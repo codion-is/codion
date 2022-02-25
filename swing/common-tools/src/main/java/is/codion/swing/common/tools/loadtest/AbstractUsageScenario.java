@@ -110,7 +110,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
       perform(application);
       successfulRunCount.incrementAndGet();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       unsuccessfulRunCount.incrementAndGet();
       synchronized (exceptions) {
         exceptions.add(e);

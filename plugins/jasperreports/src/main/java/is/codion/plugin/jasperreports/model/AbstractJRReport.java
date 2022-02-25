@@ -28,7 +28,7 @@ abstract class AbstractJRReport extends AbstractReport<JasperReport, JasperPrint
     try {
       return JasperFillManager.fillReport(loadAndCacheReport(), parameters == null ? new HashMap<>() : parameters, connection);
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new ReportException(e);
     }
   }

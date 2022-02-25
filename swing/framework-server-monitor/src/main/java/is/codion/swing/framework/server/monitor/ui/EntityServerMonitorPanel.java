@@ -135,12 +135,12 @@ public final class EntityServerMonitorPanel extends JPanel {
               .getAbsolutePath();
       UserPreferences.putUserPreference(JDK_PREFERENCE_KEY, jdkDir);
     }
-    catch (final CancelException ignored) {/*ignored*/}
+    catch (CancelException ignored) {/*ignored*/}
   }
 
   private void initializeUI() throws RemoteException {
     setLayout(new BorderLayout());
-    final JTabbedPane hostPane = new JTabbedPane();
+    JTabbedPane hostPane = new JTabbedPane();
     for (final HostMonitor hostMonitor : model.getHostMonitors()) {
       hostPane.addTab(hostMonitor.getHostName() + ":" + hostMonitor.getRegistryPort(), new HostMonitorPanel(hostMonitor));
     }
@@ -212,7 +212,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private void setUpdateInterval() {
-    final IntegerField field = Components.integerField()
+    IntegerField field = Components.integerField()
             .initialValue(5)
             .columns(6)
             .minimumValue(1d)
@@ -220,7 +220,7 @@ public final class EntityServerMonitorPanel extends JPanel {
             .selectAllOnFocusGained(true)
             .build();
 
-    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     panel.add(field);
     Dialogs.okCancelDialog(panel)
             .owner(this)
@@ -238,7 +238,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private static JPanel initializeSouthPanel() {
-    final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
+    JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
     southPanel.setBorder(BorderFactory.createEtchedBorder());
     southPanel.add(new JLabel("Memory usage:"));
     southPanel.add(new MemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS));
@@ -262,7 +262,7 @@ public final class EntityServerMonitorPanel extends JPanel {
                 .ifPresent(LookAndFeelProvider::enable);
         new EntityServerMonitorPanel().showFrame();
       }
-      catch (final Exception exception) {
+      catch (Exception exception) {
         LOG.error(exception.getMessage(), exception);
         Dialogs.exceptionDialog()
                 .title("Error during startup")

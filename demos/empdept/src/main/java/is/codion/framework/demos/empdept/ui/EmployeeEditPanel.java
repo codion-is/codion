@@ -58,12 +58,12 @@ public class EmployeeEditPanel extends EntityEditPanel {
   }
 
   private JPanel initializeDepartmentPanel() {
-    final EntityComboBox departmentBox = createForeignKeyComboBox(Employee.DEPARTMENT_FK).build();
-    final IntegerField departmentIdField = departmentBox.integerFieldSelector(Department.ID)
+    EntityComboBox departmentBox = createForeignKeyComboBox(Employee.DEPARTMENT_FK).build();
+    IntegerField departmentIdField = departmentBox.integerFieldSelector(Department.ID)
             .transferFocusOnEnter(true)
             .build();
 
-    final JPanel departmentPanel = new JPanel(borderLayout());
+    JPanel departmentPanel = new JPanel(borderLayout());
     departmentPanel.add(departmentIdField, BorderLayout.WEST);
     departmentPanel.add(departmentBox, BorderLayout.CENTER);
 

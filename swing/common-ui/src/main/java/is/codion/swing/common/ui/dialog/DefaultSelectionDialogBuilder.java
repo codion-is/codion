@@ -75,7 +75,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 
   static <T> Optional<T> selectValue(final Window dialogOwner, final Collection<T> values, final String dialogTitle,
                                      final T defaultSelection) {
-    final List<T> selected = selectValues(dialogOwner, values, dialogTitle, true,
+    List<T> selected = selectValues(dialogOwner, values, dialogTitle, true,
             defaultSelection == null ? emptyList() : singletonList(defaultSelection));
     if (selected.isEmpty()) {
       return Optional.empty();
@@ -87,10 +87,10 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
   static <T> List<T> selectValues(final Window dialogOwner, final Collection<T> values,
                                   final String dialogTitle, final boolean singleSelection,
                                   final Collection<T> defaultSelection) {
-    final DefaultListModel<T> listModel = new DefaultListModel<>();
+    DefaultListModel<T> listModel = new DefaultListModel<>();
     values.forEach(listModel::addElement);
-    final JList<T> list = new JList<>(listModel);
-    final DisposeDialogAction okAction = new DisposeDialogAction(() -> Windows.getParentDialog(list).orElse(null), null);
+    JList<T> list = new JList<>(listModel);
+    DisposeDialogAction okAction = new DisposeDialogAction(() -> Windows.getParentDialog(list).orElse(null), null);
     if (singleSelection) {
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
@@ -104,7 +104,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
         }
       }
     });
-    final JDialog dialog = new DefaultOkCancelDialogBuilder(new JScrollPane(list))
+    JDialog dialog = new DefaultOkCancelDialogBuilder(new JScrollPane(list))
             .owner(dialogOwner)
             .title(dialogTitle)
             .okAction(okAction)
@@ -115,7 +115,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
     }
     if (defaultSelection != null) {
       defaultSelection.forEach(item -> {
-        final int index = listModel.indexOf(item);
+        int index = listModel.indexOf(item);
         list.getSelectionModel().addSelectionInterval(index, index);
         list.ensureIndexIsVisible(index);
       });

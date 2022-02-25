@@ -24,9 +24,9 @@ public final class ChinookFXAppModel extends FXEntityApplicationModel {
 
   private void setupEntityModels() {
     //artists
-    final FXEntityModel artists = new FXEntityModel(Artist.TYPE, getConnectionProvider());
-    final FXEntityModel albums = new FXEntityModel(Album.TYPE, getConnectionProvider());
-    final FXEntityModel tracks = new FXEntityModel(Track.TYPE, getConnectionProvider());
+    FXEntityModel artists = new FXEntityModel(Artist.TYPE, getConnectionProvider());
+    FXEntityModel albums = new FXEntityModel(Album.TYPE, getConnectionProvider());
+    FXEntityModel tracks = new FXEntityModel(Track.TYPE, getConnectionProvider());
 
     artists.addDetailModel(albums);
     albums.addDetailModel(tracks);
@@ -34,17 +34,17 @@ public final class ChinookFXAppModel extends FXEntityApplicationModel {
     addEntityModel(artists);
 
     //playlists
-    final FXEntityModel playlists = new FXEntityModel(Playlist.TYPE, getConnectionProvider());
-    final FXEntityModel playlisttracks = new FXEntityModel(PlaylistTrack.TYPE, getConnectionProvider());
+    FXEntityModel playlists = new FXEntityModel(Playlist.TYPE, getConnectionProvider());
+    FXEntityModel playlisttracks = new FXEntityModel(PlaylistTrack.TYPE, getConnectionProvider());
 
     playlists.addDetailModel(playlisttracks);
 
     addEntityModel(playlists);
 
     //customers
-    final FXEntityModel customers = new FXEntityModel(Customer.TYPE, getConnectionProvider());
-    final FXEntityModel invoices = new FXEntityModel(Invoice.TYPE, getConnectionProvider());
-    final FXEntityModel invoicelines = new FXEntityModel(InvoiceLine.TYPE, getConnectionProvider());
+    FXEntityModel customers = new FXEntityModel(Customer.TYPE, getConnectionProvider());
+    FXEntityModel invoices = new FXEntityModel(Invoice.TYPE, getConnectionProvider());
+    FXEntityModel invoicelines = new FXEntityModel(InvoiceLine.TYPE, getConnectionProvider());
 
     customers.addDetailModel(invoices);
     invoices.addDetailModel(invoicelines);

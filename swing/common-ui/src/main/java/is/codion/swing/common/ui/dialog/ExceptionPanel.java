@@ -149,11 +149,11 @@ final class ExceptionPanel extends JPanel {
   }
 
   private JPanel createNorthPanel() {
-    final JLabel label = new JLabel(Messages.get(Messages.ERROR) + ": ");
+    JLabel label = new JLabel(Messages.get(Messages.ERROR) + ": ");
     label.setHorizontalAlignment(SwingConstants.LEFT);
     detailPanel.add(label);
     detailPanel.add(exceptionField);
-    final JLabel message = new JLabel(MESSAGES.getString("message") + ": ");
+    JLabel message = new JLabel(MESSAGES.getString("message") + ": ");
     message.setHorizontalAlignment(SwingConstants.LEFT);
     Sizes.setPreferredWidth(message, MESSAGE_LABEL_WIDTH);
     detailPanel.add(message);
@@ -170,7 +170,7 @@ final class ExceptionPanel extends JPanel {
   }
 
   private JPanel createCenterPanel() {
-    final JScrollPane scrollPane = new JScrollPane(detailsArea);
+    JScrollPane scrollPane = new JScrollPane(detailsArea);
     scrollPane.setPreferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT));
 
     return Components.panel(new BorderLayout())
@@ -179,11 +179,11 @@ final class ExceptionPanel extends JPanel {
   }
 
   private JPanel createButtonPanel() {
-    final Control closeControl = Control.builder(closeEvent::onEvent)
+    Control closeControl = Control.builder(closeEvent::onEvent)
             .caption(MESSAGES.getString("close"))
             .description(MESSAGES.getString("close_dialog"))
             .build();
-    final ToggleControl detailsControl = ToggleControl.builder(showDetailsState)
+    ToggleControl detailsControl = ToggleControl.builder(showDetailsState)
             .caption(MESSAGES.getString("details"))
             .description(MESSAGES.getString("show_details"))
             .build();
@@ -209,14 +209,14 @@ final class ExceptionPanel extends JPanel {
   }
 
   void setException(final Throwable throwable, final String message) {
-    final String name = throwable.getClass().getSimpleName();
+    String name = throwable.getClass().getSimpleName();
     descriptionLabel.setText(message == null ? name : truncateMessage(message));
     descriptionLabel.setToolTipText(message);
 
     exceptionField.setText(name);
     messageArea.setText(throwable.getMessage());
 
-    final StringWriter stringWriter = new StringWriter();
+    StringWriter stringWriter = new StringWriter();
     throwable.printStackTrace(new PrintWriter(stringWriter));
 
     detailsArea.setText(null);

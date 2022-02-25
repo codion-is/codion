@@ -33,18 +33,18 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
      *     ITEM
      *       ITEMTAG
      */
-    final SwingEntityModel categoryModel = applicationModel.getEntityModel(Category.TYPE);
-    final SwingEntityModel productModel = categoryModel.getDetailModel(Product.TYPE);
-    final SwingEntityModel itemModel = productModel.getDetailModel(Item.TYPE);
-    final SwingEntityModel tagItemModel = itemModel.getDetailModel(TagItem.TYPE);
+    SwingEntityModel categoryModel = applicationModel.getEntityModel(Category.TYPE);
+    SwingEntityModel productModel = categoryModel.getDetailModel(Product.TYPE);
+    SwingEntityModel itemModel = productModel.getDetailModel(Item.TYPE);
+    SwingEntityModel tagItemModel = itemModel.getDetailModel(TagItem.TYPE);
 
-    final EntityPanel categoryPanel = new EntityPanel(categoryModel,
+    EntityPanel categoryPanel = new EntityPanel(categoryModel,
             new CategoryEditPanel(categoryModel.getEditModel()));
-    final EntityPanel productPanel = new EntityPanel(productModel,
+    EntityPanel productPanel = new EntityPanel(productModel,
             new ProductEditPanel(productModel.getEditModel()));
-    final EntityPanel itemPanel = new EntityPanel(itemModel,
+    EntityPanel itemPanel = new EntityPanel(itemModel,
             new ItemEditPanel(itemModel.getEditModel()));
-    final EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
+    EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
             new TagItemEditPanel(tagItemModel.getEditModel()));
 
     categoryPanel.addDetailPanel(productPanel);
@@ -58,10 +58,10 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 
   @Override
   protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(final PetstoreAppModel applicationModel) {
-    final SwingEntityModel.Builder tagModelBuilder =
+    SwingEntityModel.Builder tagModelBuilder =
             SwingEntityModel.builder(Tag.TYPE)
                     .detailModelBuilder(SwingEntityModel.builder(TagItem.TYPE));
-    final SwingEntityModel.Builder sellerContactInfoModelBuilder =
+    SwingEntityModel.Builder sellerContactInfoModelBuilder =
             SwingEntityModel.builder(SellerContactInfo.TYPE)
                     .detailModelBuilder(SwingEntityModel.builder(Item.TYPE)
                             .detailModelBuilder(SwingEntityModel.builder(TagItem.TYPE)));

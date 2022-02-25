@@ -74,7 +74,7 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 
   @Override
   protected JSpinner createSpinner() {
-    final SpinnerNumberModel spinnerNumberModel = (SpinnerNumberModel) spinnerModel;
+    SpinnerNumberModel spinnerNumberModel = (SpinnerNumberModel) spinnerModel;
     if (minimum != null) {
       spinnerNumberModel.setMinimum((Comparable<T>) minimum);
     }
@@ -84,8 +84,8 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
     if (stepSize != null) {
       spinnerNumberModel.setStepSize(stepSize);
     }
-    final JSpinner spinner = super.createSpinner();
-    final JSpinner.NumberEditor numberEditor = decimalFormatPattern == null ?
+    JSpinner spinner = super.createSpinner();
+    JSpinner.NumberEditor numberEditor = decimalFormatPattern == null ?
             new JSpinner.NumberEditor(spinner) : new JSpinner.NumberEditor(spinner, decimalFormatPattern);
     numberEditor.getFormat().setGroupingUsed(groupingUsed);
     spinner.setEditor(numberEditor);

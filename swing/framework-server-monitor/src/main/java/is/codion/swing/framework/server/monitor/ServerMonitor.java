@@ -247,8 +247,8 @@ public final class ServerMonitor {
    * @throws RemoteException in case of a communication error
    */
   public String getEnvironmentInfo() throws RemoteException {
-    final StringBuilder contents = new StringBuilder();
-    final String startDate = LocaleDateTimePattern.builder()
+    StringBuilder contents = new StringBuilder();
+    String startDate = LocaleDateTimePattern.builder()
             .delimiterDash().yearFourDigits().hoursMinutesSeconds()
             .build().getFormatter().format(serverInformation.getStartTime());
     contents.append("Server info:").append("\n");
@@ -292,7 +292,7 @@ public final class ServerMonitor {
    */
   public void refreshDomainList() throws RemoteException {
     domainListModel.setDataVector(new Object[][] {}, new Object[] {"Entity Type", "Table name"});
-    final Map<String, String> definitions = server.getEntityDefinitions();
+    Map<String, String> definitions = server.getEntityDefinitions();
     for (final Map.Entry<String, String> definition : definitions.entrySet()) {
       domainListModel.addRow(new Object[] {definition.getKey(), definition.getValue()});
     }
@@ -313,7 +313,7 @@ public final class ServerMonitor {
     try {
       server.shutdown();
     }
-    catch (final RemoteException ignored) {/*ignored*/}
+    catch (RemoteException ignored) {/*ignored*/}
     serverShutDownEvent.onEvent();
   }
 
@@ -325,7 +325,7 @@ public final class ServerMonitor {
       server.getUsedMemory();
       return true;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return false;
     }
   }
@@ -365,7 +365,7 @@ public final class ServerMonitor {
     try {
       server.setConnectionLimit(value);
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       throw new RuntimeException(e);
     }
   }
@@ -377,26 +377,26 @@ public final class ServerMonitor {
     try {
       server.setLogLevel(level);
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       throw new RuntimeException(e);
     }
   }
 
   private EntityServerAdmin connectServer(final String serverName) throws RemoteException, ServerAuthenticationException {
-    final long time = System.currentTimeMillis();
+    long time = System.currentTimeMillis();
     try {
-      final Server<?, EntityServerAdmin> theServer = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
-      final EntityServerAdmin serverAdmin = theServer.getServerAdmin(serverAdminUser);
+      Server<?, EntityServerAdmin> theServer = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
+      EntityServerAdmin serverAdmin = theServer.getServerAdmin(serverAdminUser);
       //just some simple call to validate the remote connection
       serverAdmin.getUsedMemory();
       LOG.info("ServerMonitor connected to server: {}", serverName);
       return serverAdmin;
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       LOG.error("Server \"" + serverName + "\" is unreachable, host: " + hostName + ", registry port: " + registryPort, e);
       throw e;
     }
-    catch (final NotBoundException e) {
+    catch (NotBoundException e) {
       LOG.error(e.getMessage(), e);
       throw new RemoteException("Server " + serverName + " is not bound to registry on host: " + hostName + ", port: " + registryPort, e);
     }
@@ -408,8 +408,8 @@ public final class ServerMonitor {
   private void updateStatistics() {
     try {
       if (!shutdown) {
-        final ServerAdmin.ServerStatistics statistics = server.getServerStatistics(lastStatisticsUpdateTime);
-        final long timestamp = statistics.getTimestamp();
+        ServerAdmin.ServerStatistics statistics = server.getServerStatistics(lastStatisticsUpdateTime);
+        long timestamp = statistics.getTimestamp();
         lastStatisticsUpdateTime = timestamp;
         connectionLimitValue.set(statistics.getConnectionLimit());
         connectionCountValue.set(statistics.getConnectionCount());
@@ -426,7 +426,7 @@ public final class ServerMonitor {
         addGCInfo(statistics.getGcEvents());
       }
     }
-    catch (final RemoteException ignored) {/*ignored*/}
+    catch (RemoteException ignored) {/*ignored*/}
   }
 
   private void addThreadStatistics(final long timestamp, final ServerAdmin.ThreadStatistics threadStatistics) {

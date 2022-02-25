@@ -154,7 +154,7 @@ public final class Util {
   public static <K, T> LinkedHashMap<K, List<T>> map(final Collection<? extends T> values, final Function<T, K> keyProvider) {
     requireNonNull(values, "values");
     requireNonNull(keyProvider, "keyProvider");
-    final LinkedHashMap<K, List<T>> map = new LinkedHashMap<>(values.size());
+    LinkedHashMap<K, List<T>> map = new LinkedHashMap<>(values.size());
     for (final T value : values) {
       map.computeIfAbsent(keyProvider.apply(value), k -> new ArrayList<>()).add(value);
     }
@@ -171,7 +171,7 @@ public final class Util {
       Class.forName(requireNonNull(className, "className"));
       return true;
     }
-    catch (final ClassNotFoundException e) {
+    catch (ClassNotFoundException e) {
       return false;
     }
   }
@@ -197,7 +197,7 @@ public final class Util {
     try {
       return d == null ? null : new BigDecimal(Double.toString(d)).setScale(places, roundingMode).doubleValue();
     }
-    catch (final NumberFormatException e) {
+    catch (NumberFormatException e) {
       throw new RuntimeException(e);
     }
   }
@@ -209,7 +209,7 @@ public final class Util {
    * @throws IllegalArgumentException in case primitiveType is not a primitive
    */
   public static <T> T getPrimitiveDefaultValue(final Class<T> primitiveType) {
-    final T defaultValue = (T) DEFAULT_PRIMITIVE_VALUES.get(requireNonNull(primitiveType));
+    T defaultValue = (T) DEFAULT_PRIMITIVE_VALUES.get(requireNonNull(primitiveType));
     if (defaultValue == null) {
       throw new IllegalArgumentException("Not a primitive type: " + primitiveType);
     }

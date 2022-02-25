@@ -61,7 +61,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
       try {
         return getEditModel().getConnectionProvider().getConnection().select(Customer.STATE);
       }
-      catch (final DatabaseException e) {
+      catch (DatabaseException e) {
         throw new RuntimeException(e);
       }
     }

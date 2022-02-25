@@ -23,9 +23,9 @@ final class ConditionCombinationDeserializer {
   }
 
   Condition.Combination deserialize(final EntityDefinition definition, final JsonNode jsonNode) throws IOException {
-    final Conjunction conjunction = Conjunction.valueOf(jsonNode.get("conjunction").asText());
-    final JsonNode conditionsNode = jsonNode.get("conditions");
-    final Collection<Condition> conditions = new ArrayList<>(conditionsNode.size());
+    Conjunction conjunction = Conjunction.valueOf(jsonNode.get("conjunction").asText());
+    JsonNode conditionsNode = jsonNode.get("conditions");
+    Collection<Condition> conditions = new ArrayList<>(conditionsNode.size());
     for (final JsonNode conditionNode : conditionsNode) {
       conditions.add(conditionDeserializer.deserialize(definition, conditionNode));
     }

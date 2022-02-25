@@ -31,16 +31,16 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
   @Override
   protected List<Key> doInsert(final List<Entity> entities) throws DatabaseException {
-    final EntityConnection connection = getConnectionProvider().getConnection();
+    EntityConnection connection = getConnectionProvider().getConnection();
     connection.beginTransaction();
     try {
-      final List<Key> keys = connection.insert(entities);
+      List<Key> keys = connection.insert(entities);
       updateTotals(entities, connection);
       connection.commitTransaction();
 
       return keys;
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       connection.rollbackTransaction();
       throw e;
     }
@@ -48,16 +48,16 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
   @Override
   protected List<Entity> doUpdate(final List<Entity> entities) throws DatabaseException {
-    final EntityConnection connection = getConnectionProvider().getConnection();
+    EntityConnection connection = getConnectionProvider().getConnection();
     connection.beginTransaction();
     try {
-      final List<Entity> updated = connection.update(entities);
+      List<Entity> updated = connection.update(entities);
       updateTotals(entities, connection);
       connection.commitTransaction();
 
       return updated;
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       connection.rollbackTransaction();
       throw e;
     }
@@ -65,7 +65,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
   @Override
   protected List<Entity> doDelete(final List<Entity> entities) throws DatabaseException {
-    final EntityConnection connection = getConnectionProvider().getConnection();
+    EntityConnection connection = getConnectionProvider().getConnection();
     connection.beginTransaction();
     try {
       connection.delete(Entity.getPrimaryKeys(entities));
@@ -74,7 +74,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
       return entities;
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       connection.rollbackTransaction();
       throw e;
     }

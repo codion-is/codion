@@ -24,13 +24,13 @@ public class SelectedValuesTest {
 
   @Test
   void selectedItemValueLinkValidate() throws Exception {
-    final Value<String> originalValue = Value.value("b");
+    Value<String> originalValue = Value.value("b");
     originalValue.addValidator(value -> {
       if (value != null && value.equals("s")) {
         throw new IllegalArgumentException();
       }
     });
-    final JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
+    JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
     ComponentValues.comboBox(box).link(originalValue);
 
     assertEquals("b", box.getSelectedItem());
@@ -42,7 +42,7 @@ public class SelectedValuesTest {
 
   @Test
   void selectedItemValueLink() throws Exception {
-    final JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
+    JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
     ComponentValues.comboBox(box).link(Value.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent));
     assertNull(selectedItem);
     setSelectedItem("s");
@@ -53,7 +53,7 @@ public class SelectedValuesTest {
 
   @Test
   void selectedItemValue() {
-    final List<Item<String>> items = asList(item(null), item("one"),
+    List<Item<String>> items = asList(item(null), item("one"),
             item("two"), item("three"), item("four"));
     ItemComboBoxModel<String> boxModel = ItemComboBoxModel.createModel(items);
     boxModel.setSelectedItem("two");
@@ -69,8 +69,8 @@ public class SelectedValuesTest {
 
   @Test
   void selectedValue() {
-    final JComboBox<String> box = new JComboBox<>(new String[] {null, "one", "two", "three"});
-    final Value<String> value = ComponentValues.comboBox(box);
+    JComboBox<String> box = new JComboBox<>(new String[] {null, "one", "two", "three"});
+    Value<String> value = ComponentValues.comboBox(box);
 
     assertNull(value.get());
     box.setSelectedIndex(1);

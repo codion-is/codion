@@ -92,7 +92,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
         connection.rollback();
       }
     }
-    catch (final SQLException ex) {
+    catch (SQLException ex) {
       System.err.println("DefaultDatabaseConnection.close(), connection invalid");
     }
     Database.closeSilently(connection);
@@ -122,7 +122,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public int selectInteger(final String sql) throws SQLException {
-    final List<Integer> integers = select(sql, INTEGER_RESULT_PACKER, 1);
+    List<Integer> integers = select(sql, INTEGER_RESULT_PACKER, 1);
     if (!integers.isEmpty()) {
       return integers.get(0);
     }
@@ -132,7 +132,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public long selectLong(final String sql) throws SQLException {
-    final List<Long> longs = select(sql, LONG_RESULT_PACKER, 1);
+    List<Long> longs = select(sql, LONG_RESULT_PACKER, 1);
     if (!longs.isEmpty()) {
       return longs.get(0);
     }
@@ -164,7 +164,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       logAccess("rollbackTransaction");
       connection.rollback();
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       exception = e;
     }
     finally {
@@ -185,7 +185,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       logAccess("commitTransaction");
       connection.commit();
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       exception = e;
     }
     finally {
@@ -211,7 +211,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       logAccess("commit");
       connection.commit();
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       System.err.println("Exception during commit: " + user.getUsername() + ": " + e.getMessage());
       exception = e;
       throw e;
@@ -233,7 +233,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     try {
       connection.rollback();
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       exception = e;
       throw e;
     }
@@ -255,7 +255,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
       return resultPacker.pack(resultSet, fetchLimit);
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       exception = e;
       throw e;
     }
@@ -305,7 +305,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
       return connection;
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       System.err.println("Unable to disable auto commit on connection, assuming invalid state");
       throw new DatabaseException(e, "Connection invalid during instantiation");
     }
@@ -322,7 +322,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     try {
       return META_DATA_USER_CACHE.computeIfAbsent(connection.getMetaData().getUserName(), User::user);
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       throw new DatabaseException(e, "Exception while trying to retrieve username from meta data");
     }
   }

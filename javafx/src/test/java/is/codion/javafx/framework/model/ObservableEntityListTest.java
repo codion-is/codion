@@ -39,7 +39,7 @@ public final class ObservableEntityListTest {
 
   @Test
   void selectCondition() {
-    final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
     list.setSelectCondition(Conditions.where(TestDomain.DEPARTMENT_NAME).notEqualTo("SALES", "OPERATIONS"));
@@ -49,13 +49,13 @@ public final class ObservableEntityListTest {
 
   @Test
   void includeCondition() throws DatabaseException {
-    final AtomicInteger counter = new AtomicInteger();
-    final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
-    final EventListener listener = counter::incrementAndGet;
+    AtomicInteger counter = new AtomicInteger();
+    ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    EventListener listener = counter::incrementAndGet;
     list.addFilterListener(listener);
     list.refresh();
-    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+    Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
 
     list.setIncludeCondition(item -> Objects.equals(item.get(TestDomain.DEPARTMENT_NAME), "SALES"));
     assertEquals(1, counter.get());
@@ -81,17 +81,17 @@ public final class ObservableEntityListTest {
 
   @Test
   void selection() throws DatabaseException {
-    final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
-    final ListView<Entity> listView = new ListView<>(list);
+    ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    ListView<Entity> listView = new ListView<>(list);
     list.setSelectionModel(listView.getSelectionModel());
     try {
       list.setSelectionModel(listView.getSelectionModel());
       fail();
     }
-    catch (final IllegalStateException ignored) {}
+    catch (IllegalStateException ignored) {}
     list.refresh();
-    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+    Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
 
     list.getSelectionModel().setSelectedItem(sales);
     assertFalse(list.getSelectionEmptyObserver().get());

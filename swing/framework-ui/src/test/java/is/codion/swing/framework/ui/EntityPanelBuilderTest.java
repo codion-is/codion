@@ -35,25 +35,25 @@ public class EntityPanelBuilderTest {
 
   @Test
   void testDetailPanelBuilder() {
-    final SwingEntityModel.Builder customerModelBuilder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT);
-    final SwingEntityModel.Builder invoiceModelBuilder = SwingEntityModel.builder(TestDomain.T_EMP);
+    SwingEntityModel.Builder customerModelBuilder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT);
+    SwingEntityModel.Builder invoiceModelBuilder = SwingEntityModel.builder(TestDomain.T_EMP);
 
     customerModelBuilder.detailModelBuilder(invoiceModelBuilder);
 
-    final SwingEntityModel customerModel = customerModelBuilder.buildModel(CONNECTION_PROVIDER);
+    SwingEntityModel customerModel = customerModelBuilder.buildModel(CONNECTION_PROVIDER);
 
     final String customerCaption = "A department caption";
-    final EntityPanel.Builder customerPanelBuilder = EntityPanel.builder(TestDomain.T_DEPARTMENT)
+    EntityPanel.Builder customerPanelBuilder = EntityPanel.builder(TestDomain.T_DEPARTMENT)
             .caption(customerCaption);
-    final EntityPanel.Builder invoicePanelBuilder = EntityPanel.builder(TestDomain.T_EMP)
+    EntityPanel.Builder invoicePanelBuilder = EntityPanel.builder(TestDomain.T_EMP)
             .caption("empCaption");
 
     customerPanelBuilder.detailPanelBuilder(invoicePanelBuilder);
 
-    final EntityPanel customerPanel = customerPanelBuilder.buildPanel(customerModel);
+    EntityPanel customerPanel = customerPanelBuilder.buildPanel(customerModel);
     assertEquals(customerCaption, customerPanel.getCaption());
     assertTrue(customerPanel.containsDetailPanel(TestDomain.T_EMP));
-    final EntityPanel invoicePanel = customerPanel.getDetailPanel(TestDomain.T_EMP);
+    EntityPanel invoicePanel = customerPanel.getDetailPanel(TestDomain.T_EMP);
     assertEquals("empCaption", invoicePanel.getCaption());
     assertEquals(1, customerPanel.getDetailPanels().size());
 

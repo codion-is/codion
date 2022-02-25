@@ -140,7 +140,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
       return (Item<T>) item;
     }
 
-    final int index = indexOf((T) item);
+    int index = indexOf((T) item);
     if (index >= 0) {
       return getElementAt(index);
     }

@@ -83,7 +83,7 @@ public final class DatabaseMonitor {
    * @throws RemoteException in case of an exception
    */
   public void updateStatistics() throws RemoteException {
-    final Database.Statistics dbStats = server.getDatabaseStatistics();
+    Database.Statistics dbStats = server.getDatabaseStatistics();
     queriesPerSecond.add(dbStats.getTimestamp(), dbStats.getQueriesPerSecond());
     selectsPerSecond.add(dbStats.getTimestamp(), dbStats.getSelectsPerSecond());
     insertsPerSecond.add(dbStats.getTimestamp(), dbStats.getInsertsPerSecond());
@@ -109,6 +109,6 @@ public final class DatabaseMonitor {
     try {
       updateStatistics();
     }
-    catch (final RemoteException ignored) {/*ignored*/}
+    catch (RemoteException ignored) {/*ignored*/}
   }
 }

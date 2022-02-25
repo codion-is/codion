@@ -16,7 +16,7 @@ final class DoubleFieldValue extends AbstractTextComponentValue<Double, DoubleFi
 
   @Override
   protected Double getComponentValue(final DoubleField component) {
-    final Number number = component.getNumber();
+    Number number = component.getNumber();
     if (number == null) {
       return isNullable() ? null : 0d;
     }

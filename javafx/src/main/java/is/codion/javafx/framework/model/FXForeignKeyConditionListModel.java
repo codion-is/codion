@@ -53,7 +53,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
     addEqualsValueListener(() -> {
       try {
         setUpdatingModel(true);
-        final Collection<Entity> equalsValues = getEqualValues();
+        Collection<Entity> equalsValues = getEqualValues();
         if (!equalsValues.isEmpty()) {
           listModel.getSelectionModel().setSelectedItem(equalsValues.iterator().next());
         }
@@ -66,7 +66,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
       }
     });
     listModel.addRefreshListener(() -> {
-      final Collection<Entity> equalsValues = getEqualValues();
+      Collection<Entity> equalsValues = getEqualValues();
       if (!equalsValues.isEmpty()) {
         listModel.getSelectionModel().setSelectedItem(equalsValues.iterator().next());
       }

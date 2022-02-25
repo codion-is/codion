@@ -153,9 +153,9 @@ class DefaultKey implements Key, Serializable {
 
   @Override
   public String toString() {
-    final StringBuilder stringBuilder = new StringBuilder();
+    StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < attributes.size(); i++) {
-      final Attribute<Object> attribute = (Attribute<Object>) attributes.get(i);
+      Attribute<Object> attribute = (Attribute<Object>) attributes.get(i);
       stringBuilder.append(attribute.getName()).append(":").append(values.get(attribute));
       if (i < attributes.size() - 1) {
         stringBuilder.append(",");
@@ -180,14 +180,14 @@ class DefaultKey implements Key, Serializable {
       return false;
     }
     if (object.getClass() == DefaultKey.class) {
-      final DefaultKey otherKey = (DefaultKey) object;
+      DefaultKey otherKey = (DefaultKey) object;
       if (isNull() || otherKey.isNull()) {
         return false;
       }
 
       if (attributes.size() == 1 && otherKey.attributes.size() == 1) {
-        final Attribute<?> attribute = attributes.get(0);
-        final Attribute<?> otherAttribute = otherKey.attributes.get(0);
+        Attribute<?> attribute = attributes.get(0);
+        Attribute<?> otherAttribute = otherKey.attributes.get(0);
 
         return Objects.equals(values.get(attribute), otherKey.values.get(otherAttribute)) && attribute.equals(otherAttribute);
       }
@@ -250,8 +250,8 @@ class DefaultKey implements Key, Serializable {
   private Integer computeMultipleValueHashCode() {
     int hash = 0;
     for (int i = 0; i < attributes.size(); i++) {
-      final ColumnProperty<?> property = definition.getColumnProperty(attributes.get(i));
-      final Object value = values.get(property.getAttribute());
+      ColumnProperty<?> property = definition.getColumnProperty(attributes.get(i));
+      Object value = values.get(property.getAttribute());
       if (!property.isNullable() && value == null) {
         return null;
       }
@@ -264,7 +264,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   private Integer computeSingleValueHashCode() {
-    final Object value = get();
+    Object value = get();
     if (value == null) {
       return null;
     }
@@ -291,23 +291,23 @@ class DefaultKey implements Key, Serializable {
     stream.writeBoolean(primaryKey);
     stream.writeInt(attributes.size());
     for (int i = 0; i < attributes.size(); i++) {
-      final Attribute<?> attribute = attributes.get(i);
+      Attribute<?> attribute = attributes.get(i);
       stream.writeObject(attribute.getName());
       stream.writeObject(values.get(attribute));
     }
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    final Entities entities = DefaultEntities.getEntities((String) stream.readObject());
+    Entities entities = DefaultEntities.getEntities((String) stream.readObject());
     definition = entities.getDefinition((String) stream.readObject());
     if (definition.getSerializationVersion() != stream.readInt()) {
       throw new IllegalArgumentException("Entity type '" + definition.getEntityType() + "' can not be deserialized due to version difference");
     }
     primaryKey = stream.readBoolean();
-    final int attributeCount = stream.readInt();
+    int attributeCount = stream.readInt();
     values = new HashMap<>(attributeCount);
     for (int i = 0; i < attributeCount; i++) {
-      final Attribute<Object> attribute = definition.getAttribute((String) stream.readObject());
+      Attribute<Object> attribute = definition.getAttribute((String) stream.readObject());
       values.put(attribute, attribute.validateType(stream.readObject()));
     }
     attributes = new ArrayList<>(values.keySet());
@@ -316,7 +316,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   private static Map<Attribute<?>, Object> createNullValueMap(final List<Attribute<?>> attributes) {
-    final Map<Attribute<?>, Object> values = new HashMap<>(attributes.size());
+    Map<Attribute<?>, Object> values = new HashMap<>(attributes.size());
     for (final Attribute<?> attribute : attributes) {
       values.put(attribute, null);
     }

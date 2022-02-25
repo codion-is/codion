@@ -79,8 +79,8 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    */
   public Domain getDomain() {
     if (domain == null) {
-      final String domainClassName = getDomainClassName();
-      final Optional<Domain> optionalDomain = Domain.getInstanceByClassName(domainClassName);
+      String domainClassName = getDomainClassName();
+      Optional<Domain> optionalDomain = Domain.getInstanceByClassName(domainClassName);
       if (optionalDomain.isPresent()) {
         domain = optionalDomain.get();
       }
@@ -92,7 +92,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
           domain = (Domain) Class.forName(domainClassName).getConstructor().newInstance();
         }
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         LOG.error("Error when instantiating Domain of type " + domainClassName);
         throw new RuntimeException(e);
       }
@@ -137,7 +137,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
       return localEntityConnection(getDomain(), getDatabase(), getUser())
               .setQueryTimeout(queryTimeout);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }

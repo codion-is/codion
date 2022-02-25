@@ -106,7 +106,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
   @Override
   public ProgressWorker<T, V> execute() {
-    final ProgressWorker<T, V> worker = build();
+    ProgressWorker<T, V> worker = build();
     worker.execute();
 
     return worker;
@@ -114,7 +114,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
   @Override
   public ProgressWorker<T, V> build() {
-    final ProgressDialog progressDialog = progressDialogBuilder
+    ProgressDialog progressDialog = progressDialogBuilder
             .owner(owner)
             .title(title)
             .icon(icon)

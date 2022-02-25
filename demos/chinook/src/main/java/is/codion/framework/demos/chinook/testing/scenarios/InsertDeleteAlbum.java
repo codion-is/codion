@@ -20,21 +20,21 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
 
   @Override
   protected void perform(final ChinookApplicationModel application) throws Exception {
-    final SwingEntityModel artistModel = application.getEntityModel(Artist.TYPE);
+    SwingEntityModel artistModel = application.getEntityModel(Artist.TYPE);
     artistModel.getTableModel().refresh();
     selectRandomRow(artistModel.getTableModel());
-    final Entity artist = artistModel.getTableModel().getSelectionModel().getSelectedItem();
-    final SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
-    final SwingEntityEditModel albumEditModel = albumModel.getEditModel();
+    Entity artist = artistModel.getTableModel().getSelectionModel().getSelectedItem();
+    SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+    SwingEntityEditModel albumEditModel = albumModel.getEditModel();
     albumEditModel.setEntity(application.getEntities().builder(Album.TYPE)
             .with(Album.ARTIST_FK, artist)
             .with(Album.TITLE, "Title")
             .build());
-    final Entity insertedAlbum = albumEditModel.insert();
-    final SwingEntityEditModel trackEditModel = albumModel.getDetailModel(Track.TYPE).getEditModel();
-    final SwingEntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(Track.GENRE_FK);
+    Entity insertedAlbum = albumEditModel.insert();
+    SwingEntityEditModel trackEditModel = albumModel.getDetailModel(Track.TYPE).getEditModel();
+    SwingEntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(Track.GENRE_FK);
     selectRandomItem(genreComboBoxModel);
-    final SwingEntityComboBoxModel mediaTypeComboBoxModel =
+    SwingEntityComboBoxModel mediaTypeComboBoxModel =
             trackEditModel.getForeignKeyComboBoxModel(Track.MEDIATYPE_FK);
     selectRandomItem(mediaTypeComboBoxModel);
     for (int i = 0; i < 10; i++) {
@@ -49,7 +49,7 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
       trackEditModel.insert();
     }
 
-    final SwingEntityTableModel trackTableModel = albumModel.getDetailModel(Track.TYPE).getTableModel();
+    SwingEntityTableModel trackTableModel = albumModel.getDetailModel(Track.TYPE).getTableModel();
     trackTableModel.getSelectionModel().selectAll();
     trackTableModel.deleteSelected();
     albumEditModel.delete();

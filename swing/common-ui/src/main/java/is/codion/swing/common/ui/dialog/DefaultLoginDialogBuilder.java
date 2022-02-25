@@ -43,7 +43,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
     if (owner == null && isWindows()) {
       owner = dummyFrame = createDummyFrame(title, icon);
     }
-    final LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent);
+    LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent);
     new DefaultOkCancelDialogBuilder(loginPanel)
             .owner(owner)
             .resizable(false)
@@ -56,7 +56,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
       dummyFrame.dispose();
     }
 
-    final User user = loginPanel.getUser();
+    User user = loginPanel.getUser();
     if (user == null) {
       throw new CancelException();
     }
@@ -65,7 +65,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
   }
 
   private static JFrame createDummyFrame(final String title, final ImageIcon icon) {
-    final JFrame frame = new JFrame(title);
+    JFrame frame = new JFrame(title);
     frame.setUndecorated(true);
     frame.setVisible(true);
     frame.setLocationRelativeTo(null);

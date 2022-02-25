@@ -31,17 +31,17 @@ class NumberParser<T extends Number> implements Parser<T> {
       return new DefaultNumberParseResult<>(string, null);
     }
 
-    final T parsedNumber = parseNumber(string);
+    T parsedNumber = parseNumber(string);
     if (parsedNumber != null) {
       String formattedNumber = format.format(parsedNumber);
       //handle trailing decimal symbol and trailing decimal zeros
       if (format instanceof DecimalFormat) {
-        final String decimalSeparator =
+        String decimalSeparator =
                 String.valueOf(((DecimalFormat) format).getDecimalFormatSymbols().getDecimalSeparator());
         if (!formattedNumber.contains(decimalSeparator) && string.endsWith(decimalSeparator)) {
           formattedNumber += decimalSeparator;
         }
-        final int decimalSeparatorIndex = string.indexOf(decimalSeparator);
+        int decimalSeparatorIndex = string.indexOf(decimalSeparator);
         if (decimalSeparatorIndex >= 0 && string.substring(decimalSeparatorIndex).endsWith("0")) {
           formattedNumber += (formattedNumber.contains(decimalSeparator) ? "" : decimalSeparator) +
                   getTrailingDecimalZeros(string, decimalSeparatorIndex);
@@ -70,8 +70,8 @@ class NumberParser<T extends Number> implements Parser<T> {
       return null;
     }
 
-    final ParsePosition position = new ParsePosition(0);
-    final T number = (T) format.parse(text, position);
+    ParsePosition position = new ParsePosition(0);
+    T number = (T) format.parse(text, position);
     if (position.getIndex() != text.length() || position.getErrorIndex() != -1) {
       return null;
     }
@@ -129,13 +129,13 @@ class NumberParser<T extends Number> implements Parser<T> {
   }
 
   private int countAddedGroupingSeparators(final String currentNumber, final String newNumber) {
-    final DecimalFormatSymbols symbols = ((DecimalFormat) format).getDecimalFormatSymbols();
+    DecimalFormatSymbols symbols = ((DecimalFormat) format).getDecimalFormatSymbols();
 
     return count(newNumber, symbols.getGroupingSeparator()) - count(currentNumber, symbols.getGroupingSeparator());
   }
 
   private static String getTrailingDecimalZeros(final String string, final int decimalSeparatorIndex) {
-    final StringBuilder builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     int index = string.length() - 1;
     char c = string.charAt(index);
     while (c == '0' && index > decimalSeparatorIndex) {

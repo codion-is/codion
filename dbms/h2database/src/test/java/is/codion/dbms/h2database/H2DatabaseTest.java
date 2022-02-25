@@ -46,19 +46,19 @@ public class H2DatabaseTest {
 
   @Test
   void supportsIsValid() {
-    final H2Database db = new H2Database("url");
+    H2Database db = new H2Database("url");
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   void getAutoIncrementQuery() {
-    final H2Database db = new H2Database("url");
+    H2Database db = new H2Database("url");
     assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
   void getSequenceQuery() {
-    final H2Database db = new H2Database("url");
+    H2Database db = new H2Database("url");
     final String idSource = "seq";
     assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));
   }
@@ -70,19 +70,19 @@ public class H2DatabaseTest {
 
   @Test
   void multipleDatabases() throws DatabaseException, SQLException, IOException {
-    final File file1 = File.createTempFile("h2db_test_1", ".sql");
-    final File file2 = File.createTempFile("h2db_test_2", ".sql");
+    File file1 = File.createTempFile("h2db_test_1", ".sql");
+    File file2 = File.createTempFile("h2db_test_2", ".sql");
     Files.write(file1.toPath(), singletonList("create schema scott; create table scott.test1 (id int);"));
     Files.write(file2.toPath(), singletonList("create schema scott; create table scott.test2 (id int);"));
 
     final String url1 = "jdbc:h2:mem:test1";
     final String url2 = "jdbc:h2:mem:test2";
 
-    final User user = User.user("sa");
-    final H2Database db1 = new H2Database(url1, singletonList(file1.getAbsolutePath()));
-    final H2Database db2 = new H2Database(url2, singletonList(file2.getAbsolutePath()));
-    final Connection connection1 = db1.createConnection(user);
-    final Connection connection2 = db2.createConnection(user);
+    User user = User.user("sa");
+    H2Database db1 = new H2Database(url1, singletonList(file1.getAbsolutePath()));
+    H2Database db2 = new H2Database(url2, singletonList(file2.getAbsolutePath()));
+    Connection connection1 = db1.createConnection(user);
+    Connection connection2 = db2.createConnection(user);
     connection1.prepareCall("select id from scott.test1").executeQuery();
     connection2.prepareCall("select id from scott.test2").executeQuery();
     connection1.close();
@@ -93,33 +93,33 @@ public class H2DatabaseTest {
 
   @Test
   void fileDatabase() throws DatabaseException, SQLException {
-    final File tempDir = new File(System.getProperty("java.io.tmpdir"));
-    final String url = "jdbc:h2:file:" + tempDir.getAbsolutePath() + "/h2db/database";
-    final File dbFile = new File(tempDir.getAbsolutePath() + "/h2db/database.mv.db");
+    File tempDir = new File(System.getProperty("java.io.tmpdir"));
+    String url = "jdbc:h2:file:" + tempDir.getAbsolutePath() + "/h2db/database";
+    File dbFile = new File(tempDir.getAbsolutePath() + "/h2db/database.mv.db");
     dbFile.deleteOnExit();
     assertFalse(dbFile.exists());
 
-    final H2Database database = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
+    H2Database database = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
     assertTrue(dbFile.exists());
 
-    final User user = User.parseUser("scott:tiger");
+    User user = User.parseUser("scott:tiger");
 
     Connection connection = database.createConnection(user);
     connection.prepareStatement("select id from test.test_table").execute();
     connection.close();
 
-    final H2Database database2 = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
+    H2Database database2 = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
     connection = database2.createConnection(user);
     connection.prepareStatement("select id from test.test_table").execute();
     connection.close();
 
     //test old url type
-    final H2Database database3 = new H2Database("jdbc:h2:" + tempDir.getAbsolutePath() + "/h2db/database", singletonList("src/test/resources/create_schema.sql"));
+    H2Database database3 = new H2Database("jdbc:h2:" + tempDir.getAbsolutePath() + "/h2db/database", singletonList("src/test/resources/create_schema.sql"));
     connection = database3.createConnection(user);
     connection.prepareStatement("select id from test.test_table").execute();
     connection.close();
 
-    final File parentDir = dbFile.getParentFile();
+    File parentDir = dbFile.getParentFile();
     dbFile.delete();
     parentDir.delete();
   }

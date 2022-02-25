@@ -73,7 +73,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     try {
       return dateTimeParser.parse(getText(), formatter);
     }
-    catch (final DateTimeParseException e) {
+    catch (DateTimeParseException e) {
       return null;
     }
   }
@@ -255,7 +255,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
         throw new IllegalStateException("dateTimeParser must be specified");
       }
 
-      final TemporalField<T> temporalField = new TemporalField<>(this);
+      TemporalField<T> temporalField = new TemporalField<>(this);
       temporalField.setTemporal(initialValue);
 
       return temporalField;
@@ -283,7 +283,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     try {
       return FieldFormatter.create(LocaleDateTimePattern.getMask(dateTimePattern), true);
     }
-    catch (final ParseException e) {
+    catch (ParseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -304,7 +304,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
       try {
         return getComponent().getDateTimeParser().parse(text, getComponent().getDateTimeFormatter());
       }
-      catch (final DateTimeParseException e) {
+      catch (DateTimeParseException e) {
         return null;
       }
     }

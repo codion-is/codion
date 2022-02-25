@@ -23,26 +23,26 @@ public class TemporalInputPanelTest {
 
   @Test
   void constructor() {
-    final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
+    TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
     field.setTemporal(LocalDate.now());
-    final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
+    TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     assertEquals("dd.MM.yyyy", panel.getDateTimePattern());
     assertNotNull(panel.getInputField());
   }
 
   @Test
   void setText() {
-    final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
-    final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
+    TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
+    TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     panel.getInputField().setText("01.03.2010");
     assertEquals(LocalDate.parse("01.03.2010", DateTimeFormatter.ofPattern("dd.MM.yyyy")), panel.getTemporal());
   }
 
   @Test
   void setDate() {
-    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
-    final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
+    TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     panel.setTemporal(LocalDate.parse("03.04.2010", formatter));
     assertEquals("03.04.2010", panel.getInputField().getText());
     panel.setTemporal(null);
@@ -51,8 +51,8 @@ public class TemporalInputPanelTest {
 
   @Test
   void getDate() {
-    final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
-    final TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
+    TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
+    TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     assertFalse(panel.getOptional().isPresent());
     panel.getInputField().setText("03");
     assertFalse(panel.getOptional().isPresent());
@@ -64,8 +64,8 @@ public class TemporalInputPanelTest {
 
   @Test
   void unsupportedType() {
-    final TemporalField<LocalTime> field = TemporalField.localTimeField("hh:MM");
-    final TemporalInputPanel<LocalTime> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
+    TemporalField<LocalTime> field = TemporalField.localTimeField("hh:MM");
+    TemporalInputPanel<LocalTime> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     assertFalse(panel.getCalendarButton().isPresent());
   }
 
@@ -76,12 +76,12 @@ public class TemporalInputPanelTest {
 
   @Test
   void enabledState() throws InterruptedException {
-    final State enabledState = State.state();
-    final TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
-    final TemporalInputPanel<LocalDate> inputPanel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
+    State enabledState = State.state();
+    TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
+    TemporalInputPanel<LocalDate> inputPanel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     Utilities.linkToEnabledState(enabledState, inputPanel);
     assertFalse(field.isEnabled());
-    final Optional<JButton> calendarButton = inputPanel.getCalendarButton();
+    Optional<JButton> calendarButton = inputPanel.getCalendarButton();
     assertTrue(calendarButton.isPresent());
     assertFalse(calendarButton.get().isEnabled());
     enabledState.set(true);

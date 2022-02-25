@@ -339,11 +339,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Shows a dialog for setting the log level
    */
   public final void setLogLevel() {
-    final LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
+    LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
     if (loggerProxy == LoggerProxy.NULL_PROXY) {
       throw new RuntimeException("No LoggerProxy implementation available");
     }
-    final ComboBoxModel<Object> model = new DefaultComboBoxModel<>(loggerProxy.getLogLevels().toArray());
+    ComboBoxModel<Object> model = new DefaultComboBoxModel<>(loggerProxy.getLogLevels().toArray());
     model.setSelectedItem(loggerProxy.getLogLevel());
     Dialogs.okCancelDialog(new JComboBox<>(model))
             .owner(this)
@@ -378,23 +378,23 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Display a dialog for selecting the application font size
    */
   public final void selectFontSize() {
-    final List<Item<Integer>> values = new ArrayList<>();
+    List<Item<Integer>> values = new ArrayList<>();
     for (int i = 50; i <= 200; i += 5) {
       values.add(Item.item(i, i + "%"));
     }
-    final ItemComboBoxModel<Integer> comboBoxModel = ItemComboBoxModel.createModel(values);
-    final Integer defaultFontSize = getDefaultFontSize();
+    ItemComboBoxModel<Integer> comboBoxModel = ItemComboBoxModel.createModel(values);
+    Integer defaultFontSize = getDefaultFontSize();
     comboBoxModel.setSelectedItem(defaultFontSize);
 
-    final JComboBox<Item<Integer>> comboBox = new JComboBox<>(comboBoxModel);
+    JComboBox<Item<Integer>> comboBox = new JComboBox<>(comboBoxModel);
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,
                                                     final boolean isSelected, final boolean cellHasFocus) {
-        final Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (index >= 0) {
-          final Font font = component.getFont();
-          final int newSize = Math.round(font.getSize() * (values.get(index).getValue() / (float) defaultFontSize.doubleValue()));
+          Font font = component.getFont();
+          int newSize = Math.round(font.getSize() * (values.get(index).getValue() / (float) defaultFontSize.doubleValue()));
           component.setFont(new Font(font.getName(), font.getStyle(), newSize));
         }
 
@@ -405,7 +405,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .owner(this)
             .title(resourceBundle.getString("select_font_size"))
             .onOk(() -> {
-              final Integer selectedFontSize = ((Item<Integer>) comboBoxModel.getSelectedItem()).getValue();
+              Integer selectedFontSize = ((Item<Integer>) comboBoxModel.getSelectedItem()).getValue();
               if (!selectedFontSize.equals(defaultFontSize)) {
                 UserPreferences.putUserPreference(applicationFontSizeProperty, selectedFontSize.toString());
                 JOptionPane.showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
@@ -468,23 +468,23 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       onExitEvent.onEvent();
     }
-    catch (final CancelException e) {
+    catch (CancelException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.debug("Exception while exiting", e);
     }
     try {
       savePreferences();
       UserPreferences.flushUserPreferences();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.debug("Exception while saving preferences", e);
     }
     try {
       applicationModel.getConnectionProvider().close();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.debug("Exception while disconnecting from database", e);
     }
     getParentWindow().ifPresent(Window::dispose);
@@ -546,7 +546,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public static TreeModel getDependencyTreeModel(final Entities entities) {
     requireNonNull(entities);
-    final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
     for (final EntityDefinition definition : entities.getDefinitions()) {
       if (definition.getForeignKeys().isEmpty() || referencesOnlySelf(entities, definition.getEntityType())) {
         root.add(new EntityDependencyTreeNode(definition.getEntityType(), entities));
@@ -581,30 +581,30 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #getHelpControls()
    */
   protected Controls getMainMenuControls() {
-    final Controls menuControls = Controls.controls();
-    final Controls fileControls = getFileControls();
+    Controls menuControls = Controls.controls();
+    Controls fileControls = getFileControls();
     if (fileControls != null && !fileControls.isEmpty()) {
       menuControls.add(fileControls);
     }
-    final Controls viewControls = getViewControls();
+    Controls viewControls = getViewControls();
     if (viewControls != null && !viewControls.isEmpty()) {
       menuControls.add(viewControls);
     }
-    final Controls toolsControls = getToolsControls();
+    Controls toolsControls = getToolsControls();
     if (toolsControls != null && !toolsControls.isEmpty()) {
       menuControls.add(toolsControls);
     }
-    final Controls supportTableControls = getSupportTableControls();
+    Controls supportTableControls = getSupportTableControls();
     if (supportTableControls != null && !supportTableControls.isEmpty()) {
       menuControls.add(supportTableControls);
     }
-    final List<Controls> additionalMenus = getAdditionalMenuControls();
+    List<Controls> additionalMenus = getAdditionalMenuControls();
     if (additionalMenus != null) {
       for (final Controls set : additionalMenus) {
         menuControls.add(set);
       }
     }
-    final Controls helpControls = getHelpControls();
+    Controls helpControls = getHelpControls();
     if (helpControls != null && !helpControls.isEmpty()) {
       menuControls.add(helpControls);
     }
@@ -637,7 +637,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the Controls specifying the items in the 'Tools' menu
    */
   protected Controls getToolsControls() {
-    final Controls.Builder toolsControlsBuilder = Controls.builder()
+    Controls.Builder toolsControlsBuilder = Controls.builder()
             .caption(resourceBundle.getString("tools"))
             .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0));
     if (!logLevelStates.isEmpty()) {
@@ -689,7 +689,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return a Control for setting the log level
    */
   protected final Control createLogLevelControl() {
-    final Controls logLevelControls = Controls.builder()
+    Controls logLevelControls = Controls.builder()
             .caption(resourceBundle.getString(LOG_LEVEL))
             .description(resourceBundle.getString(LOG_LEVEL_DESC))
             .build();
@@ -779,11 +779,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the panel shown when Help -&#62; About is selected
    */
   protected JPanel getAboutPanel() {
-    final JPanel panel = new JPanel(Layouts.borderLayout());
-    final String versionString = Version.getVersionAndMetadataString();
+    JPanel panel = new JPanel(Layouts.borderLayout());
+    String versionString = Version.getVersionAndMetadataString();
     panel.add(new JLabel(FrameworkIcons.frameworkIcons().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST);
-    final Version version = getClientVersion();
-    final JPanel versionMemoryPanel = new JPanel(Layouts.gridLayout(version == null ? 2 : 3, 2));
+    Version version = getClientVersion();
+    JPanel versionMemoryPanel = new JPanel(Layouts.gridLayout(version == null ? 2 : 3, 2));
     versionMemoryPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     if (version != null) {
       versionMemoryPanel.add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"));
@@ -842,15 +842,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return null;
     }
 
-    final Comparator<String> comparator = Text.getSpaceAwareCollator();
-    final Entities entities = applicationModel.getEntities();
+    Comparator<String> comparator = Text.getSpaceAwareCollator();
+    Entities entities = applicationModel.getEntities();
     supportPanelBuilders.sort((ep1, ep2) -> {
-      final String thisCompare = ep1.getCaption() == null ? entities.getDefinition(ep1.getEntityType()).getCaption() : ep1.getCaption();
-      final String thatCompare = ep2.getCaption() == null ? entities.getDefinition(ep2.getEntityType()).getCaption() : ep2.getCaption();
+      String thisCompare = ep1.getCaption() == null ? entities.getDefinition(ep1.getEntityType()).getCaption() : ep1.getCaption();
+      String thatCompare = ep2.getCaption() == null ? entities.getDefinition(ep2.getEntityType()).getCaption() : ep2.getCaption();
 
       return comparator.compare(thisCompare, thatCompare);
     });
-    final Controls.Builder controlsBuilder = Controls.builder()
+    Controls.Builder controlsBuilder = Controls.builder()
             .caption(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES))
             .mnemonic(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
     supportPanelBuilders.forEach(panelBuilder -> controlsBuilder.control(Control.builder(() -> displayEntityPanel(panelBuilder))
@@ -881,7 +881,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     requireNonNull(panelBuilder, "panelBuilder");
     WaitCursor.show(this);
     try {
-      final EntityPanel entityPanel = getEntityPanel(panelBuilder);
+      EntityPanel entityPanel = getEntityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
         Windows.getParentWindow(entityPanel).ifPresent(Window::toFront);
       }
@@ -919,12 +919,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     requireNonNull(panelBuilder, "panelBuilder");
     WaitCursor.show(this);
     try {
-      final EntityPanel entityPanel = getEntityPanel(panelBuilder);
+      EntityPanel entityPanel = getEntityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
         Windows.getParentWindow(entityPanel).ifPresent(Window::toFront);
       }
       else {
-        final String dialogTitle = panelBuilder.getCaption() == null ?
+        String dialogTitle = panelBuilder.getCaption() == null ?
                 applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() :
                 panelBuilder.getCaption();
         Dialogs.componentDialog(entityPanel)
@@ -951,16 +951,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     setLayout(new BorderLayout());
     applicationTabPane = initializeApplicationTabPane();
     //base panel added for Look&Feel rendering
-    final JPanel basePanel = new JPanel(Layouts.borderLayout());
+    JPanel basePanel = new JPanel(Layouts.borderLayout());
     basePanel.add(applicationTabPane, BorderLayout.CENTER);
     add(basePanel, BorderLayout.CENTER);
 
-    final JPanel northPanel = initializeNorthPanel();
+    JPanel northPanel = initializeNorthPanel();
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
     }
 
-    final JPanel southPanel = initializeSouthPanel();
+    JPanel southPanel = initializeSouthPanel();
     if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
     }
@@ -1027,7 +1027,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return an initialized startup icon panel
    */
   protected JPanel initializeStartupIconPanel(final Icon icon) {
-    final JPanel panel = new JPanel(new BorderLayout());
+    JPanel panel = new JPanel(new BorderLayout());
     if (icon != null) {
       panel.add(new JLabel(icon), BorderLayout.CENTER);
     }
@@ -1039,8 +1039,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return a frame title based on the application name, version and the logged-in user
    */
   protected String getFrameTitle() {
-    final StringBuilder builder = new StringBuilder(applicationName == null ? "" : applicationName);
-    final Version version = getClientVersion();
+    StringBuilder builder = new StringBuilder(applicationName == null ? "" : applicationName);
+    Version version = getClientVersion();
     if (version != null) {
       if (builder.length() > 0) {
         builder.append(" - ");
@@ -1065,7 +1065,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final JFrame prepareFrame(final boolean displayFrame, final boolean maximizeFrame, final Dimension frameSize,
                                       final boolean mainMenu) {
-    final JFrame frame = frameProvider.get();
+    JFrame frame = frameProvider.get();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     frame.setIconImage(getApplicationIcon().getImage());
     frame.addWindowListener(new WindowAdapter() {
@@ -1074,7 +1074,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         try {
           exit();
         }
-        catch (final CancelException ignored) {/*ignored*/}
+        catch (CancelException ignored) {/*ignored*/}
       }
     });
     frame.getContentPane().setLayout(new BorderLayout());
@@ -1136,8 +1136,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case a login dialog is cancelled
    */
   protected User getLoginUser(final User defaultUser, final LoginValidator loginValidator) {
-    final String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.get(Messages.LOGIN);
-    final User user = Dialogs.loginDialog()
+    String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.get(Messages.LOGIN);
+    User user = Dialogs.loginDialog()
             .defaultUser(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser)
             .validator(loginValidator)
             .title(loginDialogTitle)
@@ -1191,12 +1191,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     LOG.debug("{} application starting", applicationName);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
     LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
-    final Integer fontSize = getDefaultFontSize();
+    Integer fontSize = getDefaultFontSize();
     if (!Objects.equals(fontSize, 100)) {
       Utilities.setFontSize(fontSize / 100f);
     }
 
-    final EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
+    EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
 
     if (silentLoginUser == null && EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
       saveDefaultUsername(connectionProvider.getUser().getUsername());
@@ -1209,7 +1209,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                                 final boolean includeMainMenu, final boolean displayProgressDialog,
                                 final EntityConnectionProvider connectionProvider) {
     setVersionProperty();
-    final long initializationStarted = System.currentTimeMillis();
+    long initializationStarted = System.currentTimeMillis();
     if (displayProgressDialog) {
       Dialogs.progressWorkerDialog(() -> initializeApplicationModel(connectionProvider))
               .title(applicationName)
@@ -1229,11 +1229,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       this.applicationModel = applicationModel;
       initializePanel();
-      final JFrame frame = prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu);
+      JFrame frame = prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu);
       applicationStartedEvent.onEvent(frame);
       LOG.info(frame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
     }
-    catch (final Exception exception) {
+    catch (Exception exception) {
       displayException(exception, null);
       throw new CancelException();
     }
@@ -1243,7 +1243,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Sets the application version as a system property, so that it appears automatically in exception dialogs.
    */
   private void setVersionProperty() {
-    final Version version = getClientVersion();
+    Version version = getClientVersion();
     if (version != null) {
       System.setProperty(CODION_CLIENT_VERSION, version.toString());
     }
@@ -1252,20 +1252,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private EntityConnectionProvider createConnectionProvider(final User defaultUser, final User silentLoginUser,
                                                             final boolean loginRequired) {
     if (silentLoginUser == null && loginRequired) {
-      final EntityLoginValidator loginValidator = new EntityLoginValidator();
+      EntityLoginValidator loginValidator = new EntityLoginValidator();
       getLoginUser(defaultUser, loginValidator);
 
       return loginValidator.connectionProvider;
     }
 
-    final EntityConnectionProvider connectionProvider = initializeConnectionProvider(silentLoginUser, getApplicationIdentifier());
+    EntityConnectionProvider connectionProvider = initializeConnectionProvider(silentLoginUser, getApplicationIdentifier());
     connectionProvider.getConnection();//throws exception if the server is not reachable
 
     return connectionProvider;
   }
 
   private JTabbedPane initializeApplicationTabPane() {
-    final JTabbedPane tabbedPane = new JTabbedPane(TAB_PLACEMENT.get());
+    JTabbedPane tabbedPane = new JTabbedPane(TAB_PLACEMENT.get());
     tabbedPane.setFocusable(false);
     tabbedPane.addChangeListener(e -> ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel());
     for (final EntityPanel entityPanel : entityPanels) {
@@ -1319,7 +1319,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return persistentEntityPanels.get(panelBuilder);
     }
 
-    final EntityPanel entityPanel = panelBuilder.buildPanel(applicationModel.getConnectionProvider());
+    EntityPanel entityPanel = panelBuilder.buildPanel(applicationModel.getConnectionProvider());
     entityPanel.initializePanel();
     if (PERSIST_ENTITY_PANELS.get()) {
       persistentEntityPanels.put(panelBuilder, entityPanel);
@@ -1337,7 +1337,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void setParentWindowTitle(final String title) {
-    final Window parentWindow = Windows.getParentWindow(this).orElse(null);
+    Window parentWindow = Windows.getParentWindow(this).orElse(null);
     if (parentWindow instanceof JFrame) {
       ((JFrame) parentWindow).setTitle(title);
     }
@@ -1347,11 +1347,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private boolean cancelExit() {
-    final boolean cancelForUnsavedData = getModel().isWarnAboutUnsavedData() && getModel().containsUnsavedData() &&
+    boolean cancelForUnsavedData = getModel().isWarnAboutUnsavedData() && getModel().containsUnsavedData() &&
             JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING),
                     FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
                     JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
-    final boolean exitNotConfirmed = CONFIRM_EXIT.get() && JOptionPane.showConfirmDialog(this,
+    boolean exitNotConfirmed = CONFIRM_EXIT.get() && JOptionPane.showConfirmDialog(this,
             FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT), FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE),
             JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
 
@@ -1369,7 +1369,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected static User getUser(final String[] args) {
     try {
-      final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
+      CredentialsProvider provider = CredentialsProvider.credentialsProvider();
       if (provider != null) {
         return provider.getCredentials(provider.getAuthenticationToken(args));
       }
@@ -1377,26 +1377,26 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       LOG.debug("No CredentialsProvider available");
       return null;
     }
-    catch (final CredentialsException e) {
+    catch (CredentialsException e) {
       LOG.debug("CredentialsService not reachable", e);
       return null;
     }
-    catch (final IllegalArgumentException e) {
+    catch (IllegalArgumentException e) {
       LOG.debug("Invalid UUID authentication token");
       return null;
     }
   }
 
   private static Map<Object, State> initializeLogLevelStates() {
-    final LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
+    LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
     if (loggerProxy == LoggerProxy.NULL_PROXY) {
       return Collections.emptyMap();
     }
-    final Object currentLogLevel = loggerProxy.getLogLevel();
-    final Map<Object, State> levelStateMap = new LinkedHashMap<>();
-    final State.Group logLevelStateGroup = State.group();
+    Object currentLogLevel = loggerProxy.getLogLevel();
+    Map<Object, State> levelStateMap = new LinkedHashMap<>();
+    State.Group logLevelStateGroup = State.group();
     for (final Object logLevel : loggerProxy.getLogLevels()) {
-      final State logLevelState = State.state(Objects.equals(logLevel, currentLogLevel));
+      State logLevelState = State.state(Objects.equals(logLevel, currentLogLevel));
       logLevelStateGroup.addState(logLevelState);
       logLevelState.addDataListener(enabled -> {
         if (enabled) {
@@ -1410,7 +1410,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private static JScrollPane initializeTree(final TreeModel treeModel) {
-    final JTree tree = new JTree(treeModel);
+    JTree tree = new JTree(treeModel);
     tree.setShowsRootHandles(true);
     tree.setToggleClickCount(1);
     tree.setRootVisible(false);
@@ -1420,7 +1420,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private static DefaultTreeModel createApplicationTree(final Collection<? extends EntityPanel> entityPanels) {
-    final DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
+    DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
     addModelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityPanels);
 
     return applicationTreeModel;
@@ -1428,7 +1428,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static void addModelsToTree(final DefaultMutableTreeNode root, final Collection<? extends EntityPanel> panels) {
     for (final EntityPanel entityPanel : panels) {
-      final DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel.getCaption());
+      DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel.getCaption());
       root.add(node);
       if (!entityPanel.getChildPanels().isEmpty()) {
         addModelsToTree(node, (Collection<? extends EntityPanel>) entityPanel.getChildPanels());
@@ -1437,13 +1437,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private static String getUserInfo(final EntityConnectionProvider connectionProvider) {
-    final String description = connectionProvider.getDescription();
+    String description = connectionProvider.getDescription();
 
     return getUsername(connectionProvider.getUser().getUsername().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
   }
 
   private static String getUsername(final String username) {
-    final String usernamePrefix = EntityApplicationModel.USERNAME_PREFIX.get();
+    String usernamePrefix = EntityApplicationModel.USERNAME_PREFIX.get();
     if (!nullOrEmpty(usernamePrefix) && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
       return username.substring(usernamePrefix.length());
     }
@@ -1542,7 +1542,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     private List<EntityDependencyTreeNode> initializeChildren() {
-      final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
+      List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (final EntityDefinition definition : entities.getDefinitions()) {
         for (final ForeignKeyProperty fkProperty : definition.getForeignKeyProperties()) {
           if (fkProperty.getReferencedEntityType().equals(getEntityType()) && !fkProperty.isSoftReference()

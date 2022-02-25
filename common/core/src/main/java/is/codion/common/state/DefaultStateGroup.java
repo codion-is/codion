@@ -47,9 +47,9 @@ final class DefaultStateGroup implements State.Group {
   }
 
   private void disableOthers(final State state) {
-    final ListIterator<WeakReference<State>> iterator = members.listIterator();
+    ListIterator<WeakReference<State>> iterator = members.listIterator();
     while (iterator.hasNext()) {
-      final State memberState = iterator.next().get();
+      State memberState = iterator.next().get();
       if (memberState == null) {//remove this dead weak reference
         iterator.remove();
       }

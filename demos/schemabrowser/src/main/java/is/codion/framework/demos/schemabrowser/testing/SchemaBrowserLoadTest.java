@@ -32,7 +32,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
           = new AbstractEntityUsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel>() {
     @Override
     protected void perform(final SchemaBrowserAppPanel.SchemaBrowserApplicationModel application) {
-      final SwingEntityModel schemaModel = application.getEntityModels().iterator().next();
+      SwingEntityModel schemaModel = application.getEntityModels().iterator().next();
       schemaModel.getTableModel().refresh();
       selectRandomRow(schemaModel.getTableModel());
       selectRandomRow(schemaModel.getDetailModels().iterator().next().getTableModel());
@@ -46,18 +46,18 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
 
   @Override
   protected SchemaBrowserAppPanel.SchemaBrowserApplicationModel initializeApplication() throws CancelException {
-    final SchemaBrowserAppPanel.SchemaBrowserApplicationModel applicationModel =
+    SchemaBrowserAppPanel.SchemaBrowserApplicationModel applicationModel =
             new SchemaBrowserAppPanel.SchemaBrowserApplicationModel(
                     EntityConnectionProvider.connectionProvider().setDomainClassName(SchemaBrowser.class.getName())
                             .setClientTypeId(getClass().getSimpleName()).setUser(getUser()));
-    final SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
-    final SwingEntityModel dbObjectModel = schemaModel.getDetailModel(Table.TYPE);
+    SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
+    SwingEntityModel dbObjectModel = schemaModel.getDetailModel(Table.TYPE);
     schemaModel.addLinkedDetailModel(dbObjectModel);
-    final SwingEntityModel columnModel = dbObjectModel.getDetailModel(Column.TYPE);
-    final SwingEntityModel constraintModel = dbObjectModel.getDetailModel(Constraint.TYPE);
+    SwingEntityModel columnModel = dbObjectModel.getDetailModel(Column.TYPE);
+    SwingEntityModel constraintModel = dbObjectModel.getDetailModel(Constraint.TYPE);
     dbObjectModel.addDetailModel(columnModel);
     dbObjectModel.addDetailModel(constraintModel);
-    final SwingEntityModel constraintColumnModel = dbObjectModel.getDetailModel(ConstraintColumn.TYPE);
+    SwingEntityModel constraintColumnModel = dbObjectModel.getDetailModel(ConstraintColumn.TYPE);
     constraintModel.addDetailModel(constraintColumnModel);
     dbObjectModel.addLinkedDetailModel(columnModel);
 
@@ -74,7 +74,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
       try {
         new LoadTestPanel<>(new SchemaBrowserLoadTest()).showFrame();
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         e.printStackTrace();
       }
     }

@@ -21,7 +21,7 @@ public final class ArtistEditVew extends EntityEditView {
     setInitialFocusAttribute(Artist.NAME);
     createTextField(Artist.NAME);
 
-    final BorderPane pane = new BorderPane();
+    BorderPane pane = new BorderPane();
     pane.setCenter(createPropertyPanel(Artist.NAME));
 
     return pane;

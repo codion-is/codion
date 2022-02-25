@@ -202,10 +202,10 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
     private Color getBackgroundColor(final SwingEntityTableModel tableModel, final Attribute<?> attribute, final int row,
                                      final boolean indicateCondition) {
-      final boolean conditionEnabled = tableModel.getTableConditionModel().isConditionEnabled(attribute);
-      final boolean filterEnabled = tableModel.getTableConditionModel().isFilterEnabled(attribute);
-      final boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
-      final Color cellColor = tableModel.getBackgroundColor(row, attribute);
+      boolean conditionEnabled = tableModel.getTableConditionModel().isConditionEnabled(attribute);
+      boolean filterEnabled = tableModel.getTableConditionModel().isFilterEnabled(attribute);
+      boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
+      Color cellColor = tableModel.getBackgroundColor(row, attribute);
       if (showCondition) {
         return getConditionEnabledColor(row, conditionEnabled, filterEnabled, cellColor);
       }
@@ -218,14 +218,14 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     }
 
     private Color getForegroundColor(final SwingEntityTableModel tableModel, final Attribute<?> attribute, final int row) {
-      final Color cellColor = tableModel.getForegroundColor(row, attribute);
+      Color cellColor = tableModel.getForegroundColor(row, attribute);
 
       return cellColor == null ? foregroundColor : cellColor;
     }
 
     private Color getConditionEnabledColor(final int row, final boolean conditionEnabled,
                                            final boolean filterEnabled, final Color cellColor) {
-      final boolean conditionAndFilterEnabled = conditionEnabled && filterEnabled;
+      boolean conditionAndFilterEnabled = conditionEnabled && filterEnabled;
       if (cellColor != null) {
         return darker(cellColor, DARKENING_FACTOR);
       }
@@ -303,7 +303,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
     @Override
     public EntityTableCellRenderer build() {
-      final Border border = leftPadding > 0 || rightPadding > 0 ? BorderFactory.createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
+      Border border = leftPadding > 0 || rightPadding > 0 ? BorderFactory.createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
         return new DefaultEntityTableCellRenderer.BooleanRenderer(this, border);
       }

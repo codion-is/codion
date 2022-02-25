@@ -74,8 +74,8 @@ public final class EntitySelectionDialog extends JDialog {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(cancelControl)
             .enable(getRootPane());
-    final JPanel buttonPanel = new JPanel(flowLayout(FlowLayout.RIGHT));
-    final JButton okButton = okControl.createButton();
+    JPanel buttonPanel = new JPanel(flowLayout(FlowLayout.RIGHT));
+    JButton okButton = okControl.createButton();
     buttonPanel.add(okButton);
     buttonPanel.add(cancelControl.createButton());
     buttonPanel.add(searchControl.createButton());
@@ -124,7 +124,7 @@ public final class EntitySelectionDialog extends JDialog {
 
   private EntityTablePanel initializeTablePanel(final SwingEntityTableModel tableModel, final Dimension preferredSize,
                                                 final boolean singleSelection) {
-    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+    EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
     tablePanel.initializePanel();
     tablePanel.getTable().addDoubleClickListener(mouseEvent -> {
       if (!tableModel.getSelectionModel().isSelectionEmpty()) {
@@ -189,7 +189,7 @@ public final class EntitySelectionDialog extends JDialog {
 
     @Override
     public Optional<Entity> selectSingle() {
-      final List<Entity> entities = new EntitySelectionDialog(tableModel, owner, title, icon, preferredSize, true).selectEntities();
+      List<Entity> entities = new EntitySelectionDialog(tableModel, owner, title, icon, preferredSize, true).selectEntities();
 
       return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
     }

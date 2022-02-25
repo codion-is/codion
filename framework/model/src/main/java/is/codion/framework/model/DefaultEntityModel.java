@@ -301,7 +301,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   public final void initialize(final EntityType foreignKeyEntityType, final List<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyEntityType);
     requireNonNull(foreignKeyValues);
-    final List<ForeignKey> foreignKeys = editModel.getEntityDefinition().getForeignKeys(foreignKeyEntityType);
+    List<ForeignKey> foreignKeys = editModel.getEntityDefinition().getForeignKeys(foreignKeyEntityType);
     if (!foreignKeys.isEmpty()) {
       initialize(foreignKeys.get(0), foreignKeyValues);
     }
@@ -371,7 +371,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @see #initialize(EntityType, List)
    */
   protected final void initializeDetailModels() {
-    final List<Entity> activeEntities = getActiveEntities();
+    List<Entity> activeEntities = getActiveEntities();
     for (final M detailModel : linkedDetailModels) {
       initializeDetailModel(activeEntities, detailModel);
     }
@@ -436,7 +436,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void bindEventsInternal() {
-    final EventListener initializer = this::initializeDetailModels;
+    EventListener initializer = this::initializeDetailModels;
     linkedDetailModelAddedEvent.addListener(initializer);
     linkedDetailModelRemovedEvent.addListener(initializer);
     editModel.addAfterInsertListener(this::onInsert);

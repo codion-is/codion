@@ -186,14 +186,14 @@ public final class ClientUserMonitor {
   }
 
   private List<String> getSortedClientTypes() throws RemoteException {
-    final List<String> users = new ArrayList<>(server.getClientTypes());
+    List<String> users = new ArrayList<>(server.getClientTypes());
     Collections.sort(users);
 
     return users;
   }
 
   private List<User> getSortedUsers() throws RemoteException {
-    final List<User> users = new ArrayList<>(server.getUsers());
+    List<User> users = new ArrayList<>(server.getUsers());
     users.sort(USER_COMPARATOR);
 
     return users;
@@ -207,7 +207,7 @@ public final class ClientUserMonitor {
     try {
       server.setConnectionTimeout(timeout * THOUSAND);
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       throw new RuntimeException(e);
     }
   }
@@ -216,7 +216,7 @@ public final class ClientUserMonitor {
     try {
       userHistoryTableModel.refresh();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error("Error while refreshing user history table model", e);
     }
   }
@@ -242,7 +242,7 @@ public final class ClientUserMonitor {
 
   private static TableColumn createColumn(final Integer identifier, final String headerValue,
                                           final TableCellRenderer cellRenderer) {
-    final TableColumn column = new TableColumn(identifier);
+    TableColumn column = new TableColumn(identifier);
     column.setIdentifier(identifier);
     column.setHeaderValue(headerValue);
     if (cellRenderer != null) {
@@ -262,17 +262,17 @@ public final class ClientUserMonitor {
     @Override
     protected Collection<UserInfo> refreshItems() {
       try {
-        final List<UserInfo> items = new ArrayList<>(getItems());
+        List<UserInfo> items = new ArrayList<>(getItems());
         for (final RemoteClient remoteClient : server.getClients()) {
-          final UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeId(),
+          UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeId(),
                   remoteClient.getClientHost(), LocalDateTime.now(), remoteClient.getClientId(), remoteClient.getClientVersion(),
                   remoteClient.getFrameworkVersion());
-          final int index = items.indexOf(newUserInfo);
+          int index = items.indexOf(newUserInfo);
           if (index == -1) {
             items.add(newUserInfo);
           }
           else {
-            final UserInfo currentUserInfo = items.get(index);
+            UserInfo currentUserInfo = items.get(index);
             currentUserInfo.setLastSeen(newUserInfo.getLastSeen());
             if (currentUserInfo.isNewConnection(newUserInfo.getClientId())) {
               currentUserInfo.incrementConnectionCount();
@@ -283,14 +283,14 @@ public final class ClientUserMonitor {
 
         return items;
       }
-      catch (final RemoteException e) {
+      catch (RemoteException e) {
         throw new RuntimeException(e);
       }
     }
 
     @Override
     public Object getValueAt(final int row, final int column) {
-      final UserInfo userInfo = getItemAt(row);
+      UserInfo userInfo = getItemAt(row);
       switch (column) {
         case USERNAME_COLUMN: return userInfo.getUser().getUsername();
         case CLIENT_TYPE_COLUMN: return userInfo.getClientTypeId();
@@ -379,7 +379,7 @@ public final class ClientUserMonitor {
         return false;
       }
 
-      final UserInfo that = (UserInfo) obj;
+      UserInfo that = (UserInfo) obj;
 
       return this.user.getUsername().equalsIgnoreCase(that.user.getUsername()) &&
               this.clientTypeId.equals(that.clientTypeId) && this.clientHost.equals(that.clientHost);

@@ -26,13 +26,13 @@ public class MySQLDatabaseTest {
 
   @Test
   void supportsIsValid() {
-    final MySQLDatabase db = new MySQLDatabase(URL);
+    MySQLDatabase db = new MySQLDatabase(URL);
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   void getAutoIncrementQuery() {
-    final MySQLDatabase db = new MySQLDatabase(URL);
+    MySQLDatabase db = new MySQLDatabase(URL);
     assertEquals(MySQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 

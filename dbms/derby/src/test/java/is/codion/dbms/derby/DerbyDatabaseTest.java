@@ -30,19 +30,19 @@ public class DerbyDatabaseTest {
 
   @Test
   void supportsIsValid() {
-    final DerbyDatabase db = new DerbyDatabase(URL);
+    DerbyDatabase db = new DerbyDatabase(URL);
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   void supportsNoWait() {
-    final DerbyDatabase db = new DerbyDatabase(URL);
+    DerbyDatabase db = new DerbyDatabase(URL);
     assertEquals("for update", db.getSelectForUpdateClause());
   }
 
   @Test
   void getAutoIncrementQuery() {
-    final DerbyDatabase db = new DerbyDatabase(URL);
+    DerbyDatabase db = new DerbyDatabase(URL);
     final String idSource = "id_source";
     assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.getAutoIncrementQuery(idSource));
   }

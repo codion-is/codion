@@ -32,9 +32,9 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
       return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue);
     }
 
-    final EntityComponents inputComponents = new EntityComponents(editModel.getEntityDefinition());
+    EntityComponents inputComponents = new EntityComponents(editModel.getEntityDefinition());
     if (attribute.isTemporal()) {
-      final ComponentValue<Temporal, TemporalInputPanel<Temporal>> componentValue =
+      ComponentValue<Temporal, TemporalInputPanel<Temporal>> componentValue =
               inputComponents.temporalInputPanel((Attribute<Temporal>) attribute).buildComponentValue();
       componentValue.set((Temporal) initialValue);
 
@@ -51,9 +51,9 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
 
   private ComponentValue<T, C> createForeignKeyComponentValue(final ForeignKey foreignKey, final SwingEntityEditModel editModel,
                                                               final Entity initialValue) {
-    final EntityComponents inputComponents = new EntityComponents(editModel.getEntityDefinition());
+    EntityComponents inputComponents = new EntityComponents(editModel.getEntityDefinition());
     if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
-      final SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
+      SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
       comboBoxModel.setSelectedItem(initialValue);
 
       return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
@@ -61,7 +61,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
               .buildComponentValue();
     }
 
-    final EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
+    EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
     searchModel.setSelectedEntity(initialValue);
 
     return (ComponentValue<T, C>) inputComponents.foreignKeySearchField(foreignKey, searchModel).buildComponentValue();

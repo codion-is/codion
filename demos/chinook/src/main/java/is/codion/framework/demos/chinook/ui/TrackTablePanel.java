@@ -43,7 +43,7 @@ public final class TrackTablePanel extends EntityTablePanel {
   }
 
   private void raisePriceOfSelected() throws DatabaseException {
-    final TrackTableModel tableModel = (TrackTableModel) getTableModel();
+    TrackTableModel tableModel = (TrackTableModel) getTableModel();
 
     tableModel.raisePriceOfSelected(getAmountFromUser());
   }
@@ -66,7 +66,7 @@ public final class TrackTablePanel extends EntityTablePanel {
     public ComponentValue<Integer, MinutesSecondsPanel> createComponentValue(final Attribute<Integer> attribute,
                                                                              final SwingEntityEditModel editModel,
                                                                              final Integer initialValue) {
-      final MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue(horizontal);
+      MinutesSecondsPanelValue minutesSecondsPanelValue = new MinutesSecondsPanelValue(horizontal);
       minutesSecondsPanelValue.set(initialValue);
 
       return minutesSecondsPanelValue;

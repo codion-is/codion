@@ -72,7 +72,7 @@ final class DefaultMethodLogger implements MethodLogger {
     if (callStack.isEmpty()) {
       throw new IllegalStateException("Call stack is empty when trying to log method exit: " + method);
     }
-    final DefaultEntry entry = callStack.pop();
+    DefaultEntry entry = callStack.pop();
     if (!entry.getMethod().equals(method)) {//todo pop until found or empty?
       throw new IllegalStateException("Expecting method " + entry.getMethod() + " but got " + method + " when trying to log method exit");
     }
@@ -202,13 +202,13 @@ final class DefaultMethodLogger implements MethodLogger {
 
     @Override
     public String toString(final int indentation) {
-      final String indentString = indentation > 0 ? Text.padString("", indentation, '\t', Text.Alignment.RIGHT) : "";
-      final StringBuilder stringBuilder = new StringBuilder();
-      final LocalDateTime accessDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(accessTime), TimeZone.getDefault().toZoneId());
+      String indentString = indentation > 0 ? Text.padString("", indentation, '\t', Text.Alignment.RIGHT) : "";
+      StringBuilder stringBuilder = new StringBuilder();
+      LocalDateTime accessDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(accessTime), TimeZone.getDefault().toZoneId());
       if (isComplete()) {
         stringBuilder.append(indentString).append(TIMESTAMP_FORMATTER.format(accessDateTime)).append(" @ ").append(method).append(
                 !nullOrEmpty(accessMessage) ? (": " + accessMessage) : "").append("\n");
-        final LocalDateTime exitDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(exitTime), TimeZone.getDefault().toZoneId());
+        LocalDateTime exitDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(exitTime), TimeZone.getDefault().toZoneId());
         stringBuilder.append(indentString).append(TIMESTAMP_FORMATTER.format(exitDateTime)).append(" > ")
                 .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(getDuration()))).append(" μs")
                 .append(exitMessage == null ? "" : " (" + exitMessage + ")");
@@ -278,7 +278,7 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     private static String getStackTrace(final Throwable exception) {
-      final StringWriter sw = new StringWriter();
+      StringWriter sw = new StringWriter();
       exception.printStackTrace(new PrintWriter(sw));
 
       return sw.toString();

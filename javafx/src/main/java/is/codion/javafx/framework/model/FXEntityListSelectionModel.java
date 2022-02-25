@@ -338,10 +338,10 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
 
   private void bindEvents() {
     if (selectionModel instanceof MultipleSelectionModel) {
-      final MultipleSelectionModel<Entity> multipleSelectionModel = (MultipleSelectionModel<Entity>) this.selectionModel;
+      MultipleSelectionModel<Entity> multipleSelectionModel = (MultipleSelectionModel<Entity>) this.selectionModel;
       multipleSelectionModel.getSelectedItems().addListener((ListChangeListener<Entity>) change -> {
         selectionEmptyState.set(this.selectionModel.isEmpty());
-        final List<Integer> selectedIndexes = getSelectedIndexes();
+        List<Integer> selectedIndexes = getSelectedIndexes();
         singleSelectionState.set(selectedIndexes.size() == 1);
         multipleSelectionState.set(!selectionEmptyState.get() && !singleSelectionState.get());
         selectionChangedEvent.onEvent();
@@ -350,7 +350,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
         selectedItemsChangedEvent.onEvent(getSelectedItems());
       });
       this.selectionModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-        final int newSelectedIndex = newValue.intValue();
+        int newSelectedIndex = newValue.intValue();
         if (selectedIndex != newSelectedIndex) {
           selectedIndex = newSelectedIndex;
           selectedIndexChangedEvent.onEvent(selectedIndex);
@@ -359,7 +359,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
       multipleSelectionModel.selectionModeProperty().addListener((observable, oldValue, newValue) ->
               singleSelectionModeState.set(Objects.equals(SelectionMode.SINGLE, newValue)));
       singleSelectionModeState.addDataListener(singleSelection -> {
-        final SelectionMode newMode = singleSelection ? SelectionMode.SINGLE : SelectionMode.MULTIPLE;
+        SelectionMode newMode = singleSelection ? SelectionMode.SINGLE : SelectionMode.MULTIPLE;
         if (multipleSelectionModel.getSelectionMode() != newMode) {
           multipleSelectionModel.setSelectionMode(newMode);
         }
@@ -367,7 +367,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     }
     else {
       selectionModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-        final int newSelectedIndex = newValue.intValue();
+        int newSelectedIndex = newValue.intValue();
         if (selectedIndex != newSelectedIndex) {
           selectedIndex = newSelectedIndex;
           selectionChangedEvent.onEvent();

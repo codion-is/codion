@@ -30,13 +30,13 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 
   @Override
   protected void initializeEntityViews() {
-    final FXEntityModel departmentModel = getModel().getEntityModel(Department.TYPE);
-    final EntityView departmentView = new EntityView(departmentModel,
+    FXEntityModel departmentModel = getModel().getEntityModel(Department.TYPE);
+    EntityView departmentView = new EntityView(departmentModel,
             new DepartmentEditView(departmentModel.getEditModel()),
             new EntityTableView(departmentModel.getTableModel()));
 
-    final FXEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
-    final EntityView employeeView = new EntityView(employeeModel,
+    FXEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
+    EntityView employeeView = new EntityView(employeeModel,
             new EmployeeEditView(employeeModel.getEditModel()),
             new EntityTableView(employeeModel.getTableModel()));
 

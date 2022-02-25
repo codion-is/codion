@@ -37,7 +37,7 @@ final class DefaultReportType<T, R, P> implements ReportType<T, R, P>, Serializa
       return false;
     }
 
-    final DefaultReportType<?, ?, ?> that = (DefaultReportType<?, ?, ?>) o;
+    DefaultReportType<?, ?, ?> that = (DefaultReportType<?, ?, ?>) o;
 
     return name.equals(that.name);
   }

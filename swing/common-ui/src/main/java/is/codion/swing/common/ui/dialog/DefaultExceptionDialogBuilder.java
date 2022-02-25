@@ -32,18 +32,18 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
         SwingUtilities.invokeAndWait(() -> displayException(exception));
       }
     }
-    catch (final InterruptedException e) {
+    catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
   private void displayException(final Throwable exception) {
-    final ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message);
+    ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message);
 
-    final JDialog dialog = Dialogs.componentDialog(exceptionPanel)
+    JDialog dialog = Dialogs.componentDialog(exceptionPanel)
             .title(title == null ? Messages.get(Messages.ERROR) : title)
             .owner(owner)
             .closeEvent(exceptionPanel.getCloseObserver())

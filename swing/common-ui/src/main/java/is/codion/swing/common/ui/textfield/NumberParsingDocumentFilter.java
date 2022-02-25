@@ -42,10 +42,10 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
   @Override
   public void replace(final FilterBypass filterBypass, final int offset, final int length, final String text,
                       final AttributeSet attributeSet) throws BadLocationException {
-    final Document document = filterBypass.getDocument();
-    final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
+    Document document = filterBypass.getDocument();
+    StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.replace(offset, offset + length, text);
-    final NumberParser.NumberParseResult<T> parseResult = parser.parse(builder.toString());
+    NumberParser.NumberParseResult<T> parseResult = parser.parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
         validate(parseResult.getValue());

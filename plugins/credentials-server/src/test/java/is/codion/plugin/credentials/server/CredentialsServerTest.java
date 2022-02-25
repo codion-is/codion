@@ -21,13 +21,13 @@ public final class CredentialsServerTest {
   @Test
   void test() throws AlreadyBoundException, RemoteException, InterruptedException, CredentialsException {
     try {
-      final CredentialsProvider provider = CredentialsProvider.credentialsProvider();
+      CredentialsProvider provider = CredentialsProvider.credentialsProvider();
 
       System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
-      final User scott = User.parseUser("scott:tiger");
-      final int serverPort = 1100;
+      User scott = User.parseUser("scott:tiger");
+      int serverPort = 1100;
 
-      final CredentialsServer server = new CredentialsServer(serverPort, 900, 50);
+      CredentialsServer server = new CredentialsServer(serverPort, 900, 50);
 
       UUID token = UUID.randomUUID();
       server.addAuthenticationToken(token, scott);
@@ -51,7 +51,7 @@ public final class CredentialsServerTest {
       server.exit();
       System.clearProperty("java.rmi.server.hostname");
     }
-    catch (final AlreadyBoundException | RemoteException | CredentialsException | InterruptedException e) {
+    catch (AlreadyBoundException | RemoteException | CredentialsException | InterruptedException e) {
       e.printStackTrace();
       throw e;
     }

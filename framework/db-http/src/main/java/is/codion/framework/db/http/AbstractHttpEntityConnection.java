@@ -117,7 +117,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
       httpClient.close();
       closed = true;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -128,7 +128,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
       try {
         return httpClient.execute(targetHost, operation, httpContext);
       }
-      catch (final NoHttpResponseException e) {
+      catch (NoHttpResponseException e) {
         LOG.debug(e.getMessage(), e);
         //retry once, todo fix server side if possible
         return httpClient.execute(targetHost, operation, httpContext);
@@ -141,7 +141,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
   }
 
   protected final HttpPost createHttpPost(final String path, final HttpEntity data) throws URISyntaxException {
-    final HttpPost post = new HttpPost(createURIBuilder(path).build());
+    HttpPost post = new HttpPost(createURIBuilder(path).build());
     if (data != null) {
       post.setEntity(data);
     }
@@ -157,10 +157,10 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
     try {
       return onResponse(execute(createHttpPost("getEntities")));
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
@@ -174,7 +174,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
 
   protected static <T> T onResponse(final CloseableHttpResponse closeableHttpResponse) throws Exception {
     try (final CloseableHttpResponse response = closeableHttpResponse) {
-      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       response.getEntity().writeTo(outputStream);
       if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
         throw Serializer.<Exception>deserialize(outputStream.toByteArray());
@@ -185,7 +185,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
   }
 
   private CloseableHttpClient createHttpClient(final String clientTypeId, final UUID clientId, final String contentType) {
-    final String clientIdString = clientId.toString();
+    String clientIdString = clientId.toString();
 
     return HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
@@ -200,15 +200,15 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
   }
 
   private static HttpClientContext createHttpContext(final User user, final HttpHost targetHost) {
-    final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     credentialsProvider.setCredentials(
             new AuthScope(targetHost.getHostName(), targetHost.getPort()),
             new UsernamePasswordCredentials(user.getUsername(), String.valueOf(user.getPassword())));
 
-    final AuthCache authCache = new BasicAuthCache();
+    AuthCache authCache = new BasicAuthCache();
     authCache.put(targetHost, new BasicScheme());
 
-    final HttpClientContext context = HttpClientContext.create();
+    HttpClientContext context = HttpClientContext.create();
     context.setCredentialsProvider(credentialsProvider);
     context.setAuthCache(authCache);
 

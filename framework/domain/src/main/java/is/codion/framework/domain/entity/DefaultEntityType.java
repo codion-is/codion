@@ -189,7 +189,7 @@ final class DefaultEntityType implements EntityType, Serializable {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    final DefaultEntityType that = (DefaultEntityType) object;
+    DefaultEntityType that = (DefaultEntityType) object;
 
     return hashCode == that.hashCode && name.equals(that.name) && domainName.equals(that.domainName);
   }

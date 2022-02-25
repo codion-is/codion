@@ -48,7 +48,7 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
 
   @Override
   protected JTabbedPane buildComponent() {
-    final JTabbedPane tabbedPane = new JTabbedPane(tabPlacement);
+    JTabbedPane tabbedPane = new JTabbedPane(tabPlacement);
     tabs.forEach(tabbedPane::addTab);
     mnemonicAt.forEach(tabbedPane::setMnemonicAt);
     changeListeners.forEach(tabbedPane::addChangeListener);

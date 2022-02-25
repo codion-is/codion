@@ -13,10 +13,10 @@ public final class ProgressWorkerTest {
 
   @Test
   void test() {
-    final Value<Integer> progressValue = Value.value();
-    final Value<String> messageValue = Value.value();
+    Value<Integer> progressValue = Value.value();
+    Value<String> messageValue = Value.value();
 
-    final ProgressWorker.ProgressTask<Integer, String> task = progressReporter -> {
+    ProgressWorker.ProgressTask<Integer, String> task = progressReporter -> {
       progressReporter.setProgress(100);
       progressReporter.publish("Done");
 

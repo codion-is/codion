@@ -50,9 +50,9 @@ final class DefaultTextFieldHint implements TextFieldHint {
 
   @Override
   public void updateHint() {
-    final boolean hasFocus = textField.hasFocus();
-    final boolean hideHint = hasFocus && textField.getText().equals(hintText);
-    final boolean showHint = !hasFocus && textField.getText().isEmpty();
+    boolean hasFocus = textField.hasFocus();
+    boolean hideHint = hasFocus && textField.getText().equals(hintText);
+    boolean showHint = !hasFocus && textField.getText().isEmpty();
     if (hideHint) {
       textField.setText("");
     }
@@ -78,13 +78,13 @@ final class DefaultTextFieldHint implements TextFieldHint {
   }
 
   private void updateColor() {
-    final boolean hintForeground = !textField.hasFocus() && isHintVisible();
+    boolean hintForeground = !textField.hasFocus() && isHintVisible();
     textField.setForeground(hintForeground ? hintForegroundColor : foregroundColor);
   }
 
   private void configureColors() {
-    final Color foreground = UIManager.getColor("TextField.foreground");
-    final Color background = UIManager.getColor("TextField.background");
+    Color foreground = UIManager.getColor("TextField.foreground");
+    Color background = UIManager.getColor("TextField.background");
     foregroundColor = foreground;
     hintForegroundColor = getHintForegroundColor(background, foreground);
     updateColor();
@@ -92,9 +92,9 @@ final class DefaultTextFieldHint implements TextFieldHint {
 
   private static Color getHintForegroundColor(final Color background, final Color foreground) {
     //simplistic averaging of background and foreground
-    final int r = (int) sqrt((pow(background.getRed(), 2) + pow(foreground.getRed(), 2)) / 2);
-    final int g = (int) sqrt((pow(background.getGreen(), 2) + pow(foreground.getGreen(), 2)) / 2);
-    final int b = (int) sqrt((pow(background.getBlue(), 2) + pow(foreground.getBlue(), 2)) / 2);
+    int r = (int) sqrt((pow(background.getRed(), 2) + pow(foreground.getRed(), 2)) / 2);
+    int g = (int) sqrt((pow(background.getGreen(), 2) + pow(foreground.getGreen(), 2)) / 2);
+    int b = (int) sqrt((pow(background.getBlue(), 2) + pow(foreground.getBlue(), 2)) / 2);
 
     return new Color(r, g, b, foreground.getAlpha());
   }

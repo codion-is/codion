@@ -32,7 +32,7 @@ final class SchemaTableModel extends AbstractFilteredTableModel<Schema, Integer>
 
   @Override
   public Object getValueAt(final int rowIndex, final int columnIndex) {
-    final Schema schema = getItemAt(rowIndex);
+    Schema schema = getItemAt(rowIndex);
     switch (columnIndex) {
       case SCHEMA:
         return schema.getName();
@@ -49,10 +49,10 @@ final class SchemaTableModel extends AbstractFilteredTableModel<Schema, Integer>
   }
 
   private static List<TableColumn> createSchemaColumns() {
-    final TableColumn schemaColumn = new TableColumn(SchemaTableModel.SCHEMA);
+    TableColumn schemaColumn = new TableColumn(SchemaTableModel.SCHEMA);
     schemaColumn.setIdentifier(SchemaTableModel.SCHEMA);
     schemaColumn.setHeaderValue("Schema");
-    final TableColumn populatedColumn = new TableColumn(SchemaTableModel.POPULATED);
+    TableColumn populatedColumn = new TableColumn(SchemaTableModel.POPULATED);
     populatedColumn.setIdentifier(SchemaTableModel.POPULATED);
     populatedColumn.setHeaderValue("Populated");
 

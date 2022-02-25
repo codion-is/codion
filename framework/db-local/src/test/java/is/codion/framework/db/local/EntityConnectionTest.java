@@ -43,13 +43,13 @@ public class EntityConnectionTest {
   @BeforeAll
   public static void setUp() {
     try {
-      final Database destinationDatabase = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
+      Database destinationDatabase = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
       DESTINATION_CONNECTION = localEntityConnection(DOMAIN, destinationDatabase, User.user("sa"));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
       DESTINATION_CONNECTION.delete(condition(Employee.TYPE));
       DESTINATION_CONNECTION.delete(condition(Department.TYPE));
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -61,7 +61,7 @@ public class EntityConnectionTest {
 
   @Test
   void copyEntities() throws SQLException, DatabaseException {
-    final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
+    EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
     EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Department.TYPE)
             .batchSize(2)
             .execute();
@@ -81,11 +81,11 @@ public class EntityConnectionTest {
 
   @Test
   void insertEntities() throws SQLException, DatabaseException {
-    final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
+    EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
 
-    final List<Entity> source = sourceConnection.select(condition(Department.TYPE));
+    List<Entity> source = sourceConnection.select(condition(Department.TYPE));
 
-    final EventDataListener<Integer> progressReporter = currentProgress -> {};
+    EventDataListener<Integer> progressReporter = currentProgress -> {};
     EntityConnection.insertEntities(DESTINATION_CONNECTION, source.iterator())
             .batchSize(2)
             .progressReporter(progressReporter)

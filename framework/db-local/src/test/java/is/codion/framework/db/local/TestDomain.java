@@ -110,7 +110,7 @@ public final class TestDomain extends DefaultDomain {
             .smallDataset()
             .stringFactory(stringFactory(Department.DNAME))
             .conditionProvider(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {
-              final StringBuilder builder = new StringBuilder("deptno in (");
+              StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
@@ -242,7 +242,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void uuidTestDefaultValue() {
-    final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
+    KeyGenerator uuidKeyGenerator = new KeyGenerator() {
       @Override
       public void afterInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
                               final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
@@ -271,7 +271,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void uuidTestNoDefaultValue() {
-    final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
+    KeyGenerator uuidKeyGenerator = new KeyGenerator() {
       @Override
       public void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
                                final DatabaseConnection connection) throws SQLException {

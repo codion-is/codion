@@ -122,7 +122,7 @@ public final class Utilities {
   public static <T> EventObserver<T> propertyChangeObserver(final JComponent component, final String property) {
     requireNonNull(component, COMPONENT);
     requireNonNull(property, "property");
-    final Event<T> event = Event.event();
+    Event<T> event = Event.event();
     component.addPropertyChangeListener(property, changeEvent -> event.onEvent((T) changeEvent.getNewValue()));
 
     return event.getObserver();
@@ -148,9 +148,9 @@ public final class Utilities {
   public static void expandAll(final JTree tree, final TreePath parent) {
     requireNonNull(tree, "tree");
     requireNonNull(parent, "parent");
-    final TreeNode node = (TreeNode) parent.getLastPathComponent();
+    TreeNode node = (TreeNode) parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
-      final Enumeration<? extends TreeNode> e = node.children();
+      Enumeration<? extends TreeNode> e = node.children();
       while (e.hasMoreElements()) {
         expandAll(tree, parent.pathByAddingChild(e.nextElement()));
       }
@@ -167,9 +167,9 @@ public final class Utilities {
   public static void collapseAll(final JTree tree, final TreePath parent) {
     requireNonNull(tree, "tree");
     requireNonNull(parent, "parent");
-    final TreeNode node = (TreeNode) parent.getLastPathComponent();
+    TreeNode node = (TreeNode) parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
-      final Enumeration<? extends TreeNode> e = node.children();
+      Enumeration<? extends TreeNode> e = node.children();
       while (e.hasMoreElements()) {
         collapseAll(tree, parent.pathByAddingChild(e.nextElement()));
       }
@@ -208,7 +208,7 @@ public final class Utilities {
    * @return an icon
    */
   public static ImageIcon loadIcon(final Class<?> resourceClass, final String resourceName) {
-    final URL url = requireNonNull(resourceClass).getResource(resourceName);
+    URL url = requireNonNull(resourceClass).getResource(resourceName);
     requireNonNull(url, "Resource: " + resourceName + " for " + resourceClass);
 
     return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
@@ -219,14 +219,14 @@ public final class Utilities {
    * @param multiplier the font size multiplier
    */
   public static void setFontSize(final float multiplier) {
-    final UIDefaults defaults = UIManager.getDefaults();
-    final Enumeration<Object> enumeration = defaults.keys();
+    UIDefaults defaults = UIManager.getDefaults();
+    Enumeration<Object> enumeration = defaults.keys();
     while (enumeration.hasMoreElements()) {
-      final Object key = enumeration.nextElement();
-      final Object defaultValue = defaults.get(key);
+      Object key = enumeration.nextElement();
+      Object defaultValue = defaults.get(key);
       if (defaultValue instanceof Font) {
-        final Font font = (Font) defaultValue;
-        final int newSize = Math.round(font.getSize() * multiplier);
+        Font font = (Font) defaultValue;
+        int newSize = Math.round(font.getSize() * multiplier);
         if (defaultValue instanceof FontUIResource) {
           defaults.put(key, new FontUIResource(font.getName(), font.getStyle(), newSize));
         }
@@ -293,12 +293,12 @@ public final class Utilities {
   public static boolean isFileDataFlavor(final TransferHandler.TransferSupport transferSupport) {
     requireNonNull(transferSupport, "transferSupport");
     try {
-      final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
+      DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
 
       return stream(transferSupport.getDataFlavors())
               .anyMatch(flavor -> flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor));
     }
-    catch (final ClassNotFoundException e) {
+    catch (ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
   }
@@ -315,17 +315,17 @@ public final class Utilities {
     try {
       for (final DataFlavor flavor : transferSupport.getDataFlavors()) {
         if (flavor.isFlavorJavaFileListType()) {
-          final List<File> files = (List<File>) transferSupport.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+          List<File> files = (List<File>) transferSupport.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 
           return files.isEmpty() ? emptyList() : files;
         }
       }
       //the code below is for handling unix/linux
-      final List<File> files = new ArrayList<>();
-      final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-      final String data = (String) transferSupport.getTransferable().getTransferData(nixFileDataFlavor);
-      for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens(); ) {
-        final String token = st.nextToken().trim();
+      List<File> files = new ArrayList<>();
+      DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
+      String data = (String) transferSupport.getTransferable().getTransferData(nixFileDataFlavor);
+      for (StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens(); ) {
+        String token = st.nextToken().trim();
         if (token.startsWith("#") || token.isEmpty()) {// comment line, by RFC 2483
           continue;
         }
@@ -335,7 +335,7 @@ public final class Utilities {
 
       return files;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -356,7 +356,7 @@ public final class Utilities {
     if (component != null) {
       component.updateUI();
       if (component instanceof JMenu) {
-        final JMenu menu = (JMenu) component;
+        JMenu menu = (JMenu) component;
         for (int i = 0; i < menu.getItemCount(); i++) {
           updateUI(menu.getItem(i));
         }
@@ -379,7 +379,7 @@ public final class Utilities {
 
     @Override
     public boolean importData(final TransferSupport transferSupport) {
-      final List<File> files = getTransferFiles(transferSupport);
+      List<File> files = getTransferFiles(transferSupport);
       if (files.isEmpty()) {
         return false;
       }

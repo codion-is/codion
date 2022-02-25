@@ -48,25 +48,25 @@ class NumberDocument<T extends Number> extends PlainDocument {
     try {
       return getDocumentFilter().getParser().parse(getText(0, getLength())).getValue();
     }
-    catch (final BadLocationException e) {
+    catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
   }
 
   protected final Integer getInteger() {
-    final Number number = getNumber();
+    Number number = getNumber();
 
     return number == null ? null : number.intValue();
   }
 
   protected final Long getLong() {
-    final Number number = getNumber();
+    Number number = getNumber();
 
     return number == null ? null : number.longValue();
   }
 
   protected final Double getDouble() {
-    final Number number = getNumber();
+    Number number = getNumber();
 
     return number == null ? null : number.doubleValue();
   }
@@ -82,7 +82,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
         insertString(0, text, null);
       }
     }
-    catch (final BadLocationException e) {
+    catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
   }
@@ -95,21 +95,21 @@ class NumberDocument<T extends Number> extends PlainDocument {
     if (decimalSeparator == groupingSeparator) {
       throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
     }
-    final DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+    DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
     symbols.setDecimalSeparator(decimalSeparator);
     symbols.setGroupingSeparator(groupingSeparator);
-    final T number = getNumber();
+    T number = getNumber();
     ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
     setNumber(number);
   }
 
   void setDecimalSeparator(final char decimalSeparator) {
-    final DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+    DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
     symbols.setDecimalSeparator(decimalSeparator);
   }
 
   void setGroupingSeparator(final char groupingSeparator) {
-    final DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+    DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
     symbols.setGroupingSeparator(groupingSeparator);
   }
 }

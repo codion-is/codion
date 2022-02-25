@@ -58,7 +58,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
-    final JTabbedPane baseTabPane = new JTabbedPane();
+    JTabbedPane baseTabPane = new JTabbedPane();
     baseTabPane.addTab("Current", createCurrentConnectionsPanel());
     baseTabPane.addTab("History", createConnectionHistoryPanel());
 
@@ -66,22 +66,22 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JSplitPane createCurrentConnectionsPanel() throws RemoteException {
-    final JList<ClientMonitor> clientTypeList = new JList<>(model.getClientTypeListModel());
+    JList<ClientMonitor> clientTypeList = new JList<>(model.getClientTypeListModel());
 
     clientTypeList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     clientTypeList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel(clientTypeList.getSelectedValue()));
 
-    final JList<ClientMonitor> userList = new JList<>(model.getUserListModel());
+    JList<ClientMonitor> userList = new JList<>(model.getUserListModel());
 
     userList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     userList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel(userList.getSelectedValue()));
 
-    final JPanel clientTypeBase = new JPanel(Layouts.borderLayout());
-    final JScrollPane clientTypeScroller = new JScrollPane(clientTypeList);
-    final JScrollPane userScroller = new JScrollPane(userList);
+    JPanel clientTypeBase = new JPanel(Layouts.borderLayout());
+    JScrollPane clientTypeScroller = new JScrollPane(clientTypeList);
+    JScrollPane userScroller = new JScrollPane(userList);
     clientTypeScroller.setBorder(BorderFactory.createTitledBorder("Client types"));
     userScroller.setBorder(BorderFactory.createTitledBorder("Users"));
-    final JPanel clientUserBase = new JPanel(Layouts.gridLayout(2, 1));
+    JPanel clientUserBase = new JPanel(Layouts.gridLayout(2, 1));
     clientUserBase.add(clientTypeScroller);
     clientUserBase.add(userScroller);
 
@@ -90,7 +90,7 @@ public final class ClientUserMonitorPanel extends JPanel {
             .caption("Refresh")
             .build(), BorderLayout.SOUTH);
 
-    final JPanel actionBase = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
+    JPanel actionBase = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     actionBase.add(new JLabel("Reaper interval (s)", SwingConstants.RIGHT));
     actionBase.add(initializeMaintenanceIntervalComponent());
 
@@ -111,13 +111,13 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     setLayout(new BorderLayout());
 
-    final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     splitPane.setOneTouchExpandable(true);
     splitPane.setContinuousLayout(true);
 
     splitPane.setLeftComponent(clientTypeBase);
 
-    final JPanel currentConnectionsPanel = new JPanel(Layouts.borderLayout());
+    JPanel currentConnectionsPanel = new JPanel(Layouts.borderLayout());
     currentConnectionsPanel.add(actionBase, BorderLayout.NORTH);
     currentConnectionsPanel.add(clientTypeMonitorPanel, BorderLayout.CENTER);
 
@@ -127,7 +127,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JPanel createConnectionHistoryPanel() {
-    final JPanel configPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
+    JPanel configPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     configPanel.add(new JLabel("Update interval (s)"));
     configPanel.add(Components.integerSpinner(model.getUpdateIntervalValue())
             .minimum(1)
@@ -135,15 +135,15 @@ public final class ClientUserMonitorPanel extends JPanel {
             .editable(false)
             .build());
 
-    final JPanel configBase = new JPanel(Layouts.borderLayout());
+    JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(configPanel, BorderLayout.CENTER);
     configBase.add(Components.button(control(model::resetHistory))
             .caption("Reset")
             .build(), BorderLayout.EAST);
 
-    final FilteredTable<?, ?, ?> userHistoryTable = new FilteredTable<>(model.getUserHistoryTableModel());
+    FilteredTable<?, ?, ?> userHistoryTable = new FilteredTable<>(model.getUserHistoryTableModel());
 
-    final JPanel connectionHistoryPanel = new JPanel(Layouts.borderLayout());
+    JPanel connectionHistoryPanel = new JPanel(Layouts.borderLayout());
     connectionHistoryPanel.add(new JScrollPane(userHistoryTable), BorderLayout.CENTER);
     connectionHistoryPanel.add(configBase, BorderLayout.SOUTH);
 
@@ -151,13 +151,13 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JComponent initializeMaintenanceIntervalComponent() throws RemoteException {
-    final JComboBox<Integer> maintenanceBox = new JComboBox<>(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 120, 180, 340, 6000, 10000});
+    JComboBox<Integer> maintenanceBox = new JComboBox<>(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 120, 180, 340, 6000, 10000});
     maintenanceBox.setSelectedItem(model.getMaintenanceInterval());
     maintenanceBox.addItemListener(e -> {
       try {
         model.setMaintenanceInterval((Integer) maintenanceBox.getSelectedItem());
       }
-      catch (final RemoteException ex) {
+      catch (RemoteException ex) {
         onException(ex);
       }
     });

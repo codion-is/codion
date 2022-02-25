@@ -161,7 +161,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   @Override
   public final UsageScenario<T> getUsageScenario(final String usageScenarioName) {
-    final UsageScenario<T> scenario = usageScenarios.get(usageScenarioName);
+    UsageScenario<T> scenario = usageScenarios.get(usageScenarioName);
     if (scenario != null) {
       return scenario;
     }
@@ -196,7 +196,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   @Override
   public final IntervalXYDataset getScenarioDurationDataset(final String name) {
-    final YIntervalSeriesCollection scenarioDurationCollection = new YIntervalSeriesCollection();
+    YIntervalSeriesCollection scenarioDurationCollection = new YIntervalSeriesCollection();
     scenarioDurationCollection.addSeries(durationSeries.get(name));
 
     return scenarioDurationCollection;
@@ -278,7 +278,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   @Override
   public final void addApplicationBatch() {
     for (int i = 0; i < applicationBatchSizeValue.get(); i++) {
-      final ApplicationRunner runner = new ApplicationRunner();
+      ApplicationRunner runner = new ApplicationRunner();
       applications.push(runner);
       int initialDelay = getThinkTime();
       if (loginDelayFactorValue.get() > 0) {
@@ -320,7 +320,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     try {
       scheduledExecutor.awaitTermination(10, TimeUnit.SECONDS);
     }
-    catch (final InterruptedException e) {
+    catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     }
     shutdownEvent.onEvent();
@@ -379,12 +379,12 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
    * @see #getMaximumThinkTimeValue()
    */
   protected final int getThinkTime() {
-    final int time = minimumThinkTimeValue.get() - maximumThinkTimeValue.get();
+    int time = minimumThinkTimeValue.get() - maximumThinkTimeValue.get();
     return time > 0 ? RANDOM.nextInt(time) + minimumThinkTimeValue.get() : minimumThinkTimeValue.get();
   }
 
   private ItemRandomizer<UsageScenario<T>> initializeScenarioChooser() {
-    final ItemRandomizer<UsageScenario<T>> model = new ItemRandomizerModel<>();
+    ItemRandomizer<UsageScenario<T>> model = new ItemRandomizerModel<>();
     for (final UsageScenario<T> scenario : usageScenarios.values()) {
       model.addItem(scenario, scenario.getDefaultWeight());
     }
@@ -403,12 +403,12 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     systemLoadCollection.addSeries(processLoadSeries);
     usageScenarioCollection.addSeries(scenariosRunSeries);
     for (final UsageScenario<T> usageScenario : usageScenarios.values()) {
-      final XYSeries series = new XYSeries(usageScenario.getName());
+      XYSeries series = new XYSeries(usageScenario.getName());
       usageScenarioCollection.addSeries(series);
       usageSeries.add(series);
-      final YIntervalSeries avgDurSeries = new YIntervalSeries(usageScenario.getName());
+      YIntervalSeries avgDurSeries = new YIntervalSeries(usageScenario.getName());
       durationSeries.put(usageScenario.getName(), avgDurSeries);
-      final XYSeries failSeries = new XYSeries(usageScenario.getName());
+      XYSeries failSeries = new XYSeries(usageScenario.getName());
       scenarioFailureCollection.addSeries(failSeries);
       failureSeries.add(failSeries);
     }
@@ -461,13 +461,13 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
           scheduledExecutor.schedule(this, getThinkTime(), TimeUnit.MILLISECONDS);
         }
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         LOG.debug("Exception during " + (application == null ? "application initialization" : ("run " + application)), e);
       }
     }
 
     private void runRandomScenario(final T application) {
-      final long currentTimeNano = System.nanoTime();
+      long currentTimeNano = System.nanoTime();
       UsageScenario<T> scenario = null;
       try {
         scenario = scenarioChooser.getRandomItem();
@@ -493,7 +493,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     }
 
     private void updateChartData() {
-      final long time = System.currentTimeMillis();
+      long time = System.currentTimeMillis();
       delayedScenarioRunsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
       minimumThinkTimeSeries.add(time, minimumThinkTimeValue.get());
       maximumThinkTimeSeries.add(time, maximumThinkTimeValue.get());
@@ -508,7 +508,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
         series.add(time, counter.getScenarioRate((String) series.getKey()));
       }
       for (final YIntervalSeries series : durationSeries.values()) {
-        final String scenario = (String) series.getKey();
+        String scenario = (String) series.getKey();
         series.add(time, counter.getAverageScenarioDuration(scenario),
                 counter.getMinimumScenarioDuration(scenario), counter.getMaximumScenarioDuration(scenario));
       }
@@ -594,8 +594,8 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     }
 
     private void updateRequestsPerSecond() {
-      final long current = System.currentTimeMillis();
-      final double elapsedSeconds = (current - time) / THOUSAND;
+      long current = System.currentTimeMillis();
+      double elapsedSeconds = (current - time) / THOUSAND;
       if (elapsedSeconds > UPDATE_INTERVAL) {
         usageScenarioAvgDurations.clear();
         usageScenarioMinDurations.clear();
@@ -614,7 +614,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
     private void calculateScenarioDuration(final UsageScenario<T> scenario) {
       synchronized (scenarioDurations) {
-        final Collection<Integer> durations = scenarioDurations.get(scenario.getName());
+        Collection<Integer> durations = scenarioDurations.get(scenario.getName());
         if (!Util.nullOrEmpty(durations)) {
           int totalDuration = 0;
           int minDuration = -1;

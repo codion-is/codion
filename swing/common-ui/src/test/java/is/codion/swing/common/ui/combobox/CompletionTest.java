@@ -13,7 +13,7 @@ public final class CompletionTest {
 
   @Test
   void setTwice() {
-    final JComboBox<?> comboBox = Completion.maximumMatch(new JComboBox<>());
+    JComboBox<?> comboBox = Completion.maximumMatch(new JComboBox<>());
     assertThrows(IllegalStateException.class,() -> Completion.maximumMatch(comboBox));
   }
 }

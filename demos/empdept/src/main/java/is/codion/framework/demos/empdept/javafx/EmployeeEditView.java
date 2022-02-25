@@ -28,7 +28,7 @@ public final class EmployeeEditView extends EntityEditView {
     createDatePicker(Employee.HIREDATE);
     createForeignKeyComboBox(Employee.MGR_FK);
 
-    final GridPane gridPane = new GridPane();
+    GridPane gridPane = new GridPane();
 
     gridPane.add(createPropertyPanel(Employee.ID), 0, 0);
     gridPane.add(createPropertyPanel(Employee.NAME), 0, 1);

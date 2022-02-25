@@ -39,7 +39,7 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
    */
   public AbstractTextComponentValue(final C component, final T nullValue, final UpdateOn updateOn) {
     super(component, nullValue);
-    final DocumentFilter documentFilter = ((AbstractDocument) component.getDocument()).getDocumentFilter();
+    DocumentFilter documentFilter = ((AbstractDocument) component.getDocument()).getDocumentFilter();
     if (documentFilter instanceof ValidationDocumentFilter) {
       ((ValidationDocumentFilter<T>) documentFilter).addValidator(value ->
               getValidators().forEach(validator -> validator.validate(value)));

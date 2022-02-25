@@ -149,7 +149,7 @@ public final class EntityEditEvents {
 
     private void notifyInserted(final List<Entity> insertedEntities) {
       mapToType(insertedEntities).forEach((entityType, inserted) -> {
-        final Listeners<List<Entity>> event = insertListeners.get(entityType);
+        Listeners<List<Entity>> event = insertListeners.get(entityType);
         if (event != null) {
           event.onEvent(inserted);
         }
@@ -158,9 +158,9 @@ public final class EntityEditEvents {
 
     private void notifyUpdated(final Map<Key, Entity> updatedEntities) {
       map(updatedEntities.entrySet(), entry -> entry.getKey().getEntityType()).forEach((entityType, updated) -> {
-        final Map<Key, Entity> updateMap = new HashMap<>();
+        Map<Key, Entity> updateMap = new HashMap<>();
         updated.forEach(entry -> updateMap.put(entry.getKey(), entry.getValue()));
-        final Listeners<Map<Key, Entity>> event = updateListeners.get(entityType);
+        Listeners<Map<Key, Entity>> event = updateListeners.get(entityType);
         if (event != null) {
           event.onEvent(updateMap);
         }
@@ -169,7 +169,7 @@ public final class EntityEditEvents {
 
     private void notifyDeleted(final List<Entity> deletedEntities) {
       mapToType(deletedEntities).forEach((entityType, entities) -> {
-        final Listeners<List<Entity>> event = deleteListeners.get(entityType);
+        Listeners<List<Entity>> event = deleteListeners.get(entityType);
         if (event != null) {
           event.onEvent(entities);
         }
@@ -194,9 +194,9 @@ public final class EntityEditEvents {
 
       private synchronized void onEvent(final T data) {
         requireNonNull(data);
-        final Iterator<WeakReference<EventDataListener<T>>> iterator = listenerReferences.iterator();
+        Iterator<WeakReference<EventDataListener<T>>> iterator = listenerReferences.iterator();
         while (iterator.hasNext()) {
-          final EventDataListener<T> listener = iterator.next().get();
+          EventDataListener<T> listener = iterator.next().get();
           if (listener == null) {
             iterator.remove();
           }

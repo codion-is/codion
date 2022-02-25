@@ -92,7 +92,7 @@ public class EntityTableView extends TableView<Entity> {
       try {
         listModel.deleteSelected();
       }
-      catch (final DatabaseException e) {
+      catch (DatabaseException e) {
         throw new RuntimeException(e);
       }
     }
@@ -145,7 +145,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void initializeToolPane() {
-    final StackPane filterPane = new StackPane(filterText);
+    StackPane filterPane = new StackPane(filterText);
     StackPane.setAlignment(filterText, Pos.CENTER);
     VBox.setVgrow(filterText, Priority.ALWAYS);
     toolPane.setLeft(filterPane);
@@ -153,14 +153,14 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private ToolBar createToolBar() {
-    final ToolBar toolBar = new ToolBar();
+    ToolBar toolBar = new ToolBar();
     toolBar.getItems().add(createRefreshButton());
 
     return toolBar;
   }
 
   private Button createRefreshButton() {
-    final Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
+    Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
     button.setOnAction(event -> listModel.refresh());
     FXUiUtil.link(button.disableProperty(),
             listModel.getTableConditionModel().getConditionChangedObserver().getReversedObserver());
@@ -169,7 +169,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void addPopupMenu() {
-    final ContextMenu contextMenu = new ContextMenu();
+    ContextMenu contextMenu = new ContextMenu();
     contextMenu.getItems().add(createRefreshItem());
     contextMenu.getItems().add(createClearItem());
     contextMenu.getItems().add(new SeparatorMenuItem());
@@ -193,13 +193,13 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private Menu createCopyMenu() {
-    final MenuItem copyCell = new MenuItem(FrameworkMessages.get(FrameworkMessages.COPY_CELL));
+    MenuItem copyCell = new MenuItem(FrameworkMessages.get(FrameworkMessages.COPY_CELL));
     FXUiUtil.link(copyCell.disableProperty(), listModel.getSelectionEmptyObserver());
     copyCell.setOnAction(event -> copyCell());
-    final MenuItem copyTable = new MenuItem(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER));
+    MenuItem copyTable = new MenuItem(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER));
     copyTable.setOnAction(event -> copyTable());
 
-    final Menu copyMenu = new Menu(Messages.get(Messages.COPY));
+    Menu copyMenu = new Menu(Messages.get(Messages.COPY));
     copyMenu.getItems().add(copyCell);
     copyMenu.getItems().add(copyTable);
 
@@ -207,14 +207,14 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private Menu createSearchMenu() {
-    final CheckMenuItem showConditionPane = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.SHOW));
+    CheckMenuItem showConditionPane = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.SHOW));
     showConditionPane.selectedProperty().addListener((observable, oldValue, newValue) -> setConditionPaneVisible(newValue));
-    final CheckMenuItem advanced = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.ADVANCED));
+    CheckMenuItem advanced = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.ADVANCED));
     advanced.selectedProperty().addListener((observable, oldValue, newValue) -> setConditionPaneAdvanced(newValue));
-    final MenuItem clearSearch = new MenuItem(FrameworkMessages.get(FrameworkMessages.CLEAR));
+    MenuItem clearSearch = new MenuItem(FrameworkMessages.get(FrameworkMessages.CLEAR));
     clearSearch.setOnAction(event -> listModel.getTableConditionModel().clearConditions());
 
-    final Menu searchMenu = new Menu(FrameworkMessages.get(FrameworkMessages.SEARCH));
+    Menu searchMenu = new Menu(FrameworkMessages.get(FrameworkMessages.SEARCH));
     searchMenu.getItems().add(showConditionPane);
     searchMenu.getItems().add(advanced);
     searchMenu.getItems().add(clearSearch);
@@ -223,7 +223,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private Menu createUpdateSelectedItem() {
-    final Menu updateSelected = new Menu(FrameworkMessages.get(FrameworkMessages.UPDATE));
+    Menu updateSelected = new Menu(FrameworkMessages.get(FrameworkMessages.UPDATE));
     FXUiUtil.link(updateSelected.disableProperty(), listModel.getSelectionEmptyObserver());
     Properties.sort(getListModel().getEntityDefinition().getUpdatableProperties()).stream()
             .filter(this::includeUpdateSelectedProperty)
@@ -233,14 +233,14 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void addUpdateSelectedMenuItem(final Menu updateSelected, final Property<?> property) {
-    final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
-    final MenuItem updateProperty = new MenuItem(caption);
+    String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
+    MenuItem updateProperty = new MenuItem(caption);
     updateProperty.setOnAction(actionEvent -> updateSelectedEntities(property));
     updateSelected.getItems().add(updateProperty);
   }
 
   private MenuItem createDeleteSelectionItem() {
-    final MenuItem delete = new MenuItem(FrameworkMessages.get(FrameworkMessages.DELETE));
+    MenuItem delete = new MenuItem(FrameworkMessages.get(FrameworkMessages.DELETE));
     delete.setOnAction(actionEvent -> deleteSelected());
     FXUiUtil.link(delete.disableProperty(), listModel.getSelectionEmptyObserver());
 
@@ -248,39 +248,39 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private MenuItem createRefreshItem() {
-    final MenuItem refresh = new MenuItem(FrameworkMessages.get(FrameworkMessages.REFRESH));
+    MenuItem refresh = new MenuItem(FrameworkMessages.get(FrameworkMessages.REFRESH));
     refresh.setOnAction(actionEvent -> listModel.refresh());
 
     return refresh;
   }
 
   private MenuItem createClearItem() {
-    final MenuItem refresh = new MenuItem(FrameworkMessages.get(FrameworkMessages.CLEAR));
+    MenuItem refresh = new MenuItem(FrameworkMessages.get(FrameworkMessages.CLEAR));
     refresh.setOnAction(actionEvent -> listModel.clear());
 
     return refresh;
   }
 
   private <T> void updateSelectedEntities(final Property<T> property) {
-    final List<Entity> selectedEntities = Entity.deepCopy(listModel.getSelectionModel().getSelectedItems());
+    List<Entity> selectedEntities = Entity.deepCopy(listModel.getSelectionModel().getSelectedItems());
 
-    final Collection<T> values = Entity.getDistinct(property.getAttribute(), selectedEntities);
-    final T defaultValue = values.size() == 1 ? values.iterator().next() : null;
+    Collection<T> values = Entity.getDistinct(property.getAttribute(), selectedEntities);
+    T defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
-    final PropertyInputDialog<T> inputDialog = new PropertyInputDialog<>(property, defaultValue, listModel.getConnectionProvider());
+    PropertyInputDialog<T> inputDialog = new PropertyInputDialog<>(property, defaultValue, listModel.getConnectionProvider());
 
     Platform.runLater(inputDialog.getControl()::requestFocus);
-    final Optional<PropertyInputDialog.InputResult<T>> inputResult = inputDialog.showAndWait();
+    Optional<PropertyInputDialog.InputResult<T>> inputResult = inputDialog.showAndWait();
     try {
       if (inputResult.isPresent() && inputResult.get().isInputAccepted()) {
         Entity.put(property.getAttribute(), inputResult.get().getValue(), selectedEntities);
         listModel.update(selectedEntities);
       }
     }
-    catch (final ValidationException e) {
+    catch (ValidationException e) {
       FXUiUtil.showExceptionDialog(e);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -290,11 +290,11 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void copyCell() {
-    final SelectionModel<Entity> selectionModel = getSelectionModel();
+    SelectionModel<Entity> selectionModel = getSelectionModel();
     if (!selectionModel.isEmpty()) {
-      final TablePosition<Entity, Object> pos = getSelectionModel().getSelectedCells().get(0);
-      final Entity item = listModel.get(pos.getRow());
-      final String value = item.toString(((EntityTableColumn<?>) pos.getTableColumn()).getAttribute());
+      TablePosition<Entity, Object> pos = getSelectionModel().getSelectedCells().get(0);
+      Entity item = listModel.get(pos.getRow());
+      String value = item.toString(((EntityTableColumn<?>) pos.getTableColumn()).getAttribute());
       FXUiUtil.setClipboard(value);
     }
   }
@@ -332,7 +332,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private boolean includeUpdateSelectedControls() {
-    final FXEntityListModel entityTableModel = getListModel();
+    FXEntityListModel entityTableModel = getListModel();
 
     return !entityTableModel.isReadOnly() && entityTableModel.isUpdateEnabled() &&
             entityTableModel.isBatchUpdateEnabled() &&
@@ -340,7 +340,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private boolean includeDeleteSelectedControl() {
-    final FXEntityListModel entityTableModel = getListModel();
+    FXEntityListModel entityTableModel = getListModel();
 
     return !entityTableModel.isReadOnly() && entityTableModel.isDeleteEnabled();
   }

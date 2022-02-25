@@ -119,8 +119,8 @@ final class DefaultConnectionPoolCounter {
   }
 
   ConnectionPoolStatistics getStatistics(final long since) {
-    final DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(connectionPool.getUser().getUsername());
-    final long current = System.currentTimeMillis();
+    DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(connectionPool.getUser().getUsername());
+    long current = System.currentTimeMillis();
     statistics.setTimestamp(current);
     statistics.setResetDate(resetDate.get());
     statistics.setAvailableInPool(connectionPool.getSize());
@@ -130,7 +130,7 @@ final class DefaultConnectionPoolCounter {
     statistics.setCreationDate(creationDate);
     statistics.setConnectionRequests(connectionRequests.get());
     statistics.setConnectionRequestsFailed(connectionRequestsFailed.get());
-    final double seconds = (current - requestsPerSecondTime.get()) / THOUSAND;
+    double seconds = (current - requestsPerSecondTime.get()) / THOUSAND;
     requestsPerSecondTime.set(current);
     statistics.setRequestsPerSecond((int) (requestsPerSecondCounter.get() / seconds));
     requestsPerSecondCounter.set(0);

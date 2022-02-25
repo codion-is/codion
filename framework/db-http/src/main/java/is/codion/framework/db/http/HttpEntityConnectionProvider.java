@@ -110,7 +110,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
       return HttpEntityConnections.createConnection(getDomainTypeName(getDomainClassName()), getServerHostName(),
               getServerPort(), getUser(), getClientTypeId(), getClientId(), getJson());
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }

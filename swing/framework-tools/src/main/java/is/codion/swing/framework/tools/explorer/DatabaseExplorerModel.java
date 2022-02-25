@@ -40,7 +40,7 @@ public final class DatabaseExplorerModel {
       this.schemaTableModel.refresh();
       bindEvents();
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       throw new DatabaseException(e);
     }
   }
@@ -73,7 +73,7 @@ public final class DatabaseExplorerModel {
   }
 
   private void updateCodeValue() {
-    final StringBuilder builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     definitionTableModel.getSelectionModel().getSelectedItems().forEach(definitionRow ->
             builder.append(DomainToString.toString(definitionRow.definition)));
     domainSourceValue.set(builder.toString());

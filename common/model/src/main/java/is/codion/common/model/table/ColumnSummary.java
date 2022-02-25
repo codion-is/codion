@@ -30,7 +30,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
-      final Collection<T> values = valueProvider.getValues();
+      Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
         return addSubsetIndicator(valueProvider.format(values.stream()
                 .filter(Objects::nonNull)
@@ -47,9 +47,9 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
-      final Collection<T> values = valueProvider.getValues();
+      Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        final OptionalDouble average = values.stream()
+        OptionalDouble average = values.stream()
                 .mapToDouble(value -> value == null ? 0d : value.doubleValue())
                 .average();
         if (average.isPresent()) {
@@ -67,9 +67,9 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
-      final Collection<T> values = valueProvider.getValues();
+      Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        final OptionalDouble min = values.stream()
+        OptionalDouble min = values.stream()
                 .filter(Objects::nonNull)
                 .mapToDouble(Number::doubleValue)
                 .min();
@@ -88,9 +88,9 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
-      final Collection<T> values = valueProvider.getValues();
+      Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        final OptionalDouble max = values.stream()
+        OptionalDouble max = values.stream()
                 .filter(Objects::nonNull)
                 .mapToDouble(Number::doubleValue)
                 .max();
@@ -109,13 +109,13 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
-      final Collection<T> values = valueProvider.getValues();
+      Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        final OptionalDouble min = values.stream()
+        OptionalDouble min = values.stream()
                 .filter(Objects::nonNull)
                 .mapToDouble(Number::doubleValue)
                 .min();
-        final OptionalDouble max = values.stream()
+        OptionalDouble max = values.stream()
                 .filter(Objects::nonNull)
                 .mapToDouble(Number::doubleValue)
                 .max();

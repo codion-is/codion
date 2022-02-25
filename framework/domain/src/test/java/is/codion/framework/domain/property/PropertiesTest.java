@@ -38,49 +38,49 @@ public final class PropertiesTest {
 
   @Test
   void foreignKeyPropertyNonUniqueReferencedAttribute() {
-    final Attribute<Integer> attribute = ENTITY_TYPE.integerAttribute("attr");
+    Attribute<Integer> attribute = ENTITY_TYPE.integerAttribute("attr");
     assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute, attribute));
   }
 
   @Test
   void foreignKeyPropertyDifferentReferenceEntities() {
-    final Attribute<Integer> integerAttribute = ENTITY_TYPE2.integerAttribute("test");
-    final Attribute<Integer> attribute1 = ENTITY_TYPE.integerAttribute("attribute1");
-    final Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
+    Attribute<Integer> integerAttribute = ENTITY_TYPE2.integerAttribute("test");
+    Attribute<Integer> attribute1 = ENTITY_TYPE.integerAttribute("attribute1");
+    Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
     assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute1, attribute1, attribute2, integerAttribute));
   }
 
   @Test
   void foreignKeyPropertyDifferentReferenceEntities2() {
-    final Attribute<Integer> integerAttribute = ENTITY_TYPE2.integerAttribute("test");
-    final Attribute<Integer> attribute1 = ENTITY_TYPE.integerAttribute("attribute1");
-    final Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
+    Attribute<Integer> integerAttribute = ENTITY_TYPE2.integerAttribute("test");
+    Attribute<Integer> attribute1 = ENTITY_TYPE.integerAttribute("attribute1");
+    Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
     assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute1, attribute1, integerAttribute, attribute2));
   }
 
   @Test
   void foreignKeyPropertyAttributeFromOtherEntity() {
-    final Attribute<Integer> attribute1 = ENTITY_TYPE2.integerAttribute("attribute1");
-    final Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
+    Attribute<Integer> attribute1 = ENTITY_TYPE2.integerAttribute("attribute1");
+    Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
     assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute1, attribute2));
   }
 
   @Test
   void foreignKeyPropertyDuplicateAttribute() {
-    final Attribute<Integer> attribute1 = ENTITY_TYPE.integerAttribute("attribute1");
-    final Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
+    Attribute<Integer> attribute1 = ENTITY_TYPE.integerAttribute("attribute1");
+    Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
     assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute1, attribute2, attribute1, attribute2));
   }
 
   @Test
   void foreignKeyWithoutReferencedAttribute() {
-    final Attribute<Entity> attribute = ENTITY_TYPE.entityAttribute("attribute");
+    Attribute<Entity> attribute = ENTITY_TYPE.entityAttribute("attribute");
     assertThrows(NullPointerException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute, null));
   }
 
   @Test
   void foreignKeyWithoutReference() {
-    final Attribute<Entity> attribute = ENTITY_TYPE.entityAttribute("attribute");
+    Attribute<Entity> attribute = ENTITY_TYPE.entityAttribute("attribute");
     assertThrows(NullPointerException.class, () -> ENTITY_TYPE.foreignKey("attribute", null, attribute));
   }
 
@@ -143,7 +143,7 @@ public final class PropertiesTest {
 
   @Test
   void minimumMaximumValue() {
-    final ColumnProperty.Builder<Double, ?> builder = columnProperty(ENTITY_TYPE.doubleAttribute("attribute"));
+    ColumnProperty.Builder<Double, ?> builder = columnProperty(ENTITY_TYPE.doubleAttribute("attribute"));
     assertThrows(IllegalArgumentException.class, () -> builder.range(5, 4));
   }
 
@@ -160,14 +160,14 @@ public final class PropertiesTest {
   @Test
   void description() {
     final String description = "Here is a description";
-    final Property<Integer> property = columnProperty(ENTITY_TYPE.integerAttribute("attribute")).description(description).get();
+    Property<Integer> property = columnProperty(ENTITY_TYPE.integerAttribute("attribute")).description(description).get();
     assertEquals(description, property.getDescription());
   }
 
   @Test
   void mnemonic() {
     final Character mnemonic = 'M';
-    final Property<Integer> property = columnProperty(ENTITY_TYPE.integerAttribute("attribute")).mnemonic(mnemonic).get();
+    Property<Integer> property = columnProperty(ENTITY_TYPE.integerAttribute("attribute")).mnemonic(mnemonic).get();
     assertEquals(mnemonic, property.getMnemonic());
   }
 
@@ -219,7 +219,7 @@ public final class PropertiesTest {
 
   @Test
   void itemProperty() {
-    final List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(1));
+    List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(1));
     assertThrows(IllegalArgumentException.class, () -> Properties.itemProperty(ENTITY_TYPE.integerAttribute("item"), items));
   }
 }

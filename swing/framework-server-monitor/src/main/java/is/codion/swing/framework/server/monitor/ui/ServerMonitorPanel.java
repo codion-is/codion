@@ -108,7 +108,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
-    final JPanel serverPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
+    JPanel serverPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     serverPanel.add(new JLabel("Connections", SwingConstants.RIGHT));
     serverPanel.add(initializeConnectionCountField());
     serverPanel.add(new JLabel("limit", SwingConstants.RIGHT));
@@ -120,9 +120,9 @@ public final class ServerMonitorPanel extends JPanel {
     serverPanel.add(new JLabel("Logging", SwingConstants.RIGHT));
     serverPanel.add(initializeLogLevelField());
 
-    final JPanel northPanel = new JPanel(Layouts.borderLayout());
+    JPanel northPanel = new JPanel(Layouts.borderLayout());
     northPanel.add(serverPanel, BorderLayout.CENTER);
-    final JPanel shutdownBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
+    JPanel shutdownBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     shutdownBasePanel.add(Components.button(control(this::shutdownServer))
             .caption("Shutdown")
             .build(), BorderLayout.EAST);
@@ -131,7 +131,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     setLayout(new BorderLayout());
     add(northPanel, BorderLayout.NORTH);
-    final JTabbedPane pane = new JTabbedPane();
+    JTabbedPane pane = new JTabbedPane();
     pane.addTab("Performance", initializePerformancePanel());
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
     pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.getClientMonitor()));
@@ -141,10 +141,10 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel initializePerformancePanel() {
-    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2));
+    JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
 
-    final JPanel intervalPanel = new JPanel(Layouts.borderLayout());
+    JPanel intervalPanel = new JPanel(Layouts.borderLayout());
     intervalPanel.add(new JLabel("Update interval (s)"), BorderLayout.WEST);
     intervalPanel.add(Components.integerSpinner(model.getUpdateIntervalValue())
             .minimum(1)
@@ -152,7 +152,7 @@ public final class ServerMonitorPanel extends JPanel {
             .editable(false)
             .build(), BorderLayout.CENTER);
 
-    final JPanel chartsPanel = new JPanel(Layouts.borderLayout());
+    JPanel chartsPanel = new JPanel(Layouts.borderLayout());
     chartsPanel.add(intervalPanel, BorderLayout.CENTER);
     chartsPanel.add(Components.button(control(model::clearStatistics))
             .caption("Clear")
@@ -160,7 +160,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     controlPanel.add(chartsPanel);
 
-    final JPanel zoomPanel = new JPanel(Layouts.borderLayout());
+    JPanel zoomPanel = new JPanel(Layouts.borderLayout());
     zoomPanel.add(Components.checkBox(synchronizedZoomState)
             .caption("Synchronize zoom")
             .build(), BorderLayout.CENTER);
@@ -169,34 +169,34 @@ public final class ServerMonitorPanel extends JPanel {
             .build(), BorderLayout.EAST);
     controlPanel.add(zoomPanel);
 
-    final JPanel controlPanelBase = new JPanel(Layouts.borderLayout());
+    JPanel controlPanelBase = new JPanel(Layouts.borderLayout());
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
 
-    final JPanel chartPanelLeft = new JPanel(Layouts.gridLayout(3, 1));
-    final JPanel chartPanelRight = new JPanel(Layouts.gridLayout(3, 1));
+    JPanel chartPanelLeft = new JPanel(Layouts.gridLayout(3, 1));
+    JPanel chartPanelRight = new JPanel(Layouts.gridLayout(3, 1));
     chartPanelLeft.add(requestsPerSecondChartPanel);
     chartPanelLeft.add(connectionCountChartPanel);
     chartPanelLeft.add(systemLoadChartPanel);
     chartPanelRight.add(threadCountChartPanel);
     chartPanelRight.add(memoryUsageChartPanel);
     chartPanelRight.add(gcEventsChartPanel);
-    final JPanel chartPanel = new JPanel(Layouts.gridLayout(1, 2));
+    JPanel chartPanel = new JPanel(Layouts.gridLayout(1, 2));
     chartPanel.add(chartPanelLeft);
     chartPanel.add(chartPanelRight);
     chartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JPanel overviewPanel = new JPanel(Layouts.borderLayout());
+    JPanel overviewPanel = new JPanel(Layouts.borderLayout());
     overviewPanel.add(controlPanelBase, BorderLayout.SOUTH);
     overviewPanel.add(chartPanel, BorderLayout.CENTER);
 
-    final JPanel panel = new JPanel(Layouts.borderLayout());
+    JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(overviewPanel, BorderLayout.CENTER);
 
     return panel;
   }
 
   private JTabbedPane initializeEnvironmentPanel() throws RemoteException {
-    final JTabbedPane panel = new JTabbedPane();
+    JTabbedPane panel = new JTabbedPane();
     panel.addTab("System", initializeEnvironmentInfoPanel());
     panel.addTab("Domain", initializeDomainModelPanel());
 
@@ -204,12 +204,12 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel initializeDomainModelPanel() {
-    final JPanel panel = new JPanel(Layouts.borderLayout());
-    final JTable table = new JTable(model.getDomainTableModel());
+    JPanel panel = new JPanel(Layouts.borderLayout());
+    JTable table = new JTable(model.getDomainTableModel());
     table.setRowSorter(new TableRowSorter<>(model.getDomainTableModel()));
-    final JScrollPane scroller = new JScrollPane(table);
+    JScrollPane scroller = new JScrollPane(table);
 
-    final JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
+    JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
     refreshPanel.add(Components.button(control(model::refreshDomainList))
             .caption("Refresh")
             .build());
@@ -249,7 +249,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JComboBox<Object> initializeLogLevelField() {
-    final DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.getLogLevels().toArray());
+    DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.getLogLevels().toArray());
 
     return Components.comboBox(comboModel, model.getLogLevelValue())
             .build();
@@ -260,7 +260,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private void resetZoom() {
-    final boolean isSync = synchronizedZoomState.get();
+    boolean isSync = synchronizedZoomState.get();
     synchronizedZoomState.set(false);
     requestsPerSecondChartPanel.restoreAutoBounds();
     memoryUsageChartPanel.restoreAutoBounds();
@@ -272,7 +272,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    final ZoomSyncListener zoomSyncListener = new ZoomSyncListener();
+    ZoomSyncListener zoomSyncListener = new ZoomSyncListener();
     requestsPerSecondChart.getXYPlot().getDomainAxis().addChangeListener(zoomSyncListener);
     memoryUsageChart.getXYPlot().getDomainAxis().addChangeListener(zoomSyncListener);
     connectionCountChart.getXYPlot().getDomainAxis().addChangeListener(zoomSyncListener);
@@ -293,10 +293,10 @@ public final class ServerMonitorPanel extends JPanel {
     @Override
     public void axisChanged(final AxisChangeEvent event) {
       if (synchronizedZoomState.get()) {
-        final DateAxis dateAxis = (DateAxis) event.getAxis();
+        DateAxis dateAxis = (DateAxis) event.getAxis();
         performanceCharts.forEach(chart -> {
           if (!chart.equals(event.getChart())) {
-            final ValueAxis domainAxis = chart.getXYPlot().getDomainAxis();
+            ValueAxis domainAxis = chart.getXYPlot().getDomainAxis();
             if (!domainAxis.getRange().equals(dateAxis.getRange())) {
               domainAxis.setRange(dateAxis.getRange());
             }

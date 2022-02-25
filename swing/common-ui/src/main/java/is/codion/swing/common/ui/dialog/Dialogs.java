@@ -148,13 +148,13 @@ public final class Dialogs {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
-          final File file = fileSelectionDialog()
+          File file = fileSelectionDialog()
                   .owner(filenameField)
                   .startDirectory(getParentPath(filenameField.getText()))
                   .selectFile();
           filenameField.setText(file.getAbsolutePath());
         }
-        catch (final CancelException ignored) {/*ignored*/}
+        catch (CancelException ignored) {/*ignored*/}
       }
     };
   }
@@ -166,7 +166,7 @@ public final class Dialogs {
     try {
       return new File(text).getParentFile().getPath();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return null;
     }
   }

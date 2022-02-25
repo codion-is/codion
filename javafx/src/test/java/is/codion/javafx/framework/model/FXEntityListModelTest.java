@@ -30,13 +30,13 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createTestTableModel() {
-    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_DETAIL, getConnectionProvider()) {
+    FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_DETAIL, getConnectionProvider()) {
       @Override
       protected List<Entity> performQuery() {
         return testEntities;
       }
     };
-    final ListView<Entity> listView = new ListView<>(listModel);
+    ListView<Entity> listView = new ListView<>(listModel);
     listModel.setSelectionModel(listView.getSelectionModel());
 
     return listModel;
@@ -54,8 +54,8 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createDepartmentTableModel() {
-    final FXEntityListModel deptModel = new FXEntityListModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
-    final EntityTableView tableView = new EntityTableView(deptModel);
+    FXEntityListModel deptModel = new FXEntityListModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
+    EntityTableView tableView = new EntityTableView(deptModel);
     tableView.getSortOrder().add(deptModel.getTableColumn(TestDomain.DEPARTMENT_NAME));
 
     return deptModel;
@@ -63,7 +63,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createEmployeeTableModel() {
-    final FXEntityListModel empModel = new FXEntityListModel(TestDomain.T_EMP, testModel.getConnectionProvider());
+    FXEntityListModel empModel = new FXEntityListModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     new EntityTableView(empModel);
 
     return empModel;
@@ -81,7 +81,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Test
   void orderQueryBySortOrder() {
-    final FXEntityListModel tableModel = createEmployeeTableModel();
+    FXEntityListModel tableModel = createEmployeeTableModel();
     OrderBy orderBy = tableModel.getOrderBy();
     //default order by for entity
     assertEquals(2, orderBy.getOrderByAttributes().size());
@@ -90,7 +90,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     assertTrue(orderBy.getOrderByAttributes().get(1).isAscending());
     assertEquals(TestDomain.EMP_NAME, orderBy.getOrderByAttributes().get(1).getAttribute());
 
-    final ObservableList<TableColumn<Entity, ?>> sortOrder = tableModel.getColumnSortOrder();
+    ObservableList<TableColumn<Entity, ?>> sortOrder = tableModel.getColumnSortOrder();
     sortOrder.clear();
     EntityTableColumn<?> column = tableModel.getTableColumn(TestDomain.EMP_NAME);
     column.setSortType(TableColumn.SortType.ASCENDING);

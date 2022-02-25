@@ -31,7 +31,7 @@ public final class DatabaseExplorerModelTest {
       TAG_ITEM_DEF = Text.getTextFileContents(DatabaseExplorerModelTest.class, "tagitem.txt").trim();
       PRODUCT_DEF = Text.getTextFileContents(DatabaseExplorerModelTest.class, "product.txt").trim();
     }
-    catch (final IOException e) {
+    catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
@@ -57,21 +57,21 @@ public final class DatabaseExplorerModelTest {
   @Test
   void address() {
     model.getDefinitionModel().getSelectionModel().setSelectedIndex(0);
-    final String addressDef = model.getDomainSourceObserver().get().trim();
+    String addressDef = model.getDomainSourceObserver().get().trim();
     assertEquals(ADDRESS_DEF, addressDef);
   }
 
   @Test
   void product() {
     model.getDefinitionModel().getSelectionModel().setSelectedIndex(3);
-    final String productDef = model.getDomainSourceObserver().get().trim();
+    String productDef = model.getDomainSourceObserver().get().trim();
     assertEquals(PRODUCT_DEF, productDef);
   }
 
   @Test
   void tagItem() throws Exception {
     model.getDefinitionModel().getSelectionModel().setSelectedIndex(6);
-    final String tagItemDef = model.getDomainSourceObserver().get().trim();
+    String tagItemDef = model.getDomainSourceObserver().get().trim();
     assertEquals(TAG_ITEM_DEF, tagItemDef);
   }
 }

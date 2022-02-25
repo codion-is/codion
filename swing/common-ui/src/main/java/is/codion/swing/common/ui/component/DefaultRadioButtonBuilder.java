@@ -24,7 +24,7 @@ final class DefaultRadioButtonBuilder extends AbstractToggleButtonBuilder<JRadio
 
   @Override
   protected JRadioButton createButton() {
-    final JRadioButton radioButton = new JRadioButton();
+    JRadioButton radioButton = new JRadioButton();
     radioButton.setHorizontalAlignment(horizontalAlignment);
 
     return radioButton;

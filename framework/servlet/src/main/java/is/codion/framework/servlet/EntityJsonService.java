@@ -66,11 +66,11 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("getEntities")
   public Response getEntities(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
       return Response.ok(Serializer.serialize(connection.getEntities())).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -86,13 +86,13 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("close")
   public Response close(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
       request.getSession().invalidate();
       connection.close();
 
       return Response.ok().build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -107,13 +107,13 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("isTransactionOpen")
   public Response isTransactionOpen(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
-      final EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.getEntities());
+      EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.getEntities());
 
       return Response.ok(entityObjectMapper.writeValueAsString(connection.isTransactionOpen())).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -128,13 +128,13 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("beginTransaction")
   public Response beginTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
       connection.beginTransaction();
 
       return Response.ok().type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -149,13 +149,13 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("commitTransaction")
   public Response commitTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
       connection.commitTransaction();
 
       return Response.ok().type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -170,13 +170,13 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("rollbackTransaction")
   public Response rollbackTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
       connection.rollbackTransaction();
 
       return Response.ok().type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -192,15 +192,15 @@ public final class EntityJsonService extends AbstractEntityService {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   public Response procedure(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Object> parameters = deserialize(request);
-      final Object argument = parameters.size() > 1 ? parameters.get(1) : null;
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Object> parameters = deserialize(request);
+      Object argument = parameters.size() > 1 ? parameters.get(1) : null;
 
       connection.executeProcedure((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), argument);
 
       return Response.ok().build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -216,14 +216,14 @@ public final class EntityJsonService extends AbstractEntityService {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   public Response function(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Object> parameters = deserialize(request);
-      final Object argument = parameters.size() > 1 ? parameters.get(1) : null;
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Object> parameters = deserialize(request);
+      Object argument = parameters.size() > 1 ? parameters.get(1) : null;
 
       return Response.ok(Serializer.serialize(connection.executeFunction(
               (FunctionType<? extends EntityConnection, Object, Object>) parameters.get(0), argument))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -239,12 +239,12 @@ public final class EntityJsonService extends AbstractEntityService {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   public Response report(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Object> parameters = deserialize(request);
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Object> parameters = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.fillReport((ReportType<?, ?, Object>) parameters.get(0), parameters.get(1)))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -259,17 +259,17 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("dependencies")
   public Response dependencies(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
-      final EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.getEntities());
-      final List<Entity> entities = entityObjectMapper.deserializeEntities(request.getInputStream());
+      EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.getEntities());
+      List<Entity> entities = entityObjectMapper.deserializeEntities(request.getInputStream());
 
-      final Map<String, Collection<Entity>> dependencies = new HashMap<>();
+      Map<String, Collection<Entity>> dependencies = new HashMap<>();
       connection.selectDependencies(entities).forEach((entityType, deps) -> dependencies.put(entityType.getName(), deps));
 
       return Response.ok(entityObjectMapper.writeValueAsString(dependencies)).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -284,14 +284,14 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("count")
   public Response count(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
-      final ConditionObjectMapper conditionObjectMapper = getConditionObjectMapper(connection.getEntities());
+      ConditionObjectMapper conditionObjectMapper = getConditionObjectMapper(connection.getEntities());
 
       return Response.ok(conditionObjectMapper.getEntityObjectMapper().writeValueAsString(connection.rowCount(conditionObjectMapper
               .readValue(request.getInputStream(), Condition.class)))).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -306,15 +306,15 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("values")
   public Response values(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
-      final Entities entities = connection.getEntities();
-      final ConditionObjectMapper mapper = getConditionObjectMapper(entities);
-      final JsonNode jsonNode = mapper.readTree(request.getInputStream());
-      final EntityType entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
-      final Attribute<?> attribute = entities.getDefinition(entityType).getAttribute(jsonNode.get("attribute").textValue());
+      Entities entities = connection.getEntities();
+      ConditionObjectMapper mapper = getConditionObjectMapper(entities);
+      JsonNode jsonNode = mapper.readTree(request.getInputStream());
+      EntityType entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
+      Attribute<?> attribute = entities.getDefinition(entityType).getAttribute(jsonNode.get("attribute").textValue());
       Condition condition = null;
-      final JsonNode conditionNode = jsonNode.get("condition");
+      JsonNode conditionNode = jsonNode.get("condition");
       if (conditionNode != null) {
         condition = mapper.readValue(conditionNode.toString(), Condition.class);
       }
@@ -322,7 +322,7 @@ public final class EntityJsonService extends AbstractEntityService {
       return Response.ok(mapper.getEntityObjectMapper().writeValueAsString(connection.select(attribute, condition)))
               .type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -337,15 +337,15 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("selectByKey")
   public Response selectByKey(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
-      final EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.getEntities());
-      final List<Key> keysFromJson = entityObjectMapper.deserializeKeys(request.getInputStream());
-      final List<Entity> entities = connection.select(keysFromJson);
+      EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.getEntities());
+      List<Key> keysFromJson = entityObjectMapper.deserializeKeys(request.getInputStream());
+      List<Entity> entities = connection.select(keysFromJson);
 
       return Response.ok(entityObjectMapper.writeValueAsString(entities)).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -360,16 +360,16 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("select")
   public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
-      final ConditionObjectMapper mapper = getConditionObjectMapper(connection.getEntities());
-      final SelectCondition selectConditionJson = mapper
+      ConditionObjectMapper mapper = getConditionObjectMapper(connection.getEntities());
+      SelectCondition selectConditionJson = mapper
               .readValue(request.getInputStream(), SelectCondition.class);
 
       return Response.ok(mapper.getEntityObjectMapper().writeValueAsString(connection.select(selectConditionJson)))
               .type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -384,14 +384,14 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("insert")
   public Response insert(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
-      final EntityObjectMapper mapper = getEntityObjectMapper(connection.getEntities());
-      final List<Entity> entities = mapper.deserializeEntities(request.getInputStream());
+      EntityObjectMapper mapper = getEntityObjectMapper(connection.getEntities());
+      List<Entity> entities = mapper.deserializeEntities(request.getInputStream());
 
       return Response.ok(mapper.writeValueAsString(connection.insert(entities))).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -406,14 +406,14 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("update")
   public Response update(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
-      final EntityObjectMapper mapper = getEntityObjectMapper(connection.getEntities());
-      final List<Entity> entities = mapper.deserializeEntities(request.getInputStream());
+      EntityObjectMapper mapper = getEntityObjectMapper(connection.getEntities());
+      List<Entity> entities = mapper.deserializeEntities(request.getInputStream());
 
       return Response.ok(mapper.writeValueAsString(connection.update(entities))).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -428,15 +428,15 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("updateByCondition")
   public Response updateByCondition(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
-      final ConditionObjectMapper mapper = getConditionObjectMapper(connection.getEntities());
-      final UpdateCondition updateCondition = mapper.readValue(request.getInputStream(), UpdateCondition.class);
+      ConditionObjectMapper mapper = getConditionObjectMapper(connection.getEntities());
+      UpdateCondition updateCondition = mapper.readValue(request.getInputStream(), UpdateCondition.class);
 
       return Response.ok(mapper.getEntityObjectMapper().writeValueAsString(connection.update(updateCondition)))
               .type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -451,15 +451,15 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("delete")
   public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
-      final ConditionObjectMapper mapper = getConditionObjectMapper(connection.getEntities());
-      final Condition deleteCondition = mapper.readValue(request.getInputStream(), Condition.class);
+      ConditionObjectMapper mapper = getConditionObjectMapper(connection.getEntities());
+      Condition deleteCondition = mapper.readValue(request.getInputStream(), Condition.class);
 
       return Response.ok(mapper.getEntityObjectMapper().writeValueAsString(connection.delete(deleteCondition)))
               .type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -474,15 +474,15 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("deleteByKey")
   public Response deleteByKey(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
-      final EntityObjectMapper mapper = getEntityObjectMapper(connection.getEntities());
-      final List<Key> deleteKeys = mapper.deserializeKeys(request.getInputStream());
+      EntityObjectMapper mapper = getEntityObjectMapper(connection.getEntities());
+      List<Key> deleteKeys = mapper.deserializeKeys(request.getInputStream());
       connection.delete(deleteKeys);
 
       return Response.ok().type(MediaType.APPLICATION_JSON_TYPE).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -498,14 +498,14 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("writeBlob")
   public Response writeBlob(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Object> parameters = deserialize(request);
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Object> parameters = deserialize(request);
 
       connection.writeBlob((Key) parameters.get(0), (Attribute<byte[]>) parameters.get(1), (byte[]) parameters.get(2));
 
       return Response.ok().build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -521,12 +521,12 @@ public final class EntityJsonService extends AbstractEntityService {
   @Path("readBlob")
   public Response readBlob(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Object> parameters = deserialize(request);
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Object> parameters = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.readBlob((Key) parameters.get(0), (Attribute<byte[]>) parameters.get(1)))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }

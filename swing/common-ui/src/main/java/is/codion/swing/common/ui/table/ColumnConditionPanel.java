@@ -110,7 +110,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     requireNonNull(conditionModel, "conditionModel");
     requireNonNull(boundFieldFactory, "boundFieldFactory");
     this.conditionModel = conditionModel;
-    final boolean modelLocked = conditionModel.isLocked();
+    boolean modelLocked = conditionModel.isLocked();
     conditionModel.setLocked(false);//otherwise, the validator checking the locked state kicks in during value linking
     this.equalField = boundFieldFactory.createEqualField();
     this.upperBoundField = boundFieldFactory.createUpperBoundField().orElse(null);
@@ -176,7 +176,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
     if (!isDialogVisible()) {
       if (position != null) {
-        final Point adjustedPosition = position;
+        Point adjustedPosition = position;
         adjustedPosition.y = adjustedPosition.y - dialog.getHeight();
         dialog.setLocation(adjustedPosition);
       }
@@ -346,7 +346,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
 
     private JComponent createField(final Value<?> value) {
-      final Class<?> typeClass = columnConditionModel.getTypeClass();
+      Class<?> typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Boolean.class)) {
         return checkBox((Value<Boolean>) value)
                 .nullable(true)
@@ -404,7 +404,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private void bindEvents() {
     advancedConditionState.addDataListener(this::onAdvancedChange);
     conditionModel.getOperatorValue().addDataListener(this::onOperatorChanged);
-    final FocusAdapter focusGainedListener = new FocusAdapter() {
+    FocusAdapter focusGainedListener = new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
         if (!e.isTemporary()) {
@@ -519,7 +519,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       return;
     }
 
-    final JDialog dialogParent = Windows.getParentDialog(parent).orElse(null);
+    JDialog dialogParent = Windows.getParentDialog(parent).orElse(null);
     if (dialogParent != null) {
       dialog = new JDialog(dialogParent, title, false);
     }

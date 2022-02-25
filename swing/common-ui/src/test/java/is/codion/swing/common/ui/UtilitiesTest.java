@@ -22,7 +22,7 @@ public class UtilitiesTest {
 
   @Test
   void linkToEnabledState() {
-    final Action action = new AbstractAction("test") {
+    Action action = new AbstractAction("test") {
       @Override
       public void actionPerformed(final ActionEvent e) {}
     };
@@ -35,10 +35,10 @@ public class UtilitiesTest {
     state.set(false);
     assertFalse(action.isEnabled());
 
-    final JComponent comp = new JTextField();
+    JComponent comp = new JTextField();
     state = State.state();
 
-    final State theState = state;
+    State theState = state;
     try {
       Utilities.linkToEnabledState(theState, comp);
       assertFalse(comp.isEnabled());
@@ -49,14 +49,14 @@ public class UtilitiesTest {
       Thread.sleep(50);//due to EDT
       assertFalse(comp.isEnabled());
     }
-    catch (final InterruptedException e) {/*ignored*/}
+    catch (InterruptedException e) {/*ignored*/}
   }
 
   @Test
   void propertyChangeObserver() {
-    final JTextField textField = new JTextField();
-    final AtomicInteger counter = new AtomicInteger();
-    final EventObserver<Integer> alignmentObserver =
+    JTextField textField = new JTextField();
+    AtomicInteger counter = new AtomicInteger();
+    EventObserver<Integer> alignmentObserver =
             Utilities.propertyChangeObserver(textField, "horizontalAlignment");
     alignmentObserver.addListener(counter::incrementAndGet);
     textField.setHorizontalAlignment(SwingConstants.RIGHT);

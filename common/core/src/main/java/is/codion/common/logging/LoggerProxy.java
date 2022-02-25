@@ -54,8 +54,8 @@ public interface LoggerProxy {
    * @return the first available LoggerProxy implementation found, {@link #NULL_PROXY} if none is available.
    */
   static LoggerProxy loggerProxy() {
-    final ServiceLoader<LoggerProxy> loader = ServiceLoader.load(LoggerProxy.class);
-    final Iterator<LoggerProxy> proxyIterator = loader.iterator();
+    ServiceLoader<LoggerProxy> loader = ServiceLoader.load(LoggerProxy.class);
+    Iterator<LoggerProxy> proxyIterator = loader.iterator();
     if (proxyIterator.hasNext()) {
       return proxyIterator.next();
     }

@@ -59,7 +59,7 @@ public interface LookAndFeelProvider {
     try {
       UIManager.setLookAndFeel(getClassName());
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -74,7 +74,7 @@ public interface LookAndFeelProvider {
       try {
         UIManager.setLookAndFeel(classname);
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         throw new RuntimeException(e);
       }
     });
@@ -101,7 +101,7 @@ public interface LookAndFeelProvider {
       try {
         UIManager.setLookAndFeel(classname);
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         throw new RuntimeException(e);
       }
     });
@@ -152,9 +152,9 @@ public interface LookAndFeelProvider {
    * @return the selected look and feel provider, an empty Optional if cancelled
    */
   static Optional<LookAndFeelProvider> selectLookAndFeel(final JComponent dialogOwner, final boolean changeDuringSelection) {
-    final List<Item<LookAndFeelProvider>> items = new ArrayList<>();
-    final Value<Item<LookAndFeelProvider>> currentLookAndFeel = Value.value();
-    final String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
+    List<Item<LookAndFeelProvider>> items = new ArrayList<>();
+    Value<Item<LookAndFeelProvider>> currentLookAndFeel = Value.value();
+    String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
     DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS.values().stream()
             .sorted(Comparator.comparing(LookAndFeelProvider::getName))
             .map(provider -> Item.item(provider, provider.getName()))
@@ -164,23 +164,23 @@ public interface LookAndFeelProvider {
                 currentLookAndFeel.set(item);
               }
             });
-    final ItemComboBoxModel<LookAndFeelProvider> comboBoxModel = ItemComboBoxModel.createModel(items);
+    ItemComboBoxModel<LookAndFeelProvider> comboBoxModel = ItemComboBoxModel.createModel(items);
     currentLookAndFeel.toOptional().ifPresent(comboBoxModel::setSelectedItem);
     if (changeDuringSelection) {
       comboBoxModel.addSelectionListener(lookAndFeelProvider -> enableLookAndFeel(lookAndFeelProvider.getValue()));
     }
 
-    final JComboBox<Item<LookAndFeelProvider>> comboBox = Components.comboBox(comboBoxModel)
+    JComboBox<Item<LookAndFeelProvider>> comboBox = Components.comboBox(comboBoxModel)
             .completionMode(Completion.Mode.NONE)
             .mouseWheelScrolling(true)
             .build();
 
-    final ResourceBundle resourceBundle = ResourceBundle.getBundle(LookAndFeelProvider.class.getName());
-    final String dialogTitle = resourceBundle.getString("select_look_and_feel");
+    ResourceBundle resourceBundle = ResourceBundle.getBundle(LookAndFeelProvider.class.getName());
+    String dialogTitle = resourceBundle.getString("select_look_and_feel");
 
-    final int option = JOptionPane.showOptionDialog(dialogOwner, comboBox, dialogTitle,
+    int option = JOptionPane.showOptionDialog(dialogOwner, comboBox, dialogTitle,
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-    final LookAndFeelProvider selectedLookAndFeel = comboBoxModel.getSelectedValue().getValue();
+    LookAndFeelProvider selectedLookAndFeel = comboBoxModel.getSelectedValue().getValue();
     if (option == JOptionPane.OK_OPTION) {
       if (currentLookAndFeel.get().getValue() != selectedLookAndFeel) {
         enableLookAndFeel(selectedLookAndFeel);
@@ -211,8 +211,8 @@ public interface LookAndFeelProvider {
    * @return a look and feel selection control
    */
   static Control selectLookAndFeelControl(final JComponent dialogOwner, final String userPreferencePropertyName) {
-    final ResourceBundle resourceBundle = ResourceBundle.getBundle(LookAndFeelProvider.class.getName());
-    final String caption = resourceBundle.getString("select_look_and_feel");
+    ResourceBundle resourceBundle = ResourceBundle.getBundle(LookAndFeelProvider.class.getName());
+    String caption = resourceBundle.getString("select_look_and_feel");
 
     return Control.builder(() -> selectLookAndFeel(dialogOwner)
                     .ifPresent(provider -> {

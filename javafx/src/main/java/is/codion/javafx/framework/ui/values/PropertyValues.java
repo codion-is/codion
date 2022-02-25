@@ -165,8 +165,8 @@ public final class PropertyValues {
    * @throws ParseException in case of an exception
    */
   public static Object parseStrict(final Format format, final String value) throws ParseException {
-    final ParsePosition pos = new ParsePosition(0);
-    final Object result = format.parseObject(value, pos);
+    ParsePosition pos = new ParsePosition(0);
+    Object result = format.parseObject(value, pos);
     if (pos.getIndex() < value.length()) {
       throw new ParseException("Failed to parse '" + value + "'", pos.getIndex());
     }
@@ -214,11 +214,11 @@ public final class PropertyValues {
         return null;
       }
       try {
-        final Object number = parseStrict(numberFormat, value);
+        Object number = parseStrict(numberFormat, value);
 
         return ((Long) number).intValue();
       }
-      catch (final ParseException e) {
+      catch (ParseException e) {
         return null;
       }
     }
@@ -249,7 +249,7 @@ public final class PropertyValues {
       try {
         return (Long) parseStrict(numberFormat, value);
       }
-      catch (final ParseException e) {
+      catch (ParseException e) {
         return null;
       }
     }
@@ -278,14 +278,14 @@ public final class PropertyValues {
         return null;
       }
       try {
-        final Object number = parseStrict(numberFormat, value);
+        Object number = parseStrict(numberFormat, value);
         if (number instanceof Double) {
           return (Double) number;
         }
 
         return ((Long) number).doubleValue();
       }
-      catch (final ParseException e) {
+      catch (ParseException e) {
         return null;
       }
     }
@@ -317,7 +317,7 @@ public final class PropertyValues {
       try {
         return (BigDecimal) parseStrict(numberFormat, value);
       }
-      catch (final ParseException e) {
+      catch (ParseException e) {
         return null;
       }
     }
@@ -350,7 +350,7 @@ public final class PropertyValues {
       try {
         return parser.parse(string, dateFormatter);
       }
-      catch (final DateTimeParseException e) {
+      catch (DateTimeParseException e) {
         return null;
       }
     }
@@ -434,7 +434,7 @@ public final class PropertyValues {
 
     @Override
     public T get() {
-      final Item<T> selectedItem = selectionModel.getSelectedItem();
+      Item<T> selectedItem = selectionModel.getSelectedItem();
       if (selectedItem == null) {
         return null;
       }
@@ -459,7 +459,7 @@ public final class PropertyValues {
 
     @Override
     public Entity get() {
-      final List<Entity> selected = searchModel.getSelectedEntities();
+      List<Entity> selected = searchModel.getSelectedEntities();
 
       return selected.isEmpty() ? null : selected.iterator().next();
     }

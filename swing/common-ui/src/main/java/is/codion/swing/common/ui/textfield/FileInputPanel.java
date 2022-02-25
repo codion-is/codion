@@ -24,7 +24,7 @@ public final class FileInputPanel extends JPanel {
     filePathField.setFocusable(false);
     setLayout(Layouts.borderLayout());
     add(filePathField, BorderLayout.CENTER);
-    final JButton browseButton = new JButton(new AbstractAction("...") {
+    JButton browseButton = new JButton(new AbstractAction("...") {
       @Override
       public void actionPerformed(final ActionEvent e) {
         browseFile();
@@ -40,13 +40,13 @@ public final class FileInputPanel extends JPanel {
 
   private void browseFile() {
     try {
-      final File file = Dialogs.fileSelectionDialog()
+      File file = Dialogs.fileSelectionDialog()
               .owner(filePathField)
               .title("Select file")
               .selectFile();
       filePathField.setText(file.toString());
     }
-    catch (final CancelException e) {
+    catch (CancelException e) {
       filePathField.setText("");
       throw e;
     }

@@ -83,7 +83,7 @@ public final class Panels {
                                               final boolean buttonFocusable) {
     requireNonNull(centerComponent, CENTER_COMPONENT);
     requireNonNull(buttonAction, "buttonAction");
-    final JButton button = new JButton(buttonAction);
+    JButton button = new JButton(buttonAction);
     button.setPreferredSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
     button.setFocusable(buttonFocusable);
 

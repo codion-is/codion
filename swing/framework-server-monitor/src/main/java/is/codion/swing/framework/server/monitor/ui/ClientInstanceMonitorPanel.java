@@ -72,11 +72,11 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    final JPanel creationDatePanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
+    JPanel creationDatePanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     creationDatePanel.add(new JLabel("Creation date"));
     creationDatePanel.add(creationDateField);
 
-    final JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
+    JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     Components.checkBox(model.getLoggingEnabledValue())
             .caption("Logging enabled")
             .build(settingsPanel::add);
@@ -84,20 +84,20 @@ public final class ClientInstanceMonitorPanel extends JPanel {
             .caption("Refresh log")
             .build(settingsPanel::add);
 
-    final JPanel northPanel = new JPanel(Layouts.borderLayout());
+    JPanel northPanel = new JPanel(Layouts.borderLayout());
     northPanel.setBorder(BorderFactory.createTitledBorder("Connection info"));
     northPanel.add(creationDatePanel, BorderLayout.CENTER);
     northPanel.add(settingsPanel, BorderLayout.EAST);
 
-    final JPanel searchPanel = new JPanel(Layouts.borderLayout());
+    JPanel searchPanel = new JPanel(Layouts.borderLayout());
     searchPanel.add(new JLabel("Search"), BorderLayout.WEST);
     searchPanel.add(searchHighlighter.createSearchField(), BorderLayout.CENTER);
 
-    final JPanel textLogPanel = new JPanel(Layouts.borderLayout());
+    JPanel textLogPanel = new JPanel(Layouts.borderLayout());
     textLogPanel.add(new JScrollPane(logTextArea), BorderLayout.CENTER);
     textLogPanel.add(searchPanel, BorderLayout.SOUTH);
 
-    final JTabbedPane centerPane = new JTabbedPane(SwingConstants.TOP);
+    JTabbedPane centerPane = new JTabbedPane(SwingConstants.TOP);
     centerPane.add(textLogPanel, "Text");
     centerPane.add(new JScrollPane(createLogTree()), "Tree");
 
@@ -107,18 +107,18 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   private JTree createLogTree() {
-    final JTree treeLog = new JTree(model.getLogTreeModel());
+    JTree treeLog = new JTree(model.getLogTreeModel());
     treeLog.setRootVisible(false);
 
     return treeLog;
   }
 
   private JTextArea createLogTextArea() {
-    final JTextArea textArea = new JTextArea(model.getLogDocument());
+    JTextArea textArea = new JTextArea(model.getLogDocument());
     textArea.setEditable(false);
     textArea.setLineWrap(false);
     textArea.setWrapStyleWord(true);
-    final State lineWrapState = State.state();
+    State lineWrapState = State.state();
     lineWrapState.addDataListener(textArea::setLineWrap);
     textArea.setComponentPopupMenu(Controls.builder()
             .control(Control.builder(() -> saveLogToFile(textArea))
@@ -136,9 +136,9 @@ public final class ClientInstanceMonitorPanel extends JPanel {
       throw new IllegalStateException("No client selected");
     }
 
-    final User user = model.getRemoteClient().getUser();
-    final LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
-    final String filename = user.getUsername() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate) + ".log";
+    User user = model.getRemoteClient().getUser();
+    LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
+    String filename = user.getUsername() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate) + ".log";
 
     Files.write(Dialogs.fileSelectionDialog()
             .owner(this)

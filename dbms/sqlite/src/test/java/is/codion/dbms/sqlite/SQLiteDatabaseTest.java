@@ -19,7 +19,7 @@ public class SQLiteDatabaseTest {
 
   @Test
   void getAutoIncrementQuery() {
-    final SQLiteDatabase database = new SQLiteDatabase("test");
+    SQLiteDatabase database = new SQLiteDatabase("test");
     assertEquals("select last_insert_rowid()", database.getAutoIncrementQuery(null));
   }
 }

@@ -65,7 +65,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
   @Override
   public final List<GcEvent> getGcEvents(final long since) {
-    final List<GcEvent> gcEvents;
+    List<GcEvent> gcEvents;
     synchronized (gcEventList) {
       gcEvents = new LinkedList<>(gcEventList);
     }
@@ -76,8 +76,8 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
   @Override
   public final ThreadStatistics getThreadStatistics() throws RemoteException {
-    final ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-    final Map<Thread.State, Integer> threadStateMap = new EnumMap<>(Thread.State.class);
+    ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+    Map<Thread.State, Integer> threadStateMap = new EnumMap<>(Thread.State.class);
     for (final Long threadId : bean.getAllThreadIds()) {
       threadStateMap.compute(bean.getThreadInfo(threadId).getThreadState(), (threadState, value) -> value == null ? 1 : value + 1);
     }
@@ -187,7 +187,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
     @Override
     public void handleNotification(final Notification notification, final Object handback) {
       synchronized (gcEventList) {
-        final GarbageCollectionNotificationInfo notificationInfo =
+        GarbageCollectionNotificationInfo notificationInfo =
                 GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
         gcEventList.addLast(new DefaultGcEvent(notification.getTimeStamp(), notificationInfo.getGcName(),
                 notificationInfo.getGcInfo().getDuration()));

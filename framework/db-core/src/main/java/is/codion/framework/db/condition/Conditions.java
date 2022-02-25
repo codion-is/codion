@@ -68,7 +68,7 @@ public final class Conditions {
     if (requireNonNull(keys).isEmpty()) {
       throw new IllegalArgumentException("No keys specified for key condition");
     }
-    final Key firstKey = (keys instanceof List) ? ((List<Key>) keys).get(0) : keys.iterator().next();
+    Key firstKey = (keys instanceof List) ? ((List<Key>) keys).get(0) : keys.iterator().next();
     if (firstKey.getAttributes().size() > 1) {
       return compositeKeyCondition(attributeMap(firstKey.getAttributes()), EQUAL, keys.stream()
               .map(Conditions::valueMap)
@@ -167,7 +167,7 @@ public final class Conditions {
   }
 
   private static Condition condition(final Attribute<?> conditionAttribute, final Operator operator, final Object value) {
-    final AttributeCondition.Builder<Object> condition = where((Attribute<Object>) conditionAttribute);
+    AttributeCondition.Builder<Object> condition = where((Attribute<Object>) conditionAttribute);
     if (operator == EQUAL) {
       return condition.equalTo(value);
     }
@@ -180,14 +180,14 @@ public final class Conditions {
   }
 
   private static Map<Attribute<?>, Attribute<?>> attributeMap(final Collection<Attribute<?>> attributes) {
-    final Map<Attribute<?>, Attribute<?>> map = new LinkedHashMap<>(attributes.size());
+    Map<Attribute<?>, Attribute<?>> map = new LinkedHashMap<>(attributes.size());
     attributes.forEach(attribute -> map.put(attribute, attribute));
 
     return map;
   }
 
   private static Map<Attribute<?>, Object> valueMap(final Key key) {
-    final Map<Attribute<?>, Object> values = new HashMap<>();
+    Map<Attribute<?>, Object> values = new HashMap<>();
     key.getAttributes().forEach(attribute -> values.put(attribute, key.get(attribute)));
 
     return values;

@@ -97,7 +97,7 @@ public final class EntityComponentValidators {
         editModel.validate(attribute);
         return null;
       }
-      catch (final ValidationException e) {
+      catch (ValidationException e) {
         return e.getMessage();
       }
     }
@@ -164,9 +164,9 @@ public final class EntityComponentValidators {
 
     @Override
     protected void validate() {
-      final JComponent component = getComponent();
-      final boolean enabled = component.isEnabled();
-      final String validationMessage = getValidationMessage();
+      JComponent component = getComponent();
+      boolean enabled = component.isEnabled();
+      String validationMessage = getValidationMessage();
       component.setBackground(validationMessage == null ?
               (enabled ? backgroundColor : inactiveBackgroundColor) : invalidBackgroundColor);
       setToolTipText(validationMessage);
@@ -192,11 +192,11 @@ public final class EntityComponentValidators {
 
     @Override
     protected void validate() {
-      final JTextComponent textComponent = (JTextComponent) getComponent();
-      final boolean enabled = textComponent.isEnabled();
-      final boolean stringEqualsMask = textComponent.getText().equals(maskString);
-      final boolean validInputString = !isNull() || (stringEqualsMask && isNullable());
-      final String validationMessage = getValidationMessage();
+      JTextComponent textComponent = (JTextComponent) getComponent();
+      boolean enabled = textComponent.isEnabled();
+      boolean stringEqualsMask = textComponent.getText().equals(maskString);
+      boolean validInputString = !isNull() || (stringEqualsMask && isNullable());
+      String validationMessage = getValidationMessage();
       if (validInputString && validationMessage == null) {
         textComponent.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
       }

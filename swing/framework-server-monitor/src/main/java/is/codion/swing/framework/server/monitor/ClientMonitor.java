@@ -45,7 +45,7 @@ public final class ClientMonitor {
    */
   public void refresh() throws RemoteException {
     clientInstanceListModel.clear();
-    final List<RemoteClient> clients = new ArrayList<>(clientTypeId == null ? server.getClients(user) : server.getClients(clientTypeId));
+    List<RemoteClient> clients = new ArrayList<>(clientTypeId == null ? server.getClients(user) : server.getClients(clientTypeId));
     clients.sort(CLIENT_INFO_COMPARATOR);
     for (final RemoteClient client : clients) {
       clientInstanceListModel.addElement(client);

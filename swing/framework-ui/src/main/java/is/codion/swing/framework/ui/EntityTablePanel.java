@@ -528,7 +528,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       return;
     }
     if (conditionPanel.hasAdvancedView()) {
-      final State advancedState = conditionPanel.getAdvancedState();
+      State advancedState = conditionPanel.getAdvancedState();
       if (isConditionPanelVisible()) {
         if (advancedState.get()) {
           setConditionPanelVisible(false);
@@ -624,10 +624,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
-    final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
-    final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
-    final StateObserver enabled = State.and(selectionNotEmpty, updateEnabled);
-    final Controls updateControls = Controls.builder()
+    StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
+    StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
+    StateObserver enabled = State.and(selectionNotEmpty, updateEnabled);
+    Controls updateControls = Controls.builder()
             .caption(FrameworkMessages.get(FrameworkMessages.UPDATE))
             .enabledState(enabled)
             .smallIcon(frameworkIcons().edit())
@@ -635,7 +635,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .build();
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
-        final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
+        String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
         updateControls.add(Control.builder(() -> updateSelectedEntities(property))
                 .caption(caption)
                 .enabledState(enabled)
@@ -681,7 +681,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control for printing the table
    */
   public final Control createPrintTableControl() {
-    final String printCaption = MESSAGES.getString("print_table");
+    String printCaption = MESSAGES.getString("print_table");
     return Control.builder(this::printTable)
             .caption(printCaption)
             .description(printCaption)
@@ -694,7 +694,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a Control for refreshing the underlying table data
    */
   public final Control createRefreshControl() {
-    final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
+    String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
     return Control.builder(tableModel::refresh)
             .caption(refreshCaption)
             .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP))
@@ -708,7 +708,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a Control for clearing the underlying table model, that is, removing all rows
    */
   public final Control createClearControl() {
-    final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
+    String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
     return Control.builder(tableModel::clear)
             .caption(clearCaption)
             .mnemonic(clearCaption.charAt(0))
@@ -728,17 +728,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       return;
     }
 
-    final List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
-    final Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
-    final T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    final T newValue = createUpdateSelectedComponentValue(propertyToUpdate.getAttribute(), initialValue)
+    List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
+    Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
+    T initialValue = values.size() == 1 ? values.iterator().next() : null;
+    T newValue = createUpdateSelectedComponentValue(propertyToUpdate.getAttribute(), initialValue)
             .showDialog(this, propertyToUpdate.getCaption());
     Entity.put(propertyToUpdate.getAttribute(), newValue, selectedEntities);
     WaitCursor.show(this);
     try {
       tableModel.update(selectedEntities);
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       onException(e);
     }
@@ -757,13 +757,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     WaitCursor.show(this);
     try {
-      final Map<EntityType, Collection<Entity>> dependencies =
+      Map<EntityType, Collection<Entity>> dependencies =
               tableModel.getConnectionProvider().getConnection()
                       .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
       showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this,
               MESSAGES.getString("no_dependent_records"));
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       onException(e);
     }
@@ -788,11 +788,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         }
       }
     }
-    catch (final ReferentialIntegrityException e) {
+    catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
       onReferentialIntegrityException(e, tableModel.getSelectionModel().getSelectedItems());
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       onException(e);
     }
@@ -818,7 +818,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     WaitCursor.show(this);
     try {
       if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
-        final Map<EntityType, Collection<Entity>> dependencies =
+        Map<EntityType, Collection<Entity>> dependencies =
                 tableModel.getConnectionProvider().getConnection().selectDependencies(entities);
         showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this,
                 MESSAGES.getString("unknown_dependent_records"));
@@ -827,7 +827,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         onException(exception);
       }
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       onException(e);
     }
@@ -932,10 +932,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     requireNonNull(connectionProvider);
     requireNonNull(dialogParent);
     try {
-      final Map<EntityType, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependencies(entities);
+      Map<EntityType, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependencies(entities);
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       DefaultDialogExceptionHandler.getInstance().displayException(e, getParentWindow(dialogParent).orElse(null));
     }
   }
@@ -952,7 +952,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    final SwingEntityTableModel tableModel = new SwingEntityTableModel(entities.iterator().next().getEntityType(), connectionProvider) {
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(entities.iterator().next().getEntityType(), connectionProvider) {
       @Override
       protected Collection<Entity> refreshItems() {
         return entities;
@@ -976,8 +976,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    final EntityType entityType = entities.iterator().next().getEntityType();
-    final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityType, connectionProvider) {
+    EntityType entityType = entities.iterator().next().getEntityType();
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(entityType, connectionProvider) {
       @Override
       protected Collection<Entity> refreshItems() {
         return entities;
@@ -995,13 +995,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return an entity table panel based on the given model
    */
   public static EntityTablePanel createEntityTablePanel(final SwingEntityTableModel tableModel) {
-    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
+    EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
       @Override
       protected Controls getPopupControls(final List<Controls> additionalPopupControls) {
         return additionalPopupControls.get(0);
       }
     };
-    final Controls popupControls = Controls.controls();
+    Controls popupControls = Controls.controls();
     if (tablePanel.includeUpdateSelectedControls()) {
       popupControls.add(tablePanel.createUpdateSelectedControls());
     }
@@ -1053,14 +1053,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
-    final JSplitPane southCenterSplitPane = new JSplitPane();
+    JSplitPane southCenterSplitPane = new JSplitPane();
     southCenterSplitPane.setContinuousLayout(true);
     southCenterSplitPane.setResizeWeight(0.35);
     southCenterSplitPane.setTopComponent(table.getSearchField());
     southCenterSplitPane.setBottomComponent(statusMessageLabel);
     southPanel.add(southCenterSplitPane, BorderLayout.CENTER);
     southPanel.add(refreshToolBar, BorderLayout.WEST);
-    final JToolBar southToolBar = initializeSouthToolBar();
+    JToolBar southToolBar = initializeSouthToolBar();
     if (southToolBar != null) {
       southPanel.add(southToolBar, BorderLayout.EAST);
     }
@@ -1114,7 +1114,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   protected Controls getToolBarControls(final List<Controls> additionalToolBarControls) {
     requireNonNull(additionalToolBarControls);
-    final Controls toolbarControls = Controls.controls();
+    Controls toolbarControls = Controls.controls();
     if (controls.containsKey(ControlCode.TOGGLE_SUMMARY_PANEL)) {
       toolbarControls.add(controls.get(ControlCode.TOGGLE_SUMMARY_PANEL));
     }
@@ -1149,7 +1149,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   protected Controls getPopupControls(final List<Controls> additionalPopupControls) {
     requireNonNull(additionalPopupControls);
-    final Controls popupControls = Controls.controls();
+    Controls popupControls = Controls.controls();
     popupControls.add(controls.get(ControlCode.REFRESH));
     if (controls.containsKey(ControlCode.CLEAR)) {
       popupControls.add(controls.get(ControlCode.CLEAR));
@@ -1181,12 +1181,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       popupControls.addSeparator();
       separatorRequired = false;
     }
-    final Controls printControls = createPrintControls();
+    Controls printControls = createPrintControls();
     if (printControls != null && !printControls.isEmpty()) {
       popupControls.add(printControls);
       separatorRequired = true;
     }
-    final Controls columnControls = createColumnControls();
+    Controls columnControls = createColumnControls();
     if (!columnControls.isEmpty()) {
       if (separatorRequired) {
         popupControls.addSeparator();
@@ -1217,8 +1217,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   protected Controls createPrintControls() {
-    final String printCaption = Messages.get(Messages.PRINT);
-    final Controls.Builder builder = Controls.builder()
+    String printCaption = Messages.get(Messages.PRINT);
+    Controls.Builder builder = Controls.builder()
             .caption(printCaption)
             .mnemonic(printCaption.charAt(0))
             .smallIcon(frameworkIcons().print());
@@ -1230,7 +1230,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   protected final Controls createColumnControls() {
-    final Controls.Builder builder = Controls.builder()
+    Controls.Builder builder = Controls.builder()
             .caption(MESSAGES.getString("columns"));
     if (controls.containsKey(ControlCode.SELECT_COLUMNS)) {
       builder.control(controls.get(ControlCode.SELECT_COLUMNS));
@@ -1274,8 +1274,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
-    final String[] messages = getConfirmDeleteMessages();
-    final int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
+    String[] messages = getConfirmDeleteMessages();
+    int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;
   }
@@ -1333,9 +1333,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the toolbar to add to the south panel
    */
   protected JToolBar initializeSouthToolBar() {
-    final Controls toolbarControls = getToolBarControls(additionalToolBarControls);
+    Controls toolbarControls = getToolBarControls(additionalToolBarControls);
     if (toolbarControls != null) {
-      final JToolBar southToolBar = toolbarControls.createHorizontalToolBar();
+      JToolBar southToolBar = toolbarControls.createHorizontalToolBar();
       Arrays.stream(southToolBar.getComponents())
               .map(JComponent.class::cast)
               .forEach(component -> component.setToolTipText(null));
@@ -1399,7 +1399,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> initializeFilteredTable() {
-    final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> filteredTable =
+    FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> filteredTable =
             new FilteredTable<>(tableModel, new DefaultFilterPanelFactory(tableModel));
     filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
@@ -1423,7 +1423,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the refresh toolbar
    */
   private JToolBar initializeRefreshToolBar() {
-    final Control refreshControl = Control.builder(tableModel::refresh)
+    Control refreshControl = Control.builder(tableModel::refresh)
             .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
             .smallIcon(frameworkIcons().refreshRequired())
             .build();
@@ -1433,7 +1433,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .action(refreshControl)
             .enable(this);
 
-    final JToolBar toolBar = Controls.controls(refreshControl).createHorizontalToolBar();
+    JToolBar toolBar = Controls.controls(refreshControl).createHorizontalToolBar();
     toolBar.setFocusable(false);
     toolBar.getComponentAtIndex(0).setFocusable(false);
     toolBar.setFloatable(false);
@@ -1451,7 +1451,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private JScrollPane initializeSummaryScrollPane(final JScrollPane tableScrollPane) {
-    final Map<TableColumn, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
+    Map<TableColumn, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
     if (columnSummaryPanels.isEmpty()) {
       return null;
     }
@@ -1460,7 +1460,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private JPanel initializeTablePanel(final JScrollPane tableScrollPane) {
-    final JPanel panel = new JPanel(new BorderLayout());
+    JPanel panel = new JPanel(new BorderLayout());
     panel.add(tableScrollPane, BorderLayout.CENTER);
     if (conditionScrollPane != null) {
       panel.add(conditionScrollPane, BorderLayout.NORTH);
@@ -1479,7 +1479,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private String getStatusMessage() {
-    final int filteredItemCount = tableModel.getFilteredItemCount();
+    int filteredItemCount = tableModel.getFilteredItemCount();
 
     return STATUS_MESSAGE_NUMBER_FORMAT.format(tableModel.getRowCount()) + " (" +
             STATUS_MESSAGE_NUMBER_FORMAT.format(tableModel.getSelectionModel().getSelectionCount()) + " " +
@@ -1505,7 +1505,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisibleInternal);
     summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisibleInternal);
-    final EventListener statusListener = () -> SwingUtilities.invokeLater(EntityTablePanel.this::updateStatusMessage);
+    EventListener statusListener = () -> SwingUtilities.invokeLater(EntityTablePanel.this::updateStatusMessage);
     tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
     tableModel.addFilterListener(statusListener);
     tableModel.addTableDataChangedListener(statusListener);
@@ -1551,7 +1551,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void initializeTable() {
     tableModel.getColumnModel().getAllColumns().forEach(this::configureColumn);
-    final JTableHeader header = table.getTableHeader();
+    JTableHeader header = table.getTableHeader();
     header.setDefaultRenderer(new HeaderRenderer(header.getDefaultRenderer()));
     header.setFocusable(false);
     if (includePopupMenu) {
@@ -1560,19 +1560,19 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void configureColumn(final TableColumn column) {
-    final Property<?> property = tableModel.getEntityDefinition().getProperty((Attribute<?>) column.getIdentifier());
+    Property<?> property = tableModel.getEntityDefinition().getProperty((Attribute<?>) column.getIdentifier());
     column.setCellRenderer(initializeTableCellRenderer(property));
     column.setCellEditor(initializeTableCellEditor(property));
     column.setResizable(true);
   }
 
   private void addTablePopupMenu() {
-    final Controls popupControls = getPopupControls(additionalPopupControls);
+    Controls popupControls = getPopupControls(additionalPopupControls);
     if (popupControls == null || popupControls.isEmpty()) {
       return;
     }
 
-    final JPopupMenu popupMenu = popupControls.createPopupMenu();
+    JPopupMenu popupMenu = popupControls.createPopupMenu();
     table.setComponentPopupMenu(popupMenu);
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
@@ -1580,7 +1580,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     KeyEvents.builder(KeyEvent.VK_G)
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .action(control(() -> {
-              final Point location = getPopupLocation(table);
+              Point location = getPopupLocation(table);
               popupMenu.show(table, location.x, location.y);
             }))
             .enable(table);
@@ -1593,14 +1593,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void addConditionControls(final Controls popupControls) {
-    final Controls conditionControls = Controls.builder()
+    Controls conditionControls = Controls.builder()
             .caption(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .smallIcon(frameworkIcons().filter())
             .build();
     if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
       conditionControls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
     }
-    final Controls searchPanelControls = conditionPanel.getControls();
+    Controls searchPanelControls = conditionPanel.getControls();
     if (!searchPanelControls.isEmpty()) {
       conditionControls.addAll(searchPanelControls);
       conditionControls.addSeparator();
@@ -1615,9 +1615,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void showEntityMenu() {
-    final Entity selected = tableModel.getSelectionModel().getSelectedItem();
+    Entity selected = tableModel.getSelectionModel().getSelectedItem();
     if (selected != null) {
-      final Point location = getPopupLocation(table);
+      Point location = getPopupLocation(table);
       new EntityPopupMenu(selected.copy(), tableModel.getConnectionProvider()).show(this, location.x, location.y);
     }
   }
@@ -1664,7 +1664,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private static Map<TableColumn, JPanel> createColumnSummaryPanels(final AbstractFilteredTableModel<?, Attribute<?>> tableModel) {
-    final Map<TableColumn, JPanel> components = new HashMap<>();
+    Map<TableColumn, JPanel> components = new HashMap<>();
     tableModel.getColumnModel().getAllColumns().forEach(column ->
             tableModel.getColumnSummaryModel((Attribute<?>) column.getIdentifier())
                     .ifPresent(columnSummaryModel ->
@@ -1674,7 +1674,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private static JScrollPane createHiddenLinkedScrollPane(final JScrollPane masterScrollPane, final JPanel panel) {
-    final JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     Utilities.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
     scrollPane.setVisible(false);
 
@@ -1682,7 +1682,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private static JLabel initializeStatusMessageLabel() {
-    final JLabel label = new JLabel("", SwingConstants.CENTER);
+    JLabel label = new JLabel("", SwingConstants.CENTER);
     label.setFont(new Font(label.getFont().getName(), Font.PLAIN, STATUS_MESSAGE_FONT_SIZE));
 
     return label;
@@ -1690,10 +1690,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static JPanel createDependenciesPanel(final Map<EntityType, Collection<Entity>> dependencies,
                                                 final EntityConnectionProvider connectionProvider) {
-    final JPanel panel = new JPanel(new BorderLayout());
-    final JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
+    JPanel panel = new JPanel(new BorderLayout());
+    JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
     for (final Map.Entry<EntityType, Collection<Entity>> entry : dependencies.entrySet()) {
-      final Collection<Entity> dependentEntities = entry.getValue();
+      Collection<Entity> dependentEntities = entry.getValue();
       if (!dependentEntities.isEmpty()) {
         tabPane.addTab(connectionProvider.getEntities().getDefinition(entry.getKey()).getCaption(),
                 createEntityTablePanel(dependentEntities, connectionProvider));
@@ -1705,9 +1705,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private static Point getPopupLocation(final JTable table) {
-    final Rectangle visibleRect = table.getVisibleRect();
-    final int x = visibleRect.x + visibleRect.width / 2;
-    final int y = table.getSelectionModel().isSelectionEmpty() ?
+    Rectangle visibleRect = table.getVisibleRect();
+    int x = visibleRect.x + visibleRect.width / 2;
+    int y = table.getSelectionModel().isSelectionEmpty() ?
             visibleRect.y + visibleRect.height / 2 :
             table.getSelectedRow() * table.getRowHeight() + table.getRowHeight() / 2;
 
@@ -1725,14 +1725,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
-      final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
-      final TableCellRenderer renderer = tableColumn.getCellRenderer();
-      final Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
-      final boolean displayConditionState = renderer instanceof EntityTableCellRenderer
+      JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
+      TableCellRenderer renderer = tableColumn.getCellRenderer();
+      Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
+      boolean displayConditionState = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isDisplayConditionState()
               && tableModel.getTableConditionModel().isConditionEnabled(attribute);
-      final Font defaultFont = label.getFont();
+      Font defaultFont = label.getFont();
       label.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
       return label;
@@ -1749,7 +1749,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     @Override
     public ColumnConditionPanel<?, ?> createConditionPanel(final TableColumn column) {
-      final ColumnFilterModel<Entity, Attribute<?>, ?> filterModel =
+      ColumnFilterModel<Entity, Attribute<?>, ?> filterModel =
               tableModel.getTableConditionModel().getFilterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;

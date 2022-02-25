@@ -150,24 +150,24 @@ public class NumberField<T extends Number> extends JTextField {
     }
 
     private void skipGroupingSeparator(final boolean forward) {
-      final NumberDocument<?> numberDocument = getTypedDocument();
-      final char groupingSeparator = ((DecimalFormat) numberDocument.getFormat()).getDecimalFormatSymbols().getGroupingSeparator();
+      NumberDocument<?> numberDocument = getTypedDocument();
+      char groupingSeparator = ((DecimalFormat) numberDocument.getFormat()).getDecimalFormatSymbols().getGroupingSeparator();
       try {
-        final int caretPosition = getCaretPosition();
+        int caretPosition = getCaretPosition();
         if (forward && caretPosition < getDocument().getLength() - 1) {
-          final char afterCaret = numberDocument.getText(caretPosition, 1).charAt(0);
+          char afterCaret = numberDocument.getText(caretPosition, 1).charAt(0);
           if (groupingSeparator == afterCaret) {
             setCaretPosition(caretPosition + 1);
           }
         }
         else if (!forward && caretPosition > 0) {
-          final char beforeCaret = numberDocument.getText(caretPosition - 1, 1).charAt(0);
+          char beforeCaret = numberDocument.getText(caretPosition - 1, 1).charAt(0);
           if (groupingSeparator == beforeCaret) {
             setCaretPosition(caretPosition - 1);
           }
         }
       }
-      catch (final BadLocationException ignored) {/*Not happening*/}
+      catch (BadLocationException ignored) {/*Not happening*/}
     }
   }
 }

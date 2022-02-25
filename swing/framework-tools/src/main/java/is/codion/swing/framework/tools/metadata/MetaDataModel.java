@@ -27,7 +27,7 @@ public final class MetaDataModel {
     try {
       this.schemas = discoverSchemas(metaData);
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       throw new DatabaseException(e);
     }
   }
@@ -37,7 +37,7 @@ public final class MetaDataModel {
   }
 
   public void populateSchema(final String schemaName, final EventDataListener<String> schemaNotifier) {
-    final Schema schema = schemas.get(requireNonNull(schemaName));
+    Schema schema = schemas.get(requireNonNull(schemaName));
     if (schema == null) {
       throw new IllegalArgumentException("Schema not found: " + schemaName);
     }
@@ -45,7 +45,7 @@ public final class MetaDataModel {
   }
 
   private static Map<String, Schema> discoverSchemas(final DatabaseMetaData metaData) throws SQLException {
-    final Map<String, Schema> schemas = new HashMap<>();
+    Map<String, Schema> schemas = new HashMap<>();
     try (final ResultSet resultSet = metaData.getCatalogs()) {
       schemas.putAll(new SchemaPacker("TABLE_CAT").pack(resultSet).stream()
               .collect(toMap(Schema::getName, schema -> schema)));

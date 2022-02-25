@@ -63,10 +63,10 @@ public class SwingFilteredComboBoxModelTest {
     assertEquals(SIGGI, testModel.getElementAt(4));
     assertEquals(TOMAS, testModel.getElementAt(5));
 
-    final Comparator<String> comparator = testModel.getSortComparator();
+    Comparator<String> comparator = testModel.getSortComparator();
     testModel.setSortComparator(null);
     assertNull(testModel.getSortComparator());
-    final List<String> names = new ArrayList<>();
+    List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);
     names.add(SIGGI);
@@ -111,8 +111,8 @@ public class SwingFilteredComboBoxModelTest {
 
   @Test
   void testSelection() {
-    final AtomicInteger selectionChangedCounter = new AtomicInteger();
-    final EventDataListener<String> selectionListener = selectedItem -> selectionChangedCounter.incrementAndGet();
+    AtomicInteger selectionChangedCounter = new AtomicInteger();
+    EventDataListener<String> selectionListener = selectedItem -> selectionChangedCounter.incrementAndGet();
     testModel.addSelectionListener(selectionListener);
     testModel.setSelectedItem(BJORN);
     assertEquals(1, selectionChangedCounter.get());
@@ -157,8 +157,8 @@ public class SwingFilteredComboBoxModelTest {
 
   @Test
   void setIncludeCondition() {
-    final AtomicInteger filteringEndedCounter = new AtomicInteger();
-    final EventListener filteringEndedListener = filteringEndedCounter::incrementAndGet;
+    AtomicInteger filteringEndedCounter = new AtomicInteger();
+    EventListener filteringEndedListener = filteringEndedCounter::incrementAndGet;
     testModel.addListDataListener(listDataListener);
     testModel.addFilterListener(filteringEndedListener);
 
@@ -261,7 +261,7 @@ public class SwingFilteredComboBoxModelTest {
     }
     List<Data> contents = asList(new Data(1, "1"), new Data(2, "2"), new Data(3, "3"));
 
-    final SwingFilteredComboBoxModel<Data> model = new SwingFilteredComboBoxModel<>();
+    SwingFilteredComboBoxModel<Data> model = new SwingFilteredComboBoxModel<>();
     model.setContents(contents);
     model.setSelectedItem(contents.get(1));
     assertEquals("2", model.getSelectedValue().data);
@@ -276,7 +276,7 @@ public class SwingFilteredComboBoxModelTest {
   void setUp() throws Exception {
     testModel = new SwingFilteredComboBoxModel<>();
     testModel.setNullString(NULL);
-    final List<String> names = new ArrayList<>();
+    List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);
     names.add(SIGGI);

@@ -120,7 +120,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   @Override
   public JPanel createVerticalButtonPanel() {
-    final JPanel panel = addEmptyBorder(new JPanel(Layouts.gridLayout(0, 1)));
+    JPanel panel = addEmptyBorder(new JPanel(Layouts.gridLayout(0, 1)));
     new ButtonControlHandler(panel, this, true);
 
     return panel;
@@ -128,7 +128,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   @Override
   public JPanel createHorizontalButtonPanel() {
-    final JPanel panel = addEmptyBorder(new JPanel(Layouts.gridLayout(1, 0)));
+    JPanel panel = addEmptyBorder(new JPanel(Layouts.gridLayout(1, 0)));
     new ButtonControlHandler(panel, this, false);
 
     return panel;
@@ -151,7 +151,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   @Override
   public JMenu createMenu() {
-    final JMenu menu = new JMenu(this);
+    JMenu menu = new JMenu(this);
     new MenuControlHandler(menu, this);
 
     return menu;
@@ -159,7 +159,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   @Override
   public JMenuBar createMenuBar() {
-    final JMenuBar menuBar = new JMenuBar();
+    JMenuBar menuBar = new JMenuBar();
     actions.stream()
             .filter(Controls.class::isInstance)
             .map(Controls.class::cast)
@@ -172,14 +172,14 @@ final class DefaultControls extends AbstractControl implements Controls {
   public void actionPerformed(final ActionEvent e) {/*Not required*/}
 
   private JToolBar createToolBar(final int orientation) {
-    final JToolBar toolBar = new JToolBar(orientation);
+    JToolBar toolBar = new JToolBar(orientation);
     actions.forEach(new ToolBarControlHandler(toolBar));
 
     return toolBar;
   }
 
   private static JPanel addEmptyBorder(final JPanel panel) {
-    final Integer gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    Integer gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
     if (gap != null) {
       panel.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
     }

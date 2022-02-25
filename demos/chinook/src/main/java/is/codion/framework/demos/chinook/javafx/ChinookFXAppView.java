@@ -25,14 +25,14 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
 
   @Override
   protected void initializeEntityViews() {
-    final ChinookFXAppModel model = getModel();
+    ChinookFXAppModel model = getModel();
 
-    final FXEntityModel artistModel = model.getEntityModel(Artist.TYPE);
-    final EntityView artists = new EntityView(artistModel, new ArtistEditVew(artistModel.getEditModel()));
-    final FXEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
-    final EntityView albums = new EntityView(albumModel);
-    final FXEntityModel trackModel = albumModel.getDetailModel(Track.TYPE);
-    final EntityView tracks = new EntityView(trackModel);
+    FXEntityModel artistModel = model.getEntityModel(Artist.TYPE);
+    EntityView artists = new EntityView(artistModel, new ArtistEditVew(artistModel.getEditModel()));
+    FXEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+    EntityView albums = new EntityView(albumModel);
+    FXEntityModel trackModel = albumModel.getDetailModel(Track.TYPE);
+    EntityView tracks = new EntityView(trackModel);
 
     artists.addDetailView(albums);
     albums.addDetailView(tracks);
@@ -40,22 +40,22 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
     addEntityView(artists);
 
     //playlists
-    final FXEntityModel playlistModel = model.getEntityModel(Playlist.TYPE);
-    final EntityView playlists = new EntityView(playlistModel);
-    final FXEntityModel playlisttrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);
-    final EntityView playlisttracks = new EntityView(playlisttrackModel);
+    FXEntityModel playlistModel = model.getEntityModel(Playlist.TYPE);
+    EntityView playlists = new EntityView(playlistModel);
+    FXEntityModel playlisttrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);
+    EntityView playlisttracks = new EntityView(playlisttrackModel);
 
     playlists.addDetailView(playlisttracks);
 
     addEntityView(playlists);
 
     //customers
-    final FXEntityModel customerModel = model.getEntityModel(Customer.TYPE);
-    final EntityView customers = new EntityView(customerModel);
-    final FXEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
-    final EntityView invoices = new EntityView(invoiceModel);
-    final FXEntityModel invoicelineModel = invoiceModel.getDetailModel(InvoiceLine.TYPE);
-    final EntityView invoicelines = new EntityView(invoicelineModel);
+    FXEntityModel customerModel = model.getEntityModel(Customer.TYPE);
+    EntityView customers = new EntityView(customerModel);
+    FXEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
+    EntityView invoices = new EntityView(invoiceModel);
+    FXEntityModel invoicelineModel = invoiceModel.getDetailModel(InvoiceLine.TYPE);
+    EntityView invoicelines = new EntityView(invoicelineModel);
 
     customers.addDetailView(invoices);
     invoices.addDetailView(invoicelines);

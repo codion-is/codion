@@ -45,28 +45,28 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
 
   @Override
   protected ChinookApplicationModel initializeApplication() throws CancelException {
-    final ChinookApplicationModel applicationModel = new ChinookApplicationModel(
+    ChinookApplicationModel applicationModel = new ChinookApplicationModel(
             EntityConnectionProvider.connectionProvider().setDomainClassName("is.codion.framework.demos.chinook.domain.impl.ChinookImpl")
                     .setClientTypeId(ChinookAppPanel.class.getName()).setUser(getUser()));
 
-    final SwingEntityModel customerModel = applicationModel.getEntityModel(Customer.TYPE);
-    final SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
+    SwingEntityModel customerModel = applicationModel.getEntityModel(Customer.TYPE);
+    SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
     customerModel.addLinkedDetailModel(invoiceModel);
 
-    final SwingEntityModel artistModel = applicationModel.getEntityModel(Artist.TYPE);
-    final SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
-    final SwingEntityModel trackModel = albumModel.getDetailModel(Track.TYPE);
+    SwingEntityModel artistModel = applicationModel.getEntityModel(Artist.TYPE);
+    SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+    SwingEntityModel trackModel = albumModel.getDetailModel(Track.TYPE);
 
     artistModel.addLinkedDetailModel(albumModel);
     albumModel.addLinkedDetailModel(trackModel);
 
-    final SwingEntityModel playlistModel = applicationModel.getEntityModel(Playlist.TYPE);
-    final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);
+    SwingEntityModel playlistModel = applicationModel.getEntityModel(Playlist.TYPE);
+    SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);
     playlistModel.addLinkedDetailModel(playlistTrackModel);
 
     /* Add a Genre model used in the ViewGenre scenario */
-    final SwingEntityModel genreModel = new SwingEntityModel(Genre.TYPE, applicationModel.getConnectionProvider());
-    final SwingEntityModel genreTrackModel = new SwingEntityModel(Track.TYPE, applicationModel.getConnectionProvider());
+    SwingEntityModel genreModel = new SwingEntityModel(Genre.TYPE, applicationModel.getConnectionProvider());
+    SwingEntityModel genreTrackModel = new SwingEntityModel(Track.TYPE, applicationModel.getConnectionProvider());
     genreModel.addDetailModel(genreTrackModel);
     genreModel.addLinkedDetailModel(genreTrackModel);
 
@@ -85,7 +85,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
       try {
         new LoadTestPanel<>(new ChinookLoadTest()).showFrame();
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         throw new RuntimeException(e);
       }
     }

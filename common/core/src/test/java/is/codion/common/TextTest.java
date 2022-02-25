@@ -78,14 +78,14 @@ public final class TextTest {
 
   @Test
   void getDelimitedString() {
-    final String result = "test\ttest2" + Util.LINE_SEPARATOR + "data1\tdata2" + Util.LINE_SEPARATOR + "data3\tdata4";
+    String result = "test\ttest2" + Util.LINE_SEPARATOR + "data1\tdata2" + Util.LINE_SEPARATOR + "data3\tdata4";
     assertEquals(result, Text.getDelimitedString(asList("test", "test2"),
             asList(asList("data1", "data2"), asList("data3", "data4")), "\t"));
   }
 
   @Test
   void getTextFileContents() throws IOException {
-    final String contents = "here is" + Util.LINE_SEPARATOR + "some text";
+    String contents = "here is" + Util.LINE_SEPARATOR + "some text";
     assertEquals(contents, Text.getTextFileContents("src/test/java/is/codion/common/TextUtilTest.txt", Charset.defaultCharset()));
   }
 
@@ -94,7 +94,7 @@ public final class TextTest {
     final String one = "Bláskuggi";
     final String two = "Blá skuggi";
     final String three = "Blár skuggi";
-    final List<String> values = asList(one, two, three);
+    List<String> values = asList(one, two, three);
     Text.collate(values);
     assertEquals(0, values.indexOf(two));
     assertEquals(1, values.indexOf(three));
@@ -108,7 +108,7 @@ public final class TextTest {
     final String d = "Davíð Arnar";
     final String dNoSpace = "DavíðArnar";
     final String a = "Arnór Jón";
-    final List<String> items = asList(b, d, a, bNoSpace, dNoSpace);
+    List<String> items = asList(b, d, a, bNoSpace, dNoSpace);
     Text.collateSansSpaces(Collator.getInstance(), items);
     assertEquals(0, items.indexOf(a));
     assertEquals(1, items.indexOf(b));

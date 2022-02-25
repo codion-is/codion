@@ -53,10 +53,10 @@ public class JasperReportsTest {
   void fillJdbcReport() throws ReportException, DatabaseException {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
-    final HashMap<String, Object> reportParameters = new HashMap<>();
+    HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
-    final LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
-    final JasperPrint print = TestDomain.EMPLOYEE_CLASSPATH_REPORT.fillReport(connection.getDatabaseConnection().getConnection(), reportParameters);
+    LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
+    JasperPrint print = TestDomain.EMPLOYEE_CLASSPATH_REPORT.fillReport(connection.getDatabaseConnection().getConnection(), reportParameters);
     assertNotNull(print);
   }
 
@@ -64,8 +64,8 @@ public class JasperReportsTest {
   void fillDataSourceReport() throws ReportException, MalformedURLException, JRException {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
-    final Report<JasperReport, JasperPrint, Map<String, Object>> wrapper = JasperReports.fileReport("empdept_employees.jasper");
-    final JRDataSource dataSource = new JRDataSource() {
+    Report<JasperReport, JasperPrint, Map<String, Object>> wrapper = JasperReports.fileReport("empdept_employees.jasper");
+    JRDataSource dataSource = new JRDataSource() {
       boolean done = false;
       @Override
       public boolean next() throws JRException {
@@ -88,7 +88,7 @@ public class JasperReportsTest {
   void fillJdbcReportInvalidReport() throws Exception {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
-    final ReportType<Object, Object, Object> nonExisting = ReportType.reportType("test");
+    ReportType<Object, Object, Object> nonExisting = ReportType.reportType("test");
     assertThrows(IllegalArgumentException.class, () -> CONNECTION_PROVIDER.getConnection().fillReport(nonExisting, new HashMap<>()));
   }
 
@@ -96,14 +96,14 @@ public class JasperReportsTest {
   void urlReport() throws Exception {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set("http://localhost:1234");
-    final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(1234, ServerHttps.FALSE);
+    HttpServerConfiguration configuration = HttpServerConfiguration.configuration(1234, ServerHttps.FALSE);
     configuration.setDocumentRoot(REPORT_PATH);
-    final HttpServer server = new HttpServer(configuration);
+    HttpServer server = new HttpServer(configuration);
     try {
       server.startServer();
-      final HashMap<String, Object> reportParameters = new HashMap<>();
+      HashMap<String, Object> reportParameters = new HashMap<>();
       reportParameters.put("DEPTNO", asList(10, 20));
-      final LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
+      LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
       TestDomain.EMPLOYEE_FILE_REPORT.fillReport(connection.getDatabaseConnection().getConnection(), reportParameters);
     }
     finally {
@@ -113,10 +113,10 @@ public class JasperReportsTest {
 
   @Test
   void classPathReport() throws DatabaseException, ReportException {
-    final JRReportType report = JasperReports.reportType("report");
-    final Map<String, Object> reportParameters = new HashMap<>();
+    JRReportType report = JasperReports.reportType("report");
+    Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
-    final LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
+    LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
     report.fillReport(connection.getDatabaseConnection().getConnection(), TestDomain.EMPLOYEE_CLASSPATH_REPORT, reportParameters);
 
     assertThrows(ReportException.class, () -> new ClassPathJRReport(JasperReportsTest.class, "non-existing.jasper").loadReport());
@@ -124,10 +124,10 @@ public class JasperReportsTest {
 
   @Test
   void fileReport() throws DatabaseException, ReportException {
-    final JRReportType report = JasperReports.reportType("report");
-    final Map<String, Object> reportParameters = new HashMap<>();
+    JRReportType report = JasperReports.reportType("report");
+    Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
-    final LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
+    LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
     report.fillReport(connection.getDatabaseConnection().getConnection(), TestDomain.EMPLOYEE_FILE_REPORT, reportParameters);
 
     assertThrows(ReportException.class, () -> new FileJRReport("/non-existing.jasper").loadReport());

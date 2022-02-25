@@ -24,13 +24,13 @@ public class SerializerTest {
 
   @Test
   void serialize() throws IOException, ClassNotFoundException {
-    final List<Integer> ints = asList(1, 2, 3, 4);
-    final File file = File.createTempFile("FileUtilTest.serialize", ".txt");
+    List<Integer> ints = asList(1, 2, 3, 4);
+    File file = File.createTempFile("FileUtilTest.serialize", ".txt");
     file.deleteOnExit();
 
     Serializer.serializeToFile(ints, file);
 
-    final List<Integer> readInts = Serializer.deserializeFromFile(file);
+    List<Integer> readInts = Serializer.deserializeFromFile(file);
 
     assertEquals(ints, readInts);
 

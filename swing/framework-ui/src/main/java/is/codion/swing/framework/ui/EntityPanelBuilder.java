@@ -184,7 +184,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   @Override
   public boolean equals(final Object obj) {
     if (obj instanceof EntityPanelBuilder) {
-      final EntityPanelBuilder that = (EntityPanelBuilder) obj;
+      EntityPanelBuilder that = (EntityPanelBuilder) obj;
 
       return Objects.equals(modelBuilder, that.model) &&
               Objects.equals(model, that.model) &&
@@ -223,7 +223,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   public EntityPanel buildPanel(final SwingEntityModel model) {
     requireNonNull(model, "model");
     try {
-      final EntityPanel entityPanel = initializePanel(model);
+      EntityPanel entityPanel = initializePanel(model);
       if (entityPanel.getTablePanel() != null && tableConditionPanelVisible) {
         entityPanel.getTablePanel().setConditionPanelVisible(tableConditionPanelVisible);
       }
@@ -231,8 +231,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (final EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
-          final SwingEntityModel detailModel = model.getDetailModel(detailPanelBuilder.getEntityType());
-          final EntityPanel detailPanel = detailPanelBuilder.buildPanel(detailModel);
+          SwingEntityModel detailModel = model.getDetailModel(detailPanelBuilder.getEntityType());
+          EntityPanel detailPanel = detailPanelBuilder.buildPanel(detailModel);
           entityPanel.addDetailPanel(detailPanel);
         }
       }
@@ -243,10 +243,10 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
       return entityPanel;
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -287,10 +287,10 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   private EntityPanel initializePanel(final SwingEntityModel entityModel) {
     try {
-      final EntityPanel entityPanel;
+      EntityPanel entityPanel;
       if (getPanelClass().equals(EntityPanel.class)) {
-        final EntityTablePanel tablePanel = entityModel.containsTableModel() ? initializeTablePanel(entityModel.getTableModel()) : null;
-        final EntityEditPanel editPanel = getEditPanelClass() == null ? null : initializeEditPanel(entityModel.getEditModel());
+        EntityTablePanel tablePanel = entityModel.containsTableModel() ? initializeTablePanel(entityModel.getTableModel()) : null;
+        EntityEditPanel editPanel = getEditPanelClass() == null ? null : initializeEditPanel(entityModel.getEditModel());
         entityPanel = getPanelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
                 .newInstance(entityModel, editPanel, tablePanel);
       }
@@ -302,10 +302,10 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
       return entityPanel;
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -318,15 +318,15 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.getEntityType() + ", required: " + getEntityType());
     }
     try {
-      final EntityEditPanel editPanel = findEditModelConstructor(editPanelClass).newInstance(editModel);
+      EntityEditPanel editPanel = findEditModelConstructor(editPanelClass).newInstance(editModel);
       editPanelInitializer.accept(editPanel);
 
       return editPanel;
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -336,15 +336,15 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       if (!tableModel.getEntityType().equals(getEntityType())) {
         throw new IllegalArgumentException("Entity type mismatch, tableModel: " + tableModel.getEntityType() + ", required: " + getEntityType());
       }
-      final EntityTablePanel tablePanel = findTableModelConstructor(getTablePanelClass()).newInstance(tableModel);
+      EntityTablePanel tablePanel = findTableModelConstructor(getTablePanelClass()).newInstance(tableModel);
       tablePanelInitializer.accept(tablePanel);
 
       return tablePanel;
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -408,8 +408,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     private InsertEntityAction(final EntityComboBox comboBox) {
       this(requireNonNull(comboBox, "comboBox"), comboBox.getModel().getConnectionProvider(), inserted -> {
-        final EntityComboBoxModel comboBoxModel = comboBox.getModel();
-        final Entity item = inserted.get(0);
+        EntityComboBoxModel comboBoxModel = comboBox.getModel();
+        Entity item = inserted.get(0);
         comboBoxModel.addItem(item);
         comboBoxModel.setSelectedItem(item);
       });
@@ -436,16 +436,16 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       if (component instanceof JComboBox && ((JComboBox<?>) component).isPopupVisible()) {
         ((JComboBox<?>) component).hidePopup();
       }
-      final EntityEditPanel editPanel = buildEditPanel(connectionProvider);
+      EntityEditPanel editPanel = buildEditPanel(connectionProvider);
       editPanel.initializePanel();
       editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
       editPanel.getEditModel().addAfterInsertListener(inserted -> {
         this.insertedEntities.clear();
         this.insertedEntities.addAll(inserted);
       });
-      final State cancelled = State.state();
-      final Value<Attribute<?>> invalidAttribute = Value.value();
-      final JDialog dialog = Dialogs.okCancelDialog(editPanel)
+      State cancelled = State.state();
+      Value<Attribute<?>> invalidAttribute = Value.value();
+      JDialog dialog = Dialogs.okCancelDialog(editPanel)
               .owner(component)
               .title(getCaption() == null ? connectionProvider.getEntities().getDefinition(getEntityType()).getCaption() : getCaption())
               .onShown(dlg -> invalidAttribute.toOptional()
@@ -482,12 +482,12 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
           WaitCursor.hide(component);
         }
       }
-      catch (final ValidationException e) {
+      catch (ValidationException e) {
         invalidAttribute.set(e.getAttribute());
         JOptionPane.showMessageDialog(component, e.getMessage(),
                 Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         DefaultDialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(component).orElse(null));
       }
 

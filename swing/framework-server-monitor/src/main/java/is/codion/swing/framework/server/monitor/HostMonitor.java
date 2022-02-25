@@ -80,13 +80,13 @@ public final class HostMonitor {
     try {
       for (final ServerInformation serverInformation : getEntityServers(hostName, registryPort)) {
         if (!containsServerMonitor(serverInformation.getServerId())) {
-          final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInformation, registryPort, adminUser, updateRate);
+          ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInformation, registryPort, adminUser, updateRate);
           serverMonitor.addServerShutDownListener(() -> removeServer(serverMonitor));
           addServer(serverMonitor);
         }
       }
     }
-    catch (final ServerAuthenticationException e) {
+    catch (ServerAuthenticationException e) {
       throw new RuntimeException(e);
     }
   }
@@ -128,7 +128,7 @@ public final class HostMonitor {
   }
 
   private void removeUnreachableServers() {
-    final Collection<ServerMonitor> monitors = new ArrayList<>(serverMonitors);
+    Collection<ServerMonitor> monitors = new ArrayList<>(serverMonitors);
     for (final ServerMonitor monitor : monitors) {
       if (!monitor.isServerReachable()) {
         removeServer(monitor);
@@ -137,22 +137,22 @@ public final class HostMonitor {
   }
 
   private static List<ServerInformation> getEntityServers(final String serverHostName, final int registryPort) {
-    final List<ServerInformation> servers = new ArrayList<>();
+    List<ServerInformation> servers = new ArrayList<>();
     try {
       LOG.debug("HostMonitor locating registry on host: {}, port: {}: ", serverHostName, registryPort);
-      final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
+      Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
       LOG.debug("HostMonitor located registry: {} on port: {}", registry, registryPort);
-      final Collection<String> boundNames = getEntityServers(registry);
+      Collection<String> boundNames = getEntityServers(registry);
       if (boundNames.isEmpty()) {
         LOG.debug("HostMonitor found no server bound to registry: {} on port: {}", registry, registryPort);
       }
       for (final String name : boundNames) {
         LOG.debug("HostMonitor found server '{}'", name);
-        final Server<?, ?> server = (Server<?, ?>) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
+        Server<?, ?> server = (Server<?, ?>) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
         servers.add(server.getServerInformation());
       }
     }
-    catch (final RemoteException | NotBoundException e) {
+    catch (RemoteException | NotBoundException e) {
       LOG.error(e.getMessage(), e);
     }
 
@@ -160,8 +160,8 @@ public final class HostMonitor {
   }
 
   private static Collection<String> getEntityServers(final Registry registry) throws RemoteException {
-    final String[] boundNames = registry.list();
-    final String serverNamePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
+    String[] boundNames = registry.list();
+    String serverNamePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
 
     return Arrays.stream(boundNames).filter(name -> name.startsWith(serverNamePrefix)).collect(Collectors.toList());
   }

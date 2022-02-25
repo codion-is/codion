@@ -25,9 +25,9 @@ public class DefauitEntityTableCellRendererTest {
 
   @Test
   void test() {
-    final EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
+    EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.getTableModel().refresh();
-    final EntityTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.getTableModel(),
+    EntityTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.getTableModel(),
             DOMAIN.getEntities().getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_NAME))
             .build();
     renderer.getTableCellRendererComponent(tablePanel.getTable(), null, false, false, 0, 0);
@@ -45,7 +45,7 @@ public class DefauitEntityTableCellRendererTest {
 
   @Test
   void entityMismatch() {
-    final EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
+    EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.getTableModel().refresh();
     assertThrows(IllegalArgumentException.class, () -> EntityTableCellRenderer.builder(tablePanel.getTableModel(),
             DOMAIN.getEntities().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DEPARTMENT_NAME)));

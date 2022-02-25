@@ -19,8 +19,8 @@ final class Queries {
    * @return a query for inserting
    */
   static String insertQuery(final String tableName, final List<ColumnProperty<?>> insertProperties) {
-    final StringBuilder queryBuilder = new StringBuilder("insert ").append("into ").append(tableName).append("(");
-    final StringBuilder columnValues = new StringBuilder(") values(");
+    StringBuilder queryBuilder = new StringBuilder("insert ").append("into ").append(tableName).append("(");
+    StringBuilder columnValues = new StringBuilder(") values(");
     for (int i = 0; i < insertProperties.size(); i++) {
       queryBuilder.append(insertProperties.get(i).getColumnName());
       columnValues.append("?");
@@ -41,7 +41,7 @@ final class Queries {
    */
   static String updateQuery(final String tableName, final List<ColumnProperty<?>> updateProperties,
                             final String conditionString) {
-    final StringBuilder queryBuilder = new StringBuilder("update ").append(tableName).append(" set ");
+    StringBuilder queryBuilder = new StringBuilder("update ").append(tableName).append(" set ");
     for (int i = 0; i < updateProperties.size(); i++) {
       queryBuilder.append(updateProperties.get(i).getColumnName()).append(" = ?");
       if (i < updateProperties.size() - 1) {

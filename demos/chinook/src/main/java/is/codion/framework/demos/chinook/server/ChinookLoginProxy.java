@@ -85,7 +85,7 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   private void authenticateUser(final User user) throws LoginException {
     try (final EntityConnection connection = getConnectionFromPool()) {
-      final int rows = connection.rowCount(where(Authentication.User.USERNAME)
+      int rows = connection.rowCount(where(Authentication.User.USERNAME)
               .equalTo(user.getUsername()).caseSensitive(false)
                       .and(where(Authentication.User.PASSWORD_HASH)
                               .equalTo(valueOf(user.getPassword()).hashCode())));
@@ -93,7 +93,7 @@ public final class ChinookLoginProxy implements LoginProxy {
         throw new ServerAuthenticationException("Wrong username or password");
       }
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }

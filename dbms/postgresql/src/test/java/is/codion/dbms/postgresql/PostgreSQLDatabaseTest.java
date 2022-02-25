@@ -30,25 +30,25 @@ public class PostgreSQLDatabaseTest {
 
   @Test
   void supportsIsValid() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
+    PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertFalse(db.supportsIsValid());
   }
 
   @Test
   void getAutoIncrementQuery() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
+    PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals("select currval('seq')", db.getAutoIncrementQuery("seq"));
   }
 
   @Test
   void getSequenceQuery() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
+    PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals("select nextval('seq')", db.getSequenceQuery("seq"));
   }
 
   @Test
   void getCheckConnectionQuery() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
+    PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals(PostgreSQLDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
   }
 

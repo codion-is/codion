@@ -88,7 +88,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       setConnectionLimit(configuration.getConnectionLimit());
       bindToRegistry(configuration.getRegistryPort());
     }
-    catch (final Throwable t) {
+    catch (Throwable t) {
       throw logShutdownAndReturn(new RuntimeException(t));
     }
   }
@@ -115,7 +115,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   protected final AbstractRemoteEntityConnection connect(final RemoteClient remoteClient) throws RemoteException, LoginException {
     requireNonNull(remoteClient, "remoteClient");
     try {
-      final AbstractRemoteEntityConnection connection = createRemoteConnection(getDatabase(), remoteClient,
+      AbstractRemoteEntityConnection connection = createRemoteConnection(getDatabase(), remoteClient,
               configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
       connection.setLoggingEnabled(clientLoggingEnabled);
 
@@ -124,13 +124,13 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
       return connection;
     }
-    catch (final AuthenticationException e) {
+    catch (AuthenticationException e) {
       throw new ServerAuthenticationException(e.getMessage());
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.debug(remoteClient + " unable to connect", e);
       throw new LoginException(e.getMessage());
     }
@@ -206,10 +206,10 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   @Override
   protected final void maintainConnections(final Collection<ClientConnection<AbstractRemoteEntityConnection>> connections) throws RemoteException {
     for (final ClientConnection<AbstractRemoteEntityConnection> client : connections) {
-      final AbstractRemoteEntityConnection connection = client.getConnection();
+      AbstractRemoteEntityConnection connection = client.getConnection();
       if (!connection.isActive()) {
-        final boolean connected = connection.isConnected();
-        final boolean timedOut = hasConnectionTimedOut(connection);
+        boolean connected = connection.isConnected();
+        boolean timedOut = hasConnectionTimedOut(connection);
         if (!connected || timedOut) {
           LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
           disconnect(client.getRemoteClient().getClientId());
@@ -231,7 +231,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @return a map containing all defined entityTypes, with their respective table names as an associated value
    */
   final Map<EntityType, String> getEntityDefinitions() {
-    final Map<EntityType, String> definitions = new HashMap<>();
+    Map<EntityType, String> definitions = new HashMap<>();
     for (final Domain domain : domainModels.values()) {
       for (final EntityDefinition definition : domain.getEntities().getDefinitions()) {
         definitions.put(definition.getEntityType(), definition.getTableName());
@@ -272,11 +272,11 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @see #hasConnectionTimedOut(AbstractRemoteEntityConnection)
    */
   final void disconnectClients(final boolean timedOutOnly) throws RemoteException {
-    final List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
+    List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
     for (final RemoteClient client : clients) {
-      final AbstractRemoteEntityConnection connection = getConnection(client.getClientId());
+      AbstractRemoteEntityConnection connection = getConnection(client.getClientId());
       if (timedOutOnly) {
-        final boolean active = connection.isActive();
+        boolean active = connection.isActive();
         if (!active && hasConnectionTimedOut(connection)) {
           disconnect(client.getClientId());
         }
@@ -291,7 +291,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     try {
       disconnect(connection.getRemoteClient().getClientId());
     }
-    catch (final RemoteException ex) {
+    catch (RemoteException ex) {
       LOG.error(ex.getMessage(), ex);
     }
   }
@@ -317,7 +317,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    */
   private void bindToRegistry(final int registryPort) throws RemoteException {
     getRegistry().rebind(getServerInformation().getServerName(), this);
-    final String connectInfo = getServerInformation().getServerName() + " bound to registry on port: " + registryPort;
+    String connectInfo = getServerInformation().getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
   }
@@ -332,7 +332,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   private Domain getClientDomainModel(final RemoteClient remoteClient) {
-    final String domainTypeName = (String) remoteClient.getParameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
+    String domainTypeName = (String) remoteClient.getParameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
     if (domainTypeName == null) {
       throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
     }
@@ -341,8 +341,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   private static Map<DomainType, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
-    final Map<DomainType, Domain> domains = new HashMap<>();
-    final List<Domain> serviceDomains = Domain.getDomains();
+    Map<DomainType, Domain> domains = new HashMap<>();
+    List<Domain> serviceDomains = Domain.getDomains();
     try {
       serviceDomains.forEach(domain -> {
         LOG.info("Server loading and registering domain model '" + domain.getDomainType() + "' as a service");
@@ -350,17 +350,17 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       });
       for (final String className : domainModelClassNames) {
         LOG.info("Server loading and registering domain model class '" + className + "' from classpath");
-        final Domain domain = (Domain) Class.forName(className).getConstructor().newInstance();
+        Domain domain = (Domain) Class.forName(className).getConstructor().newInstance();
         domains.put(domain.getDomainType(), domain);
       }
 
       return unmodifiableMap(domains);
     }
-    catch (final InvocationTargetException ite) {
+    catch (InvocationTargetException ite) {
       LOG.error("Exception while loading and registering domain model", ite);
       throw ite.getCause();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error("Exception while loading and registering domain model", e);
       throw e;
     }
@@ -369,7 +369,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private static void initializeConnectionPools(final Database database, final String connectionPoolFactoryClassName,
                                                 final Collection<User> startupPoolUsers) throws DatabaseException {
     if (!startupPoolUsers.isEmpty()) {
-      final ConnectionPoolFactory poolFactory;
+      ConnectionPoolFactory poolFactory;
       if (Util.nullOrEmpty(connectionPoolFactoryClassName)) {
         poolFactory = ConnectionPoolFactory.connectionPoolFactory();
       }
@@ -402,10 +402,10 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     try {
       return new EntityServer(configuration);
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error("Exception when starting server", e);
       throw new RuntimeException(e);
     }
@@ -415,31 +415,31 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * Connects to the server and shuts it down
    */
   static synchronized void shutdownServer() throws ServerAuthenticationException {
-    final EntityServerConfiguration configuration = EntityServerConfiguration.fromSystemProperties();
-    final String serverName = configuration.getServerName();
-    final int registryPort = configuration.getRegistryPort();
-    final User adminUser = configuration.getAdminUser();
+    EntityServerConfiguration configuration = EntityServerConfiguration.fromSystemProperties();
+    String serverName = configuration.getServerName();
+    int registryPort = configuration.getRegistryPort();
+    User adminUser = configuration.getAdminUser();
     if (adminUser == null) {
       throw new ServerAuthenticationException("No admin user specified");
     }
     Clients.resolveTrustStore();
     try {
-      final Registry registry = LocateRegistry.getRegistry(registryPort);
-      final Server<?, EntityServerAdmin> server = (Server<?, EntityServerAdmin>) registry.lookup(serverName);
-      final EntityServerAdmin serverAdmin = server.getServerAdmin(adminUser);
-      final String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
+      Registry registry = LocateRegistry.getRegistry(registryPort);
+      Server<?, EntityServerAdmin> server = (Server<?, EntityServerAdmin>) registry.lookup(serverName);
+      EntityServerAdmin serverAdmin = server.getServerAdmin(adminUser);
+      String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
       LOG.info(shutDownInfo);
       System.out.println(shutDownInfo);
       serverAdmin.shutdown();
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       System.out.println("Unable to shutdown server: " + e.getMessage());
       LOG.error("Error on shutdown", e);
     }
-    catch (final NotBoundException e) {
+    catch (NotBoundException e) {
       System.out.println(serverName + " not bound to registry on port: " + registryPort);
     }
-    catch (final ServerAuthenticationException e) {
+    catch (ServerAuthenticationException e) {
       LOG.error("Admin user info not provided or incorrect", e);
       throw e;
     }
@@ -452,7 +452,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @throws ServerAuthenticationException in case of missing or incorrect admin user information
    */
   public static void main(final String[] arguments) throws RemoteException, ServerAuthenticationException {
-    final String argument = arguments.length == 0 ? START : arguments[0];
+    String argument = arguments.length == 0 ? START : arguments[0];
     switch (argument) {
       case START:
         startServer();

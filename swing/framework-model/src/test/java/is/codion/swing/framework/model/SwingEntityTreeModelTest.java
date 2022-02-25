@@ -22,20 +22,20 @@ public final class SwingEntityTreeModelTest {
 
   @Test
   void test() {
-    final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
+    EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             DatabaseFactory.getDatabase()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 
-    final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, connectionProvider);
-    final SwingEntityTreeModel treeModel = new SwingEntityTreeModel(tableModel, TestDomain.EMP_MGR_FK);
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, connectionProvider);
+    SwingEntityTreeModel treeModel = new SwingEntityTreeModel(tableModel, TestDomain.EMP_MGR_FK);
 
     tableModel.refresh();
 
-    final SwingEntityTreeModel.EntityTreeNode root = (SwingEntityTreeModel.EntityTreeNode) treeModel.getRoot().children().nextElement();
+    SwingEntityTreeModel.EntityTreeNode root = (SwingEntityTreeModel.EntityTreeNode) treeModel.getRoot().children().nextElement();
     assertEquals("KING", root.getEntity().get(TestDomain.EMP_NAME));
 
     tableModel.setSelectedByKey(Collections.singletonList(connectionProvider.getEntities().primaryKey(TestDomain.T_EMP, 3)));//Jones
 
-    final SwingEntityTreeModel.EntityTreeNode node = (SwingEntityTreeModel.EntityTreeNode) treeModel.getTreeSelectionModel().getSelectionPath().getLastPathComponent();
+    SwingEntityTreeModel.EntityTreeNode node = (SwingEntityTreeModel.EntityTreeNode) treeModel.getTreeSelectionModel().getSelectionPath().getLastPathComponent();
     assertEquals("JONES", node.getEntity().get(TestDomain.EMP_NAME));
   }
 }

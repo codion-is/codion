@@ -52,7 +52,7 @@ public class EntityServerTest {
 
   @BeforeAll
   public static synchronized void setUp() throws Exception {
-    final String serverName = CONFIGURATION.getServerName();
+    String serverName = CONFIGURATION.getServerName();
     EntityServer.startServer(CONFIGURATION).addLoginProxy(new TestLoginProxy());
     server = (Server<RemoteEntityConnection, EntityServerAdmin>)
             LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
@@ -71,13 +71,13 @@ public class EntityServerTest {
     //which registers the entities received from the server
     //thus overwriting the entities containing the custom conditions
     new TestDomain();
-    final ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
+    ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
             .user(UNIT_TEST_USER)
             .clientTypeId("ClientTypeID")
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
-    final RemoteEntityConnection connection = server.connect(connectionRequestOne);
+    RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
-    final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_TYPE,
+    Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_TYPE,
             singletonList(TestDomain.EMP_MGR), singletonList(4));
 
     connection.select(condition);
@@ -115,11 +115,11 @@ public class EntityServerTest {
 
   @Test
   void test() throws Exception {
-    final ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
+    ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
             .user(UNIT_TEST_USER)
             .clientTypeId("ClientTypeID").parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 
-    final RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
+    RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
     assertTrue(remoteConnectionOne.isConnected());
     assertEquals(1, admin.getConnectionCount());
     admin.setPooledConnectionTimeout(UNIT_TEST_USER.getUsername(), 60005);
@@ -131,7 +131,7 @@ public class EntityServerTest {
       server.connect(ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId("ClientTypeID").build());
       fail();
     }
-    catch (final LoginException ignored) {}
+    catch (LoginException ignored) {}
 
     try {
       server.connect(ConnectionRequest.builder()
@@ -141,13 +141,13 @@ public class EntityServerTest {
                       new EmptyDomain().getDomainType().getName()).build());
       fail();
     }
-    catch (final LoginException ignored) {}
+    catch (LoginException ignored) {}
 
-    final ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
+    ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
             .user(UNIT_TEST_USER)
             .clientTypeId("ClientTypeID")
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
-    final RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
+    RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
     admin.setLoggingEnabled(connectionRequestTwo.getClientId(), true);
     assertTrue(admin.isLoggingEnabled(connectionRequestOne.getClientId()));
     assertThrows(IllegalArgumentException.class, () -> admin.isLoggingEnabled(UUID.randomUUID()));
@@ -160,23 +160,23 @@ public class EntityServerTest {
     assertEquals(2, clients.size());
     clients = admin.getClients("ClientTypeID");
     assertEquals(2, clients.size());
-    final Collection<String> clientTypes = admin.getClientTypes();
+    Collection<String> clientTypes = admin.getClientTypes();
     assertEquals(1, clientTypes.size());
     assertTrue(clientTypes.contains("ClientTypeID"));
 
-    final Collection<User> users = admin.getUsers();
+    Collection<User> users = admin.getUsers();
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    final SelectCondition selectCondition = Conditions.condition(TestDomain.T_EMP).toSelectCondition()
+    SelectCondition selectCondition = Conditions.condition(TestDomain.T_EMP).toSelectCondition()
             .orderBy(orderBy().ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.select(selectCondition);
 
     admin.getDatabaseStatistics();
 
-    final ClientLog log = admin.getClientLog(connectionRequestTwo.getClientId());
+    ClientLog log = admin.getClientLog(connectionRequestTwo.getClientId());
 
-    final MethodLogger.Entry entry = log.getEntries().get(0);
+    MethodLogger.Entry entry = log.getEntries().get(0);
     assertEquals("select", entry.getMethod());
     assertTrue(entry.getDuration() >= 0);
 
@@ -194,7 +194,7 @@ public class EntityServerTest {
       server.connect(connectionRequestTwo);
       fail("Server should be full");
     }
-    catch (final ConnectionNotAvailableException ignored) {/*ignored*/}
+    catch (ConnectionNotAvailableException ignored) {/*ignored*/}
 
     assertEquals(1, admin.getConnectionCount());
     admin.setConnectionLimit(2);
@@ -210,29 +210,29 @@ public class EntityServerTest {
     admin.setConnectionLimit(3);
     assertEquals(3, admin.getConnectionLimit());
     final String testClientTypeId = "TestLoginProxy";
-    final User john = User.parseUser("john:hello");
-    final ConnectionRequest connectionRequestJohn = ConnectionRequest.builder()
+    User john = User.parseUser("john:hello");
+    ConnectionRequest connectionRequestJohn = ConnectionRequest.builder()
             .user(john)
             .clientTypeId(testClientTypeId)
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
-    final ConnectionRequest connectionRequestHelen = ConnectionRequest.builder()
+    ConnectionRequest connectionRequestHelen = ConnectionRequest.builder()
             .user(User.parseUser("helen:juno"))
             .clientTypeId(testClientTypeId)
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
-    final ConnectionRequest connectionRequestInvalid = ConnectionRequest.builder()
+    ConnectionRequest connectionRequestInvalid = ConnectionRequest.builder()
             .user(User.parseUser("foo:bar"))
             .clientTypeId(testClientTypeId)
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     server.connect(connectionRequestJohn);
-    final RemoteClient clientJohn = admin.getClients(john).iterator().next();
+    RemoteClient clientJohn = admin.getClients(john).iterator().next();
     assertNotNull(clientJohn.getClientHost());
     server.connect(connectionRequestHelen);
     try {
       server.connect(connectionRequestInvalid);
       fail("Should not be able to connect with an invalid user");
     }
-    catch (final LoginException ignored) {/*ignored*/}
-    final Collection<RemoteClient> empDeptClients = admin.getClients(testClientTypeId);
+    catch (LoginException ignored) {/*ignored*/}
+    Collection<RemoteClient> empDeptClients = admin.getClients(testClientTypeId);
     assertEquals(2, empDeptClients.size());
     for (final RemoteClient empDeptClient : empDeptClients) {
       assertEquals(UNIT_TEST_USER, empDeptClient.getDatabaseUser());
@@ -245,13 +245,13 @@ public class EntityServerTest {
 
   @Test
   void remoteEntityConnectionProvider() throws Exception {
-    final RemoteEntityConnectionProvider provider = (RemoteEntityConnectionProvider)
+    RemoteEntityConnectionProvider provider = (RemoteEntityConnectionProvider)
             new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())
                     .setDomainClassName("TestDomain").setClientTypeId("TestClient").setUser(UNIT_TEST_USER);
 
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, provider.getConnectionType());
 
-    final EntityConnection db = provider.getConnection();
+    EntityConnection db = provider.getConnection();
     assertNotNull(db);
     assertTrue(db.isConnected());
     provider.close();
@@ -259,7 +259,7 @@ public class EntityServerTest {
     //not available until a connection has been requested
     assertEquals(Clients.SERVER_HOST_NAME.get(), provider.getServerHostName());
 
-    final EntityConnection db2 = provider.getConnection();
+    EntityConnection db2 = provider.getConnection();
     assertNotNull(db2);
     assertNotSame(db, db2);
     assertTrue(db2.isConnected());
@@ -294,7 +294,7 @@ public class EntityServerTest {
       admin.setConnectionTimeout(-1);
       fail();
     }
-    catch (final IllegalArgumentException ignored) {/*ignored*/}
+    catch (IllegalArgumentException ignored) {/*ignored*/}
     assertEquals(30, admin.getConnectionTimeout());
     admin.getDatabaseStatistics();
     admin.getDatabaseUrl();

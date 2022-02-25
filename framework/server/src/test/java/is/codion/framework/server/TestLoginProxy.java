@@ -32,7 +32,7 @@ public final class TestLoginProxy implements LoginProxy {
   public RemoteClient login(final RemoteClient remoteClient) throws ServerAuthenticationException {
     authenticateUser(remoteClient.getUser());
 
-    final RemoteClient authenticatedClient = RemoteClient.remoteClient(remoteClient.getConnectionRequest(), databaseUser);
+    RemoteClient authenticatedClient = RemoteClient.remoteClient(remoteClient.getConnectionRequest(), databaseUser);
     authenticatedClient.setClientHost(remoteClient.getClientHost());
 
     return authenticatedClient;
@@ -47,7 +47,7 @@ public final class TestLoginProxy implements LoginProxy {
   }
 
   private void authenticateUser(final User user) throws ServerAuthenticationException {
-    final String password = users.get(user.getUsername());
+    String password = users.get(user.getUsername());
     if (password == null || !Arrays.equals(password.toCharArray(), user.getPassword())) {
       throw new ServerAuthenticationException("Wrong username or password");
     }

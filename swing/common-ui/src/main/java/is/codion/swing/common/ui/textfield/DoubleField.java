@@ -71,7 +71,7 @@ public final class DoubleField extends NumberField<Double> {
   }
 
   private static DecimalFormat createDefaultFormat() {
-    final DecimalFormat format = new DecimalFormat();
+    DecimalFormat format = new DecimalFormat();
     format.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
 
     return format;

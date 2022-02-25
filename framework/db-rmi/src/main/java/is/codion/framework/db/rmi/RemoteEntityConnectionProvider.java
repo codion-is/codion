@@ -114,7 +114,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
                               .parameter(REMOTE_CLIENT_DOMAIN_TYPE, getDomainTypeName(getDomainClassName()))
                               .build())));
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -124,7 +124,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     try {
       server.disconnect(getClientId());
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       throw new RuntimeException(e);
     }
   }
@@ -141,7 +141,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
         this.server.getServerLoad();
       }//just to check the connection
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       LOG.info("{} was unreachable, {} - {} reconnecting...", serverInformation.getServerName(), getUser(), getClientId());
       unreachable = true;
     }
@@ -189,20 +189,20 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
     @Override
     public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
-      final String methodName = method.getName();
+      String methodName = method.getName();
       if (methodName.equals(IS_CONNECTED)) {
         return isConnected();
       }
 
-      final Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::getRemoteMethod);
+      Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::getRemoteMethod);
       try {
         return remoteMethod.invoke(remoteConnection, args);
       }
-      catch (final InvocationTargetException e) {
+      catch (InvocationTargetException e) {
         LOG.error(e.getMessage(), e);
         throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         LOG.error(e.getMessage(), e);
         throw e;
       }
@@ -212,7 +212,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       try {
         return remoteConnection.isConnected();
       }
-      catch (final NoSuchObjectException | ConnectException e) {
+      catch (NoSuchObjectException | ConnectException e) {
         return false;
       }
     }
@@ -221,7 +221,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       try {
         return RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
       }
-      catch (final NoSuchMethodException e) {
+      catch (NoSuchMethodException e) {
         throw new RuntimeException(e);
       }
     }

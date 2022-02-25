@@ -32,17 +32,17 @@ public class NextReportsTest {
 
   @Test
   void fillReport() throws ReportException, IOException, DatabaseException {
-    final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
+    EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", Database.DATABASE_INIT_SCRIPTS.get()))
             .setDomainClassName(NextDomain.class.getName()).setUser(UNIT_TEST_USER);
     Report.REPORT_PATH.set("src/test/reports/");
-    final LocalEntityConnection connection = (LocalEntityConnection) connectionProvider.getConnection();
-    final NextReportsResult result = NextReports.nextReport("test-report.report", ReportRunner.CSV_FORMAT)
+    LocalEntityConnection connection = (LocalEntityConnection) connectionProvider.getConnection();
+    NextReportsResult result = NextReports.nextReport("test-report.report", ReportRunner.CSV_FORMAT)
             .fillReport(connection.getDatabaseConnection().getConnection(), Collections.emptyMap());
     File file = null;
     try {
-      final String tmpDir = System.getProperty("java.io.tmpdir");
-      final String filename = "NextReportsWrapperTest" + System.currentTimeMillis();
+      String tmpDir = System.getProperty("java.io.tmpdir");
+      String filename = "NextReportsWrapperTest" + System.currentTimeMillis();
       file = result.writeResultToFile(tmpDir, filename);
       file.deleteOnExit();
       assertEquals(file.length(), result.getResult().length);
@@ -50,7 +50,7 @@ public class NextReportsTest {
       result.writeResultToFile(tmpDir, filename);
       fail("Should not overwrite file");
     }
-    catch (final IllegalArgumentException e) {/*expected*/}
+    catch (IllegalArgumentException e) {/*expected*/}
     finally {
       if (file != null) {
         file.delete();

@@ -21,12 +21,12 @@ public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookApp
 
   @Override
   protected void perform(final ChinookApplicationModel application) throws Exception {
-    final SwingEntityModel playlistModel = application.getEntityModel(Playlist.TYPE);
-    final PlaylistTableModel playlistTableModel = (PlaylistTableModel) playlistModel.getTableModel();
+    SwingEntityModel playlistModel = application.getEntityModel(Playlist.TYPE);
+    PlaylistTableModel playlistTableModel = (PlaylistTableModel) playlistModel.getTableModel();
     playlistTableModel.refresh();
     playlistTableModel.createRandomPlaylist(new RandomPlaylistParameters(PLAYLIST_NAME + " " + System.currentTimeMillis(),
             RANDOM.nextInt(100) + 25));
-    final SwingEntityTableModel playlistTrackTableModel = playlistModel.getDetailModel(PlaylistTrack.TYPE).getTableModel();
+    SwingEntityTableModel playlistTrackTableModel = playlistModel.getDetailModel(PlaylistTrack.TYPE).getTableModel();
     playlistTrackTableModel.getSelectionModel().selectAll();
     playlistTrackTableModel.deleteSelected();
     playlistTableModel.deleteSelected();

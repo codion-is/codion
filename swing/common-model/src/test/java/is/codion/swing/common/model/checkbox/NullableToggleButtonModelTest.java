@@ -11,7 +11,7 @@ public class NullableToggleButtonModelTest {
 
   @Test
   void iterateState() {
-    final NullableToggleButtonModel model = new NullableToggleButtonModel();
+    NullableToggleButtonModel model = new NullableToggleButtonModel();
     assertNull(model.getState());
     assertFalse(model.isSelected());
     model.nextState();
@@ -26,7 +26,7 @@ public class NullableToggleButtonModelTest {
 
   @Test
   void setNull() {
-    final NullableToggleButtonModel model = new NullableToggleButtonModel(true);
+    NullableToggleButtonModel model = new NullableToggleButtonModel(true);
     assertTrue(model.getState());
     assertTrue(model.isSelected());
     model.setState(null);
@@ -36,7 +36,7 @@ public class NullableToggleButtonModelTest {
 
   @Test
   void setSelected() {
-    final NullableToggleButtonModel model = new NullableToggleButtonModel(false);
+    NullableToggleButtonModel model = new NullableToggleButtonModel(false);
     assertFalse(model.getState());
     model.setSelected(true);
     assertTrue(model.isSelected());

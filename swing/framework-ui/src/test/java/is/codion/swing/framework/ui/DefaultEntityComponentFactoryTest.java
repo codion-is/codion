@@ -23,11 +23,11 @@ public final class DefaultEntityComponentFactoryTest {
 
   @Test
   void test() {
-    final EntityComponentFactory<Entity, ForeignKey, EntitySearchField> foreignKeyComponentFactory = new DefaultEntityComponentFactory<>();
+    EntityComponentFactory<Entity, ForeignKey, EntitySearchField> foreignKeyComponentFactory = new DefaultEntityComponentFactory<>();
     foreignKeyComponentFactory.createComponentValue(TestDomain.DETAIL_MASTER_FK, editModel, null);
     foreignKeyComponentFactory.createComponentValue(TestDomain.DETAIL_DETAIL_FK, editModel, null);
 
-    final EntityComponentFactory<Integer, Attribute<Integer>, IntegerField> integerComponentFactory = new DefaultEntityComponentFactory<>();
+    EntityComponentFactory<Integer, Attribute<Integer>, IntegerField> integerComponentFactory = new DefaultEntityComponentFactory<>();
     integerComponentFactory.createComponentValue(TestDomain.DETAIL_INT, editModel, null);
     integerComponentFactory.createComponentValue(TestDomain.DETAIL_INT_DERIVED, editModel, null);
   }

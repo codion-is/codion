@@ -162,7 +162,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       try {
         return entityConnection.isConnected();
       }
-      catch (final RuntimeException e) {
+      catch (RuntimeException e) {
         LOG.debug("Connection deemed invalid", e);
         return false;
       }
@@ -229,7 +229,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       try {//try to disconnect just in case
         entityConnection.close();
       }
-      catch (final Exception ignored) {/*ignored*/}
+      catch (Exception ignored) {/*ignored*/}
       entityConnection = null;
       doConnect();
     }

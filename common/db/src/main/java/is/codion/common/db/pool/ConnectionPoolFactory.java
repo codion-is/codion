@@ -34,7 +34,7 @@ public interface ConnectionPoolFactory {
    */
   static ConnectionPoolFactory connectionPoolFactory(final String classname) {
     requireNonNull(classname, "classname");
-    final ServiceLoader<ConnectionPoolFactory> loader = ServiceLoader.load(ConnectionPoolFactory.class);
+    ServiceLoader<ConnectionPoolFactory> loader = ServiceLoader.load(ConnectionPoolFactory.class);
     for (final ConnectionPoolFactory factory : loader) {
       if (factory.getClass().getName().equals(classname)) {
         return factory;
@@ -50,8 +50,8 @@ public interface ConnectionPoolFactory {
    * @throws IllegalStateException in case no {@link ConnectionPoolFactory} implementation is available.
    */
   static ConnectionPoolFactory connectionPoolFactory() {
-    final ServiceLoader<ConnectionPoolFactory> loader = ServiceLoader.load(ConnectionPoolFactory.class);
-    final Iterator<ConnectionPoolFactory> iterator = loader.iterator();
+    ServiceLoader<ConnectionPoolFactory> loader = ServiceLoader.load(ConnectionPoolFactory.class);
+    Iterator<ConnectionPoolFactory> iterator = loader.iterator();
     if (iterator.hasNext()) {
       return iterator.next();
     }

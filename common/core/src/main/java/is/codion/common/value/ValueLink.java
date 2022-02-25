@@ -66,7 +66,7 @@ final class ValueLink<T> {
         try {
           originalValue.set(linkedValue.get());
         }
-        catch (final IllegalArgumentException e) {
+        catch (IllegalArgumentException e) {
           linkedValue.set(originalValue.get());
           throw e;
         }
@@ -84,7 +84,7 @@ final class ValueLink<T> {
         try {
           linkedValue.set(originalValue.get());
         }
-        catch (final IllegalArgumentException e) {
+        catch (IllegalArgumentException e) {
           originalValue.set(linkedValue.get());
           throw e;
         }
@@ -99,7 +99,7 @@ final class ValueLink<T> {
     if (originalValue == linkedValue) {
       throw new IllegalArgumentException("A Value can not be linked to itself");
     }
-    final Set<Value<T>> linkedValues = originalValue.getLinkedValues();
+    Set<Value<T>> linkedValues = originalValue.getLinkedValues();
     if (linkedValues.contains(linkedValue)) {
       throw new IllegalStateException("Cyclical value link detected");
     }

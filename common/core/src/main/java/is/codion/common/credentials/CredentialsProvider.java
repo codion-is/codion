@@ -47,8 +47,8 @@ public interface CredentialsProvider {
    * @return a {@link CredentialsProvider} implementation, null if none is available
    */
   static CredentialsProvider credentialsProvider() {
-    final ServiceLoader<CredentialsProvider> loader = ServiceLoader.load(CredentialsProvider.class);
-    final Iterator<CredentialsProvider> providerIterator = loader.iterator();
+    ServiceLoader<CredentialsProvider> loader = ServiceLoader.load(CredentialsProvider.class);
+    Iterator<CredentialsProvider> providerIterator = loader.iterator();
     if (providerIterator.hasNext()) {
       return providerIterator.next();
     }

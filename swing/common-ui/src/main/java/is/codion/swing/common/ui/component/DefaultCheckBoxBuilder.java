@@ -33,7 +33,7 @@ final class DefaultCheckBoxBuilder extends AbstractToggleButtonBuilder<JCheckBox
 
   @Override
   protected JCheckBox createButton() {
-    final JCheckBox checkBox = nullable ? new NullableCheckBox(new NullableToggleButtonModel()) : new JCheckBox();
+    JCheckBox checkBox = nullable ? new NullableCheckBox(new NullableToggleButtonModel()) : new JCheckBox();
     checkBox.setHorizontalAlignment(horizontalAlignment);
 
     return checkBox;

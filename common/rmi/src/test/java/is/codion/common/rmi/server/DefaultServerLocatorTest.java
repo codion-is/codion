@@ -33,17 +33,17 @@ public class DefaultServerLocatorTest {
   @Test
   void getServer() throws RemoteException, NotBoundException {
     //flaky test, inline setup and teardown
-    final DefaultServerLocator serverLocator = new DefaultServerLocator();
+    DefaultServerLocator serverLocator = new DefaultServerLocator();
 
-    final Registry registry = serverLocator.initializeRegistry(Registry.REGISTRY_PORT);
+    Registry registry = serverLocator.initializeRegistry(Registry.REGISTRY_PORT);
     registry.rebind(SERVER_NAME, server);
 
     assertThrows(NotBoundException.class, () -> serverLocator.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, 42));
     try {
-      final Server<Remote, ServerAdmin> server = serverLocator.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
+      Server<Remote, ServerAdmin> server = serverLocator.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
       assertNotNull(server);
     }
-    catch (final NotBoundException e) {
+    catch (NotBoundException e) {
       fail("Remote server not bound");
     }
 

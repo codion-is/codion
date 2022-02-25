@@ -49,7 +49,7 @@ public class JasperReportsDataSource<T> implements JRDataSource {
 
   @Override
   public final boolean next() {
-    final boolean hasNext = reportIterator.hasNext();
+    boolean hasNext = reportIterator.hasNext();
     if (hasNext) {
       currentItem = reportIterator.next();
       onNext.accept(currentItem);
@@ -70,7 +70,7 @@ public class JasperReportsDataSource<T> implements JRDataSource {
     try {
       return valueProvider.apply(currentItem, field);
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new JRException("Unable to get field value: " + field.getName(), e);
     }
   }

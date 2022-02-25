@@ -7824,3 +7824,4 @@
   EntityTablePanel, keyboard actions added for requesting table and search field focus and selecting condition panel, for when an EntityTablePanel is being used by itself
   FilteredTable bug fixed, NullPointerException in performSearch() when search string was null, searchString value now defaults to empty string and is non-null
   EntityTablePanel.getPopupLocation() bug fixed, location no longer messed up when table content is scrolled
+  Unnecessary final keyword removed from local variables, finally getting rid of this old habit, keeping method parameters final for now

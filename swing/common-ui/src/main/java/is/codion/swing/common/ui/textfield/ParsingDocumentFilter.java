@@ -27,11 +27,11 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
   @Override
   public final void insertString(final FilterBypass filterBypass, final int offset, final String string,
                                  final AttributeSet attributeSet) throws BadLocationException {
-    final String transformedString = transform(string);
-    final Document document = filterBypass.getDocument();
-    final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
+    String transformedString = transform(string);
+    Document document = filterBypass.getDocument();
+    StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.insert(offset, transformedString);
-    final Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
+    Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
         validate(parseResult.getValue());
@@ -42,10 +42,10 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
 
   @Override
   public final void remove(final FilterBypass filterBypass, final int offset, final int length) throws BadLocationException {
-    final Document document = filterBypass.getDocument();
-    final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
+    Document document = filterBypass.getDocument();
+    StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.replace(offset, offset + length, "");
-    final Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
+    Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
         validate(parseResult.getValue());
@@ -57,11 +57,11 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
   @Override
   public final void replace(final FilterBypass filterBypass, final int offset, final int length, final String string,
                             final AttributeSet attributeSet) throws BadLocationException {
-    final String transformedString = transform(string);
-    final Document document = filterBypass.getDocument();
-    final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
+    String transformedString = transform(string);
+    Document document = filterBypass.getDocument();
+    StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.replace(offset, offset + length, transformedString);
-    final Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
+    Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
     if (parseResult.successful()) {
       if (parseResult.getValue() != null) {
         validate(parseResult.getValue());

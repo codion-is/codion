@@ -16,9 +16,9 @@ public class DefaultClientLogTest {
 
   @Test
   void clientLog() {
-    final UUID uuid = UUID.randomUUID();
-    final LocalDateTime currentTime = LocalDateTime.now();
-    final ClientLog log = ClientLog.clientLog(uuid, currentTime, emptyList());
+    UUID uuid = UUID.randomUUID();
+    LocalDateTime currentTime = LocalDateTime.now();
+    ClientLog log = ClientLog.clientLog(uuid, currentTime, emptyList());
     assertEquals(uuid, log.getClientId());
     assertEquals(currentTime, log.getConnectionCreationDate());
     assertEquals(log, ClientLog.clientLog(uuid, currentTime, emptyList()));

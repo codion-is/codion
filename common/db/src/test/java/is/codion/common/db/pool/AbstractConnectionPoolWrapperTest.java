@@ -19,16 +19,16 @@ public final class AbstractConnectionPoolWrapperTest {
 
   @Test
   void test() throws DatabaseException, SQLException, InterruptedException {
-    final Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", "src/test/sql/create_h2_db.sql");
+    Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", "src/test/sql/create_h2_db.sql");
 
     assertThrows(IllegalStateException.class, () -> ConnectionPoolFactory.connectionPoolFactory("is.codion.none.existing.Factory"));
 
-    final ConnectionPoolFactory poolFactory = ConnectionPoolFactory.connectionPoolFactory();
+    ConnectionPoolFactory poolFactory = ConnectionPoolFactory.connectionPoolFactory();
     assertNotNull(ConnectionPoolFactory.connectionPoolFactory("is.codion.plugin.hikari.pool.HikariConnectionPoolFactory"));
 
-    final User user = User.parseUser("scott:tiger");
-    final long startTime = System.currentTimeMillis();
-    final ConnectionPoolWrapper poolWrapper = poolFactory.createConnectionPoolWrapper(database, user);
+    User user = User.parseUser("scott:tiger");
+    long startTime = System.currentTimeMillis();
+    ConnectionPoolWrapper poolWrapper = poolFactory.createConnectionPoolWrapper(database, user);
     poolWrapper.getUser();
     poolWrapper.setCollectSnapshotStatistics(true);
     assertTrue(poolWrapper.isCollectSnapshotStatistics());
@@ -37,7 +37,7 @@ public final class AbstractConnectionPoolWrapperTest {
     }
     //just wait a bit for statistics to be collected
     Thread.sleep(100);
-    final ConnectionPoolStatistics statistics = poolWrapper.getStatistics(startTime);
+    ConnectionPoolStatistics statistics = poolWrapper.getStatistics(startTime);
     statistics.getAvailable();
     statistics.getInUse();
     statistics.getCreated();
@@ -54,9 +54,9 @@ public final class AbstractConnectionPoolWrapperTest {
     statistics.getResetTime();
     statistics.getSize();
     statistics.getTimestamp();
-    final List<ConnectionPoolState> snapshot = statistics.getSnapshot();
+    List<ConnectionPoolState> snapshot = statistics.getSnapshot();
     assertFalse(snapshot.isEmpty());
-    final ConnectionPoolState state = snapshot.get(0);
+    ConnectionPoolState state = snapshot.get(0);
     state.getSize();
     state.getInUse();
     state.getWaiting();

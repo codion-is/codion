@@ -64,7 +64,7 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
         try {
           return loadReport();
         }
-        catch (final ReportException e) {
+        catch (ReportException e) {
           throw new RuntimeException(e);
         }
       });

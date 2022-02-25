@@ -104,7 +104,7 @@ final class SelectQueries {
     }
 
     Builder entitySelectQuery() {
-      final SelectQuery selectQuery = definition.getSelectQuery();
+      SelectQuery selectQuery = definition.getSelectQuery();
       if (selectQuery != null) {
         if (selectQuery.getColumns() != null) {
           columns(selectQuery.getColumns());
@@ -137,7 +137,7 @@ final class SelectQueries {
     }
 
     Builder where(final Condition condition) {
-      final String conditionString = condition.getConditionString(definition);
+      String conditionString = condition.getConditionString(definition);
       if (!conditionString.isEmpty()) {
         where(conditionString);
       }
@@ -182,7 +182,7 @@ final class SelectQueries {
     }
 
     String build() {
-      final StringBuilder builder = new StringBuilder()
+      StringBuilder builder = new StringBuilder()
               .append(SELECT).append(columns).append(NEWLINE)
               .append(FROM).append(getFrom());
       if (!where.isEmpty()) {
@@ -209,7 +209,7 @@ final class SelectQueries {
         builder.append(NEWLINE).append(OFFSET).append(offset);
       }
       if (forUpdate) {
-        final String forUpdateClause = database.getSelectForUpdateClause();
+        String forUpdateClause = database.getSelectForUpdateClause();
         if (!nullOrEmpty(forUpdateClause)) {
           builder.append(NEWLINE).append(forUpdateClause);
         }
@@ -219,7 +219,7 @@ final class SelectQueries {
     }
 
     private void setColumns(final SelectCondition condition) {
-      final Collection<Attribute<?>> selectAttributes = condition.getSelectAttributes();
+      Collection<Attribute<?>> selectAttributes = condition.getSelectAttributes();
       if (selectAttributes.isEmpty()) {
         this.selectedProperties = getSelectableProperties();
         columns(getAllColumnsClause());
@@ -235,7 +235,7 @@ final class SelectQueries {
     }
 
     private List<ColumnProperty<?>> getPropertiesToSelect(final Collection<Attribute<?>> selectAttributes) {
-      final Set<Attribute<?>> attributesToSelect = new HashSet<>(definition.getPrimaryKeyAttributes());
+      Set<Attribute<?>> attributesToSelect = new HashSet<>(definition.getPrimaryKeyAttributes());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
           ((ForeignKey) attribute).getReferences().forEach(reference -> attributesToSelect.add(reference.getAttribute()));
@@ -263,15 +263,15 @@ final class SelectQueries {
     }
 
     private String getColumnsClause(final List<ColumnProperty<?>> columnProperties) {
-      final StringBuilder stringBuilder = new StringBuilder();
+      StringBuilder stringBuilder = new StringBuilder();
       for (int i = 0; i < columnProperties.size(); i++) {
-        final ColumnProperty<?> property = columnProperties.get(i);
-        final String columnName = property.getColumnName();
+        ColumnProperty<?> property = columnProperties.get(i);
+        String columnName = property.getColumnName();
         if (property instanceof SubqueryProperty) {
           stringBuilder.append("(").append(((SubqueryProperty<?>) property).getSubquery()).append(") as ").append(columnName);
         }
         else {
-          final String columnExpression = property.getColumnExpression();
+          String columnExpression = property.getColumnExpression();
           stringBuilder.append(columnExpression);
           if (!columnName.equals(columnExpression)) {
             stringBuilder.append(" as ").append(columnName);
@@ -290,7 +290,7 @@ final class SelectQueries {
       if (orderBy == null) {
         return null;
       }
-      final List<OrderBy.OrderByAttribute> orderByAttributes = orderBy.getOrderByAttributes();
+      List<OrderBy.OrderByAttribute> orderByAttributes = orderBy.getOrderByAttributes();
       if (orderByAttributes.isEmpty()) {
         throw new IllegalArgumentException("An order by clause must contain at least a single attribute");
       }

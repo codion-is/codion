@@ -16,11 +16,11 @@ final class DefaultVersion implements Version, Serializable {
 
   static {
     try {
-      final Properties properties = new Properties();
+      Properties properties = new Properties();
       properties.load(DefaultVersion.class.getResourceAsStream("version.properties"));
       VERSION = Version.parse(properties.getProperty("version"));
     }
-    catch (final IOException e) {
+    catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
@@ -92,7 +92,7 @@ final class DefaultVersion implements Version, Serializable {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    final DefaultVersion that = (DefaultVersion) obj;
+    DefaultVersion that = (DefaultVersion) obj;
 
     return major == that.major && minor == that.minor && patch == that.patch && Objects.equals(metadata, that.metadata);
   }

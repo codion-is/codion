@@ -52,7 +52,7 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   public Condition equalTo(final Collection<? extends Entity> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    final List<Attribute<?>> attributes = foreignKey.getReferences().stream()
+    List<Attribute<?>> attributes = foreignKey.getReferences().stream()
             .map(ForeignKey.Reference::getReferencedAttribute)
             .collect(toList());
 
@@ -81,7 +81,7 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   public Condition notEqualTo(final Collection<? extends Entity> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    final List<Attribute<?>> attributes = foreignKey.getReferences().stream()
+    List<Attribute<?>> attributes = foreignKey.getReferences().stream()
             .map(ForeignKey.Reference::getReferencedAttribute)
             .collect(toList());
 
@@ -106,8 +106,8 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
       return Conditions.compositeKeyCondition(attributeMap(foreignKey), operator, valueMaps);
     }
 
-    final ForeignKey.Reference<?> reference = foreignKey.getReferences().get(0);
-    final List<Object> values = valueMaps.stream()
+    ForeignKey.Reference<?> reference = foreignKey.getReferences().get(0);
+    List<Object> values = valueMaps.stream()
             .map(map -> map.get(reference.getReferencedAttribute()))
             .collect(toList());
     if (operator == EQUAL) {
@@ -121,14 +121,14 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   }
 
   private static Map<Attribute<?>, Attribute<?>> attributeMap(final ForeignKey foreignKeyProperty) {
-    final Map<Attribute<?>, Attribute<?>> map = new LinkedHashMap<>(foreignKeyProperty.getReferences().size());
+    Map<Attribute<?>, Attribute<?>> map = new LinkedHashMap<>(foreignKeyProperty.getReferences().size());
     foreignKeyProperty.getReferences().forEach(reference -> map.put(reference.getAttribute(), reference.getReferencedAttribute()));
 
     return map;
   }
 
   private static Map<Attribute<?>, Object> valueMap(final Entity entity, final List<Attribute<?>> attributes) {
-    final Map<Attribute<?>, Object> values = new HashMap<>();
+    Map<Attribute<?>, Object> values = new HashMap<>();
     attributes.forEach(attribute -> values.put(attribute, entity.get(attribute)));
 
     return values;

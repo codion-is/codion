@@ -36,10 +36,10 @@ public final class FieldFormatter extends MaskFormatter {
 
   @Override
   public void install(final JFormattedTextField field) {
-    final int previousLength = field.getDocument().getLength();
-    final int currentCaretPosition = field.getCaretPosition();
-    final int currentSelectionStart = field.getSelectionStart();
-    final int currentSelectionEnd = field.getSelectionEnd();
+    int previousLength = field.getDocument().getLength();
+    int currentCaretPosition = field.getCaretPosition();
+    int currentSelectionStart = field.getSelectionStart();
+    int currentSelectionEnd = field.getSelectionEnd();
     super.install(field);
     if (previousLength == field.getDocument().getLength()) {
       if (currentSelectionEnd - currentSelectionStart > 0) {

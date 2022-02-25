@@ -84,7 +84,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 
   @Override
   public RemoteClient withDatabaseUser(final User databaseUser) {
-    final RemoteClient client = new DefaultRemoteClient(connectionRequest, databaseUser);
+    RemoteClient client = new DefaultRemoteClient(connectionRequest, databaseUser);
     client.setClientHost(clientHost);
 
     return client;
@@ -102,7 +102,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 
   @Override
   public String toString() {
-    final StringBuilder builder = new StringBuilder(connectionRequest.getUser().toString());
+    StringBuilder builder = new StringBuilder(connectionRequest.getUser().toString());
     if (databaseUser != null && !connectionRequest.getUser().equals(databaseUser)) {
       builder.append(" (databaseUser: ").append(databaseUser).append(")");
     }

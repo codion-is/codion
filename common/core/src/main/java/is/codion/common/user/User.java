@@ -59,7 +59,7 @@ public interface User {
    * @return a User with the given username and password
    */
   static User parseUser(final String userPassword) {
-    final String[] split = requireNonNull(userPassword).split(":", 2);
+    String[] split = requireNonNull(userPassword).split(":", 2);
     if (split.length == 1) {
       return new DefaultUser(split[0].trim(), null);
     }

@@ -38,7 +38,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
   @Override
   public void displayException(final Throwable exception, final Window dialogParent) {
     requireNonNull(exception);
-    final Throwable rootCause = unwrapExceptions(exception, asList(RemoteException.class, RuntimeException.class,
+    Throwable rootCause = unwrapExceptions(exception, asList(RemoteException.class, RuntimeException.class,
             InvocationTargetException.class, ExceptionInInitializerError.class, UndeclaredThrowableException.class));
     if (rootCause instanceof CancelException) {
       return;
@@ -70,7 +70,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
         break;
       }
     }
-    final boolean cyclicalCause = exception.getCause() == exception;
+    boolean cyclicalCause = exception.getCause() == exception;
     if (unwrap && !cyclicalCause) {
       return unwrapExceptions(exception.getCause(), exceptions);
     }
@@ -87,7 +87,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
   }
 
   private static String trimMessage(final Throwable e) {
-    final String message = e.getMessage();
+    String message = e.getMessage();
     if (message != null && message.length() > MAXIMUM_MESSAGE_LENGTH) {
       return message.substring(0, MAXIMUM_MESSAGE_LENGTH) + "...";
     }

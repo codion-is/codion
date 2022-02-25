@@ -184,16 +184,16 @@ public final class Completion {
 
     // calculates how many characters are predetermined by the given pattern.
     private int getMaximumMatchingOffset(final String pattern, final Object selectedItem) {
-      final String selectedAsString = selectedItem.toString();
+      String selectedAsString = selectedItem.toString();
       int match = selectedAsString.length();
       // look for items that match the given pattern
       for (int i = 0; i < getModel().getSize(); i++) {
-        final Object currentItem = getModel().getElementAt(i);
-        final String itemAsString = currentItem == null ? "" : currentItem.toString();
+        Object currentItem = getModel().getElementAt(i);
+        String itemAsString = currentItem == null ? "" : currentItem.toString();
         if (startsWithIgnoreCase(itemAsString, pattern, isNormalize())) {
           // current item matches the pattern
           // how many leading characters have the selected and the current item in common?
-          final int tmpMatch = equalStartLength(itemAsString, selectedAsString);
+          int tmpMatch = equalStartLength(itemAsString, selectedAsString);
           if (tmpMatch < match) {
             match = tmpMatch;
           }
@@ -205,11 +205,11 @@ public final class Completion {
 
     // returns how many leading characters two strings have in common?
     private int equalStartLength(final String str1, final String str2) {
-      final String one = isNormalize() ? normalize(str1) : str1;
-      final String two = isNormalize() ? normalize(str2) : str2;
-      final char[] ch1 = one.toUpperCase().toCharArray();
-      final char[] ch2 = two.toUpperCase().toCharArray();
-      final int n = Math.min(ch1.length, ch2.length);
+      String one = isNormalize() ? normalize(str1) : str1;
+      String two = isNormalize() ? normalize(str2) : str2;
+      char[] ch1 = one.toUpperCase().toCharArray();
+      char[] ch2 = two.toUpperCase().toCharArray();
+      int n = Math.min(ch1.length, ch2.length);
       for (int i = 0; i < n; i++) {
         if (ch1[i] != ch2[i]) {
           return i;
@@ -233,7 +233,7 @@ public final class Completion {
         return;
       }
       super.insertString(offs, str, a);
-      final Object item = lookupItem(getText(0, getLength()));
+      Object item = lookupItem(getText(0, getLength()));
       if (item != null) {
         setSelectedItem(item);
       }

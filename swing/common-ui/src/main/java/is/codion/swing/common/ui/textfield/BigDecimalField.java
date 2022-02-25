@@ -75,7 +75,7 @@ public final class BigDecimalField extends NumberField<BigDecimal> {
   }
 
   private static DecimalFormat createDefaultFormat() {
-    final DecimalFormat format = new DecimalFormat();
+    DecimalFormat format = new DecimalFormat();
     format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 
     return format;

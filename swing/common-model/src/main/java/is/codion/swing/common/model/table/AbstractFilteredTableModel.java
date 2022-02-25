@@ -158,7 +158,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   @Override
   public final List<R> getItems() {
-    final List<R> items = new ArrayList<>(visibleItems);
+    List<R> items = new ArrayList<>(visibleItems);
     items.addAll(filteredItems);
 
     return unmodifiableList(items);
@@ -222,7 +222,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final Optional<RowColumn> findNext(final int fromRowIndex, final Predicate<String> condition) {
     for (int row = fromRowIndex >= getVisibleItemCount() ? 0 : fromRowIndex; row < getVisibleItemCount(); row++) {
-      final RowColumn coordinate = findColumnValue(row, condition);
+      RowColumn coordinate = findColumnValue(row, condition);
       if (coordinate != null) {
         return Optional.of(coordinate);
       }
@@ -234,7 +234,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final Optional<RowColumn> findPrevious(final int fromRowIndex, final Predicate<String> condition) {
     for (int row = fromRowIndex < 0 ? getVisibleItemCount() - 1 : fromRowIndex; row >= 0; row--) {
-      final RowColumn coordinate = findColumnValue(row, condition);
+      RowColumn coordinate = findColumnValue(row, condition);
       if (coordinate != null) {
         return Optional.of(coordinate);
       }
@@ -265,7 +265,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final void clear() {
     filteredItems.clear();
-    final int size = visibleItems.size();
+    int size = visibleItems.size();
     if (size > 0) {
       visibleItems.clear();
       fireTableRowsDeleted(0, size - 1);
@@ -298,7 +298,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   @Override
   public final <T> ColumnFilterModel<R, C, T> getColumnFilterModel(final C columnIdentifier) {
-    final ColumnFilterModel<R, C, T> filterModel = (ColumnFilterModel<R, C, T>) columnFilterModels.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    ColumnFilterModel<R, C, T> filterModel = (ColumnFilterModel<R, C, T>) columnFilterModels.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
     if (filterModel == null) {
       throw new IllegalArgumentException("No filter model exists for column: " + columnIdentifier);
     }
@@ -361,7 +361,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final void sort() {
     if (sortModel.isSortingEnabled()) {
-      final List<R> selectedItems = selectionModel.getSelectedItems();
+      List<R> selectedItems = selectionModel.getSelectedItems();
       sortModel.sort(visibleItems);
       fireTableRowsUpdated(0, visibleItems.size());
       selectionModel.setSelectedItems(selectedItems);
@@ -371,12 +371,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   @Override
   public final void filterContents() {
-    final List<R> selectedItems = selectionModel.getSelectedItems();
+    List<R> selectedItems = selectionModel.getSelectedItems();
     visibleItems.addAll(filteredItems);
     filteredItems.clear();
     if (includeCondition != null) {
-      for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
-        final R item = iterator.next();
+      for (ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
+        R item = iterator.next();
         if (!includeCondition.test(item)) {
           filteredItems.add(item);
           iterator.remove();
@@ -402,13 +402,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   @Override
   public final void removeItem(final R item) {
-    final int visibleItemIndex = visibleItems.indexOf(item);
+    int visibleItemIndex = visibleItems.indexOf(item);
     if (visibleItemIndex >= 0) {
       visibleItems.remove(visibleItemIndex);
       fireTableRowsDeleted(visibleItemIndex, visibleItemIndex);
     }
     else {
-      final int filteredIndex = filteredItems.indexOf(item);
+      int filteredIndex = filteredItems.indexOf(item);
       if (filteredIndex >= 0) {
         filteredItems.remove(item);
       }
@@ -633,7 +633,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @see #findPrevious(int, String)
    */
   protected String getSearchValueAt(final int rowIndex, final C columnIdentifier) {
-    final Object value = getValueAt(rowIndex, columnModel.getTableColumn(columnIdentifier).getModelIndex());
+    Object value = getValueAt(rowIndex, columnModel.getTableColumn(columnIdentifier).getModelIndex());
 
     return value == null ? "" : value.toString();
   }
@@ -670,9 +670,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private RowColumn findColumnValue(final int row, final Predicate<String> condition) {
     requireNonNull(condition, "condition");
-    final Enumeration<TableColumn> columnsToSearch = columnModel.getColumns();
+    Enumeration<TableColumn> columnsToSearch = columnModel.getColumns();
     while (columnsToSearch.hasMoreElements()) {
-      final C columnIdentifier = (C) columnsToSearch.nextElement().getIdentifier();
+      C columnIdentifier = (C) columnsToSearch.nextElement().getIdentifier();
       if (condition.test(getSearchValueAt(row, columnIdentifier))) {
         return RowColumn.rowColumn(row, columnModel.getColumnIndex(columnIdentifier));
       }
@@ -726,7 +726,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     try {
       onRefreshResult(refreshItems());
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       onRefreshFailed(e);
     }
   }
@@ -752,14 +752,14 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   private void merge(final Collection<R> items) {
-    final Set<R> itemSet = new HashSet<>(items);
+    Set<R> itemSet = new HashSet<>(items);
     getItems().forEach(item -> {
       if (!itemSet.contains(item)) {
         removeItem(item);
       }
     });
     items.forEach(item -> {
-      final int index = indexOf(item);
+      int index = indexOf(item);
       if (index == -1) {
         addItemSorted(item);
       }
@@ -770,7 +770,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   private void clearAndAdd(final Collection<R> items) {
-    final Collection<R> selectedItems = selectionModel.getSelectedItems();
+    Collection<R> selectedItems = selectionModel.getSelectedItems();
     clear();
     addItemsSorted(items);
     selectionModel.setSelectedItems(selectedItems);

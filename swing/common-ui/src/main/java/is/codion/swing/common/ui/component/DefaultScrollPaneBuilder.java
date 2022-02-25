@@ -77,7 +77,7 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
 
   @Override
   protected JScrollPane buildComponent() {
-    final JScrollPane scrollPane = new JScrollPane(view, vsbPolicy, hsbPolicy);
+    JScrollPane scrollPane = new JScrollPane(view, vsbPolicy, hsbPolicy);
     scrollPane.setWheelScrollingEnabled(wheelScrollingEnabled);
     if (verticalUnitIncrement > 0) {
       scrollPane.getVerticalScrollBar().setUnitIncrement(verticalUnitIncrement);

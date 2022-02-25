@@ -30,31 +30,31 @@ public class OracleDatabaseTest {
 
   @Test
   void supportsIsValid() {
-    final OracleDatabase db = new OracleDatabase(URL);
+    OracleDatabase db = new OracleDatabase(URL);
     assertFalse(db.supportsIsValid());
   }
 
   @Test
   void getAutoIncrementQuery() {
-    final OracleDatabase db = new OracleDatabase(URL);
+    OracleDatabase db = new OracleDatabase(URL);
     assertEquals("select seq.currval from dual", db.getAutoIncrementQuery("seq"));
   }
 
   @Test
   void getSequenceQuery() {
-    final OracleDatabase db = new OracleDatabase(URL);
+    OracleDatabase db = new OracleDatabase(URL);
     assertEquals("select seq.nextval from dual", db.getSequenceQuery("seq"));
   }
 
   @Test
   void getURL() {
-    final OracleDatabase db = new OracleDatabase(URL);
+    OracleDatabase db = new OracleDatabase(URL);
     assertEquals("jdbc:oracle:thin:@host:1234:sid", db.getUrl());
   }
 
   @Test
   void getCheckConnectionQuery() {
-    final OracleDatabase db = new OracleDatabase(URL);
+    OracleDatabase db = new OracleDatabase(URL);
     assertEquals(OracleDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
   }
 

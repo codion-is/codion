@@ -19,7 +19,7 @@ public class MethodLoggerTest {
 
   @Test
   void test() throws Exception {
-    final MethodLogger logger = MethodLogger.methodLogger(10);
+    MethodLogger logger = MethodLogger.methodLogger(10);
     assertFalse(logger.isEnabled());
     logger.setEnabled(true);
 
@@ -34,21 +34,21 @@ public class MethodLoggerTest {
 
   @Test
   void serialize() throws IOException, ClassNotFoundException {
-    final MethodLogger logger = MethodLogger.methodLogger(10);
+    MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logAccess("method2");
     logger.logExit("method2");
     logger.logExit("method");
 
-    final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+    ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
     new ObjectOutputStream(byteOut).writeObject(logger.getEntries());
     new ObjectInputStream(new ByteArrayInputStream(byteOut.toByteArray())).readObject();
   }
 
   @Test
   void enableDisable() {
-    final MethodLogger logger = MethodLogger.methodLogger(10);
+    MethodLogger logger = MethodLogger.methodLogger(10);
     assertFalse(logger.isEnabled());
     logger.logAccess("method");
 
@@ -66,20 +66,20 @@ public class MethodLoggerTest {
 
   @Test
   void singleLevelLogging() {
-    final MethodLogger logger = MethodLogger.methodLogger(10);
+    MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logExit("method");
 
     assertEquals(1, logger.getEntries().size());
-    final MethodLogger.Entry entry = logger.getEntries().get(0);
+    MethodLogger.Entry entry = logger.getEntries().get(0);
     assertEquals("method", entry.getMethod());
 
     logger.logAccess("method2");
     logger.logExit("method2");
 
     assertEquals(2, logger.getEntries().size());
-    final MethodLogger.Entry entry2 = logger.getEntries().get(1);
+    MethodLogger.Entry entry2 = logger.getEntries().get(1);
     assertEquals("method2", entry2.getMethod());
 
     assertTrue(logger.getEntries().containsAll(asList(entry, entry2)));
@@ -87,7 +87,7 @@ public class MethodLoggerTest {
 
   @Test
   void twoLevelLogging() {
-    final MethodLogger logger = MethodLogger.methodLogger(10);
+    MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method", new Object[] {"param1", "param2"});
     logger.logAccess("subMethod");
@@ -98,19 +98,19 @@ public class MethodLoggerTest {
 
     assertEquals(1, logger.getEntries().size());
 
-    final MethodLogger.Entry lastEntry = logger.getEntries().get(0);
+    MethodLogger.Entry lastEntry = logger.getEntries().get(0);
     assertEquals("method", lastEntry.getMethod());
     assertTrue(lastEntry.hasChildEntries());
-    final List<MethodLogger.Entry> subLog = lastEntry.getChildEntries();
+    List<MethodLogger.Entry> subLog = lastEntry.getChildEntries();
     assertEquals(2, subLog.size());
-    final MethodLogger.Entry subEntry = subLog.get(0);
+    MethodLogger.Entry subEntry = subLog.get(0);
     assertEquals("subMethod", subEntry.getMethod());
     assertFalse(subEntry.hasChildEntries());
   }
 
   @Test
   void twoLevelLoggingSameMethodName() {
-    final MethodLogger logger = MethodLogger.methodLogger(10);
+    MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logAccess("method");
@@ -121,19 +121,19 @@ public class MethodLoggerTest {
 
     assertEquals(1, logger.getEntries().size());
 
-    final MethodLogger.Entry lastEntry = logger.getEntries().get(0);
+    MethodLogger.Entry lastEntry = logger.getEntries().get(0);
     assertEquals("method", lastEntry.getMethod());
     assertTrue(lastEntry.hasChildEntries());
-    final List<MethodLogger.Entry> subLog = lastEntry.getChildEntries();
+    List<MethodLogger.Entry> subLog = lastEntry.getChildEntries();
     assertEquals(2, subLog.size());
-    final MethodLogger.Entry subEntry = subLog.get(0);
+    MethodLogger.Entry subEntry = subLog.get(0);
     assertEquals("method", subEntry.getMethod());
     assertFalse(subEntry.hasChildEntries());
   }
 
   @Test
   void threeLevelLogging() {
-    final MethodLogger logger = MethodLogger.methodLogger(10);
+    MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("one");
     logger.logAccess("two");
@@ -148,31 +148,31 @@ public class MethodLoggerTest {
 
     assertEquals(1, logger.getEntries().size());
 
-    final MethodLogger.Entry entry = logger.getEntries().get(0);
+    MethodLogger.Entry entry = logger.getEntries().get(0);
     assertEquals("one", entry.getMethod());
     assertTrue(entry.hasChildEntries());
-    final List<MethodLogger.Entry> subLog = entry.getChildEntries();
+    List<MethodLogger.Entry> subLog = entry.getChildEntries();
     assertEquals(2, subLog.size());
-    final MethodLogger.Entry subEntry1 = subLog.get(0);
+    MethodLogger.Entry subEntry1 = subLog.get(0);
     assertEquals("two", subEntry1.getMethod());
     assertTrue(entry.hasChildEntries());
-    final MethodLogger.Entry subEntry2 = subLog.get(1);
+    MethodLogger.Entry subEntry2 = subLog.get(1);
     assertEquals("two2", subEntry2.getMethod());
     assertTrue(entry.hasChildEntries());
 
-    final List<MethodLogger.Entry> subSubLog = subEntry1.getChildEntries();
-    final MethodLogger.Entry subSubEntry = subSubLog.get(0);
+    List<MethodLogger.Entry> subSubLog = subEntry1.getChildEntries();
+    MethodLogger.Entry subSubEntry = subSubLog.get(0);
     assertEquals("three", subSubEntry.getMethod());
     assertFalse(subSubEntry.hasChildEntries());
-    final List<MethodLogger.Entry> subSubLog2 = subEntry2.getChildEntries();
-    final MethodLogger.Entry subSubEntry2 = subSubLog2.get(0);
+    List<MethodLogger.Entry> subSubLog2 = subEntry2.getChildEntries();
+    MethodLogger.Entry subSubEntry2 = subSubLog2.get(0);
     assertEquals("three2", subSubEntry2.getMethod());
     assertFalse(subSubEntry2.hasChildEntries());
   }
 
   @Test
   void exitBeforeAccess() {
-    final MethodLogger logger = MethodLogger.methodLogger(10);
+    MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logExit("method");
@@ -181,7 +181,7 @@ public class MethodLoggerTest {
 
   @Test
   void wrongMethodName() {
-    final MethodLogger logger = MethodLogger.methodLogger(10);
+    MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method");
     assertThrows(IllegalStateException.class, () -> logger.logExit("anotherMethod"));
@@ -189,7 +189,7 @@ public class MethodLoggerTest {
 
   @Test
   void appendLogEntry() {
-    final MethodLogger logger = MethodLogger.methodLogger(10);
+    MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("one");
     logger.logAccess("two");

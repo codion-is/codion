@@ -16,9 +16,9 @@ public class StateTest {
 
   @Test
   void listeners() {
-    final State state = State.state();
-    final AtomicInteger stateChangeCounter = new AtomicInteger();
-    final EventListener stateChangeListener = stateChangeCounter::incrementAndGet;
+    State state = State.state();
+    AtomicInteger stateChangeCounter = new AtomicInteger();
+    EventListener stateChangeListener = stateChangeCounter::incrementAndGet;
     state.addListener(stateChangeListener);
     //this has no effect, coverage whoring
     state.getObserver().addListener(stateChangeListener);
@@ -41,15 +41,15 @@ public class StateTest {
 
   @Test
   void reversedState() {
-    final AtomicInteger stateCounter = new AtomicInteger();
-    final EventListener listener = stateCounter::incrementAndGet;
-    final AtomicInteger reversedStateCounter = new AtomicInteger();
-    final EventListener reversedListener = reversedStateCounter::incrementAndGet;
-    final AtomicInteger reversedReversedStateCounter = new AtomicInteger();
-    final EventListener reversedReversedListener = reversedReversedStateCounter::incrementAndGet;
-    final State state = State.state();
-    final StateObserver reversed = state.getReversedObserver();
-    final StateObserver reversedReversed = reversed.getReversedObserver();
+    AtomicInteger stateCounter = new AtomicInteger();
+    EventListener listener = stateCounter::incrementAndGet;
+    AtomicInteger reversedStateCounter = new AtomicInteger();
+    EventListener reversedListener = reversedStateCounter::incrementAndGet;
+    AtomicInteger reversedReversedStateCounter = new AtomicInteger();
+    EventListener reversedReversedListener = reversedReversedStateCounter::incrementAndGet;
+    State state = State.state();
+    StateObserver reversed = state.getReversedObserver();
+    StateObserver reversedReversed = reversed.getReversedObserver();
     state.addListener(listener);
     reversed.addListener(reversedListener);
     reversedReversed.addListener(reversedReversedListener);
@@ -71,7 +71,7 @@ public class StateTest {
 
   @Test
   void test() {
-    final State state = State.state();
+    State state = State.state();
     assertFalse(state.get(), "State should be inactive when initialized");
     state.set(true);
     assertTrue(state.get(), "State should be active after activation");
@@ -86,10 +86,10 @@ public class StateTest {
 
   @Test
   void group() throws Exception {
-    final State stateOne = State.state(true);
-    final State stateTwo = State.state(true);
-    final State stateThree = State.state(true);
-    final State.Group stateGroup = State.group(stateOne);
+    State stateOne = State.state(true);
+    State stateTwo = State.state(true);
+    State stateThree = State.state(true);
+    State.Group stateGroup = State.group(stateOne);
 
     stateGroup.addState(stateOne);//has no effect
     stateGroup.addState(stateTwo);
@@ -108,9 +108,9 @@ public class StateTest {
   @Test
   void stateCombination() {
     State.Combination orState = State.or();
-    final State stateOne = State.state();
-    final State stateTwo = State.state();
-    final State stateThree = State.state();
+    State stateOne = State.state();
+    State stateTwo = State.state();
+    State stateThree = State.state();
     orState.addState(stateOne);
     orState.addState(stateTwo);
     orState.addState(stateThree);
@@ -191,11 +191,11 @@ public class StateTest {
 
   @Test
   void stateCombinationDataListener() {
-    final State one = State.state();
-    final State two = State.state();
-    final State three = State.state();
+    State one = State.state();
+    State two = State.state();
+    State three = State.state();
 
-    final StateObserver combinationAnd = State.and(one, two, three);
+    StateObserver combinationAnd = State.and(one, two, three);
     combinationAnd.addDataListener(newValue -> assertEquals(combinationAnd.get(), newValue));
     one.set(true);
     two.set(true);
@@ -204,7 +204,7 @@ public class StateTest {
     two.set(false);
     three.set(false);
 
-    final StateObserver combinationOr = State.or(one, two, three);
+    StateObserver combinationOr = State.or(one, two, three);
     combinationOr.addDataListener(newValue -> assertEquals(combinationOr.get(), newValue));
     one.set(true);
     one.set(false);
@@ -216,10 +216,10 @@ public class StateTest {
 
   @Test
   void stateCombinationEvents() {
-    final State stateOne = State.state(false);
-    final State stateTwo = State.state(true);
-    final State.Combination combination = State.or(stateOne, stateTwo);
-    final AtomicInteger stateChangeEvents = new AtomicInteger();
+    State stateOne = State.state(false);
+    State stateTwo = State.state(true);
+    State.Combination combination = State.or(stateOne, stateTwo);
+    AtomicInteger stateChangeEvents = new AtomicInteger();
     combination.addListener(stateChangeEvents::incrementAndGet);
     assertTrue(combination.get());
 

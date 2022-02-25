@@ -262,7 +262,7 @@ public final class ApplicationPanel extends JPanel {
     @Override
     public void validate(final String value) throws IllegalArgumentException {
       if (value != null) {
-        final String lowerCaseValue = value.toLowerCase();
+        String lowerCaseValue = value.toLowerCase();
         swearWords.forEach(swearWord -> {
           if (lowerCaseValue.contains(swearWord)) {
             throw new IllegalArgumentException("No swearing please");
@@ -295,7 +295,7 @@ public final class ApplicationPanel extends JPanel {
   }
 
   private static ListModel<String> createStringListModel() {
-    final DefaultListModel<String> listModel = new DefaultListModel<>();
+    DefaultListModel<String> listModel = new DefaultListModel<>();
     listModel.addElement("Here");
     listModel.addElement("Are");
     listModel.addElement("A");

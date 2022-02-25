@@ -152,7 +152,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
     if (!(object instanceof DefaultAttribute)) {
       return false;
     }
-    final DefaultAttribute<?> that = (DefaultAttribute<?>) object;
+    DefaultAttribute<?> that = (DefaultAttribute<?>) object;
 
     return hashCode == that.hashCode && name.equals(that.name) && entityType.equals(that.entityType);
   }

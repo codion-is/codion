@@ -13,10 +13,10 @@ public class EventsTest {
 
   @Test
   void test() throws Exception {
-    final Event<Integer> event = Event.event();
-    final AtomicInteger counter = new AtomicInteger();
-    final EventListener listener = counter::incrementAndGet;
-    final EventDataListener<Integer> dataListener = value -> {};
+    Event<Integer> event = Event.event();
+    AtomicInteger counter = new AtomicInteger();
+    EventListener listener = counter::incrementAndGet;
+    EventDataListener<Integer> dataListener = value -> {};
     event.addListener(listener);
     event.addDataListener(dataListener);
     event.onEvent();

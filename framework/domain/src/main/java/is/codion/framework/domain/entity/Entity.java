@@ -355,8 +355,8 @@ public interface Entity extends Comparable<Entity> {
     return comparison.entrySet().stream()
             .map(entry -> definition.getProperty(entry.getKey()))
             .filter(property -> {
-              final boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
-              final boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
+              boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
+              boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
 
               return updatableColumnProperty && !lazilyLoadedBlobProperty && isValueMissingOrModified(entity, comparison, property.getAttribute());
             })
@@ -481,7 +481,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static <T> Map<Key, T> put(final Attribute<T> attribute, final T value, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
-    final Map<Key, T> previousValues = new HashMap<>(requireNonNull(entities).size());
+    Map<Key, T> previousValues = new HashMap<>(requireNonNull(entities).size());
     for (final Entity entity : entities) {
       previousValues.put(entity.getPrimaryKey(), entity.put(attribute, value));
     }
@@ -664,8 +664,8 @@ public interface Entity extends Comparable<Entity> {
       return true;
     }
 
-    final T originalValue = entity.getOriginal(attribute);
-    final T comparisonValue = comparison.get(attribute);
+    T originalValue = entity.getOriginal(attribute);
+    T comparisonValue = comparison.get(attribute);
     if (attribute.isByteArray()) {
       return !Arrays.equals((byte[]) originalValue, (byte[]) comparisonValue);
     }

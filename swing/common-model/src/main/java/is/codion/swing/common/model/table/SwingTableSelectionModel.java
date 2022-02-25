@@ -152,7 +152,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   @Override
   public R getSelectedItem() {
-    final int index = getSelectedIndex();
+    int index = getSelectedIndex();
     if (index >= 0 && index < tableModel.getRowCount()) {
       return tableModel.getItemAt(index);
     }
@@ -243,7 +243,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   @Override
   public void moveSelectionUp() {
     if (tableModel.getRowCount() > 0) {
-      final int lastIndex = tableModel.getRowCount() - 1;
+      int lastIndex = tableModel.getRowCount() - 1;
       if (isSelectionEmpty()) {
         setSelectionInterval(lastIndex, lastIndex);
       }
@@ -281,13 +281,13 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
       selectionEmptyState.set(isSelectionEmpty());
       singleSelectionState.set(getSelectionCount() == 1);
       multipleSelectionState.set(!selectionEmptyState.get() && !singleSelectionState.get());
-      final int minSelIndex = getMinSelectionIndex();
+      int minSelIndex = getMinSelectionIndex();
       if (selectedIndex != minSelIndex) {
         selectedIndex = minSelIndex;
         selectedIndexChangedEvent.onEvent(selectedIndex);
         selectedItemChangedEvent.onEvent(getSelectedItem());
       }
-      final List<Integer> selectedIndexes = getSelectedIndexes();
+      List<Integer> selectedIndexes = getSelectedIndexes();
       selectionChangedEvent.onEvent();
       selectedIndexesChangedEvent.onEvent(selectedIndexes);
       //we don't call getSelectedItems() since that would cause another call to getSelectedIndexes()
@@ -374,7 +374,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   }
 
   private void checkIndexes(final Collection<Integer> indexes) {
-    final int size = tableModel.getRowCount();
+    int size = tableModel.getRowCount();
     for (final Integer index : indexes) {
       checkIndex(index, size);
     }

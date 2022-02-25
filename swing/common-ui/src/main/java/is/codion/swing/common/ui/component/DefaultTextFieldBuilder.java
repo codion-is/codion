@@ -89,7 +89,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 
   @Override
   protected final C createTextComponent() {
-    final C textField = createTextField();
+    C textField = createTextField();
     textField.setColumns(columns);
     textField.setHorizontalAlignment(horizontalAlignment);
     if (action != null) {

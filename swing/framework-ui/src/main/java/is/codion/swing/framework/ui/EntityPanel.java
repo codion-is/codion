@@ -505,7 +505,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the currently visible/linked detail EntityPanel, if any
    */
   public final Collection<EntityPanel> getLinkedDetailPanels() {
-    final Collection<SwingEntityModel> linkedDetailModels = entityModel.getLinkedDetailModels();
+    Collection<SwingEntityModel> linkedDetailModels = entityModel.getLinkedDetailModels();
 
     return detailEntityPanels.stream()
             .filter(detailPanel -> linkedDetailModels.contains(detailPanel.entityModel))
@@ -588,7 +588,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   @Override
   public final Optional<HierarchyPanel> getSelectedChildPanel() {
-    final Collection<EntityPanel> linkedDetailPanels = getLinkedDetailPanels();
+    Collection<EntityPanel> linkedDetailPanels = getLinkedDetailPanels();
     if (!linkedDetailPanels.isEmpty()) {
       return Optional.of(linkedDetailPanels.iterator().next());
     }
@@ -609,14 +609,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   @Override
   public final Optional<HierarchyPanel> getPreviousSiblingPanel() {
-    final Optional<HierarchyPanel> optionalParent = getParentPanel();
+    Optional<HierarchyPanel> optionalParent = getParentPanel();
     if (!optionalParent.isPresent()) {//no parent, no siblings
       return Optional.empty();
     }
-    final HierarchyPanel parentPanel = optionalParent.get();
-    final List<? extends HierarchyPanel> siblingPanels = parentPanel.getChildPanels();
+    HierarchyPanel parentPanel = optionalParent.get();
+    List<? extends HierarchyPanel> siblingPanels = parentPanel.getChildPanels();
     if (siblingPanels.contains(this)) {
-      final int index = siblingPanels.indexOf(this);
+      int index = siblingPanels.indexOf(this);
       if (index == 0) {//wrap around
         return Optional.of(siblingPanels.get(siblingPanels.size() - 1));
       }
@@ -629,14 +629,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   @Override
   public final Optional<HierarchyPanel> getNextSiblingPanel() {
-    final Optional<HierarchyPanel> optionalParent = getParentPanel();
+    Optional<HierarchyPanel> optionalParent = getParentPanel();
     if (!optionalParent.isPresent()) {//no parent, no siblings
       return Optional.empty();
     }
-    final HierarchyPanel parentPanel = optionalParent.get();
-    final List<? extends HierarchyPanel> siblingPanels = parentPanel.getChildPanels();
+    HierarchyPanel parentPanel = optionalParent.get();
+    List<? extends HierarchyPanel> siblingPanels = parentPanel.getChildPanels();
     if (siblingPanels.contains(this)) {
-      final int index = siblingPanels.indexOf(this);
+      int index = siblingPanels.indexOf(this);
       if (index == siblingPanels.size() - 1) {//wrap around
         return Optional.of(siblingPanels.get(0));
       }
@@ -1089,7 +1089,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @see EntityPanel#TOOLBAR_BUTTONS
    */
   protected JComponent createEditControlPanel() {
-    final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
+    int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
             controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
     if (TOOLBAR_BUTTONS.get()) {
       return editPanel.createControlToolBar(SwingConstants.VERTICAL);
@@ -1131,9 +1131,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   protected final void initializeKeyboardActions() {
     if (containsTablePanel()) {
-      final Control selectTablePanelControl = getTablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS);
-      final Control selectSearchFieldControl = getTablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_SEARCH_FIELD_FOCUS);
-      final Control selectConditionPanelAction = getTablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL);
+      Control selectTablePanelControl = getTablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS);
+      Control selectSearchFieldControl = getTablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_SEARCH_FIELD_FOCUS);
+      Control selectConditionPanelAction = getTablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL);
       KeyEvents.builder(KeyEvent.VK_T)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1172,8 +1172,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       }
     }
     if (containsEditPanel()) {
-      final Control selectEditPanelControl = Control.control(this::selectEditPanel);
-      final Control selectInputComponentControl = Control.control(this::selectInputComponent);
+      Control selectEditPanelControl = Control.control(this::selectEditPanel);
+      Control selectInputComponentControl = Control.control(this::selectInputComponent);
       KeyEvents.builder(KeyEvent.VK_E)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1287,13 +1287,13 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   protected final void initializeEditControlPanel() {
     editPanel.initializePanel();
     editControlPanel.setMinimumSize(new Dimension(0, 0));
-    final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
+    int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
             controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
-    final JPanel propertyBase = new JPanel(Layouts.flowLayout(alignment));
+    JPanel propertyBase = new JPanel(Layouts.flowLayout(alignment));
     propertyBase.add(editPanel);
     editControlPanel.add(propertyBase, BorderLayout.CENTER);
     if (includeControlPanel) {
-      final JComponent controlPanel = createEditControlPanel();
+      JComponent controlPanel = createEditControlPanel();
       if (controlPanel != null) {
         editControlPanel.add(controlPanel, controlPanelConstraints);
       }
@@ -1301,7 +1301,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void initializeTablePanel() {
-    final Controls toolbarControls = Controls.controls();
+    Controls toolbarControls = Controls.controls();
     if (showToggleEditPanelControl && editPanel != null) {
       toolbarControls.add(getToggleEditPanelControl());
     }
@@ -1326,7 +1326,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the horizontal split pane
    */
   private JSplitPane initializeHorizontalSplitPane() {
-    final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
+    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
     splitPane.setBorder(BorderFactory.createEmptyBorder());
     splitPane.setOneTouchExpandable(true);
     splitPane.setResizeWeight(detailSplitPanelResizeWeight);
@@ -1340,7 +1340,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the JTabbedPane for holding detail panels
    */
   private JTabbedPane initializeDetailTabPane() {
-    final JTabbedPane tabbedPane = new JTabbedPane();
+    JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.setFocusable(false);
     for (final EntityPanel detailPanel : detailEntityPanels) {
       tabbedPane.addTab(detailPanel.caption, detailPanel);
@@ -1392,7 +1392,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       return null;
     }
 
-    final Controls.Builder controls = Controls.builder()
+    Controls.Builder controls = Controls.builder()
             .caption(MESSAGES.getString(MSG_DETAIL_TABLES))
             .smallIcon(frameworkIcons().detail());
     detailEntityPanels.forEach(detailPanel ->
@@ -1444,10 +1444,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   private void showDetailWindow() {
     Windows.getParentWindow(this).ifPresent(parent -> {
-      final Dimension parentSize = parent.getSize();
-      final Dimension size = getDetailWindowSize(parentSize);
-      final Point parentLocation = parent.getLocation();
-      final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
+      Dimension parentSize = parent.getSize();
+      Dimension size = getDetailWindowSize(parentSize);
+      Point parentLocation = parent.getLocation();
+      Point location = new Point(parentLocation.x + (parentSize.width - size.width),
               parentLocation.y + (parentSize.height - size.height) - DETAIL_WINDOW_OFFSET);
       detailPanelWindow = createDetailPanelWindow();
       detailPanelWindow.setSize(size);
@@ -1651,7 +1651,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private static class FocusActivationListener implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent changeEvent) {
-      final EntityEditPanel editPanelParent = Utilities.getParentOfType((Component) changeEvent.getNewValue(), EntityEditPanel.class).orElse(null);
+      EntityEditPanel editPanelParent = Utilities.getParentOfType((Component) changeEvent.getNewValue(), EntityEditPanel.class).orElse(null);
       if (editPanelParent != null) {
         editPanelParent.setActive(true);
       }

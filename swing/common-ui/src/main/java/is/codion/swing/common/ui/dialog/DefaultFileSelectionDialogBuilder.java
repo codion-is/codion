@@ -169,9 +169,9 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
     if (dialogTitle != null) {
       fileChooserOpen.setDialogTitle(dialogTitle);
     }
-    final int option = fileChooserOpen.showOpenDialog(dialogParent);
+    int option = fileChooserOpen.showOpenDialog(dialogParent);
     if (option == JFileChooser.APPROVE_OPTION) {
-      final List<File> selectedFiles;
+      List<File> selectedFiles;
       if (singleSelection) {
         selectedFiles = singletonList(fileChooserOpen.getSelectedFile());
       }
@@ -210,7 +210,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
     fileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
     fileChooserSave.removeChoosableFileFilter(fileChooserSave.getFileFilter());
     fileChooserSave.setMultiSelectionEnabled(false);
-    final File startDirectory;
+    File startDirectory;
     if (!nullOrEmpty(startDir) && new File(startDir).exists()) {
       startDirectory = new File(startDir);
     }

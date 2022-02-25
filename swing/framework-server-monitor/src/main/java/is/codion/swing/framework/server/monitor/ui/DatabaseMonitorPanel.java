@@ -47,14 +47,14 @@ public final class DatabaseMonitorPanel extends JPanel {
 
   private void initializeUI() {
     setLayout(new BorderLayout());
-    final JTabbedPane tabPane = new JTabbedPane();
+    JTabbedPane tabPane = new JTabbedPane();
     tabPane.addTab("Connection Pools", new PoolMonitorPanel(model.getConnectionPoolMonitor()));
     tabPane.addTab("Performance", getChartPanel());
     add(tabPane, BorderLayout.CENTER);
   }
 
   private JPanel getChartPanel() {
-    final JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 3));
+    JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 3));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(Components.integerSpinner(model.getUpdateIntervalValue())
@@ -66,10 +66,10 @@ public final class DatabaseMonitorPanel extends JPanel {
             .caption("Clear")
             .build());
 
-    final JPanel configBase = new JPanel(Layouts.borderLayout());
+    JPanel configBase = new JPanel(Layouts.borderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);
 
-    final JPanel panel = new JPanel(Layouts.borderLayout());
+    JPanel panel = new JPanel(Layouts.borderLayout());
     queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());
     panel.add(queriesPerSecondChartPanel, BorderLayout.CENTER);
     panel.add(configBase, BorderLayout.SOUTH);

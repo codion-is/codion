@@ -27,7 +27,7 @@ public final class AlbumEditPanel extends EntityEditPanel {
     createForeignKeySearchField(Album.ARTIST_FK);
     createTextField(Album.TITLE);
 
-    final JPanel northPanel = new JPanel(gridLayout(2, 1));
+    JPanel northPanel = new JPanel(gridLayout(2, 1));
     northPanel.add(createInputPanel(Album.ARTIST_FK));
     northPanel.add(createInputPanel(Album.TITLE));
 

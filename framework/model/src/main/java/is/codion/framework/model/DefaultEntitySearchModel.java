@@ -222,7 +222,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public boolean searchStringRepresentsSelected() {
-    final String selectedAsString = toString(getSelectedEntities());
+    String selectedAsString = toString(getSelectedEntities());
     return (selectedEntities.isEmpty() && nullOrEmpty(searchStringValue.get()))
             || !selectedEntities.isEmpty() && selectedAsString.equals(searchStringValue.get());
   }
@@ -230,14 +230,14 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   @Override
   public List<Entity> performQuery() {
     try {
-      final List<Entity> result = connectionProvider.getConnection().select(getEntitySelectCondition());
+      List<Entity> result = connectionProvider.getConnection().select(getEntitySelectCondition());
       if (resultSorter != null) {
         result.sort(resultSorter);
       }
 
       return result;
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -276,18 +276,18 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     if (searchAttributes.isEmpty()) {
       throw new IllegalStateException("No search attributes provided for search model: " + entityType);
     }
-    final Collection<Condition> conditions = new ArrayList<>();
-    final String[] searchTexts = multipleSelectionEnabledValue.get() ?
+    Collection<Condition> conditions = new ArrayList<>();
+    String[] searchTexts = multipleSelectionEnabledValue.get() ?
             searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final Attribute<String> searchAttribute : searchAttributes) {
-      final SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
+      SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
       for (final String rawSearchText : searchTexts) {
         conditions.add(where(searchAttribute)
                 .equalTo(prepareSearchText(rawSearchText, searchSettings))
                 .caseSensitive(searchSettings.getCaseSensitiveValue().get()));
       }
     }
-    final Condition.Combination conditionCombination = combination(Conjunction.OR, conditions);
+    Condition.Combination conditionCombination = combination(Conjunction.OR, conditions);
 
     return (additionalConditionSupplier == null ? conditionCombination :
             additionalConditionSupplier.get().and(conditionCombination))
@@ -295,8 +295,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private String prepareSearchText(final String rawSearchText, final SearchSettings searchSettings) {
-    final boolean wildcardPrefix = searchSettings.getWildcardPrefixValue().get();
-    final boolean wildcardPostfix = searchSettings.getWildcardPostfixValue().get();
+    boolean wildcardPrefix = searchSettings.getWildcardPrefixValue().get();
+    boolean wildcardPostfix = searchSettings.getWildcardPostfixValue().get();
 
     return rawSearchText.equals(wildcard) ? wildcard :
             ((wildcardPrefix ? wildcard : "") + rawSearchText.trim() + (wildcardPostfix ? wildcard : ""));
@@ -309,7 +309,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private String createDescription() {
-    final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
+    EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
 
     return searchAttributes.stream()
             .map(attribute -> definition.getProperty(attribute).getCaption())

@@ -19,7 +19,7 @@ public final class PlaylistTableModel extends SwingEntityTableModel {
   }
 
   public void createRandomPlaylist(final RandomPlaylistParameters parameters) throws DatabaseException {
-    final Entity randomPlaylist = getConnectionProvider().getConnection()
+    Entity randomPlaylist = getConnectionProvider().getConnection()
             .executeFunction(Playlist.RANDOM_PLAYLIST, parameters);
     addEntitiesAt(0, Collections.singletonList(randomPlaylist));
     getSelectionModel().setSelectedItem(randomPlaylist);

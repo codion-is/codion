@@ -32,7 +32,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 
   @Override
   protected Controls createPrintControls() {
-    final Controls printControls = super.createPrintControls();
+    Controls printControls = super.createPrintControls();
     printControls.add(Control.builder(this::viewCustomerReport)
             .caption(BUNDLE.getString("customer_report"))
             .enabledState(getTableModel().getSelectionModel().getSelectionNotEmptyObserver())
@@ -48,9 +48,9 @@ public final class CustomerTablePanel extends EntityTablePanel {
   }
 
   private JasperPrint fillCustomerReport() throws DatabaseException, ReportException {
-    final Collection<Long> customerIDs = Entity.get(Customer.ID,
+    Collection<Long> customerIDs = Entity.get(Customer.ID,
             getTableModel().getSelectionModel().getSelectedItems());
-    final Map<String, Object> reportParameters = new HashMap<>();
+    Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
 
     return getTableModel().getConnectionProvider().getConnection().fillReport(Customer.REPORT, reportParameters);

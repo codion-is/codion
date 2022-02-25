@@ -138,8 +138,8 @@ public interface FrameworkIcons extends Logos {
    * @throws IllegalArgumentException in case no such implementation is found
    */
   static FrameworkIcons frameworkIcons() {
-    final String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.get();
-    final ServiceLoader<FrameworkIcons> loader = ServiceLoader.load(FrameworkIcons.class);
+    String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.get();
+    ServiceLoader<FrameworkIcons> loader = ServiceLoader.load(FrameworkIcons.class);
     for (final FrameworkIcons icons : loader) {
       if (Objects.equals(icons.getClass().getName(), iconsClassName)) {
         return icons;

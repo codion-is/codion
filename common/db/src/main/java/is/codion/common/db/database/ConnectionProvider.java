@@ -33,7 +33,7 @@ public interface ConnectionProvider {
     if (nullOrEmpty(requireNonNull(user, "user").getUsername())) {
       throw new IllegalArgumentException("Username must be specified");
     }
-    final Properties connectionProperties = new Properties();
+    Properties connectionProperties = new Properties();
     connectionProperties.put(Database.USER_PROPERTY, user.getUsername());
     connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
 

@@ -383,12 +383,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     if (!editable || isReadOnly() || !isUpdateEnabled()) {
       return false;
     }
-    final Attribute<?> attribute = getColumnModel().getColumnIdentifier(modelColumnIndex);
+    Attribute<?> attribute = getColumnModel().getColumnIdentifier(modelColumnIndex);
     if (attribute instanceof ForeignKey) {
       return getEntityDefinition().isUpdatable((ForeignKey) attribute);
     }
 
-    final Property<?> property = getEntityDefinition().getProperty(attribute);
+    Property<?> property = getEntityDefinition().getProperty(attribute);
 
     return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
   }
@@ -401,8 +401,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    */
   @Override
   public final Object getValueAt(final int rowIndex, final int modelColumnIndex) {
-    final Attribute<?> attribute = getColumnModel().getColumnIdentifier(modelColumnIndex);
-    final Entity entity = getItemAt(rowIndex);
+    Attribute<?> attribute = getColumnModel().getColumnIdentifier(modelColumnIndex);
+    Entity entity = getItemAt(rowIndex);
 
     return getValue(entity, attribute);
   }
@@ -418,29 +418,29 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     if (!editable || isReadOnly() || !isUpdateEnabled()) {
       throw new IllegalStateException("This table model is readOnly or has disabled update");
     }
-    final Entity entity = getItemAt(rowIndex).copy();
+    Entity entity = getItemAt(rowIndex).copy();
 
-    final Attribute<?> columnIdentifier = getColumnModel().getColumnIdentifier(modelColumnIndex);
+    Attribute<?> columnIdentifier = getColumnModel().getColumnIdentifier(modelColumnIndex);
 
     entity.put((Attribute<Object>) columnIdentifier, value);
     try {
       update(singletonList(entity));
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
   @Override
   public Color getBackgroundColor(final int row, final Attribute<?> attribute) {
-    final Object color = getEntityDefinition().getBackgroundColorProvider().getColor(getItemAt(row), attribute);
+    Object color = getEntityDefinition().getBackgroundColorProvider().getColor(getItemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
 
   @Override
   public Color getForegroundColor(final int row, final Attribute<?> attribute) {
-    final Object color = getEntityDefinition().getForegroundColorProvider().getColor(getItemAt(row), attribute);
+    Object color = getEntityDefinition().getForegroundColorProvider().getColor(getItemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
@@ -488,7 +488,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     try {
       replaceEntities(getConnectionProvider().getConnection().select(keys));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -505,12 +505,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   @Override
   public final void replaceForeignKeyValues(final EntityType foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyValues, "foreignKeyValues");
-    final List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(requireNonNull(foreignKeyEntityType, "foreignKeyEntityType"));
+    List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(requireNonNull(foreignKeyEntityType, "foreignKeyEntityType"));
     boolean changed = false;
     for (final Entity entity : getItems()) {
       for (final ForeignKey foreignKey : foreignKeys) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
-          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKey);
+          Entity currentForeignKeyValue = entity.getForeignKey(foreignKey);
           if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
             currentForeignKeyValue.setAs(foreignKeyValue);
             changed = true;
@@ -526,10 +526,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   @Override
   public final void setSelectedByKey(final Collection<Key> keys) {
     requireNonNull(keys, "keys");
-    final List<Key> keyList = new ArrayList<>(keys);
-    final List<Integer> indexes = new ArrayList<>();
+    List<Key> keyList = new ArrayList<>(keys);
+    List<Integer> indexes = new ArrayList<>();
     for (final Entity visibleEntity : getVisibleItems()) {
-      final int index = keyList.indexOf(visibleEntity.getPrimaryKey());
+      int index = keyList.indexOf(visibleEntity.getPrimaryKey());
       if (index >= 0) {
         indexes.add(indexOf(visibleEntity));
         keyList.remove(index);
@@ -586,7 +586,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
       try {
         UserPreferences.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         LOG.error("Error while saving preferences", e);
       }
     }
@@ -594,11 +594,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   @Override
   public final String getTableDataAsDelimitedString(final char delimiter) {
-    final List<String> header = new ArrayList<>();
-    final List<Attribute<?>> attributes = new ArrayList<>();
-    final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
+    List<String> header = new ArrayList<>();
+    List<Attribute<?>> attributes = new ArrayList<>();
+    Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
-      final Attribute<?> attribute = (Attribute<?>) columnEnumeration.nextElement().getIdentifier();
+      Attribute<?> attribute = (Attribute<?>) columnEnumeration.nextElement().getIdentifier();
       attributes.add(attribute);
       header.add(getEntityDefinition().getProperty(attribute).getCaption());
     }
@@ -629,9 +629,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    */
   public static List<TableColumn> createColumns(final List<Property<?>> properties) {
     requireNonNull(properties);
-    final List<TableColumn> columns = new ArrayList<>(properties.size());
+    List<TableColumn> columns = new ArrayList<>(properties.size());
     for (final Property<?> property : properties) {
-      final TableColumn column = new TableColumn(columns.size());
+      TableColumn column = new TableColumn(columns.size());
       column.setIdentifier(property.getAttribute());
       column.setHeaderValue(property.getCaption());
       if (property.getPreferredColumnWidth() > 0) {
@@ -672,7 +672,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
               .limit(limit)
               .orderBy(getOrderBy()));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -688,7 +688,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     try {
       return editModel.getConnectionProvider().getConnection().rowCount(getTableConditionModel().getCondition());
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -740,7 +740,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    */
   protected OrderBy getOrderBy() {
     if (orderQueryBySortOrder && getSortModel().isSortingEnabled()) {
-      final OrderBy orderBy = getOrderByFromSortModel();
+      OrderBy orderBy = getOrderByFromSortModel();
       if (!orderBy.getOrderByAttributes().isEmpty()) {
         return orderBy;
       }
@@ -809,7 +809,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   private void onInsert(final List<Entity> insertedEntities) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
-      final List<Entity> entitiesToAdd = insertedEntities.stream()
+      List<Entity> entitiesToAdd = insertedEntities.stream()
               .filter(entity -> entity.getEntityType().equals(getEntityType()))
               .collect(toList());
       switch (insertAction) {
@@ -856,13 +856,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    */
   private void replaceEntitiesByKey(final Map<Key, Entity> entitiesByKey) {
     for (final Entity entity : getItems()) {
-      final Iterator<Map.Entry<Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
+      Iterator<Map.Entry<Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
       while (mapIterator.hasNext()) {
-        final Map.Entry<Key, Entity> entry = mapIterator.next();
+        Map.Entry<Key, Entity> entry = mapIterator.next();
         if (entity.getPrimaryKey().equals(entry.getKey())) {
           mapIterator.remove();
           entity.setAs(entry.getValue());
-          final int index = indexOf(entity);
+          int index = indexOf(entity);
           if (index >= 0) {
             fireTableRowsUpdated(index, index);
           }
@@ -876,18 +876,18 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   private void onColumnHidden(final Attribute<?> attribute) {
     //disable the condition and filter model for the column to be hidden, to prevent confusion
-    final ColumnConditionModel<?, ?> conditionModel = tableConditionModel.getConditionModels().get(attribute);
+    ColumnConditionModel<?, ?> conditionModel = tableConditionModel.getConditionModels().get(attribute);
     if (conditionModel != null && !conditionModel.isLocked()) {
       conditionModel.setEnabled(false);
     }
-    final ColumnConditionModel<?, ?> filterModel = tableConditionModel.getFilterModels().get(attribute);
+    ColumnConditionModel<?, ?> filterModel = tableConditionModel.getFilterModels().get(attribute);
     if (filterModel != null && !filterModel.isLocked()) {
       filterModel.setEnabled(false);
     }
   }
 
   private OrderBy getOrderByFromSortModel() {
-    final OrderBy orderBy = OrderBy.orderBy();
+    OrderBy orderBy = OrderBy.orderBy();
     getSortModel().getColumnSortOrder().entrySet().stream()
             .filter(entry -> isColumnProperty(entry.getKey()))
             .forEach(entry -> {
@@ -903,24 +903,24 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   private boolean isColumnProperty(final Attribute<?> attribute) {
-    final Property<?> property = getEntityDefinition().getProperty(attribute);
+    Property<?> property = getEntityDefinition().getProperty(attribute);
 
     return property instanceof ColumnProperty;
   }
 
   private JSONObject createPreferences() throws Exception {
-    final JSONObject preferencesRoot = new JSONObject();
+    JSONObject preferencesRoot = new JSONObject();
     preferencesRoot.put(PREFERENCES_COLUMNS, createColumnPreferences());
 
     return preferencesRoot;
   }
 
   private JSONObject createColumnPreferences() throws Exception {
-    final JSONObject columnPreferencesRoot = new JSONObject();
+    JSONObject columnPreferencesRoot = new JSONObject();
     for (final TableColumn column : getColumnModel().getAllColumns()) {
-      final Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
-      final JSONObject columnObject = new JSONObject();
-      final boolean visible = getColumnModel().isColumnVisible(attribute);
+      Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
+      JSONObject columnObject = new JSONObject();
+      boolean visible = getColumnModel().isColumnVisible(attribute);
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
       columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? getColumnModel().getColumnIndex(attribute) : -1);
@@ -932,35 +932,35 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   private void applyPreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
-      final String preferencesString = UserPreferences.getUserPreference(getUserPreferencesKey(), "");
+      String preferencesString = UserPreferences.getUserPreference(getUserPreferencesKey(), "");
       try {
         if (preferencesString.length() > 0) {
           applyColumnPreferences(new JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS));
         }
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         LOG.error("Error while applying preferences: " + preferencesString, e);
       }
     }
   }
 
   private void applyColumnPreferences(final JSONObject preferences) {
-    final SwingFilteredTableColumnModel<Attribute<?>> columnModel = getColumnModel();
+    SwingFilteredTableColumnModel<Attribute<?>> columnModel = getColumnModel();
     for (final TableColumn column : Collections.list(columnModel.getColumns())) {
-      final Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
+      Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
       if (columnModel.containsColumn(attribute)) {
         try {
-          final JSONObject columnPreferences = preferences.getJSONObject(attribute.getName());
+          JSONObject columnPreferences = preferences.getJSONObject(attribute.getName());
           column.setPreferredWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
           if (columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
-            final int index = Math.min(columnModel.getColumnCount() - 1, columnPreferences.getInt(PREFERENCES_COLUMN_INDEX));
+            int index = Math.min(columnModel.getColumnCount() - 1, columnPreferences.getInt(PREFERENCES_COLUMN_INDEX));
             columnModel.moveColumn(getColumnModel().getColumnIndex(column.getIdentifier()), index);
           }
           else {
             columnModel.setColumnVisible((Attribute<?>) column.getIdentifier(), false);
           }
         }
-        catch (final Exception e) {
+        catch (Exception e) {
           LOG.info("Property preferences not found: " + attribute, e);
         }
       }

@@ -35,27 +35,27 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
     if (authenticationToken == null) {
       return null;
     }
-    final Remote credentialsService = getCredentialsService(getRegistry(CredentialsService.REGISTRY_PORT.getOrThrow()));
+    Remote credentialsService = getCredentialsService(getRegistry(CredentialsService.REGISTRY_PORT.getOrThrow()));
     try {
       return ((CredentialsService) credentialsService).getUser(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       throw new ProviderNotReachableException(e.getMessage(), e);
     }
   }
 
   private static Remote getCredentialsService(final Registry registry) throws ProviderNotFoundException, ProviderNotReachableException {
-    final Remote credentialsService;
+    Remote credentialsService;
     try {
       credentialsService = registry.lookup(CredentialsService.class.getSimpleName());
       LOG.debug("CredentialsService found: " + credentialsService);
 
       return credentialsService;
     }
-    catch (final NotBoundException e) {
+    catch (NotBoundException e) {
       throw new ProviderNotFoundException("CredentialsService not bound in registry", e);
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       throw new ProviderNotReachableException("RMI registry not reachable", e);
     }
   }
@@ -64,7 +64,7 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
     try {
       return LocateRegistry.getRegistry(registryPort);
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       throw new ProviderNotFoundException("No RMI registry found", e);
     }
   }

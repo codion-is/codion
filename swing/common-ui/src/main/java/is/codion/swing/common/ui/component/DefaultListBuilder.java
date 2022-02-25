@@ -51,7 +51,7 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
 
   @Override
   protected JList<T> buildComponent() {
-    final JList<T> list = new JList<>(listModel);
+    JList<T> list = new JList<>(listModel);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setVisibleRowCount(visibleRowCount);
     list.setLayoutOrientation(layoutOrientation);

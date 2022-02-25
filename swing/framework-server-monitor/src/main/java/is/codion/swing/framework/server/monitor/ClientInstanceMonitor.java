@@ -68,7 +68,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public LocalDateTime getCreationDate() throws RemoteException {
-    final ClientLog log = server.getClientLog(remoteClient.getClientId());
+    ClientLog log = server.getClientLog(remoteClient.getClientId());
 
     return log == null ? null : log.getConnectionCreationDate();
   }
@@ -86,15 +86,15 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshLog() throws RemoteException {
-    final ClientLog log = server.getClientLog(remoteClient.getClientId());
+    ClientLog log = server.getClientLog(remoteClient.getClientId());
     try {
       logDocument.remove(0, logDocument.getLength());
       logRootNode.removeAllChildren();
       if (log != null) {
-        final StringBuilder logBuilder = new StringBuilder();
+        StringBuilder logBuilder = new StringBuilder();
         for (final MethodLogger.Entry entry : log.getEntries()) {
           entry.append(logBuilder);
-          final DefaultMutableTreeNode entryNode = new DefaultMutableTreeNode(getEntryString(entry));
+          DefaultMutableTreeNode entryNode = new DefaultMutableTreeNode(getEntryString(entry));
           if (entry.hasChildEntries()) {
             addChildEntries(entryNode, entry.getChildEntries());
           }
@@ -107,7 +107,7 @@ public final class ClientInstanceMonitor {
         logDocument.insertString(0, "Disconnected!", null);
       }
     }
-    catch (final BadLocationException e) {
+    catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
   }
@@ -135,7 +135,7 @@ public final class ClientInstanceMonitor {
     try {
       server.setLoggingEnabled(remoteClient.getClientId(), status);
     }
-    catch (final RemoteException e) {
+    catch (RemoteException e) {
       throw new RuntimeException(e);
     }
   }
@@ -146,7 +146,7 @@ public final class ClientInstanceMonitor {
 
   private static void addChildEntries(final DefaultMutableTreeNode entryNode, final List<MethodLogger.Entry> childEntries) {
     for (final MethodLogger.Entry entry : childEntries) {
-      final DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(getEntryString(entry));
+      DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(getEntryString(entry));
       if (entry.hasChildEntries()) {
         addChildEntries(subEntry, entry.getChildEntries());
       }
@@ -155,7 +155,7 @@ public final class ClientInstanceMonitor {
   }
 
   private static String getEntryString(final MethodLogger.Entry entry) {
-    final StringBuilder builder = new StringBuilder(entry.getMethod()).append(" [")
+    StringBuilder builder = new StringBuilder(entry.getMethod()).append(" [")
             .append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.getDuration())))
             .append(" μs").append("]");
     if (entry.getAccessMessage() != null) {

@@ -40,7 +40,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 
   @Override
   public Entity build() {
-    final Entity entity = definition.entity(values, originalValues);
+    Entity entity = definition.entity(values, originalValues);
     builderValues.forEach((attribute, value) -> entity.put((Attribute<Object>) attribute, value));
     builderForeignKeyValues.forEach(entity::put);
 

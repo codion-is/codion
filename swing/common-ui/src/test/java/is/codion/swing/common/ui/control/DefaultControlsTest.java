@@ -36,19 +36,19 @@ public class DefaultControlsTest {
 
   @Test
   void test() {
-    final Control one = Control.control(() -> {});
-    final Control two = Control.control(() -> {});
-    final Controls list = Controls.builder().caption("list").controls(one, two).build();
+    Control one = Control.control(() -> {});
+    Control two = Control.control(() -> {});
+    Controls list = Controls.builder().caption("list").controls(one, two).build();
     assertThrows(NullPointerException.class, () -> list.add(null));
     assertThrows(NullPointerException.class, () -> list.addAt(0, null));
     list.remove(null);
     assertFalse(nullOrEmpty(list.getCaption()));
     assertNull(list.getSmallIcon());
     assertEquals("list", list.getCaption());
-    final Controls list1 = Controls.controls();
+    Controls list1 = Controls.controls();
     assertTrue(nullOrEmpty(list1.getCaption()));
     assertNull(list1.getCaption());
-    final Controls list2 = Controls.builder().control(two).build();
+    Controls list2 = Controls.builder().control(two).build();
     list2.setCaption("list");
     assertFalse(nullOrEmpty(list2.getCaption()));
     assertEquals("list", list2.getCaption());
@@ -75,24 +75,24 @@ public class DefaultControlsTest {
 
   @Test
   void menuBar() {
-    final Controls base = Controls.controls();
+    Controls base = Controls.controls();
     base.add(controls);
 
-    final JMenuBar menu = base.createMenuBar();
+    JMenuBar menu = base.createMenuBar();
     assertEquals(1, menu.getMenuCount());
     assertEquals(3, menu.getMenu(0).getItemCount());
     assertEquals("one", menu.getMenu(0).getItem(0).getText());
     assertEquals("two", menu.getMenu(0).getItem(1).getText());
     assertEquals("three", menu.getMenu(0).getItem(2).getText());
 
-    final List<Controls> lists = new ArrayList<>();
+    List<Controls> lists = new ArrayList<>();
     lists.add(controls);
     lists.add(base);
   }
 
   @Test
   void popupMenu() {
-    final Controls base = Controls.controls();
+    Controls base = Controls.controls();
     base.add(controls);
 
     base.createPopupMenu();
@@ -100,13 +100,13 @@ public class DefaultControlsTest {
 
   @Test
   void horizontalButtonPanel() {
-    final JPanel base = new JPanel();
+    JPanel base = new JPanel();
     base.add(controls.createHorizontalButtonPanel());
   }
 
   @Test
   void verticalButtonPanel() {
-    final JPanel base = new JPanel();
+    JPanel base = new JPanel();
     base.add(controls.createVerticalButtonPanel());
   }
 

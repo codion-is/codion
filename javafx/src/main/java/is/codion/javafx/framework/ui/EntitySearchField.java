@@ -77,7 +77,7 @@ public final class EntitySearchField extends TextField {
         model.setSelectedEntities(null);
       }
       else if (!model.searchStringRepresentsSelected()) {
-        final List<Entity> queryResult;
+        List<Entity> queryResult;
         queryResult = model.performQuery();
         if (queryResult.size() == 1) {
           model.setSelectedEntities(queryResult);
@@ -103,7 +103,7 @@ public final class EntitySearchField extends TextField {
   }
 
   private void selectEntities(final List<Entity> queryResult) {
-    final FXUiUtil.SingleSelection singleSelection;
+    FXUiUtil.SingleSelection singleSelection;
     if (model.getMultipleSelectionEnabledValue().get()) {
       singleSelection = FXUiUtil.SingleSelection.NO;
     }

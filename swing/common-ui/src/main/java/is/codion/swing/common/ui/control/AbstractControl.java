@@ -94,7 +94,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
   @Override
   public final int getMnemonic() {
-    final Integer mnemonic = (Integer) super.getValue(MNEMONIC_KEY);
+    Integer mnemonic = (Integer) super.getValue(MNEMONIC_KEY);
     return mnemonic == null ? 0 : mnemonic;
   }
 
@@ -155,7 +155,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
   @Override
   public final JButton createButton() {
-    final JButton button = new JButton(this);
+    JButton button = new JButton(this);
     addPropertyChangeListener(new ButtonPropertyChangeListener(button));
 
     return button;
@@ -163,7 +163,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
   @Override
   public final JMenuItem createMenuItem() {
-    final JMenuItem menuItem = new JMenuItem(this);
+    JMenuItem menuItem = new JMenuItem(this);
     addPropertyChangeListener(new ButtonPropertyChangeListener(menuItem));
 
     return menuItem;

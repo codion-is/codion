@@ -73,15 +73,15 @@ public final class Clients {
    * @see Clients#TRUSTSTORE_PASSWORD
    */
   public static void resolveTrustStore() {
-    final String trustStorePath = TRUSTSTORE.get();
+    String trustStorePath = TRUSTSTORE.get();
     if (nullOrEmpty(trustStorePath)) {
       LOG.debug("No client truststore specified via {}", TRUSTSTORE.getPropertyName());
       return;
     }
-    final String password = TRUSTSTORE_PASSWORD.getOrThrow();
-    final SSLFactory.Builder sslFactoryBuilder = SSLFactory.builder()
+    String password = TRUSTSTORE_PASSWORD.getOrThrow();
+    SSLFactory.Builder sslFactoryBuilder = SSLFactory.builder()
             .withDefaultTrustMaterial();
-    final File trustStore = new File(trustStorePath);
+    File trustStore = new File(trustStorePath);
     if (trustStore.exists()) {
       sslFactoryBuilder.withTrustMaterial(trustStore.toPath(), password.toCharArray());
     }
@@ -89,12 +89,12 @@ public final class Clients {
       sslFactoryBuilder.withTrustMaterial(trustStorePath, password.toCharArray());
     }
 
-    final X509TrustManager trustManager = sslFactoryBuilder.build()
+    X509TrustManager trustManager = sslFactoryBuilder.build()
             .getTrustManager()
             .orElseThrow(() -> new RuntimeException("No TrustManager available after combining truststores"));
-    final KeyStore store = KeyStoreUtils.createTrustStore(trustManager);
+    KeyStore store = KeyStoreUtils.createTrustStore(trustManager);
     try {
-      final File file = File.createTempFile("combinedTrustStore", "tmp");
+      File file = File.createTempFile("combinedTrustStore", "tmp");
       file.deleteOnExit();
       try (final OutputStream outputStream = new FileOutputStream(file)) {
         store.store(outputStream, password.toCharArray());
@@ -104,7 +104,7 @@ public final class Clients {
       System.setProperty(JAVAX_NET_TRUSTSTORE, file.getPath());
       System.setProperty(JAVAX_NET_TRUSTSTORE_PASSWORD, password);
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }

@@ -202,7 +202,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
     @Override
     public ServerConfiguration build() {
-      final DefaultServerConfiguration configuration = new DefaultServerConfiguration(serverPort, registryPort);
+      DefaultServerConfiguration configuration = new DefaultServerConfiguration(serverPort, registryPort);
       configuration.auxiliaryServerFactoryClassNames.addAll(auxiliaryServerFactoryClassNames);
       configuration.serverAdminPort = serverAdminPort;
       configuration.sslEnabled = sslEnabled;
@@ -218,7 +218,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     }
 
     private static synchronized void resolveClasspathKeyStore() {
-      final String keystore = CLASSPATH_KEYSTORE.get();
+      String keystore = CLASSPATH_KEYSTORE.get();
       if (nullOrEmpty(keystore)) {
         LOG.debug("No classpath key store specified via {}", CLASSPATH_KEYSTORE.getPropertyName());
         return;
@@ -232,7 +232,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
           LOG.debug("Specified key store not found on classpath: {}", keystore);
           return;
         }
-        final File file = File.createTempFile("serverKeyStore", "tmp");
+        File file = File.createTempFile("serverKeyStore", "tmp");
         Files.write(file.toPath(), getBytes(inputStream));
         file.deleteOnExit();
 
@@ -240,14 +240,14 @@ final class DefaultServerConfiguration implements ServerConfiguration {
         LOG.debug("Classpath key store {} written to file {} and set as {}",
                 CLASSPATH_KEYSTORE.getPropertyName(), file, JAVAX_NET_KEYSTORE);
       }
-      catch (final IOException e) {
+      catch (IOException e) {
         throw new RuntimeException(e);
       }
     }
 
     private static byte[] getBytes(final InputStream stream) throws IOException {
-      final ByteArrayOutputStream os = new ByteArrayOutputStream();
-      final byte[] buffer = new byte[8192];
+      ByteArrayOutputStream os = new ByteArrayOutputStream();
+      byte[] buffer = new byte[8192];
       int line;
       while ((line = stream.read(buffer)) != -1) {
         os.write(buffer, 0, line);

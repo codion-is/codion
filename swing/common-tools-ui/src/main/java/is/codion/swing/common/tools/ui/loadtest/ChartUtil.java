@@ -21,7 +21,7 @@ final class ChartUtil {
   }
 
   private static void setColors(final JComponent parent, final JFreeChart chart) {
-    final Color textFieldForeground = UIManager.getColor("TextField.foreground");
+    Color textFieldForeground = UIManager.getColor("TextField.foreground");
     chart.setBackgroundPaint(parent.getBackground());
     chart.getLegend().setBackgroundPaint(parent.getBackground());
     chart.getLegend().setItemPaint(textFieldForeground);

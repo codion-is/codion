@@ -24,11 +24,11 @@ final class DefaultControl extends AbstractControl {
     try {
       command.perform();
     }
-    catch (final CancelException ce) {/*Operation cancelled*/}
-    catch (final RuntimeException re) {
+    catch (CancelException ce) {/*Operation cancelled*/}
+    catch (RuntimeException re) {
       throw re;
     }
-    catch (final Exception ex) {
+    catch (Exception ex) {
       throw new RuntimeException(ex);
     }
   }

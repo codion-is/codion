@@ -71,13 +71,13 @@ public final class DefaultVersionTest {
 
   @Test
   void compare() {
-    final Version version0 = Version.version(0, 0, 1);
-    final Version version1 = Version.version(0, 1, 0);
-    final Version version2 = Version.version(0, 1, 1);
-    final Version version3 = Version.version(1, 0, 1);
-    final Version version4 = Version.version(1, 1, 0);
+    Version version0 = Version.version(0, 0, 1);
+    Version version1 = Version.version(0, 1, 0);
+    Version version2 = Version.version(0, 1, 1);
+    Version version3 = Version.version(1, 0, 1);
+    Version version4 = Version.version(1, 1, 0);
 
-    final List<Version> versions = asList(version3, version4, version0, version2, version1);
+    List<Version> versions = asList(version3, version4, version0, version2, version1);
     Collections.sort(versions);
 
     assertEquals(0, versions.indexOf(version0));
@@ -89,8 +89,8 @@ public final class DefaultVersionTest {
 
   @Test
   void equalsHashCodeToString() {
-    final Version version0 = Version.version(2, 1, 5, "RC");
-    final Version version1 = Version.parse("2.1.5");
+    Version version0 = Version.version(2, 1, 5, "RC");
+    Version version1 = Version.parse("2.1.5");
     assertNotEquals(version0, version1);
     assertNotEquals(version0.hashCode(), version1.hashCode());
     assertEquals("2.1.5-RC", version0.toString());
@@ -98,17 +98,17 @@ public final class DefaultVersionTest {
     assertEquals(version1, Version.version(2, 1, 5));
     assertNotEquals(version0, Version.version(2, 1, 5, "SNAPSHOT"));
 
-    final Version v111 = Version.version(1, 1, 1);
-    final Version v111rc = Version.version(1, 1, 1, "RC");
-    final Version v111snap = Version.version(1, 1, 1, "snapshot");
+    Version v111 = Version.version(1, 1, 1);
+    Version v111rc = Version.version(1, 1, 1, "RC");
+    Version v111snap = Version.version(1, 1, 1, "snapshot");
 
-    final Version v121 = Version.version(1, 2, 1);
-    final Version v121rc = Version.version(1, 2, 1, "RC");
-    final Version v121snap = Version.version(1, 2, 1, "snapshot");
+    Version v121 = Version.version(1, 2, 1);
+    Version v121rc = Version.version(1, 2, 1, "RC");
+    Version v121snap = Version.version(1, 2, 1, "snapshot");
 
-    final Version v112 = Version.version(1, 1, 2);
+    Version v112 = Version.version(1, 1, 2);
 
-    final List<Version> versions = new ArrayList<>(Arrays.asList(v112, v121, v121snap, v121rc, v111rc, v111snap, v111));
+    List<Version> versions = new ArrayList<>(Arrays.asList(v112, v121, v121snap, v121rc, v111rc, v111snap, v111));
 
     Collections.sort(versions);
 

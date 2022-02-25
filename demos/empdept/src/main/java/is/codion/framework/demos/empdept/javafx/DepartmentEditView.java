@@ -24,7 +24,7 @@ public final class DepartmentEditView extends EntityEditView {
     createTextField(Department.NAME);
     createTextField(Department.LOCATION);
 
-    final GridPane gridPane = new GridPane();
+    GridPane gridPane = new GridPane();
 
     gridPane.add(createPropertyPanel(Department.ID), 0, 0);
     gridPane.add(createPropertyPanel(Department.NAME), 0, 1);

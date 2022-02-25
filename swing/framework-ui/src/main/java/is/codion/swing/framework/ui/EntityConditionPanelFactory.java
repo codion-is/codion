@@ -54,7 +54,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
   @Override
   public final <T> ColumnConditionPanel<?, T> createConditionPanel(final TableColumn column) {
-    final ColumnConditionModel<Attribute<T>, T> conditionModel = (ColumnConditionModel<Attribute<T>, T>)
+    ColumnConditionModel<Attribute<T>, T> conditionModel = (ColumnConditionModel<Attribute<T>, T>)
             tableConditionModel.getConditionModels().get(column.getIdentifier());
 
     return conditionModel == null ? null : createConditionPanel(conditionModel);
@@ -80,7 +80,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
    * @return a ColumnConditionPanel based on the given model
    */
   protected final <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createDefaultConditionPanel(final ColumnConditionModel<C, T> conditionModel) {
-    final ColumnConditionPanel.BoundFieldFactory boundFieldFactory;
+    ColumnConditionPanel.BoundFieldFactory boundFieldFactory;
     if (conditionModel instanceof ForeignKeyConditionModel) {
       boundFieldFactory = new ForeignKeyBoundFieldFactory((ForeignKeyConditionModel) conditionModel, entityComponents);
     }
@@ -93,7 +93,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
     try {
       return new ColumnConditionPanel<>(conditionModel, ToggleAdvancedButton.NO, boundFieldFactory);
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error("Unable to create AttributeConditionPanel for attribute: " + conditionModel.getColumnIdentifier(), e);
       return null;
     }
@@ -126,7 +126,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
     private JComponent createForeignKeyField() {
       if (model instanceof SwingForeignKeyConditionModel) {
-        final SwingEntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) model).getEntityComboBoxModel();
+        SwingEntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) model).getEntityComboBoxModel();
 
         return entityComponents.foreignKeyComboBox(model.getColumnIdentifier(), comboBoxModel)
                 .completionMode(Completion.Mode.MAXIMUM_MATCH)
@@ -134,7 +134,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
                 .build();
       }
 
-      final EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).getEntitySearchModel();
+      EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).getEntitySearchModel();
 
       return entityComponents.foreignKeySearchField(model.getColumnIdentifier(), searchModel).build();
     }

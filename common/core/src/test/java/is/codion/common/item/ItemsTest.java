@@ -16,17 +16,17 @@ public class ItemsTest {
 
   @Test
   void item() throws IOException, ClassNotFoundException {
-    final Item<String> item = Item.item("hello", "world");
+    Item<String> item = Item.item("hello", "world");
     assertEquals("hello", item.getValue());
     assertEquals("world", item.getCaption());
     assertEquals("world", item.toString());
 
-    final Item<String> newItem = Item.item("hello", "bla");
+    Item<String> newItem = Item.item("hello", "bla");
     assertEquals(item, newItem);
     assertEquals("hello".hashCode(), item.hashCode());
     assertEquals(1, item.compareTo(newItem));
 
-    final Item<String> thirdItem = Item.item("hello");
+    Item<String> thirdItem = Item.item("hello");
     assertEquals("hello".hashCode(), thirdItem.hashCode());
     assertEquals("hello", thirdItem.getCaption());
 
@@ -36,7 +36,7 @@ public class ItemsTest {
     assertEquals(0, Item.item(null).hashCode());
 
     //just make sure it's ok post serialization
-    final Item<String> deser = Serializer.deserialize(Serializer.serialize(item));
+    Item<String> deser = Serializer.deserialize(Serializer.serialize(item));
     deser.compareTo(item);
   }
 

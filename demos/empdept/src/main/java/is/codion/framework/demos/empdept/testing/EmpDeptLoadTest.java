@@ -36,17 +36,17 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppPanel.E
 
   @Override
   protected EmpDeptAppPanel.EmpDeptApplicationModel initializeApplication() throws CancelException {
-    final EmpDeptAppPanel.EmpDeptApplicationModel applicationModel = new EmpDeptAppPanel.EmpDeptApplicationModel(
+    EmpDeptAppPanel.EmpDeptApplicationModel applicationModel = new EmpDeptAppPanel.EmpDeptApplicationModel(
             EntityConnectionProvider.connectionProvider().setDomainClassName(EmpDept.class.getName())
                     .setClientTypeId(EmpDeptLoadTest.class.getSimpleName())
                     .setUser(getUser()));
 
-    final SwingEntityModel model = applicationModel.getEntityModel(Department.TYPE);
+    SwingEntityModel model = applicationModel.getEntityModel(Department.TYPE);
     model.addLinkedDetailModel(model.getDetailModel(Employee.TYPE));
     try {
       model.getTableModel().refresh();
     }
-    catch (final Exception ignored) {/*ignored*/}
+    catch (Exception ignored) {/*ignored*/}
 
     return applicationModel;
   }
@@ -61,7 +61,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppPanel.E
       try {
         new LoadTestPanel<>(new EmpDeptLoadTest()).showFrame();
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         e.printStackTrace();
       }
     }

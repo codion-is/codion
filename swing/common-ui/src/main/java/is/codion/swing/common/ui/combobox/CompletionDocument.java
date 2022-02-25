@@ -38,7 +38,7 @@ class CompletionDocument extends PlainDocument {
     this.model = comboBox.getModel();
     setEditorComponent((JTextComponent) comboBox.getEditor().getEditorComponent());
     comboBox.addPropertyChangeListener("editor", event -> {
-      final ComboBoxEditor editor = (ComboBoxEditor) event.getNewValue();
+      ComboBoxEditor editor = (ComboBoxEditor) event.getNewValue();
       if (editor != null) {
         setEditorComponent((JTextComponent) editor.getEditorComponent());
       }
@@ -102,14 +102,14 @@ class CompletionDocument extends PlainDocument {
   }
 
   protected final void setTextAccordingToSelectedItem() {
-    final Object item = comboBox.getSelectedItem();
-    final String text = item == null ? "" : item.toString();
+    Object item = comboBox.getSelectedItem();
+    String text = item == null ? "" : item.toString();
     try {
       // remove all text and insert the completed string
       super.remove(0, getLength());
       super.insertString(0, text, null);
     }
-    catch (final BadLocationException e) {
+    catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
   }
@@ -129,14 +129,14 @@ class CompletionDocument extends PlainDocument {
   }
 
   protected final Object lookupItem(final String pattern) {
-    final Object selectedItem = model.getSelectedItem();
+    Object selectedItem = model.getSelectedItem();
     // only search for a different item if the currently selected does not match
     if (selectedItem != null && startsWithIgnoreCase(selectedItem.toString(), pattern, normalize)) {
       return selectedItem;
     }
     else {
       for (int i = 0; i < model.getSize(); i++) {
-        final Object currentItem = model.getElementAt(i);
+        Object currentItem = model.getElementAt(i);
         // current item starts with the pattern?
         if (currentItem != null && startsWithIgnoreCase(currentItem.toString(), pattern, normalize)) {
           return currentItem;
@@ -148,8 +148,8 @@ class CompletionDocument extends PlainDocument {
   }
 
   protected static boolean startsWithIgnoreCase(final String str1, final String str2, final boolean normalize) {
-    final String one = normalize ? normalize(str1) : str1;
-    final String two = normalize ? normalize(str2) : str2;
+    String one = normalize ? normalize(str1) : str1;
+    String two = normalize ? normalize(str2) : str2;
 
     return one.toUpperCase().startsWith(two.toUpperCase());
   }

@@ -26,7 +26,7 @@ final class DefaultKeyBuilder implements Key.Builder {
 
   @Override
   public <T> Key.Builder with(final Attribute<T> attribute, final T value) {
-    final ColumnProperty<T> property = definition.getColumnProperty(attribute);
+    ColumnProperty<T> property = definition.getColumnProperty(attribute);
     if (property.isPrimaryKeyColumn()) {
       primaryKey = true;
     }

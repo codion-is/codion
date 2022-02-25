@@ -32,9 +32,9 @@ public final class SpinnerMouseWheelListener implements MouseWheelListener {
 
   @Override
   public void mouseWheelMoved(final MouseWheelEvent event) {
-    final int wheelRotation = event.getWheelRotation();
+    int wheelRotation = event.getWheelRotation();
     if (wheelRotation != 0) {
-      final Object newValue = (reversed ? wheelRotation > 0 : wheelRotation < 0) ? spinnerModel.getNextValue() : spinnerModel.getPreviousValue();
+      Object newValue = (reversed ? wheelRotation > 0 : wheelRotation < 0) ? spinnerModel.getNextValue() : spinnerModel.getPreviousValue();
       if (newValue != null) {
         spinnerModel.setValue(newValue);
       }

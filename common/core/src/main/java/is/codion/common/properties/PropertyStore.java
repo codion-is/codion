@@ -220,18 +220,18 @@ public interface PropertyStore {
   static String getSystemProperties(final PropertyFormatter propertyFormatter) {
     requireNonNull(propertyFormatter, "propertyWriter");
     try {
-      final SecurityManager manager = System.getSecurityManager();
+      SecurityManager manager = System.getSecurityManager();
       if (manager != null) {
         manager.checkPropertiesAccess();
       }
     }
-    catch (final SecurityException e) {
+    catch (SecurityException e) {
       System.err.println(e.getMessage());
       return "";
     }
-    final Properties props = System.getProperties();
-    final Enumeration<?> propNames = props.propertyNames();
-    final List<String> propertyNames = new ArrayList<>(props.size());
+    Properties props = System.getProperties();
+    Enumeration<?> propNames = props.propertyNames();
+    List<String> propertyNames = new ArrayList<>(props.size());
     while (propNames.hasMoreElements()) {
       propertyNames.add((String) propNames.nextElement());
     }

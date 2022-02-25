@@ -32,14 +32,14 @@ final class DisposeDialogOnEscapeAction extends AbstractAction {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
-    final List<Window> heavyWeightWindows = Arrays.stream(dialog.getOwnedWindows()).filter(window ->
+    List<Window> heavyWeightWindows = Arrays.stream(dialog.getOwnedWindows()).filter(window ->
             window.getClass().getName().endsWith("Popup$HeavyWeightWindow") && window.isVisible()).collect(toList());
     if (!heavyWeightWindows.isEmpty()) {
       heavyWeightWindows.forEach(Window::dispose);
 
       return;
     }
-    final List<JPopupMenu> popupMenus = getComponentsOfType(dialog.getContentPane(), JPopupMenu.class);
+    List<JPopupMenu> popupMenus = getComponentsOfType(dialog.getContentPane(), JPopupMenu.class);
     if (popupMenus.isEmpty()) {
       DisposeDialogAction.closeIfConfirmed(dialog, confirmCloseListener);
     }
@@ -49,7 +49,7 @@ final class DisposeDialogOnEscapeAction extends AbstractAction {
   }
 
   static <T extends Component> List<T> getComponentsOfType(final Container container, final Class<T> clazz) {
-    final List<T> components = new ArrayList<>();
+    List<T> components = new ArrayList<>();
     for (final Component component : container.getComponents()) {
       if (clazz.isAssignableFrom(component.getClass())) {
         components.add((T) component);

@@ -121,8 +121,8 @@ public final class Configuration {
   }
 
   private static PropertyStore loadConfiguration() {
-    final boolean configurationFileRequired = System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
-    final String configurationFilePath = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + Util.FILE_SEPARATOR + "codion.config");
+    boolean configurationFileRequired = System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
+    String configurationFilePath = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + Util.FILE_SEPARATOR + "codion.config");
     if (configurationFilePath.toLowerCase().startsWith(CLASSPATH_PREFIX)) {
       return loadFromClasspath(configurationFilePath, configurationFileRequired);
     }
@@ -131,7 +131,7 @@ public final class Configuration {
   }
 
   static PropertyStore loadFromClasspath(final String filePath, final boolean configurationRequired) {
-    final String filepath = getClasspathFilepath(filePath);
+    String filepath = getClasspathFilepath(filePath);
     try (final InputStream configurationFileStream = Configuration.class.getClassLoader().getResourceAsStream(filepath)) {
       if (configurationFileStream == null) {
         if (configurationRequired) {
@@ -143,14 +143,14 @@ public final class Configuration {
 
       return PropertyStore.propertyStore(configurationFileStream);
     }
-    catch (final IOException e) {
+    catch (IOException e) {
       throw new RuntimeException("Unable to load configuration from classpath: " + filePath, e);
     }
   }
 
   static PropertyStore loadFromFile(final String filePath, final boolean configurationRequired) {
     try {
-      final File file = new File(filePath);
+      File file = new File(filePath);
       if (!file.exists()) {
         if (configurationRequired) {
           throw new RuntimeException("Required configuration file not found: " + filePath);
@@ -161,7 +161,7 @@ public final class Configuration {
 
       return PropertyStore.propertyStore(file);
     }
-    catch (final IOException e) {
+    catch (IOException e) {
       throw new RuntimeException("Unable to load configuration from file: " + filePath);
     }
   }

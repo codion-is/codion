@@ -15,9 +15,9 @@ public class NullableCheckBoxTest {
 
   @Test
   void test() {
-    final NullableCheckBox box = new NullableCheckBox(new NullableToggleButtonModel(false), "Test");
+    NullableCheckBox box = new NullableCheckBox(new NullableToggleButtonModel(false), "Test");
     assertFalse(box.getState());
-    final MouseListener mouseListener = box.getMouseListeners()[1];
+    MouseListener mouseListener = box.getMouseListeners()[1];
     mouseListener.mouseClicked(null);
     assertTrue(box.getState());
     mouseListener.mouseClicked(null);

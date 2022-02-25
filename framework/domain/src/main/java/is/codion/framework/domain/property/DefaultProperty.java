@@ -246,7 +246,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   @Override
   public final DateTimeFormatter getDateTimeFormatter() {
     if (dateTimeFormatter == null) {
-      final String pattern = getDateTimePattern();
+      String pattern = getDateTimePattern();
       dateTimeFormatter = pattern == null ? null : ofPattern(pattern);
     }
 
@@ -276,7 +276,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   public final String getCaption() {
     if (attribute.getEntityType().getResourceBundleName() != null) {
       if (resourceCaption == null) {
-        final ResourceBundle bundle = ResourceBundle.getBundle(attribute.getEntityType().getResourceBundleName());
+        ResourceBundle bundle = ResourceBundle.getBundle(attribute.getEntityType().getResourceBundleName());
         resourceCaption = bundle.containsKey(captionResourceKey) ? bundle.getString(captionResourceKey) : "";
       }
 
@@ -296,7 +296,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    final DefaultProperty<?> that = (DefaultProperty<?>) obj;
+    DefaultProperty<?> that = (DefaultProperty<?>) obj;
 
     return attribute.equals(that.attribute);
   }
@@ -324,7 +324,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       return "";
     }
     if (attribute.isTemporal()) {
-      final DateTimeFormatter formatter = getDateTimeFormatter();
+      DateTimeFormatter formatter = getDateTimeFormatter();
       if (formatter != null) {
         return formatter.format((TemporalAccessor) value);
       }
@@ -426,7 +426,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       if (property.caption != null) {
         throw new IllegalStateException("Caption has already been set for property: " + property.attribute);
       }
-      final String resourceBundleName = property.attribute.getEntityType().getResourceBundleName();
+      String resourceBundleName = property.attribute.getEntityType().getResourceBundleName();
       if (resourceBundleName == null) {
         throw new IllegalStateException("No resource bundle specified for entity: " + property.attribute.getEntityType());
       }
@@ -609,14 +609,14 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
         return false;
       }
-      catch (final MissingResourceException e) {
+      catch (MissingResourceException e) {
         return true;
       }
     }
 
     private static Format initializeDefaultFormat(final Attribute<?> attribute) {
       if (attribute.isNumerical()) {
-        final NumberFormat numberFormat = getDefaultNumberFormat(attribute);
+        NumberFormat numberFormat = getDefaultNumberFormat(attribute);
         if (attribute.isBigDecimal()) {
           ((DecimalFormat) numberFormat).setParseBigDecimal(true);
         }
@@ -631,7 +631,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     private static NumberFormat getDefaultNumberFormat(final Attribute<?> attribute) {
-      final boolean grouping = NUMBER_FORMAT_GROUPING.get();
+      boolean grouping = NUMBER_FORMAT_GROUPING.get();
       if (attribute.isInteger() || attribute.isLong()) {
         return setSeparators(grouping ? NumberFormat.getIntegerInstance() : Formats.getNonGroupingIntegerFormat());
       }
@@ -641,11 +641,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
     private static NumberFormat setSeparators(final NumberFormat numberFormat) {
       if (numberFormat instanceof DecimalFormat) {
-        final String defaultGroupingSeparator = GROUPING_SEPARATOR.get();
-        final String defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
+        String defaultGroupingSeparator = GROUPING_SEPARATOR.get();
+        String defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
         if (Util.notNull(defaultGroupingSeparator, defaultDecimalSeparator)
                 && defaultGroupingSeparator.length() == 1 && defaultDecimalSeparator.length() == 1) {
-          final DecimalFormatSymbols symbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
+          DecimalFormatSymbols symbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
           symbols.setDecimalSeparator(defaultDecimalSeparator.charAt(0));
           symbols.setGroupingSeparator(defaultGroupingSeparator.charAt(0));
           ((DecimalFormat) numberFormat).setDecimalFormatSymbols(symbols);

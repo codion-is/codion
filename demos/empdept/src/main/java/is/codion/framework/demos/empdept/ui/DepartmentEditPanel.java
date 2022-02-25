@@ -24,7 +24,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Department.ID);
 
-    final JTextField departmentIdField = createTextField(Department.ID)
+    JTextField departmentIdField = createTextField(Department.ID)
             .build();
     createTextField(Department.NAME)
             .upperCase(true);

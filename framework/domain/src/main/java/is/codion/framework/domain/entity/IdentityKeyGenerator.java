@@ -28,7 +28,7 @@ final class IdentityKeyGenerator implements KeyGenerator {
                           final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
     try (final ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
       if (generatedKeys.next()) {
-        final ColumnProperty<?> property = primaryKeyProperties.get(0);
+        ColumnProperty<?> property = primaryKeyProperties.get(0);
         entity.put((Attribute<Object>) property.getAttribute(), generatedKeys.getObject(property.getColumnName()));
       }
     }

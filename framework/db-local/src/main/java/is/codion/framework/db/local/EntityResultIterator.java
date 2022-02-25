@@ -40,7 +40,7 @@ final class EntityResultIterator implements ResultIterator<Entity> {
 
       return false;
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       close();
       throw e;
     }
@@ -51,7 +51,7 @@ final class EntityResultIterator implements ResultIterator<Entity> {
     try {
       return resultPacker.fetch(resultSet);
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       close();
       throw e;
     }

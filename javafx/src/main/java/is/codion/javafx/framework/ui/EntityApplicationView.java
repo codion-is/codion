@@ -125,20 +125,20 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
   public final void start(final Stage stage) {
     try {
       this.mainStage = stage;
-      final User user = getApplicationUser();
-      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+      User user = getApplicationUser();
+      EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
       connectionProvider.getConnection();//throws exception if the server is not reachable or credentials are incorrect
       this.model = initializeApplicationModel(connectionProvider);
       stage.setTitle(applicationTitle);
       stage.getIcons().add(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName)));
       initializeEntityViews();
-      final Scene applicationScene = initializeApplicationScene(stage);
+      Scene applicationScene = initializeApplicationScene(stage);
       stage.setOnCloseRequest(event -> savePreferences());
       stage.setScene(applicationScene);
 
       stage.show();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       onException(e);
       stage.close();
     }
@@ -159,7 +159,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @return the default user when logging into this application
    */
   protected User getDefaultUser() {
-    final String defaultUserName = EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name");
+    String defaultUserName = EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name");
 
     return User.user(defaultUserName);
   }
@@ -175,9 +175,9 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @return the main menu for this application
    */
   protected MenuBar createMainMenu() {
-    final MenuBar menuBar = new MenuBar();
-    final Menu file = new Menu(FrameworkMessages.get(FrameworkMessages.FILE));
-    final MenuItem exit = new MenuItem(FrameworkMessages.get(FrameworkMessages.EXIT));
+    MenuBar menuBar = new MenuBar();
+    Menu file = new Menu(FrameworkMessages.get(FrameworkMessages.FILE));
+    MenuItem exit = new MenuItem(FrameworkMessages.get(FrameworkMessages.EXIT));
     exit.setOnAction(event -> mainStage.close());
     file.getItems().add(exit);
     menuBar.getMenus().add(file);
@@ -234,7 +234,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
     if (entityViews.isEmpty()) {
       throw new IllegalStateException("No entity views have been added");
     }
-    final TabPane tabPane = new TabPane();
+    TabPane tabPane = new TabPane();
     for (final EntityView entityView : entityViews) {
       entityView.initializePanel();
       tabPane.getTabs().add(new Tab(entityView.getCaption(), entityView));

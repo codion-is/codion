@@ -180,7 +180,7 @@ public final class TestDomain extends DefaultDomain {
             denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.getName(), Detail.MASTER_FK, Master.CODE),
             itemProperty(Detail.INT_VALUE_LIST, Detail.INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(Detail.INT_DERIVED, Detail.INT_DERIVED.getName(), linkedValues -> {
-              final Integer intValue = linkedValues.get(Detail.INT);
+              Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
 
                 return null;
@@ -318,8 +318,8 @@ public final class TestDomain extends DefaultDomain {
 
     @Override
     public String get(final DerivedProperty.SourceValues sourceValues) {
-      final String name = sourceValues.get(Employee.NAME);
-      final Entity department = sourceValues.get(Employee.DEPARTMENT_FK);
+      String name = sourceValues.get(Employee.NAME);
+      Entity department = sourceValues.get(Employee.DEPARTMENT_FK);
       if (name == null || department == null) {
         return null;
       }

@@ -103,7 +103,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
     for (final Entity deleted : entities.stream()
             .filter(entity -> entity.isNotNull(parentForeignKey))
             .collect(toList())) {
-      final TreePath treePath = find(getRoot(), deleted);
+      TreePath treePath = find(getRoot(), deleted);
       if (treePath != null) {
         removeNodeFromParent((EntityTreeNode) treePath.getLastPathComponent());
       }
@@ -123,9 +123,9 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
   }
 
   private static TreePath find(final EntityTreeNode root, final Entity entity) {
-    final Enumeration<TreeNode> enumeration = root.depthFirstEnumeration();
+    Enumeration<TreeNode> enumeration = root.depthFirstEnumeration();
     while (enumeration.hasMoreElements()) {
-      final EntityTreeNode node = (EntityTreeNode) enumeration.nextElement();
+      EntityTreeNode node = (EntityTreeNode) enumeration.nextElement();
       if (Objects.equals(node.nodeEntity, entity)) {
         return new TreePath(node.getPath());
       }
@@ -245,7 +245,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
       try {
         treeSelectionChangingState.set(true);
         if (!tableSelectionChangingState.get()) {
-          final List<Entity> selectedEntities = new ArrayList<>(treeSelectionModel.getSelectionCount());
+          List<Entity> selectedEntities = new ArrayList<>(treeSelectionModel.getSelectionCount());
           for (final TreePath selectedPath : treeSelectionModel.getSelectionPaths()) {
             selectedEntities.add(((EntityTreeNode) selectedPath.getLastPathComponent()).getEntity());
           }

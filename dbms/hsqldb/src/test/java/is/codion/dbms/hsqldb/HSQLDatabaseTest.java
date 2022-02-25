@@ -30,19 +30,19 @@ public class HSQLDatabaseTest {
 
   @Test
   void supportsIsValid() {
-    final HSQLDatabase db = new HSQLDatabase(URL);
+    HSQLDatabase db = new HSQLDatabase(URL);
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   void getAutoIncrementQuery() {
-    final HSQLDatabase db = new HSQLDatabase(URL);
+    HSQLDatabase db = new HSQLDatabase(URL);
     assertEquals(HSQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
   void getSequenceQuery() {
-    final HSQLDatabase db = new HSQLDatabase(URL);
+    HSQLDatabase db = new HSQLDatabase(URL);
     final String idSource = "seq";
     assertEquals(HSQLDatabase.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));
   }

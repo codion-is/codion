@@ -22,7 +22,7 @@ final class ClassPathJRReport extends AbstractJRReport {
     try {
       return (JasperReport) JRLoader.loadObject(resourceClass.getResource(reportPath));
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new ReportException("Unable to load report '" + reportPath + "' from classpath", e);
     }
   }

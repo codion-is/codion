@@ -96,13 +96,13 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
   @Override
   public User getUser(final UUID authenticationToken) throws RemoteException {
     try {
-      final String clientHost = getClientHost();
+      String clientHost = getClientHost();
       if (!Objects.equals(clientHost, LOCALHOST)) {
         LOG.debug("Request denied, clientHost should be " + LOCALHOST + " but was: " + clientHost);
         return null;
       }
 
-      final UserExpiration userExpiration = authenticationTokens.remove(authenticationToken);
+      UserExpiration userExpiration = authenticationTokens.remove(authenticationToken);
       if (userExpiration == null || userExpiration.isExpired()) {
         LOG.debug("Request failed, authentication token: " + authenticationToken + " invalid or expired");
 
@@ -111,7 +111,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
 
       return userExpiration.user;
     }
-    catch (final ServerNotActiveException e) {
+    catch (ServerNotActiveException e) {
       LOG.debug("Request denied, unable to get request host", e);
       return null;
     }
@@ -127,7 +127,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
       registry.unbind(CredentialsService.class.getSimpleName());
       UnicastRemoteObject.unexportObject(registry, true);
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error("Error on exit", e);
     }
   }

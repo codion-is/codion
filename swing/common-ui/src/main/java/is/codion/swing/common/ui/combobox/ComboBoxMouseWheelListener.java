@@ -29,7 +29,7 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
     if (comboBoxModel.getSize() == 0) {
       return;
     }
-    final int wheelRotation = event.getWheelRotation();
+    int wheelRotation = event.getWheelRotation();
     if (wheelRotation != 0) {
       comboBoxModel.setSelectedItem(getItemToSelect(wheelRotation > 0));
     }
@@ -56,7 +56,7 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
   }
 
   private Object getItemToSelect(final boolean next) {
-    final Object currentSelection = comboBoxModel.getSelectedItem();
+    Object currentSelection = comboBoxModel.getSelectedItem();
     if (currentSelection == null) {
       return next || wrapAround ? comboBoxModel.getElementAt(0) : null;
     }

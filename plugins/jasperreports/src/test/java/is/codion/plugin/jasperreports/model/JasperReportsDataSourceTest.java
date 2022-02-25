@@ -23,18 +23,18 @@ public class JasperReportsDataSourceTest {
 
   @Test
   void iterator() throws Exception {
-    final Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+    Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
             .with(TestDomain.DEPARTMENT_ID, 10)
             .with(TestDomain.DEPARTMENT_NAME, "name")
             .with(TestDomain.DEPARTMENT_LOCATION, "none")
             .build();
-    final EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
-    final List<Entity> entities = singletonList(department);
-    final JasperReportsDataSource<Entity> source =
+    EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
+    List<Entity> entities = singletonList(department);
+    JasperReportsDataSource<Entity> source =
             new JasperReportsDataSource<>(entities.iterator(), (entity, field) ->
                     entity.get(definition.getAttribute(field.getName())));
     while (source.next()) {
-      final JRField field = new TestField(TestDomain.DEPARTMENT_NAME.getName());
+      JRField field = new TestField(TestDomain.DEPARTMENT_NAME.getName());
       source.getFieldValue(field);
     }
   }

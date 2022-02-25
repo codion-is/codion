@@ -50,43 +50,43 @@ public class LoadTestModelTest {
 
   @Test
   void setApplicationBatchSizeNegative() {
-    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
+    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getApplicationBatchSizeValue().set(-5));
   }
 
   @Test
   void setUpdateIntervalNegative() {
-    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
+    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.setUpdateInterval(-1));
   }
 
   @Test
   void setLoginDelayFactorNegative() {
-    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
+    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getLoginDelayFactorValue().set(-1));
   }
 
   @Test
   void setMinimumThinkTimeNegative() {
-    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
+    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getMinimumThinkTimeValue().set(-1));
   }
 
   @Test
   void setMaximumThinkTimeNegative() {
-    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
+    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getMaximumThinkTimeValue().set(-1));
   }
 
   @Test
   void getUnknownUsageScenario() {
-    final TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
+    TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.getUsageScenario("bla"));
   }
 
   @Test
   void test() throws Exception {
-    final TestLoadTestModel model = new TestLoadTestModel(UNIT_TEST_USER, 50, 2, 2);
+    TestLoadTestModel model = new TestLoadTestModel(UNIT_TEST_USER, 50, 2, 2);
     assertEquals(2, model.getApplicationBatchSizeValue().get());
     model.getCollectChartDataState().set(true);
 
@@ -135,7 +135,7 @@ public class LoadTestModelTest {
     model.removeApplicationBatch();
     assertEquals(0, model.getApplicationCount());
 
-    final AtomicInteger exitCounter = new AtomicInteger();
+    AtomicInteger exitCounter = new AtomicInteger();
     model.addShutdownListener(exitCounter::incrementAndGet);
     model.shutdown();
     assertEquals(1, exitCounter.get());

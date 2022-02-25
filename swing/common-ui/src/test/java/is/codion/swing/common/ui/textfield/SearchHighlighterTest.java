@@ -19,16 +19,16 @@ public final class SearchHighlighterTest {
 
   @Test
   void test() throws BadLocationException {
-    final Document document = new DefaultStyledDocument();
+    Document document = new DefaultStyledDocument();
     document.insertString(0, "Hello there, here we are", null);
 
-    final JTextArea textArea = new JTextArea(document);
+    JTextArea textArea = new JTextArea(document);
 
-    final SearchHighlighter highlighter = SearchHighlighter.searchHighlighter(textArea);
+    SearchHighlighter highlighter = SearchHighlighter.searchHighlighter(textArea);
     highlighter.setHighlightColor(Color.BLUE);
     highlighter.setSelectedHighlightColor(Color.MAGENTA);
 
-    final JTextField searchField = highlighter.createSearchField();
+    JTextField searchField = highlighter.createSearchField();
 
     searchField.setText("th");
     assertEquals(6, highlighter.getSelectedHighlightPosition());

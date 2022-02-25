@@ -38,13 +38,13 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
   @Override
   protected List<EntityPanel> initializeEntityPanels(final EmpDeptApplicationModel applicationModel) {
-    final SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
-    final SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
+    SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
+    SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
 
-    final EntityPanel employeePanelBuilder = new EntityPanel(employeeModel,
+    EntityPanel employeePanelBuilder = new EntityPanel(employeeModel,
             new EmployeeEditPanel(employeeModel.getEditModel()));;
 
-    final EntityPanel departmentPanel = new EntityPanel(departmentModel,
+    EntityPanel departmentPanel = new EntityPanel(departmentModel,
             new DepartmentEditPanel(departmentModel.getEditModel()),
             new DepartmentTablePanel(departmentModel.getTableModel()));
     departmentPanel.addDetailPanel(employeePanelBuilder);
@@ -55,13 +55,13 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
   // tag::importJSON[]
   public void importJSON() throws Exception {
-    final File file = Dialogs.fileSelectionDialog()
+    File file = Dialogs.fileSelectionDialog()
             .owner(this)
             .addFileFilter(new FileNameExtensionFilter("JSON files", "json"))
             .addFileFilter(new FileNameExtensionFilter("Text files", "txt"))
             .selectFile();
 
-    final EntityTablePanel tablePanel = EntityTablePanel.createReadOnlyEntityTablePanel(
+    EntityTablePanel tablePanel = EntityTablePanel.createReadOnlyEntityTablePanel(
             EntityObjectMapper.createEntityObjectMapper(getModel().getEntities()).deserializeEntities(
                     Text.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider());
 
@@ -106,7 +106,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
     public EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
-      final SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
+      SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
       departmentModel.addDetailModel(new SwingEntityModel(new EmployeeEditModel(connectionProvider)));
       departmentModel.getTableModel().refresh();
       addEntityModel(departmentModel);

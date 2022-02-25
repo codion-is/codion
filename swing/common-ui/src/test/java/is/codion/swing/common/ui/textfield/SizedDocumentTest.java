@@ -17,8 +17,8 @@ public class SizedDocumentTest {
 
   @Test
   void test() throws BadLocationException {
-    final JTextField textField = new JTextField();
-    final SizedDocument document = new SizedDocument();
+    JTextField textField = new JTextField();
+    SizedDocument document = new SizedDocument();
     textField.setDocument(document);
     textField.setText("hello");
     assertEquals("hello", textField.getText());

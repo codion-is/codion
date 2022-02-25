@@ -74,7 +74,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
 
   @Override
   public final LinkedHashMap<C, SortOrder> getColumnSortOrder() {
-    final LinkedHashMap<C, SortOrder> columnSortOrder = new LinkedHashMap<>();
+    LinkedHashMap<C, SortOrder> columnSortOrder = new LinkedHashMap<>();
     getSortingStatesOrderedByPriority().forEach(entry ->
             columnSortOrder.put(entry.getKey(), entry.getValue().getSortOrder()));
 
@@ -84,7 +84,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   @Override
   public final void clear() {
     if (!sortingStates.isEmpty()) {
-      final C firstSortColumn = getSortingStatesOrderedByPriority().get(0).getKey();
+      C firstSortColumn = getSortingStatesOrderedByPriority().get(0).getKey();
       sortingStates.clear();
       sortingChangedEvent.onEvent(firstSortColumn);
     }
@@ -110,7 +110,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
    * @return the comparator to use when sorting by the given column
    */
   protected Comparator<?> initializeColumnComparator(final C columnIdentifier) {
-    final Class<?> columnClass = getColumnClass(columnIdentifier);
+    Class<?> columnClass = getColumnClass(columnIdentifier);
     if (Comparable.class.isAssignableFrom(columnClass)) {
       return COMPARABLE_COMPARATOR;
     }
@@ -128,7 +128,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       sortingStates.remove(columnIdentifier);
     }
     else {
-      final SortingState state = getSortingState(columnIdentifier);
+      SortingState state = getSortingState(columnIdentifier);
       if (state.equals(EMPTY_SORTING_STATE)) {
         sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, getNextSortPriority()));
       }
@@ -165,7 +165,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     @Override
     public int compare(final R o1, final R o2) {
       for (final Map.Entry<C, TableSortModel.SortingState> state : sortedSortingStates) {
-        final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getSortOrder());
+        int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getSortOrder());
         if (comparison != 0) {
           return comparison;
         }
@@ -175,9 +175,9 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }
 
     private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortOrder sortOrder) {
-      final Object valueOne = getColumnValue(rowOne, columnIdentifier);
-      final Object valueTwo = getColumnValue(rowTwo, columnIdentifier);
-      final int comparison;
+      Object valueOne = getColumnValue(rowOne, columnIdentifier);
+      Object valueTwo = getColumnValue(rowTwo, columnIdentifier);
+      int comparison;
       // Define null less than everything, except null.
       if (valueOne == null && valueTwo == null) {
         comparison = 0;

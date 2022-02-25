@@ -36,26 +36,26 @@ public class BoundedItemRandomizerModelTest {
 
   @Test
   void construct() {
-    final BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
+    BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
     assertEquals(3, model.getItemCount());
     assertEquals(10, model.getWeightBounds());
   }
 
   @Test
   void setWeight() {
-    final BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
+    BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
     assertThrows(UnsupportedOperationException.class, () -> model.setWeight(one, 10));
   }
 
   @Test
   void addItem() {
-    final BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
+    BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
     assertThrows(UnsupportedOperationException.class, () -> model.addItem("four"));
   }
 
   @Test
   void test() {
-    final BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
+    BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
 
     assertEquals(3, model.getWeight(one));//last
     assertEquals(3, model.getWeight(two));
@@ -95,7 +95,7 @@ public class BoundedItemRandomizerModelTest {
       model.decrementWeight(two);
       fail();
     }
-    catch (final IllegalStateException ignored) {/*ignored*/}
+    catch (IllegalStateException ignored) {/*ignored*/}
 
     model.incrementWeight(three);
 
@@ -149,6 +149,6 @@ public class BoundedItemRandomizerModelTest {
       model.incrementWeight(three);
       fail();
     }
-    catch (final IllegalStateException ignored) {/*ignored*/}
+    catch (IllegalStateException ignored) {/*ignored*/}
   }
 }

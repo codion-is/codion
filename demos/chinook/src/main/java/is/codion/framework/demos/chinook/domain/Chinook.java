@@ -317,7 +317,7 @@ public interface Chinook {
       try {
         return ImageIO.read(new ByteArrayInputStream(bytes));
       }
-      catch (final IOException e) {
+      catch (IOException e) {
         throw new RuntimeException(e);
       }
     }

@@ -62,8 +62,8 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
 
   @Override
   public final T showDialog(final JComponent owner, final String title) {
-    final State okPressed = State.state();
-    final JPanel basePanel = new JPanel(Layouts.borderLayout());
+    State okPressed = State.state();
+    JPanel basePanel = new JPanel(Layouts.borderLayout());
     basePanel.add(component, BorderLayout.CENTER);
     basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
     Dialogs.okCancelDialog(basePanel)
@@ -87,22 +87,22 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
       try {
         SwingUtilities.invokeAndWait(() -> setComponentValue(component, value));
       }
-      catch (final InterruptedException ex) {
+      catch (InterruptedException ex) {
         Thread.currentThread().interrupt();
         throw new RuntimeException(ex);
       }
-      catch (final InvocationTargetException e) {
-        final Throwable cause = e.getCause();
+      catch (InvocationTargetException e) {
+        Throwable cause = e.getCause();
         if (cause instanceof RuntimeException) {
           throw (RuntimeException) cause;
         }
 
         throw new RuntimeException(cause);
       }
-      catch (final RuntimeException e) {
+      catch (RuntimeException e) {
         throw e;
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         throw new RuntimeException(e);
       }
     }

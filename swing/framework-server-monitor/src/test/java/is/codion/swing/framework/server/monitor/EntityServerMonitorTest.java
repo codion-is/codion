@@ -51,27 +51,27 @@ public class EntityServerMonitorTest {
 
   @Test
   void test() throws Exception {
-    final String clientTypeId = EntityServerMonitorTest.class.getName();
-    final EntityConnectionProvider connectionProvider =
+    String clientTypeId = EntityServerMonitorTest.class.getName();
+    EntityConnectionProvider connectionProvider =
             new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())
             .setDomainClassName("TestDomain").setClientTypeId(clientTypeId).setUser(UNIT_TEST_USER);
     connectionProvider.getConnection();
-    final EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.getRegistryPort(), CONFIGURATION.getAdminUser());
+    EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.getRegistryPort(), CONFIGURATION.getAdminUser());
     model.refresh();
-    final HostMonitor hostMonitor = model.getHostMonitors().iterator().next();
+    HostMonitor hostMonitor = model.getHostMonitors().iterator().next();
     assertEquals("localhost", hostMonitor.getHostName());
     hostMonitor.refresh();
-    final ServerMonitor serverMonitor = hostMonitor.getServerMonitors().iterator().next();
+    ServerMonitor serverMonitor = hostMonitor.getServerMonitors().iterator().next();
     assertNotNull(serverMonitor);
-    final ClientUserMonitor clientUserMonitor = serverMonitor.getClientMonitor();
+    ClientUserMonitor clientUserMonitor = serverMonitor.getClientMonitor();
     clientUserMonitor.refresh();
     assertEquals(1, clientUserMonitor.getUserListModel().size());
     assertEquals(1, clientUserMonitor.getClientTypeListModel().size());
-    final ClientMonitor clientMonitor = clientUserMonitor.getClientTypeListModel().firstElement();
+    ClientMonitor clientMonitor = clientUserMonitor.getClientTypeListModel().firstElement();
     assertEquals(clientTypeId, clientMonitor.getClientTypeId());
     clientMonitor.refresh();
     assertEquals(1, clientMonitor.getRemoteClientListModel().size());
-    final RemoteClient remoteClient = clientMonitor.getRemoteClientListModel().firstElement();
+    RemoteClient remoteClient = clientMonitor.getRemoteClientListModel().firstElement();
     assertEquals(connectionProvider.getClientId(), remoteClient.getClientId());
     assertEquals(UNIT_TEST_USER, remoteClient.getUser());
 

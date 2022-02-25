@@ -331,9 +331,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void replaceForeignKeyValues(final Collection<Entity> entities) {
-    final Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
+    Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
     for (final Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
-      final List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(entityTypeEntities.getKey());
+      List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(entityTypeEntities.getKey());
       for (final ForeignKey foreignKey : foreignKeys) {
         replaceForeignKey(foreignKey, entityTypeEntities.getValue());
       }
@@ -367,7 +367,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void setForeignKeyValues(final Collection<Entity> entities) {
-    final Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
+    Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
     for (final Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
       for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entityTypeEntities.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
@@ -397,8 +397,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final <T> void put(final Attribute<T> attribute, final T value) {
     requireNonNull(attribute, "attribute");
-    final Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
-    final T previousValue = entity.put(attribute, value);
+    Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
+    T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
       notifyValueEdit(new DefaultValueChange<>(attribute, value, previousValue), dependingValues);
     }
@@ -409,7 +409,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     requireNonNull(attribute, PROPERTY);
     T value = null;
     if (entity.contains(attribute)) {
-      final Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
+      Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
       value = entity.remove(attribute);
       notifyValueEdit(new DefaultValueChange<>(attribute, null, value), dependingValues);
     }
@@ -444,7 +444,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void validate(final Attribute<?> attribute) throws ValidationException {
-    final EntityDefinition entityDefinition = getEntityDefinition();
+    EntityDefinition entityDefinition = getEntityDefinition();
     validator.validate(entity, entityDefinition, entityDefinition.getProperty(attribute));
   }
 
@@ -462,7 +462,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public void validate(final Entity entity) throws ValidationException {
-    final EntityDefinition definition = getEntities().getDefinition(entity.getEntityType());
+    EntityDefinition definition = getEntities().getDefinition(entity.getEntityType());
     if (definition.getEntityType().equals(getEntityType())) {
       validator.validate(entity, definition);
     }
@@ -477,7 +477,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       validate(attribute);
       return true;
     }
-    catch (final ValidationException e) {
+    catch (ValidationException e) {
       return false;
     }
   }
@@ -492,12 +492,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     if (!isInsertEnabled()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
-    final Entity toInsert = getEntityCopy();
+    Entity toInsert = getEntityCopy();
     if (getEntityDefinition().isKeyGenerated()) {
       toInsert.clearPrimaryKey();
     }
     toInsert.saveAll();
-    final List<Entity> insertedEntities = insertEntities(singletonList(toInsert));
+    List<Entity> insertedEntities = insertEntities(singletonList(toInsert));
     if (insertedEntities.isEmpty()) {
       throw new RuntimeException("Insert did not return an entity, usually caused by a misconfigured key generator");
     }
@@ -517,7 +517,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     if (entities.isEmpty()) {
       return emptyList();
     }
-    final List<Entity> insertedEntities = insertEntities(entities);
+    List<Entity> insertedEntities = insertEntities(entities);
 
     notifyAfterInsert(unmodifiableList(insertedEntities));
 
@@ -526,7 +526,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity update() throws DatabaseException, ValidationException {
-    final List<Entity> updated = update(singletonList(getEntityCopy()));
+    List<Entity> updated = update(singletonList(getEntityCopy()));
     if (updated.isEmpty()) {
       throw new UpdateException("Active entity is not modified");
     }
@@ -545,7 +545,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
     LOG.debug("{} - update {}", this, entities);
 
-    final List<Entity> modifiedEntities = getModifiedEntities(entities);
+    List<Entity> modifiedEntities = getModifiedEntities(entities);
     if (modifiedEntities.isEmpty()) {
       return emptyList();
     }
@@ -553,8 +553,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     notifyBeforeUpdate(unmodifiableMap(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities))));
     validate(modifiedEntities);
 
-    final List<Entity> updatedEntities = doUpdate(modifiedEntities);
-    final int index = updatedEntities.indexOf(getEntity());
+    List<Entity> updatedEntities = doUpdate(modifiedEntities);
+    int index = updatedEntities.indexOf(getEntity());
     if (index >= 0) {
       doSetEntity(updatedEntities.get(index));
     }
@@ -566,7 +566,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity delete() throws DatabaseException {
-    final Entity originalEntity = getEntityCopy();
+    Entity originalEntity = getEntityCopy();
     originalEntity.revertAll();
 
     return delete(singletonList(originalEntity)).get(0);
@@ -585,7 +585,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
     notifyBeforeDelete(unmodifiableList(entities));
 
-    final List<Entity> deleted = doDelete(entities);
+    List<Entity> deleted = doDelete(entities);
     if (deleted.contains(getEntity())) {
       doSetEntity(null);
     }
@@ -607,7 +607,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
         setEntity(getConnectionProvider().getConnection().selectSingle(getEntity().getPrimaryKey()));
       }
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -620,14 +620,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public EntitySearchModel createForeignKeySearchModel(final ForeignKey foreignKey) {
-    final ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKey);
-    final Collection<Attribute<String>> searchAttributes = getEntities()
+    ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKey);
+    Collection<Attribute<String>> searchAttributes = getEntities()
             .getDefinition(property.getReferencedEntityType()).getSearchAttributes();
     if (searchAttributes.isEmpty()) {
       throw new IllegalStateException("No search attributes defined for entity: " + property.getReferencedEntityType());
     }
 
-    final EntitySearchModel searchModel = new DefaultEntitySearchModel(property.getReferencedEntityType(), connectionProvider, searchAttributes);
+    EntitySearchModel searchModel = new DefaultEntitySearchModel(property.getReferencedEntityType(), connectionProvider, searchAttributes);
     searchModel.getMultipleSelectionEnabledValue().set(false);
 
     return searchModel;
@@ -657,7 +657,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final boolean containsUnsavedData() {
     if (isEntityNew()) {
-      final EntityDefinition entityDefinition = getEntityDefinition();
+      EntityDefinition entityDefinition = getEntityDefinition();
       for (final ColumnProperty<?> property : entityDefinition.getColumnProperties()) {
         if (!entityDefinition.isForeignKeyAttribute(property.getAttribute()) && valueModified(property.getAttribute())) {
           return true;
@@ -882,7 +882,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param values the foreign key entities
    */
   protected void replaceForeignKey(final ForeignKey foreignKey, final List<Entity> values) {
-    final Entity currentForeignKeyValue = getForeignKey(foreignKey);
+    Entity currentForeignKeyValue = getForeignKey(foreignKey);
     if (currentForeignKeyValue != null) {
       for (final Entity replacementValue : values) {
         if (currentForeignKeyValue.equals(replacementValue)) {
@@ -973,7 +973,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private boolean isSetEntityAllowed() {
     if (warnAboutUnsavedData && containsUnsavedData()) {
-      final State confirmation = State.state(true);
+      State confirmation = State.state(true);
       confirmSetEntityEvent.onEvent(confirmation);
 
       return confirmation.get();
@@ -983,9 +983,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private void doSetEntity(final Entity entity) {
-    final Map<Attribute<?>, Object> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity(this::getDefaultValue) : entity);
+    Map<Attribute<?>, Object> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity(this::getDefaultValue) : entity);
     for (final Map.Entry<Attribute<?>, Object> entry : affectedAttributes.entrySet()) {
-      final Attribute<Object> objectAttribute = (Attribute<Object>) entry.getKey();
+      Attribute<Object> objectAttribute = (Attribute<Object>) entry.getKey();
       onValueChange(new DefaultValueChange<>(objectAttribute, this.entity.get(objectAttribute), entry.getValue()));
     }
     if (affectedAttributes.isEmpty()) {//no value changes to trigger state updates
@@ -1026,8 +1026,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see ColumnProperty.Builder#defaultValue(Object)
    */
   private Entity getDefaultEntity(final ValueSupplier valueSupplier) {
-    final EntityDefinition definition = getEntityDefinition();
-    final Entity newEntity = definition.entity();
+    EntityDefinition definition = getEntityDefinition();
+    Entity newEntity = definition.entity();
     for (@SuppressWarnings("rawtypes") final ColumnProperty property : definition.getColumnProperties()) {
       if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
@@ -1070,8 +1070,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private Map<Attribute<?>, Object> getDependentValues(final Attribute<?> attribute) {
-    final Map<Attribute<?>, Object> dependentValues = new HashMap<>();
-    final EntityDefinition entityDefinition = getEntityDefinition();
+    Map<Attribute<?>, Object> dependentValues = new HashMap<>();
+    EntityDefinition entityDefinition = getEntityDefinition();
     entityDefinition.getDerivedAttributes(attribute).forEach(derivedAttribute ->
             dependentValues.put(derivedAttribute, get(derivedAttribute)));
     entityDefinition.getForeignKeyProperties(attribute).forEach(foreignKeyProperty ->
@@ -1088,7 +1088,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     onValueChange(valueChange);
     getValueEditEvent(valueChange.getAttribute()).onEvent(valueChange);
     dependentValues.forEach((dependentAttribute, previousValue) -> {
-      final Object currentValue = get(dependentAttribute);
+      Object currentValue = get(dependentAttribute);
       if (!Objects.equals(previousValue, currentValue)) {
         notifyValueEdit(new DefaultValueChange<>((Attribute<Object>) dependentAttribute, currentValue, previousValue), emptyMap());
       }
@@ -1097,7 +1097,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private <T> void onValueChange(final ValueChange<T> valueChange) {
     updateEntityStates();
-    final Event<ValueChange<T>> changeEvent = (Event<ValueChange<T>>) valueChangeEventMap.get(valueChange.getAttribute());
+    Event<ValueChange<T>> changeEvent = (Event<ValueChange<T>>) valueChangeEventMap.get(valueChange.getAttribute());
     if (changeEvent != null) {
       changeEvent.onEvent(valueChange);
     }
@@ -1120,8 +1120,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    */
   private static Map<Key, Entity> mapToOriginalPrimaryKey(final List<Entity> entitiesBeforeUpdate,
                                                           final List<Entity> entitiesAfterUpdate) {
-    final List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
-    final Map<Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
+    List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
+    Map<Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
     for (final Entity entity : entitiesBeforeUpdate) {
       keyMap.put(entity.getOriginalPrimaryKey(), findAndRemove(entity.getPrimaryKey(), entitiesAfterUpdateCopy.listIterator()));
     }
@@ -1131,7 +1131,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private static Entity findAndRemove(final Key primaryKey, final ListIterator<Entity> iterator) {
     while (iterator.hasNext()) {
-      final Entity current = iterator.next();
+      Entity current = iterator.next();
       if (current.getPrimaryKey().equals(primaryKey)) {
         iterator.remove();
 

@@ -35,7 +35,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityTableModel createTestTableModel() {
-    final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DETAIL, getConnectionProvider()) {
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DETAIL, getConnectionProvider()) {
       @Override
       protected Collection<Entity> refreshItems() {
         return testEntities;
@@ -57,7 +57,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityTableModel createDepartmentTableModel() {
-    final SwingEntityTableModel deptModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
+    SwingEntityTableModel deptModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
     deptModel.getSortModel().setSortOrder(TestDomain.DEPARTMENT_NAME, SortOrder.ASCENDING);
 
     return deptModel;
@@ -80,14 +80,14 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
-    final SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
+    SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
     assertEquals(0, employeeTableModel.getRowCount());
-    final Entity accounting = getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
+    Entity accounting = getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
     employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, singletonList(accounting));
     assertEquals(7, employeeTableModel.getRowCount());
     employeeTableModel.clear();
     employeeTableModel.setRefreshOnForeignKeyConditionValuesSet(false);
-    final Entity sales = getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 30);
+    Entity sales = getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 30);
     employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, Collections.singleton(sales));
     assertEquals(0, employeeTableModel.getRowCount());
     employeeTableModel.refresh();
@@ -96,7 +96,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void nonMatchingConditionModelEntityType() {
-    final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
+    EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
             new DefaultFilterModelFactory(), new DefaultConditionModelFactory(getConnectionProvider()));
     assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(new SwingEntityEditModel(TestDomain.T_EMP, getConnectionProvider()),
             new SwingEntityTableSortModel(getConnectionProvider().getEntities()), conditionModel));
@@ -110,7 +110,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   void testFiltering() {
     testModel.refresh();
-    final ColumnConditionModel<Attribute<String>, String> filterModel =
+    ColumnConditionModel<Attribute<String>, String> filterModel =
             testModel.getTableConditionModel().getFilterModel(TestDomain.DETAIL_STRING);
     filterModel.setEqualValue("a");
     testModel.filterContents();
@@ -156,26 +156,26 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void setValueAt() {
-    final SwingEntityTableModel tableModel = createEmployeeTableModel();
+    SwingEntityTableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
     assertThrows(IllegalStateException.class, () -> tableModel.setValueAt("newname", 0, 1));
     tableModel.setEditable(true);
     tableModel.setValueAt("newname", 0, 1);
-    final Entity entity = tableModel.getItemAt(0);
+    Entity entity = tableModel.getItemAt(0);
     assertEquals("newname", entity.get(TestDomain.EMP_NAME));
     assertThrows(RuntimeException.class, () -> tableModel.setValueAt("newname", 0, 0));
   }
 
   @Test
   void testSortComparator() {
-    final Comparator<?> comparator = ((SwingEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(TestDomain.DETAIL_MASTER_FK);
+    Comparator<?> comparator = ((SwingEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(TestDomain.DETAIL_MASTER_FK);
     //make sure we get the comparator from the entity referenced by the foreign key
     assertEquals(comparator, getConnectionProvider().getEntities().getDefinition(TestDomain.T_MASTER).getComparator());
   }
 
   @Test
   void columnModel() {
-    final TableColumn column = testModel.getColumnModel().getTableColumn(TestDomain.DETAIL_STRING);
+    TableColumn column = testModel.getColumnModel().getTableColumn(TestDomain.DETAIL_STRING);
     assertEquals(TestDomain.DETAIL_STRING, column.getIdentifier());
   }
 
@@ -193,8 +193,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void backgroundColor() {
-    final SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
-    final ColumnConditionModel<Attribute<String>, String> nameConditionModel =
+    SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
+    ColumnConditionModel<Attribute<String>, String> nameConditionModel =
             employeeTableModel.getTableConditionModel().getConditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setEqualValue("BLAKE");
     employeeTableModel.refresh();
@@ -203,15 +203,15 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void indexOf() {
-    final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
     tableModel.getSortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
     assertEquals(SortOrder.ASCENDING, tableModel.getSortModel().getSortingState(TestDomain.EMP_NAME).getSortOrder());
 
-    final Key pk1 = getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 10);//ADAMS
+    Key pk1 = getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
 
-    final Key pk2 = getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, -66);
+    Key pk2 = getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, -66);
     assertEquals(-1, tableModel.indexOf(pk2));
   }
 
@@ -219,7 +219,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void preferences() throws Exception {
     testModel.clearPreferences();
 
-    final SwingEntityTableModel tableModel = createTestTableModel();
+    SwingEntityTableModel tableModel = createTestTableModel();
     assertTrue(tableModel.getColumnModel().isColumnVisible(TestDomain.DETAIL_STRING));
 
     tableModel.getColumnModel().setColumnVisible(TestDomain.DETAIL_STRING, false);
@@ -231,7 +231,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
     tableModel.savePreferences();
 
-    final SwingEntityTableModel model = createTestTableModel();
+    SwingEntityTableModel model = createTestTableModel();
     assertFalse(model.getColumnModel().isColumnVisible(TestDomain.DETAIL_STRING));
     assertEquals(0, model.getColumnModel().getColumnIndex(TestDomain.DETAIL_DOUBLE));
     assertEquals(1, model.getColumnModel().getColumnIndex(TestDomain.DETAIL_INT));
@@ -246,7 +246,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void orderQueryBySortOrder() {
-    final SwingEntityTableModel tableModel = createEmployeeTableModel();
+    SwingEntityTableModel tableModel = createEmployeeTableModel();
     OrderBy orderBy = tableModel.getOrderBy();
     //default order by for entity
     assertEquals(2, orderBy.getOrderByAttributes().size());

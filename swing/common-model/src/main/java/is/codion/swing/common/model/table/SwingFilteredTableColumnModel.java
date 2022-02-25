@@ -69,7 +69,7 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
       throw new IllegalArgumentException("One or more columns must be specified");
     }
     tableColumns.forEach(column -> {
-      final C identifier = (C) column.getIdentifier();
+      C identifier = (C) column.getIdentifier();
       columns.put(identifier, column);
       columnIdentifiers.put(column.getModelIndex(), identifier);
       tableColumnModel.addColumn(column);
@@ -136,7 +136,7 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
 
   @Override
   public TableColumn getTableColumn(final C columnIdentifier) {
-    final TableColumn column = columns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    TableColumn column = columns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
     if (column != null) {
       return column;
     }
@@ -151,7 +151,7 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
 
   @Override
   public C getColumnIdentifier(final int columnModelIndex) {
-    final C identifier = columnIdentifiers.get(columnModelIndex);
+    C identifier = columnIdentifiers.get(columnModelIndex);
     if (identifier != null) {
       return identifier;
     }
@@ -285,7 +285,7 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
 
   private boolean showColumn(final C columnIdentifier) {
     checkIfLocked();
-    final HiddenColumn column = hiddenColumns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    HiddenColumn column = hiddenColumns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
     if (column != null) {
       hiddenColumns.remove(columnIdentifier);
       tableColumnModel.addColumn(column.column);
@@ -301,7 +301,7 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
   private boolean hideColumn(final C columnIdentifier) {
     checkIfLocked();
     if (!hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER))) {
-      final HiddenColumn hiddenColumn = new HiddenColumn(getTableColumn(columnIdentifier));
+      HiddenColumn hiddenColumn = new HiddenColumn(getTableColumn(columnIdentifier));
       hiddenColumns.put(columnIdentifier, hiddenColumn);
       tableColumnModel.removeColumn(hiddenColumn.column);
       columnHiddenEvent.onEvent(columnIdentifier);
@@ -329,7 +329,7 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
     }
 
     private Set<TableColumn> getColumnsToTheRightOf(final TableColumn column) {
-      final Set<TableColumn> set = new HashSet<>();
+      Set<TableColumn> set = new HashSet<>();
       for (int i = tableColumnModel.getColumnIndex(column.getIdentifier()) + 1; i < tableColumnModel.getColumnCount(); i++) {
         set.add(tableColumnModel.getColumn(i));
       }

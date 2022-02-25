@@ -18,7 +18,7 @@ public class DefaultDialogExceptionHandlerTest {
   void test() {
     Exception rootException = new Exception();
     RuntimeException wrapper = new RuntimeException(rootException);
-    final List<Class<? extends Throwable>> toUnwrap = new ArrayList<>();
+    List<Class<? extends Throwable>> toUnwrap = new ArrayList<>();
     toUnwrap.add(RuntimeException.class);
     Throwable unwrapped = DefaultDialogExceptionHandler.unwrapExceptions(wrapper, toUnwrap);
     assertEquals(rootException, unwrapped);

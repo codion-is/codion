@@ -75,7 +75,7 @@ public final class SerializationWhitelist {
    * If dry-run was not active this method has no effect.
    */
   public static void writeDryRunWhitelist() {
-    final sun.misc.ObjectInputFilter serialFilter = sun.misc.ObjectInputFilter.Config.getSerialFilter();
+    sun.misc.ObjectInputFilter serialFilter = sun.misc.ObjectInputFilter.Config.getSerialFilter();
     if (serialFilter instanceof SerializationFilterDryRun) {
       ((SerializationFilterDryRun) serialFilter).writeToFile();
     }
@@ -95,7 +95,7 @@ public final class SerializationWhitelist {
 
     @Override
     public Status checkInput(final FilterInfo filterInfo) {
-      final Class<?> clazz = filterInfo.serialClass();
+      Class<?> clazz = filterInfo.serialClass();
       if (clazz != null) {
         deserializedClasses.add(clazz);
       }
@@ -105,7 +105,7 @@ public final class SerializationWhitelist {
 
     private void writeToFile() {
       try {
-        final File file = new File(whitelistFile);
+        File file = new File(whitelistFile);
         file.createNewFile();
         Files.write(file.toPath(), deserializedClasses.stream()
                 .map(Class::getName)
@@ -113,7 +113,7 @@ public final class SerializationWhitelist {
                 .collect(toList()));
         LOG.debug("Serialization whitelist written: " + whitelistFile);
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         LOG.error("Error while writing serialization filter dry run results: " + whitelistFile, e);
       }
     }
@@ -137,7 +137,7 @@ public final class SerializationWhitelist {
 
     @Override
     public Status checkInput(final FilterInfo filterInfo) {
-      final Class<?> clazz = filterInfo.serialClass();
+      Class<?> clazz = filterInfo.serialClass();
       if (clazz == null) {
         return Status.ALLOWED;
       }
@@ -190,7 +190,7 @@ public final class SerializationWhitelist {
     }
 
     private static Collection<String> getClasspathWhitelistItems(final String whitelistFile) {
-      final String path = getClasspathFilepath(whitelistFile);
+      String path = getClasspathFilepath(whitelistFile);
       try (final InputStream whitelistFileStream = SerializationWhitelist.class.getClassLoader().getResourceAsStream(path)) {
         if (whitelistFileStream == null) {
           throw new RuntimeException("Whitelist file not found on classpath: " + path);
@@ -199,7 +199,7 @@ public final class SerializationWhitelist {
                 .lines()
                 .collect(toSet());
       }
-      catch (final IOException e) {
+      catch (IOException e) {
         throw new RuntimeException("Unable to load whitelist from classpath: " + whitelistFile, e);
       }
     }
@@ -208,7 +208,7 @@ public final class SerializationWhitelist {
       try (final Stream<String> stream = Files.lines(Paths.get(whitelistFile))) {
         return stream.collect(toSet());
       }
-      catch (final IOException e) {
+      catch (IOException e) {
         LOG.error("Unable to read serialization whitelist: " + whitelistFile);
         throw new RuntimeException(e);
       }

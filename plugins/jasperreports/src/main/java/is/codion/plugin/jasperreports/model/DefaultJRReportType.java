@@ -44,7 +44,7 @@ final class DefaultJRReportType implements JRReportType, Serializable {
       return false;
     }
 
-    final DefaultJRReportType that = (DefaultJRReportType) o;
+    DefaultJRReportType that = (DefaultJRReportType) o;
 
     return reportType.equals(that.reportType);
   }

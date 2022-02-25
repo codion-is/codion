@@ -17,7 +17,7 @@ public final class FormatsTest {
   void test() throws ParseException {
     assertEquals("test123", Formats.NULL_FORMAT.format("test123"));
     assertEquals("test123", Formats.NULL_FORMAT.parseObject("test123"));
-    final NumberFormat format = Formats.getNonGroupingNumberFormat();
+    NumberFormat format = Formats.getNonGroupingNumberFormat();
     assertFalse(format.isGroupingUsed());
   }
 }

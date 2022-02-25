@@ -32,15 +32,15 @@ public class EntityComboBoxTest {
 
   @Test
   void inputProvider() throws Exception {
-    final SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     model.refresh();
-    final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+    Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
     model.setSelectedItem(operations);
-    final ComponentValue<Entity, EntityComboBox> value = ComponentValues.comboBox(new EntityComboBox(model));
+    ComponentValue<Entity, EntityComboBox> value = ComponentValues.comboBox(new EntityComboBox(model));
 
     assertNotNull(value.get());
 
-    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(
+    Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(
             TestDomain.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedItem(sales);
@@ -51,14 +51,14 @@ public class EntityComboBoxTest {
 
   @Test
   void integerValueSelector() {
-    final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     comboBoxModel.refresh();
-    final Key jonesKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 3);
+    Key jonesKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 3);
     comboBoxModel.setSelectedEntityByKey(jonesKey);
-    final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
-    final IntegerField empIdValue = comboBox.integerFieldSelector(TestDomain.EMP_ID).build();
+    EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
+    IntegerField empIdValue = comboBox.integerFieldSelector(TestDomain.EMP_ID).build();
     assertEquals(3, empIdValue.getInteger());
-    final Key blakeKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 5);
+    Key blakeKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 5);
     comboBoxModel.setSelectedEntityByKey(blakeKey);
     assertEquals(5, empIdValue.getInteger());
     comboBoxModel.setSelectedItem(null);

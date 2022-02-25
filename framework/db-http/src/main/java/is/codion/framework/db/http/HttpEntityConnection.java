@@ -69,7 +69,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("isTransactionOpen")));
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -79,10 +79,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       onResponse(execute(createHttpPost("beginTransaction")));
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -92,10 +92,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       onResponse(execute(createHttpPost("rollbackTransaction")));
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -105,10 +105,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       onResponse(execute(createHttpPost("commitTransaction")));
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -124,10 +124,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("function", byteArrayEntity(asList(functionType, argument)))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -143,10 +143,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       onResponse(execute(createHttpPost("procedure", byteArrayEntity(asList(procedureType, argument)))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -162,10 +162,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("insert", byteArrayEntity(entities))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -181,10 +181,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("update", byteArrayEntity(entities))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -195,10 +195,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("updateByCondition", byteArrayEntity(condition))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -214,10 +214,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       onResponse(execute(createHttpPost("deleteByKey", byteArrayEntity(keys))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -228,10 +228,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("delete", byteArrayEntity(condition))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -247,10 +247,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("values", byteArrayEntity(asList(attribute, condition)))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -267,7 +267,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public Entity selectSingle(final Condition condition) throws DatabaseException {
-    final List<Entity> selected = select(condition);
+    List<Entity> selected = select(condition);
     if (Util.nullOrEmpty(selected)) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
@@ -284,10 +284,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("selectByKey", byteArrayEntity(keys))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -298,10 +298,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("select", byteArrayEntity(condition))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -322,10 +322,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("dependencies", byteArrayEntity(entities))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -336,10 +336,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("count", byteArrayEntity(condition))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -350,10 +350,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("report", byteArrayEntity(asList(reportType, reportParameters)))));
     }
-    catch (final ReportException | DatabaseException e) {
+    catch (ReportException | DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -367,10 +367,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       onResponse(execute(createHttpPost("writeBlob", byteArrayEntity(asList(primaryKey, blobAttribute, blobData)))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -382,10 +382,10 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("readBlob", byteArrayEntity(asList(primaryKey, blobAttribute)))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
