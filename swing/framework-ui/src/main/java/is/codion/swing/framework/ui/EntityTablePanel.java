@@ -51,7 +51,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
@@ -330,8 +329,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     this.tablePanel = initializeTablePanel(tableScrollPane);
     this.refreshToolBar = initializeRefreshToolBar();
     this.statusMessageLabel = Components.label(tableModel.getStatusMessageObserver())
-          .horizontalAlignment(SwingConstants.CENTER)
-          .build();
+            .horizontalAlignment(SwingConstants.CENTER)
+            .build();
   }
 
   @Override
@@ -1049,12 +1048,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
-    JSplitPane southCenterSplitPane = new JSplitPane();
-    southCenterSplitPane.setContinuousLayout(true);
-    southCenterSplitPane.setResizeWeight(0.35);
-    southCenterSplitPane.setTopComponent(table.getSearchField());
-    southCenterSplitPane.setBottomComponent(statusMessageLabel);
-    southPanel.add(southCenterSplitPane, BorderLayout.CENTER);
+    southPanel.add(Components.splitPane()
+            .continuousLayout(true)
+            .resizeWeight(0.35)
+            .leftComponent(table.getSearchField())
+            .rightComponent(statusMessageLabel)
+            .build(), BorderLayout.CENTER);
     southPanel.add(refreshToolBar, BorderLayout.WEST);
     JToolBar southToolBar = initializeSouthToolBar();
     if (southToolBar != null) {

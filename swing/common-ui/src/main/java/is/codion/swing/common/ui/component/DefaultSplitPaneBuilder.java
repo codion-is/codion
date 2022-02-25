@@ -13,6 +13,7 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
   private JComponent leftTopComponent;
   private JComponent rightBottomComponent;
   private double resizeWeight;
+  private boolean continuousLayout;
 
   @Override
   public SplitPaneBuilder orientation(int orientation) {
@@ -57,12 +58,19 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
   }
 
   @Override
+  public SplitPaneBuilder continuousLayout(boolean continuousLayout) {
+    this.continuousLayout = continuousLayout;
+    return this;
+  }
+
+  @Override
   protected JSplitPane buildComponent() {
     JSplitPane splitPane = new JSplitPane(orientation);
     splitPane.setLeftComponent(leftTopComponent);
     splitPane.setRightComponent(rightBottomComponent);
     splitPane.setResizeWeight(resizeWeight);
     splitPane.setOneTouchExpandable(oneTouchExpandable);
+    splitPane.setContinuousLayout(continuousLayout);
 
     return splitPane;
   }

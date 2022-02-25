@@ -7828,3 +7828,4 @@
   On a second thought, let's remove the final keyword from method parameters as well
   EntityTableModel.queryRowCountLimit removed
   SwingEntityTableModel.getStatusMessageObserver() added, functionality moved from EntityTablePanel
+  SplitPaneBuilder.continuousLayout() added
