@@ -490,9 +490,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     }
   }
 
-  private HttpResponse execute(HttpRequest operation) throws Exception {
+  private <T> HttpResponse<T> execute(HttpRequest operation) throws Exception {
     synchronized (httpClient) {
-      return httpClient.send(operation, HttpResponse.BodyHandlers.ofByteArray());
+      return (HttpResponse<T>) httpClient.send(operation, HttpResponse.BodyHandlers.ofByteArray());
     }
   }
 
@@ -513,7 +513,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
             .connectTimeout(Duration.ofSeconds(2)).build();
   }
 
-  private static <T> T handleResponse(HttpResponse response) throws Exception {
+  private static <T> T handleResponse(HttpResponse<T> response) throws Exception {
     if (response.statusCode() != HTTP_STATUS_OK) {
       throw (Exception) Serializer.deserialize((byte[]) response.body());
     }
