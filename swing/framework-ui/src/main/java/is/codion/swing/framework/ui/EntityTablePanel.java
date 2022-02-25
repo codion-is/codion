@@ -66,6 +66,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -1704,9 +1705,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private static Point getPopupLocation(final JTable table) {
-    final int x = table.getBounds().getLocation().x + POPUP_LOCATION_X_OFFSET;
-    final int y = table.getSelectionModel().isSelectionEmpty() ? POPUP_LOCATION_EMPTY_SELECTION :
-            (table.getSelectedRow() + 1) * table.getRowHeight();
+    final Rectangle visibleRect = table.getVisibleRect();
+    final int x = visibleRect.x + visibleRect.width / 2;
+    final int y = table.getSelectionModel().isSelectionEmpty() ?
+            visibleRect.y + visibleRect.height / 2 :
+            table.getSelectedRow() * table.getRowHeight() + table.getRowHeight() / 2;
 
     return new Point(x, y);
   }
