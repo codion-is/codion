@@ -13,7 +13,7 @@ public class NavigableImagePanelTest {
 
   @Test
   void test() throws IOException {
-    final NavigableImagePanel panel = new NavigableImagePanel(readImage("../../documentation/src/docs/asciidoc/images/chinook-client.png"));
+    NavigableImagePanel panel = new NavigableImagePanel(readImage("../../documentation/src/docs/asciidoc/images/chinook-client.png"));
     panel.setZoom(2.0);
   }
 }

@@ -90,7 +90,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
   }
 
   private boolean includeEqual(final Comparable<T> comparable) {
-    final T equalValue = getEqualValue();
+    T equalValue = getEqualValue();
     if (comparable == null) {
       return equalValue == null;
     }
@@ -106,7 +106,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
   }
 
   private boolean includeNotEqual(final Comparable<T> comparable) {
-    final T equalValue = getEqualValue();
+    T equalValue = getEqualValue();
     if (comparable == null) {
       return equalValue != null;
     }
@@ -149,32 +149,32 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
   }
 
   private boolean includeLessThan(final Comparable<T> comparable) {
-    final T upperBound = getUpperBound();
+    T upperBound = getUpperBound();
 
     return upperBound == null || comparable != null && comparable.compareTo(upperBound) < 0;
   }
 
   private boolean includeLessThanOrEqual(final Comparable<T> comparable) {
-    final T upperBound = getUpperBound();
+    T upperBound = getUpperBound();
 
     return upperBound == null || comparable != null && comparable.compareTo(upperBound) <= 0;
   }
 
   private boolean includeGreaterThan(final Comparable<T> comparable) {
-    final T lowerBound = getLowerBound();
+    T lowerBound = getLowerBound();
 
     return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) > 0;
   }
 
   private boolean includeGreaterThanOrEqual(final Comparable<T> comparable) {
-    final T lowerBound = getLowerBound();
+    T lowerBound = getLowerBound();
 
     return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) >= 0;
   }
 
   private boolean includeBetweenExclusive(final Comparable<T> comparable) {
-    final T lowerBound = getLowerBound();
-    final T upperBound = getUpperBound();
+    T lowerBound = getLowerBound();
+    T upperBound = getUpperBound();
     if (lowerBound == null && upperBound == null) {
       return true;
     }
@@ -191,15 +191,15 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
       return comparable.compareTo(lowerBound) > 0;
     }
 
-    final int lowerCompareResult = comparable.compareTo(lowerBound);
-    final int upperCompareResult = comparable.compareTo(upperBound);
+    int lowerCompareResult = comparable.compareTo(lowerBound);
+    int upperCompareResult = comparable.compareTo(upperBound);
 
     return lowerCompareResult > 0 && upperCompareResult < 0;
   }
 
   private boolean includeBetweenInclusive(final Comparable<T> comparable) {
-    final T lowerBound = getLowerBound();
-    final T upperBound = getUpperBound();
+    T lowerBound = getLowerBound();
+    T upperBound = getUpperBound();
     if (lowerBound == null && upperBound == null) {
       return true;
     }
@@ -216,15 +216,15 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
       return comparable.compareTo(lowerBound) >= 0;
     }
 
-    final int lowerCompareResult = comparable.compareTo(lowerBound);
-    final int upperCompareResult = comparable.compareTo(upperBound);
+    int lowerCompareResult = comparable.compareTo(lowerBound);
+    int upperCompareResult = comparable.compareTo(upperBound);
 
     return lowerCompareResult >= 0 && upperCompareResult <= 0;
   }
 
   private boolean includeNotBetweenExclusive(final Comparable<T> comparable) {
-    final T lowerBound = getLowerBound();
-    final T upperBound = getUpperBound();
+    T lowerBound = getLowerBound();
+    T upperBound = getUpperBound();
     if (lowerBound == null && upperBound == null) {
       return true;
     }
@@ -241,15 +241,15 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
       return comparable.compareTo(lowerBound) < 0;
     }
 
-    final int lowerCompareResult = comparable.compareTo(lowerBound);
-    final int upperCompareResult = comparable.compareTo(upperBound);
+    int lowerCompareResult = comparable.compareTo(lowerBound);
+    int upperCompareResult = comparable.compareTo(upperBound);
 
     return lowerCompareResult < 0 || upperCompareResult > 0;
   }
 
   private boolean includeNotBetween(final Comparable<T> comparable) {
-    final T lowerBound = getLowerBound();
-    final T upperBound = getUpperBound();
+    T lowerBound = getLowerBound();
+    T upperBound = getUpperBound();
     if (lowerBound == null && upperBound == null) {
       return true;
     }
@@ -266,8 +266,8 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
       return comparable.compareTo(lowerBound) <= 0;
     }
 
-    final int lowerCompareResult = comparable.compareTo(lowerBound);
-    final int upperCompareResult = comparable.compareTo(upperBound);
+    int lowerCompareResult = comparable.compareTo(lowerBound);
+    int upperCompareResult = comparable.compareTo(upperBound);
 
     return lowerCompareResult <= 0 || upperCompareResult >= 0;
   }

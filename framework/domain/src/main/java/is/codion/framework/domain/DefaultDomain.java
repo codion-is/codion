@@ -73,7 +73,7 @@ public abstract class DefaultDomain implements Domain {
 
   @Override
   public final <T, R, P> Report<T, R, P> getReport(final ReportType<T, R, P> reportType) {
-    final Report<T, R, P> report = reports.getReport(reportType);
+    Report<T, R, P> report = reports.getReport(reportType);
     if (report == null) {
       throw new IllegalArgumentException("Undefined report: " + reportType);
     }
@@ -276,7 +276,7 @@ public abstract class DefaultDomain implements Domain {
 
     private <C, T> DatabaseProcedure<C, T> getProcedure(final ProcedureType<C, T> procedureType) {
       requireNonNull(procedureType, "procedureType");
-      final DatabaseProcedure<C, T> operation = (DatabaseProcedure<C, T>) procedures.get(procedureType);
+      DatabaseProcedure<C, T> operation = (DatabaseProcedure<C, T>) procedures.get(procedureType);
       if (operation == null) {
         throw new IllegalArgumentException("Procedure not found: " + procedureType);
       }
@@ -300,7 +300,7 @@ public abstract class DefaultDomain implements Domain {
 
     private <C, T, R> DatabaseFunction<C, T, R> getFunction(final FunctionType<C, T, R> functionType) {
       requireNonNull(functionType, "functionType");
-      final DatabaseFunction<C, T, R> operation = (DatabaseFunction<C, T, R>) functions.get(functionType);
+      DatabaseFunction<C, T, R> operation = (DatabaseFunction<C, T, R>) functions.get(functionType);
       if (operation == null) {
         throw new IllegalArgumentException("Function not found: " + functionType);
       }
@@ -325,7 +325,7 @@ public abstract class DefaultDomain implements Domain {
         report.loadReport();
         reports.put(reportType, report);
       }
-      catch (final ReportException e) {
+      catch (ReportException e) {
         throw new RuntimeException(e);
       }
     }

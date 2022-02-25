@@ -15,8 +15,8 @@ public class StringLengthValidatorTest {
 
   @Test
   void insert() {
-    final JTextArea textArea = new JTextArea();
-    final ParsingDocumentFilter<String> documentFilter = new ParsingDocumentFilter<>(ParsingDocumentFilter.STRING_PARSER);
+    JTextArea textArea = new JTextArea();
+    ParsingDocumentFilter<String> documentFilter = new ParsingDocumentFilter<>(ParsingDocumentFilter.STRING_PARSER);
     documentFilter.addValidator(new StringLengthValidator(10));
     ((AbstractDocument) textArea.getDocument()).setDocumentFilter(documentFilter);
     final String text8 = "12345678";
@@ -31,8 +31,8 @@ public class StringLengthValidatorTest {
 
   @Test
   void replace() {
-    final JTextArea textArea = new JTextArea();
-    final ParsingDocumentFilter<String> documentFilter = new ParsingDocumentFilter<>(ParsingDocumentFilter.STRING_PARSER);
+    JTextArea textArea = new JTextArea();
+    ParsingDocumentFilter<String> documentFilter = new ParsingDocumentFilter<>(ParsingDocumentFilter.STRING_PARSER);
     documentFilter.addValidator(new StringLengthValidator(10));
     ((AbstractDocument) textArea.getDocument()).setDocumentFilter(documentFilter);
     final String text8 = "12345678";

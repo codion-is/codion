@@ -71,7 +71,7 @@ public final class Table {
       return false;
     }
 
-    final Table table = (Table) object;
+    Table table = (Table) object;
 
     return Objects.equals(schema, table.getSchema()) && Objects.equals(tableName, table.getTableName());
   }
@@ -83,8 +83,8 @@ public final class Table {
 
   void resolveForeignKeys(final Map<String, Schema> schemas) {
     for (final ForeignKeyColumn foreignKeyColumn : foreignKeyColumns) {
-      final Table referencedTable = getReferencedTable(foreignKeyColumn, schemas);
-      final ForeignKeyConstraint foreignKeyConstraint;
+      Table referencedTable = getReferencedTable(foreignKeyColumn, schemas);
+      ForeignKeyConstraint foreignKeyConstraint;
       if (foreignKeyColumn.getKeySeq() == 1) {//new key
         foreignKeyConstraint = new ForeignKeyConstraint(referencedTable);
         foreignKeys.add(foreignKeyConstraint);
@@ -102,7 +102,7 @@ public final class Table {
   }
 
   private static Table getReferencedTable(final ForeignKeyColumn foreignKeyColumn, final Map<String, Schema> schemas) {
-    final Table referencedTable = schemas.get(foreignKeyColumn.getPkSchemaName()).getTables().get(foreignKeyColumn.getPkTableName());
+    Table referencedTable = schemas.get(foreignKeyColumn.getPkSchemaName()).getTables().get(foreignKeyColumn.getPkTableName());
     if (referencedTable == null) {
       throw new IllegalStateException("Referenced table not found: " + foreignKeyColumn.getPkSchemaName() + "." + foreignKeyColumn.getPkTableName());
     }

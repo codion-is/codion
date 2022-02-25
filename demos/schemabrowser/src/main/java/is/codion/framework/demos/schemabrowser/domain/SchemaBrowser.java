@@ -29,11 +29,11 @@ public final class SchemaBrowser extends DefaultDomain {
 
   static {
     try {
-      final String databaseFactoryClassName = DatabaseFactory.databaseFactory().getClass().getName();
+      String databaseFactoryClassName = DatabaseFactory.databaseFactory().getClass().getName();
       bundle = ResourceBundle.getBundle(SchemaBrowser.class.getName(),
               new Locale(databaseFactoryClassName.substring(databaseFactoryClassName.lastIndexOf('.') + 1)));
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
@@ -72,7 +72,7 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   void table() {
-    final EntityDefinition.Builder tableBuilder = define(Table.TYPE, bundle.getString("t_table"),
+    EntityDefinition.Builder tableBuilder = define(Table.TYPE, bundle.getString("t_table"),
             columnProperty(Table.SCHEMA)
                     .primaryKeyIndex(0),
             foreignKeyProperty(Table.SCHEMA_FK, "Schema"),
@@ -82,10 +82,10 @@ public final class SchemaBrowser extends DefaultDomain {
             .readOnly()
             .stringFactory(stringFactory(Table.SCHEMA_FK).text(".").value(Table.NAME))
             .caption("Tables");
-    final String tableQueryFrom = bundle.getString("t_table_query_from");
+    String tableQueryFrom = bundle.getString("t_table_query_from");
     if (!tableQueryFrom.isEmpty()) {
-      final String tableQueryColumns = bundle.getString("t_table_query_columns");
-      final String tableQueryWhere = bundle.getString("t_table_query_where");
+      String tableQueryColumns = bundle.getString("t_table_query_columns");
+      String tableQueryWhere = bundle.getString("t_table_query_where");
       tableBuilder.selectQuery(SelectQuery.builder(tableQueryFrom)
               .columns(tableQueryColumns)
               .where(tableQueryWhere)

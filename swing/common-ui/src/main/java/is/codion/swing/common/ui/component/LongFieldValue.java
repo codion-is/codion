@@ -16,7 +16,7 @@ final class LongFieldValue extends AbstractTextComponentValue<Long, LongField> {
 
   @Override
   protected Long getComponentValue(final LongField component) {
-    final Number number = component.getNumber();
+    Number number = component.getNumber();
     if (number == null) {
       return isNullable() ? null : 0L;
     }

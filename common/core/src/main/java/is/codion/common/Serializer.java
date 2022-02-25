@@ -33,7 +33,7 @@ public final class Serializer {
    */
   public static byte[] serialize(final Object object) throws IOException {
     if (object != null) {
-      final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
       new ObjectOutputStream(byteArrayOutputStream).writeObject(object);
 
       return byteArrayOutputStream.toByteArray();
@@ -67,13 +67,13 @@ public final class Serializer {
    * @throws ClassNotFoundException in case the deserialized class is not found
    */
   public static <T> List<T> deserializeFromFile(final File file) throws IOException, ClassNotFoundException {
-    final List<T> objects = new ArrayList<>();
+    List<T> objects = new ArrayList<>();
     try (final ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
       while (true) {
         objects.add((T) inputStream.readObject());
       }
     }
-    catch (final EOFException ignored) {/*ignored*/}
+    catch (EOFException ignored) {/*ignored*/}
 
     return objects;
   }

@@ -25,8 +25,8 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   @Override
   public boolean add(final T value) {
-    final Set<T> newValues = new HashSet<>(values);
-    final boolean added = newValues.add(value);
+    Set<T> newValues = new HashSet<>(values);
+    boolean added = newValues.add(value);
     set(newValues);
 
     return added;
@@ -34,8 +34,8 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   @Override
   public boolean remove(final T value) {
-    final Set<T> newValues = new HashSet<>(values);
-    final boolean removed = newValues.remove(value);
+    Set<T> newValues = new HashSet<>(values);
+    boolean removed = newValues.remove(value);
     set(newValues);
 
     return removed;
@@ -79,7 +79,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
     @Override
     public T get() {
-      final Set<T> set = valueSet.get();
+      Set<T> set = valueSet.get();
 
       return set.isEmpty() ? null : set.iterator().next();
     }

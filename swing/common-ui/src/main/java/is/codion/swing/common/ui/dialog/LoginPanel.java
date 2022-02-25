@@ -105,18 +105,18 @@ final class LoginPanel extends JPanel {
             .action(Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())))
             .enable(passwordField);
 
-    final JProgressBar progressBar = new JProgressBar();
+    JProgressBar progressBar = new JProgressBar();
     progressBar.setPreferredSize(passwordField.getPreferredSize());
     progressBar.setIndeterminate(true);
-    final CardLayout passwordProgressLayout = new CardLayout();
-    final JPanel passwordProgressPanel = Components.panel(passwordProgressLayout)
+    CardLayout passwordProgressLayout = new CardLayout();
+    JPanel passwordProgressPanel = Components.panel(passwordProgressLayout)
             .addConstrained(passwordField, PASSWORD_CARD)
             .addConstrained(progressBar, PROGRESS_CARD)
             .build();
     validatingState.addDataListener(validating ->
             passwordProgressLayout.show(passwordProgressPanel, validating ? PROGRESS_CARD : PASSWORD_CARD));
 
-    final JPanel credentialsPanel = Components.panel(Layouts.flexibleGridLayout()
+    JPanel credentialsPanel = Components.panel(Layouts.flexibleGridLayout()
                     .rowsColumns(2, 2)
                     .fixRowHeights(true)
                     .build())
@@ -125,7 +125,7 @@ final class LoginPanel extends JPanel {
             .add(new JLabel(Messages.get(Messages.PASSWORD), SwingConstants.RIGHT))
             .add(passwordProgressPanel)
             .build();
-    final JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
+    JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
     credentialsBasePanel.add(credentialsPanel, BorderLayout.CENTER);
     if (southComponent != null) {
       credentialsBasePanel.add(southComponent, BorderLayout.SOUTH);
@@ -136,8 +136,8 @@ final class LoginPanel extends JPanel {
     else {
       Utilities.addInitialFocusHack(passwordField, Control.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
     }
-    final GridBagConstraints constraints = new GridBagConstraints();
-    final int insets = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    GridBagConstraints constraints = new GridBagConstraints();
+    int insets = Layouts.HORIZONTAL_VERTICAL_GAP.get();
     constraints.insets = new Insets(insets, insets, insets, insets);
     setLayout(new GridBagLayout());
     if (icon != null) {
@@ -156,7 +156,7 @@ final class LoginPanel extends JPanel {
   }
 
   private User validateLogin() throws Exception {
-    final User user = User.user(usernameField.getText(), passwordField.getPassword());
+    User user = User.user(usernameField.getText(), passwordField.getPassword());
     loginValidator.validate(user);
 
     return user;

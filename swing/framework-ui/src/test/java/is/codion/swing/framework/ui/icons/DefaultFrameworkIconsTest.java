@@ -14,7 +14,7 @@ public final class DefaultFrameworkIconsTest {
 
   @Test
   void test() {
-    final DefaultFrameworkIcons icons = new DefaultFrameworkIcons();
+    DefaultFrameworkIcons icons = new DefaultFrameworkIcons();
     assertNotNull(icons.filter());
     assertNotNull(icons.add());
     assertNotNull(icons.delete());
@@ -33,7 +33,7 @@ public final class DefaultFrameworkIconsTest {
     assertNotNull(icons.editPanel());
     assertNotNull(icons.dependencies());
     assertNotNull(icons.logo());
-    final ImageIcon logo12 = icons.logo(12);
+    ImageIcon logo12 = icons.logo(12);
     assertNotNull(logo12);
     assertSame(logo12, icons.logo(12));
   }

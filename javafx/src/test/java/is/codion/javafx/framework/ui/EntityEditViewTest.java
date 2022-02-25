@@ -30,8 +30,8 @@ public final class EntityEditViewTest {
 
   @Test
   void constructor() {
-    final FXEntityEditModel editModel = new FXEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
-    final EntityEditView editView = new EmpEditView(editModel).initializePanel();
+    FXEntityEditModel editModel = new FXEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    EntityEditView editView = new EmpEditView(editModel).initializePanel();
     editView.getButtonPanel();
   }
 

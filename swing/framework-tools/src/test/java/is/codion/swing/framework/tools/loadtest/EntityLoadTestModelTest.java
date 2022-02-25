@@ -37,7 +37,7 @@ public class EntityLoadTestModelTest {
 
   @BeforeAll
   public static synchronized void setUp() throws Exception {
-    final EntityServerConfiguration configuration = configure();
+    EntityServerConfiguration configuration = configure();
     EntityServer.startServer(configuration);
     server = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(),
             configuration.getRegistryPort()).lookup(configuration.getServerName());
@@ -83,7 +83,7 @@ public class EntityLoadTestModelTest {
 
   @Test
   void testLoadTesting() throws Exception {
-    final TestLoadTestModel loadTest = new TestLoadTestModel();
+    TestLoadTestModel loadTest = new TestLoadTestModel();
 
     loadTest.getCollectChartDataState().set(true);
     loadTest.setUpdateInterval(350);

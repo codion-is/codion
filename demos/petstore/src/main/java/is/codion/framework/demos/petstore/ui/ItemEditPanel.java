@@ -28,11 +28,11 @@ public class ItemEditPanel extends EntityEditPanel {
     createTextInputPanel(Item.DESCRIPTION)
             .buttonFocusable(false);
     createTextField(Item.PRICE);
-    final EntityComboBox contactInfoBox = createForeignKeyComboBox(Item.CONTACT_INFO_FK)
+    EntityComboBox contactInfoBox = createForeignKeyComboBox(Item.CONTACT_INFO_FK)
             .preferredWidth(140)
             .popupWidth(200)
             .build();
-    final EntityComboBox addressBox = createForeignKeyComboBox(Item.ADDRESS_FK)
+    EntityComboBox addressBox = createForeignKeyComboBox(Item.ADDRESS_FK)
             .popupWidth(200)
             .build();
     createTextField(Item.IMAGE_URL);

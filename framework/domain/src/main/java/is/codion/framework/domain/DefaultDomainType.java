@@ -73,7 +73,7 @@ final class DefaultDomainType implements DomainType, Serializable {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    final DefaultDomainType that = (DefaultDomainType) object;
+    DefaultDomainType that = (DefaultDomainType) object;
 
     return domainName.equals(that.domainName);
   }
@@ -98,7 +98,7 @@ final class DefaultDomainType implements DomainType, Serializable {
   }
 
   static DomainType getDomainType(final String domainName) {
-    final DomainType domainType = DOMAIN_TYPES.get(requireNonNull(domainName, "domainName"));
+    DomainType domainType = DOMAIN_TYPES.get(requireNonNull(domainName, "domainName"));
     if (domainType == null) {
       throw new IllegalArgumentException("Domain: " + domainName + " has not been defined");
     }

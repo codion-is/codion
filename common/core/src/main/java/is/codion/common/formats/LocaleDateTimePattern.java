@@ -76,7 +76,7 @@ public interface LocaleDateTimePattern {
    */
   static String getMask(final String dateTimePattern) {
     requireNonNull(dateTimePattern, "dateTimePattern");
-    final StringBuilder stringBuilder = new StringBuilder(dateTimePattern.length());
+    StringBuilder stringBuilder = new StringBuilder(dateTimePattern.length());
     for (final Character character : dateTimePattern.toCharArray()) {
       stringBuilder.append(Character.isLetter(character) ? "#" : character);
     }

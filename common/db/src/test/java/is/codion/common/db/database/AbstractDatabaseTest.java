@@ -40,8 +40,8 @@ public final class AbstractDatabaseTest {
 
   @Test
   void connectionProvider() throws Exception {
-    final User sa = User.user("sa");
-    final Connection connection = database.createConnection(sa);
+    User sa = User.user("sa");
+    Connection connection = database.createConnection(sa);
     database.setConnectionProvider(new ConnectionProvider() {
       @Override
       public Connection getConnection(final User user, final String jdbcUrl) throws SQLException {
@@ -50,7 +50,7 @@ public final class AbstractDatabaseTest {
     });
     assertSame(connection, database.createConnection(sa));
     database.setConnectionProvider(null);
-    final Connection newConnection = database.createConnection(sa);
+    Connection newConnection = database.createConnection(sa);
     assertNotSame(connection, newConnection);
     connection.close();
     newConnection.close();

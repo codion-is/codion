@@ -18,8 +18,8 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 
   @Override
   protected TestEntityModel createDepartmentModel() {
-    final TestEntityModel deptModel = new TestEntityModel(new TestEntityEditModel(TestDomain.T_DEPARTMENT, getConnectionProvider()));
-    final TestEntityModel empModel = new TestEntityModel(new TestEntityEditModel(TestDomain.T_EMP, getConnectionProvider()));
+    TestEntityModel deptModel = new TestEntityModel(new TestEntityEditModel(TestDomain.T_DEPARTMENT, getConnectionProvider()));
+    TestEntityModel empModel = new TestEntityModel(new TestEntityEditModel(TestDomain.T_EMP, getConnectionProvider()));
     deptModel.addDetailModel(empModel);
     deptModel.addLinkedDetailModel(empModel);
 

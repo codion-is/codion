@@ -111,7 +111,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName()),
             itemProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.getName(), linkedValues -> {
-              final Integer intValue = linkedValues.get(DETAIL_INT);
+              Integer intValue = linkedValues.get(DETAIL_INT);
               if (intValue == null) {
                 return null;
               }
@@ -145,7 +145,7 @@ public final class TestDomain extends DefaultDomain {
             .orderBy(orderBy().ascending(DEPARTMENT_NAME))
             .stringFactory(stringFactory(DEPARTMENT_NAME))
             .conditionProvider(DEPARTMENT_CONDITION_ID, (attributes, values) -> {
-              final StringBuilder builder = new StringBuilder("deptno in (");
+              StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 

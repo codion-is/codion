@@ -67,8 +67,8 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
     @Override
     protected void perform(final EntityConnectionProvider client) throws Exception {
-      final List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
-      final Entity entity = departments.get(new Random().nextInt(departments.size()));
+      List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
+      Entity entity = departments.get(new Random().nextInt(departments.size()));
       entity.put(Department.LOCATION, Text.randomString(10, 13));
       client.getConnection().update(entity);
     }
@@ -96,7 +96,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
     @Override
     protected void perform(final EntityConnectionProvider client) throws Exception {
-      final List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
+      List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
 
       client.getConnection().select(Employee.DEPARTMENT,
               departments.get(new Random().nextInt(departments.size())).get(Department.ID));
@@ -112,7 +112,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
     @Override
     protected void perform(final EntityConnectionProvider client) throws Exception {
-      final int deptNo = new Random().nextInt(5000);
+      int deptNo = new Random().nextInt(5000);
       client.getConnection().insert(client.getEntities().builder(Department.TYPE)
               .with(Department.ID, deptNo)
               .with(Department.NAME, Text.randomString(4, 8))
@@ -132,8 +132,8 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
     @Override
     protected void perform(final EntityConnectionProvider client) throws Exception {
-      final List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
-      final Entity department = departments.get(random.nextInt(departments.size()));
+      List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
+      Entity department = departments.get(random.nextInt(departments.size()));
       client.getConnection().insert(client.getEntities().builder(Employee.TYPE)
               .with(Employee.DEPARTMENT_FK, department)
               .with(Employee.NAME, Text.randomString(5, 10))

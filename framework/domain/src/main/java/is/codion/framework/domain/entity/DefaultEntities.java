@@ -85,7 +85,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   @Override
   public final Entity.Builder builder(final Key key) {
-    final Entity.Builder builder = builder(requireNonNull(key).getEntityType());
+    Entity.Builder builder = builder(requireNonNull(key).getEntityType());
     key.getAttributes().forEach(attribute -> builder.with((Attribute<Object>) attribute, key.get(attribute)));
 
     return builder;
@@ -125,7 +125,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
    * @throws IllegalArgumentException in case the domain has not been registered
    */
   static Entities getEntities(final String domainName) {
-    final Entities entities = REGISTERED_ENTITIES.get(DomainType.getDomainType(domainName));
+    Entities entities = REGISTERED_ENTITIES.get(DomainType.getDomainType(domainName));
     if (entities == null) {
       throw new IllegalArgumentException("Entities for domain '" + domainName + "' have not been registered");
     }
@@ -140,7 +140,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   protected final EntityDefinition.Builder define(final EntityType entityType, final String tableName,
                                                   final Property.Builder<?, ?>... propertyBuilders) {
     requireNonNull(propertyBuilders, "propertyBuilders");
-    final DefaultEntityDefinition.DefaultBuilder definitionBuilder =
+    DefaultEntityDefinition.DefaultBuilder definitionBuilder =
             new DefaultEntityDefinition(domainType.getName(), entityType, tableName,
                     Arrays.asList(propertyBuilders)).builder();
     addDefinition(definitionBuilder.get());
@@ -163,7 +163,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   private EntityDefinition getDefinitionInternal(final String entityTypeName) {
-    final EntityDefinition definition = entityDefinitions.get(entityTypeName);
+    EntityDefinition definition = entityDefinitions.get(entityTypeName);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityTypeName);
     }
@@ -172,10 +172,10 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   private void validateForeignKeyProperties(final EntityDefinition definition) {
-    final EntityType entityType = definition.getEntityType();
+    EntityType entityType = definition.getEntityType();
     for (final ForeignKey foreignKey : definition.getForeignKeys()) {
-      final EntityType referencedType = foreignKey.getReferencedEntityType();
-      final EntityDefinition referencedEntity = referencedType.equals(entityType) ?
+      EntityType referencedType = foreignKey.getReferencedEntityType();
+      EntityDefinition referencedEntity = referencedType.equals(entityType) ?
               definition : entityDefinitions.get(referencedType.getName());
       if (referencedEntity == null && strictForeignKeys) {
         throw new IllegalArgumentException("Entity '" + referencedType
@@ -197,7 +197,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   private void populateForeignDefinitions() {
     for (final DefaultEntityDefinition definition : entityDefinitions.values()) {
       for (final ForeignKey foreignKey : definition.getForeignKeys()) {
-        final EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.getReferencedEntityType().getName());
+        EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.getReferencedEntityType().getName());
         if (referencedDefinition != null && !definition.hasReferencedEntityDefinition(foreignKey)) {
           definition.setReferencedEntityDefinition(foreignKey, referencedDefinition);
         }

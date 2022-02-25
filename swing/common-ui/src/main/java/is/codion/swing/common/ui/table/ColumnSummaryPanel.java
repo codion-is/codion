@@ -33,7 +33,7 @@ public final class ColumnSummaryPanel extends JPanel {
   }
 
   private static JTextField initializeSummaryField(final ColumnSummaryModel model) {
-    final JPopupMenu menu = createPopupMenu(model);
+    JPopupMenu menu = createPopupMenu(model);
     return Components.textField()
             .linkedValueObserver(model.getSummaryTextObserver())
             .horizontalAlignment(SwingConstants.RIGHT)
@@ -52,10 +52,10 @@ public final class ColumnSummaryPanel extends JPanel {
   }
 
   private static JPopupMenu createPopupMenu(final ColumnSummaryModel model) {
-    final JPopupMenu popupMenu = new JPopupMenu();
-    final ButtonGroup group = new ButtonGroup();
+    JPopupMenu popupMenu = new JPopupMenu();
+    ButtonGroup group = new ButtonGroup();
     for (final ColumnSummaryModel.Summary summary : model.getAvailableSummaries()) {
-      final JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder(() -> model.getSummaryValue().set(summary))
+      JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder(() -> model.getSummaryValue().set(summary))
               .caption(summary.toString())
               .build());
       model.getSummaryValue().addDataListener(newSummary -> item.setSelected(newSummary.equals(summary)));

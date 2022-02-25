@@ -45,8 +45,8 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(MASTER_NAME),
             columnProperty(MASTER_CODE))
             .comparator((o1, o2) -> {//keep like this for equality test in SwingEntityTableModelTest.testSortComparator()
-              final Integer code1 = o1.get(MASTER_CODE);
-              final Integer code2 = o2.get(MASTER_CODE);
+              Integer code1 = o1.get(MASTER_CODE);
+              Integer code2 = o2.get(MASTER_CODE);
 
               return code1.compareTo(code2);
             })
@@ -94,7 +94,7 @@ public final class TestDomain extends DefaultDomain {
             denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName(), DETAIL_MASTER_FK, MASTER_CODE),
             itemProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.getName(), linkedValues -> {
-              final Integer intValue = linkedValues.get(DETAIL_INT);
+              Integer intValue = linkedValues.get(DETAIL_INT);
               if (intValue == null) {
                 return null;
               }

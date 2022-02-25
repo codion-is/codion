@@ -47,7 +47,7 @@ final class DefaultCopyEntities implements CopyEntities {
     if (batchSize <= 0) {
       throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
     }
-    final DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
+    DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
     copyEntities.batchSize = batchSize;
 
     return copyEntities;
@@ -55,7 +55,7 @@ final class DefaultCopyEntities implements CopyEntities {
 
   @Override
   public CopyEntities includePrimaryKeys(final boolean includePrimaryKeys) {
-    final DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
+    DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
     copyEntities.includePrimaryKeys = includePrimaryKeys;
 
     return copyEntities;
@@ -65,7 +65,7 @@ final class DefaultCopyEntities implements CopyEntities {
   public CopyEntities condition(final EntityType entityType, final Condition condition) {
     requireNonNull(entityType);
     requireNonNull(condition);
-    final DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
+    DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
     copyEntities.conditions.put(entityType, condition);
 
     return copyEntities;
@@ -74,7 +74,7 @@ final class DefaultCopyEntities implements CopyEntities {
   @Override
   public void execute() throws DatabaseException {
     for (final EntityType entityType : entityTypes) {
-      final List<Entity> entities = source.select(conditions.getOrDefault(entityType, Conditions.condition(entityType))
+      List<Entity> entities = source.select(conditions.getOrDefault(entityType, Conditions.condition(entityType))
               .toSelectCondition()
               .fetchDepth(0));
       if (!includePrimaryKeys) {

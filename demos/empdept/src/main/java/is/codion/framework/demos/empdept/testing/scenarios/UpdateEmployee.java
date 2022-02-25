@@ -23,11 +23,11 @@ public final class UpdateEmployee extends AbstractEntityUsageScenario<EmpDeptApp
 
   @Override
   protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws Exception {
-    final SwingEntityModel departmentModel = application.getEntityModel(Department.TYPE);
+    SwingEntityModel departmentModel = application.getEntityModel(Department.TYPE);
     selectRandomRow(departmentModel.getTableModel());
-    final SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
+    SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
     if (employeeModel.getTableModel().getRowCount() > 0) {
-      final EntityConnection connection = employeeModel.getConnectionProvider().getConnection();
+      EntityConnection connection = employeeModel.getConnectionProvider().getConnection();
       connection.beginTransaction();
       try {
         selectRandomRow(employeeModel.getTableModel());

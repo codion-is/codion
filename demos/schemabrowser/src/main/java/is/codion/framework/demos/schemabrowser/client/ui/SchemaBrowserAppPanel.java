@@ -31,17 +31,17 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
   @Override
   protected List<EntityPanel> initializeEntityPanels(final SchemaBrowserApplicationModel applicationModel) {
-    final SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
-    final SwingEntityModel tableModel = schemaModel.getDetailModel(Table.TYPE);
-    final SwingEntityModel columnModel = tableModel.getDetailModel(Column.TYPE);
-    final SwingEntityModel constraintModel = tableModel.getDetailModel(Constraint.TYPE);
-    final SwingEntityModel columnConstraintModel = constraintModel.getDetailModel(ConstraintColumn.TYPE);
+    SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
+    SwingEntityModel tableModel = schemaModel.getDetailModel(Table.TYPE);
+    SwingEntityModel columnModel = tableModel.getDetailModel(Column.TYPE);
+    SwingEntityModel constraintModel = tableModel.getDetailModel(Constraint.TYPE);
+    SwingEntityModel columnConstraintModel = constraintModel.getDetailModel(ConstraintColumn.TYPE);
 
-    final EntityPanel schemaPanel = new EntityPanel(schemaModel);
-    final EntityPanel tablePanel = new EntityPanel(tableModel);
-    final EntityPanel columnPanel = new EntityPanel(columnModel);
-    final EntityPanel constraintPanel = new EntityPanel(constraintModel);
-    final EntityPanel columnConstraintPanel = new EntityPanel(columnConstraintModel);
+    EntityPanel schemaPanel = new EntityPanel(schemaModel);
+    EntityPanel tablePanel = new EntityPanel(tableModel);
+    EntityPanel columnPanel = new EntityPanel(columnModel);
+    EntityPanel constraintPanel = new EntityPanel(constraintModel);
+    EntityPanel columnConstraintPanel = new EntityPanel(columnConstraintModel);
 
     schemaPanel.addDetailPanel(tablePanel);
     tablePanel.addDetailPanels(columnPanel);
@@ -78,11 +78,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {
     public SchemaBrowserApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
-      final SwingEntityModel schemaModel = new SwingEntityModel(Schema.TYPE, connectionProvider);
-      final SwingEntityModel tableModel = new SwingEntityModel(Table.TYPE, connectionProvider);
-      final SwingEntityModel columnModel = new SwingEntityModel(Column.TYPE, connectionProvider);
-      final SwingEntityModel constraintModel = new SwingEntityModel(Constraint.TYPE, connectionProvider);
-      final SwingEntityModel constraintColumnModel = new SwingEntityModel(ConstraintColumn.TYPE, connectionProvider);
+      SwingEntityModel schemaModel = new SwingEntityModel(Schema.TYPE, connectionProvider);
+      SwingEntityModel tableModel = new SwingEntityModel(Table.TYPE, connectionProvider);
+      SwingEntityModel columnModel = new SwingEntityModel(Column.TYPE, connectionProvider);
+      SwingEntityModel constraintModel = new SwingEntityModel(Constraint.TYPE, connectionProvider);
+      SwingEntityModel constraintColumnModel = new SwingEntityModel(ConstraintColumn.TYPE, connectionProvider);
 
       schemaModel.addDetailModel(tableModel);
       tableModel.addDetailModels(columnModel, constraintModel);

@@ -24,7 +24,7 @@ public class SwingConditionModelFactory extends DefaultConditionModelFactory {
   @Override
   public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(final A attribute) {
     if (attribute instanceof ForeignKey) {
-      final ForeignKey foreignKey = (ForeignKey) attribute;
+      ForeignKey foreignKey = (ForeignKey) attribute;
       if (getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
         return (ColumnConditionModel<A, T>) new SwingForeignKeyConditionModel(foreignKey, createComboBoxModel(foreignKey));
       }
@@ -40,7 +40,7 @@ public class SwingConditionModelFactory extends DefaultConditionModelFactory {
    * @return a combo box model based on the given foreign key
    */
   protected SwingEntityComboBoxModel createComboBoxModel(final ForeignKey foreignKey) {
-    final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
+    SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
     comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
 
     return comboBoxModel;

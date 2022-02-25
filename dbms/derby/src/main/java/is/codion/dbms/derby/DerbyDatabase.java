@@ -31,7 +31,7 @@ final class DerbyDatabase extends AbstractDatabase {
   @Override
   public String getName() {
     String name = getUrl();
-    final boolean tcp = name.startsWith(JDBC_URL_PREFIX_TCP);
+    boolean tcp = name.startsWith(JDBC_URL_PREFIX_TCP);
     name = removeUrlPrefixOptionsAndParameters(name, JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE);
     if (tcp && name.contains("/")) {
       name = name.substring(name.indexOf('/') + 1);
@@ -65,7 +65,7 @@ final class DerbyDatabase extends AbstractDatabase {
     try {
       DriverManager.getConnection(getUrl() + ";shutdown=true").close();
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       if (!e.getSQLState().equals(SHUTDOWN_ERROR_CODE)) {//08006 is expected on Derby shutdown
         System.err.println("Embedded Derby database did not successfully shut down: " + e.getMessage());
       }

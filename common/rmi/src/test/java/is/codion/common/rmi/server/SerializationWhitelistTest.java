@@ -24,14 +24,14 @@ public final class SerializationWhitelistTest {
   @Test
   void dryRun() throws IOException, ClassNotFoundException {
     assertThrows(IllegalArgumentException.class, () -> SerializationWhitelist.configureDryRun("classpath:dryrun"));
-    final File tempFile = File.createTempFile("serialization_dry_run_test", "txt");
+    File tempFile = File.createTempFile("serialization_dry_run_test", "txt");
     tempFile.deleteOnExit();
     SerializationWhitelist.configureDryRun(tempFile.getAbsolutePath());
     Serializer.deserialize(Serializer.serialize(Integer.valueOf(42)));
     Serializer.deserialize(Serializer.serialize(Double.valueOf(42)));
     Serializer.deserialize(Serializer.serialize(Long.valueOf(42)));
     SerializationWhitelist.writeDryRunWhitelist();
-    final List<String> classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
+    List<String> classNames = Files.readAllLines(tempFile.toPath(), StandardCharsets.UTF_8);
     assertEquals(4, classNames.size());
     assertEquals(Double.class.getName(), classNames.get(0));
     assertEquals(Integer.class.getName(), classNames.get(1));
@@ -42,13 +42,13 @@ public final class SerializationWhitelistTest {
 
   @Test
   void testNoWildcards() {
-    final List<String> whitelistItems = asList(
+    List<String> whitelistItems = asList(
             "#comment",
             "is.codion.common.value.Value",
             "is.codion.common.state.State",
             "is.codion.common.state.StateObserver"
     );
-    final SerializationFilter filter = new SerializationFilter(whitelistItems);
+    SerializationFilter filter = new SerializationFilter(whitelistItems);
     assertEquals(filter.checkInput("is.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("is.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("is.codion.common.state.States"), ObjectInputFilter.Status.REJECTED);

@@ -82,15 +82,15 @@ public final class DefaultEntitySearchModelTest {
   @Test
   void setMultipleSelectionNotEnabled() {
     searchModel.getMultipleSelectionEnabledValue().set(false);
-    final List<Entity> entities = asList(ENTITIES.entity(TestDomain.T_EMP), ENTITIES.entity(TestDomain.T_EMP));
+    List<Entity> entities = asList(ENTITIES.entity(TestDomain.T_EMP), ENTITIES.entity(TestDomain.T_EMP));
     assertThrows(IllegalArgumentException.class, () -> searchModel.setSelectedEntities(entities));
   }
 
   @Test
   void setToStringProvider() {
-    final Property<?> job = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
+    Property<?> job = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
     searchModel.setToStringProvider(entity -> entity.toString(job.getAttribute()));
-    final Entity employee = ENTITIES.builder(TestDomain.T_EMP)
+    Entity employee = ENTITIES.builder(TestDomain.T_EMP)
             .with(TestDomain.EMP_NAME, "Darri")
             .with(TestDomain.EMP_JOB, "CLERK")
             .build();
@@ -233,13 +233,13 @@ public final class DefaultEntitySearchModelTest {
   }
 
   private static void setupData() throws Exception {
-    final Entity dept = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+    Entity dept = ENTITIES.builder(TestDomain.T_DEPARTMENT)
             .with(TestDomain.DEPARTMENT_ID, 88)
             .with(TestDomain.DEPARTMENT_LOCATION, "TestLoc")
             .with(TestDomain.DEPARTMENT_NAME, "TestDept")
             .build();
 
-    final Entity emp = ENTITIES.builder(TestDomain.T_EMP)
+    Entity emp = ENTITIES.builder(TestDomain.T_EMP)
             .with(TestDomain.EMP_DEPARTMENT_FK, dept)
             .with(TestDomain.EMP_COMMISSION, 1000d)
             .with(TestDomain.EMP_HIREDATE, LocalDate.now())
@@ -248,7 +248,7 @@ public final class DefaultEntitySearchModelTest {
             .with(TestDomain.EMP_SALARY, 1000d)
             .build();
 
-    final Entity emp2 = ENTITIES.builder(TestDomain.T_EMP)
+    Entity emp2 = ENTITIES.builder(TestDomain.T_EMP)
             .with(TestDomain.EMP_DEPARTMENT_FK, dept)
             .with(TestDomain.EMP_COMMISSION, 1000d)
             .with(TestDomain.EMP_HIREDATE, LocalDate.now())
@@ -257,7 +257,7 @@ public final class DefaultEntitySearchModelTest {
             .with(TestDomain.EMP_SALARY, 1000d)
             .build();
 
-    final Entity emp3 = ENTITIES.builder(TestDomain.T_EMP)
+    Entity emp3 = ENTITIES.builder(TestDomain.T_EMP)
             .with(TestDomain.EMP_DEPARTMENT_FK, dept)
             .with(TestDomain.EMP_COMMISSION, 1000d)
             .with(TestDomain.EMP_HIREDATE, LocalDate.now())
@@ -266,7 +266,7 @@ public final class DefaultEntitySearchModelTest {
             .with(TestDomain.EMP_SALARY, 1000d)
             .build();
 
-    final Entity emp4 = ENTITIES.builder(TestDomain.T_EMP)
+    Entity emp4 = ENTITIES.builder(TestDomain.T_EMP)
             .with(TestDomain.EMP_DEPARTMENT_FK, dept)
             .with(TestDomain.EMP_COMMISSION, 1000d)
             .with(TestDomain.EMP_HIREDATE, LocalDate.now())

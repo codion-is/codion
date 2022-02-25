@@ -35,7 +35,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   @Override
   public String toString() {
     synchronized (lock) {
-      final StringBuilder stringBuilder = new StringBuilder("Combination");
+      StringBuilder stringBuilder = new StringBuilder("Combination");
       stringBuilder.append(toString(conjunction)).append(super.toString());
       for (final StateCombinationListener listener : stateListeners) {
         stringBuilder.append(", ").append(listener.getState());
@@ -55,7 +55,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
     requireNonNull(state, "state");
     synchronized (lock) {
       if (!findListener(state).isPresent()) {
-        final boolean previousValue = get();
+        boolean previousValue = get();
         stateListeners.add(new StateCombinationListener(state));
         ((DefaultStateObserver) getObserver()).notifyObservers(get(), previousValue);
       }
@@ -66,7 +66,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   public void removeState(final StateObserver state) {
     requireNonNull(state, "state");
     synchronized (lock) {
-      final boolean previousValue = get();
+      boolean previousValue = get();
       findListener(state).ifPresent(listener -> {
         state.removeDataListener(listener);
         stateListeners.remove(listener);
@@ -89,8 +89,8 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
 
   private boolean get(final Conjunction conjunction, final StateObserver exclude, final boolean excludeReplacement) {
     for (final StateCombinationListener listener : stateListeners) {
-      final StateObserver state = listener.getState();
-      final boolean value = state.equals(exclude) ? excludeReplacement : state.get();
+      StateObserver state = listener.getState();
+      boolean value = state.equals(exclude) ? excludeReplacement : state.get();
       if (conjunction == Conjunction.AND) {
         if (!value) {
           return false;

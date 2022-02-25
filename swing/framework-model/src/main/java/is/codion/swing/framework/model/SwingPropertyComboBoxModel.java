@@ -60,7 +60,7 @@ public final class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxMo
       try {
         return connectionProvider.getConnection().select(attribute);
       }
-      catch (final DatabaseException e) {
+      catch (DatabaseException e) {
         throw new RuntimeException(e);
       }
     }

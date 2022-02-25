@@ -17,7 +17,7 @@ public class DoubleFieldTest {
 
   @Test
   void testNoGrouping() {
-    final DoubleField doubleField = new DoubleField();
+    DoubleField doubleField = new DoubleField();
     doubleField.setGroupingUsed(false);
     doubleField.setSeparators(',', '.');
     doubleField.setText(",");
@@ -49,8 +49,8 @@ public class DoubleFieldTest {
 
   @Test
   void testGrouping() {
-    final DecimalFormat decimalFormat = new DecimalFormat();
-    final DoubleField doubleField = new DoubleField(decimalFormat);
+    DecimalFormat decimalFormat = new DecimalFormat();
+    DoubleField doubleField = new DoubleField(decimalFormat);
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators(',', '.');
     assertEquals(0, doubleField.getCaretPosition());
@@ -100,10 +100,10 @@ public class DoubleFieldTest {
 
   @Test
   void caretPosition() throws BadLocationException {
-    final DoubleField doubleField = new DoubleField();
+    DoubleField doubleField = new DoubleField();
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators(',', '.');
-    final NumberDocument<Double> document = doubleField.getTypedDocument();
+    NumberDocument<Double> document = doubleField.getTypedDocument();
 
     doubleField.setText("123456789");
     assertEquals("123.456.789", doubleField.getText());
@@ -179,7 +179,7 @@ public class DoubleFieldTest {
 
   @Test
   void maximumFractionDigits() throws BadLocationException {
-    final DoubleField doubleField = new DoubleField();
+    DoubleField doubleField = new DoubleField();
     assertEquals(-1, doubleField.getMaximumFractionDigits());
     doubleField.setSeparators(',', '.');
     doubleField.setMaximumFractionDigits(2);
@@ -202,7 +202,7 @@ public class DoubleFieldTest {
 
   @Test
   void decimalSeparators() {
-    final DoubleField doubleField = new DoubleField();
+    DoubleField doubleField = new DoubleField();
     doubleField.setGroupingUsed(false);
     doubleField.setSeparators('.', ',');
     doubleField.setText("1.5");
@@ -218,9 +218,9 @@ public class DoubleFieldTest {
 
   @Test
   void trailingDecimalSeparator() throws BadLocationException {
-    final DoubleField doubleField = new DoubleField();
+    DoubleField doubleField = new DoubleField();
     doubleField.setSeparators('.', ',');
-    final NumberDocument<Double> document = doubleField.getTypedDocument();
+    NumberDocument<Double> document = doubleField.getTypedDocument();
     document.insertString(0, "1", null);
     assertEquals(Double.valueOf(1), doubleField.getDouble());
     document.insertString(1, ".", null);
@@ -233,7 +233,7 @@ public class DoubleFieldTest {
 
   @Test
   void setSeparators() {
-    final DoubleField doubleField = new DoubleField();
+    DoubleField doubleField = new DoubleField();
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators('.', ',');
     doubleField.setNumber(12345678.9);
@@ -244,8 +244,8 @@ public class DoubleFieldTest {
 
   @Test
   void trailingDecimalZeros() throws BadLocationException {
-    final DoubleField doubleField = new DoubleField();
-    final NumberDocument<Double> document = doubleField.getTypedDocument();
+    DoubleField doubleField = new DoubleField();
+    NumberDocument<Double> document = doubleField.getTypedDocument();
     doubleField.setSeparators('.', ',');
 
     document.insertString(0, "1", null);

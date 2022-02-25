@@ -39,7 +39,7 @@ final class DatabaseDomain extends DefaultDomain {
 
   private void defineEntity(final Table table) {
     if (!tableEntityTypes.containsKey(table)) {
-      final EntityType entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
+      EntityType entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
       tableEntityTypes.put(table, entityType);
       table.getForeignKeys().stream()
               .map(ForeignKeyConstraint::getReferencedTable)
@@ -57,7 +57,7 @@ final class DatabaseDomain extends DefaultDomain {
 
   private List<Property.Builder<?, ?>> getPropertyBuilders(final Table table, final EntityType entityType,
                                                            final List<ForeignKeyConstraint> foreignKeyConstraints) {
-    final List<Property.Builder<?, ?>> builders = new ArrayList<>();
+    List<Property.Builder<?, ?>> builders = new ArrayList<>();
     table.getColumns().forEach(column -> {
       builders.add(getColumnPropertyBuilder(column, entityType));
       if (column.isForeignKeyColumn()) {
@@ -75,9 +75,9 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private Property.Builder<?, ?> getForeignKeyPropertyBuilder(final ForeignKeyConstraint foreignKeyConstraint, final EntityType entityType) {
-    final Table referencedTable = foreignKeyConstraint.getReferencedTable();
-    final EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
-    final ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
+    Table referencedTable = foreignKeyConstraint.getReferencedTable();
+    EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
+    ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
             foreignKeyConstraint.getReferences().entrySet().stream()
                     .map(entry -> reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
                     .collect(toList()));
@@ -86,9 +86,9 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private static ColumnProperty.Builder<?, ?> getColumnPropertyBuilder(final Column column, final EntityType entityType) {
-    final String caption = getCaption(column.getColumnName());
-    final Attribute<?> attribute = getAttribute(entityType, column);
-    final ColumnProperty.Builder<?, ?> builder;
+    String caption = getCaption(column.getColumnName());
+    Attribute<?> attribute = getAttribute(entityType, column);
+    ColumnProperty.Builder<?, ?> builder;
     if (attribute.isByteArray()) {
       builder = blobProperty((Attribute<byte[]>) attribute, caption);
     }
@@ -122,13 +122,13 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private static String getCaption(final String name) {
-    final String caption = name.toLowerCase().replace("_", " ");
+    String caption = name.toLowerCase().replace("_", " ");
 
     return caption.substring(0, 1).toUpperCase() + caption.substring(1);
   }
 
   private static boolean isLastKeyColumn(final ForeignKeyConstraint foreignKeyConstraint, final Column column) {
-    final OptionalInt lastColumnPosition = foreignKeyConstraint.getReferences().keySet().stream()
+    OptionalInt lastColumnPosition = foreignKeyConstraint.getReferences().keySet().stream()
             .mapToInt(Column::getPosition)
             .max();
 

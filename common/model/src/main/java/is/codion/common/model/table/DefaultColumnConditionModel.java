@@ -404,19 +404,19 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   private int getNextOperatorIndex() {
-    final int currentIndex = operators.indexOf(operatorValue.get());
+    int currentIndex = operators.indexOf(operatorValue.get());
 
     return currentIndex == operators.size() - 1 ? 0 : currentIndex + 1;
   }
 
   private int getPreviousOperatorIndex() {
-    final int currentIndex = operators.indexOf(operatorValue.get());
+    int currentIndex = operators.indexOf(operatorValue.get());
 
     return currentIndex == 0 ? operators.size() - 1 : currentIndex - 1;
   }
 
   private void bindEvents() {
-    final EventListener autoEnableListener = new AutoEnableListener();
+    EventListener autoEnableListener = new AutoEnableListener();
     equalValues.addListener(autoEnableListener);
     upperBoundValue.addListener(autoEnableListener);
     lowerBoundValue.addListener(autoEnableListener);

@@ -101,15 +101,15 @@ public abstract class EntityEditView extends BorderPane {
    * @return the button panel for this edit view
    */
   public final Node getButtonPanel() {
-    final Button save = createSaveButton();
+    Button save = createSaveButton();
     save.maxWidthProperty().setValue(Double.MAX_VALUE);
-    final Button update = createUpdateButton();
+    Button update = createUpdateButton();
     update.maxWidthProperty().setValue(Double.MAX_VALUE);
-    final Button delete = createDeleteButton();
+    Button delete = createDeleteButton();
     delete.maxWidthProperty().setValue(Double.MAX_VALUE);
-    final Button clear = createClearButton();
+    Button clear = createClearButton();
     clear.maxWidthProperty().setValue(Double.MAX_VALUE);
-    final Button refresh = createRefreshButton();
+    Button refresh = createRefreshButton();
     refresh.maxWidthProperty().setValue(Double.MAX_VALUE);
 
     return new VBox(save, update, delete, clear, refresh);
@@ -119,10 +119,10 @@ public abstract class EntityEditView extends BorderPane {
    * Displays a dialog for choosing an input component to receive focus
    */
   public void selectInputControl() {
-    final List<Property<?>> properties = Properties.sort(getEditModel()
+    List<Property<?>> properties = Properties.sort(getEditModel()
             .getEntityDefinition().getProperties(controls.keySet()));
     properties.removeIf(property -> {
-      final Control control = controls.get(property.getAttribute());
+      Control control = controls.get(property.getAttribute());
 
       return control == null || control.isDisabled() || !control.isVisible();
     });
@@ -172,7 +172,7 @@ public abstract class EntityEditView extends BorderPane {
   protected final EntitySearchField createForeignKeySearchField(final ForeignKey foreignKey) {
     checkControl(foreignKey);
     getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey);
-    final EntitySearchField searchField = FXUiUtil.createSearchField(foreignKey, editModel);
+    EntitySearchField searchField = FXUiUtil.createSearchField(foreignKey, editModel);
 
     controls.put(foreignKey, searchField);
 
@@ -187,7 +187,7 @@ public abstract class EntityEditView extends BorderPane {
   protected final ComboBox<Entity> createForeignKeyComboBox(final ForeignKey foreignKey) {
     checkControl(foreignKey);
     getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey);
-    final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(foreignKey, editModel);
+    ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(foreignKey, editModel);
 
     controls.put(foreignKey, box);
 
@@ -202,7 +202,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final <T> ComboBox<Item<T>> createItemComboBox(final Attribute<T> attribute) {
     checkControl(attribute);
-    final ComboBox<Item<T>> box = FXUiUtil.createItemComboBox((ItemProperty<T>)
+    ComboBox<Item<T>> box = FXUiUtil.createItemComboBox((ItemProperty<T>)
             getEditModel().getEntityDefinition().getProperty(attribute), editModel);
 
     controls.put(attribute, box);
@@ -218,8 +218,8 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final <T> TextField createTextField(final Attribute<T> attribute) {
     checkControl(attribute);
-    final Property<?> property = getEditModel().getEntityDefinition().getProperty(attribute);
-    final TextField textField;
+    Property<?> property = getEditModel().getEntityDefinition().getProperty(attribute);
+    TextField textField;
     if (attribute.isInteger()) {
       textField = FXUiUtil.createIntegerField((Property<Integer>) property, editModel);
     }
@@ -251,7 +251,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final DatePicker createDatePicker(final Attribute<LocalDate> attribute) {
     checkControl(attribute);
-    final DatePicker picker = FXUiUtil.createDatePicker(getEditModel()
+    DatePicker picker = FXUiUtil.createDatePicker(getEditModel()
             .getEntityDefinition().getProperty(attribute), editModel);
     controls.put(attribute, picker);
 
@@ -268,9 +268,9 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   protected final BorderPane createPropertyPanel(final Attribute<?> attribute) {
-    final BorderPane pane = new BorderPane();
+    BorderPane pane = new BorderPane();
     pane.setTop(createLabel(attribute));
-    final Control control = controls.get(attribute);
+    Control control = controls.get(attribute);
     control.setMaxWidth(Double.MAX_VALUE);
     pane.setCenter(control);
 
@@ -278,8 +278,8 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private void initializeUI() {
-    final BorderPane top = new BorderPane();
-    final BorderPane topLeft = new BorderPane();
+    BorderPane top = new BorderPane();
+    BorderPane topLeft = new BorderPane();
     topLeft.setCenter(initializeEditPanel());
     top.setLeft(topLeft);
     setTop(top);
@@ -287,16 +287,16 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private Button createSaveButton() {
-    final Button button = new Button(FrameworkMessages.get(FrameworkMessages.SAVE));
+    Button button = new Button(FrameworkMessages.get(FrameworkMessages.SAVE));
     button.setOnAction(event -> save());
 
     return button;
   }
 
   private Button createUpdateButton() {
-    final Button button = new Button(FrameworkMessages.get(FrameworkMessages.UPDATE));
+    Button button = new Button(FrameworkMessages.get(FrameworkMessages.UPDATE));
     button.setOnAction(event -> update(true));
-    final StateObserver existingAndModifiedState = State.and(
+    StateObserver existingAndModifiedState = State.and(
             editModel.getEntityNewObserver().getReversedObserver(),
             editModel.getModifiedObserver());
     FXUiUtil.link(button.disableProperty(), existingAndModifiedState.getReversedObserver());
@@ -305,7 +305,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private Button createDeleteButton() {
-    final Button button = new Button(FrameworkMessages.get(FrameworkMessages.DELETE));
+    Button button = new Button(FrameworkMessages.get(FrameworkMessages.DELETE));
     button.setOnAction(event -> delete());
     FXUiUtil.link(button.disableProperty(), editModel.getEntityNewObserver());
 
@@ -313,7 +313,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private Button createClearButton() {
-    final Button button = new Button(FrameworkMessages.get(FrameworkMessages.CLEAR));
+    Button button = new Button(FrameworkMessages.get(FrameworkMessages.CLEAR));
     button.setOnAction(event -> {
       editModel.setDefaultValues();
       requestInitialFocus();
@@ -323,7 +323,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private Button createRefreshButton() {
-    final Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
+    Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
     button.setOnAction(event -> editModel.refresh());
 
     return button;
@@ -335,17 +335,17 @@ public abstract class EntityEditView extends BorderPane {
       insert();
     }
     else {//possibly update
-      final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
       alert.setTitle(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_ADD_TITLE));
       alert.setHeaderText(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_ADD));
 
-      final ButtonType update = new ButtonType(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD));
-      final ButtonType insert = new ButtonType(FrameworkMessages.get(FrameworkMessages.ADD_NEW));
-      final ButtonType cancel = new ButtonType(Messages.get(Messages.CANCEL), ButtonBar.ButtonData.CANCEL_CLOSE);
+      ButtonType update = new ButtonType(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD));
+      ButtonType insert = new ButtonType(FrameworkMessages.get(FrameworkMessages.ADD_NEW));
+      ButtonType cancel = new ButtonType(Messages.get(Messages.CANCEL), ButtonBar.ButtonData.CANCEL_CLOSE);
       alert.getButtonTypes().setAll(update, insert, cancel);
       ((Button) alert.getDialogPane().lookupButton(update)).setDefaultButton(true);
 
-      final Optional<ButtonType> result = alert.showAndWait();
+      Optional<ButtonType> result = alert.showAndWait();
       if (!result.isPresent() || result.get().equals(cancel)) {
         return;
       }
@@ -368,11 +368,11 @@ public abstract class EntityEditView extends BorderPane {
         requestInitialFocus(true);
       }
     }
-    catch (final ValidationException e) {
+    catch (ValidationException e) {
       FXUiUtil.showExceptionDialog(e);
       requestComponentFocus(e.getAttribute());
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -384,11 +384,11 @@ public abstract class EntityEditView extends BorderPane {
         editModel.update();
         requestInitialFocus(false);
       }
-      catch (final ValidationException e) {
+      catch (ValidationException e) {
         FXUiUtil.showExceptionDialog(e);
         requestComponentFocus(e.getAttribute());
       }
-      catch (final DatabaseException e) {
+      catch (DatabaseException e) {
         throw new RuntimeException(e);
       }
     }
@@ -399,21 +399,21 @@ public abstract class EntityEditView extends BorderPane {
       try {
         editModel.delete();
       }
-      catch (final DatabaseException e) {
+      catch (DatabaseException e) {
         throw new RuntimeException(e);
       }
     }
   }
 
   private void requestComponentFocus(final Attribute<?> attribute) {
-    final Control control = controls.get(attribute);
+    Control control = controls.get(attribute);
     if (control != null) {
       control.requestFocus();
     }
   }
 
   private void requestInitialFocus(final boolean afterInsert) {
-    final Control focusControl = afterInsert && afterInsertFocusAttribute != null ?
+    Control focusControl = afterInsert && afterInsertFocusAttribute != null ?
             controls.get(afterInsertFocusAttribute) :
             controls.get(initialFocusAttribute);
     if (focusControl != null && focusControl.isFocusTraversable()) {

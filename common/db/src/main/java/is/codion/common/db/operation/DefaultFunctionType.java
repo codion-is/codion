@@ -37,7 +37,7 @@ final class DefaultFunctionType<C, T, R> implements FunctionType<C, T, R>, Seria
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    final DefaultFunctionType<?, ?, ?> that = (DefaultFunctionType<?, ?, ?>) o;
+    DefaultFunctionType<?, ?, ?> that = (DefaultFunctionType<?, ?, ?>) o;
 
     return name.equals(that.name);
   }

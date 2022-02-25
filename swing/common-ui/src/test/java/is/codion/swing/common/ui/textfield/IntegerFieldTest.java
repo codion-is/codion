@@ -16,7 +16,7 @@ public class IntegerFieldTest {
 
   @Test
   void test() {
-    final IntegerField integerField = new IntegerField(5);
+    IntegerField integerField = new IntegerField(5);
     integerField.setInteger(42);
     assertEquals("42", integerField.getText());
     integerField.setText("22");
@@ -42,7 +42,7 @@ public class IntegerFieldTest {
 
     integerField.setRange(0, Integer.MAX_VALUE);
 
-    final DecimalFormat decimalFormat = (DecimalFormat) ((NumberDocument<Integer>) integerField.getDocument()).getFormat();
+    DecimalFormat decimalFormat = (DecimalFormat) ((NumberDocument<Integer>) integerField.getDocument()).getFormat();
     decimalFormat.setGroupingSize(3);
     decimalFormat.setGroupingUsed(true);
     integerField.setSeparators(',', '.');
@@ -63,10 +63,10 @@ public class IntegerFieldTest {
 
   @Test
   void skipGroupingSeparator() {
-    final IntegerField integerField = new IntegerField();
+    IntegerField integerField = new IntegerField();
     integerField.setSeparators(',', '.');
     integerField.setGroupingUsed(true);
-    final KeyListener keyListener = integerField.getKeyListeners()[0];
+    KeyListener keyListener = integerField.getKeyListeners()[0];
     integerField.setNumber(123456);
     assertEquals("123.456", integerField.getText());
     integerField.setCaretPosition(3);

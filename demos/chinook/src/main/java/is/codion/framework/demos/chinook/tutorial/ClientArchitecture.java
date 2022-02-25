@@ -110,7 +110,7 @@ public final class ClientArchitecture {
                     .setDomainClassName(ChinookImpl.class.getName())
                     .setUser(User.parseUser("scott:tiger"));
 
-    final EntityPanel artistPanel = artistPanel(connectionProvider);
+    EntityPanel artistPanel = artistPanel(connectionProvider);
 
     // lazy initialization of the UI
     artistPanel.initializePanel();

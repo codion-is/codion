@@ -11,7 +11,7 @@ public final class LogbackProxyTest {
 
   @Test
   void test() {
-    final LogbackProxy proxy = new LogbackProxy();
+    LogbackProxy proxy = new LogbackProxy();
     proxy.getLogLevel();
     proxy.setLogLevel(proxy.getLogLevels().get(2));
     assertThrows(IllegalArgumentException.class, () -> proxy.setLogLevel("hello"));

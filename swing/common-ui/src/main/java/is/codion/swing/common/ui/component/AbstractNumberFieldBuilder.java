@@ -46,8 +46,8 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
 
   @Override
   protected final C createTextField() {
-    final NumberFormat format = cloneFormat((NumberFormat) getFormat());
-    final C numberField = createNumberField(format);
+    NumberFormat format = cloneFormat((NumberFormat) getFormat());
+    C numberField = createNumberField(format);
     if (minimumValue != null && maximumValue != null) {
       numberField.setRange(Math.min(minimumValue, 0), maximumValue);
     }
@@ -72,7 +72,7 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
     if (format == null) {
       return null;
     }
-    final NumberFormat cloned = (NumberFormat) format.clone();
+    NumberFormat cloned = (NumberFormat) format.clone();
     cloned.setGroupingUsed(format.isGroupingUsed());
     cloned.setMaximumIntegerDigits(format.getMaximumIntegerDigits());
     cloned.setMaximumFractionDigits(format.getMaximumFractionDigits());

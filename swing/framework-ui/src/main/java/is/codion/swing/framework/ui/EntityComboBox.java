@@ -156,7 +156,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   private Control.Command createForeignKeyFilterCommand(final ForeignKey foreignKey) {
     return () -> {
-      final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKey);
+      Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKey);
       Dialogs.okCancelDialog(createForeignKeyFilterComboBox(foreignKey).build())
               .owner(this)
               .title(MESSAGES.getString("filter_by"))

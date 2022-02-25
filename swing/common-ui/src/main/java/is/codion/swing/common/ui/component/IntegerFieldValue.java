@@ -16,7 +16,7 @@ final class IntegerFieldValue extends AbstractTextComponentValue<Integer, Intege
 
   @Override
   protected Integer getComponentValue(final IntegerField component) {
-    final Number number = component.getNumber();
+    Number number = component.getNumber();
     if (number == null) {
       return isNullable() ? null : 0;
     }

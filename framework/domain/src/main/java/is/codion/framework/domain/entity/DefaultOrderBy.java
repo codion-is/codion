@@ -38,7 +38,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
       throw new IllegalArgumentException("One or more attributes required for order by");
     }
     for (final Attribute<?> attribute : attributes) {
-      final DefaultOrderByAttribute orderByAttribute = new DefaultOrderByAttribute(attribute, ascending);
+      DefaultOrderByAttribute orderByAttribute = new DefaultOrderByAttribute(attribute, ascending);
       if (orderByAttributes.contains(orderByAttribute)) {
         throw new IllegalArgumentException("Order by already contains attribute: " + attribute);
       }

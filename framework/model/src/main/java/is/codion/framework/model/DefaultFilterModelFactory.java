@@ -20,7 +20,7 @@ public class DefaultFilterModelFactory implements FilterModelFactory {
       return null;
     }
 
-    final DefaultColumnFilterModel<Entity, Attribute<?>, T> filterModel = new DefaultColumnFilterModel<>(
+    DefaultColumnFilterModel<Entity, Attribute<?>, T> filterModel = new DefaultColumnFilterModel<>(
             property.getAttribute(), property.getAttribute().getTypeClass(),
             Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
     filterModel.setComparableFunction(row -> {
@@ -28,7 +28,7 @@ public class DefaultFilterModelFactory implements FilterModelFactory {
         return null;
       }
 
-      final Object value = row.get(property.getAttribute());
+      Object value = row.get(property.getAttribute());
       if (value instanceof Entity) {
         return (Comparable<T>) value.toString();
       }

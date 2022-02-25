@@ -28,7 +28,7 @@ public class DatabaseConnectionTest {
     Connection connection = null;
     try {
       connection = DATABASE.createConnection(UNIT_TEST_USER);
-      final DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
+      DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
       assertTrue(databaseConnection.isConnected());
       assertNotNull(databaseConnection.getUser());
       assertTrue(UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));

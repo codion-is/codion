@@ -58,7 +58,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
   @Override
   public void incrementWeight(final T item) {
     synchronized (lock) {
-      final RandomItem<T> randomItem = getRandomItem(item);
+      RandomItem<T> randomItem = getRandomItem(item);
       if (randomItem.getWeight() >= weightBounds) {
         throw new IllegalStateException("Maximum weight reached");
       }
@@ -71,7 +71,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
   @Override
   public void decrementWeight(final T item) {
     synchronized (lock) {
-      final RandomItem<T> randomItem = getRandomItem(item);
+      RandomItem<T> randomItem = getRandomItem(item);
       if (randomItem.getWeight() == 0) {
         throw new IllegalStateException("No weight to shed");
       }
@@ -92,9 +92,9 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
   }
 
   private void initializeItems(final Collection<T> items) {
-    final int rest = weightBounds % items.size();
-    final int amountEach = weightBounds / items.size();
-    final Iterator<T> itemIterator = items.iterator();
+    int rest = weightBounds % items.size();
+    int amountEach = weightBounds / items.size();
+    Iterator<T> itemIterator = items.iterator();
     int i = 0;
     while (itemIterator.hasNext()) {
       super.addItem(itemIterator.next(), i++ < items.size() - 1 ? amountEach : amountEach + rest);

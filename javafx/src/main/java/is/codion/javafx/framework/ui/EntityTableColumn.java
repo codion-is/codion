@@ -33,7 +33,7 @@ public final class EntityTableColumn<T> extends FXEntityListModel.AttributeTable
     super(property.getAttribute(), property.getCaption());
     this.conditionView = initializeConditionView(listModel, property);
     setCellValueFactory(cellValueFactory);
-    final int preferredWidth = property.getPreferredColumnWidth();
+    int preferredWidth = property.getPreferredColumnWidth();
     if (preferredWidth > 0) {
       setPrefWidth(preferredWidth);
     }
@@ -61,10 +61,10 @@ public final class EntityTableColumn<T> extends FXEntityListModel.AttributeTable
 
   private PropertyConditionView<T> initializeConditionView(final FXEntityListModel listModel, final Property<T> property) {
     if (property instanceof ColumnProperty || property instanceof ForeignKeyProperty) {
-      final ColumnConditionModel<? extends Attribute<T>, T> conditionModel = (ColumnConditionModel<? extends Attribute<T>, T>)
+      ColumnConditionModel<? extends Attribute<T>, T> conditionModel = (ColumnConditionModel<? extends Attribute<T>, T>)
               listModel.getTableConditionModel().getConditionModels().get(property.getAttribute());
       if (conditionModel != null) {
-        final PropertyConditionView<T> view = new PropertyConditionView<>(conditionModel, property);
+        PropertyConditionView<T> view = new PropertyConditionView<>(conditionModel, property);
         view.prefWidthProperty().setValue(getWidth());
         widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
         widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));

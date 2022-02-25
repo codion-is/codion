@@ -68,10 +68,10 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 
   @Override
   protected final JSpinner buildComponent() {
-    final JSpinner spinner = createSpinner();
-    final JComponent editor = spinner.getEditor();
+    JSpinner spinner = createSpinner();
+    JComponent editor = spinner.getEditor();
     if (editor instanceof JSpinner.DefaultEditor) {
-      final JTextField editorField = ((JSpinner.DefaultEditor) editor).getTextField();
+      JTextField editorField = ((JSpinner.DefaultEditor) editor).getTextField();
       if (!editable) {
         editorField.setEditable(false);
       }

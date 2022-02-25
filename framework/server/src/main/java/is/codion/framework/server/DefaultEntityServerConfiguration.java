@@ -281,7 +281,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
     @Override
     public EntityServerConfiguration build() {
-      final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(serverConfigurationBuilder.build());
+      DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(serverConfigurationBuilder.build());
       configuration.database = database;
       configuration.adminUser = adminUser;
       configuration.connectionLimit = connectionLimit;

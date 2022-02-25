@@ -64,7 +64,7 @@ public final class TextInputPanel extends JPanel {
    * @return the current input text value
    */
   public String getText() {
-    final String text = textField.getText();
+    String text = textField.getText();
 
     return text.isEmpty() ? null : text;
   }
@@ -178,7 +178,7 @@ public final class TextInputPanel extends JPanel {
   }
 
   private JButton createButton(final boolean buttonFocusable, final Dimension buttonSize) {
-    final JButton actionButton = new JButton(new AbstractAction("...") {
+    JButton actionButton = new JButton(new AbstractAction("...") {
       @Override
       public void actionPerformed(final ActionEvent e) {
         getInputFromUser();
@@ -193,7 +193,7 @@ public final class TextInputPanel extends JPanel {
   }
 
   private void getInputFromUser() {
-    final JTextArea textArea = new JTextArea(textField.getText()) {
+    JTextArea textArea = new JTextArea(textField.getText()) {
       @Override
       protected Document createDefaultModel() {
         return new SizedDocument(maximumLength);

@@ -86,7 +86,7 @@ public final class SearchHighlighter {
    * @return a text field for entering the search text.
    */
   public JTextField createSearchField() {
-    final JTextField searchField = new JTextField(12);
+    JTextField searchField = new JTextField(12);
     ComponentValues.textComponent(searchField).link(searchStringValue);
     //todo make this work somehow
     //TextFieldHint.create(searchField, "Search");
@@ -164,43 +164,43 @@ public final class SearchHighlighter {
     highlighter.removeAllHighlights();
     searchTextPositions.clear();
     if (!Util.nullOrEmpty(searchStringValue.get())) {
-      final Pattern pattern = Pattern.compile(searchStringValue.get(), caseSensitiveState.get() ? 0 : Pattern.CASE_INSENSITIVE);
+      Pattern pattern = Pattern.compile(searchStringValue.get(), caseSensitiveState.get() ? 0 : Pattern.CASE_INSENSITIVE);
       try {
-        final Matcher matcher = pattern.matcher(document.getText(0, document.getLength()));
+        Matcher matcher = pattern.matcher(document.getText(0, document.getLength()));
         int searchFrom = 0;
         while (matcher.find(searchFrom)) {
-          final Object highlightTag = highlighter.addHighlight(matcher.start(), matcher.end(), highlightPainter);
+          Object highlightTag = highlighter.addHighlight(matcher.start(), matcher.end(), highlightPainter);
           searchTextPositions.add(new MatchPosition(matcher.start(), matcher.end(), highlightTag));
           searchFrom = matcher.end();
         }
         nextSearchPosition();
       }
-      catch (final BadLocationException e) {
+      catch (BadLocationException e) {
         throw new RuntimeException(e);
       }
     }
   }
 
   private void selectCurrentSearchPosition() {
-    final MatchPosition matchPosition = searchTextPositions.get(currentSearchTextPositionIndex.get());
+    MatchPosition matchPosition = searchTextPositions.get(currentSearchTextPositionIndex.get());
     selectedSearchTextPosition.set(matchPosition.start);
     try {
       highlighter.removeHighlight(matchPosition.highlightTag);
       matchPosition.highlightTag = highlighter.addHighlight(matchPosition.start, matchPosition.end, selectedHighlightPainter);
     }
-    catch (final BadLocationException e) {
+    catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
   }
 
   private void deselectCurrentSearchPosition() {
     if (currentSearchTextPositionIndex.isNotNull()) {
-      final MatchPosition matchPosition = searchTextPositions.get(currentSearchTextPositionIndex.get());
+      MatchPosition matchPosition = searchTextPositions.get(currentSearchTextPositionIndex.get());
       try {
         highlighter.removeHighlight(matchPosition.highlightTag);
         matchPosition.highlightTag = highlighter.addHighlight(matchPosition.start, matchPosition.end, highlightPainter);
       }
-      catch (final BadLocationException e) {
+      catch (BadLocationException e) {
         throw new RuntimeException(e);
       }
     }
@@ -215,7 +215,7 @@ public final class SearchHighlighter {
         try {
           textComponent.scrollRectToVisible(textComponent.modelToView(selectedSearchPosition));
         }
-        catch (final BadLocationException e) {
+        catch (BadLocationException e) {
           throw new RuntimeException(e);
         }
       }

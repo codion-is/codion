@@ -23,16 +23,16 @@ final class DomainToString {
   private DomainToString() {}
 
   static String toString(final EntityDefinition definition) {
-    final StringBuilder builder = new StringBuilder();
-    final String interfaceName = getInterfaceName(definition.getTableName(), true);
+    StringBuilder builder = new StringBuilder();
+    String interfaceName = getInterfaceName(definition.getTableName(), true);
     builder.append("public interface ").append(interfaceName).append(" {").append(Util.LINE_SEPARATOR);
     builder.append("  ").append("EntityType TYPE = ").append("DOMAIN.entityType(\"")
             .append(definition.getTableName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
-    final List<Property<?>> columnProperties = definition.getProperties().stream()
+    List<Property<?>> columnProperties = definition.getProperties().stream()
             .filter(ColumnProperty.class::isInstance)
             .collect(toList());
     columnProperties.forEach(property -> appendAttribute(builder, property, interfaceName));
-    final List<Property<?>> foreignKeyProperties = definition.getProperties().stream()
+    List<Property<?>> foreignKeyProperties = definition.getProperties().stream()
             .filter(ForeignKeyProperty.class::isInstance)
             .collect(toList());
     if (!foreignKeyProperties.isEmpty()) {
@@ -51,17 +51,17 @@ final class DomainToString {
 
   private static void appendAttribute(final StringBuilder builder, final Property<?> property, final String interfaceName) {
     if (property instanceof ColumnProperty) {
-      final ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
-      final String typeClassName = columnProperty.getAttribute().getTypeClass().getSimpleName();
+      ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
+      String typeClassName = columnProperty.getAttribute().getTypeClass().getSimpleName();
       builder.append("  ").append("Attribute<").append(typeClassName).append("> ")
               .append(columnProperty.getColumnName().toUpperCase()).append(" = TYPE.").append(getAttributeTypePrefix(typeClassName))
               .append("Attribute(\"").append(columnProperty.getColumnName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
     }
     else if (property instanceof ForeignKeyProperty) {
-      final ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) property;
-      final List<String> references = new ArrayList<>();
+      ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) property;
+      List<String> references = new ArrayList<>();
       foreignKeyProperty.getReferences().forEach(reference -> {
-        final StringBuilder referenceBuilder = new StringBuilder();
+        StringBuilder referenceBuilder = new StringBuilder();
         referenceBuilder.append(interfaceName).append(".")
                 .append(reference.getAttribute().getName().toUpperCase()).append(", ")
                 .append(getInterfaceName(reference.getReferencedAttribute().getEntityType().getName(), true))
@@ -78,7 +78,7 @@ final class DomainToString {
 
   private static List<String> getPropertyStrings(final List<Property<?>> properties, final String interfaceName,
                                                  final EntityDefinition definition) {
-    final List<String> strings = new ArrayList<>();
+    List<String> strings = new ArrayList<>();
     properties.forEach(property -> {
       if (property instanceof ColumnProperty) {
         strings.add(getColumnProperty(interfaceName, (ColumnProperty<?>) property,
@@ -93,8 +93,8 @@ final class DomainToString {
   }
 
   private static String getForeignKeyProperty(final String interfaceName, final ForeignKeyProperty property) {
-    final StringBuilder builder = new StringBuilder();
-    final String foreignKey = property.getAttribute().getName().toUpperCase();
+    StringBuilder builder = new StringBuilder();
+    String foreignKey = property.getAttribute().getName().toUpperCase();
     builder.append("          foreignKeyProperty(").append(interfaceName).append(".").append(foreignKey)
             .append(", \"").append(property.getCaption()).append("\")");
 
@@ -103,7 +103,7 @@ final class DomainToString {
 
   private static String getColumnProperty(final String interfaceName, final ColumnProperty<?> property,
                                           final boolean isForeignKey, final boolean compositePrimaryKey) {
-    final StringBuilder builder = new StringBuilder(getPropertyType(property.getAttribute(),
+    StringBuilder builder = new StringBuilder(getPropertyType(property.getAttribute(),
             property.isPrimaryKeyColumn() && !compositePrimaryKey))
             .append(interfaceName).append(".").append(property.getColumnName().toUpperCase());
     if (!isForeignKey && !property.isPrimaryKeyColumn()) {

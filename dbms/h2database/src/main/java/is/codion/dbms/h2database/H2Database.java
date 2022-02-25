@@ -69,7 +69,7 @@ final class H2Database extends AbstractDatabase {
 
   @Override
   public String getName() {
-    final String name= removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
+    String name= removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
             JDBC_URL_PREFIX_MEM, JDBC_URL_PREFIX_SSL, JDBC_URL_PREFIX_ZIP, JDBC_URL_PREFIX);
 
     return name.isEmpty() ? "private" : name;
@@ -117,14 +117,14 @@ final class H2Database extends AbstractDatabase {
 
   private void initializeEmbeddedDatabase(final List<String> scriptPaths) {
     if ((isEmbeddedInMemory() || !databaseFileExists())) {
-      final Properties properties = new Properties();
+      Properties properties = new Properties();
       properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
       for (final String scriptPath : scriptPaths) {
-        final String initUrl = getUrl() + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
+        String initUrl = getUrl() + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
         try {
           DriverManager.getConnection(initUrl, properties).close();
         }
-        catch (final SQLException e) {
+        catch (SQLException e) {
           throw new RuntimeException(e);
         }
       }

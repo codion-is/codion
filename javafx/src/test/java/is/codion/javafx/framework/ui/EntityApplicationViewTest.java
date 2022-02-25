@@ -30,11 +30,11 @@ public final class EntityApplicationViewTest {
 
   @Test
   void constructor() {
-    final EntityApplicationView<FXEntityApplicationModel> applicationView = new EntityApplicationView<FXEntityApplicationModel>("EntityApplicationViewTest") {
+    EntityApplicationView<FXEntityApplicationModel> applicationView = new EntityApplicationView<FXEntityApplicationModel>("EntityApplicationViewTest") {
       @Override
       protected void initializeEntityViews() {
-        final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
-        final FXEntityModel model = new FXEntityModel(listModel);
+        FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+        FXEntityModel model = new FXEntityModel(listModel);
 
         addEntityView(new EntityView(model, new EntityEditViewTest.EmpEditView(listModel.getEditModel()), new EntityTableView(listModel)));
       }

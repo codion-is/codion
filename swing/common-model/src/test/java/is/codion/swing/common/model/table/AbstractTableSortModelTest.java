@@ -17,18 +17,18 @@ public class AbstractTableSortModelTest {
 
   @Test
   void test() {
-    final TableColumn firstColumn = new TableColumn(0);
+    TableColumn firstColumn = new TableColumn(0);
     firstColumn.setIdentifier(0);
-    final TableColumn secondColumn = new TableColumn(1);
+    TableColumn secondColumn = new TableColumn(1);
     secondColumn.setIdentifier(1);
-    final TableColumn thirdColumn = new TableColumn(2);
+    TableColumn thirdColumn = new TableColumn(2);
     thirdColumn.setIdentifier(2);
-    final TestTableSortModel model = new TestTableSortModel();
+    TestTableSortModel model = new TestTableSortModel();
 
-    final Row firstRow = new Row(1, 2, null);
-    final Row secondRow = new Row(1, 2, 5);
-    final Row thirdRow = new Row(1, 3, 6);
-    final List<Row> items = asList(firstRow, secondRow, thirdRow);
+    Row firstRow = new Row(1, 2, null);
+    Row secondRow = new Row(1, 2, 5);
+    Row thirdRow = new Row(1, 3, 6);
+    List<Row> items = asList(firstRow, secondRow, thirdRow);
 
     model.sort(items);
     assertEquals(0, items.indexOf(firstRow));
@@ -75,7 +75,7 @@ public class AbstractTableSortModelTest {
 
   @Test
   void nonComparableColumnClass() {
-    final AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>() {
+    AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>() {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {
         return ArrayList.class;
@@ -86,7 +86,7 @@ public class AbstractTableSortModelTest {
         return row.toString();
       }
     };
-    final List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
+    List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
     model.setSortOrder(0, SortOrder.DESCENDING);
     model.sort(collections);
   }

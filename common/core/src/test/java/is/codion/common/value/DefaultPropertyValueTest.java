@@ -18,7 +18,7 @@ public class DefaultPropertyValueTest {
 
   @Test
   void getGetMethodBoolean() throws NoSuchMethodException {
-    final Method getMethod = DefaultPropertyValue.getGetMethod(boolean.class, "anotherBooleanValue", Bean.class);
+    Method getMethod = DefaultPropertyValue.getGetMethod(boolean.class, "anotherBooleanValue", Bean.class);
     assertEquals("getAnotherBooleanValue", getMethod.getName());
   }
 

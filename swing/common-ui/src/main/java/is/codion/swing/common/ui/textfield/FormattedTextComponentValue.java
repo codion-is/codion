@@ -32,7 +32,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
 
   @Override
   protected final V getComponentValue(final C component) {
-    final String formattedText = getFormattedText(component);
+    String formattedText = getFormattedText(component);
     if (nullOrEmpty(formattedText)) {
       return null;
     }
@@ -66,21 +66,21 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
     try {
       return (V) format.parseObject(text);
     }
-    catch (final ParseException e) {
+    catch (ParseException e) {
       return null;
     }
   }
 
   private String getFormattedText(final C component) {
     try {
-      final String text = component.getText();
+      String text = component.getText();
       if (formatter == null) {
         return text;
       }
 
       return (String) formatter.stringToValue(text);
     }
-    catch (final ParseException e) {
+    catch (ParseException e) {
       return null;
     }
   }

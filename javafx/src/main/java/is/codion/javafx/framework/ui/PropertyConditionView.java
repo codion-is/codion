@@ -79,29 +79,29 @@ public final class PropertyConditionView<T> extends BorderPane {
   }
 
   private BorderPane createTopPane() {
-    final BorderPane pane = new BorderPane(header);
+    BorderPane pane = new BorderPane(header);
     pane.setRight(checkBoxPane);
 
     return pane;
   }
 
   private BorderPane createOperatorPane() {
-    final BorderPane pane = new BorderPane(createOperatorComboBox());
-    final Label filler = new Label();
+    BorderPane pane = new BorderPane(createOperatorComboBox());
+    Label filler = new Label();
     pane.setRight(filler);
 
     return pane;
   }
 
   private BorderPane createCheckBoxPane() {
-    final BorderPane pane = new BorderPane();
+    BorderPane pane = new BorderPane();
     pane.setCenter(enabledBox);
 
     return pane;
   }
 
   private ComboBox<Item<Operator>> createOperatorComboBox() {
-    final ComboBox<Item<Operator>> comboBox = new ComboBox<>(
+    ComboBox<Item<Operator>> comboBox = new ComboBox<>(
             FXCollections.observableArrayList(getOperators(model.getColumnIdentifier())));
     comboBox.getSelectionModel().select(item(model.getOperator()));
     comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> model.setOperator(newValue.getValue()));
@@ -113,7 +113,7 @@ public final class PropertyConditionView<T> extends BorderPane {
   }
 
   private CheckBox createEnabledBox() {
-    final CheckBox box = new CheckBox();
+    CheckBox box = new CheckBox();
     FXUiUtil.createBooleanValue(box).link(model.getEnabledState());
     FXUiUtil.link(box.disableProperty(), model.getLockedObserver());
 
@@ -121,10 +121,10 @@ public final class PropertyConditionView<T> extends BorderPane {
   }
 
   private Control createEqualsValueControl(final Property<T> property) {
-    final Control control = createControl(property);
+    Control control = createControl(property);
     if (!(control instanceof EntitySearchField)) {
-      final ValueSet<T> valueSet = model.getEqualValueSet();
-      final Value<T> value = Value.value();
+      ValueSet<T> valueSet = model.getEqualValueSet();
+      Value<T> value = Value.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
 
       FXUiUtil.createValue(property, control, null).link(value);
@@ -138,7 +138,7 @@ public final class PropertyConditionView<T> extends BorderPane {
       //never required
       return null;
     }
-    final Control control = createControl(property);
+    Control control = createControl(property);
     FXUiUtil.createValue(property, control, null).link(model.getUpperBoundValue());
 
     return control;
@@ -149,16 +149,16 @@ public final class PropertyConditionView<T> extends BorderPane {
       //never required
       return null;
     }
-    final Control control = createControl(property);
+    Control control = createControl(property);
     FXUiUtil.createValue(property, control, null).link(model.getLowerBoundValue());
 
     return control;
   }
 
   private Control createControl(final Property<T> property) {
-    final Control control;
+    Control control;
     if (model instanceof FXForeignKeyConditionListModel) {
-      final FXForeignKeyConditionListModel listModel = (FXForeignKeyConditionListModel) model;
+      FXForeignKeyConditionListModel listModel = (FXForeignKeyConditionListModel) model;
       control = new ComboBox<>(listModel.getListModel().getSortedList());
       listModel.getListModel().setSelectionModel(((ComboBox<Entity>) control).getSelectionModel());
     }
@@ -197,7 +197,7 @@ public final class PropertyConditionView<T> extends BorderPane {
   }
 
   private Pane createAdvancedView() {
-    final BorderPane borderPane = new BorderPane();
+    BorderPane borderPane = new BorderPane();
     borderPane.setTop(operatorPane);
     borderPane.setCenter(createInputPane());
 
@@ -222,7 +222,7 @@ public final class PropertyConditionView<T> extends BorderPane {
   }
 
   private Pane rangePane() {
-    final GridPane gridPane = new GridPane();
+    GridPane gridPane = new GridPane();
     gridPane.addColumn(0, lowerBoundControl);
     gridPane.addColumn(1, upperBoundControl);
 
@@ -230,14 +230,14 @@ public final class PropertyConditionView<T> extends BorderPane {
   }
 
   private static Pane singleValuePane(final Control control) {
-    final GridPane gridPane = new GridPane();
+    GridPane gridPane = new GridPane();
     gridPane.addColumn(0, control);
 
     return gridPane;
   }
 
   private static Collection<Item<Operator>> getOperators(final Attribute<?> attribute) {
-    final Collection<Item<Operator>> types = new ArrayList<>();
+    Collection<Item<Operator>> types = new ArrayList<>();
     if (attribute instanceof ForeignKey) {
       types.add(item(Operator.EQUAL, Operator.EQUAL.getCaption()));
       types.add(item(Operator.NOT_EQUAL, Operator.NOT_EQUAL.getCaption()));

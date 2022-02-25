@@ -149,25 +149,25 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   private static <T> T getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final boolean value = resultSet.getBoolean(columnIndex);
+    boolean value = resultSet.getBoolean(columnIndex);
 
     return (T) (!value && resultSet.wasNull() ? null : value);
   }
 
   private static <T> T getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final int value = resultSet.getInt(columnIndex);
+    int value = resultSet.getInt(columnIndex);
 
     return (T) (value == 0 && resultSet.wasNull() ? null : value);
   }
 
   private static <T> T getLong(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final long value = resultSet.getLong(columnIndex);
+    long value = resultSet.getLong(columnIndex);
 
     return (T) (value == 0L && resultSet.wasNull() ? null : value);
   }
 
   private static <T> T getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final double value = resultSet.getDouble(columnIndex);
+    double value = resultSet.getDouble(columnIndex);
 
     return (T) (Double.compare(value, 0d) == 0 && resultSet.wasNull() ? null : value);
   }
@@ -197,7 +197,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   private static <T> T getCharacter(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final String string = getString(resultSet, columnIndex);
+    String string = getString(resultSet, columnIndex);
     if (nullOrEmpty(string)) {
       return null;
     }

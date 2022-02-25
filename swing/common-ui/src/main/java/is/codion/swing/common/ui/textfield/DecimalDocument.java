@@ -19,7 +19,7 @@ final class DecimalDocument<T extends Number> extends NumberDocument<T> {
   }
 
   int getMaximumFractionDigits() {
-    final int maximumFractionDigits = getFormat().getMaximumFractionDigits();
+    int maximumFractionDigits = getFormat().getMaximumFractionDigits();
 
     return maximumFractionDigits == MAXIMUM_FRACTION_DIGITS ? -1 : maximumFractionDigits;
   }
@@ -41,13 +41,13 @@ final class DecimalDocument<T extends Number> extends NumberDocument<T> {
 
     @Override
     public NumberParseResult<T> parse(final String string) {
-      final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
+      char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
       if (string.equals(Character.toString(decimalSeparator))) {
         try {
           //use the format for the correct type
           return new DefaultNumberParseResult<>("0" + decimalSeparator, (T) getFormat().parse("0"), 1, true);
         }
-        catch (final ParseException e) {/*Won't happen*/}
+        catch (ParseException e) {/*Won't happen*/}
       }
 
       return super.parse(string);

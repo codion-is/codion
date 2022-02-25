@@ -147,7 +147,7 @@ public final class EmpDeptMinimalApp {
      */
     @Override
     public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKey foreignKey) {
-      final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
+      SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
       if (foreignKey.equals(Employee.MGR_FK)) {
         comboBoxModel.setSelectConditionSupplier(() ->
                 Conditions.where(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));
@@ -225,8 +225,8 @@ public final class EmpDeptMinimalApp {
 
     private EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
-      final SwingEntityModel employeeModel = new SwingEntityModel(new EmployeeEditModel(connectionProvider));
-      final SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
+      SwingEntityModel employeeModel = new SwingEntityModel(new EmployeeEditModel(connectionProvider));
+      SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
       departmentModel.addDetailModel(employeeModel);
       addEntityModel(departmentModel);
     }
@@ -248,12 +248,12 @@ public final class EmpDeptMinimalApp {
     @Override
     protected List<EntityPanel> initializeEntityPanels(final EmpDeptApplicationModel applicationModel) {
       //now, let's assemble our application
-      final SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
-      final SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
+      SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
+      SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
 
-      final EntityPanel employeePanel = new EntityPanel(employeeModel,
+      EntityPanel employeePanel = new EntityPanel(employeeModel,
               new EmployeeEditPanel(employeeModel.getEditModel()));
-      final EntityPanel departmentPanel = new EntityPanel(departmentModel,
+      EntityPanel departmentPanel = new EntityPanel(departmentModel,
               new DepartmentEditPanel(departmentModel.getEditModel()));
       departmentPanel.addDetailPanel(employeePanel);
 

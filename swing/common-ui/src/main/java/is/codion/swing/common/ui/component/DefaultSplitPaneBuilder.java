@@ -58,7 +58,7 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
 
   @Override
   protected JSplitPane buildComponent() {
-    final JSplitPane splitPane = new JSplitPane(orientation);
+    JSplitPane splitPane = new JSplitPane(orientation);
     splitPane.setLeftComponent(leftTopComponent);
     splitPane.setRightComponent(rightBottomComponent);
     splitPane.setResizeWeight(resizeWeight);

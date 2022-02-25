@@ -26,7 +26,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
     super(UNIT_TEST_USER, singletonList(new AbstractUsageScenario<PetstoreAppModel>("selectRecords") {
       @Override
       protected void perform(final PetstoreAppModel application) {
-        final SwingEntityModel categoryModel = application.getEntityModels().iterator().next();
+        SwingEntityModel categoryModel = application.getEntityModels().iterator().next();
         categoryModel.getTableModel().getSelectionModel().clearSelection();
         categoryModel.getTableModel().refresh();
         selectRandomRow(categoryModel.getTableModel());
@@ -38,14 +38,14 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
 
   @Override
   protected PetstoreAppModel initializeApplication() throws CancelException {
-    final PetstoreAppModel applicationModel = new PetstoreAppModel(
+    PetstoreAppModel applicationModel = new PetstoreAppModel(
             EntityConnectionProvider.connectionProvider().setDomainClassName(Petstore.class.getName())
                     .setClientTypeId(getClass().getSimpleName()).setUser(getUser()));
-    final SwingEntityModel categoryModel = applicationModel.getEntityModels().iterator().next();
+    SwingEntityModel categoryModel = applicationModel.getEntityModels().iterator().next();
     categoryModel.addLinkedDetailModel(categoryModel.getDetailModels().iterator().next());
-    final SwingEntityModel productModel = categoryModel.getDetailModels().iterator().next();
+    SwingEntityModel productModel = categoryModel.getDetailModels().iterator().next();
     productModel.addLinkedDetailModel(productModel.getDetailModels().iterator().next());
-    final SwingEntityModel itemModel = productModel.getDetailModels().iterator().next();
+    SwingEntityModel itemModel = productModel.getDetailModels().iterator().next();
     itemModel.addLinkedDetailModel(itemModel.getDetailModels().iterator().next());
 
     return applicationModel;
@@ -61,7 +61,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
       try {
         new LoadTestPanel<>(new PetstoreLoadTest()).showFrame();
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         e.printStackTrace();
       }
     }

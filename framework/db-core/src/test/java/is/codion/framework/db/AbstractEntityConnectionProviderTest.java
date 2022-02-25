@@ -20,31 +20,31 @@ public final class AbstractEntityConnectionProviderTest {
 
   @Test
   void connectClose() {
-    final EntityConnectionProvider provider = new TestProvider().setUser(UNIT_TEST_USER);
+    EntityConnectionProvider provider = new TestProvider().setUser(UNIT_TEST_USER);
     assertEquals("description", provider.getDescription());
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.getConnectionType());
     assertEquals(provider.getEntities(), ENTITIES);
     assertEquals(UNIT_TEST_USER, provider.getUser());
 
-    final EntityConnection connection1 = provider.getConnection();
+    EntityConnection connection1 = provider.getConnection();
     assertTrue(provider.isConnectionValid());
     provider.close();
     assertFalse(provider.isConnectionValid());
 
-    final EntityConnection connection2 = provider.getConnection();
+    EntityConnection connection2 = provider.getConnection();
     assertTrue(provider.isConnectionValid());
     assertNotEquals(connection1, connection2);
 
     connection2.close();
     assertFalse(provider.isConnectionValid());
-    final EntityConnection connection3 = provider.getConnection();
+    EntityConnection connection3 = provider.getConnection();
     assertNotEquals(connection2, connection3);
 
     provider.setUser(UNIT_TEST_USER);
     assertFalse(provider.isConnected());
     assertFalse(provider.isConnectionValid());
 
-    final EntityConnection connection4 = provider.getConnection();
+    EntityConnection connection4 = provider.getConnection();
     assertTrue(provider.isConnectionValid());
     assertNotEquals(connection3, connection4);
 

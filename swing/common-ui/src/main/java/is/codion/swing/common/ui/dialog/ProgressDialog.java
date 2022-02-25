@@ -70,7 +70,7 @@ public final class ProgressDialog extends JDialog {
     }
     add(progressBar, BorderLayout.CENTER);
     if (controls != null) {
-      final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
+      JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
       southPanel.add(controls.createHorizontalButtonPanel());
       add(southPanel, BorderLayout.SOUTH);
     }
@@ -79,7 +79,7 @@ public final class ProgressDialog extends JDialog {
 
   private static JProgressBar initializeProgressBar(final boolean indeterminate, final boolean stringPainted,
                                                     final Dimension size) {
-    final JProgressBar progressBar = new JProgressBar();
+    JProgressBar progressBar = new JProgressBar();
     progressBar.setStringPainted(stringPainted);
     if (size != null) {
       progressBar.setPreferredSize(size);

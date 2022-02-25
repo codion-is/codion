@@ -21,8 +21,8 @@ public final class Log4jProxy implements LoggerProxy {
 
   @Override
   public Object getLogLevel() {
-    final LoggerContext context = (LoggerContext) LogManager.getContext(false);
-    final LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+    LoggerContext context = (LoggerContext) LogManager.getContext(false);
+    LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
 
     return loggerConfig.getLevel();
   }
@@ -32,8 +32,8 @@ public final class Log4jProxy implements LoggerProxy {
     if (!(logLevel instanceof Level)) {
       throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
     }
-    final LoggerContext context = (LoggerContext) LogManager.getContext(false);
-    final LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+    LoggerContext context = (LoggerContext) LogManager.getContext(false);
+    LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
     loggerConfig.setLevel((Level) logLevel);
     context.updateLoggers();
   }

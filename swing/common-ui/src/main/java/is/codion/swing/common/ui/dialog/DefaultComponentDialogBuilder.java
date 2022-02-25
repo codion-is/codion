@@ -114,7 +114,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   @Override
   public JDialog show() {
-    final JDialog dialog = build();
+    JDialog dialog = build();
     dialog.setVisible(true);
 
     return dialog;
@@ -122,7 +122,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   @Override
   public JDialog build() {
-    final JDialog dialog = createDialog(owner, title, icon, component, size, locationRelativeTo, modal, resizable, onShown);
+    JDialog dialog = createDialog(owner, title, icon, component, size, locationRelativeTo, modal, resizable, onShown);
     if (enterAction != null) {
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -131,7 +131,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
               .enable(dialog.getRootPane());
     }
 
-    final Action disposeAction = new DisposeDialogAction(() -> dialog, confirmCloseListener);
+    Action disposeAction = new DisposeDialogAction(() -> dialog, confirmCloseListener);
     dialog.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(final WindowEvent e) {
@@ -170,7 +170,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   static JDialog createDialog(final Window owner, final String title, final ImageIcon icon,
                               final JComponent component, final Dimension size, final JComponent locationRelativeTo,
                               final boolean modal, final boolean resizable, final Consumer<JDialog> onShown) {
-    final JDialog dialog = new JDialog(owner, title);
+    JDialog dialog = new JDialog(owner, title);
     if (icon != null) {
       dialog.setIconImage(icon.getImage());
     }

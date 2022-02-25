@@ -20,9 +20,9 @@ public final class DefaultAttributeEqualConditionTest {
 
   @Test
   void inClauseParenthesis() {
-    final EntityDefinition definition = domain.getEntities().getDefinition(TestDomain.T_EMP);
+    EntityDefinition definition = domain.getEntities().getDefinition(TestDomain.T_EMP);
 
-    final List<Integer> ids = new ArrayList<>();
+    List<Integer> ids = new ArrayList<>();
     IntStream.range(0, 95).forEach(ids::add);
     DefaultAttributeEqualCondition<Integer> condition = new DefaultAttributeEqualCondition<>(TestDomain.EMP_ID, ids);
     String conditionString = condition.getConditionString(definition);

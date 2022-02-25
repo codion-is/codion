@@ -82,7 +82,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    * Iterates between the states: null -&gt; false -&gt; true
    */
   public void nextState() {
-    final Boolean state = getState();
+    Boolean state = getState();
     if (state == null) {
       setState(false);
     }

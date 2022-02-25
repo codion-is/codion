@@ -115,7 +115,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
   @Override
   public JDialog show() {
-    final JDialog dialog = build();
+    JDialog dialog = build();
     dialog.setVisible(true);
 
     return dialog;
@@ -123,15 +123,15 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
   @Override
   public JDialog build() {
-    final JButton okButton = Components.button(okAction)
+    JButton okButton = Components.button(okAction)
             .caption(Messages.get(Messages.OK))
             .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
             .build();
-    final JButton cancelButton = Components.button(cancelAction)
+    JButton cancelButton = Components.button(cancelAction)
             .caption(Messages.get(Messages.CANCEL))
             .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
             .build();
-    final JPanel panel = Components.panel(new BorderLayout())
+    JPanel panel = Components.panel(new BorderLayout())
             .addConstrained(component, BorderLayout.CENTER)
             .addConstrained(Components.panel(Layouts.flowLayout(buttonPanelConstraints))
                     .add(Components.panel(Layouts.gridLayout(1, 2))
@@ -141,7 +141,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
                     .build(), BorderLayout.SOUTH)
             .build();
 
-    final JDialog dialog = createDialog(owner, title, icon, panel, size, locationRelativeTo, modal, resizable, onShown);
+    JDialog dialog = createDialog(owner, title, icon, panel, size, locationRelativeTo, modal, resizable, onShown);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.addWindowListener(new WindowAdapter() {
       @Override

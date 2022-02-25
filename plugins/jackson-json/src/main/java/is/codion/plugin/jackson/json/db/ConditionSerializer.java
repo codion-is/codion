@@ -44,15 +44,15 @@ final class ConditionSerializer extends StdSerializer<Condition> {
 
   void serialize(final Condition condition, final JsonGenerator generator) throws IOException {
     if (condition instanceof Condition.Combination) {
-      final Condition.Combination combination = (Condition.Combination) condition;
+      Condition.Combination combination = (Condition.Combination) condition;
       conditionCombinationSerializer.serialize(combination, generator);
     }
     else if (condition instanceof AttributeCondition) {
-      final AttributeCondition<?> attributeCondition = (AttributeCondition<?>) condition;
+      AttributeCondition<?> attributeCondition = (AttributeCondition<?>) condition;
       attributeConditionSerializer.serialize(attributeCondition, generator);
     }
     else if (condition instanceof CustomCondition) {
-      final CustomCondition customCondition = (CustomCondition) condition;
+      CustomCondition customCondition = (CustomCondition) condition;
       customConditionSerializer.serialize(customCondition, generator);
     }
     else if (condition.getConditionString(entities.getDefinition(condition.getEntityType())).isEmpty()) {

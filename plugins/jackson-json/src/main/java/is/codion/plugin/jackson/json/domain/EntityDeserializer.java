@@ -46,8 +46,8 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
 
   @Override
   public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
-    final JsonNode entityNode = parser.getCodec().readTree(parser);
-    final EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entities::getDefinition);
+    JsonNode entityNode = parser.getCodec().readTree(parser);
+    EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entities::getDefinition);
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
   }
@@ -107,7 +107,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
 
   private Map<Attribute<?>, Object> getOriginalValueMap(final JsonNode node, final EntityDefinition definition)
           throws JsonProcessingException {
-    final JsonNode originalValues = node.get("originalValues");
+    JsonNode originalValues = node.get("originalValues");
     if (originalValues != null) {
       return getPropertyValueMap(definition, originalValues);
     }
@@ -116,11 +116,11 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   }
 
   private Map<Attribute<?>, Object> getPropertyValueMap(final EntityDefinition definition, final JsonNode values) throws JsonProcessingException {
-    final Map<Attribute<?>, Object> valueMap = new HashMap<>();
-    final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
+    Map<Attribute<?>, Object> valueMap = new HashMap<>();
+    Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
-      final Map.Entry<String, JsonNode> field = fields.next();
-      final Property<?> property = definition.getProperty(definition.getAttribute(field.getKey()));
+      Map.Entry<String, JsonNode> field = fields.next();
+      Property<?> property = definition.getProperty(definition.getAttribute(field.getKey()));
       valueMap.put(property.getAttribute(), parseValue(property.getAttribute(), field.getValue()));
     }
 

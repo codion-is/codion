@@ -54,7 +54,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
     createTextField(Invoice.BILLINGPOSTALCODE)
             .selectAllOnFocusGained(true);
 
-    final JPanel centerBasePanel = Components.panel(borderLayout())
+    JPanel centerBasePanel = Components.panel(borderLayout())
             .addConstrained(Components.panel(gridLayout(4, 2))
                     .add(createInputPanel(Invoice.CUSTOMER_FK)).add(createInputPanel(Invoice.DATE))
                     .add(createInputPanel(Invoice.BILLINGADDRESS)).add(createInputPanel(Invoice.BILLINGCITY))
@@ -74,7 +74,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
     private CustomerSelectionProvider(final EntitySearchModel searchModel) {
       super(searchModel);
-      final SwingEntityTableModel tableModel = getTable().getModel();
+      SwingEntityTableModel tableModel = getTable().getModel();
       tableModel.getColumnModel().setColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
       tableModel.getSortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
       setPreferredSize(new Dimension(500, 300));

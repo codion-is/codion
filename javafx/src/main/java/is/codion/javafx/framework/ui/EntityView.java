@@ -138,9 +138,9 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
       return Optional.empty();
     }
 
-    final List<EntityView> siblings = getParentView().get().getChildViews();
+    List<EntityView> siblings = getParentView().get().getChildViews();
     if (siblings.contains(this)) {
-      final int index = siblings.indexOf(this);
+      int index = siblings.indexOf(this);
       if (index == 0) {
         return Optional.ofNullable(siblings.get(siblings.size() - 1));
       }
@@ -156,9 +156,9 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
     if (!getParentView().isPresent()) {//no parent, no siblings
       return Optional.empty();
     }
-    final List<EntityView> siblings = getParentView().get().getChildViews();
+    List<EntityView> siblings = getParentView().get().getChildViews();
     if (siblings.contains(this)) {
-      final int index = siblings.indexOf(this);
+      int index = siblings.indexOf(this);
       if (index == siblings.size() - 1) {
         return Optional.ofNullable(siblings.get(0));
       }
@@ -277,7 +277,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
 
   private void activateView() {
     initializePanel();
-    final TabPane parent = FXUiUtil.getParentOfType(this, TabPane.class);
+    TabPane parent = FXUiUtil.getParentOfType(this, TabPane.class);
     if (parent != null) {
       parent.getTabs().stream()
               .filter(tab -> tab.getContent().equals(this))
@@ -295,7 +295,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   }
 
   private void initializeUI() {
-    final BorderPane editPane;
+    BorderPane editPane;
     if (editView != null) {
       editPane = new BorderPane();
       editView.initializePanel();
@@ -305,9 +305,9 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
     else {
       editPane = null;
     }
-    final BorderPane tableBottomPane = new BorderPane();
+    BorderPane tableBottomPane = new BorderPane();
     tableBottomPane.setCenter(tableView.getToolPane());
-    final BorderPane tablePane = new BorderPane();
+    BorderPane tablePane = new BorderPane();
     tablePane.setCenter(tableView);
     tablePane.setBottom(tableBottomPane);
     if (detailViews.isEmpty()) {
@@ -317,7 +317,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
       setCenter(tablePane);
     }
     else {
-      final BorderPane leftPane = new BorderPane();
+      BorderPane leftPane = new BorderPane();
       if (editPane != null) {
         leftPane.setTop(editPane);
       }
@@ -338,7 +338,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
       getTabbedDetailPanel().initializePanel();
     }
 
-    final FXEntityModel entityModel = getModel();
+    FXEntityModel entityModel = getModel();
     if (state == PanelState.HIDDEN) {
       entityModel.removeLinkedDetailModel(getTabbedDetailPanel().model);
     }

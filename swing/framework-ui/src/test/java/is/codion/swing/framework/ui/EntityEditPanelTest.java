@@ -27,8 +27,8 @@ public final class EntityEditPanelTest {
 
   @Test
   void test() throws DatabaseException {
-    final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
-    final TestEditPanel editPanel = new TestEditPanel(editModel);
+    SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    TestEditPanel editPanel = new TestEditPanel(editModel);
     assertEquals(7, editPanel.getComponentAttributes().size());
     editPanel.createHorizontalControlPanel();
     editPanel.createVerticalControlPanel();
@@ -42,7 +42,7 @@ public final class EntityEditPanelTest {
     editPanel.setActive(true);
     assertTrue(editPanel.isActive());
 
-    final Entity martin = editModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "MARTIN");
+    Entity martin = editModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "MARTIN");
     editModel.setEntity(martin);
     assertFalse(editModel.isEntityNew());
     editPanel.clearAndRequestFocus();

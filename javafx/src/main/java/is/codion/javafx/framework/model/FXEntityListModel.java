@@ -148,7 +148,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @throws IllegalArgumentException in case the column was not found
    */
   public final <T> EntityTableColumn<T> getTableColumn(final Attribute<T> attribute) {
-    final Optional<? extends TableColumn<Entity, ?>> tableColumn = columns.stream()
+    Optional<? extends TableColumn<Entity, ?>> tableColumn = columns.stream()
             .filter((Predicate<TableColumn<Entity, ?>>) entityTableColumn ->
                     ((EntityTableColumn<?>) entityTableColumn).getAttribute().equals(attribute))
             .findFirst();
@@ -200,11 +200,11 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final void replaceForeignKeyValues(final EntityType foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
-    final List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(foreignKeyEntityType);
+    List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(foreignKeyEntityType);
     for (final Entity entity : getItems()) {
       for (final ForeignKey foreignKey : foreignKeys) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
-          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKey);
+          Entity currentForeignKeyValue = entity.getForeignKey(foreignKey);
           if (Objects.equals(currentForeignKeyValue, foreignKeyValue)) {
             currentForeignKeyValue.setAs(foreignKeyValue);
           }
@@ -244,7 +244,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     try {
       replaceEntities(getConnectionProvider().getConnection().select(keys));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -366,8 +366,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final void setSelectedByKey(final Collection<Key> keys) {
-    final List<Key> keyList = new ArrayList<>(keys);
-    final List<Entity> toSelect = new ArrayList<>(keys.size());
+    List<Key> keyList = new ArrayList<>(keys);
+    List<Entity> toSelect = new ArrayList<>(keys.size());
     stream().filter(entity -> keyList.contains(entity.getPrimaryKey())).forEach(entity -> {
       toSelect.add(entity);
       keyList.remove(entity.getPrimaryKey());
@@ -399,7 +399,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       try {
         UserPreferences.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         LOG.error("Error while saving preferences", e);
       }
     }
@@ -407,15 +407,15 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final void setColumns(final Attribute<?>... attributes) {
-    final List<Attribute<?>> attributeList = asList(attributes);
+    List<Attribute<?>> attributeList = asList(attributes);
     new ArrayList<>(columns).forEach(column -> {
       if (!attributeList.contains(((AttributeTableColumn<?>) column).getAttribute())) {
         columns.remove(column);
       }
     });
     columns.sort((col1, col2) -> {
-      final Integer first = attributeList.indexOf(((AttributeTableColumn<?>) col1).getAttribute());
-      final Integer second = attributeList.indexOf(((AttributeTableColumn<?>) col2).getAttribute());
+      Integer first = attributeList.indexOf(((AttributeTableColumn<?>) col1).getAttribute());
+      Integer second = attributeList.indexOf(((AttributeTableColumn<?>) col2).getAttribute());
 
       return first.compareTo(second);
     });
@@ -423,10 +423,10 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final String getTableDataAsDelimitedString(final char delimiter) {
-    final List<String> header = new ArrayList<>();
-    final List<Attribute<?>> attributes = new ArrayList<>();
+    List<String> header = new ArrayList<>();
+    List<Attribute<?>> attributes = new ArrayList<>();
     columns.forEach(entityTableColumn -> {
-      final Attribute<?> attribute = ((AttributeTableColumn<?>) entityTableColumn).getAttribute();
+      Attribute<?> attribute = ((AttributeTableColumn<?>) entityTableColumn).getAttribute();
       attributes.add(attribute);
       header.add(getEntityDefinition().getProperty(attribute).getCaption());
     });
@@ -457,7 +457,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
               .limit(limit)
               .orderBy(getOrderBy()));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -474,7 +474,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     try {
       return getConnectionProvider().getConnection().rowCount(tableConditionModel.getCondition());
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -487,7 +487,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   protected OrderBy getOrderBy() {
     if (orderQueryBySortOrder && columnSortOrder != null && !columnSortOrder.isEmpty()) {
-      final OrderBy orderBy = getOrderByFromSortModel();
+      OrderBy orderBy = getOrderByFromSortModel();
       if (!orderBy.getOrderByAttributes().isEmpty()) {
         return orderBy;
       }
@@ -540,7 +540,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private void onInsert(final List<Entity> insertedEntities) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
-      final List<Entity> entitiesToAdd = insertedEntities.stream()
+      List<Entity> entitiesToAdd = insertedEntities.stream()
               .filter(entity -> entity.getEntityType().equals(getEntityType()))
               .collect(toList());
       switch (insertAction) {
@@ -578,16 +578,16 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @param entityMap the entities to replace mapped to the corresponding primary key found in this table model
    */
   private void replaceEntitiesByKey(final Map<Key, Entity> entityMap) {
-    final List<Integer> selected = getSelectionModel().getSelectedIndexes();
+    List<Integer> selected = getSelectionModel().getSelectedIndexes();
     replaceAll(entity -> {
-      final Entity toReplaceWith = entityMap.get(entity.getPrimaryKey());
+      Entity toReplaceWith = entityMap.get(entity.getPrimaryKey());
       return toReplaceWith == null ? entity : toReplaceWith;
     });
     getSelectionModel().setSelectedIndexes(selected);
   }
 
   private OrderBy getOrderByFromSortModel() {
-    final OrderBy orderBy = OrderBy.orderBy();
+    OrderBy orderBy = OrderBy.orderBy();
     columnSortOrder.stream()
             .map(EntityTableColumn.class::cast)
             .filter(column -> isColumnProperty(column.getAttribute()))
@@ -604,22 +604,22 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private boolean isColumnProperty(final Attribute<?> attribute) {
-    final Property<?> property = getEntityDefinition().getProperty(attribute);
+    Property<?> property = getEntityDefinition().getProperty(attribute);
 
     return property instanceof ColumnProperty;
   }
 
   private void applyPreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
-      final String preferencesString = UserPreferences.getUserPreference(getUserPreferencesKey(), "");
+      String preferencesString = UserPreferences.getUserPreference(getUserPreferencesKey(), "");
       try {
         if (preferencesString.length() > 0) {
-          final JSONObject preferences = new JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS);
+          JSONObject preferences = new JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS);
           applyColumnPreferences(preferences);
           columns.sort(new ColumnOrder(preferences));
         }
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         LOG.error("Error while applying preferences: " + preferencesString, e);
       }
     }
@@ -627,16 +627,16 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private void applyColumnPreferences(final JSONObject preferences) {
     for (final AttributeTableColumn<?> column : initialColumns) {
-      final Attribute<?> property = column.getAttribute();
+      Attribute<?> property = column.getAttribute();
       if (columns.contains(column)) {
         try {
-          final JSONObject columnPreferences = preferences.getJSONObject(property.getName());
+          JSONObject columnPreferences = preferences.getJSONObject(property.getName());
           column.setPrefWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
           if (!columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
             columns.remove(column);
           }
         }
-        catch (final Exception e) {
+        catch (Exception e) {
           LOG.info("Property preferences not found: " + property, e);
         }
       }
@@ -644,18 +644,18 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private JSONObject createPreferences() throws Exception {
-    final JSONObject preferencesRoot = new JSONObject();
+    JSONObject preferencesRoot = new JSONObject();
     preferencesRoot.put(PREFERENCES_COLUMNS, createColumnPreferences());
 
     return preferencesRoot;
   }
 
   private JSONObject createColumnPreferences() throws Exception {
-    final JSONObject columnPreferencesRoot = new JSONObject();
+    JSONObject columnPreferencesRoot = new JSONObject();
     for (final AttributeTableColumn<?> column : initialColumns) {
-      final Attribute<?> property = column.getAttribute();
-      final JSONObject columnObject = new JSONObject();
-      final boolean visible = columns.contains(column);
+      Attribute<?> property = column.getAttribute();
+      JSONObject columnObject = new JSONObject();
+      boolean visible = columns.contains(column);
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
       columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? columns.indexOf(column) : -1);
@@ -716,8 +716,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     @Override
     public int compare(final TableColumn<Entity, ?> col1, final TableColumn<Entity, ?> col2) {
       try {
-        final JSONObject columnOnePreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col1).getAttribute().getName());
-        final JSONObject columnTwoPreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col2).getAttribute().getName());
+        JSONObject columnOnePreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col1).getAttribute().getName());
+        JSONObject columnTwoPreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col2).getAttribute().getName());
         Integer firstIndex = columnOnePreferences.getInt(PREFERENCES_COLUMN_INDEX);
         if (firstIndex == null) {
           firstIndex = 0;
@@ -729,7 +729,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
         return firstIndex.compareTo(secondIndex);
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         LOG.info("Property preferences not found", e);
       }
 

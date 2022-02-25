@@ -49,7 +49,7 @@ public final class NextReportsResult implements Serializable {
   public File writeResultToFile(final String parentDirectory, final String filename) throws IOException {
     requireNonNull(parentDirectory, "parentDirectory");
     requireNonNull(filename, "filename");
-    final File file = new File(parentDirectory + Util.FILE_SEPARATOR + filename + "." + format.toLowerCase());
+    File file = new File(parentDirectory + Util.FILE_SEPARATOR + filename + "." + format.toLowerCase());
     if (file.exists()) {
       throw new IllegalArgumentException("File '" + file + "' already exists");
     }

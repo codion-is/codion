@@ -42,7 +42,7 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
 
   private Item<T> findItem(final T value) {
     for (int i = 0; i < items.size(); i++) {
-      final Item<T> item = items.get(i);
+      Item<T> item = items.get(i);
       if (Objects.equals(item.getValue(), value)) {
         return item;
       }

@@ -119,7 +119,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
     @Override
     public ForeignKeyProperty.Builder selectAttributes(final Attribute<?>... attributes) {
-      final Set<Attribute<?>> selectAttributes = new HashSet<>();
+      Set<Attribute<?>> selectAttributes = new HashSet<>();
       for (final Attribute<?> attribute : requireNonNull(attributes)) {
         if (!attribute.getEntityType().equals(foreignKeyProperty.referencedEntityType)) {
           throw new IllegalArgumentException("Select attribute must be part of the referenced entity type");

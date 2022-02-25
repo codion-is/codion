@@ -38,43 +38,43 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
   @Override
   public SelectCondition deserialize(final JsonParser parser, final DeserializationContext ctxt)
           throws IOException {
-    final JsonNode jsonNode = parser.getCodec().readTree(parser);
-    final EntityType entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
-    final EntityDefinition definition = entities.getDefinition(entityType);
-    final JsonNode conditionNode = jsonNode.get("condition");
-    final Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
+    JsonNode jsonNode = parser.getCodec().readTree(parser);
+    EntityType entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
+    EntityDefinition definition = entities.getDefinition(entityType);
+    JsonNode conditionNode = jsonNode.get("condition");
+    Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
     SelectCondition selectCondition = condition.toSelectCondition();
-    final JsonNode orderBy = jsonNode.get("orderBy");
+    JsonNode orderBy = jsonNode.get("orderBy");
     if (orderBy != null && !orderBy.isNull()) {
       selectCondition = selectCondition.orderBy(deserializeOrderBy(definition, orderBy));
     }
-    final JsonNode limit = jsonNode.get("limit");
+    JsonNode limit = jsonNode.get("limit");
     if (limit != null && !limit.isNull()) {
       selectCondition = selectCondition.limit(limit.asInt());
     }
-    final JsonNode offset = jsonNode.get("offset");
+    JsonNode offset = jsonNode.get("offset");
     if (offset != null && !offset.isNull()) {
       selectCondition = selectCondition.offset(offset.asInt());
     }
-    final JsonNode fetchDepth = jsonNode.get("fetchDepth");
+    JsonNode fetchDepth = jsonNode.get("fetchDepth");
     if (fetchDepth != null && !fetchDepth.isNull()) {
       selectCondition = selectCondition.fetchDepth(fetchDepth.asInt());
     }
-    final JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
+    JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
     if (fkFetchDepth != null && !fkFetchDepth.isNull()) {
       for (final ForeignKey foreignKey : definition.getForeignKeys()) {
-        final JsonNode fetchDepthNode = fkFetchDepth.get(foreignKey.getName());
+        JsonNode fetchDepthNode = fkFetchDepth.get(foreignKey.getName());
         if (fetchDepthNode != null) {
           selectCondition = selectCondition.fetchDepth(foreignKey, fetchDepthNode.asInt());
         }
       }
     }
-    final JsonNode forUpdate = jsonNode.get("forUpdate");
+    JsonNode forUpdate = jsonNode.get("forUpdate");
     if (forUpdate != null && !forUpdate.isNull() && forUpdate.asBoolean()) {
       selectCondition = selectCondition.forUpdate();
     }
-    final JsonNode selectAttributes = jsonNode.get("selectAttributes");
+    JsonNode selectAttributes = jsonNode.get("selectAttributes");
     if (selectAttributes != null && !selectAttributes.isNull()) {
       selectCondition = selectCondition.selectAttributes(deserializeSelectAttributes(definition, selectAttributes));
     }
@@ -89,8 +89,8 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
 
     OrderBy orderBy = OrderBy.orderBy();
     for (final JsonNode node : jsonNode) {
-      final String[] split = node.asText().split(":");
-      final String attributeName = split[0];
+      String[] split = node.asText().split(":");
+      String attributeName = split[0];
       if ("asc".equals(split[1])) {
         orderBy = orderBy.ascending(definition.getAttribute(attributeName));
       }
@@ -103,7 +103,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
   }
 
   private static Attribute<?>[] deserializeSelectAttributes(final EntityDefinition definition, final JsonNode jsonNode) {
-    final List<Attribute<?>> attributes = new ArrayList<>(jsonNode.size());
+    List<Attribute<?>> attributes = new ArrayList<>(jsonNode.size());
     for (final JsonNode node : jsonNode) {
       attributes.add(definition.getAttribute(node.asText()));
     }

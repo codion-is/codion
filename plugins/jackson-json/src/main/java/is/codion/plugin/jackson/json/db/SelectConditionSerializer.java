@@ -54,7 +54,7 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeFieldName("fkFetchDepth");
     generator.writeStartObject();
     for (final ForeignKey foreignKey : entities.getDefinition(condition.getEntityType()).getForeignKeys()) {
-      final Integer fkFetchDepth = condition.getFetchDepth(foreignKey);
+      Integer fkFetchDepth = condition.getFetchDepth(foreignKey);
       if (fkFetchDepth != condition.getFetchDepth()) {
         generator.writeObjectField(foreignKey.getName(), fkFetchDepth);
       }

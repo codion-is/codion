@@ -19,6 +19,6 @@ public final class LogoutLogin extends AbstractEntityUsageScenario<ChinookApplic
       Thread.sleep(random.nextInt(1500));
       application.getConnectionProvider().getConnection();
     }
-    catch (final InterruptedException ignored) {/*ignored*/}
+    catch (InterruptedException ignored) {/*ignored*/}
   }
 }

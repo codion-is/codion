@@ -97,12 +97,12 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
   @Override
   public final void refresh() {
-    final List<Entity> selectedItems = getSelectedItems();
+    List<Entity> selectedItems = getSelectedItems();
     onRefreshStarted();
     try {
       onRefreshResult(performQuery());
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       onRefreshFailed(e);
     }
     setSelectedItems(selectedItems);
@@ -250,7 +250,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   @Override
   public final List<Entity> getFilteredItems() {
     if (size() != filteredList.size()) {
-      final List<Entity> result = new ArrayList<>(this);
+      List<Entity> result = new ArrayList<>(this);
       result.removeAll(filteredList);
 
       return unmodifiableList(result);
@@ -348,7 +348,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
       return connectionProvider.getConnection().select(condition.toSelectCondition()
               .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -365,7 +365,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     try {
       return connectionProvider.getConnection().rowCount(condition);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }

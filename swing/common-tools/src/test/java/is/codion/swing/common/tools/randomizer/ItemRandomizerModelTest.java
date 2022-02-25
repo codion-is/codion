@@ -15,7 +15,7 @@ public class ItemRandomizerModelTest {
     final Object two = "two";
     final Object three = "three";
 
-    final ItemRandomizerModel<Object> model = new ItemRandomizerModel<>();
+    ItemRandomizerModel<Object> model = new ItemRandomizerModel<>();
     model.addItem(one);
     model.addItem(two);
     model.addItem(three);
@@ -77,6 +77,6 @@ public class ItemRandomizerModelTest {
       model.decrementWeight(one);
       fail();
     }
-    catch (final IllegalStateException ignored) {/*ignored*/}
+    catch (IllegalStateException ignored) {/*ignored*/}
   }
 }

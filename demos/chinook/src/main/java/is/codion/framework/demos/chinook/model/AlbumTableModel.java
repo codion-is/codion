@@ -21,9 +21,9 @@ public final class AlbumTableModel extends SwingEntityTableModel {
 
   @Override
   protected Object getValue(final Entity entity, final Attribute<?> attribute) {
-    final Object value = super.getValue(entity, attribute);
+    Object value = super.getValue(entity, attribute);
     if (value != null && attribute.equals(Album.COVER)) {
-      final byte[] bytes = (byte[]) value;
+      byte[] bytes = (byte[]) value;
 
       return kbFormat.format(bytes.length / 1024) + " Kb";
     }

@@ -17,8 +17,8 @@ public class TextComponentsTest {
 
   @Test
   void maximumLengthTextField() {
-    final JTextField textField = new JTextField();
-    final SizedDocument document = new SizedDocument();
+    JTextField textField = new JTextField();
+    SizedDocument document = new SizedDocument();
     textField.setDocument(document);
     TextComponents.maximumLength(document, 5);
     assertThrows(IllegalArgumentException.class, () -> textField.setText("123456"));
@@ -32,14 +32,14 @@ public class TextComponentsTest {
 
   @Test
   void maximumLengthTextArea() {
-    final JTextArea textArea = new JTextArea();
-    final Document document = textArea.getDocument();
+    JTextArea textArea = new JTextArea();
+    Document document = textArea.getDocument();
     TextComponents.maximumLength(document, 5);
     assertThrows(IllegalArgumentException.class, () -> textArea.setText("123456"));
     TextComponents.maximumLength(document, 3);
     textArea.setText("123");
     assertThrows(IllegalArgumentException.class, () -> textArea.setText("1234"));
-    final DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
+    DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
     assertTrue(documentFilter instanceof CaseDocumentFilter);
     assertEquals(1, ((CaseDocumentFilter) documentFilter).getValidators().size());
     TextComponents.maximumLength(document, -1);
@@ -76,8 +76,8 @@ public class TextComponentsTest {
 
   @Test
   void selectAllOnFocusGained() {
-    final JTextField textField = new JTextField("test");
-    final int focusListenerCount = textField.getFocusListeners().length;
+    JTextField textField = new JTextField("test");
+    int focusListenerCount = textField.getFocusListeners().length;
     TextComponents.selectAllOnFocusGained(textField);
     assertEquals(focusListenerCount + 1, textField.getFocusListeners().length);
     TextComponents.selectNoneOnFocusGained(textField);
@@ -101,8 +101,8 @@ public class TextComponentsTest {
 
   @Test
   void hint() {
-    final JTextField textField = new JTextField();
-    final TextFieldHint hint = TextFieldHint.create(textField, "search");
+    JTextField textField = new JTextField();
+    TextFieldHint hint = TextFieldHint.create(textField, "search");
     assertEquals("search", hint.getHintText());
     assertEquals("search", textField.getText());
     textField.setText("he");

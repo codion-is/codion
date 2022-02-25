@@ -22,8 +22,8 @@ final class ChartUtil {
   }
 
   private static void setColors(final JComponent parent, final JFreeChart chart) {
-    final Color textFieldForeground = UIManager.getColor("TextField.foreground");
-    final TextTitle title = chart.getTitle();
+    Color textFieldForeground = UIManager.getColor("TextField.foreground");
+    TextTitle title = chart.getTitle();
     if (title != null) {
       title.setPaint(textFieldForeground);
     }

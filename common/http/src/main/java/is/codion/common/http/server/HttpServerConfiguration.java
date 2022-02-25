@@ -61,7 +61,7 @@ public interface HttpServerConfiguration {
    * @return a server configuration according to system properties
    */
   static HttpServerConfiguration fromSystemProperties() {
-    final DefaultHttpServerConfiguration configuration = new DefaultHttpServerConfiguration(
+    DefaultHttpServerConfiguration configuration = new DefaultHttpServerConfiguration(
             HttpServerConfiguration.HTTP_SERVER_PORT.get(),
             HttpServerConfiguration.HTTP_SERVER_SECURE.get());
     configuration.setDocumentRoot(HttpServerConfiguration.DOCUMENT_ROOT.get());

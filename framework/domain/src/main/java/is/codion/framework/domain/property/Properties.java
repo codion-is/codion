@@ -118,8 +118,8 @@ public final class Properties {
   public static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> denormalizedViewProperty(final Attribute<T> attribute, final String caption,
                                                                                                                         final Attribute<Entity> entityAttribute,
                                                                                                                         final Attribute<T> denormalizedAttribute) {
-    final DerivedProperty.Provider<T> valueProvider = sourceValues -> {
-      final Entity foreignKeyValue = sourceValues.get(entityAttribute);
+    DerivedProperty.Provider<T> valueProvider = sourceValues -> {
+      Entity foreignKeyValue = sourceValues.get(entityAttribute);
 
       return foreignKeyValue == null ? null : foreignKeyValue.get(denormalizedAttribute);
     };
@@ -427,7 +427,7 @@ public final class Properties {
    */
   public static List<Property<?>> sort(final List<Property<?>> properties) {
     requireNonNull(properties, "properties");
-    final Collator collator = Collator.getInstance();
+    Collator collator = Collator.getInstance();
     properties.sort((o1, o2) -> collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase()));
 
     return properties;

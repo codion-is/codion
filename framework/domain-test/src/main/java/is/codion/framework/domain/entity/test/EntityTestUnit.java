@@ -87,12 +87,12 @@ public class EntityTestUnit {
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
   public final void test(final EntityType entityType) throws DatabaseException {
-    final EntityConnection connection = connectionProvider.getConnection();
+    EntityConnection connection = connectionProvider.getConnection();
     connection.beginTransaction();
     try {
-      final Map<EntityType, Entity> foreignKeyEntities = initializeReferencedEntities(entityType, new HashMap<>(), connection);
+      Map<EntityType, Entity> foreignKeyEntities = initializeReferencedEntities(entityType, new HashMap<>(), connection);
       Entity testEntity = null;
-      final EntityDefinition entityDefinition = getEntities().getDefinition(entityType);
+      EntityDefinition entityDefinition = getEntities().getDefinition(entityType);
       if (!entityDefinition.isReadOnly()) {
         testEntity = testInsert(requireNonNull(initializeTestEntity(entityType, foreignKeyEntities), "test entity"), connection);
         assertTrue(testEntity.getPrimaryKey().isNotNull());
@@ -161,17 +161,17 @@ public class EntityTestUnit {
   private Map<EntityType, Entity> initializeReferencedEntities(final EntityType entityType,
                                                                final Map<EntityType, Entity> foreignKeyEntities,
                                                                final EntityConnection connection) throws DatabaseException {
-    final List<ForeignKey> foreignKeys = new ArrayList<>(getEntities().getDefinition(entityType).getForeignKeys());
+    List<ForeignKey> foreignKeys = new ArrayList<>(getEntities().getDefinition(entityType).getForeignKeys());
     //we have to start with non-self-referential ones
     foreignKeys.sort((fk1, fk2) -> !fk1.getReferencedEntityType().equals(entityType) ? -1 : 1);
     for (final ForeignKey foreignKey : foreignKeys) {
-      final EntityType referencedEntityType = foreignKey.getReferencedEntityType();
+      EntityType referencedEntityType = foreignKey.getReferencedEntityType();
       if (!foreignKeyEntities.containsKey(referencedEntityType)) {
         if (!Objects.equals(entityType, referencedEntityType)) {
           foreignKeyEntities.put(referencedEntityType, null);//short circuit recursion, value replaced below
           initializeReferencedEntities(referencedEntityType, foreignKeyEntities, connection);
         }
-        final Entity referencedEntity = initializeReferenceEntity(referencedEntityType, foreignKeyEntities);
+        Entity referencedEntity = initializeReferenceEntity(referencedEntityType, foreignKeyEntities);
         if (referencedEntity != null) {
           foreignKeyEntities.put(referencedEntityType, insertOrSelect(referencedEntity, connection));
         }
@@ -189,11 +189,11 @@ public class EntityTestUnit {
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
   private static Entity testInsert(final Entity testEntity, final EntityConnection connection) throws DatabaseException {
-    final Key key = connection.insert(testEntity);
+    Key key = connection.insert(testEntity);
     try {
       return connection.selectSingle(key);
     }
-    catch (final RecordNotFoundException e) {
+    catch (RecordNotFoundException e) {
       fail("Inserted entity of type " + testEntity.getEntityType() + " not returned by select after insert");
       throw e;
     }
@@ -233,13 +233,13 @@ public class EntityTestUnit {
       return;
     }
 
-    final Entity updated = connection.update(testEntity);
+    Entity updated = connection.update(testEntity);
     assertEquals(testEntity.getPrimaryKey(), updated.getPrimaryKey());
     for (final ColumnProperty<?> property : connection.getEntities().getDefinition(testEntity.getEntityType()).getColumnProperties()) {
       if (property.isUpdatable()) {
-        final Object beforeUpdate = testEntity.get(property.getAttribute());
-        final Object afterUpdate = updated.get(property.getAttribute());
-        final String message = "Values of property " + property + " should be equal after update ["
+        Object beforeUpdate = testEntity.get(property.getAttribute());
+        Object afterUpdate = updated.get(property.getAttribute());
+        String message = "Values of property " + property + " should be equal after update ["
                 + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
                 + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]";
         if (property.getAttribute().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
@@ -268,7 +268,7 @@ public class EntityTestUnit {
     try {
       connection.selectSingle(testEntity.getPrimaryKey());
     }
-    catch (final RecordNotFoundException e) {
+    catch (RecordNotFoundException e) {
       caught = true;
     }
     assertTrue(caught, "Entity of type " + testEntity.getEntityType() + " failed delete test");
@@ -284,7 +284,7 @@ public class EntityTestUnit {
   private static Entity insertOrSelect(final Entity entity, final EntityConnection connection) throws DatabaseException {
     try {
       if (entity.getPrimaryKey().isNotNull()) {
-        final List<Entity> selected = connection.select(singletonList(entity.getPrimaryKey()));
+        List<Entity> selected = connection.select(singletonList(entity.getPrimaryKey()));
         if (!selected.isEmpty()) {
           return selected.get(0);
         }
@@ -292,7 +292,7 @@ public class EntityTestUnit {
 
       return connection.selectSingle(connection.insert(entity));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       LOG.error("EntityTestUnit.insertOrSelect()", e);
       throw e;
     }

@@ -55,7 +55,7 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
       try {
         getPool().shutdown();
       }
-      catch (final InterruptedException e) {
+      catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       }
     }

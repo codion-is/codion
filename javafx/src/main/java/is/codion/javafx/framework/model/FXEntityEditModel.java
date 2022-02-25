@@ -69,7 +69,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   public FXEntityListModel createForeignKeyListModel(final ForeignKey foreignKey) {
     requireNonNull(foreignKey);
-    final FXEntityListModel entityListModel = new FXEntityListModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
+    FXEntityListModel entityListModel = new FXEntityListModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
     refreshingObserver.addState(entityListModel.getRefreshingObserver());
 
     return entityListModel;
@@ -86,10 +86,10 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void addForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
+    Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
     for (final Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
-        final FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
+        FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
         if (listModel != null) {
           listModel.addAll(entry.getValue());
         }
@@ -103,10 +103,10 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void removeForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
+    Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
     for (final Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
-        final FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
+        FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
         if (listModel != null) {
           listModel.removeAll(entry.getValue());
           //todo

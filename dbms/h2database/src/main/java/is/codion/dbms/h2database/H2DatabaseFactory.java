@@ -62,20 +62,20 @@ public final class H2DatabaseFactory implements DatabaseFactory {
    */
   public static void runScript(final Database database, final String scriptPath, final String username, final String password, final Charset scriptCharset) throws SQLException {
     try {
-      final Class runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
-      final Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, Charset.class, boolean.class);
+      Class runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
+      Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, Charset.class, boolean.class);
       execute.invoke(runScriptToolClass.getDeclaredConstructor().newInstance(), database.getUrl(), username, password, scriptPath, scriptCharset, false);
     }
-    catch (final ClassNotFoundException cle) {
+    catch (ClassNotFoundException cle) {
       throw new RuntimeException(RUN_TOOL_CLASS_NAME + " must be on classpath for creating an embedded H2 database", cle);
     }
-    catch (final InvocationTargetException ite) {
+    catch (InvocationTargetException ite) {
       if (ite.getCause() instanceof SQLException) {
         throw (SQLException) ite.getCause();
       }
       throw new RuntimeException(ite.getTargetException());
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }

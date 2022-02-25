@@ -144,7 +144,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @return the attributes that have associated components.
    */
   public final Collection<Attribute<?>> getComponentAttributes() {
-    final Set<Attribute<?>> attributes = new HashSet<>(components.keySet());
+    Set<Attribute<?>> attributes = new HashSet<>(components.keySet());
     attributes.addAll(componentBuilders.keySet());
 
     return attributes;
@@ -156,7 +156,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @throws IllegalArgumentException in case no component or builder has been associated with the given attribute
    */
   public final JComponent getComponent(final Attribute<?> attribute) {
-    final JComponent component = getComponentInternal(attribute);
+    JComponent component = getComponentInternal(attribute);
     if (component == null) {
       throw new IllegalArgumentException("No component associated with attribute: " + attribute);
     }
@@ -245,7 +245,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute of the component to select
    */
   public final void requestComponentFocus(final Attribute<?> attribute) {
-    final JComponent component = getComponentInternal(attribute);
+    JComponent component = getComponentInternal(attribute);
     if (component != null) {
       component.requestFocus();
     }
@@ -258,9 +258,9 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @see #requestComponentFocus(Attribute)
    */
   public void selectInputComponent() {
-    final Collection<Property<?>> properties =
+    Collection<Property<?>> properties =
             Properties.sort(getEditModel().getEntityDefinition().getProperties(getSelectComponentAttributes()));
-    final Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
+    Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
             Dialogs.selectionDialog(properties)
                     .owner(this)
                     .title(FrameworkMessages.get(FrameworkMessages.SELECT_INPUT_FIELD))
@@ -276,7 +276,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @see #setComponent(Attribute, JComponent)
    */
   public final Collection<Attribute<?>> getSelectComponentAttributes() {
-    final Collection<Attribute<?>> attributes = getComponentAttributes();
+    Collection<Attribute<?>> attributes = getComponentAttributes();
     attributes.removeIf(attribute ->
             excludeFromSelection.contains(attribute) ||
                     !isComponentSelectable(getComponentInternal(attribute)));
@@ -460,7 +460,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     if (labelComponent instanceof JLabel) {
       setLabelForComponent((JLabel) labelComponent, inputComponent);
     }
-    final JPanel panel = new JPanel(Layouts.borderLayout());
+    JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(inputComponent, BorderLayout.CENTER);
     panel.add(labelComponent, labelBorderLayoutConstraints);
 
@@ -658,7 +658,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @return a combo box builder
    */
   protected final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createAttributeComboBox(final Attribute<T> attribute) {
-    final FilteredComboBoxModel<T> comboBoxModel = getEditModel().getComboBoxModel(attribute);
+    FilteredComboBoxModel<T> comboBoxModel = getEditModel().getComboBoxModel(attribute);
     comboBoxModel.addRefreshFailedListener(this::onException);
 
     return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, (ComboBoxModel<T>) comboBoxModel)
@@ -672,7 +672,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @return a foreign key combo box builder
    */
   protected final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyComboBox(final ForeignKey foreignKey) {
-    final SwingEntityComboBoxModel comboBoxModel = getEditModel().getForeignKeyComboBoxModel(foreignKey);
+    SwingEntityComboBoxModel comboBoxModel = getEditModel().getForeignKeyComboBoxModel(foreignKey);
     comboBoxModel.addRefreshFailedListener(this::onException);
 
     return (ComboBoxBuilder<Entity, EntityComboBox, B>) setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
@@ -707,7 +707,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @return a label builder for the given attribute
    */
   protected final <T> LabelBuilder<T> createLabel(final Attribute<T> attribute) {
-    final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
+    Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
     return (LabelBuilder<T>) Components.label(property.getCaption())
             .displayedMnemonic(property.getMnemonic() == null ? 0 : property.getMnemonic())
             .labelFor(getComponentInternal(attribute));
@@ -795,9 +795,9 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   private static void refreshIfCleared(final JComboBox<?> comboBox) {
-    final ComboBoxModel<?> model = comboBox.getModel();
+    ComboBoxModel<?> model = comboBox.getModel();
     if (model instanceof FilteredComboBoxModel) {
-      final FilteredComboBoxModel<?> comboBoxModel = (FilteredComboBoxModel<?>) model;
+      FilteredComboBoxModel<?> comboBoxModel = (FilteredComboBoxModel<?>) model;
       if (comboBoxModel.isCleared()) {
         comboBoxModel.refresh();
       }

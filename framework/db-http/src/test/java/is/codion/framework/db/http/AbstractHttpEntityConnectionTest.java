@@ -80,41 +80,41 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void fillReport() throws ReportException, DatabaseException, IOException {
-    final String result = connection.fillReport(TestDomain.REPORT, "");
+    String result = connection.fillReport(TestDomain.REPORT, "");
     assertNotNull(result);
   }
 
   @Test
   void insert() throws IOException, DatabaseException {
-    final Entity entity = connection.getEntities().builder(TestDomain.T_DEPARTMENT)
+    Entity entity = connection.getEntities().builder(TestDomain.T_DEPARTMENT)
             .with(TestDomain.DEPARTMENT_ID, 33)
             .with(TestDomain.DEPARTMENT_NAME, "name")
             .with(TestDomain.DEPARTMENT_LOCATION, "loc")
             .build();
-    final Key key = connection.insert(entity);
+    Key key = connection.insert(entity);
     assertEquals(Integer.valueOf(33), key.get());
     connection.delete(key);
   }
 
   @Test
   void selectByKey() throws IOException, DatabaseException {
-    final Key key = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 10);
-    final List<Entity> depts = connection.select(singletonList(key));
+    Key key = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 10);
+    List<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
   @Test
   void selectByKeyDifferentEntityTypes() throws IOException, DatabaseException {
-    final Key deptKey = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 10);
-    final Key empKey = connection.getEntities().primaryKey(TestDomain.T_EMP, 8);
+    Key deptKey = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 10);
+    Key empKey = connection.getEntities().primaryKey(TestDomain.T_EMP, 8);
 
-    final List<Entity> selected = connection.select(asList(deptKey, empKey));
+    List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
   }
 
   @Test
   void selectByValue() throws IOException, DatabaseException {
-    final List<Entity> department = connection.select(TestDomain.DEPARTMENT_NAME, "SALES");
+    List<Entity> department = connection.select(TestDomain.DEPARTMENT_NAME, "SALES");
     assertEquals(1, department.size());
   }
 
@@ -131,18 +131,18 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void updateByCondition() throws DatabaseException {
-    final Condition selectCondition = where(TestDomain.EMP_COMMISSION).isNull();
+    Condition selectCondition = where(TestDomain.EMP_COMMISSION).isNull();
 
-    final List<Entity> entities = connection.select(selectCondition);
+    List<Entity> entities = connection.select(selectCondition);
 
-    final UpdateCondition updateCondition = where(TestDomain.EMP_COMMISSION).isNull().toUpdateCondition()
+    UpdateCondition updateCondition = where(TestDomain.EMP_COMMISSION).isNull().toUpdateCondition()
             .set(TestDomain.EMP_COMMISSION, 500d)
             .set(TestDomain.EMP_SALARY, 4200d);
     connection.beginTransaction();
     try {
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(selectCondition));
-      final List<Entity> afterUpdate = connection.select(Entity.getPrimaryKeys(entities));
+      List<Entity> afterUpdate = connection.select(Entity.getPrimaryKeys(entities));
       for (final Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(TestDomain.EMP_COMMISSION));
         assertEquals(4200d, entity.get(TestDomain.EMP_SALARY));
@@ -155,11 +155,11 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void deleteByKey() throws IOException, DatabaseException {
-    final Entity employee = connection.selectSingle(TestDomain.EMP_NAME, "ADAMS");
+    Entity employee = connection.selectSingle(TestDomain.EMP_NAME, "ADAMS");
     connection.beginTransaction();
     try {
       connection.delete(employee.getPrimaryKey());
-      final List<Entity> selected = connection.select(singletonList(employee.getPrimaryKey()));
+      List<Entity> selected = connection.select(singletonList(employee.getPrimaryKey()));
       assertTrue(selected.isEmpty());
     }
     finally {
@@ -169,13 +169,13 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void deleteByKeyDifferentEntityTypes() throws IOException, DatabaseException {
-    final Key deptKey = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 40);
-    final Key empKey = connection.getEntities().primaryKey(TestDomain.T_EMP, 1);
+    Key deptKey = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 40);
+    Key empKey = connection.getEntities().primaryKey(TestDomain.T_EMP, 1);
     connection.beginTransaction();
     try {
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());
       connection.delete(asList(deptKey, empKey));
-      final List<Entity> selected = connection.select(asList(deptKey, empKey));
+      List<Entity> selected = connection.select(asList(deptKey, empKey));
       assertTrue(selected.isEmpty());
     }
     finally {
@@ -185,8 +185,8 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void selectDependencies() throws IOException, DatabaseException {
-    final Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    final Map<EntityType, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
+    Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Map<EntityType, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
     assertNotNull(dependentEntities);
     assertTrue(dependentEntities.containsKey(TestDomain.T_EMP));
     assertFalse(dependentEntities.get(TestDomain.T_EMP).isEmpty());
@@ -199,7 +199,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void selectValues() throws IOException, DatabaseException {
-    final List<String> values = connection.select(TestDomain.DEPARTMENT_NAME);
+    List<String> values = connection.select(TestDomain.DEPARTMENT_NAME);
     assertEquals(4, values.size());
   }
 
@@ -218,10 +218,10 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void writeReadBlob() throws DatabaseException {
-    final byte[] bytes = new byte[1024];
+    byte[] bytes = new byte[1024];
     new Random().nextBytes(bytes);
 
-    final Entity scott = connection.selectSingle(TestDomain.EMP_ID, 7);
+    Entity scott = connection.selectSingle(TestDomain.EMP_ID, 7);
     connection.writeBlob(scott.getPrimaryKey(), TestDomain.EMP_DATA, bytes);
     assertArrayEquals(bytes, connection.readBlob(scott.getPrimaryKey(), TestDomain.EMP_DATA));
   }
@@ -234,13 +234,13 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
-    final Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Conditions.condition(department.getPrimaryKey())));
   }
 
   @Test
   void foreignKeyValues() throws DatabaseException {
-    final Entity employee = connection.selectSingle(TestDomain.EMP_ID, 5);
+    Entity employee = connection.selectSingle(TestDomain.EMP_ID, 5);
     assertNotNull(employee.get(TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(employee.get(TestDomain.EMP_MGR_FK));
   }
@@ -252,13 +252,13 @@ abstract class AbstractHttpEntityConnectionTest {
 
   static BasicHttpClientConnectionManager createConnectionManager() {
     try {
-      final SSLContext sslContext = SSLContext.getDefault();
+      SSLContext sslContext = SSLContext.getDefault();
 
       return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("https",
               new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
               .build());
     }
-    catch (final NoSuchAlgorithmException e) {
+    catch (NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
     }
   }

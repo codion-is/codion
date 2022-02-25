@@ -78,7 +78,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void updateView() {
-    final ConnectionPoolStatistics statistics = model.getConnectionPoolStatistics();
+    ConnectionPoolStatistics statistics = model.getConnectionPoolStatistics();
     poolSizeField.setText(format.format(statistics.getSize()));
     createdField.setText(format.format(statistics.getCreated()));
     destroyedField.setText(format.format(statistics.getDestroyed()));
@@ -87,7 +87,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .build().getFormatter()
             .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
     requestedField.setText(format.format(statistics.getRequests()));
-    final double prc = statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
+    double prc = statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
     failedField.setText(format.format(statistics.getFailedRequests()) + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
     if (model.datasetContainsData()) {
       inPoolSnapshotChart.getXYPlot().setDataset(model.getSnapshotDataset());
@@ -104,18 +104,18 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void initializeCharts(final ConnectionPoolMonitor model) {
-    final JFreeChart checkOutTimeChart = ChartFactory.createXYStepChart(null,
+    JFreeChart checkOutTimeChart = ChartFactory.createXYStepChart(null,
             null, null, model.getCheckOutTimeCollection(), PlotOrientation.VERTICAL, true, true, false);
     setColors(checkOutTimeChart);
     checkOutTimePanel = new ChartPanel(checkOutTimeChart);
     checkOutTimePanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final DeviationRenderer devRenderer = new DeviationRenderer();
+    DeviationRenderer devRenderer = new DeviationRenderer();
     devRenderer.setDefaultShapesVisible(false);
     checkOutTimeChart.getXYPlot().setRenderer(devRenderer);
 
     inPoolChart.getXYPlot().setDataset(model.getInPoolDataset());
-    final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) inPoolChart.getXYPlot().getRenderer();
+    XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) inPoolChart.getXYPlot().getRenderer();
     renderer.setSeriesPaint(0, Color.RED);
     renderer.setSeriesPaint(1, Color.BLUE);
     renderer.setSeriesPaint(2, Color.PINK);
@@ -138,7 +138,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getConfigurationPanel() {
-    final JPanel configBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
+    JPanel configBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
     configBase.setBorder(BorderFactory.createTitledBorder("Configuration"));
     configBase.add(createWestCenterPanel(new JLabel("Mininum size"), Components.integerSpinner(model.getMinimumPoolSizeValue())
             .columns(3)
@@ -162,14 +162,14 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .editable(false)
             .build()));
 
-    final JPanel configPanel = new JPanel(Layouts.flowLayout(RIGHT));
+    JPanel configPanel = new JPanel(Layouts.flowLayout(RIGHT));
     configPanel.add(configBase);
 
     return configPanel;
   }
 
   private JPanel getChartPanel() {
-    final JPanel chartBase = new JPanel(new GridLayout(2, 2));
+    JPanel chartBase = new JPanel(new GridLayout(2, 2));
     chartBase.add(requestsPerSecondChartPanel);
     chartBase.add(inPoolChartPanel);
     chartBase.add(checkOutTimePanel);
@@ -180,7 +180,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getSouthPanel() {
-    final JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 4));
+    JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 4));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(Components.integerSpinner(model.getUpdateIntervalValue())
@@ -204,7 +204,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .maximumSize(TextComponents.getPreferredTextFieldSize())
             .build());
 
-    final JPanel southPanel = new JPanel(Layouts.borderLayout());
+    JPanel southPanel = new JPanel(Layouts.borderLayout());
     southPanel.add(chartConfig, BorderLayout.WEST);
 
     southPanel.add(getStatisticsPanel(), BorderLayout.CENTER);
@@ -213,7 +213,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getStatisticsPanel() {
-    final JPanel statisticsBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
+    JPanel statisticsBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
     poolSizeField.setEditable(false);
     poolSizeField.setHorizontalAlignment(CENTER);
     createdField.setEditable(false);

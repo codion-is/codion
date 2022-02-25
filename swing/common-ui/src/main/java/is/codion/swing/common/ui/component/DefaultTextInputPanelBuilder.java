@@ -97,7 +97,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   protected TextInputPanel buildComponent() {
-    final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null)
+    TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null)
             .selectAllOnFocusGained(selectAllOnFocusGained)
             .updateOn(updateOn)
             .columns(columns)

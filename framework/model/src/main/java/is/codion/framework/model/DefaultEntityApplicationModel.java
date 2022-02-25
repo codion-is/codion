@@ -72,7 +72,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   @Override
   public final void logout() {
-    final User user = connectionProvider.getUser();
+    User user = connectionProvider.getUser();
     connectionProvider.setUser(null);
     clear();
     logoutEvent.onEvent(user);
@@ -223,7 +223,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   private static boolean containsUnsavedData(final Collection<? extends EntityModel<?, ?, ?>> models) {
     for (final EntityModel<?, ?, ?> model : models) {
-      final EntityEditModel editModel = model.getEditModel();
+      EntityEditModel editModel = model.getEditModel();
       if (editModel.containsUnsavedData() || containsUnsavedData(model.getDetailModels())) {
         return true;
       }

@@ -48,7 +48,7 @@ public final class Schema {
         tables.values().forEach(table -> table.resolveForeignKeys(schemas));
         populated = true;
       }
-      catch (final SQLException e) {
+      catch (SQLException e) {
         throw new RuntimeException(e);
       }
     }
@@ -71,7 +71,7 @@ public final class Schema {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    final Schema schema = (Schema) object;
+    Schema schema = (Schema) object;
 
     return name.equals(schema.name);
   }

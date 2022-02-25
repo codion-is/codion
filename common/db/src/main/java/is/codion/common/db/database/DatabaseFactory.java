@@ -43,8 +43,8 @@ public interface DatabaseFactory {
    * @throws SQLException in case loading of database driver failed
    */
   static DatabaseFactory databaseFactory(final String jdbcUrl) throws SQLException {
-    final String driver = getDriverClassName(jdbcUrl);
-    final ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
+    String driver = getDriverClassName(jdbcUrl);
+    ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
     for (final DatabaseFactory factory : loader) {
       if (factory.isDriverCompatible(driver)) {
         return factory;
@@ -64,7 +64,7 @@ public interface DatabaseFactory {
    */
   static Database getDatabase() {
     try {
-      final DatabaseFactory factory = databaseFactory();
+      DatabaseFactory factory = databaseFactory();
       if (AbstractDatabase.instance == null || !AbstractDatabase.instance.getUrl().equals(Database.DATABASE_URL.get())) {
         //replace the instance
         AbstractDatabase.instance = factory.createDatabase(Database.DATABASE_URL.get());
@@ -72,10 +72,10 @@ public interface DatabaseFactory {
 
       return AbstractDatabase.instance;
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }

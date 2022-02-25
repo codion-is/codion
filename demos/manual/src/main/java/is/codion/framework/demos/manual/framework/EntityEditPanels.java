@@ -175,10 +175,10 @@ public final class EntityEditPanels {
 
     private void selectionValue() {
       // tag::selectionValue[]
-      final DefaultComboBoxModel<String> comboBoxModel =
+      DefaultComboBoxModel<String> comboBoxModel =
               new DefaultComboBoxModel<>(new String[] {"One", "Two"});
 
-      final SteppedComboBox<String> comboBox =
+      SteppedComboBox<String> comboBox =
               createComboBox(Demo.TEXT, comboBoxModel)
                       .editable(true)
                       .build();

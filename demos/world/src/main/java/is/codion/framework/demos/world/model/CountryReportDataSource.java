@@ -42,7 +42,7 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
 
       return new JasperReportsDataSource<>(largestCities.iterator(), new CityValueProvider());
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }

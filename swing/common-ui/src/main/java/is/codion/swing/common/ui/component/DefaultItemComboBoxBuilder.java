@@ -111,8 +111,8 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
 
   @Override
   protected SteppedComboBox<Item<T>> buildComponent() {
-    final ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
-    final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(itemComboBoxModel);
+    ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
+    SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(itemComboBoxModel);
     Completion.enable(comboBox, completionMode);
     if (popupWidth > 0) {
       comboBox.setPopupWidth(popupWidth);
@@ -147,9 +147,9 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   private ItemComboBoxModel<T> initializeItemComboBoxModel() {
-    final Item<T> nullItem = Item.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
+    Item<T> nullItem = Item.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     if (comboBoxModel == null) {
-      final List<Item<T>> modelItems = new ArrayList<>(items);
+      List<Item<T>> modelItems = new ArrayList<>(items);
       if (nullable && !modelItems.contains(nullItem)) {
         modelItems.add(0, nullItem);
       }

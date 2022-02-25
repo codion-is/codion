@@ -43,8 +43,8 @@ public class SteppedComboBox<T> extends JComboBox<T> {
    * @return the popup size
    */
   public final Dimension getPopupSize() {
-    final Dimension displaySize = ((SteppedComboBoxUI) getUI()).getDisplaySize();
-    final Dimension size = getSize();
+    Dimension displaySize = ((SteppedComboBoxUI) getUI()).getDisplaySize();
+    Dimension size = getSize();
 
     return new Dimension(Math.max(size.width, popupWidth <= 0 ? displaySize.width : popupWidth), size.height);
   }
@@ -114,15 +114,15 @@ public class SteppedComboBox<T> extends JComboBox<T> {
     @Override
     public void setVisible(final boolean visible) {
       if (visible) {
-        final Dimension popupSize = ((SteppedComboBox<?>) comboBox).getPopupSize();
+        Dimension popupSize = ((SteppedComboBox<?>) comboBox).getPopupSize();
         popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
-        final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height,
+        Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height,
                 popupSize.width + new JScrollBar(SwingConstants.VERTICAL).getWidth(), popupSize.height);
         scroller.setMaximumSize(popupBounds.getSize());
         scroller.setPreferredSize(popupBounds.getSize());
         scroller.setMinimumSize(popupBounds.getSize());
         getList().invalidate();
-        final int selectedIndex = comboBox.getSelectedIndex();
+        int selectedIndex = comboBox.getSelectedIndex();
         if (selectedIndex == -1) {
           getList().clearSelection();
         }

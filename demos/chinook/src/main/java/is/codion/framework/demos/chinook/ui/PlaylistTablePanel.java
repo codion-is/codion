@@ -34,7 +34,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 
   @Override
   protected Controls getPopupControls(final List<Controls> additionalPopupControls) {
-    final Controls popupControls = super.getPopupControls(additionalPopupControls);
+    Controls popupControls = super.getPopupControls(additionalPopupControls);
     popupControls.addAt(0, Control.builder(this::createRandomPlaylist)
             .caption(BUNDLE.getString("create_random_playlist"))
             .build());
@@ -44,7 +44,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
   }
 
   private void createRandomPlaylist() throws DatabaseException {
-    final RandomPlaylistParameters randomPlaylistParameters = new RandomPlaylistParametersValue()
+    RandomPlaylistParameters randomPlaylistParameters = new RandomPlaylistParametersValue()
             .showDialog(this, BUNDLE.getString("create_random_playlist"));
     if (randomPlaylistParameters.getPlaylistName() != null) {
       ((PlaylistTableModel) getTableModel()).createRandomPlaylist(randomPlaylistParameters);

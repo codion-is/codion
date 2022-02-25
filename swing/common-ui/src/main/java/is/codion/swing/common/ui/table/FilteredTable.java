@@ -210,7 +210,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     if (!(dataModel instanceof AbstractFilteredTableModel)) {
       throw new IllegalArgumentException("FilteredTable model must be a AbstractFilteredTableModel instance");
     }
-    final List<R> selection = ((AbstractFilteredTableModel<R, C>) dataModel).getSelectionModel().getSelectedItems();
+    List<R> selection = ((AbstractFilteredTableModel<R, C>) dataModel).getSelectionModel().getSelectedItems();
     super.setModel(dataModel);
     if (!selection.isEmpty()) {
       ((AbstractFilteredTableModel<R, C>) dataModel).getSelectionModel().setSelectedItems(selection);
@@ -308,7 +308,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Shows a dialog for selecting which columns to show/hide
    */
   public void selectColumns() {
-    final SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.getColumnModel());
+    SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.getColumnModel());
     Dialogs.okCancelDialog(selectColumnsPanel)
             .owner(this)
             .title(MESSAGES.getString(SELECT_COLUMNS))
@@ -324,12 +324,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
    */
   public boolean isCellVisible(final int row, final int column) {
-    final JViewport viewport = Utilities.getParentOfType(this, JViewport.class).orElse(null);
+    JViewport viewport = Utilities.getParentOfType(this, JViewport.class).orElse(null);
     if (viewport == null) {
       return false;
     }
-    final Rectangle cellRect = getCellRect(row, column, true);
-    final Point viewPosition = viewport.getViewPosition();
+    Rectangle cellRect = getCellRect(row, column, true);
+    Point viewPosition = viewport.getViewPosition();
     cellRect.setLocation(cellRect.x - viewPosition.x, cellRect.y - viewPosition.y);
 
     return new Rectangle(viewport.getExtentSize()).contains(cellRect);
@@ -355,8 +355,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   public void scrollToCoordinate(final int row, final int column, final CenterOnScroll centerOnScroll) {
     requireNonNull(centerOnScroll);
     Utilities.getParentOfType(this, JViewport.class).ifPresent(viewport -> {
-      final Rectangle cellRectangle = getCellRect(row, column, true);
-      final Rectangle viewRectangle = viewport.getViewRect();
+      Rectangle cellRectangle = getCellRect(row, column, true);
+      Rectangle viewRectangle = viewport.getViewRect();
       cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
       int x = cellRectangle.x;
       int y = cellRectangle.y;
@@ -383,10 +383,10 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Copies the contents of the selected cell to the clipboard.
    */
   public void copySelectedCell() {
-    final int selectedRow = getSelectedRow();
-    final int selectedColumn = getSelectedColumn();
+    int selectedRow = getSelectedRow();
+    int selectedColumn = getSelectedColumn();
     if (selectedRow >= 0 && selectedColumn >= 0) {
-      final Object value = getValueAt(selectedRow, selectedColumn);
+      Object value = getValueAt(selectedRow, selectedColumn);
       Utilities.setClipboard(value == null ? "" : value.toString());
     }
   }
@@ -498,12 +498,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return a search field
    */
   private JTextField initializeSearchField() {
-    final Value<String> searchString = Value.value("", "");
-    final Control findNext = control(() -> findNext(searchString.get()));
-    final Control findAndSelectNext = control(() -> findAndSelectNext(searchString.get()));
-    final Control findPrevious = control(() -> findPrevious(searchString.get()));
-    final Control findAndSelectPrevious = control(() -> findAndSelectPrevious(searchString.get()));
-    final Control cancel = control(this::requestFocusInWindow);
+    Value<String> searchString = Value.value("", "");
+    Control findNext = control(() -> findNext(searchString.get()));
+    Control findAndSelectNext = control(() -> findAndSelectNext(searchString.get()));
+    Control findPrevious = control(() -> findPrevious(searchString.get()));
+    Control findAndSelectPrevious = control(() -> findAndSelectPrevious(searchString.get()));
+    Control cancel = control(this::requestFocusInWindow);
 
     return Components.textField(searchString)
             .columns(SEARCH_FIELD_COLUMNS)
@@ -537,7 +537,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private TextFieldHint initializeSearchFieldHint() {
-    final TextFieldHint searchFieldHint = TextFieldHint.create(searchField, Messages.get(Messages.SEARCH_FIELD_HINT));
+    TextFieldHint searchFieldHint = TextFieldHint.create(searchField, Messages.get(Messages.SEARCH_FIELD_HINT));
     searchField.getDocument().addDocumentListener((DocumentAdapter) e -> {
       if (!searchFieldHint.isHintVisible()) {
         performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
@@ -550,7 +550,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
     if (!searchText.isEmpty()) {
-      final RowColumn coordinate = (forward ?
+      RowColumn coordinate = (forward ?
               tableModel.findNext(fromIndex, searchText) :
               tableModel.findPrevious(fromIndex, searchText))
               .orElse(null);
@@ -600,8 +600,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private ToggleControl createToggleColumnControl(final TableColumn column) {
-    final C identifier = (C) column.getIdentifier();
-    final State visibleState = State.state(tableModel.getColumnModel().isColumnVisible(identifier));
+    C identifier = (C) column.getIdentifier();
+    State visibleState = State.state(tableModel.getColumnModel().isColumnVisible(identifier));
     visibleState.addDataListener(visible -> tableModel.getColumnModel().setColumnVisible(identifier, visible));
 
     return ToggleControl.builder(visibleState)
@@ -631,7 +631,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private void bindFilterIndicatorEvents(final TableColumn column) {
-    final ColumnFilterModel<R, C, Object> model = (ColumnFilterModel<R, C, Object>) getModel().getColumnFilterModels().get(column.getIdentifier());
+    ColumnFilterModel<R, C, Object> model = (ColumnFilterModel<R, C, Object>) getModel().getColumnFilterModels().get(column.getIdentifier());
     if (model != null) {
       model.addEnabledListener(() -> getTableHeader().repaint());
     }
@@ -668,7 +668,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
     @Override
     public <T> ColumnConditionPanel<C, T> createConditionPanel(final TableColumn column) {
-      final ColumnFilterModel<?, C, Object> filterModel = (ColumnFilterModel<?, C, Object>) tableModel.getColumnFilterModels().get(column.getIdentifier());
+      ColumnFilterModel<?, C, Object> filterModel = (ColumnFilterModel<?, C, Object>) tableModel.getColumnFilterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
       }
@@ -688,12 +688,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
-      final Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      final Font defaultFont = component.getFont();
+      Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      Font defaultFont = component.getFont();
       if (component instanceof JLabel) {
-        final JLabel label = (JLabel) component;
-        final TableColumn tableColumn = table.getColumnModel().getColumn(column);
-        final ColumnFilterModel<R, C, ?> filterModel = tableModel.getColumnFilterModels().get(tableColumn.getIdentifier());
+        JLabel label = (JLabel) component;
+        TableColumn tableColumn = table.getColumnModel().getColumn(column);
+        ColumnFilterModel<R, C, ?> filterModel = tableModel.getColumnFilterModels().get(tableColumn.getIdentifier());
         label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
         label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
@@ -703,7 +703,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     private Icon getHeaderRendererIcon(final C columnIdentifier, final int iconSizePixels) {
-      final SortOrder sortOrder = tableModel.getSortModel().getSortingState(columnIdentifier).getSortOrder();
+      SortOrder sortOrder = tableModel.getSortModel().getSortingState(columnIdentifier).getSortOrder();
       if (sortOrder == SortOrder.UNSORTED) {
         return null;
       }
@@ -731,13 +731,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
     @Override
     public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
-      final Color color = c == null ? Color.GRAY : c.getBackground();
+      Color color = c == null ? Color.GRAY : c.getBackground();
       // In a compound sort, make each successive triangle 20% smaller than the previous one.
-      final int dx = (int) (size / PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
-      final int dy = descending ? dx : -dx;
+      int dx = (int) (size / PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
+      int dy = descending ? dx : -dx;
       // Align icon (roughly) with font baseline.
-      final int theY = y + SORT_ICON_SIZE * size / ALIGNMENT_CONSTANT + (descending ? -dy : 0);
-      final int shift = descending ? 1 : -1;
+      int theY = y + SORT_ICON_SIZE * size / ALIGNMENT_CONSTANT + (descending ? -dy : 0);
+      int shift = descending ? 1 : -1;
       g.translate(x, theY);
 
       // Right diagonal.
@@ -781,16 +781,16 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
         return;
       }
 
-      final JTableHeader tableHeader = (JTableHeader) e.getSource();
-      final TableColumnModel columnModel = tableHeader.getColumnModel();
-      final int index = columnModel.getColumnIndexAtX(e.getX());
+      JTableHeader tableHeader = (JTableHeader) e.getSource();
+      TableColumnModel columnModel = tableHeader.getColumnModel();
+      int index = columnModel.getColumnIndexAtX(e.getX());
       if (index >= 0) {
         if (!getSelectionModel().isSelectionEmpty()) {
           setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
         }
-        final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
-        final TableSortModel<R, C> sortModel = getModel().getSortModel();
-        final SortOrder sortOrder = getSortOrder(sortModel.getSortingState(columnIdentifier).getSortOrder(), e.isShiftDown());
+        C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
+        TableSortModel<R, C> sortModel = getModel().getSortModel();
+        SortOrder sortOrder = getSortOrder(sortModel.getSortingState(columnIdentifier).getSortOrder(), e.isShiftDown());
         if (e.isControlDown()) {
           sortModel.addSortOrder(columnIdentifier, sortOrder);
         }
@@ -821,8 +821,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     private void toggleColumnFilterPanel(final MouseEvent event) {
-      final SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
-      final TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
+      SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
+      TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
       toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
                       (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column)),
               FilteredTable.this, column.getHeaderValue().toString(), event.getLocationOnScreen());
@@ -851,10 +851,10 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     private void moveSelectedColumn(final boolean left) {
-      final int selectedColumnIndex = getSelectedColumn();
+      int selectedColumnIndex = getSelectedColumn();
       if (selectedColumnIndex != -1) {
-        final int columnCount = getColumnModel().getColumnCount();
-        final int newIndex;
+        int columnCount = getColumnModel().getColumnCount();
+        int newIndex;
         if (left) {
           if (selectedColumnIndex == 0) {
             newIndex = columnCount - 1;
@@ -877,9 +877,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     private void resizeSelectedColumn(final boolean enlarge) {
-      final int selectedColumnIndex = getSelectedColumn();
+      int selectedColumnIndex = getSelectedColumn();
       if (selectedColumnIndex != -1) {
-        final TableColumn column = getColumnModel().getColumn(selectedColumnIndex);
+        TableColumn column = getColumnModel().getColumn(selectedColumnIndex);
         column.setPreferredWidth(column.getWidth() + (enlarge ? COLUMN_RESIZE_AMOUNT : -COLUMN_RESIZE_AMOUNT));
       }
     }

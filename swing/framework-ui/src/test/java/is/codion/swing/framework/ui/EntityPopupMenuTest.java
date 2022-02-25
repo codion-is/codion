@@ -21,8 +21,8 @@ public final class EntityPopupMenuTest {
 
   @Test
   void test() throws DatabaseException {
-    final Entity blake = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.EMP_NAME, "BLAKE");
-    final Entity trevor = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.EMP_NAME, "TREVOR");
+    Entity blake = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.EMP_NAME, "BLAKE");
+    Entity trevor = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.EMP_NAME, "TREVOR");
     blake.put(TestDomain.EMP_ID, -1);
     blake.put(TestDomain.EMP_NAME, "NEWSTEAD");
     blake.put(TestDomain.EMP_MGR_FK, trevor);

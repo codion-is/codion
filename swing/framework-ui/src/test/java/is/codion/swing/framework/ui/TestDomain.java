@@ -103,7 +103,7 @@ public final class TestDomain extends DefaultDomain {
             denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName(), DETAIL_MASTER_FK, MASTER_CODE),
             itemProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.getName(), linkedValues -> {
-              final Integer intValue = linkedValues.get(DETAIL_INT);
+              Integer intValue = linkedValues.get(DETAIL_INT);
               if (intValue == null) {
                 return null;
               }

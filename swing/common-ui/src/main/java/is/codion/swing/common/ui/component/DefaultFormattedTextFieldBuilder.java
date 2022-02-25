@@ -58,13 +58,13 @@ final class DefaultFormattedTextFieldBuilder
   @Override
   protected JFormattedTextField buildComponent() {
     try {
-      final JFormattedTextField textField = new JFormattedTextField(FieldFormatter.create(formatMask, valueContainsLiterals));
+      JFormattedTextField textField = new JFormattedTextField(FieldFormatter.create(formatMask, valueContainsLiterals));
       textField.setFocusLostBehavior(focusLostBehaviour);
       textField.setColumns(columns);
 
       return textField;
     }
-    catch (final ParseException e) {
+    catch (ParseException e) {
       throw new RuntimeException(e);
     }
   }

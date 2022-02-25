@@ -75,7 +75,7 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
       identifier = "upper(" + identifier + ")";
     }
 
-    final String valuePlaceholder = getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
+    String valuePlaceholder = getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
     if (values.size() > 1) {
       return getInList(identifier, valuePlaceholder, values.size(), negated);
     }
@@ -87,8 +87,8 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
   }
 
   private static String getInList(final String columnIdentifier, final String valuePlaceholder, final int valueCount, final boolean negated) {
-    final boolean exceedsLimit = valueCount > IN_CLAUSE_LIMIT;
-    final StringBuilder stringBuilder = new StringBuilder(exceedsLimit ? "(" : "").append(columnIdentifier).append(negated ? NOT_IN_PREFIX : IN_PREFIX);
+    boolean exceedsLimit = valueCount > IN_CLAUSE_LIMIT;
+    StringBuilder stringBuilder = new StringBuilder(exceedsLimit ? "(" : "").append(columnIdentifier).append(negated ? NOT_IN_PREFIX : IN_PREFIX);
     int cnt = 1;
     for (int i = 0; i < valueCount; i++) {
       stringBuilder.append(valuePlaceholder);

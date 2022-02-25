@@ -19,9 +19,9 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
   }
 
   private static SwingEntityModel initializeArtistModel(final EntityConnectionProvider connectionProvider) {
-    final SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
-    final SwingEntityModel albumModel = new SwingEntityModel(new AlbumTableModel(connectionProvider));
-    final SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
+    SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
+    SwingEntityModel albumModel = new SwingEntityModel(new AlbumTableModel(connectionProvider));
+    SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
     trackModel.getEditModel().initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
 
     albumModel.addDetailModel(trackModel);
@@ -33,8 +33,8 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
   }
 
   private static SwingEntityModel initializePlaylistModel(final EntityConnectionProvider connectionProvider) {
-    final SwingEntityModel playlistModel = new SwingEntityModel(new PlaylistTableModel(connectionProvider));
-    final SwingEntityModel playlistTrackModel = new SwingEntityModel(PlaylistTrack.TYPE, connectionProvider);
+    SwingEntityModel playlistModel = new SwingEntityModel(new PlaylistTableModel(connectionProvider));
+    SwingEntityModel playlistTrackModel = new SwingEntityModel(PlaylistTrack.TYPE, connectionProvider);
     playlistTrackModel.getEditModel().initializeComboBoxModels(PlaylistTrack.PLAYLIST_FK);
 
     playlistModel.addDetailModel(playlistTrackModel);
@@ -45,9 +45,9 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
   }
 
   private static SwingEntityModel initializeCustomerModel(final EntityConnectionProvider connectionProvider) {
-    final SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+    SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
     customerModel.getEditModel().initializeComboBoxModels(Customer.SUPPORTREP_FK);
-    final SwingEntityModel invoiceModel = new InvoiceModel(connectionProvider);
+    SwingEntityModel invoiceModel = new InvoiceModel(connectionProvider);
     customerModel.addDetailModel(invoiceModel);
 
     customerModel.getTableModel().refresh();

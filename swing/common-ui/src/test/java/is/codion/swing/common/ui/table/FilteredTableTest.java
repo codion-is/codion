@@ -34,25 +34,25 @@ public class FilteredTableTest {
 
   @Test
   void searchField() throws AWTException {
-    final TableColumn column = new TableColumn(0);
+    TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnFilterModel<List<String>, Integer, String> filterModel =
+    ColumnFilterModel<List<String>, Integer, String> filterModel =
             new DefaultColumnFilterModel<>(0, String.class, "%");
 
-    final TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column),
+    TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column),
             new TestAbstractTableSortModel(), singletonList(filterModel)) {
       @Override
       protected Collection<List<String>> refreshItems() {
         return asList(singletonList("darri"), singletonList("dac"), singletonList("dansinn"), singletonList("dlabo"));
       }
     };
-    final FilteredTable<List<String>, Integer, TestAbstractFilteredTableModel> filteredTable =
+    FilteredTable<List<String>, Integer, TestAbstractFilteredTableModel> filteredTable =
             new FilteredTable<>(tableModel);
     tableModel.refresh();
 
     new JScrollPane(filteredTable);
 
-    final JTextField searchField = filteredTable.getSearchField();
+    JTextField searchField = filteredTable.getSearchField();
 
     searchField.setText("d");
     assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());

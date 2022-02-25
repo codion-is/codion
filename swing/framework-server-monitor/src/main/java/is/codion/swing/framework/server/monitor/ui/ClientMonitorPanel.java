@@ -54,16 +54,16 @@ public final class ClientMonitorPanel extends JPanel {
   private void initializeUI() {
     clientList.setComponentPopupMenu(initializePopupMenu());
 
-    final JPanel clientInstanceBase = new JPanel(Layouts.borderLayout());
-    final JScrollPane clientInstanceScroller = new JScrollPane(clientList);
+    JPanel clientInstanceBase = new JPanel(Layouts.borderLayout());
+    JScrollPane clientInstanceScroller = new JScrollPane(clientList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
     clientInstanceBase.add(Components.button(control(this::refresh))
             .caption("Refresh")
             .build(), BorderLayout.SOUTH);
 
-    final JPanel clientInstancePanel = new JPanel(Layouts.borderLayout());
-    final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    JPanel clientInstancePanel = new JPanel(Layouts.borderLayout());
+    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     splitPane.setOneTouchExpandable(true);
     splitPane.setContinuousLayout(true);
     splitPane.setLeftComponent(clientInstanceBase);
@@ -72,15 +72,15 @@ public final class ClientMonitorPanel extends JPanel {
     clientList.getSelectionModel().addListSelectionListener(e -> {
       clientInstancePanel.removeAll();
       try {
-        final RemoteClient remoteClient = clientList.getSelectedValue();
+        RemoteClient remoteClient = clientList.getSelectedValue();
         if (model != null && remoteClient != null) {
-          final ClientInstanceMonitorPanel clientMonitor = new ClientInstanceMonitorPanel(new ClientInstanceMonitor(model.getServer(), remoteClient));
+          ClientInstanceMonitorPanel clientMonitor = new ClientInstanceMonitorPanel(new ClientInstanceMonitor(model.getServer(), remoteClient));
           clientInstancePanel.add(clientMonitor, BorderLayout.CENTER);
         }
         revalidate();
         repaint();
       }
-      catch (final RemoteException ex) {
+      catch (RemoteException ex) {
         throw new RuntimeException(ex);
       }
     });

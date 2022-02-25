@@ -29,8 +29,8 @@ public final class EntityViewTest {
 
   @Test
   void constructor() {
-    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
-    final FXEntityModel model = new FXEntityModel(listModel);
+    FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    FXEntityModel model = new FXEntityModel(listModel);
 
     new EntityView(model, new EntityEditViewTest.EmpEditView(listModel.getEditModel()), new EntityTableView(listModel)).initializePanel();
   }

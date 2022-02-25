@@ -93,7 +93,7 @@ public final class Column {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    final Column column = (Column) object;
+    Column column = (Column) object;
 
     return columnName.equals(column.columnName);
   }

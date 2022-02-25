@@ -38,10 +38,10 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
     try {
       return (T) getMethod.invoke(valueOwner);
     }
-    catch (final RuntimeException re) {
+    catch (RuntimeException re) {
       throw re;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -59,7 +59,7 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
   @Override
   public T getOrThrow(final String message) throws IllegalStateException {
     requireNonNull(message, "message");
-    final T value = get();
+    T value = get();
     if (value == null) {
       throw new IllegalStateException(message);
     }
@@ -75,10 +75,10 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
     try {
       setMethod.invoke(valueOwner, value);
     }
-    catch (final RuntimeException re) {
+    catch (RuntimeException re) {
       throw re;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -97,7 +97,7 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
       return Optional.of(requireNonNull(ownerClass, "ownerClass").getMethod("set" +
               Character.toUpperCase(property.charAt(0)) + property.substring(1), requireNonNull(valueType, "valueType")));
     }
-    catch (final NoSuchMethodException e) {
+    catch (NoSuchMethodException e) {
       return Optional.empty();
     }
   }
@@ -109,22 +109,22 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
     if (property.isEmpty()) {
       throw new IllegalArgumentException("Property must be specified");
     }
-    final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
+    String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
     if (valueType.equals(boolean.class) || valueType.equals(Boolean.class)) {
       try {
         return ownerClass.getMethod("is" + propertyName);
       }
-      catch (final NoSuchMethodException ignored) {/*ignored*/}
+      catch (NoSuchMethodException ignored) {/*ignored*/}
       try {
         return ownerClass.getMethod(propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1));
       }
-      catch (final NoSuchMethodException ignored) {/*ignored*/}
+      catch (NoSuchMethodException ignored) {/*ignored*/}
     }
 
     try {
       return ownerClass.getMethod("get" + propertyName);
     }
-    catch (final NoSuchMethodException e) {
+    catch (NoSuchMethodException e) {
       throw new IllegalArgumentException("Get method for property " + propertyName + ", type: " + valueType +
               " not found in class " + ownerClass.getName(), e);
     }

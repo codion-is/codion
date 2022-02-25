@@ -43,7 +43,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     this.calendarProvider = requireNonNull(calendarProvider, "calendarProvider");
     add(temporalField, BorderLayout.CENTER);
     if (calendarProvider.supports(temporalField.getTemporalClass())) {
-      final Control displayCalendarControl = Control.builder(this::displayCalendar)
+      Control displayCalendarControl = Control.builder(this::displayCalendar)
               .caption("...")
               .build();
       KeyEvents.builder(KeyEvent.VK_INSERT)

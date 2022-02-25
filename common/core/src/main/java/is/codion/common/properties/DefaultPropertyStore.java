@@ -42,7 +42,7 @@ final class DefaultPropertyStore implements PropertyStore {
     @Override
     public Enumeration<Object> keys() {
       //sort to make properties file easier for human consumption
-      final List<Object> keys = Collections.list(super.keys());
+      List<Object> keys = Collections.list(super.keys());
       keys.sort(Comparator.comparing(Object::toString));
 
       return Collections.enumeration(keys);
@@ -89,7 +89,7 @@ final class DefaultPropertyStore implements PropertyStore {
     if (propertyValues.containsKey(requireNonNull(propertyName, "propertyName"))) {
       throw new IllegalArgumentException("Configuration value for property '" + propertyName + "' has already been created");
     }
-    final DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, defaultValue, nullValue, decoder, encoder);
+    DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, defaultValue, nullValue, decoder, encoder);
     propertyValues.put(propertyName, value);
 
     return value;
@@ -102,7 +102,7 @@ final class DefaultPropertyStore implements PropertyStore {
       throw new IllegalArgumentException("Configuration value for property '" + propertyName + "' has already been created");
     }
 
-    final DefaultPropertyValue<List<T>> value = new DefaultPropertyValue<>(propertyName, defaultValue, null,
+    DefaultPropertyValue<List<T>> value = new DefaultPropertyValue<>(propertyName, defaultValue, null,
             stringValue -> stringValue == null ? emptyList() :
                     Arrays.stream(stringValue.split(VALUE_SEPARATOR))
                             .map(decoder)
@@ -155,7 +155,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public void removeAll(final String prefix) {
-    final List<String> propertyKeys = getPropertyNames(prefix);
+    List<String> propertyKeys = getPropertyNames(prefix);
     if (propertyKeys.stream().anyMatch(propertyValues::containsKey)) {
       throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
     }
@@ -197,7 +197,7 @@ final class DefaultPropertyStore implements PropertyStore {
    */
   private static Properties loadProperties(final InputStream inputStream) throws IOException {
     requireNonNull(inputStream);
-    final Properties propertiesFromFile = new Properties();
+    Properties propertiesFromFile = new Properties();
     propertiesFromFile.load(inputStream);
 
     return propertiesFromFile;
@@ -217,7 +217,7 @@ final class DefaultPropertyStore implements PropertyStore {
       this.propertyName = propertyName;
       requireNonNull(decoder, "decoder");
       this.encoder = requireNonNull(encoder, "encoder");
-      final String initialValue = getInitialValue(propertyName);
+      String initialValue = getInitialValue(propertyName);
       set(initialValue == null ? defaultValue : decoder.apply(initialValue));
     }
 

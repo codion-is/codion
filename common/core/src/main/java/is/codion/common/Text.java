@@ -68,7 +68,7 @@ public final class Text {
     if (minLength > maximumLength) {
       throw new IllegalArgumentException("Minimum length can not exceed maximum length");
     }
-    final int length = minLength == maximumLength ? minLength : RANDOM.nextInt(maximumLength - minLength) + minLength;
+    int length = minLength == maximumLength ? minLength : RANDOM.nextInt(maximumLength - minLength) + minLength;
 
     return IntStream.range(0, length).mapToObj(i ->
             String.valueOf(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length()))))
@@ -145,7 +145,7 @@ public final class Text {
       return string;
     }
 
-    final StringBuilder stringBuilder = new StringBuilder(string);
+    StringBuilder stringBuilder = new StringBuilder(string);
     while (stringBuilder.length() < length) {
       if (alignment.equals(Alignment.LEFT)) {
         stringBuilder.insert(0, padChar);
@@ -170,7 +170,7 @@ public final class Text {
     requireNonNull(header, "header");
     requireNonNull(lines, "lines");
     requireNonNull(columnDelimiter, "delimiter");
-    final StringBuilder contents = new StringBuilder();
+    StringBuilder contents = new StringBuilder();
     contents.append(String.join(columnDelimiter, header)).append(Util.LINE_SEPARATOR)
             .append(lines.stream().map(line -> String.join(columnDelimiter, line))
                     .collect(joining(Util.LINE_SEPARATOR)));
@@ -202,7 +202,7 @@ public final class Text {
   public static <T> String getTextFileContents(final Class<T> resourceClass, final String resourceName, final Charset charset) throws IOException {
     requireNonNull(resourceClass, "resourceClass");
     requireNonNull(resourceName, "resourceName");
-    final InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
+    InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
     if (inputStream == null) {
       throw new FileNotFoundException("Resource not found: '" + resourceName + "'");
     }
@@ -247,7 +247,7 @@ public final class Text {
    */
   public static String getTextFileContents(final InputStream inputStream, final Charset charset) throws IOException {
     requireNonNull(inputStream, "inputStream");
-    final StringBuilder contents = new StringBuilder();
+    StringBuilder contents = new StringBuilder();
     try (final BufferedReader input = new BufferedReader(new InputStreamReader(inputStream, charset))) {
       String line = input.readLine();
       while (line != null) {
@@ -268,9 +268,9 @@ public final class Text {
    * @return the trimmed values
    */
   public static List<String> parseCommaSeparatedValues(final String commaSeparatedValues) {
-    final List<String> values = new ArrayList<>();
+    List<String> values = new ArrayList<>();
     if (!nullOrEmpty(commaSeparatedValues)) {
-      final String[] strings = commaSeparatedValues.split(",");
+      String[] strings = commaSeparatedValues.split(",");
       for (final String value : strings) {
         values.add(value.trim());
       }
@@ -289,9 +289,9 @@ public final class Text {
     if (!requireNonNull(text, "text").contains("_")) {
       return text;
     }
-    final StringBuilder builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     boolean firstDone = false;
-    final List<String> strings = Arrays.stream(text.toLowerCase().split("_"))
+    List<String> strings = Arrays.stream(text.toLowerCase().split("_"))
             .filter(string -> !string.isEmpty()).collect(Collectors.toList());
     if (strings.size() == 1) {
       return strings.get(0);

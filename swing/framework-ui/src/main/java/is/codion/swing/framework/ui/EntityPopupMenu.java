@@ -60,7 +60,7 @@ final class EntityPopupMenu extends JPopupMenu {
    */
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
                                          final EntityConnectionProvider connectionProvider, final Set<Entity> visitedEntities) {
-    final Entities entities = connectionProvider.getEntities();
+    Entities entities = connectionProvider.getEntities();
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityType()).getPrimaryKeyProperties()));
     populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(entities.getDefinition(entity.getEntityType())
             .getForeignKeyProperties()), visitedEntities);
@@ -70,14 +70,14 @@ final class EntityPopupMenu extends JPopupMenu {
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties) {
     Text.collate(primaryKeyProperties);
     for (final ColumnProperty<?> property : primaryKeyProperties) {
-      final boolean modified = entity.isModified(property.getAttribute());
-      final String value = entity.toString(property.getAttribute());
-      final StringBuilder builder = new StringBuilder("[PK] ")
+      boolean modified = entity.isModified(property.getAttribute());
+      String value = entity.toString(property.getAttribute());
+      StringBuilder builder = new StringBuilder("[PK] ")
               .append(property.getAttribute()).append(": ").append(value);
       if (modified) {
         builder.append(getOriginalValue(entity, property));
       }
-      final JMenuItem menuItem = new JMenuItem(builder.toString());
+      JMenuItem menuItem = new JMenuItem(builder.toString());
       menuItem.addActionListener(Control.control(() -> setClipboard(value)));
       setInvalidModified(menuItem, true, modified);
       menuItem.setToolTipText(property.getAttribute().getName());
@@ -93,17 +93,17 @@ final class EntityPopupMenu extends JPopupMenu {
       if (!visitedEntities.contains(entity)) {
         visitedEntities.add(entity);
         Text.collate(fkProperties);
-        final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entity.getEntityType());
-        final EntityValidator validator = definition.getValidator();
+        EntityDefinition definition = connectionProvider.getEntities().getDefinition(entity.getEntityType());
+        EntityValidator validator = definition.getValidator();
         for (final ForeignKeyProperty property : fkProperties) {
-          final ForeignKey foreignKey = property.getAttribute();
-          final boolean fkValueNull = entity.isForeignKeyNull(foreignKey);
-          final boolean isLoaded = entity.isLoaded(foreignKey);
-          final boolean valid = isValid(validator, entity, definition, property);
-          final boolean modified = entity.isModified(foreignKey);
-          final String toolTipText = getForeignKeyAttributeNames(foreignKey);
+          ForeignKey foreignKey = property.getAttribute();
+          boolean fkValueNull = entity.isForeignKeyNull(foreignKey);
+          boolean isLoaded = entity.isLoaded(foreignKey);
+          boolean valid = isValid(validator, entity, definition, property);
+          boolean modified = entity.isModified(foreignKey);
+          String toolTipText = getForeignKeyAttributeNames(foreignKey);
           if (!fkValueNull) {
-            final Entity referencedEntity;
+            Entity referencedEntity;
             if (isLoaded) {
               referencedEntity = entity.getForeignKey(foreignKey);
             }
@@ -112,23 +112,23 @@ final class EntityPopupMenu extends JPopupMenu {
               entity.remove(foreignKey);
               entity.put(foreignKey, referencedEntity);
             }
-            final StringBuilder builder = new StringBuilder("[FK").append(isLoaded ? "] " : "+] ")
+            StringBuilder builder = new StringBuilder("[FK").append(isLoaded ? "] " : "+] ")
                     .append(property.getCaption()).append(": ").append(referencedEntity.toString());
             if (modified) {
               builder.append(getOriginalValue(entity, property));
             }
-            final JMenu foreignKeyMenu = new JMenu(builder.toString());
+            JMenu foreignKeyMenu = new JMenu(builder.toString());
             setInvalidModified(foreignKeyMenu, valid, modified);
             foreignKeyMenu.setToolTipText(toolTipText);
             populateEntityMenu(foreignKeyMenu, referencedEntity, connectionProvider, visitedEntities);
             rootMenu.add(foreignKeyMenu);
           }
           else {
-            final StringBuilder builder = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
+            StringBuilder builder = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
             if (modified) {
               builder.append(getOriginalValue(entity, property));
             }
-            final JMenuItem menuItem = new JMenuItem(builder.toString());
+            JMenuItem menuItem = new JMenuItem(builder.toString());
             setInvalidModified(menuItem, valid, modified);
             menuItem.setToolTipText(toolTipText);
             rootMenu.add(menuItem);
@@ -136,7 +136,7 @@ final class EntityPopupMenu extends JPopupMenu {
         }
       }
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -151,20 +151,20 @@ final class EntityPopupMenu extends JPopupMenu {
                                         final Entities entities) {
     Text.collate(properties);
     final int maxValueLength = 20;
-    final EntityDefinition definition = entities.getDefinition(entity.getEntityType());
-    final EntityValidator validator = definition.getValidator();
+    EntityDefinition definition = entities.getDefinition(entity.getEntityType());
+    EntityValidator validator = definition.getValidator();
     for (final Property<?> property : properties) {
-      final boolean valid = isValid(validator, entity, definition, property);
-      final boolean modified = entity.isModified(property.getAttribute());
-      final boolean isForeignKeyProperty = property instanceof ColumnProperty
+      boolean valid = isValid(validator, entity, definition, property);
+      boolean modified = entity.isModified(property.getAttribute());
+      boolean isForeignKeyProperty = property instanceof ColumnProperty
               && definition.isForeignKeyAttribute(property.getAttribute());
       if (!isForeignKeyProperty && !(property instanceof ForeignKeyProperty)) {
-        final String prefix = "[" + property.getAttribute().getTypeClass().getSimpleName().charAt(0)
+        String prefix = "[" + property.getAttribute().getTypeClass().getSimpleName().charAt(0)
                 + (property instanceof DerivedProperty ? "*" : "")
                 + (property instanceof DenormalizedProperty ? "+" : "") + "] ";
-        final String value = entity.isNull(property.getAttribute()) ? "<null>" : entity.toString(property.getAttribute());
-        final boolean longValue = value != null && value.length() > maxValueLength;
-        final StringBuilder builder = new StringBuilder(prefix).append(property).append(": ");
+        String value = entity.isNull(property.getAttribute()) ? "<null>" : entity.toString(property.getAttribute());
+        boolean longValue = value != null && value.length() > maxValueLength;
+        StringBuilder builder = new StringBuilder(prefix).append(property).append(": ");
         if (longValue) {
           builder.append(value, 0, maxValueLength).append("...");
         }
@@ -174,10 +174,10 @@ final class EntityPopupMenu extends JPopupMenu {
         if (modified) {
           builder.append(getOriginalValue(entity, property));
         }
-        final JMenuItem menuItem = new JMenuItem(builder.toString());
+        JMenuItem menuItem = new JMenuItem(builder.toString());
         menuItem.addActionListener(Control.control(() -> setClipboard(value)));
         setInvalidModified(menuItem, valid, modified);
-        final StringBuilder toolTipBuilder = new StringBuilder();
+        StringBuilder toolTipBuilder = new StringBuilder();
         if (property instanceof ColumnProperty) {
           toolTipBuilder.append(property.getAttribute());
         }
@@ -196,7 +196,7 @@ final class EntityPopupMenu extends JPopupMenu {
   }
 
   private static void setInvalidModified(final JMenuItem menuItem, final boolean valid, final boolean modified) {
-    final Font currentFont = menuItem.getFont();
+    Font currentFont = menuItem.getFont();
     if (!valid) {
       menuItem.setBackground(Color.RED);
       menuItem.setFont(new Font(currentFont.getName(), Font.BOLD, currentFont.getSize()));
@@ -207,7 +207,7 @@ final class EntityPopupMenu extends JPopupMenu {
   }
 
   private static String getOriginalValue(final Entity entity, final Property<?> property) {
-    final Object originalValue = entity.getOriginal(property.getAttribute());
+    Object originalValue = entity.getOriginal(property.getAttribute());
 
     return " | " + (originalValue == null ? "<null>" : originalValue.toString());
   }
@@ -217,7 +217,7 @@ final class EntityPopupMenu extends JPopupMenu {
       validator.validate(entity, definition, property);
       return true;
     }
-    catch (final ValidationException e) {
+    catch (ValidationException e) {
       return false;
     }
   }

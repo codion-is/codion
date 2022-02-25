@@ -33,7 +33,7 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
 
   @Override
   public Object getValueAt(final int rowIndex, final int columnIndex) {
-    final DefinitionRow definition = getItemAt(rowIndex);
+    DefinitionRow definition = getItemAt(rowIndex);
     switch (columnIndex) {
       case DOMAIN:
         return definition.domain.getDomainType().getName();
@@ -46,14 +46,14 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
 
   @Override
   protected Collection<DefinitionRow> refreshItems() {
-    final Collection<DefinitionRow> items = new ArrayList<>();
+    Collection<DefinitionRow> items = new ArrayList<>();
     schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema -> items.addAll(createDomainDefinitions(schema)));
 
     return items;
   }
 
   private static Collection<DefinitionRow> createDomainDefinitions(final Schema schema) {
-    final DatabaseDomain domain = new DatabaseDomain(domainType(schema.getName()), schema.getTables().values());
+    DatabaseDomain domain = new DatabaseDomain(domainType(schema.getName()), schema.getTables().values());
 
     return domain.getEntities().getDefinitions().stream()
             .map(definition -> new DefinitionRow(domain, definition))
@@ -61,10 +61,10 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
   }
 
   private static List<TableColumn> createDefinitionColumns() {
-    final TableColumn domainColumn = new TableColumn(DefinitionTableModel.DOMAIN);
+    TableColumn domainColumn = new TableColumn(DefinitionTableModel.DOMAIN);
     domainColumn.setIdentifier(DefinitionTableModel.DOMAIN);
     domainColumn.setHeaderValue("Domain");
-    final TableColumn entityTypeColumn = new TableColumn(DefinitionTableModel.ENTITY);
+    TableColumn entityTypeColumn = new TableColumn(DefinitionTableModel.ENTITY);
     entityTypeColumn.setIdentifier(DefinitionTableModel.ENTITY);
     entityTypeColumn.setHeaderValue("Entity");
 

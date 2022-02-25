@@ -41,8 +41,8 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void test() {
-    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    final Model deptModel = createDepartmentModel();
+    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+    Model deptModel = createDepartmentModel();
     model.addEntityModel(deptModel);
     assertNotNull(model.getEntityModel(TestDomain.T_DEPARTMENT));
     assertEquals(1, model.getEntityModels().size());
@@ -68,28 +68,28 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void loginNullUser() {
-    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     assertThrows(NullPointerException.class, () -> model.login(null));
   }
 
   @Test
   public void getEntityModelByEntityTypeNotFound() {
-    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test
   public void getEntityModelByEntityType() {
-    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    final Model departmentModel = createDepartmentModel();
+    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+    Model departmentModel = createDepartmentModel();
     model.addEntityModel(departmentModel);
     assertEquals(departmentModel, model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test
   public void getEntityModelByClass() {
-    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    final Model departmentModel = createDepartmentModel();
+    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+    Model departmentModel = createDepartmentModel();
     assertThrows(IllegalArgumentException.class, () -> model.getEntityModel((Class<? extends Model>) departmentModel.getClass()));
     model.addEntityModels(departmentModel);
     assertEquals(departmentModel, model.getEntityModel((Class<? extends Model>) departmentModel.getClass()));
@@ -97,8 +97,8 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void containsEntityModel() {
-    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    final Model departmentModel = createDepartmentModel();
+    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+    Model departmentModel = createDepartmentModel();
     model.addEntityModel(departmentModel);
 
     assertTrue(model.containsEntityModel(TestDomain.T_DEPARTMENT));
@@ -111,15 +111,15 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void containsUnsavedData() {
-    final Model deptModel = createDepartmentModel();
+    Model deptModel = createDepartmentModel();
     if (!deptModel.containsTableModel()) {
       return;
     }
 
-    final Model empModel = deptModel.getDetailModel(TestDomain.T_EMP);
+    Model empModel = deptModel.getDetailModel(TestDomain.T_EMP);
     deptModel.addLinkedDetailModel(empModel);
 
-    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     model.addEntityModel(deptModel);
 
     assertFalse(model.containsUnsavedData());

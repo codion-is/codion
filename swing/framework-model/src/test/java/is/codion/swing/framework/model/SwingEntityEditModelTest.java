@@ -36,7 +36,7 @@ public class SwingEntityEditModelTest {
 
   @Test
   void getComboBoxModel() {
-    final FilteredComboBoxModel<String> model = employeeEditModel.getComboBoxModel(TestDomain.EMP_JOB);
+    FilteredComboBoxModel<String> model = employeeEditModel.getComboBoxModel(TestDomain.EMP_JOB);
     model.setNullString("null");
     assertNotNull(model);
     assertTrue(employeeEditModel.containsComboBoxModel(TestDomain.EMP_JOB));
@@ -52,7 +52,7 @@ public class SwingEntityEditModelTest {
   @Test
   void getForeignKeyComboBoxModel() {
     assertFalse(employeeEditModel.containsComboBoxModel(TestDomain.EMP_DEPARTMENT_FK));
-    final EntityComboBoxModel model = employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
+    EntityComboBoxModel model = employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getItems().isEmpty());
@@ -66,11 +66,11 @@ public class SwingEntityEditModelTest {
 
   @Test
   void createForeignKeyComboBoxModel() {
-    final EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
+    EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getItems().isEmpty());
-    final ForeignKeyProperty deptProperty = employeeEditModel.getEntities().getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
+    ForeignKeyProperty deptProperty = employeeEditModel.getEntities().getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
     assertEquals(deptProperty.getReferencedEntityType(), model.getEntityType());
     model.refresh();
     for (final Entity department : model.getItems()) {
@@ -82,7 +82,7 @@ public class SwingEntityEditModelTest {
 
   @Test
   void replaceForeignKeyValues() throws DatabaseException {
-    final Entity blake = employeeEditModel.getConnectionProvider().getConnection()
+    Entity blake = employeeEditModel.getConnectionProvider().getConnection()
             .selectSingle(TestDomain.EMP_NAME, "BLAKE");
     employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK);
     employeeEditModel.refreshComboBoxModels();

@@ -32,13 +32,13 @@ public final class EntityTest {
 
   @Test
   void equal() {
-    final Entity department1 = entities.builder(Department.TYPE)
+    Entity department1 = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .with(Department.NAME, "name")
             .with(Department.LOCATION, "loc")
             .build();
 
-    final Entity department2 = entities.builder(Department.TYPE)
+    Entity department2 = entities.builder(Department.TYPE)
             .with(Department.NO, 2)
             .with(Department.NAME, "name")
             .with(Department.LOCATION, "loc")
@@ -55,7 +55,7 @@ public final class EntityTest {
     assertTrue(Entity.valuesEqual(department1, department2,
             Department.NAME, Department.LOCATION));
 
-    final Entity employee = entities.builder(Employee.TYPE)
+    Entity employee = entities.builder(Employee.TYPE)
             .with(Employee.ID, 1)
             .with(Employee.NAME, "name")
             .build();
@@ -67,7 +67,7 @@ public final class EntityTest {
   void isKeyModified() {
     assertFalse(Entity.isKeyModified(emptyList()));
 
-    final Entity department = entities.builder(Department.TYPE)
+    Entity department = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .with(Department.NAME, "name")
             .with(Department.LOCATION, "loc")
@@ -86,16 +86,16 @@ public final class EntityTest {
 
   @Test
   void getModifiedColumnAttributes() {
-    final Entity entity = entities.builder(Department.TYPE)
+    Entity entity = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .with(Department.LOCATION, "Location")
             .with(Department.NAME, "Name")
             .with(Department.ACTIVE, true)
             .build();
 
-    final EntityDefinition definition = entities.getDefinition(Department.TYPE);
+    EntityDefinition definition = entities.getDefinition(Department.TYPE);
 
-    final Entity current = entities.builder(Department.TYPE)
+    Entity current = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .with(Department.LOCATION, "Location")
             .with(Department.NAME, "Name")
@@ -109,7 +109,7 @@ public final class EntityTest {
     current.saveAll();
     assertTrue(Entity.isValueMissingOrModified(current, entity, Department.NO));
     assertEquals(Department.NO, Entity.getModifiedColumnAttributes(definition, current, entity).iterator().next());
-    final Integer id = current.remove(Department.NO);
+    Integer id = current.remove(Department.NO);
     assertEquals(2, id);
     current.saveAll();
     assertTrue(Entity.isValueMissingOrModified(current, entity, Department.NO));
@@ -140,22 +140,22 @@ public final class EntityTest {
 
   @Test
   void getModifiedColumnAttributesWithBlob() {
-    final Random random = new Random();
-    final byte[] bytes = new byte[1024];
+    Random random = new Random();
+    byte[] bytes = new byte[1024];
     random.nextBytes(bytes);
-    final byte[] modifiedBytes = new byte[1024];
+    byte[] modifiedBytes = new byte[1024];
     random.nextBytes(modifiedBytes);
 
-    final EntityDefinition definition = entities.getDefinition(Employee.TYPE);
+    EntityDefinition definition = entities.getDefinition(Employee.TYPE);
     //eagerly loaded blob
-    final Entity emp1 = entities.builder(Employee.TYPE)
+    Entity emp1 = entities.builder(Employee.TYPE)
             .with(Employee.ID, 1)
             .with(Employee.NAME, "name")
             .with(Employee.SALARY, 1300d)
             .with(Employee.DATA, bytes)
             .build();
 
-    final Entity emp2 = emp1.copyBuilder()
+    Entity emp2 = emp1.copyBuilder()
             .with(Employee.DATA, modifiedBytes)
             .build();
 
@@ -163,18 +163,18 @@ public final class EntityTest {
     assertTrue(modifiedAttributes.contains(Employee.DATA));
 
     //lazy loaded blob
-    final Entity dept1 = entities.builder(Department.TYPE)
+    Entity dept1 = entities.builder(Department.TYPE)
             .with(Department.NAME, "name")
             .with(Department.LOCATION, "loc")
             .with(Department.ACTIVE, true)
             .with(Department.DATA, bytes)
             .build();
 
-    final Entity dept2 = dept1.copyBuilder()
+    Entity dept2 = dept1.copyBuilder()
             .with(Department.DATA, modifiedBytes)
             .build();
 
-    final EntityDefinition departmentDefinition = entities.getDefinition(Department.TYPE);
+    EntityDefinition departmentDefinition = entities.getDefinition(Department.TYPE);
 
     modifiedAttributes = Entity.getModifiedColumnAttributes(departmentDefinition, dept1, dept2);
     assertFalse(modifiedAttributes.contains(Department.DATA));
@@ -190,8 +190,8 @@ public final class EntityTest {
 
   @Test
   void get() {
-    final List<Entity> entityList = new ArrayList<>();
-    final List<Object> values = new ArrayList<>();
+    List<Entity> entityList = new ArrayList<>();
+    List<Object> values = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
       entityList.add(entities.builder(Department.TYPE)
               .with(Department.NO, i == 5 ? null : i)
@@ -211,8 +211,8 @@ public final class EntityTest {
 
   @Test
   void getDistinct() {
-    final List<Entity> entityList = new ArrayList<>();
-    final List<Object> values = new ArrayList<>();
+    List<Entity> entityList = new ArrayList<>();
+    List<Object> values = new ArrayList<>();
 
     entityList.add(entities.builder(Department.TYPE)
             .with(Department.NO, null)
@@ -255,21 +255,21 @@ public final class EntityTest {
 
   @Test
   void getStringValueList() {
-    final Entity dept1 = entities.builder(Department.TYPE)
+    Entity dept1 = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .with(Department.NAME, "name1")
             .with(Department.LOCATION, "loc1")
             .build();
-    final Entity dept2 = entities.builder(Department.TYPE)
+    Entity dept2 = entities.builder(Department.TYPE)
             .with(Department.NO, 2)
             .with(Department.NAME, "name2")
             .with(Department.LOCATION, "loc2")
             .build();
 
-    final List<Attribute<?>> attributes = entities.getDefinition(Department.TYPE)
+    List<Attribute<?>> attributes = entities.getDefinition(Department.TYPE)
             .getColumnProperties().stream().map(Property::getAttribute).collect(Collectors.toList());
 
-    final List<List<String>> strings =
+    List<List<String>> strings =
             Entity.getStringValueList(attributes, asList(dept1, dept2));
     assertEquals("1", strings.get(0).get(0));
     assertEquals("name1", strings.get(0).get(1));
@@ -281,7 +281,7 @@ public final class EntityTest {
 
   @Test
   void testSetPropertyValue() {
-    final Collection<Entity> collection = new ArrayList<>();
+    Collection<Entity> collection = new ArrayList<>();
     collection.add(entities.entity(Department.TYPE));
     collection.add(entities.entity(Department.TYPE));
     collection.add(entities.entity(Department.TYPE));
@@ -300,55 +300,55 @@ public final class EntityTest {
 
   @Test
   void mapToPropertyValue() {
-    final List<Entity> entityList = new ArrayList<>();
+    List<Entity> entityList = new ArrayList<>();
 
-    final Entity entityOne = entities.builder(Department.TYPE)
+    Entity entityOne = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .build();
     entityList.add(entityOne);
 
-    final Entity entityTwo = entities.builder(Department.TYPE)
+    Entity entityTwo = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .build();
     entityList.add(entityTwo);
 
-    final Entity entityThree = entities.builder(Department.TYPE)
+    Entity entityThree = entities.builder(Department.TYPE)
             .with(Department.NO, 2)
             .build();
     entityList.add(entityThree);
 
-    final Entity entityFour = entities.builder(Department.TYPE)
+    Entity entityFour = entities.builder(Department.TYPE)
             .with(Department.NO, 3)
             .build();
     entityList.add(entityFour);
 
-    final Entity entityFive = entities.builder(Department.TYPE)
+    Entity entityFive = entities.builder(Department.TYPE)
             .with(Department.NO, 3)
             .build();
     entityList.add(entityFive);
 
-    final Map<Integer, List<Entity>> map = Entity.mapToValue(Department.NO, entityList);
-    final Collection<Entity> ones = map.get(1);
+    Map<Integer, List<Entity>> map = Entity.mapToValue(Department.NO, entityList);
+    Collection<Entity> ones = map.get(1);
     assertTrue(ones.contains(entityOne));
     assertTrue(ones.contains(entityTwo));
 
-    final Collection<Entity> twos = map.get(2);
+    Collection<Entity> twos = map.get(2);
     assertTrue(twos.contains(entityThree));
 
-    final Collection<Entity> threes = map.get(3);
+    Collection<Entity> threes = map.get(3);
     assertTrue(threes.contains(entityFour));
     assertTrue(threes.contains(entityFive));
   }
 
   @Test
   void mapToType() {
-    final Entity one = entities.entity(Employee.TYPE);
-    final Entity two = entities.entity(Department.TYPE);
-    final Entity three = entities.entity(Detail.TYPE);
-    final Entity four = entities.entity(Employee.TYPE);
+    Entity one = entities.entity(Employee.TYPE);
+    Entity two = entities.entity(Department.TYPE);
+    Entity three = entities.entity(Detail.TYPE);
+    Entity four = entities.entity(Employee.TYPE);
 
-    final Collection<Entity> entities = asList(one, two, three, four);
-    final Map<EntityType, List<Entity>> map = Entity.mapToType(entities);
+    Collection<Entity> entities = asList(one, two, three, four);
+    Map<EntityType, List<Entity>> map = Entity.mapToType(entities);
 
     Collection<Entity> mapped = map.get(Employee.TYPE);
     assertTrue(mapped.contains(one));
@@ -363,7 +363,7 @@ public final class EntityTest {
 
   @Test
   void putNull() {
-    final Entity dept = entities.entity(Department.TYPE);
+    Entity dept = entities.entity(Department.TYPE);
     for (final Property<?> property : entities.getDefinition(Department.TYPE).getProperties()) {
       assertFalse(dept.contains(property.getAttribute()));
       assertTrue(dept.isNull(property.getAttribute()));
@@ -383,24 +383,24 @@ public final class EntityTest {
 
   @Test
   void getByValue() {
-    final Entity one = entities.builder(Detail.TYPE)
+    Entity one = entities.builder(Detail.TYPE)
             .with(Detail.ID, 1L)
             .with(Detail.STRING, "b")
             .build();
 
-    final Entity two = entities.builder(Detail.TYPE)
+    Entity two = entities.builder(Detail.TYPE)
             .with(Detail.ID, 2L)
             .with(Detail.STRING, "zz")
             .build();
 
-    final Entity three = entities.builder(Detail.TYPE)
+    Entity three = entities.builder(Detail.TYPE)
             .with(Detail.ID, 3L)
             .with(Detail.STRING, "zz")
             .build();
 
-    final List<Entity> entities = asList(one, two, three);
+    List<Entity> entities = asList(one, two, three);
 
-    final Map<Attribute<?>, Object> values = new HashMap<>();
+    Map<Attribute<?>, Object> values = new HashMap<>();
     values.put(Detail.STRING, "b");
     assertEquals(1, Entity.getByValue(entities, values).size());
     values.put(Detail.STRING, "zz");
@@ -411,30 +411,30 @@ public final class EntityTest {
 
   @Test
   void getReferencedKeys() {
-    final Entity dept1 = entities.builder(Department.TYPE)
+    Entity dept1 = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .build();
-    final Entity dept2 = entities.builder(Department.TYPE)
+    Entity dept2 = entities.builder(Department.TYPE)
             .with(Department.NO, 2)
             .build();
 
-    final Entity emp1 = entities.builder(Employee.TYPE)
+    Entity emp1 = entities.builder(Employee.TYPE)
             .with(Employee.DEPARTMENT_FK, dept1)
             .build();
-    final Entity emp2 = entities.builder(Employee.TYPE)
+    Entity emp2 = entities.builder(Employee.TYPE)
             .with(Employee.DEPARTMENT_FK, dept1)
             .build();
-    final Entity emp3 = entities.builder(Employee.TYPE)
+    Entity emp3 = entities.builder(Employee.TYPE)
             .with(Employee.DEPARTMENT_FK, dept2)
             .build();
-    final Entity emp4 = entities.builder(Employee.TYPE)
+    Entity emp4 = entities.builder(Employee.TYPE)
             .build();
 
-    final Set<Key> referencedKeys = Entity.getReferencedKeys(asList(emp1, emp2, emp3, emp4),
+    Set<Key> referencedKeys = Entity.getReferencedKeys(asList(emp1, emp2, emp3, emp4),
             Employee.DEPARTMENT_FK);
     assertEquals(2, referencedKeys.size());
     referencedKeys.forEach(key -> assertEquals(Department.TYPE, key.getEntityType()));
-    final Collection<Integer> values = Entity.getValues(new ArrayList<>(referencedKeys));
+    Collection<Integer> values = Entity.getValues(new ArrayList<>(referencedKeys));
     assertTrue(values.contains(1));
     assertTrue(values.contains(2));
     assertFalse(values.contains(3));
@@ -442,12 +442,12 @@ public final class EntityTest {
 
   @Test
   void noPkEntity() {
-    final Entity noPk = entities.builder(NoPk.TYPE)
+    Entity noPk = entities.builder(NoPk.TYPE)
             .with(NoPk.COL1, 1)
             .with(NoPk.COL2, 2)
             .with(NoPk.COL3, 3)
             .build();
-    final Collection<Key> keys = Entity.getPrimaryKeys(singletonList(noPk));
+    Collection<Key> keys = Entity.getPrimaryKeys(singletonList(noPk));
     assertTrue(keys.iterator().next().isNull());
   }
 }

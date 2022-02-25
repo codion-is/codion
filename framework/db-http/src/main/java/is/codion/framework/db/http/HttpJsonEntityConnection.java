@@ -88,7 +88,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onJsonResponse(execute(createHttpPost("isTransactionOpen")), entityObjectMapper, Boolean.class);
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -98,10 +98,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     try {
       onJsonResponse(execute(createHttpPost("beginTransaction")));
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -111,10 +111,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     try {
       onJsonResponse(execute(createHttpPost("rollbackTransaction")));
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -124,10 +124,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     try {
       onJsonResponse(execute(createHttpPost("commitTransaction")));
     }
-    catch (final RuntimeException e) {
+    catch (RuntimeException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -143,10 +143,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("function", byteArrayEntity(asList(functionType, argument)))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -162,10 +162,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     try {
       onResponse(execute(createHttpPost("procedure", byteArrayEntity(asList(procedureType, argument)))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -183,10 +183,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
               stringEntity(entityObjectMapper.writeValueAsString(entities)))),
               entityObjectMapper, EntityObjectMapper.KEY_LIST_REFERENCE);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -204,10 +204,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
               stringEntity(entityObjectMapper.writeValueAsString(entities)))),
               entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -220,10 +220,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
               stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
               entityObjectMapper, Integer.class);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -240,10 +240,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
       onJsonResponse(execute(createHttpPost("deleteByKey",
               stringEntity(entityObjectMapper.writeValueAsString(keys)))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -256,10 +256,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
               stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
               entityObjectMapper, Integer.class);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -273,7 +273,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public <T> List<T> select(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
     Objects.requireNonNull(attribute);
     try {
-      final ObjectNode node = entityObjectMapper.createObjectNode();
+      ObjectNode node = entityObjectMapper.createObjectNode();
       node.set("attribute", conditionObjectMapper.valueToTree(attribute.getName()));
       node.set("entityType", conditionObjectMapper.valueToTree(attribute.getEntityType().getName()));
       if (condition != null) {
@@ -282,10 +282,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
 
       return onJsonResponse(execute(createHttpPost("values", stringEntity(node.toString()))), entityObjectMapper, List.class);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -302,7 +302,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public Entity selectSingle(final Condition condition) throws DatabaseException {
-    final List<Entity> selected = select(condition);
+    List<Entity> selected = select(condition);
     if (Util.nullOrEmpty(selected)) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
@@ -321,10 +321,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
               stringEntity(entityObjectMapper.writeValueAsString(keys)))),
               entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -337,10 +337,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
               stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
               entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -359,8 +359,8 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public Map<EntityType, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
-      final Map<EntityType, Collection<Entity>> dependencies = new HashMap<>();
-      final DomainType domainType = getEntities().getDomainType();
+      Map<EntityType, Collection<Entity>> dependencies = new HashMap<>();
+      DomainType domainType = getEntities().getDomainType();
 
       onJsonResponse(execute(createHttpPost("dependencies",
               stringEntity(entityObjectMapper.writeValueAsString(new ArrayList<>(entities))))),
@@ -369,10 +369,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
 
       return dependencies;
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -385,10 +385,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
               stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
               entityObjectMapper, Integer.class);
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -399,10 +399,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("report", byteArrayEntity(asList(reportType, reportParameters)))));
     }
-    catch (final ReportException | DatabaseException e) {
+    catch (ReportException | DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -416,10 +416,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     try {
       onResponse(execute(createHttpPost("writeBlob", byteArrayEntity(asList(primaryKey, blobAttribute, blobData)))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -431,10 +431,10 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     try {
       return onResponse(execute(createHttpPost("readBlob", byteArrayEntity(asList(primaryKey, blobAttribute)))));
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       throw e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw logAndWrap(e);
     }
   }
@@ -443,7 +443,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
                                       final TypeReference<T> typeReference) throws Exception {
     try (final CloseableHttpResponse response = closeableHttpResponse) {
       if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         response.getEntity().writeTo(outputStream);
 
         throw Serializer.<Exception>deserialize(outputStream.toByteArray());
@@ -461,7 +461,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
                                       final Class<T> valueClass) throws Exception {
     try (final CloseableHttpResponse response = closeableHttpResponse) {
       if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         response.getEntity().writeTo(outputStream);
 
         throw Serializer.<Exception>deserialize(outputStream.toByteArray());

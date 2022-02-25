@@ -74,7 +74,7 @@ public interface Version extends Comparable<Version> {
    * @return a string containing the framework version number, without any version metadata (fx. build no.)
    */
   static String getVersionString() {
-    final String versionString = getVersionAndMetadataString();
+    String versionString = getVersionAndMetadataString();
     if (versionString.toLowerCase().contains("-")) {
       return versionString.substring(0, versionString.toLowerCase().indexOf('-'));
     }
@@ -105,15 +105,15 @@ public interface Version extends Comparable<Version> {
     if (versionString == null || versionString.isEmpty()) {
       throw new IllegalArgumentException("Invalid version string: " + versionString);
     }
-    final String version;
-    final String metadata;
-    final int dashIndex = versionString.indexOf('-');
+    String version;
+    String metadata;
+    int dashIndex = versionString.indexOf('-');
     if (dashIndex > 0) {
       version = versionString.substring(0, dashIndex);
       metadata = versionString.substring(dashIndex + 1);
     }
     else {
-      final int spaceIndex = versionString.indexOf(' ');
+      int spaceIndex = versionString.indexOf(' ');
       if (spaceIndex > 0) {
         version = versionString.substring(0, spaceIndex);
         metadata = versionString.substring(spaceIndex + 1);
@@ -123,11 +123,11 @@ public interface Version extends Comparable<Version> {
         metadata = null;
       }
     }
-    final String[] versionSplit = version.split("\\.");
+    String[] versionSplit = version.split("\\.");
 
-    final int major = versionSplit.length > 0 ? Integer.parseInt(versionSplit[0]) : 0;
-    final int minor = versionSplit.length > 1 ? Integer.parseInt(versionSplit[1]) : 0;
-    final int patch = versionSplit.length > 2 ? Integer.parseInt(versionSplit[2]) : 0;
+    int major = versionSplit.length > 0 ? Integer.parseInt(versionSplit[0]) : 0;
+    int minor = versionSplit.length > 1 ? Integer.parseInt(versionSplit[1]) : 0;
+    int patch = versionSplit.length > 2 ? Integer.parseInt(versionSplit[2]) : 0;
 
     return new DefaultVersion(major, minor, patch, metadata);
   }

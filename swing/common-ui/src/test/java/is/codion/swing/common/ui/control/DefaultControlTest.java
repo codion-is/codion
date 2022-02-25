@@ -38,9 +38,9 @@ public final class DefaultControlTest {
 
   @Test
   void test() throws Exception {
-    final State enabledState = State.state();
-    final Control control = Control.builder(this::method).enabledState(enabledState).build();
-    final JButton button = control.createButton();
+    State enabledState = State.state();
+    Control control = Control.builder(this::method).enabledState(enabledState).build();
+    JButton button = control.createButton();
     assertFalse(button.isEnabled());
     enabledState.set(true);
     assertTrue(button.isEnabled());
@@ -50,15 +50,15 @@ public final class DefaultControlTest {
     assertEquals(button.getForeground(), Color.RED);
     control.setBackground(Color.BLACK);
     assertEquals(button.getBackground(), Color.BLACK);
-    final Font font = button.getFont().deriveFont(Font.ITALIC);
+    Font font = button.getFont().deriveFont(Font.ITALIC);
     control.setFont(font);
     assertEquals(button.getFont(), font);
   }
 
   @Test
   void eventControl() {
-    final State state = State.state();
-    final Event<ActionEvent> event = Event.event();
+    State state = State.state();
+    Event<ActionEvent> event = Event.event();
     event.addListener(() -> state.set(true));
     Control.eventControl(event).actionPerformed(null);
     assertTrue(state.get());
@@ -66,7 +66,7 @@ public final class DefaultControlTest {
 
   @Test
   void basics() throws Exception {
-    final Control test = Control.control(this::doNothing);
+    Control test = Control.control(this::doNothing);
     test.setCaption("test");
     assertEquals("test", test.toString());
     assertEquals("test", test.getCaption());
@@ -82,8 +82,8 @@ public final class DefaultControlTest {
 
   @Test
   void actionCommand() {
-    final ActionEvent event = new ActionEvent(this, -1, "test");
-    final Control test = Control.actionControl(actionEvent -> {
+    ActionEvent event = new ActionEvent(this, -1, "test");
+    Control test = Control.actionControl(actionEvent -> {
       assertSame(this, actionEvent.getSource());
       assertEquals(actionEvent.getActionCommand(), "test");
       assertEquals(actionEvent.getID(), -1);
@@ -94,8 +94,8 @@ public final class DefaultControlTest {
 
   @Test
   void setEnabled() {
-    final State enabledState = State.state();
-    final Control control = Control.builder(this::doNothing).caption("control").enabledState(enabledState.getObserver()).build();
+    State enabledState = State.state();
+    Control control = Control.builder(this::doNothing).caption("control").enabledState(enabledState.getObserver()).build();
     assertEquals("control", control.getCaption());
     assertEquals(enabledState.getObserver(), control.getEnabledObserver());
     assertFalse(control.isEnabled());
@@ -107,25 +107,25 @@ public final class DefaultControlTest {
 
   @Test
   void setEnabledViaMethod() {
-    final Control test = Control.control(this::doNothing);
+    Control test = Control.control(this::doNothing);
     assertThrows(UnsupportedOperationException.class, () -> test.setEnabled(true));
   }
 
   @Test
   void exceptionOnExecute() {
-    final Control control = Control.control(this::errorMethod);
+    Control control = Control.control(this::errorMethod);
     assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
   }
 
   @Test
   void runtimeExceptionOnExecute() {
-    final Control control = Control.control(this::runtimeErrorMethod);
+    Control control = Control.control(this::runtimeErrorMethod);
     assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
   }
 
   @Test
   void cancelOnExecute() {
-    final Control control = Control.control(this::cancelMethod);
+    Control control = Control.control(this::cancelMethod);
     control.actionPerformed(null);
   }
 

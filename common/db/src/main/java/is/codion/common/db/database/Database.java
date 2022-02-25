@@ -249,7 +249,7 @@ public interface Database extends ConnectionFactory {
         resultSet.close();
       }
     }
-    catch (final SQLException ignored) {/*ignored*/}
+    catch (SQLException ignored) {/*ignored*/}
   }
 
   /**
@@ -262,7 +262,7 @@ public interface Database extends ConnectionFactory {
         statement.close();
       }
     }
-    catch (final SQLException ignored) {/*ignored*/}
+    catch (SQLException ignored) {/*ignored*/}
   }
 
   /**
@@ -275,7 +275,7 @@ public interface Database extends ConnectionFactory {
         connection.close();
       }
     }
-    catch (final SQLException ignored) {/*ignored*/}
+    catch (SQLException ignored) {/*ignored*/}
   }
 
   /**

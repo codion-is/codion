@@ -14,10 +14,10 @@ public final class DefaultRowColumnTest {
 
   @Test
   void test() {
-    final RowColumn rowColumn1 = RowColumn.rowColumn(1, 2);
+    RowColumn rowColumn1 = RowColumn.rowColumn(1, 2);
     assertEquals(1, rowColumn1.getRow());
     assertEquals(2, rowColumn1.getColumn());
-    final RowColumn rowColumn2 = RowColumn.rowColumn(3, 4);
+    RowColumn rowColumn2 = RowColumn.rowColumn(3, 4);
     assertEquals(3, rowColumn2.getRow());
     assertEquals(4, rowColumn2.getColumn());
 

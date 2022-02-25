@@ -39,18 +39,18 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
   @Override
   public UpdateCondition deserialize(final JsonParser parser, final DeserializationContext ctxt)
           throws IOException {
-    final JsonNode jsonNode = parser.getCodec().readTree(parser);
-    final EntityType entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
-    final EntityDefinition definition = entities.getDefinition(entityType);
-    final JsonNode conditionNode = jsonNode.get("condition");
-    final Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
+    JsonNode jsonNode = parser.getCodec().readTree(parser);
+    EntityType entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
+    EntityDefinition definition = entities.getDefinition(entityType);
+    JsonNode conditionNode = jsonNode.get("condition");
+    Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
     UpdateCondition updateCondition = condition.toUpdateCondition();
-    final JsonNode values = jsonNode.get("values");
-    final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
+    JsonNode values = jsonNode.get("values");
+    Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
-      final Map.Entry<String, JsonNode> field = fields.next();
-      final Attribute<Object> attribute = definition.getProperty(definition.getAttribute(field.getKey())).getAttribute();
+      Map.Entry<String, JsonNode> field = fields.next();
+      Attribute<Object> attribute = definition.getProperty(definition.getAttribute(field.getKey())).getAttribute();
       updateCondition = updateCondition.set(attribute, EntityDeserializer.parseValue(entityObjectMapper, attribute, field.getValue()));
     }
 

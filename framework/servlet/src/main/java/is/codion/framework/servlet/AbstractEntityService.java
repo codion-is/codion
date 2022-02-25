@@ -51,11 +51,11 @@ abstract class AbstractEntityService extends Application {
       throw new IllegalStateException("EntityServer has not been set for EntityService");
     }
 
-    final MultivaluedMap<String, String> headerValues = headers.getRequestHeaders();
-    final String domainTypeName = getDomainTypeName(headerValues);
-    final String clientTypeId = getClientTypeId(headerValues);
-    final UUID clientId = getClientId(headerValues, request.getSession());
-    final User user = getUser(headerValues);
+    MultivaluedMap<String, String> headerValues = headers.getRequestHeaders();
+    String domainTypeName = getDomainTypeName(headerValues);
+    String clientTypeId = getClientTypeId(headerValues);
+    UUID clientId = getClientId(headerValues, request.getSession());
+    User user = getUser(headerValues);
 
     return server.connect(ConnectionRequest.builder()
             .user(user)
@@ -75,7 +75,7 @@ abstract class AbstractEntityService extends Application {
 
       return Response.serverError().entity(Serializer.serialize(exception)).build();
     }
-    catch (final IOException e) {
+    catch (IOException e) {
       LOG.error(e.getMessage(), e);
       return Response.serverError().entity(exception.getMessage()).build();
     }
@@ -86,7 +86,7 @@ abstract class AbstractEntityService extends Application {
   }
 
   private static String getRemoteHost(final HttpServletRequest request) {
-    final String forwardHeader = request.getHeader(X_FORWARDED_FOR);
+    String forwardHeader = request.getHeader(X_FORWARDED_FOR);
     if (forwardHeader == null) {
       return request.getRemoteAddr();
     }
@@ -104,12 +104,12 @@ abstract class AbstractEntityService extends Application {
 
   private static UUID getClientId(final MultivaluedMap<String, String> headers, final HttpSession session)
           throws ServerAuthenticationException {
-    final UUID headerClientId = UUID.fromString(checkHeaderParameter(headers.get(CLIENT_ID), CLIENT_ID));
+    UUID headerClientId = UUID.fromString(checkHeaderParameter(headers.get(CLIENT_ID), CLIENT_ID));
     if (session.isNew()) {
       session.setAttribute(CLIENT_ID, headerClientId);
     }
     else {
-      final UUID sessionClientId = (UUID) session.getAttribute(CLIENT_ID);
+      UUID sessionClientId = (UUID) session.getAttribute(CLIENT_ID);
       if (sessionClientId == null || !sessionClientId.equals(headerClientId)) {
         session.invalidate();
 
@@ -121,12 +121,12 @@ abstract class AbstractEntityService extends Application {
   }
 
   private static User getUser(final MultivaluedMap<String, String> headers) throws ServerAuthenticationException {
-    final List<String> basic = headers.get(AUTHORIZATION);
+    List<String> basic = headers.get(AUTHORIZATION);
     if (Util.nullOrEmpty(basic)) {
       throw new ServerAuthenticationException("Authorization information missing");
     }
 
-    final String basicAuth = basic.get(0);
+    String basicAuth = basic.get(0);
     if (basicAuth.length() > BASIC_PREFIX_LENGTH && BASIC_PREFIX.equalsIgnoreCase(basicAuth.substring(0, BASIC_PREFIX_LENGTH))) {
       return User.parseUser(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH))));
     }

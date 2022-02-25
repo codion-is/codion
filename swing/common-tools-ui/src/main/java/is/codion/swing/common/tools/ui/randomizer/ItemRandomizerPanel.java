@@ -78,7 +78,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * Initializes the UI
    */
   private void initializeUI() {
-    final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(model.getItems());
+    List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(model.getItems());
     items.sort(Comparator.comparing(item -> item.getItem().toString()));
     items.forEach(((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel())::addElement);
     itemList.addListSelectionListener(e -> selectedItemChangedEvent.onEvent(itemList.getSelectedValuesList()));
@@ -100,7 +100,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @return a control panel for the item weight
    */
   private JPanel initializeWeightPanel(final ItemRandomizer.RandomItem<T> item) {
-    final JPanel panel = new JPanel(Layouts.borderLayout());
+    JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(new JLabel(item.getItem().toString()), BorderLayout.NORTH);
     panel.add(Components.checkBox(new EnabledModelValue(item.getItem()))
             .caption("Enabled")

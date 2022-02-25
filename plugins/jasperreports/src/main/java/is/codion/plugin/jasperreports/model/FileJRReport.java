@@ -19,19 +19,19 @@ final class FileJRReport extends AbstractJRReport {
 
   @Override
   public JasperReport loadReport() throws ReportException {
-    final String fullReportPath = getFullReportPath();
+    String fullReportPath = getFullReportPath();
     try {
       if (fullReportPath.toLowerCase().startsWith("http")) {
         return (JasperReport) JRLoader.loadObject(new URL(fullReportPath));
       }
-      final File reportFile = new File(fullReportPath);
+      File reportFile = new File(fullReportPath);
       if (!reportFile.exists()) {
         throw new ReportException("Report '" + reportFile + "' not found in filesystem");
       }
 
       return (JasperReport) JRLoader.loadObject(reportFile);
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new ReportException(e);
     }
   }

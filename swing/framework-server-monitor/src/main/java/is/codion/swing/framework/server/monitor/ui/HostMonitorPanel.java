@@ -54,13 +54,13 @@ public final class HostMonitorPanel extends JPanel {
       try {
         addServerTab(serverMonitor);
       }
-      catch (final RemoteException e) {
+      catch (RemoteException e) {
         throw new RuntimeException(e);
       }
     });
     model.addServerRemovedListener(serverMonitor -> {
       for (int i = 0; i < serverPane.getTabCount(); i++) {
-        final ServerMonitorPanel panel = (ServerMonitorPanel) serverPane.getComponentAt(i);
+        ServerMonitorPanel panel = (ServerMonitorPanel) serverPane.getComponentAt(i);
         if (panel.getModel() == serverMonitor) {
           removeServerTab(panel);
         }
@@ -75,7 +75,7 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void addServerTab(final ServerMonitor serverMonitor) throws RemoteException {
-    final ServerMonitorPanel serverMonitorPanel = new ServerMonitorPanel(serverMonitor);
+    ServerMonitorPanel serverMonitorPanel = new ServerMonitorPanel(serverMonitor);
     serverPane.addTab(serverMonitor.getServerInformation().getServerName(), serverMonitorPanel);
   }
 

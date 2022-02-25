@@ -15,10 +15,10 @@ public final class SizesTest {
 
   @Test
   void setPreferredWidth() {
-    final JTextField textField = new JTextField();
+    JTextField textField = new JTextField();
     Sizes.setPreferredWidth(textField, 42);
     assertEquals(new Dimension(42, textField.getPreferredSize().height), textField.getPreferredSize());
-    final JComboBox<String> box = new JComboBox<>();
+    JComboBox<String> box = new JComboBox<>();
     box.setPreferredSize(new Dimension(10, 10));
     Sizes.setPreferredWidth(box, 42);
     assertEquals(10, box.getPreferredSize().height);
@@ -27,17 +27,17 @@ public final class SizesTest {
 
   @Test
   void setPreferredHeight() {
-    final JTextField textField = new JTextField();
+    JTextField textField = new JTextField();
     Sizes.setPreferredHeight(textField, 42);
     assertEquals(new Dimension(textField.getPreferredSize().width, 42), textField.getPreferredSize());
   }
 
   @Test
   void setMinimumWidth() {
-    final JTextField textField = new JTextField();
+    JTextField textField = new JTextField();
     Sizes.setMinimumWidth(textField, 42);
     assertEquals(new Dimension(42, textField.getMinimumSize().height), textField.getMinimumSize());
-    final JComboBox<String> box = new JComboBox<>();
+    JComboBox<String> box = new JComboBox<>();
     box.setMinimumSize(new Dimension(10, 10));
     Sizes.setMinimumWidth(box, 42);
     assertEquals(10, box.getMinimumSize().height);
@@ -46,17 +46,17 @@ public final class SizesTest {
 
   @Test
   void setMinimumHeight() {
-    final JTextField textField = new JTextField();
+    JTextField textField = new JTextField();
     Sizes.setMinimumHeight(textField, 42);
     assertEquals(new Dimension(textField.getMinimumSize().width, 42), textField.getMinimumSize());
   }
 
   @Test
   void setMaximumWidth() {
-    final JTextField textField = new JTextField();
+    JTextField textField = new JTextField();
     Sizes.setMaximumWidth(textField, 42);
     assertEquals(new Dimension(42, textField.getMaximumSize().height), textField.getMaximumSize());
-    final JComboBox<String> box = new JComboBox<>();
+    JComboBox<String> box = new JComboBox<>();
     box.setMaximumSize(new Dimension(10, 10));
     Sizes.setMaximumWidth(box, 42);
     assertEquals(10, box.getMaximumSize().height);
@@ -65,7 +65,7 @@ public final class SizesTest {
 
   @Test
   void setMaximumHeight() {
-    final JTextField textField = new JTextField();
+    JTextField textField = new JTextField();
     Sizes.setMaximumHeight(textField, 42);
     assertEquals(new Dimension(textField.getMaximumSize().width, 42), textField.getMaximumSize());
   }

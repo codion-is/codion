@@ -161,7 +161,7 @@ public final class ConnectionPoolMonitor {
    * @return the dataset for snapshot pool stats
    */
   public XYDataset getSnapshotDataset() {
-    final XYSeriesCollection poolDataset = new XYSeriesCollection();
+    XYSeriesCollection poolDataset = new XYSeriesCollection();
     poolDataset.addSeries(snapshotStatisticsCollection.getSeries(0));
     poolDataset.addSeries(snapshotStatisticsCollection.getSeries(1));
     poolDataset.addSeries(snapshotStatisticsCollection.getSeries(2));
@@ -268,7 +268,7 @@ public final class ConnectionPoolMonitor {
 
   private void updateStatistics() {
     poolStatistics = connectionPool.getStatistics(lastStatisticsUpdateTime);
-    final long timestamp = poolStatistics.getTimestamp();
+    long timestamp = poolStatistics.getTimestamp();
     lastStatisticsUpdateTime = timestamp;
     poolSizeSeries.add(timestamp, poolStatistics.getSize());
     minimumPoolSizeSeries.add(timestamp, connectionPool.getMinimumPoolSize());
@@ -279,11 +279,11 @@ public final class ConnectionPoolMonitor {
     failedRequestsPerSecond.add(timestamp, poolStatistics.getFailedRequestsPerSecond());
     averageCheckOutTime.add(timestamp, poolStatistics.getAverageGetTime(),
             poolStatistics.getMinimumCheckOutTime(), poolStatistics.getMaximumCheckOutTime());
-    final List<ConnectionPoolState> snapshotStatistics = poolStatistics.getSnapshot();
+    List<ConnectionPoolState> snapshotStatistics = poolStatistics.getSnapshot();
     if (!snapshotStatistics.isEmpty()) {
-      final XYSeries snapshotInPoolSeries = new XYSeries("In pool");
-      final XYSeries snapshotInUseSeries = new XYSeries("In use");
-      final XYSeries snapshotWaitingSeries = new XYSeries("Waiting");
+      XYSeries snapshotInPoolSeries = new XYSeries("In pool");
+      XYSeries snapshotInUseSeries = new XYSeries("In use");
+      XYSeries snapshotWaitingSeries = new XYSeries("Waiting");
       for (final ConnectionPoolState inPool : snapshotStatistics) {
         snapshotInPoolSeries.add(inPool.getTimestamp(), inPool.getSize());
         snapshotInUseSeries.add(inPool.getTimestamp(), inPool.getInUse());

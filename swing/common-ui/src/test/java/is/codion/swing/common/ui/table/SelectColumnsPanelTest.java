@@ -15,11 +15,11 @@ public final class SelectColumnsPanelTest {
 
   @Test
   void test() {
-    final TableColumn column = new TableColumn(0);
+    TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     column.setHeaderValue("Testing");
 
-    final SwingFilteredTableColumnModel<Object> columnModel =
+    SwingFilteredTableColumnModel<Object> columnModel =
             new SwingFilteredTableColumnModel<>(singletonList(column));
 
     new SelectColumnsPanel<>(columnModel);

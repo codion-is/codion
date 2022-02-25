@@ -33,7 +33,7 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
   }
 
   private static DataSource createDataSource(final User user, final ConnectionFactory connectionFactory) {
-    final PoolProperties pp = new PoolProperties();
+    PoolProperties pp = new PoolProperties();
     pp.setUrl(connectionFactory.getUrl());
     pp.setDefaultAutoCommit(false);
     pp.setName(user.getUsername());

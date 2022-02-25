@@ -26,7 +26,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   /** Providing a custom ComboBoxModel for the manager attribute, which only shows managers and the president */
   @Override
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKey foreignKey) {
-    final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
+    SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
     if (foreignKey.equals(Employee.MGR_FK)) {
       //Customize the null value so that it displays the chosen
       //text instead of the default '-' character

@@ -90,17 +90,17 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     try {
       onResult.accept(get());
     }
-    catch (final InterruptedException e) {
+    catch (InterruptedException e) {
       onInterrupted.run();
     }
-    catch (final ExecutionException e) {
+    catch (ExecutionException e) {
       onException.accept(e.getCause());
     }
   }
 
   private void onPropertyChangeEvent(final PropertyChangeEvent changeEvent) {
     if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
-      final Object newValue = changeEvent.getNewValue();
+      Object newValue = changeEvent.getNewValue();
       if (StateValue.STARTED.equals(newValue)) {
         if (!isDone()) {
           onStarted.run();
@@ -295,7 +295,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     @Override
     public ProgressWorker<T, V> execute() {
-      final ProgressWorker<T, V> worker = build();
+      ProgressWorker<T, V> worker = build();
       worker.execute();
 
       return worker;

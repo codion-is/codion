@@ -40,19 +40,19 @@ public class DefaultDatabaseConnectionTest {
         dbConnection.close();
       }
     }
-    catch (final Exception ignored) {/*ignored*/}
+    catch (Exception ignored) {/*ignored*/}
   }
 
   @Test
   void constructorWithConnection() throws DatabaseException, SQLException {
-    final Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
+    Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
     new DefaultDatabaseConnection(DATABASE, connection).close();
     assertTrue(connection.isClosed());
   }
 
   @Test
   void constructorWithInvalidConnection() throws DatabaseException, SQLException {
-    final Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
+    Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
     connection.close();
     assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, connection));
   }
@@ -70,7 +70,7 @@ public class DefaultDatabaseConnectionTest {
   @Test
   void queryInteger() throws Exception {
     try (final DatabaseConnection connection = new DefaultDatabaseConnection(DatabaseFactory.getDatabase(), UNIT_TEST_USER)) {
-      final int qInt = connection.selectInteger("select empno from scott.emp where ename = 'ADAMS'");
+      int qInt = connection.selectInteger("select empno from scott.emp where ename = 'ADAMS'");
       assertEquals(10, qInt);
     }
   }
@@ -78,7 +78,7 @@ public class DefaultDatabaseConnectionTest {
   @Test
   void queryLong() throws Exception {
     try (final DatabaseConnection connection = new DefaultDatabaseConnection(DatabaseFactory.getDatabase(), UNIT_TEST_USER)) {
-      final long qLong = connection.selectLong("select empno from scott.emp where ename = 'ADAMS'");
+      long qLong = connection.selectLong("select empno from scott.emp where ename = 'ADAMS'");
       assertEquals(10L, qLong);
     }
   }

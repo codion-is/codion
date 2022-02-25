@@ -93,7 +93,7 @@ public class EntityServletServerTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    final EntityServerConfiguration configuration = configure();
+    EntityServerConfiguration configuration = configure();
     HOSTNAME = Clients.SERVER_HOST_NAME.get();
     TARGET_HOST = new HttpHost(HOSTNAME, WEB_SERVER_PORT_NUMBER, HTTPS);
     SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/ser";
@@ -110,14 +110,14 @@ public class EntityServletServerTest {
 
   @Test
   void isTransactionOpen() throws URISyntaxException, IOException, ClassNotFoundException {
-    final RequestConfig requestConfig = RequestConfig.custom()
+    RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
             .build();
-    final String domainName = TestDomain.DOMAIN.getName();
+    String domainName = TestDomain.DOMAIN.getName();
     final String clientTypeId = "EntityServletServerTest";
-    final UUID clientId = UUID.randomUUID();
-    final CloseableHttpClient client = HttpClientBuilder.create()
+    UUID clientId = UUID.randomUUID();
+    CloseableHttpClient client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
@@ -128,31 +128,31 @@ public class EntityServletServerTest {
             })
             .build();
 
-    final URIBuilder uriBuilder = createURIBuilder();
+    URIBuilder uriBuilder = createURIBuilder();
     uriBuilder.setPath("isTransactionOpen");
 
-    final HttpPost httpPost = new HttpPost(uriBuilder.build());
-    final HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-    final CloseableHttpResponse response = client.execute(TARGET_HOST, httpPost, context);
+    HttpPost httpPost = new HttpPost(uriBuilder.build());
+    HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
+    CloseableHttpResponse response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    final Boolean result = deserializeResponse(response);
+    Boolean result = deserializeResponse(response);
     assertFalse(result);
     response.close();
   }
 
   @Test
   void testJson() throws URISyntaxException, IOException {
-    final RequestConfig requestConfig = RequestConfig.custom()
+    RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
             .build();
 
-    final String domainName = new TestDomain().getDomainType().getName();
+    String domainName = new TestDomain().getDomainType().getName();
     final String clientTypeId = "EntityServletServerTest";
-    final Value<UUID> clientIdValue = Value.value(UUID.randomUUID());
-    final HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
+    Value<UUID> clientIdValue = Value.value(UUID.randomUUID());
+    HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
 
-    final CloseableHttpClient client = HttpClientBuilder.create()
+    CloseableHttpClient client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
@@ -163,15 +163,15 @@ public class EntityServletServerTest {
             })
             .build();
 
-    final EntityObjectMapper entityObjectMapper = EntityObjectMapper.createEntityObjectMapper(ENTITIES);
-    final ConditionObjectMapper conditionObjectMapper = new ConditionObjectMapper(entityObjectMapper);
-    final URIBuilder uriBuilder = createJsonURIBuilder();
+    EntityObjectMapper entityObjectMapper = EntityObjectMapper.createEntityObjectMapper(ENTITIES);
+    ConditionObjectMapper conditionObjectMapper = new ConditionObjectMapper(entityObjectMapper);
+    URIBuilder uriBuilder = createJsonURIBuilder();
 
     //count
     uriBuilder.setPath("count");
     HttpPost httpPost = new HttpPost(uriBuilder.build());
     AttributeCondition<Integer> condition = where(TestDomain.DEPARTMENT_ID).equalTo(10);
-    final String conditionJson = conditionObjectMapper.writeValueAsString(condition);
+    String conditionJson = conditionObjectMapper.writeValueAsString(condition);
 
     httpPost.setEntity(new StringEntity(conditionJson));
 
@@ -197,7 +197,7 @@ public class EntityServletServerTest {
     response.close();
 
     //select by condition
-    final Condition selectCondition = Conditions.condition(keys);
+    Condition selectCondition = Conditions.condition(keys);
 
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
@@ -209,7 +209,7 @@ public class EntityServletServerTest {
     response.close();
 
     //insert
-    final List<Entity> entities = new ArrayList<>();
+    List<Entity> entities = new ArrayList<>();
     entities.add(ENTITIES.builder(TestDomain.T_DEPARTMENT)
             .with(TestDomain.DEPARTMENT_ID, -10)
             .with(TestDomain.DEPARTMENT_NAME, "A name")
@@ -244,7 +244,7 @@ public class EntityServletServerTest {
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
 
-    final List<Entity> updated = entityObjectMapper.deserializeEntities(response.getEntity().getContent());
+    List<Entity> updated = entityObjectMapper.deserializeEntities(response.getEntity().getContent());
     assertEquals(2, updated.size());
     assertTrue(updated.containsAll(entities));
 
@@ -253,7 +253,7 @@ public class EntityServletServerTest {
     response.close();
 
     //update condition
-    final UpdateCondition updateCondition = where(TestDomain.DEPARTMENT_ID)
+    UpdateCondition updateCondition = where(TestDomain.DEPARTMENT_ID)
             .between(-20, -10).toUpdateCondition().set(TestDomain.DEPARTMENT_LOCATION, "aloc");
     uriBuilder.setPath("updateByCondition");
     httpPost = new HttpPost(uriBuilder.build());
@@ -262,12 +262,12 @@ public class EntityServletServerTest {
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
 
-    final Integer updateCount = entityObjectMapper.readValue(response.getEntity().getContent(), Integer.class);
+    Integer updateCount = entityObjectMapper.readValue(response.getEntity().getContent(), Integer.class);
     assertEquals(2, updateCount);
     response.close();
 
     //delete condition
-    final Condition deleteCondition = where(TestDomain.DEPARTMENT_ID).equalTo(-10);
+    Condition deleteCondition = where(TestDomain.DEPARTMENT_ID).equalTo(-10);
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new StringEntity(conditionObjectMapper.writeValueAsString(deleteCondition)));
@@ -275,7 +275,7 @@ public class EntityServletServerTest {
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
 
-    final Integer deleteCount = entityObjectMapper.readValue(response.getEntity().getContent(), Integer.class);
+    Integer deleteCount = entityObjectMapper.readValue(response.getEntity().getContent(), Integer.class);
     assertEquals(1, deleteCount);
     response.close();
 
@@ -290,7 +290,7 @@ public class EntityServletServerTest {
 
     //select values
     condition = where(TestDomain.DEPARTMENT_ID).equalTo(10);
-    final ObjectNode node = entityObjectMapper.createObjectNode();
+    ObjectNode node = entityObjectMapper.createObjectNode();
     node.set("attribute", conditionObjectMapper.valueToTree(TestDomain.DEPARTMENT_ID.getName()));
     node.set("entityType", conditionObjectMapper.valueToTree(TestDomain.DEPARTMENT_ID.getEntityType().getName()));
     node.set("condition", conditionObjectMapper.valueToTree(condition));
@@ -305,10 +305,10 @@ public class EntityServletServerTest {
     response.close();
 
     //dependencies
-    final Key key1 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 10);
-    final Key key2 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 20);
+    Key key1 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 10);
+    Key key2 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 20);
 
-    final List<Entity> entitiesDep = Arrays.asList(ENTITIES.entity(key1), ENTITIES.entity(key2));
+    List<Entity> entitiesDep = Arrays.asList(ENTITIES.entity(key1), ENTITIES.entity(key2));
 
     uriBuilder.setPath("dependencies");
     httpPost = new HttpPost(uriBuilder.build());
@@ -316,7 +316,7 @@ public class EntityServletServerTest {
 
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    final Map<String, Collection<Entity>> dependencies = entityObjectMapper.readValue(response.getEntity().getContent(),
+    Map<String, Collection<Entity>> dependencies = entityObjectMapper.readValue(response.getEntity().getContent(),
             new TypeReference<Map<String, Collection<Entity>>>() {});
     assertEquals(1, dependencies.size());
     assertEquals(12, dependencies.get(TestDomain.T_EMP.getName()).size());
@@ -383,7 +383,7 @@ public class EntityServletServerTest {
 
   @Test
   void test() throws URISyntaxException, IOException, InterruptedException, ClassNotFoundException {
-    final RequestConfig requestConfig = RequestConfig.custom()
+    RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
             .build();
@@ -401,7 +401,7 @@ public class EntityServletServerTest {
     response.close();
     client.close();
 
-    final String domainName = new TestDomain().getDomainType().getName();
+    String domainName = new TestDomain().getDomainType().getName();
     final String clientTypeId = "EntityServletServerTest";
     //test with missing clientId header
     client = HttpClientBuilder.create()
@@ -421,7 +421,7 @@ public class EntityServletServerTest {
     response.close();
     client.close();
 
-    final Value<UUID> clientIdValue = Value.value(UUID.randomUUID());
+    Value<UUID> clientIdValue = Value.value(UUID.randomUUID());
     //test with unknown user authentication
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
@@ -464,7 +464,7 @@ public class EntityServletServerTest {
     assertEquals(4, queryEntities.size());
     response.close();
 
-    final Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
+    Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
             .with(TestDomain.DEPARTMENT_ID, null)
             .with(TestDomain.DEPARTMENT_ID, -42)
             .with(TestDomain.DEPARTMENT_NAME, "Test")
@@ -478,7 +478,7 @@ public class EntityServletServerTest {
     httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(singletonList(department))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    final List<Key> queryKeys = deserializeResponse(response);
+    List<Key> queryKeys = deserializeResponse(response);
     assertEquals(1, queryKeys.size());
     assertEquals(department.getPrimaryKey(), queryKeys.get(0));
     response.close();
@@ -499,7 +499,7 @@ public class EntityServletServerTest {
     httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(singletonList(department))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    final List<Key> keys = deserializeResponse(response);
+    List<Key> keys = deserializeResponse(response);
     assertEquals(1, keys.size());
     assertEquals(department.getPrimaryKey(), keys.get(0));
     response.close();
@@ -570,7 +570,7 @@ public class EntityServletServerTest {
     assertEquals(1, clients.size());
 
     //try to change the clientId
-    final UUID originalClientId = clientIdValue.get();
+    UUID originalClientId = clientIdValue.get();
     clientIdValue.set(UUID.randomUUID());
 
     uriBuilder = createURIBuilder();
@@ -595,36 +595,36 @@ public class EntityServletServerTest {
   }
 
   private static URIBuilder createURIBuilder() {
-    final URIBuilder builder = new URIBuilder();
+    URIBuilder builder = new URIBuilder();
     builder.setScheme(HTTPS).setHost(SERVER_BASEURL);
 
     return builder;
   }
 
   private static URIBuilder createJsonURIBuilder() {
-    final URIBuilder builder = new URIBuilder();
+    URIBuilder builder = new URIBuilder();
     builder.setScheme(HTTPS).setHost(SERVER_JSON_BASEURL);
 
     return builder;
   }
 
   private static <T> T deserializeResponse(final CloseableHttpResponse response) throws IOException, ClassNotFoundException {
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     response.getEntity().writeTo(outputStream);
 
     return Serializer.deserialize(outputStream.toByteArray());
   }
 
   private static HttpClientContext createHttpContext(final User user, final HttpHost targetHost) {
-    final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     credentialsProvider.setCredentials(
             new AuthScope(targetHost.getHostName(), targetHost.getPort()),
             new UsernamePasswordCredentials(user.getUsername(), String.valueOf(user.getPassword())));
 
-    final AuthCache authCache = new BasicAuthCache();
+    AuthCache authCache = new BasicAuthCache();
     authCache.put(targetHost, new BasicScheme());
 
-    final HttpClientContext context = HttpClientContext.create();
+    HttpClientContext context = HttpClientContext.create();
     context.setCredentialsProvider(credentialsProvider);
     context.setAuthCache(authCache);
 
@@ -633,13 +633,13 @@ public class EntityServletServerTest {
 
   private static BasicHttpClientConnectionManager createConnectionManager() {
     try {
-      final SSLContext sslContext = SSLContext.getDefault();
+      SSLContext sslContext = SSLContext.getDefault();
 
       return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register(HTTPS,
                       new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
               .build());
     }
-    catch (final NoSuchAlgorithmException e) {
+    catch (NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
     }
   }

@@ -98,7 +98,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       try {
         UnicastRemoteObject.unexportObject(this, true);
       }
-      catch (final NoSuchObjectException e) {
+      catch (NoSuchObjectException e) {
         LOG.error(e.getMessage(), e);
       }
       connectionHandler.close();

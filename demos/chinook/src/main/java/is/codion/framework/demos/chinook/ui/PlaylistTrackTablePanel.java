@@ -30,9 +30,9 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
     @Override
     protected <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createConditionPanel(final ColumnConditionModel<C, T> conditionModel) {
-      final ColumnConditionPanel<C, T> conditionPanel = super.createConditionPanel(conditionModel);
+      ColumnConditionPanel<C, T> conditionPanel = super.createConditionPanel(conditionModel);
       if (PlaylistTrack.TRACK_FK.equals(conditionModel.getColumnIdentifier())) {
-        final EntitySearchField equalField = (EntitySearchField) conditionPanel.getEqualField();
+        EntitySearchField equalField = (EntitySearchField) conditionPanel.getEqualField();
         equalField.setSelectionProvider(new TrackSelectionProvider(equalField.getModel()));
       }
 

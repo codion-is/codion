@@ -60,7 +60,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
     this.basePanel = new JPanel(FlexibleGridLayout.builder()
             .rows(1)
             .build());
-    final Dimension fillerSize = new Dimension(UIManager.getInt("ScrollBar.width"), 0);
+    Dimension fillerSize = new Dimension(UIManager.getInt("ScrollBar.width"), 0);
     this.scrollBarFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
     setLayout(new BorderLayout());
     add(basePanel, BorderLayout.WEST);
@@ -88,7 +88,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
 
   private void resetPanel() {
     basePanel.removeAll();
-    final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
+    Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
       basePanel.add(getColumnComponent(columnEnumeration.nextElement()));
     }
@@ -100,7 +100,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   private void bindColumnAndComponentSizes() {
     columnModel.addColumnModelListener(new SyncColumnModelListener());
     for (final TableColumn column : columns) {
-      final JComponent component = getColumnComponent(column);
+      JComponent component = getColumnComponent(column);
       component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));
       column.addPropertyChangeListener(new SyncListener(component, column));
     }

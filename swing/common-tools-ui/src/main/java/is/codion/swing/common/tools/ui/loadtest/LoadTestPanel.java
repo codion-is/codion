@@ -120,7 +120,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .title("Codion - " + loadTestModel.getTitle())
             .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
             .onClosing(windowEvent -> {
-              final JFrame frame = (JFrame) windowEvent.getWindow();
+              JFrame frame = (JFrame) windowEvent.getWindow();
               frame.setTitle(frame.getTitle() + " - Closing...");
               loadTestModel.shutdown();
             })
@@ -139,13 +139,13 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private void initializeUI() {
-    final JPanel chartBase = initializeChartPanel();
-    final JPanel activityPanel = initializeActivityPanel();
-    final JPanel applicationPanel = initializeApplicationPanel();
-    final JPanel userBase = initializeUserPanel();
-    final JPanel chartControlPanel = initializeChartControlPanel();
+    JPanel chartBase = initializeChartPanel();
+    JPanel activityPanel = initializeActivityPanel();
+    JPanel applicationPanel = initializeApplicationPanel();
+    JPanel userBase = initializeUserPanel();
+    JPanel chartControlPanel = initializeChartControlPanel();
 
-    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout()
+    JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(5, 1)
             .fixColumnWidths(true)
             .build());
@@ -155,13 +155,13 @@ public final class LoadTestPanel<T> extends JPanel {
     controlPanel.add(userBase);
     controlPanel.add(chartControlPanel);
 
-    final JPanel controlBase = new JPanel(new BorderLayout());
+    JPanel controlBase = new JPanel(new BorderLayout());
     controlBase.add(controlPanel, BorderLayout.NORTH);
 
     setLayout(new BorderLayout());
     add(controlBase, BorderLayout.WEST);
     if (pluginPanel != null) {
-      final JTabbedPane tabPanel = new JTabbedPane();
+      JTabbedPane tabPanel = new JTabbedPane();
       tabPanel.addTab("Load test", chartBase);
       tabPanel.addTab("Plugins", pluginPanel);
       add(tabPanel, BorderLayout.CENTER);
@@ -173,7 +173,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private static JPanel initializeSouthPanel() {
-    final JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
+    JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
     southPanel.add(new JLabel("Memory usage:"));
     southPanel.add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS));
 
@@ -181,7 +181,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private ItemRandomizerPanel<UsageScenario<T>> initializeScenarioPanel() {
-    final ItemRandomizerPanel<UsageScenario<T>> panel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
+    ItemRandomizerPanel<UsageScenario<T>> panel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
     panel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
     panel.addSelectedItemListener(this::onScenarioSelectionChanged);
 
@@ -189,17 +189,17 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeUserPanel() {
-    final User user = loadTestModel.getUser();
-    final JTextField usernameField = Components.textField()
+    User user = loadTestModel.getUser();
+    JTextField usernameField = Components.textField()
             .columns(LARGE_TEXT_FIELD_COLUMNS)
             .initialValue(user.getUsername())
             .build();
-    final JPasswordField passwordField = new JPasswordField(String.valueOf(user.getPassword()));
+    JPasswordField passwordField = new JPasswordField(String.valueOf(user.getPassword()));
     passwordField.setColumns(LARGE_TEXT_FIELD_COLUMNS);
-    final ActionListener userInfoListener = e -> loadTestModel.setUser(User.user(usernameField.getText(), passwordField.getPassword()));
+    ActionListener userInfoListener = e -> loadTestModel.setUser(User.user(usernameField.getText(), passwordField.getPassword()));
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
-    final JPanel userBase = new JPanel(Layouts.flexibleGridLayout()
+    JPanel userBase = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(2, 2)
             .fixRowHeights(true)
             .fixedRowHeight(TextComponents.getPreferredTextFieldHeight())
@@ -215,7 +215,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeApplicationPanel() {
-    final JPanel applicationCountPanel = new JPanel(Layouts.borderLayout());
+    JPanel applicationCountPanel = new JPanel(Layouts.borderLayout());
     applicationCountPanel.add(initializeApplicationCountButtonPanel(), BorderLayout.WEST);
     applicationCountPanel.add(Components.integerField()
             .horizontalAlignment(SwingConstants.CENTER)
@@ -227,7 +227,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .toolTipText("Application batch size")
             .build(), BorderLayout.EAST);
 
-    final JPanel applicationPanel = new JPanel(Layouts.borderLayout());
+    JPanel applicationPanel = new JPanel(Layouts.borderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
     applicationPanel.add(applicationCountPanel, BorderLayout.NORTH);
 
@@ -235,7 +235,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeApplicationCountButtonPanel() {
-    final JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 0, 0));
+    JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 0, 0));
     buttonPanel.add(initializeAddRemoveApplicationButton(false));
     buttonPanel.add(initializeAddRemoveApplicationButton(true));
 
@@ -243,7 +243,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JButton initializeAddRemoveApplicationButton(final boolean add) {
-    final JButton button = Control.builder(add ? loadTestModel::addApplicationBatch : loadTestModel::removeApplicationBatch)
+    JButton button = Control.builder(add ? loadTestModel::addApplicationBatch : loadTestModel::removeApplicationBatch)
             .caption(add ? "+" : "-")
             .description(add ? "Add application batch" : "Remove application batch")
             .build()
@@ -255,7 +255,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeChartControlPanel() {
-    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout()
+    JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout()
             .rowsColumns(1, 2)
             .fixRowHeights(true)
             .build());
@@ -271,41 +271,41 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeChartPanel() {
-    final JFreeChart thinkTimeChart = ChartFactory.createXYStepChart(null,
+    JFreeChart thinkTimeChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getThinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(thinkTimeChart);
-    final ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
+    ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
     thinkTimeChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JFreeChart numberOfApplicationsChart = ChartFactory.createXYStepChart(null,
+    JFreeChart numberOfApplicationsChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getNumberOfApplicationsDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(numberOfApplicationsChart);
-    final ChartPanel numberOfApplicationsChartPanel = new ChartPanel(numberOfApplicationsChart);
+    ChartPanel numberOfApplicationsChartPanel = new ChartPanel(numberOfApplicationsChart);
     numberOfApplicationsChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JFreeChart usageScenarioChart = ChartFactory.createXYStepChart(null,
+    JFreeChart usageScenarioChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getUsageScenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(usageScenarioChart);
-    final ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
+    ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
     usageScenarioChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JFreeChart failureChart = ChartFactory.createXYStepChart(null,
+    JFreeChart failureChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getUsageScenarioFailureDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(failureChart);
-    final ChartPanel failureChartPanel = new ChartPanel(failureChart);
+    ChartPanel failureChartPanel = new ChartPanel(failureChart);
     failureChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JFreeChart memoryUsageChart = ChartFactory.createXYStepChart(null,
+    JFreeChart memoryUsageChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getMemoryUsageDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(memoryUsageChart);
-    final ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
+    ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
     memoryUsageChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JFreeChart systemLoadChart = ChartFactory.createXYStepChart(null,
+    JFreeChart systemLoadChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getSystemLoadDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(systemLoadChart);
     systemLoadChart.getXYPlot().getRangeAxis().setRange(0, 100);
-    final ChartPanel systemLoadChartPanel = new ChartPanel(systemLoadChart);
+    ChartPanel systemLoadChartPanel = new ChartPanel(systemLoadChart);
     systemLoadChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     usageScenarioChartPanel.setBorder(BorderFactory.createTitledBorder("Scenarios run per second"));
@@ -371,32 +371,32 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel createScenarioPanel(final UsageScenario<T> item) {
-    final JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
+    JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getScenarioDurationDataset(item.getName()),
             PlotOrientation.VERTICAL, true, true, false);
     setColors(scenarioDurationChart);
-    final ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
+    ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
     scenarioDurationChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final DeviationRenderer renderer = new DeviationRenderer();
+    DeviationRenderer renderer = new DeviationRenderer();
     renderer.setDefaultShapesVisible(false);
     scenarioDurationChart.getXYPlot().setRenderer(renderer);
 
-    final JPanel basePanel = new JPanel(Layouts.borderLayout());
-    final JTabbedPane tabPanel = new JTabbedPane();
+    JPanel basePanel = new JPanel(Layouts.borderLayout());
+    JTabbedPane tabPanel = new JTabbedPane();
     tabPanel.addTab("Duration", scenarioDurationChartPanel);
 
-    final JTextArea exceptionsArea = new JTextArea();
-    final JPanel scenarioExceptionPanel = new JPanel(Layouts.borderLayout());
+    JTextArea exceptionsArea = new JTextArea();
+    JPanel scenarioExceptionPanel = new JPanel(Layouts.borderLayout());
     scenarioExceptionPanel.add(exceptionsArea, BorderLayout.CENTER);
-    final JButton refreshButton = new JButton(new RefreshExceptionsAction(exceptionsArea, item));
+    JButton refreshButton = new JButton(new RefreshExceptionsAction(exceptionsArea, item));
     refreshButton.doClick();
-    final JButton clearButton = new JButton(new ClearExceptionsAction(exceptionsArea, item));
+    JButton clearButton = new JButton(new ClearExceptionsAction(exceptionsArea, item));
 
-    final JScrollPane exceptionScroller = new JScrollPane(exceptionsArea);
+    JScrollPane exceptionScroller = new JScrollPane(exceptionsArea);
 
     scenarioExceptionPanel.add(exceptionScroller, BorderLayout.CENTER);
-    final JPanel buttonPanel = new JPanel(Layouts.borderLayout());
+    JPanel buttonPanel = new JPanel(Layouts.borderLayout());
     buttonPanel.add(refreshButton, BorderLayout.NORTH);
     buttonPanel.add(clearButton, BorderLayout.SOUTH);
 
@@ -454,7 +454,7 @@ public final class LoadTestPanel<T> extends JPanel {
     @Override
     public void actionPerformed(final ActionEvent e) {
       getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
-      final List<Exception> exceptions = getScenario().getExceptions();
+      List<Exception> exceptions = getScenario().getExceptions();
       for (final Exception exception : exceptions) {
         getExceptionsTextArea().append(exception.getMessage());
         getExceptionsTextArea().append(Util.LINE_SEPARATOR);

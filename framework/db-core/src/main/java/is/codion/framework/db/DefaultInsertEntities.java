@@ -42,7 +42,7 @@ final class DefaultInsertEntities implements InsertEntities {
     if (batchSize <= 0) {
       throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
     }
-    final DefaultInsertEntities insertEntities = new DefaultInsertEntities(this);
+    DefaultInsertEntities insertEntities = new DefaultInsertEntities(this);
     insertEntities.batchSize = batchSize;
 
     return insertEntities;
@@ -51,7 +51,7 @@ final class DefaultInsertEntities implements InsertEntities {
   @Override
   public InsertEntities progressReporter(final EventDataListener<Integer> progressReporter) {
     requireNonNull(progressReporter);
-    final DefaultInsertEntities insertEntities = new DefaultInsertEntities(this);
+    DefaultInsertEntities insertEntities = new DefaultInsertEntities(this);
     insertEntities.progressReporter = progressReporter;
 
     return insertEntities;
@@ -60,7 +60,7 @@ final class DefaultInsertEntities implements InsertEntities {
   @Override
   public InsertEntities onInsert(final EventDataListener<List<Key>> onInsert) {
     requireNonNull(onInsert);
-    final DefaultInsertEntities insertEntities = new DefaultInsertEntities(this);
+    DefaultInsertEntities insertEntities = new DefaultInsertEntities(this);
     insertEntities.onInsert = onInsert;
 
     return insertEntities;
@@ -68,13 +68,13 @@ final class DefaultInsertEntities implements InsertEntities {
 
   @Override
   public void execute() throws DatabaseException {
-    final List<Entity> batch = new ArrayList<>(batchSize);
+    List<Entity> batch = new ArrayList<>(batchSize);
     int progress = 0;
     while (entityIterator.hasNext()) {
       while (batch.size() < batchSize && entityIterator.hasNext()) {
         batch.add(entityIterator.next());
       }
-      final List<Key> insertedKeys = connection.insert(batch);
+      List<Key> insertedKeys = connection.insert(batch);
       progress += insertedKeys.size();
       batch.clear();
       if (progressReporter != null) {

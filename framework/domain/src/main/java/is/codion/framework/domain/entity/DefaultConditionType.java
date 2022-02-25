@@ -38,7 +38,7 @@ final class DefaultConditionType implements ConditionType, Serializable {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    final DefaultConditionType that = (DefaultConditionType) object;
+    DefaultConditionType that = (DefaultConditionType) object;
 
     return entityType.equals(that.entityType) && name.equals(that.name);
   }

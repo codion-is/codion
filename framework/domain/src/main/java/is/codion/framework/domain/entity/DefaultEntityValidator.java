@@ -65,7 +65,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       validate(entity, definition);
       return true;
     }
-    catch (final ValidationException e) {
+    catch (ValidationException e) {
       return false;
     }
   }
@@ -85,7 +85,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   @Override
   public void validate(final Entity entity, final EntityDefinition definition) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
-    final List<Property<?>> properties = definition.getProperties().stream()
+    List<Property<?>> properties = definition.getProperties().stream()
             .filter(DefaultEntityValidator::validationRequired)
             .collect(Collectors.toList());
     for (final Property<?> property : properties) {
@@ -116,7 +116,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       return;
     }
 
-    final Number value = entity.get(property.getAttribute());
+    Number value = entity.get(property.getAttribute());
     if (value.doubleValue() < (property.getMinimumValue() == null ? Double.NEGATIVE_INFINITY : property.getMinimumValue())) {
       throw new RangeValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
               MESSAGES.getString("property_value_too_small") + " " + property.getMinimumValue());
@@ -135,8 +135,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     if (!isNullable(entity, property) && entity.isNull(property.getAttribute())) {
       if ((entity.getPrimaryKey().isNull() || entity.getOriginalPrimaryKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
-        final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
-        final boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(definition, property);
+        boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
+        boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(definition, property);
         if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
           throw new NullValidationException(property.getAttribute(),
                   MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.getCaption()));
@@ -157,8 +157,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       return;
     }
 
-    final int maximumLength = property.getMaximumLength();
-    final String value = entity.get(property.getAttribute());
+    int maximumLength = property.getMaximumLength();
+    String value = entity.get(property.getAttribute());
     if (maximumLength != -1 && value.length() > maximumLength) {
       throw new LengthValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
               MESSAGES.getString("property_value_too_long") + " " + maximumLength + "\n:'" + value + "'");

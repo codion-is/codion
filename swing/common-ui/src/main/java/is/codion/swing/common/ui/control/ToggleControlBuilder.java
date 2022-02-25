@@ -64,7 +64,7 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
 
   @Override
   public ToggleControl build() {
-    final DefaultToggleControl toggleControl = new DefaultToggleControl(caption, value, enabledState);
+    DefaultToggleControl toggleControl = new DefaultToggleControl(caption, value, enabledState);
     toggleControl.setMnemonic(mnemonic);
     toggleControl.setSmallIcon(smallIcon);
     toggleControl.setDescription(description);

@@ -80,8 +80,8 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   }
 
   private JPanel initializeSimpleConditionPanel(final EntityTableConditionModel conditionModel) {
-    final JButton simpleSearchButton = searchControl.createButton();
-    final JPanel panel = new JPanel(Layouts.borderLayout());
+    JButton simpleSearchButton = searchControl.createButton();
+    JPanel panel = new JPanel(Layouts.borderLayout());
     ComponentValues.textComponent(simpleSearchTextField).link(conditionModel.getSimpleConditionStringValue());
     panel.setBorder(BorderFactory.createTitledBorder(MESSAGES.getString("condition")));
     panel.add(simpleSearchTextField, BorderLayout.WEST);
@@ -91,7 +91,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   }
 
   private void performSimpleSearch() {
-    final Conjunction previousConjunction = getTableConditionModel().getConjunction();
+    Conjunction previousConjunction = getTableConditionModel().getConjunction();
     try {
       getTableConditionModel().setConjunction(Conjunction.OR);
       onSearchListener.onEvent();

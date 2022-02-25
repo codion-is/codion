@@ -20,7 +20,7 @@ public final class LoginLogout extends AbstractEntityUsageScenario<EmpDeptAppPan
       Thread.sleep(random.nextInt(1500));
       application.getConnectionProvider().getConnection();
     }
-    catch (final InterruptedException ignored) {/*ignored*/}
+    catch (InterruptedException ignored) {/*ignored*/}
   }
 
   @Override

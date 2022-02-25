@@ -88,7 +88,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    */
   @Override
   public void selectConditionPanel() {
-    final List<Property<?>> conditionProperties = getConditionPanelProperties();
+    List<Property<?>> conditionProperties = getConditionPanelProperties();
     if (!conditionProperties.isEmpty()) {
       if (conditionProperties.size() == 1) {
         getConditionPanel(conditionProperties.get(0).getAttribute()).requestInputFocus();
@@ -118,7 +118,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    */
   @Override
   public Controls getControls() {
-    final Controls.Builder controls = Controls.builder()
+    Controls.Builder controls = Controls.builder()
             .caption(FrameworkMessages.get(FrameworkMessages.SEARCH))
             .smallIcon(frameworkIcons().filter());
     if (hasAdvancedView()) {
@@ -162,9 +162,9 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
 
   private static Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(
           final SwingFilteredTableColumnModel<Attribute<?>> columnModel, final ConditionPanelFactory conditionPanelFactory) {
-    final Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new HashMap<>();
+    Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new HashMap<>();
     columnModel.getAllColumns().forEach(column -> {
-      final ColumnConditionPanel<Attribute<?>, Object> conditionPanel = (ColumnConditionPanel<Attribute<?>, Object>) conditionPanelFactory.createConditionPanel(column);
+      ColumnConditionPanel<Attribute<?>, Object> conditionPanel = (ColumnConditionPanel<Attribute<?>, Object>) conditionPanelFactory.createConditionPanel(column);
       if (conditionPanel != null) {
         conditionPanels.put(column, conditionPanel);
       }

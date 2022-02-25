@@ -27,7 +27,7 @@ public final class EntityTableViewTest {
 
   @Test
   void constructor() {
-    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     new EntityTableView(listModel);
   }
 }

@@ -42,10 +42,10 @@ public interface ResultPacker<T> {
    */
   default List<T> pack(final ResultSet resultSet, final int fetchLimit) throws SQLException {
     requireNonNull(resultSet, "resultSet");
-    final List<T> result = fetchLimit < 0 ? new ArrayList<>() : new ArrayList<>(fetchLimit);
+    List<T> result = fetchLimit < 0 ? new ArrayList<>() : new ArrayList<>(fetchLimit);
     int counter = 0;
     while (resultSet.next() && (fetchLimit < 0 || counter++ < fetchLimit)) {
-      final T item = fetch(resultSet);
+      T item = fetch(resultSet);
       if (item != null) {
         result.add(item);
       }

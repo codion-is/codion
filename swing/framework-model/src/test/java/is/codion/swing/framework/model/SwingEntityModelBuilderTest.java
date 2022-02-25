@@ -40,15 +40,15 @@ public final class SwingEntityModelBuilderTest {
 
   @Test
   void testDetailModelBuilder() {
-    final SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+    SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
             .tableModelClass(DepartmentTableModel.class);
-    final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(TestDomain.T_EMP);
+    SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(TestDomain.T_EMP);
 
     departmentModelBuilder.detailModelBuilder(employeeModelBuilder);
 
     assertEquals(DepartmentTableModel.class, departmentModelBuilder.getTableModelClass());
 
-    final SwingEntityModel departmentModel = departmentModelBuilder.buildModel(CONNECTION_PROVIDER);
+    SwingEntityModel departmentModel = departmentModelBuilder.buildModel(CONNECTION_PROVIDER);
     assertTrue(departmentModel.getEditModel() instanceof DepartmentEditModel);
     assertTrue(departmentModel.getTableModel() instanceof DepartmentTableModel);
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
@@ -91,9 +91,9 @@ public final class SwingEntityModelBuilderTest {
 
   @Test
   void initializers() {
-    final State modelInitialized = State.state();
-    final State editModelInitialized = State.state();
-    final State tableModelInitialized = State.state();
+    State modelInitialized = State.state();
+    State editModelInitialized = State.state();
+    State tableModelInitialized = State.state();
 
     SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
             .tableModelClass(DepartmentTableModel.class)

@@ -30,7 +30,7 @@ public final class SliderMouseWheelListener implements MouseWheelListener {
 
   @Override
   public void mouseWheelMoved(final MouseWheelEvent event) {
-    final int wheelRotation = event.getWheelRotation();
+    int wheelRotation = event.getWheelRotation();
     if (wheelRotation != 0) {
       boundedRangeModel.setValue(boundedRangeModel.getValue() + (wheelRotation * (reversed ? 1 : -1)));
     }

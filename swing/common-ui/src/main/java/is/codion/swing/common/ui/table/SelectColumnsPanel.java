@@ -56,7 +56,7 @@ final class SelectColumnsPanel<C> extends JPanel {
                     .caption(Objects.toString(entry.getKey().getHeaderValue()))
                     .build())
             .collect(Collectors.toList());
-    final JScrollPane checkBoxPanel = createCheckBoxPanel();
+    JScrollPane checkBoxPanel = createCheckBoxPanel();
     add(createNorthPanel(checkBoxPanel.getBorder().getBorderInsets(checkBoxPanel)), BorderLayout.NORTH);
     add(checkBoxPanel, BorderLayout.CENTER);
   }
@@ -69,13 +69,13 @@ final class SelectColumnsPanel<C> extends JPanel {
 
   void applyChanges() {
     columnModel.getVisibleColumns().forEach(identifier -> {
-      final TableColumn tableColumn = columnModel.getTableColumn(identifier);
+      TableColumn tableColumn = columnModel.getTableColumn(identifier);
       if (!states.get(tableColumn).get()) {
         columnModel.setColumnVisible(identifier, false);
       }
     });
     new ArrayList<>(columnModel.getHiddenColumns()).forEach(identifier -> {
-      final TableColumn tableColumn = columnModel.getTableColumn(identifier);
+      TableColumn tableColumn = columnModel.getTableColumn(identifier);
       if (states.get(tableColumn).get()) {
         columnModel.setColumnVisible(identifier, true);
       }
@@ -83,7 +83,7 @@ final class SelectColumnsPanel<C> extends JPanel {
   }
 
   private Map<TableColumn, State> createStateMap() {
-    final Map<TableColumn, State> stateMap = new LinkedHashMap<>();
+    Map<TableColumn, State> stateMap = new LinkedHashMap<>();
     columnModel.getAllColumns().stream()
             .sorted(new FilteredTable.ColumnComparator())
             .forEach(column -> stateMap.put(column,
@@ -93,12 +93,12 @@ final class SelectColumnsPanel<C> extends JPanel {
   }
 
   private JPanel createNorthPanel(final Insets insets) {
-    final JCheckBox selectAllButton = Components.checkBox()
+    JCheckBox selectAllButton = Components.checkBox()
             .linkedValueObserver(State.and(states.values()))
             .caption(MESSAGES.getString("select_all"))
             .mnemonic(MESSAGES.getString("select_all_mnemonic").charAt(0))
             .build();
-    final JCheckBox selectNoneButton = Components.checkBox()
+    JCheckBox selectNoneButton = Components.checkBox()
             .linkedValueObserver(State.and(states.values().stream()
                     .map(StateObserver::getReversedObserver)
                     .collect(Collectors.toList())))
@@ -123,14 +123,14 @@ final class SelectColumnsPanel<C> extends JPanel {
   }
 
   private JScrollPane createCheckBoxPanel() {
-    final JPanel northPanel = Components.panel(gridLayout(0, 1))
+    JPanel northPanel = Components.panel(gridLayout(0, 1))
             .add(checkBoxes)
             .build();
-    final KeyEvents.Builder upEventBuilder = KeyEvents.builder(KeyEvent.VK_UP)
+    KeyEvents.Builder upEventBuilder = KeyEvents.builder(KeyEvent.VK_UP)
             .condition(JComponent.WHEN_FOCUSED)
             .onKeyPressed()
             .action(control(new TransferFocusCommand(checkBoxes, false)));
-    final KeyEvents.Builder downEventBuilder = KeyEvents.builder(KeyEvent.VK_DOWN)
+    KeyEvents.Builder downEventBuilder = KeyEvents.builder(KeyEvent.VK_DOWN)
             .condition(JComponent.WHEN_FOCUSED)
             .onKeyPressed()
             .action(control(new TransferFocusCommand(checkBoxes, true)));

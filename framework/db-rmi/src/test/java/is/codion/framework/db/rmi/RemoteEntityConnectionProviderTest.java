@@ -40,21 +40,21 @@ public class RemoteEntityConnectionProviderTest {
 
   @Test
   void test() throws DatabaseException, RemoteException, ServerAuthenticationException, NotBoundException {
-    final EntityServerConfiguration configuration = configure();
+    EntityServerConfiguration configuration = configure();
 
-    final String serverName = configuration.getServerName();
+    String serverName = configuration.getServerName();
     EntityServer.startServer(configuration);
-    final Server<RemoteEntityConnection, EntityServerAdmin> server = (Server<RemoteEntityConnection, EntityServerAdmin>)
+    Server<RemoteEntityConnection, EntityServerAdmin> server = (Server<RemoteEntityConnection, EntityServerAdmin>)
             LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(), configuration.getRegistryPort()).lookup(serverName);
-    final EntityServerAdmin admin = server.getServerAdmin(User.parseUser("scott:tiger"));
+    EntityServerAdmin admin = server.getServerAdmin(User.parseUser("scott:tiger"));
 
-    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(Clients.SERVER_HOST_NAME.get(),
+    RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(Clients.SERVER_HOST_NAME.get(),
             configuration.getServerPort(), configuration.getRegistryPort());
     provider.setClientTypeId("RemoteEntityConnectionProviderTest");
     provider.setDomainClassName("is.codion.framework.db.rmi.TestDomain");
     provider.setUser(User.parseUser("scott:tiger"));
 
-    final EntityConnection connection = provider.getConnection();
+    EntityConnection connection = provider.getConnection();
     connection.select(condition(TestDomain.T_DEPARTMENT));
 
     assertThrows(DatabaseException.class, () -> connection.delete(where(TestDomain.EMP_NAME).equalTo("JONES")));
@@ -72,9 +72,9 @@ public class RemoteEntityConnectionProviderTest {
 
   @Test
   void entityConnectionProviders() {
-    final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
+    String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
-    final EntityConnectionProvider connectionProvider = EntityConnectionProvider.connectionProvider()
+    EntityConnectionProvider connectionProvider = EntityConnectionProvider.connectionProvider()
             .setDomainClassName(Domain.class.getName()).setClientTypeId("test").setUser(UNIT_TEST_USER);
     assertEquals("RemoteEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, connectionProvider.getConnectionType());

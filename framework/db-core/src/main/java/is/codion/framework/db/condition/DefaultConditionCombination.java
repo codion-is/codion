@@ -45,7 +45,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
     this.conditions = new ArrayList<>(requireNonNull(conditions, CONDITIONS));
     this.entityType = this.conditions.isEmpty() ? null : this.conditions.get(0).getEntityType();
     for (int i = 1; i < this.conditions.size(); i++) {
-      final EntityType conditionEntityType = this.conditions.get(i).getEntityType();
+      EntityType conditionEntityType = this.conditions.get(i).getEntityType();
       if (!conditionEntityType.equals(this.entityType)) {
         throw new IllegalArgumentException("EntityType " + this.entityType + " expected, got: " + conditionEntityType);
       }
@@ -73,7 +73,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   @Override
   public List<?> getValues() {
-    final List<Object> values = new ArrayList<>();
+    List<Object> values = new ArrayList<>();
     for (int i = 0; i < conditions.size(); i++) {
       values.addAll(conditions.get(i).getValues());
     }
@@ -83,7 +83,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   @Override
   public List<Attribute<?>> getAttributes() {
-    final List<Attribute<?>> attributes = new ArrayList<>();
+    List<Attribute<?>> attributes = new ArrayList<>();
     for (int i = 0; i < conditions.size(); i++) {
       attributes.addAll(conditions.get(i).getAttributes());
     }
@@ -140,7 +140,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   private static List<Condition> combine(final Condition condition, final Condition... conditions) {
-    final List<Condition> list = new ArrayList<>(requireNonNull(conditions, CONDITIONS).length + (condition != null ? 1 : 0));
+    List<Condition> list = new ArrayList<>(requireNonNull(conditions, CONDITIONS).length + (condition != null ? 1 : 0));
     if (condition != null) {
       list.add(condition);
     }

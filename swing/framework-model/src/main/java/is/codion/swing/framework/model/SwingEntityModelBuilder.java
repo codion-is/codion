@@ -152,7 +152,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   public SwingEntityModel buildModel(final EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
-      final SwingEntityModel model;
+      SwingEntityModel model;
       if (modelBuilder != null) {
         LOG.debug("{} modelBuilder initializing entity model", this);
         model = modelBuilder.build(connectionProvider);
@@ -172,10 +172,10 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 
       return model;
     }
-    catch (final RuntimeException re) {
+    catch (RuntimeException re) {
       throw re;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -184,7 +184,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   public SwingEntityEditModel buildEditModel(final EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
-      final SwingEntityEditModel editModel;
+      SwingEntityEditModel editModel;
       if (editModelBuilder != null) {
         LOG.debug("{} editModelBuilder initializing edit model", this);
         editModel = editModelBuilder.build(connectionProvider);
@@ -201,10 +201,10 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 
       return editModel;
     }
-    catch (final RuntimeException re) {
+    catch (RuntimeException re) {
       throw re;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -213,7 +213,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   public SwingEntityTableModel buildTableModel(final EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
-      final SwingEntityTableModel tableModel;
+      SwingEntityTableModel tableModel;
       if (tableModelBuilder != null) {
         LOG.debug("{} tableModelBuilder initializing table model", this);
         tableModel = tableModelBuilder.build(connectionProvider);
@@ -230,10 +230,10 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 
       return tableModel;
     }
-    catch (final RuntimeException re) {
+    catch (RuntimeException re) {
       throw re;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -241,7 +241,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   @Override
   public boolean equals(final Object obj) {
     if (obj instanceof SwingEntityModelBuilder) {
-      final SwingEntityModelBuilder that = (SwingEntityModelBuilder) obj;
+      SwingEntityModelBuilder that = (SwingEntityModelBuilder) obj;
 
       return Objects.equals(entityType, that.entityType) &&
               Objects.equals(modelClass, that.modelClass) &&

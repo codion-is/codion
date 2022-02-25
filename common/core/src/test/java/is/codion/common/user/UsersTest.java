@@ -16,7 +16,7 @@ public class UsersTest {
 
   @Test
   void test() {
-    final User user = User.parseUser("scott:tiger");
+    User user = User.parseUser("scott:tiger");
     assertEquals("scott", user.getUsername());
     assertEquals("tiger", String.valueOf(user.getPassword()));
     user.setPassword("mess".toCharArray());

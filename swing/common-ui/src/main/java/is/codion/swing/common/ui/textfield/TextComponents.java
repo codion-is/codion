@@ -52,15 +52,15 @@ public final class TextComponents {
       ((SizedDocument) document).setMaximumLength(maximumLength);
     }
     else if (document instanceof AbstractDocument) {
-      final DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
+      DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
       if (documentFilter == null) {
-        final CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
+        CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
         caseDocumentFilter.addValidator(new StringLengthValidator(maximumLength));
         ((AbstractDocument) document).setDocumentFilter(caseDocumentFilter);
       }
       else if (documentFilter instanceof CaseDocumentFilter) {
-        final CaseDocumentFilter caseDocumentFilter = (CaseDocumentFilter) documentFilter;
-        final Optional<StringLengthValidator> lengthValidator = caseDocumentFilter.getValidators().stream()
+        CaseDocumentFilter caseDocumentFilter = (CaseDocumentFilter) documentFilter;
+        Optional<StringLengthValidator> lengthValidator = caseDocumentFilter.getValidators().stream()
                 .filter(StringLengthValidator.class::isInstance)
                 .map(StringLengthValidator.class::cast)
                 .findFirst();
@@ -197,9 +197,9 @@ public final class TextComponents {
       ((SizedDocument) document).getDocumentFilter().setDocumentCase(documentCase);
     }
     else if (document instanceof AbstractDocument) {
-      final DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
+      DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
       if (documentFilter == null) {
-        final CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
+        CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
         caseDocumentFilter.setDocumentCase(documentCase);
         ((AbstractDocument) document).setDocumentFilter(caseDocumentFilter);
       }

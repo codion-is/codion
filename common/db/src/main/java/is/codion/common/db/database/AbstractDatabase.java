@@ -62,7 +62,7 @@ public abstract class AbstractDatabase implements Database {
     try {
       return connectionProvider.getConnection(user, jdbcUrl);
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       if (isAuthenticationException(e)) {
         throw new AuthenticationException(e.getMessage());
       }
@@ -80,7 +80,7 @@ public abstract class AbstractDatabase implements Database {
 
       return validateWithQuery(connection);
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       return false;
     }
   }
@@ -115,7 +115,7 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public final void closeConnectionPool(final String username) {
-    final ConnectionPoolWrapper connectionPoolWrapper = connectionPools.remove(requireNonNull(username, "username").toLowerCase());
+    ConnectionPoolWrapper connectionPoolWrapper = connectionPools.remove(requireNonNull(username, "username").toLowerCase());
     if (connectionPoolWrapper != null) {
       connectionPoolWrapper.close();
     }
@@ -234,7 +234,7 @@ public abstract class AbstractDatabase implements Database {
         try {
           statement.setQueryTimeout(validityCheckTimeout);
         }
-        catch (final SQLException ignored) {/*Not all databases have implemented this feature*/}
+        catch (SQLException ignored) {/*Not all databases have implemented this feature*/}
       }
       rs = statement.executeQuery(getCheckConnectionQuery());
 
@@ -283,8 +283,8 @@ public abstract class AbstractDatabase implements Database {
     }
 
     private Database.Statistics getStatisticsAndResetCounter() {
-      final long current = System.currentTimeMillis();
-      final double seconds = (current - queriesPerSecondTime.get()) / THOUSAND;
+      long current = System.currentTimeMillis();
+      double seconds = (current - queriesPerSecondTime.get()) / THOUSAND;
       int queriesPerSecond = 0;
       int selectsPerSecond = 0;
       int insertsPerSecond = 0;

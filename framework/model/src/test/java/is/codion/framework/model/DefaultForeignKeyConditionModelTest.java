@@ -30,16 +30,16 @@ public class DefaultForeignKeyConditionModelTest {
 
   @Test
   void getSearchEntitiesLookupModel() throws DatabaseException {
-    final EntitySearchModel searchModel = new DefaultEntitySearchModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
+    EntitySearchModel searchModel = new DefaultEntitySearchModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
             singletonList(TestDomain.DEPARTMENT_NAME));
-    final ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(TestDomain.EMP_DEPARTMENT_FK, searchModel);
-    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(TestDomain.EMP_DEPARTMENT_FK, searchModel);
+    Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     searchModel.setSelectedEntity(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
-    final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
-    final List<Entity> salesAccounting = asList(sales, accounting);
+    Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    List<Entity> salesAccounting = asList(sales, accounting);
     searchModel.setSelectedEntities(salesAccounting);
     assertTrue(conditionModel.getEqualValues().contains(sales));
     assertTrue(conditionModel.getEqualValues().contains(accounting));

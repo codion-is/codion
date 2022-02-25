@@ -20,10 +20,10 @@ public class SwingTableSelectionModelTest {
   private final SwingTableSelectionModel<String> testModel;
 
   public SwingTableSelectionModelTest() {
-    final List<String> data = asList("A", "B", "C");
-    final TableColumn column = new TableColumn(0);
+    List<String> data = asList("A", "B", "C");
+    TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final AbstractTableSortModel<String, Integer> sortModel = new AbstractTableSortModel<String, Integer>() {
+    AbstractTableSortModel<String, Integer> sortModel = new AbstractTableSortModel<String, Integer>() {
       @Override
       public Class<String> getColumnClass(final Integer columnIdentifier) {
         return String.class;
@@ -34,7 +34,7 @@ public class SwingTableSelectionModelTest {
         return row;
       }
     };
-    final AbstractFilteredTableModel<String, Integer> tableModel = new AbstractFilteredTableModel<String, Integer>(
+    AbstractFilteredTableModel<String, Integer> tableModel = new AbstractFilteredTableModel<String, Integer>(
             new SwingFilteredTableColumnModel<>(singletonList(column)), sortModel) {
       @Override
       protected Collection<String> refreshItems() {
@@ -48,7 +48,7 @@ public class SwingTableSelectionModelTest {
 
       @Override
       public boolean allowSelectionChange() {
-        final String selected = getSelectionModel().getSelectedItem();
+        String selected = getSelectionModel().getSelectedItem();
         return !"C".equals(selected);
       }
     };
@@ -91,7 +91,7 @@ public class SwingTableSelectionModelTest {
 
   @Test
   void events() {
-    final AtomicInteger emptyCounter = new AtomicInteger();
+    AtomicInteger emptyCounter = new AtomicInteger();
     testModel.getSelectionEmptyObserver().addListener(emptyCounter::incrementAndGet);
     testModel.setSelectedIndex(0);
     assertEquals(1, emptyCounter.get());

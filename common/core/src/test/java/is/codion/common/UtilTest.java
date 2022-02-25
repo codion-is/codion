@@ -31,7 +31,7 @@ public final class UtilTest {
     assertTrue(Util.notNull(new Object(), new Object(), new Object()));
     assertTrue(Util.notNull(new Object()));
     assertFalse(Util.notNull(new Object(), null, new Object()));
-    final Object ob = null;
+    Object ob = null;
     assertFalse(Util.notNull(ob));
     assertFalse(Util.notNull((Object[]) null));
   }
@@ -44,7 +44,7 @@ public final class UtilTest {
 
   @Test
   void nullOrEmpty() {
-    final Map<Integer, String> map = new HashMap<>();
+    Map<Integer, String> map = new HashMap<>();
     map.put(1, "1");
 
     assertTrue(Util.nullOrEmpty((String[]) null));

@@ -26,13 +26,13 @@ public class SQLServerDatabaseTest {
 
   @Test
   void supportsIsValid() {
-    final SQLServerDatabase db = new SQLServerDatabase(URL);
+    SQLServerDatabase db = new SQLServerDatabase(URL);
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   void getAutoIncrementQuery() {
-    final SQLServerDatabase db = new SQLServerDatabase(URL);
+    SQLServerDatabase db = new SQLServerDatabase(URL);
     assertEquals(SQLServerDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 

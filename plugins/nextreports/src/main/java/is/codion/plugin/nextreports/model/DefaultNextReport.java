@@ -52,11 +52,11 @@ final class DefaultNextReport extends AbstractReport<ro.nextreports.engine.Repor
               .run(output);
       output.close();
 
-      final byte[] bytes = Files.readAllBytes(file.toPath());
+      byte[] bytes = Files.readAllBytes(file.toPath());
 
       return new NextReportsResult(bytes, format);
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new ReportException(e);
     }
     finally {
@@ -71,7 +71,7 @@ final class DefaultNextReport extends AbstractReport<ro.nextreports.engine.Repor
     try {
       return ReportUtil.loadReport(new FileInputStream(getFullReportPath()));
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       throw new ReportException(e);
     }
   }

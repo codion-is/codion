@@ -37,7 +37,7 @@ final class DefaultProcedureType<C, T> implements ProcedureType<C, T>, Serializa
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    final DefaultProcedureType<?, ?> that = (DefaultProcedureType<?, ?>) o;
+    DefaultProcedureType<?, ?> that = (DefaultProcedureType<?, ?>) o;
 
     return name.equals(that.name);
   }

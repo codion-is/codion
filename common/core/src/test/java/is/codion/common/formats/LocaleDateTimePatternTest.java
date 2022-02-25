@@ -18,12 +18,12 @@ public final class LocaleDateTimePatternTest {
 
   @Test
   void locale() {
-    final LocaleDateTimePattern pattern = LocaleDateTimePattern.builder()
+    LocaleDateTimePattern pattern = LocaleDateTimePattern.builder()
             .delimiterDash().yearFourDigits().hoursMinutes()
             .build();
 
-    final Locale iceland = new Locale("is", "IS");
-    final Locale us = new Locale("en", "US");
+    Locale iceland = new Locale("is", "IS");
+    Locale us = new Locale("en", "US");
 
     assertEquals("dd-MM-yyyy", pattern.getDatePattern(iceland));
     assertEquals("MM-dd-yyyy", pattern.getDatePattern(us));

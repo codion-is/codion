@@ -213,7 +213,7 @@ public interface EntityType {
       ResourceBundle.getBundle(entityClass.getName());
       bundleName = entityClass.getName();
     }
-    catch (final MissingResourceException e) {/* Non-existing bundle */}
+    catch (MissingResourceException e) {/* Non-existing bundle */}
 
     return new DefaultEntityType(domainName, name, entityClass, bundleName);
   }

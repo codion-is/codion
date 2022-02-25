@@ -16,10 +16,10 @@ public final class ViewGenre extends AbstractEntityUsageScenario<ChinookApplicat
 
   @Override
   protected void perform(final ChinookApplicationModel application) throws Exception {
-    final SwingEntityModel genreModel = application.getEntityModel(Genre.TYPE);
+    SwingEntityModel genreModel = application.getEntityModel(Genre.TYPE);
     genreModel.getTableModel().refresh();
     EntityLoadTestModel.selectRandomRow(genreModel.getTableModel());
-    final SwingEntityModel trackModel = genreModel.getDetailModel(Track.TYPE);
+    SwingEntityModel trackModel = genreModel.getDetailModel(Track.TYPE);
     selectRandomRows(trackModel.getTableModel(), 2);
     genreModel.getConnectionProvider().getConnection().selectDependencies(trackModel.getTableModel().getSelectionModel().getSelectedItems());
   }

@@ -24,7 +24,7 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
   }
 
   private void setAddress(final ValueChange<Entity> valueChange) {
-    final Entity customer = valueChange.getValue();
+    Entity customer = valueChange.getValue();
     if (customer == null) {
       put(Invoice.BILLINGADDRESS, null);
       put(Invoice.BILLINGCITY, null);

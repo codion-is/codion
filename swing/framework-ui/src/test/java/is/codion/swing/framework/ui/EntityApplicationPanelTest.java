@@ -37,9 +37,9 @@ public class EntityApplicationPanelTest {
 
   @Test
   void getDependencyTreeModel() {
-    final TreeModel model = EntityApplicationPanel.getDependencyTreeModel(CONNECTION_PROVIDER.getEntities());
-    final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-    final Enumeration<?> tree = root.preorderEnumeration();
+    TreeModel model = EntityApplicationPanel.getDependencyTreeModel(CONNECTION_PROVIDER.getEntities());
+    DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+    Enumeration<?> tree = root.preorderEnumeration();
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
     assertNull(node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
@@ -53,14 +53,14 @@ public class EntityApplicationPanelTest {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(TestDomain.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
-    final EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>("Test") {
+    EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>("Test") {
       @Override
       protected List<EntityPanel> initializeEntityPanels(final SwingEntityApplicationModel applicationModel) {
         return singletonList(new EntityPanel(applicationModel.getEntityModel(TestDomain.T_EMP)));
       }
       @Override
       protected SwingEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
-        final SwingEntityApplicationModel model = new SwingEntityApplicationModel(connectionProvider);
+        SwingEntityApplicationModel model = new SwingEntityApplicationModel(connectionProvider);
         model.addEntityModel(new SwingEntityModel(TestDomain.T_EMP, connectionProvider));
 
         return model;

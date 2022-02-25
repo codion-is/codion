@@ -34,14 +34,14 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
   @Override
   public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(final A attribute) {
     if (attribute instanceof ForeignKey) {
-      final ForeignKey foreignKey = (ForeignKey) attribute;
-      final EntitySearchModel searchModel = new DefaultEntitySearchModel(foreignKey.getReferencedEntityType(), connectionProvider);
+      ForeignKey foreignKey = (ForeignKey) attribute;
+      EntitySearchModel searchModel = new DefaultEntitySearchModel(foreignKey.getReferencedEntityType(), connectionProvider);
       searchModel.getMultipleSelectionEnabledValue().set(true);
 
       return (ColumnConditionModel<A, T>) new DefaultForeignKeyConditionModel(foreignKey, searchModel);
     }
 
-    final ColumnProperty<T> property = getDefinition(attribute.getEntityType()).getColumnProperty(attribute);
+    ColumnProperty<T> property = getDefinition(attribute.getEntityType()).getColumnProperty(attribute);
     if (property.isAggregateColumn()) {
       return null;
     }

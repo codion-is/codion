@@ -34,10 +34,10 @@ public final class FXEntityListSelectionModelTest {
 
   @Test
   void selectionMode() {
-    final FXEntityListModel list = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    FXEntityListModel list = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     new EntityTableView(list);
-    final FXEntityListSelectionModel selectionModel = list.getSelectionModel();
-    final MultipleSelectionModel<Entity> multipleSelectionModel = (MultipleSelectionModel<Entity>) selectionModel.getSelectionModel();
+    FXEntityListSelectionModel selectionModel = list.getSelectionModel();
+    MultipleSelectionModel<Entity> multipleSelectionModel = (MultipleSelectionModel<Entity>) selectionModel.getSelectionModel();
     assertFalse(selectionModel.getSingleSelectionModeState().get());
     multipleSelectionModel.setSelectionMode(SelectionMode.SINGLE);
     assertTrue(selectionModel.getSingleSelectionModeState().get());

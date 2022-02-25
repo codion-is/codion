@@ -27,13 +27,13 @@ public class EntityServerMonitorPanelTest {
 
   @Test
   void test() throws Exception {
-    final EntityServerMonitorPanel panel = new EntityServerMonitorPanel(new EntityServerMonitor("localhost",
+    EntityServerMonitorPanel panel = new EntityServerMonitorPanel(new EntityServerMonitor("localhost",
             EntityServerMonitorTest.CONFIGURATION.getRegistryPort(), EntityServerMonitorTest.CONFIGURATION.getAdminUser()));
-    final ServerMonitor serverMonitor = panel.getModel().getHostMonitors().iterator().next().getServerMonitors().iterator().next();
+    ServerMonitor serverMonitor = panel.getModel().getHostMonitors().iterator().next().getServerMonitors().iterator().next();
     serverMonitor.getUpdateIntervalValue().set(1);
-    final DatabaseMonitor databaseMonitor = serverMonitor.getDatabaseMonitor();
+    DatabaseMonitor databaseMonitor = serverMonitor.getDatabaseMonitor();
     databaseMonitor.getUpdateIntervalValue().set(1);
-    final ConnectionPoolMonitor poolMonitor = databaseMonitor.getConnectionPoolMonitor().getConnectionPoolInstanceMonitors().iterator().next();
+    ConnectionPoolMonitor poolMonitor = databaseMonitor.getConnectionPoolMonitor().getConnectionPoolInstanceMonitors().iterator().next();
     poolMonitor.getCollectSnapshotStatisticsState().set(true);
     poolMonitor.getCollectCheckOutTimesState().set(true);
     poolMonitor.getUpdateIntervalValue().set(1);

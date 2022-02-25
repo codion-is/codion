@@ -36,24 +36,24 @@ public class DefaultRemoteEntityConnectionTest {
 
   @Test
   void wrongUsername() throws Exception {
-    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
+    RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
             .user(User.user("foo", "bar".toCharArray())).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1234));
   }
 
   @Test
   void wrongPassword() throws Exception {
-    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
+    RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
             .user(User.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray())).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1235));
   }
 
   @Test
   void rollbackOnClose() throws Exception {
-    final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
+    RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
             .user(UNIT_TEST_USER).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1238);
-    final Condition condition = Conditions.condition(TestDomain.T_EMP);
+    Condition condition = Conditions.condition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.select(condition).isEmpty());
@@ -69,29 +69,29 @@ public class DefaultRemoteEntityConnectionTest {
     DefaultRemoteEntityConnection adapter = null;
     final String serviceName = "DefaultRemoteEntityConnectionTest";
     try {
-      final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
+      RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
               .user(UNIT_TEST_USER).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
       adapter = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1238);
 
       registry = Server.Locator.locator().initializeRegistry(Registry.REGISTRY_PORT);
 
       registry.rebind(serviceName, adapter);
-      final Collection<String> boundNames = asList(registry.list());
+      Collection<String> boundNames = asList(registry.list());
       assertTrue(boundNames.contains(serviceName));
 
-      final DefaultRemoteEntityConnection finalAdapter = adapter;
-      final EntityConnection proxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
+      DefaultRemoteEntityConnection finalAdapter = adapter;
+      EntityConnection proxy = (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
               new Class[] {EntityConnection.class}, (proxy1, method, args) -> {
-                final Method remoteMethod = RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
+                Method remoteMethod = RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
                 try {
                   return remoteMethod.invoke(finalAdapter, args);
                 }
-                catch (final InvocationTargetException e) {
+                catch (InvocationTargetException e) {
                   throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
                 }
               });
 
-      final Condition condition = Conditions.condition(TestDomain.T_EMP);
+      Condition condition = Conditions.condition(TestDomain.T_EMP);
       proxy.beginTransaction();
       proxy.select(condition);
       proxy.delete(condition);
@@ -104,14 +104,14 @@ public class DefaultRemoteEntityConnectionTest {
         try {
           registry.unbind(serviceName);
         }
-        catch (final Exception ignored) {/*ignored*/}
+        catch (Exception ignored) {/*ignored*/}
       }
       try {
         if (adapter != null) {
           adapter.close();
         }
       }
-      catch (final Exception ignored) {/*ignored*/}
+      catch (Exception ignored) {/*ignored*/}
     }
   }
 }

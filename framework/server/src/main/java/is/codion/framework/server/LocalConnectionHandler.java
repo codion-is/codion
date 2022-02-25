@@ -132,7 +132,7 @@ final class LocalConnectionHandler implements InvocationHandler {
         returnConnectionToPool();
       }
     }
-    catch (final DatabaseException e) {
+    catch (DatabaseException e) {
       close();
       throw e;
     }
@@ -142,7 +142,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
     active.set(true);
     lastAccessTime = System.currentTimeMillis();
-    final String methodName = method.getName();
+    String methodName = method.getName();
     Exception exception = null;
     try {
       MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
@@ -153,10 +153,10 @@ final class LocalConnectionHandler implements InvocationHandler {
 
       return method.invoke(getConnection(), args);
     }
-    catch (final InvocationTargetException e) {
+    catch (InvocationTargetException e) {
       throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error(e.getMessage(), e);
       exception = e;
       throw exception;
@@ -164,8 +164,8 @@ final class LocalConnectionHandler implements InvocationHandler {
     finally {
       returnConnection();
       if (methodLogger.isEnabled()) {
-        final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
-        final StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
+        MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
+        StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
         entry.append(messageBuilder);
         LOG.info(messageBuilder.toString());
       }
@@ -230,7 +230,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
       return getLocalEntityConnection();
     }
-    catch (final DatabaseException ex) {
+    catch (DatabaseException ex) {
       exception = ex;
       throw ex;
     }
@@ -275,7 +275,7 @@ final class LocalConnectionHandler implements InvocationHandler {
       poolEntityConnection.setMethodLogger(null);
       returnConnectionToPool();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.info("Exception while returning connection to pool", e);
     }
     finally {
@@ -286,7 +286,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   }
 
   private void returnConnectionToPool() {
-    final Connection connection = poolEntityConnection.getDatabaseConnection().getConnection();
+    Connection connection = poolEntityConnection.getDatabaseConnection().getConnection();
     if (connection != null) {
       Database.closeSilently(connection);
       poolEntityConnection.getDatabaseConnection().setConnection(null);
@@ -335,8 +335,8 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
 
     private void updateRequestsPerSecond() {
-      final long current = System.currentTimeMillis();
-      final double seconds = (current - requestsPerSecondTime.get()) / THOUSAND;
+      long current = System.currentTimeMillis();
+      double seconds = (current - requestsPerSecondTime.get()) / THOUSAND;
       if (seconds > 0) {
         requestsPerSecond.set((int) (requestsPerSecondCounter.get() / seconds));
         requestsPerSecondCounter.set(0);
@@ -353,7 +353,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
     @Override
     public Thread newThread(final Runnable runnable) {
-      final Thread thread = new Thread(runnable);
+      Thread thread = new Thread(runnable);
       thread.setDaemon(true);
 
       return thread;
@@ -390,13 +390,13 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
 
     private String entityToString(final Entity entity) {
-      final StringBuilder builder = new StringBuilder(entity.getEntityType().getName()).append(" {");
-      final List<ColumnProperty<?>> columnProperties = entities.getDefinition(entity.getEntityType()).getColumnProperties();
+      StringBuilder builder = new StringBuilder(entity.getEntityType().getName()).append(" {");
+      List<ColumnProperty<?>> columnProperties = entities.getDefinition(entity.getEntityType()).getColumnProperties();
       for (int i = 0; i < columnProperties.size(); i++) {
-        final ColumnProperty<?> property = columnProperties.get(i);
-        final boolean modified = entity.isModified(property.getAttribute());
+        ColumnProperty<?> property = columnProperties.get(i);
+        boolean modified = entity.isModified(property.getAttribute());
         if (property.isPrimaryKeyColumn() || modified) {
-          final StringBuilder valueString = new StringBuilder();
+          StringBuilder valueString = new StringBuilder();
           if (modified) {
             valueString.append(entity.getOriginal(property.getAttribute())).append("->");
           }

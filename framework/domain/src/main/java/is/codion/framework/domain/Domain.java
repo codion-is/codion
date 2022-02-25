@@ -92,8 +92,8 @@ public interface Domain {
    * @return a list containing all the Domains registered with {@link ServiceLoader}.
    */
   static List<Domain> getDomains() {
-    final List<Domain> domains = new ArrayList<>();
-    final ServiceLoader<Domain> loader = ServiceLoader.load(Domain.class);
+    List<Domain> domains = new ArrayList<>();
+    ServiceLoader<Domain> loader = ServiceLoader.load(Domain.class);
     for (final Domain domain : loader) {
       domains.add(domain);
     }

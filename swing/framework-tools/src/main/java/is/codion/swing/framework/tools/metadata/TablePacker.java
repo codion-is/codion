@@ -24,10 +24,10 @@ final class TablePacker implements ResultPacker<Table> {
 
   @Override
   public Table fetch(final ResultSet resultSet) throws SQLException {
-    final String tableName = resultSet.getString("TABLE_NAME");
-    final List<PrimaryKeyColumn> primaryKeyColumns = getPrimaryKeyColumns(schema, metaData, catalog, tableName);
-    final List<ForeignKeyColumn> foreignKeyColumns = getForeignKeyColumns(schema, metaData, catalog, tableName);
-    final List<Column> columns = getColumns(schema, metaData, catalog, tableName, primaryKeyColumns, foreignKeyColumns);
+    String tableName = resultSet.getString("TABLE_NAME");
+    List<PrimaryKeyColumn> primaryKeyColumns = getPrimaryKeyColumns(schema, metaData, catalog, tableName);
+    List<ForeignKeyColumn> foreignKeyColumns = getForeignKeyColumns(schema, metaData, catalog, tableName);
+    List<Column> columns = getColumns(schema, metaData, catalog, tableName, primaryKeyColumns, foreignKeyColumns);
 
     return new Table(schema, tableName, columns, foreignKeyColumns);
   }

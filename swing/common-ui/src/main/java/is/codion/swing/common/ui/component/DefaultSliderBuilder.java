@@ -100,7 +100,7 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
 
   @Override
   protected JSlider buildComponent() {
-    final JSlider slider = new JSlider(boundedRangeModel);
+    JSlider slider = new JSlider(boundedRangeModel);
     if (minorTickSpacing > 0) {
       slider.setMinorTickSpacing(minorTickSpacing);
     }

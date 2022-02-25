@@ -36,7 +36,7 @@ public final class EmployeeServerTest {
           ConnectionNotAvailableException, ConnectionValidationException, DatabaseException {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 
-    final EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
+    EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
             .adminPort(SERVER_ADMIN_PORT)
             .database(DatabaseFactory.getDatabase())
             .connectionTimeout(60_000)
@@ -45,22 +45,22 @@ public final class EmployeeServerTest {
             .serverName("Employee Server")
             .build();
 
-    final EmployeeServer employeeServer = new EmployeeServer(configuration);
+    EmployeeServer employeeServer = new EmployeeServer(configuration);
 
-    final Server<EmployeeService, ?> remoteServer = Server.Locator.locator().getServer("localhost",
+    Server<EmployeeService, ?> remoteServer = Server.Locator.locator().getServer("localhost",
             "Employee Server", REGISTRY_PORT, SERVER_PORT);
 
-    final UUID clientId = UUID.randomUUID();
-    final EmployeeService employeeService = remoteServer.connect(ConnectionRequest.builder()
+    UUID clientId = UUID.randomUUID();
+    EmployeeService employeeService = remoteServer.connect(ConnectionRequest.builder()
             .user(User.parseUser("scott:tiger"))
             .clientId(clientId)
             .clientTypeId("EmployeeServerTest")
             .build());
 
-    final List<Entity> employees = employeeService.getEmployees();
+    List<Entity> employees = employeeService.getEmployees();
     assertEquals(16, employees.size());
 
-    final List<Employee> employeeBeans = employeeService.getEmployeeBeans();
+    List<Employee> employeeBeans = employeeService.getEmployeeBeans();
     assertEquals(16, employeeBeans.size());
 
     employeeServer.disconnect(clientId);

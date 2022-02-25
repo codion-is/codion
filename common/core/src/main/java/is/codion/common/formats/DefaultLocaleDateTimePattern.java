@@ -75,13 +75,13 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
   private static String getDateTimePattern(final Locale locale, final String delimiter, final boolean fourDigitYear,
                                            final String timePattern) {
-    final String datePattern = DateTimeFormatterBuilder.
+    String datePattern = DateTimeFormatterBuilder.
             getLocalizedDateTimePattern(FormatStyle.SHORT, null, IsoChronology.INSTANCE, locale).toLowerCase(locale);
-    final List<String> pattern = new ArrayList<>(Arrays.asList(null, null, null));
+    List<String> pattern = new ArrayList<>(Arrays.asList(null, null, null));
     pattern.set(indexOf(datePattern, Element.YEAR), fourDigitYear ? FOUR_DIGIT_YEAR : TWO_DIGIT_YEAR);
     pattern.set(indexOf(datePattern, Element.MONTH), TWO_DIGIT_MONTH);
     pattern.set(indexOf(datePattern, Element.DAY), TWO_DIGIT_DAY);
-    final StringBuilder builder = new StringBuilder(String.join(delimiter, pattern));
+    StringBuilder builder = new StringBuilder(String.join(delimiter, pattern));
     if (timePattern != null) {
       builder.append(" ").append(timePattern);
     }

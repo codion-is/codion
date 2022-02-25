@@ -57,7 +57,7 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
     if (propertyValues.containsKey(attribute)) {
       throw new IllegalArgumentException("Update condition already contains a value for attribute: " + attribute);
     }
-    final DefaultUpdateCondition updateCondition = new DefaultUpdateCondition(this);
+    DefaultUpdateCondition updateCondition = new DefaultUpdateCondition(this);
     updateCondition.propertyValues.put(attribute, value);
 
     return updateCondition;

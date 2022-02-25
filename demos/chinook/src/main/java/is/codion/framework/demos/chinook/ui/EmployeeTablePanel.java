@@ -24,7 +24,7 @@ public final class EmployeeTablePanel extends EntityTablePanel {
   @Override
   protected void layoutPanel(final JPanel tablePanel, final JPanel southPanel) {
     setLayout(Layouts.borderLayout());
-    final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     splitPane.setDividerSize(EntityPanel.SPLIT_PANE_DIVIDER_SIZE.get());
     splitPane.setContinuousLayout(true);
     splitPane.setOneTouchExpandable(true);

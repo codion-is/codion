@@ -19,15 +19,15 @@ public final class ParsingDocumentFilterTest {
 
   @Test
   void test() throws BadLocationException {
-    final JTextField textField = new JTextField();
-    final AbstractDocument document = (AbstractDocument) textField.getDocument();
-    final Parser<String> parser = text -> parseResult(text, text);
-    final Value.Validator<String> validator = value -> {
+    JTextField textField = new JTextField();
+    AbstractDocument document = (AbstractDocument) textField.getDocument();
+    Parser<String> parser = text -> parseResult(text, text);
+    Value.Validator<String> validator = value -> {
       if (!value.contains("42")) {
         throw new IllegalArgumentException();
       }
     };
-    final ParsingDocumentFilter<String> validationFilter = new ParsingDocumentFilter<>(parser);
+    ParsingDocumentFilter<String> validationFilter = new ParsingDocumentFilter<>(parser);
     validationFilter.addValidator(validator);
     document.setDocumentFilter(validationFilter);
     document.insertString(0, "abc42bca", null);

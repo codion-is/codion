@@ -32,7 +32,7 @@ public final class QueryLoadTestModelTest {
           new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectDepartments", "select * from scott.dept", true);
   @Test
   void test() throws DatabaseException {
-    final QueryLoadTestModel loadTest = new QueryLoadTestModel(createTestDatabaseInstance(), UNIT_TEST_USER,
+    QueryLoadTestModel loadTest = new QueryLoadTestModel(createTestDatabaseInstance(), UNIT_TEST_USER,
             asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
     loadTest.getMinimumThinkTimeValue().set(10);
     loadTest.getMaximumThinkTimeValue().set(30);
@@ -42,12 +42,12 @@ public final class QueryLoadTestModelTest {
     try {
       Thread.sleep(1500);
     }
-    catch (final InterruptedException ignored) {/*ignored*/}
+    catch (InterruptedException ignored) {/*ignored*/}
     loadTest.removeApplicationBatch();
     try {
       Thread.sleep(500);
     }
-    catch (final InterruptedException ignored) {/*ignored*/}
+    catch (InterruptedException ignored) {/*ignored*/}
     assertTrue(SELECT_DEPARTMENTS.getSuccessfulRunCount() > 0);
     assertTrue(SELECT_EMPLOYEE.getSuccessfulRunCount() > 0);
     loadTest.shutdown();

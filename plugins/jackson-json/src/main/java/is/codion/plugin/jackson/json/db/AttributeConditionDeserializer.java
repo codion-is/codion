@@ -30,10 +30,10 @@ final class AttributeConditionDeserializer implements Serializable {
   }
 
   <T> AttributeCondition<T> deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
-    final String attributeName = conditionNode.get("attribute").asText();
-    final Property<T> property = definition.getProperty(definition.getAttribute(attributeName));
-    final JsonNode valuesNode = conditionNode.get("values");
-    final List<T> values = new ArrayList<>();
+    String attributeName = conditionNode.get("attribute").asText();
+    Property<T> property = definition.getProperty(definition.getAttribute(attributeName));
+    JsonNode valuesNode = conditionNode.get("values");
+    List<T> values = new ArrayList<>();
     for (final JsonNode valueNode : valuesNode) {
       if (valueNode.has("entityType")) {
         values.add((T) entityObjectMapper.readValue(valueNode.toString(), Entity.class));
@@ -42,7 +42,7 @@ final class AttributeConditionDeserializer implements Serializable {
         values.add((T) EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), valueNode));
       }
     }
-    final AttributeCondition.Builder<T> builder = Conditions.where(property.getAttribute());
+    AttributeCondition.Builder<T> builder = Conditions.where(property.getAttribute());
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
       case EQUAL:
         return builder.equalTo(values);

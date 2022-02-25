@@ -39,7 +39,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    */
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws DatabaseException {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE);
-    final ConnectionPoolFactory poolProvider = ConnectionPoolFactory.connectionPoolFactory();
+    ConnectionPoolFactory poolProvider = ConnectionPoolFactory.connectionPoolFactory();
     this.pool = poolProvider.createConnectionPoolWrapper(database, user);
     addShutdownListener(pool::close);
   }
@@ -123,12 +123,12 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
           connection.commit();
         }
       }
-      catch (final Exception e) {
+      catch (Exception e) {
         if (transactional && connection != null) {
           try {
             connection.rollback();
           }
-          catch (final SQLException ignored) {/*ignored*/}
+          catch (SQLException ignored) {/*ignored*/}
         }
         throw e;
       }
@@ -149,7 +149,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
     }
 
     private void setStatementParameters(final PreparedStatement statement) throws SQLException {
-      final List<Object> parameters = getParameters();
+      List<Object> parameters = getParameters();
       if (!Util.nullOrEmpty(parameters)) {
         int index = 1;
         for (final Object parameter : parameters) {
@@ -159,7 +159,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
     }
 
     private static void fetchResult(final ResultSet resultSet) throws SQLException {
-      final int columnCount = resultSet.getMetaData().getColumnCount();
+      int columnCount = resultSet.getMetaData().getColumnCount();
       if (columnCount > 0) {
         while (resultSet.next()) {
           for (int i = 1; i <= columnCount; i++) {

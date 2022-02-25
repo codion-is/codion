@@ -61,7 +61,7 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
   @Override
   protected JPanel buildComponent() {
-    final JPanel component = panel == null ? new JPanel() : panel;
+    JPanel component = panel == null ? new JPanel() : panel;
     if (layout != null) {
       component.setLayout(layout);
     }

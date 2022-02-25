@@ -36,11 +36,11 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void test() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("test");
-    final Attribute<Integer> id = entityType.integerAttribute("id");
-    final Attribute<String> name = entityType.stringAttribute("name");
-    final Function<Entity, String> stringFactory = StringFactory.stringFactory(name).get();
-    final Comparator<Entity> comparator = (o1, o2) -> 0;
+    EntityType entityType = DOMAIN_TYPE.entityType("test");
+    Attribute<Integer> id = entityType.integerAttribute("id");
+    Attribute<String> name = entityType.stringAttribute("name");
+    Function<Entity, String> stringFactory = StringFactory.stringFactory(name).get();
+    Comparator<Entity> comparator = (o1, o2) -> 0;
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -53,8 +53,8 @@ public class DefaultEntityDefinitionTest {
                 .stringFactory(stringFactory).comparator(comparator);
       }
     }
-    final Domain domain = new TestDomain();
-    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
+    Domain domain = new TestDomain();
+    EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertEquals(entityType.getName(), definition.toString());
     assertEquals(entityType, definition.getEntityType());
     assertEquals("tableName", definition.getTableName());
@@ -72,7 +72,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void defaultSelectAttributes() {
-    final Domain domain = new TestDomain();
+    Domain domain = new TestDomain();
 
     Collection<Attribute<?>> defaultSelectAttributes = domain.getEntities()
             .getDefinition(Employee.TYPE).getDefaultSelectAttributes();
@@ -121,10 +121,10 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void entityWithDefaultValues() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("entityWithDefaultValues");
-    final Attribute<Integer> id = entityType.integerAttribute("id");
-    final Attribute<String> name = entityType.stringAttribute("name");
-    final Attribute<Integer> value = entityType.integerAttribute("value");
+    EntityType entityType = DOMAIN_TYPE.entityType("entityWithDefaultValues");
+    Attribute<Integer> id = entityType.integerAttribute("id");
+    Attribute<String> name = entityType.stringAttribute("name");
+    Attribute<Integer> value = entityType.integerAttribute("value");
 
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -137,7 +137,7 @@ public class DefaultEntityDefinitionTest {
                         .defaultValue(42));
       }
     }
-    final Entity entity = new TestDomain().getEntities().getDefinition(entityType).entityWithDefaultValues();
+    Entity entity = new TestDomain().getEntities().getDefinition(entityType).entityWithDefaultValues();
     assertTrue(entity.isNull(id));
     assertEquals("DefName", entity.get(name));
     assertEquals(42, entity.get(value));
@@ -145,7 +145,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void entityWithoutProperties() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("entityWithoutProperties");
+    EntityType entityType = DOMAIN_TYPE.entityType("entityWithoutProperties");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -160,7 +160,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        final EntityType entityType = DOMAIN_TYPE.entityType("duplicateAttributes");
+        EntityType entityType = DOMAIN_TYPE.entityType("duplicateAttributes");
         define(entityType, "tableName",
                 primaryKeyProperty(entityType.integerAttribute("id")),
                 Properties.columnProperty(entityType.stringAttribute("name")),
@@ -172,10 +172,10 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void testDerivedProperty() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("derivedProperty");
-    final Attribute<Integer> name = entityType.integerAttribute("name");
-    final Attribute<String> info = entityType.stringAttribute("info");
-    final Attribute<String> derived = entityType.stringAttribute("derived");
+    EntityType entityType = DOMAIN_TYPE.entityType("derivedProperty");
+    Attribute<Integer> name = entityType.integerAttribute("name");
+    Attribute<String> info = entityType.stringAttribute("info");
+    Attribute<String> derived = entityType.stringAttribute("derived");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -187,9 +187,9 @@ public class DefaultEntityDefinitionTest {
                         linkedValues.get(name).toString() + linkedValues.get(info), name, info));
       }
     }
-    final Domain domain = new TestDomain();
+    Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
+    EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     Collection<Attribute<?>> linked = definition.getDerivedAttributes(name);
     assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
@@ -200,7 +200,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void testGroupingProperties() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("testGroupingProperties");
+    EntityType entityType = DOMAIN_TYPE.entityType("testGroupingProperties");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -210,9 +210,9 @@ public class DefaultEntityDefinitionTest {
                 Properties.columnProperty(entityType.integerAttribute("p2")).groupingColumn());
       }
     }
-    final Domain domain = new TestDomain();
+    Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
+    EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertEquals("p1, p2", definition.getGroupByClause());
   }
 
@@ -221,7 +221,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        final EntityType entityType = DOMAIN_TYPE.entityType("testSetGroupByClauseWithGroupingProperties");
+        EntityType entityType = DOMAIN_TYPE.entityType("testSetGroupByClauseWithGroupingProperties");
         define(entityType,
                 primaryKeyProperty(entityType.integerAttribute("p0")).aggregateColumn(),
                 Properties.columnProperty(entityType.integerAttribute("p1")).groupingColumn(),
@@ -234,7 +234,7 @@ public class DefaultEntityDefinitionTest {
   @Test
   void testSetHavingClause() {
     final String havingClause = "p1 > 1";
-    final EntityType entityType = DOMAIN_TYPE.entityType("testSetHavingClause");
+    EntityType entityType = DOMAIN_TYPE.entityType("testSetHavingClause");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -242,15 +242,15 @@ public class DefaultEntityDefinitionTest {
                 primaryKeyProperty(entityType.integerAttribute("p0"))).havingClause(havingClause);
       }
     }
-    final Domain domain = new TestDomain();
+    Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
+    EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertEquals(havingClause, definition.getHavingClause());
   }
 
   @Test
   void testSetHavingClauseAlreadySet() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("testSetHavingClauseAlreadySet");
+    EntityType entityType = DOMAIN_TYPE.entityType("testSetHavingClauseAlreadySet");
     final String havingClause = "p1 > 1";
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -265,17 +265,17 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void testForeignKeyNullability() {
-    final Domain domain = new TestDomain();
+    Domain domain = new TestDomain();
     assertFalse(domain.getEntities().getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK).isNullable());
     assertTrue(domain.getEntities().getDefinition(Detail.TYPE).getForeignKeyProperty(Detail.MASTER_FK).isNullable());
   }
 
   @Test
   void testForeignPrimaryKey() {
-    final EntityType parent = DOMAIN_TYPE.entityType("parent");
-    final EntityType entityType = DOMAIN_TYPE.entityType("testForeignPrimaryKey");
-    final Attribute<Integer> integerAttribute = entityType.integerAttribute("attribute");
-    final ForeignKey foreignKey = entityType.foreignKey("fkAttribute", integerAttribute, parent.integerAttribute("test"));
+    EntityType parent = DOMAIN_TYPE.entityType("parent");
+    EntityType entityType = DOMAIN_TYPE.entityType("testForeignPrimaryKey");
+    Attribute<Integer> integerAttribute = entityType.integerAttribute("attribute");
+    ForeignKey foreignKey = entityType.foreignKey("fkAttribute", integerAttribute, parent.integerAttribute("test"));
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -291,11 +291,11 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void testAttributeConflict() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("testAttributeConflict");
+    EntityType entityType = DOMAIN_TYPE.entityType("testAttributeConflict");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        final Attribute<Integer> integerAttribute = entityType.integerAttribute("col");
+        Attribute<Integer> integerAttribute = entityType.integerAttribute("col");
         define(entityType,
                 primaryKeyProperty(entityType.integerAttribute("pk")),
                 Properties.columnProperty(integerAttribute),
@@ -307,11 +307,11 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void testLinkedProperties() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("testLinkedProperties");
-    final Attribute<Integer> pk = entityType.integerAttribute("pk");
-    final Attribute<Integer> attribute1 = entityType.integerAttribute("1");
-    final Attribute<Integer> attribute2 = entityType.integerAttribute("2");
-    final Attribute<Integer> der = entityType.integerAttribute("der");
+    EntityType entityType = DOMAIN_TYPE.entityType("testLinkedProperties");
+    Attribute<Integer> pk = entityType.integerAttribute("pk");
+    Attribute<Integer> attribute1 = entityType.integerAttribute("1");
+    Attribute<Integer> attribute2 = entityType.integerAttribute("2");
+    Attribute<Integer> der = entityType.integerAttribute("der");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -322,9 +322,9 @@ public class DefaultEntityDefinitionTest {
                 Properties.derivedProperty(der, "cap", linkedValues -> null, attribute1, attribute2));
       }
     }
-    final Domain domain = new TestDomain();
+    Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
+    EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertTrue(definition.hasDerivedAttributes(attribute1));
     assertTrue(definition.hasDerivedAttributes(attribute2));
   }
@@ -333,7 +333,7 @@ public class DefaultEntityDefinitionTest {
   void getColor() {
     final String colorBlue = "blue";
     final String colorYellow = "blue";
-    final EntityType entityType = DOMAIN_TYPE.entityType("getColor");
+    EntityType entityType = DOMAIN_TYPE.entityType("getColor");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -343,18 +343,18 @@ public class DefaultEntityDefinitionTest {
                 .foregroundColorProvider((entity1, attribute) -> colorYellow);
       }
     }
-    final Entities entities = new TestDomain().getEntities();
+    Entities entities = new TestDomain().getEntities();
 
-    final Entity entity = entities.entity(entityType);
-    final EntityDefinition definition = entities.getDefinition(entityType);
+    Entity entity = entities.entity(entityType);
+    EntityDefinition definition = entities.getDefinition(entityType);
     assertEquals(colorBlue, definition.getBackgroundColorProvider().getColor(entity, entity.getPrimaryKey().getAttribute()));
     assertEquals(colorYellow, definition.getForegroundColorProvider().getColor(entity, entity.getPrimaryKey().getAttribute()));
   }
 
   @Test
   void testDefaultStringProvider() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("testDefaultStringProvider");
-    final Attribute<Integer> attribute = entityType.integerAttribute("attribute");
+    EntityType entityType = DOMAIN_TYPE.entityType("testDefaultStringProvider");
+    Attribute<Integer> attribute = entityType.integerAttribute("attribute");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -362,16 +362,16 @@ public class DefaultEntityDefinitionTest {
                 primaryKeyProperty(attribute));
       }
     }
-    final Entities entities = new TestDomain().getEntities();
+    Entities entities = new TestDomain().getEntities();
 
-    final Entity entity = entities.entity(entityType);
+    Entity entity = entities.entity(entityType);
     entity.put(attribute, 1);
     assertEquals("testDefaultStringProvider: attribute:1", entity.toString());
   }
 
   @Test
   void nullStringProvider() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("nullStringProvider");
+    EntityType entityType = DOMAIN_TYPE.entityType("nullStringProvider");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -384,7 +384,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void stringProvider() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("stringProvider");
+    EntityType entityType = DOMAIN_TYPE.entityType("stringProvider");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -392,15 +392,15 @@ public class DefaultEntityDefinitionTest {
                 primaryKeyProperty(entityType.integerAttribute("attribute"))).stringFactory(entity -> "test");
       }
     }
-    final Entities entities = new TestDomain().getEntities();
+    Entities entities = new TestDomain().getEntities();
 
-    final Entity entity = entities.entity(entityType);
+    Entity entity = entities.entity(entityType);
     assertEquals("test", entity.toString());
   }
 
   @Test
   void defaultKeyGenerator() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("defaultKeyGenerator");
+    EntityType entityType = DOMAIN_TYPE.entityType("defaultKeyGenerator");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -408,9 +408,9 @@ public class DefaultEntityDefinitionTest {
                 primaryKeyProperty(entityType.integerAttribute("attribute")));
       }
     }
-    final Domain domain = new TestDomain();
+    Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
+    EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertNotNull(definition.getKeyGenerator());
     assertFalse(definition.isKeyGenerated());
     assertTrue(definition.getKeyGenerator().isInserted());
@@ -418,7 +418,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void nullKeyGenerator() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("nullKeyGenerator");
+    EntityType entityType = DOMAIN_TYPE.entityType("nullKeyGenerator");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -431,7 +431,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void keyGenerator() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("keyGenerator");
+    EntityType entityType = DOMAIN_TYPE.entityType("keyGenerator");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -440,9 +440,9 @@ public class DefaultEntityDefinitionTest {
                 .keyGenerator(automatic("table"));
       }
     }
-    final Domain domain = new TestDomain();
+    Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
+    EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertNotNull(definition.getKeyGenerator());
     assertTrue(definition.isKeyGenerated());
     assertFalse(definition.getKeyGenerator().isInserted());
@@ -462,7 +462,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void keyGeneratorWithoutPrimaryKey() {
-    final EntityType entityType = DOMAIN_TYPE.entityType("keyGeneratorWithoutPrimaryKey");
+    EntityType entityType = DOMAIN_TYPE.entityType("keyGeneratorWithoutPrimaryKey");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -476,7 +476,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void i18n() throws IOException, ClassNotFoundException {
-    final EntityType entityType = DOMAIN_TYPE.entityType("i18n", DefaultEntityDefinitionTest.class.getName());
+    EntityType entityType = DOMAIN_TYPE.entityType("i18n", DefaultEntityDefinitionTest.class.getName());
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
@@ -484,7 +484,7 @@ public class DefaultEntityDefinitionTest {
                 .captionResourceKey("test");
       }
     }
-    final Domain domain = new TestDomain();
+    Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.getEntities().getDefinition(entityType);
 
@@ -519,7 +519,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void serializationCompatibility() {
-    final DefaultEntityDefinition definition = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
+    DefaultEntityDefinition definition = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
             Arrays.asList(
                     primaryKeyProperty(Person.ID),
                     columnProperty(Person.NAME),
@@ -529,7 +529,7 @@ public class DefaultEntityDefinitionTest {
                     columnProperty(Person.ENABLED)
             ));
 
-    final DefaultEntityDefinition missingProperty = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
+    DefaultEntityDefinition missingProperty = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
             Arrays.asList(
                     primaryKeyProperty(Person.ID),
                     columnProperty(Person.NAME),
@@ -538,7 +538,7 @@ public class DefaultEntityDefinitionTest {
                             sourceValues.get(Person.SALARY).toString(), Person.SALARY)
             ));
 
-    final DefaultEntityDefinition missingDerivedProperty = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
+    DefaultEntityDefinition missingDerivedProperty = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
             Arrays.asList(
                     primaryKeyProperty(Person.ID),
                     columnProperty(Person.NAME),
@@ -546,7 +546,7 @@ public class DefaultEntityDefinitionTest {
                     columnProperty(Person.ENABLED)
             ));
 
-    final DefaultEntityDefinition differentOrder = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
+    DefaultEntityDefinition differentOrder = new DefaultEntityDefinition(COMPATIBILITY.getName(), Person.TYPE, Person.TYPE.getName(),
             Arrays.asList(
                     primaryKeyProperty(Person.ID),
                     derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
@@ -556,7 +556,7 @@ public class DefaultEntityDefinitionTest {
                     columnProperty(Person.SALARY)
             ));
 
-    final DefaultEntityDefinition differentType = new DefaultEntityDefinition(COMPATIBILITY.getName(), PersonDifferentType.TYPE, Person.TYPE.getName(),
+    DefaultEntityDefinition differentType = new DefaultEntityDefinition(COMPATIBILITY.getName(), PersonDifferentType.TYPE, Person.TYPE.getName(),
             Arrays.asList(
                     primaryKeyProperty(PersonDifferentType.ID),
                     columnProperty(PersonDifferentType.NAME),

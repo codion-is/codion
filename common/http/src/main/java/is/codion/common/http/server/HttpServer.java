@@ -57,7 +57,7 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
     setHandler(handlers);
     if (!nullOrEmpty(configuration.getDocumentRoot())) {
       LOG.info("HttpServer serving files from: " + configuration.getDocumentRoot());
-      final ResourceHandler fileHandler = new ResourceHandler();
+      ResourceHandler fileHandler = new ResourceHandler();
       fileHandler.setResourceBase(configuration.getDocumentRoot());
       addHandler(fileHandler);
     }
@@ -115,21 +115,21 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
   }
 
   private void setupSecureConnector(final HttpServerConfiguration configuration) {
-    final HttpConfiguration httpConfiguration = new HttpConfiguration();
+    HttpConfiguration httpConfiguration = new HttpConfiguration();
     httpConfiguration.setSecureScheme("https");
     httpConfiguration.setSecurePort(port);
 
-    final HttpConfiguration httpsConfig = new HttpConfiguration(httpConfiguration);
+    HttpConfiguration httpsConfig = new HttpConfiguration(httpConfiguration);
     httpsConfig.addCustomizer(new SecureRequestCustomizer());
 
     requireNonNull(configuration.getKeystorePath(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.toString());
 
     requireNonNull(configuration.getKeystorePassword(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.toString());
 
-    final SslContextFactory sslContextFactory = new SslContextFactory(configuration.getKeystorePath());
+    SslContextFactory sslContextFactory = new SslContextFactory(configuration.getKeystorePath());
     sslContextFactory.setKeyStorePassword(configuration.getKeystorePassword());
 
-    final ServerConnector httpsConnector = new ServerConnector(this,
+    ServerConnector httpsConnector = new ServerConnector(this,
             new SslConnectionFactory(sslContextFactory, "http/1.1"),
             new HttpConnectionFactory(httpsConfig));
     httpsConnector.setPort(port);

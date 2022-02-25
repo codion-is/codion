@@ -49,8 +49,8 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
     if (getValue().isNullable()) {
       throw new IllegalArgumentException("A check box menu item does not support a nullable value");
     }
-    final ButtonModel buttonModel = createButtonModel();
-    final JCheckBoxMenuItem item = new JCheckBoxMenuItem(this) {
+    ButtonModel buttonModel = createButtonModel();
+    JCheckBoxMenuItem item = new JCheckBoxMenuItem(this) {
       @Override
       protected void processMouseEvent(final MouseEvent e) {
         if (e.getID() == MouseEvent.MOUSE_RELEASED && e.isControlDown()) {
@@ -72,8 +72,8 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
     if (getValue().isNullable()) {
       throw new IllegalArgumentException("A check box menu item does not support a nullable value");
     }
-    final ButtonModel buttonModel = createButtonModel();
-    final JRadioButtonMenuItem item = new JRadioButtonMenuItem(this) {
+    ButtonModel buttonModel = createButtonModel();
+    JRadioButtonMenuItem item = new JRadioButtonMenuItem(this) {
       @Override
       protected void processMouseEvent(final MouseEvent e) {
         if (e.getID() == MouseEvent.MOUSE_RELEASED && e.isControlDown()) {
@@ -92,7 +92,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
   @Override
   public ButtonModel createButtonModel() {
-    final ButtonModel buttonModel;
+    ButtonModel buttonModel;
     if (value.isNullable()) {
       buttonModel = new NullableToggleButtonModel(value.get());
     }
@@ -113,8 +113,8 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
   @Override
   public JCheckBox createCheckBox() {
-    final JCheckBox checkBox;
-    final ButtonModel buttonModel = createButtonModel();
+    JCheckBox checkBox;
+    ButtonModel buttonModel = createButtonModel();
     if (buttonModel instanceof NullableToggleButtonModel) {
       checkBox = new NullableCheckBox((NullableToggleButtonModel) buttonModel, getCaption());
     }
@@ -130,7 +130,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
   @Override
   public JToggleButton createToggleButton() {
-    final JToggleButton toggleButton = new JToggleButton(this);
+    JToggleButton toggleButton = new JToggleButton(this);
     toggleButton.setModel(createButtonModel());
     toggleButton.setText(getCaption());
     toggleButton.setMnemonic(getMnemonic());
@@ -160,22 +160,22 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
         try {
           SwingUtilities.invokeAndWait(() -> setModelValue(value));
         }
-        catch (final InterruptedException ex) {
+        catch (InterruptedException ex) {
           Thread.currentThread().interrupt();
           throw new RuntimeException(ex);
         }
-        catch (final InvocationTargetException e) {
-          final Throwable cause = e.getCause();
+        catch (InvocationTargetException e) {
+          Throwable cause = e.getCause();
           if (cause instanceof RuntimeException) {
             throw (RuntimeException) cause;
           }
 
           throw new RuntimeException(cause);
         }
-        catch (final RuntimeException e) {
+        catch (RuntimeException e) {
           throw e;
         }
-        catch (final Exception e) {
+        catch (Exception e) {
           throw new RuntimeException(e);
         }
       }

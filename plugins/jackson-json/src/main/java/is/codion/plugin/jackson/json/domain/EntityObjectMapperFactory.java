@@ -38,7 +38,7 @@ public interface EntityObjectMapperFactory {
    */
   static EntityObjectMapperFactory entityObjectMapperFactory(final DomainType domainType) {
     requireNonNull(domainType);
-    final ServiceLoader<EntityObjectMapperFactory> loader = ServiceLoader.load(EntityObjectMapperFactory.class);
+    ServiceLoader<EntityObjectMapperFactory> loader = ServiceLoader.load(EntityObjectMapperFactory.class);
     for (final EntityObjectMapperFactory factory : loader) {
       if (factory.isCompatibleWith(domainType)) {
         return factory;

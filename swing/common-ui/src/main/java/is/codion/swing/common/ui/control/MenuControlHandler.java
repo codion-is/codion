@@ -32,7 +32,7 @@ final class MenuControlHandler extends ControlHandler {
 
   @Override
   public void onControls(final Controls controls) {
-    final JMenu subMenu = new JMenu(controls);
+    JMenu subMenu = new JMenu(controls);
     new MenuControlHandler(subMenu, controls);
     this.menu.add(subMenu);
   }

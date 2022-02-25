@@ -26,14 +26,14 @@ final class ColumnPacker implements ResultPacker<Column> {
 
   @Override
   public Column fetch(final ResultSet resultSet) throws SQLException {
-    final int dataType = resultSet.getInt("DATA_TYPE");
+    int dataType = resultSet.getInt("DATA_TYPE");
     int decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
     if (resultSet.wasNull()) {
       decimalDigits = -1;
     }
-    final Class<?> typeClass = translateTypeName(dataType, decimalDigits);
+    Class<?> typeClass = translateTypeName(dataType, decimalDigits);
     if (typeClass != null) {
-      final String columnName = resultSet.getString("COLUMN_NAME");
+      String columnName = resultSet.getString("COLUMN_NAME");
 
       return new Column(columnName, typeClass,
               resultSet.getInt("ORDINAL_POSITION"), resultSet.getInt("COLUMN_SIZE"), decimalDigits,

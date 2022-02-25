@@ -100,8 +100,8 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
       tableModel.getSelectionModel().selectAll();
     }
     else {
-      final int startIdx = RANDOM.nextInt(tableModel.getRowCount() - count);
-      final List<Integer> indexes = new ArrayList<>();
+      int startIdx = RANDOM.nextInt(tableModel.getRowCount() - count);
+      List<Integer> indexes = new ArrayList<>();
       for (int i = startIdx; i < count + startIdx; i++) {
         indexes.add(i);
       }
@@ -120,8 +120,8 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
       return;
     }
 
-    final int toSelect = ratio > 0 ? (int) Math.floor(tableModel.getRowCount() * ratio) : 1;
-    final List<Integer> indexes = new ArrayList<>();
+    int toSelect = ratio > 0 ? (int) Math.floor(tableModel.getRowCount() * ratio) : 1;
+    List<Integer> indexes = new ArrayList<>();
     for (int i = 0; i < toSelect; i++) {
       indexes.add(i);
     }
@@ -137,11 +137,11 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
     if (comboBoxModel.isCleared()) {
       comboBoxModel.refresh();
     }
-    final List<Entity> visibleItems = comboBoxModel.getVisibleItems();
+    List<Entity> visibleItems = comboBoxModel.getVisibleItems();
     if (visibleItems.isEmpty() || visibleItems.size() == 1 && visibleItems.get(0) == null) {
       return;
     }
-    final int fromIndex = visibleItems.get(0) == null ? 1 : 0;
+    int fromIndex = visibleItems.get(0) == null ? 1 : 0;
     comboBoxModel.setSelectedItem(visibleItems.get(RANDOM.nextInt(visibleItems.size() - fromIndex) + fromIndex));
   }
 

@@ -16,7 +16,7 @@ final class DefaultTaskSchedulerBuilder implements TaskScheduler.Builder {
   private int initialDelay;
   private TimeUnit timeUnit;
   private ThreadFactory threadFactory = runnable -> {
-    final Thread thread = new Thread(runnable);
+    Thread thread = new Thread(runnable);
     thread.setDaemon(true);
 
     return thread;
@@ -58,7 +58,7 @@ final class DefaultTaskSchedulerBuilder implements TaskScheduler.Builder {
 
   @Override
   public TaskScheduler start() {
-    final TaskScheduler taskScheduler = build();
+    TaskScheduler taskScheduler = build();
     taskScheduler.start();
 
     return taskScheduler;

@@ -176,8 +176,8 @@ public interface EntityConnectionProvider extends AutoCloseable {
    * @see EntityConnectionProvider#CLIENT_CONNECTION_TYPE
    */
   static EntityConnectionProvider connectionProvider() {
-    final String clientConnectionType = CLIENT_CONNECTION_TYPE.getOrThrow();
-    final ServiceLoader<EntityConnectionProvider> loader = ServiceLoader.load(EntityConnectionProvider.class);
+    String clientConnectionType = CLIENT_CONNECTION_TYPE.getOrThrow();
+    ServiceLoader<EntityConnectionProvider> loader = ServiceLoader.load(EntityConnectionProvider.class);
     for (final EntityConnectionProvider provider : loader) {
       if (provider.getConnectionType().equalsIgnoreCase(clientConnectionType)) {
         return provider;

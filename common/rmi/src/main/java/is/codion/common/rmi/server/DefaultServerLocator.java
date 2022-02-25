@@ -23,14 +23,14 @@ final class DefaultServerLocator implements Server.Locator {
   @Override
   public Registry initializeRegistry(final int port) throws RemoteException {
     LOG.info("Initializing registry on port: {}", port);
-    final Registry localRegistry = LocateRegistry.getRegistry(port);
+    Registry localRegistry = LocateRegistry.getRegistry(port);
     try {
       localRegistry.list();
       LOG.info("Registry listing available on port: {}", port);
 
       return localRegistry;
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.info("Trying to locate registry: {}", e.getMessage());
       LOG.info("Creating registry on port: {}", port);
       return LocateRegistry.createRegistry(port);
@@ -43,7 +43,7 @@ final class DefaultServerLocator implements Server.Locator {
                                                                           final int registryPort,
                                                                           final int requestedServerPort)
           throws RemoteException, NotBoundException {
-    final List<Server<T, A>> servers = getServers(serverHostName, registryPort, serverNamePrefix, requestedServerPort);
+    List<Server<T, A>> servers = getServers(serverHostName, registryPort, serverNamePrefix, requestedServerPort);
     if (!servers.isEmpty()) {
       return servers.get(0);
     }
@@ -58,7 +58,7 @@ final class DefaultServerLocator implements Server.Locator {
                                                                                          final String serverNamePrefix,
                                                                                          final int requestedServerPort)
           throws RemoteException {
-    final List<Server<T, A>> servers = new ArrayList<>();
+    List<Server<T, A>> servers = new ArrayList<>();
     for (final String serverHostName : hostNames.split(",")) {
       servers.addAll(getServersOnHost(serverHostName, registryPort, serverNamePrefix, requestedServerPort));
     }
@@ -74,8 +74,8 @@ final class DefaultServerLocator implements Server.Locator {
           throws RemoteException {
     LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", requested server port: {}, registry port {}",
             serverHostName, serverNamePrefix, requestedServerPort, registryPort);
-    final List<Server<T, A>> servers = new ArrayList<>();
-    final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
+    List<Server<T, A>> servers = new ArrayList<>();
+    Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
     for (final String serverName : registry.list()) {
       if (serverName.startsWith(serverNamePrefix)) {
         addIfReachable(serverName, requestedServerPort, registry, servers);
@@ -89,20 +89,20 @@ final class DefaultServerLocator implements Server.Locator {
                                                                                final Registry registry, final List<Server<T, A>> servers) {
     LOG.info("Found server \"{}\"", serverName);
     try {
-      final Server<T, A> server = getIfReachable((Server<T, A>) registry.lookup(serverName), requestedServerPort);
+      Server<T, A> server = getIfReachable((Server<T, A>) registry.lookup(serverName), requestedServerPort);
       if (server != null) {
         LOG.info("Adding server \"{}\"", serverName);
         servers.add(server);
       }
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       LOG.error("Server \"" + serverName + "\" is unreachable", e);
     }
   }
 
   private static <T extends Remote, A extends ServerAdmin> Server<T, A> getIfReachable(final Server<T, A> server,
                                                                                        final int requestedServerPort) throws RemoteException {
-    final ServerInformation serverInformation = server.getServerInformation();
+    ServerInformation serverInformation = server.getServerInformation();
     if (requestedServerPort != -1 && serverInformation.getServerPort() != requestedServerPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
               serverInformation.getServerName(), serverInformation.getServerPort(), requestedServerPort);
@@ -123,7 +123,7 @@ final class DefaultServerLocator implements Server.Locator {
       try {
         return Integer.compare(o1.getServerLoad(), o2.getServerLoad());
       }
-      catch (final RemoteException e) {
+      catch (RemoteException e) {
         return 1;
       }
     }

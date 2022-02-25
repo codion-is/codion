@@ -39,7 +39,7 @@ public final class Windows {
    * @return a Dimension which is the size of the available screen times ratio
    */
   public static Dimension getScreenSizeRatio(final double ratio) {
-    final Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
+    Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
 
     return new Dimension((int) (screen.getWidth() * ratio), (int) (screen.getHeight() * ratio));
   }
@@ -50,10 +50,10 @@ public final class Windows {
    * @param window the window to resize
    */
   public static void setSizeWithinScreenBounds(final Window window) {
-    final Dimension screenSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
-    final Dimension frameSize = window.getSize();
+    Dimension screenSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
+    Dimension frameSize = window.getSize();
     if (frameSize.getHeight() > screenSize.getHeight() || frameSize.getWidth() > screenSize.getWidth()) {
-      final Dimension newFrameSize = new Dimension((int) Math.min(frameSize.getWidth(), screenSize.getWidth()),
+      Dimension newFrameSize = new Dimension((int) Math.min(frameSize.getWidth(), screenSize.getWidth()),
               (int) Math.min(frameSize.getHeight(), screenSize.getHeight()));
       window.setSize(newFrameSize);
     }
@@ -77,7 +77,7 @@ public final class Windows {
    */
   public static void resizeWindow(final Window window, final double screenSizeRatio,
                                   final Dimension minimumSize) {
-    final Dimension ratioSize = getScreenSizeRatio(screenSizeRatio);
+    Dimension ratioSize = getScreenSizeRatio(screenSizeRatio);
     if (minimumSize != null) {
       ratioSize.setSize(Math.max(minimumSize.width, ratioSize.width), Math.max(minimumSize.height, ratioSize.height));
     }
@@ -132,8 +132,8 @@ public final class Windows {
    * @param window the window to center on screen
    */
   public static void centerWindow(final Window window) {
-    final Dimension size = window.getSize();
-    final Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
+    Dimension size = window.getSize();
+    Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
     window.setLocation((int) (screen.getWidth() - size.getWidth()) / 2,
             (int) (screen.getHeight() - size.getHeight()) / 2);
   }
@@ -346,7 +346,7 @@ public final class Windows {
 
     @Override
     public JFrame build() {
-      final JFrame frame = new JFrame();
+      JFrame frame = new JFrame();
       frame.setDefaultCloseOperation(defaultCloseOperation);
       frame.setLayout(Layouts.borderLayout());
       frame.add(component, BorderLayout.CENTER);
@@ -384,7 +384,7 @@ public final class Windows {
 
     @Override
     public JFrame show() {
-      final JFrame frame = build();
+      JFrame frame = build();
       frame.setVisible(true);
 
       return frame;

@@ -60,13 +60,13 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   public final Connection getConnection(final User user) throws DatabaseException {
     requireNonNull(user, "user");
     checkConnectionPoolCredentials(user);
-    final long startTime = counter.isCollectCheckOutTimes() ? System.nanoTime() : 0;
+    long startTime = counter.isCollectCheckOutTimes() ? System.nanoTime() : 0;
     try {
       counter.incrementRequestCounter();
 
       return fetchConnection();
     }
-    catch (final SQLException e) {
+    catch (SQLException e) {
       counter.incrementFailedRequestCounter();
       throw new DatabaseException(e);
     }
@@ -174,7 +174,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       if ("getConnection".equals(method.getName())) {
-        final Connection connection = connectionFactory.createConnection(user);
+        Connection connection = connectionFactory.createConnection(user);
         counter.incrementConnectionsCreatedCounter();
 
         return newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class},

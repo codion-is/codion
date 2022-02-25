@@ -61,8 +61,8 @@ public interface Report<T, R, P> {
    */
   static String getFullReportPath(final String reportPath) {
     final String slash = "/";
-    final String reportLocation = getReportPath();
-    final StringBuilder builder = new StringBuilder(reportLocation);
+    String reportLocation = getReportPath();
+    StringBuilder builder = new StringBuilder(reportLocation);
     if (!reportLocation.endsWith(slash) && !reportPath.startsWith(slash)) {
       builder.append(slash);
     }

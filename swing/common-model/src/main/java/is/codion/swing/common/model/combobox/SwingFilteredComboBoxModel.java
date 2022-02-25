@@ -146,8 +146,8 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     visibleItems.addAll(filteredItems);
     filteredItems.clear();
     if (includeCondition != null) {
-      for (final Iterator<T> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
-        final T item = iterator.next();
+      for (Iterator<T> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
+        T item = iterator.next();
         if (item != null && !includeCondition.test(item)) {
           filteredItems.add(item);
           iterator.remove();
@@ -187,7 +187,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final List<T> getItems() {
-    final List<T> entities = new ArrayList<>(getVisibleItems());
+    List<T> entities = new ArrayList<>(getVisibleItems());
     entities.addAll(filteredItems);
 
     return entities;
@@ -321,7 +321,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final void setSelectedItem(final Object anItem) {
-    final T toSelect = translateSelectionItem(Objects.equals(nullString, anItem) ? null : anItem);
+    T toSelect = translateSelectionItem(Objects.equals(nullString, anItem) ? null : anItem);
     if (!Objects.equals(selectedItem, toSelect) && allowSelectionChange(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();
@@ -353,7 +353,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final T getElementAt(final int index) {
-    final T element = visibleItems.get(index);
+    T element = visibleItems.get(index);
     if (element == null) {
       return (T) nullString;//very hacky, buggy even?
     }
@@ -412,7 +412,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    * both filtered and visible, excluding the null value.
    */
   protected Collection<T> refreshItems() {
-    final List<T> contents = new ArrayList<>(visibleItems);
+    List<T> contents = new ArrayList<>(visibleItems);
     if (nullString != null) {
       contents.remove(null);
     }
@@ -441,7 +441,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    * Fires a {@link ListDataEvent#CONTENTS_CHANGED} event on all registered listeners
    */
   protected final void fireContentsChanged() {
-    final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
+    ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
     for (final ListDataListener dataListener : listDataListeners) {
       dataListener.contentsChanged(event);
     }
@@ -470,7 +470,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     try {
       onRefreshResult(refreshItems());
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       onRefreshFailed(e);
     }
   }

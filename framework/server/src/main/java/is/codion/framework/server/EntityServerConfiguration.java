@@ -200,7 +200,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * @return an entity server configuration builder initialized with values from system properties.
    */
   static EntityServerConfiguration.Builder builderFromSystemProperties() {
-    final Builder builder =  builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
+    Builder builder =  builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
             .auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
             .sslEnabled(SERVER_CONNECTION_SSL_ENABLED.get())
             .serializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get())
@@ -214,17 +214,17 @@ public interface EntityServerConfiguration extends ServerConfiguration {
                     .collect(toList()))
             .clientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get())
             .connectionTimeout(SERVER_CONNECTION_TIMEOUT.get());
-    final Map<String, Integer> timeoutMap = new HashMap<>();
+    Map<String, Integer> timeoutMap = new HashMap<>();
     for (final String clientTimeout : Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get())) {
-      final String[] split = clientTimeout.split(":");
+      String[] split = clientTimeout.split(":");
       if (split.length < 2) {
         throw new IllegalArgumentException("Expecting a ':' delimiter");
       }
       timeoutMap.put(split[0], Integer.parseInt(split[1]));
     }
     builder.clientSpecificConnectionTimeouts(timeoutMap);
-    final String adminUserString = SERVER_ADMIN_USER.get();
-    final User adminUser = nullOrEmpty(adminUserString) ? null : User.parseUser(adminUserString);
+    String adminUserString = SERVER_ADMIN_USER.get();
+    User adminUser = nullOrEmpty(adminUserString) ? null : User.parseUser(adminUserString);
     if (adminUser == null) {
       EntityServerConfiguration.LOG.info("No admin user specified");
     }

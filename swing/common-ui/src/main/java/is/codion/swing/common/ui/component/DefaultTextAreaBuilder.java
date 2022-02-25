@@ -69,7 +69,7 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
 
   @Override
   protected JTextArea createTextComponent() {
-    final JTextArea textArea = new JTextArea(rows, columns);
+    JTextArea textArea = new JTextArea(rows, columns);
     if (document != null) {
       textArea.setDocument(document);
     }

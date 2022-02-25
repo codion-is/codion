@@ -26,13 +26,13 @@ public class MariaDBDatabaseTest {
 
   @Test
   void supportsIsValid() {
-    final MariaDBDatabase db = new MariaDBDatabase(URL);
+    MariaDBDatabase db = new MariaDBDatabase(URL);
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   void getAutoIncrementQuery() {
-    final MariaDBDatabase db = new MariaDBDatabase(URL);
+    MariaDBDatabase db = new MariaDBDatabase(URL);
     assertEquals(MariaDBDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 

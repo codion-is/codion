@@ -31,18 +31,18 @@ public final class TrackEditPanel extends EntityEditPanel {
 
     createForeignKeySearchField(Track.ALBUM_FK);
     createTextField(Track.NAME);
-    final EntityComboBox mediaTypeBox = createForeignKeyComboBox(Track.MEDIATYPE_FK)
+    EntityComboBox mediaTypeBox = createForeignKeyComboBox(Track.MEDIATYPE_FK)
             .build();
-    final Action newMediaTypeAction = EntityPanel.builder(MediaType.TYPE)
+    Action newMediaTypeAction = EntityPanel.builder(MediaType.TYPE)
             .editPanelClass(MediaTypeEditPanel.class)
             .createEditPanelAction(mediaTypeBox);
-    final JPanel mediaTypePanel = Panels.createEastButtonPanel(mediaTypeBox, newMediaTypeAction);
-    final EntityComboBox genreBox = createForeignKeyComboBox(Track.GENRE_FK)
+    JPanel mediaTypePanel = Panels.createEastButtonPanel(mediaTypeBox, newMediaTypeAction);
+    EntityComboBox genreBox = createForeignKeyComboBox(Track.GENRE_FK)
             .build();
-    final Action newGenreAction = EntityPanel.builder(Genre.TYPE)
+    Action newGenreAction = EntityPanel.builder(Genre.TYPE)
             .editPanelClass(GenreEditPanel.class)
             .createEditPanelAction(genreBox);
-    final JPanel genrePanel = Panels.createEastButtonPanel(genreBox, newGenreAction);
+    JPanel genrePanel = Panels.createEastButtonPanel(genreBox, newGenreAction);
     createTextInputPanel(Track.COMPOSER)
             .buttonFocusable(false);
     createIntegerField(Track.MILLISECONDS)
@@ -54,9 +54,9 @@ public final class TrackEditPanel extends EntityEditPanel {
             .build();
     createTextField(Track.UNITPRICE);
 
-    final ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();
+    ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();
     minutesSecondsValue.link(getEditModel().value(Track.MILLISECONDS));
-    final JPanel durationPanel = new JPanel(gridLayout(1, 2));
+    JPanel durationPanel = new JPanel(gridLayout(1, 2));
     durationPanel.add(createInputPanel(Track.MILLISECONDS));
     durationPanel.add(minutesSecondsValue.getComponent());
 

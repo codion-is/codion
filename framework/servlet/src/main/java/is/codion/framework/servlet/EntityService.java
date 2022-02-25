@@ -48,11 +48,11 @@ public final class EntityService extends AbstractEntityService {
   @Path("getEntities")
   public Response getEntities(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
       return Response.ok(Serializer.serialize(connection.getEntities())).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -67,13 +67,13 @@ public final class EntityService extends AbstractEntityService {
   @Path("close")
   public Response close(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
       request.getSession().invalidate();
       connection.close();
 
       return Response.ok().build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -88,11 +88,11 @@ public final class EntityService extends AbstractEntityService {
   @Path("isTransactionOpen")
   public Response isTransactionOpen(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
       return Response.ok(Serializer.serialize(connection.isTransactionOpen())).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -107,12 +107,12 @@ public final class EntityService extends AbstractEntityService {
   @Path("beginTransaction")
   public Response beginTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
       connection.beginTransaction();
 
       return Response.ok().build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -127,12 +127,12 @@ public final class EntityService extends AbstractEntityService {
   @Path("commitTransaction")
   public Response commitTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
       connection.commitTransaction();
 
       return Response.ok().build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -147,12 +147,12 @@ public final class EntityService extends AbstractEntityService {
   @Path("rollbackTransaction")
   public Response rollbackTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
       connection.rollbackTransaction();
 
       return Response.ok().build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -167,15 +167,15 @@ public final class EntityService extends AbstractEntityService {
   @Path("procedure")
   public Response procedure(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Object> parameters = deserialize(request);
-      final Object argument = parameters.size() > 1 ? parameters.get(1) : null;
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Object> parameters = deserialize(request);
+      Object argument = parameters.size() > 1 ? parameters.get(1) : null;
 
       connection.executeProcedure((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), argument);
 
       return Response.ok().build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -190,14 +190,14 @@ public final class EntityService extends AbstractEntityService {
   @Path("function")
   public Response function(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Object> parameters = deserialize(request);
-      final Object argument = parameters.size() > 1 ? parameters.get(1) : null;
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Object> parameters = deserialize(request);
+      Object argument = parameters.size() > 1 ? parameters.get(1) : null;
 
       return Response.ok(Serializer.serialize(connection.executeFunction(
               (FunctionType<? extends EntityConnection, Object, Object>) parameters.get(0), argument))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -212,12 +212,12 @@ public final class EntityService extends AbstractEntityService {
   @Path("report")
   public Response report(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Object> parameters = deserialize(request);
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Object> parameters = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.fillReport((ReportType<?, ?, Object>) parameters.get(0), parameters.get(1)))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -232,11 +232,11 @@ public final class EntityService extends AbstractEntityService {
   @Path("dependencies")
   public Response dependencies(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
       return Response.ok(Serializer.serialize(connection.selectDependencies(deserialize(request)))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -251,11 +251,11 @@ public final class EntityService extends AbstractEntityService {
   @Path("count")
   public Response count(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
       return Response.ok(Serializer.serialize(connection.rowCount(deserialize(request)))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -270,12 +270,12 @@ public final class EntityService extends AbstractEntityService {
   @Path("values")
   public Response values(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Object> parameters = deserialize(request);
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Object> parameters = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.select((Attribute<?>) parameters.get(0), (Condition) parameters.get(1)))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -290,12 +290,12 @@ public final class EntityService extends AbstractEntityService {
   @Path("selectByKey")
   public Response selectByKey(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Key> keys = deserialize(request);
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Key> keys = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.select(keys))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -310,12 +310,12 @@ public final class EntityService extends AbstractEntityService {
   @Path("select")
   public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final Condition selectCondition = deserialize(request);
+      RemoteEntityConnection connection = authenticate(request, headers);
+      Condition selectCondition = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.select(selectCondition))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -330,11 +330,11 @@ public final class EntityService extends AbstractEntityService {
   @Path("insert")
   public Response insert(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
       return Response.ok(Serializer.serialize(connection.insert((List<Entity>) deserialize(request)))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -349,11 +349,11 @@ public final class EntityService extends AbstractEntityService {
   @Path("update")
   public Response update(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
       return Response.ok(Serializer.serialize(connection.update((List<Entity>) deserialize(request)))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -368,11 +368,11 @@ public final class EntityService extends AbstractEntityService {
   @Path("updateByCondition")
   public Response updateByCondition(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
+      RemoteEntityConnection connection = authenticate(request, headers);
 
       return Response.ok(Serializer.serialize(connection.update((UpdateCondition) deserialize(request)))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -387,12 +387,12 @@ public final class EntityService extends AbstractEntityService {
   @Path("delete")
   public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final Condition condition = deserialize(request);
+      RemoteEntityConnection connection = authenticate(request, headers);
+      Condition condition = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.delete(condition))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -407,13 +407,13 @@ public final class EntityService extends AbstractEntityService {
   @Path("deleteByKey")
   public Response deleteByKey(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Key> keys = deserialize(request);
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Key> keys = deserialize(request);
       connection.delete(keys);
 
       return Response.ok().build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -428,14 +428,14 @@ public final class EntityService extends AbstractEntityService {
   @Path("writeBlob")
   public Response writeBlob(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Object> parameters = deserialize(request);
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Object> parameters = deserialize(request);
 
       connection.writeBlob((Key) parameters.get(0), (Attribute<byte[]>) parameters.get(1), (byte[]) parameters.get(2));
 
       return Response.ok().build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }
@@ -450,12 +450,12 @@ public final class EntityService extends AbstractEntityService {
   @Path("readBlob")
   public Response readBlob(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
-      final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Object> parameters = deserialize(request);
+      RemoteEntityConnection connection = authenticate(request, headers);
+      List<Object> parameters = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.readBlob((Key) parameters.get(0), (Attribute<byte[]>) parameters.get(1)))).build();
     }
-    catch (final Exception e) {
+    catch (Exception e) {
       return logAndGetExceptionResponse(e);
     }
   }

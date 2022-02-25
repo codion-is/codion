@@ -19,11 +19,11 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test
   void testModel() {
-    final SwingFilteredTableColumnModel<Integer> testModel = createTestModel();
-    final Collection<Object> hidden = new ArrayList<>();
-    final Collection<Object> shown = new ArrayList<>();
-    final EventDataListener<Integer> hideListener = hidden::add;
-    final EventDataListener<Integer> showListener = shown::add;
+    SwingFilteredTableColumnModel<Integer> testModel = createTestModel();
+    Collection<Object> hidden = new ArrayList<>();
+    Collection<Object> shown = new ArrayList<>();
+    EventDataListener<Integer> hideListener = hidden::add;
+    EventDataListener<Integer> showListener = shown::add;
     testModel.addColumnHiddenListener(hideListener);
     testModel.addColumnShownListener(showListener);
 
@@ -47,7 +47,7 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test
   void getTableColumnNotFound() {
-    final SwingFilteredTableColumnModel<Integer> testModel = createTestModel();
+    SwingFilteredTableColumnModel<Integer> testModel = createTestModel();
     assertThrows(IllegalArgumentException.class, () -> testModel.getTableColumn(42));
   }
 
@@ -63,16 +63,16 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test
   void setColumns() {
-    final TableColumn column0 = new TableColumn(0);
+    TableColumn column0 = new TableColumn(0);
     column0.setIdentifier(0);
-    final TableColumn column1 = new TableColumn(1);
+    TableColumn column1 = new TableColumn(1);
     column1.setIdentifier(1);
-    final TableColumn column2 = new TableColumn(2);
+    TableColumn column2 = new TableColumn(2);
     column2.setIdentifier(2);
-    final TableColumn column3 = new TableColumn(3);
+    TableColumn column3 = new TableColumn(3);
     column3.setIdentifier(3);
 
-    final SwingFilteredTableColumnModel<Integer> columnModel =
+    SwingFilteredTableColumnModel<Integer> columnModel =
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
 
     columnModel.setColumns(1, 3);
@@ -113,16 +113,16 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test
   void lock() {
-    final TableColumn column0 = new TableColumn(0);
+    TableColumn column0 = new TableColumn(0);
     column0.setIdentifier(0);
-    final TableColumn column1 = new TableColumn(1);
+    TableColumn column1 = new TableColumn(1);
     column1.setIdentifier(1);
-    final TableColumn column2 = new TableColumn(2);
+    TableColumn column2 = new TableColumn(2);
     column2.setIdentifier(2);
-    final TableColumn column3 = new TableColumn(3);
+    TableColumn column3 = new TableColumn(3);
     column3.setIdentifier(3);
 
-    final SwingFilteredTableColumnModel<Integer> columnModel =
+    SwingFilteredTableColumnModel<Integer> columnModel =
             new SwingFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
 
     columnModel.getLockedState().set(true);
@@ -140,7 +140,7 @@ public class SwingFilteredTableColumnModelTest {
   }
 
   private static SwingFilteredTableColumnModel<Integer> createTestModel() {
-    final TableColumn column = new TableColumn(0);
+    TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
 
     return new SwingFilteredTableColumnModel<>(singletonList(column));

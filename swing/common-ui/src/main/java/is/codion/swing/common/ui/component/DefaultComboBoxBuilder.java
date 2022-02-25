@@ -104,7 +104,7 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
 
   @Override
   protected final C buildComponent() {
-    final C comboBox = createComboBox();
+    C comboBox = createComboBox();
     if (renderer != null) {
       comboBox.setRenderer(renderer);
     }
@@ -166,7 +166,7 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
 
     @Override
     public void onEvent(final Object selectedItem) {
-      final Component editorComponent = comboBox.getEditor().getEditorComponent();
+      Component editorComponent = comboBox.getEditor().getEditorComponent();
       if (selectedItem != null && editorComponent instanceof JTextComponent) {
         ((JTextComponent) editorComponent).setCaretPosition(0);
       }

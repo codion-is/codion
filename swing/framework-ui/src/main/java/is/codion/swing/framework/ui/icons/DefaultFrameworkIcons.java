@@ -152,7 +152,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
       @Override
       protected void paintIcon() {
-        final int yOffset = (fontIcon.getIconHeight() - fontIcon.getIconWidth()) / 2;
+        int yOffset = (fontIcon.getIconHeight() - fontIcon.getIconWidth()) / 2;
 
         fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, -yOffset);
       }
