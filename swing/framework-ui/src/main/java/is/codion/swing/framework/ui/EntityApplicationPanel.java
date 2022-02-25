@@ -236,12 +236,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   @Override
-  public void updateUI() {
-    super.updateUI();
-    Utilities.updateUI(entityPanels);
-  }
-
-  @Override
   public final void displayException(Throwable exception, Window dialogParent) {
     LOG.error(exception.getMessage(), exception);
     DefaultDialogExceptionHandler.getInstance().displayException(exception, dialogParent);

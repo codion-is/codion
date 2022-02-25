@@ -338,7 +338,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     super.updateUI();
     Utilities.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane, summaryScrollPane, southPanel);
     if (refreshToolBar != null) {
-      Utilities.updateUI(refreshToolBar, (JComponent) refreshToolBar.getComponent(0));
+      Utilities.updateUI(refreshToolBar);
     }
     if (tableScrollPane != null) {
       Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
