@@ -10,6 +10,8 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.state.State;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -39,6 +41,7 @@ import javax.swing.SortOrder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import java.awt.Color;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,6 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Collections.emptyList;
@@ -62,6 +66,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
         implements EntityTableModel<SwingEntityEditModel> {
 
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingEntityTableModel.class.getName());
+
+  private static final NumberFormat STATUS_MESSAGE_NUMBER_FORMAT = NumberFormat.getIntegerInstance();
 
   /**
    * The edit model to use when updating/deleting entities
@@ -82,6 +90,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
    */
   private final ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
+
+  /**
+   * Contains the status message, number of rows, selected etc.
+   */
+  private final Value<String> statusMessageValue = Value.value("", "");
 
   /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
@@ -599,6 +612,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   /**
+   * @return an Observer for the table model status message, that is, the number of rows, number of selected rows etc
+   */
+  public final ValueObserver<String> getStatusMessageObserver() {
+    return statusMessageValue.getObserver();
+  }
+
+  /**
    * Initializes default {@link TableColumn}s for all visible properties in the given entity type.
    * @param definition the entity definition
    * @return a list of TableColumns based on the given entity
@@ -766,6 +786,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     editModel.addRefreshingObserver(getRefreshingObserver());
     getSelectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(this::onTableModelEvent);
+    EventListener statusListener = () -> statusMessageValue.set(getStatusMessage());
+    getSelectionModel().addSelectionChangedListener(statusListener);
+    addFilterListener(statusListener);
+    addTableDataChangedListener(statusListener);
   }
 
   private void onInsert(List<Entity> insertedEntities) {
@@ -927,5 +951,14 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
         }
       }
     }
+  }
+
+  private String getStatusMessage() {
+    int filteredItemCount = getFilteredItemCount();
+
+    return STATUS_MESSAGE_NUMBER_FORMAT.format(getRowCount()) + " (" +
+            STATUS_MESSAGE_NUMBER_FORMAT.format(getSelectionModel().getSelectionCount()) + " " +
+            MESSAGES.getString("selected") + (filteredItemCount > 0 ? " - " +
+            STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 }
