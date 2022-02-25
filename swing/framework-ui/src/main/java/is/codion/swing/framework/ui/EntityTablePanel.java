@@ -86,6 +86,7 @@ import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Windows.getParentWindow;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -179,7 +180,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
           "is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
 
   /**
-   * The standard controls available to the TablePanel
+   * The standard controls available
    */
   public enum ControlCode {
     PRINT_TABLE,
@@ -198,7 +199,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     CLEAR_SELECTION,
     MOVE_SELECTION_UP,
     MOVE_SELECTION_DOWN,
-    COPY_TABLE_DATA
+    COPY_TABLE_DATA,
+    REQUEST_TABLE_FOCUS,
+    REQUEST_SEARCH_FIELD_FOCUS,
+    SELECT_CONDITION_PANEL
   }
 
   /**
@@ -1030,6 +1034,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         setConditionPanelVisibleInternal(conditionPanelVisibleState.get());
         setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
         bindEvents();
+        initializeKeyboardActions();
         updateStatusMessage();
       }
       finally {
@@ -1060,6 +1065,33 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     return southPanel;
+  }
+
+  /**
+   * Initializes the default keyboard actions.
+   * CTRL-T transfers focus to the table in case one is available,
+   * CTR-S opens a select search condition panel dialog, in case one is available,
+   * CTR-I opens a select input field dialog and
+   * CTR-F selects the table search field
+   */
+  protected void initializeKeyboardActions() {
+    KeyEvents.builder(KeyEvent.VK_T)
+            .modifiers(CTRL_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(getControl(ControlCode.REQUEST_TABLE_FOCUS))
+            .enable(this);
+    KeyEvents.builder(KeyEvent.VK_F)
+            .modifiers(CTRL_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .action(getControl(ControlCode.REQUEST_SEARCH_FIELD_FOCUS))
+            .enable(this);
+    if (getConditionPanel() != null) {
+      KeyEvents.builder(KeyEvent.VK_S)
+              .modifiers(CTRL_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(getControl(ControlCode.SELECT_CONDITION_PANEL))
+              .enable(this);
+    }
   }
 
   /**
@@ -1346,6 +1378,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (includeSelectionModeControl) {
       controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
     }
+    controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(getTable()::requestFocus));
+    controls.put(ControlCode.REQUEST_SEARCH_FIELD_FOCUS, Control.control(getTable().getSearchField()::requestFocus));
+    controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
   }
 
   private void copyTableAsDelimitedString() {
