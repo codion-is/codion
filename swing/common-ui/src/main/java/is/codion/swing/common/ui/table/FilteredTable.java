@@ -498,7 +498,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return a search field
    */
   private JTextField initializeSearchField() {
-    final Value<String> searchString = Value.value();
+    final Value<String> searchString = Value.value("", "");
     final Control findNext = control(() -> findNext(searchString.get()));
     final Control findAndSelectNext = control(() -> findAndSelectNext(searchString.get()));
     final Control findPrevious = control(() -> findPrevious(searchString.get()));
