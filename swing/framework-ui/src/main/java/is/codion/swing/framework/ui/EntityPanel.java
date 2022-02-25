@@ -1123,16 +1123,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * Initializes the keyboard navigation actions.
-   * By default, CTRL-T transfers focus to the table in case one is available,
+   * CTRL-T transfers focus to the table in case one is available,
    * CTR-E transfers focus to the edit panel in case one is available,
-   * CTR-S transfers focus to the condition panel, CTR-C opens a select control dialog
-   * and CTR-F selects the table search field
+   * CTR-S opens a select search condition panel dialog, in case one is available,
+   * CTR-I opens a select input field dialog and
+   * CTR-F selects the table search field
    */
   protected final void initializeKeyboardActions() {
     if (containsTablePanel()) {
-      final Control selectTablePanelControl = Control.control(getTablePanel().getTable()::requestFocus);
-      final Control selectSearchFieldControl = Control.control(getTablePanel().getTable().getSearchField()::requestFocus);
-      final Control selectConditionPanelAction = Control.control(getTablePanel()::selectConditionPanel);
+      final Control selectTablePanelControl = getTablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS);
+      final Control selectSearchFieldControl = getTablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_SEARCH_FIELD_FOCUS);
+      final Control selectConditionPanelAction = getTablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL);
       KeyEvents.builder(KeyEvent.VK_T)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
