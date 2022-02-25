@@ -20,7 +20,7 @@ final class OffsetDateTimeSerializer extends StdSerializer<OffsetDateTime> {
   }
 
   @Override
-  public void serialize(final OffsetDateTime dateTime, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
+  public void serialize(OffsetDateTime dateTime, JsonGenerator generator, SerializerProvider provider) throws IOException {
     generator.writeString(dateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
   }
 }

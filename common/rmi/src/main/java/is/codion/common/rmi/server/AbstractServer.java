@@ -79,7 +79,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @param configuration the configuration
    * @throws RemoteException in case of an exception
    */
-  public AbstractServer(final ServerConfiguration configuration) throws RemoteException {
+  public AbstractServer(ServerConfiguration configuration) throws RemoteException {
     super(requireNonNull(configuration, "configuration").getServerPort(),
             configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
     Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
@@ -106,7 +106,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    */
   public final Map<RemoteClient, T> getConnections() {
     Map<RemoteClient, T> clients = new HashMap<>();
-    for (final ClientConnection<T> clientConnection : connections.values()) {
+    for (ClientConnection<T> clientConnection : connections.values()) {
       clients.put(clientConnection.getRemoteClient(), clientConnection.getConnection());
     }
 
@@ -118,7 +118,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return the connection associated with the given client
    * @throws IllegalArgumentException in case no such client is connected
    */
-  public final T getConnection(final UUID clientId) {
+  public final T getConnection(UUID clientId) {
     ClientConnection<T> clientConnection = connections.get(requireNonNull(clientId, CLIENT_ID));
     if (clientConnection != null) {
       return clientConnection.getConnection();
@@ -146,7 +146,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @param connectionLimit the maximum number of concurrent connections accepted by this server,
    * a negative number means no limit while 0 means the server is closed.
    */
-  public final void setConnectionLimit(final int connectionLimit) {
+  public final void setConnectionLimit(int connectionLimit) {
     this.connectionLimit = connectionLimit;
   }
 
@@ -160,7 +160,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   /**
    * @param maintenanceInterval the new maintenance interval in ms
    */
-  public final void setMaintenanceInterval(final int maintenanceInterval) {
+  public final void setMaintenanceInterval(int maintenanceInterval) {
     connectionMaintenanceScheduler.setInterval(maintenanceInterval);
   }
 
@@ -175,7 +175,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   @Override
-  public final T connect(final ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException,
+  public final T connect(ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException,
           LoginException, ConnectionValidationException {
     if (shuttingDown) {
       throw new LoginException("Server is shutting down");
@@ -204,7 +204,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   @Override
-  public final void disconnect(final UUID clientId) throws RemoteException {
+  public final void disconnect(UUID clientId) throws RemoteException {
     if (clientId == null) {
       return;
     }
@@ -213,7 +213,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     if (clientConnection != null) {
       disconnect(clientConnection.getConnection());
       RemoteClient remoteClient = clientConnection.getRemoteClient();
-      for (final LoginProxy loginProxy : sharedLoginProxies) {
+      for (LoginProxy loginProxy : sharedLoginProxies) {
         loginProxy.logout(remoteClient);
       }
       LoginProxy loginProxy = loginProxies.get(remoteClient.getClientTypeId());
@@ -238,7 +238,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     if (admin != null) {
       unexportSilently(admin);
     }
-    for (final UUID clientId : new ArrayList<>(connections.keySet())) {
+    for (UUID clientId : new ArrayList<>(connections.keySet())) {
       try {
         disconnect(clientId);
       }
@@ -255,7 +255,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     shutdownEvent.onEvent();
   }
 
-  public final void addLoginProxy(final LoginProxy loginProxy) {
+  public final void addLoginProxy(LoginProxy loginProxy) {
     requireNonNull(loginProxy, "loginProxy");
     if (loginProxy.getClientTypeId() == null) {
       sharedLoginProxies.add(loginProxy);
@@ -285,13 +285,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @param user the user
    * @return all clients connected with the given user
    */
-  final Collection<RemoteClient> getClients(final User user) {
+  final Collection<RemoteClient> getClients(User user) {
     return getConnections().keySet().stream()
             .filter(remoteClient -> user == null || remoteClient.getUser().equals(user))
             .collect(toList());
   }
 
-  protected final void setAdmin(final A admin) {
+  protected final void setAdmin(A admin) {
     if (this.admin != null) {
       throw new IllegalStateException("Admin has already been set for this server");
     }
@@ -309,7 +309,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   /**
    * @param listener a listener notified when this server is shutting down.
    */
-  protected final void addShutdownListener(final EventListener listener) {
+  protected final void addShutdownListener(EventListener listener) {
     shutdownEvent.addListener(requireNonNull(listener, "listener"));
   }
 
@@ -334,13 +334,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @throws RemoteException in case of an exception
    * @param connections all current connections
    */
-  protected abstract void maintainConnections(final Collection<ClientConnection<T>> connections) throws RemoteException;
+  protected abstract void maintainConnections(Collection<ClientConnection<T>> connections) throws RemoteException;
 
   /**
    * @param clientTypeId the client type id
    * @return all clients of the given type
    */
-  protected Collection<RemoteClient> getClients(final String clientTypeId) {
+  protected Collection<RemoteClient> getClients(String clientTypeId) {
     return getConnections().keySet().stream()
             .filter(client -> Objects.equals(client.getClientTypeId(), clientTypeId))
             .collect(toList());
@@ -354,7 +354,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     return this.registry;
   }
 
-  protected final <T extends Throwable> T logShutdownAndReturn(final T exception) {
+  protected final <T extends Throwable> T logShutdownAndReturn(T exception) {
     LOG.error("Exception on server startup", exception);
     shutdown();
 
@@ -367,7 +367,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @param requiredUser the required credentials
    * @throws ServerAuthenticationException in case either User instance is null or if the username or password does not match
    */
-  protected static final void validateUserCredentials(final User userToCheck, final User requiredUser) throws ServerAuthenticationException {
+  protected static final void validateUserCredentials(User userToCheck, User requiredUser) throws ServerAuthenticationException {
     if (userToCheck == null || requiredUser == null
             || !Objects.equals(userToCheck.getUsername(), requiredUser.getUsername())
             || !Arrays.equals(userToCheck.getPassword(), requiredUser.getPassword())) {
@@ -379,10 +379,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
   }
 
-  private ClientConnection<T> createConnection(final ConnectionRequest connectionRequest) throws LoginException, RemoteException {
+  private ClientConnection<T> createConnection(ConnectionRequest connectionRequest) throws LoginException, RemoteException {
     RemoteClient remoteClient = remoteClient(connectionRequest);
     setClientHost(remoteClient, (String) connectionRequest.getParameters().get(CLIENT_HOST_KEY));
-    for (final LoginProxy loginProxy : sharedLoginProxies) {
+    for (LoginProxy loginProxy : sharedLoginProxies) {
       remoteClient = loginProxy.login(remoteClient);
     }
     LoginProxy clientLoginProxy = loginProxies.get(connectionRequest.getClientTypeId());
@@ -396,9 +396,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     return clientConnection;
   }
 
-  private void startAuxiliaryServers(final Collection<String> auxiliaryServerFactoryClassNames) {
+  private void startAuxiliaryServers(Collection<String> auxiliaryServerFactoryClassNames) {
     try {
-      for (final String auxiliaryServerFactoryClassName : auxiliaryServerFactoryClassNames) {
+      for (String auxiliaryServerFactoryClassName : auxiliaryServerFactoryClassNames) {
         AuxiliaryServerFactory<T, A, ?> auxiliaryServerFactory = auxiliaryServerFactory(auxiliaryServerFactoryClassName);
         AuxiliaryServer auxiliaryServer = auxiliaryServerFactory.createServer(this);
         auxiliaryServers.add(auxiliaryServer);
@@ -416,7 +416,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
   }
 
-  private static void configureSerializationWhitelist(final ServerConfiguration configuration) {
+  private static void configureSerializationWhitelist(ServerConfiguration configuration) {
     if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
       if (configuration.isSerializationFilterDryRun()) {
         SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
@@ -427,7 +427,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
   }
 
-  private static void closeLoginProxy(final LoginProxy loginProxy) {
+  private static void closeLoginProxy(LoginProxy loginProxy) {
     try {
       loginProxy.close();
     }
@@ -436,7 +436,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
   }
 
-  private static Object startAuxiliaryServer(final AuxiliaryServer server) throws Exception {
+  private static Object startAuxiliaryServer(AuxiliaryServer server) throws Exception {
     try {
       server.startServer();
       LOG.info("Auxiliary server started: " + server);
@@ -449,7 +449,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
   }
 
-  private static void stopAuxiliaryServer(final AuxiliaryServer server) {
+  private static void stopAuxiliaryServer(AuxiliaryServer server) {
     try {
       server.stopServer();
       LOG.info("Auxiliary server stopped: " + server);
@@ -459,7 +459,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
   }
 
-  private static void unexportSilently(final Remote object) {
+  private static void unexportSilently(Remote object) {
     try {
       unexportObject(object, true);
     }
@@ -468,7 +468,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
   }
 
-  private static void setClientHost(final RemoteClient remoteClient, final String requestParameterHost) {
+  private static void setClientHost(RemoteClient remoteClient, String requestParameterHost) {
     if (requestParameterHost == null) {
       try {
         remoteClient.setClientHost(getClientHost());
@@ -493,7 +493,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     private final RemoteClient client;
     private final T connection;
 
-    private ClientConnection(final RemoteClient client, final T connection) {
+    private ClientConnection(RemoteClient client, T connection) {
       this.client = client;
       this.connection = connection;
     }
@@ -525,7 +525,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   private static final class DaemonThreadFactory implements ThreadFactory {
 
     @Override
-    public Thread newThread(final Runnable runnable) {
+    public Thread newThread(Runnable runnable) {
       Thread thread = new Thread(runnable);
       thread.setDaemon(true);
 

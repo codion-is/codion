@@ -31,7 +31,7 @@ public final class DatabaseExplorerModel {
     EntityDefinition.STRICT_FOREIGN_KEYS.set(false);
   }
 
-  public DatabaseExplorerModel(final Database database, final User user) throws DatabaseException {
+  public DatabaseExplorerModel(Database database, User user) throws DatabaseException {
     this.connection = requireNonNull(database, "database").createConnection(user);
     try {
       this.metaDataModel = new MetaDataModel(connection.getMetaData());
@@ -66,7 +66,7 @@ public final class DatabaseExplorerModel {
     definitionTableModel.getSelectionModel().addSelectionChangedListener(this::updateCodeValue);
   }
 
-  public void populateSelected(final EventDataListener<String> schemaNotifier) {
+  public void populateSelected(EventDataListener<String> schemaNotifier) {
     schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema ->
             metaDataModel.populateSchema(schema.getName(), schemaNotifier));
     definitionTableModel.refresh();

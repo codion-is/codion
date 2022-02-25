@@ -13,7 +13,7 @@ import static is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 
 public final class InvoiceEditModel extends SwingEntityEditModel {
 
-  public InvoiceEditModel(final EntityConnectionProvider connectionProvider) {
+  public InvoiceEditModel(EntityConnectionProvider connectionProvider) {
     super(Invoice.TYPE, connectionProvider);
     setPersistValue(Invoice.CUSTOMER_FK, false);
     bindEvents();
@@ -23,7 +23,7 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
     addValueEditListener(Invoice.CUSTOMER_FK, this::setAddress);
   }
 
-  private void setAddress(final ValueChange<Entity> valueChange) {
+  private void setAddress(ValueChange<Entity> valueChange) {
     Entity customer = valueChange.getValue();
     if (customer == null) {
       put(Invoice.BILLINGADDRESS, null);

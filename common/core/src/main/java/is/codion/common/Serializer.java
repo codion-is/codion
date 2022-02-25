@@ -31,7 +31,7 @@ public final class Serializer {
    * @return a byte array representing the serialized object, an empty byte array in case of null
    * @throws IOException in case of an exception
    */
-  public static byte[] serialize(final Object object) throws IOException {
+  public static byte[] serialize(Object object) throws IOException {
     if (object != null) {
       ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
       new ObjectOutputStream(byteArrayOutputStream).writeObject(object);
@@ -50,7 +50,7 @@ public final class Serializer {
    * @throws IOException in case of an exception
    * @throws ClassNotFoundException in case the deserialized class is not found
    */
-  public static <T> T deserialize(final byte[] bytes) throws IOException, ClassNotFoundException {
+  public static <T> T deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
     if (bytes != null && bytes.length > 0) {
       return (T) new ObjectInputStream(new ByteArrayInputStream(bytes)).readObject();
     }
@@ -66,9 +66,9 @@ public final class Serializer {
    * @throws IOException in case the file can not be read
    * @throws ClassNotFoundException in case the deserialized class is not found
    */
-  public static <T> List<T> deserializeFromFile(final File file) throws IOException, ClassNotFoundException {
+  public static <T> List<T> deserializeFromFile(File file) throws IOException, ClassNotFoundException {
     List<T> objects = new ArrayList<>();
-    try (final ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
+    try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
       while (true) {
         objects.add((T) inputStream.readObject());
       }
@@ -85,9 +85,9 @@ public final class Serializer {
    * @param <T> the value type
    * @throws IOException in case the file can not be written
    */
-  public static <T> void serializeToFile(final Collection<T> objects, final File file) throws IOException {
-    try (final ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
-      for (final T object : objects) {
+  public static <T> void serializeToFile(Collection<T> objects, File file) throws IOException {
+    try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
+      for (T object : objects) {
         outputStream.writeObject(object);
       }
     }

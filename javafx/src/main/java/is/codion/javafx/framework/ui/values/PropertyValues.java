@@ -44,7 +44,7 @@ public final class PropertyValues {
    * @param <T> the value type
    * @return a {@link Value} based on the selected item in the given selection model
    */
-  public static <T> Value<T> selectedItemValue(final SingleSelectionModel<Item<T>> selectionModel) {
+  public static <T> Value<T> selectedItemValue(SingleSelectionModel<Item<T>> selectionModel) {
     return new SelectedItemValue<>(selectionModel);
   }
 
@@ -52,7 +52,7 @@ public final class PropertyValues {
    * @param booleanProperty the boolean property
    * @return a {@link Value} based on the given boolean property
    */
-  public static Value<Boolean> booleanPropertyValue(final BooleanProperty booleanProperty) {
+  public static Value<Boolean> booleanPropertyValue(BooleanProperty booleanProperty) {
     return new BooleanPropertyValue(booleanProperty);
   }
 
@@ -61,7 +61,7 @@ public final class PropertyValues {
    * @param <T> the type of the actual value
    * @return a {@link Value} based on the selected item in the given selection model
    */
-  public static <T> Value<T> selectedValue(final SingleSelectionModel<T> selectionModel) {
+  public static <T> Value<T> selectedValue(SingleSelectionModel<T> selectionModel) {
     return new SelectedValue<>(selectionModel);
   }
 
@@ -70,7 +70,7 @@ public final class PropertyValues {
    * @return a {@link Value} based on the entities selected in the given search model
    * @throws IllegalArgumentException in case the search model has multiple selection enabled
    */
-  public static Value<Entity> singleSearchValue(final EntitySearchModel searchModel) {
+  public static Value<Entity> singleSearchValue(EntitySearchModel searchModel) {
     if (searchModel.getMultipleSelectionEnabledValue().get()) {
       throw new IllegalArgumentException("Multiple item selection is enabled for search model");
     }
@@ -82,7 +82,7 @@ public final class PropertyValues {
    * @param searchModel the search model
    * @return a {@link Value} based on the entities selected in the given search model
    */
-  public static Value<List<Entity>> multipleSearchValue(final EntitySearchModel searchModel) {
+  public static Value<List<Entity>> multipleSearchValue(EntitySearchModel searchModel) {
     return new EntitySearchMultiValue(searchModel);
   }
 
@@ -90,7 +90,7 @@ public final class PropertyValues {
    * @param property the string property
    * @return a {@link StringValue} based on the given string property
    */
-  public static StringValue<String> stringPropertyValue(final StringProperty property) {
+  public static StringValue<String> stringPropertyValue(StringProperty property) {
     return new DefaultStringValue<>(property, new DefaultStringConverter());
   }
 
@@ -99,7 +99,7 @@ public final class PropertyValues {
    * @param numberFormat the format to use
    * @return an Integer {@link StringValue} based on the given string property
    */
-  public static StringValue<Integer> integerPropertyValue(final StringProperty property, final NumberFormat numberFormat) {
+  public static StringValue<Integer> integerPropertyValue(StringProperty property, NumberFormat numberFormat) {
     return new DefaultStringValue<>(property, new IntegerConverter(numberFormat));
   }
 
@@ -108,7 +108,7 @@ public final class PropertyValues {
    * @param numberFormat the format to use
    * @return a Long {@link StringValue} based on the given string property
    */
-  public static StringValue<Long> longPropertyValue(final StringProperty property, final NumberFormat numberFormat) {
+  public static StringValue<Long> longPropertyValue(StringProperty property, NumberFormat numberFormat) {
     return new DefaultStringValue<>(property, new LongConverter(numberFormat));
   }
 
@@ -117,7 +117,7 @@ public final class PropertyValues {
    * @param numberFormat the format to use
    * @return a Double {@link StringValue} based on the given string property
    */
-  public static StringValue<Double> doublePropertyValue(final StringProperty property, final NumberFormat numberFormat) {
+  public static StringValue<Double> doublePropertyValue(StringProperty property, NumberFormat numberFormat) {
     return new DefaultStringValue<>(property, new DoubleConverter(numberFormat));
   }
 
@@ -126,7 +126,7 @@ public final class PropertyValues {
    * @param decimalFormat the format to use
    * @return a BigDecimal {@link StringValue} based on the given string property
    */
-  public static StringValue<BigDecimal> bigDecimalPropertyValue(final StringProperty property, final DecimalFormat decimalFormat) {
+  public static StringValue<BigDecimal> bigDecimalPropertyValue(StringProperty property, DecimalFormat decimalFormat) {
     return new DefaultStringValue<>(property, new BigDecimalConverter(decimalFormat));
   }
 
@@ -135,7 +135,7 @@ public final class PropertyValues {
    * @param dateTimeFormatter the formatter to use
    * @return a {@link LocalDate} {@link StringValue} based on the given string property
    */
-  public static StringValue<LocalDate> datePropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
+  public static StringValue<LocalDate> datePropertyValue(StringProperty property, DateTimeFormatter dateTimeFormatter) {
     return new DefaultStringValue<>(property, new DateConverter<>(dateTimeFormatter, LocalDate::parse));
   }
 
@@ -144,7 +144,7 @@ public final class PropertyValues {
    * @param dateTimeFormatter the formatter to use
    * @return a {@link LocalDateTime} {@link StringValue} based on the given string property
    */
-  public static StringValue<LocalDateTime> timestampPropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
+  public static StringValue<LocalDateTime> timestampPropertyValue(StringProperty property, DateTimeFormatter dateTimeFormatter) {
     return new DefaultStringValue<>(property, new DateConverter<>(dateTimeFormatter, LocalDateTime::parse));
   }
 
@@ -153,7 +153,7 @@ public final class PropertyValues {
    * @param dateTimeFormatter the formatter to use
    * @return a {@link LocalTime} {@link StringValue} based on the given string property
    */
-  public static StringValue<LocalTime> timePropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
+  public static StringValue<LocalTime> timePropertyValue(StringProperty property, DateTimeFormatter dateTimeFormatter) {
     return new DefaultStringValue<>(property, new DateConverter<>(dateTimeFormatter, LocalTime::parse));
   }
 
@@ -164,7 +164,7 @@ public final class PropertyValues {
    * @return the parsed value
    * @throws ParseException in case of an exception
    */
-  public static Object parseStrict(final Format format, final String value) throws ParseException {
+  public static Object parseStrict(Format format, String value) throws ParseException {
     ParsePosition pos = new ParsePosition(0);
     Object result = format.parseObject(value, pos);
     if (pos.getIndex() < value.length()) {
@@ -177,12 +177,12 @@ public final class PropertyValues {
   private static final class DefaultStringConverter extends StringConverter<String> {
 
     @Override
-    public String toString(final String object) {
+    public String toString(String object) {
       return object;
     }
 
     @Override
-    public String fromString(final String string) {
+    public String fromString(String string) {
       if (string != null && string.isEmpty()) {
         return null;
       }
@@ -195,12 +195,12 @@ public final class PropertyValues {
 
     private final NumberFormat numberFormat;
 
-    private IntegerConverter(final NumberFormat numberFormat) {
+    private IntegerConverter(NumberFormat numberFormat) {
       this.numberFormat = numberFormat;
     }
 
     @Override
-    public String toString(final Integer value) {
+    public String toString(Integer value) {
       if (value == null) {
         return "";
       }
@@ -209,7 +209,7 @@ public final class PropertyValues {
     }
 
     @Override
-    public Integer fromString(final String value) {
+    public Integer fromString(String value) {
       if (nullOrEmpty(value)) {
         return null;
       }
@@ -228,12 +228,12 @@ public final class PropertyValues {
 
     private final NumberFormat numberFormat;
 
-    private LongConverter(final NumberFormat numberFormat) {
+    private LongConverter(NumberFormat numberFormat) {
       this.numberFormat = numberFormat;
     }
 
     @Override
-    public String toString(final Long value) {
+    public String toString(Long value) {
       if (value == null) {
         return "";
       }
@@ -242,7 +242,7 @@ public final class PropertyValues {
     }
 
     @Override
-    public Long fromString(final String value) {
+    public Long fromString(String value) {
       if (nullOrEmpty(value)) {
         return null;
       }
@@ -259,12 +259,12 @@ public final class PropertyValues {
 
     private final NumberFormat numberFormat;
 
-    private DoubleConverter(final NumberFormat numberFormat) {
+    private DoubleConverter(NumberFormat numberFormat) {
       this.numberFormat = numberFormat;
     }
 
     @Override
-    public String toString(final Double value) {
+    public String toString(Double value) {
       if (value == null) {
         return "";
       }
@@ -273,7 +273,7 @@ public final class PropertyValues {
     }
 
     @Override
-    public Double fromString(final String value) {
+    public Double fromString(String value) {
       if (nullOrEmpty(value)) {
         return null;
       }
@@ -295,13 +295,13 @@ public final class PropertyValues {
 
     private final DecimalFormat numberFormat;
 
-    private BigDecimalConverter(final DecimalFormat numberFormat) {
+    private BigDecimalConverter(DecimalFormat numberFormat) {
       this.numberFormat = numberFormat;
       this.numberFormat.setParseBigDecimal(true);
     }
 
     @Override
-    public String toString(final BigDecimal value) {
+    public String toString(BigDecimal value) {
       if (value == null) {
         return "";
       }
@@ -310,7 +310,7 @@ public final class PropertyValues {
     }
 
     @Override
-    public BigDecimal fromString(final String value) {
+    public BigDecimal fromString(String value) {
       if (nullOrEmpty(value)) {
         return null;
       }
@@ -328,13 +328,13 @@ public final class PropertyValues {
     private final DateTimeFormatter dateFormatter;
     private final DateTimeParser<T> parser;
 
-    private DateConverter(final DateTimeFormatter dateFormatter, final DateTimeParser<T> parser) {
+    private DateConverter(DateTimeFormatter dateFormatter, DateTimeParser<T> parser) {
       this.dateFormatter = dateFormatter;
       this.parser = parser;
     }
 
     @Override
-    public String toString(final T value) {
+    public String toString(T value) {
       if (value != null) {
         return dateFormatter.format(value);
       }
@@ -343,7 +343,7 @@ public final class PropertyValues {
       }
     }
     @Override
-    public T fromString(final String string) {
+    public T fromString(String string) {
       if (nullOrEmpty(string)) {
         return null;
       }
@@ -361,7 +361,7 @@ public final class PropertyValues {
     private final StringProperty stringProperty;
     private final StringConverter<T> converter;
 
-    public DefaultStringValue(final StringProperty stringProperty, final StringConverter<T> converter) {
+    public DefaultStringValue(StringProperty stringProperty, StringConverter<T> converter) {
       this.stringProperty = stringProperty;
       this.converter = converter;
       this.stringProperty.addListener((observable, oldValue, newValue) -> notifyValueChange());
@@ -378,7 +378,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void setValue(final T value) {
+    protected void setValue(T value) {
       stringProperty.set(converter.toString(value));
     }
   }
@@ -387,7 +387,7 @@ public final class PropertyValues {
 
     private final BooleanProperty booleanProperty;
 
-    public BooleanPropertyValue(final BooleanProperty booleanProperty) {
+    public BooleanPropertyValue(BooleanProperty booleanProperty) {
       this.booleanProperty = booleanProperty;
       this.booleanProperty.addListener((observable, oldValue, newValue) -> notifyValueChange());
     }
@@ -398,7 +398,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void setValue(final Boolean value) {
+    protected void setValue(Boolean value) {
       booleanProperty.set(value);
     }
   }
@@ -407,7 +407,7 @@ public final class PropertyValues {
 
     private final SingleSelectionModel<T> selectionModel;
 
-    public SelectedValue(final SingleSelectionModel<T> selectionModel) {
+    public SelectedValue(SingleSelectionModel<T> selectionModel) {
       this.selectionModel = selectionModel;
       this.selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> notifyValueChange());
     }
@@ -418,7 +418,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void setValue(final T value) {
+    protected void setValue(T value) {
       selectionModel.select(value);
     }
   }
@@ -427,7 +427,7 @@ public final class PropertyValues {
 
     private final SelectionModel<Item<T>> selectionModel;
 
-    public SelectedItemValue(final SelectionModel<Item<T>> selectionModel) {
+    public SelectedItemValue(SelectionModel<Item<T>> selectionModel) {
       this.selectionModel = selectionModel;
       this.selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> notifyValueChange());
     }
@@ -443,7 +443,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void setValue(final T value) {
+    protected void setValue(T value) {
       selectionModel.select(Item.item(value));
     }
   }
@@ -452,7 +452,7 @@ public final class PropertyValues {
 
     private final EntitySearchModel searchModel;
 
-    private EntitySearchSingleValue(final EntitySearchModel searchModel) {
+    private EntitySearchSingleValue(EntitySearchModel searchModel) {
       this.searchModel = searchModel;
       this.searchModel.addSelectedEntitiesListener(selected -> notifyValueChange());
     }
@@ -465,7 +465,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void setValue(final Entity value) {
+    protected void setValue(Entity value) {
       searchModel.setSelectedEntity(value);
     }
   }
@@ -474,7 +474,7 @@ public final class PropertyValues {
 
     private final EntitySearchModel searchModel;
 
-    private EntitySearchMultiValue(final EntitySearchModel searchModel) {
+    private EntitySearchMultiValue(EntitySearchModel searchModel) {
       this.searchModel = searchModel;
       this.searchModel.addSelectedEntitiesListener(entities -> notifyValueChange());
     }
@@ -485,7 +485,7 @@ public final class PropertyValues {
     }
 
     @Override
-    protected void setValue(final List<Entity> value) {
+    protected void setValue(List<Entity> value) {
       searchModel.setSelectedEntities(value);
     }
   }

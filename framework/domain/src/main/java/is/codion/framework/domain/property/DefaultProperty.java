@@ -150,7 +150,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    * @param typeClass the type associated with this property
    */
-  DefaultProperty(final Attribute<T> attribute, final String caption) {
+  DefaultProperty(Attribute<T> attribute, String caption) {
     requireNonNull(attribute, "attribute");
     this.attribute = attribute;
     this.caption = caption;
@@ -289,7 +289,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final boolean equals(final Object obj) {
+  public final boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
@@ -307,7 +307,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final T prepareValue(final T value) {
+  public final T prepareValue(T value) {
     if (value instanceof Double) {
       return (T) Util.roundDouble((Double) value, getMaximumFractionDigits(), decimalRoundingMode);
     }
@@ -319,7 +319,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final String formatValue(final T value) {
+  public final String formatValue(T value) {
     if (value == null) {
       return "";
     }
@@ -359,7 +359,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
     private final T defaultValue;
 
-    DefaultValueSupplier(final T defaultValue) {
+    DefaultValueSupplier(T defaultValue) {
       this.defaultValue = defaultValue;
     }
 
@@ -383,7 +383,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     private static final long serialVersionUID = 1;
 
     @Override
-    public int compare(final Comparable<Object> o1, final Comparable<Object> o2) {
+    public int compare(Comparable<Object> o1, Comparable<Object> o2) {
       return o1.compareTo(o2);
     }
   }
@@ -393,7 +393,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     private static final long serialVersionUID = 1;
 
     @Override
-    public int compare(final Object o1, final Object o2) {
+    public int compare(Object o1, Object o2) {
       return o1.toString().compareTo(o2.toString());
     }
   }
@@ -402,7 +402,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
     private final DefaultProperty<T> property;
 
-    DefaultPropertyBuilder(final DefaultProperty<T> property) {
+    DefaultPropertyBuilder(DefaultProperty<T> property) {
       this.property = property;
       property.format = initializeDefaultFormat(property.getAttribute());
       property.comparator = initializeDefaultComparator(property.getAttribute());
@@ -422,7 +422,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B captionResourceKey(final String captionResourceKey) {
+    public final B captionResourceKey(String captionResourceKey) {
       if (property.caption != null) {
         throw new IllegalStateException("Caption has already been set for property: " + property.attribute);
       }
@@ -439,7 +439,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B beanProperty(final String beanProperty) {
+    public final B beanProperty(String beanProperty) {
       if (nullOrEmpty(beanProperty)) {
         throw new IllegalArgumentException("beanProperty must be a non-empty string: " + property.attribute);
       }
@@ -453,18 +453,18 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B hidden(final boolean hidden) {
+    public final B hidden(boolean hidden) {
       property.hidden = hidden;
       return (B) this;
     }
 
     @Override
-    public final B defaultValue(final T defaultValue) {
+    public final B defaultValue(T defaultValue) {
       return defaultValueSupplier(new DefaultValueSupplier<>(defaultValue));
     }
 
     @Override
-    public final B defaultValueSupplier(final ValueSupplier<T> supplier) {
+    public final B defaultValueSupplier(ValueSupplier<T> supplier) {
       if (supplier != null) {
         property.attribute.validateType(supplier.get());
       }
@@ -473,13 +473,13 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B nullable(final boolean nullable) {
+    public final B nullable(boolean nullable) {
       property.nullable = nullable;
       return (B) this;
     }
 
     @Override
-    public final B maximumLength(final int maximumLength) {
+    public final B maximumLength(int maximumLength) {
       if (!property.attribute.isString()) {
         throw new IllegalStateException("maximumLength is only applicable to string properties: " + property.attribute);
       }
@@ -491,7 +491,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B range(final double minimumValue, final double maximumValue) {
+    public final B range(double minimumValue, double maximumValue) {
       if (!property.attribute.isNumerical()) {
         throw new IllegalStateException("range is only applicable to numerical properties");
       }
@@ -504,7 +504,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B numberFormatGrouping(final boolean numberFormatGrouping) {
+    public final B numberFormatGrouping(boolean numberFormatGrouping) {
       if (!property.attribute.isNumerical()) {
         throw new IllegalStateException("numberFormatGrouping is only applicable to numerical properties: " + property.attribute);
       }
@@ -513,7 +513,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B preferredColumnWidth(final int preferredColumnWidth) {
+    public final B preferredColumnWidth(int preferredColumnWidth) {
       if (preferredColumnWidth <= 0) {
         throw new IllegalArgumentException("preferredColumnWidth must be larger than 0");
       }
@@ -522,19 +522,19 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B description(final String description) {
+    public final B description(String description) {
       property.description = description;
       return (B) this;
     }
 
     @Override
-    public final B mnemonic(final Character mnemonic) {
+    public final B mnemonic(Character mnemonic) {
       property.mnemonic = mnemonic;
       return (B) this;
     }
 
     @Override
-    public final B format(final Format format) {
+    public final B format(Format format) {
       requireNonNull(format, "format");
       if (property.attribute.isNumerical() && !(format instanceof NumberFormat)) {
         throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.attribute);
@@ -547,7 +547,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B dateTimePattern(final String dateTimePattern) {
+    public final B dateTimePattern(String dateTimePattern) {
       requireNonNull(dateTimePattern, "dateTimePattern");
       if (!property.attribute.isTemporal()) {
         throw new IllegalStateException("dateTimePattern is only applicable to temporal properties: " + property.attribute);
@@ -561,7 +561,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B localeDateTimePattern(final LocaleDateTimePattern localeDateTimePattern) {
+    public final B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern) {
       requireNonNull(localeDateTimePattern, "localeDateTimePattern");
       if (!property.attribute.isTemporal()) {
         throw new IllegalStateException("localeDateTimePattern is only applicable to temporal properties: " + property.attribute);
@@ -577,7 +577,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B maximumFractionDigits(final int maximumFractionDigits) {
+    public final B maximumFractionDigits(int maximumFractionDigits) {
       if (!property.attribute.isDecimal()) {
         throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties: " + property.attribute);
       }
@@ -586,7 +586,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B decimalRoundingMode(final RoundingMode decimalRoundingMode) {
+    public final B decimalRoundingMode(RoundingMode decimalRoundingMode) {
       if (!property.attribute.isDecimal()) {
         throw new IllegalStateException("decimalRoundingMode is only applicable to decimal properties: " + property.attribute);
       }
@@ -595,12 +595,12 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public B comparator(final Comparator<T> comparator) {
+    public B comparator(Comparator<T> comparator) {
       property.comparator = requireNonNull(comparator);
       return (B) this;
     }
 
-    private static boolean resourceNotFound(final String resourceBundleName, final String captionResourceKey) {
+    private static boolean resourceNotFound(String resourceBundleName, String captionResourceKey) {
       if (resourceBundleName == null) {
         return true;
       }
@@ -614,7 +614,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       }
     }
 
-    private static Format initializeDefaultFormat(final Attribute<?> attribute) {
+    private static Format initializeDefaultFormat(Attribute<?> attribute) {
       if (attribute.isNumerical()) {
         NumberFormat numberFormat = getDefaultNumberFormat(attribute);
         if (attribute.isBigDecimal()) {
@@ -630,7 +630,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       return Formats.NULL_FORMAT;
     }
 
-    private static NumberFormat getDefaultNumberFormat(final Attribute<?> attribute) {
+    private static NumberFormat getDefaultNumberFormat(Attribute<?> attribute) {
       boolean grouping = NUMBER_FORMAT_GROUPING.get();
       if (attribute.isInteger() || attribute.isLong()) {
         return setSeparators(grouping ? NumberFormat.getIntegerInstance() : Formats.getNonGroupingIntegerFormat());
@@ -639,7 +639,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       return setSeparators(grouping ? NumberFormat.getNumberInstance() : Formats.getNonGroupingNumberFormat());
     }
 
-    private static NumberFormat setSeparators(final NumberFormat numberFormat) {
+    private static NumberFormat setSeparators(NumberFormat numberFormat) {
       if (numberFormat instanceof DecimalFormat) {
         String defaultGroupingSeparator = GROUPING_SEPARATOR.get();
         String defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
@@ -655,7 +655,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       return numberFormat;
     }
 
-    private static <T> Comparator<T> initializeDefaultComparator(final Attribute<T> attribute) {
+    private static <T> Comparator<T> initializeDefaultComparator(Attribute<T> attribute) {
       if (attribute.isString() && USE_LEXICAL_STRING_COMPARATOR.get()) {
         return (Comparator<T>) LEXICAL_COMPARATOR;
       }

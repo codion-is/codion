@@ -29,7 +29,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
   private final EntityObjectMapper entityObjectMapper;
   private final Entities entities;
 
-  UpdateConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
+  UpdateConditionDeserializer(EntityObjectMapper entityObjectMapper) {
     super(UpdateCondition.class);
     this.conditionDeserializer = new ConditionDeserializer(entityObjectMapper);
     this.entityObjectMapper = entityObjectMapper;
@@ -37,7 +37,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
   }
 
   @Override
-  public UpdateCondition deserialize(final JsonParser parser, final DeserializationContext ctxt)
+  public UpdateCondition deserialize(JsonParser parser, DeserializationContext ctxt)
           throws IOException {
     JsonNode jsonNode = parser.getCodec().readTree(parser);
     EntityType entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());

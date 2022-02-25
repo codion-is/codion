@@ -35,7 +35,7 @@ public interface FunctionType<C, T, R> {
    * @param <R> the function result type
    * @return a new {@link FunctionType}
    */
-  static <C, T, R> FunctionType<C, T, R> functionType(final String name) {
+  static <C, T, R> FunctionType<C, T, R> functionType(String name) {
     return new DefaultFunctionType<>(name);
   }
 }

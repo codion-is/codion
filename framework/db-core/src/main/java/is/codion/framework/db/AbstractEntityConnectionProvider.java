@@ -55,7 +55,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final EntityConnectionProvider setUser(final User user) {
+  public final EntityConnectionProvider setUser(User user) {
     synchronized (lock) {
       close();
       this.user = user;
@@ -76,7 +76,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final EntityConnectionProvider setDomainClassName(final String domainClassName) {
+  public final EntityConnectionProvider setDomainClassName(String domainClassName) {
     synchronized (lock) {
       if (nullOrEmpty(domainClassName)) {
         throw new IllegalArgumentException("Domain class name must be specified");
@@ -96,7 +96,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final EntityConnectionProvider setClientId(final UUID clientId) {
+  public final EntityConnectionProvider setClientId(UUID clientId) {
     synchronized (lock) {
       if (clientId == null) {
         throw new IllegalArgumentException("Client id must be specified");
@@ -120,7 +120,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final EntityConnectionProvider setClientTypeId(final String clientTypeId) {
+  public final EntityConnectionProvider setClientTypeId(String clientTypeId) {
     synchronized (lock) {
       close();
       this.clientTypeId = requireNonNull(clientTypeId);
@@ -137,7 +137,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final EntityConnectionProvider setClientVersion(final Version clientVersion) {
+  public final EntityConnectionProvider setClientVersion(Version clientVersion) {
     synchronized (lock) {
       close();
       this.clientVersion = clientVersion;
@@ -170,12 +170,12 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final void addOnConnectListener(final EventDataListener<EntityConnection> listener) {
+  public final void addOnConnectListener(EventDataListener<EntityConnection> listener) {
     onConnectEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeOnConnectListener(final EventDataListener<EntityConnection> listener) {
+  public final void removeOnConnectListener(EventDataListener<EntityConnection> listener) {
     onConnectEvent.removeDataListener(listener);
   }
 
@@ -212,7 +212,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    */
   protected abstract void close(EntityConnection connection);
 
-  protected String getDomainTypeName(final String domainClass) {
+  protected String getDomainTypeName(String domainClass) {
     if (domainClass.contains(".")) {
       return domainClass.substring(domainClass.lastIndexOf('.') + 1);
     }

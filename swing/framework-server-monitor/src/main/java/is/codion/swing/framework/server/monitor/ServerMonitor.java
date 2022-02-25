@@ -105,8 +105,8 @@ public final class ServerMonitor {
    * @throws RemoteException in case of an exception
    * @throws ServerAuthenticationException in case the admin user credentials are incorrect
    */
-  public ServerMonitor(final String hostName, final ServerInformation serverInformation, final int registryPort,
-                       final User serverAdminUser, final int updateRate)
+  public ServerMonitor(String hostName, ServerInformation serverInformation, int registryPort,
+                       User serverAdminUser, int updateRate)
           throws RemoteException, ServerAuthenticationException {
     this.hostName = hostName;
     this.serverInformation = serverInformation;
@@ -293,7 +293,7 @@ public final class ServerMonitor {
   public void refreshDomainList() throws RemoteException {
     domainListModel.setDataVector(new Object[][] {}, new Object[] {"Entity Type", "Table name"});
     Map<String, String> definitions = server.getEntityDefinitions();
-    for (final Map.Entry<String, String> definition : definitions.entrySet()) {
+    for (Map.Entry<String, String> definition : definitions.entrySet()) {
       domainListModel.addRow(new Object[] {definition.getKey(), definition.getValue()});
     }
   }
@@ -340,7 +340,7 @@ public final class ServerMonitor {
   /**
    * @param listener a listener notified when the server is shut down
    */
-  public void addServerShutDownListener(final EventListener listener) {
+  public void addServerShutDownListener(EventListener listener) {
     serverShutDownEvent.addListener(listener);
   }
 
@@ -361,7 +361,7 @@ public final class ServerMonitor {
   /**
    * @param value the connection number limit
    */
-  private void setConnectionLimit(final int value) {
+  private void setConnectionLimit(int value) {
     try {
       server.setConnectionLimit(value);
     }
@@ -373,7 +373,7 @@ public final class ServerMonitor {
   /**
    * @param level the server log level
    */
-  private void setLogLevel(final Object level) {
+  private void setLogLevel(Object level) {
     try {
       server.setLogLevel(level);
     }
@@ -382,7 +382,7 @@ public final class ServerMonitor {
     }
   }
 
-  private EntityServerAdmin connectServer(final String serverName) throws RemoteException, ServerAuthenticationException {
+  private EntityServerAdmin connectServer(String serverName) throws RemoteException, ServerAuthenticationException {
     long time = System.currentTimeMillis();
     try {
       Server<?, EntityServerAdmin> theServer = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
@@ -429,10 +429,10 @@ public final class ServerMonitor {
     catch (RemoteException ignored) {/*ignored*/}
   }
 
-  private void addThreadStatistics(final long timestamp, final ServerAdmin.ThreadStatistics threadStatistics) {
+  private void addThreadStatistics(long timestamp, ServerAdmin.ThreadStatistics threadStatistics) {
     threadCountSeries.add(timestamp, threadStatistics.getThreadCount());
     daemonThreadCountSeries.add(timestamp, threadStatistics.getDaemonThreadCount());
-    for (final Map.Entry<Thread.State, Integer> entry : threadStatistics.getThreadStateCount().entrySet()) {
+    for (Map.Entry<Thread.State, Integer> entry : threadStatistics.getThreadStateCount().entrySet()) {
       XYSeries stateSeries = threadStateSeries.get(entry.getKey());
       if (stateSeries == null) {
         stateSeries = new XYSeries(entry.getKey());
@@ -443,8 +443,8 @@ public final class ServerMonitor {
     }
   }
 
-  private void addGCInfo(final List<ServerAdmin.GcEvent> gcEvents) {
-    for (final ServerAdmin.GcEvent event : gcEvents) {
+  private void addGCInfo(List<ServerAdmin.GcEvent> gcEvents) {
+    for (ServerAdmin.GcEvent event : gcEvents) {
       XYSeries typeSeries = gcTypeSeries.get(GC_EVENT_PREFIX + event.getGcName());
       if (typeSeries == null) {
         typeSeries = new XYSeries(GC_EVENT_PREFIX + event.getGcName());
@@ -462,7 +462,7 @@ public final class ServerMonitor {
 
   private static final class DomainTableModel extends DefaultTableModel {
     @Override
-    public boolean isCellEditable(final int row, final int column) {
+    public boolean isCellEditable(int row, int column) {
       return false;
     }
   }

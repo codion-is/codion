@@ -23,8 +23,8 @@ final class DefaultDenormalizedProperty<T> extends DefaultColumnProperty<T> impl
    * @param denormalizedAttribute the attribute from which this property should get its value
    * @param caption the caption if this property
    */
-  DefaultDenormalizedProperty(final Attribute<T> attribute, final Attribute<Entity> entityAttribute,
-                              final Attribute<T> denormalizedAttribute, final String caption) {
+  DefaultDenormalizedProperty(Attribute<T> attribute, Attribute<Entity> entityAttribute,
+                              Attribute<T> denormalizedAttribute, String caption) {
     super(attribute, caption);
     this.entityAttribute = entityAttribute;
     this.denormalizedAttribute = denormalizedAttribute;

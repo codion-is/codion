@@ -26,11 +26,11 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   private final boolean nowait;
 
-  PostgreSQLDatabase(final String jdbcUrl) {
+  PostgreSQLDatabase(String jdbcUrl) {
     this(jdbcUrl, false);
   }
 
-  PostgreSQLDatabase(final String jdbcUrl, final boolean nowait) {
+  PostgreSQLDatabase(String jdbcUrl, boolean nowait) {
     super(jdbcUrl);
     this.nowait = nowait;
   }
@@ -55,32 +55,32 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getAutoIncrementQuery(final String idSource) {
+  public String getAutoIncrementQuery(String idSource) {
     return "select currval('" + requireNonNull(idSource, "idSource") + "')";
   }
 
   @Override
-  public String getSequenceQuery(final String sequenceName) {
+  public String getSequenceQuery(String sequenceName) {
     return "select nextval('" + requireNonNull(sequenceName, "sequenceName") + "')";
   }
 
   @Override
-  public boolean isAuthenticationException(final SQLException exception) {
+  public boolean isAuthenticationException(SQLException exception) {
     return INVALID_PASS.equals(exception.getSQLState());
   }
 
   @Override
-  public boolean isReferentialIntegrityException(final SQLException exception) {
+  public boolean isReferentialIntegrityException(SQLException exception) {
     return INTEGRITY_CONSTRAINT_VIOLATION.equals(exception.getSQLState()) || FOREIGN_KEY_VIOLATION.equals(exception.getSQLState());
   }
 
   @Override
-  public boolean isUniqueConstraintException(final SQLException exception) {
+  public boolean isUniqueConstraintException(SQLException exception) {
     return UNIQUE_CONSTRAINT_ERROR.equals(exception.getSQLState());
   }
 
   @Override
-  public boolean isTimeoutException(final SQLException exception) {
+  public boolean isTimeoutException(SQLException exception) {
     return TIMEOUT_ERROR.equals(exception.getSQLState());
   }
 

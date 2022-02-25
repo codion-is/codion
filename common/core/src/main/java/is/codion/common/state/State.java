@@ -83,7 +83,7 @@ public interface State extends StateObserver, Value<Boolean> {
    * @param value the initial state value
    * @return a new State
    */
-  static State state(final boolean value) {
+  static State state(boolean value) {
     return new DefaultState(value);
   }
 
@@ -93,7 +93,7 @@ public interface State extends StateObserver, Value<Boolean> {
    * @param stateObservers the state observers to base this state combination on
    * @return a new State.Combination
    */
-  static Combination combination(final Conjunction conjunction, final StateObserver... stateObservers) {
+  static Combination combination(Conjunction conjunction, StateObserver... stateObservers) {
     return new DefaultStateCombination(conjunction, stateObservers);
   }
 
@@ -103,7 +103,7 @@ public interface State extends StateObserver, Value<Boolean> {
    * @param stateObservers the state observers to base this state combination on
    * @return a new State.Combination
    */
-  static Combination combination(final Conjunction conjunction, final Collection<? extends StateObserver> stateObservers) {
+  static Combination combination(Conjunction conjunction, Collection<? extends StateObserver> stateObservers) {
     return new DefaultStateCombination(conjunction, stateObservers);
   }
 
@@ -112,7 +112,7 @@ public interface State extends StateObserver, Value<Boolean> {
    * @param stateObservers the state observers to base this state combination on
    * @return a new State.Combination
    */
-  static Combination and(final StateObserver... stateObservers) {
+  static Combination and(StateObserver... stateObservers) {
     return new DefaultStateCombination(Conjunction.AND, stateObservers);
   }
 
@@ -121,7 +121,7 @@ public interface State extends StateObserver, Value<Boolean> {
    * @param stateObservers the state observers to base this state combination on
    * @return a new State.Combination
    */
-  static Combination and(final Collection<? extends StateObserver> stateObservers) {
+  static Combination and(Collection<? extends StateObserver> stateObservers) {
     return new DefaultStateCombination(Conjunction.AND, stateObservers);
   }
 
@@ -130,7 +130,7 @@ public interface State extends StateObserver, Value<Boolean> {
    * @param stateObservers the state observers to base this state combination on
    * @return a new State.Combination
    */
-  static Combination or(final StateObserver... stateObservers) {
+  static Combination or(StateObserver... stateObservers) {
     return new DefaultStateCombination(Conjunction.OR, stateObservers);
   }
 
@@ -139,7 +139,7 @@ public interface State extends StateObserver, Value<Boolean> {
    * @param stateObservers the state observers to base this state combination on
    * @return a new State.Combination
    */
-  static Combination or(final Collection<? extends StateObserver> stateObservers) {
+  static Combination or(Collection<? extends StateObserver> stateObservers) {
     return new DefaultStateCombination(Conjunction.OR, stateObservers);
   }
 
@@ -150,7 +150,7 @@ public interface State extends StateObserver, Value<Boolean> {
    * @return a new State.Group
    * @see Group
    */
-  static Group group(final State... states) {
+  static Group group(State... states) {
     return new DefaultStateGroup(states);
   }
 }

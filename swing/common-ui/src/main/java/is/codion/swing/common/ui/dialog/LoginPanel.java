@@ -63,8 +63,8 @@ final class LoginPanel extends JPanel {
   private final Control cancelControl;
   private final State validatingState = State.state();
 
-  LoginPanel(final User defaultUser, final LoginValidator loginValidator,
-             final ImageIcon icon, final JComponent southComponent) {
+  LoginPanel(User defaultUser, LoginValidator loginValidator,
+             ImageIcon icon, JComponent southComponent) {
     this.icon = icon;
     this.okControl = Control.builder(this::onOkPressed)
             .caption(Messages.get(Messages.OK))
@@ -92,7 +92,7 @@ final class LoginPanel extends JPanel {
     return cancelControl;
   }
 
-  private void initializeUI(final User defaultUser, final JComponent southComponent) {
+  private void initializeUI(User defaultUser, JComponent southComponent) {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
     usernameField.addFocusListener(new SelectAllListener(usernameField));
@@ -166,13 +166,13 @@ final class LoginPanel extends JPanel {
     validatingState.set(true);
   }
 
-  private void onValidationSuccess(final User user) {
+  private void onValidationSuccess(User user) {
     userValue.set(user);
     validatingState.set(false);
     closeDialog();
   }
 
-  private void onValidationFailure(final Throwable exception) {
+  private void onValidationFailure(Throwable exception) {
     userValue.set(null);
     validatingState.set(false);
     DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this).orElse(null));
@@ -186,17 +186,17 @@ final class LoginPanel extends JPanel {
 
     private final JTextComponent textComponent;
 
-    private SelectAllListener(final JTextComponent textComponent) {
+    private SelectAllListener(JTextComponent textComponent) {
       this.textComponent = textComponent;
     }
 
     @Override
-    public void focusGained(final FocusEvent e) {
+    public void focusGained(FocusEvent e) {
       textComponent.selectAll();
     }
 
     @Override
-    public void focusLost(final FocusEvent e) {
+    public void focusLost(FocusEvent e) {
       textComponent.select(0, 0);
     }
   }

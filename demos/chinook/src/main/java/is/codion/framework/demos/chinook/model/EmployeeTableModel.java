@@ -12,7 +12,7 @@ public final class EmployeeTableModel extends SwingEntityTableModel {
 
   private final SwingEntityTreeModel treeModel;
 
-  public EmployeeTableModel(final EntityConnectionProvider connectionProvider) {
+  public EmployeeTableModel(EntityConnectionProvider connectionProvider) {
     super(Employee.TYPE, connectionProvider);
     this.treeModel = new SwingEntityTreeModel(this, Employee.REPORTSTO_FK);
   }

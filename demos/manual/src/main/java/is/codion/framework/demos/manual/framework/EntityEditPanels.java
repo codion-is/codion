@@ -60,7 +60,7 @@ public final class EntityEditPanels {
 
   private static final class EditPanelDemo extends EntityEditPanel {
 
-    public EditPanelDemo(final SwingEntityEditModel editModel) {
+    public EditPanelDemo(SwingEntityEditModel editModel) {
       super(editModel);
     }
 

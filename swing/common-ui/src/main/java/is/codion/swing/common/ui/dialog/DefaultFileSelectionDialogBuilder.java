@@ -37,19 +37,19 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   private boolean confirmOverwrite = true;
 
   @Override
-  public FileSelectionDialogBuilder startDirectory(final String startDirectory) {
+  public FileSelectionDialogBuilder startDirectory(String startDirectory) {
     this.startDirectory = startDirectory;
     return this;
   }
 
   @Override
-  public FileSelectionDialogBuilder confirmOverwrite(final boolean confirmOverwrite) {
+  public FileSelectionDialogBuilder confirmOverwrite(boolean confirmOverwrite) {
     this.confirmOverwrite = confirmOverwrite;
     return this;
   }
 
   @Override
-  public FileSelectionDialogBuilder addFileFilter(final FileFilter fileFilter) {
+  public FileSelectionDialogBuilder addFileFilter(FileFilter fileFilter) {
     this.fileFilters.add(requireNonNull(fileFilter));
     return this;
   }
@@ -94,7 +94,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   }
 
   @Override
-  public File selectFileToSave(final String defaultFileName) {
+  public File selectFileToSave(String defaultFileName) {
     return selectFileToSave(owner, startDirectory, defaultFileName, confirmOverwrite);
   }
 
@@ -116,26 +116,26 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
     BOTH
   }
 
-  static File selectDirectory(final Window dialogParent, final String startDir, final String dialogTitle) {
+  static File selectDirectory(Window dialogParent, String startDir, String dialogTitle) {
     return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.DIRECTORIES, dialogTitle, emptyList());
   }
 
-  static File selectFile(final Window dialogParent, final String startDir, final String dialogTitle,
-                         final List<FileFilter> fileFilters) {
+  static File selectFile(Window dialogParent, String startDir, String dialogTitle,
+                         List<FileFilter> fileFilters) {
     return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.FILES, dialogTitle, fileFilters);
   }
 
-  static File selectFileOrDirectory(final Window dialogParent, final String startDir,
-                                    final FilesOrDirectories filesOrDirectories, final String dialogTitle,
-                                    final List<FileFilter> fileFilters) {
+  static File selectFileOrDirectory(Window dialogParent, String startDir,
+                                    FilesOrDirectories filesOrDirectories, String dialogTitle,
+                                    List<FileFilter> fileFilters) {
     return selectFilesOrDirectories(dialogParent, startDir, filesOrDirectories, false, dialogTitle, fileFilters).get(0);
   }
 
-  static synchronized List<File> selectFilesOrDirectories(final Window dialogParent, final String startDir,
-                                                          final FilesOrDirectories filesOrDirectories,
-                                                          final boolean singleSelection,
-                                                          final String dialogTitle,
-                                                          final List<FileFilter> fileFilters) {
+  static synchronized List<File> selectFilesOrDirectories(Window dialogParent, String startDir,
+                                                          FilesOrDirectories filesOrDirectories,
+                                                          boolean singleSelection,
+                                                          String dialogTitle,
+                                                          List<FileFilter> fileFilters) {
     if (fileChooserOpen == null) {
       try {
         WaitCursor.show(dialogParent);
@@ -195,8 +195,8 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
-  static synchronized File selectFileToSave(final Window dialogParent, final String startDir,
-                                            final String defaultFileName, final boolean confirmOverwrite) {
+  static synchronized File selectFileToSave(Window dialogParent, String startDir,
+                                            String defaultFileName, boolean confirmOverwrite) {
     if (fileChooserSave == null) {
       try {
         WaitCursor.show(dialogParent);

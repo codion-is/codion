@@ -38,21 +38,21 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   private final EntityObjectMapper entityObjectMapper;
   private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
 
-  EntityDeserializer(final Entities entities, final EntityObjectMapper entityObjectMapper) {
+  EntityDeserializer(Entities entities, EntityObjectMapper entityObjectMapper) {
     super(Entity.class);
     this.entities = entities;
     this.entityObjectMapper = entityObjectMapper;
   }
 
   @Override
-  public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
+  public Entity deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
     JsonNode entityNode = parser.getCodec().readTree(parser);
     EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entities::getDefinition);
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
   }
 
-  public static Object parseValue(final EntityObjectMapper mapper, final Attribute<?> attribute, final JsonNode jsonNode)
+  public static Object parseValue(EntityObjectMapper mapper, Attribute<?> attribute, JsonNode jsonNode)
           throws JsonProcessingException {
     if (jsonNode.isNull()) {
       return null;
@@ -100,12 +100,12 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     return jsonNode.asText();
   }
 
-  private Map<Attribute<?>, Object> getValueMap(final JsonNode node, final EntityDefinition definition)
+  private Map<Attribute<?>, Object> getValueMap(JsonNode node, EntityDefinition definition)
           throws JsonProcessingException {
     return getPropertyValueMap(definition, node.get("values"));
   }
 
-  private Map<Attribute<?>, Object> getOriginalValueMap(final JsonNode node, final EntityDefinition definition)
+  private Map<Attribute<?>, Object> getOriginalValueMap(JsonNode node, EntityDefinition definition)
           throws JsonProcessingException {
     JsonNode originalValues = node.get("originalValues");
     if (originalValues != null) {
@@ -115,7 +115,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     return null;
   }
 
-  private Map<Attribute<?>, Object> getPropertyValueMap(final EntityDefinition definition, final JsonNode values) throws JsonProcessingException {
+  private Map<Attribute<?>, Object> getPropertyValueMap(EntityDefinition definition, JsonNode values) throws JsonProcessingException {
     Map<Attribute<?>, Object> valueMap = new HashMap<>();
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
@@ -134,7 +134,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
    * @return the value for the given attribute
    * @throws JsonProcessingException in case of an error
    */
-  private Object parseValue(final Attribute<?> attribute, final JsonNode jsonNode) throws JsonProcessingException {
+  private Object parseValue(Attribute<?> attribute, JsonNode jsonNode) throws JsonProcessingException {
     return parseValue(entityObjectMapper, attribute, jsonNode);
   }
 }

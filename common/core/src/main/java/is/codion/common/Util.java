@@ -75,7 +75,7 @@ public final class Util {
    * @param string the string to check
    * @return true if the given string is null or empty, false otherwise
    */
-  public static boolean nullOrEmpty(final String string) {
+  public static boolean nullOrEmpty(String string) {
     return string == null || string.isEmpty();
   }
 
@@ -84,7 +84,7 @@ public final class Util {
    * @param strings the strings to check
    * @return true if one of the given strings is null or empty or if no arguments are provided, false otherwise
    */
-  public static boolean nullOrEmpty(final String... strings) {
+  public static boolean nullOrEmpty(String... strings) {
     if (strings == null || strings.length == 0) {
       return true;
     }
@@ -102,7 +102,7 @@ public final class Util {
    * @param map the map to check
    * @return true if the given map is null or empty, false otherwise
    */
-  public static boolean nullOrEmpty(final Map<?, ?> map) {
+  public static boolean nullOrEmpty(Map<?, ?> map) {
     return map == null || map.isEmpty();
   }
 
@@ -111,7 +111,7 @@ public final class Util {
    * @param collection the collection to check
    * @return true if the given collection is null or empty, false otherwise
    */
-  public static boolean nullOrEmpty(final Collection<?> collection) {
+  public static boolean nullOrEmpty(Collection<?> collection) {
     return collection == null || collection.isEmpty();
   }
 
@@ -120,7 +120,7 @@ public final class Util {
    * @param objects the objects to check
    * @return true if none of the given objects is null
    */
-  public static boolean notNull(final Object... objects) {
+  public static boolean notNull(Object... objects) {
     if (objects == null) {
       return false;
     }
@@ -151,11 +151,11 @@ public final class Util {
    * @param <T> the value type
    * @return a LinkedHashMap with the values mapped to their respective key values, respecting the iteration order of the given collection
    */
-  public static <K, T> LinkedHashMap<K, List<T>> map(final Collection<? extends T> values, final Function<T, K> keyProvider) {
+  public static <K, T> LinkedHashMap<K, List<T>> map(Collection<? extends T> values, Function<T, K> keyProvider) {
     requireNonNull(values, "values");
     requireNonNull(keyProvider, "keyProvider");
     LinkedHashMap<K, List<T>> map = new LinkedHashMap<>(values.size());
-    for (final T value : values) {
+    for (T value : values) {
       map.computeIfAbsent(keyProvider.apply(value), k -> new ArrayList<>()).add(value);
     }
 
@@ -166,7 +166,7 @@ public final class Util {
    * @param className the name of the class to search for
    * @return true if the given class is found on the classpath
    */
-  public static boolean onClasspath(final String className) {
+  public static boolean onClasspath(String className) {
     try {
       Class.forName(requireNonNull(className, "className"));
       return true;
@@ -182,7 +182,7 @@ public final class Util {
    * @param places the number of decimal places
    * @return the rounded value or null if the parameter value was null
    */
-  public static Double roundDouble(final Double d, final int places) {
+  public static Double roundDouble(Double d, int places) {
     return roundDouble(d, places, RoundingMode.HALF_UP);
   }
 
@@ -193,7 +193,7 @@ public final class Util {
    * @param roundingMode the rounding mode
    * @return the rounded value or null if the parameter value was null
    */
-  public static Double roundDouble(final Double d, final int places, final RoundingMode roundingMode) {
+  public static Double roundDouble(Double d, int places, RoundingMode roundingMode) {
     try {
       return d == null ? null : new BigDecimal(Double.toString(d)).setScale(places, roundingMode).doubleValue();
     }
@@ -208,7 +208,7 @@ public final class Util {
    * @return the default value for the given typ
    * @throws IllegalArgumentException in case primitiveType is not a primitive
    */
-  public static <T> T getPrimitiveDefaultValue(final Class<T> primitiveType) {
+  public static <T> T getPrimitiveDefaultValue(Class<T> primitiveType) {
     T defaultValue = (T) DEFAULT_PRIMITIVE_VALUES.get(requireNonNull(primitiveType));
     if (defaultValue == null) {
       throw new IllegalArgumentException("Not a primitive type: " + primitiveType);
@@ -223,7 +223,7 @@ public final class Util {
    * @return the boxed type
    * @throws IllegalArgumentException in case primitiveType is not a primitive
    */
-  public static <T> Class<T> getPrimitiveBoxedType(final Class<T> primitiveType) {
+  public static <T> Class<T> getPrimitiveBoxedType(Class<T> primitiveType) {
     if (!requireNonNull(primitiveType).isPrimitive()) {
       throw new IllegalArgumentException("Not a primitive type: " + primitiveType);
     }

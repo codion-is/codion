@@ -63,7 +63,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   @Override
-  protected List<EntityPanel> initializeEntityPanels(final ChinookApplicationModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(ChinookApplicationModel applicationModel) {
     return Arrays.asList(
             new CustomerPanel(applicationModel.getEntityModel(Customer.TYPE)),
             new ArtistPanel(applicationModel.getEntityModel(Artist.TYPE)),
@@ -72,7 +72,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   @Override
-  protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(final ChinookApplicationModel applicationModel) {
+  protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(ChinookApplicationModel applicationModel) {
     EntityPanel.Builder trackBuilder =
             EntityPanel.builder(SwingEntityModel.builder(Track.TYPE))
                     .tablePanelClass(TrackTablePanel.class);
@@ -109,7 +109,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   @Override
-  protected ChinookApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
+  protected ChinookApplicationModel initializeApplicationModel(EntityConnectionProvider connectionProvider) throws CancelException {
     return new ChinookApplicationModel(connectionProvider);
   }
 
@@ -146,7 +146,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     }
   }
 
-  public static void main(final String[] args) throws CancelException {
+  public static void main(String[] args) throws CancelException {
     String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
     Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
     LookAndFeelProvider.CHANGE_DURING_SELECTION.set(true);

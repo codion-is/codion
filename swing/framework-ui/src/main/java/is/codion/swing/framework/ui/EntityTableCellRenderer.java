@@ -74,7 +74,7 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
    * @param selected true if the cell is selected
    * @return the foreground color
    */
-  default Color getForeground(final JTable table, final int row, final boolean selected) {
+  default Color getForeground(JTable table, int row, boolean selected) {
     if (selected) {
       return table.getSelectionForeground();
     }
@@ -89,7 +89,7 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
    * @param selected true if the cell is selected
    * @return the background color
    */
-  default Color getBackground(final JTable table, final int row, final boolean selected) {
+  default Color getBackground(JTable table, int row, boolean selected) {
     if (selected) {
       return table.getSelectionBackground();
     }
@@ -103,7 +103,7 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
    * @param property the property
    * @return a new {@link EntityTableCellRenderer.Builder} instance
    */
-  static Builder builder(final SwingEntityTableModel tableModel, final Property<?> property) {
+  static Builder builder(SwingEntityTableModel tableModel, Property<?> property) {
     return new DefaultEntityTableCellRenderer.DefaultBuilder(tableModel, property);
   }
 

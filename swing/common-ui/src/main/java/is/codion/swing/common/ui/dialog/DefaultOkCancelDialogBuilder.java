@@ -43,72 +43,72 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   private int buttonPanelConstraints = FlowLayout.RIGHT;
   private Border buttonPanelBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 
-  DefaultOkCancelDialogBuilder(final JComponent component) {
+  DefaultOkCancelDialogBuilder(JComponent component) {
     this.component = requireNonNull(component);
     this.okAction = Control.control(() -> Windows.getParentDialog(component).ifPresent(JDialog::dispose));
     this.cancelAction = Control.control(() -> Windows.getParentDialog(component).ifPresent(JDialog::dispose));
   }
 
   @Override
-  public OkCancelDialogBuilder modal(final boolean modal) {
+  public OkCancelDialogBuilder modal(boolean modal) {
     this.modal = modal;
     return this;
   }
 
   @Override
-  public OkCancelDialogBuilder resizable(final boolean resizable) {
+  public OkCancelDialogBuilder resizable(boolean resizable) {
     this.resizable = resizable;
     return this;
   }
 
   @Override
-  public OkCancelDialogBuilder size(final Dimension size) {
+  public OkCancelDialogBuilder size(Dimension size) {
     this.size = requireNonNull(size);
     return this;
   }
 
   @Override
-  public OkCancelDialogBuilder buttonPanelConstraints(final int buttonPanelConstraints) {
+  public OkCancelDialogBuilder buttonPanelConstraints(int buttonPanelConstraints) {
     this.buttonPanelConstraints = buttonPanelConstraints;
     return this;
   }
 
   @Override
-  public OkCancelDialogBuilder buttonPanelBorder(final Border buttonPanelBorder) {
+  public OkCancelDialogBuilder buttonPanelBorder(Border buttonPanelBorder) {
     this.buttonPanelBorder = buttonPanelBorder;
     return this;
   }
 
   @Override
-  public OkCancelDialogBuilder onOk(final Runnable onOk) {
+  public OkCancelDialogBuilder onOk(Runnable onOk) {
     return okAction(performAndCloseControl(requireNonNull(onOk)));
   }
 
   @Override
-  public OkCancelDialogBuilder onCancel(final Runnable onCancel) {
+  public OkCancelDialogBuilder onCancel(Runnable onCancel) {
     return cancelAction(performAndCloseControl(requireNonNull(onCancel)));
   }
 
   @Override
-  public OkCancelDialogBuilder okAction(final Action okAction) {
+  public OkCancelDialogBuilder okAction(Action okAction) {
     this.okAction = requireNonNull(okAction);
     return this;
   }
 
   @Override
-  public OkCancelDialogBuilder cancelAction(final Action cancelAction) {
+  public OkCancelDialogBuilder cancelAction(Action cancelAction) {
     this.cancelAction = requireNonNull(cancelAction);
     return this;
   }
 
   @Override
-  public OkCancelDialogBuilder locationRelativeTo(final JComponent locationRelativeTo) {
+  public OkCancelDialogBuilder locationRelativeTo(JComponent locationRelativeTo) {
     this.locationRelativeTo = requireNonNull(locationRelativeTo);
     return this;
   }
 
   @Override
-  public OkCancelDialogBuilder onShown(final Consumer<JDialog> onShown) {
+  public OkCancelDialogBuilder onShown(Consumer<JDialog> onShown) {
     this.onShown = onShown;
     return this;
   }
@@ -145,7 +145,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(final WindowEvent e) {
+      public void windowClosing(WindowEvent e) {
         cancelAction.actionPerformed(null);
       }
     });
@@ -159,7 +159,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     return dialog;
   }
 
-  private Control performAndCloseControl(final Runnable command) {
+  private Control performAndCloseControl(Runnable command) {
     return Control.control(() -> {
       command.run();
       Windows.getParentDialog(component).ifPresent(JDialog::dispose);

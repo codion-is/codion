@@ -159,7 +159,7 @@ public final class SwingEntityComboBoxModelTest {
       assertEquals(item.getForeignKey(TestDomain.EMP_DEPARTMENT_FK), accounting);
       assertEquals(item.getForeignKey(TestDomain.EMP_MGR_FK), blake);
     }
-    for (final Entity employee : comboBoxModel.getItems()) {
+    for (Entity employee : comboBoxModel.getItems()) {
       if (employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK).equals(accounting)) {
         comboBoxModel.setSelectedItem(employee);
         break;
@@ -226,7 +226,7 @@ public final class SwingEntityComboBoxModelTest {
   void selectAttributes() {
     comboBoxModel.setSelectAttributes(Arrays.asList(TestDomain.EMP_NAME, TestDomain.EMP_DEPARTMENT_FK));
     comboBoxModel.refresh();
-    for (final Entity emp : comboBoxModel.getItems()) {
+    for (Entity emp : comboBoxModel.getItems()) {
       assertTrue(emp.contains(TestDomain.EMP_ID));
       assertTrue(emp.contains(TestDomain.EMP_NAME));
       assertTrue(emp.contains(TestDomain.EMP_DEPARTMENT));
@@ -239,7 +239,7 @@ public final class SwingEntityComboBoxModelTest {
     }
     comboBoxModel.setSelectAttributes(emptyList());
     comboBoxModel.refresh();
-    for (final Entity emp : comboBoxModel.getItems()) {
+    for (Entity emp : comboBoxModel.getItems()) {
       assertTrue(emp.contains(TestDomain.EMP_ID));
       assertTrue(emp.contains(TestDomain.EMP_NAME));
       assertTrue(emp.contains(TestDomain.EMP_DEPARTMENT));

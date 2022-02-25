@@ -47,7 +47,7 @@ final class SelectColumnsPanel<C> extends JPanel {
   private final Map<TableColumn, State> states;
   private final List<JCheckBox> checkBoxes;
 
-  SelectColumnsPanel(final SwingFilteredTableColumnModel<C> columnModel) {
+  SelectColumnsPanel(SwingFilteredTableColumnModel<C> columnModel) {
     super(new BorderLayout());
     this.columnModel = columnModel;
     this.states = createStateMap();
@@ -92,7 +92,7 @@ final class SelectColumnsPanel<C> extends JPanel {
     return stateMap;
   }
 
-  private JPanel createNorthPanel(final Insets insets) {
+  private JPanel createNorthPanel(Insets insets) {
     JCheckBox selectAllButton = Components.checkBox()
             .linkedValueObserver(State.and(states.values()))
             .caption(MESSAGES.getString("select_all"))
@@ -139,7 +139,7 @@ final class SelectColumnsPanel<C> extends JPanel {
       downEventBuilder.enable(checkBox);
       checkBox.addFocusListener(new FocusAdapter() {
         @Override
-        public void focusGained(final FocusEvent e) {
+        public void focusGained(FocusEvent e) {
           northPanel.scrollRectToVisible(checkBox.getBounds());
         }
       });
@@ -158,13 +158,13 @@ final class SelectColumnsPanel<C> extends JPanel {
     private final JCheckBox selectAllButton;
     private final JCheckBox selectNoneButton;
 
-    private SelectAll(final JCheckBox selectAllButton, final JCheckBox selectNoneButton) {
+    private SelectAll(JCheckBox selectAllButton, JCheckBox selectNoneButton) {
       this.selectAllButton = selectAllButton;
       this.selectNoneButton = selectNoneButton;
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
       if (selectAllButton.isSelected()) {
         selectAll();
       }
@@ -180,13 +180,13 @@ final class SelectColumnsPanel<C> extends JPanel {
     private final JCheckBox selectAllButton;
     private final JCheckBox selectNoneButton;
 
-    private SelectNone(final JCheckBox selectAllButton, final JCheckBox selectNoneButton) {
+    private SelectNone(JCheckBox selectAllButton, JCheckBox selectNoneButton) {
       this.selectAllButton = selectAllButton;
       this.selectNoneButton = selectNoneButton;
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
       if (selectNoneButton.isSelected()) {
         selectNone();
       }
@@ -202,7 +202,7 @@ final class SelectColumnsPanel<C> extends JPanel {
     private final List<JCheckBox> checkBoxes;
     private final boolean next;
 
-    private TransferFocusCommand(final List<JCheckBox> checkBoxes, final boolean next) {
+    private TransferFocusCommand(List<JCheckBox> checkBoxes, boolean next) {
       this.next = next;
       this.checkBoxes = checkBoxes;
     }
@@ -218,11 +218,11 @@ final class SelectColumnsPanel<C> extends JPanel {
                       .requestFocusInWindow());
     }
 
-    private int getNextIndex(final int currentIndex) {
+    private int getNextIndex(int currentIndex) {
       return currentIndex == checkBoxes.size() - 1 ? 0 : currentIndex + 1;
     }
 
-    private int getPreviousIndex(final int currentIndex) {
+    private int getPreviousIndex(int currentIndex) {
       return currentIndex == 0 ? checkBoxes.size() - 1 : currentIndex - 1;
     }
   }

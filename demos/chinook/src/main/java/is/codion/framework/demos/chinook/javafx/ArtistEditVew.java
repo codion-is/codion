@@ -12,7 +12,7 @@ import javafx.scene.layout.BorderPane;
 
 public final class ArtistEditVew extends EntityEditView {
 
-  public ArtistEditVew(final FXEntityEditModel editModel) {
+  public ArtistEditVew(FXEntityEditModel editModel) {
     super(editModel);
   }
 

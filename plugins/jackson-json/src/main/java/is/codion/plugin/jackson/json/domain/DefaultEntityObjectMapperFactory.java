@@ -19,12 +19,12 @@ public abstract class DefaultEntityObjectMapperFactory implements EntityObjectMa
    * Instantiates a new instance compatible with the given domain type.
    * @param domainType the domain type
    */
-  protected DefaultEntityObjectMapperFactory(final DomainType domainType) {
+  protected DefaultEntityObjectMapperFactory(DomainType domainType) {
     this.domainType = requireNonNull(domainType);
   }
 
   @Override
-  public final boolean isCompatibleWith(final DomainType domainType) {
+  public final boolean isCompatibleWith(DomainType domainType) {
     return this.domainType.equals(requireNonNull(domainType));
   }
 }

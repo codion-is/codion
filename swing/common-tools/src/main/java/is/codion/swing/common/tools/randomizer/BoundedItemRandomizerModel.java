@@ -29,7 +29,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
    * Instantiates a new BoundedRandomItemModel with a default bounded weight of 100.
    * @param items the items
    */
-  public BoundedItemRandomizerModel(final Collection<T> items) {
+  public BoundedItemRandomizerModel(Collection<T> items) {
     this(DEFAULT_BOUNDED_WEIGHT, items);
   }
 
@@ -38,7 +38,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
    * @param boundedWeight the maximum total weight
    * @param items the items
    */
-  public BoundedItemRandomizerModel(final int boundedWeight, final Collection<T> items) {
+  public BoundedItemRandomizerModel(int boundedWeight, Collection<T> items) {
     if (boundedWeight <= 0) {
       throw new IllegalArgumentException("Bounded weight must be a positive integer");
     }
@@ -56,7 +56,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
   }
 
   @Override
-  public void incrementWeight(final T item) {
+  public void incrementWeight(T item) {
     synchronized (lock) {
       RandomItem<T> randomItem = getRandomItem(item);
       if (randomItem.getWeight() >= weightBounds) {
@@ -69,7 +69,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
   }
 
   @Override
-  public void decrementWeight(final T item) {
+  public void decrementWeight(T item) {
     synchronized (lock) {
       RandomItem<T> randomItem = getRandomItem(item);
       if (randomItem.getWeight() == 0) {
@@ -82,16 +82,16 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
   }
 
   @Override
-  public void setWeight(final T item, final int weight) {
+  public void setWeight(T item, int weight) {
     throw new UnsupportedOperationException("setWeight is not implemented in " + getClass().getSimpleName());
   }
 
   @Override
-  public void addItem(final T item, final int weight) {
+  public void addItem(T item, int weight) {
     throw new UnsupportedOperationException("addItem is not implemented in " + getClass().getSimpleName());
   }
 
-  private void initializeItems(final Collection<T> items) {
+  private void initializeItems(Collection<T> items) {
     int rest = weightBounds % items.size();
     int amountEach = weightBounds / items.size();
     Iterator<T> itemIterator = items.iterator();
@@ -101,17 +101,17 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
     }
   }
 
-  private void incrementWeight(final RandomItem<?> exclude) {
+  private void incrementWeight(RandomItem<?> exclude) {
     lastAffected = getNextItem(exclude, false);
     lastAffected.incrementWeight();
   }
 
-  private void decrementWeight(final RandomItem<?> exclude) {
+  private void decrementWeight(RandomItem<?> exclude) {
     lastAffected = getNextItem(exclude, true);
     lastAffected.decrementWeight();
   }
 
-  private RandomItem<T> getNextItem(final RandomItem<?> exclude, final boolean nonEmpty) {
+  private RandomItem<T> getNextItem(RandomItem<?> exclude, boolean nonEmpty) {
     int index = getItems().indexOf(lastAffected);
     RandomItem<T> item = null;
     while (item == null || item.equals(exclude) || (nonEmpty ? item.getWeight() == 0 : item.getWeight() == weightBounds)) {

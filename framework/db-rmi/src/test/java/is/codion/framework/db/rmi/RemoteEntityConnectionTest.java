@@ -28,7 +28,7 @@ public class RemoteEntityConnectionTest {
     if (remoteEntityConnectionMethods.size() != entityConnectionMethods.size()) {
       fail("Method count mismatch");
     }
-    for (final Method entityConnectionMethod : entityConnectionMethods) {
+    for (Method entityConnectionMethod : entityConnectionMethods) {
       if (remoteEntityConnectionMethods.stream().noneMatch(remoteConnectionMethod ->
               remoteConnectionMethod.getReturnType().equals(entityConnectionMethod.getReturnType())
                       && remoteConnectionMethod.getName().equals(entityConnectionMethod.getName())

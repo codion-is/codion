@@ -19,13 +19,13 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
   private final ComboBoxModel<?> comboBoxModel;
   private final boolean wrapAround;
 
-  private ComboBoxMouseWheelListener(final ComboBoxModel<?> comboBoxModel, final boolean wrapAround) {
+  private ComboBoxMouseWheelListener(ComboBoxModel<?> comboBoxModel, boolean wrapAround) {
     this.comboBoxModel = requireNonNull(comboBoxModel);
     this.wrapAround = wrapAround;
   }
 
   @Override
-  public void mouseWheelMoved(final MouseWheelEvent event) {
+  public void mouseWheelMoved(MouseWheelEvent event) {
     if (comboBoxModel.getSize() == 0) {
       return;
     }
@@ -41,7 +41,7 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
    * @param <T> the combo box value type
    * @return a new MouseWheelListener based on the given model
    */
-  public static <T> MouseWheelListener create(final ComboBoxModel<T> comboBoxModel) {
+  public static <T> MouseWheelListener create(ComboBoxModel<T> comboBoxModel) {
     return new ComboBoxMouseWheelListener(comboBoxModel, false);
   }
 
@@ -51,11 +51,11 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
    * @param <T> the combo box value type
    * @return a new MouseWheelListener based on the given model
    */
-  public static <T> MouseWheelListener createWithWrapAround(final ComboBoxModel<T> comboBoxModel) {
+  public static <T> MouseWheelListener createWithWrapAround(ComboBoxModel<T> comboBoxModel) {
     return new ComboBoxMouseWheelListener(comboBoxModel, true);
   }
 
-  private Object getItemToSelect(final boolean next) {
+  private Object getItemToSelect(boolean next) {
     Object currentSelection = comboBoxModel.getSelectedItem();
     if (currentSelection == null) {
       return next || wrapAround ? comboBoxModel.getElementAt(0) : null;
@@ -69,11 +69,11 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
     return currentSelection;
   }
 
-  private int getNextIndex(final int currentIndex) {
+  private int getNextIndex(int currentIndex) {
     return currentIndex == comboBoxModel.getSize() - 1 ? (wrapAround ? 0 : currentIndex) : currentIndex + 1;
   }
 
-  private int getPreviousIndex(final int currentIndex) {
+  private int getPreviousIndex(int currentIndex) {
     return currentIndex == 0 ? (wrapAround ? comboBoxModel.getSize() - 1 : currentIndex) : currentIndex - 1;
   }
 }

@@ -37,7 +37,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    * @param scenarios the query scenarios
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
-  public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws DatabaseException {
+  public QueryLoadTestModel(Database database, User user, Collection<? extends QueryScenario> scenarios) throws DatabaseException {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE);
     ConnectionPoolFactory poolProvider = ConnectionPoolFactory.connectionPoolFactory();
     this.pool = poolProvider.createConnectionPoolWrapper(database, user);
@@ -52,7 +52,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   }
 
   @Override
-  protected void disconnectApplication(final QueryApplication application) {/*Not required*/}
+  protected void disconnectApplication(QueryApplication application) {/*Not required*/}
 
   @Override
   protected QueryApplication initializeApplication() {
@@ -66,7 +66,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     private final ConnectionPoolWrapper pool;
 
-    private QueryApplication(final ConnectionPoolWrapper pool) {
+    private QueryApplication(ConnectionPoolWrapper pool) {
       this.pool = pool;
     }
   }
@@ -86,7 +86,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
      * @param name a unique name for the scenario
      * @param query the query
      */
-    public QueryScenario(final User user, final String name, final String query) {
+    public QueryScenario(User user, String name, String query) {
       this(user, name, query, false);
     }
 
@@ -97,7 +97,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
      * @param query the query
      * @param transactional if true, commit and rollback is performed on success and error respectively
      */
-    public QueryScenario(final User user, final String name, final String query, final boolean transactional) {
+    public QueryScenario(User user, String name, String query, boolean transactional) {
       super(name);
       this.user = user;
       this.query = query;
@@ -109,7 +109,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
      * @throws Exception in case of an exception during the scenario run
      */
     @Override
-    protected final void perform(final QueryApplication application) throws Exception {
+    protected final void perform(QueryApplication application) throws Exception {
       Connection connection = null;
       PreparedStatement statement = null;
       ResultSet resultSet = null;
@@ -148,17 +148,17 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
       return emptyList();
     }
 
-    private void setStatementParameters(final PreparedStatement statement) throws SQLException {
+    private void setStatementParameters(PreparedStatement statement) throws SQLException {
       List<Object> parameters = getParameters();
       if (!Util.nullOrEmpty(parameters)) {
         int index = 1;
-        for (final Object parameter : parameters) {
+        for (Object parameter : parameters) {
           statement.setObject(index++, parameter);
         }
       }
     }
 
-    private static void fetchResult(final ResultSet resultSet) throws SQLException {
+    private static void fetchResult(ResultSet resultSet) throws SQLException {
       int columnCount = resultSet.getMetaData().getColumnCount();
       if (columnCount > 0) {
         while (resultSet.next()) {

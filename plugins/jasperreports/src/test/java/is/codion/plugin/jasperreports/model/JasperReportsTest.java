@@ -77,7 +77,7 @@ public class JasperReportsTest {
       }
 
       @Override
-      public Object getFieldValue(final JRField jrField) throws JRException {
+      public Object getFieldValue(JRField jrField) throws JRException {
         return null;
       }
     };

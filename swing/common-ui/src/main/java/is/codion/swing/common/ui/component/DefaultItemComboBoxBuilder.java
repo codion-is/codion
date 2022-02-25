@@ -36,13 +36,13 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   private boolean mouseWheelScrollingWithWrapAround = false;
   private int maximumRowCount = -1;
 
-  DefaultItemComboBoxBuilder(final List<Item<T>> items, final Value<T> linkedValue) {
+  DefaultItemComboBoxBuilder(List<Item<T>> items, Value<T> linkedValue) {
     super(linkedValue);
     this.items = requireNonNull(items);
     preferredHeight(getPreferredTextFieldHeight());
   }
 
-  DefaultItemComboBoxBuilder(final ItemComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
+  DefaultItemComboBoxBuilder(ItemComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
     super(linkedValue);
     this.comboBoxModel = requireNonNull(comboBoxModel);
     this.items = Collections.emptyList();
@@ -50,19 +50,19 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
-  public ItemComboBoxBuilder<T> nullable(final boolean nullable) {
+  public ItemComboBoxBuilder<T> nullable(boolean nullable) {
     this.nullable = nullable;
     return this;
   }
 
   @Override
-  public ItemComboBoxBuilder<T> popupWidth(final int popupWidth) {
+  public ItemComboBoxBuilder<T> popupWidth(int popupWidth) {
     this.popupWidth = popupWidth;
     return this;
   }
 
   @Override
-  public ItemComboBoxBuilder<T> sorted(final boolean sorted) {
+  public ItemComboBoxBuilder<T> sorted(boolean sorted) {
     if (comboBoxModel != null) {
       throw new IllegalStateException("ComboBoxModel has been set, which controls the sorting");
     }
@@ -71,7 +71,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
-  public ItemComboBoxBuilder<T> sortComparator(final Comparator<Item<T>> sortComparator) {
+  public ItemComboBoxBuilder<T> sortComparator(Comparator<Item<T>> sortComparator) {
     if (comboBoxModel != null) {
       throw new IllegalStateException("ComboBoxModel has been set, which controls the sorting comparator");
     }
@@ -80,13 +80,13 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
-  public ItemComboBoxBuilder<T> completionMode(final Completion.Mode completionMode) {
+  public ItemComboBoxBuilder<T> completionMode(Completion.Mode completionMode) {
     this.completionMode = requireNonNull(completionMode);
     return this;
   }
 
   @Override
-  public ItemComboBoxBuilder<T> mouseWheelScrolling(final boolean mouseWheelScrolling) {
+  public ItemComboBoxBuilder<T> mouseWheelScrolling(boolean mouseWheelScrolling) {
     this.mouseWheelScrolling = mouseWheelScrolling;
     if (mouseWheelScrolling) {
       this.mouseWheelScrollingWithWrapAround = false;
@@ -95,7 +95,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
-  public ItemComboBoxBuilder<T> mouseWheelScrollingWithWrapAround(final boolean mouseWheelScrollingWithWrapAround) {
+  public ItemComboBoxBuilder<T> mouseWheelScrollingWithWrapAround(boolean mouseWheelScrollingWithWrapAround) {
     this.mouseWheelScrollingWithWrapAround = mouseWheelScrollingWithWrapAround;
     if (mouseWheelScrollingWithWrapAround) {
       this.mouseWheelScrolling = false;
@@ -104,7 +104,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
-  public ItemComboBoxBuilder<T> maximumRowCount(final int maximumRowCount) {
+  public ItemComboBoxBuilder<T> maximumRowCount(int maximumRowCount) {
     this.maximumRowCount = maximumRowCount;
     return this;
   }
@@ -131,18 +131,18 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
-  protected ComponentValue<T, SteppedComboBox<Item<T>>> buildComponentValue(final SteppedComboBox<Item<T>> component) {
+  protected ComponentValue<T, SteppedComboBox<Item<T>>> buildComponentValue(SteppedComboBox<Item<T>> component) {
     return ComponentValues.itemComboBox(component);
   }
 
   @Override
-  protected void setTransferFocusOnEnter(final SteppedComboBox<Item<T>> component) {
+  protected void setTransferFocusOnEnter(SteppedComboBox<Item<T>> component) {
     component.setTransferFocusOnEnter(true);
     TransferFocusOnEnter.enable((JComponent) component.getEditor().getEditorComponent());
   }
 
   @Override
-  protected void setInitialValue(final SteppedComboBox<Item<T>> component, final T initialValue) {
+  protected void setInitialValue(SteppedComboBox<Item<T>> component, T initialValue) {
     component.setSelectedItem(initialValue);
   }
 

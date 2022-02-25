@@ -58,8 +58,8 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
    * @throws RemoteException in case of a communication error
    * @throws AlreadyBoundException if a credential server is already running
    */
-  public CredentialsServer(final int port, final int tokenValidity,
-                           final int cleanupInterval) throws AlreadyBoundException, RemoteException {
+  public CredentialsServer(int port, int tokenValidity,
+                           int cleanupInterval) throws AlreadyBoundException, RemoteException {
     this(port, CredentialsService.REGISTRY_PORT.getOrThrow(), tokenValidity, cleanupInterval);
   }
 
@@ -72,8 +72,8 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
    * @throws RemoteException in case of a communication error
    * @throws AlreadyBoundException if a credential server is already running
    */
-  public CredentialsServer(final int port, final int registryPort, final int tokenValidity,
-                           final int cleanupInterval) throws AlreadyBoundException, RemoteException {
+  public CredentialsServer(int port, int registryPort, int tokenValidity,
+                           int cleanupInterval) throws AlreadyBoundException, RemoteException {
     super(port);
     this.tokenValidity = tokenValidity;
     this.expiredCleaner = TaskScheduler.builder(this::removeExpired)
@@ -89,12 +89,12 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
    * @param authenticationToken the one-time token
    * @param user the user credentials associated with the token
    */
-  public void addAuthenticationToken(final UUID authenticationToken, final User user) {
+  public void addAuthenticationToken(UUID authenticationToken, User user) {
     authenticationTokens.put(authenticationToken, new UserExpiration(user, System.currentTimeMillis() + tokenValidity));
   }
 
   @Override
-  public User getUser(final UUID authenticationToken) throws RemoteException {
+  public User getUser(UUID authenticationToken) throws RemoteException {
     try {
       String clientHost = getClientHost();
       if (!Objects.equals(clientHost, LOCALHOST)) {
@@ -133,7 +133,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
   }
 
   private void removeExpired() {
-    for (final Map.Entry<UUID, UserExpiration> entry : authenticationTokens.entrySet()) {
+    for (Map.Entry<UUID, UserExpiration> entry : authenticationTokens.entrySet()) {
       if (entry.getValue().isExpired()) {
         authenticationTokens.remove(entry.getKey());
         LOG.debug("Expired token removed for user: " + entry.getValue().user);
@@ -146,7 +146,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
     private final User user;
     private final long expires;
 
-    private UserExpiration(final User user, final long expires) {
+    private UserExpiration(User user, long expires) {
       this.user = user;
       this.expires = expires;
     }

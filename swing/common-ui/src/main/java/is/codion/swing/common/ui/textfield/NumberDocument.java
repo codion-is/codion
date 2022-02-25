@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 class NumberDocument<T extends Number> extends PlainDocument {
 
-  protected NumberDocument(final NumberParsingDocumentFilter<T> documentFilter) {
+  protected NumberDocument(NumberParsingDocumentFilter<T> documentFilter) {
     super.setDocumentFilter(documentFilter);
   }
 
@@ -27,7 +27,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
    * @throws UnsupportedOperationException always
    */
   @Override
-  public final void setDocumentFilter(final DocumentFilter filter) {
+  public final void setDocumentFilter(DocumentFilter filter) {
     throw new UnsupportedOperationException("Changing the DocumentFilter of NumberDocument and its descendants is not allowed");
   }
 
@@ -40,7 +40,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
     return ((NumberParser<T>) getDocumentFilter().getParser()).getFormat();
   }
 
-  protected final void setNumber(final T number) {
+  protected final void setNumber(T number) {
     setText(number == null ? "" : getFormat().format(number));
   }
 
@@ -75,7 +75,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
     return (BigDecimal) getNumber();
   }
 
-  protected final void setText(final String text) {
+  protected final void setText(String text) {
     try {
       if (!Objects.equals(getText(0, getLength()), text)) {
         remove(0, getLength());
@@ -87,11 +87,11 @@ class NumberDocument<T extends Number> extends PlainDocument {
     }
   }
 
-  void setTextComponent(final JTextComponent textComponent) {
+  void setTextComponent(JTextComponent textComponent) {
     getDocumentFilter().setTextComponent(textComponent);
   }
 
-  void setSeparators(final char decimalSeparator, final char groupingSeparator) {
+  void setSeparators(char decimalSeparator, char groupingSeparator) {
     if (decimalSeparator == groupingSeparator) {
       throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
     }
@@ -103,12 +103,12 @@ class NumberDocument<T extends Number> extends PlainDocument {
     setNumber(number);
   }
 
-  void setDecimalSeparator(final char decimalSeparator) {
+  void setDecimalSeparator(char decimalSeparator) {
     DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
     symbols.setDecimalSeparator(decimalSeparator);
   }
 
-  void setGroupingSeparator(final char groupingSeparator) {
+  void setGroupingSeparator(char groupingSeparator) {
     DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
     symbols.setGroupingSeparator(groupingSeparator);
   }

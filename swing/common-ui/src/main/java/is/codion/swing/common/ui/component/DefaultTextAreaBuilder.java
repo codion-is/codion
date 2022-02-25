@@ -20,49 +20,49 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   private boolean autoscrolls = true;
   private Document document;
 
-  DefaultTextAreaBuilder(final Value<String> linkedValue) {
+  DefaultTextAreaBuilder(Value<String> linkedValue) {
     super(linkedValue);
   }
 
   @Override
-  public TextAreaBuilder rows(final int rows) {
+  public TextAreaBuilder rows(int rows) {
     this.rows = rows;
     return this;
   }
 
   @Override
-  public TextAreaBuilder rowsColumns(final int rows, final int columns) {
+  public TextAreaBuilder rowsColumns(int rows, int columns) {
     this.rows = rows;
     this.columns = columns;
     return this;
   }
 
   @Override
-  public TextAreaBuilder tabSize(final int tabSize) {
+  public TextAreaBuilder tabSize(int tabSize) {
     this.tabSize = tabSize;
     return this;
   }
 
   @Override
-  public TextAreaBuilder lineWrap(final boolean lineWrap) {
+  public TextAreaBuilder lineWrap(boolean lineWrap) {
     this.lineWrap = lineWrap;
     return this;
   }
 
   @Override
-  public TextAreaBuilder wrapStyleWord(final boolean wrapStyleWord) {
+  public TextAreaBuilder wrapStyleWord(boolean wrapStyleWord) {
     this.wrapStyleWord = wrapStyleWord;
     return this;
   }
 
   @Override
-  public TextAreaBuilder autoscrolls(final boolean autoscrolls) {
+  public TextAreaBuilder autoscrolls(boolean autoscrolls) {
     this.autoscrolls = autoscrolls;
     return this;
   }
 
   @Override
-  public TextAreaBuilder document(final Document document) {
+  public TextAreaBuilder document(Document document) {
     this.document = requireNonNull(document);
     return this;
   }
@@ -87,12 +87,12 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   }
 
   @Override
-  protected ComponentValue<String, JTextArea> buildComponentValue(final JTextArea component) {
+  protected ComponentValue<String, JTextArea> buildComponentValue(JTextArea component) {
     return ComponentValues.textComponent(component, null, updateOn);
   }
 
   @Override
-  protected void setInitialValue(final JTextArea component, final String initialValue) {
+  protected void setInitialValue(JTextArea component, String initialValue) {
     component.setText(initialValue);
     component.setCaretPosition(0);
   }

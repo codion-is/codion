@@ -45,8 +45,8 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final Domain domain, final Database database, final RemoteClient remoteClient,
-                                final int port) throws DatabaseException, RemoteException {
+  DefaultRemoteEntityConnection(Domain domain, Database database, RemoteClient remoteClient,
+                                int port) throws DatabaseException, RemoteException {
     this(domain, database, remoteClient, port, null, null);
   }
 
@@ -62,9 +62,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final Domain domain, final Database database, final RemoteClient remoteClient,
-                                final int port, final RMIClientSocketFactory clientSocketFactory,
-                                final RMIServerSocketFactory serverSocketFactory)
+  DefaultRemoteEntityConnection(Domain domain, Database database, RemoteClient remoteClient,
+                                int port, RMIClientSocketFactory clientSocketFactory,
+                                RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
     super(domain, database, remoteClient, port, clientSocketFactory, serverSocketFactory);
   }
@@ -77,38 +77,38 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int rowCount(final Condition condition) throws DatabaseException {
+  public int rowCount(Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.rowCount(condition);
     }
   }
 
   @Override
-  public <T, R, P> R fillReport(final ReportType<T, R, P> reportType, final P reportParameters) throws ReportException, DatabaseException {
+  public <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws ReportException, DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.fillReport(reportType, reportParameters);
     }
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType) throws DatabaseException {
     executeProcedure(procedureType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final T argument) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
     synchronized (connectionProxy) {
       connectionProxy.executeProcedure(procedureType, argument);
     }
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws DatabaseException {
     return executeFunction(functionType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final T argument) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.executeFunction(functionType, argument);
     }
@@ -143,140 +143,140 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Key insert(final Entity entity) throws RemoteException, DatabaseException {
+  public Key insert(Entity entity) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.insert(entity);
     }
   }
 
   @Override
-  public List<Key> insert(final List<? extends Entity> entities) throws DatabaseException {
+  public List<Key> insert(List<? extends Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.insert(entities);
     }
   }
 
   @Override
-  public Entity update(final Entity entity) throws RemoteException, DatabaseException {
+  public Entity update(Entity entity) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.update(entity);
     }
   }
 
   @Override
-  public List<Entity> update(final List<? extends Entity> entities) throws DatabaseException {
+  public List<Entity> update(List<? extends Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.update(entities);
     }
   }
 
   @Override
-  public int update(final UpdateCondition condition) throws DatabaseException {
+  public int update(UpdateCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.update(condition);
     }
   }
 
   @Override
-  public void delete(final Key entityKey) throws RemoteException, DatabaseException {
+  public void delete(Key entityKey) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
       connectionProxy.delete(entityKey);
     }
   }
 
   @Override
-  public void delete(final List<Key> entityKeys) throws DatabaseException {
+  public void delete(List<Key> entityKeys) throws DatabaseException {
     synchronized (connectionProxy) {
       connectionProxy.delete(entityKeys);
     }
   }
 
   @Override
-  public int delete(final Condition condition) throws DatabaseException {
+  public int delete(Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.delete(condition);
     }
   }
 
   @Override
-  public <T> List<T> select(final Attribute<T> attribute) throws RemoteException, DatabaseException {
+  public <T> List<T> select(Attribute<T> attribute) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(attribute);
     }
   }
 
   @Override
-  public <T> List<T> select(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
+  public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(attribute, condition);
     }
   }
 
   @Override
-  public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectSingle(attribute, value);
     }
   }
 
   @Override
-  public Entity selectSingle(final Key key) throws DatabaseException {
+  public Entity selectSingle(Key key) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectSingle(key);
     }
   }
 
   @Override
-  public Entity selectSingle(final Condition condition) throws DatabaseException {
+  public Entity selectSingle(Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectSingle(condition);
     }
   }
 
   @Override
-  public List<Entity> select(final List<Key> keys) throws DatabaseException {
+  public List<Entity> select(List<Key> keys) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(keys);
     }
   }
 
   @Override
-  public List<Entity> select(final Condition condition) throws DatabaseException {
+  public List<Entity> select(Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(condition);
     }
   }
 
   @Override
-  public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(attribute, value);
     }
   }
 
   @Override
-  public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
+  public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(attribute, values);
     }
   }
 
   @Override
-  public Map<EntityType, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectDependencies(entities);
     }
   }
 
   @Override
-  public void writeBlob(final Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData) throws DatabaseException {
+  public void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws DatabaseException {
     synchronized (connectionProxy) {
       connectionProxy.writeBlob(primaryKey, blobAttribute, blobData);
     }
   }
 
   @Override
-  public byte[] readBlob(final Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.readBlob(primaryKey, blobAttribute);
     }

@@ -30,8 +30,8 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
    * @param tableConditionModel the table condition model
    * @param tableColumns the table columns
    */
-  public AbstractEntityTableConditionPanel(final EntityTableConditionModel tableConditionModel,
-                                           final Collection<TableColumn> tableColumns) {
+  public AbstractEntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
+                                           Collection<TableColumn> tableColumns) {
     this.tableConditionModel = requireNonNull(tableConditionModel);
     this.tableColumns = requireNonNull(tableColumns);
     bindEvents();
@@ -81,14 +81,14 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
   /**
    * @param listener a listener notified each time the advanced search state changes
    */
-  public final void addAdvancedListener(final EventDataListener<Boolean> listener) {
+  public final void addAdvancedListener(EventDataListener<Boolean> listener) {
     advancedState.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeAdvancedListener(final EventDataListener<Boolean> listener) {
+  public final void removeAdvancedListener(EventDataListener<Boolean> listener) {
     advancedState.removeDataListener(listener);
   }
 
@@ -96,7 +96,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
    * @param listener a listener notified when a condition panel receives focus, note this does not apply
    * for custom search panels
    */
-  public void addFocusGainedListener(final EventDataListener<Attribute<?>> listener) {}
+  public void addFocusGainedListener(EventDataListener<Attribute<?>> listener) {}
 
   /**
    * Sets the advanced search state, if supported
@@ -104,7 +104,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
    * @throws UnsupportedOperationException by default
    * @see #hasAdvancedView()
    */
-  protected void setAdvanced(final boolean advanced) {
+  protected void setAdvanced(boolean advanced) {
     throw new UnsupportedOperationException();
   }
 

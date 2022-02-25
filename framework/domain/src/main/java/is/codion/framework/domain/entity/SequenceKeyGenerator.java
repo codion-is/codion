@@ -16,13 +16,13 @@ final class SequenceKeyGenerator extends AbstractQueriedKeyGenerator {
 
   private final String sequenceName;
 
-  SequenceKeyGenerator(final String sequenceName) {
+  SequenceKeyGenerator(String sequenceName) {
     this.sequenceName = requireNonNull(sequenceName, "sequenceName");
   }
 
   @Override
-  public void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
-                           final DatabaseConnection connection) throws SQLException {
+  public void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
+                           DatabaseConnection connection) throws SQLException {
     ColumnProperty<?> primaryKeyProperty = primaryKeyProperties.get(0);
     if (entity.isNull(primaryKeyProperty.getAttribute())) {
       selectAndPut(entity, primaryKeyProperty, connection);
@@ -30,7 +30,7 @@ final class SequenceKeyGenerator extends AbstractQueriedKeyGenerator {
   }
 
   @Override
-  protected String getQuery(final Database database) {
+  protected String getQuery(Database database) {
     return database.getSequenceQuery(sequenceName);
   }
 }

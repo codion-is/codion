@@ -17,16 +17,16 @@ final class ConditionCombinationSerializer implements Serializable {
 
   private final AttributeConditionSerializer attributeConditionSerializer;
 
-  ConditionCombinationSerializer(final AttributeConditionSerializer attributeConditionSerializer) {
+  ConditionCombinationSerializer(AttributeConditionSerializer attributeConditionSerializer) {
     this.attributeConditionSerializer = attributeConditionSerializer;
   }
 
-  void serialize(final Condition.Combination combination, final JsonGenerator generator) throws IOException {
+  void serialize(Condition.Combination combination, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("type", "combination");
     generator.writeStringField("conjunction", combination.getConjunction().name());
     generator.writeArrayFieldStart("conditions");
-    for (final Condition condition : combination.getConditions()) {
+    for (Condition condition : combination.getConditions()) {
       if (condition instanceof Condition.Combination) {
         serialize((Condition.Combination) condition, generator);
       }

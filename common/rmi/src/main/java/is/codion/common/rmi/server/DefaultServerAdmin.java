@@ -46,7 +46,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   private final transient LinkedList<GcEvent> gcEventList = new LinkedList<>();
   private final transient PropertyFormatter propertyFormatter = new SystemPropertyFormatter();
 
-  public DefaultServerAdmin(final AbstractServer<?, ? extends ServerAdmin> server, final ServerConfiguration configuration) throws RemoteException {
+  public DefaultServerAdmin(AbstractServer<?, ? extends ServerAdmin> server, ServerConfiguration configuration) throws RemoteException {
     super(requireNonNull(configuration, "configuration").getServerAdminPort(),
             configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
     this.server = requireNonNull(server, "server");
@@ -64,7 +64,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   }
 
   @Override
-  public final List<GcEvent> getGcEvents(final long since) {
+  public final List<GcEvent> getGcEvents(long since) {
     List<GcEvent> gcEvents;
     synchronized (gcEventList) {
       gcEvents = new LinkedList<>(gcEventList);
@@ -78,7 +78,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   public final ThreadStatistics getThreadStatistics() throws RemoteException {
     ThreadMXBean bean = ManagementFactory.getThreadMXBean();
     Map<Thread.State, Integer> threadStateMap = new EnumMap<>(Thread.State.class);
-    for (final Long threadId : bean.getAllThreadIds()) {
+    for (Long threadId : bean.getAllThreadIds()) {
       threadStateMap.compute(bean.getThreadInfo(threadId).getThreadState(), (threadState, value) -> value == null ? 1 : value + 1);
     }
 
@@ -91,12 +91,12 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   }
 
   @Override
-  public final Collection<RemoteClient> getClients(final User user) throws RemoteException {
+  public final Collection<RemoteClient> getClients(User user) throws RemoteException {
     return server.getClients(user);
   }
 
   @Override
-  public final Collection<RemoteClient> getClients(final String clientTypeId) {
+  public final Collection<RemoteClient> getClients(String clientTypeId) {
     return server.getClients(clientTypeId);
   }
 
@@ -113,7 +113,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   }
 
   @Override
-  public final void disconnect(final UUID clientId) throws RemoteException {
+  public final void disconnect(UUID clientId) throws RemoteException {
     LOG.info("disconnect({})", clientId);
     server.disconnect(clientId);
   }
@@ -129,7 +129,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   }
 
   @Override
-  public final ServerStatistics getServerStatistics(final long since) throws RemoteException {
+  public final ServerStatistics getServerStatistics(long since) throws RemoteException {
     return new DefaultServerStatistics(System.currentTimeMillis(), getConnectionCount(), getConnectionLimit(),
             getUsedMemory(), getMaxMemory(), getAllocatedMemory(), getRequestsPerSecond(), getSystemCpuLoad(),
             getProcessCpuLoad(), getThreadStatistics(), getGcEvents(since));
@@ -171,13 +171,13 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   }
 
   @Override
-  public final void setConnectionLimit(final int value) {
+  public final void setConnectionLimit(int value) {
     LOG.info("setConnectionLimit({})", value);
     server.setConnectionLimit(value);
   }
 
   private void initializeGarbageCollectionListener() {
-    for (final GarbageCollectorMXBean collectorMXBean : ManagementFactory.getGarbageCollectorMXBeans()) {
+    for (GarbageCollectorMXBean collectorMXBean : ManagementFactory.getGarbageCollectorMXBeans()) {
       ((NotificationEmitter) collectorMXBean).addNotificationListener(new GcNotificationListener(), notification ->
               notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION), null);
     }
@@ -185,7 +185,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
   private final class GcNotificationListener implements NotificationListener {
     @Override
-    public void handleNotification(final Notification notification, final Object handback) {
+    public void handleNotification(Notification notification, Object handback) {
       synchronized (gcEventList) {
         GarbageCollectionNotificationInfo notificationInfo =
                 GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
@@ -214,10 +214,10 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
     private final ThreadStatistics threadStatistics;
     private final List<GcEvent> gcEvents;
 
-    private DefaultServerStatistics(final long timestamp, final int connectionCount, final int connectionLimit,
-                                    final long usedMemory, final long maximumMemory, final long allocatedMemory,
-                                    final int requestsPerSecond, final double systemCpuLoad, final double processCpuLoad,
-                                    final ThreadStatistics threadStatistics, final List<GcEvent> gcEvents) {
+    private DefaultServerStatistics(long timestamp, int connectionCount, int connectionLimit,
+                                    long usedMemory, long maximumMemory, long allocatedMemory,
+                                    int requestsPerSecond, double systemCpuLoad, double processCpuLoad,
+                                    ThreadStatistics threadStatistics, List<GcEvent> gcEvents) {
       this.timestamp = timestamp;
       this.connectionCount = connectionCount;
       this.connectionLimit = connectionLimit;
@@ -295,8 +295,8 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
     private final int daemonThreadCount;
     private final Map<Thread.State, Integer> threadStateCount;
 
-    private DefaultThreadStatistics(final int threadCount, final int daemonThreadCount,
-                                    final Map<Thread.State, Integer> threadStateCount) {
+    private DefaultThreadStatistics(int threadCount, int daemonThreadCount,
+                                    Map<Thread.State, Integer> threadStateCount) {
       this.threadCount = threadCount;
       this.daemonThreadCount = daemonThreadCount;
       this.threadStateCount = threadStateCount;
@@ -326,7 +326,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
     private final String gcName;
     private final long duration;
 
-    public DefaultGcEvent(final long timestamp, final String gcName, final long duration) {
+    public DefaultGcEvent(long timestamp, String gcName, long duration) {
       this.timestamp = timestamp;
       this.gcName = gcName;
       this.duration = duration;
@@ -351,7 +351,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   private static final class SystemPropertyFormatter implements PropertyFormatter {
 
     @Override
-    public String formatValue(final String property, final String value) {
+    public String formatValue(String property, String value) {
       if ("java.class.path".equals(property) && !value.isEmpty()) {
         return "\n" + String.join("\n", value.split(Util.PATH_SEPARATOR));
       }

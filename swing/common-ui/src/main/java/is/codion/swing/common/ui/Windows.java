@@ -38,7 +38,7 @@ public final class Windows {
    * @param ratio a ratio, 0.0 - 1.0
    * @return a Dimension which is the size of the available screen times ratio
    */
-  public static Dimension getScreenSizeRatio(final double ratio) {
+  public static Dimension getScreenSizeRatio(double ratio) {
     Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
 
     return new Dimension((int) (screen.getWidth() * ratio), (int) (screen.getHeight() * ratio));
@@ -49,7 +49,7 @@ public final class Windows {
    * if the window already fits then calling this method has no effect
    * @param window the window to resize
    */
-  public static void setSizeWithinScreenBounds(final Window window) {
+  public static void setSizeWithinScreenBounds(Window window) {
     Dimension screenSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
     Dimension frameSize = window.getSize();
     if (frameSize.getHeight() > screenSize.getHeight() || frameSize.getWidth() > screenSize.getWidth()) {
@@ -64,7 +64,7 @@ public final class Windows {
    * @param window the window to resize
    * @param screenSizeRatio the screen size ratio
    */
-  public static void resizeWindow(final Window window, final double screenSizeRatio) {
+  public static void resizeWindow(Window window, double screenSizeRatio) {
     resizeWindow(window, screenSizeRatio, null);
   }
 
@@ -75,8 +75,8 @@ public final class Windows {
    * @param screenSizeRatio the screen size ratio
    * @param minimumSize a minimum size
    */
-  public static void resizeWindow(final Window window, final double screenSizeRatio,
-                                  final Dimension minimumSize) {
+  public static void resizeWindow(Window window, double screenSizeRatio,
+                                  Dimension minimumSize) {
     Dimension ratioSize = getScreenSizeRatio(screenSizeRatio);
     if (minimumSize != null) {
       ratioSize.setSize(Math.max(minimumSize.width, ratioSize.width), Math.max(minimumSize.height, ratioSize.height));
@@ -91,7 +91,7 @@ public final class Windows {
    * @param component the component
    * @return the parent Window of the given component, an empty Optional if none exists
    */
-  public static Optional<Window> getParentWindow(final Component component) {
+  public static Optional<Window> getParentWindow(Component component) {
     if (component instanceof Window) {
       return Optional.of((Window) component);
     }
@@ -105,7 +105,7 @@ public final class Windows {
    * @param component the component
    * @return the parent JFrame of the given component, an empty Optional if none exists
    */
-  public static Optional<JFrame> getParentFrame(final Component component) {
+  public static Optional<JFrame> getParentFrame(Component component) {
     if (component instanceof JFrame) {
       return Optional.of((JFrame) component);
     }
@@ -119,7 +119,7 @@ public final class Windows {
    * @param component the component
    * @return the parent JDialog of the given component, an empty Optional if none exists
    */
-  public static Optional<JDialog> getParentDialog(final Component component) {
+  public static Optional<JDialog> getParentDialog(Component component) {
     if (component instanceof JDialog) {
       return Optional.of((JDialog) component);
     }
@@ -131,7 +131,7 @@ public final class Windows {
    * Centers the given window on the screen
    * @param window the window to center on screen
    */
-  public static void centerWindow(final Window window) {
+  public static void centerWindow(Window window) {
     Dimension size = window.getSize();
     Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
     window.setLocation((int) (screen.getWidth() - size.getWidth()) / 2,
@@ -142,7 +142,7 @@ public final class Windows {
    * @param component the component to display in the frame
    * @return a frame builder
    */
-  public static FrameBuilder frameBuilder(final JComponent component) {
+  public static FrameBuilder frameBuilder(JComponent component) {
     return new DefaultFrameBuilder(component);
   }
 
@@ -262,84 +262,84 @@ public final class Windows {
     private int extendedState = Frame.NORMAL;
     private boolean centerFrame;
 
-    private DefaultFrameBuilder(final JComponent component) {
+    private DefaultFrameBuilder(JComponent component) {
       this.component = requireNonNull(component);
     }
 
     @Override
-    public FrameBuilder title(final String title) {
+    public FrameBuilder title(String title) {
       this.title = title;
       return this;
     }
 
     @Override
-    public FrameBuilder icon(final ImageIcon icon) {
+    public FrameBuilder icon(ImageIcon icon) {
       this.icon = icon;
       return this;
     }
 
     @Override
-    public FrameBuilder size(final Dimension size) {
+    public FrameBuilder size(Dimension size) {
       this.size = size;
       return this;
     }
 
     @Override
-    public FrameBuilder resizable(final boolean resizable) {
+    public FrameBuilder resizable(boolean resizable) {
       this.resizable = resizable;
       return this;
     }
 
     @Override
-    public FrameBuilder relativeTo(final JComponent relativeTo) {
+    public FrameBuilder relativeTo(JComponent relativeTo) {
       this.relativeTo = relativeTo;
       return this;
     }
 
     @Override
-    public FrameBuilder defaultCloseOperation(final int defaultCloseOperation) {
+    public FrameBuilder defaultCloseOperation(int defaultCloseOperation) {
       this.defaultCloseOperation = defaultCloseOperation;
       return this;
     }
 
     @Override
-    public FrameBuilder onOpened(final Consumer<WindowEvent> onOpened) {
+    public FrameBuilder onOpened(Consumer<WindowEvent> onOpened) {
       this.onOpened = onOpened;
       return this;
     }
 
     @Override
-    public FrameBuilder onClosed(final Consumer<WindowEvent> onClosed) {
+    public FrameBuilder onClosed(Consumer<WindowEvent> onClosed) {
       this.onClosed = onClosed;
       return this;
     }
 
     @Override
-    public FrameBuilder onClosing(final Consumer<WindowEvent> onClosing) {
+    public FrameBuilder onClosing(Consumer<WindowEvent> onClosing) {
       this.onClosing = onClosing;
       return this;
     }
 
     @Override
-    public FrameBuilder menuBar(final JMenuBar menuBar) {
+    public FrameBuilder menuBar(JMenuBar menuBar) {
       this.menuBar = menuBar;
       return this;
     }
 
     @Override
-    public FrameBuilder extendedState(final int extendedState) {
+    public FrameBuilder extendedState(int extendedState) {
       this.extendedState = extendedState;
       return this;
     }
 
     @Override
-    public FrameBuilder centerFrame(final boolean centerFrame) {
+    public FrameBuilder centerFrame(boolean centerFrame) {
       this.centerFrame = centerFrame;
       return this;
     }
 
     @Override
-    public FrameBuilder windowListener(final WindowListener windowListener) {
+    public FrameBuilder windowListener(WindowListener windowListener) {
       this.windowListeners.add(requireNonNull(windowListener));
       return this;
     }
@@ -397,28 +397,28 @@ public final class Windows {
     private final Consumer<WindowEvent> onClosed;
     private final Consumer<WindowEvent> onOpened;
 
-    private FrameListener(final Consumer<WindowEvent> onClosing, final Consumer<WindowEvent> onClosed, final Consumer<WindowEvent> onOpened) {
+    private FrameListener(Consumer<WindowEvent> onClosing, Consumer<WindowEvent> onClosed, Consumer<WindowEvent> onOpened) {
       this.onClosing = onClosing;
       this.onClosed = onClosed;
       this.onOpened = onOpened;
     }
 
     @Override
-    public void windowOpened(final WindowEvent e) {
+    public void windowOpened(WindowEvent e) {
       if (onOpened != null) {
         onOpened.accept(e);
       }
     }
 
     @Override
-    public void windowClosing(final WindowEvent e) {
+    public void windowClosing(WindowEvent e) {
       if (onClosing != null) {
         onClosing.accept(e);
       }
     }
 
     @Override
-    public void windowClosed(final WindowEvent e) {
+    public void windowClosed(WindowEvent e) {
       if (onClosed != null) {
         onClosed.accept(e);
       }

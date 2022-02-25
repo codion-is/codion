@@ -69,7 +69,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
    * Instantiates a new ConnectionPoolMonitorPanel
    * @param model the ConnectionPoolMonitor to base this panel on
    */
-  public ConnectionPoolMonitorPanel(final ConnectionPoolMonitor model) {
+  public ConnectionPoolMonitorPanel(ConnectionPoolMonitor model) {
     this.model = model;
     this.format.setMaximumFractionDigits(2);
     initializeUI();
@@ -103,7 +103,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     add(getSouthPanel(), BorderLayout.SOUTH);
   }
 
-  private void initializeCharts(final ConnectionPoolMonitor model) {
+  private void initializeCharts(ConnectionPoolMonitor model) {
     JFreeChart checkOutTimeChart = ChartFactory.createXYStepChart(null,
             null, null, model.getCheckOutTimeCollection(), PlotOrientation.VERTICAL, true, true, false);
     setColors(checkOutTimeChart);
@@ -129,7 +129,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     setColors(checkOutTimeChart);
   }
 
-  private void setColors(final JFreeChart chart) {
+  private void setColors(JFreeChart chart) {
     ChartUtil.linkColors(this, chart);
   }
 

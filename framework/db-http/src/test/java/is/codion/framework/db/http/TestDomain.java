@@ -40,7 +40,7 @@ public final class TestDomain extends DefaultDomain {
     operations();
     defineReport(REPORT, new AbstractReport<Object, String, String>("report.path") {
       @Override
-      public String fillReport(final Connection connection, final String parameters) throws ReportException {
+      public String fillReport(Connection connection, String parameters) throws ReportException {
         return "result";
       }
 

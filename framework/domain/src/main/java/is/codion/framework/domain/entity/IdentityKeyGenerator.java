@@ -24,9 +24,9 @@ final class IdentityKeyGenerator implements KeyGenerator {
   }
 
   @Override
-  public void afterInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
-                          final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
-    try (final ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
+  public void afterInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
+                          DatabaseConnection connection, Statement insertStatement) throws SQLException {
+    try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
       if (generatedKeys.next()) {
         ColumnProperty<?> property = primaryKeyProperties.get(0);
         entity.put((Attribute<Object>) property.getAttribute(), generatedKeys.getObject(property.getColumnName()));

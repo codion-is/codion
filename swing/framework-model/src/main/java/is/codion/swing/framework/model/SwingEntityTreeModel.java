@@ -36,13 +36,13 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
   private final TreeSelectionModel treeSelectionModel;
   private final ForeignKey parentForeignKey;
 
-  public SwingEntityTreeModel(final SwingEntityTableModel tableModel, final ForeignKey parentForeignKey) {
+  public SwingEntityTreeModel(SwingEntityTableModel tableModel, ForeignKey parentForeignKey) {
     this(tableModel, parentForeignKey, Entity::toString);
     bindEvents(tableModel);
   }
 
-  public SwingEntityTreeModel(final SwingEntityTableModel tableModel, final ForeignKey parentForeignKey,
-                              final Function<Entity, String> stringFunction) {
+  public SwingEntityTreeModel(SwingEntityTableModel tableModel, ForeignKey parentForeignKey,
+                              Function<Entity, String> stringFunction) {
     super(new EntityTreeNode(requireNonNull(tableModel, "tableModel"), null,
             requireNonNull(stringFunction, "stringFunction"), requireNonNull(parentForeignKey, "parentForeignKey"),
             new EntityTreeNodeComparator(tableModel.getEntityDefinition().getComparator())));
@@ -78,7 +78,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
    * Selects the given entities in this tree model.
    * @param entities the entities to select, an empty collection to clear the selection
    */
-  public void setSelectedEntities(final Collection<Entity> entities) {
+  public void setSelectedEntities(Collection<Entity> entities) {
     requireNonNull(entities, "entities");
     treeSelectionModel.clearSelection();
     entities.forEach(entity -> treeSelectionModel.addSelectionPath(find(getRoot(), entity)));
@@ -88,7 +88,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
    * Refreshes this tree and selects the given entities
    * @param entities the modified entities
    */
-  public void nodesUpdated(final Collection<Entity> entities) {
+  public void nodesUpdated(Collection<Entity> entities) {
     refreshRoot();
     setSelectedEntities(entities.stream()
             .filter(entity -> entity.isNotNull(parentForeignKey))
@@ -99,8 +99,8 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
    * Removes the given entities from this tree model
    * @param entities the entities to remove
    */
-  public void nodesDeleted(final Collection<Entity> entities) {
-    for (final Entity deleted : entities.stream()
+  public void nodesDeleted(Collection<Entity> entities) {
+    for (Entity deleted : entities.stream()
             .filter(entity -> entity.isNotNull(parentForeignKey))
             .collect(toList())) {
       TreePath treePath = find(getRoot(), deleted);
@@ -110,19 +110,19 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
     }
   }
 
-  private void refreshNode(final EntityTreeNode treeNode) {
+  private void refreshNode(EntityTreeNode treeNode) {
     treeNode.refresh();
     nodeStructureChanged(treeNode);
   }
 
-  private void bindEvents(final SwingEntityTableModel tableModel) {
+  private void bindEvents(SwingEntityTableModel tableModel) {
     tableModel.addRefreshListener(this::refreshRoot);
     tableModel.getEditModel().addAfterUpdateListener(updatedEntities -> this.nodesUpdated(updatedEntities.values()));
     tableModel.getEditModel().addAfterInsertListener(this::nodesUpdated);
     tableModel.getEditModel().addAfterDeleteListener(this::nodesDeleted);
   }
 
-  private static TreePath find(final EntityTreeNode root, final Entity entity) {
+  private static TreePath find(EntityTreeNode root, Entity entity) {
     Enumeration<TreeNode> enumeration = root.depthFirstEnumeration();
     while (enumeration.hasMoreElements()) {
       EntityTreeNode node = (EntityTreeNode) enumeration.nextElement();
@@ -145,9 +145,9 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
     private final Function<Entity, String> stringFunction;
     private final ForeignKey parentForeignKey;
 
-    private EntityTreeNode(final SwingEntityTableModel tableModel, final Entity nodeEntity,
-                           final Function<Entity, String> stringFunction, final ForeignKey parentForeignKey,
-                           final Comparator<EntityTreeNode> nodeComparator) {
+    private EntityTreeNode(SwingEntityTableModel tableModel, Entity nodeEntity,
+                           Function<Entity, String> stringFunction, ForeignKey parentForeignKey,
+                           Comparator<EntityTreeNode> nodeComparator) {
       super(nodeEntity);
       if (nodeEntity != null && !nodeEntity.getEntityType().equals(tableModel.getEntityType())) {
         throw new IllegalArgumentException("Entity of type " +
@@ -198,12 +198,12 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
 
     private final Comparator<Entity> entityComparator;
 
-    private EntityTreeNodeComparator(final Comparator<Entity> entityComparator) {
+    private EntityTreeNodeComparator(Comparator<Entity> entityComparator) {
       this.entityComparator = entityComparator;
     }
 
     @Override
-    public int compare(final EntityTreeNode node1, final EntityTreeNode node2) {
+    public int compare(EntityTreeNode node1, EntityTreeNode node2) {
       if (node1.getChildCount() > 0 && node2.getChildCount() == 0) {
         return -1;
       }
@@ -222,8 +222,8 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
     private final State treeSelectionChangingState = State.state();
     private final State tableSelectionChangingState = State.state();
 
-    private EntityTreeSelectionListener(final TreeSelectionModel treeSelectionModel, final SelectionModel<Entity> tableSelectionModel,
-                                        final EntityTreeNode rootNode) {
+    private EntityTreeSelectionListener(TreeSelectionModel treeSelectionModel, SelectionModel<Entity> tableSelectionModel,
+                                        EntityTreeNode rootNode) {
       this.treeSelectionModel = treeSelectionModel;
       this.tableSelectionModel = tableSelectionModel;
       this.tableSelectionModel.addSelectedItemsListener(selected -> {
@@ -241,12 +241,12 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
     }
 
     @Override
-    public void valueChanged(final TreeSelectionEvent event) {
+    public void valueChanged(TreeSelectionEvent event) {
       try {
         treeSelectionChangingState.set(true);
         if (!tableSelectionChangingState.get()) {
           List<Entity> selectedEntities = new ArrayList<>(treeSelectionModel.getSelectionCount());
-          for (final TreePath selectedPath : treeSelectionModel.getSelectionPaths()) {
+          for (TreePath selectedPath : treeSelectionModel.getSelectionPaths()) {
             selectedEntities.add(((EntityTreeNode) selectedPath.getLastPathComponent()).getEntity());
           }
           tableSelectionModel.setSelectedItems(selectedEntities);

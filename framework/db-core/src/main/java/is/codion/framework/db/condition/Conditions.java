@@ -41,7 +41,7 @@ public final class Conditions {
    * @param entityType the entityType
    * @return a condition specifying all entities of the given type
    */
-  public static Condition condition(final EntityType entityType) {
+  public static Condition condition(EntityType entityType) {
     return new DefaultCondition(entityType);
   }
 
@@ -50,7 +50,7 @@ public final class Conditions {
    * @param key the key
    * @return a condition based on the given key
    */
-  public static Condition condition(final Key key) {
+  public static Condition condition(Key key) {
     if (requireNonNull(key).getAttributes().size() > 1) {
       return compositeCondition(attributeMap(key.getAttributes()), EQUAL, valueMap(key));
     }
@@ -64,7 +64,7 @@ public final class Conditions {
    * @return a condition based on the given keys
    * @throws IllegalArgumentException in case {@code keys} is empty
    */
-  public static Condition condition(final Collection<Key> keys) {
+  public static Condition condition(Collection<Key> keys) {
     if (requireNonNull(keys).isEmpty()) {
       throw new IllegalArgumentException("No keys specified for key condition");
     }
@@ -83,7 +83,7 @@ public final class Conditions {
    * @param foreignKey the foreign key to base the condition on
    * @return a {@link ForeignKeyConditionBuilder} instance
    */
-  public static ForeignKeyConditionBuilder where(final ForeignKey foreignKey) {
+  public static ForeignKeyConditionBuilder where(ForeignKey foreignKey) {
     return new DefaultForeignKeyConditionBuilder(foreignKey);
   }
 
@@ -95,7 +95,7 @@ public final class Conditions {
    * @throws IllegalArgumentException in case {@code attribute} is a {@link ForeignKey}.
    * @see #where(ForeignKey)
    */
-  public static <T> AttributeCondition.Builder<T> where(final Attribute<T> attribute) {
+  public static <T> AttributeCondition.Builder<T> where(Attribute<T> attribute) {
     if (attribute instanceof ForeignKey) {
       throw new IllegalArgumentException("Use Conditions.where(ForeignKey foreignKey) to create a foreign key based where condition");
     }
@@ -109,7 +109,7 @@ public final class Conditions {
    * @param conditions the conditions to combine
    * @return a new {@link Condition.Combination} instance
    */
-  public static Condition.Combination combination(final Conjunction conjunction, final Condition... conditions) {
+  public static Condition.Combination combination(Conjunction conjunction, Condition... conditions) {
     return new DefaultConditionCombination(conjunction, conditions);
   }
 
@@ -119,7 +119,7 @@ public final class Conditions {
    * @param conditions the conditions to combine
    * @return a new {@link Condition.Combination} instance
    */
-  public static Condition.Combination combination(final Conjunction conjunction, final Collection<Condition> conditions) {
+  public static Condition.Combination combination(Conjunction conjunction, Collection<Condition> conditions) {
     return new DefaultConditionCombination(conjunction, conditions);
   }
 
@@ -130,7 +130,7 @@ public final class Conditions {
    * @throws NullPointerException in case the condition type is null
    * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
    */
-  public static CustomCondition customCondition(final ConditionType conditionType) {
+  public static CustomCondition customCondition(ConditionType conditionType) {
     return customCondition(conditionType, emptyList(), emptyList());
   }
 
@@ -143,13 +143,13 @@ public final class Conditions {
    * @throws NullPointerException in case any of the parameters are null
    * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
    */
-  public static CustomCondition customCondition(final ConditionType conditionType, final List<Attribute<?>> attributes,
-                                                final List<Object> values) {
+  public static CustomCondition customCondition(ConditionType conditionType, List<Attribute<?>> attributes,
+                                                List<Object> values) {
     return new DefaultCustomCondition(conditionType, attributes, values);
   }
 
-  static Condition compositeKeyCondition(final Map<Attribute<?>, Attribute<?>> attributes, final Operator operator,
-                                         final List<Map<Attribute<?>, Object>> valueMaps) {
+  static Condition compositeKeyCondition(Map<Attribute<?>, Attribute<?>> attributes, Operator operator,
+                                         List<Map<Attribute<?>, Object>> valueMaps) {
     if (valueMaps.size() == 1) {
       return compositeCondition(attributes, operator, valueMaps.get(0));
     }
@@ -159,14 +159,14 @@ public final class Conditions {
             .collect(toList()));
   }
 
-  private static Condition compositeCondition(final Map<Attribute<?>, Attribute<?>> attributes,
-                                              final Operator operator, final Map<Attribute<?>, Object> valueMap) {
+  private static Condition compositeCondition(Map<Attribute<?>, Attribute<?>> attributes,
+                                              Operator operator, Map<Attribute<?>, Object> valueMap) {
     return combination(AND, attributes.entrySet().stream()
             .map(entry -> condition(entry.getKey(), operator, valueMap.get(entry.getValue())))
             .collect(toList()));
   }
 
-  private static Condition condition(final Attribute<?> conditionAttribute, final Operator operator, final Object value) {
+  private static Condition condition(Attribute<?> conditionAttribute, Operator operator, Object value) {
     AttributeCondition.Builder<Object> condition = where((Attribute<Object>) conditionAttribute);
     if (operator == EQUAL) {
       return condition.equalTo(value);
@@ -179,14 +179,14 @@ public final class Conditions {
     }
   }
 
-  private static Map<Attribute<?>, Attribute<?>> attributeMap(final Collection<Attribute<?>> attributes) {
+  private static Map<Attribute<?>, Attribute<?>> attributeMap(Collection<Attribute<?>> attributes) {
     Map<Attribute<?>, Attribute<?>> map = new LinkedHashMap<>(attributes.size());
     attributes.forEach(attribute -> map.put(attribute, attribute));
 
     return map;
   }
 
-  private static Map<Attribute<?>, Object> valueMap(final Key key) {
+  private static Map<Attribute<?>, Object> valueMap(Key key) {
     Map<Attribute<?>, Object> values = new HashMap<>();
     key.getAttributes().forEach(attribute -> values.put(attribute, key.get(attribute)));
 

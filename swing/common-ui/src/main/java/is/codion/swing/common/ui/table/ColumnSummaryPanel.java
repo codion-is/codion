@@ -27,12 +27,12 @@ public final class ColumnSummaryPanel extends JPanel {
   /**
    * @param model the PropertySummaryModel instance
    */
-  public ColumnSummaryPanel(final ColumnSummaryModel model) {
+  public ColumnSummaryPanel(ColumnSummaryModel model) {
     setLayout(new BorderLayout());
     add(initializeSummaryField(requireNonNull(model, "model")), BorderLayout.CENTER);
   }
 
-  private static JTextField initializeSummaryField(final ColumnSummaryModel model) {
+  private static JTextField initializeSummaryField(ColumnSummaryModel model) {
     JPopupMenu menu = createPopupMenu(model);
     return Components.textField()
             .linkedValueObserver(model.getSummaryTextObserver())
@@ -42,7 +42,7 @@ public final class ColumnSummaryPanel extends JPanel {
             .popupMenu(menu)
             .mouseListener(new MouseAdapter() {
               @Override
-              public void mouseReleased(final MouseEvent e) {
+              public void mouseReleased(MouseEvent e) {
                 if (!model.getLockedState().get()) {
                   menu.show(e.getComponent(), e.getX(), e.getY() - menu.getPreferredSize().height);
                 }
@@ -51,10 +51,10 @@ public final class ColumnSummaryPanel extends JPanel {
             .build();
   }
 
-  private static JPopupMenu createPopupMenu(final ColumnSummaryModel model) {
+  private static JPopupMenu createPopupMenu(ColumnSummaryModel model) {
     JPopupMenu popupMenu = new JPopupMenu();
     ButtonGroup group = new ButtonGroup();
-    for (final ColumnSummaryModel.Summary summary : model.getAvailableSummaries()) {
+    for (ColumnSummaryModel.Summary summary : model.getAvailableSummaries()) {
       JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder(() -> model.getSummaryValue().set(summary))
               .caption(summary.toString())
               .build());

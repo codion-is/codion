@@ -81,7 +81,7 @@ public final class ClientUI {
 //            .show();
   }
 
-  static void albumPanel(final EntityConnectionProvider connectionProvider) {
+  static void albumPanel(EntityConnectionProvider connectionProvider) {
     // create a EditModel based on the album entity
     SwingEntityEditModel editModel = new SwingEntityEditModel(Album.TYPE, connectionProvider);
 
@@ -149,7 +149,7 @@ public final class ClientUI {
 //            .show();
   }
 
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     // Configure the database
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");

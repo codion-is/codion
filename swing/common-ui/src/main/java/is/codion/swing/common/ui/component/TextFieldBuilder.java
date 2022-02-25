@@ -54,7 +54,7 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
    * @param selectAllOnFocusGained if true the component will select contents on focus gained
    * @return this builder instance
    */
-  B selectAllOnFocusGained(final boolean selectAllOnFocusGained);
+  B selectAllOnFocusGained(boolean selectAllOnFocusGained);
 
   /**
    * Adds a CTRL-SPACE action the given text field for displaying a lookup dialog showing the values provided

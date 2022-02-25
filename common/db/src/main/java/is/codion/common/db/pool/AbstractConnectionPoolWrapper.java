@@ -38,7 +38,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
    * @param user the connection pool user
    * @param poolDataSource the DataSource
    */
-  public AbstractConnectionPoolWrapper(final ConnectionFactory connectionFactory, final User user, final DataSource poolDataSource) {
+  public AbstractConnectionPoolWrapper(ConnectionFactory connectionFactory, User user, DataSource poolDataSource) {
     this.connectionFactory = requireNonNull(connectionFactory, "connectionFactory");
     this.user = requireNonNull(user, "user");
     this.poolDataSource = (DataSource) newProxyInstance(DataSource.class.getClassLoader(),
@@ -57,7 +57,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   }
 
   @Override
-  public final Connection getConnection(final User user) throws DatabaseException {
+  public final Connection getConnection(User user) throws DatabaseException {
     requireNonNull(user, "user");
     checkConnectionPoolCredentials(user);
     long startTime = counter.isCollectCheckOutTimes() ? System.nanoTime() : 0;
@@ -88,7 +88,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   }
 
   @Override
-  public final void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
+  public final void setCollectSnapshotStatistics(boolean collectSnapshotStatistics) {
     counter.setCollectSnapshotStatistics(collectSnapshotStatistics);
   }
 
@@ -98,12 +98,12 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   }
 
   @Override
-  public final void setCollectCheckOutTimes(final boolean collectCheckOutTimes) {
+  public final void setCollectCheckOutTimes(boolean collectCheckOutTimes) {
     counter.setCollectCheckOutTimes(collectCheckOutTimes);
   }
 
   @Override
-  public final ConnectionPoolStatistics getStatistics(final long since) {
+  public final ConnectionPoolStatistics getStatistics(long since) {
     return counter.getStatistics(since);
   }
 
@@ -117,7 +117,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   /**
    * @param pool the underlying connection pool
    */
-  protected final void setPool(final T pool) {
+  protected final void setPool(T pool) {
     this.pool = requireNonNull(pool, "pool");
   }
 
@@ -148,7 +148,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
    * @param state the state to update
    * @return the updated state
    */
-  final DefaultConnectionPoolState updateState(final DefaultConnectionPoolState state) {
+  final DefaultConnectionPoolState updateState(DefaultConnectionPoolState state) {
     return state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
   }
 
@@ -157,7 +157,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
    * @param user the user credentials to check
    * @throws AuthenticationException in case the username or password do not match the ones in the connection pool
    */
-  private void checkConnectionPoolCredentials(final User user) throws AuthenticationException {
+  private void checkConnectionPoolCredentials(User user) throws AuthenticationException {
     if (!this.user.getUsername().equalsIgnoreCase(user.getUsername()) || !Arrays.equals(this.user.getPassword(), user.getPassword())) {
       throw new AuthenticationException("Wrong username or password");
     }
@@ -167,12 +167,12 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 
     private final DataSource dataSource;
 
-    private DataSourceInvocationHandler(final DataSource dataSource) {
+    private DataSourceInvocationHandler(DataSource dataSource) {
       this.dataSource = dataSource;
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       if ("getConnection".equals(method.getName())) {
         Connection connection = connectionFactory.createConnection(user);
         counter.incrementConnectionsCreatedCounter();
@@ -189,13 +189,13 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 
     private final Connection connection;
 
-    private ConnectionInvocationHandler(final Connection connection) {
+    private ConnectionInvocationHandler(Connection connection) {
       this.connection = connection;
     }
 
     @Override
-    public Object invoke(final Object connectionProxy, final Method connectionMethod,
-                         final Object[] connectionArgs) throws Throwable {
+    public Object invoke(Object connectionProxy, Method connectionMethod,
+                         Object[] connectionArgs) throws Throwable {
       if ("close".equals(connectionMethod.getName())) {
         counter.incrementConnectionsDestroyedCounter();
       }

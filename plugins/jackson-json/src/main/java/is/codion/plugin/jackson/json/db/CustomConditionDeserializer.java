@@ -28,11 +28,11 @@ final class CustomConditionDeserializer implements Serializable {
 
   private final EntityObjectMapper entityObjectMapper;
 
-  CustomConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
+  CustomConditionDeserializer(EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  CustomCondition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
+  CustomCondition deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     String conditionTypeName = conditionNode.get("conditionTypeName").asText();
     JsonNode attributesNode = conditionNode.get("attributes");
     List<String> attributeNames = Arrays.asList(entityObjectMapper.readValue(attributesNode.toString(), String[].class));
@@ -42,7 +42,7 @@ final class CustomConditionDeserializer implements Serializable {
     JsonNode valuesNode = conditionNode.get("values");
     List<Object> values = new ArrayList<>();
     int attributeIndex = 0;
-    for (final JsonNode valueNode : valuesNode) {
+    for (JsonNode valueNode : valuesNode) {
       Property<?> property = definition.getProperty(attributes.get(attributeIndex++));
       if (valueNode.isNull()) {
         values.add(null);

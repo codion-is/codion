@@ -38,7 +38,7 @@ public final class ClientMonitorPanel extends JPanel {
     initializeUI();
   }
 
-  public void setModel(final ClientMonitor model) {
+  public void setModel(ClientMonitor model) {
     this.model = model;
     if (model != null) {
       clientList.setModel(model.getRemoteClientListModel());
@@ -97,7 +97,7 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private void disconnect() throws RemoteException {
-    for (final RemoteClient remoteClient : clientList.getSelectedValuesList()) {
+    for (RemoteClient remoteClient : clientList.getSelectedValuesList()) {
       model.getServer().disconnect(remoteClient.getClientId());
       model.getRemoteClientListModel().removeElement(remoteClient);
     }

@@ -27,12 +27,12 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
 
   private final EntityConnectionProvider connectionProvider;
 
-  public DefaultConditionModelFactory(final EntityConnectionProvider connectionProvider) {
+  public DefaultConditionModelFactory(EntityConnectionProvider connectionProvider) {
     this.connectionProvider = requireNonNull(connectionProvider);
   }
 
   @Override
-  public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(final A attribute) {
+  public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(A attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
       EntitySearchModel searchModel = new DefaultEntitySearchModel(foreignKey.getReferencedEntityType(), connectionProvider);
@@ -61,11 +61,11 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
    * @param entityType the entity type
    * @return the entity definition
    */
-  protected final EntityDefinition getDefinition(final EntityType entityType) {
+  protected final EntityDefinition getDefinition(EntityType entityType) {
     return connectionProvider.getEntities().getDefinition(entityType);
   }
 
-  private static List<Operator> getOperators(final Attribute<?> attribute) {
+  private static List<Operator> getOperators(Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
       return Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL);
     }

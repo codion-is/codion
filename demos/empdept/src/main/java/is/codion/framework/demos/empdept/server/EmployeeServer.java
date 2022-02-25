@@ -25,22 +25,22 @@ public final class EmployeeServer extends EntityServer {
 
   private final Domain domain = new EmpDept();
 
-  public EmployeeServer(final EntityServerConfiguration configuration) throws RemoteException {
+  public EmployeeServer(EntityServerConfiguration configuration) throws RemoteException {
     super(configuration);
   }
 
   @Override
-  protected AbstractRemoteEntityConnection createRemoteConnection(final Database database,
-                                                                  final RemoteClient remoteClient, final int port,
-                                                                  final RMIClientSocketFactory clientSocketFactory,
-                                                                  final RMIServerSocketFactory serverSocketFactory)
+  protected AbstractRemoteEntityConnection createRemoteConnection(Database database,
+                                                                  RemoteClient remoteClient, int port,
+                                                                  RMIClientSocketFactory clientSocketFactory,
+                                                                  RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
     return new DefaultEmployeeService(domain, database, remoteClient, port);
   }
 
   static final class DefaultEmployeeService extends AbstractRemoteEntityConnection implements EmployeeService {
 
-    private DefaultEmployeeService(final Domain domain, final Database database, final RemoteClient remoteClient, final int port)
+    private DefaultEmployeeService(Domain domain, Database database, RemoteClient remoteClient, int port)
             throws DatabaseException, RemoteException {
       super(domain, database, remoteClient, port, null, null);
     }

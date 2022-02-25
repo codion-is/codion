@@ -28,13 +28,13 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
    * @param upperCase if true the text component convert all lower case input to upper case
    * @return this builder instance
    */
-  B upperCase(final boolean upperCase);
+  B upperCase(boolean upperCase);
 
   /**
    * @param lowerCase if true the text component convert all upper case input to lower case
    * @return this builder instance
    */
-  B lowerCase(final boolean lowerCase);
+  B lowerCase(boolean lowerCase);
 
   /**
    * @param maximumLength the maximum text length

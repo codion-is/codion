@@ -29,7 +29,7 @@ public class DefaultToggleControlTest {
     return booleanValue;
   }
 
-  public void setBooleanValue(final boolean booleanValue) {
+  public void setBooleanValue(boolean booleanValue) {
     this.booleanValue = booleanValue;
   }
 
@@ -37,11 +37,11 @@ public class DefaultToggleControlTest {
     return selectedValue;
   }
 
-  public void setSelectedValue(final Object selectedValue) {
+  public void setSelectedValue(Object selectedValue) {
     this.selectedValue = selectedValue;
   }
 
-  public void setValue(final boolean value) {
+  public void setValue(boolean value) {
     this.value = value;
     valueChangeEvent.onEvent(value);
   }
@@ -50,7 +50,7 @@ public class DefaultToggleControlTest {
     return value;
   }
 
-  public void setNullableValue(final Boolean value) {
+  public void setNullableValue(Boolean value) {
     this.value = value;
     valueChangeEvent.onEvent(value);
   }

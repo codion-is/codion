@@ -20,31 +20,31 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
   private int fixedCellHeight = -1;
   private int fixedCellWidth = -1;
 
-  DefaultListBuilder(final ListModel<T> listModel, final Value<T> linkedValue) {
+  DefaultListBuilder(ListModel<T> listModel, Value<T> linkedValue) {
     super(linkedValue);
     this.listModel = requireNonNull(listModel);
   }
 
   @Override
-  public ListBuilder<T> visibleRowCount(final int visibleRowCount) {
+  public ListBuilder<T> visibleRowCount(int visibleRowCount) {
     this.visibleRowCount = visibleRowCount;
     return this;
   }
 
   @Override
-  public ListBuilder<T> layoutOrientation(final int layoutOrientation) {
+  public ListBuilder<T> layoutOrientation(int layoutOrientation) {
     this.layoutOrientation = layoutOrientation;
     return this;
   }
 
   @Override
-  public ListBuilder<T> fixedCellHeight(final int fixedCellHeight) {
+  public ListBuilder<T> fixedCellHeight(int fixedCellHeight) {
     this.fixedCellHeight = fixedCellHeight;
     return this;
   }
 
   @Override
-  public ListBuilder<T> fixedCellWidth(final int fixedCellWidth) {
+  public ListBuilder<T> fixedCellWidth(int fixedCellWidth) {
     this.fixedCellWidth = fixedCellWidth;
     return this;
   }
@@ -62,12 +62,12 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
   }
 
   @Override
-  protected ComponentValue<T, JList<T>> buildComponentValue(final JList<T> component) {
+  protected ComponentValue<T, JList<T>> buildComponentValue(JList<T> component) {
     return ComponentValues.list(component);
   }
 
   @Override
-  protected void setInitialValue(final JList<T> component, final T initialValue) {
+  protected void setInitialValue(JList<T> component, T initialValue) {
     component.setSelectedValue(initialValue, true);
   }
 }

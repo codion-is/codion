@@ -46,7 +46,7 @@ public final class SearchHighlighter {
   private Highlighter.HighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
   private Highlighter.HighlightPainter selectedHighlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.GREEN);
 
-  private SearchHighlighter(final JTextComponent textComponent) {
+  private SearchHighlighter(JTextComponent textComponent) {
     this.document = requireNonNull(textComponent).getDocument();
     textComponent.setHighlighter(highlighter);
     bindEvents(textComponent);
@@ -69,7 +69,7 @@ public final class SearchHighlighter {
   /**
    * @param color the color to use when highlighting search results.
    */
-  public void setHighlightColor(final Color color) {
+  public void setHighlightColor(Color color) {
     highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(requireNonNull(color));
     searchAndHighlightResults();
   }
@@ -77,7 +77,7 @@ public final class SearchHighlighter {
   /**
    * @param color the color to use when highlighting the selected search result.
    */
-  public void setSelectedHighlightColor(final Color color) {
+  public void setSelectedHighlightColor(Color color) {
     selectedHighlightPainter = new DefaultHighlighter.DefaultHighlightPainter(requireNonNull(color));
     searchAndHighlightResults();
   }
@@ -115,7 +115,7 @@ public final class SearchHighlighter {
    * @param textComponent the text component to search
    * @return a new {@link SearchHighlighter} for the given component
    */
-  public static SearchHighlighter searchHighlighter(final JTextComponent textComponent) {
+  public static SearchHighlighter searchHighlighter(JTextComponent textComponent) {
     return new SearchHighlighter(textComponent);
   }
 
@@ -206,7 +206,7 @@ public final class SearchHighlighter {
     }
   }
 
-  private void bindEvents(final JTextComponent textComponent) {
+  private void bindEvents(JTextComponent textComponent) {
     searchStringValue.addListener(this::searchAndHighlightResults);
     caseSensitiveState.addListener(this::searchAndHighlightResults);
     document.addDocumentListener((DocumentAdapter) e -> searchAndHighlightResults());
@@ -229,7 +229,7 @@ public final class SearchHighlighter {
 
     private Object highlightTag;
 
-    private MatchPosition(final int start, final int end, final Object highlightTag) {
+    private MatchPosition(int start, int end, Object highlightTag) {
       this.start = start;
       this.end = end;
       this.highlightTag = highlightTag;

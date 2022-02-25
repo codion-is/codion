@@ -24,7 +24,7 @@ final class DefaultDomainType implements DomainType, Serializable {
   private final String domainName;
   private final Map<String, EntityType> entityTypes = new ConcurrentHashMap<>();
 
-  private DefaultDomainType(final String domainName) {
+  private DefaultDomainType(String domainName) {
     if (nullOrEmpty(domainName)) {
       throw new IllegalArgumentException("domainName must be a non-empty string");
     }
@@ -37,36 +37,36 @@ final class DefaultDomainType implements DomainType, Serializable {
   }
 
   @Override
-  public EntityType entityType(final String name) {
+  public EntityType entityType(String name) {
     return entityType(name, Entity.class);
   }
 
   @Override
-  public <T extends Entity> EntityType entityType(final String name, final Class<T> entityClass) {
+  public <T extends Entity> EntityType entityType(String name, Class<T> entityClass) {
     return entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
             EntityType.entityType(entityTypeName, this.domainName, entityClass));
   }
 
   @Override
-  public EntityType entityType(final String name, final String resourceBundleName) {
+  public EntityType entityType(String name, String resourceBundleName) {
     return entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
             EntityType.entityType(entityTypeName, this.domainName, resourceBundleName));
   }
 
   @Override
-  public <T extends Entity> EntityType entityType(final String name, final Class<T> entityClass,
-                                                     final String resourceBundleName) {
+  public <T extends Entity> EntityType entityType(String name, Class<T> entityClass,
+                                                  String resourceBundleName) {
     return entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
             EntityType.entityType(entityTypeName, this.domainName, entityClass, resourceBundleName));
   }
 
   @Override
-  public boolean contains(final EntityType entityType) {
+  public boolean contains(EntityType entityType) {
     return entityTypes.containsKey(requireNonNull(entityType).getName());
   }
 
   @Override
-  public boolean equals(final Object object) {
+  public boolean equals(Object object) {
     if (this == object) {
       return true;
     }
@@ -88,16 +88,16 @@ final class DefaultDomainType implements DomainType, Serializable {
     return domainName;
   }
 
-  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+  private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     DOMAIN_TYPES.put(domainName, this);
   }
 
-  static DomainType getOrCreateDomainType(final String domainName) {
+  static DomainType getOrCreateDomainType(String domainName) {
     return DOMAIN_TYPES.computeIfAbsent(requireNonNull(domainName), DefaultDomainType::new);
   }
 
-  static DomainType getDomainType(final String domainName) {
+  static DomainType getDomainType(String domainName) {
     DomainType domainType = DOMAIN_TYPES.get(requireNonNull(domainName, "domainName"));
     if (domainType == null) {
       throw new IllegalArgumentException("Domain: " + domainName + " has not been defined");

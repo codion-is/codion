@@ -54,13 +54,13 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
    * @param performNullValidation true if this validator should perform null validation
    * @return this validator instance
    */
-  public DefaultEntityValidator setPerformNullValidation(final boolean performNullValidation) {
+  public DefaultEntityValidator setPerformNullValidation(boolean performNullValidation) {
     this.performNullValidation = performNullValidation;
     return this;
   }
 
   @Override
-  public boolean isValid(final Entity entity, final EntityDefinition definition) {
+  public boolean isValid(Entity entity, EntityDefinition definition) {
     try {
       validate(entity, definition);
       return true;
@@ -71,30 +71,30 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   }
 
   @Override
-  public <T> boolean isNullable(final Entity entity, final Property<T> property) {
+  public <T> boolean isNullable(Entity entity, Property<T> property) {
     return property.isNullable();
   }
 
   @Override
-  public final void validate(final Collection<Entity> entities, final EntityDefinition definition) throws ValidationException {
-    for (final Entity entity : entities) {
+  public final void validate(Collection<Entity> entities, EntityDefinition definition) throws ValidationException {
+    for (Entity entity : entities) {
       validate(entity, definition);
     }
   }
 
   @Override
-  public void validate(final Entity entity, final EntityDefinition definition) throws ValidationException {
+  public void validate(Entity entity, EntityDefinition definition) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     List<Property<?>> properties = definition.getProperties().stream()
             .filter(DefaultEntityValidator::validationRequired)
             .collect(Collectors.toList());
-    for (final Property<?> property : properties) {
+    for (Property<?> property : properties) {
       validate(entity, definition, property);
     }
   }
 
   @Override
-  public <T> void validate(final Entity entity, final EntityDefinition definition, final Property<T> property) throws ValidationException {
+  public <T> void validate(Entity entity, EntityDefinition definition, Property<T> property) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (performNullValidation && !definition.isForeignKeyAttribute(property.getAttribute())) {
@@ -109,7 +109,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   }
 
   @Override
-  public final <T extends Number> void performRangeValidation(final Entity entity, final Property<T> property) throws RangeValidationException {
+  public final <T extends Number> void performRangeValidation(Entity entity, Property<T> property) throws RangeValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (entity.isNull(property.getAttribute())) {
@@ -128,8 +128,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   }
 
   @Override
-  public final <T> void performNullValidation(final Entity entity, final EntityDefinition definition,
-                                              final Property<T> property) throws NullValidationException {
+  public final <T> void performNullValidation(Entity entity, EntityDefinition definition,
+                                              Property<T> property) throws NullValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (!isNullable(entity, property) && entity.isNull(property.getAttribute())) {
@@ -150,7 +150,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   }
 
   @Override
-  public final void performLengthValidation(final Entity entity, final Property<String> property) throws LengthValidationException {
+  public final void performLengthValidation(Entity entity, Property<String> property) throws LengthValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (entity.isNull(property.getAttribute())) {
@@ -165,17 +165,17 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
   }
 
-  private static boolean isNonGeneratedPrimaryKeyProperty(final EntityDefinition definition, final Property<?> property) {
+  private static boolean isNonGeneratedPrimaryKeyProperty(EntityDefinition definition, Property<?> property) {
     return (property instanceof ColumnProperty
             && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) && !definition.isKeyGenerated();
   }
 
-  private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property<?> property) {
+  private static boolean isNonKeyColumnPropertyWithoutDefaultValue(Property<?> property) {
     return property instanceof ColumnProperty && !((ColumnProperty<?>) property).isPrimaryKeyColumn()
             && !((ColumnProperty<?>) property).columnHasDefaultValue();
   }
 
-  private static boolean validationRequired(final Property<?> property) {
+  private static boolean validationRequired(Property<?> property) {
     return !(property instanceof DerivedProperty || property instanceof SubqueryProperty || property instanceof AuditProperty);
   }
 }

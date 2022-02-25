@@ -39,11 +39,11 @@ public final class EntityServerMonitor {
    * @param adminUser the admin user
    * @throws RemoteException in case of an exception
    */
-  public EntityServerMonitor(final String hostNames, final int registryPort, final User adminUser) throws RemoteException {
+  public EntityServerMonitor(String hostNames, int registryPort, User adminUser) throws RemoteException {
     if (nullOrEmpty(hostNames)) {
       throw new IllegalArgumentException("No server host names specified for server monitor");
     }
-    for (final String hostname : hostNames.split(",")) {
+    for (String hostname : hostNames.split(",")) {
       addHost(hostname, registryPort, adminUser);
     }
   }
@@ -60,13 +60,13 @@ public final class EntityServerMonitor {
    * @throws RemoteException in case of a communication error
    */
   public void refresh() throws RemoteException {
-    for (final HostMonitor hostMonitor : hostMonitors) {
+    for (HostMonitor hostMonitor : hostMonitors) {
       hostMonitor.refresh();
     }
   }
 
-  public void setUpdateInterval(final Integer interval) {
-    for (final HostMonitor hostMonitor : hostMonitors) {
+  public void setUpdateInterval(Integer interval) {
+    for (HostMonitor hostMonitor : hostMonitors) {
       hostMonitor.getServerMonitors().forEach(serverMonitor -> {
         serverMonitor.getUpdateIntervalValue().set(interval);
         serverMonitor.getDatabaseMonitor().getUpdateIntervalValue().set(interval);
@@ -77,7 +77,7 @@ public final class EntityServerMonitor {
     }
   }
 
-  private void addHost(final String hostname, final int registryPort, final User adminUser) throws RemoteException {
+  private void addHost(String hostname, int registryPort, User adminUser) throws RemoteException {
     hostMonitors.add(new HostMonitor(hostname, registryPort, adminUser, SERVER_MONITOR_UPDATE_RATE.get()));
     hostAddedEvent.onEvent(hostname);
   }

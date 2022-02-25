@@ -18,7 +18,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @param entityType the type of the entity on which to base the model
    * @param connectionProvider the connection provider
    */
-  public FXEntityModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public FXEntityModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this(new FXEntityListModel(entityType, connectionProvider));
   }
 
@@ -27,7 +27,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @param editModel the {@link FXEntityEditModel} to use
    * @throws IllegalArgumentException in case editModel is null
    */
-  public FXEntityModel(final FXEntityEditModel editModel) {
+  public FXEntityModel(FXEntityEditModel editModel) {
     this(new FXEntityListModel(editModel));
   }
 
@@ -36,7 +36,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * or a default {@link FXEntityEditModel} implementation if the list model does not contain an edit model.
    * @param listModel the {@link FXEntityListModel} to use
    */
-  public FXEntityModel(final FXEntityListModel listModel) {
+  public FXEntityModel(FXEntityListModel listModel) {
     super(listModel);
   }
 }

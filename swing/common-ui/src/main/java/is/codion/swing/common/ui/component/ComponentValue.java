@@ -26,7 +26,7 @@ public interface ComponentValue<T, C extends JComponent> extends Value<T> {
    * @return the value from the underlying component if the user presses OK
    * @throws is.codion.common.model.CancelException if the user cancels
    */
-  T showDialog(final JComponent owner);
+  T showDialog(JComponent owner);
 
   /**
    * Displays the underlying component in a dialog and returns the value if the user presses OK.
@@ -35,5 +35,5 @@ public interface ComponentValue<T, C extends JComponent> extends Value<T> {
    * @return the value from the underlying component if the user presses OK
    * @throws is.codion.common.model.CancelException if the user cancels
    */
-  T showDialog(final JComponent owner, final String title);
+  T showDialog(JComponent owner, String title);
 }

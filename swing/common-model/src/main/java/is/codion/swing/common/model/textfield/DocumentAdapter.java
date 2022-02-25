@@ -13,15 +13,15 @@ import javax.swing.event.DocumentListener;
 public interface DocumentAdapter extends DocumentListener {
 
   @Override
-  default void changedUpdate(final DocumentEvent e) {}
+  default void changedUpdate(DocumentEvent e) {}
 
   @Override
-  default void insertUpdate(final DocumentEvent e) {
+  default void insertUpdate(DocumentEvent e) {
     contentsChanged(e);
   }
 
   @Override
-  default void removeUpdate(final DocumentEvent e) {
+  default void removeUpdate(DocumentEvent e) {
     contentsChanged(e);
   }
 

@@ -7,7 +7,7 @@ import is.codion.swing.common.ui.textfield.IntegerField;
 
 final class IntegerFieldValue extends AbstractTextComponentValue<Integer, IntegerField> {
 
-  IntegerFieldValue(final IntegerField integerField, final boolean nullable, final UpdateOn updateOn) {
+  IntegerFieldValue(IntegerField integerField, boolean nullable, UpdateOn updateOn) {
     super(integerField, nullable ? null : 0, updateOn);
     if (!isNullable() && integerField.getInteger() == null) {
       integerField.setInteger(0);
@@ -15,7 +15,7 @@ final class IntegerFieldValue extends AbstractTextComponentValue<Integer, Intege
   }
 
   @Override
-  protected Integer getComponentValue(final IntegerField component) {
+  protected Integer getComponentValue(IntegerField component) {
     Number number = component.getNumber();
     if (number == null) {
       return isNullable() ? null : 0;
@@ -25,7 +25,7 @@ final class IntegerFieldValue extends AbstractTextComponentValue<Integer, Intege
   }
 
   @Override
-  protected void setComponentValue(final IntegerField component, final Integer value) {
+  protected void setComponentValue(IntegerField component, Integer value) {
     component.setNumber(value);
   }
 }

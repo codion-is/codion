@@ -20,41 +20,41 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
   private LayoutManager layout;
 
-  DefaultPanelBuilder(final JPanel panel) {
+  DefaultPanelBuilder(JPanel panel) {
     this.panel = requireNonNull(panel);
   }
 
-  DefaultPanelBuilder(final LayoutManager layout) {
+  DefaultPanelBuilder(LayoutManager layout) {
     this.layout = layout;
     this.panel = null;
   }
 
   @Override
-  public PanelBuilder layout(final LayoutManager layoutManager) {
+  public PanelBuilder layout(LayoutManager layoutManager) {
     this.layout = requireNonNull(layoutManager);
     return this;
   }
 
   @Override
-  public PanelBuilder add(final JComponent component) {
+  public PanelBuilder add(JComponent component) {
     componentConstraints.add(new ComponentConstraints(requireNonNull(component)));
     return this;
   }
 
   @Override
-  public PanelBuilder addConstrained(final JComponent component, final Object constraints) {
+  public PanelBuilder addConstrained(JComponent component, Object constraints) {
     componentConstraints.add(new ComponentConstraints(requireNonNull(component), requireNonNull(constraints)));
     return this;
   }
 
   @Override
-  public PanelBuilder add(final JComponent... components) {
+  public PanelBuilder add(JComponent... components) {
     add(Arrays.asList(components));
     return this;
   }
 
   @Override
-  public PanelBuilder add(final Collection<? extends JComponent> components) {
+  public PanelBuilder add(Collection<? extends JComponent> components) {
     requireNonNull(components).forEach(this::add);
     return this;
   }
@@ -78,23 +78,23 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
   }
 
   @Override
-  protected ComponentValue<Void, JPanel> buildComponentValue(final JPanel component) {
+  protected ComponentValue<Void, JPanel> buildComponentValue(JPanel component) {
     throw new UnsupportedOperationException("A ComponentValue can not be based on a JPanel");
   }
 
   @Override
-  protected void setInitialValue(final JPanel component, final Void initialValue) {}
+  protected void setInitialValue(JPanel component, Void initialValue) {}
 
   private static final class ComponentConstraints {
 
     private final JComponent component;
     private final Object constraints;
 
-    private ComponentConstraints(final JComponent component) {
+    private ComponentConstraints(JComponent component) {
       this(component, null);
     }
 
-    private ComponentConstraints(final JComponent component, final Object constraints) {
+    private ComponentConstraints(JComponent component, Object constraints) {
       this.component = component;
       this.constraints = constraints;
     }

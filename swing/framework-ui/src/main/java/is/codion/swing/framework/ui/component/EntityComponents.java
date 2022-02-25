@@ -59,7 +59,7 @@ public class EntityComponents {
   /**
    * @param entityDefinition the entity definition
    */
-  public EntityComponents(final EntityDefinition entityDefinition) {
+  public EntityComponents(EntityDefinition entityDefinition) {
     this.entityDefinition = requireNonNull(entityDefinition);
   }
 
@@ -74,7 +74,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return true if {@link #inputComponent(Attribute)} supports the given attribute
    */
-  public boolean inputComponentSupported(final Attribute<?> attribute) {
+  public boolean inputComponentSupported(Attribute<?> attribute) {
     requireNonNull(attribute);
     if (attribute instanceof ForeignKey) {
       return false;
@@ -106,7 +106,7 @@ public class EntityComponents {
    * @return the component builder handling input for {@code attribute}
    * @throws IllegalArgumentException in case the attribute type is not supported
    */
-  public <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> inputComponent(final Attribute<T> attribute) {
+  public <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> inputComponent(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
     if (property instanceof ItemProperty) {
       return (ComponentBuilder<T, C, B>) itemComboBox(attribute);
@@ -150,7 +150,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final CheckBoxBuilder checkBox(final Attribute<Boolean> attribute) {
+  public final CheckBoxBuilder checkBox(Attribute<Boolean> attribute) {
     Property<Boolean> property = entityDefinition.getProperty(attribute);
 
     return Components.checkBox()
@@ -166,7 +166,7 @@ public class EntityComponents {
    * @param <B> the builder type
    * @return a builder
    */
-  public final <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(final Attribute<Boolean> attribute) {
+  public final <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(Attribute<Boolean> attribute) {
     Property<Boolean> property = entityDefinition.getProperty(attribute);
 
     return (ButtonBuilder<Boolean, JToggleButton, B>) Components.toggleButton()
@@ -180,7 +180,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final ItemComboBoxBuilder<Boolean> booleanComboBox(final Attribute<Boolean> attribute) {
+  public final ItemComboBoxBuilder<Boolean> booleanComboBox(Attribute<Boolean> attribute) {
     Property<Boolean> property = entityDefinition.getProperty(attribute);
 
     return Components.booleanComboBox(ItemComboBoxModel.createBooleanModel())
@@ -194,8 +194,8 @@ public class EntityComponents {
    * @param <B> the builder type
    * @return a builder
    */
-  public final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> foreignKeyComboBox(final ForeignKey foreignKey,
-                                                                                                                                    final SwingEntityComboBoxModel comboBoxModel) {
+  public final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> foreignKeyComboBox(ForeignKey foreignKey,
+                                                                                                                                    SwingEntityComboBoxModel comboBoxModel) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
     return (ComboBoxBuilder<Entity, EntityComboBox, B>) EntityComboBox.builder(comboBoxModel)
@@ -208,7 +208,7 @@ public class EntityComponents {
    * @param searchModel the search model
    * @return a builder
    */
-  public final EntitySearchField.Builder foreignKeySearchField(final ForeignKey foreignKey, final EntitySearchModel searchModel) {
+  public final EntitySearchField.Builder foreignKeySearchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
     return EntitySearchField.builder(searchModel)
@@ -220,7 +220,7 @@ public class EntityComponents {
    * @param foreignKey the foreign key
    * @return a builder
    */
-  public final LabelBuilder<Entity> foreignKeyLabel(final ForeignKey foreignKey) {
+  public final LabelBuilder<Entity> foreignKeyLabel(ForeignKey foreignKey) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
     return Components.<Entity>label()
@@ -233,7 +233,7 @@ public class EntityComponents {
    * @param <T> the attribute type
    * @return a builder
    */
-  public final <T> ItemComboBoxBuilder<T> itemComboBox(final Attribute<T> attribute) {
+  public final <T> ItemComboBoxBuilder<T> itemComboBox(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
     if (!(property instanceof ItemProperty)) {
       throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ItemProperty");
@@ -253,8 +253,8 @@ public class EntityComponents {
    * @param <B> the builder type
    * @return a builder
    */
-  public final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(final Attribute<T> attribute,
-                                                                                                                       final ComboBoxModel<T> comboBoxModel) {
+  public final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(Attribute<T> attribute,
+                                                                                                                       ComboBoxModel<T> comboBoxModel) {
     Property<T> property = entityDefinition.getProperty(attribute);
 
     return (ComboBoxBuilder<T, C, B>) Components.comboBox(comboBoxModel)
@@ -267,7 +267,7 @@ public class EntityComponents {
    * @param <T> the attribute type
    * @return a builder
    */
-  public final <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(final Attribute<T> attribute) {
+  public final <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(Attribute<T> attribute) {
     if (!attribute.isTemporal()) {
       throw new IllegalArgumentException("Attribute " + attribute + " is not Temporal");
     }
@@ -282,7 +282,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TextInputPanelBuilder textInputPanel(final Attribute<String> attribute) {
+  public final TextInputPanelBuilder textInputPanel(Attribute<String> attribute) {
     Property<String> property = entityDefinition.getProperty(attribute);
 
     return Components.textInputPanel()
@@ -296,7 +296,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TextAreaBuilder textArea(final Attribute<String> attribute) {
+  public final TextAreaBuilder textArea(Attribute<String> attribute) {
     Property<String> property = entityDefinition.getProperty(attribute);
     if (!attribute.isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
@@ -315,7 +315,7 @@ public class EntityComponents {
    * @param <B> the builder type
    * @return a builder
    */
-  public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(final Attribute<T> attribute) {
+  public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
 
     Class<T> typeClass = attribute.getTypeClass();
@@ -347,7 +347,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> localTimeField(final Attribute<LocalTime> attribute) {
+  public final TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> localTimeField(Attribute<LocalTime> attribute) {
     Property<LocalTime> property = entityDefinition.getProperty(attribute);
 
     return Components.localTimeField(property.getDateTimePattern())
@@ -359,7 +359,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> localDateField(final Attribute<LocalDate> attribute) {
+  public final TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> localDateField(Attribute<LocalDate> attribute) {
     Property<LocalDate> property = entityDefinition.getProperty(attribute);
 
     return Components.localDateField(property.getDateTimePattern())
@@ -371,7 +371,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(final Attribute<LocalDateTime> attribute) {
+  public final TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(Attribute<LocalDateTime> attribute) {
     Property<LocalDateTime> property = entityDefinition.getProperty(attribute);
 
     return Components.localDateTimeField(property.getDateTimePattern())
@@ -383,7 +383,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
+  public final TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
     Property<OffsetDateTime> property = entityDefinition.getProperty(attribute);
 
     return Components.offsetDateTimeField(property.getDateTimePattern())
@@ -395,7 +395,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final IntegerFieldBuilder integerField(final Attribute<Integer> attribute) {
+  public final IntegerFieldBuilder integerField(Attribute<Integer> attribute) {
     Property<Integer> property = entityDefinition.getProperty(attribute);
 
     return Components.integerField()
@@ -410,7 +410,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final LongFieldBuilder longField(final Attribute<Long> attribute) {
+  public final LongFieldBuilder longField(Attribute<Long> attribute) {
     Property<Long> property = entityDefinition.getProperty(attribute);
 
     return Components.longField()
@@ -425,7 +425,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final DoubleFieldBuilder doubleField(final Attribute<Double> attribute) {
+  public final DoubleFieldBuilder doubleField(Attribute<Double> attribute) {
     Property<Double> property = entityDefinition.getProperty(attribute);
 
     return Components.doubleField()
@@ -441,7 +441,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final BigDecimalFieldBuilder bigDecimalField(final Attribute<BigDecimal> attribute) {
+  public final BigDecimalFieldBuilder bigDecimalField(Attribute<BigDecimal> attribute) {
     Property<BigDecimal> property = entityDefinition.getProperty(attribute);
 
     return Components.bigDecimalField()
@@ -457,7 +457,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final FormattedTextFieldBuilder formattedTextField(final Attribute<String> attribute) {
+  public final FormattedTextFieldBuilder formattedTextField(Attribute<String> attribute) {
     Property<String> property = entityDefinition.getProperty(attribute);
 
     return Components.formattedTextField()

@@ -27,7 +27,7 @@ public class SteppedComboBox<T> extends JComboBox<T> {
    * Instantiates a new SteppedComboBox.
    * @param comboBoxModel the combo box model
    */
-  public SteppedComboBox(final ComboBoxModel<T> comboBoxModel) {
+  public SteppedComboBox(ComboBoxModel<T> comboBoxModel) {
     super(Objects.requireNonNull(comboBoxModel, "comboBoxModel"));
     setUI(new SteppedComboBoxUI());
   }
@@ -35,7 +35,7 @@ public class SteppedComboBox<T> extends JComboBox<T> {
   /**
    * @param width the width of the popup
    */
-  public final void setPopupWidth(final int width) {
+  public final void setPopupWidth(int width) {
     popupWidth = width;
   }
 
@@ -59,7 +59,7 @@ public class SteppedComboBox<T> extends JComboBox<T> {
   /**
    * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
    */
-  public final void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
+  public final void setTransferFocusOnEnter(boolean transferFocusOnEnter) {
     this.transferFocusOnEnter = transferFocusOnEnter;
   }
 
@@ -74,7 +74,7 @@ public class SteppedComboBox<T> extends JComboBox<T> {
   }
 
   @Override
-  public final void processKeyEvent(final KeyEvent e) {
+  public final void processKeyEvent(KeyEvent e) {
     if (isTransferFocusEvent(e)){
       if (e.isShiftDown()) {
         transferFocusBackward();
@@ -88,7 +88,7 @@ public class SteppedComboBox<T> extends JComboBox<T> {
     }
   }
 
-  private boolean isTransferFocusEvent(final KeyEvent e) {
+  private boolean isTransferFocusEvent(KeyEvent e) {
     return e.getKeyCode() == KeyEvent.VK_ENTER && e.getID() == KeyEvent.KEY_PRESSED && !isPopupVisible() && transferFocusOnEnter;
   }
 
@@ -106,13 +106,13 @@ public class SteppedComboBox<T> extends JComboBox<T> {
 
   private static final class SteppedComboBoxPopup extends BasicComboPopup {
 
-    private SteppedComboBoxPopup(final JComboBox comboBox) {
+    private SteppedComboBoxPopup(JComboBox comboBox) {
       super(comboBox);
       getAccessibleContext().setAccessibleParent(comboBox);
     }
 
     @Override
-    public void setVisible(final boolean visible) {
+    public void setVisible(boolean visible) {
       if (visible) {
         Dimension popupSize = ((SteppedComboBox<?>) comboBox).getPopupSize();
         popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));

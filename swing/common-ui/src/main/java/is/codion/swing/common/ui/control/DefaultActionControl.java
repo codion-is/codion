@@ -14,13 +14,13 @@ final class DefaultActionControl extends AbstractControl {
 
   private final ActionCommand command;
 
-  DefaultActionControl(final ActionCommand command, final String name, final StateObserver enabledObserver) {
+  DefaultActionControl(ActionCommand command, String name, StateObserver enabledObserver) {
     super(name, enabledObserver);
     this.command = requireNonNull(command);
   }
 
   @Override
-  public void actionPerformed(final ActionEvent e) {
+  public void actionPerformed(ActionEvent e) {
     try {
       command.perform(e);
     }

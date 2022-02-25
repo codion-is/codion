@@ -36,9 +36,9 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
    * @param columnModel the column model
    * @param onSearchListener notified when this condition panel triggers a search
    */
-  public EntityTableSimpleConditionPanel(final EntityTableConditionModel tableConditionModel,
-                                         final SwingFilteredTableColumnModel<?> columnModel,
-                                         final EventListener onSearchListener) {
+  public EntityTableSimpleConditionPanel(EntityTableConditionModel tableConditionModel,
+                                         SwingFilteredTableColumnModel<?> columnModel,
+                                         EventListener onSearchListener) {
     super(tableConditionModel, columnModel.getAllColumns());
     this.searchControl = Control.builder(this::performSimpleSearch)
             .caption(FrameworkMessages.get(FrameworkMessages.SEARCH))
@@ -63,7 +63,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
    * Sets the search text in case simple search is enabled
    * @param searchText the search text
    */
-  public void setSearchText(final String searchText) {
+  public void setSearchText(String searchText) {
     simpleSearchTextField.setText(searchText);
   }
 
@@ -79,7 +79,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
     performSimpleSearch();
   }
 
-  private JPanel initializeSimpleConditionPanel(final EntityTableConditionModel conditionModel) {
+  private JPanel initializeSimpleConditionPanel(EntityTableConditionModel conditionModel) {
     JButton simpleSearchButton = searchControl.createButton();
     JPanel panel = new JPanel(Layouts.borderLayout());
     ComponentValues.textComponent(simpleSearchTextField).link(conditionModel.getSimpleConditionStringValue());

@@ -12,7 +12,7 @@ public class MultipleRecordsFoundException extends DatabaseException {
    * Instantiates a new MultipleRecordsFoundException
    * @param message the exception message
    */
-  public MultipleRecordsFoundException(final String message) {
+  public MultipleRecordsFoundException(String message) {
     super(message);
   }
 }

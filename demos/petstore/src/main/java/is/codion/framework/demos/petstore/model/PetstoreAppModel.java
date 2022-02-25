@@ -11,7 +11,7 @@ import static is.codion.framework.demos.petstore.domain.Petstore.*;
 
 public final class PetstoreAppModel extends SwingEntityApplicationModel {
 
-  public PetstoreAppModel(final EntityConnectionProvider connectionProvider) {
+  public PetstoreAppModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
     SwingEntityModel categoryModel = new SwingEntityModel(Category.TYPE, connectionProvider);
     SwingEntityModel productModel = new SwingEntityModel(Product.TYPE, connectionProvider);

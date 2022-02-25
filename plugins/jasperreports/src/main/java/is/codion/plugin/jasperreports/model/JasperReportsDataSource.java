@@ -30,7 +30,7 @@ public class JasperReportsDataSource<T> implements JRDataSource {
    * @param reportIterator the iterator providing the report data
    * @param valueProvider a Function returning the value for a given field from the given item
    */
-  public JasperReportsDataSource(final Iterator<T> reportIterator, final BiFunction<T, JRField, Object> valueProvider) {
+  public JasperReportsDataSource(Iterator<T> reportIterator, BiFunction<T, JRField, Object> valueProvider) {
     this(reportIterator, valueProvider, null);
   }
 
@@ -40,8 +40,8 @@ public class JasperReportsDataSource<T> implements JRDataSource {
    * @param valueProvider a Function returning the value for a given field from the given item
    * @param onNext called each time next has been called
    */
-  public JasperReportsDataSource(final Iterator<T> reportIterator, final BiFunction<T, JRField, Object> valueProvider,
-                                 final Consumer<T> onNext) {
+  public JasperReportsDataSource(Iterator<T> reportIterator, BiFunction<T, JRField, Object> valueProvider,
+                                 Consumer<T> onNext) {
     this.reportIterator = requireNonNull(reportIterator, "reportIterator");
     this.valueProvider = requireNonNull(valueProvider, "valueProvider");
     this.onNext = onNext == null ? next -> {} : onNext;
@@ -65,7 +65,7 @@ public class JasperReportsDataSource<T> implements JRDataSource {
    * @throws net.sf.jasperreports.engine.JRException in case of an exception
    */
   @Override
-  public final Object getFieldValue(final JRField field) throws JRException {
+  public final Object getFieldValue(JRField field) throws JRException {
     requireNonNull(field, "field");
     try {
       return valueProvider.apply(currentItem, field);

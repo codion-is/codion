@@ -58,7 +58,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * Instantiates a new {@link EntityView} with no {@link EntityEditView} and a default {@link EntityTableView}
    * @param model the {@link EntityModel} to base this view on
    */
-  public EntityView(final FXEntityModel model) {
+  public EntityView(FXEntityModel model) {
     this(model, (EntityEditView) null);
   }
 
@@ -67,7 +67,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * @param model the {@link FXEntityModel} to base this view on
    * @param editView the editView
    */
-  public EntityView(final FXEntityModel model, final EntityEditView editView) {
+  public EntityView(FXEntityModel model, EntityEditView editView) {
     this(model, editView, new EntityTableView(model.getTableModel()));
   }
 
@@ -76,7 +76,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * @param model the {@link FXEntityModel} to base this view on
    * @param tableView the tableView
    */
-  public EntityView(final FXEntityModel model, final EntityTableView tableView) {
+  public EntityView(FXEntityModel model, EntityTableView tableView) {
     this(model, null, tableView);
   }
 
@@ -86,7 +86,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * @param editView the editView
    * @param tableView the tableView
    */
-  public EntityView(final FXEntityModel model, final EntityEditView editView, final EntityTableView tableView) {
+  public EntityView(FXEntityModel model, EntityEditView editView, EntityTableView tableView) {
     this(model.getEditModel().getEntityDefinition().getCaption(), model, editView, tableView);
   }
 
@@ -97,7 +97,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * @param editView the editView
    * @param tableView the tableView
    */
-  public EntityView(final String caption, final FXEntityModel model, final EntityEditView editView, final EntityTableView tableView) {
+  public EntityView(String caption, FXEntityModel model, EntityEditView editView, EntityTableView tableView) {
     this.caption = caption;
     this.model = model;
     this.editView = editView;
@@ -123,7 +123,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * Sets the parent view of this {@link EntityView}
    * @param parentView the parent view
    */
-  public final void setParentView(final ViewTreeNode<EntityView> parentView) {
+  public final void setParentView(ViewTreeNode<EntityView> parentView) {
     this.parentView = parentView;
   }
 
@@ -205,7 +205,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * Adds a detail {@link EntityView} to this {@link EntityView}
    * @param detailView the detail view to add
    */
-  public final void addDetailView(final EntityView detailView) {
+  public final void addDetailView(EntityView detailView) {
     checkIfInitalized();
     detailViews.add(detailView);
     detailView.setParentView(this);
@@ -224,7 +224,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
     }
   }
 
-  private void navigate(final KeyEvent event) {
+  private void navigate(KeyEvent event) {
     switch (event.getCode()) {
       case DOWN:
         navigateDown();
@@ -323,7 +323,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
       }
       leftPane.setCenter(tablePane);
 
-      for (final EntityView detailView : detailViews) {
+      for (EntityView detailView : detailViews) {
         detailViewTabPane.getTabs().add(new Tab(detailView.getCaption(), detailView));
       }
       splitPane.getItems().add(leftPane);
@@ -333,7 +333,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
     setOnKeyReleased(this::onKeyReleased);
   }
 
-  private void setDetailPanelState(final PanelState state) {
+  private void setDetailPanelState(PanelState state) {
     if (state != PanelState.HIDDEN) {
       getTabbedDetailPanel().initializePanel();
     }
@@ -355,7 +355,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
     return (EntityView) detailViewTabPane.getSelectionModel().getSelectedItem().getContent();
   }
 
-  private void onKeyReleased(final KeyEvent event) {
+  private void onKeyReleased(KeyEvent event) {
     switch (event.getCode()) {
       case T:
         if (tableView != null && event.isControlDown()) {

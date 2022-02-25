@@ -59,7 +59,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param serverPort the server port, -1 if no specific port is required
    * @param registryPort the registry port
    */
-  public RemoteEntityConnectionProvider(final String serverHostName, final Integer serverPort, final Integer registryPort) {
+  public RemoteEntityConnectionProvider(String serverHostName, Integer serverPort, Integer registryPort) {
     this.serverHostName = requireNonNull(serverHostName, "serverHostName");
     this.serverPort = requireNonNull(serverPort, "serverPort");
     this.registryPort = requireNonNull(registryPort, "registryPort");
@@ -120,7 +120,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   @Override
-  protected void close(final EntityConnection connection) {
+  protected void close(EntityConnection connection) {
     try {
       server.disconnect(getClientId());
     }
@@ -183,12 +183,12 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     private final Map<Method, Method> methodCache = new HashMap<>();
     private final RemoteEntityConnection remoteConnection;
 
-    private RemoteEntityConnectionHandler(final RemoteEntityConnection remoteConnection) {
+    private RemoteEntityConnectionHandler(RemoteEntityConnection remoteConnection) {
       this.remoteConnection = remoteConnection;
     }
 
     @Override
-    public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+    public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Exception {
       String methodName = method.getName();
       if (methodName.equals(IS_CONNECTED)) {
         return isConnected();
@@ -217,7 +217,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       }
     }
 
-    private static Method getRemoteMethod(final Method method) {
+    private static Method getRemoteMethod(Method method) {
       try {
         return RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
       }

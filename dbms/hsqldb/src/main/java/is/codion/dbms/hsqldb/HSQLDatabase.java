@@ -22,11 +22,11 @@ final class HSQLDatabase extends AbstractDatabase {
 
   private final boolean nowait;
 
-  HSQLDatabase(final String jdbcUrl) {
+  HSQLDatabase(String jdbcUrl) {
     this(jdbcUrl, true);
   }
 
-  HSQLDatabase(final String jdbcUrl, final boolean nowait) {
+  HSQLDatabase(String jdbcUrl, boolean nowait) {
     super(jdbcUrl);
     this.nowait = nowait;
   }
@@ -49,12 +49,12 @@ final class HSQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getAutoIncrementQuery(final String idSource) {
+  public String getAutoIncrementQuery(String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
   @Override
-  public String getSequenceQuery(final String sequenceName) {
+  public String getSequenceQuery(String sequenceName) {
     return SEQUENCE_VALUE_QUERY + requireNonNull(sequenceName, "sequenceName");
   }
 }

@@ -26,8 +26,8 @@ public final class PropertyInputDialog<T> extends Dialog<PropertyInputDialog.Inp
    * @param defaultValue the default value to present to the user
    * @param connectionProvider the connection provider
    */
-  public PropertyInputDialog(final Property<T> property, final T defaultValue,
-                             final EntityConnectionProvider connectionProvider) {
+  public PropertyInputDialog(Property<T> property, T defaultValue,
+                             EntityConnectionProvider connectionProvider) {
     setTitle(property.getCaption());
     this.control = FXUiUtil.createControl(property, connectionProvider);
     Value<T> value = FXUiUtil.createValue(property, control, defaultValue);
@@ -46,7 +46,7 @@ public final class PropertyInputDialog<T> extends Dialog<PropertyInputDialog.Inp
     return control;
   }
 
-  private void initializeUI(final Control control) {
+  private void initializeUI(Control control) {
     getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
     getDialogPane().setContent(control);
   }
@@ -64,7 +64,7 @@ public final class PropertyInputDialog<T> extends Dialog<PropertyInputDialog.Inp
      * @param inputAccepted true if the user accepted the input value
      * @param value the input value
      */
-    public InputResult(final boolean inputAccepted, final T value) {
+    public InputResult(boolean inputAccepted, T value) {
       this.inputAccepted = inputAccepted;
       this.value = value;
     }

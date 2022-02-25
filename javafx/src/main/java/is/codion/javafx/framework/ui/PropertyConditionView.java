@@ -54,7 +54,7 @@ public final class PropertyConditionView<T> extends BorderPane {
    * @param model the {@link ColumnConditionModel} to base this view on
    * @param property the underlying property
    */
-  public PropertyConditionView(final ColumnConditionModel<? extends Attribute<?>, T> model, final Property<T> property) {
+  public PropertyConditionView(ColumnConditionModel<? extends Attribute<?>, T> model, Property<T> property) {
     this.model = model;
     this.header = new Label(property.getCaption());
     this.enabledBox = createEnabledBox();
@@ -73,7 +73,7 @@ public final class PropertyConditionView<T> extends BorderPane {
    * Toggles the advanced view
    * @param advanced the toggle value
    */
-  public void setAdvanced(final boolean advanced) {
+  public void setAdvanced(boolean advanced) {
     advancedCondition.set(advanced);
     initializeUI();
   }
@@ -120,7 +120,7 @@ public final class PropertyConditionView<T> extends BorderPane {
     return box;
   }
 
-  private Control createEqualsValueControl(final Property<T> property) {
+  private Control createEqualsValueControl(Property<T> property) {
     Control control = createControl(property);
     if (!(control instanceof EntitySearchField)) {
       ValueSet<T> valueSet = model.getEqualValueSet();
@@ -133,7 +133,7 @@ public final class PropertyConditionView<T> extends BorderPane {
     return control;
   }
 
-  private Control createUpperBoundControl(final Property<T> property) {
+  private Control createUpperBoundControl(Property<T> property) {
     if (model.getTypeClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKey) {
       //never required
       return null;
@@ -144,7 +144,7 @@ public final class PropertyConditionView<T> extends BorderPane {
     return control;
   }
 
-  private Control createLowerBoundControl(final Property<T> property) {
+  private Control createLowerBoundControl(Property<T> property) {
     if (model.getTypeClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKey) {
       //never required
       return null;
@@ -155,7 +155,7 @@ public final class PropertyConditionView<T> extends BorderPane {
     return control;
   }
 
-  private Control createControl(final Property<T> property) {
+  private Control createControl(Property<T> property) {
     Control control;
     if (model instanceof FXForeignKeyConditionListModel) {
       FXForeignKeyConditionListModel listModel = (FXForeignKeyConditionListModel) model;
@@ -229,14 +229,14 @@ public final class PropertyConditionView<T> extends BorderPane {
     return gridPane;
   }
 
-  private static Pane singleValuePane(final Control control) {
+  private static Pane singleValuePane(Control control) {
     GridPane gridPane = new GridPane();
     gridPane.addColumn(0, control);
 
     return gridPane;
   }
 
-  private static Collection<Item<Operator>> getOperators(final Attribute<?> attribute) {
+  private static Collection<Item<Operator>> getOperators(Attribute<?> attribute) {
     Collection<Item<Operator>> types = new ArrayList<>();
     if (attribute instanceof ForeignKey) {
       types.add(item(Operator.EQUAL, Operator.EQUAL.getCaption()));
@@ -246,7 +246,7 @@ public final class PropertyConditionView<T> extends BorderPane {
       types.add(item(Operator.EQUAL, Operator.EQUAL.getCaption()));
     }
     else {
-      for (final Operator operator : Operator.values()) {
+      for (Operator operator : Operator.values()) {
         types.add(item(operator, operator.getCaption()));
       }
     }

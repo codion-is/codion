@@ -20,7 +20,7 @@ public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookApp
   private static final String PLAYLIST_NAME = "Random playlist";
 
   @Override
-  protected void perform(final ChinookApplicationModel application) throws Exception {
+  protected void perform(ChinookApplicationModel application) throws Exception {
     SwingEntityModel playlistModel = application.getEntityModel(Playlist.TYPE);
     PlaylistTableModel playlistTableModel = (PlaylistTableModel) playlistModel.getTableModel();
     playlistTableModel.refresh();

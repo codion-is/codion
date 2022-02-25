@@ -10,7 +10,7 @@ final class ToolBarControlHandler extends ControlHandler {
 
   private final JToolBar toolbar;
 
-  ToolBarControlHandler(final JToolBar owner) {
+  ToolBarControlHandler(JToolBar owner) {
     this.toolbar = owner;
   }
 
@@ -20,7 +20,7 @@ final class ToolBarControlHandler extends ControlHandler {
   }
 
   @Override
-  public void onControl(final Control control) {
+  public void onControl(Control control) {
     if (control instanceof ToggleControl) {
       toolbar.add(((ToggleControl) control).createToggleButton());
     }
@@ -30,12 +30,12 @@ final class ToolBarControlHandler extends ControlHandler {
   }
 
   @Override
-  public void onControls(final Controls controls) {
+  public void onControls(Controls controls) {
     controls.getActions().forEach(new ToolBarControlHandler(toolbar));
   }
 
   @Override
-  public void onAction(final Action action) {
+  public void onAction(Action action) {
     toolbar.add(action);
   }
 }

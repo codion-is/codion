@@ -46,7 +46,7 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
    * Instantiates a new HttpServer.
    * @param configuration the server configuration.
    */
-  public HttpServer(final HttpServerConfiguration configuration) {
+  public HttpServer(HttpServerConfiguration configuration) {
     super(requireNonNull(configuration, "configuration").getServerPort());
     this.port = configuration.getServerPort();
     if (configuration.isSecure()) {
@@ -88,7 +88,7 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
    * Adds a startup listener.
    * @param listener a listener notified when this server is started.
    */
-  public final void addServerStartedListener(final EventListener listener) {
+  public final void addServerStartedListener(EventListener listener) {
     serverStartedEvent.addListener(listener);
   }
 
@@ -96,12 +96,12 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
    * Adds a shutdown listener.
    * @param listener a listener notified when this server is stopped.
    */
-  public final void addServerStoppedListener(final EventListener listener) {
+  public final void addServerStoppedListener(EventListener listener) {
     serverStoppedEvent.addListener(listener);
   }
 
   @Override
-  public final void setHandler(final Handler handler) {
+  public final void setHandler(Handler handler) {
     super.setHandler(handler);
   }
 
@@ -109,12 +109,12 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
    * Adds a handler to this http server
    * @param handler the handler to add
    */
-  protected final void addHandler(final Handler handler) {
+  protected final void addHandler(Handler handler) {
     LOG.info(getClass().getSimpleName() + " adding handler: " + handler);
     handlers.addHandler(handler);
   }
 
-  private void setupSecureConnector(final HttpServerConfiguration configuration) {
+  private void setupSecureConnector(HttpServerConfiguration configuration) {
     HttpConfiguration httpConfiguration = new HttpConfiguration();
     httpConfiguration.setSecureScheme("https");
     httpConfiguration.setSecurePort(port);

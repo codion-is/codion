@@ -37,7 +37,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public FXEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public FXEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     super(entityType, connectionProvider);
   }
 
@@ -47,8 +47,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public FXEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                           final EntityValidator validator) {
+  public FXEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                           EntityValidator validator) {
     super(entityType, connectionProvider, validator);
   }
 
@@ -57,7 +57,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param foreignKey the foreign key
    * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key
    */
-  public final FXEntityListModel getForeignKeyListModel(final ForeignKey foreignKey) {
+  public final FXEntityListModel getForeignKeyListModel(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
     return foreignKeyListModels.computeIfAbsent(foreignKey, k -> createForeignKeyListModel(foreignKey));
   }
@@ -67,7 +67,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param foreignKey the foreign key
    * @return a new {@link FXEntityListModel} based on the given
    */
-  public FXEntityListModel createForeignKeyListModel(final ForeignKey foreignKey) {
+  public FXEntityListModel createForeignKeyListModel(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
     FXEntityListModel entityListModel = new FXEntityListModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
     refreshingObserver.addState(entityListModel.getRefreshingObserver());
@@ -85,10 +85,10 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param entities the values
    */
   @Override
-  public void addForeignKeyValues(final List<Entity> entities) {
+  public void addForeignKeyValues(List<Entity> entities) {
     Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
-    for (final Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
-      for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
+    for (Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
+      for (ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
         FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
         if (listModel != null) {
           listModel.addAll(entry.getValue());
@@ -102,10 +102,10 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param entities the values
    */
   @Override
-  public void removeForeignKeyValues(final List<Entity> entities) {
+  public void removeForeignKeyValues(List<Entity> entities) {
     Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
-    for (final Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
-      for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
+    for (Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
+      for (ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
         FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
         if (listModel != null) {
           listModel.removeAll(entry.getValue());
@@ -127,7 +127,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  public final void addRefreshingObserver(final StateObserver refreshingObserver) {
+  public final void addRefreshingObserver(StateObserver refreshingObserver) {
     this.refreshingObserver.addState(refreshingObserver);
   }
 
@@ -137,12 +137,12 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  public final void addRefreshListener(final EventListener listener) {
+  public final void addRefreshListener(EventListener listener) {
     afterRefreshEvent.addListener(listener);
   }
 
   @Override
-  public final void removeRefreshListener(final EventListener listener) {
+  public final void removeRefreshListener(EventListener listener) {
     afterRefreshEvent.removeListener(listener);
   }
 
@@ -152,7 +152,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     afterRefreshEvent.onEvent();
   }
 
-  private void clearForeignKeyReferences(final ForeignKey foreignKey, final List<Entity> entities) {
+  private void clearForeignKeyReferences(ForeignKey foreignKey, List<Entity> entities) {
     entities.forEach(entity -> {
       if (Objects.equals(entity, get(foreignKey))) {
         put(foreignKey, null);

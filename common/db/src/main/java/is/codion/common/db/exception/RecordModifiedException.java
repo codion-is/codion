@@ -17,7 +17,7 @@ public final class RecordModifiedException extends UpdateException {
    * @param modifiedRow the current (modified) version of the row, null if it has been deleted
    * @param message a message describing the modification
    */
-  public RecordModifiedException(final Object row, final Object modifiedRow, final String message) {
+  public RecordModifiedException(Object row, Object modifiedRow, String message) {
     super(message);
     this.row = row;
     this.modifiedRow = modifiedRow;

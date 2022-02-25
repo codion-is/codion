@@ -28,12 +28,12 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
 
   private final ForeignKey foreignKey;
 
-  DefaultForeignKeyConditionBuilder(final ForeignKey foreignKey) {
+  DefaultForeignKeyConditionBuilder(ForeignKey foreignKey) {
     this.foreignKey = requireNonNull(foreignKey, "foreignKey");
   }
 
   @Override
-  public Condition equalTo(final Entity value) {
+  public Condition equalTo(Entity value) {
     if (value == null) {
       return isNull();
     }
@@ -42,14 +42,14 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   }
 
   @Override
-  public Condition equalTo(final Entity... values) {
+  public Condition equalTo(Entity... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
     return equalTo(Arrays.asList(values));
   }
 
   @Override
-  public Condition equalTo(final Collection<? extends Entity> values) {
+  public Condition equalTo(Collection<? extends Entity> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
     List<Attribute<?>> attributes = foreignKey.getReferences().stream()
@@ -62,7 +62,7 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   }
 
   @Override
-  public Condition notEqualTo(final Entity value) {
+  public Condition notEqualTo(Entity value) {
     if (value == null) {
       return isNotNull();
     }
@@ -71,14 +71,14 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   }
 
   @Override
-  public Condition notEqualTo(final Entity... values) {
+  public Condition notEqualTo(Entity... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
     return notEqualTo(Arrays.asList(values));
   }
 
   @Override
-  public Condition notEqualTo(final Collection<? extends Entity> values) {
+  public Condition notEqualTo(Collection<? extends Entity> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
     List<Attribute<?>> attributes = foreignKey.getReferences().stream()
@@ -100,8 +100,8 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
     return foreignKeyCondition(foreignKey, NOT_EQUAL, emptyList());
   }
 
-  private static Condition foreignKeyCondition(final ForeignKey foreignKey, final Operator operator,
-                                               final List<Map<Attribute<?>, Object>> valueMaps) {
+  private static Condition foreignKeyCondition(ForeignKey foreignKey, Operator operator,
+                                               List<Map<Attribute<?>, Object>> valueMaps) {
     if (foreignKey.getReferences().size() > 1) {
       return Conditions.compositeKeyCondition(attributeMap(foreignKey), operator, valueMaps);
     }
@@ -120,14 +120,14 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
     throw new IllegalArgumentException("Unsupported operator: " + operator);
   }
 
-  private static Map<Attribute<?>, Attribute<?>> attributeMap(final ForeignKey foreignKeyProperty) {
+  private static Map<Attribute<?>, Attribute<?>> attributeMap(ForeignKey foreignKeyProperty) {
     Map<Attribute<?>, Attribute<?>> map = new LinkedHashMap<>(foreignKeyProperty.getReferences().size());
     foreignKeyProperty.getReferences().forEach(reference -> map.put(reference.getAttribute(), reference.getReferencedAttribute()));
 
     return map;
   }
 
-  private static Map<Attribute<?>, Object> valueMap(final Entity entity, final List<Attribute<?>> attributes) {
+  private static Map<Attribute<?>, Object> valueMap(Entity entity, List<Attribute<?>> attributes) {
     Map<Attribute<?>, Object> values = new HashMap<>();
     attributes.forEach(attribute -> values.put(attribute, entity.get(attribute)));
 

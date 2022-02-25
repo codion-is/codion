@@ -36,7 +36,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
   }
 
   @Override
-  public void displayException(final Throwable exception, final Window dialogParent) {
+  public void displayException(Throwable exception, Window dialogParent) {
     requireNonNull(exception);
     Throwable rootCause = unwrapExceptions(exception, asList(RemoteException.class, RuntimeException.class,
             InvocationTargetException.class, ExceptionInInitializerError.class, UndeclaredThrowableException.class));
@@ -55,7 +55,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
             .show(rootCause);
   }
 
-  static Throwable unwrapExceptions(final Throwable exception, final Collection<Class<? extends Throwable>> exceptions) {
+  static Throwable unwrapExceptions(Throwable exception, Collection<Class<? extends Throwable>> exceptions) {
     if (exception instanceof CancelException) {
       return exception;
     }
@@ -64,7 +64,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
     }
 
     boolean unwrap = false;
-    for (final Class<? extends Throwable> exceptionClass : exceptions) {
+    for (Class<? extends Throwable> exceptionClass : exceptions) {
       unwrap = exceptionClass.isAssignableFrom(exception.getClass());
       if (unwrap) {
         break;
@@ -78,7 +78,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
     return exception;
   }
 
-  private static String getMessageTitle(final Throwable e) {
+  private static String getMessageTitle(Throwable e) {
     if (e instanceof FileNotFoundException) {
       return MESSAGES.getString("file_not_found");
     }
@@ -86,7 +86,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
     return Messages.get(Messages.ERROR);
   }
 
-  private static String trimMessage(final Throwable e) {
+  private static String trimMessage(Throwable e) {
     String message = e.getMessage();
     if (message != null && message.length() > MAXIMUM_MESSAGE_LENGTH) {
       return message.substring(0, MAXIMUM_MESSAGE_LENGTH) + "...";

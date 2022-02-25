@@ -47,8 +47,8 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
    * @param columnModel the column model
    * @param columnComponents the column components mapped to their respective column
    */
-  public TableColumnComponentPanel(final SwingFilteredTableColumnModel<?> columnModel,
-                                   final Map<TableColumn, T> columnComponents) {
+  public TableColumnComponentPanel(SwingFilteredTableColumnModel<?> columnModel,
+                                   Map<TableColumn, T> columnComponents) {
     this.columnModel = requireNonNull(columnModel);
     this.columns = columnModel.getAllColumns();
     requireNonNull(columnComponents).forEach((column, component) -> {
@@ -99,7 +99,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
 
   private void bindColumnAndComponentSizes() {
     columnModel.addColumnModelListener(new SyncColumnModelListener());
-    for (final TableColumn column : columns) {
+    for (TableColumn column : columns) {
       JComponent component = getColumnComponent(column);
       component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));
       column.addPropertyChangeListener(new SyncListener(component, column));
@@ -107,16 +107,16 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   }
 
   private void syncPanelWidths() {
-    for (final TableColumn column : columns) {
+    for (TableColumn column : columns) {
       syncPanelWidth(getColumnComponent(column), column);
     }
   }
 
-  private JComponent getColumnComponent(final TableColumn column) {
+  private JComponent getColumnComponent(TableColumn column) {
     return columnComponents.getOrDefault(column, (T) nullComponents.computeIfAbsent(column, c -> new JPanel()));
   }
 
-  private static void syncPanelWidth(final JComponent component, final TableColumn column) {
+  private static void syncPanelWidth(JComponent component, TableColumn column) {
     component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));
     component.revalidate();
   }
@@ -126,13 +126,13 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
     private final JComponent component;
     private final TableColumn column;
 
-    private SyncListener(final JComponent component, final TableColumn column) {
+    private SyncListener(JComponent component, TableColumn column) {
       this.component = component;
       this.column = column;
     }
 
     @Override
-    public void propertyChange(final PropertyChangeEvent changeEvent) {
+    public void propertyChange(PropertyChangeEvent changeEvent) {
       if ("width".equals(changeEvent.getPropertyName())) {
         syncPanelWidth(component, column);
       }
@@ -141,24 +141,24 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
 
   private final class SyncColumnModelListener implements TableColumnModelListener {
     @Override
-    public void columnAdded(final TableColumnModelEvent e) {
+    public void columnAdded(TableColumnModelEvent e) {
       resetPanel();
     }
 
     @Override
-    public void columnRemoved(final TableColumnModelEvent e) {
+    public void columnRemoved(TableColumnModelEvent e) {
       resetPanel();
     }
 
     @Override
-    public void columnMoved(final TableColumnModelEvent e) {
+    public void columnMoved(TableColumnModelEvent e) {
       resetPanel();
     }
 
     @Override
-    public void columnMarginChanged(final ChangeEvent e) {/*Not required*/}
+    public void columnMarginChanged(ChangeEvent e) {/*Not required*/}
 
     @Override
-    public void columnSelectionChanged(final ListSelectionEvent e) {/*Not required*/}
+    public void columnSelectionChanged(ListSelectionEvent e) {/*Not required*/}
   }
 }

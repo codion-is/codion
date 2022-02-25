@@ -21,14 +21,14 @@ public interface EntityObjectMapperFactory {
    * @param entities the domain entities
    * @return a new {@link EntityObjectMapper} instance.
    */
-  EntityObjectMapper createEntityObjectMapper(final Entities entities);
+  EntityObjectMapper createEntityObjectMapper(Entities entities);
 
   /**
    * Returns true if this mapper factory is compatible with the given domain type.
    * @param domainType the domain type
    * @return true if this mapper factory is compatible with the given domain type
    */
-  boolean isCompatibleWith(final DomainType domainType);
+  boolean isCompatibleWith(DomainType domainType);
 
   /**
    * Returns the first available {@link EntityObjectMapperFactory} instance compatible with the given domain type,
@@ -36,10 +36,10 @@ public interface EntityObjectMapperFactory {
    * @param domainType the domain type for which to find a mapper factory
    * @return a {@link EntityObjectMapperFactory} instance compatible with the given domain type.
    */
-  static EntityObjectMapperFactory entityObjectMapperFactory(final DomainType domainType) {
+  static EntityObjectMapperFactory entityObjectMapperFactory(DomainType domainType) {
     requireNonNull(domainType);
     ServiceLoader<EntityObjectMapperFactory> loader = ServiceLoader.load(EntityObjectMapperFactory.class);
-    for (final EntityObjectMapperFactory factory : loader) {
+    for (EntityObjectMapperFactory factory : loader) {
       if (factory.isCompatibleWith(domainType)) {
         return factory;
       }
@@ -47,12 +47,12 @@ public interface EntityObjectMapperFactory {
 
     return new EntityObjectMapperFactory() {
       @Override
-      public EntityObjectMapper createEntityObjectMapper(final Entities entities) {
+      public EntityObjectMapper createEntityObjectMapper(Entities entities) {
         return EntityObjectMapper.createEntityObjectMapper(entities);
       }
 
       @Override
-      public boolean isCompatibleWith(final DomainType domainType) {
+      public boolean isCompatibleWith(DomainType domainType) {
         return true;
       }
     };

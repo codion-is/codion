@@ -128,7 +128,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * Instantiates a new EntityEditComponentPanel
    * @param editModel the edit model
    */
-  protected EntityEditComponentPanel(final SwingEntityEditModel editModel) {
+  protected EntityEditComponentPanel(SwingEntityEditModel editModel) {
     this.editModel = requireNonNull(editModel, "editModel");
     this.entityComponents = new EntityComponents(editModel.getEntityDefinition());
   }
@@ -155,7 +155,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @return the component associated with the given attribute
    * @throws IllegalArgumentException in case no component or builder has been associated with the given attribute
    */
-  public final JComponent getComponent(final Attribute<?> attribute) {
+  public final JComponent getComponent(Attribute<?> attribute) {
     JComponent component = getComponentInternal(attribute);
     if (component == null) {
       throw new IllegalArgumentException("No component associated with attribute: " + attribute);
@@ -170,7 +170,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @return the attribute the given component is associated with, null if the component has not been
    * associated with an attribute
    */
-  public final <T> Attribute<T> getAttribute(final JComponent component) {
+  public final <T> Attribute<T> getAttribute(JComponent component) {
     return (Attribute<T>) components.entrySet().stream()
             .filter(entry -> entry.getValue() == component)
             .findFirst()
@@ -184,7 +184,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param initialFocusComponent the component
    * @return the component
    */
-  public final JComponent setInitialFocusComponent(final JComponent initialFocusComponent) {
+  public final JComponent setInitialFocusComponent(JComponent initialFocusComponent) {
     this.initialFocusComponent = initialFocusComponent;
     return initialFocusComponent;
   }
@@ -196,7 +196,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the component attribute
    * @see #setInitialFocusComponent(javax.swing.JComponent)
    */
-  public final void setInitialFocusAttribute(final Attribute<?> attribute) {
+  public final void setInitialFocusAttribute(Attribute<?> attribute) {
     getEditModel().getEntityDefinition().getProperty(attribute);
     this.initialFocusAttribute = attribute;
   }
@@ -207,7 +207,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param afterInsertFocusComponent the component
    * @return the component
    */
-  public final JComponent setAfterInsertFocusComponent(final JComponent afterInsertFocusComponent) {
+  public final JComponent setAfterInsertFocusComponent(JComponent afterInsertFocusComponent) {
     this.afterInsertFocusComponent = afterInsertFocusComponent;
     return afterInsertFocusComponent;
   }
@@ -219,7 +219,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the component attribute
    * @see #setAfterInsertFocusComponent(JComponent)
    */
-  public final void setAfterInsertFocusAttribute(final Attribute<?> attribute) {
+  public final void setAfterInsertFocusAttribute(Attribute<?> attribute) {
     getEditModel().getEntityDefinition().getProperty(attribute);
     this.afterInsertFocusAttribute = attribute;
   }
@@ -244,7 +244,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * If no component is associated with the attribute calling this method has no effect.
    * @param attribute the attribute of the component to select
    */
-  public final void requestComponentFocus(final Attribute<?> attribute) {
+  public final void requestComponentFocus(Attribute<?> attribute) {
     JComponent component = getComponentInternal(attribute);
     if (component != null) {
       component.requestFocus();
@@ -289,7 +289,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute to exclude from selection
    * @see #selectInputComponent()
    */
-  public final void excludeComponentFromSelection(final Attribute<?> attribute) {
+  public final void excludeComponentFromSelection(Attribute<?> attribute) {
     getEditModel().getEntityDefinition().getProperty(attribute);//just validating that the attribute exists
     excludeFromSelection.add(attribute);
   }
@@ -299,12 +299,12 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param exception the exception to handle
    * @see #displayException(Throwable, Window)
    */
-  public void onException(final Throwable exception) {
+  public void onException(Throwable exception) {
     displayException(exception, Windows.getParentWindow(this).orElse(null));
   }
 
   @Override
-  public final void displayException(final Throwable throwable, final Window dialogParent) {
+  public final void displayException(Throwable throwable, Window dialogParent) {
     DefaultDialogExceptionHandler.getInstance().displayException(throwable, dialogParent);
   }
 
@@ -314,7 +314,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param transferFocusOnEnter the new value
    * @see ComponentBuilder#TRANSFER_FOCUS_ON_ENTER
    */
-  protected final void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
+  protected final void setTransferFocusOnEnter(boolean transferFocusOnEnter) {
     this.transferFocusOnEnter = transferFocusOnEnter;
   }
 
@@ -325,7 +325,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @see #createForeignKeySearchField(ForeignKey)
    * @see #createTextInputPanel(Attribute)
    */
-  protected final void setDefaultTextFieldColumns(final int defaultTextFieldColumns) {
+  protected final void setDefaultTextFieldColumns(int defaultTextFieldColumns) {
     this.defaultTextFieldColumns = defaultTextFieldColumns;
   }
 
@@ -334,7 +334,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute
    * @param component the input component
    */
-  protected final void setComponent(final Attribute<?> attribute, final JComponent component) {
+  protected final void setComponent(Attribute<?> attribute, JComponent component) {
     getEditModel().getEntityDefinition().getProperty(attribute);
     requireNonNull(component, "component");
     components.put(attribute, component);
@@ -345,7 +345,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute
    * @see #createInputPanel(Attribute)
    */
-  protected final void addInputPanel(final Attribute<?> attribute) {
+  protected final void addInputPanel(Attribute<?> attribute) {
     add(createInputPanel(attribute));
   }
 
@@ -355,7 +355,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param constraints the layout constraints
    * @see #createInputPanel(Attribute)
    */
-  protected final void addInputPanel(final Attribute<?> attribute, final Object constraints) {
+  protected final void addInputPanel(Attribute<?> attribute, Object constraints) {
     add(createInputPanel(attribute), constraints);
   }
 
@@ -365,7 +365,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param inputComponent a component bound to {@code attribute}
    * @see #createInputPanel(Attribute, JComponent)
    */
-  protected final void addInputPanel(final Attribute<?> attribute, final JComponent inputComponent) {
+  protected final void addInputPanel(Attribute<?> attribute, JComponent inputComponent) {
     add(createInputPanel(attribute, inputComponent));
   }
 
@@ -376,7 +376,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param constraints the layout constraints
    * @see #createInputPanel(Attribute, JComponent)
    */
-  protected final void addInputPanel(final Attribute<?> attribute, final JComponent inputComponent, final Object constraints) {
+  protected final void addInputPanel(Attribute<?> attribute, JComponent inputComponent, Object constraints) {
     add(createInputPanel(attribute, inputComponent), constraints);
   }
 
@@ -388,7 +388,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @return a panel containing a label and a component
    * @throws IllegalArgumentException in case no component has been associated with the given attribute
    */
-  protected final JPanel createInputPanel(final Attribute<?> attribute) {
+  protected final JPanel createInputPanel(Attribute<?> attribute) {
     return createInputPanel(attribute, getComponent(attribute));
   }
 
@@ -400,7 +400,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param inputComponent a component bound to the property with id {@code attribute}
    * @return a panel containing a label and a component
    */
-  protected final JPanel createInputPanel(final Attribute<?> attribute, final JComponent inputComponent) {
+  protected final JPanel createInputPanel(Attribute<?> attribute, JComponent inputComponent) {
     return createInputPanel(attribute, inputComponent, BorderLayout.NORTH);
   }
 
@@ -413,8 +413,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
    * @return a panel containing a label and a component
    */
-  protected final JPanel createInputPanel(final Attribute<?> attribute, final JComponent inputComponent,
-                                          final String labelBorderLayoutConstraints) {
+  protected final JPanel createInputPanel(Attribute<?> attribute, JComponent inputComponent,
+                                          String labelBorderLayoutConstraints) {
     return createInputPanel(attribute, inputComponent, labelBorderLayoutConstraints, SwingConstants.LEADING);
   }
 
@@ -428,8 +428,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param labelAlignment the label alignment
    * @return a panel containing a label and a component
    */
-  protected final JPanel createInputPanel(final Attribute<?> attribute, final JComponent inputComponent,
-                                          final String labelBorderLayoutConstraints, final int labelAlignment) {
+  protected final JPanel createInputPanel(Attribute<?> attribute, JComponent inputComponent,
+                                          String labelBorderLayoutConstraints, int labelAlignment) {
     return createInputPanel(createLabel(attribute).horizontalAlignment(labelAlignment).build(), inputComponent, labelBorderLayoutConstraints);
   }
 
@@ -440,7 +440,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param inputComponent a input component
    * @return a panel containing a label and a component
    */
-  protected final JPanel createInputPanel(final JComponent labelComponent, final JComponent inputComponent) {
+  protected final JPanel createInputPanel(JComponent labelComponent, JComponent inputComponent) {
     return createInputPanel(labelComponent, inputComponent, BorderLayout.NORTH);
   }
 
@@ -453,8 +453,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
    * @return a panel containing a label and a component
    */
-  protected final JPanel createInputPanel(final JComponent labelComponent, final JComponent inputComponent,
-                                          final String labelBorderLayoutConstraints) {
+  protected final JPanel createInputPanel(JComponent labelComponent, JComponent inputComponent,
+                                          String labelBorderLayoutConstraints) {
     requireNonNull(labelComponent, "labelComponent");
     requireNonNull(inputComponent, "inputComponent");
     if (labelComponent instanceof JLabel) {
@@ -472,7 +472,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a text area
    * @return a text area builder
    */
-  protected final TextAreaBuilder createTextArea(final Attribute<String> attribute) {
+  protected final TextAreaBuilder createTextArea(Attribute<String> attribute) {
     return setComponentBuilder(attribute, entityComponents.textArea(attribute)
             .onBuild(textArea -> addValidator(attribute, textArea, getEditModel())));
   }
@@ -482,7 +482,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a text input panel
    * @return a text input panel builder
    */
-  protected final TextInputPanelBuilder createTextInputPanel(final Attribute<String> attribute) {
+  protected final TextInputPanelBuilder createTextInputPanel(Attribute<String> attribute) {
     return setComponentBuilder(attribute, entityComponents.textInputPanel(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(inputPanel -> addValidator(attribute, inputPanel.getTextField(), getEditModel())));
@@ -494,7 +494,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <T> the temporal type
    * @return a text area builder
    */
-  protected final <T extends Temporal> TemporalInputPanelBuilder<T> createTemporalInputPanel(final Attribute<T> attribute) {
+  protected final <T extends Temporal> TemporalInputPanelBuilder<T> createTemporalInputPanel(Attribute<T> attribute) {
     return setComponentBuilder(attribute, entityComponents.temporalInputPanel(attribute)
             .onBuild(inputPanel -> addFormattedValidator(attribute, inputPanel.getInputField(), getEditModel())));
   }
@@ -507,7 +507,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <B> the builder type
    * @return a text field builder
    */
-  protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(final Attribute<T> attribute) {
+  protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(Attribute<T> attribute) {
     return setComponentBuilder(attribute, (TextFieldBuilder<T, C, B>) entityComponents.textField(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
@@ -518,7 +518,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a temporal field
    * @return a local time field builder
    */
-  protected final TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> createLocalTimeField(final Attribute<LocalTime> attribute) {
+  protected final TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> createLocalTimeField(Attribute<LocalTime> attribute) {
     return setComponentBuilder(attribute, entityComponents.localTimeField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
@@ -528,7 +528,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a temporal field
    * @return a local date field builder
    */
-  protected final TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> createLocalDateField(final Attribute<LocalDate> attribute) {
+  protected final TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> createLocalDateField(Attribute<LocalDate> attribute) {
     return setComponentBuilder(attribute, entityComponents.localDateField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
@@ -538,7 +538,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a temporal field
    * @return a local date time field builder
    */
-  protected final TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> createLocalDateTimeField(final Attribute<LocalDateTime> attribute) {
+  protected final TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> createLocalDateTimeField(Attribute<LocalDateTime> attribute) {
     return setComponentBuilder(attribute, entityComponents.localDateTimeField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
@@ -548,7 +548,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a temporal field
    * @return an offset date time field builder
    */
-  protected final TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> createOffsetDateTimeField(final Attribute<OffsetDateTime> attribute) {
+  protected final TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> createOffsetDateTimeField(Attribute<OffsetDateTime> attribute) {
     return setComponentBuilder(attribute, entityComponents.offsetDateTimeField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
@@ -558,7 +558,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a text field
    * @return a integer field builder
    */
-  protected final IntegerFieldBuilder createIntegerField(final Attribute<Integer> attribute) {
+  protected final IntegerFieldBuilder createIntegerField(Attribute<Integer> attribute) {
     return setComponentBuilder(attribute, entityComponents.integerField(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(field -> addValidator(attribute, field, getEditModel())));
@@ -569,7 +569,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a text field
    * @return a long field builder
    */
-  protected final LongFieldBuilder createLongField(final Attribute<Long> attribute) {
+  protected final LongFieldBuilder createLongField(Attribute<Long> attribute) {
     return setComponentBuilder(attribute, entityComponents.longField(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(field -> addValidator(attribute, field, getEditModel())));
@@ -580,7 +580,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a text field
    * @return a double field builder
    */
-  protected final DoubleFieldBuilder createDoubleField(final Attribute<Double> attribute) {
+  protected final DoubleFieldBuilder createDoubleField(Attribute<Double> attribute) {
     return setComponentBuilder(attribute, entityComponents.doubleField(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(field -> addValidator(attribute, field, getEditModel())));
@@ -591,7 +591,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a text field
    * @return a big decimal field builder
    */
-  protected final BigDecimalFieldBuilder createBigDecimalField(final Attribute<BigDecimal> attribute) {
+  protected final BigDecimalFieldBuilder createBigDecimalField(Attribute<BigDecimal> attribute) {
     return setComponentBuilder(attribute, entityComponents.bigDecimalField(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(field -> addValidator(attribute, field, getEditModel())));
@@ -602,7 +602,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a formatted text field
    * @return a formatted text field builder
    */
-  protected final FormattedTextFieldBuilder createFormattedTextField(final Attribute<String> attribute) {
+  protected final FormattedTextFieldBuilder createFormattedTextField(Attribute<String> attribute) {
     return setComponentBuilder(attribute, entityComponents.formattedTextField(attribute)
             .onBuild(textField -> addFormattedValidator(attribute, textField, getEditModel())));
   }
@@ -613,7 +613,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a check-box
    * @return a check-box builder
    */
-  protected final CheckBoxBuilder createCheckBox(final Attribute<Boolean> attribute) {
+  protected final CheckBoxBuilder createCheckBox(Attribute<Boolean> attribute) {
     return setComponentBuilder(attribute, entityComponents.checkBox(attribute));
   }
 
@@ -622,7 +622,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build boolean combo box
    * @return a boolean combo box builder
    */
-  protected ItemComboBoxBuilder<Boolean> createBooleanComboBox(final Attribute<Boolean> attribute) {
+  protected ItemComboBoxBuilder<Boolean> createBooleanComboBox(Attribute<Boolean> attribute) {
     return setComponentBuilder(attribute, entityComponents.booleanComboBox(attribute));
   }
 
@@ -635,7 +635,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <B> the builder type
    * @return a combo box builder
    */
-  protected final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
+  protected final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Attribute<T> attribute, ComboBoxModel<T> comboBoxModel) {
     return setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel));
   }
 
@@ -645,7 +645,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <T> the value type
    * @return a value item list combo box builder
    */
-  protected final <T> ItemComboBoxBuilder<T> createItemComboBox(final Attribute<T> attribute) {
+  protected final <T> ItemComboBoxBuilder<T> createItemComboBox(Attribute<T> attribute) {
     return setComponentBuilder(attribute, entityComponents.itemComboBox(attribute));
   }
 
@@ -657,7 +657,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <B> the builder type
    * @return a combo box builder
    */
-  protected final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createAttributeComboBox(final Attribute<T> attribute) {
+  protected final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createAttributeComboBox(Attribute<T> attribute) {
     FilteredComboBoxModel<T> comboBoxModel = getEditModel().getComboBoxModel(attribute);
     comboBoxModel.addRefreshFailedListener(this::onException);
 
@@ -671,7 +671,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <B> the builder type
    * @return a foreign key combo box builder
    */
-  protected final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyComboBox(final ForeignKey foreignKey) {
+  protected final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyComboBox(ForeignKey foreignKey) {
     SwingEntityComboBoxModel comboBoxModel = getEditModel().getForeignKeyComboBoxModel(foreignKey);
     comboBoxModel.addRefreshFailedListener(this::onException);
 
@@ -684,7 +684,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param foreignKey the foreign key for which to build a search field
    * @return a foreign key search field builder
    */
-  protected final EntitySearchField.Builder createForeignKeySearchField(final ForeignKey foreignKey) {
+  protected final EntitySearchField.Builder createForeignKeySearchField(ForeignKey foreignKey) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
                     getEditModel().getForeignKeySearchModel(foreignKey))
             .columns(defaultTextFieldColumns));
@@ -695,7 +695,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param foreignKey the foreign key for which to build a label
    * @return a foreign key label builder
    */
-  protected final LabelBuilder<Entity> createForeignKeyLabel(final ForeignKey foreignKey) {
+  protected final LabelBuilder<Entity> createForeignKeyLabel(ForeignKey foreignKey) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeyLabel(foreignKey));
   }
 
@@ -706,7 +706,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <T> the attribute type
    * @return a label builder for the given attribute
    */
-  protected final <T> LabelBuilder<T> createLabel(final Attribute<T> attribute) {
+  protected final <T> LabelBuilder<T> createLabel(Attribute<T> attribute) {
     Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
     return (LabelBuilder<T>) Components.label(property.getCaption())
             .displayedMnemonic(property.getMnemonic() == null ? 0 : property.getMnemonic())
@@ -747,7 +747,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     requestFocus(getAfterInsertFocusComponent());
   }
 
-  private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(final Attribute<T> attribute, final B componentBuilder) {
+  private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
     if (componentBuilders.containsKey(attribute)) {
       throw new IllegalStateException("ComponentBuilder has already been set for attribute: " + attribute);
     }
@@ -758,7 +758,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     return componentBuilder;
   }
 
-  private void requestFocus(final JComponent component) {
+  private void requestFocus(JComponent component) {
     if (component != null && component.isFocusable()) {
       component.requestFocus();
     }
@@ -767,7 +767,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     }
   }
 
-  private JComponent getComponentInternal(final Attribute<?> attribute) {
+  private JComponent getComponentInternal(Attribute<?> attribute) {
     if (componentBuilders.containsKey(attribute)) {
       components.putIfAbsent(attribute, componentBuilders.remove(attribute).build());
     }
@@ -781,12 +781,12 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param component the component
    * @return true if this component can be selected
    */
-  private static boolean isComponentSelectable(final JComponent component) {
+  private static boolean isComponentSelectable(JComponent component) {
     return component != null && component.isDisplayable() &&
             component.isVisible() && component.isFocusable() && component.isEnabled();
   }
 
-  private static JLabel setLabelForComponent(final JLabel label, final JComponent component) {
+  private static JLabel setLabelForComponent(JLabel label, JComponent component) {
     if (component != null && label.getLabelFor() != component) {
       label.setLabelFor(component);
     }
@@ -794,7 +794,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     return label;
   }
 
-  private static void refreshIfCleared(final JComboBox<?> comboBox) {
+  private static void refreshIfCleared(JComboBox<?> comboBox) {
     ComboBoxModel<?> model = comboBox.getModel();
     if (model instanceof FilteredComboBoxModel) {
       FilteredComboBoxModel<?> comboBoxModel = (FilteredComboBoxModel<?>) model;

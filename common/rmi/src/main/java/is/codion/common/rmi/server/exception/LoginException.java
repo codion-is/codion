@@ -12,7 +12,7 @@ public class LoginException extends ServerException {
    * Instantiates a new {@link LoginException}
    * @param message the exception message
    */
-  public LoginException(final String message) {
+  public LoginException(String message) {
     super(message);
   }
 }

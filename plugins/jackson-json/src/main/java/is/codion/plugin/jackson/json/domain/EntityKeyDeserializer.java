@@ -29,14 +29,14 @@ final class EntityKeyDeserializer extends StdDeserializer<Key> {
   private final EntityObjectMapper entityObjectMapper;
   private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
 
-  EntityKeyDeserializer(final Entities entities, final EntityObjectMapper entityObjectMapper) {
+  EntityKeyDeserializer(Entities entities, EntityObjectMapper entityObjectMapper) {
     super(Key.class);
     this.entities = entities;
     this.entityObjectMapper = entityObjectMapper;
   }
 
   @Override
-  public Key deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
+  public Key deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
     ObjectCodec codec = parser.getCodec();
     JsonNode node = codec.readTree(parser);
     EntityDefinition definition = definitions.computeIfAbsent(node.get("entityType").asText(), entities::getDefinition);

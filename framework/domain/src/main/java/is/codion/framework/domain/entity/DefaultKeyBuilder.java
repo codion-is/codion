@@ -15,17 +15,17 @@ final class DefaultKeyBuilder implements Key.Builder {
 
   private boolean primaryKey = false;
 
-  DefaultKeyBuilder(final Key key, final EntityDefinition definition) {
+  DefaultKeyBuilder(Key key, EntityDefinition definition) {
     this(definition);
     key.getAttributes().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
   }
 
-  DefaultKeyBuilder(final EntityDefinition definition) {
+  DefaultKeyBuilder(EntityDefinition definition) {
     this.definition = definition;
   }
 
   @Override
-  public <T> Key.Builder with(final Attribute<T> attribute, final T value) {
+  public <T> Key.Builder with(Attribute<T> attribute, T value) {
     ColumnProperty<T> property = definition.getColumnProperty(attribute);
     if (property.isPrimaryKeyColumn()) {
       primaryKey = true;

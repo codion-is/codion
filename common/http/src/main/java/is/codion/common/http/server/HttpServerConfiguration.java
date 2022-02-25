@@ -52,7 +52,7 @@ public interface HttpServerConfiguration {
    * @param https yes if https should be used
    * @return a default configuration
    */
-  static HttpServerConfiguration configuration(final int port, final ServerHttps https) {
+  static HttpServerConfiguration configuration(int port, ServerHttps https) {
     return new DefaultHttpServerConfiguration(port, https);
   }
 

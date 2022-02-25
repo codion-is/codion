@@ -24,7 +24,7 @@ public interface CredentialsProvider {
    * @return the authentication token or null if none is found
    * @see #AUTHENTICATION_TOKEN_PREFIX
    */
-  default UUID getAuthenticationToken(final String[] args) {
+  default UUID getAuthenticationToken(String[] args) {
     if (args == null) {
       return null;
     }
@@ -60,7 +60,7 @@ public interface CredentialsProvider {
    * @param argument the argument
    * @return true if argument is an authentication token ('authenticationToken:123-123-123-123')
    */
-  static boolean isAuthenticationToken(final String argument) {
+  static boolean isAuthenticationToken(String argument) {
     return argument.startsWith(AUTHENTICATION_TOKEN_PREFIX + AUTHENTICATION_TOKEN_DELIMITER);
   }
 
@@ -68,7 +68,7 @@ public interface CredentialsProvider {
    * @param argument an argument containing an authenticationToken
    * @return the UUID parsed from the given argument
    */
-  static UUID getAuthenticationToken(final String argument) {
+  static UUID getAuthenticationToken(String argument) {
     return UUID.fromString(argument.split(AUTHENTICATION_TOKEN_DELIMITER)[1]);
   }
 }

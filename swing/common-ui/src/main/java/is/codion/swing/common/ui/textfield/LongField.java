@@ -23,7 +23,7 @@ public final class LongField extends NumberField<Long> {
    * Instantiates a new LongField
    * @param columns the number of columns
    */
-  public LongField(final int columns) {
+  public LongField(int columns) {
     this(Formats.getNonGroupingIntegerFormat(), columns);
   }
 
@@ -31,7 +31,7 @@ public final class LongField extends NumberField<Long> {
    * Instantiates a new LongField
    * @param format the format to use
    */
-  public LongField(final NumberFormat format) {
+  public LongField(NumberFormat format) {
     this(format, 0);
   }
 
@@ -40,7 +40,7 @@ public final class LongField extends NumberField<Long> {
    * @param format the format to use
    * @param columns the number of columns
    */
-  public LongField(final NumberFormat format, final int columns) {
+  public LongField(NumberFormat format, int columns) {
     super(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Long.class))), columns);
   }
 
@@ -54,7 +54,7 @@ public final class LongField extends NumberField<Long> {
   /**
    * @param value the value to set
    */
-  public void setLong(final Long value) {
+  public void setLong(Long value) {
     getTypedDocument().setNumber(value);
   }
 }

@@ -17,15 +17,15 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
   private final Provider<T> valueProvider;
   private final List<Attribute<?>> sourceAttributes;
 
-  DefaultDerivedProperty(final Attribute<T> attribute, final String caption,
-                         final Provider<T> valueProvider, final Attribute<?>... sourceAttributes) {
+  DefaultDerivedProperty(Attribute<T> attribute, String caption,
+                         Provider<T> valueProvider, Attribute<?>... sourceAttributes) {
     super(attribute, caption);
     requireNonNull(sourceAttributes);
     this.valueProvider = requireNonNull(valueProvider);
     if (sourceAttributes.length == 0) {
       throw new IllegalArgumentException("No source attributes, a derived property must be derived from one or more existing attributes");
     }
-    for (final Attribute<?> sourceAttribute : sourceAttributes) {
+    for (Attribute<?> sourceAttribute : sourceAttributes) {
       if (!attribute.getEntityType().equals(sourceAttribute.getEntityType())) {
         throw new IllegalArgumentException("Source attribute must be from same entity as the derived property");
       }

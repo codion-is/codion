@@ -24,7 +24,7 @@ import java.util.Map;
 // tag::customerTablePanel[]
 public class CustomerTablePanel extends EntityTablePanel {
 
-  public CustomerTablePanel(final SwingEntityTableModel tableModel) {
+  public CustomerTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
   }
 

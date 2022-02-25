@@ -21,7 +21,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * @param entityType the type of the entity this DefaultEntityModel represents
    * @param connectionProvider a EntityConnectionProvider
    */
-  public SwingEntityModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this(new SwingEntityEditModel(requireNonNull(entityType, "entityType"),
             requireNonNull(connectionProvider, "connectionProvider")));
   }
@@ -30,7 +30,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * Instantiates a new SwingEntityModel, with a default {@link SwingEntityTableModel}
    * @param editModel the edit model
    */
-  public SwingEntityModel(final SwingEntityEditModel editModel) {
+  public SwingEntityModel(SwingEntityEditModel editModel) {
     super(new SwingEntityTableModel(editModel));
   }
 
@@ -38,7 +38,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * Instantiates a new SwingEntityModel
    * @param tableModel the table model
    */
-  public SwingEntityModel(final SwingEntityTableModel tableModel) {
+  public SwingEntityModel(SwingEntityTableModel tableModel) {
     super(tableModel);
   }
 
@@ -47,7 +47,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * @param entityType the entity type
    * @return a new builder instance
    */
-  public static SwingEntityModel.Builder builder(final EntityType entityType) {
+  public static SwingEntityModel.Builder builder(EntityType entityType) {
     return new SwingEntityModelBuilder(entityType);
   }
 

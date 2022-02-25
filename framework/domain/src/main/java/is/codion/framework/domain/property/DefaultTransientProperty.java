@@ -17,7 +17,7 @@ class DefaultTransientProperty<T> extends DefaultProperty<T> implements Transien
    * @param type the data type of this property
    * @param caption the caption of this property
    */
-  DefaultTransientProperty(final Attribute<T> attribute, final String caption) {
+  DefaultTransientProperty(Attribute<T> attribute, String caption) {
     super(attribute, caption);
   }
 
@@ -35,7 +35,7 @@ class DefaultTransientProperty<T> extends DefaultProperty<T> implements Transien
 
     private final DefaultTransientProperty<T> transientProperty;
 
-    DefaultTransientPropertyBuilder(final DefaultTransientProperty<T> transientProperty) {
+    DefaultTransientPropertyBuilder(DefaultTransientProperty<T> transientProperty) {
       super(transientProperty);
       this.transientProperty = transientProperty;
     }
@@ -46,7 +46,7 @@ class DefaultTransientProperty<T> extends DefaultProperty<T> implements Transien
     }
 
     @Override
-    public TransientProperty.Builder<T, B> modifiesEntity(final boolean modifiesEntity) {
+    public TransientProperty.Builder<T, B> modifiesEntity(boolean modifiesEntity) {
       transientProperty.modifiesEntity = modifiesEntity;
       return this;
     }

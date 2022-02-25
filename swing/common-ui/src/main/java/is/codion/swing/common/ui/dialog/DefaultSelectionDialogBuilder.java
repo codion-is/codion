@@ -38,7 +38,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
   private boolean singleSelection;
   private Collection<T> defaultSelection = Collections.emptyList();
 
-  DefaultSelectionDialogBuilder(final Collection<T> values) {
+  DefaultSelectionDialogBuilder(Collection<T> values) {
     if (requireNonNull(values).isEmpty()) {
       throw new IllegalArgumentException("No values to select from");
     }
@@ -46,18 +46,18 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
   }
 
   @Override
-  public SelectionDialogBuilder<T> singleSelection(final boolean singleSelection) {
+  public SelectionDialogBuilder<T> singleSelection(boolean singleSelection) {
     this.singleSelection = singleSelection;
     return this;
   }
 
   @Override
-  public SelectionDialogBuilder<T> defaultSelection(final T defaultSelection) {
+  public SelectionDialogBuilder<T> defaultSelection(T defaultSelection) {
     return defaultSelection(Collections.singletonList(defaultSelection));
   }
 
   @Override
-  public SelectionDialogBuilder<T> defaultSelection(final Collection<T> defaultSelection) {
+  public SelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection) {
     this.defaultSelection = requireNonNull(defaultSelection);
     return this;
   }
@@ -73,8 +73,8 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
     return selectValues(owner, values, title == null ? MESSAGES.getString("select_values") : title, singleSelection, defaultSelection);
   }
 
-  static <T> Optional<T> selectValue(final Window dialogOwner, final Collection<T> values, final String dialogTitle,
-                                     final T defaultSelection) {
+  static <T> Optional<T> selectValue(Window dialogOwner, Collection<T> values, String dialogTitle,
+                                     T defaultSelection) {
     List<T> selected = selectValues(dialogOwner, values, dialogTitle, true,
             defaultSelection == null ? emptyList() : singletonList(defaultSelection));
     if (selected.isEmpty()) {
@@ -84,9 +84,9 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
     return Optional.of(selected.get(0));
   }
 
-  static <T> List<T> selectValues(final Window dialogOwner, final Collection<T> values,
-                                  final String dialogTitle, final boolean singleSelection,
-                                  final Collection<T> defaultSelection) {
+  static <T> List<T> selectValues(Window dialogOwner, Collection<T> values,
+                                  String dialogTitle, boolean singleSelection,
+                                  Collection<T> defaultSelection) {
     DefaultListModel<T> listModel = new DefaultListModel<>();
     values.forEach(listModel::addElement);
     JList<T> list = new JList<>(listModel);
@@ -98,7 +98,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
     list.addMouseListener(new MouseAdapter() {
       @Override
-      public void mouseClicked(final MouseEvent e) {
+      public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {
           okAction.actionPerformed(null);
         }

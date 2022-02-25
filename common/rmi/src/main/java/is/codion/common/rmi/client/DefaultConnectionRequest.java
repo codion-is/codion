@@ -24,9 +24,9 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
   private final Version frameworkVersion;
   private final Map<String, Object> parameters;
 
-  DefaultConnectionRequest(final User user, final UUID clientId, final String clientTypeId,
-                           final Version clientVersion, final Version frameworkVersion,
-                           final Map<String, Object> parameters) {
+  DefaultConnectionRequest(User user, UUID clientId, String clientTypeId,
+                           Version clientVersion, Version frameworkVersion,
+                           Map<String, Object> parameters) {
     this.user = requireNonNull(user, "user");
     this.clientId = requireNonNull(clientId, "clientId");
     this.clientTypeId = requireNonNull(clientTypeId, "clientTypeId");
@@ -66,7 +66,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
   }
 
   @Override
-  public boolean equals(final Object obj) {
+  public boolean equals(Object obj) {
     return this == obj || obj instanceof ConnectionRequest && clientId.equals(((ConnectionRequest) obj).getClientId());
   }
 

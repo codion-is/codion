@@ -18,13 +18,13 @@ final class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalFi
 
   private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
-  DefaultTemporalFieldBuilder(final Class<T> valueClass, final String dateTimePattern, final Value<T> linkedValue) {
+  DefaultTemporalFieldBuilder(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
     super(valueClass, linkedValue);
     this.dateTimePattern = requireNonNull(dateTimePattern);
   }
 
   @Override
-  public TemporalFieldBuilder<T, C> focusLostBehaviour(final int focusLostBehaviour) {
+  public TemporalFieldBuilder<T, C> focusLostBehaviour(int focusLostBehaviour) {
     this.focusLostBehaviour = focusLostBehaviour;
     return this;
   }
@@ -37,12 +37,12 @@ final class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalFi
   }
 
   @Override
-  protected ComponentValue<T, C> buildComponentValue(final C component) {
+  protected ComponentValue<T, C> buildComponentValue(C component) {
     return (ComponentValue<T, C>) component.componentValue(updateOn);
   }
 
   @Override
-  protected void setInitialValue(final C component, final T initialValue) {
+  protected void setInitialValue(C component, T initialValue) {
     component.setTemporal(initialValue);
   }
 }

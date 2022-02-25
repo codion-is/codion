@@ -157,7 +157,7 @@ public class AbstractServerTest {
 
     private final RemoteClient remoteClient;
 
-    public ServerTestImpl(final RemoteClient remoteClient) {
+    public ServerTestImpl(RemoteClient remoteClient) {
       this.remoteClient = remoteClient;
     }
 
@@ -181,26 +181,26 @@ public class AbstractServerTest {
       this(getConfiguration());
     }
 
-    private TestServer(final ServerConfiguration configuration) throws RemoteException {
+    private TestServer(ServerConfiguration configuration) throws RemoteException {
       super(configuration);
       addLoginProxy(new TestLoginProxy());
     }
 
     @Override
-    protected ServerTest connect(final RemoteClient remoteClient) {
+    protected ServerTest connect(RemoteClient remoteClient) {
       return new ServerTestImpl(remoteClient);
     }
 
     @Override
-    public ServerAdmin getServerAdmin(final User user) throws RemoteException, ServerAuthenticationException {
+    public ServerAdmin getServerAdmin(User user) throws RemoteException, ServerAuthenticationException {
       return null;
     }
 
     @Override
-    protected void disconnect(final ServerTest connection) {}
+    protected void disconnect(ServerTest connection) {}
 
     @Override
-    protected void maintainConnections(final Collection<ClientConnection<ServerTest>> connections) throws RemoteException {}
+    protected void maintainConnections(Collection<ClientConnection<ServerTest>> connections) throws RemoteException {}
 
     @Override
     public int getServerLoad() {
@@ -219,12 +219,12 @@ public class AbstractServerTest {
       return null;
     }
     @Override
-    public RemoteClient login(final RemoteClient remoteClient) {
+    public RemoteClient login(RemoteClient remoteClient) {
       LOGIN_COUNTER.incrementAndGet();
       return remoteClient;
     }
     @Override
-    public void logout(final RemoteClient remoteClient) {
+    public void logout(RemoteClient remoteClient) {
       LOGOUT_COUNTER.incrementAndGet();
     }
     @Override

@@ -77,7 +77,7 @@ public final class ServerMonitorPanel extends JPanel {
    * @param model the ServerMonitor to base this panel on
    * @throws RemoteException in case of an exception
    */
-  public ServerMonitorPanel(final ServerMonitor model) throws RemoteException {
+  public ServerMonitorPanel(ServerMonitor model) throws RemoteException {
     this.model = model;
     requestsPerSecondChart.getXYPlot().setDataset(model.getConnectionRequestsDataset());
     memoryUsageChart.getXYPlot().setDataset(model.getMemoryUsageDataset());
@@ -255,7 +255,7 @@ public final class ServerMonitorPanel extends JPanel {
             .build();
   }
 
-  private void setColors(final JFreeChart chart) {
+  private void setColors(JFreeChart chart) {
     ChartUtil.linkColors(this, chart);
   }
 
@@ -291,7 +291,7 @@ public final class ServerMonitorPanel extends JPanel {
     }
 
     @Override
-    public void axisChanged(final AxisChangeEvent event) {
+    public void axisChanged(AxisChangeEvent event) {
       if (synchronizedZoomState.get()) {
         DateAxis dateAxis = (DateAxis) event.getAxis();
         performanceCharts.forEach(chart -> {

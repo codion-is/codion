@@ -24,7 +24,7 @@ final class DerbyDatabase extends AbstractDatabase {
 
   static final String AUTO_INCREMENT_QUERY = "select IDENTITY_VAL_LOCAL() from ";
 
-  DerbyDatabase(final String jdbcUrl) {
+  DerbyDatabase(String jdbcUrl) {
     super(jdbcUrl);
   }
 
@@ -46,17 +46,17 @@ final class DerbyDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getAutoIncrementQuery(final String idSource) {
+  public String getAutoIncrementQuery(String idSource) {
     return AUTO_INCREMENT_QUERY + requireNonNull(idSource, "idSource");
   }
 
   @Override
-  public boolean isReferentialIntegrityException(final SQLException exception) {
+  public boolean isReferentialIntegrityException(SQLException exception) {
     return exception.getErrorCode() == FOREIGN_KEY_ERROR;
   }
 
   @Override
-  public boolean isTimeoutException(final SQLException exception) {
+  public boolean isTimeoutException(SQLException exception) {
     return TIMEOUT_ERROR_CODE.equals(exception.getSQLState());
   }
 

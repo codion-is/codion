@@ -22,42 +22,42 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
   private String description;
   private KeyStroke keyStroke;
 
-  ToggleControlBuilder(final Value<Boolean> value) {
+  ToggleControlBuilder(Value<Boolean> value) {
     this.value = requireNonNull(value);
   }
 
   @Override
-  public ToggleControl.Builder caption(final String caption) {
+  public ToggleControl.Builder caption(String caption) {
     this.caption = requireNonNull(caption);
     return this;
   }
 
   @Override
-  public ToggleControl.Builder enabledState(final StateObserver enabledState) {
+  public ToggleControl.Builder enabledState(StateObserver enabledState) {
     this.enabledState = requireNonNull(enabledState);
     return this;
   }
 
   @Override
-  public ToggleControl.Builder mnemonic(final char mnemonic) {
+  public ToggleControl.Builder mnemonic(char mnemonic) {
     this.mnemonic = mnemonic;
     return this;
   }
 
   @Override
-  public ToggleControl.Builder smallIcon(final Icon smallIcon) {
+  public ToggleControl.Builder smallIcon(Icon smallIcon) {
     this.smallIcon = requireNonNull(smallIcon);
     return this;
   }
 
   @Override
-  public ToggleControl.Builder description(final String description) {
+  public ToggleControl.Builder description(String description) {
     this.description = requireNonNull(description);
     return this;
   }
 
   @Override
-  public ToggleControl.Builder keyStroke(final KeyStroke keyStroke) {
+  public ToggleControl.Builder keyStroke(KeyStroke keyStroke) {
     this.keyStroke = requireNonNull(keyStroke);
     return this;
   }

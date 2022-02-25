@@ -16,18 +16,18 @@ final class DisposeDialogAction extends AbstractAction {
   private final Supplier<JDialog> dialogSupplier;
   private final EventDataListener<State> confirmCloseListener;
 
-  DisposeDialogAction(final Supplier<JDialog> dialogSupplier, final EventDataListener<State> confirmCloseListener) {
+  DisposeDialogAction(Supplier<JDialog> dialogSupplier, EventDataListener<State> confirmCloseListener) {
     super("DisposeDialogAction");
     this.dialogSupplier = dialogSupplier;
     this.confirmCloseListener = confirmCloseListener;
   }
 
   @Override
-  public void actionPerformed(final ActionEvent e) {
+  public void actionPerformed(ActionEvent e) {
     closeIfConfirmed(dialogSupplier.get(), confirmCloseListener);
   }
 
-  static void closeIfConfirmed(final JDialog dialog, final EventDataListener<State> confirmCloseListener) {
+  static void closeIfConfirmed(JDialog dialog, EventDataListener<State> confirmCloseListener) {
     if (dialog != null) {
       if (confirmCloseListener == null) {
         dialog.dispose();

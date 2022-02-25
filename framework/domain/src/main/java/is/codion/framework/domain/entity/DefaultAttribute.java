@@ -24,7 +24,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   private final int hashCode;
   private final EntityType entityType;
 
-  DefaultAttribute(final String name, final Class<T> typeClass, final EntityType entityType) {
+  DefaultAttribute(String name, Class<T> typeClass, EntityType entityType) {
     if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
     }
@@ -50,7 +50,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public final T validateType(final T value) {
+  public final T validateType(T value) {
     if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
       throw new IllegalArgumentException("Value of type " + typeClass +
               " expected for property " + this + " in entity " + entityType + ", got: " + value.getClass());
@@ -60,7 +60,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public final boolean isType(final Class<?> typeClass) {
+  public final boolean isType(Class<?> typeClass) {
     return this.typeClass.equals(typeClass);
   }
 
@@ -145,7 +145,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public final boolean equals(final Object object) {
+  public final boolean equals(Object object) {
     if (this == object) {
       return true;
     }

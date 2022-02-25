@@ -28,7 +28,7 @@ public final class DefaultColumnSummaryModel<T extends Number> implements Column
    * Instantiates a new DefaultColumnSummaryModel
    * @param valueProvider the property value provider
    */
-  public DefaultColumnSummaryModel(final ColumnValueProvider<T> valueProvider) {
+  public DefaultColumnSummaryModel(ColumnValueProvider<T> valueProvider) {
     this.valueProvider = requireNonNull(valueProvider);
     this.summaryValue.addValidator(summary -> {
       if (lockedState.get()) {

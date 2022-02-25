@@ -43,7 +43,7 @@ final class DefaultConnectionPoolCounter {
   private final AtomicInteger connectionRequestsFailed = new AtomicInteger();
   private final AtomicInteger requestsFailedPerSecondCounter = new AtomicInteger();
 
-  DefaultConnectionPoolCounter(final AbstractConnectionPoolWrapper<?> connectionPool) {
+  DefaultConnectionPoolCounter(AbstractConnectionPoolWrapper<?> connectionPool) {
     this.connectionPool = connectionPool;
   }
 
@@ -51,7 +51,7 @@ final class DefaultConnectionPoolCounter {
     return collectSnapshotStatistics;
   }
 
-  void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
+  void setCollectSnapshotStatistics(boolean collectSnapshotStatistics) {
     synchronized (snapshotStatistics) {
       if (collectSnapshotStatistics) {
         IntStream.range(0, SNAPSHOT_STATS_SIZE).forEach(i -> snapshotStatistics.add(new DefaultConnectionPoolState()));
@@ -69,7 +69,7 @@ final class DefaultConnectionPoolCounter {
     return collectCheckOutTimes;
   }
 
-  void setCollectCheckOutTimes(final boolean collectCheckOutTimes) {
+  void setCollectCheckOutTimes(boolean collectCheckOutTimes) {
     synchronized (checkOutTimes) {
       if (!collectCheckOutTimes) {
         checkOutTimes.clear();
@@ -78,7 +78,7 @@ final class DefaultConnectionPoolCounter {
     }
   }
 
-  void addCheckOutTime(final int time) {
+  void addCheckOutTime(int time) {
     if (collectCheckOutTimes) {
       synchronized (checkOutTimes) {
         checkOutTimes.add(time);
@@ -118,7 +118,7 @@ final class DefaultConnectionPoolCounter {
     resetDate.set(System.currentTimeMillis());
   }
 
-  ConnectionPoolStatistics getStatistics(final long since) {
+  ConnectionPoolStatistics getStatistics(long since) {
     DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(connectionPool.getUser().getUsername());
     long current = System.currentTimeMillis();
     statistics.setTimestamp(current);
@@ -150,12 +150,12 @@ final class DefaultConnectionPoolCounter {
     return statistics;
   }
 
-  private void populateCheckOutTime(final DefaultConnectionPoolStatistics statistics) {
+  private void populateCheckOutTime(DefaultConnectionPoolStatistics statistics) {
     int total = 0;
     int min = -1;
     int max = -1;
     synchronized (checkOutTimes) {
-      for (final Integer time : checkOutTimes) {
+      for (Integer time : checkOutTimes) {
         total += time;
         if (min == -1) {
           min = time;

@@ -18,8 +18,8 @@ final class DefaultClientLog implements ClientLog, Serializable {
   private final LocalDateTime connectionCreationDate;
   private final List<MethodLogger.Entry> entries;
 
-  DefaultClientLog(final UUID clientId, final LocalDateTime connectionCreationDate,
-                   final List<MethodLogger.Entry> entries) {
+  DefaultClientLog(UUID clientId, LocalDateTime connectionCreationDate,
+                   List<MethodLogger.Entry> entries) {
     this.clientId = clientId;
     this.connectionCreationDate = connectionCreationDate;
     this.entries = entries;
@@ -41,7 +41,7 @@ final class DefaultClientLog implements ClientLog, Serializable {
   }
 
   @Override
-  public boolean equals(final Object obj) {
+  public boolean equals(Object obj) {
     return this == obj || !((obj == null) || (obj.getClass() != this.getClass()))
             && clientId.equals(((ClientLog) obj).getClientId());
   }

@@ -13,7 +13,7 @@ import java.net.URL;
 
 final class FileJRReport extends AbstractJRReport {
 
-  FileJRReport(final String reportPath) {
+  FileJRReport(String reportPath) {
     super(reportPath);
   }
 

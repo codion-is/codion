@@ -10,7 +10,7 @@ import java.awt.event.ItemEvent;
 
 final class SelectedItemValue<T, C extends JComboBox<Item<T>>> extends AbstractComponentValue<T, C> {
 
-  SelectedItemValue(final C comboBox) {
+  SelectedItemValue(C comboBox) {
     super(comboBox);
     getComponent().addItemListener(e -> {
       if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -20,14 +20,14 @@ final class SelectedItemValue<T, C extends JComboBox<Item<T>>> extends AbstractC
   }
 
   @Override
-  protected T getComponentValue(final C component) {
+  protected T getComponentValue(C component) {
     Item<T> selectedValue = (Item<T>) component.getModel().getSelectedItem();
 
     return selectedValue == null ? null : selectedValue.getValue();
   }
 
   @Override
-  protected void setComponentValue(final C component, final T value) {
+  protected void setComponentValue(C component, T value) {
     component.getModel().setSelectedItem(value);
   }
 }

@@ -28,19 +28,19 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   private final Conjunction conjunction;
   private final EntityType entityType;
 
-  DefaultConditionCombination(final Conjunction conjunction, final Condition... conditions) {
+  DefaultConditionCombination(Conjunction conjunction, Condition... conditions) {
     this(conjunction, Arrays.asList(requireNonNull(conditions, CONDITIONS)));
   }
 
-  DefaultConditionCombination(final Conjunction conjunction, final Condition condition, final Condition... conditions) {
+  DefaultConditionCombination(Conjunction conjunction, Condition condition, Condition... conditions) {
     this(conjunction, combine(condition, conditions));
   }
 
-  DefaultConditionCombination(final Conjunction conjunction, final Collection<Condition> conditions) {
+  DefaultConditionCombination(Conjunction conjunction, Collection<Condition> conditions) {
     this(conjunction, new ArrayList<>(requireNonNull(conditions, CONDITIONS)));
   }
 
-  DefaultConditionCombination(final Conjunction conjunction, final List<Condition> conditions) {
+  DefaultConditionCombination(Conjunction conjunction, List<Condition> conditions) {
     this.conjunction = requireNonNull(conjunction, "conjunction");
     this.conditions = new ArrayList<>(requireNonNull(conditions, CONDITIONS));
     this.entityType = this.conditions.isEmpty() ? null : this.conditions.get(0).getEntityType();
@@ -92,7 +92,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public Condition.Combination and(final Condition... conditions) {
+  public Condition.Combination and(Condition... conditions) {
     if (this.conditions.isEmpty()) {
       return new DefaultConditionCombination(Conjunction.AND, combine(null, conditions));
     }
@@ -101,7 +101,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public Condition.Combination or(final Condition... conditions) {
+  public Condition.Combination or(Condition... conditions) {
     if (this.conditions.isEmpty()) {
       return new DefaultConditionCombination(Conjunction.OR, combine(null, conditions));
     }
@@ -110,7 +110,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public String getConditionString(final EntityDefinition definition) {
+  public String getConditionString(EntityDefinition definition) {
     if (conditions.isEmpty()) {
       return "";
     }
@@ -139,7 +139,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
     return getClass().getSimpleName() + ": " + getEntityType();
   }
 
-  private static List<Condition> combine(final Condition condition, final Condition... conditions) {
+  private static List<Condition> combine(Condition condition, Condition... conditions) {
     List<Condition> list = new ArrayList<>(requireNonNull(conditions, CONDITIONS).length + (condition != null ? 1 : 0));
     if (condition != null) {
       list.add(condition);
@@ -149,7 +149,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
     return list;
   }
 
-  private static String toString(final Conjunction conjunction) {
+  private static String toString(Conjunction conjunction) {
     switch (conjunction) {
       case AND: return " and ";
       case OR: return " or ";

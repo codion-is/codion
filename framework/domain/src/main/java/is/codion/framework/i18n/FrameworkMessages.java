@@ -75,7 +75,7 @@ public final class FrameworkMessages {
    * @param key the key
    * @return the string associated with the key
    */
-  public static String get(final String key) {
+  public static String get(String key) {
     return BUNDLE.getString(key);
   }
 }

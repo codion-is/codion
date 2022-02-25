@@ -29,7 +29,7 @@ public interface ConnectionProvider {
    * @return a JDBC {@link Connection} instance
    * @throws SQLException in case of an exception
    */
-  default Connection getConnection(final User user, final String jdbcUrl) throws SQLException {
+  default Connection getConnection(User user, String jdbcUrl) throws SQLException {
     if (nullOrEmpty(requireNonNull(user, "user").getUsername())) {
       throw new IllegalArgumentException("Username must be specified");
     }

@@ -65,13 +65,13 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   private final List<EntityPanel.Builder> detailPanelBuilders = new ArrayList<>();
 
-  EntityPanelBuilder(final SwingEntityModel.Builder modelBuilder) {
+  EntityPanelBuilder(SwingEntityModel.Builder modelBuilder) {
     this.modelBuilder = requireNonNull(modelBuilder, "modelBuilder");
     this.entityType = modelBuilder.getEntityType();
     this.model = null;
   }
 
-  EntityPanelBuilder(final SwingEntityModel model) {
+  EntityPanelBuilder(SwingEntityModel model) {
     this.model = requireNonNull(model, "model");
     this.entityType = model.getEntityType();
     this.modelBuilder = null;
@@ -93,7 +93,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanelBuilder caption(final String caption) {
+  public EntityPanelBuilder caption(String caption) {
     this.caption = caption;
     return this;
   }
@@ -104,7 +104,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder detailPanelBuilder(final EntityPanel.Builder panelBuilder) {
+  public EntityPanel.Builder detailPanelBuilder(EntityPanel.Builder panelBuilder) {
     if (!detailPanelBuilders.contains(panelBuilder)) {
       detailPanelBuilders.add(panelBuilder);
     }
@@ -113,31 +113,31 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder refreshOnInit(final boolean refreshOnInit) {
+  public EntityPanel.Builder refreshOnInit(boolean refreshOnInit) {
     this.refreshOnInit = refreshOnInit;
     return this;
   }
 
   @Override
-  public EntityPanel.Builder tableConditionPanelVisible(final boolean tableConditionPanelVisible) {
+  public EntityPanel.Builder tableConditionPanelVisible(boolean tableConditionPanelVisible) {
     this.tableConditionPanelVisible = tableConditionPanelVisible;
     return this;
   }
 
   @Override
-  public EntityPanel.Builder detailPanelState(final EntityPanel.PanelState detailPanelState) {
+  public EntityPanel.Builder detailPanelState(EntityPanel.PanelState detailPanelState) {
     this.detailPanelState = detailPanelState;
     return this;
   }
 
   @Override
-  public EntityPanel.Builder detailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
+  public EntityPanel.Builder detailSplitPanelResizeWeight(double detailSplitPanelResizeWeight) {
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
     return this;
   }
 
   @Override
-  public EntityPanel.Builder panelClass(final Class<? extends EntityPanel> panelClass) {
+  public EntityPanel.Builder panelClass(Class<? extends EntityPanel> panelClass) {
     if (editPanelClass != null || tablePanelClass != null) {
       throw new IllegalStateException("Edit or table panel class has been set");
     }
@@ -146,7 +146,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder editPanelClass(final Class<? extends EntityEditPanel> editPanelClass) {
+  public EntityPanel.Builder editPanelClass(Class<? extends EntityEditPanel> editPanelClass) {
     if (panelClass != null) {
       throw new IllegalStateException("Panel class has been set");
     }
@@ -155,7 +155,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder tablePanelClass(final Class<? extends EntityTablePanel> tablePanelClass) {
+  public EntityPanel.Builder tablePanelClass(Class<? extends EntityTablePanel> tablePanelClass) {
     if (panelClass != null) {
       throw new IllegalStateException("Panel class has been set");
     }
@@ -164,25 +164,25 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder panelInitializer(final Consumer<EntityPanel> panelInitializer) {
+  public EntityPanel.Builder panelInitializer(Consumer<EntityPanel> panelInitializer) {
     this.panelInitializer = requireNonNull(panelInitializer);
     return this;
   }
 
   @Override
-  public EntityPanelBuilder editPanelInitializer(final Consumer<EntityEditPanel> editPanelInitializer) {
+  public EntityPanelBuilder editPanelInitializer(Consumer<EntityEditPanel> editPanelInitializer) {
     this.editPanelInitializer = requireNonNull(editPanelInitializer);
     return this;
   }
 
   @Override
-  public EntityPanel.Builder tablePanelInitializer(final Consumer<EntityTablePanel> tablePanelInitializer) {
+  public EntityPanel.Builder tablePanelInitializer(Consumer<EntityTablePanel> tablePanelInitializer) {
     this.tablePanelInitializer = requireNonNull(tablePanelInitializer);
     return this;
   }
 
   @Override
-  public boolean equals(final Object obj) {
+  public boolean equals(Object obj) {
     if (obj instanceof EntityPanelBuilder) {
       EntityPanelBuilder that = (EntityPanelBuilder) obj;
 
@@ -211,7 +211,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel buildPanel(final EntityConnectionProvider connectionProvider) {
+  public EntityPanel buildPanel(EntityConnectionProvider connectionProvider) {
     if (modelBuilder == null) {
       throw new IllegalStateException("A SwingEntityModel.Builder is not avilable in this panel builder: " + getEntityType());
     }
@@ -220,7 +220,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel buildPanel(final SwingEntityModel model) {
+  public EntityPanel buildPanel(SwingEntityModel model) {
     requireNonNull(model, "model");
     try {
       EntityPanel entityPanel = initializePanel(model);
@@ -230,7 +230,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       if (!detailPanelBuilders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
-        for (final EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
+        for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
           SwingEntityModel detailModel = model.getDetailModel(detailPanelBuilder.getEntityType());
           EntityPanel detailPanel = detailPanelBuilder.buildPanel(detailModel);
           entityPanel.addDetailPanel(detailPanel);
@@ -252,17 +252,17 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityEditPanel buildEditPanel(final EntityConnectionProvider connectionProvider) {
+  public EntityEditPanel buildEditPanel(EntityConnectionProvider connectionProvider) {
     return initializeEditPanel(modelBuilder.buildEditModel(connectionProvider));
   }
 
   @Override
-  public EntityTablePanel buildTablePanel(final EntityConnectionProvider connectionProvider) {
+  public EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider) {
     return initializeTablePanel(modelBuilder.buildTableModel(connectionProvider));
   }
 
   @Override
-  public Action createEditPanelAction(final EntityComboBox comboBox) {
+  public Action createEditPanelAction(EntityComboBox comboBox) {
     if (editPanelClass == null) {
       throw new IllegalStateException("Can not create a edit panel action when no edit panel class is specified");
     }
@@ -271,7 +271,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public Action createEditPanelAction(final EntitySearchField searchField) {
+  public Action createEditPanelAction(EntitySearchField searchField) {
     if (editPanelClass == null) {
       throw new IllegalStateException("Can not create a edit panel action when no edit panel class is specified");
     }
@@ -280,12 +280,12 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public Action createEditPanelAction(final JComponent component, final EntityConnectionProvider connectionProvider,
-                                      final EventDataListener<List<Entity>> insertListener) {
+  public Action createEditPanelAction(JComponent component, EntityConnectionProvider connectionProvider,
+                                      EventDataListener<List<Entity>> insertListener) {
     return new InsertEntityAction(component, connectionProvider, insertListener);
   }
 
-  private EntityPanel initializePanel(final SwingEntityModel entityModel) {
+  private EntityPanel initializePanel(SwingEntityModel entityModel) {
     try {
       EntityPanel entityPanel;
       if (getPanelClass().equals(EntityPanel.class)) {
@@ -310,7 +310,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
   }
 
-  private EntityEditPanel initializeEditPanel(final SwingEntityEditModel editModel) {
+  private EntityEditPanel initializeEditPanel(SwingEntityEditModel editModel) {
     if (editPanelClass == null) {
       throw new IllegalArgumentException("No edit panel class has been specified for entity panel builder: " + getEntityType());
     }
@@ -331,7 +331,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
   }
 
-  private EntityTablePanel initializeTablePanel(final SwingEntityTableModel tableModel) {
+  private EntityTablePanel initializeTablePanel(SwingEntityTableModel tableModel) {
     try {
       if (!tableModel.getEntityType().equals(getEntityType())) {
         throw new IllegalArgumentException("Entity type mismatch, tableModel: " + tableModel.getEntityType() + ", required: " + getEntityType());
@@ -361,9 +361,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     return tablePanelClass == null ? EntityTablePanel.class : tablePanelClass;
   }
 
-  private static Constructor<EntityPanel> findModelConstructor(final Class<? extends EntityPanel> panelClass)
+  private static Constructor<EntityPanel> findModelConstructor(Class<? extends EntityPanel> panelClass)
           throws NoSuchMethodException {
-    for (final Constructor<?> constructor : panelClass.getConstructors()) {
+    for (Constructor<?> constructor : panelClass.getConstructors()) {
       if (constructor.getParameterCount() == 1 &&
               SwingEntityModel.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
         return (Constructor<EntityPanel>) constructor;
@@ -373,9 +373,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     throw new NoSuchMethodException("Constructor with a single parameter of type SwingEntityModel (or subclass) not found in class: " + panelClass);
   }
 
-  private static Constructor<EntityEditPanel> findEditModelConstructor(final Class<? extends EntityEditPanel> editPanelClass)
+  private static Constructor<EntityEditPanel> findEditModelConstructor(Class<? extends EntityEditPanel> editPanelClass)
           throws NoSuchMethodException {
-    for (final Constructor<?> constructor : editPanelClass.getConstructors()) {
+    for (Constructor<?> constructor : editPanelClass.getConstructors()) {
       if (constructor.getParameterCount() == 1 &&
               SwingEntityEditModel.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
         return (Constructor<EntityEditPanel>) constructor;
@@ -385,9 +385,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     throw new NoSuchMethodException("Constructor with a single parameter of type SwingEntityEditModel (or subclass) not found in class: " + editPanelClass);
   }
 
-  private static Constructor<EntityTablePanel> findTableModelConstructor(final Class<? extends EntityTablePanel> tablePanelClass)
+  private static Constructor<EntityTablePanel> findTableModelConstructor(Class<? extends EntityTablePanel> tablePanelClass)
           throws NoSuchMethodException {
-    for (final Constructor<?> constructor : tablePanelClass.getConstructors()) {
+    for (Constructor<?> constructor : tablePanelClass.getConstructors()) {
       if (constructor.getParameterCount() == 1 &&
               SwingEntityTableModel.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
         return (Constructor<EntityTablePanel>) constructor;
@@ -406,7 +406,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     private final EventDataListener<List<Entity>> insertListener;
     private final List<Entity> insertedEntities = new ArrayList<>();
 
-    private InsertEntityAction(final EntityComboBox comboBox) {
+    private InsertEntityAction(EntityComboBox comboBox) {
       this(requireNonNull(comboBox, "comboBox"), comboBox.getModel().getConnectionProvider(), inserted -> {
         EntityComboBoxModel comboBoxModel = comboBox.getModel();
         Entity item = inserted.get(0);
@@ -415,13 +415,13 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       });
     }
 
-    private InsertEntityAction(final EntitySearchField searchField) {
+    private InsertEntityAction(EntitySearchField searchField) {
       this(requireNonNull(searchField, "searchField"), searchField.getModel().getConnectionProvider(), inserted ->
               searchField.getModel().setSelectedEntities(inserted));
     }
 
-    private InsertEntityAction(final JComponent component, final EntityConnectionProvider connectionProvider,
-                               final EventDataListener<List<Entity>> insertListener) {
+    private InsertEntityAction(JComponent component, EntityConnectionProvider connectionProvider,
+                               EventDataListener<List<Entity>> insertListener) {
       super("", frameworkIcons().add());
       this.component = component;
       this.connectionProvider = connectionProvider;
@@ -432,7 +432,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
       if (component instanceof JComboBox && ((JComboBox<?>) component).isPopupVisible()) {
         ((JComboBox<?>) component).hidePopup();
       }
@@ -470,7 +470,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       }
     }
 
-    private boolean insert(final SwingEntityEditModel editModel, final Value<Attribute<?>> invalidAttribute) {
+    private boolean insert(SwingEntityEditModel editModel, Value<Attribute<?>> invalidAttribute) {
       try {
         WaitCursor.show(component);
         try {

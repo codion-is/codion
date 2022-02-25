@@ -16,7 +16,7 @@ final class ItemI18n<T> extends AbstractItem<T> {
 
   private transient String caption;
 
-  ItemI18n(final T value, final String resourceBundleName, final String resourceBundleKey) {
+  ItemI18n(T value, String resourceBundleName, String resourceBundleKey) {
     super(value);
     this.resourceBundleName = requireNonNull(resourceBundleName, "resourceBundleName");
     this.resourceBundleKey = requireNonNull(resourceBundleKey, "resourceBundleKey");

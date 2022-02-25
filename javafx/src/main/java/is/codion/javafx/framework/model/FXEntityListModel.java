@@ -73,17 +73,17 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private boolean queryHiddenColumns = QUERY_HIDDEN_COLUMNS.get();
   private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
 
-  public FXEntityListModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public FXEntityListModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this(new FXEntityEditModel(entityType, connectionProvider));
   }
 
 
-  public FXEntityListModel(final FXEntityEditModel editModel) {
+  public FXEntityListModel(FXEntityEditModel editModel) {
     this(editModel, new DefaultEntityTableConditionModel(editModel.getEntityType(), editModel.getConnectionProvider(),
             null, new FXConditionModelFactory(editModel.getConnectionProvider())));
   }
 
-  public FXEntityListModel(final FXEntityEditModel editModel, final EntityTableConditionModel tableConditionModel) {
+  public FXEntityListModel(FXEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
     super(editModel.getEntityType(), editModel.getConnectionProvider());
     requireNonNull(tableConditionModel);
     if (!tableConditionModel.getEntityType().equals(getEntityType())) {
@@ -113,7 +113,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @param columns the columns
    * @throws IllegalStateException if the columns have already been set
    */
-  public final void setColumns(final ObservableList<? extends TableColumn<Entity, ?>> columns) {
+  public final void setColumns(ObservableList<? extends TableColumn<Entity, ?>> columns) {
     if (this.columns != null) {
       throw new IllegalStateException("Columns have already been set");
     }
@@ -126,7 +126,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * Sets the column sort order
    * @param columnSortOrder the column sort order
    */
-  public final void setColumnSortOrder(final ObservableList<TableColumn<Entity, ?>> columnSortOrder) {
+  public final void setColumnSortOrder(ObservableList<TableColumn<Entity, ?>> columnSortOrder) {
     if (this.columnSortOrder != null) {
       throw new IllegalStateException("Column sort order has already been set");
     }
@@ -147,7 +147,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @return the column
    * @throws IllegalArgumentException in case the column was not found
    */
-  public final <T> EntityTableColumn<T> getTableColumn(final Attribute<T> attribute) {
+  public final <T> EntityTableColumn<T> getTableColumn(Attribute<T> attribute) {
     Optional<? extends TableColumn<Entity, ?>> tableColumn = columns.stream()
             .filter((Predicate<TableColumn<Entity, ?>>) entityTableColumn ->
                     ((EntityTableColumn<?>) entityTableColumn).getAttribute().equals(attribute))
@@ -176,12 +176,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setEditable(final boolean editable) {
+  public final void setEditable(boolean editable) {
     this.editable = editable;
   }
 
   @Override
-  public final void setForeignKeyConditionValues(final ForeignKey foreignKey, final Collection<Entity> entities) {
+  public final void setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> entities) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);
     if (tableConditionModel.setEqualConditionValues(foreignKey, entities) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
@@ -199,11 +199,11 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void replaceForeignKeyValues(final EntityType foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
+  public final void replaceForeignKeyValues(EntityType foreignKeyEntityType, Collection<Entity> foreignKeyValues) {
     List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(foreignKeyEntityType);
-    for (final Entity entity : getItems()) {
-      for (final ForeignKey foreignKey : foreignKeys) {
-        for (final Entity foreignKeyValue : foreignKeyValues) {
+    for (Entity entity : getItems()) {
+      for (ForeignKey foreignKey : foreignKeys) {
+        for (Entity foreignKeyValue : foreignKeyValues) {
           Entity currentForeignKeyValue = entity.getForeignKey(foreignKey);
           if (Objects.equals(currentForeignKeyValue, foreignKeyValue)) {
             currentForeignKeyValue.setAs(foreignKeyValue);
@@ -214,33 +214,33 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public void addEntities(final Collection<Entity> entities) {
+  public void addEntities(Collection<Entity> entities) {
     addEntitiesAt(getSize(), entities);
   }
 
   @Override
-  public void addEntitiesSorted(final Collection<Entity> entities) {
+  public void addEntitiesSorted(Collection<Entity> entities) {
     addEntitiesAtSorted(getSize(), entities);
   }
 
   @Override
-  public void addEntitiesAt(final int index, final Collection<Entity> entities) {
+  public void addEntitiesAt(int index, Collection<Entity> entities) {
     addAll(index, entities);
   }
 
   @Override
-  public void addEntitiesAtSorted(final int index, final Collection<Entity> entities) {
+  public void addEntitiesAtSorted(int index, Collection<Entity> entities) {
     addAll(index, entities);
     sort(getSortedList().getComparator());
   }
 
   @Override
-  public final void replaceEntities(final Collection<Entity> entities) {
+  public final void replaceEntities(Collection<Entity> entities) {
     replaceEntitiesByKey(Entity.mapToPrimaryKey(entities));
   }
 
   @Override
-  public final void refreshEntities(final List<Key> keys) {
+  public final void refreshEntities(List<Key> keys) {
     try {
       replaceEntities(getConnectionProvider().getConnection().select(keys));
     }
@@ -270,12 +270,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
+  public final void setBatchUpdateEnabled(boolean batchUpdateEnabled) {
     this.batchUpdateEnabled = batchUpdateEnabled;
   }
 
   @Override
-  public final void setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
+  public final void setRefreshOnForeignKeyConditionValuesSet(boolean refreshOnForeignKeyConditionValuesSet) {
     this.refreshOnForeignKeyConditionValuesSet = refreshOnForeignKeyConditionValuesSet;
   }
 
@@ -290,7 +290,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setQueryHiddenColumns(final boolean queryHiddenColumns) {
+  public final void setQueryHiddenColumns(boolean queryHiddenColumns) {
     this.queryHiddenColumns = queryHiddenColumns;
   }
 
@@ -300,17 +300,17 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setOrderQueryBySortOrder(final boolean orderQueryBySortOrder) {
+  public final void setOrderQueryBySortOrder(boolean orderQueryBySortOrder) {
     this.orderQueryBySortOrder = orderQueryBySortOrder;
   }
 
   @Override
-  public final Color getBackgroundColor(final int row, final Attribute<?> attribute) {
+  public final Color getBackgroundColor(int row, Attribute<?> attribute) {
     return (Color) getEntityDefinition().getBackgroundColorProvider().getColor(get(row), attribute);
   }
 
   @Override
-  public final Color getForegroundColor(final int row, final Attribute<?> attribute) {
+  public final Color getForegroundColor(int row, Attribute<?> attribute) {
     return (Color) getEntityDefinition().getForegroundColorProvider().getColor(get(row), attribute);
   }
 
@@ -320,12 +320,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setLimit(final int limit) {
+  public final void setLimit(int limit) {
     this.limit = limit;
   }
 
   @Override
-  public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
+  public final void update(List<Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities);
     if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not allowed via this table model");
@@ -342,7 +342,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
+  public final void setRemoveEntitiesOnDelete(boolean removeEntitiesOnDelete) {
     this.removeEntitiesOnDelete = removeEntitiesOnDelete;
   }
 
@@ -352,12 +352,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setInsertAction(final InsertAction insertAction) {
+  public final void setInsertAction(InsertAction insertAction) {
     this.insertAction = requireNonNull(insertAction);
   }
 
   @Override
-  public final Collection<Entity> getEntitiesByKey(final Collection<Key> keys) {
+  public final Collection<Entity> getEntitiesByKey(Collection<Key> keys) {
     return getItems().stream()
             .filter(entity -> keys.stream()
                     .anyMatch(key -> entity.getPrimaryKey().equals(key)))
@@ -365,7 +365,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setSelectedByKey(final Collection<Key> keys) {
+  public final void setSelectedByKey(Collection<Key> keys) {
     List<Key> keyList = new ArrayList<>(keys);
     List<Entity> toSelect = new ArrayList<>(keys.size());
     stream().filter(entity -> keyList.contains(entity.getPrimaryKey())).forEach(entity -> {
@@ -376,7 +376,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final Entity getEntityByKey(final Key primaryKey) {
+  public final Entity getEntityByKey(Key primaryKey) {
     return getFilteredList().stream()
             .filter(entity -> entity.getPrimaryKey().equals(primaryKey))
             .findFirst()
@@ -389,7 +389,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final int indexOf(final Key primaryKey) {
+  public final int indexOf(Key primaryKey) {
     return indexOf(getEntityByKey(primaryKey));
   }
 
@@ -406,7 +406,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setColumns(final Attribute<?>... attributes) {
+  public final void setColumns(Attribute<?>... attributes) {
     List<Attribute<?>> attributeList = asList(attributes);
     new ArrayList<>(columns).forEach(column -> {
       if (!attributeList.contains(((AttributeTableColumn<?>) column).getAttribute())) {
@@ -422,7 +422,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final String getTableDataAsDelimitedString(final char delimiter) {
+  public final String getTableDataAsDelimitedString(char delimiter) {
     List<String> header = new ArrayList<>();
     List<Attribute<?>> attributes = new ArrayList<>();
     columns.forEach(entityTableColumn -> {
@@ -537,7 +537,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     });
   }
 
-  private void onInsert(final List<Entity> insertedEntities) {
+  private void onInsert(List<Entity> insertedEntities) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
       List<Entity> entitiesToAdd = insertedEntities.stream()
@@ -557,17 +557,17 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  private void onUpdate(final Map<Key, Entity> updatedEntities) {
+  private void onUpdate(Map<Key, Entity> updatedEntities) {
     replaceEntitiesByKey(new HashMap<>(updatedEntities));
   }
 
-  private void onDelete(final List<Entity> deletedEntities) {
+  private void onDelete(List<Entity> deletedEntities) {
     if (removeEntitiesOnDelete) {
       removeAll(deletedEntities);
     }
   }
 
-  private boolean containsColumn(final Attribute<?> attribute) {
+  private boolean containsColumn(Attribute<?> attribute) {
     return columns.stream()
             .map(EntityTableColumn.class::cast)
             .anyMatch(column -> column.getAttribute().equals(attribute));
@@ -577,7 +577,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * Replace the entities identified by the Entity.Key map keys with their respective value
    * @param entityMap the entities to replace mapped to the corresponding primary key found in this table model
    */
-  private void replaceEntitiesByKey(final Map<Key, Entity> entityMap) {
+  private void replaceEntitiesByKey(Map<Key, Entity> entityMap) {
     List<Integer> selected = getSelectionModel().getSelectedIndexes();
     replaceAll(entity -> {
       Entity toReplaceWith = entityMap.get(entity.getPrimaryKey());
@@ -603,7 +603,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     return orderBy;
   }
 
-  private boolean isColumnProperty(final Attribute<?> attribute) {
+  private boolean isColumnProperty(Attribute<?> attribute) {
     Property<?> property = getEntityDefinition().getProperty(attribute);
 
     return property instanceof ColumnProperty;
@@ -625,8 +625,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  private void applyColumnPreferences(final JSONObject preferences) {
-    for (final AttributeTableColumn<?> column : initialColumns) {
+  private void applyColumnPreferences(JSONObject preferences) {
+    for (AttributeTableColumn<?> column : initialColumns) {
       Attribute<?> property = column.getAttribute();
       if (columns.contains(column)) {
         try {
@@ -652,7 +652,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private JSONObject createColumnPreferences() throws Exception {
     JSONObject columnPreferencesRoot = new JSONObject();
-    for (final AttributeTableColumn<?> column : initialColumns) {
+    for (AttributeTableColumn<?> column : initialColumns) {
       Attribute<?> property = column.getAttribute();
       JSONObject columnObject = new JSONObject();
       boolean visible = columns.contains(column);
@@ -687,7 +687,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
     private final Attribute<T> attribute;
 
-    protected AttributeTableColumn(final Attribute<T> attribute, final String caption) {
+    protected AttributeTableColumn(Attribute<T> attribute, String caption) {
       super(caption);
       this.attribute = attribute;
     }
@@ -709,12 +709,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
     private final JSONObject preferences;
 
-    private ColumnOrder(final JSONObject preferences) {
+    private ColumnOrder(JSONObject preferences) {
       this.preferences = preferences;
     }
 
     @Override
-    public int compare(final TableColumn<Entity, ?> col1, final TableColumn<Entity, ?> col2) {
+    public int compare(TableColumn<Entity, ?> col1, TableColumn<Entity, ?> col2) {
       try {
         JSONObject columnOnePreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col1).getAttribute().getName());
         JSONObject columnTwoPreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col2).getAttribute().getName());

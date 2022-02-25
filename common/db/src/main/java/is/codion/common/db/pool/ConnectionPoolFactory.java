@@ -32,10 +32,10 @@ public interface ConnectionPoolFactory {
    * @return a {@link ConnectionPoolFactory} implementation of the given type from the {@link ServiceLoader}.
    * @throws IllegalStateException in case no such {@link ConnectionPoolFactory} implementation is available.
    */
-  static ConnectionPoolFactory connectionPoolFactory(final String classname) {
+  static ConnectionPoolFactory connectionPoolFactory(String classname) {
     requireNonNull(classname, "classname");
     ServiceLoader<ConnectionPoolFactory> loader = ServiceLoader.load(ConnectionPoolFactory.class);
-    for (final ConnectionPoolFactory factory : loader) {
+    for (ConnectionPoolFactory factory : loader) {
       if (factory.getClass().getName().equals(classname)) {
         return factory;
       }

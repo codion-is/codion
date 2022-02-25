@@ -14,7 +14,7 @@ final class DefaultReportType<T, R, P> implements ReportType<T, R, P>, Serializa
 
   private final String name;
 
-  DefaultReportType(final String name) {
+  DefaultReportType(String name) {
     this.name = requireNonNull(name);
   }
 
@@ -24,12 +24,12 @@ final class DefaultReportType<T, R, P> implements ReportType<T, R, P>, Serializa
   }
 
   @Override
-  public R fillReport(final Connection connection, final Report<T, R, P> report, final P parameters) throws ReportException {
+  public R fillReport(Connection connection, Report<T, R, P> report, P parameters) throws ReportException {
     return report.fillReport(connection, parameters);
   }
 
   @Override
-  public boolean equals(final Object o) {
+  public boolean equals(Object o) {
     if (this == o) {
       return true;
     }

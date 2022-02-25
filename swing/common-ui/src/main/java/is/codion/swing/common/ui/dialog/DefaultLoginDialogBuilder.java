@@ -20,19 +20,19 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
   private JComponent southComponent;
 
   @Override
-  public LoginDialogBuilder defaultUser(final User defaultUser) {
+  public LoginDialogBuilder defaultUser(User defaultUser) {
     this.defaultUser = defaultUser;
     return this;
   }
 
   @Override
-  public LoginDialogBuilder validator(final LoginValidator validator) {
+  public LoginDialogBuilder validator(LoginValidator validator) {
     this.validator = requireNonNull(validator);
     return this;
   }
 
   @Override
-  public LoginDialogBuilder southComponent(final JComponent southComponent) {
+  public LoginDialogBuilder southComponent(JComponent southComponent) {
     this.southComponent = southComponent;
     return this;
   }
@@ -64,7 +64,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
     return user;
   }
 
-  private static JFrame createDummyFrame(final String title, final ImageIcon icon) {
+  private static JFrame createDummyFrame(String title, ImageIcon icon) {
     JFrame frame = new JFrame(title);
     frame.setUndecorated(true);
     frame.setVisible(true);

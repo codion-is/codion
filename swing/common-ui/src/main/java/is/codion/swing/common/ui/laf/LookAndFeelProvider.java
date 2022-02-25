@@ -69,7 +69,7 @@ public interface LookAndFeelProvider {
    * @param classname the look and feel classname
    * @return a look and feel provider
    */
-  static LookAndFeelProvider create(final String classname) {
+  static LookAndFeelProvider create(String classname) {
     return create(classname, () -> {
       try {
         UIManager.setLookAndFeel(classname);
@@ -86,7 +86,7 @@ public interface LookAndFeelProvider {
    * @param enabler configures and enables this look and feel
    * @return a look and feel provider
    */
-  static LookAndFeelProvider create(final String classname, final Runnable enabler) {
+  static LookAndFeelProvider create(String classname, Runnable enabler) {
     return create(classname, classname, enabler);
   }
 
@@ -96,7 +96,7 @@ public interface LookAndFeelProvider {
    * @param name a unique name
    * @return a look and feel provider
    */
-  static LookAndFeelProvider create(final String classname, final String name) {
+  static LookAndFeelProvider create(String classname, String name) {
     return create(classname, name, () -> {
       try {
         UIManager.setLookAndFeel(classname);
@@ -114,7 +114,7 @@ public interface LookAndFeelProvider {
    * @param enabler configures and enables this look and feel
    * @return a look and feel provider
    */
-  static LookAndFeelProvider create(final String classname, final String name, final Runnable enabler) {
+  static LookAndFeelProvider create(String classname, String name, Runnable enabler) {
     return new DefaultLookAndFeelProvider(classname, name, enabler);
   }
 
@@ -123,7 +123,7 @@ public interface LookAndFeelProvider {
    * Note that this overrides any existing look and feel provider with the same name.
    * @param lookAndFeelProvider the look and feel provider to add
    */
-  static void addLookAndFeelProvider(final LookAndFeelProvider lookAndFeelProvider) {
+  static void addLookAndFeelProvider(LookAndFeelProvider lookAndFeelProvider) {
     DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS.put(requireNonNull(lookAndFeelProvider).getName(), lookAndFeelProvider);
   }
 
@@ -132,7 +132,7 @@ public interface LookAndFeelProvider {
    * @param name the look and feel name
    * @return a look and feel provider, an empty Optional if not found
    */
-  static Optional<LookAndFeelProvider> getLookAndFeelProvider(final String name) {
+  static Optional<LookAndFeelProvider> getLookAndFeelProvider(String name) {
     return name == null ? Optional.empty() : Optional.ofNullable(DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS.get(name));
   }
 
@@ -141,7 +141,7 @@ public interface LookAndFeelProvider {
    * @param dialogOwner the dialog owner
    * @return the selected look and feel provider, an empty Optional if cancelled
    */
-  static Optional<LookAndFeelProvider> selectLookAndFeel(final JComponent dialogOwner) {
+  static Optional<LookAndFeelProvider> selectLookAndFeel(JComponent dialogOwner) {
     return selectLookAndFeel(dialogOwner, CHANGE_DURING_SELECTION.get());
   }
 
@@ -151,7 +151,7 @@ public interface LookAndFeelProvider {
    * @param changeDuringSelection true if the Look and Feel should change dynamically when choosing
    * @return the selected look and feel provider, an empty Optional if cancelled
    */
-  static Optional<LookAndFeelProvider> selectLookAndFeel(final JComponent dialogOwner, final boolean changeDuringSelection) {
+  static Optional<LookAndFeelProvider> selectLookAndFeel(JComponent dialogOwner, boolean changeDuringSelection) {
     List<Item<LookAndFeelProvider>> items = new ArrayList<>();
     Value<Item<LookAndFeelProvider>> currentLookAndFeel = Value.value();
     String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
@@ -200,7 +200,7 @@ public interface LookAndFeelProvider {
    * @param dialogOwner the dialog owner
    * @return a look and feel selection control
    */
-  static Control selectLookAndFeelControl(final JComponent dialogOwner) {
+  static Control selectLookAndFeelControl(JComponent dialogOwner) {
     return selectLookAndFeelControl(dialogOwner, null);
   }
 
@@ -210,7 +210,7 @@ public interface LookAndFeelProvider {
    * @param userPreferencePropertyName the name of the property to use when saving the selected look and feel as a user preference
    * @return a look and feel selection control
    */
-  static Control selectLookAndFeelControl(final JComponent dialogOwner, final String userPreferencePropertyName) {
+  static Control selectLookAndFeelControl(JComponent dialogOwner, String userPreferencePropertyName) {
     ResourceBundle resourceBundle = ResourceBundle.getBundle(LookAndFeelProvider.class.getName());
     String caption = resourceBundle.getString("select_look_and_feel");
 
@@ -229,7 +229,7 @@ public interface LookAndFeelProvider {
    * @param userPreferencePropertyName the name of the user preference look and feel property
    * @return the look and feel specified by user preference or the default system look and feel
    */
-  static String getDefaultLookAndFeelName(final String userPreferencePropertyName) {
+  static String getDefaultLookAndFeelName(String userPreferencePropertyName) {
     return UserPreferences.getUserPreference(userPreferencePropertyName, getSystemLookAndFeelClassName());
   }
 
@@ -237,9 +237,9 @@ public interface LookAndFeelProvider {
    * Enables the given look and feel and updates all window component trees.
    * @param lookAndFeelProvider the look and feel provider to enable
    */
-  static void enableLookAndFeel(final LookAndFeelProvider lookAndFeelProvider) {
+  static void enableLookAndFeel(LookAndFeelProvider lookAndFeelProvider) {
     requireNonNull(lookAndFeelProvider).enable();
-    for (final Window window : Window.getWindows()) {
+    for (Window window : Window.getWindows()) {
       SwingUtilities.updateComponentTreeUI(window);
     }
   }

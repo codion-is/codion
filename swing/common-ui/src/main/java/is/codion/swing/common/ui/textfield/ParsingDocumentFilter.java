@@ -20,13 +20,13 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
 
   private final Parser<T> parser;
 
-  public ParsingDocumentFilter(final Parser<T> parser) {
+  public ParsingDocumentFilter(Parser<T> parser) {
     this.parser = requireNonNull(parser, "parser");
   }
 
   @Override
-  public final void insertString(final FilterBypass filterBypass, final int offset, final String string,
-                                 final AttributeSet attributeSet) throws BadLocationException {
+  public final void insertString(FilterBypass filterBypass, int offset, String string,
+                                 AttributeSet attributeSet) throws BadLocationException {
     String transformedString = transform(string);
     Document document = filterBypass.getDocument();
     StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
@@ -41,7 +41,7 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
   }
 
   @Override
-  public final void remove(final FilterBypass filterBypass, final int offset, final int length) throws BadLocationException {
+  public final void remove(FilterBypass filterBypass, int offset, int length) throws BadLocationException {
     Document document = filterBypass.getDocument();
     StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.replace(offset, offset + length, "");
@@ -55,8 +55,8 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
   }
 
   @Override
-  public final void replace(final FilterBypass filterBypass, final int offset, final int length, final String string,
-                            final AttributeSet attributeSet) throws BadLocationException {
+  public final void replace(FilterBypass filterBypass, int offset, int length, String string,
+                            AttributeSet attributeSet) throws BadLocationException {
     String transformedString = transform(string);
     Document document = filterBypass.getDocument();
     StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
@@ -77,7 +77,7 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
    * @param string the string to transform
    * @return the transformed string
    */
-  protected String transform(final String string) {
+  protected String transform(String string) {
     return string;
   }
 }

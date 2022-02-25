@@ -298,7 +298,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
      * @param column the column index
      * @return the RowColumn
      */
-    static RowColumn rowColumn(final int row, final int column) {
+    static RowColumn rowColumn(int row, int column) {
       return new DefaultRowColumn(row, column);
     }
   }

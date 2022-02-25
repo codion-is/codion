@@ -16,7 +16,7 @@ public class SwingEntityApplicationModel
    * Instantiates a new {@link SwingEntityApplicationModel}
    * @param connectionProvider the connectio provider
    */
-  public SwingEntityApplicationModel(final EntityConnectionProvider connectionProvider) {
+  public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
   }
 }

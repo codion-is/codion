@@ -25,24 +25,24 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   private String caption;
   private String dialogTitle;
 
-  DefaultTextInputPanelBuilder(final Value<String> linkedValue) {
+  DefaultTextInputPanelBuilder(Value<String> linkedValue) {
     super(linkedValue);
   }
 
   @Override
-  public TextInputPanelBuilder updateOn(final UpdateOn updateOn) {
+  public TextInputPanelBuilder updateOn(UpdateOn updateOn) {
     this.updateOn = requireNonNull(updateOn);
     return this;
   }
 
   @Override
-  public TextInputPanelBuilder columns(final int columns) {
+  public TextInputPanelBuilder columns(int columns) {
     this.columns = columns;
     return this;
   }
 
   @Override
-  public TextInputPanelBuilder upperCase(final boolean upperCase) {
+  public TextInputPanelBuilder upperCase(boolean upperCase) {
     if (upperCase && lowerCase) {
       throw new IllegalArgumentException("Field is already lowercase");
     }
@@ -51,7 +51,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   }
 
   @Override
-  public TextInputPanelBuilder lowerCase(final boolean lowerCase) {
+  public TextInputPanelBuilder lowerCase(boolean lowerCase) {
     if (lowerCase && upperCase) {
       throw new IllegalArgumentException("Field is already uppercase");
     }
@@ -60,37 +60,37 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   }
 
   @Override
-  public TextInputPanelBuilder selectAllOnFocusGained(final boolean selectAllOnFocusGained) {
+  public TextInputPanelBuilder selectAllOnFocusGained(boolean selectAllOnFocusGained) {
     this.selectAllOnFocusGained = selectAllOnFocusGained;
     return this;
   }
 
   @Override
-  public TextInputPanelBuilder buttonFocusable(final boolean buttonFocusable) {
+  public TextInputPanelBuilder buttonFocusable(boolean buttonFocusable) {
     this.buttonFocusable = buttonFocusable;
     return this;
   }
 
   @Override
-  public TextInputPanelBuilder textAreaSize(final Dimension textAreaSize) {
+  public TextInputPanelBuilder textAreaSize(Dimension textAreaSize) {
     this.textAreaSize = requireNonNull(textAreaSize);
     return this;
   }
 
   @Override
-  public TextInputPanelBuilder maximumLength(final int maximumLength) {
+  public TextInputPanelBuilder maximumLength(int maximumLength) {
     this.maximumLength = maximumLength;
     return this;
   }
 
   @Override
-  public TextInputPanelBuilder caption(final String caption) {
+  public TextInputPanelBuilder caption(String caption) {
     this.caption = caption;
     return this;
   }
 
   @Override
-  public TextInputPanelBuilder dialogTitle(final String dialogTitle) {
+  public TextInputPanelBuilder dialogTitle(String dialogTitle) {
     this.dialogTitle = dialogTitle;
     return this;
   }
@@ -115,17 +115,17 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   }
 
   @Override
-  protected ComponentValue<String, TextInputPanel> buildComponentValue(final TextInputPanel component) {
+  protected ComponentValue<String, TextInputPanel> buildComponentValue(TextInputPanel component) {
     return component.componentValue();
   }
 
   @Override
-  protected void setInitialValue(final TextInputPanel component, final String initialValue) {
+  protected void setInitialValue(TextInputPanel component, String initialValue) {
     component.setText(initialValue);
   }
 
   @Override
-  protected void setTransferFocusOnEnter(final TextInputPanel component) {
+  protected void setTransferFocusOnEnter(TextInputPanel component) {
     component.setTransferFocusOnEnter(true);
   }
 }

@@ -206,8 +206,8 @@ public interface EntityType {
    * @param <T> the entity representation type
    * @return a {@link EntityType} instance with the given name
    */
-  static <T extends Entity> EntityType entityType(final String name, final String domainName,
-                                                  final Class<T> entityClass) {
+  static <T extends Entity> EntityType entityType(String name, String domainName,
+                                                  Class<T> entityClass) {
     String bundleName = null;
     try {
       ResourceBundle.getBundle(entityClass.getName());
@@ -225,8 +225,8 @@ public interface EntityType {
    * @param resourceBundleName the name of a resource bundle to use for captions, if any
    * @return a {@link EntityType} instance with the given name
    */
-  static EntityType entityType(final String name, final String domainName,
-                               final String resourceBundleName) {
+  static EntityType entityType(String name, String domainName,
+                               String resourceBundleName) {
     return new DefaultEntityType(domainName, name, Entity.class, resourceBundleName);
   }
 
@@ -239,8 +239,8 @@ public interface EntityType {
    * @param <T> the entity representation type
    * @return a {@link EntityType} instance with the given name
    */
-  static <T extends Entity> EntityType entityType(final String name, final String domainName,
-                                                  final Class<T> entityClass, final String resourceBundleName) {
+  static <T extends Entity> EntityType entityType(String name, String domainName,
+                                                  Class<T> entityClass, String resourceBundleName) {
     return new DefaultEntityType(domainName, name, entityClass, resourceBundleName);
   }
 }

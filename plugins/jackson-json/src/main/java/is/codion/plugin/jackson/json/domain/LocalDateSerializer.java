@@ -20,7 +20,7 @@ final class LocalDateSerializer extends StdSerializer<LocalDate> {
   }
 
   @Override
-  public void serialize(final LocalDate localDate, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
+  public void serialize(LocalDate localDate, JsonGenerator generator, SerializerProvider provider) throws IOException {
     generator.writeString(localDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
   }
 }

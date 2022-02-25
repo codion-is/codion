@@ -41,7 +41,7 @@ public abstract class DefaultDomain implements Domain {
    * Instantiates a new DefaultDomain identified by the given {@link DomainType}.
    * @param domainType the Domain model type to associate with this domain model
    */
-  protected DefaultDomain(final DomainType domainType) {
+  protected DefaultDomain(DomainType domainType) {
     this.domainType = requireNonNull(domainType, "domainType");
     this.entities = new DomainEntities(domainType);
   }
@@ -72,7 +72,7 @@ public abstract class DefaultDomain implements Domain {
   }
 
   @Override
-  public final <T, R, P> Report<T, R, P> getReport(final ReportType<T, R, P> reportType) {
+  public final <T, R, P> Report<T, R, P> getReport(ReportType<T, R, P> reportType) {
     Report<T, R, P> report = reports.getReport(reportType);
     if (report == null) {
       throw new IllegalArgumentException("Undefined report: " + reportType);
@@ -82,12 +82,12 @@ public abstract class DefaultDomain implements Domain {
   }
 
   @Override
-  public final <C, T> DatabaseProcedure<C, T> getProcedure(final ProcedureType<C, T> procedureType) {
+  public final <C, T> DatabaseProcedure<C, T> getProcedure(ProcedureType<C, T> procedureType) {
     return procedures.getProcedure(procedureType);
   }
 
   @Override
-  public final <C, T, R> DatabaseFunction<C, T, R> getFunction(final FunctionType<C, T, R> functionType) {
+  public final <C, T, R> DatabaseFunction<C, T, R> getFunction(FunctionType<C, T, R> functionType) {
     return functions.getFunction(functionType);
   }
 
@@ -101,7 +101,7 @@ public abstract class DefaultDomain implements Domain {
    * @throws IllegalArgumentException in case the entityType has already been used to define an entity type or if
    * no primary key property is specified
    */
-  protected final EntityDefinition.Builder define(final EntityType entityType, final Property.Builder<?, ?>... propertyBuilders) {
+  protected final EntityDefinition.Builder define(EntityType entityType, Property.Builder<?, ?>... propertyBuilders) {
     return define(entityType, entityType.getName(), propertyBuilders);
   }
 
@@ -116,8 +116,8 @@ public abstract class DefaultDomain implements Domain {
    * @throws IllegalArgumentException in case the entityType has already been used to define an entity type
    * @throws IllegalArgumentException in case no properties are specified
    */
-  protected final EntityDefinition.Builder define(final EntityType entityType, final String tableName,
-                                                  final Property.Builder<?, ?>... propertyBuilders) {
+  protected final EntityDefinition.Builder define(EntityType entityType, String tableName,
+                                                  Property.Builder<?, ?>... propertyBuilders) {
     requireNonNull(entityType, "entityType");
     if (!domainType.contains(entityType)) {
       throw new IllegalArgumentException("Entity type '" + entityType + "' is not part of domain: " + domainType);
@@ -135,7 +135,7 @@ public abstract class DefaultDomain implements Domain {
    * @throws RuntimeException in case loading the report failed
    * @throws IllegalArgumentException in case the report has already been added
    */
-  protected final <T, R, P> void defineReport(final ReportType<T, R, P> reportType, final Report<T, R, P> report) {
+  protected final <T, R, P> void defineReport(ReportType<T, R, P> reportType, Report<T, R, P> report) {
     reports.addReport(reportType, report);
   }
 
@@ -147,7 +147,7 @@ public abstract class DefaultDomain implements Domain {
    * @param <T> the argument type
    * @throws IllegalArgumentException in case a procedure has already been associated with the given type
    */
-  protected final <C, T> void defineProcedure(final ProcedureType<C, T> type, final DatabaseProcedure<C, T> procedure) {
+  protected final <C, T> void defineProcedure(ProcedureType<C, T> type, DatabaseProcedure<C, T> procedure) {
     procedures.addProcedure(type, procedure);
   }
 
@@ -160,7 +160,7 @@ public abstract class DefaultDomain implements Domain {
    * @param <R> the result type
    * @throws IllegalArgumentException in case a function has already been associated with the given type
    */
-  protected final <C, T, R> void defineFunction(final FunctionType<C, T, R> type, final DatabaseFunction<C, T, R> function) {
+  protected final <C, T, R> void defineFunction(FunctionType<C, T, R> type, DatabaseFunction<C, T, R> function) {
     functions.addFunction(type, function);
   }
 
@@ -169,7 +169,7 @@ public abstract class DefaultDomain implements Domain {
    * not been defined, this can be disabled in cases where entities have circular references.
    * @param strictForeignKeys true for strict foreign key validation
    */
-  protected final void setStrictForeignKeys(final boolean strictForeignKeys) {
+  protected final void setStrictForeignKeys(boolean strictForeignKeys) {
     entities.setStrictForeignKeysInternal(strictForeignKeys);
   }
 
@@ -180,7 +180,7 @@ public abstract class DefaultDomain implements Domain {
    * @see #addFunctions(Domain)
    * @see #addReports(Domain)
    */
-  protected final void copyFrom(final Domain domain) {
+  protected final void copyFrom(Domain domain) {
     requireNonNull(domain, "domain");
     addEntities(domain);
     addProcedures(domain);
@@ -195,7 +195,7 @@ public abstract class DefaultDomain implements Domain {
    * @throws IllegalArgumentException in case a non-unique entity type name is encountered
    * @see EntityType#getName()
    */
-  protected final void addEntities(final Domain domain) {
+  protected final void addEntities(Domain domain) {
     domain.getEntities().getDefinitions().forEach(definition -> {
       if (!entities.contains(definition.getEntityType())) {
         entities.addDefinitionInternal(definition);
@@ -207,7 +207,7 @@ public abstract class DefaultDomain implements Domain {
    * Adds all the procedures from the given domain to this domain.
    * @param domain the domain model which procedures to add
    */
-  protected final void addProcedures(final Domain domain) {
+  protected final void addProcedures(Domain domain) {
     domain.getProcedures().forEach((procedureType, procedure) -> {
       if (!procedures.procedures.containsKey(procedureType)) {
         procedures.procedures.put(procedureType, procedure);
@@ -219,7 +219,7 @@ public abstract class DefaultDomain implements Domain {
    * Adds all the functions from the given domain to this domain.
    * @param domain the domain model which functions to add
    */
-  protected final void addFunctions(final Domain domain) {
+  protected final void addFunctions(Domain domain) {
     domain.getFunctions().forEach((functionType, function) -> {
       if (!functions.functions.containsKey(functionType)) {
         functions.functions.put(functionType, function);
@@ -231,7 +231,7 @@ public abstract class DefaultDomain implements Domain {
    * Adds all the reports from the given domain to this domain.
    * @param domain the domain model which reports to add
    */
-  protected final void addReports(final Domain domain) {
+  protected final void addReports(Domain domain) {
     domain.getReports().forEach((reportType, report) -> {
       if (!reports.reports.containsKey(reportType)) {
         reports.reports.put(reportType, report);
@@ -243,20 +243,20 @@ public abstract class DefaultDomain implements Domain {
 
     private static final long serialVersionUID = 1;
 
-    private DomainEntities(final DomainType domainType) {
+    private DomainEntities(DomainType domainType) {
       super(domainType);
     }
 
-    private EntityDefinition.Builder defineInternal(final EntityType entityType, final String tableName,
-                                                    final Property.Builder<?, ?>... propertyBuilders) {
+    private EntityDefinition.Builder defineInternal(EntityType entityType, String tableName,
+                                                    Property.Builder<?, ?>... propertyBuilders) {
       return super.define(entityType, tableName, propertyBuilders);
     }
 
-    private void addDefinitionInternal(final EntityDefinition definition) {
+    private void addDefinitionInternal(EntityDefinition definition) {
       super.addDefinition(definition);
     }
 
-    private void setStrictForeignKeysInternal(final boolean strictForeignKeys) {
+    private void setStrictForeignKeysInternal(boolean strictForeignKeys) {
       super.setStrictForeignKeys(strictForeignKeys);
     }
   }
@@ -265,7 +265,7 @@ public abstract class DefaultDomain implements Domain {
 
     private final Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> procedures = new HashMap<>();
 
-    private void addProcedure(final ProcedureType<?, ?> type, final DatabaseProcedure<?, ?> procedure) {
+    private void addProcedure(ProcedureType<?, ?> type, DatabaseProcedure<?, ?> procedure) {
       requireNonNull(procedure, "procedure");
       if (procedures.containsKey(type)) {
         throw new IllegalArgumentException("Procedure already defined: " + type);
@@ -274,7 +274,7 @@ public abstract class DefaultDomain implements Domain {
       procedures.put(type, procedure);
     }
 
-    private <C, T> DatabaseProcedure<C, T> getProcedure(final ProcedureType<C, T> procedureType) {
+    private <C, T> DatabaseProcedure<C, T> getProcedure(ProcedureType<C, T> procedureType) {
       requireNonNull(procedureType, "procedureType");
       DatabaseProcedure<C, T> operation = (DatabaseProcedure<C, T>) procedures.get(procedureType);
       if (operation == null) {
@@ -289,7 +289,7 @@ public abstract class DefaultDomain implements Domain {
 
     private final Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> functions = new HashMap<>();
 
-    private void addFunction(final FunctionType<?, ?, ?> type, final DatabaseFunction<?, ?, ?> function) {
+    private void addFunction(FunctionType<?, ?, ?> type, DatabaseFunction<?, ?, ?> function) {
       requireNonNull(function, "function");
       if (functions.containsKey(type)) {
         throw new IllegalArgumentException("Function already defined: " + type);
@@ -298,7 +298,7 @@ public abstract class DefaultDomain implements Domain {
       functions.put(type, function);
     }
 
-    private <C, T, R> DatabaseFunction<C, T, R> getFunction(final FunctionType<C, T, R> functionType) {
+    private <C, T, R> DatabaseFunction<C, T, R> getFunction(FunctionType<C, T, R> functionType) {
       requireNonNull(functionType, "functionType");
       DatabaseFunction<C, T, R> operation = (DatabaseFunction<C, T, R>) functions.get(functionType);
       if (operation == null) {
@@ -315,7 +315,7 @@ public abstract class DefaultDomain implements Domain {
 
     private final Map<ReportType<?, ?, ?>, Report<?, ?, ?>> reports = new HashMap<>();
 
-    private <T, R, P> void addReport(final ReportType<T, R, P> reportType, final Report<T, R, P> report) {
+    private <T, R, P> void addReport(ReportType<T, R, P> reportType, Report<T, R, P> report) {
       requireNonNull(reportType, "reportType");
       requireNonNull(report, REPORT);
       if (reports.containsKey(reportType)) {
@@ -330,7 +330,7 @@ public abstract class DefaultDomain implements Domain {
       }
     }
 
-    private <T, R, P> Report<T, R, P> getReport(final ReportType<T, R, P> reportType) {
+    private <T, R, P> Report<T, R, P> getReport(ReportType<T, R, P> reportType) {
       return (Report<T, R, P>) reports.get(requireNonNull(reportType, REPORT));
     }
   }

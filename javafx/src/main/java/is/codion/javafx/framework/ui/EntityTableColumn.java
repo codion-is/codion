@@ -28,8 +28,8 @@ public final class EntityTableColumn<T> extends FXEntityListModel.AttributeTable
    * @param property the property
    * @param cellValueFactory the cell value factory for this column
    */
-  public EntityTableColumn(final FXEntityListModel listModel, final Property<T> property,
-                           final Callback<CellDataFeatures<Entity, T>, ObservableValue<T>> cellValueFactory) {
+  public EntityTableColumn(FXEntityListModel listModel, Property<T> property,
+                           Callback<CellDataFeatures<Entity, T>, ObservableValue<T>> cellValueFactory) {
     super(property.getAttribute(), property.getCaption());
     this.conditionView = initializeConditionView(listModel, property);
     setCellValueFactory(cellValueFactory);
@@ -43,7 +43,7 @@ public final class EntityTableColumn<T> extends FXEntityListModel.AttributeTable
    * Toggles the advanced property condition view
    * @param advanced the toggle value
    */
-  public void setConditionViewAdvanced(final boolean advanced) {
+  public void setConditionViewAdvanced(boolean advanced) {
     if (conditionView != null) {
       conditionView.setAdvanced(advanced);
     }
@@ -53,13 +53,13 @@ public final class EntityTableColumn<T> extends FXEntityListModel.AttributeTable
    * Toggles the visibility of the property condition view
    * @param visible the toggle values
    */
-  public void setConditionViewVisible(final boolean visible) {
+  public void setConditionViewVisible(boolean visible) {
     if (conditionView != null) {
       setGraphic(visible ? conditionView : null);
     }
   }
 
-  private PropertyConditionView<T> initializeConditionView(final FXEntityListModel listModel, final Property<T> property) {
+  private PropertyConditionView<T> initializeConditionView(FXEntityListModel listModel, Property<T> property) {
     if (property instanceof ColumnProperty || property instanceof ForeignKeyProperty) {
       ColumnConditionModel<? extends Attribute<T>, T> conditionModel = (ColumnConditionModel<? extends Attribute<T>, T>)
               listModel.getTableConditionModel().getConditionModels().get(property.getAttribute());

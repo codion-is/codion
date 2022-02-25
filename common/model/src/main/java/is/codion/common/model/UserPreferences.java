@@ -24,7 +24,7 @@ public final class UserPreferences {
    * @param defaultValue the default value if no preference is available
    * @return the user preference associated with the given key
    */
-  public static String getUserPreference(final String key, final String defaultValue) {
+  public static String getUserPreference(String key, String defaultValue) {
     return getPreferences().get(requireNonNull(key, KEY), defaultValue);
   }
 
@@ -32,7 +32,7 @@ public final class UserPreferences {
    * @param key the key to use to identify the preference
    * @param value the preference value to associate with the given key
    */
-  public static void putUserPreference(final String key, final String value) {
+  public static void putUserPreference(String key, String value) {
     getPreferences().put(requireNonNull(key, KEY), value);
   }
 
@@ -40,7 +40,7 @@ public final class UserPreferences {
    * Removes the preference associated with the given key
    * @param key the key to use to identify the preference to remove
    */
-  public static void removeUserPreference(final String key) {
+  public static void removeUserPreference(String key) {
     getPreferences().remove(requireNonNull(key, KEY));
   }
 

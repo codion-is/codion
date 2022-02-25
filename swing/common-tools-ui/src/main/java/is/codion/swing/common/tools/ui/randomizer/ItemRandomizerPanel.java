@@ -41,7 +41,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @param itemRandomizer the ItemRandomizer to base this panel on
    * @throws NullPointerException in case itemRandomizer is null
    */
-  public ItemRandomizerPanel(final ItemRandomizer<T> itemRandomizer) {
+  public ItemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
     this.model = requireNonNull(itemRandomizer, "itemRandomizer");
     initializeUI();
   }
@@ -56,14 +56,14 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   /**
    * @param listener a listener notified each time the selected item changes
    */
-  public void addSelectedItemListener(final EventDataListener<List<ItemRandomizer.RandomItem<T>>> listener) {
+  public void addSelectedItemListener(EventDataListener<List<ItemRandomizer.RandomItem<T>>> listener) {
     selectedItemChangedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeSelectedItemListener(final EventDataListener<List<ItemRandomizer.RandomItem<T>>> listener) {
+  public void removeSelectedItemListener(EventDataListener<List<ItemRandomizer.RandomItem<T>>> listener) {
     selectedItemChangedEvent.removeDataListener(listener);
   }
 
@@ -84,7 +84,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     itemList.addListSelectionListener(e -> selectedItemChangedEvent.onEvent(itemList.getSelectedValuesList()));
     addSelectedItemListener(selectedItems -> {
       configPanel.removeAll();
-      for (final ItemRandomizer.RandomItem<T> item : selectedItems) {
+      for (ItemRandomizer.RandomItem<T> item : selectedItems) {
         configPanel.add(initializeWeightPanel(item));
       }
       revalidate();
@@ -99,7 +99,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @param item the item for which to create a configuration panel
    * @return a control panel for the item weight
    */
-  private JPanel initializeWeightPanel(final ItemRandomizer.RandomItem<T> item) {
+  private JPanel initializeWeightPanel(ItemRandomizer.RandomItem<T> item) {
     JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(new JLabel(item.getItem().toString()), BorderLayout.NORTH);
     panel.add(Components.checkBox(new EnabledModelValue(item.getItem()))
@@ -121,7 +121,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     private final T item;
 
-    private EnabledModelValue(final T item) {
+    private EnabledModelValue(T item) {
       super(false);
       this.item = item;
     }
@@ -132,7 +132,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
-    protected void setValue(final Boolean value) {
+    protected void setValue(Boolean value) {
       model.setItemEnabled(item, value);
     }
   }
@@ -141,7 +141,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     private final T item;
 
-    private WeightModelValue(final T item) {
+    private WeightModelValue(T item) {
       super(0);
       this.item = item;
     }
@@ -152,7 +152,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
-    protected void setValue(final Integer value) {
+    protected void setValue(Integer value) {
       model.setWeight(item, value);
     }
   }

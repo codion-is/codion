@@ -19,13 +19,13 @@ final class ColumnPacker implements ResultPacker<Column> {
   private final Collection<PrimaryKeyColumn> primaryKeyColumns;
   private final List<ForeignKeyColumn> foreignKeyColumns;
 
-  ColumnPacker(final Collection<PrimaryKeyColumn> primaryKeyColumns, final List<ForeignKeyColumn> foreignKeyColumns) {
+  ColumnPacker(Collection<PrimaryKeyColumn> primaryKeyColumns, List<ForeignKeyColumn> foreignKeyColumns) {
     this.primaryKeyColumns = primaryKeyColumns;
     this.foreignKeyColumns = foreignKeyColumns;
   }
 
   @Override
-  public Column fetch(final ResultSet resultSet) throws SQLException {
+  public Column fetch(ResultSet resultSet) throws SQLException {
     int dataType = resultSet.getInt("DATA_TYPE");
     int decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
     if (resultSet.wasNull()) {
@@ -44,7 +44,7 @@ final class ColumnPacker implements ResultPacker<Column> {
     return null;
   }
 
-  private int getPrimaryKeyColumnIndex(final String columnName) {
+  private int getPrimaryKeyColumnIndex(String columnName) {
     return primaryKeyColumns.stream()
             .filter(primaryKeyColumn -> columnName.equals(primaryKeyColumn.getColumnName()))
             .findFirst()
@@ -52,12 +52,12 @@ final class ColumnPacker implements ResultPacker<Column> {
             .orElse(-1);
   }
 
-  private boolean isForeignKeyColumn(final String columnName) {
+  private boolean isForeignKeyColumn(String columnName) {
     return foreignKeyColumns.stream()
             .anyMatch(foreignKeyColumn -> foreignKeyColumn.getFkColumnName().equals(columnName));
   }
 
-  private static Class<?> translateTypeName(final int sqlType, final int decimalDigits) {
+  private static Class<?> translateTypeName(int sqlType, int decimalDigits) {
     switch (sqlType) {
       case Types.BIGINT:
         return Long.class;

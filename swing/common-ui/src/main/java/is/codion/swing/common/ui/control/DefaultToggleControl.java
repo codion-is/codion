@@ -34,7 +34,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
    * @param value the value to toggle
    * @param enabledObserver an observer indicating when this control should be enabled
    */
-  DefaultToggleControl(final String name, final Value<Boolean> value, final StateObserver enabledObserver) {
+  DefaultToggleControl(String name, Value<Boolean> value, StateObserver enabledObserver) {
     super(name, enabledObserver);
     this.value = requireNonNull(value, "value");
   }
@@ -52,7 +52,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
     ButtonModel buttonModel = createButtonModel();
     JCheckBoxMenuItem item = new JCheckBoxMenuItem(this) {
       @Override
-      protected void processMouseEvent(final MouseEvent e) {
+      protected void processMouseEvent(MouseEvent e) {
         if (e.getID() == MouseEvent.MOUSE_RELEASED && e.isControlDown()) {
           buttonModel.setSelected(!buttonModel.isSelected());
         }
@@ -75,7 +75,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
     ButtonModel buttonModel = createButtonModel();
     JRadioButtonMenuItem item = new JRadioButtonMenuItem(this) {
       @Override
-      protected void processMouseEvent(final MouseEvent e) {
+      protected void processMouseEvent(MouseEvent e) {
         if (e.getID() == MouseEvent.MOUSE_RELEASED && e.isControlDown()) {
           buttonModel.setSelected(!buttonModel.isSelected());
         }
@@ -140,19 +140,19 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
   }
 
   @Override
-  public void actionPerformed(final ActionEvent e) {/*Not required*/}
+  public void actionPerformed(ActionEvent e) {/*Not required*/}
 
   private static final class BooleanButtonModelValue extends AbstractValue<Boolean> {
 
     private final ButtonModel buttonModel;
 
-    BooleanButtonModelValue(final ButtonModel buttonModel) {
+    BooleanButtonModelValue(ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
       buttonModel.addItemListener(itemEvent -> notifyValueChange());
     }
 
     @Override
-    protected void setValue(final Boolean value) {
+    protected void setValue(Boolean value) {
       if (SwingUtilities.isEventDispatchThread()) {
         setModelValue(value);
       }
@@ -190,7 +190,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
       return buttonModel.isSelected();
     }
 
-    private void setModelValue(final Boolean value) {
+    private void setModelValue(Boolean value) {
       if (buttonModel instanceof NullableToggleButtonModel) {
         ((NullableToggleButtonModel) buttonModel).setState(value);
       }

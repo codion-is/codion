@@ -13,7 +13,7 @@ public final class ServerAuthenticationException extends LoginException {
    * Instantiates a new {@link ServerAuthenticationException}
    * @param message the exception message
    */
-  public ServerAuthenticationException(final String message) {
+  public ServerAuthenticationException(String message) {
     super(message);
   }
 }

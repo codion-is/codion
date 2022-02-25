@@ -10,8 +10,8 @@ final class DefaultSelectQuery implements SelectQuery {
   private final String whereClause;
   private final String orderByClause;
 
-  DefaultSelectQuery(final String columnsClause, final String fromClause, final String whereClause,
-                     final String orderByClause) {
+  DefaultSelectQuery(String columnsClause, String fromClause, String whereClause,
+                     String orderByClause) {
     this.columnsClause = columnsClause;
     this.fromClause = fromClause;
     this.whereClause = whereClause;

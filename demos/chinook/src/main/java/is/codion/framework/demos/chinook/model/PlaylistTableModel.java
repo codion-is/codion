@@ -14,11 +14,11 @@ import java.util.Collections;
 
 public final class PlaylistTableModel extends SwingEntityTableModel {
 
-  public PlaylistTableModel(final EntityConnectionProvider connectionProvider) {
+  public PlaylistTableModel(EntityConnectionProvider connectionProvider) {
     super(Playlist.TYPE, connectionProvider);
   }
 
-  public void createRandomPlaylist(final RandomPlaylistParameters parameters) throws DatabaseException {
+  public void createRandomPlaylist(RandomPlaylistParameters parameters) throws DatabaseException {
     Entity randomPlaylist = getConnectionProvider().getConnection()
             .executeFunction(Playlist.RANDOM_PLAYLIST, parameters);
     addEntitiesAt(0, Collections.singletonList(randomPlaylist));

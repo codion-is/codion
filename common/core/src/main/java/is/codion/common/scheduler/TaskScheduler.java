@@ -40,7 +40,7 @@ public interface TaskScheduler {
    * @param interval the interval
    * @throws IllegalArgumentException in case {@code interval} isn't a positive integer
    */
-  void setInterval(final int interval);
+  void setInterval(int interval);
 
   /**
    * Starts this TaskScheduler, if it is running it is restarted, using the initial delay specified during construction.
@@ -62,13 +62,13 @@ public interface TaskScheduler {
    * Adds a listener notified when the interval is set.
    * @param listener a listener notified each time the interval is set
    */
-  void addIntervalListener(final EventDataListener<Integer> listener);
+  void addIntervalListener(EventDataListener<Integer> listener);
 
   /**
    * @param task the task to run
    * @return a new {@link TaskScheduler.Builder} instance.
    */
-  static TaskScheduler.Builder builder(final Runnable task) {
+  static TaskScheduler.Builder builder(Runnable task) {
     return new DefaultTaskSchedulerBuilder(task);
   }
 

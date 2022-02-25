@@ -66,7 +66,7 @@ public final class ConnectionPoolMonitor {
    * @param connectionPool the connection pool to monitor
    * @param updateRate the initial statistics update rate in seconds
    */
-  public ConnectionPoolMonitor(final ConnectionPoolWrapper connectionPool, final int updateRate) {
+  public ConnectionPoolMonitor(ConnectionPoolWrapper connectionPool, int updateRate) {
     this.username = connectionPool.getUser().getUsername();
     this.connectionPool = connectionPool;
     this.pooledConnectionTimeoutValue = Value.value(connectionPool.getConnectionTimeout() / THOUSAND);
@@ -246,23 +246,23 @@ public final class ConnectionPoolMonitor {
     updateScheduler.stop();
   }
 
-  private void setPooledConnectionTimeout(final int value) {
+  private void setPooledConnectionTimeout(int value) {
     connectionPool.setConnectionTimeout(value * THOUSAND);
   }
 
-  private void setPoolCleanupInterval(final int value) {
+  private void setPoolCleanupInterval(int value) {
     connectionPool.setCleanupInterval(value * THOUSAND);
   }
 
-  private void setMinimumPoolSize(final int value) {
+  private void setMinimumPoolSize(int value) {
     connectionPool.setMinimumPoolSize(value);
   }
 
-  private void setMaximumPoolSize(final int value) {
+  private void setMaximumPoolSize(int value) {
     connectionPool.setMaximumPoolSize(value);
   }
 
-  private void setMaximumCheckOutTime(final int value) {
+  private void setMaximumCheckOutTime(int value) {
     connectionPool.setMaximumCheckOutTime(value);
   }
 
@@ -284,7 +284,7 @@ public final class ConnectionPoolMonitor {
       XYSeries snapshotInPoolSeries = new XYSeries("In pool");
       XYSeries snapshotInUseSeries = new XYSeries("In use");
       XYSeries snapshotWaitingSeries = new XYSeries("Waiting");
-      for (final ConnectionPoolState inPool : snapshotStatistics) {
+      for (ConnectionPoolState inPool : snapshotStatistics) {
         snapshotInPoolSeries.add(inPool.getTimestamp(), inPool.getSize());
         snapshotInUseSeries.add(inPool.getTimestamp(), inPool.getInUse());
         snapshotWaitingSeries.add(inPool.getTimestamp(), inPool.getWaiting());
@@ -317,12 +317,12 @@ public final class ConnectionPoolMonitor {
 
     private final int minimumValue;
 
-    private MinimumValidator(final int minimumValue) {
+    private MinimumValidator(int minimumValue) {
       this.minimumValue = minimumValue;
     }
 
     @Override
-    public void validate(final Integer value) {
+    public void validate(Integer value) {
       if (value == null || value < minimumValue) {
         throw new IllegalArgumentException("Value must be larger than: " + minimumValue);
       }
@@ -336,7 +336,7 @@ public final class ConnectionPoolMonitor {
     }
 
     @Override
-    public void validate(final Integer value) {
+    public void validate(Integer value) {
       super.validate(value);
       if (value > maximumPoolSizeValue.get()) {
         throw new IllegalArgumentException("Minimum pool sizeequal to or below maximum pool size time");
@@ -351,7 +351,7 @@ public final class ConnectionPoolMonitor {
     }
 
     @Override
-    public void validate(final Integer value) {
+    public void validate(Integer value) {
       super.validate(value);
       if (value < minimumPoolSizeValue.get()) {
         throw new IllegalArgumentException("Maximum pool size must be equal to or exceed minimum pool size");

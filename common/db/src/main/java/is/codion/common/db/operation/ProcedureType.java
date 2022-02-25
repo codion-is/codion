@@ -32,7 +32,7 @@ public interface ProcedureType<C, T> {
    * @param <T> the procedure argument type
    * @return a new {@link ProcedureType}
    */
-  static <C, T> ProcedureType<C, T> procedureType(final String name) {
+  static <C, T> ProcedureType<C, T> procedureType(String name) {
     return new DefaultProcedureType<>(name);
   }
 }

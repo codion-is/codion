@@ -12,7 +12,7 @@ class DefaultSelectQueryBuilder implements SelectQuery.Builder {
   private String where;
   private String orderBy;
 
-  DefaultSelectQueryBuilder(final String from) {
+  DefaultSelectQueryBuilder(String from) {
     if (requireNonNull(from, "from").trim().toLowerCase().startsWith("from")) {
       throw new IllegalArgumentException("from clause should not include the 'FROM' keyword");
     }
@@ -20,7 +20,7 @@ class DefaultSelectQueryBuilder implements SelectQuery.Builder {
   }
 
   @Override
-  public SelectQuery.Builder columns(final String columns) {
+  public SelectQuery.Builder columns(String columns) {
     if (requireNonNull(columns, "columns").trim().toLowerCase().startsWith("select")) {
       throw new IllegalArgumentException("columns clause should not include the 'SELECT' keyword");
     }
@@ -29,7 +29,7 @@ class DefaultSelectQueryBuilder implements SelectQuery.Builder {
   }
 
   @Override
-  public SelectQuery.Builder where(final String where) {
+  public SelectQuery.Builder where(String where) {
     if (requireNonNull(where, "where").trim().toLowerCase().startsWith("where")) {
       throw new IllegalArgumentException("where clause should not include the 'WHERE' keyword");
     }
@@ -39,7 +39,7 @@ class DefaultSelectQueryBuilder implements SelectQuery.Builder {
   }
 
   @Override
-  public SelectQuery.Builder orderBy(final String orderBy) {
+  public SelectQuery.Builder orderBy(String orderBy) {
     if (requireNonNull(orderBy, "orderBy").trim().toLowerCase().startsWith("order by")) {
       throw new IllegalArgumentException("orderBy clause should not include the 'ORDER BY' keywords");
     }

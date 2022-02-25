@@ -15,13 +15,13 @@ final class ChartUtil {
 
   private ChartUtil() {}
 
-  static void linkColors(final JComponent parent, final JFreeChart chart) {
+  static void linkColors(JComponent parent, JFreeChart chart) {
     chart.getXYPlot().setBackgroundPaint(Color.BLACK);
     setColors(parent, chart);
     parent.addPropertyChangeListener("background", evt -> setColors(parent, chart));
   }
 
-  private static void setColors(final JComponent parent, final JFreeChart chart) {
+  private static void setColors(JComponent parent, JFreeChart chart) {
     Color textFieldForeground = UIManager.getColor("TextField.foreground");
     TextTitle title = chart.getTitle();
     if (title != null) {
@@ -34,7 +34,7 @@ final class ChartUtil {
     setColors(chart.getXYPlot().getDomainAxis(), textFieldForeground);
   }
 
-  private static void setColors(final ValueAxis axis, final Color color) {
+  private static void setColors(ValueAxis axis, Color color) {
     axis.setLabelPaint(color);
     axis.setTickLabelPaint(color);
     axis.setAxisLinePaint(color);

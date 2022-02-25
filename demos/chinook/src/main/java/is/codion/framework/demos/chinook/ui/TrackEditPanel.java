@@ -20,7 +20,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class TrackEditPanel extends EntityEditPanel {
 
-  public TrackEditPanel(final SwingEntityEditModel editModel) {
+  public TrackEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
     setDefaultTextFieldColumns(18);
   }

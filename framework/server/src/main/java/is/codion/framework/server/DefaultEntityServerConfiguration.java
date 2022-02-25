@@ -35,7 +35,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   private final Collection<User> startupPoolUsers = new HashSet<>();
   private final Map<String, Integer> clientSpecificConnectionTimeouts = new HashMap<>();
 
-  DefaultEntityServerConfiguration(final ServerConfiguration serverConfiguration) {
+  DefaultEntityServerConfiguration(ServerConfiguration serverConfiguration) {
     this.serverConfiguration = requireNonNull(serverConfiguration);
   }
 
@@ -153,7 +153,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     private final Collection<User> startupPoolUsers = new HashSet<>();
     private final Map<String, Integer> clientSpecificConnectionTimeouts = new HashMap<>();
 
-    DefaultBuilder(final int serverPort, final int registryPort) {
+    DefaultBuilder(int serverPort, int registryPort) {
       serverConfigurationBuilder = ServerConfiguration.builder(serverPort, registryPort);
       serverConfigurationBuilder.serverNameProvider(() -> {
         if (database == null) {
@@ -166,115 +166,115 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     }
 
     @Override
-    public Builder serverNameProvider(final Supplier<String> serverNameProvider) {
+    public Builder serverNameProvider(Supplier<String> serverNameProvider) {
       serverConfigurationBuilder.serverNameProvider(serverNameProvider);
       return this;
     }
 
     @Override
-    public Builder serverName(final String serverName) {
+    public Builder serverName(String serverName) {
       serverConfigurationBuilder.serverName(serverName);
       return this;
     }
 
     @Override
-    public Builder auxiliaryServerFactoryClassNames(final Collection<String> auxiliaryServerFactoryClassNames) {
+    public Builder auxiliaryServerFactoryClassNames(Collection<String> auxiliaryServerFactoryClassNames) {
       serverConfigurationBuilder.auxiliaryServerFactoryClassNames(auxiliaryServerFactoryClassNames);
       return this;
     }
 
     @Override
-    public Builder sslEnabled(final boolean sslEnabled) {
+    public Builder sslEnabled(boolean sslEnabled) {
       serverConfigurationBuilder.sslEnabled(sslEnabled);
       return this;
     }
 
     @Override
-    public Builder rmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
+    public Builder rmiClientSocketFactory(RMIClientSocketFactory rmiClientSocketFactory) {
       serverConfigurationBuilder.rmiClientSocketFactory(rmiClientSocketFactory);
       return this;
     }
 
     @Override
-    public Builder rmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
+    public Builder rmiServerSocketFactory(RMIServerSocketFactory rmiServerSocketFactory) {
       serverConfigurationBuilder.rmiServerSocketFactory(rmiServerSocketFactory);
       return this;
     }
 
     @Override
-    public Builder serializationFilterWhitelist(final String serializationFilterWhitelist) {
+    public Builder serializationFilterWhitelist(String serializationFilterWhitelist) {
       serverConfigurationBuilder.serializationFilterWhitelist(serializationFilterWhitelist);
       return this;
     }
 
     @Override
-    public Builder serializationFilterDryRun(final boolean serializationFilterDryRun) {
+    public Builder serializationFilterDryRun(boolean serializationFilterDryRun) {
       serverConfigurationBuilder.serializationFilterDryRun(serializationFilterDryRun);
       return this;
     }
 
     @Override
-    public Builder connectionMaintenanceIntervalMs(final int connectionMaintenanceIntervalMs) {
+    public Builder connectionMaintenanceIntervalMs(int connectionMaintenanceIntervalMs) {
       serverConfigurationBuilder.connectionMaintenanceIntervalMs(connectionMaintenanceIntervalMs);
       return this;
     }
 
     @Override
-    public Builder adminPort(final int adminPort) {
+    public Builder adminPort(int adminPort) {
       serverConfigurationBuilder.adminPort(adminPort);
       return this;
     }
 
     @Override
-    public Builder database(final Database database) {
+    public Builder database(Database database) {
       this.database = requireNonNull(database);
       return this;
     }
 
     @Override
-    public Builder adminUser(final User adminUser) {
+    public Builder adminUser(User adminUser) {
       this.adminUser = requireNonNull(adminUser);
       return this;
     }
 
     @Override
-    public Builder connectionLimit(final int connectionLimit) {
+    public Builder connectionLimit(int connectionLimit) {
       this.connectionLimit = connectionLimit;
       return this;
     }
 
     @Override
-    public Builder clientLoggingEnabled(final boolean clientLoggingEnabled) {
+    public Builder clientLoggingEnabled(boolean clientLoggingEnabled) {
       this.clientLoggingEnabled = clientLoggingEnabled;
       return this;
     }
 
     @Override
-    public Builder connectionTimeout(final int connectionTimeout) {
+    public Builder connectionTimeout(int connectionTimeout) {
       this.connectionTimeout = connectionTimeout;
       return this;
     }
 
     @Override
-    public Builder connectionPoolProvider(final String connectionPoolProvider) {
+    public Builder connectionPoolProvider(String connectionPoolProvider) {
       this.connectionPoolProvider = requireNonNull(connectionPoolProvider);
       return this;
     }
 
     @Override
-    public Builder domainModelClassNames(final Collection<String> domainModelClassNames) {
+    public Builder domainModelClassNames(Collection<String> domainModelClassNames) {
       this.domainModelClassNames.addAll(requireNonNull(domainModelClassNames));
       return this;
     }
 
     @Override
-    public Builder startupPoolUsers(final Collection<User> startupPoolUsers) {
+    public Builder startupPoolUsers(Collection<User> startupPoolUsers) {
       this.startupPoolUsers.addAll(requireNonNull(startupPoolUsers));
       return this;
     }
 
     @Override
-    public Builder clientSpecificConnectionTimeouts(final Map<String, Integer> clientSpecificConnectionTimeouts) {
+    public Builder clientSpecificConnectionTimeouts(Map<String, Integer> clientSpecificConnectionTimeouts) {
       this.clientSpecificConnectionTimeouts.putAll(requireNonNull(clientSpecificConnectionTimeouts));
       return this;
     }

@@ -8,7 +8,7 @@ public final class PrimaryKeyColumn {
   private final String columnName;
   private final int index;
 
-  PrimaryKeyColumn(final String columnName, final int index) {
+  PrimaryKeyColumn(String columnName, int index) {
     this.columnName = columnName;
     this.index = index;
   }

@@ -14,7 +14,7 @@ final class DefaultEvent<T> implements Event<T> {
   }
 
   @Override
-  public void onEvent(final T data) {
+  public void onEvent(T data) {
     if (observer != null) {
       observer.notifyListeners(data);
     }
@@ -32,22 +32,22 @@ final class DefaultEvent<T> implements Event<T> {
   }
 
   @Override
-  public void addListener(final EventListener listener) {
+  public void addListener(EventListener listener) {
     getObserver().addListener(listener);
   }
 
   @Override
-  public void removeListener(final EventListener listener) {
+  public void removeListener(EventListener listener) {
     getObserver().removeListener(listener);
   }
 
   @Override
-  public void addDataListener(final EventDataListener<T> listener) {
+  public void addDataListener(EventDataListener<T> listener) {
     getObserver().addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(final EventDataListener<T> listener) {
+  public void removeDataListener(EventDataListener<T> listener) {
     getObserver().removeDataListener(listener);
   }
 }

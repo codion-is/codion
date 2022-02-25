@@ -59,13 +59,13 @@ public final class Formats {
     private static final long serialVersionUID = 1;
 
     @Override
-    public StringBuffer format(final Object obj, final StringBuffer toAppendTo, final FieldPosition pos) {
+    public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
       toAppendTo.append(obj.toString());
       return toAppendTo;
     }
 
     @Override
-    public Object parseObject(final String source, final ParsePosition pos) {
+    public Object parseObject(String source, ParsePosition pos) {
       pos.setIndex(source.length());
       return source;
     }

@@ -68,7 +68,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * @param serverPort the server port
    * @param https true if https should be used
    */
-  public HttpEntityConnectionProvider(final String serverHostName, final Integer serverPort, final ClientHttps https) {
+  public HttpEntityConnectionProvider(String serverHostName, Integer serverPort, ClientHttps https) {
     this.serverHostName = requireNonNull(serverHostName, "serverHostName");
     this.serverPort = requireNonNull(serverPort, "serverPort");
     this.https = requireNonNull(https, "https").equals(ClientHttps.TRUE);
@@ -116,7 +116,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   }
 
   @Override
-  protected void close(final EntityConnection connection) {
+  protected void close(EntityConnection connection) {
     connection.close();
   }
 

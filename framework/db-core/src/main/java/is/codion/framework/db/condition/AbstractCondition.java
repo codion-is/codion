@@ -16,7 +16,7 @@ abstract class AbstractCondition implements Condition, Serializable {
 
   private final EntityType entityType;
 
-  AbstractCondition(final EntityType entityType) {
+  AbstractCondition(EntityType entityType) {
     this.entityType = requireNonNull(entityType);
   }
 
@@ -26,12 +26,12 @@ abstract class AbstractCondition implements Condition, Serializable {
   }
 
   @Override
-  public final Condition.Combination and(final Condition... conditions) {
+  public final Condition.Combination and(Condition... conditions) {
     return new DefaultConditionCombination(Conjunction.AND, this, conditions);
   }
 
   @Override
-  public final Condition.Combination or(final Condition... conditions) {
+  public final Condition.Combination or(Condition... conditions) {
     return new DefaultConditionCombination(Conjunction.OR, this, conditions);
   }
 

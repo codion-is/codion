@@ -81,7 +81,7 @@ final class ExceptionPanel extends JPanel {
   private final State showDetailsState = State.state();
   private final Event<?> closeEvent = Event.event();
 
-  ExceptionPanel(final Throwable throwable, final String message) {
+  ExceptionPanel(Throwable throwable, String message) {
     exceptionField = new JTextField();
     exceptionField.setEnabled(false);
     messageArea = new JTextArea();
@@ -121,7 +121,7 @@ final class ExceptionPanel extends JPanel {
     setException(throwable, message);
   }
 
-  void addDetailsListener(final EventDataListener<Boolean> detailsListener) {
+  void addDetailsListener(EventDataListener<Boolean> detailsListener) {
     showDetailsState.addDataListener(detailsListener);
   }
 
@@ -139,7 +139,7 @@ final class ExceptionPanel extends JPanel {
             .build(), BorderLayout.CENTER);
   }
 
-  private void initializeDetailView(final boolean show) {
+  private void initializeDetailView(boolean show) {
     printButton.setVisible(show);
     saveButton.setVisible(show);
     copyButton.setVisible(show);
@@ -208,7 +208,7 @@ final class ExceptionPanel extends JPanel {
             .build();
   }
 
-  void setException(final Throwable throwable, final String message) {
+  void setException(Throwable throwable, String message) {
     String name = throwable.getClass().getSimpleName();
     descriptionLabel.setText(message == null ? name : truncateMessage(message));
     descriptionLabel.setToolTipText(message);
@@ -240,7 +240,7 @@ final class ExceptionPanel extends JPanel {
             Arrays.asList(detailsArea.getText().split("\\r?\\n")));
   }
 
-  private static String truncateMessage(final String message) {
+  private static String truncateMessage(String message) {
     if (message.length() > MAX_MESSAGE_LENGTH) {
       return message.substring(0, MAX_MESSAGE_LENGTH) + "...";
     }

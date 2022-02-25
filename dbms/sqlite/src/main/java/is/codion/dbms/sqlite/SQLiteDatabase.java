@@ -17,7 +17,7 @@ final class SQLiteDatabase extends AbstractDatabase {
 
   private static final String JDBC_URL_PREFIX = "jdbc:sqlite:";
 
-  SQLiteDatabase(final String jdbcUrl) {
+  SQLiteDatabase(String jdbcUrl) {
     super(jdbcUrl);
   }
 
@@ -27,7 +27,7 @@ final class SQLiteDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getAutoIncrementQuery(final String idSource) {
+  public String getAutoIncrementQuery(String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
@@ -41,7 +41,7 @@ final class SQLiteDatabase extends AbstractDatabase {
    * @return true if this exception is a referential integrity error
    */
   @Override
-  public boolean isReferentialIntegrityException(final SQLException exception) {
+  public boolean isReferentialIntegrityException(SQLException exception) {
     return exception.getErrorCode() == FOREIGN_KEY_ERROR;
   }
 }

@@ -20,11 +20,11 @@ final class CustomConditionSerializer implements Serializable {
 
   private final EntityObjectMapper entityObjectMapper;
 
-  CustomConditionSerializer(final EntityObjectMapper entityObjectMapper) {
+  CustomConditionSerializer(EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  void serialize(final CustomCondition condition, final JsonGenerator generator) throws IOException {
+  void serialize(CustomCondition condition, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("type", "custom");
     generator.writeStringField("conditionTypeName", condition.getConditionType().getName());

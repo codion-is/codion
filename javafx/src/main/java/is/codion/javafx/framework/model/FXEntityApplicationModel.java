@@ -16,7 +16,7 @@ public class FXEntityApplicationModel
    * Instantiates a new {@link FXEntityApplicationModel}
    * @param connectionProvider the connection provider
    */
-  public FXEntityApplicationModel(final EntityConnectionProvider connectionProvider) {
+  public FXEntityApplicationModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
   }
 }

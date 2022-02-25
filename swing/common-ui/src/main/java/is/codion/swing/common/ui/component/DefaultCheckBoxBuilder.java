@@ -15,18 +15,18 @@ final class DefaultCheckBoxBuilder extends AbstractToggleButtonBuilder<JCheckBox
   private boolean nullable = false;
   private int horizontalAlignment = SwingConstants.LEADING;
 
-  DefaultCheckBoxBuilder(final Value<Boolean> value) {
+  DefaultCheckBoxBuilder(Value<Boolean> value) {
     super(value);
   }
 
   @Override
-  public CheckBoxBuilder nullable(final boolean nullable) {
+  public CheckBoxBuilder nullable(boolean nullable) {
     this.nullable = nullable;
     return this;
   }
 
   @Override
-  public CheckBoxBuilder horizontalAlignment(final int horizontalAlignment) {
+  public CheckBoxBuilder horizontalAlignment(int horizontalAlignment) {
     this.horizontalAlignment = horizontalAlignment;
     return this;
   }

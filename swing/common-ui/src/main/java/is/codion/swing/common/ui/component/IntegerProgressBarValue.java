@@ -7,18 +7,18 @@ import javax.swing.JProgressBar;
 
 final class IntegerProgressBarValue extends AbstractComponentValue<Integer, JProgressBar> {
 
-  IntegerProgressBarValue(final JProgressBar progressBar) {
+  IntegerProgressBarValue(JProgressBar progressBar) {
     super(progressBar, 0);
     progressBar.getModel().addChangeListener(e -> notifyValueChange());
   }
 
   @Override
-  protected Integer getComponentValue(final JProgressBar component) {
+  protected Integer getComponentValue(JProgressBar component) {
     return component.getValue();
   }
 
   @Override
-  protected void setComponentValue(final JProgressBar component, final Integer value) {
+  protected void setComponentValue(JProgressBar component, Integer value) {
     component.setValue(value == null ? 0 : value);
   }
 }

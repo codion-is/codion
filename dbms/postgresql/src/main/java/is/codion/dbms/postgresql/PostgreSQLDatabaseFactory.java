@@ -16,12 +16,12 @@ public final class PostgreSQLDatabaseFactory implements DatabaseFactory {
   private static final String DRIVER_PACKAGE = "org.postgresql";
 
   @Override
-  public boolean isDriverCompatible(final String driverClassName) {
+  public boolean isDriverCompatible(String driverClassName) {
     return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
   }
 
   @Override
-  public Database createDatabase(final String jdbcUrl) {
+  public Database createDatabase(String jdbcUrl) {
     return new PostgreSQLDatabase(jdbcUrl, Database.SELECT_FOR_UPDATE_NOWAIT.get());
   }
 }

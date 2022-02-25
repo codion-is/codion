@@ -60,9 +60,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
    * @param filterModelFactory provides the column filter models for this table condition model, null if not required
    * @param conditionModelFactory provides the column condition models for this table condition model
    */
-  public DefaultEntityTableConditionModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                                          final FilterModelFactory filterModelFactory,
-                                          final ConditionModelFactory conditionModelFactory) {
+  public DefaultEntityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                          FilterModelFactory filterModelFactory,
+                                          ConditionModelFactory conditionModelFactory) {
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     initializeConditionModels(entityType, requireNonNull(conditionModelFactory, "conditionModelFactory"));
@@ -93,7 +93,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(final C attribute) {
+  public <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(C attribute) {
     ColumnFilterModel<Entity, C, T> filterModel = (ColumnFilterModel<Entity, C, T>) filterModels.get(attribute);
     if (filterModel == null) {
       throw new IllegalArgumentException("No filter model available for attribute: " + attribute);
@@ -114,7 +114,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   @Override
   public void refresh() {
-    for (final ColumnConditionModel<?, ?> model : conditionModels.values()) {
+    for (ColumnConditionModel<?, ?> model : conditionModels.values()) {
       if (model instanceof ForeignKeyConditionModel) {
         ((ForeignKeyConditionModel) model).refresh();
       }
@@ -132,7 +132,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <C extends Attribute<T>, T> ColumnConditionModel<C, T> getConditionModel(final C attribute) {
+  public <C extends Attribute<T>, T> ColumnConditionModel<C, T> getConditionModel(C attribute) {
     ColumnConditionModel<C, T> conditionModel = (ColumnConditionModel<C, T>) conditionModels.get(attribute);
     if (conditionModel == null) {
       throw new IllegalArgumentException("No condition model available for attribute: " + attribute);
@@ -148,7 +148,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public boolean isConditionEnabled(final Attribute<?> attribute) {
+  public boolean isConditionEnabled(Attribute<?> attribute) {
     return conditionModels.containsKey(attribute) && conditionModels.get(attribute).isEnabled();
   }
 
@@ -159,12 +159,12 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public boolean isFilterEnabled(final Attribute<?> attribute) {
+  public boolean isFilterEnabled(Attribute<?> attribute) {
     return filterModels.containsKey(attribute) && filterModels.get(attribute).isEnabled();
   }
 
   @Override
-  public <T> boolean setEqualConditionValues(final Attribute<T> attribute, final Collection<T> values) {
+  public <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values) {
     String conditionsString = getConditionsString();
     ColumnConditionModel<Attribute<T>, T> conditionModel = (ColumnConditionModel<Attribute<T>, T>) conditionModels.get(attribute);
     if (conditionModel != null) {
@@ -177,7 +177,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <T> void setEqualFilterValue(final Attribute<T> attribute, final Comparable<T> value) {
+  public <T> void setEqualFilterValue(Attribute<T> attribute, Comparable<T> value) {
     ColumnFilterModel<Entity, Attribute<?>, T> filterModel = (ColumnFilterModel<Entity, Attribute<?>, T>) filterModels.get(attribute);
     if (filterModel != null) {
       filterModel.setOperator(Operator.EQUAL);
@@ -189,7 +189,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   @Override
   public Condition getCondition() {
     Collection<Condition> conditions = new ArrayList<>();
-    for (final ColumnConditionModel<? extends Attribute<?>, ?> conditionModel : conditionModels.values()) {
+    for (ColumnConditionModel<? extends Attribute<?>, ?> conditionModel : conditionModels.values()) {
       if (conditionModel.isEnabled()) {
         if (conditionModel instanceof ForeignKeyConditionModel) {
           conditions.add(getForeignKeyCondition((ForeignKeyConditionModel) conditionModel));
@@ -213,7 +213,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public void setAdditionalConditionSupplier(final Supplier<Condition> conditionSupplier) {
+  public void setAdditionalConditionSupplier(Supplier<Condition> conditionSupplier) {
     this.additionalConditionSupplier = conditionSupplier;
   }
 
@@ -228,7 +228,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public void setConjunction(final Conjunction conjunction) {
+  public void setConjunction(Conjunction conjunction) {
     this.conjunction = conjunction;
   }
 
@@ -238,17 +238,17 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public void addConditionChangedListener(final EventListener listener) {
+  public void addConditionChangedListener(EventListener listener) {
     conditionChangedState.addListener(listener);
   }
 
   @Override
-  public void removeConditionChangedListener(final EventListener listener) {
+  public void removeConditionChangedListener(EventListener listener) {
     conditionChangedState.removeListener(listener);
   }
 
   private void bindEvents() {
-    for (final ColumnConditionModel<?, ?> conditionModel : conditionModels.values()) {
+    for (ColumnConditionModel<?, ?> conditionModel : conditionModels.values()) {
       conditionModel.addConditionChangedListener(() ->
               conditionChangedState.set(!rememberedCondition.equals(getConditionsString())));
     }
@@ -260,7 +260,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     });
   }
 
-  private void setConditionString(final String searchString) {
+  private void setConditionString(String searchString) {
     Collection<Attribute<String>> searchAttributes =
             connectionProvider.getEntities().getDefinition(entityType).getSearchAttributes();
     conditionModels.values().stream()
@@ -284,9 +284,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
             .collect(joining());
   }
 
-  private void initializeFilterModels(final EntityType entityType, final FilterModelFactory filterModelProvider) {
+  private void initializeFilterModels(EntityType entityType, FilterModelFactory filterModelProvider) {
     if (filterModelProvider != null) {
-      for (final Property<?> property : connectionProvider.getEntities().getDefinition(entityType).getProperties()) {
+      for (Property<?> property : connectionProvider.getEntities().getDefinition(entityType).getProperties()) {
         if (!property.isHidden()) {
           ColumnFilterModel<Entity, Attribute<?>, ?> filterModel = filterModelProvider.createFilterModel(property);
           if (filterModel != null) {
@@ -297,15 +297,15 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private void initializeConditionModels(final EntityType entityType, final ConditionModelFactory conditionModelFactory) {
+  private void initializeConditionModels(EntityType entityType, ConditionModelFactory conditionModelFactory) {
     EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
-    for (final ColumnProperty<?> columnProperty : definition.getColumnProperties()) {
+    for (ColumnProperty<?> columnProperty : definition.getColumnProperties()) {
       ColumnConditionModel<? extends Attribute<?>, ?> conditionModel = conditionModelFactory.createConditionModel(columnProperty.getAttribute());
       if (conditionModel != null) {
         conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel);
       }
     }
-    for (final ForeignKeyProperty foreignKeyProperty :
+    for (ForeignKeyProperty foreignKeyProperty :
             connectionProvider.getEntities().getDefinition(entityType).getForeignKeyProperties()) {
       ColumnConditionModel<ForeignKey, Entity> conditionModel = conditionModelFactory.createConditionModel(foreignKeyProperty.getAttribute());
       if (conditionModel != null) {
@@ -314,7 +314,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private static Condition getForeignKeyCondition(final ForeignKeyConditionModel conditionModel) {
+  private static Condition getForeignKeyCondition(ForeignKeyConditionModel conditionModel) {
     ForeignKey foreignKey = conditionModel.getColumnIdentifier();
     Collection<Entity> values = conditionModel.getEqualValueSet().get();
     ForeignKeyConditionBuilder builder = Conditions.where(foreignKey);
@@ -328,7 +328,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private static <T> AttributeCondition<T> getCondition(final ColumnConditionModel<?, T> conditionModel) {
+  private static <T> AttributeCondition<T> getCondition(ColumnConditionModel<?, T> conditionModel) {
     Collection<T> equalToValues = conditionModel.getEqualValues();
     AttributeCondition.Builder<T> builder = Conditions.where((Attribute<T>) conditionModel.getColumnIdentifier());
     switch (conditionModel.getOperator()) {
@@ -365,7 +365,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private static String toString(final ColumnConditionModel<?, ?> conditionModel) {
+  private static String toString(ColumnConditionModel<?, ?> conditionModel) {
     StringBuilder stringBuilder = new StringBuilder(((Attribute<?>) conditionModel.getColumnIdentifier()).getName());
     if (conditionModel.isEnabled()) {
       stringBuilder.append(conditionModel.getOperator());
@@ -376,10 +376,10 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     return stringBuilder.toString();
   }
 
-  private static String boundToString(final Object object) {
+  private static String boundToString(Object object) {
     StringBuilder stringBuilder = new StringBuilder();
     if (object instanceof Collection) {
-      for (final Object obj : (Collection<Object>) object) {
+      for (Object obj : (Collection<Object>) object) {
         stringBuilder.append(boundToString(obj));
       }
     }

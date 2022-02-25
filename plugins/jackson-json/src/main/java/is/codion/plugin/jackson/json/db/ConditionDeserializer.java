@@ -27,7 +27,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
   private final ConditionCombinationDeserializer conditionCombinationDeserializer;
   private final CustomConditionDeserializer customConditionDeserializer;
 
-  ConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
+  ConditionDeserializer(EntityObjectMapper entityObjectMapper) {
     super(Condition.class);
     this.entities = entityObjectMapper.getEntities();
     this.attributeConditionDeserializer = new AttributeConditionDeserializer(entityObjectMapper);
@@ -36,7 +36,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
   }
 
   @Override
-  public Condition deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
+  public Condition deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
     JsonNode entityConditionNode = parser.getCodec().readTree(parser);
     EntityType entityType = entities.getDomainType().entityType(entityConditionNode.get("entityType").asText());
     JsonNode conditionNode = entityConditionNode.get("condition");
@@ -44,7 +44,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
     return deserialize(entities.getDefinition(entityType), conditionNode);
   }
 
-  Condition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
+  Condition deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     JsonNode type = conditionNode.get("type");
     String typeString = type.asText();
     if ("combination".equals(typeString)) {

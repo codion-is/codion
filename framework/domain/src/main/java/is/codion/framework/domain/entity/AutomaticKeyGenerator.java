@@ -17,7 +17,7 @@ final class AutomaticKeyGenerator extends AbstractQueriedKeyGenerator {
 
   private final String valueSource;
 
-  AutomaticKeyGenerator(final String valueSource) {
+  AutomaticKeyGenerator(String valueSource) {
     this.valueSource = requireNonNull(valueSource, "valueSource");
   }
 
@@ -27,13 +27,13 @@ final class AutomaticKeyGenerator extends AbstractQueriedKeyGenerator {
   }
 
   @Override
-  public void afterInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
-                          final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
+  public void afterInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
+                          DatabaseConnection connection, Statement insertStatement) throws SQLException {
     selectAndPut(entity, primaryKeyProperties.get(0), connection);
   }
 
   @Override
-  protected String getQuery(final Database database) {
+  protected String getQuery(Database database) {
     return database.getAutoIncrementQuery(valueSource);
   }
 }

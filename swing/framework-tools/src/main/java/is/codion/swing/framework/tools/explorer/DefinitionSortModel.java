@@ -10,7 +10,7 @@ final class DefinitionSortModel extends AbstractTableSortModel<DefinitionRow, In
   DefinitionSortModel() {}
 
   @Override
-  public Class<?> getColumnClass(final Integer columnIdentifier) {
+  public Class<?> getColumnClass(Integer columnIdentifier) {
     switch (columnIdentifier) {
       case DefinitionTableModel.DOMAIN:
       case DefinitionTableModel.ENTITY:
@@ -21,7 +21,7 @@ final class DefinitionSortModel extends AbstractTableSortModel<DefinitionRow, In
   }
 
   @Override
-  protected Object getColumnValue(final DefinitionRow row, final Integer columnIdentifier) {
+  protected Object getColumnValue(DefinitionRow row, Integer columnIdentifier) {
     switch (columnIdentifier) {
       case DefinitionTableModel.DOMAIN:
         return row.domain.getDomainType().getName();

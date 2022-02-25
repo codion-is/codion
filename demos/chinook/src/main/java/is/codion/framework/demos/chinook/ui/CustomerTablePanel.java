@@ -26,7 +26,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CustomerTablePanel.class.getName());
 
-  public CustomerTablePanel(final SwingEntityTableModel tableModel) {
+  public CustomerTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
   }
 
@@ -56,7 +56,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
     return getTableModel().getConnectionProvider().getConnection().fillReport(Customer.REPORT, reportParameters);
   }
 
-  private void viewReport(final JasperPrint customerReport) {
+  private void viewReport(JasperPrint customerReport) {
     Dialogs.componentDialog(new JRViewer(customerReport))
             .owner(this)
             .modal(false)

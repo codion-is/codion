@@ -18,15 +18,15 @@ final class ConditionCombinationDeserializer {
 
   private final ConditionDeserializer conditionDeserializer;
 
-  ConditionCombinationDeserializer(final ConditionDeserializer conditionDeserializer) {
+  ConditionCombinationDeserializer(ConditionDeserializer conditionDeserializer) {
     this.conditionDeserializer = conditionDeserializer;
   }
 
-  Condition.Combination deserialize(final EntityDefinition definition, final JsonNode jsonNode) throws IOException {
+  Condition.Combination deserialize(EntityDefinition definition, JsonNode jsonNode) throws IOException {
     Conjunction conjunction = Conjunction.valueOf(jsonNode.get("conjunction").asText());
     JsonNode conditionsNode = jsonNode.get("conditions");
     Collection<Condition> conditions = new ArrayList<>(conditionsNode.size());
-    for (final JsonNode conditionNode : conditionsNode) {
+    for (JsonNode conditionNode : conditionsNode) {
       conditions.add(conditionDeserializer.deserialize(definition, conditionNode));
     }
 

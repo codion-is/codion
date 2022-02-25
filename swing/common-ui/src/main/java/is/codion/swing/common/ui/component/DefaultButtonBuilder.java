@@ -9,7 +9,7 @@ import javax.swing.JButton;
 final class DefaultButtonBuilder<B extends ButtonBuilder<Void, JButton, B>> extends AbstractButtonBuilder<Void, JButton, B>
         implements ButtonBuilder<Void, JButton, B> {
 
-  DefaultButtonBuilder(final Action action) {
+  DefaultButtonBuilder(Action action) {
     super(null);
     action(action);
   }
@@ -20,18 +20,18 @@ final class DefaultButtonBuilder<B extends ButtonBuilder<Void, JButton, B>> exte
   }
 
   @Override
-  protected ComponentValue<Void, JButton> buildComponentValue(final JButton component) {
+  protected ComponentValue<Void, JButton> buildComponentValue(JButton component) {
     return new AbstractComponentValue<Void, JButton>(component) {
       @Override
-      protected Void getComponentValue(final JButton component) {
+      protected Void getComponentValue(JButton component) {
         return null;
       }
 
       @Override
-      protected void setComponentValue(final JButton component, final Void value) {/*Not applicable*/}
+      protected void setComponentValue(JButton component, Void value) {/*Not applicable*/}
     };
   }
 
   @Override
-  protected void setInitialValue(final JButton component, final Void initialValue) {/*Not applicable*/}
+  protected void setInitialValue(JButton component, Void initialValue) {/*Not applicable*/}
 }

@@ -18,12 +18,12 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   private final Attribute<T> attribute;
 
-  DefaultAttributeConditionBuilder(final Attribute<T> attribute) {
+  DefaultAttributeConditionBuilder(Attribute<T> attribute) {
     this.attribute = requireNonNull(attribute, "attribute");
   }
 
   @Override
-  public AttributeCondition<T> equalTo(final T value) {
+  public AttributeCondition<T> equalTo(T value) {
     if (value == null) {
       return isNull();
     }
@@ -32,21 +32,21 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   }
 
   @Override
-  public AttributeCondition<T> equalTo(final T... values) {
+  public AttributeCondition<T> equalTo(T... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
     return equalTo(asList(values));
   }
 
   @Override
-  public AttributeCondition<T> equalTo(final Collection<? extends T> values) {
+  public AttributeCondition<T> equalTo(Collection<? extends T> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
     return new DefaultAttributeEqualCondition<>(attribute, values);
   }
 
   @Override
-  public AttributeCondition<T> notEqualTo(final T value) {
+  public AttributeCondition<T> notEqualTo(T value) {
     if (value == null) {
       return isNotNull();
     }
@@ -55,56 +55,56 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   }
 
   @Override
-  public AttributeCondition<T> notEqualTo(final T... values) {
+  public AttributeCondition<T> notEqualTo(T... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
     return notEqualTo(asList(values));
   }
 
   @Override
-  public AttributeCondition<T> notEqualTo(final Collection<? extends T> values) {
+  public AttributeCondition<T> notEqualTo(Collection<? extends T> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
     return new DefaultAttributeEqualCondition<>(attribute, values, true);
   }
 
   @Override
-  public AttributeCondition<T> lessThan(final T value) {
+  public AttributeCondition<T> lessThan(T value) {
     return new DefaultAttributeLessThanCondition<>(attribute, value, false);
   }
 
   @Override
-  public AttributeCondition<T> lessThanOrEqualTo(final T value) {
+  public AttributeCondition<T> lessThanOrEqualTo(T value) {
     return new DefaultAttributeLessThanCondition<>(attribute, value, true);
   }
 
   @Override
-  public AttributeCondition<T> greaterThan(final T value) {
+  public AttributeCondition<T> greaterThan(T value) {
     return new DefaultAttributeGreaterThanCondition<>(attribute, value, false);
   }
 
   @Override
-  public AttributeCondition<T> greaterThanOrEqualTo(final T value) {
+  public AttributeCondition<T> greaterThanOrEqualTo(T value) {
     return new DefaultAttributeGreaterThanCondition<>(attribute, value, true);
   }
 
   @Override
-  public AttributeCondition<T> betweenExclusive(final T lowerBound, final T upperBound) {
+  public AttributeCondition<T> betweenExclusive(T lowerBound, T upperBound) {
     return new DefaultAttributeBetweenCondition<>(attribute, lowerBound, upperBound, true);
   }
 
   @Override
-  public AttributeCondition<T> between(final T lowerBound, final T upperBound) {
+  public AttributeCondition<T> between(T lowerBound, T upperBound) {
     return new DefaultAttributeBetweenCondition<>(attribute, lowerBound, upperBound, false);
   }
 
   @Override
-  public AttributeCondition<T> notBetweenExclusive(final T lowerBound, final T upperBound) {
+  public AttributeCondition<T> notBetweenExclusive(T lowerBound, T upperBound) {
     return new DefaultAttributeNotBetweenCondition<>(attribute, lowerBound, upperBound, true);
   }
 
   @Override
-  public AttributeCondition<T> notBetween(final T lowerBound, final T upperBound) {
+  public AttributeCondition<T> notBetween(T lowerBound, T upperBound) {
     return new DefaultAttributeNotBetweenCondition<>(attribute, lowerBound, upperBound, false);
   }
 

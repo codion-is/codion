@@ -7,7 +7,7 @@ public final class Custom {
 
   public final String value;
 
-  Custom(final String value) {
+  Custom(String value) {
     this.value = value;
   }
 }

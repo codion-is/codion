@@ -24,11 +24,11 @@ public final class CustomEntityObjectMapperFactory extends DefaultEntityObjectMa
   }
 
   @Override
-  public EntityObjectMapper createEntityObjectMapper(final Entities entities) {
+  public EntityObjectMapper createEntityObjectMapper(Entities entities) {
     EntityObjectMapper mapper = EntityObjectMapper.createEntityObjectMapper(entities);
     mapper.addSerializer(Custom.class, new StdSerializer<Custom>(Custom.class) {
       @Override
-      public void serialize(final Custom value, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
+      public void serialize(Custom value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStartObject();
         gen.writeStringField("value", value.value);
         gen.writeEndObject();
@@ -36,7 +36,7 @@ public final class CustomEntityObjectMapperFactory extends DefaultEntityObjectMa
     });
     mapper.addDeserializer(Custom.class, new StdDeserializer<Custom>(Custom.class) {
       @Override
-      public Custom deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException,
+      public Custom deserialize(JsonParser p, DeserializationContext ctxt) throws IOException,
               JsonProcessingException {
         JsonNode node = p.getCodec().readTree(p);
 

@@ -21,7 +21,7 @@ public final class DoubleField extends NumberField<Double> {
    * Instantiates a new DecimalField
    * @param columns the number of columns
    */
-  public DoubleField(final int columns) {
+  public DoubleField(int columns) {
     this(createDefaultFormat(), columns);
   }
 
@@ -29,7 +29,7 @@ public final class DoubleField extends NumberField<Double> {
    * Instantiates a new DecimalField
    * @param format the format to use
    */
-  public DoubleField(final DecimalFormat format) {
+  public DoubleField(DecimalFormat format) {
     this(format, 0);
   }
 
@@ -38,7 +38,7 @@ public final class DoubleField extends NumberField<Double> {
    * @param format the format to use
    * @param columns the number of columns
    */
-  public DoubleField(final DecimalFormat format, final int columns) {
+  public DoubleField(DecimalFormat format, int columns) {
     super(new DecimalDocument<>(format, false), columns);
   }
 
@@ -52,7 +52,7 @@ public final class DoubleField extends NumberField<Double> {
   /**
    * @param maximumFractionDigits the maximum number of fraction digits this field shows
    */
-  public void setMaximumFractionDigits(final int maximumFractionDigits) {
+  public void setMaximumFractionDigits(int maximumFractionDigits) {
     ((DecimalDocument<Double>) getTypedDocument()).setMaximumFractionDigits(maximumFractionDigits);
   }
 
@@ -66,7 +66,7 @@ public final class DoubleField extends NumberField<Double> {
   /**
    * @param value the value to set
    */
-  public void setDouble(final Double value) {
+  public void setDouble(Double value) {
     getTypedDocument().setNumber(value);
   }
 

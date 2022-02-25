@@ -18,7 +18,7 @@ public final class NextReports {
    * @param format the format
    * @return a report wrapper
    */
-  public static NextReport nextReport(final String reportPath, final String format) {
+  public static NextReport nextReport(String reportPath, String format) {
     return new DefaultNextReport(reportPath, format);
   }
 }

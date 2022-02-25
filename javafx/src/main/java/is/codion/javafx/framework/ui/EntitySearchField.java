@@ -38,7 +38,7 @@ public final class EntitySearchField extends TextField {
    * Instantiates a new {@link EntitySearchField} based on the given model
    * @param model the {@link EntitySearchModel} model to base this search field on
    */
-  public EntitySearchField(final EntitySearchModel model) {
+  public EntitySearchField(EntitySearchModel model) {
     this.model = model;
     linkToModel();
     setInvalidBackgroundColor(Color.DARKGRAY);
@@ -59,18 +59,18 @@ public final class EntitySearchField extends TextField {
   /**
    * @param validBackgroundColor the background color to display when the text fits the selected value
    */
-  public void setValidBackgroundColor(final Color validBackgroundColor) {
+  public void setValidBackgroundColor(Color validBackgroundColor) {
     this.validBackgroundColor = validBackgroundColor;
   }
 
   /**
    * @param invalidBackgroundColor the background color to display when the text does not fit the selected value
    */
-  public void setInvalidBackgroundColor(final Color invalidBackgroundColor) {
+  public void setInvalidBackgroundColor(Color invalidBackgroundColor) {
     this.invalidBackgroundColor = invalidBackgroundColor;
   }
 
-  private void performSearch(final boolean promptUser) {
+  private void performSearch(boolean promptUser) {
     try {
       performingSearch = true;
       if (nullOrEmpty(model.getSearchString())) {
@@ -102,7 +102,7 @@ public final class EntitySearchField extends TextField {
     PropertyValues.stringPropertyValue(textProperty()).link(model.getSearchStringValue());
   }
 
-  private void selectEntities(final List<Entity> queryResult) {
+  private void selectEntities(List<Entity> queryResult) {
     FXUiUtil.SingleSelection singleSelection;
     if (model.getMultipleSelectionEnabledValue().get()) {
       singleSelection = FXUiUtil.SingleSelection.NO;
@@ -119,7 +119,7 @@ public final class EntitySearchField extends TextField {
 //    setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
   }
 
-  private void onFocusChanged(final Boolean hasFocus) {
+  private void onFocusChanged(Boolean hasFocus) {
     if (!hasFocus) {
       if (getText().isEmpty()) {
         getModel().setSelectedEntity(null);
@@ -139,7 +139,7 @@ public final class EntitySearchField extends TextField {
   private class SearchKeyHandler implements EventHandler<KeyEvent> {
 
     @Override
-    public void handle(final KeyEvent event) {
+    public void handle(KeyEvent event) {
       switch (event.getCode()) {
         case ESCAPE:
           onEscape();

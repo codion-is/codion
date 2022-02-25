@@ -64,7 +64,7 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
   }
 
   @Override
-  protected ChinookFXAppModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
+  protected ChinookFXAppModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {
     return new ChinookFXAppModel(connectionProvider);
   }
 
@@ -73,7 +73,7 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
     return User.parseUser("scott:tiger");
   }
 
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.chinook.domain.impl.ChinookImpl");
     launch(args);
   }

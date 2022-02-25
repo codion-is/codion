@@ -25,16 +25,16 @@ final class AttributeConditionDeserializer implements Serializable {
 
   private final EntityObjectMapper entityObjectMapper;
 
-  AttributeConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
+  AttributeConditionDeserializer(EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  <T> AttributeCondition<T> deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
+  <T> AttributeCondition<T> deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     String attributeName = conditionNode.get("attribute").asText();
     Property<T> property = definition.getProperty(definition.getAttribute(attributeName));
     JsonNode valuesNode = conditionNode.get("values");
     List<T> values = new ArrayList<>();
-    for (final JsonNode valueNode : valuesNode) {
+    for (JsonNode valueNode : valuesNode) {
       if (valueNode.has("entityType")) {
         values.add((T) entityObjectMapper.readValue(valueNode.toString(), Entity.class));
       }

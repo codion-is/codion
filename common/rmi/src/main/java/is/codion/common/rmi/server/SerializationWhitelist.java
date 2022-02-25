@@ -42,7 +42,7 @@ public final class SerializationWhitelist {
    * Supports 'classpath:' prefix for a whitelist in the classpath root.
    * @param whitelistFile the path to the file containing the whitelisted class names
    */
-  public static void configure(final String whitelistFile) {
+  public static void configure(String whitelistFile) {
     if (!nullOrEmpty(whitelistFile)) {
       sun.misc.ObjectInputFilter.Config.setSerialFilter(new SerializationFilter(whitelistFile));
       LOG.info("Serialization filter whitelist set: " + whitelistFile);
@@ -55,7 +55,7 @@ public final class SerializationWhitelist {
    * @param dryRunFile the dry-run results file to write to, appended to if it exists
    * @throws IllegalArgumentException in case of a classpath dry run file
    */
-  public static void configureDryRun(final String dryRunFile) {
+  public static void configureDryRun(String dryRunFile) {
     if (!nullOrEmpty(dryRunFile)) {
       sun.misc.ObjectInputFilter.Config.setSerialFilter(new SerializationFilterDryRun(dryRunFile));
       LOG.info("Serialization filter whitelist set for dry-run: " + dryRunFile);
@@ -86,7 +86,7 @@ public final class SerializationWhitelist {
     private final String whitelistFile;
     private final Set<Class<?>> deserializedClasses = new HashSet<>();
 
-    private SerializationFilterDryRun(final String whitelistFile) {
+    private SerializationFilterDryRun(String whitelistFile) {
       if (requireNonNull(whitelistFile).toLowerCase().startsWith(CLASSPATH_PREFIX)) {
         throw new IllegalArgumentException("Filter dry run can not be performed with a classpath whitelist: " + whitelistFile);
       }
@@ -94,7 +94,7 @@ public final class SerializationWhitelist {
     }
 
     @Override
-    public Status checkInput(final FilterInfo filterInfo) {
+    public Status checkInput(FilterInfo filterInfo) {
       Class<?> clazz = filterInfo.serialClass();
       if (clazz != null) {
         deserializedClasses.add(clazz);
@@ -127,16 +127,16 @@ public final class SerializationWhitelist {
     private final Set<String> allowedClassnames = new HashSet<>();
     private final List<String> allowedWildcardClassnames = new ArrayList<>();
 
-    SerializationFilter(final String whitelistFile) {
+    SerializationFilter(String whitelistFile) {
       this(getWhitelistItems(whitelistFile));
     }
 
-    SerializationFilter(final Collection<String> whitelistItems) {
+    SerializationFilter(Collection<String> whitelistItems) {
       addWhitelistItems(whitelistItems);
     }
 
     @Override
-    public Status checkInput(final FilterInfo filterInfo) {
+    public Status checkInput(FilterInfo filterInfo) {
       Class<?> clazz = filterInfo.serialClass();
       if (clazz == null) {
         return Status.ALLOWED;
@@ -145,7 +145,7 @@ public final class SerializationWhitelist {
       return checkInput(clazz.getName());
     }
 
-    Status checkInput(final String classname) {
+    Status checkInput(String classname) {
       if (allowedClassnames.contains(classname) || allowWildcard(classname)) {
         return Status.ALLOWED;
       }
@@ -154,7 +154,7 @@ public final class SerializationWhitelist {
       return Status.REJECTED;
     }
 
-    private void addWhitelistItems(final Collection<String> whitelistItems) {
+    private void addWhitelistItems(Collection<String> whitelistItems) {
       requireNonNull(whitelistItems).forEach(whitelistItem -> {
         if (!whitelistItem.startsWith(COMMENT)) {
           if (whitelistItem.endsWith(WILDCARD)) {
@@ -167,7 +167,7 @@ public final class SerializationWhitelist {
       });
     }
 
-    private boolean allowWildcard(final String classname) {
+    private boolean allowWildcard(String classname) {
       if (allowedWildcardClassnames.isEmpty()) {
         return false;
       }
@@ -181,7 +181,7 @@ public final class SerializationWhitelist {
       return false;
     }
 
-    private static Collection<String> getWhitelistItems(final String whitelistFile) {
+    private static Collection<String> getWhitelistItems(String whitelistFile) {
       if (requireNonNull(whitelistFile).startsWith(CLASSPATH_PREFIX)) {
         return getClasspathWhitelistItems(whitelistFile);
       }
@@ -189,9 +189,9 @@ public final class SerializationWhitelist {
       return getFileWhitelistItems(whitelistFile);
     }
 
-    private static Collection<String> getClasspathWhitelistItems(final String whitelistFile) {
+    private static Collection<String> getClasspathWhitelistItems(String whitelistFile) {
       String path = getClasspathFilepath(whitelistFile);
-      try (final InputStream whitelistFileStream = SerializationWhitelist.class.getClassLoader().getResourceAsStream(path)) {
+      try (InputStream whitelistFileStream = SerializationWhitelist.class.getClassLoader().getResourceAsStream(path)) {
         if (whitelistFileStream == null) {
           throw new RuntimeException("Whitelist file not found on classpath: " + path);
         }
@@ -204,8 +204,8 @@ public final class SerializationWhitelist {
       }
     }
 
-    private static Collection<String> getFileWhitelistItems(final String whitelistFile) {
-      try (final Stream<String> stream = Files.lines(Paths.get(whitelistFile))) {
+    private static Collection<String> getFileWhitelistItems(String whitelistFile) {
+      try (Stream<String> stream = Files.lines(Paths.get(whitelistFile))) {
         return stream.collect(toSet());
       }
       catch (IOException e) {
@@ -214,7 +214,7 @@ public final class SerializationWhitelist {
       }
     }
 
-    private static String getClasspathFilepath(final String whitelistFile) {
+    private static String getClasspathFilepath(String whitelistFile) {
       String path = whitelistFile.substring(CLASSPATH_PREFIX.length());
       if (path.startsWith("/")) {
         path = path.substring(1);

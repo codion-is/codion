@@ -260,7 +260,7 @@ public final class ApplicationPanel extends JPanel {
     private final List<String> swearWords = asList("fuck", "shit");
 
     @Override
-    public void validate(final String value) throws IllegalArgumentException {
+    public void validate(String value) throws IllegalArgumentException {
       if (value != null) {
         String lowerCaseValue = value.toLowerCase();
         swearWords.forEach(swearWord -> {
@@ -320,7 +320,7 @@ public final class ApplicationPanel extends JPanel {
     return new DefaultComboBoxModel<>(new Integer[] {101, 202, 303, 404});
   }
 
-  private static Control createSelectRandomItemControl(final ItemComboBoxModel<Integer> integerItemComboBoxModel) {
+  private static Control createSelectRandomItemControl(ItemComboBoxModel<Integer> integerItemComboBoxModel) {
     Random random = new Random();
     return Control.builder(() ->
                     integerItemComboBoxModel.setSelectedItem(random.nextInt(integerItemComboBoxModel.getSize()) + 1))

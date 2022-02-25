@@ -10,7 +10,7 @@ final class MenuControlHandler extends ControlHandler {
 
   private final JMenu menu;
 
-  MenuControlHandler(final JMenu menu, final Controls controls) {
+  MenuControlHandler(JMenu menu, Controls controls) {
     this.menu = menu;
     controls.getActions().forEach(this);
   }
@@ -21,7 +21,7 @@ final class MenuControlHandler extends ControlHandler {
   }
 
   @Override
-  public void onControl(final Control control) {
+  public void onControl(Control control) {
     if (control instanceof ToggleControl) {
       menu.add(((ToggleControl) control).createCheckBoxMenuItem());
     }
@@ -31,14 +31,14 @@ final class MenuControlHandler extends ControlHandler {
   }
 
   @Override
-  public void onControls(final Controls controls) {
+  public void onControls(Controls controls) {
     JMenu subMenu = new JMenu(controls);
     new MenuControlHandler(subMenu, controls);
     this.menu.add(subMenu);
   }
 
   @Override
-  public void onAction(final Action action) {
+  public void onAction(Action action) {
     menu.add(action);
   }
 }

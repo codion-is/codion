@@ -13,9 +13,9 @@ public final class ForeignKeyColumn {
   private final String fkColumnName;
   private final int keySeq;
 
-  ForeignKeyColumn(final String pkSchemaName, final String pkTableName, final String pkColumnName,
-                   final String fkTableName, final String fkSchemaName, final String fkColumnName,
-                   final int keySeq) {
+  ForeignKeyColumn(String pkSchemaName, String pkTableName, String pkColumnName,
+                   String fkTableName, String fkSchemaName, String fkColumnName,
+                   int keySeq) {
     this.pkSchemaName = pkSchemaName;
     this.pkTableName = pkTableName;
     this.pkColumnName = pkColumnName;

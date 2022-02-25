@@ -17,7 +17,7 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
    * @param caption the caption of this property
    * @param subquery the sql query
    */
-  DefaultSubqueryProperty(final Attribute<T> attribute, final String caption, final String subquery) {
+  DefaultSubqueryProperty(Attribute<T> attribute, String caption, String subquery) {
     super(attribute, caption);
     this.subquery = subquery;
   }
@@ -37,7 +37,7 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
 
     private final DefaultSubqueryProperty<T> subqueryProperty;
 
-    private DefaultSubqueryPropertyBuilder(final DefaultSubqueryProperty<T> subqueryProperty) {
+    private DefaultSubqueryPropertyBuilder(DefaultSubqueryProperty<T> subqueryProperty) {
       super(subqueryProperty);
       this.subqueryProperty = subqueryProperty;
       super.readOnly(true);
@@ -54,17 +54,17 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
     }
 
     @Override
-    public B readOnly(final boolean readOnly) {
+    public B readOnly(boolean readOnly) {
       throw new UnsupportedOperationException("Subquery properties are read only by default: " + subqueryProperty.getAttribute());
     }
 
     @Override
-    public B insertable(final boolean insertable) {
+    public B insertable(boolean insertable) {
       throw new UnsupportedOperationException("Subquery properties are never insertable: " + subqueryProperty.getAttribute());
     }
 
     @Override
-    public B updatable(final boolean updatable) {
+    public B updatable(boolean updatable) {
       throw new UnsupportedOperationException("Subquery properties are never updatable: " + subqueryProperty.getAttribute());
     }
   }

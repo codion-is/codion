@@ -32,7 +32,7 @@ public interface Logos {
     return imageIcon("codion-logo-rounded-red-48x48.png");
   }
 
-  static ImageIcon imageIcon(final String resourceName) {
+  static ImageIcon imageIcon(String resourceName) {
     return new ImageIcon(Toolkit.getDefaultToolkit().getImage(Logos.class.getResource(resourceName)));
   }
 }

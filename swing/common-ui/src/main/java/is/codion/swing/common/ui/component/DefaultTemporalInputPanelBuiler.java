@@ -31,32 +31,32 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   private boolean selectAllOnFocusGained;
   private CalendarProvider calendarProvider = calendarProvider();
 
-  DefaultTemporalInputPanelBuiler(final Class<T> valueClass, final String dateTimePattern, final Value<T> linkedValue) {
+  DefaultTemporalInputPanelBuiler(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
     super(linkedValue);
     this.valueClass = requireNonNull(valueClass);
     this.dateTimePattern = requireNonNull(dateTimePattern);
   }
 
   @Override
-  public TemporalInputPanelBuilder<T> selectAllOnFocusGained(final boolean selectAllOnFocusGained) {
+  public TemporalInputPanelBuilder<T> selectAllOnFocusGained(boolean selectAllOnFocusGained) {
     this.selectAllOnFocusGained = selectAllOnFocusGained;
     return this;
   }
 
   @Override
-  public TemporalInputPanelBuilder<T> columns(final int columns) {
+  public TemporalInputPanelBuilder<T> columns(int columns) {
     this.columns = columns;
     return this;
   }
 
   @Override
-  public TemporalInputPanelBuilder<T> updateOn(final UpdateOn updateOn) {
+  public TemporalInputPanelBuilder<T> updateOn(UpdateOn updateOn) {
     this.updateOn = requireNonNull(updateOn);
     return this;
   }
 
   @Override
-  public TemporalInputPanelBuilder<T> calendarProvider(final CalendarProvider calendarProvider) {
+  public TemporalInputPanelBuilder<T> calendarProvider(CalendarProvider calendarProvider) {
     this.calendarProvider = requireNonNull(calendarProvider);
     return this;
   }
@@ -67,17 +67,17 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   }
 
   @Override
-  protected ComponentValue<T, TemporalInputPanel<T>> buildComponentValue(final TemporalInputPanel<T> component) {
+  protected ComponentValue<T, TemporalInputPanel<T>> buildComponentValue(TemporalInputPanel<T> component) {
     return component.componentValue();
   }
 
   @Override
-  protected void setTransferFocusOnEnter(final TemporalInputPanel<T> component) {
+  protected void setTransferFocusOnEnter(TemporalInputPanel<T> component) {
     component.setTransferFocusOnEnter(true);
   }
 
   @Override
-  protected void setInitialValue(final TemporalInputPanel<T> component, final T initialValue) {
+  protected void setInitialValue(TemporalInputPanel<T> component, T initialValue) {
     component.setTemporal(initialValue);
   }
 
@@ -117,8 +117,8 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   private static CalendarProvider calendarProvider() {
     return new CalendarProvider() {
       @Override
-      public <T extends Temporal> Optional<T> getTemporal(final Class<T> temporalClass, final JComponent dialogOwner,
-                                                          final T initialValue) {
+      public <T extends Temporal> Optional<T> getTemporal(Class<T> temporalClass, JComponent dialogOwner,
+                                                          T initialValue) {
         if (LocalDate.class.equals(temporalClass)) {
           return (Optional<T>) CalendarPanel.getLocalDate(dialogOwner, (LocalDate) initialValue);
         }
@@ -130,7 +130,7 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
       }
 
       @Override
-      public <T extends Temporal> boolean supports(final Class<T> temporalClass) {
+      public <T extends Temporal> boolean supports(Class<T> temporalClass) {
         return LocalDate.class.equals(temporalClass) || LocalDateTime.class.equals(temporalClass);
       }
     };

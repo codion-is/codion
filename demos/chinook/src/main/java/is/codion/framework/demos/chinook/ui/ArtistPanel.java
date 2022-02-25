@@ -10,7 +10,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 
 public final class ArtistPanel extends EntityPanel {
 
-  public ArtistPanel(final SwingEntityModel artistModel) {
+  public ArtistPanel(SwingEntityModel artistModel) {
     super(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
     setDetailSplitPanelResizeWeight(0.25);
 

@@ -12,12 +12,12 @@ final class DefaultRadioButtonBuilder extends AbstractToggleButtonBuilder<JRadio
 
   private int horizontalAlignment = SwingConstants.LEADING;
 
-  DefaultRadioButtonBuilder(final Value<Boolean> value) {
+  DefaultRadioButtonBuilder(Value<Boolean> value) {
     super(value);
   }
 
   @Override
-  public RadioButtonBuilder horizontalAlignment(final int horizontalAlignment) {
+  public RadioButtonBuilder horizontalAlignment(int horizontalAlignment) {
     this.horizontalAlignment = horizontalAlignment;
     return this;
   }

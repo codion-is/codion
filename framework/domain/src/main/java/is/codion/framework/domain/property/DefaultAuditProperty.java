@@ -11,7 +11,7 @@ class DefaultAuditProperty<T> extends DefaultColumnProperty<T> implements AuditP
 
   private final AuditAction auditAction;
 
-  DefaultAuditProperty(final Attribute<T> attribute, final AuditAction auditAction, final String caption) {
+  DefaultAuditProperty(Attribute<T> attribute, AuditAction auditAction, String caption) {
     super(attribute, caption);
     this.auditAction = auditAction;
   }

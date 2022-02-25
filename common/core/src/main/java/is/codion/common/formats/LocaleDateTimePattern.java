@@ -74,10 +74,10 @@ public interface LocaleDateTimePattern {
    * @param dateTimePattern the format pattern for which to create the mask
    * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
    */
-  static String getMask(final String dateTimePattern) {
+  static String getMask(String dateTimePattern) {
     requireNonNull(dateTimePattern, "dateTimePattern");
     StringBuilder stringBuilder = new StringBuilder(dateTimePattern.length());
-    for (final Character character : dateTimePattern.toCharArray()) {
+    for (Character character : dateTimePattern.toCharArray()) {
       stringBuilder.append(Character.isLetter(character) ? "#" : character);
     }
 

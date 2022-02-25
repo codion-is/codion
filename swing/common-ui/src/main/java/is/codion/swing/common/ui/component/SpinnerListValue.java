@@ -8,7 +8,7 @@ import javax.swing.SpinnerListModel;
 
 final class SpinnerListValue<T> extends AbstractComponentValue<T, JSpinner> {
 
-  SpinnerListValue(final JSpinner spinner) {
+  SpinnerListValue(JSpinner spinner) {
     super(spinner);
     if (!(spinner.getModel() instanceof SpinnerListModel)) {
       throw new IllegalArgumentException("Spinner model must be a SpinnerListModel");
@@ -17,12 +17,12 @@ final class SpinnerListValue<T> extends AbstractComponentValue<T, JSpinner> {
   }
 
   @Override
-  protected T getComponentValue(final JSpinner component) {
+  protected T getComponentValue(JSpinner component) {
     return (T) component.getValue();
   }
 
   @Override
-  protected void setComponentValue(final JSpinner component, final T value) {
+  protected void setComponentValue(JSpinner component, T value) {
     component.setValue(value == null ? ((SpinnerListModel) component.getModel()).getList().get(0) : value);
   }
 }

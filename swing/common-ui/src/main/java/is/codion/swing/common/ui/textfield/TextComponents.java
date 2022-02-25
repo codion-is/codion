@@ -46,7 +46,7 @@ public final class TextComponents {
    * @param document the document
    * @param maximumLength the maximum string length
    */
-  public static void maximumLength(final Document document, final int maximumLength) {
+  public static void maximumLength(Document document, int maximumLength) {
     requireNonNull(document);
     if (document instanceof SizedDocument) {
       ((SizedDocument) document).setMaximumLength(maximumLength);
@@ -79,7 +79,7 @@ public final class TextComponents {
    * supports {@link SizedDocument} and {@link AbstractDocument}
    * @param document the document
    */
-  public static void upperCase(final Document document) {
+  public static void upperCase(Document document) {
     documentCase(document, DocumentCase.UPPERCASE);
   }
 
@@ -88,7 +88,7 @@ public final class TextComponents {
    * supports {@link SizedDocument} and {@link AbstractDocument}
    * @param document the document
    */
-  public static void lowerCase(final Document document) {
+  public static void lowerCase(Document document) {
     documentCase(document, DocumentCase.LOWERCASE);
   }
 
@@ -99,7 +99,7 @@ public final class TextComponents {
    * @param <T> the component type
    * @return the component
    */
-  public static <T extends JTextComponent> T selectAllOnFocusGained(final T textComponent) {
+  public static <T extends JTextComponent> T selectAllOnFocusGained(T textComponent) {
     requireNonNull(textComponent, TEXT_COMPONENT);
     textComponent.addFocusListener(new SelectAllListener(textComponent));
 
@@ -113,9 +113,9 @@ public final class TextComponents {
    * @return the text component
    * @see #selectAllOnFocusGained(JTextComponent)
    */
-  public static <T extends JTextComponent> T selectNoneOnFocusGained(final T textComponent) {
+  public static <T extends JTextComponent> T selectNoneOnFocusGained(T textComponent) {
     requireNonNull(textComponent, TEXT_COMPONENT);
-    for (final FocusListener listener : textComponent.getFocusListeners()) {
+    for (FocusListener listener : textComponent.getFocusListeners()) {
       if (listener instanceof SelectAllListener) {
         textComponent.removeFocusListener(listener);
       }
@@ -130,11 +130,11 @@ public final class TextComponents {
    * @param <T> the component type
    * @return the component
    */
-  public static <T extends JTextComponent> T moveCaretToStartOnFocusGained(final T textComponent) {
+  public static <T extends JTextComponent> T moveCaretToStartOnFocusGained(T textComponent) {
     requireNonNull(textComponent, TEXT_COMPONENT);
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
-      public void focusGained(final FocusEvent e) {
+      public void focusGained(FocusEvent e) {
         textComponent.setCaretPosition(0);
       }
     });
@@ -148,11 +148,11 @@ public final class TextComponents {
    * @param <T> the component type
    * @return the component
    */
-  public static <T extends JTextComponent> T moveCaretToEndOnFocusGained(final T textComponent) {
+  public static <T extends JTextComponent> T moveCaretToEndOnFocusGained(T textComponent) {
     requireNonNull(textComponent, TEXT_COMPONENT);
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
-      public void focusGained(final FocusEvent e) {
+      public void focusGained(FocusEvent e) {
         textComponent.setCaretPosition(textComponent.getText().length());
       }
     });
@@ -185,13 +185,13 @@ public final class TextComponents {
    * @param <C> the component type
    * @return a text component value
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> formattedTextComponentValue(final C textComponent,
-                                                                                                 final Format format,
-                                                                                                 final UpdateOn updateOn) {
+  public static <C extends JTextComponent> ComponentValue<String, C> formattedTextComponentValue(C textComponent,
+                                                                                                 Format format,
+                                                                                                 UpdateOn updateOn) {
     return new FormattedTextComponentValue<>(textComponent, format, updateOn);
   }
 
-  private static void documentCase(final Document document, final DocumentCase documentCase) {
+  private static void documentCase(Document document, DocumentCase documentCase) {
     requireNonNull(document);
     if (document instanceof SizedDocument) {
       ((SizedDocument) document).getDocumentFilter().setDocumentCase(documentCase);
@@ -213,17 +213,17 @@ public final class TextComponents {
 
     private final JTextComponent textComponent;
 
-    private SelectAllListener(final JTextComponent textComponent) {
+    private SelectAllListener(JTextComponent textComponent) {
       this.textComponent = textComponent;
     }
 
     @Override
-    public void focusGained(final FocusEvent e) {
+    public void focusGained(FocusEvent e) {
       textComponent.selectAll();
     }
 
     @Override
-    public void focusLost(final FocusEvent e) {
+    public void focusLost(FocusEvent e) {
       textComponent.select(0, 0);
     }
   }

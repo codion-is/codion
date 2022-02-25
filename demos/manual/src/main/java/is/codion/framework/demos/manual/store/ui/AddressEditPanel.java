@@ -12,7 +12,7 @@ import java.awt.GridLayout;
 // tag::addressEditPanel[]
 public class AddressEditPanel extends EntityEditPanel {
 
-  public AddressEditPanel(final SwingEntityEditModel editModel) {
+  public AddressEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

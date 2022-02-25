@@ -25,12 +25,12 @@ public class SwingTableSelectionModelTest {
     column.setIdentifier(0);
     AbstractTableSortModel<String, Integer> sortModel = new AbstractTableSortModel<String, Integer>() {
       @Override
-      public Class<String> getColumnClass(final Integer columnIdentifier) {
+      public Class<String> getColumnClass(Integer columnIdentifier) {
         return String.class;
       }
 
       @Override
-      protected Object getColumnValue(final String row, final Integer columnIdentifier) {
+      protected Object getColumnValue(String row, Integer columnIdentifier) {
         return row;
       }
     };
@@ -42,7 +42,7 @@ public class SwingTableSelectionModelTest {
       }
 
       @Override
-      public Object getValueAt(final int rowIndex, final int columnIndex) {
+      public Object getValueAt(int rowIndex, int columnIndex) {
         return data.get(rowIndex);
       }
 

@@ -32,7 +32,7 @@ public final class ClientMonitor {
    * @param user the user to monitor
    * @throws RemoteException in case of an exception
    */
-  public ClientMonitor(final EntityServerAdmin server, final String clientTypeId, final User user) throws RemoteException {
+  public ClientMonitor(EntityServerAdmin server, String clientTypeId, User user) throws RemoteException {
     this.server = server;
     this.clientTypeId = clientTypeId;
     this.user = user;
@@ -47,7 +47,7 @@ public final class ClientMonitor {
     clientInstanceListModel.clear();
     List<RemoteClient> clients = new ArrayList<>(clientTypeId == null ? server.getClients(user) : server.getClients(clientTypeId));
     clients.sort(CLIENT_INFO_COMPARATOR);
-    for (final RemoteClient client : clients) {
+    for (RemoteClient client : clients) {
       clientInstanceListModel.addElement(client);
     }
   }

@@ -24,37 +24,37 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   private final Random random = new Random();
 
   @Override
-  public void addItem(final T item, final int weight) {
+  public void addItem(T item, int weight) {
     items.add(new DefaultRandomItem<>(item, weight));
   }
 
   @Override
-  public void incrementWeight(final T item) {
+  public void incrementWeight(T item) {
     getRandomItem(item).incrementWeight();
   }
 
   @Override
-  public void decrementWeight(final T item) {
+  public void decrementWeight(T item) {
     getRandomItem(item).decrementWeight();
   }
 
   @Override
-  public void setWeight(final T item, final int weight) {
+  public void setWeight(T item, int weight) {
     getRandomItem(item).setWeight(weight);
   }
 
   @Override
-  public final boolean isItemEnabled(final T item) {
+  public final boolean isItemEnabled(T item) {
     return getRandomItem(item).isEnabled();
   }
 
   @Override
-  public final void setItemEnabled(final T item, final boolean enabled) {
+  public final void setItemEnabled(T item, boolean enabled) {
     getRandomItem(item).setEnabled(enabled);
   }
 
   @Override
-  public final void addItem(final T item) {
+  public final void addItem(T item) {
     addItem(item, 0);
   }
 
@@ -77,7 +77,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
     int randomNumber = random.nextInt(totalWeights + 1);
     int position = 0;
-    for (final ItemRandomizer.RandomItem<T> item : items) {
+    for (ItemRandomizer.RandomItem<T> item : items) {
       position += item.getWeight();
       if (randomNumber <= position && item.getWeight() > 0) {
         return item.getItem();
@@ -88,7 +88,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   @Override
-  public final double getWeightRatio(final T item) {
+  public final double getWeightRatio(T item) {
     int totalWeights = getTotalWeights();
     if (totalWeights == 0) {
       return 0;
@@ -98,7 +98,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   @Override
-  public final int getWeight(final T item) {
+  public final int getWeight(T item) {
     return getRandomItem(item).getWeight();
   }
 
@@ -108,8 +108,8 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
    * @return the RandomItem
    * @throws RuntimeException in case the item is not found
    */
-  protected final ItemRandomizer.RandomItem<T> getRandomItem(final T item) {
-    for (final ItemRandomizer.RandomItem<T> randomItem : items) {
+  protected final ItemRandomizer.RandomItem<T> getRandomItem(T item) {
+    for (ItemRandomizer.RandomItem<T> randomItem : items) {
       if (randomItem.getItem().equals(item)) {
         return randomItem;
       }
@@ -140,7 +140,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
      * @param item the item
      * @param weight the random selection weight to assign to this item
      */
-    private DefaultRandomItem(final T item, final int weight) {
+    private DefaultRandomItem(T item, int weight) {
       if (weight < 0) {
         throw new IllegalArgumentException(WEIGHT_CAN_NOT_BE_NEGATIVE);
       }
@@ -159,7 +159,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     }
 
     @Override
-    public void setEnabled(final boolean enabled) {
+    public void setEnabled(boolean enabled) {
       this.enabled = enabled;
     }
 
@@ -174,7 +174,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
       return obj instanceof ItemRandomizer.RandomItem && (((ItemRandomizer.RandomItem<T>) obj).getItem().equals(item));
     }
 
@@ -198,7 +198,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     }
 
     @Override
-    public void setWeight(final int weight) {
+    public void setWeight(int weight) {
       if (weight < 0) {
         throw new IllegalArgumentException(WEIGHT_CAN_NOT_BE_NEGATIVE);
       }

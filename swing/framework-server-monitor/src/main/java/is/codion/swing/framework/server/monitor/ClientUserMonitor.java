@@ -68,7 +68,7 @@ public final class ClientUserMonitor {
    * @param updateRate the initial statistics update rate in seconds
    * @throws RemoteException in case of a communication error
    */
-  public ClientUserMonitor(final EntityServerAdmin server, final int updateRate) throws RemoteException {
+  public ClientUserMonitor(EntityServerAdmin server, int updateRate) throws RemoteException {
     this.server = server;
     this.connectionTimeoutValue = Value.value(server.getConnectionTimeout() / THOUSAND);
     this.connectionTimeoutValue.addValidator(value -> {
@@ -119,11 +119,11 @@ public final class ClientUserMonitor {
    */
   public void refresh() throws RemoteException {
     clientTypeListModel.clear();
-    for (final String clientType : getSortedClientTypes()) {
+    for (String clientType : getSortedClientTypes()) {
       clientTypeListModel.addElement(new ClientMonitor(server, clientType, null));
     }
     userListModel.clear();
-    for (final User user : getSortedUsers()) {
+    for (User user : getSortedUsers()) {
       userListModel.addElement(new ClientMonitor(server, null, user));
     }
     connectionTimeoutValue.set(server.getConnectionTimeout() / THOUSAND);
@@ -152,7 +152,7 @@ public final class ClientUserMonitor {
    * @param interval the maintenance interval in seconds
    * @throws RemoteException in case of an exception
    */
-  public void setMaintenanceInterval(final int interval) throws RemoteException {
+  public void setMaintenanceInterval(int interval) throws RemoteException {
     server.setMaintenanceInterval(interval * THOUSAND);
   }
 
@@ -203,7 +203,7 @@ public final class ClientUserMonitor {
    * Sets the server connection timeout
    * @param timeout the timeout in seconds
    */
-  private void setConnectionTimeout(final int timeout) {
+  private void setConnectionTimeout(int timeout) {
     try {
       server.setConnectionTimeout(timeout * THOUSAND);
     }
@@ -236,12 +236,12 @@ public final class ClientUserMonitor {
             createColumn(CONNECTION_COUNT_COLUMN, "Connections"));
   }
 
-  private static TableColumn createColumn(final Integer identifier, final String headerValue) {
+  private static TableColumn createColumn(Integer identifier, String headerValue) {
     return createColumn(identifier, headerValue, null);
   }
 
-  private static TableColumn createColumn(final Integer identifier, final String headerValue,
-                                          final TableCellRenderer cellRenderer) {
+  private static TableColumn createColumn(Integer identifier, String headerValue,
+                                          TableCellRenderer cellRenderer) {
     TableColumn column = new TableColumn(identifier);
     column.setIdentifier(identifier);
     column.setHeaderValue(headerValue);
@@ -263,7 +263,7 @@ public final class ClientUserMonitor {
     protected Collection<UserInfo> refreshItems() {
       try {
         List<UserInfo> items = new ArrayList<>(getItems());
-        for (final RemoteClient remoteClient : server.getClients()) {
+        for (RemoteClient remoteClient : server.getClients()) {
           UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeId(),
                   remoteClient.getClientHost(), LocalDateTime.now(), remoteClient.getClientId(), remoteClient.getClientVersion(),
                   remoteClient.getFrameworkVersion());
@@ -289,7 +289,7 @@ public final class ClientUserMonitor {
     }
 
     @Override
-    public Object getValueAt(final int row, final int column) {
+    public Object getValueAt(int row, int column) {
       UserInfo userInfo = getItemAt(row);
       switch (column) {
         case USERNAME_COLUMN: return userInfo.getUser().getUsername();
@@ -315,8 +315,8 @@ public final class ClientUserMonitor {
     private UUID clientId;
     private int connectionCount = 1;
 
-    private UserInfo(final User user, final String clientTypeId, final String clientHost, final LocalDateTime lastSeen,
-                     final UUID clientId, final Version clientVersion, final Version frameworkVersion) {
+    private UserInfo(User user, String clientTypeId, String clientHost, LocalDateTime lastSeen,
+                     UUID clientId, Version clientVersion, Version frameworkVersion) {
       this.user = user;
       this.clientTypeId = clientTypeId;
       this.clientHost = clientHost;
@@ -358,11 +358,11 @@ public final class ClientUserMonitor {
       return connectionCount;
     }
 
-    public void setLastSeen(final LocalDateTime lastSeen) {
+    public void setLastSeen(LocalDateTime lastSeen) {
       this.lastSeen = lastSeen;
     }
 
-    public void setClientID(final UUID clientId) {
+    public void setClientID(UUID clientId) {
       this.clientId = clientId;
     }
 
@@ -371,7 +371,7 @@ public final class ClientUserMonitor {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
       if (this == obj) {
         return true;
       }
@@ -394,7 +394,7 @@ public final class ClientUserMonitor {
       return result;
     }
 
-    public boolean isNewConnection(final UUID clientId) {
+    public boolean isNewConnection(UUID clientId) {
       return !this.clientId.equals(clientId);
     }
   }
@@ -402,7 +402,7 @@ public final class ClientUserMonitor {
   private static final class UserHistoryTableSortModel extends AbstractTableSortModel<UserInfo, Integer> {
 
     @Override
-    public Class<?> getColumnClass(final Integer columnIdentifier) {
+    public Class<?> getColumnClass(Integer columnIdentifier) {
       switch (columnIdentifier) {
         case USERNAME_COLUMN: return String.class;
         case CLIENT_TYPE_COLUMN: return String.class;
@@ -416,7 +416,7 @@ public final class ClientUserMonitor {
     }
 
     @Override
-    protected Object getColumnValue(final UserInfo row, final Integer columnIdentifier) {
+    protected Object getColumnValue(UserInfo row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case USERNAME_COLUMN: return row.getUser().getUsername();
         case CLIENT_TYPE_COLUMN: return row.getClientTypeId();
@@ -437,7 +437,7 @@ public final class ClientUserMonitor {
             .build().getFormatter();
 
     @Override
-    protected void setValue(final Object value) {
+    protected void setValue(Object value) {
       if (value instanceof Temporal) {
         super.setValue(formatter.format((Temporal) value));
       }

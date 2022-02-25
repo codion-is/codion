@@ -191,7 +191,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * @param registryPort the registry port
    * @return a default entity connection server configuration builder
    */
-  static EntityServerConfiguration.Builder builder(final int serverPort, final int registryPort) {
+  static EntityServerConfiguration.Builder builder(int serverPort, int registryPort) {
     return new DefaultEntityServerConfiguration.DefaultBuilder(serverPort, registryPort);
   }
 
@@ -215,7 +215,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
             .clientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get())
             .connectionTimeout(SERVER_CONNECTION_TIMEOUT.get());
     Map<String, Integer> timeoutMap = new HashMap<>();
-    for (final String clientTimeout : Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get())) {
+    for (String clientTimeout : Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get())) {
       String[] split = clientTimeout.split(":");
       if (split.length < 2) {
         throw new IllegalArgumentException("Expecting a ':' delimiter");

@@ -12,7 +12,7 @@ public final class ConnectionValidationException extends ServerException {
    * Instantiates a new {@link ConnectionValidationException}
    * @param message the exception message
    */
-  public ConnectionValidationException(final String message) {
+  public ConnectionValidationException(String message) {
     super(message);
   }
 }

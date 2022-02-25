@@ -92,13 +92,13 @@ public class TemporalInputPanelTest {
   private static final class DefaultCalendarProvider implements TemporalInputPanel.CalendarProvider {
 
     @Override
-    public <T extends Temporal> Optional<T> getTemporal(final Class<T> temporalClass, final JComponent dialogOwner,
-                                                        final T initialValue) {
+    public <T extends Temporal> Optional<T> getTemporal(Class<T> temporalClass, JComponent dialogOwner,
+                                                        T initialValue) {
       return Optional.empty();
     }
 
     @Override
-    public <T extends Temporal> boolean supports(final Class<T> temporalClass) {
+    public <T extends Temporal> boolean supports(Class<T> temporalClass) {
       return LocalDate.class.equals(temporalClass) || LocalDateTime.class.equals(temporalClass);
     }
   }

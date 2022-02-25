@@ -181,7 +181,7 @@ public interface Control extends Action {
    * @param command the {@link Control.Command} on which to base the control
    * @return a Control for calling the given {@link Control.Command}
    */
-  static Control control(final Command command) {
+  static Control control(Command command) {
     return builder(command).build();
   }
 
@@ -190,7 +190,7 @@ public interface Control extends Action {
    * @param actionCommand the {@link Control.ActionCommand} on which to base the control
    * @return a Control for calling the given {@link Control.Command}
    */
-  static Control actionControl(final ActionCommand actionCommand) {
+  static Control actionControl(ActionCommand actionCommand) {
     return actionControlBuilder(actionCommand).build();
   }
 
@@ -199,7 +199,7 @@ public interface Control extends Action {
    * @param event the event
    * @return a control which triggers the given event
    */
-  static Control eventControl(final Event<ActionEvent> event) {
+  static Control eventControl(Event<ActionEvent> event) {
     return eventControlBuilder(event).build();
   }
 
@@ -208,7 +208,7 @@ public interface Control extends Action {
    * @param command the command to base the control on
    * @return a new Control.Builder
    */
-  static Builder builder(final Command command) {
+  static Builder builder(Command command) {
     return new ControlBuilder(command);
   }
 
@@ -217,7 +217,7 @@ public interface Control extends Action {
    * @param actionCommand the action command to base the control on
    * @return a new Control.Builder
    */
-  static Builder actionControlBuilder(final ActionCommand actionCommand) {
+  static Builder actionControlBuilder(ActionCommand actionCommand) {
     return new ControlBuilder(actionCommand);
   }
 
@@ -226,7 +226,7 @@ public interface Control extends Action {
    * @param event the event
    * @return a new Control.Builder
    */
-  static Builder eventControlBuilder(final Event<ActionEvent> event) {
+  static Builder eventControlBuilder(Event<ActionEvent> event) {
     requireNonNull(event, "event");
     return new ControlBuilder((ActionCommand) event::onEvent);
   }

@@ -27,7 +27,7 @@ public enum FrameworkIkons implements Ikon {
   private final String description;
   private final char code;
 
-  FrameworkIkons(final String description, final char code) {
+  FrameworkIkons(String description, char code) {
     this.description = description;
     this.code = code;
   }

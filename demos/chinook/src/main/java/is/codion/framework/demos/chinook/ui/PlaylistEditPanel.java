@@ -11,7 +11,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class PlaylistEditPanel extends EntityEditPanel {
 
-  public PlaylistEditPanel(final SwingEntityEditModel editModel) {
+  public PlaylistEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

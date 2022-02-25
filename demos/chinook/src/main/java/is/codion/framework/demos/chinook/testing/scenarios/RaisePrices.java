@@ -18,7 +18,7 @@ import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selec
 public final class RaisePrices extends AbstractEntityUsageScenario<ChinookApplicationModel> {
 
   @Override
-  protected void perform(final ChinookApplicationModel application) throws Exception {
+  protected void perform(ChinookApplicationModel application) throws Exception {
     SwingEntityModel artistModel = application.getEntityModel(Artist.TYPE);
     artistModel.getTableModel().refresh();
     selectRandomRows(artistModel.getTableModel(), 2);

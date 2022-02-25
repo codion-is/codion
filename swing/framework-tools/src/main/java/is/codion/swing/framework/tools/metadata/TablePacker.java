@@ -16,14 +16,14 @@ final class TablePacker implements ResultPacker<Table> {
   private final DatabaseMetaData metaData;
   private final String catalog;
 
-  TablePacker(final Schema schema, final DatabaseMetaData metaData, final String catalog) {
+  TablePacker(Schema schema, DatabaseMetaData metaData, String catalog) {
     this.schema = schema;
     this.metaData = metaData;
     this.catalog = catalog;
   }
 
   @Override
-  public Table fetch(final ResultSet resultSet) throws SQLException {
+  public Table fetch(ResultSet resultSet) throws SQLException {
     String tableName = resultSet.getString("TABLE_NAME");
     List<PrimaryKeyColumn> primaryKeyColumns = getPrimaryKeyColumns(schema, metaData, catalog, tableName);
     List<ForeignKeyColumn> foreignKeyColumns = getForeignKeyColumns(schema, metaData, catalog, tableName);
@@ -32,24 +32,24 @@ final class TablePacker implements ResultPacker<Table> {
     return new Table(schema, tableName, columns, foreignKeyColumns);
   }
 
-  private static List<PrimaryKeyColumn> getPrimaryKeyColumns(final Schema schema, final DatabaseMetaData metaData,
-                                                             final String catalog, final String tableName) throws SQLException {
-    try (final ResultSet resultSet = metaData.getPrimaryKeys(catalog, schema.getName(), tableName)) {
+  private static List<PrimaryKeyColumn> getPrimaryKeyColumns(Schema schema, DatabaseMetaData metaData,
+                                                             String catalog, String tableName) throws SQLException {
+    try (ResultSet resultSet = metaData.getPrimaryKeys(catalog, schema.getName(), tableName)) {
       return new PrimaryKeyColumnPacker().pack(resultSet);
     }
   }
 
-  private static List<ForeignKeyColumn> getForeignKeyColumns(final Schema schema, final DatabaseMetaData metaData,
-                                                             final String catalog, final String tableName) throws SQLException {
-    try (final ResultSet resultSet = metaData.getImportedKeys(catalog, schema.getName(), tableName)) {
+  private static List<ForeignKeyColumn> getForeignKeyColumns(Schema schema, DatabaseMetaData metaData,
+                                                             String catalog, String tableName) throws SQLException {
+    try (ResultSet resultSet = metaData.getImportedKeys(catalog, schema.getName(), tableName)) {
       return new ForeignKeyColumnPacker().pack(resultSet);
     }
   }
 
-  private static List<Column> getColumns(final Schema schema, final DatabaseMetaData metaData, final String catalog,
-                                         final String tableName, final List<PrimaryKeyColumn> primaryKeyColumns,
-                                         final List<ForeignKeyColumn> foreignKeyColumns) throws SQLException {
-    try (final ResultSet resultSet = metaData.getColumns(catalog, schema.getName(), tableName, null)) {
+  private static List<Column> getColumns(Schema schema, DatabaseMetaData metaData, String catalog,
+                                         String tableName, List<PrimaryKeyColumn> primaryKeyColumns,
+                                         List<ForeignKeyColumn> foreignKeyColumns) throws SQLException {
+    try (ResultSet resultSet = metaData.getColumns(catalog, schema.getName(), tableName, null)) {
       return new ColumnPacker(primaryKeyColumns, foreignKeyColumns).pack(resultSet);
     }
   }

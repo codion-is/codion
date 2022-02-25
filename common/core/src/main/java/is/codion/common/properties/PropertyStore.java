@@ -181,7 +181,7 @@ public interface PropertyStore {
    * @return a new PropertyStore
    * @throws IOException in case the given input stream could not be read
    */
-  static PropertyStore propertyStore(final InputStream inputStream) throws IOException {
+  static PropertyStore propertyStore(InputStream inputStream) throws IOException {
     return new DefaultPropertyStore(inputStream);
   }
 
@@ -192,7 +192,7 @@ public interface PropertyStore {
    * @throws IOException in case the given properties file exists but reading it failed
    * @throws FileNotFoundException in case the file does not exist
    */
-  static PropertyStore propertyStore(final File propertiesFile) throws IOException {
+  static PropertyStore propertyStore(File propertiesFile) throws IOException {
     return new DefaultPropertyStore(propertiesFile);
   }
 
@@ -201,7 +201,7 @@ public interface PropertyStore {
    * @param properties the initial properties
    * @return a new PropertyStore
    */
-  static PropertyStore propertyStore(final Properties properties) {
+  static PropertyStore propertyStore(Properties properties) {
     return new DefaultPropertyStore(properties);
   }
 
@@ -217,7 +217,7 @@ public interface PropertyStore {
    * @param propertyFormatter for specific property formatting or exclusions
    * @return a String containing all system properties, one per line
    */
-  static String getSystemProperties(final PropertyFormatter propertyFormatter) {
+  static String getSystemProperties(PropertyFormatter propertyFormatter) {
     requireNonNull(propertyFormatter, "propertyWriter");
     try {
       SecurityManager manager = System.getSecurityManager();

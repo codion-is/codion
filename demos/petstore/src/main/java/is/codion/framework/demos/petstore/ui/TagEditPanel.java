@@ -10,7 +10,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 public class TagEditPanel extends EntityEditPanel {
 
-  public TagEditPanel(final SwingEntityEditModel model) {
+  public TagEditPanel(SwingEntityEditModel model) {
     super(model);
   }
 

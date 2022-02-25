@@ -52,7 +52,7 @@ public final class Configuration {
    * @param defaultValue the default value, if any
    * @return the configuration value
    */
-  public static PropertyValue<Boolean> booleanValue(final String key, final Boolean defaultValue) {
+  public static PropertyValue<Boolean> booleanValue(String key, Boolean defaultValue) {
     return value(key, defaultValue, value -> value.equalsIgnoreCase(Boolean.TRUE.toString()));
   }
 
@@ -62,7 +62,7 @@ public final class Configuration {
    * @param defaultValue the default value, if any
    * @return the configuration value
    */
-  public static PropertyValue<Integer> integerValue(final String key, final Integer defaultValue) {
+  public static PropertyValue<Integer> integerValue(String key, Integer defaultValue) {
     return value(key, defaultValue, Integer::parseInt);
   }
 
@@ -72,7 +72,7 @@ public final class Configuration {
    * @param defaultValue the default value, if any
    * @return the configuration value
    */
-  public static PropertyValue<Long> longValue(final String key, final Long defaultValue) {
+  public static PropertyValue<Long> longValue(String key, Long defaultValue) {
     return value(key, defaultValue, Long::parseLong);
   }
 
@@ -82,7 +82,7 @@ public final class Configuration {
    * @param defaultValue the default value, if any
    * @return the configuration value
    */
-  public static PropertyValue<Double> doubleValue(final String key, final Double defaultValue) {
+  public static PropertyValue<Double> doubleValue(String key, Double defaultValue) {
     return value(key, defaultValue, Double::parseDouble);
   }
 
@@ -92,7 +92,7 @@ public final class Configuration {
    * @param defaultValue the default value, if any
    * @return the configuration value
    */
-  public static PropertyValue<String> stringValue(final String key, final String defaultValue) {
+  public static PropertyValue<String> stringValue(String key, String defaultValue) {
     return value(key, defaultValue, value -> value);
   }
 
@@ -104,7 +104,7 @@ public final class Configuration {
    * @param <T> the enum type
    * @return the configuration value
    */
-  public static <T extends Enum<T>> PropertyValue<T> enumValue(final String key, final Class<T> enumClass, final T defaultValue) {
+  public static <T extends Enum<T>> PropertyValue<T> enumValue(String key, Class<T> enumClass, T defaultValue) {
     return value(key, defaultValue, value -> Enum.valueOf(enumClass, value.toUpperCase()));
   }
 
@@ -116,7 +116,7 @@ public final class Configuration {
    * @param <T> the value type
    * @return the configuration value
    */
-  public static <T> PropertyValue<T> value(final String key, final T defaultValue, final Function<String, T> parser) {
+  public static <T> PropertyValue<T> value(String key, T defaultValue, Function<String, T> parser) {
     return STORE.propertyValue(key, defaultValue, null, parser, Objects::toString);
   }
 
@@ -130,9 +130,9 @@ public final class Configuration {
     return loadFromFile(configurationFilePath, configurationFileRequired);
   }
 
-  static PropertyStore loadFromClasspath(final String filePath, final boolean configurationRequired) {
+  static PropertyStore loadFromClasspath(String filePath, boolean configurationRequired) {
     String filepath = getClasspathFilepath(filePath);
-    try (final InputStream configurationFileStream = Configuration.class.getClassLoader().getResourceAsStream(filepath)) {
+    try (InputStream configurationFileStream = Configuration.class.getClassLoader().getResourceAsStream(filepath)) {
       if (configurationFileStream == null) {
         if (configurationRequired) {
           throw new RuntimeException("Required configuration file not found on classpath: " + filePath);
@@ -148,7 +148,7 @@ public final class Configuration {
     }
   }
 
-  static PropertyStore loadFromFile(final String filePath, final boolean configurationRequired) {
+  static PropertyStore loadFromFile(String filePath, boolean configurationRequired) {
     try {
       File file = new File(filePath);
       if (!file.exists()) {
@@ -166,7 +166,7 @@ public final class Configuration {
     }
   }
 
-  private static String getClasspathFilepath(final String filePath) {
+  private static String getClasspathFilepath(String filePath) {
     String path = filePath.substring(CLASSPATH_PREFIX.length());
     if (path.startsWith("/")) {
       path = path.substring(1);

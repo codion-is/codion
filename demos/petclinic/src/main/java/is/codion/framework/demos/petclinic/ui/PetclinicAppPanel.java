@@ -84,7 +84,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     return asList(petTypePanelBuilder, specialtiesPanelBuilder);
   }
 
-  public static void main(final String[] args) throws CancelException {
+  public static void main(String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityEditPanel.USE_SAVE_CONTROL.set(false);

@@ -11,7 +11,7 @@ import java.util.Objects;
 
 final class SpinnerItemValue<T> extends AbstractComponentValue<T, JSpinner> {
 
-  SpinnerItemValue(final JSpinner spinner) {
+  SpinnerItemValue(JSpinner spinner) {
     super(spinner);
     if (!(spinner.getModel() instanceof SpinnerListModel)) {
       throw new IllegalArgumentException("Spinner model must be a SpinnerListModel");
@@ -20,14 +20,14 @@ final class SpinnerItemValue<T> extends AbstractComponentValue<T, JSpinner> {
   }
 
   @Override
-  protected T getComponentValue(final JSpinner component) {
+  protected T getComponentValue(JSpinner component) {
     Item<T> selectedValue = (Item<T>) component.getModel().getValue();
 
     return selectedValue == null ? null : selectedValue.getValue();
   }
 
   @Override
-  protected void setComponentValue(final JSpinner component, final T value) {
+  protected void setComponentValue(JSpinner component, T value) {
     SpinnerListModel model = (SpinnerListModel) component.getModel();
     model.getList().stream()
             .map(Item.class::cast)

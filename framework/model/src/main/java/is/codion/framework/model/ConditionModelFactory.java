@@ -18,5 +18,5 @@ public interface ConditionModelFactory {
    * @param attribute the Attribute for which to create a {@link ColumnConditionModel}
    * @return a {@link ColumnConditionModel} based on the given attribute, null if searching should not be available for this attribute
    */
-  <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(final A attribute);
+  <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(A attribute);
 }

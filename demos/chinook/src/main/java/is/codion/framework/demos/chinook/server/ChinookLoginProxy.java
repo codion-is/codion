@@ -67,7 +67,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   }
 
   @Override
-  public RemoteClient login(final RemoteClient remoteClient) throws LoginException {
+  public RemoteClient login(RemoteClient remoteClient) throws LoginException {
     authenticateUser(remoteClient.getUser());
 
     //Create a new RemoteClient based on the one received
@@ -76,15 +76,15 @@ public final class ChinookLoginProxy implements LoginProxy {
   }
 
   @Override
-  public void logout(final RemoteClient remoteClient) {}
+  public void logout(RemoteClient remoteClient) {}
 
   @Override
   public void close() {
     connectionPool.close();
   }
 
-  private void authenticateUser(final User user) throws LoginException {
-    try (final EntityConnection connection = getConnectionFromPool()) {
+  private void authenticateUser(User user) throws LoginException {
+    try (EntityConnection connection = getConnectionFromPool()) {
       int rows = connection.rowCount(where(Authentication.User.USERNAME)
               .equalTo(user.getUsername()).caseSensitive(false)
                       .and(where(Authentication.User.PASSWORD_HASH)

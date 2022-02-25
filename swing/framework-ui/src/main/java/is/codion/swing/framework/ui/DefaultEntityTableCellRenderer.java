@@ -41,7 +41,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   private final boolean displayConditionState;
   private final Border border;
 
-  private DefaultEntityTableCellRenderer(final DefaultBuilder builder, final Border border) {
+  private DefaultEntityTableCellRenderer(DefaultBuilder builder, Border border) {
     this.tableModel = requireNonNull(builder.tableModel, "tableModel");
     this.property = requireNonNull(builder.property, "property");
     this.format = builder.format == null ? property.getFormat() : builder.format;
@@ -66,8 +66,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   }
 
   @Override
-  public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-                                                 final boolean hasFocus, final int row, final int column) {
+  public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                 boolean hasFocus, int row, int column) {
     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     setForeground(getForeground(table, row, isSelected));
     setBackground(getBackground(table, row, isSelected));
@@ -80,7 +80,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   }
 
   @Override
-  public Color getBackground(final JTable table, final int row, final boolean selected) {
+  public Color getBackground(JTable table, int row, boolean selected) {
     if (selected) {
       return table.getSelectionBackground();
     }
@@ -89,7 +89,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   }
 
   @Override
-  public Color getForeground(final JTable table, final int row, final boolean selected) {
+  public Color getForeground(JTable table, int row, boolean selected) {
     return settings.getForegroundColor(tableModel, property.getAttribute(), row);
   }
 
@@ -98,7 +98,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
    * @see SwingEntityTableModel#getValue(Entity, Attribute)
    */
   @Override
-  protected void setValue(final Object value) {
+  protected void setValue(Object value) {
     if (property instanceof ItemProperty) {
       setText((String) value);
     }
@@ -122,7 +122,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private final boolean displayConditionState;
     private final Border border;
 
-    private BooleanRenderer(final DefaultBuilder builder, final Border border) {
+    private BooleanRenderer(DefaultBuilder builder, Border border) {
       super(new NullableToggleButtonModel());
       this.tableModel = requireNonNull(builder.tableModel, "tableModel");
       this.property = requireNonNull(builder.property, "property");
@@ -146,8 +146,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     }
 
     @Override
-    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-                                                   final boolean hasFocus, final int row, final int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                   boolean hasFocus, int row, int column) {
       getNullableModel().setState((Boolean) value);
       setForeground(getForeground(table, row, isSelected));
       setBackground(getBackground(table, row, isSelected));
@@ -157,7 +157,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     }
 
     @Override
-    public Color getBackground(final JTable table, final int row, final boolean selected) {
+    public Color getBackground(JTable table, int row, boolean selected) {
       if (selected) {
         return table.getSelectionBackground();
       }
@@ -166,7 +166,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     }
 
     @Override
-    public Color getForeground(final JTable table, final int row, final boolean selected) {
+    public Color getForeground(JTable table, int row, boolean selected) {
       return settings.getForegroundColor(tableModel, property.getAttribute(), row);
     }
   }
@@ -200,8 +200,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       focusedCellBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
     }
 
-    private Color getBackgroundColor(final SwingEntityTableModel tableModel, final Attribute<?> attribute, final int row,
-                                     final boolean indicateCondition) {
+    private Color getBackgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute, int row,
+                                     boolean indicateCondition) {
       boolean conditionEnabled = tableModel.getTableConditionModel().isConditionEnabled(attribute);
       boolean filterEnabled = tableModel.getTableConditionModel().isFilterEnabled(attribute);
       boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
@@ -217,14 +217,14 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       }
     }
 
-    private Color getForegroundColor(final SwingEntityTableModel tableModel, final Attribute<?> attribute, final int row) {
+    private Color getForegroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute, int row) {
       Color cellColor = tableModel.getForegroundColor(row, attribute);
 
       return cellColor == null ? foregroundColor : cellColor;
     }
 
-    private Color getConditionEnabledColor(final int row, final boolean conditionEnabled,
-                                           final boolean filterEnabled, final Color cellColor) {
+    private Color getConditionEnabledColor(int row, boolean conditionEnabled,
+                                           boolean filterEnabled, Color cellColor) {
       boolean conditionAndFilterEnabled = conditionEnabled && filterEnabled;
       if (cellColor != null) {
         return darker(cellColor, DARKENING_FACTOR);
@@ -250,7 +250,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private int leftPadding = EntityTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
     private int rightPadding = EntityTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
 
-    DefaultBuilder(final SwingEntityTableModel tableModel, final Property<?> property) {
+    DefaultBuilder(SwingEntityTableModel tableModel, Property<?> property) {
       this.tableModel = requireNonNull(tableModel);
       this.property = requireNonNull(property);
       this.tableModel.getEntityDefinition().getProperty(property.getAttribute());
@@ -260,43 +260,43 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     }
 
     @Override
-    public Builder format(final Format format) {
+    public Builder format(Format format) {
       this.format = format;
       return this;
     }
 
     @Override
-    public Builder dateTimeFormatter(final DateTimeFormatter dateTimeFormatter) {
+    public Builder dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
       this.dateTimeFormatter = dateTimeFormatter;
       return this;
     }
 
     @Override
-    public Builder horizontalAlignment(final int horizontalAlignment) {
+    public Builder horizontalAlignment(int horizontalAlignment) {
       this.horizontalAlignment = horizontalAlignment;
       return this;
     }
 
     @Override
-    public Builder toolTipData(final boolean toolTipData) {
+    public Builder toolTipData(boolean toolTipData) {
       this.toolTipData = toolTipData;
       return this;
     }
 
     @Override
-    public Builder displayConditionState(final boolean displayConditionState) {
+    public Builder displayConditionState(boolean displayConditionState) {
       this.displayConditionState = displayConditionState;
       return this;
     }
 
     @Override
-    public Builder leftPadding(final int leftPadding) {
+    public Builder leftPadding(int leftPadding) {
       this.leftPadding = leftPadding;
       return null;
     }
 
     @Override
-    public Builder rightPadding(final int rightPadding) {
+    public Builder rightPadding(int rightPadding) {
       this.rightPadding = rightPadding;
       return this;
     }
@@ -311,7 +311,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       return new DefaultEntityTableCellRenderer(this, border);
     }
 
-    private static int getDefaultHorizontalAlignment(final Property<?> property) {
+    private static int getDefaultHorizontalAlignment(Property<?> property) {
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
         return EntityTableCellRenderer.BOOLEAN_HORIZONTAL_ALIGNMENT.get();
       }

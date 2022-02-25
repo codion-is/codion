@@ -42,7 +42,7 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
    * @throws RemoteException in case of an exception
    * @throws NullPointerException in case {@code configuration} or {@code server} are not specified
    */
-  DefaultEntityServerAdmin(final EntityServer server, final EntityServerConfiguration configuration) throws RemoteException {
+  DefaultEntityServerAdmin(EntityServer server, EntityServerConfiguration configuration) throws RemoteException {
     super(server, configuration);
     this.server = server;
   }
@@ -58,7 +58,7 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   }
 
   @Override
-  public void setLogLevel(final Object level) {
+  public void setLogLevel(Object level) {
     LOG.info("setLogLevel({})", level);
     loggerProxy.setLogLevel(level);
   }
@@ -69,7 +69,7 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   }
 
   @Override
-  public void setMaintenanceInterval(final int interval) {
+  public void setMaintenanceInterval(int interval) {
     LOG.info("setMaintenanceInterval({})", interval);
     server.setMaintenanceInterval(interval);
   }
@@ -87,29 +87,29 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   }
 
   @Override
-  public void resetConnectionPoolStatistics(final String username) {
+  public void resetConnectionPoolStatistics(String username) {
     LOG.info("resetConnectionPoolStatistics({})", username);
     server.getDatabase().getConnectionPool(username).resetStatistics();
   }
 
   @Override
-  public boolean isCollectPoolSnapshotStatistics(final String username) {
+  public boolean isCollectPoolSnapshotStatistics(String username) {
     return server.getDatabase().getConnectionPool(username).isCollectSnapshotStatistics();
   }
 
   @Override
-  public void setCollectPoolSnapshotStatistics(final String username, final boolean snapshotStatistics) {
+  public void setCollectPoolSnapshotStatistics(String username, boolean snapshotStatistics) {
     LOG.info("setCollectPoolSnapshotStatistics({}, {})", username, snapshotStatistics);
     server.getDatabase().getConnectionPool(username).setCollectSnapshotStatistics(snapshotStatistics);
   }
 
   @Override
-  public boolean isCollectPoolCheckOutTimes(final String username) throws RemoteException {
+  public boolean isCollectPoolCheckOutTimes(String username) throws RemoteException {
     return server.getDatabase().getConnectionPool(username).isCollectCheckOutTimes();
   }
 
   @Override
-  public void setCollectPoolCheckOutTimes(final String username, final boolean collectCheckOutTimes) throws RemoteException {
+  public void setCollectPoolCheckOutTimes(String username, boolean collectCheckOutTimes) throws RemoteException {
     LOG.info("setCollectPoolCheckOutTimes({}, {})", username, collectCheckOutTimes);
     server.getDatabase().getConnectionPool(username).setCollectCheckOutTimes(collectCheckOutTimes);
   }
@@ -120,7 +120,7 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   }
 
   @Override
-  public ConnectionPoolStatistics getConnectionPoolStatistics(final String username, final long since) {
+  public ConnectionPoolStatistics getConnectionPoolStatistics(String username, long since) {
     return server.getDatabase().getConnectionPool(username).getStatistics(since);
   }
 
@@ -135,72 +135,72 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   }
 
   @Override
-  public int getConnectionPoolCleanupInterval(final String username) {
+  public int getConnectionPoolCleanupInterval(String username) {
     return server.getDatabase().getConnectionPool(username).getCleanupInterval();
   }
 
   @Override
-  public void setConnectionPoolCleanupInterval(final String username, final int poolCleanupInterval) {
+  public void setConnectionPoolCleanupInterval(String username, int poolCleanupInterval) {
     LOG.info("setConnectionPoolCleanupInterval({}, {})", username, poolCleanupInterval);
     server.getDatabase().getConnectionPool(username).setCleanupInterval(poolCleanupInterval);
   }
 
   @Override
-  public int getMaximumConnectionPoolSize(final String username) {
+  public int getMaximumConnectionPoolSize(String username) {
     return server.getDatabase().getConnectionPool(username).getMaximumPoolSize();
   }
 
   @Override
-  public void setMaximumConnectionPoolSize(final String username, final int value) {
+  public void setMaximumConnectionPoolSize(String username, int value) {
     LOG.info("setMaximumConnectionPoolSize({}, {})", username, value);
     server.getDatabase().getConnectionPool(username).setMaximumPoolSize(value);
   }
 
   @Override
-  public int getMinimumConnectionPoolSize(final String username) {
+  public int getMinimumConnectionPoolSize(String username) {
     return server.getDatabase().getConnectionPool(username).getMinimumPoolSize();
   }
 
   @Override
-  public void setMinimumConnectionPoolSize(final String username, final int value) {
+  public void setMinimumConnectionPoolSize(String username, int value) {
     LOG.info("setMinimumConnectionPoolSize({}, {})", username, value);
     server.getDatabase().getConnectionPool(username).setMinimumPoolSize(value);
   }
 
   @Override
-  public int getPooledConnectionTimeout(final String username) {
+  public int getPooledConnectionTimeout(String username) {
     return server.getDatabase().getConnectionPool(username).getConnectionTimeout();
   }
 
   @Override
-  public void setPooledConnectionTimeout(final String username, final int timeout) {
+  public void setPooledConnectionTimeout(String username, int timeout) {
     LOG.info("setPooledConnectionTimeout({}, {})", username, timeout);
     server.getDatabase().getConnectionPool(username).setConnectionTimeout(timeout);
   }
 
   @Override
-  public int getMaximumPoolCheckOutTime(final String username) {
+  public int getMaximumPoolCheckOutTime(String username) {
     return server.getDatabase().getConnectionPool(username).getMaximumCheckOutTime();
   }
 
   @Override
-  public void setMaximumPoolCheckOutTime(final String username, final int value) {
+  public void setMaximumPoolCheckOutTime(String username, int value) {
     LOG.info("setMaximumPoolCheckOutTime({}, {})", username, value);
     server.getDatabase().getConnectionPool(username).setMaximumCheckOutTime(value);
   }
 
   @Override
-  public ClientLog getClientLog(final UUID clientId) {
+  public ClientLog getClientLog(UUID clientId) {
     return server.getClientLog(clientId);
   }
 
   @Override
-  public boolean isLoggingEnabled(final UUID clientId) {
+  public boolean isLoggingEnabled(UUID clientId) {
     return server.isLoggingEnabled(clientId);
   }
 
   @Override
-  public void setLoggingEnabled(final UUID clientId, final boolean loggingEnabled) {
+  public void setLoggingEnabled(UUID clientId, boolean loggingEnabled) {
     LOG.info("setLoggingEnabled({}, {})", clientId, loggingEnabled);
     server.setLoggingEnabled(clientId, loggingEnabled);
   }
@@ -211,7 +211,7 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   }
 
   @Override
-  public void setConnectionTimeout(final int timeout) {
+  public void setConnectionTimeout(int timeout) {
     LOG.info("setConnectionTimeout({})", timeout);
     server.setConnectionTimeout(timeout);
   }

@@ -19,14 +19,14 @@ class NumberParser<T extends Number> implements Parser<T> {
   private final NumberFormat format;
   private final Class<T> clazz;
 
-  protected NumberParser(final NumberFormat format, final Class<T> clazz) {
+  protected NumberParser(NumberFormat format, Class<T> clazz) {
     this.format = requireNonNull(format, "format");
     this.format.setRoundingMode(RoundingMode.DOWN);
     this.clazz = requireNonNull(clazz, "clazz");
   }
 
   @Override
-  public NumberParseResult<T> parse(final String string) {
+  public NumberParseResult<T> parse(String string) {
     if (string.isEmpty() || MINUS_SIGN.equals(string)) {
       return new DefaultNumberParseResult<>(string, null);
     }
@@ -65,7 +65,7 @@ class NumberParser<T extends Number> implements Parser<T> {
    * @param text the text to parse
    * @return a number if the format can parse it, null otherwise
    */
-  private T parseNumber(final String text) {
+  private T parseNumber(String text) {
     if (text.isEmpty()) {
       return null;
     }
@@ -79,7 +79,7 @@ class NumberParser<T extends Number> implements Parser<T> {
     return toType(number);
   }
 
-  private T toType(final T number) {
+  private T toType(T number) {
     if (clazz.equals(Integer.class)) {
       return toInteger(number);
     }
@@ -96,7 +96,7 @@ class NumberParser<T extends Number> implements Parser<T> {
     throw new IllegalArgumentException("Unsupported type class: " + clazz);
   }
 
-  private T toInteger(final T number) {
+  private T toInteger(T number) {
     if (number instanceof Integer) {
       return number;
     }
@@ -104,7 +104,7 @@ class NumberParser<T extends Number> implements Parser<T> {
     return (T) Integer.valueOf(number.intValue());
   }
 
-  private T toLong(final T number) {
+  private T toLong(T number) {
     if (number instanceof Long) {
       return number;
     }
@@ -112,7 +112,7 @@ class NumberParser<T extends Number> implements Parser<T> {
     return (T) Long.valueOf(number.longValue());
   }
 
-  private T toDouble(final T number) {
+  private T toDouble(T number) {
     if (number instanceof Double) {
       return number;
     }
@@ -120,7 +120,7 @@ class NumberParser<T extends Number> implements Parser<T> {
     return (T) Double.valueOf(number.doubleValue());
   }
 
-  private T toBigDecimal(final T number) {
+  private T toBigDecimal(T number) {
     if (number instanceof BigDecimal) {
       return number;
     }
@@ -128,13 +128,13 @@ class NumberParser<T extends Number> implements Parser<T> {
     return (T) BigDecimal.valueOf(number.doubleValue());
   }
 
-  private int countAddedGroupingSeparators(final String currentNumber, final String newNumber) {
+  private int countAddedGroupingSeparators(String currentNumber, String newNumber) {
     DecimalFormatSymbols symbols = ((DecimalFormat) format).getDecimalFormatSymbols();
 
     return count(newNumber, symbols.getGroupingSeparator()) - count(currentNumber, symbols.getGroupingSeparator());
   }
 
-  private static String getTrailingDecimalZeros(final String string, final int decimalSeparatorIndex) {
+  private static String getTrailingDecimalZeros(String string, int decimalSeparatorIndex) {
     StringBuilder builder = new StringBuilder();
     int index = string.length() - 1;
     char c = string.charAt(index);
@@ -146,9 +146,9 @@ class NumberParser<T extends Number> implements Parser<T> {
     return builder.toString();
   }
 
-  private static int count(final String string, final char groupingSeparator) {
+  private static int count(String string, char groupingSeparator) {
     int counter = 0;
-    for (final char c : string.toCharArray()) {
+    for (char c : string.toCharArray()) {
       if (c == groupingSeparator) {
         counter++;
       }
@@ -170,12 +170,12 @@ class NumberParser<T extends Number> implements Parser<T> {
 
     private final int charetOffset;
 
-    private DefaultNumberParseResult(final String text, final T value) {
+    private DefaultNumberParseResult(String text, T value) {
       this(text, value, 0, true);
     }
 
-    DefaultNumberParseResult(final String text, final T value, final int charetOffset,
-                             final boolean successful) {
+    DefaultNumberParseResult(String text, T value, int charetOffset,
+                             boolean successful) {
       super(text, value, successful);
       this.charetOffset = charetOffset;
     }

@@ -58,11 +58,11 @@ final class OracleDatabase extends AbstractDatabase {
 
   private final boolean nowait;
 
-  OracleDatabase(final String jdbcUrl) {
+  OracleDatabase(String jdbcUrl) {
     this(jdbcUrl, true);
   }
 
-  OracleDatabase(final String jdbcUrl, final boolean nowait) {
+  OracleDatabase(String jdbcUrl, boolean nowait) {
     super(jdbcUrl);
     this.nowait = nowait;
   }
@@ -78,12 +78,12 @@ final class OracleDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getAutoIncrementQuery(final String idSource) {
+  public String getAutoIncrementQuery(String idSource) {
     return "select " + requireNonNull(idSource, "idSource") + ".currval from dual";
   }
 
   @Override
-  public String getSequenceQuery(final String sequenceName) {
+  public String getSequenceQuery(String sequenceName) {
     return "select " + requireNonNull(sequenceName, "sequenceName") + ".nextval from dual";
   }
 
@@ -110,7 +110,7 @@ final class OracleDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getErrorMessage(final SQLException exception) {
+  public String getErrorMessage(SQLException exception) {
     if (exception.getErrorCode() == NULL_VALUE_ERROR || exception.getErrorCode() == NULL_VALUE_ERROR_2) {
       String exceptionMessage = exception.getMessage();
       int newlineIndex = exception.getMessage().indexOf('\n');
@@ -131,22 +131,22 @@ final class OracleDatabase extends AbstractDatabase {
   }
 
   @Override
-  public boolean isAuthenticationException(final SQLException exception) {
+  public boolean isAuthenticationException(SQLException exception) {
     return exception.getErrorCode() == LOGIN_CREDS_ERROR;
   }
 
   @Override
-  public boolean isReferentialIntegrityException(final SQLException exception) {
+  public boolean isReferentialIntegrityException(SQLException exception) {
     return exception.getErrorCode() == CHILD_RECORD_ERROR || exception.getErrorCode() == INTEGRITY_CONSTRAINT_ERROR;
   }
 
   @Override
-  public boolean isUniqueConstraintException(final SQLException exception) {
+  public boolean isUniqueConstraintException(SQLException exception) {
     return exception.getErrorCode() == UNIQUE_KEY_ERROR;
   }
 
   @Override
-  public boolean isTimeoutException(final SQLException exception) {
+  public boolean isTimeoutException(SQLException exception) {
     return exception.getErrorCode() == TIMEOUT_ERROR;
   }
 }

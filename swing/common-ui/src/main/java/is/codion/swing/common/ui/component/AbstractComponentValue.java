@@ -31,7 +31,7 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
    * Instantiates a new nullable {@link AbstractComponentValue}
    * @param component the component
    */
-  public AbstractComponentValue(final C component) {
+  public AbstractComponentValue(C component) {
     this(component, null);
   }
 
@@ -40,7 +40,7 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
    * @param component the component
    * @param nullValue the value to use instead of null
    */
-  public AbstractComponentValue(final C component, final T nullValue) {
+  public AbstractComponentValue(C component, T nullValue) {
     super(nullValue);
     this.component = requireNonNull(component, "component");
   }
@@ -56,12 +56,12 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
   }
 
   @Override
-  public final T showDialog(final JComponent owner) {
+  public final T showDialog(JComponent owner) {
     return showDialog(owner, null);
   }
 
   @Override
-  public final T showDialog(final JComponent owner, final String title) {
+  public final T showDialog(JComponent owner, String title) {
     State okPressed = State.state();
     JPanel basePanel = new JPanel(Layouts.borderLayout());
     basePanel.add(component, BorderLayout.CENTER);
@@ -79,7 +79,7 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
   }
 
   @Override
-  protected final void setValue(final T value) {
+  protected final void setValue(T value) {
     if (SwingUtilities.isEventDispatchThread()) {
       setComponentValue(component, value);
     }

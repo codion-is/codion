@@ -45,7 +45,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
    * Instantiates a new SwingeEntityModel.Builder based on the given entityType
    * @param entityType the entityType
    */
-  SwingEntityModelBuilder(final EntityType entityType) {
+  SwingEntityModelBuilder(EntityType entityType) {
     this.entityType = requireNonNull(entityType, "entityType");
   }
 
@@ -55,7 +55,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder modelClass(final Class<? extends SwingEntityModel> modelClass) {
+  public SwingEntityModel.Builder modelClass(Class<? extends SwingEntityModel> modelClass) {
     if (editModelClass != null || tableModelClass != null) {
       throw new IllegalStateException("Edit or table model class has been set");
     }
@@ -64,7 +64,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder editModelClass(final Class<? extends SwingEntityEditModel> editModelClass) {
+  public SwingEntityModel.Builder editModelClass(Class<? extends SwingEntityEditModel> editModelClass) {
     if (modelClass != null) {
       throw new IllegalStateException("Model class has been set");
     }
@@ -76,7 +76,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder tableModelClass(final Class<? extends SwingEntityTableModel> tableModelClass) {
+  public SwingEntityModel.Builder tableModelClass(Class<? extends SwingEntityTableModel> tableModelClass) {
     if (modelClass != null) {
       throw new IllegalStateException("Model class has been set");
     }
@@ -88,43 +88,43 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder modelBuilder(final ModelBuilder modelBuilder) {
+  public SwingEntityModel.Builder modelBuilder(ModelBuilder modelBuilder) {
     this.modelBuilder = requireNonNull(modelBuilder);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder editModelBuilder(final EditModelBuilder editModelBuilder) {
+  public SwingEntityModel.Builder editModelBuilder(EditModelBuilder editModelBuilder) {
     this.editModelBuilder = requireNonNull(editModelBuilder);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder tableModelBuilder(final TableModelBuilder tableModelBuilder) {
+  public SwingEntityModel.Builder tableModelBuilder(TableModelBuilder tableModelBuilder) {
     this.tableModelBuilder = requireNonNull(tableModelBuilder);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder modelInitializer(final Consumer<SwingEntityModel> modelInitializer) {
+  public SwingEntityModel.Builder modelInitializer(Consumer<SwingEntityModel> modelInitializer) {
     this.modelInitializer = requireNonNull(modelInitializer);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder editModelInitializer(final Consumer<SwingEntityEditModel> editModelInitializer) {
+  public SwingEntityModel.Builder editModelInitializer(Consumer<SwingEntityEditModel> editModelInitializer) {
     this.editModelInitializer = requireNonNull(editModelInitializer);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder tableModelInitializer(final Consumer<SwingEntityTableModel> tableModelInitializer) {
+  public SwingEntityModel.Builder tableModelInitializer(Consumer<SwingEntityTableModel> tableModelInitializer) {
     this.tableModelInitializer = requireNonNull(tableModelInitializer);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder detailModelBuilder(final SwingEntityModel.Builder detailModelBuilder) {
+  public SwingEntityModel.Builder detailModelBuilder(SwingEntityModel.Builder detailModelBuilder) {
     requireNonNull(detailModelBuilder, "detailModelBuilder");
     if (!detailModelBuilders.contains(detailModelBuilder)) {
       detailModelBuilders.add(detailModelBuilder);
@@ -149,7 +149,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel buildModel(final EntityConnectionProvider connectionProvider) {
+  public SwingEntityModel buildModel(EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
       SwingEntityModel model;
@@ -165,7 +165,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
         LOG.debug("{} initializing a custom entity model: {}", this, getModelClass());
         model = getModelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
-      for (final SwingEntityModel.Builder detailProvider : detailModelBuilders) {
+      for (SwingEntityModel.Builder detailProvider : detailModelBuilders) {
         model.addDetailModel(detailProvider.buildModel(connectionProvider));
       }
       modelInitializer.accept(model);
@@ -181,7 +181,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityEditModel buildEditModel(final EntityConnectionProvider connectionProvider) {
+  public SwingEntityEditModel buildEditModel(EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
       SwingEntityEditModel editModel;
@@ -210,7 +210,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityTableModel buildTableModel(final EntityConnectionProvider connectionProvider) {
+  public SwingEntityTableModel buildTableModel(EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
       SwingEntityTableModel tableModel;
@@ -239,7 +239,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public boolean equals(final Object obj) {
+  public boolean equals(Object obj) {
     if (obj instanceof SwingEntityModelBuilder) {
       SwingEntityModelBuilder that = (SwingEntityModelBuilder) obj;
 
@@ -257,7 +257,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
     return Objects.hash(entityType, modelClass, editModelClass, tableModelClass);
   }
 
-  private SwingEntityModel buildDefaultModel(final EntityConnectionProvider connectionProvider) {
+  private SwingEntityModel buildDefaultModel(EntityConnectionProvider connectionProvider) {
     return new SwingEntityModel(buildTableModel(connectionProvider));
   }
 }

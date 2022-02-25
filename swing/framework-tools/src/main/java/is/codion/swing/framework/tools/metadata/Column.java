@@ -21,9 +21,9 @@ public final class Column {
   private final int primaryKeyIndex;
   private final boolean foreignKeyColumn;
 
-  Column(final String columnName, final Class<?> columnTypeClass, final int position, final int columnSize,
-         final int decimalDigits, final int nullable, final boolean hasDefaultValue, final String comment,
-         final int primaryKeyIndex, final boolean foreignKeyColumn) {
+  Column(String columnName, Class<?> columnTypeClass, int position, int columnSize,
+         int decimalDigits, int nullable, boolean hasDefaultValue, String comment,
+         int primaryKeyIndex, boolean foreignKeyColumn) {
     this.columnName = requireNonNull(columnName);
     this.columnTypeClass = requireNonNull(columnTypeClass);
     this.position = position;
@@ -86,7 +86,7 @@ public final class Column {
   }
 
   @Override
-  public boolean equals(final Object object) {
+  public boolean equals(Object object) {
     if (this == object) {
       return true;
     }

@@ -65,7 +65,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @param entityType the entity on which to base the list
    * @param connectionProvider the connection provider
    */
-  public ObservableEntityList(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public ObservableEntityList(EntityType entityType, EntityConnectionProvider connectionProvider) {
     super(FXCollections.observableArrayList());
     this.entityType = entityType;
     this.connectionProvider = connectionProvider;
@@ -125,7 +125,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * Sets the query row count limit, a value of -1 means no limit.
    * @param queryRowCountLimit the query row count limit
    */
-  public final void setQueryRowCountLimit(final int queryRowCountLimit) {
+  public final void setQueryRowCountLimit(int queryRowCountLimit) {
     this.queryRowCountLimit = queryRowCountLimit;
   }
 
@@ -149,7 +149,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @param selectionModel the selection model
    * @throws IllegalStateException in case the selection model has already been set
    */
-  public final void setSelectionModel(final javafx.scene.control.SelectionModel<Entity> selectionModel) {
+  public final void setSelectionModel(javafx.scene.control.SelectionModel<Entity> selectionModel) {
     if (this.selectionModel != null) {
       throw new IllegalStateException("Selection model has already been set");
     }
@@ -166,21 +166,21 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   @Override
-  public final void setAsyncRefresh(final boolean asyncRefresh) {
+  public final void setAsyncRefresh(boolean asyncRefresh) {
     throw new UnsupportedOperationException("Async refresh is not supported");
   }
 
   /**
    * @param listener notified when the selection changes in the underlying selection model
    */
-  public final void addRefreshListener(final EventListener listener) {
+  public final void addRefreshListener(EventListener listener) {
     refreshEvent.addListener(listener);
   }
 
   /**
    * @param listener notified each time this model is refreshed.
    */
-  public final void removeRefreshListener(final EventListener listener) {
+  public final void removeRefreshListener(EventListener listener) {
     refreshEvent.removeListener(listener);
   }
 
@@ -223,22 +223,22 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   /**
    * @param listener notified each time the selection changes.
    */
-  public final void addSelectionChangedListener(final EventListener listener) {
+  public final void addSelectionChangedListener(EventListener listener) {
     selectionChangedEvent.addListener(listener);
   }
 
   @Override
-  public final boolean containsItem(final Entity item) {
+  public final boolean containsItem(Entity item) {
     return filteredList.contains(item) || contains(item);
   }
 
   @Override
-  public final boolean isVisible(final Entity item) {
+  public final boolean isVisible(Entity item) {
     return filteredList.contains(item);
   }
 
   @Override
-  public final boolean isFiltered(final Entity item) {
+  public final boolean isFiltered(Entity item) {
     return containsItem(item) && !filteredList.contains(item);
   }
 
@@ -280,7 +280,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   @Override
-  public final void setIncludeCondition(final Predicate<Entity> includeCondition) {
+  public final void setIncludeCondition(Predicate<Entity> includeCondition) {
     this.includeCondition = includeCondition;
     filterContents();
   }
@@ -292,12 +292,12 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   @Override
-  public final void addFilterListener(final EventListener listener) {
+  public final void addFilterListener(EventListener listener) {
     filterEvent.addListener(listener);
   }
 
   @Override
-  public final void removeFilterListener(final EventListener listener) {
+  public final void removeFilterListener(EventListener listener) {
     filterEvent.removeListener(listener);
   }
 
@@ -306,7 +306,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @see #refresh()
    */
   @Override
-  public final void addRefreshFailedListener(final EventDataListener<Throwable> listener) {
+  public final void addRefreshFailedListener(EventDataListener<Throwable> listener) {
     refreshFailedEvent.addDataListener(listener);
   }
 
@@ -314,7 +314,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @param listener the listener to remove
    */
   @Override
-  public final void removeRefreshFailedListener(final EventDataListener<Throwable> listener) {
+  public final void removeRefreshFailedListener(EventDataListener<Throwable> listener) {
     refreshFailedEvent.removeDataListener(listener);
   }
 
@@ -323,7 +323,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @param selectCondition the select condition to use
    * @see #performQuery()
    */
-  public final void setSelectCondition(final Condition selectCondition) {
+  public final void setSelectCondition(Condition selectCondition) {
     this.selectCondition = selectCondition;
   }
 
@@ -388,18 +388,18 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     refreshStartedEvent.onEvent();
   }
 
-  private void onRefreshFailed(final Throwable throwable) {
+  private void onRefreshFailed(Throwable throwable) {
     refreshingState.set(false);
     refreshFailedEvent.onEvent(throwable);
   }
 
-  private void onRefreshResult(final Collection<Entity> items) {
+  private void onRefreshResult(Collection<Entity> items) {
     setAll(items);
     refreshingState.set(false);
     refreshEvent.onEvent();
   }
 
-  private void setSelectedItems(final List<Entity> selectedItems) {
+  private void setSelectedItems(List<Entity> selectedItems) {
     if (selectedItems != null && selectionModel != null) {
       selectionModel.setSelectedItems(selectedItems);
     }

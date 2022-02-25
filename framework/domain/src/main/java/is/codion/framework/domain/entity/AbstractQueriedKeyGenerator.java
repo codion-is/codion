@@ -12,8 +12,8 @@ import java.sql.Types;
 
 abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 
-  protected final <T> void selectAndPut(final Entity entity, final ColumnProperty<T> keyProperty,
-                                        final DatabaseConnection connection) throws SQLException {
+  protected final <T> void selectAndPut(Entity entity, ColumnProperty<T> keyProperty,
+                                        DatabaseConnection connection) throws SQLException {
     switch (keyProperty.getColumnType()) {
       case Types.INTEGER:
         entity.put((Attribute<Integer>) keyProperty.getAttribute(),

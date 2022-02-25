@@ -361,7 +361,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param entityTypes the entity types to copy
    * @return a new {@link CopyEntities} instance
    */
-  static CopyEntities copyEntities(final EntityConnection source, final EntityConnection destination, final EntityType... entityTypes) {
+  static CopyEntities copyEntities(EntityConnection source, EntityConnection destination, EntityType... entityTypes) {
     return new DefaultCopyEntities(source, destination, Arrays.asList(entityTypes));
   }
 
@@ -373,7 +373,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param entities the entities to insert
    * @return a new {@link InsertEntities} instance
    */
-  static InsertEntities insertEntities(final EntityConnection connection, final Iterator<Entity> entities) {
+  static InsertEntities insertEntities(EntityConnection connection, Iterator<Entity> entities) {
     return new DefaultInsertEntities(connection, entities);
   }
 

@@ -46,7 +46,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   /**
    * @param selectionModel the {@link javafx.scene.control.SelectionModel} instance to base this selection model on
    */
-  public FXEntityListSelectionModel(final javafx.scene.control.SelectionModel<Entity> selectionModel) {
+  public FXEntityListSelectionModel(javafx.scene.control.SelectionModel<Entity> selectionModel) {
     this.selectionModel = selectionModel;
     this.selectionEmptyState.set(selectionModel.isEmpty());
     if (selectionModel instanceof MultipleSelectionModel) {
@@ -92,52 +92,52 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public void addSelectionChangedListener(final EventListener listener) {
+  public void addSelectionChangedListener(EventListener listener) {
     selectionChangedEvent.addListener(listener);
   }
 
   @Override
-  public void removeSelectionChangedListener(final EventListener listener) {
+  public void removeSelectionChangedListener(EventListener listener) {
     selectionChangedEvent.removeListener(listener);
   }
 
   @Override
-  public void addSelectedIndexListener(final EventDataListener<Integer> listener) {
+  public void addSelectedIndexListener(EventDataListener<Integer> listener) {
     selectedIndexChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedIndexListener(final EventDataListener<Integer> listener) {
+  public void removeSelectedIndexListener(EventDataListener<Integer> listener) {
     selectedIndexChangedEvent.removeDataListener(listener);
   }
 
   @Override
-  public void addSelectedIndexesListener(final EventDataListener<List<Integer>> listener) {
+  public void addSelectedIndexesListener(EventDataListener<List<Integer>> listener) {
     selectedIndexesChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedIndexesListener(final EventDataListener<List<Integer>> listener) {
+  public void removeSelectedIndexesListener(EventDataListener<List<Integer>> listener) {
     selectedIndexesChangedEvent.removeDataListener(listener);
   }
 
   @Override
-  public void addSelectedItemListener(final EventDataListener<Entity> listener) {
+  public void addSelectedItemListener(EventDataListener<Entity> listener) {
     selectedItemChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedItemListener(final EventDataListener<Entity> listener) {
+  public void removeSelectedItemListener(EventDataListener<Entity> listener) {
     selectedItemChangedEvent.removeDataListener(listener);
   }
 
   @Override
-  public void addSelectedItemsListener(final EventDataListener<List<Entity>> listener) {
+  public void addSelectedItemsListener(EventDataListener<List<Entity>> listener) {
     selectedItemsChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedItemsListener(final EventDataListener<List<Entity>> listener) {
+  public void removeSelectedItemsListener(EventDataListener<List<Entity>> listener) {
     selectedItemsChangedEvent.removeDataListener(listener);
   }
 
@@ -157,12 +157,12 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public void addSelectedIndex(final int index) {
+  public void addSelectedIndex(int index) {
     selectionModel.selectedIndexProperty().add(index);
   }
 
   @Override
-  public void removeSelectedIndex(final int index) {
+  public void removeSelectedIndex(int index) {
     if (selectionModel instanceof MultipleSelectionModel) {
       removeSelectedIndexes(singletonList(index));
     }
@@ -174,7 +174,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public void removeSelectedIndexes(final Collection<Integer> indexes) {
+  public void removeSelectedIndexes(Collection<Integer> indexes) {
     if (selectionModel instanceof MultipleSelectionModel) {
       indexes.forEach(index -> ((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices().remove(index));
     }
@@ -184,12 +184,12 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public void removeSelectedItem(final Entity item) {
+  public void removeSelectedItem(Entity item) {
     removeSelectedItems(singletonList(item));
   }
 
   @Override
-  public void removeSelectedItems(final Collection<Entity> items) {
+  public void removeSelectedItems(Collection<Entity> items) {
     if (selectionModel instanceof MultipleSelectionModel) {
       ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().removeAll(items);
     }
@@ -199,12 +199,12 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public void setSelectedIndex(final int index) {
+  public void setSelectedIndex(int index) {
     selectionModel.selectedIndexProperty().add(index);
   }
 
   @Override
-  public void setSelectedIndexes(final Collection<Integer> indexes) {
+  public void setSelectedIndexes(Collection<Integer> indexes) {
     if (selectionModel instanceof MultipleSelectionModel) {
       selectionModel.clearSelection();
       indexes.forEach(selectionModel::select);
@@ -237,7 +237,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public void addSelectedIndexes(final Collection<Integer> indexes) {
+  public void addSelectedIndexes(Collection<Integer> indexes) {
     if (selectionModel instanceof MultipleSelectionModel) {
       ((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices().addAll(indexes);
     }
@@ -256,7 +256,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public void setSelectedItems(final Collection<Entity> items) {
+  public void setSelectedItems(Collection<Entity> items) {
     if (selectionModel instanceof MultipleSelectionModel) {
       selectionModel.clearSelection();
       items.forEach(selectionModel::select);
@@ -294,7 +294,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public void setSelectedItem(final Entity item) {
+  public void setSelectedItem(Entity item) {
     if (selectionModel instanceof MultipleSelectionModel) {
       selectionModel.clearSelection();
     }
@@ -302,7 +302,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public void addSelectedItem(final Entity item) {
+  public void addSelectedItem(Entity item) {
     if (selectionModel instanceof MultipleSelectionModel) {
       ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().add(item);
     }
@@ -312,7 +312,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public void addSelectedItems(final Collection<Entity> items) {
+  public void addSelectedItems(Collection<Entity> items) {
     if (selectionModel instanceof MultipleSelectionModel) {
       ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().addAll(items);
     }

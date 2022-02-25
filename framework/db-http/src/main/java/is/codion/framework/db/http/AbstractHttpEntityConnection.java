@@ -80,9 +80,9 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
    * @param path the path
    * @param connectionManager the connection manager
    */
-  AbstractHttpEntityConnection(final String domainTypeName, final String serverHostName, final int serverPort,
-                               final ClientHttps httpsEnabled, final User user, final String clientTypeId, final UUID clientId,
-                               final String contentType, final String path, final HttpClientConnectionManager connectionManager) {
+  AbstractHttpEntityConnection(String domainTypeName, String serverHostName, int serverPort,
+                               ClientHttps httpsEnabled, User user, String clientTypeId, UUID clientId,
+                               String contentType, String path, HttpClientConnectionManager connectionManager) {
     this.domainTypeName = Objects.requireNonNull(domainTypeName, DOMAIN_TYPE_NAME);
     this.user = Objects.requireNonNull(user, "user");
     this.httpsEnabled = ClientHttps.TRUE.equals(httpsEnabled);
@@ -123,7 +123,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
     }
   }
 
-  protected final CloseableHttpResponse execute(final HttpUriRequest operation) throws IOException {
+  protected final CloseableHttpResponse execute(HttpUriRequest operation) throws IOException {
     synchronized (httpClient) {
       try {
         return httpClient.execute(targetHost, operation, httpContext);
@@ -136,11 +136,11 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
     }
   }
 
-  protected final HttpPost createHttpPost(final String path) throws URISyntaxException {
+  protected final HttpPost createHttpPost(String path) throws URISyntaxException {
     return createHttpPost(path, null);
   }
 
-  protected final HttpPost createHttpPost(final String path, final HttpEntity data) throws URISyntaxException {
+  protected final HttpPost createHttpPost(String path, HttpEntity data) throws URISyntaxException {
     HttpPost post = new HttpPost(createURIBuilder(path).build());
     if (data != null) {
       post.setEntity(data);
@@ -149,7 +149,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
     return post;
   }
 
-  protected final URIBuilder createURIBuilder(final String path) {
+  protected final URIBuilder createURIBuilder(String path) {
     return new URIBuilder().setScheme(httpsEnabled ? HTTPS : HTTP).setHost(baseurl).setPath(path);
   }
 
@@ -166,14 +166,14 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
     }
   }
 
-  protected static RuntimeException logAndWrap(final Exception e) {
+  protected static RuntimeException logAndWrap(Exception e) {
     LOG.error(e.getMessage(), e);
 
     return new RuntimeException(e);
   }
 
-  protected static <T> T onResponse(final CloseableHttpResponse closeableHttpResponse) throws Exception {
-    try (final CloseableHttpResponse response = closeableHttpResponse) {
+  protected static <T> T onResponse(CloseableHttpResponse closeableHttpResponse) throws Exception {
+    try (CloseableHttpResponse response = closeableHttpResponse) {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       response.getEntity().writeTo(outputStream);
       if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
@@ -184,7 +184,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
     }
   }
 
-  private CloseableHttpClient createHttpClient(final String clientTypeId, final UUID clientId, final String contentType) {
+  private CloseableHttpClient createHttpClient(String clientTypeId, UUID clientId, String contentType) {
     String clientIdString = clientId.toString();
 
     return HttpClientBuilder.create()
@@ -199,7 +199,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
             .build();
   }
 
-  private static HttpClientContext createHttpContext(final User user, final HttpHost targetHost) {
+  private static HttpClientContext createHttpContext(User user, HttpHost targetHost) {
     CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     credentialsProvider.setCredentials(
             new AuthScope(targetHost.getHostName(), targetHost.getPort()),

@@ -29,7 +29,7 @@ public interface Item<T> extends Comparable<Item<T>>, Serializable {
    * @param <T> the value type
    * @return an Item based on the given value
    */
-  static <T> Item<T> item(final T value) {
+  static <T> Item<T> item(T value) {
     if (value == null) {
       return (Item<T>) DefaultItem.NULL_ITEM;
     }
@@ -45,7 +45,7 @@ public interface Item<T> extends Comparable<Item<T>>, Serializable {
    * @return an Item based on the given value and caption
    * @throws NullPointerException if caption is null
    */
-  static <T> Item<T> item(final T value, final String caption) {
+  static <T> Item<T> item(T value, String caption) {
     return new DefaultItem<>(value, caption);
   }
 
@@ -59,7 +59,7 @@ public interface Item<T> extends Comparable<Item<T>>, Serializable {
    * @param <T> the value type
    * @return an Item based on the given value and resource bundle
    */
-  static <T> Item<T> itemI18n(final T value, final String resourceBundleName, final String resourceBundleKey) {
+  static <T> Item<T> itemI18n(T value, String resourceBundleName, String resourceBundleKey) {
     return new ItemI18n<>(value, resourceBundleName, resourceBundleKey);
   }
 }

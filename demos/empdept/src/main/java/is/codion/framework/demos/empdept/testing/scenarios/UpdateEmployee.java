@@ -22,7 +22,7 @@ public final class UpdateEmployee extends AbstractEntityUsageScenario<EmpDeptApp
   private final Random random = new Random();
 
   @Override
-  protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws Exception {
+  protected void perform(EmpDeptAppPanel.EmpDeptApplicationModel application) throws Exception {
     SwingEntityModel departmentModel = application.getEntityModel(Department.TYPE);
     selectRandomRow(departmentModel.getTableModel());
     SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);

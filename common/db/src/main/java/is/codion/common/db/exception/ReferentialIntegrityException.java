@@ -15,7 +15,7 @@ public final class ReferentialIntegrityException extends DatabaseException {
    * @param cause the underlying cause
    * @param message the error message
    */
-  public ReferentialIntegrityException(final SQLException cause, final String message) {
+  public ReferentialIntegrityException(SQLException cause, String message) {
     super(cause, message);
   }
 }

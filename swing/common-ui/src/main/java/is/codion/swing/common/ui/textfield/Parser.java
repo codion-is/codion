@@ -45,7 +45,7 @@ public interface Parser<T> {
    * @param value the parsed value
    * @return a new parse result
    */
-  static <T> ParseResult<T> parseResult(final String text, final T value) {
+  static <T> ParseResult<T> parseResult(String text, T value) {
     return parseResult(text, value, true);
   }
 
@@ -57,7 +57,7 @@ public interface Parser<T> {
    * @param successful true if the parsing was successful
    * @return a new parse result
    */
-  static <T> ParseResult<T> parseResult(final String text, final T value, final boolean successful) {
+  static <T> ParseResult<T> parseResult(String text, T value, boolean successful) {
     return new DefaultParseResult<>(text, value, successful);
   }
 }

@@ -282,7 +282,7 @@ public interface ServerConfiguration {
    * @param <B> the builder type
    * @return a default server configuration
    */
-  static <B extends Builder<B>> Builder<B> builder(final int serverPort) {
+  static <B extends Builder<B>> Builder<B> builder(int serverPort) {
     return (Builder<B>) new DefaultServerConfiguration.DefaultBuilder(serverPort, Registry.REGISTRY_PORT);
   }
 
@@ -292,7 +292,7 @@ public interface ServerConfiguration {
    * @param <B> the builder type
    * @return a default server configuration
    */
-  static <B extends Builder<B>> Builder<B> builder(final int serverPort, final int registryPort) {
+  static <B extends Builder<B>> Builder<B> builder(int serverPort, int registryPort) {
     return (Builder<B>) new DefaultServerConfiguration.DefaultBuilder(serverPort, registryPort);
   }
 

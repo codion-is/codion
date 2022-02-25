@@ -16,7 +16,7 @@ public class LengthValidationException extends ValidationException {
    * @param value the value that exceeds the allowed length
    * @param message the message
    */
-  public LengthValidationException(final Attribute<?> attribute, final Object value, final String message) {
+  public LengthValidationException(Attribute<?> attribute, Object value, String message) {
     super(attribute, value, message);
   }
 }

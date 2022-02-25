@@ -59,7 +59,7 @@ public final class Utilities {
    * Calls {@link JComponent#updateUI()} for the given components, ignores null components.
    * @param components the components to update the UI for
    */
-  public static void updateUI(final JComponent... components) {
+  public static void updateUI(JComponent... components) {
     if (components != null) {
       updateUI(Arrays.asList(components));
     }
@@ -69,9 +69,9 @@ public final class Utilities {
    * Calls {@link JComponent#updateUI()} for the given components, ignores null components.
    * @param components the components to update the UI for
    */
-  public static void updateUI(final Collection<? extends JComponent> components) {
+  public static void updateUI(Collection<? extends JComponent> components) {
     if (components != null) {
-      for (final JComponent component : components) {
+      for (JComponent component : components) {
         if (component != null) {
           component.updateUI();
         }
@@ -86,7 +86,7 @@ public final class Utilities {
    * @param action the action
    * @return the linked action
    */
-  public static Action linkToEnabledState(final StateObserver enabledState, final Action action) {
+  public static Action linkToEnabledState(StateObserver enabledState, Action action) {
     requireNonNull(enabledState, "enabledState");
     requireNonNull(action, "action");
     action.setEnabled(enabledState.get());
@@ -100,10 +100,10 @@ public final class Utilities {
    * @param enabledState the StateObserver with which to link the components
    * @param components the components
    */
-  public static void linkToEnabledState(final StateObserver enabledState, final JComponent... components) {
+  public static void linkToEnabledState(StateObserver enabledState, JComponent... components) {
     requireNonNull(components, "components");
     requireNonNull(enabledState, "enabledState");
-    for (final JComponent component : components) {
+    for (JComponent component : components) {
       if (component != null) {
         component.setEnabled(enabledState.get());
         enabledState.addListener(() -> SwingUtilities.invokeLater(() ->
@@ -119,7 +119,7 @@ public final class Utilities {
    * @param <T> the property data type
    * @return a {@link EventObserver} notified each time the value of the given property changes
    */
-  public static <T> EventObserver<T> propertyChangeObserver(final JComponent component, final String property) {
+  public static <T> EventObserver<T> propertyChangeObserver(JComponent component, String property) {
     requireNonNull(component, COMPONENT);
     requireNonNull(property, "property");
     Event<T> event = Event.event();
@@ -133,7 +133,7 @@ public final class Utilities {
    * @param main the main model
    * @param linked the model to link with main
    */
-  public static void linkBoundedRangeModels(final BoundedRangeModel main, final BoundedRangeModel linked) {
+  public static void linkBoundedRangeModels(BoundedRangeModel main, BoundedRangeModel linked) {
     requireNonNull(main, "main");
     requireNonNull(linked, "linked");
     main.addChangeListener(e -> linked.setRangeProperties(main.getValue(), main.getExtent(),
@@ -145,7 +145,7 @@ public final class Utilities {
    * @param tree the tree
    * @param parent the parent from which to exapand
    */
-  public static void expandAll(final JTree tree, final TreePath parent) {
+  public static void expandAll(JTree tree, TreePath parent) {
     requireNonNull(tree, "tree");
     requireNonNull(parent, "parent");
     TreeNode node = (TreeNode) parent.getLastPathComponent();
@@ -164,7 +164,7 @@ public final class Utilities {
    * @param tree the tree
    * @param parent the parent from which to collapse
    */
-  public static void collapseAll(final JTree tree, final TreePath parent) {
+  public static void collapseAll(JTree tree, TreePath parent) {
     requireNonNull(tree, "tree");
     requireNonNull(parent, "parent");
     TreeNode node = (TreeNode) parent.getLastPathComponent();
@@ -183,14 +183,14 @@ public final class Utilities {
    * @param component the component
    * @param onFocusAction the action to run when the focus has been requested
    */
-  public static void addInitialFocusHack(final JComponent component, final Action onFocusAction) {
+  public static void addInitialFocusHack(JComponent component, Action onFocusAction) {
     requireNonNull(component, COMPONENT);
     requireNonNull(onFocusAction, "onFocusAction");
     component.addHierarchyListener(e -> {
       if (component.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
         SwingUtilities.getWindowAncestor(component).addWindowFocusListener(new WindowAdapter() {
           @Override
-          public void windowGainedFocus(final WindowEvent windowEvent) {
+          public void windowGainedFocus(WindowEvent windowEvent) {
             component.requestFocus();
             if (onFocusAction != null) {
               onFocusAction.actionPerformed(new ActionEvent(component, 0, "onFocusAction"));
@@ -207,7 +207,7 @@ public final class Utilities {
    * @param resourceName the resource name
    * @return an icon
    */
-  public static ImageIcon loadIcon(final Class<?> resourceClass, final String resourceName) {
+  public static ImageIcon loadIcon(Class<?> resourceClass, String resourceName) {
     URL url = requireNonNull(resourceClass).getResource(resourceName);
     requireNonNull(url, "Resource: " + resourceName + " for " + resourceClass);
 
@@ -218,7 +218,7 @@ public final class Utilities {
    * Sets a global font size multiplier.
    * @param multiplier the font size multiplier
    */
-  public static void setFontSize(final float multiplier) {
+  public static void setFontSize(float multiplier) {
     UIDefaults defaults = UIManager.getDefaults();
     Enumeration<Object> enumeration = defaults.keys();
     while (enumeration.hasMoreElements()) {
@@ -243,7 +243,7 @@ public final class Utilities {
    * @return a darker version of the given color
    * @see Color#darker()
    */
-  public static Color darker(final Color color) {
+  public static Color darker(Color color) {
     return darker(color, 0.8);
   }
 
@@ -254,7 +254,7 @@ public final class Utilities {
    * @return a darker version of the given color
    * @see Color#darker()
    */
-  public static Color darker(final Color color, final double factor) {
+  public static Color darker(Color color, double factor) {
     requireNonNull(color);
     if (factor <= 0 || factor >= 1) {
       throw new IllegalArgumentException("Factor must be between 0 and 1, non-inclusive");
@@ -270,7 +270,7 @@ public final class Utilities {
    * Sets the given string as clipboard contents
    * @param string the string to put on the clipboard
    */
-  public static void setClipboard(final String string) {
+  public static void setClipboard(String string) {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(string), null);
   }
 
@@ -280,7 +280,7 @@ public final class Utilities {
    * than one file is dropped)
    * @param textComponent the text component
    */
-  public static void addAcceptSingleFileDragAndDrop(final JTextComponent textComponent) {
+  public static void addAcceptSingleFileDragAndDrop(JTextComponent textComponent) {
     requireNonNull(textComponent, "textComponent");
     textComponent.setDragEnabled(true);
     textComponent.setTransferHandler(new FileTransferHandler(textComponent));
@@ -290,7 +290,7 @@ public final class Utilities {
    * @param transferSupport a drag'n drop transfer support instance
    * @return true if the given transfer support instance represents a file or a list of files
    */
-  public static boolean isFileDataFlavor(final TransferHandler.TransferSupport transferSupport) {
+  public static boolean isFileDataFlavor(TransferHandler.TransferSupport transferSupport) {
     requireNonNull(transferSupport, "transferSupport");
     try {
       DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
@@ -310,10 +310,10 @@ public final class Utilities {
    * @return the files described by the given transfer support object
    * @throws RuntimeException in case of an exception
    */
-  public static List<File> getTransferFiles(final TransferHandler.TransferSupport transferSupport) {
+  public static List<File> getTransferFiles(TransferHandler.TransferSupport transferSupport) {
     requireNonNull(transferSupport, "transferSupport");
     try {
-      for (final DataFlavor flavor : transferSupport.getDataFlavors()) {
+      for (DataFlavor flavor : transferSupport.getDataFlavors()) {
         if (flavor.isFlavorJavaFileListType()) {
           List<File> files = (List<File>) transferSupport.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 
@@ -348,11 +348,11 @@ public final class Utilities {
    * @param clazz the class of the parent to find
    * @return the parent of the given component of the given type, an empty Optional if none is found
    */
-  public static <T> Optional<T> getParentOfType(final Component component, final Class<T> clazz) {
+  public static <T> Optional<T> getParentOfType(Component component, Class<T> clazz) {
     return Optional.ofNullable((T) SwingUtilities.getAncestorOfClass(clazz, component));
   }
 
-  private static void updateUI(final JComponent component) {
+  private static void updateUI(JComponent component) {
     if (component != null) {
       component.updateUI();
       if (component instanceof JMenu) {
@@ -368,17 +368,17 @@ public final class Utilities {
 
     private final JTextComponent textComponent;
 
-    private FileTransferHandler(final JTextComponent textComponent) {
+    private FileTransferHandler(JTextComponent textComponent) {
       this.textComponent = textComponent;
     }
 
     @Override
-    public boolean canImport(final TransferSupport transferSupport) {
+    public boolean canImport(TransferSupport transferSupport) {
       return isFileDataFlavor(transferSupport);
     }
 
     @Override
-    public boolean importData(final TransferSupport transferSupport) {
+    public boolean importData(TransferSupport transferSupport) {
       List<File> files = getTransferFiles(transferSupport);
       if (files.isEmpty()) {
         return false;

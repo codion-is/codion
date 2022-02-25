@@ -27,13 +27,13 @@ final class DefaultCopyEntities implements CopyEntities {
   private int batchSize = 100;
   private boolean includePrimaryKeys = true;
 
-  DefaultCopyEntities(final EntityConnection source, final EntityConnection destination, final List<EntityType> entityTypes) {
+  DefaultCopyEntities(EntityConnection source, EntityConnection destination, List<EntityType> entityTypes) {
     this.source = requireNonNull(source, "source");
     this.destination = requireNonNull(destination, "destination");
     this.entityTypes = requireNonNull(entityTypes);
   }
 
-  private DefaultCopyEntities(final DefaultCopyEntities copyEntities) {
+  private DefaultCopyEntities(DefaultCopyEntities copyEntities) {
     this.source = copyEntities.source;
     this.destination = copyEntities.destination;
     this.entityTypes = copyEntities.entityTypes;
@@ -43,7 +43,7 @@ final class DefaultCopyEntities implements CopyEntities {
   }
 
   @Override
-  public CopyEntities batchSize(final int batchSize) {
+  public CopyEntities batchSize(int batchSize) {
     if (batchSize <= 0) {
       throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
     }
@@ -54,7 +54,7 @@ final class DefaultCopyEntities implements CopyEntities {
   }
 
   @Override
-  public CopyEntities includePrimaryKeys(final boolean includePrimaryKeys) {
+  public CopyEntities includePrimaryKeys(boolean includePrimaryKeys) {
     DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
     copyEntities.includePrimaryKeys = includePrimaryKeys;
 
@@ -62,7 +62,7 @@ final class DefaultCopyEntities implements CopyEntities {
   }
 
   @Override
-  public CopyEntities condition(final EntityType entityType, final Condition condition) {
+  public CopyEntities condition(EntityType entityType, Condition condition) {
     requireNonNull(entityType);
     requireNonNull(condition);
     DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
@@ -73,7 +73,7 @@ final class DefaultCopyEntities implements CopyEntities {
 
   @Override
   public void execute() throws DatabaseException {
-    for (final EntityType entityType : entityTypes) {
+    for (EntityType entityType : entityTypes) {
       List<Entity> entities = source.select(conditions.getOrDefault(entityType, Conditions.condition(entityType))
               .toSelectCondition()
               .fetchDepth(0));

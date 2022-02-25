@@ -12,7 +12,7 @@ public final class CountryLanguageTableModel extends SwingEntityTableModel {
 
   private final DefaultPieDataset<String> chartDataset = new DefaultPieDataset<>();
 
-  CountryLanguageTableModel(final EntityConnectionProvider connectionProvider) {
+  CountryLanguageTableModel(EntityConnectionProvider connectionProvider) {
     super(CountryLanguage.TYPE, connectionProvider);
     addRefreshListener(this::refreshChartDataset);
   }

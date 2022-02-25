@@ -20,7 +20,7 @@ final class MySQLDatabase extends AbstractDatabase {
 
   static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
 
-  MySQLDatabase(final String jdbcUrl) {
+  MySQLDatabase(String jdbcUrl) {
     super(jdbcUrl);
   }
 
@@ -35,7 +35,7 @@ final class MySQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getAutoIncrementQuery(final String idSource) {
+  public String getAutoIncrementQuery(String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
@@ -45,12 +45,12 @@ final class MySQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public boolean isReferentialIntegrityException(final SQLException exception) {
+  public boolean isReferentialIntegrityException(SQLException exception) {
     return exception.getErrorCode() == REFERENTIAL_CONSTRAINT_ERROR;
   }
 
   @Override
-  public boolean isUniqueConstraintException(final SQLException exception) {
+  public boolean isUniqueConstraintException(SQLException exception) {
     return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;
   }
 }

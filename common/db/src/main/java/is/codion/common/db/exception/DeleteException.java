@@ -12,7 +12,7 @@ public final class DeleteException extends DatabaseException {
    * Instantiates a new {@link DeleteException}
    * @param message the message
    */
-  public DeleteException(final String message) {
+  public DeleteException(String message) {
     super(message);
   }
 }

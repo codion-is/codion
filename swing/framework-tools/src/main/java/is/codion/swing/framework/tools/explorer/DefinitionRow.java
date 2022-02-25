@@ -10,7 +10,7 @@ public final class DefinitionRow {
   final DatabaseDomain domain;
   final EntityDefinition definition;
 
-  DefinitionRow(final DatabaseDomain domain, final EntityDefinition definition) {
+  DefinitionRow(DatabaseDomain domain, EntityDefinition definition) {
     this.domain = domain;
     this.definition = definition;
   }

@@ -27,61 +27,61 @@ final class ControlsBuilder implements Controls.Builder {
   private KeyStroke keyStroke;
 
   @Override
-  public Controls.Builder caption(final String caption) {
+  public Controls.Builder caption(String caption) {
     this.caption = caption;
     return this;
   }
 
   @Override
-  public Controls.Builder description(final String description) {
+  public Controls.Builder description(String description) {
     this.description = description;
     return this;
   }
 
   @Override
-  public Controls.Builder mnemonic(final char mnenomic) {
+  public Controls.Builder mnemonic(char mnenomic) {
     this.mnemonic = mnenomic;
     return this;
   }
 
   @Override
-  public Controls.Builder keyStroke(final KeyStroke keyStroke) {
+  public Controls.Builder keyStroke(KeyStroke keyStroke) {
     this.keyStroke = keyStroke;
     return this;
   }
 
   @Override
-  public Controls.Builder enabledState(final StateObserver enabledState) {
+  public Controls.Builder enabledState(StateObserver enabledState) {
     this.enabledState = enabledState;
     return this;
   }
 
   @Override
-  public Controls.Builder smallIcon(final Icon smallIcon) {
+  public Controls.Builder smallIcon(Icon smallIcon) {
     this.smallIcon = smallIcon;
     return this;
   }
 
   @Override
-  public Controls.Builder control(final Control control) {
+  public Controls.Builder control(Control control) {
     controls.add(requireNonNull(control));
     return this;
   }
 
   @Override
-  public Controls.Builder control(final Control.Builder controlBuilder) {
+  public Controls.Builder control(Control.Builder controlBuilder) {
     controls.add(requireNonNull(controlBuilder).build());
     return this;
   }
 
   @Override
-  public Controls.Builder controls(final Control... controls) {
+  public Controls.Builder controls(Control... controls) {
     this.controls.addAll(Arrays.asList(requireNonNull(controls)));
     return this;
   }
 
   @Override
-  public Controls.Builder controls(final Control.Builder... controlBuilders) {
+  public Controls.Builder controls(Control.Builder... controlBuilders) {
     this.controls.addAll(Arrays.stream(controlBuilders)
             .map(Control.Builder::build)
             .collect(Collectors.toList()));
@@ -89,13 +89,13 @@ final class ControlsBuilder implements Controls.Builder {
   }
 
   @Override
-  public Controls.Builder action(final Action action) {
+  public Controls.Builder action(Action action) {
     this.controls.add(requireNonNull(action));
     return this;
   }
 
   @Override
-  public Controls.Builder actions(final Action... actions) {
+  public Controls.Builder actions(Action... actions) {
     this.controls.addAll(Arrays.asList(requireNonNull(actions)));
     return this;
   }

@@ -22,7 +22,7 @@ public final class Schema {
 
   private boolean populated = false;
 
-  Schema(final String name) {
+  Schema(String name) {
     this.name = requireNonNull(name);
   }
 
@@ -34,11 +34,11 @@ public final class Schema {
     return unmodifiableMap(tables);
   }
 
-  public void populate(final DatabaseMetaData metaData, final Map<String, Schema> schemas,
-                       final EventDataListener<String> schemaNotifier) {
+  public void populate(DatabaseMetaData metaData, Map<String, Schema> schemas,
+                       EventDataListener<String> schemaNotifier) {
     if (!populated) {
       schemaNotifier.onEvent(name);
-      try (final ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
+      try (ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
         tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
                 .collect(toMap(Table::getTableName, table -> table)));
         tables.values().stream()
@@ -64,7 +64,7 @@ public final class Schema {
   }
 
   @Override
-  public boolean equals(final Object object) {
+  public boolean equals(Object object) {
     if (this == object) {
       return true;
     }

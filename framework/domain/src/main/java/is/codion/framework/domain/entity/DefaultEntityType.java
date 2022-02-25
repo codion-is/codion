@@ -28,8 +28,8 @@ final class DefaultEntityType implements EntityType, Serializable {
   private final String resourceBundleName;
   private final int hashCode;
 
-  DefaultEntityType(final String domainName, final String name, final Class<? extends Entity> entityClass,
-                    final String resourceBundleName) {
+  DefaultEntityType(String domainName, String name, Class<? extends Entity> entityClass,
+                    String resourceBundleName) {
     if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
     }
@@ -67,94 +67,94 @@ final class DefaultEntityType implements EntityType, Serializable {
   }
 
   @Override
-  public <T> Attribute<T> attribute(final String name, final Class<T> typeClass) {
+  public <T> Attribute<T> attribute(String name, Class<T> typeClass) {
     return Attribute.attribute(this, name, typeClass);
   }
 
   @Override
-  public Attribute<Long> longAttribute(final String name) {
+  public Attribute<Long> longAttribute(String name) {
     return attribute(name, Long.class);
   }
 
   @Override
-  public Attribute<Integer> integerAttribute(final String name) {
+  public Attribute<Integer> integerAttribute(String name) {
     return attribute(name, Integer.class);
   }
 
   @Override
-  public Attribute<Double> doubleAttribute(final String name) {
+  public Attribute<Double> doubleAttribute(String name) {
     return attribute(name, Double.class);
   }
 
   @Override
-  public Attribute<BigDecimal> bigDecimalAttribute(final String name) {
+  public Attribute<BigDecimal> bigDecimalAttribute(String name) {
     return attribute(name, BigDecimal.class);
   }
 
   @Override
-  public Attribute<LocalDate> localDateAttribute(final String name) {
+  public Attribute<LocalDate> localDateAttribute(String name) {
     return attribute(name, LocalDate.class);
   }
 
   @Override
-  public Attribute<LocalTime> localTimeAttribute(final String name) {
+  public Attribute<LocalTime> localTimeAttribute(String name) {
     return attribute(name, LocalTime.class);
   }
 
   @Override
-  public Attribute<LocalDateTime> localDateTimeAttribute(final String name) {
+  public Attribute<LocalDateTime> localDateTimeAttribute(String name) {
     return attribute(name, LocalDateTime.class);
   }
 
   @Override
-  public Attribute<OffsetDateTime> offsetDateTimeAttribute(final String name) {
+  public Attribute<OffsetDateTime> offsetDateTimeAttribute(String name) {
     return attribute(name, OffsetDateTime.class);
   }
 
   @Override
-  public Attribute<String> stringAttribute(final String name) {
+  public Attribute<String> stringAttribute(String name) {
     return attribute(name, String.class);
   }
 
   @Override
-  public Attribute<Character> characterAttribute(final String name) {
+  public Attribute<Character> characterAttribute(String name) {
     return attribute(name, Character.class);
   }
 
   @Override
-  public Attribute<Boolean> booleanAttribute(final String name) {
+  public Attribute<Boolean> booleanAttribute(String name) {
     return attribute(name, Boolean.class);
   }
 
   @Override
-  public Attribute<Entity> entityAttribute(final String name) {
+  public Attribute<Entity> entityAttribute(String name) {
     return attribute(name, Entity.class);
   }
 
   @Override
-  public Attribute<byte[]> byteArrayAttribute(final String name) {
+  public Attribute<byte[]> byteArrayAttribute(String name) {
     return attribute(name, byte[].class);
   }
 
   @Override
-  public <A> ForeignKey foreignKey(final String name, final Attribute<A> attribute, final Attribute<A> referencedAttribute) {
+  public <A> ForeignKey foreignKey(String name, Attribute<A> attribute, Attribute<A> referencedAttribute) {
     return foreignKey(name, singletonList(reference(attribute, referencedAttribute)));
   }
 
   @Override
-  public <A, B> ForeignKey foreignKey(final String name,
-                                      final Attribute<A> firstAttribute, final Attribute<A> firstReferencedAttribute,
-                                      final Attribute<B> secondAttribute, final Attribute<B> secondReferencedAttribute) {
+  public <A, B> ForeignKey foreignKey(String name,
+                                      Attribute<A> firstAttribute, Attribute<A> firstReferencedAttribute,
+                                      Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute) {
     return foreignKey(name, asList(
             reference(firstAttribute, firstReferencedAttribute),
             reference(secondAttribute, secondReferencedAttribute)));
   }
 
   @Override
-  public <A, B, C> ForeignKey foreignKey(final String name,
-                                         final Attribute<A> firstAttribute, final Attribute<A> firstReferencedAttribute,
-                                         final Attribute<B> secondAttribute, final Attribute<B> secondReferencedAttribute,
-                                         final Attribute<C> thirdAttribute, final Attribute<C> thirdReferencedAttribute) {
+  public <A, B, C> ForeignKey foreignKey(String name,
+                                         Attribute<A> firstAttribute, Attribute<A> firstReferencedAttribute,
+                                         Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute,
+                                         Attribute<C> thirdAttribute, Attribute<C> thirdReferencedAttribute) {
     return foreignKey(name, asList(
             reference(firstAttribute, firstReferencedAttribute),
             reference(secondAttribute, secondReferencedAttribute),
@@ -162,12 +162,12 @@ final class DefaultEntityType implements EntityType, Serializable {
   }
 
   @Override
-  public ForeignKey foreignKey(final String name, final List<ForeignKey.Reference<?>> references) {
+  public ForeignKey foreignKey(String name, List<ForeignKey.Reference<?>> references) {
     return ForeignKey.foreignKey(this, name, references);
   }
 
   @Override
-  public ConditionType conditionType(final String name) {
+  public ConditionType conditionType(String name) {
     return ConditionType.conditionType(this, name);
   }
 
@@ -182,7 +182,7 @@ final class DefaultEntityType implements EntityType, Serializable {
   }
 
   @Override
-  public boolean equals(final Object object) {
+  public boolean equals(Object object) {
     if (this == object) {
       return true;
     }

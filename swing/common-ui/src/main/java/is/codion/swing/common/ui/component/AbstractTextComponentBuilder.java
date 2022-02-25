@@ -22,24 +22,24 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   private int maximumLength = -1;
   private Insets margin;
 
-  protected AbstractTextComponentBuilder(final Value<T> linkedValue) {
+  protected AbstractTextComponentBuilder(Value<T> linkedValue) {
     super(linkedValue);
   }
 
   @Override
-  public final B editable(final boolean editable) {
+  public final B editable(boolean editable) {
     this.editable = editable;
     return (B) this;
   }
 
   @Override
-  public final B updateOn(final UpdateOn updateOn) {
+  public final B updateOn(UpdateOn updateOn) {
     this.updateOn = requireNonNull(updateOn);
     return (B) this;
   }
 
   @Override
-  public final B upperCase(final boolean upperCase) {
+  public final B upperCase(boolean upperCase) {
     if (upperCase && lowerCase) {
       throw new IllegalArgumentException("Field is already lowercase");
     }
@@ -48,7 +48,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
-  public final B lowerCase(final boolean lowerCase) {
+  public final B lowerCase(boolean lowerCase) {
     if (lowerCase && upperCase) {
       throw new IllegalArgumentException("Field is already uppercase");
     }
@@ -57,13 +57,13 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
-  public final B maximumLength(final int maximumLength) {
+  public final B maximumLength(int maximumLength) {
     this.maximumLength = maximumLength;
     return (B) this;
   }
 
   @Override
-  public final B margin(final Insets margin) {
+  public final B margin(Insets margin) {
     this.margin = margin;
     return (B) this;
   }

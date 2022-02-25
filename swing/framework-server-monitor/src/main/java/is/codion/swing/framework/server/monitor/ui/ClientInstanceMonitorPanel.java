@@ -58,7 +58,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
    * @param model the model
    * @throws RemoteException in case of an exception
    */
-  public ClientInstanceMonitorPanel(final ClientInstanceMonitor model) throws RemoteException {
+  public ClientInstanceMonitorPanel(ClientInstanceMonitor model) throws RemoteException {
     this.model = requireNonNull(model);
     this.logTextArea = createLogTextArea();
     this.searchHighlighter = SearchHighlighter.searchHighlighter(logTextArea);
@@ -131,7 +131,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     return textArea;
   }
 
-  private void saveLogToFile(final JTextArea logArea) throws IOException {
+  private void saveLogToFile(JTextArea logArea) throws IOException {
     if (creationDateField.getText().isEmpty()) {
       throw new IllegalStateException("No client selected");
     }

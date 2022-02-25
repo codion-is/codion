@@ -11,12 +11,12 @@ import javax.swing.SpinnerListModel;
 final class DefaultListSpinnerBuilder<T> extends AbstractSpinnerBuilder<T, ListSpinnerBuilder<T>>
         implements ListSpinnerBuilder<T> {
 
-  DefaultListSpinnerBuilder(final SpinnerListModel spinnerModel, final Value<T> linkedValue) {
+  DefaultListSpinnerBuilder(SpinnerListModel spinnerModel, Value<T> linkedValue) {
     super(spinnerModel, linkedValue);
   }
 
   @Override
-  protected ComponentValue<T, JSpinner> buildComponentValue(final JSpinner component) {
+  protected ComponentValue<T, JSpinner> buildComponentValue(JSpinner component) {
     return ComponentValues.listSpinner(component);
   }
 }

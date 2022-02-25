@@ -75,7 +75,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    * The model contents are sorted automatically with a default collation based comparator.
    * @param nullString a String representing a null value, which is shown at the top of the item list
    */
-  public SwingFilteredComboBoxModel(final String nullString) {
+  public SwingFilteredComboBoxModel(String nullString) {
     this(nullString, new SortComparator<>(nullString));
   }
 
@@ -86,7 +86,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    * the contents are not sorted
    * @see #isNullValueSelected()
    */
-  public SwingFilteredComboBoxModel(final String nullString, final Comparator<T> sortComparator) {
+  public SwingFilteredComboBoxModel(String nullString, Comparator<T> sortComparator) {
     this.nullString = nullString;
     this.sortComparator = sortComparator;
   }
@@ -112,7 +112,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final void setAsyncRefresh(final boolean asyncRefresh) {
+  public final void setAsyncRefresh(boolean asyncRefresh) {
     this.asyncRefresh = asyncRefresh;
   }
 
@@ -128,7 +128,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final void setContents(final Collection<T> contents) {
+  public final void setContents(Collection<T> contents) {
     filteredItems.clear();
     visibleItems.clear();
     if (contents != null) {
@@ -194,7 +194,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final void setIncludeCondition(final Predicate<T> includeCondition) {
+  public final void setIncludeCondition(Predicate<T> includeCondition) {
     this.includeCondition = includeCondition;
     filterContents();
   }
@@ -215,7 +215,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final boolean isVisible(final T item) {
+  public final boolean isVisible(T item) {
     if (item == null) {
       return nullString != null;
     }
@@ -224,12 +224,12 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final boolean isFiltered(final T item) {
+  public final boolean isFiltered(T item) {
     return filteredItems.contains(item);
   }
 
   @Override
-  public final void addItem(final T item) {
+  public final void addItem(T item) {
     if (includeCondition == null || includeCondition.test(item)) {
       if (!visibleItems.contains(item)) {
         visibleItems.add(item);
@@ -242,14 +242,14 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final void removeItem(final T item) {
+  public final void removeItem(T item) {
     visibleItems.remove(item);
     filteredItems.remove(item);
     fireContentsChanged();
   }
 
   @Override
-  public final void replaceItem(final T item, final T replacement) {
+  public final void replaceItem(T item, T replacement) {
     removeItem(item);
     addItem(replacement);
     if (Objects.equals(selectedItem, item)) {
@@ -259,7 +259,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final boolean containsItem(final T item) {
+  public final boolean containsItem(T item) {
     return visibleItems.contains(item) || filteredItems.contains(item);
   }
 
@@ -269,7 +269,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final void setSortComparator(final Comparator<T> sortComparator) {
+  public final void setSortComparator(Comparator<T> sortComparator) {
     this.sortComparator = sortComparator;
     sortVisibleItems();
   }
@@ -280,7 +280,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final void setNullString(final String nullString) {
+  public final void setNullString(String nullString) {
     this.nullString = nullString;
     if (selectedItem == null) {
       setSelectedItem(null);
@@ -320,7 +320,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final void setSelectedItem(final Object anItem) {
+  public final void setSelectedItem(Object anItem) {
     T toSelect = translateSelectionItem(Objects.equals(nullString, anItem) ? null : anItem);
     if (!Objects.equals(selectedItem, toSelect) && allowSelectionChange(toSelect)) {
       selectedItem = toSelect;
@@ -330,7 +330,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final void setFilterSelectedItem(final boolean filterSelectedItem) {
+  public final void setFilterSelectedItem(boolean filterSelectedItem) {
     this.filterSelectedItem = filterSelectedItem;
   }
 
@@ -340,19 +340,19 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final void addListDataListener(final ListDataListener listener) {
+  public final void addListDataListener(ListDataListener listener) {
     requireNonNull(listener, "listener");
     listDataListeners.add(listener);
   }
 
   @Override
-  public final void removeListDataListener(final ListDataListener listener) {
+  public final void removeListDataListener(ListDataListener listener) {
     requireNonNull(listener, "listener");
     listDataListeners.remove(listener);
   }
 
   @Override
-  public final T getElementAt(final int index) {
+  public final T getElementAt(int index) {
     T element = visibleItems.get(index);
     if (element == null) {
       return (T) nullString;//very hacky, buggy even?
@@ -367,42 +367,42 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final void addFilterListener(final EventListener listener) {
+  public final void addFilterListener(EventListener listener) {
     filterEvent.addListener(listener);
   }
 
   @Override
-  public final void removeFilterListener(final EventListener listener) {
+  public final void removeFilterListener(EventListener listener) {
     filterEvent.removeListener(listener);
   }
 
   @Override
-  public final void addRefreshListener(final EventListener listener) {
+  public final void addRefreshListener(EventListener listener) {
     refreshEvent.addListener(listener);
   }
 
   @Override
-  public final void removeRefreshListener(final EventListener listener) {
+  public final void removeRefreshListener(EventListener listener) {
     refreshEvent.removeListener(listener);
   }
 
   @Override
-  public final void addRefreshFailedListener(final EventDataListener<Throwable> listener) {
+  public final void addRefreshFailedListener(EventDataListener<Throwable> listener) {
     refreshFailedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeRefreshFailedListener(final EventDataListener<Throwable> listener) {
+  public final void removeRefreshFailedListener(EventDataListener<Throwable> listener) {
     refreshFailedEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addSelectionListener(final EventDataListener<T> listener) {
+  public final void addSelectionListener(EventDataListener<T> listener) {
     selectionChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeSelectionListener(final EventDataListener<T> listener) {
+  public final void removeSelectionListener(EventDataListener<T> listener) {
     selectionChangedEvent.removeDataListener(listener);
   }
 
@@ -425,7 +425,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    * @param itemToSelect the item to be selected
    * @return true if the selection change is ok, false if it should be vetoed
    */
-  protected boolean allowSelectionChange(final T itemToSelect) {
+  protected boolean allowSelectionChange(T itemToSelect) {
     return true;
   }
 
@@ -433,7 +433,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    * @param item the item to be selected
    * @return the actual item to select
    */
-  protected T translateSelectionItem(final Object item) {
+  protected T translateSelectionItem(Object item) {
     return (T) item;
   }
 
@@ -442,7 +442,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    */
   protected final void fireContentsChanged() {
     ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
-    for (final ListDataListener dataListener : listDataListeners) {
+    for (ListDataListener dataListener : listDataListeners) {
       dataListener.contentsChanged(event);
     }
   }
@@ -479,12 +479,12 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     refreshingState.set(true);
   }
 
-  private void onRefreshFailed(final Throwable throwable) {
+  private void onRefreshFailed(Throwable throwable) {
     refreshingState.set(false);
     refreshFailedEvent.onEvent(throwable);
   }
 
-  private void onRefreshResult(final Collection<T> items) {
+  private void onRefreshResult(Collection<T> items) {
     refreshingState.set(false);
     setContents(items);
     refreshEvent.onEvent();
@@ -495,12 +495,12 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     private final String nullValue;
     private final Comparator<T> comparator = Text.getSpaceAwareCollator();
 
-    SortComparator(final String nullValue) {
+    SortComparator(String nullValue) {
       this.nullValue = nullValue;
     }
 
     @Override
-    public int compare(final T o1, final T o2) {
+    public int compare(T o1, T o2) {
       if (o1 == null && o2 == null) {
         return 0;
       }

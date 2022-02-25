@@ -12,7 +12,7 @@ import is.codion.javafx.framework.model.FXEntityModel;
 
 public final class EmpDeptFXModel extends FXEntityApplicationModel {
 
-  public EmpDeptFXModel(final EntityConnectionProvider connectionProvider) {
+  public EmpDeptFXModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
     setupEntityModels();
   }

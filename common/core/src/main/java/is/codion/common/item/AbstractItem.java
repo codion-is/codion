@@ -20,7 +20,7 @@ abstract class AbstractItem<T> implements Item<T> {
    * Instantiates a new Item.
    * @param value the value, may be null
    */
-  AbstractItem(final T value) {
+  AbstractItem(T value) {
     this.value = value;
   }
 
@@ -35,7 +35,7 @@ abstract class AbstractItem<T> implements Item<T> {
    * @return the compare result
    */
   @Override
-  public final int compareTo(final Item<T> item) {
+  public final int compareTo(Item<T> item) {
     return getCollator().compare(getCaption(), item.getCaption());
   }
 
@@ -48,7 +48,7 @@ abstract class AbstractItem<T> implements Item<T> {
   }
 
   @Override
-  public final boolean equals(final Object obj) {
+  public final boolean equals(Object obj) {
     return this == obj || obj instanceof Item && Objects.equals(value, ((Item<?>) obj).getValue());
   }
 

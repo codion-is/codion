@@ -32,12 +32,12 @@ final class DatabaseDomain extends DefaultDomain {
 
   private final Map<Table, EntityType> tableEntityTypes = new HashMap<>();
 
-  DatabaseDomain(final DomainType domainType, final Collection<Table> tables) {
+  DatabaseDomain(DomainType domainType, Collection<Table> tables) {
     super(domainType);
     tables.forEach(this::defineEntity);
   }
 
-  private void defineEntity(final Table table) {
+  private void defineEntity(Table table) {
     if (!tableEntityTypes.containsKey(table)) {
       EntityType entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
       tableEntityTypes.put(table, entityType);
@@ -49,14 +49,14 @@ final class DatabaseDomain extends DefaultDomain {
     }
   }
 
-  private void define(final EntityType entityType, final List<Property.Builder<?, ?>> propertyBuilders) {
+  private void define(EntityType entityType, List<Property.Builder<?, ?>> propertyBuilders) {
     if (!propertyBuilders.isEmpty()) {
       define(entityType, entityType.getName(), propertyBuilders.toArray(new Property.Builder[0]));
     }
   }
 
-  private List<Property.Builder<?, ?>> getPropertyBuilders(final Table table, final EntityType entityType,
-                                                           final List<ForeignKeyConstraint> foreignKeyConstraints) {
+  private List<Property.Builder<?, ?>> getPropertyBuilders(Table table, EntityType entityType,
+                                                           List<ForeignKeyConstraint> foreignKeyConstraints) {
     List<Property.Builder<?, ?>> builders = new ArrayList<>();
     table.getColumns().forEach(column -> {
       builders.add(getColumnPropertyBuilder(column, entityType));
@@ -74,7 +74,7 @@ final class DatabaseDomain extends DefaultDomain {
     return builders;
   }
 
-  private Property.Builder<?, ?> getForeignKeyPropertyBuilder(final ForeignKeyConstraint foreignKeyConstraint, final EntityType entityType) {
+  private Property.Builder<?, ?> getForeignKeyPropertyBuilder(ForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
     Table referencedTable = foreignKeyConstraint.getReferencedTable();
     EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
     ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
@@ -85,7 +85,7 @@ final class DatabaseDomain extends DefaultDomain {
     return foreignKeyProperty(foreignKey, getCaption(referencedTable.getTableName()));
   }
 
-  private static ColumnProperty.Builder<?, ?> getColumnPropertyBuilder(final Column column, final EntityType entityType) {
+  private static ColumnProperty.Builder<?, ?> getColumnPropertyBuilder(Column column, EntityType entityType) {
     String caption = getCaption(column.getColumnName());
     Attribute<?> attribute = getAttribute(entityType, column);
     ColumnProperty.Builder<?, ?> builder;
@@ -117,17 +117,17 @@ final class DatabaseDomain extends DefaultDomain {
     return builder;
   }
 
-  private static <T> Attribute<T> getAttribute(final EntityType entityType, final Column column) {
+  private static <T> Attribute<T> getAttribute(EntityType entityType, Column column) {
     return (Attribute<T>) entityType.attribute(column.getColumnName(), column.getColumnTypeClass());
   }
 
-  private static String getCaption(final String name) {
+  private static String getCaption(String name) {
     String caption = name.toLowerCase().replace("_", " ");
 
     return caption.substring(0, 1).toUpperCase() + caption.substring(1);
   }
 
-  private static boolean isLastKeyColumn(final ForeignKeyConstraint foreignKeyConstraint, final Column column) {
+  private static boolean isLastKeyColumn(ForeignKeyConstraint foreignKeyConstraint, Column column) {
     OptionalInt lastColumnPosition = foreignKeyConstraint.getReferences().keySet().stream()
             .mapToInt(Column::getPosition)
             .max();
@@ -135,7 +135,7 @@ final class DatabaseDomain extends DefaultDomain {
     return lastColumnPosition.isPresent() && column.getPosition() == lastColumnPosition.getAsInt();
   }
 
-  private static String createForeignKeyName(final ForeignKeyConstraint foreignKeyConstraint) {
+  private static String createForeignKeyName(ForeignKeyConstraint foreignKeyConstraint) {
     return foreignKeyConstraint.getReferences().keySet().stream()
             .map(Column::getColumnName)
             .map(String::toUpperCase)

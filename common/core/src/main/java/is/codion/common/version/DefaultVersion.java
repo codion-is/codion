@@ -37,7 +37,7 @@ final class DefaultVersion implements Version, Serializable {
    * @param patch the patch version
    * @param metadata the metadata, fx. build information
    */
-  public DefaultVersion(final int major, final int minor, final int patch, final String metadata) {
+  public DefaultVersion(int major, int minor, int patch, String metadata) {
     if (major < 0 || minor < 0 || patch < 0) {
       throw new IllegalArgumentException("Major, minor and patch must be non-negative integers");
     }
@@ -85,7 +85,7 @@ final class DefaultVersion implements Version, Serializable {
   }
 
   @Override
-  public boolean equals(final Object obj) {
+  public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
@@ -103,7 +103,7 @@ final class DefaultVersion implements Version, Serializable {
   }
 
   @Override
-  public int compareTo(final Version version) {
+  public int compareTo(Version version) {
     int result = Integer.compare(major, version.getMajor());
     if (result == 0) {
       result = Integer.compare(minor, version.getMinor());
@@ -118,7 +118,7 @@ final class DefaultVersion implements Version, Serializable {
     return result;
   }
 
-  private static int compareMetadata(final String metadata, final String toCompare) {
+  private static int compareMetadata(String metadata, String toCompare) {
     if (metadata != null && toCompare != null) {
       return metadata.compareToIgnoreCase(toCompare);
     }

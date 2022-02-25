@@ -12,7 +12,7 @@ public class ReportException extends Exception {
    * Instantiates a new ReportException
    * @param message the exception message
    */
-  public ReportException(final String message) {
+  public ReportException(String message) {
     super(message);
   }
 
@@ -21,7 +21,7 @@ public class ReportException extends Exception {
    * @param message the exception message
    * @param cause the root cause
    */
-  public ReportException(final String message, final Throwable cause) {
+  public ReportException(String message, Throwable cause) {
     super(message, cause);
   }
 
@@ -29,7 +29,7 @@ public class ReportException extends Exception {
    * Instantiates a new ReportException
    * @param cause the root cause
    */
-  public ReportException(final Throwable cause) {
+  public ReportException(Throwable cause) {
     super(cause);
   }
 }

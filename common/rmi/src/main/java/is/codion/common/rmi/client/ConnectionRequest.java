@@ -105,31 +105,31 @@ public interface ConnectionRequest {
     private Map<String, Object> parameters;
 
     @Override
-    public Builder user(final User user) {
+    public Builder user(User user) {
       this.user = requireNonNull(user);
       return this;
     }
 
     @Override
-    public Builder clientId(final UUID clientId) {
+    public Builder clientId(UUID clientId) {
       this.clientId = requireNonNull(clientId);
       return this;
     }
 
     @Override
-    public Builder clientTypeId(final String clientTypeId) {
+    public Builder clientTypeId(String clientTypeId) {
       this.clientTypeId = requireNonNull(clientTypeId);
       return this;
     }
 
     @Override
-    public Builder clientVersion(final Version clientVersion) {
+    public Builder clientVersion(Version clientVersion) {
       this.clientVersion = clientVersion;
       return this;
     }
 
     @Override
-    public Builder parameter(final String key, final Object value) {
+    public Builder parameter(String key, Object value) {
       if (parameters == null) {
         parameters = new HashMap<>();
       }

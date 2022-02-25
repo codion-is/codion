@@ -10,24 +10,24 @@ import java.text.NumberFormat;
 
 class DefaultLongFieldBuilder extends AbstractNumberFieldBuilder<Long, LongField, LongFieldBuilder> implements LongFieldBuilder {
 
-  DefaultLongFieldBuilder(final Value<Long> linkedValue) {
+  DefaultLongFieldBuilder(Value<Long> linkedValue) {
     super(Long.class, linkedValue);
   }
 
   @Override
-  public LongFieldBuilder range(final long from, final long to) {
+  public LongFieldBuilder range(long from, long to) {
     minimumValue((double) from);
     maximumValue((double) to);
     return this;
   }
 
   @Override
-  protected LongField createNumberField(final NumberFormat format) {
+  protected LongField createNumberField(NumberFormat format) {
     return format == null ? new LongField() : new LongField(format);
   }
 
   @Override
-  protected ComponentValue<Long, LongField> buildComponentValue(final LongField component) {
+  protected ComponentValue<Long, LongField> buildComponentValue(LongField component) {
     return ComponentValues.longField(component, true, updateOn);
   }
 }

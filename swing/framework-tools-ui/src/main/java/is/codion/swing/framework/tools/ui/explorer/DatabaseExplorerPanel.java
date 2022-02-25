@@ -42,7 +42,7 @@ public final class DatabaseExplorerPanel extends JPanel {
    * Instantiates a new DatabaseExplorerPanel.
    * @param model the database explorer model to base this panel on
    */
-  DatabaseExplorerPanel(final DatabaseExplorerModel model) {
+  DatabaseExplorerPanel(DatabaseExplorerModel model) {
     this.model = requireNonNull(model);
     FilteredTable<Schema, Integer, AbstractFilteredTableModel<Schema, Integer>> schemaTable =
             new FilteredTable<>(model.getSchemaModel());
@@ -82,7 +82,7 @@ public final class DatabaseExplorerPanel extends JPanel {
             .show();
   }
 
-  private void populateSchema(final MouseEvent event) {
+  private void populateSchema(MouseEvent event) {
     JPanel northPanel = new JPanel(Layouts.borderLayout());
     JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
     northPanel.add(schemaLabel, BorderLayout.CENTER);
@@ -99,7 +99,7 @@ public final class DatabaseExplorerPanel extends JPanel {
    * Runs a DatabaseExplorerPanel instance in a frame
    * @param arguments no arguments required
    */
-  public static void main(final String[] arguments) {
+  public static void main(String[] arguments) {
     try {
       Database database = DatabaseFactory.getDatabase();
       DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(database,

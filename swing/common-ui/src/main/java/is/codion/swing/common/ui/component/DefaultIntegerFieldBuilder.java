@@ -11,24 +11,24 @@ import java.text.NumberFormat;
 final class DefaultIntegerFieldBuilder extends AbstractNumberFieldBuilder<Integer, IntegerField, IntegerFieldBuilder>
         implements IntegerFieldBuilder {
 
-  DefaultIntegerFieldBuilder(final Value<Integer> linkedValue) {
+  DefaultIntegerFieldBuilder(Value<Integer> linkedValue) {
     super(Integer.class, linkedValue);
   }
 
   @Override
-  public IntegerFieldBuilder range(final int from, final int to) {
+  public IntegerFieldBuilder range(int from, int to) {
     minimumValue((double) from);
     maximumValue((double) to);
     return this;
   }
 
   @Override
-  protected IntegerField createNumberField(final NumberFormat format) {
+  protected IntegerField createNumberField(NumberFormat format) {
     return format == null ? new IntegerField() : new IntegerField(format);
   }
 
   @Override
-  protected ComponentValue<Integer, IntegerField> buildComponentValue(final IntegerField component) {
+  protected ComponentValue<Integer, IntegerField> buildComponentValue(IntegerField component) {
     return ComponentValues.integerField(component, true, updateOn);
   }
 }

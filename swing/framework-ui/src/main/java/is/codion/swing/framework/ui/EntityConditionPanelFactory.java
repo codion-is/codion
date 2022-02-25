@@ -47,13 +47,13 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
    * Instantiates a new {@link EntityConditionPanelFactory}
    * @param tableConditionModel the table condition model
    */
-  public EntityConditionPanelFactory(final EntityTableConditionModel tableConditionModel) {
+  public EntityConditionPanelFactory(EntityTableConditionModel tableConditionModel) {
     this.tableConditionModel = requireNonNull(tableConditionModel);
     this.entityComponents = new EntityComponents(tableConditionModel.getEntityDefinition());
   }
 
   @Override
-  public final <T> ColumnConditionPanel<?, T> createConditionPanel(final TableColumn column) {
+  public final <T> ColumnConditionPanel<?, T> createConditionPanel(TableColumn column) {
     ColumnConditionModel<Attribute<T>, T> conditionModel = (ColumnConditionModel<Attribute<T>, T>)
             tableConditionModel.getConditionModels().get(column.getIdentifier());
 
@@ -68,7 +68,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
    * @return a ColumnConditionPanel based on the given model
    * @see #createDefaultConditionPanel(ColumnConditionModel)
    */
-  protected <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createConditionPanel(final ColumnConditionModel<C, T> conditionModel) {
+  protected <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createConditionPanel(ColumnConditionModel<C, T> conditionModel) {
     return createDefaultConditionPanel(requireNonNull(conditionModel));
   }
 
@@ -79,7 +79,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
    * @param conditionModel the {@link ColumnConditionModel} for which to create a condition panel
    * @return a ColumnConditionPanel based on the given model
    */
-  protected final <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createDefaultConditionPanel(final ColumnConditionModel<C, T> conditionModel) {
+  protected final <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createDefaultConditionPanel(ColumnConditionModel<C, T> conditionModel) {
     ColumnConditionPanel.BoundFieldFactory boundFieldFactory;
     if (conditionModel instanceof ForeignKeyConditionModel) {
       boundFieldFactory = new ForeignKeyBoundFieldFactory((ForeignKeyConditionModel) conditionModel, entityComponents);
@@ -104,7 +104,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
     private final EntityComponents entityComponents;
     private final ColumnConditionModel<ForeignKey, Entity> model;
 
-    private ForeignKeyBoundFieldFactory(final ColumnConditionModel<ForeignKey, Entity> model, final EntityComponents entityComponents) {
+    private ForeignKeyBoundFieldFactory(ColumnConditionModel<ForeignKey, Entity> model, EntityComponents entityComponents) {
       this.model = model;
       this.entityComponents = entityComponents;
     }
@@ -146,9 +146,9 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
     private final EntityComponents inputComponents;
     private final Attribute<T> attribute;
 
-    private AttributeBoundFieldFactory(final ColumnConditionModel<C, T> conditionModel,
-                                       final EntityComponents inputComponents,
-                                       final Attribute<T> attribute) {
+    private AttributeBoundFieldFactory(ColumnConditionModel<C, T> conditionModel,
+                                       EntityComponents inputComponents,
+                                       Attribute<T> attribute) {
       this.conditionModel = requireNonNull(conditionModel);
       this.inputComponents = inputComponents;
       this.attribute = requireNonNull(attribute);
@@ -186,7 +186,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
               .build());
     }
 
-    private static JComponent configureComponent(final JComponent component) {
+    private static JComponent configureComponent(JComponent component) {
       if (component instanceof JTextField) {
         ((JTextField) component).setColumns(0);
         ((JTextField) component).setHorizontalAlignment(SwingConstants.CENTER);

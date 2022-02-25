@@ -27,61 +27,61 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
   private boolean mouseWheelScrolling = true;
   private boolean mouseWheelScrollingReversed = false;
 
-  DefaultSliderBuilder(final BoundedRangeModel boundedRangeModel, final Value<Integer> linkedValue) {
+  DefaultSliderBuilder(BoundedRangeModel boundedRangeModel, Value<Integer> linkedValue) {
     super(linkedValue);
     this.boundedRangeModel = requireNonNull(boundedRangeModel);
   }
 
   @Override
-  public SliderBuilder minorTickSpacing(final int minorTickSpacing) {
+  public SliderBuilder minorTickSpacing(int minorTickSpacing) {
     this.minorTickSpacing = minorTickSpacing;
     return this;
   }
 
   @Override
-  public SliderBuilder majorTickSpacing(final int majorTickSpacing) {
+  public SliderBuilder majorTickSpacing(int majorTickSpacing) {
     this.majorTickSpacing = majorTickSpacing;
     return this;
   }
 
   @Override
-  public SliderBuilder snapToTicks(final boolean snapToTicks) {
+  public SliderBuilder snapToTicks(boolean snapToTicks) {
     this.snapToTicks = snapToTicks;
     return this;
   }
 
   @Override
-  public SliderBuilder paintTicks(final boolean paintTicks) {
+  public SliderBuilder paintTicks(boolean paintTicks) {
     this.paintTicks = paintTicks;
     return this;
   }
 
   @Override
-  public SliderBuilder paintTrack(final boolean paintTrack) {
+  public SliderBuilder paintTrack(boolean paintTrack) {
     this.paintTrack = paintTrack;
     return this;
   }
 
   @Override
-  public SliderBuilder paintLabels(final boolean paintLabels) {
+  public SliderBuilder paintLabels(boolean paintLabels) {
     this.paintLabels = paintLabels;
     return this;
   }
 
   @Override
-  public SliderBuilder inverted(final boolean inverted) {
+  public SliderBuilder inverted(boolean inverted) {
     this.inverted = inverted;
     return this;
   }
 
   @Override
-  public SliderBuilder orientation(final int orientation) {
+  public SliderBuilder orientation(int orientation) {
     this.orientation = orientation;
     return this;
   }
 
   @Override
-  public SliderBuilder mouseWheelScrolling(final boolean mouseWheelScrolling) {
+  public SliderBuilder mouseWheelScrolling(boolean mouseWheelScrolling) {
     this.mouseWheelScrolling  = mouseWheelScrolling;
     if (mouseWheelScrolling) {
       this.mouseWheelScrollingReversed = false;
@@ -90,7 +90,7 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
   }
 
   @Override
-  public SliderBuilder mouseWheelScrollingReversed(final boolean mouseWheelScrollingReversed) {
+  public SliderBuilder mouseWheelScrollingReversed(boolean mouseWheelScrollingReversed) {
     this.mouseWheelScrollingReversed = mouseWheelScrollingReversed;
     if (mouseWheelScrollingReversed) {
       this.mouseWheelScrolling = false;
@@ -124,12 +124,12 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
   }
 
   @Override
-  protected ComponentValue<Integer, JSlider> buildComponentValue(final JSlider component) {
+  protected ComponentValue<Integer, JSlider> buildComponentValue(JSlider component) {
     return ComponentValues.slider(component);
   }
 
   @Override
-  protected void setInitialValue(final JSlider component, final Integer initialValue) {
+  protected void setInitialValue(JSlider component, Integer initialValue) {
     component.setValue(initialValue);
   }
 }

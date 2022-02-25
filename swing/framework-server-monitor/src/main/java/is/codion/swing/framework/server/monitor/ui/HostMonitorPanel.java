@@ -28,7 +28,7 @@ public final class HostMonitorPanel extends JPanel {
    * @param model the HostMonitor to base this panel on
    * @throws RemoteException in case of an exception
    */
-  public HostMonitorPanel(final HostMonitor model) throws RemoteException {
+  public HostMonitorPanel(HostMonitor model) throws RemoteException {
     this.model = model;
     initializeUI();
     bindEvents();
@@ -69,17 +69,17 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void initializeServerTabs() throws RemoteException {
-    for (final ServerMonitor serverMonitor : model.getServerMonitors()) {
+    for (ServerMonitor serverMonitor : model.getServerMonitors()) {
       addServerTab(serverMonitor);
     }
   }
 
-  private void addServerTab(final ServerMonitor serverMonitor) throws RemoteException {
+  private void addServerTab(ServerMonitor serverMonitor) throws RemoteException {
     ServerMonitorPanel serverMonitorPanel = new ServerMonitorPanel(serverMonitor);
     serverPane.addTab(serverMonitor.getServerInformation().getServerName(), serverMonitorPanel);
   }
 
-  private void removeServerTab(final ServerMonitorPanel panel) {
+  private void removeServerTab(ServerMonitorPanel panel) {
     serverPane.remove(panel);
   }
 }

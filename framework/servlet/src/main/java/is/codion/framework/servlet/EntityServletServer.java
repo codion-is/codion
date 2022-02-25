@@ -28,7 +28,7 @@ public final class EntityServletServer extends HttpServer implements AuxiliarySe
    * @see HttpServerConfiguration#HTTP_SERVER_PORT
    * @see HttpServerConfiguration#HTTP_SERVER_SECURE
    */
-  EntityServletServer(final Server<RemoteEntityConnection, ? extends ServerAdmin> server) {
+  EntityServletServer(Server<RemoteEntityConnection, ? extends ServerAdmin> server) {
     this(server, HttpServerConfiguration.fromSystemProperties());
   }
 
@@ -37,7 +37,7 @@ public final class EntityServletServer extends HttpServer implements AuxiliarySe
    * @param server the parent server
    * @param configuration the server configuration
    */
-  EntityServletServer(final Server<RemoteEntityConnection, ? extends ServerAdmin> server, final HttpServerConfiguration configuration) {
+  EntityServletServer(Server<RemoteEntityConnection, ? extends ServerAdmin> server, HttpServerConfiguration configuration) {
     super(configuration);
     requireNonNull(server, "server");
     AbstractEntityService.setServer(server);

@@ -57,7 +57,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * Instantiates a new LocalEntityConnectionProvider
    * @param database the Database instance to base this connection provider on
    */
-  public LocalEntityConnectionProvider(final Database database) {
+  public LocalEntityConnectionProvider(Database database) {
     this.database = requireNonNull(database, "database");
   }
 
@@ -124,7 +124,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * @param queryTimeout the query timeout in seconds
    * @return this LocalEntityConnectionProvider instance
    */
-  public LocalEntityConnectionProvider setQueryTimeout(final int queryTimeout) {
+  public LocalEntityConnectionProvider setQueryTimeout(int queryTimeout) {
     close();
     this.queryTimeout = queryTimeout;
     return this;
@@ -143,7 +143,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   }
 
   @Override
-  protected void close(final EntityConnection connection) {
+  protected void close(EntityConnection connection) {
     connection.close();
     if (database != null && shutdownDatabaseOnDisconnect) {
       database.shutdownEmbedded();

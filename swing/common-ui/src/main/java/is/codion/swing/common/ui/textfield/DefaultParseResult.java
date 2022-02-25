@@ -9,7 +9,7 @@ class DefaultParseResult<T> implements Parser.ParseResult<T> {
   private final T value;
   private final boolean successful;
 
-  DefaultParseResult(final String text, final T value, final boolean successful) {
+  DefaultParseResult(String text, T value, boolean successful) {
     this.text = text;
     this.value = value;
     this.successful = successful;

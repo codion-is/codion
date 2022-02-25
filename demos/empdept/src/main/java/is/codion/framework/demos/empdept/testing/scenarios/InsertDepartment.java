@@ -14,7 +14,7 @@ import static is.codion.framework.domain.entity.test.EntityTestUtil.createRandom
 public final class InsertDepartment extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   @Override
-  protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws Exception {
+  protected void perform(EmpDeptAppPanel.EmpDeptApplicationModel application) throws Exception {
     SwingEntityModel departmentModel = application.getEntityModel(Department.TYPE);
     departmentModel.getEditModel().setEntity(createRandomEntity(application.getEntities(),
             Department.TYPE, null));

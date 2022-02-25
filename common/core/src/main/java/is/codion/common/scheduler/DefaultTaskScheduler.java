@@ -25,8 +25,8 @@ final class DefaultTaskScheduler implements TaskScheduler {
   private ScheduledExecutorService executorService;
   private int interval;
 
-  DefaultTaskScheduler(final Runnable task, final int interval, final int initialDelay, final TimeUnit timeUnit,
-                       final ThreadFactory threadFactory) {
+  DefaultTaskScheduler(Runnable task, int interval, int initialDelay, TimeUnit timeUnit,
+                       ThreadFactory threadFactory) {
     if (interval <= 0) {
       throw new IllegalArgumentException("Interval must be a positive integer");
     }
@@ -46,7 +46,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
   }
 
   @Override
-  public void setInterval(final int interval) {
+  public void setInterval(int interval) {
     if (interval <= 0) {
       throw new IllegalArgumentException("Interval must be a positive integer");
     }
@@ -90,7 +90,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
   }
 
   @Override
-  public void addIntervalListener(final EventDataListener<Integer> listener) {
+  public void addIntervalListener(EventDataListener<Integer> listener) {
     intervalChangedEvent.addDataListener(listener);
   }
 }

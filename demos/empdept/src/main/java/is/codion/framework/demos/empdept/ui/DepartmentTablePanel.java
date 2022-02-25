@@ -23,7 +23,7 @@ import java.util.HashMap;
 // tag::constructor[]
 public class DepartmentTablePanel extends EntityTablePanel {
 
-  public DepartmentTablePanel(final SwingEntityTableModel tableModel) {
+  public DepartmentTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
   }
   // end::constructor[]

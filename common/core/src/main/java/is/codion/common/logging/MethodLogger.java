@@ -69,7 +69,7 @@ public interface MethodLogger {
    * @param maxSize the maximum log size
    * @return a new MethodLogger instance
    */
-  static MethodLogger methodLogger(final int maxSize) {
+  static MethodLogger methodLogger(int maxSize) {
     return methodLogger(maxSize, new ArgumentToString());
   }
 
@@ -79,7 +79,7 @@ public interface MethodLogger {
    * @param argumentStringProvider responsible for providing String representations of method arguments
    * @return a new MethodLogger instance
    */
-  static MethodLogger methodLogger(final int maxSize, final Function<Object, String> argumentStringProvider) {
+  static MethodLogger methodLogger(int maxSize, Function<Object, String> argumentStringProvider) {
     return new DefaultMethodLogger(maxSize, argumentStringProvider);
   }
 
@@ -154,7 +154,7 @@ public interface MethodLogger {
     private static final String BRACKET_CLOSE = "]";
 
     @Override
-    public final String apply(final Object object) {
+    public final String apply(Object object) {
       return toString(object);
     }
 
@@ -163,7 +163,7 @@ public interface MethodLogger {
      * @param object the object
      * @return a String representation of the given object
      */
-    protected String toString(final Object object) {
+    protected String toString(Object object) {
       if (object == null) {
         return "";
       }
@@ -183,7 +183,7 @@ public interface MethodLogger {
       return object.toString();
     }
 
-    private String toString(final List<?> arguments) {
+    private String toString(List<?> arguments) {
       if (arguments.isEmpty()) {
         return "";
       }
@@ -196,7 +196,7 @@ public interface MethodLogger {
               .collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
     }
 
-    private String toString(final Collection<?> arguments) {
+    private String toString(Collection<?> arguments) {
       if (arguments.isEmpty()) {
         return "";
       }
@@ -206,7 +206,7 @@ public interface MethodLogger {
               .collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
     }
 
-    private String toString(final Object[] arguments) {
+    private String toString(Object[] arguments) {
       if (arguments.length == 0) {
         return "";
       }

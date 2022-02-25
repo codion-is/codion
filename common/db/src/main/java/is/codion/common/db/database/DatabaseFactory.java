@@ -42,10 +42,10 @@ public interface DatabaseFactory {
    * @throws IllegalArgumentException in case no such implementation is found
    * @throws SQLException in case loading of database driver failed
    */
-  static DatabaseFactory databaseFactory(final String jdbcUrl) throws SQLException {
+  static DatabaseFactory databaseFactory(String jdbcUrl) throws SQLException {
     String driver = getDriverClassName(jdbcUrl);
     ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
-    for (final DatabaseFactory factory : loader) {
+    for (DatabaseFactory factory : loader) {
       if (factory.isDriverCompatible(driver)) {
         return factory;
       }
@@ -85,7 +85,7 @@ public interface DatabaseFactory {
    * @return the database driver class name according to jdbc url
    * @throws SQLException in case loading of database driver failed
    */
-  static String getDriverClassName(final String jdbcUrl) throws SQLException {
+  static String getDriverClassName(String jdbcUrl) throws SQLException {
     return DriverManager.getDriver(requireNonNull(jdbcUrl, "jdbcUrl")).getClass().getName();
   }
 }

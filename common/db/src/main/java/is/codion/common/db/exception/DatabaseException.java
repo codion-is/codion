@@ -26,7 +26,7 @@ public class DatabaseException extends Exception {
    * Constructs a new DatabaseException instance
    * @param message the exception message
    */
-  public DatabaseException(final String message) {
+  public DatabaseException(String message) {
     this(message, null);
   }
 
@@ -35,7 +35,7 @@ public class DatabaseException extends Exception {
    * @param message the exception message
    * @param statement the sql statement which caused the exception
    */
-  public DatabaseException(final String message, final String statement) {
+  public DatabaseException(String message, String statement) {
     super(message);
     this.statement = statement;
     this.errorCode = -1;
@@ -45,7 +45,7 @@ public class DatabaseException extends Exception {
    * Constructs a new DatabaseException instance
    * @param cause the root cause, the stack trace is copied and used
    */
-  public DatabaseException(final SQLException cause) {
+  public DatabaseException(SQLException cause) {
     this(cause, cause.getMessage());
   }
 
@@ -54,7 +54,7 @@ public class DatabaseException extends Exception {
    * @param cause the root cause, the stack trace is copied and used
    * @param message the exception message
    */
-  public DatabaseException(final SQLException cause, final String message) {
+  public DatabaseException(SQLException cause, String message) {
     this(cause, message, null);
   }
 
@@ -64,7 +64,7 @@ public class DatabaseException extends Exception {
    * @param message the exception message
    * @param statement the sql statement which caused the exception
    */
-  public DatabaseException(final SQLException cause, final String message, final String statement) {
+  public DatabaseException(SQLException cause, String message, String statement) {
     super(message);
     this.statement = statement;
     if (cause != null) {
@@ -95,7 +95,7 @@ public class DatabaseException extends Exception {
   }
 
   @Override
-  public final void setStackTrace(final StackTraceElement[] stackTrace) {
+  public final void setStackTrace(StackTraceElement[] stackTrace) {
     super.setStackTrace(stackTrace);
   }
 }

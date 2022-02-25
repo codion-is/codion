@@ -315,7 +315,7 @@ public class DefaultLocalEntityConnectionTest {
   void foreignKeyAttributes() throws DatabaseException {
     List<Entity> emps = connection.select(where(EmployeeFk.MGR_FK).isNotNull()
             .toSelectCondition().fetchDepth(EmployeeFk.MGR_FK, 2));
-    for (final Entity emp : emps) {
+    for (Entity emp : emps) {
       Entity mgr = emp.getForeignKey(EmployeeFk.MGR_FK);
       assertTrue(mgr.contains(EmployeeFk.ID));//pk automatically included
       assertTrue(mgr.contains(EmployeeFk.NAME));
@@ -334,7 +334,7 @@ public class DefaultLocalEntityConnectionTest {
   void selectAttributes() throws Exception {
     List<Entity> emps = connection.select(condition(Employee.TYPE).toSelectCondition()
             .selectAttributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT));
-    for (final Entity emp : emps) {
+    for (Entity emp : emps) {
       assertTrue(emp.contains(Employee.ID));
       assertTrue(emp.contains(Employee.JOB));
       assertTrue(emp.contains(Employee.DEPARTMENT));
@@ -344,7 +344,7 @@ public class DefaultLocalEntityConnectionTest {
       assertFalse(emp.contains(Employee.NAME));
       assertFalse(emp.contains(Employee.SALARY));
     }
-    for (final Entity emp : connection.select(condition(Employee.TYPE).toSelectCondition()
+    for (Entity emp : connection.select(condition(Employee.TYPE).toSelectCondition()
             .selectAttributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT_FK, Employee.MGR, Employee.COMMISSION))) {
       assertTrue(emp.contains(Employee.ID));//pk automatically included
       assertTrue(emp.contains(Employee.JOB));
@@ -574,7 +574,7 @@ public class DefaultLocalEntityConnectionTest {
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(condition));
       List<Entity> afterUpdate = connection.select(Entity.getPrimaryKeys(entities));
-      for (final Entity entity : afterUpdate) {
+      for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
         assertEquals(4200d, entity.get(Employee.SALARY));
       }

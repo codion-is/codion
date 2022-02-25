@@ -14,7 +14,7 @@ import is.codion.framework.db.rmi.RemoteEntityConnection;
 public final class EntityServletServerFactory implements AuxiliaryServerFactory<RemoteEntityConnection, ServerAdmin, EntityServletServer> {
 
   @Override
-  public EntityServletServer createServer(final Server<RemoteEntityConnection, ServerAdmin> server) {
+  public EntityServletServer createServer(Server<RemoteEntityConnection, ServerAdmin> server) {
     return new EntityServletServer(server);
   }
 }

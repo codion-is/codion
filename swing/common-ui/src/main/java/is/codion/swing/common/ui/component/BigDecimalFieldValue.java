@@ -9,17 +9,17 @@ import java.math.BigDecimal;
 
 final class BigDecimalFieldValue extends AbstractTextComponentValue<BigDecimal, BigDecimalField> {
 
-  BigDecimalFieldValue(final BigDecimalField doubleField, final boolean nullable, final UpdateOn updateOn) {
+  BigDecimalFieldValue(BigDecimalField doubleField, boolean nullable, UpdateOn updateOn) {
     super(doubleField, nullable ? null : BigDecimal.ZERO, updateOn);
   }
 
   @Override
-  protected BigDecimal getComponentValue(final BigDecimalField component) {
+  protected BigDecimal getComponentValue(BigDecimalField component) {
     return component.getNumber();
   }
 
   @Override
-  protected void setComponentValue(final BigDecimalField component, final BigDecimal value) {
+  protected void setComponentValue(BigDecimalField component, BigDecimal value) {
     component.setNumber(value);
   }
 }
