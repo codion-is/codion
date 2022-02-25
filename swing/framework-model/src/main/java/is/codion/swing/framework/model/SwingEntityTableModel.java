@@ -84,11 +84,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   private final ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
 
   /**
-   * The maximum number of rows this table model accepts from a query.
-   */
-  private int queryRowCountLimit = -1;
-
-  /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
    */
   private int limit = -1;
@@ -246,16 +241,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   @Override
   public final void setLimit(int limit) {
     this.limit = limit;
-  }
-
-  @Override
-  public final int getQueryRowCountLimit() {
-    return queryRowCountLimit;
-  }
-
-  @Override
-  public final void setQueryRowCountLimit(int queryRowCountLimit) {
-    this.queryRowCountLimit = queryRowCountLimit;
   }
 
   @Override
@@ -664,29 +649,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     if (queryConditionRequiredState.get() && !getTableConditionModel().isConditionEnabled()) {
       return emptyList();
     }
-    checkQueryRowCount();
     try {
       return editModel.getConnectionProvider().getConnection().select(getTableConditionModel().getCondition()
               .toSelectCondition()
               .selectAttributes(getSelectAttributes())
               .limit(limit)
               .orderBy(getOrderBy()));
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * @return the number of rows {@link #refreshItems()} would return on next invocation
-   */
-  protected int getQueryRowCount() {
-    if (queryConditionRequiredState.get() && !getTableConditionModel().isConditionEnabled()) {
-      return 0;
-    }
-
-    try {
-      return editModel.getConnectionProvider().getConnection().rowCount(getTableConditionModel().getCondition());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -798,12 +766,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     editModel.addRefreshingObserver(getRefreshingObserver());
     getSelectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(this::onTableModelEvent);
-  }
-
-  private void checkQueryRowCount() {
-    if (queryRowCountLimit >= 0 && getQueryRowCount() > queryRowCountLimit) {
-      throw new IllegalStateException("Too many rows returned, add query condition");
-    }
   }
 
   private void onInsert(List<Entity> insertedEntities) {

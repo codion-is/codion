@@ -222,8 +222,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static final NumberFormat STATUS_MESSAGE_NUMBER_FORMAT = NumberFormat.getIntegerInstance();
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
-  private static final int POPUP_LOCATION_X_OFFSET = 42;
-  private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
 
   private final State conditionPanelVisibleState = State.state();
