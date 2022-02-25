@@ -90,8 +90,8 @@ final class HttpEntityConnectionJdk implements EntityConnection {
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  HttpEntityConnectionJdk(final String domainName, final String serverHostName, final int serverPort,
-                          final boolean httpsEnabled, final User user, final String clientTypeId, final UUID clientId) {
+  HttpEntityConnectionJdk(String domainName, String serverHostName, int serverPort,
+                          boolean httpsEnabled, User user, String clientTypeId, UUID clientId) {
     this.user = Objects.requireNonNull(user, "user");
     this.baseurl = (httpsEnabled ? HTTPS : HTTP) + Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
     this.httpClient = createHttpClient();
@@ -186,12 +186,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws DatabaseException {
     return executeFunction(functionType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final T argument) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
     Objects.requireNonNull(functionType);
     try {
       return handleResponse(execute(createRequest("function", asList(functionType, argument))));
@@ -206,12 +206,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType) throws DatabaseException {
     executeProcedure(procedureType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final T argument) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
     Objects.requireNonNull(procedureType);
     try {
       handleResponse(execute(createRequest("procedure", asList(procedureType, argument))));
@@ -226,12 +226,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public Key insert(final Entity entity) throws DatabaseException {
+  public Key insert(Entity entity) throws DatabaseException {
     return insert(singletonList(entity)).get(0);
   }
 
   @Override
-  public List<Key> insert(final List<? extends Entity> entities) throws DatabaseException {
+  public List<Key> insert(List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       return handleResponse(execute(createRequest("insert", entities)));
@@ -246,12 +246,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public Entity update(final Entity entity) throws DatabaseException {
+  public Entity update(Entity entity) throws DatabaseException {
     return update(singletonList(entity)).get(0);
   }
 
   @Override
-  public List<Entity> update(final List<? extends Entity> entities) throws DatabaseException {
+  public List<Entity> update(List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       return handleResponse(execute(createRequest("update", entities)));
@@ -266,7 +266,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public int update(final UpdateCondition condition) throws DatabaseException {
+  public int update(UpdateCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       return handleResponse(execute(createRequest("updateByCondition", condition)));
@@ -281,12 +281,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public void delete(final Key entityKey) throws DatabaseException {
+  public void delete(Key entityKey) throws DatabaseException {
     delete(singletonList(entityKey));
   }
 
   @Override
-  public void delete(final List<Key> keys) throws DatabaseException {
+  public void delete(List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
       handleResponse(execute(createRequest("deleteByKey", keys)));
@@ -301,7 +301,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public int delete(final Condition condition) throws DatabaseException {
+  public int delete(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       return handleResponse(execute(createRequest("delete", condition)));
@@ -316,12 +316,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T> List<T> select(final Attribute<T> attribute) throws DatabaseException {
+  public <T> List<T> select(Attribute<T> attribute) throws DatabaseException {
     return select(attribute, (Condition) null);
   }
 
   @Override
-  public <T> List<T> select(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
+  public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
     Objects.requireNonNull(attribute);
     try {
       return handleResponse(execute(createRequest("values", asList(attribute, condition))));
@@ -336,17 +336,17 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException {
     return selectSingle(where(attribute).equalTo(value));
   }
 
   @Override
-  public Entity selectSingle(final Key key) throws DatabaseException {
+  public Entity selectSingle(Key key) throws DatabaseException {
     return selectSingle(condition(key));
   }
 
   @Override
-  public Entity selectSingle(final Condition condition) throws DatabaseException {
+  public Entity selectSingle(Condition condition) throws DatabaseException {
     List<Entity> selected = select(condition);
     if (Util.nullOrEmpty(selected)) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
@@ -359,7 +359,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public List<Entity> select(final List<Key> keys) throws DatabaseException {
+  public List<Entity> select(List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
       return handleResponse(execute(createRequest("selectByKey", keys)));
@@ -374,7 +374,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public List<Entity> select(final Condition condition) throws DatabaseException {
+  public List<Entity> select(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
       return handleResponse(execute(createRequest("select", condition)));
@@ -389,17 +389,17 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException {
     return select(attribute, singletonList(value));
   }
 
   @Override
-  public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
+  public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
     return select(where(attribute).equalTo(values));
   }
 
   @Override
-  public Map<EntityType, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       return handleResponse(execute(createRequest("dependencies", entities)));
@@ -414,7 +414,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public int rowCount(final Condition condition) throws DatabaseException {
+  public int rowCount(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       return handleResponse(execute(createRequest("count", condition)));
@@ -429,7 +429,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T, R, P> R fillReport(final ReportType<T, R, P> reportType, final P reportParameters) throws DatabaseException, ReportException {
+  public <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportType, "reportType");
     try {
       return handleResponse(execute(createRequest("report", Arrays.asList(reportType, reportParameters))));
@@ -444,7 +444,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public void writeBlob(final Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData)
+  public void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData)
           throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
@@ -462,7 +462,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public byte[] readBlob(final Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     try {
@@ -490,17 +490,17 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     }
   }
 
-  private HttpResponse execute(final HttpRequest operation) throws Exception {
+  private HttpResponse execute(HttpRequest operation) throws Exception {
     synchronized (httpClient) {
       return httpClient.send(operation, HttpResponse.BodyHandlers.ofByteArray());
     }
   }
 
-  private HttpRequest createRequest(final String path) throws IOException {
+  private HttpRequest createRequest(String path) throws IOException {
     return createRequest(path, null);
   }
 
-  private HttpRequest createRequest(final String path, final Object data) throws IOException {
+  private HttpRequest createRequest(String path, Object data) throws IOException {
     return HttpRequest.newBuilder()
             .uri(URI.create(baseurl + path))
             .POST(data == null ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(data)))
@@ -513,7 +513,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
             .connectTimeout(Duration.ofSeconds(2)).build();
   }
 
-  private static <T> T handleResponse(final HttpResponse response) throws Exception {
+  private static <T> T handleResponse(HttpResponse response) throws Exception {
     if (response.statusCode() != HTTP_STATUS_OK) {
       throw (Exception) Serializer.deserialize((byte[]) response.body());
     }
@@ -521,10 +521,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     return Serializer.deserialize((byte[]) response.body());
   }
 
-  private static final class DaemonThreadFactory implements ThreadFactory {
+  private static class DaemonThreadFactory implements ThreadFactory {
 
     @Override
-    public Thread newThread(final Runnable runnable) {
+    public Thread newThread(Runnable runnable) {
       Thread thread = new Thread(runnable);
       thread.setDaemon(true);
 
