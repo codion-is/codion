@@ -16,13 +16,13 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
   private String message;
 
   @Override
-  public ExceptionDialogBuilder message(final String message) {
+  public ExceptionDialogBuilder message(String message) {
     this.message = message;
     return this;
   }
 
   @Override
-  public void show(final Throwable exception) {
+  public void show(Throwable exception) {
     requireNonNull(exception);
     try {
       if (SwingUtilities.isEventDispatchThread()) {
@@ -40,7 +40,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
     }
   }
 
-  private void displayException(final Throwable exception) {
+  private void displayException(Throwable exception) {
     ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message);
 
     JDialog dialog = Dialogs.componentDialog(exceptionPanel)

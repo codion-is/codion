@@ -22,48 +22,48 @@ final class ControlBuilder implements Control.Builder {
   private String description;
   private KeyStroke keyStroke;
 
-  ControlBuilder(final Control.ActionCommand actionCommand) {
+  ControlBuilder(Control.ActionCommand actionCommand) {
     this.actionCommand = requireNonNull(actionCommand);
     this.command = null;
   }
 
-  ControlBuilder(final Control.Command command) {
+  ControlBuilder(Control.Command command) {
     this.command = requireNonNull(command);
     this.actionCommand = null;
   }
 
   @Override
-  public Control.Builder caption(final String caption) {
+  public Control.Builder caption(String caption) {
     this.caption = caption;
     return this;
   }
 
   @Override
-  public Control.Builder enabledState(final StateObserver enabledState) {
+  public Control.Builder enabledState(StateObserver enabledState) {
     this.enabledState = enabledState;
     return this;
   }
 
   @Override
-  public Control.Builder mnemonic(final char mnemonic) {
+  public Control.Builder mnemonic(char mnemonic) {
     this.mnemonic = mnemonic;
     return this;
   }
 
   @Override
-  public Control.Builder smallIcon(final Icon smallIcon) {
+  public Control.Builder smallIcon(Icon smallIcon) {
     this.smallIcon = smallIcon;
     return this;
   }
 
   @Override
-  public Control.Builder description(final String description) {
+  public Control.Builder description(String description) {
     this.description = description;
     return this;
   }
 
   @Override
-  public Control.Builder keyStroke(final KeyStroke keyStroke) {
+  public Control.Builder keyStroke(KeyStroke keyStroke) {
     this.keyStroke = keyStroke;
     return this;
   }

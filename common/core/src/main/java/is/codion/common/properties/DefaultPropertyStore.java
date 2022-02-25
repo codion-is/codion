@@ -49,43 +49,43 @@ final class DefaultPropertyStore implements PropertyStore {
     }
   };
 
-  DefaultPropertyStore(final File propertiesFile) throws IOException {
+  DefaultPropertyStore(File propertiesFile) throws IOException {
     this(loadProperties(propertiesFile));
   }
 
-  DefaultPropertyStore(final InputStream inputStream) throws IOException {
+  DefaultPropertyStore(InputStream inputStream) throws IOException {
     this(loadProperties(inputStream));
   }
 
-  DefaultPropertyStore(final Properties properties) {
+  DefaultPropertyStore(Properties properties) {
     this.properties.putAll(requireNonNull(properties, "properties"));
     this.properties.stringPropertyNames().forEach(property ->
             System.setProperty(property, this.properties.getProperty(property)));
   }
 
   @Override
-  public PropertyValue<Boolean> propertyValue(final String propertyName, final Boolean defaultValue) {
+  public PropertyValue<Boolean> propertyValue(String propertyName, Boolean defaultValue) {
     return propertyValue(propertyName, defaultValue, false, Boolean::parseBoolean, Objects::toString);
   }
 
   @Override
-  public PropertyValue<String> propertyValue(final String propertyName, final String defaultValue) {
+  public PropertyValue<String> propertyValue(String propertyName, String defaultValue) {
     return propertyValue(propertyName, defaultValue, null, Objects::toString, Objects::toString);
   }
 
   @Override
-  public PropertyValue<Integer> propertyValue(final String propertyName, final Integer defaultValue) {
+  public PropertyValue<Integer> propertyValue(String propertyName, Integer defaultValue) {
     return propertyValue(propertyName, defaultValue, null, Integer::parseInt, Objects::toString);
   }
 
   @Override
-  public PropertyValue<Double> propertyValue(final String propertyName, final Double defaultValue) {
+  public PropertyValue<Double> propertyValue(String propertyName, Double defaultValue) {
     return propertyValue(propertyName, defaultValue, null, Double::parseDouble, Objects::toString);
   }
 
   @Override
-  public <T> PropertyValue<T> propertyValue(final String propertyName, final T defaultValue, final T nullValue,
-                                            final Function<String, T> decoder, final Function<T, String> encoder) {
+  public <T> PropertyValue<T> propertyValue(String propertyName, T defaultValue, T nullValue,
+                                            Function<String, T> decoder, Function<T, String> encoder) {
     if (propertyValues.containsKey(requireNonNull(propertyName, "propertyName"))) {
       throw new IllegalArgumentException("Configuration value for property '" + propertyName + "' has already been created");
     }
@@ -96,8 +96,8 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public <T> PropertyValue<List<T>> propertyListValue(final String propertyName, final List<T> defaultValue,
-                                                      final Function<String, T> decoder, final Function<T, String> encoder) {
+  public <T> PropertyValue<List<T>> propertyListValue(String propertyName, List<T> defaultValue,
+                                                      Function<String, T> decoder, Function<T, String> encoder) {
     if (propertyValues.containsKey(requireNonNull(propertyName, "propertyName"))) {
       throw new IllegalArgumentException("Configuration value for property '" + propertyName + "' has already been created");
     }
@@ -116,12 +116,12 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public <T> PropertyValue<T> getPropertyValue(final String propertyName) {
+  public <T> PropertyValue<T> getPropertyValue(String propertyName) {
     return (PropertyValue<T>) propertyValues.get(propertyName);
   }
 
   @Override
-  public void setProperty(final String propertyName, final String value) {
+  public void setProperty(String propertyName, String value) {
     if (propertyValues.containsKey(propertyName)) {
       throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
     }
@@ -129,12 +129,12 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public String getProperty(final String propertyName) {
+  public String getProperty(String propertyName) {
     return properties.getProperty(propertyName);
   }
 
   @Override
-  public List<String> getProperties(final String prefix) {
+  public List<String> getProperties(String prefix) {
     return properties.stringPropertyNames().stream()
             .filter(propertyName -> propertyName.startsWith(prefix))
             .map(properties::getProperty)
@@ -142,19 +142,19 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public List<String> getPropertyNames(final String prefix) {
+  public List<String> getPropertyNames(String prefix) {
     return properties.stringPropertyNames().stream()
             .filter(propertyName -> propertyName.startsWith(prefix))
             .collect(toList());
   }
 
   @Override
-  public boolean containsProperty(final String propertyName) {
+  public boolean containsProperty(String propertyName) {
     return properties.containsKey(propertyName);
   }
 
   @Override
-  public void removeAll(final String prefix) {
+  public void removeAll(String prefix) {
     List<String> propertyKeys = getPropertyNames(prefix);
     if (propertyKeys.stream().anyMatch(propertyValues::containsKey)) {
       throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
@@ -163,12 +163,12 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public void writeToFile(final File propertiesFile) throws IOException {
+  public void writeToFile(File propertiesFile) throws IOException {
     requireNonNull(propertiesFile, "propertiesFile");
     if (!propertiesFile.exists() && !propertiesFile.createNewFile()) {
       throw new IOException("Unable to create properties file: " + propertiesFile);
     }
-    try (final OutputStream output = new FileOutputStream(propertiesFile)) {
+    try (OutputStream output = new FileOutputStream(propertiesFile)) {
       properties.store(output, null);
     }
   }
@@ -180,11 +180,11 @@ final class DefaultPropertyStore implements PropertyStore {
    * @throws IOException in case the file exists but can not be read
    * @throws FileNotFoundException in case the file does not exist
    */
-  private static Properties loadProperties(final File propertiesFile) throws IOException {
+  private static Properties loadProperties(File propertiesFile) throws IOException {
     if (!requireNonNull(propertiesFile).exists()) {
       throw new FileNotFoundException(propertiesFile.toString());
     }
-    try (final InputStream input = new FileInputStream(propertiesFile)) {
+    try (InputStream input = new FileInputStream(propertiesFile)) {
       return loadProperties(input);
     }
   }
@@ -195,7 +195,7 @@ final class DefaultPropertyStore implements PropertyStore {
    * @return the properties read from the given input stream
    * @throws IOException in case the file exists but can not be read
    */
-  private static Properties loadProperties(final InputStream inputStream) throws IOException {
+  private static Properties loadProperties(InputStream inputStream) throws IOException {
     requireNonNull(inputStream);
     Properties propertiesFromFile = new Properties();
     propertiesFromFile.load(inputStream);
@@ -211,8 +211,8 @@ final class DefaultPropertyStore implements PropertyStore {
 
     private T value;
 
-    private DefaultPropertyValue(final String propertyName, final T defaultValue, final T nullValue,
-                                 final Function<String, T> decoder, final Function<T, String> encoder) {
+    private DefaultPropertyValue(String propertyName, T defaultValue, T nullValue,
+                                 Function<String, T> decoder, Function<T, String> encoder) {
       super(nullValue, NotifyOnSet.YES);
       this.propertyName = propertyName;
       requireNonNull(decoder, "decoder");
@@ -232,7 +232,7 @@ final class DefaultPropertyStore implements PropertyStore {
     }
 
     @Override
-    public T getOrThrow(final String message) throws IllegalStateException {
+    public T getOrThrow(String message) throws IllegalStateException {
       requireNonNull(message, "message");
       if (value == null) {
         throw new IllegalStateException(message);
@@ -252,7 +252,7 @@ final class DefaultPropertyStore implements PropertyStore {
     }
 
     @Override
-    protected void setValue(final T value) {
+    protected void setValue(T value) {
       this.value = value;
       if (value == null) {
         properties.remove(propertyName);
@@ -264,7 +264,7 @@ final class DefaultPropertyStore implements PropertyStore {
       }
     }
 
-    private String getInitialValue(final String property) {
+    private String getInitialValue(String property) {
       String initialValue = System.getProperty(property);
       if (initialValue == null) {
         initialValue = properties.getProperty(property);

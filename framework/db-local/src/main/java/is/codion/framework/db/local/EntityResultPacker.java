@@ -29,13 +29,13 @@ final class EntityResultPacker implements ResultPacker<Entity> {
    * @param definition the entity definition
    * @param columnProperties the column properties in the same order as they appear in the ResultSet
    */
-  EntityResultPacker(final EntityDefinition definition, final List<ColumnProperty<?>> columnProperties) {
+  EntityResultPacker(EntityDefinition definition, List<ColumnProperty<?>> columnProperties) {
     this.definition = definition;
     this.columnProperties = columnProperties;
   }
 
   @Override
-  public Entity fetch(final ResultSet resultSet) throws SQLException {
+  public Entity fetch(ResultSet resultSet) throws SQLException {
     Map<Attribute<?>, Object> values = new HashMap<>(columnProperties.size());
     addResultSetValues(resultSet, values);
     addTransientNullValues(values);
@@ -44,7 +44,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     return definition.entity(values, null);
   }
 
-  private void addResultSetValues(final ResultSet resultSet, final Map<Attribute<?>, Object> values) throws SQLException {
+  private void addResultSetValues(ResultSet resultSet, Map<Attribute<?>, Object> values) throws SQLException {
     for (int i = 0; i < columnProperties.size(); i++) {
       ColumnProperty<Object> property = (ColumnProperty<Object>) columnProperties.get(i);
       try {
@@ -57,7 +57,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     }
   }
 
-  private void addTransientNullValues(final Map<Attribute<?>, Object> values) {
+  private void addTransientNullValues(Map<Attribute<?>, Object> values) {
     List<TransientProperty<?>> transientProperties = definition.getTransientProperties();
     for (int i = 0; i < transientProperties.size(); i++) {
       TransientProperty<?> transientProperty = transientProperties.get(i);
@@ -67,7 +67,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     }
   }
 
-  private void addLazyLoadedBlobNullValues(final Map<Attribute<?>, Object> values) {
+  private void addLazyLoadedBlobNullValues(Map<Attribute<?>, Object> values) {
     List<ColumnProperty<?>> lazyLoadedBlobProperties = definition.getLazyLoadedBlobProperties();
     for (int i = 0; i < lazyLoadedBlobProperties.size(); i++) {
       ColumnProperty<?> blobProperty = lazyLoadedBlobProperties.get(i);

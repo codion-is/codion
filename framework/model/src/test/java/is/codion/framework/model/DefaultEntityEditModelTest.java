@@ -529,9 +529,9 @@ public final class DefaultEntityEditModelTest {
   void derivedProperties() {
     EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, employeeEditModel.getConnectionProvider()) {
       @Override
-      public void addForeignKeyValues(final List<Entity> entities) {}
+      public void addForeignKeyValues(List<Entity> entities) {}
       @Override
-      public void removeForeignKeyValues(final List<Entity> entities) {}
+      public void removeForeignKeyValues(List<Entity> entities) {}
       @Override
       public void clear() {}
       @Override
@@ -539,11 +539,11 @@ public final class DefaultEntityEditModelTest {
         return null;
       }
       @Override
-      public void addRefreshingObserver(final StateObserver refreshingObserver) {}
+      public void addRefreshingObserver(StateObserver refreshingObserver) {}
       @Override
-      public void addRefreshListener(final EventListener listener) {}
+      public void addRefreshListener(EventListener listener) {}
       @Override
-      public void removeRefreshListener(final EventListener listener) {}
+      public void removeRefreshListener(EventListener listener) {}
     };
 
     AtomicInteger derivedCounter = new AtomicInteger();
@@ -629,16 +629,16 @@ public final class DefaultEntityEditModelTest {
 
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
-    public TestEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+    public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
       super(entityType, connectionProvider);
       setDefaultValueSupplier(TestDomain.EMP_HIREDATE, LocalDate::now);
     }
 
     @Override
-    public void addForeignKeyValues(final List<Entity> entities) {}
+    public void addForeignKeyValues(List<Entity> entities) {}
 
     @Override
-    public void removeForeignKeyValues(final List<Entity> entities) {}
+    public void removeForeignKeyValues(List<Entity> entities) {}
 
     @Override
     public void clear() {}
@@ -649,12 +649,12 @@ public final class DefaultEntityEditModelTest {
     }
 
     @Override
-    public void addRefreshingObserver(final StateObserver refreshingObserver) {}
+    public void addRefreshingObserver(StateObserver refreshingObserver) {}
 
     @Override
-    public void addRefreshListener(final EventListener listener) {}
+    public void addRefreshListener(EventListener listener) {}
 
     @Override
-    public void removeRefreshListener(final EventListener listener) {}
+    public void removeRefreshListener(EventListener listener) {}
   }
 }

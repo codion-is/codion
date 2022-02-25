@@ -37,7 +37,7 @@ public final class EntityEditViewTest {
 
   static final class EmpEditView extends EntityEditView {
 
-    public EmpEditView(final FXEntityEditModel editModel) {
+    public EmpEditView(FXEntityEditModel editModel) {
       super(editModel);
     }
 

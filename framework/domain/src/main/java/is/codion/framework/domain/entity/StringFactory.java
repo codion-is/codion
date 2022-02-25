@@ -45,7 +45,7 @@ public final class StringFactory {
    * @param attribute the attribute which value to use for the string generation
    * @return a {@link Builder} instance for configuring a string factory {@link Function} for entities.
    */
-  public static Builder stringFactory(final Attribute<?> attribute) {
+  public static Builder stringFactory(Attribute<?> attribute) {
     return new DefaultStringFactoryBuilder(new DefaultStringFactory(attribute));
   }
 
@@ -111,7 +111,7 @@ public final class StringFactory {
      * Instantiates a new {@link StringFactory} instance
      * @param attribute the attribute which value should be used for a string representation
      */
-    private DefaultStringFactory(final Attribute<?> attribute) {
+    private DefaultStringFactory(Attribute<?> attribute) {
       addValue(attribute);
     }
 
@@ -121,7 +121,7 @@ public final class StringFactory {
      * @return a String representation of the entity
      */
     @Override
-    public String apply(final Entity entity) {
+    public String apply(Entity entity) {
       requireNonNull(entity, "entity");
       if (valueProviders.size() == 1) {
         return valueProviders.get(0).apply(entity);
@@ -132,20 +132,20 @@ public final class StringFactory {
               .collect(joining());
     }
 
-    private DefaultStringFactory addValue(final Attribute<?> attribute) {
+    private DefaultStringFactory addValue(Attribute<?> attribute) {
       requireNonNull(attribute, ATTRIBUTE_PARAM);
       valueProviders.add(new StringValueProvider(attribute));
       return this;
     }
 
-    private DefaultStringFactory addFormattedValue(final Attribute<?> attribute, final Format format) {
+    private DefaultStringFactory addFormattedValue(Attribute<?> attribute, Format format) {
       requireNonNull(attribute, ATTRIBUTE_PARAM);
       requireNonNull(format, "format");
       valueProviders.add(new FormattedValueProvider(attribute, format));
       return this;
     }
 
-    private DefaultStringFactory addForeignKeyValue(final ForeignKey foreignKey, final Attribute<?> attribute) {
+    private DefaultStringFactory addForeignKeyValue(ForeignKey foreignKey, Attribute<?> attribute) {
       requireNonNull(foreignKey, "foreignKey");
       requireNonNull(attribute, ATTRIBUTE_PARAM);
       if (!attribute.getEntityType().equals(foreignKey.getReferencedEntityType())) {
@@ -155,7 +155,7 @@ public final class StringFactory {
       return this;
     }
 
-    private DefaultStringFactory addText(final String text) {
+    private DefaultStringFactory addText(String text) {
       valueProviders.add(new StaticTextProvider(text));
       return this;
     }
@@ -168,13 +168,13 @@ public final class StringFactory {
     private final Attribute<?> attribute;
     private final Format format;
 
-    private FormattedValueProvider(final Attribute<?> attribute, final Format format) {
+    private FormattedValueProvider(Attribute<?> attribute, Format format) {
       this.attribute = attribute;
       this.format = format;
     }
 
     @Override
-    public String apply(final Entity entity) {
+    public String apply(Entity entity) {
       if (entity.isNull(attribute)) {
         return "";
       }
@@ -190,13 +190,13 @@ public final class StringFactory {
     private final ForeignKey foreignKey;
     private final Attribute<?> attribute;
 
-    private ForeignKeyValueProvider(final ForeignKey foreignKey, final Attribute<?> attribute) {
+    private ForeignKeyValueProvider(ForeignKey foreignKey, Attribute<?> attribute) {
       this.foreignKey = foreignKey;
       this.attribute = attribute;
     }
 
     @Override
-    public String apply(final Entity entity) {
+    public String apply(Entity entity) {
       if (entity.isNull(foreignKey)) {
         return "";
       }
@@ -211,12 +211,12 @@ public final class StringFactory {
 
     private final Attribute<?> attribute;
 
-    private StringValueProvider(final Attribute<?> attribute) {
+    private StringValueProvider(Attribute<?> attribute) {
       this.attribute = attribute;
     }
 
     @Override
-    public String apply(final Entity entity) {
+    public String apply(Entity entity) {
       return entity.toString(attribute);
     }
   }
@@ -227,12 +227,12 @@ public final class StringFactory {
 
     private final String text;
 
-    private StaticTextProvider(final String text) {
+    private StaticTextProvider(String text) {
       this.text = text;
     }
 
     @Override
-    public String apply(final Entity entity) {
+    public String apply(Entity entity) {
       return text;
     }
   }
@@ -241,30 +241,30 @@ public final class StringFactory {
 
     private final DefaultStringFactory stringFactory;
 
-    private DefaultStringFactoryBuilder(final DefaultStringFactory stringFactory) {
+    private DefaultStringFactoryBuilder(DefaultStringFactory stringFactory) {
       this.stringFactory = requireNonNull(stringFactory);
     }
 
     @Override
-    public Builder value(final Attribute<?> attribute) {
+    public Builder value(Attribute<?> attribute) {
       stringFactory.addValue(attribute);
       return this;
     }
 
     @Override
-    public Builder formattedValue(final Attribute<?> attribute, final Format format) {
+    public Builder formattedValue(Attribute<?> attribute, Format format) {
       stringFactory.addFormattedValue(attribute, format);
       return this;
     }
 
     @Override
-    public Builder foreignKeyValue(final ForeignKey foreignKey, final Attribute<?> attribute) {
+    public Builder foreignKeyValue(ForeignKey foreignKey, Attribute<?> attribute) {
       stringFactory.addForeignKeyValue(foreignKey, attribute);
       return this;
     }
 
     @Override
-    public Builder text(final String text) {
+    public Builder text(String text) {
       stringFactory.addText(text);
       return this;
     }

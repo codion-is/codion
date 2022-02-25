@@ -88,7 +88,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
    * @see EntityDefinition#getSearchAttributes()
    */
-  public DefaultEntitySearchModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public DefaultEntitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getSearchAttributes());
   }
 
@@ -98,8 +98,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
    * @param searchAttributes the attributes to search by
    */
-  public DefaultEntitySearchModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                                  final Collection<Attribute<String>> searchAttributes) {
+  public DefaultEntitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                  Collection<Attribute<String>> searchAttributes) {
     requireNonNull(entityType, "entityType");
     requireNonNull(connectionProvider, "connectionProvider");
     requireNonNull(searchAttributes, "searchAttributes");
@@ -128,7 +128,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void setResultSorter(final Comparator<Entity> resultSorter) {
+  public void setResultSorter(Comparator<Entity> resultSorter) {
     requireNonNull(resultSorter, "resultSorter");
     this.resultSorter = resultSorter;
   }
@@ -139,17 +139,17 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void setDescription(final String description) {
+  public void setDescription(String description) {
     this.description = description;
   }
 
   @Override
-  public void setSelectedEntity(final Entity entity) {
+  public void setSelectedEntity(Entity entity) {
     setSelectedEntities(entity != null ? singletonList(entity) : null);
   }
 
   @Override
-  public void setSelectedEntities(final List<Entity> entities) {
+  public void setSelectedEntities(List<Entity> entities) {
     if (nullOrEmpty(entities) && this.selectedEntities.isEmpty()) {
       return;
     }//no change
@@ -184,12 +184,12 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void setWildcard(final String wildcard) {
+  public void setWildcard(String wildcard) {
     this.wildcard = wildcard;
   }
 
   @Override
-  public void setAdditionalConditionSupplier(final Supplier<Condition> additionalConditionSupplier) {
+  public void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier) {
     this.additionalConditionSupplier = additionalConditionSupplier;
   }
 
@@ -199,7 +199,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void setToStringProvider(final Function<Entity, String> toStringProvider) {
+  public void setToStringProvider(Function<Entity, String> toStringProvider) {
     this.toStringProvider = toStringProvider == null ? DEFAULT_TO_STRING : toStringProvider;
   }
 
@@ -210,7 +210,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void setSearchString(final String searchString) {
+  public void setSearchString(String searchString) {
     this.searchStringValue.set(searchString == null ? "" : searchString);
     searchStringRepresentsSelectedState.set(searchStringRepresentsSelected());
   }
@@ -258,7 +258,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void addSelectedEntitiesListener(final EventDataListener<List<Entity>> listener) {
+  public void addSelectedEntitiesListener(EventDataListener<List<Entity>> listener) {
     selectedEntitiesChangedEvent.addDataListener(listener);
   }
 
@@ -279,9 +279,9 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     Collection<Condition> conditions = new ArrayList<>();
     String[] searchTexts = multipleSelectionEnabledValue.get() ?
             searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
-    for (final Attribute<String> searchAttribute : searchAttributes) {
+    for (Attribute<String> searchAttribute : searchAttributes) {
       SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
-      for (final String rawSearchText : searchTexts) {
+      for (String rawSearchText : searchTexts) {
         conditions.add(where(searchAttribute)
                 .equalTo(prepareSearchText(rawSearchText, searchSettings))
                 .caseSensitive(searchSettings.getCaseSensitiveValue().get()));
@@ -294,7 +294,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
             .toSelectCondition().orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
   }
 
-  private String prepareSearchText(final String rawSearchText, final SearchSettings searchSettings) {
+  private String prepareSearchText(String rawSearchText, SearchSettings searchSettings) {
     boolean wildcardPrefix = searchSettings.getWildcardPrefixValue().get();
     boolean wildcardPostfix = searchSettings.getWildcardPostfixValue().get();
 
@@ -316,20 +316,20 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
             .collect(joining(", "));
   }
 
-  private String toString(final List<Entity> entities) {
+  private String toString(List<Entity> entities) {
     return entities.stream()
             .map(toStringProvider)
             .collect(joining(multipleItemSeparatorValue.get()));
   }
 
-  private void validateType(final Entity entity) {
+  private void validateType(Entity entity) {
     if (!entity.getEntityType().equals(entityType)) {
       throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.getEntityType());
     }
   }
 
-  private static void validateSearchAttributes(final EntityType entityType, final Collection<Attribute<String>> searchAttributes) {
-    for (final Attribute<String> attribute : searchAttributes) {
+  private static void validateSearchAttributes(EntityType entityType, Collection<Attribute<String>> searchAttributes) {
+    for (Attribute<String> attribute : searchAttributes) {
       if (!entityType.equals(attribute.getEntityType())) {
         throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityType);
       }
@@ -361,7 +361,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   private static final class EntityComparator implements Comparator<Entity>, Serializable {
     private static final long serialVersionUID = 1;
     @Override
-    public int compare(final Entity o1, final Entity o2) {
+    public int compare(Entity o1, Entity o2) {
       return o1.compareTo(o2);
     }
   }

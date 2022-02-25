@@ -30,8 +30,8 @@ public class LoadTestPanelTest {
 
   private static final class TestLoadTestModel extends LoadTestModel<Object> {
 
-    public TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
-                             final int applicationBatchSize) {
+    public TestLoadTestModel(User user, int maximumThinkTime, int loginDelayFactor,
+                             int applicationBatchSize) {
       super(user, emptyList(), maximumThinkTime, loginDelayFactor, applicationBatchSize);
     }
 
@@ -41,6 +41,6 @@ public class LoadTestPanelTest {
     }
 
     @Override
-    protected void disconnectApplication(final Object application) {}
+    protected void disconnectApplication(Object application) {}
   }
 }

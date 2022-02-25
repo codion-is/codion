@@ -28,11 +28,11 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   private final List<Action> actions = new ArrayList<>();
 
-  DefaultControls(final String name, final char mnemonic, final StateObserver enabledState,
-                  final Icon smallIcon, final List<Action> controls) {
+  DefaultControls(String name, char mnemonic, StateObserver enabledState,
+                  Icon smallIcon, List<Action> controls) {
     super(name, enabledState, smallIcon);
     setMnemonic(mnemonic);
-    for (final Action control : controls) {
+    for (Action control : controls) {
       if (control != null) {
         add(control);
       }
@@ -48,19 +48,19 @@ final class DefaultControls extends AbstractControl implements Controls {
   }
 
   @Override
-  public Controls add(final Action action) {
+  public Controls add(Action action) {
     actions.add(requireNonNull(action, "action"));
     return this;
   }
 
   @Override
-  public Controls addAt(final int index, final Action action) {
+  public Controls addAt(int index, Action action) {
     actions.add(index, requireNonNull(action, "action"));
     return this;
   }
 
   @Override
-  public Controls remove(final Action action) {
+  public Controls remove(Action action) {
     if (action != null) {
       actions.remove(action);
     }
@@ -84,18 +84,18 @@ final class DefaultControls extends AbstractControl implements Controls {
   }
 
   @Override
-  public Action get(final int index) {
+  public Action get(int index) {
     return actions.get(index);
   }
 
   @Override
-  public Controls add(final Controls controls) {
+  public Controls add(Controls controls) {
     actions.add(requireNonNull(controls, CONTROLS_PARAMETER));
     return this;
   }
 
   @Override
-  public Controls addAt(final int index, final Controls controls) {
+  public Controls addAt(int index, Controls controls) {
     actions.add(index, requireNonNull(controls, CONTROLS_PARAMETER));
     return this;
   }
@@ -107,13 +107,13 @@ final class DefaultControls extends AbstractControl implements Controls {
   }
 
   @Override
-  public Controls addSeparatorAt(final int index) {
+  public Controls addSeparatorAt(int index) {
     actions.add(index, null);
     return this;
   }
 
   @Override
-  public Controls addAll(final Controls controls) {
+  public Controls addAll(Controls controls) {
     actions.addAll(requireNonNull(controls, CONTROLS_PARAMETER).getActions());
     return this;
   }
@@ -169,16 +169,16 @@ final class DefaultControls extends AbstractControl implements Controls {
   }
 
   @Override
-  public void actionPerformed(final ActionEvent e) {/*Not required*/}
+  public void actionPerformed(ActionEvent e) {/*Not required*/}
 
-  private JToolBar createToolBar(final int orientation) {
+  private JToolBar createToolBar(int orientation) {
     JToolBar toolBar = new JToolBar(orientation);
     actions.forEach(new ToolBarControlHandler(toolBar));
 
     return toolBar;
   }
 
-  private static JPanel addEmptyBorder(final JPanel panel) {
+  private static JPanel addEmptyBorder(JPanel panel) {
     Integer gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
     if (gap != null) {
       panel.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));

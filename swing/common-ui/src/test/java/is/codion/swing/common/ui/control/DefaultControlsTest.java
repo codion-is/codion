@@ -24,7 +24,7 @@ public class DefaultControlsTest {
     return booleanValue;
   }
 
-  public void setBooleanValue(final boolean booleanValue) {
+  public void setBooleanValue(boolean booleanValue) {
     this.booleanValue = booleanValue;
   }
 

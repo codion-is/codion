@@ -26,7 +26,7 @@ public interface LoggerProxy {
     }
 
     @Override
-    public void setLogLevel(final Object logLevel) {/*no op*/}
+    public void setLogLevel(Object logLevel) {/*no op*/}
 
     @Override
     public List<Object> getLogLevels() {

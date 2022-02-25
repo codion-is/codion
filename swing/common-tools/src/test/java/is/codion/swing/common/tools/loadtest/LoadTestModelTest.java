@@ -21,7 +21,7 @@ public class LoadTestModelTest {
   private static final UsageScenario<Object> SCENARIO = new AbstractUsageScenario<Object>("test") {
     int counter = 0;
     @Override
-    protected void perform(final Object application) throws Exception {
+    protected void perform(Object application) throws Exception {
       if (counter++ % 2 == 0) {
         throw new Exception();
       }
@@ -30,7 +30,7 @@ public class LoadTestModelTest {
 
   private static final UsageScenario<Object> SCENARIO_II = new AbstractUsageScenario<Object>("testII") {
     @Override
-    protected void perform(final Object application) throws Exception {}
+    protected void perform(Object application) throws Exception {}
   };
 
   @Test
@@ -143,8 +143,8 @@ public class LoadTestModelTest {
 
   public static final class TestLoadTestModel extends LoadTestModel<Object> {
 
-    public TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
-                             final int applicationBatchSize) {
+    public TestLoadTestModel(User user, int maximumThinkTime, int loginDelayFactor,
+                             int applicationBatchSize) {
       super(user, asList(SCENARIO, SCENARIO_II), maximumThinkTime, loginDelayFactor, applicationBatchSize);
     }
 
@@ -154,6 +154,6 @@ public class LoadTestModelTest {
     }
 
     @Override
-    protected void disconnectApplication(final Object application) {}
+    protected void disconnectApplication(Object application) {}
   }
 }

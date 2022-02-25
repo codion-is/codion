@@ -36,7 +36,7 @@ public final class TestDomain extends DefaultDomain {
     this(DOMAIN);
   }
 
-  public TestDomain(final DomainType domain) {
+  public TestDomain(DomainType domain) {
     super(domain);
     compositeMaster();
     compositeDetail();
@@ -104,7 +104,7 @@ public final class TestDomain extends DefaultDomain {
     private static final long serialVersionUID = 1;
 
     @Override
-    public int compare(final Entity o1, final Entity o2) {
+    public int compare(Entity o1, Entity o2) {
       return o1.get(Master.CODE).compareTo(o2.get(Master.CODE));
     }
   }
@@ -138,7 +138,7 @@ public final class TestDomain extends DefaultDomain {
     Optional<Master> getMaster();
     void setMaster(Master master);
 
-    default void setAll(final Long id, final Double value, final Master master) {
+    default void setAll(Long id, Double value, Master master) {
       setId(id);
       setDouble(value);
       setMaster(master);
@@ -317,7 +317,7 @@ public final class TestDomain extends DefaultDomain {
     private static final long serialVersionUID = 1;
 
     @Override
-    public String get(final DerivedProperty.SourceValues sourceValues) {
+    public String get(DerivedProperty.SourceValues sourceValues) {
       String name = sourceValues.get(Employee.NAME);
       Entity department = sourceValues.get(Employee.DEPARTMENT_FK);
       if (name == null || department == null) {

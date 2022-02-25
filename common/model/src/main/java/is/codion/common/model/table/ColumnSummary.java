@@ -19,7 +19,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
+    public <T extends Number> String getSummary(ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
       return "";
     }
   }, SUM {
@@ -29,7 +29,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
+    public <T extends Number> String getSummary(ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
       Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
         return addSubsetIndicator(valueProvider.format(values.stream()
@@ -46,7 +46,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
+    public <T extends Number> String getSummary(ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
       Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
         OptionalDouble average = values.stream()
@@ -66,7 +66,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
+    public <T extends Number> String getSummary(ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
       Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
         OptionalDouble min = values.stream()
@@ -87,7 +87,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
+    public <T extends Number> String getSummary(ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
       Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
         OptionalDouble max = values.stream()
@@ -108,7 +108,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(final ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
+    public <T extends Number> String getSummary(ColumnSummaryModel.ColumnValueProvider<T> valueProvider) {
       Collection<T> values = valueProvider.getValues();
       if (!values.isEmpty()) {
         OptionalDouble min = values.stream()
@@ -130,7 +130,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSummary.class.getName());
 
-  protected String addSubsetIndicator(final String text, final ColumnSummaryModel.ColumnValueProvider<?> valueProvider) {
+  protected String addSubsetIndicator(String text, ColumnSummaryModel.ColumnValueProvider<?> valueProvider) {
     return text.isEmpty() ? text : text + (valueProvider.isValueSubset() ? "*" : "");
   }
 }

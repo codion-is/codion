@@ -21,36 +21,36 @@ final class DefaultFormattedTextFieldBuilder
   private int columns;
   private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
-  DefaultFormattedTextFieldBuilder(final Value<String> linkedValue) {
+  DefaultFormattedTextFieldBuilder(Value<String> linkedValue) {
     super(linkedValue);
   }
 
   @Override
-  public FormattedTextFieldBuilder formatMask(final String formatMask) {
+  public FormattedTextFieldBuilder formatMask(String formatMask) {
     this.formatMask = requireNonNull(formatMask);
     return this;
   }
 
   @Override
-  public FormattedTextFieldBuilder valueContainsLiterals(final boolean valueContainsLiterals) {
+  public FormattedTextFieldBuilder valueContainsLiterals(boolean valueContainsLiterals) {
     this.valueContainsLiterals = valueContainsLiterals;
     return this;
   }
 
   @Override
-  public FormattedTextFieldBuilder updateOn(final UpdateOn updateOn) {
+  public FormattedTextFieldBuilder updateOn(UpdateOn updateOn) {
     this.updateOn = requireNonNull(updateOn);
     return this;
   }
 
   @Override
-  public FormattedTextFieldBuilder columns(final int columns) {
+  public FormattedTextFieldBuilder columns(int columns) {
     this.columns = columns;
     return this;
   }
 
   @Override
-  public FormattedTextFieldBuilder focusLostBehaviour(final int focusLostBehaviour) {
+  public FormattedTextFieldBuilder focusLostBehaviour(int focusLostBehaviour) {
     this.focusLostBehaviour = focusLostBehaviour;
     return this;
   }
@@ -70,12 +70,12 @@ final class DefaultFormattedTextFieldBuilder
   }
 
   @Override
-  protected ComponentValue<String, JFormattedTextField> buildComponentValue(final JFormattedTextField component) {
+  protected ComponentValue<String, JFormattedTextField> buildComponentValue(JFormattedTextField component) {
     return ComponentValues.textComponent(component, null, updateOn);
   }
 
   @Override
-  protected void setInitialValue(final JFormattedTextField component, final String initialValue) {
+  protected void setInitialValue(JFormattedTextField component, String initialValue) {
     component.setText(initialValue);
   }
 }

@@ -61,7 +61,7 @@ public interface ToggleControl extends Control {
    * @param value the value
    * @return a new ToggleControl
    */
-  static ToggleControl toggleControl(final Value<Boolean> value) {
+  static ToggleControl toggleControl(Value<Boolean> value) {
     return builder(value).build();
   }
 
@@ -70,7 +70,7 @@ public interface ToggleControl extends Control {
    * @param state the state
    * @return a new ToggleControl
    */
-  static ToggleControl toggleControl(final State state) {
+  static ToggleControl toggleControl(State state) {
     return builder(state).build();
   }
 
@@ -78,7 +78,7 @@ public interface ToggleControl extends Control {
    * @param value the value to toggle
    * @return a new ToggleControl.Builder
    */
-  static Builder builder(final Value<Boolean> value) {
+  static Builder builder(Value<Boolean> value) {
     return new ToggleControlBuilder(value);
   }
 
@@ -86,7 +86,7 @@ public interface ToggleControl extends Control {
    * @param state the state to toggle
    * @return a new ToggleControl.Builder
    */
-  static Builder builder(final State state) {
+  static Builder builder(State state) {
     return new ToggleControlBuilder(state);
   }
 

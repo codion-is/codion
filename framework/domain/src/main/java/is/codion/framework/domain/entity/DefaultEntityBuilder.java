@@ -14,19 +14,19 @@ final class DefaultEntityBuilder implements Entity.Builder {
   private final Map<Attribute<?>, Object> builderValues = new HashMap<>();
   private final Map<ForeignKey, Entity> builderForeignKeyValues = new HashMap<>();
 
-  DefaultEntityBuilder(final EntityDefinition definition) {
+  DefaultEntityBuilder(EntityDefinition definition) {
     this(definition, null, null);
   }
 
-  DefaultEntityBuilder(final EntityDefinition definition, final Map<Attribute<?>, Object> values,
-                       final Map<Attribute<?>, Object> originalValues) {
+  DefaultEntityBuilder(EntityDefinition definition, Map<Attribute<?>, Object> values,
+                       Map<Attribute<?>, Object> originalValues) {
     this.definition = definition;
     this.values = values;
     this.originalValues = originalValues;
   }
 
   @Override
-  public <T> Entity.Builder with(final Attribute<T> attribute, final T value) {
+  public <T> Entity.Builder with(Attribute<T> attribute, T value) {
     definition.getProperty(attribute);
     if (attribute instanceof ForeignKey) {
       builderForeignKeyValues.put((ForeignKey) attribute, (Entity) value);

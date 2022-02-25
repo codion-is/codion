@@ -43,7 +43,7 @@ public class HttpServerTest {
 
   @Test
   void testWebServer() throws Exception {
-    try (final InputStream input = new URL("https://localhost:" + FILE_SERVER_PORT_NUMBER + "/build.gradle").openStream()) {
+    try (InputStream input = new URL("https://localhost:" + FILE_SERVER_PORT_NUMBER + "/build.gradle").openStream()) {
       assertTrue(input.read() > 0);
     }
   }

@@ -27,7 +27,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   }
 
   @Override
-  protected List<EntityPanel> initializeEntityPanels(final PetstoreAppModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(PetstoreAppModel applicationModel) {
     /* CATEGORY
      *   PRODUCT
      *     ITEM
@@ -57,7 +57,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   }
 
   @Override
-  protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(final PetstoreAppModel applicationModel) {
+  protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(PetstoreAppModel applicationModel) {
     SwingEntityModel.Builder tagModelBuilder =
             SwingEntityModel.builder(Tag.TYPE)
                     .detailModelBuilder(SwingEntityModel.builder(TagItem.TYPE));
@@ -84,12 +84,12 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   }
 
   @Override
-  protected PetstoreAppModel initializeApplicationModel(final EntityConnectionProvider connectionProvider)
+  protected PetstoreAppModel initializeApplicationModel(EntityConnectionProvider connectionProvider)
           throws CancelException {
     return new PetstoreAppModel(connectionProvider);
   }
 
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     Locale.setDefault(new Locale("en"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petstore.domain.Petstore");

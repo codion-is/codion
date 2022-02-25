@@ -21,7 +21,7 @@ final class DefaultServerLocator implements Server.Locator {
   private static final Logger LOG = LoggerFactory.getLogger(DefaultServerLocator.class);
 
   @Override
-  public Registry initializeRegistry(final int port) throws RemoteException {
+  public Registry initializeRegistry(int port) throws RemoteException {
     LOG.info("Initializing registry on port: {}", port);
     Registry localRegistry = LocateRegistry.getRegistry(port);
     try {
@@ -38,10 +38,10 @@ final class DefaultServerLocator implements Server.Locator {
   }
 
   @Override
-  public <T extends Remote, A extends ServerAdmin> Server<T, A> getServer(final String serverHostName,
-                                                                          final String serverNamePrefix,
-                                                                          final int registryPort,
-                                                                          final int requestedServerPort)
+  public <T extends Remote, A extends ServerAdmin> Server<T, A> getServer(String serverHostName,
+                                                                          String serverNamePrefix,
+                                                                          int registryPort,
+                                                                          int requestedServerPort)
           throws RemoteException, NotBoundException {
     List<Server<T, A>> servers = getServers(serverHostName, registryPort, serverNamePrefix, requestedServerPort);
     if (!servers.isEmpty()) {
@@ -53,13 +53,13 @@ final class DefaultServerLocator implements Server.Locator {
     }
   }
 
-  private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> getServers(final String hostNames,
-                                                                                         final int registryPort,
-                                                                                         final String serverNamePrefix,
-                                                                                         final int requestedServerPort)
+  private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> getServers(String hostNames,
+                                                                                         int registryPort,
+                                                                                         String serverNamePrefix,
+                                                                                         int requestedServerPort)
           throws RemoteException {
     List<Server<T, A>> servers = new ArrayList<>();
-    for (final String serverHostName : hostNames.split(",")) {
+    for (String serverHostName : hostNames.split(",")) {
       servers.addAll(getServersOnHost(serverHostName, registryPort, serverNamePrefix, requestedServerPort));
     }
     servers.sort(new ServerComparator<>());
@@ -67,16 +67,16 @@ final class DefaultServerLocator implements Server.Locator {
     return servers;
   }
 
-  private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> getServersOnHost(final String serverHostName,
-                                                                                               final int registryPort,
-                                                                                               final String serverNamePrefix,
-                                                                                               final int requestedServerPort)
+  private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> getServersOnHost(String serverHostName,
+                                                                                               int registryPort,
+                                                                                               String serverNamePrefix,
+                                                                                               int requestedServerPort)
           throws RemoteException {
     LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", requested server port: {}, registry port {}",
             serverHostName, serverNamePrefix, requestedServerPort, registryPort);
     List<Server<T, A>> servers = new ArrayList<>();
     Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
-    for (final String serverName : registry.list()) {
+    for (String serverName : registry.list()) {
       if (serverName.startsWith(serverNamePrefix)) {
         addIfReachable(serverName, requestedServerPort, registry, servers);
       }
@@ -85,8 +85,8 @@ final class DefaultServerLocator implements Server.Locator {
     return servers;
   }
 
-  private static <T extends Remote, A extends ServerAdmin> void addIfReachable(final String serverName, final int requestedServerPort,
-                                                                               final Registry registry, final List<Server<T, A>> servers) {
+  private static <T extends Remote, A extends ServerAdmin> void addIfReachable(String serverName, int requestedServerPort,
+                                                                               Registry registry, List<Server<T, A>> servers) {
     LOG.info("Found server \"{}\"", serverName);
     try {
       Server<T, A> server = getIfReachable((Server<T, A>) registry.lookup(serverName), requestedServerPort);
@@ -100,8 +100,8 @@ final class DefaultServerLocator implements Server.Locator {
     }
   }
 
-  private static <T extends Remote, A extends ServerAdmin> Server<T, A> getIfReachable(final Server<T, A> server,
-                                                                                       final int requestedServerPort) throws RemoteException {
+  private static <T extends Remote, A extends ServerAdmin> Server<T, A> getIfReachable(Server<T, A> server,
+                                                                                       int requestedServerPort) throws RemoteException {
     ServerInformation serverInformation = server.getServerInformation();
     if (requestedServerPort != -1 && serverInformation.getServerPort() != requestedServerPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
@@ -119,7 +119,7 @@ final class DefaultServerLocator implements Server.Locator {
   private static final class ServerComparator<T extends Remote, A extends ServerAdmin> implements Comparator<Server<T, A>>, Serializable {
     private static final long serialVersionUID = 1;
     @Override
-    public int compare(final Server<T, A> o1, final Server<T, A> o2) {
+    public int compare(Server<T, A> o1, Server<T, A> o2) {
       try {
         return Integer.compare(o1.getServerLoad(), o2.getServerLoad());
       }

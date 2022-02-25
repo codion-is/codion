@@ -100,10 +100,10 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
      * @throws RemoteException in case of a remote exception
      * @throws NotBoundException in case no such server is found
      */
-    <T extends Remote, A extends ServerAdmin> Server<T, A> getServer(final String serverHostName,
-                                                                     final String serverNamePrefix,
-                                                                     final int registryPort,
-                                                                     final int requestedServerPort)
+    <T extends Remote, A extends ServerAdmin> Server<T, A> getServer(String serverHostName,
+                                                                     String serverNamePrefix,
+                                                                     int registryPort,
+                                                                     int requestedServerPort)
             throws RemoteException, NotBoundException;
 
     /**

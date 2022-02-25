@@ -39,7 +39,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    * Instantiates a new {@link NullableToggleButtonModel} with the given initial state.
    * @param initialState the initial state
    */
-  public NullableToggleButtonModel(final Boolean initialState) {
+  public NullableToggleButtonModel(Boolean initialState) {
     this.buttonState = Value.value(initialState);
     displayState(initialState);
     bindEvents();
@@ -58,7 +58,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    * @param selected the new state
    */
   @Override
-  public void setSelected(final boolean selected) {
+  public void setSelected(boolean selected) {
     setState(selected);
   }
 
@@ -66,7 +66,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    * Sets the underlying state
    * @param state the state
    */
-  public void setState(final Boolean state) {
+  public void setState(Boolean state) {
     buttonState.set(state);
   }
 
@@ -99,20 +99,20 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    * @param armed the value
    */
   @Override
-  public void setArmed(final boolean armed) {/*Not implemented*/}
+  public void setArmed(boolean armed) {/*Not implemented*/}
 
   /**
    * Does nothing.
    * @param pressed the value
    */
   @Override
-  public void setPressed(final boolean pressed) {/*Not implemented*/}
+  public void setPressed(boolean pressed) {/*Not implemented*/}
 
   /**
    * Adds a listener notified each time the state changes.
    * @param listener the listener
    */
-  public void addStateListener(final EventDataListener<Boolean> listener) {
+  public void addStateListener(EventDataListener<Boolean> listener) {
     buttonState.addDataListener(listener);
   }
 
@@ -120,7 +120,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    * Removes the given listener.
    * @param listener the listener to remove
    */
-  public void removeStateListener(final EventDataListener<Boolean> listener) {
+  public void removeStateListener(EventDataListener<Boolean> listener) {
     buttonState.removeDataListener(listener);
   }
 
@@ -133,7 +133,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
     });
   }
 
-  private void displayState(final Boolean state) {
+  private void displayState(Boolean state) {
     super.setArmed(state == null);
     super.setPressed(state == null);
   }

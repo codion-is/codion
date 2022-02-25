@@ -145,7 +145,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param selectAttributes the attributes to select
    * @throws IllegalArgumentException in case any of the given attributes is not part of the underlying entity type
    */
-  void setSelectAttributes(final Collection<Attribute<?>> selectAttributes);
+  void setSelectAttributes(Collection<Attribute<?>> selectAttributes);
 
   /**
    * @return true if the data for this model should only be fetched once

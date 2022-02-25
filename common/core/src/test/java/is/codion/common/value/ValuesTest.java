@@ -25,7 +25,7 @@ public class ValuesTest {
     return integerValue;
   }
 
-  public void setIntegerValue(final Integer integerValue) {
+  public void setIntegerValue(Integer integerValue) {
     if (!Objects.equals(this.integerValue, integerValue)) {
       this.integerValue = integerValue;
       integerValueChange.onEvent(integerValue);

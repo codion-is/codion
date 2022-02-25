@@ -40,7 +40,7 @@ public final class EntityApplicationViewTest {
       }
 
       @Override
-      protected FXEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
+      protected FXEntityApplicationModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {
         return new FXEntityApplicationModel(CONNECTION_PROVIDER);
       }
     };

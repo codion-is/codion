@@ -13,7 +13,7 @@ public final class ProviderNotFoundException extends CredentialsException {
    * @param message the exception message
    * @param cause the root cause
    */
-  public ProviderNotFoundException(final String message, final Throwable cause) {
+  public ProviderNotFoundException(String message, Throwable cause) {
     super(message, cause);
   }
 }

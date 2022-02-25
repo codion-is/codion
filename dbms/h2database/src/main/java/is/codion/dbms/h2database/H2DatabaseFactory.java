@@ -26,17 +26,17 @@ public final class H2DatabaseFactory implements DatabaseFactory {
   private static final String SYSADMIN_USERNAME = "sa";
 
   @Override
-  public boolean isDriverCompatible(final String driverClassName) {
+  public boolean isDriverCompatible(String driverClassName) {
     return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
   }
 
   @Override
-  public Database createDatabase(final String jdbcUrl) {
+  public Database createDatabase(String jdbcUrl) {
     return new H2Database(jdbcUrl, Text.parseCommaSeparatedValues(Database.DATABASE_INIT_SCRIPTS.get()),
             Database.SELECT_FOR_UPDATE_NOWAIT.get());
   }
 
-  public static Database createDatabase(final String jdbcUrl, final String initScript) {
+  public static Database createDatabase(String jdbcUrl, String initScript) {
     return new H2Database(jdbcUrl, initScript == null ? emptyList() : singletonList(initScript),
             Database.SELECT_FOR_UPDATE_NOWAIT.get());
   }
@@ -47,7 +47,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
    * @param scriptPath the path to the script
    * @throws SQLException in case of an exception
    */
-  public static void runScript(final Database database, final String scriptPath) throws SQLException {
+  public static void runScript(Database database, String scriptPath) throws SQLException {
     runScript(database, scriptPath, SYSADMIN_USERNAME, "", Charset.defaultCharset());
   }
 
@@ -60,7 +60,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
    * @param scriptCharset the script character set
    * @throws SQLException in case of an exception
    */
-  public static void runScript(final Database database, final String scriptPath, final String username, final String password, final Charset scriptCharset) throws SQLException {
+  public static void runScript(Database database, String scriptPath, String username, String password, Charset scriptCharset) throws SQLException {
     try {
       Class runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
       Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, Charset.class, boolean.class);

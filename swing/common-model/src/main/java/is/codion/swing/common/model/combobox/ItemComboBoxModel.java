@@ -23,12 +23,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<T>> {
 
-  private ItemComboBoxModel(final List<Item<T>> items) {
+  private ItemComboBoxModel(List<Item<T>> items) {
     super(null);
     setContents(items);
   }
 
-  private ItemComboBoxModel(final Comparator<Item<T>> sortComparator, final Collection<Item<T>> items) {
+  private ItemComboBoxModel(Comparator<Item<T>> sortComparator, Collection<Item<T>> items) {
     super(null, sortComparator);
     setContents(items);
     if (containsItem(Item.item(null))) {
@@ -40,7 +40,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
    * @param value the value
    * @return the index of the given value, -1 if not found
    */
-  public int indexOf(final T value) {
+  public int indexOf(T value) {
     for (int i = 0; i < getSize(); i++) {
       if (Objects.equals(getElementAt(i).getValue(), value)) {
         return i;
@@ -63,7 +63,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
    * @param <T> the Item type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> createModel(final List<Item<T>> items) {
+  public static <T> ItemComboBoxModel<T> createModel(List<Item<T>> items) {
     return new ItemComboBoxModel<>(null, requireNonNull(items));
   }
 
@@ -80,7 +80,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
    * @param <T> the Item type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> createSortedModel(final List<Item<T>> items) {
+  public static <T> ItemComboBoxModel<T> createSortedModel(List<Item<T>> items) {
     return new ItemComboBoxModel<>(items);
   }
 
@@ -89,7 +89,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
    * @param <T> the Item type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> createSortedModel(final Comparator<Item<T>> sortComparator) {
+  public static <T> ItemComboBoxModel<T> createSortedModel(Comparator<Item<T>> sortComparator) {
     return new ItemComboBoxModel<>(requireNonNull(sortComparator), null);
   }
 
@@ -99,7 +99,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
    * @param <T> the Item type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> createSortedModel(final List<Item<T>> items, final Comparator<Item<T>> sortComparator) {
+  public static <T> ItemComboBoxModel<T> createSortedModel(List<Item<T>> items, Comparator<Item<T>> sortComparator) {
     requireNonNull(items);
     requireNonNull(sortComparator);
 
@@ -119,7 +119,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
    * @param nullString the string representing a null value
    * @return a Boolean based ItemComboBoxModel
    */
-  public static ItemComboBoxModel<Boolean> createBooleanModel(final String nullString) {
+  public static ItemComboBoxModel<Boolean> createBooleanModel(String nullString) {
     return createBooleanModel(nullString, Messages.get(Messages.YES), Messages.get(Messages.NO));
   }
 
@@ -130,12 +130,12 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
    * @param falseCaption the string representing the boolean value 'false'
    * @return a Boolean based ItemComboBoxModel
    */
-  public static ItemComboBoxModel<Boolean> createBooleanModel(final String nullCaption, final String trueCaption, final String falseCaption) {
+  public static ItemComboBoxModel<Boolean> createBooleanModel(String nullCaption, String trueCaption, String falseCaption) {
     return new ItemComboBoxModel<>(null, asList(item(null, nullCaption), item(true, trueCaption), item(false, falseCaption)));
   }
 
   @Override
-  protected Item<T> translateSelectionItem(final Object item) {
+  protected Item<T> translateSelectionItem(Object item) {
     if (item instanceof Item) {
       return (Item<T>) item;
     }

@@ -31,7 +31,7 @@ class CompletionDocument extends PlainDocument {
 
   private JTextComponent editorComponent;
 
-  protected CompletionDocument(final JComboBox<?> comboBox, final boolean normalize) {
+  protected CompletionDocument(JComboBox<?> comboBox, boolean normalize) {
     this.comboBox = requireNonNull(comboBox);
     this.comboBox.setEditable(true);
     this.normalize = normalize;
@@ -53,7 +53,7 @@ class CompletionDocument extends PlainDocument {
   }
 
   @Override
-  public final void remove(final int offset, final int len) throws BadLocationException {
+  public final void remove(int offset, int len) throws BadLocationException {
     int offs = offset;
     if (selecting) {
       return;
@@ -114,7 +114,7 @@ class CompletionDocument extends PlainDocument {
     }
   }
 
-  protected final void highlightCompletedText(final int start) {
+  protected final void highlightCompletedText(int start) {
     editorComponent.setCaretPosition(getLength());
     editorComponent.moveCaretPosition(start);
   }
@@ -122,13 +122,13 @@ class CompletionDocument extends PlainDocument {
   /**
    * @param item Value to set for property 'selectedItem'.
    */
-  protected final void setSelectedItem(final Object item) {
+  protected final void setSelectedItem(Object item) {
     selecting = true;
     model.setSelectedItem(item);
     selecting = false;
   }
 
-  protected final Object lookupItem(final String pattern) {
+  protected final Object lookupItem(String pattern) {
     Object selectedItem = model.getSelectedItem();
     // only search for a different item if the currently selected does not match
     if (selectedItem != null && startsWithIgnoreCase(selectedItem.toString(), pattern, normalize)) {
@@ -147,19 +147,19 @@ class CompletionDocument extends PlainDocument {
     return null;
   }
 
-  protected static boolean startsWithIgnoreCase(final String str1, final String str2, final boolean normalize) {
+  protected static boolean startsWithIgnoreCase(String str1, String str2, boolean normalize) {
     String one = normalize ? normalize(str1) : str1;
     String two = normalize ? normalize(str2) : str2;
 
     return one.toUpperCase().startsWith(two.toUpperCase());
   }
 
-  protected static String normalize(final String string) {
+  protected static String normalize(String string) {
     //http://stackoverflow.com/a/4225698/317760
     return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
   }
 
-  private void setEditorComponent(final JTextComponent component) {
+  private void setEditorComponent(JTextComponent component) {
     editorComponent = component;
     if (editorComponent.getDocument() instanceof CompletionDocument) {
       throw new IllegalStateException("Completion has already been set for combo box");
@@ -168,7 +168,7 @@ class CompletionDocument extends PlainDocument {
     editorComponent.addKeyListener(new MatchKeyAdapter());
     editorComponent.addFocusListener(new FocusAdapter() {
       @Override
-      public void focusGained(final FocusEvent e) {
+      public void focusGained(FocusEvent e) {
         highlightCompletedText(0);
       }
     });
@@ -177,7 +177,7 @@ class CompletionDocument extends PlainDocument {
   private final class MatchKeyAdapter extends KeyAdapter {
 
     @Override
-    public void keyPressed(final KeyEvent e) {
+    public void keyPressed(KeyEvent e) {
       hitBackspace = false;
       switch (e.getKeyCode()) {
         // determine if the pressed key is backspace (needed by the remove method)

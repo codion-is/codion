@@ -11,7 +11,7 @@ public final class AuthenticationException extends DatabaseException {
   /**
    * @param message the error message
    */
-  public AuthenticationException(final String message) {
+  public AuthenticationException(String message) {
     super(message);
   }
 }

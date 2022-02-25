@@ -7,18 +7,18 @@ import javax.swing.JSpinner;
 
 final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<T, JSpinner> {
 
-  SpinnerNumberValue(final JSpinner spinner) {
+  SpinnerNumberValue(JSpinner spinner) {
     super(spinner);
     spinner.getModel().addChangeListener(e -> notifyValueChange());
   }
 
   @Override
-  protected T getComponentValue(final JSpinner component) {
+  protected T getComponentValue(JSpinner component) {
     return (T) component.getValue();
   }
 
   @Override
-  protected void setComponentValue(final JSpinner component, final T value) {
+  protected void setComponentValue(JSpinner component, T value) {
     component.setValue(value == null ? 0 : value);
   }
 }

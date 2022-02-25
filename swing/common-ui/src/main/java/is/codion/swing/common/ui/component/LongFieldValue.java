@@ -7,7 +7,7 @@ import is.codion.swing.common.ui.textfield.LongField;
 
 final class LongFieldValue extends AbstractTextComponentValue<Long, LongField> {
 
-  LongFieldValue(final LongField longField, final boolean nullable, final UpdateOn updateOn) {
+  LongFieldValue(LongField longField, boolean nullable, UpdateOn updateOn) {
     super(longField, nullable ? null : 0L, updateOn);
     if (!isNullable() && longField.getLong() == null) {
       longField.setLong(0L);
@@ -15,7 +15,7 @@ final class LongFieldValue extends AbstractTextComponentValue<Long, LongField> {
   }
 
   @Override
-  protected Long getComponentValue(final LongField component) {
+  protected Long getComponentValue(LongField component) {
     Number number = component.getNumber();
     if (number == null) {
       return isNullable() ? null : 0L;
@@ -25,7 +25,7 @@ final class LongFieldValue extends AbstractTextComponentValue<Long, LongField> {
   }
 
   @Override
-  protected void setComponentValue(final LongField component, final Long value) {
+  protected void setComponentValue(LongField component, Long value) {
     component.setNumber(value);
   }
 }

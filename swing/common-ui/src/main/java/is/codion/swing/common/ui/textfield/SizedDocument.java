@@ -27,7 +27,7 @@ public final class SizedDocument extends PlainDocument {
    * Instantiates a new SizedDocument
    * @param maximumLength the maximum text length
    */
-  public SizedDocument(final int maximumLength) {
+  public SizedDocument(int maximumLength) {
     documentFilter = CaseDocumentFilter.caseDocumentFilter(DocumentCase.NONE);
     stringLengthValidator = new StringLengthValidator(maximumLength);
     documentFilter.addValidator(stringLengthValidator);
@@ -39,7 +39,7 @@ public final class SizedDocument extends PlainDocument {
    * @throws UnsupportedOperationException always
    */
   @Override
-  public void setDocumentFilter(final DocumentFilter filter) {
+  public void setDocumentFilter(DocumentFilter filter) {
     throw new UnsupportedOperationException("Changing the DocumentFilter of SizedDocument is not allowed");
   }
 
@@ -58,7 +58,7 @@ public final class SizedDocument extends PlainDocument {
   /**
    * @param maximumLength the maximum length of the text to allow, -1 if unlimited
    */
-  public void setMaximumLength(final int maximumLength) {
+  public void setMaximumLength(int maximumLength) {
     stringLengthValidator.setMaximumLength(maximumLength);
   }
 }

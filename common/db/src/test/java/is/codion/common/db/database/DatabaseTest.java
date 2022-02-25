@@ -64,7 +64,7 @@ public class DatabaseTest {
     }
 
     @Override
-    public String getAutoIncrementQuery(final String idSource) {
+    public String getAutoIncrementQuery(String idSource) {
       return database.getAutoIncrementQuery(idSource);
     }
   }

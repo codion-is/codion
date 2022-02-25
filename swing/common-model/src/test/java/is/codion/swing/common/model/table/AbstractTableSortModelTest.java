@@ -77,12 +77,12 @@ public class AbstractTableSortModelTest {
   void nonComparableColumnClass() {
     AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>() {
       @Override
-      public Class getColumnClass(final Integer columnIdentifier) {
+      public Class getColumnClass(Integer columnIdentifier) {
         return ArrayList.class;
       }
 
       @Override
-      protected Object getColumnValue(final ArrayList row, final Integer columnIdentifier) {
+      protected Object getColumnValue(ArrayList row, Integer columnIdentifier) {
         return row.toString();
       }
     };
@@ -96,7 +96,7 @@ public class AbstractTableSortModelTest {
     private final Column secondValue;
     private final Integer thirdValue;
 
-    private Row(final Integer firstValue, final Integer secondValue, final Integer thirdValue) {
+    private Row(Integer firstValue, Integer secondValue, Integer thirdValue) {
       this.firstValue = firstValue;
       this.secondValue = new Column(secondValue);
       this.thirdValue = thirdValue;
@@ -106,7 +106,7 @@ public class AbstractTableSortModelTest {
   private static final class Column {
     private final Integer value;
 
-    private Column(final Integer value) {
+    private Column(Integer value) {
       this.value = value;
     }
 
@@ -119,7 +119,7 @@ public class AbstractTableSortModelTest {
   private static final class TestTableSortModel extends AbstractTableSortModel<Row, Integer> {
 
     @Override
-    public Class<? extends Object> getColumnClass(final Integer columnIdentifier) {
+    public Class<? extends Object> getColumnClass(Integer columnIdentifier) {
       if (columnIdentifier.equals(1)) {
         return String.class;
       }
@@ -128,7 +128,7 @@ public class AbstractTableSortModelTest {
     }
 
     @Override
-    protected Object getColumnValue(final Row row, final Integer columnIdentifier) {
+    protected Object getColumnValue(Row row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case 0:
           return row.firstValue;

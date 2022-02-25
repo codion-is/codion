@@ -31,7 +31,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private Format format;
   private int horizontalAlignment = SwingConstants.LEADING;
 
-  DefaultTextFieldBuilder(final Class<T> valueClass, final Value<T> linkedValue) {
+  DefaultTextFieldBuilder(Class<T> valueClass, Value<T> linkedValue) {
     super(linkedValue);
     this.valueClass = requireNonNull(valueClass);
     if (valueClass.equals(Character.class)) {
@@ -44,45 +44,45 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
-  public final B columns(final int columns) {
+  public final B columns(int columns) {
     this.columns = columns;
     return (B) this;
   }
 
   @Override
-  public final B action(final Action action) {
+  public final B action(Action action) {
     this.action = requireNonNull(action);
 
     return transferFocusOnEnter(false);
   }
 
   @Override
-  public final B actionListener(final ActionListener actionListener) {
+  public final B actionListener(ActionListener actionListener) {
     this.actionListener = actionListener;
 
     return transferFocusOnEnter(false);
   }
 
   @Override
-  public final B selectAllOnFocusGained(final boolean selectAllOnFocusGained) {
+  public final B selectAllOnFocusGained(boolean selectAllOnFocusGained) {
     this.selectAllOnFocusGained = selectAllOnFocusGained;
     return (B) this;
   }
 
   @Override
-  public final B lookupDialog(final Supplier<Collection<T>> valueSupplier) {
+  public final B lookupDialog(Supplier<Collection<T>> valueSupplier) {
     this.valueSupplier = requireNonNull(valueSupplier);
     return (B) this;
   }
 
   @Override
-  public final B format(final Format format) {
+  public final B format(Format format) {
     this.format = format;
     return (B) this;
   }
 
   @Override
-  public final B horizontalAlignment(final int horizontalAlignment) {
+  public final B horizontalAlignment(int horizontalAlignment) {
     this.horizontalAlignment = horizontalAlignment;
     return (B) this;
   }
@@ -120,7 +120,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
-  protected ComponentValue<T, C> buildComponentValue(final C component) {
+  protected ComponentValue<T, C> buildComponentValue(C component) {
     requireNonNull(component);
     if (valueClass.equals(String.class)) {
       return (ComponentValue<T, C>) ComponentValues.textComponent(component, format, updateOn);
@@ -130,7 +130,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
-  protected void setInitialValue(final C component, final T initialValue) {
+  protected void setInitialValue(C component, T initialValue) {
     if (initialValue instanceof String) {
       component.setText((String) initialValue);
     }

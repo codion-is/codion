@@ -96,8 +96,8 @@ public class FilteredTableTest {
 
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
-    private TestAbstractFilteredTableModel(final List<TableColumn> columns, final AbstractTableSortModel<List<String>, Integer> sortModel,
-                                           final List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
+    private TestAbstractFilteredTableModel(List<TableColumn> columns, AbstractTableSortModel<List<String>, Integer> sortModel,
+                                           List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
       super(new SwingFilteredTableColumnModel<>(columns), sortModel, columnFilterModels);
     }
 
@@ -107,7 +107,7 @@ public class FilteredTableTest {
     }
 
     @Override
-    public Object getValueAt(final int rowIndex, final int columnIndex) {
+    public Object getValueAt(int rowIndex, int columnIndex) {
       return getItemAt(rowIndex);
     }
   }
@@ -115,12 +115,12 @@ public class FilteredTableTest {
   private static final class TestAbstractTableSortModel extends AbstractTableSortModel<List<String>, Integer> {
 
     @Override
-    public Class<String> getColumnClass(final Integer columnIdentifier) {
+    public Class<String> getColumnClass(Integer columnIdentifier) {
       return String.class;
     }
 
     @Override
-    protected Object getColumnValue(final List<String> row, final Integer columnIdentifier) {
+    protected Object getColumnValue(List<String> row, Integer columnIdentifier) {
       return row.get(columnIdentifier);
     }
   }

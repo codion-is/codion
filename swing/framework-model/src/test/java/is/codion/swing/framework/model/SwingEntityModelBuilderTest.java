@@ -125,21 +125,21 @@ public final class SwingEntityModelBuilderTest {
 
   static final class DepartmentModel extends SwingEntityModel {
 
-    public DepartmentModel(final EntityConnectionProvider connectionProvider) {
+    public DepartmentModel(EntityConnectionProvider connectionProvider) {
       super(new DepartmentTableModel(connectionProvider));
     }
   }
 
   static final class DepartmentEditModel extends SwingEntityEditModel {
 
-    public DepartmentEditModel(final EntityConnectionProvider connectionProvider) {
+    public DepartmentEditModel(EntityConnectionProvider connectionProvider) {
       super(TestDomain.T_DEPARTMENT, connectionProvider);
     }
   }
 
   static final class DepartmentTableModel extends SwingEntityTableModel {
 
-    public DepartmentTableModel(final EntityConnectionProvider connectionProvider) {
+    public DepartmentTableModel(EntityConnectionProvider connectionProvider) {
       super(new DepartmentEditModel(connectionProvider));
     }
   }

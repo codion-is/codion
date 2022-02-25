@@ -135,7 +135,7 @@ public interface Chinook {
 
     FunctionType<EntityConnection, RaisePriceParameters, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price");
 
-    default Track raisePrice(final BigDecimal priceIncrease) {
+    default Track raisePrice(BigDecimal priceIncrease) {
       put(UNITPRICE, get(UNITPRICE).add(priceIncrease));
       return this;
     }
@@ -147,7 +147,7 @@ public interface Chinook {
       private final Collection<Long> trackIds;
       private final BigDecimal priceIncrease;
 
-      public RaisePriceParameters(final Collection<Long> trackIds, final BigDecimal priceIncrease) {
+      public RaisePriceParameters(Collection<Long> trackIds, BigDecimal priceIncrease) {
         this.trackIds = requireNonNull(trackIds);
         this.priceIncrease = requireNonNull(priceIncrease);
       }
@@ -217,7 +217,7 @@ public interface Chinook {
       private final String playlistName;
       private final int noOfTracks;
 
-      public RandomPlaylistParameters(final String playlistName, final int noOfTracks) {
+      public RandomPlaylistParameters(String playlistName, int noOfTracks) {
         this.playlistName = requireNonNull(playlistName);
         this.noOfTracks = noOfTracks;
       }
@@ -245,7 +245,7 @@ public interface Chinook {
     ForeignKey TRACK_FK = TYPE.foreignKey("track_fk", TRACK_ID, Track.ID);
   }
 
-  static Integer getMinutes(final Integer milliseconds) {
+  static Integer getMinutes(Integer milliseconds) {
     if (milliseconds == null) {
       return null;
     }
@@ -253,7 +253,7 @@ public interface Chinook {
     return milliseconds / 1000 / 60;
   }
 
-  static Integer getSeconds(final Integer milliseconds) {
+  static Integer getSeconds(Integer milliseconds) {
     if (milliseconds == null) {
       return null;
     }
@@ -261,7 +261,7 @@ public interface Chinook {
     return milliseconds / 1000 % 60;
   }
 
-  static Integer getMilliseconds(final Integer minutes, final Integer seconds) {
+  static Integer getMilliseconds(Integer minutes, Integer seconds) {
     int milliseconds = minutes == null ? 0 : minutes * 60 * 1000;
     milliseconds += seconds == null ? 0 : seconds * 1000;
 
@@ -274,7 +274,7 @@ public interface Chinook {
     private static final long serialVersionUID = 1;
 
     @Override
-    public BigDecimal get(final DerivedProperty.SourceValues sourceValues) {
+    public BigDecimal get(DerivedProperty.SourceValues sourceValues) {
       Integer quantity = sourceValues.get(InvoiceLine.QUANTITY);
       BigDecimal unitPrice = sourceValues.get(InvoiceLine.UNITPRICE);
       if (unitPrice == null || quantity == null) {
@@ -291,7 +291,7 @@ public interface Chinook {
     private static final long serialVersionUID = 1;
 
     @Override
-    public String get(final DerivedProperty.SourceValues sourceValues) {
+    public String get(DerivedProperty.SourceValues sourceValues) {
       Integer milliseconds = sourceValues.get(Track.MILLISECONDS);
       if (milliseconds == null || milliseconds <= 0) {
         return "";
@@ -308,7 +308,7 @@ public interface Chinook {
     private static final long serialVersionUID = 1;
 
     @Override
-    public Image get(final DerivedProperty.SourceValues sourceValues) {
+    public Image get(DerivedProperty.SourceValues sourceValues) {
       byte[] bytes = sourceValues.get(Album.COVER);
       if (bytes == null) {
         return null;
@@ -329,7 +329,7 @@ public interface Chinook {
     private static final long serialVersionUID = 1;
 
     @Override
-    public String apply(final Entity customer) {
+    public String apply(Entity customer) {
       StringBuilder builder = new StringBuilder();
       if (customer.isNotNull(Customer.LASTNAME)) {
         builder.append(customer.get(Customer.LASTNAME));

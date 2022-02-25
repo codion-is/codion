@@ -36,7 +36,7 @@ public final class WaitCursor {
    * @param component the component
    * @see #hide(JComponent)
    */
-  public static void show(final JComponent component) {
+  public static void show(JComponent component) {
     Windows.getParentWindow(component).ifPresent(WaitCursor::show);
   }
 
@@ -56,11 +56,11 @@ public final class WaitCursor {
    * @param component the component
    * @see #show(JComponent)
    */
-  public static void hide(final JComponent component) {
+  public static void hide(JComponent component) {
     Windows.getParentWindow(component).ifPresent(WaitCursor::hide);
   }
 
-  public static void show(final Window window) {
+  public static void show(Window window) {
     setWaitCursor(true, window);
   }
 
@@ -68,7 +68,7 @@ public final class WaitCursor {
    * Removes a wait cursor request for the given window
    * @param window the window
    */
-  public static void hide(final Window window) {
+  public static void hide(Window window) {
     setWaitCursor(false, window);
   }
 
@@ -76,7 +76,7 @@ public final class WaitCursor {
    * Adds a wait cursor request for the given window
    * @param window the window
    */
-  private static void setWaitCursor(final boolean on, final Window window) {
+  private static void setWaitCursor(boolean on, Window window) {
     if (window == null) {
       return;
     }

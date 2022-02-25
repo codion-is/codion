@@ -24,7 +24,7 @@ public class UtilitiesTest {
   void linkToEnabledState() {
     Action action = new AbstractAction("test") {
       @Override
-      public void actionPerformed(final ActionEvent e) {}
+      public void actionPerformed(ActionEvent e) {}
     };
     State state = State.state();
 

@@ -53,7 +53,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   private final EntityConnection connection;
 
-  protected AbstractHttpEntityConnectionTest(final EntityConnection connection) {
+  protected AbstractHttpEntityConnectionTest(EntityConnection connection) {
     this.connection = connection;
   }
 
@@ -143,7 +143,7 @@ abstract class AbstractHttpEntityConnectionTest {
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(selectCondition));
       List<Entity> afterUpdate = connection.select(Entity.getPrimaryKeys(entities));
-      for (final Entity entity : afterUpdate) {
+      for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(TestDomain.EMP_COMMISSION));
         assertEquals(4200d, entity.get(TestDomain.EMP_SALARY));
       }

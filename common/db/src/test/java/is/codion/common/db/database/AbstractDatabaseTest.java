@@ -20,7 +20,7 @@ public final class AbstractDatabaseTest {
       return "name";
     }
     @Override
-    public String getAutoIncrementQuery(final String idSource) {
+    public String getAutoIncrementQuery(String idSource) {
       return null;
     }
     @Override
@@ -44,7 +44,7 @@ public final class AbstractDatabaseTest {
     Connection connection = database.createConnection(sa);
     database.setConnectionProvider(new ConnectionProvider() {
       @Override
-      public Connection getConnection(final User user, final String jdbcUrl) throws SQLException {
+      public Connection getConnection(User user, String jdbcUrl) throws SQLException {
         return connection;
       }
     });

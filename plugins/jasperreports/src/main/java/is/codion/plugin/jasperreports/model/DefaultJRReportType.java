@@ -20,7 +20,7 @@ final class DefaultJRReportType implements JRReportType, Serializable {
 
   private final ReportType<JasperReport, JasperPrint, Map<String, Object>> reportType;
 
-  DefaultJRReportType(final String name) {
+  DefaultJRReportType(String name) {
     this.reportType = ReportType.reportType(name);
   }
 
@@ -30,13 +30,13 @@ final class DefaultJRReportType implements JRReportType, Serializable {
   }
 
   @Override
-  public JasperPrint fillReport(final Connection connection, final Report<JasperReport, JasperPrint,
-            Map<String, Object>> report, final Map<String, Object> parameters) throws ReportException {
+  public JasperPrint fillReport(Connection connection, Report<JasperReport, JasperPrint,
+            Map<String, Object>> report, Map<String, Object> parameters) throws ReportException {
     return reportType.fillReport(connection, report, parameters);
   }
 
   @Override
-  public boolean equals(final Object o) {
+  public boolean equals(Object o) {
     if (this == o) {
       return true;
     }

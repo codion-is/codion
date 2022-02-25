@@ -17,18 +17,18 @@ final class AttributeConditionSerializer implements Serializable {
 
   private final EntityObjectMapper entityObjectMapper;
 
-  AttributeConditionSerializer(final EntityObjectMapper entityObjectMapper) {
+  AttributeConditionSerializer(EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  void serialize(final AttributeCondition<?> condition, final JsonGenerator generator) throws IOException {
+  void serialize(AttributeCondition<?> condition, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("type", "attribute");
     generator.writeStringField("attribute", condition.getAttribute().getName());
     generator.writeStringField("operator", condition.getOperator().name());
     generator.writeFieldName("values");
     generator.writeStartArray();
-    for (final Object value : condition.getValues()) {
+    for (Object value : condition.getValues()) {
       entityObjectMapper.writeValue(generator, value);
     }
     generator.writeEndArray();

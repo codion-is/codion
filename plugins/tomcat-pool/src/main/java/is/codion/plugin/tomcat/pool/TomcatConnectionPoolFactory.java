@@ -28,11 +28,11 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
    * @return a connection pool
    */
   @Override
-  public ConnectionPoolWrapper createConnectionPoolWrapper(final ConnectionFactory connectionFactory, final User user) {
+  public ConnectionPoolWrapper createConnectionPoolWrapper(ConnectionFactory connectionFactory, User user) {
     return new DataSourceWrapper(connectionFactory, user, createDataSource(user, connectionFactory));
   }
 
-  private static DataSource createDataSource(final User user, final ConnectionFactory connectionFactory) {
+  private static DataSource createDataSource(User user, ConnectionFactory connectionFactory) {
     PoolProperties pp = new PoolProperties();
     pp.setUrl(connectionFactory.getUrl());
     pp.setDefaultAutoCommit(false);
@@ -51,7 +51,7 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 
   private static final class DataSourceWrapper extends AbstractConnectionPoolWrapper<DataSource> {
 
-    private DataSourceWrapper(final ConnectionFactory connectionFactory, final User user, final DataSource dataSource) {
+    private DataSourceWrapper(ConnectionFactory connectionFactory, User user, DataSource dataSource) {
       super(connectionFactory, user, dataSource);
       dataSource.setDataSource(getPoolDataSource());
       setPool(dataSource);
@@ -68,7 +68,7 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public void setCleanupInterval(final int poolCleanupInterval) {
+    public void setCleanupInterval(int poolCleanupInterval) {
       getPool().setTimeBetweenEvictionRunsMillis(poolCleanupInterval);
     }
 
@@ -78,7 +78,7 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public void setConnectionTimeout(final int timeout) {
+    public void setConnectionTimeout(int timeout) {
       getPool().setSuspectTimeout(timeout / 1000);
     }
 
@@ -88,7 +88,7 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public void setMinimumPoolSize(final int value) {
+    public void setMinimumPoolSize(int value) {
       getPool().setMinIdle(value);
     }
 
@@ -98,7 +98,7 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public void setMaximumPoolSize(final int value) {
+    public void setMaximumPoolSize(int value) {
       getPool().setMaxActive(value);
       getPool().setMaxIdle(value);
     }
@@ -109,7 +109,7 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public void setMaximumCheckOutTime(final int value) {
+    public void setMaximumCheckOutTime(int value) {
       getPool().setMaxWait(value);
     }
 
@@ -138,12 +138,12 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 
     private final ConnectionFactory connectionFactory;
 
-    private ConnectionValidator(final ConnectionFactory connectionFactory) {
+    private ConnectionValidator(ConnectionFactory connectionFactory) {
       this.connectionFactory = connectionFactory;
     }
 
     @Override
-    public boolean validate(final Connection connection, final int i) {
+    public boolean validate(Connection connection, int i) {
       return connectionFactory.isConnectionValid(connection);
     }
   }

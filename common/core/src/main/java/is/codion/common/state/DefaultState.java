@@ -23,7 +23,7 @@ class DefaultState implements State {
     this(false);
   }
 
-  DefaultState(final boolean value) {
+  DefaultState(boolean value) {
     this.value = Value.value(value, false);
     this.value.addDataListener(new Notifier());
   }
@@ -41,7 +41,7 @@ class DefaultState implements State {
   }
 
   @Override
-  public void set(final Boolean value) {
+  public void set(Boolean value) {
     synchronized (this.value) {
       this.value.set(value);
     }
@@ -64,22 +64,22 @@ class DefaultState implements State {
   }
 
   @Override
-  public final void link(final Value<Boolean> originalValue) {
+  public final void link(Value<Boolean> originalValue) {
     this.value.link(originalValue);
   }
 
   @Override
-  public final void unlink(final Value<Boolean> originalValue) {
+  public final void unlink(Value<Boolean> originalValue) {
     this.value.unlink(originalValue);
   }
 
   @Override
-  public final void link(final ValueObserver<Boolean> originalValueObserver) {
+  public final void link(ValueObserver<Boolean> originalValueObserver) {
     this.value.link(originalValueObserver);
   }
 
   @Override
-  public final void unlink(final ValueObserver<Boolean> originalValueObserver) {
+  public final void unlink(ValueObserver<Boolean> originalValueObserver) {
     this.value.unlink(originalValueObserver);
   }
 
@@ -89,12 +89,12 @@ class DefaultState implements State {
   }
 
   @Override
-  public final void addValidator(final Validator<Boolean> validator) {
+  public final void addValidator(Validator<Boolean> validator) {
     this.value.addValidator(validator);
   }
 
   @Override
-  public final void removeValidator(final Validator<Boolean> validator) {
+  public final void removeValidator(Validator<Boolean> validator) {
     this.value.removeValidator(validator);
   }
 
@@ -124,39 +124,39 @@ class DefaultState implements State {
   }
 
   @Override
-  public final boolean equalTo(final Boolean value) {
+  public final boolean equalTo(Boolean value) {
     return Objects.equals(get(), value);
   }
 
   @Override
-  public final void onEvent(final Boolean data) {
+  public final void onEvent(Boolean data) {
     set(data);
   }
 
   @Override
-  public final void addListener(final EventListener listener) {
+  public final void addListener(EventListener listener) {
     getObserver().addListener(listener);
   }
 
   @Override
-  public final void removeListener(final EventListener listener) {
+  public final void removeListener(EventListener listener) {
     getObserver().removeListener(listener);
   }
 
   @Override
-  public final void addDataListener(final EventDataListener<Boolean> listener) {
+  public final void addDataListener(EventDataListener<Boolean> listener) {
     getObserver().addDataListener(listener);
   }
 
   @Override
-  public final void removeDataListener(final EventDataListener<Boolean> listener) {
+  public final void removeDataListener(EventDataListener<Boolean> listener) {
     getObserver().removeDataListener(listener);
   }
 
   private final class Notifier implements EventDataListener<Boolean> {
 
     @Override
-    public void onEvent(final Boolean value) {
+    public void onEvent(Boolean value) {
       if (observer != null) {
         observer.notifyObservers(value, !value);
       }

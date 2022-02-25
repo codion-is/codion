@@ -24,7 +24,7 @@ public final class BigDecimalField extends NumberField<BigDecimal> {
    * Instantiates a new DecimalField
    * @param columns the number of columns
    */
-  public BigDecimalField(final int columns) {
+  public BigDecimalField(int columns) {
     this(createDefaultFormat(), columns);
   }
 
@@ -32,7 +32,7 @@ public final class BigDecimalField extends NumberField<BigDecimal> {
    * Instantiates a new DecimalField
    * @param format the format to use
    */
-  public BigDecimalField(final DecimalFormat format) {
+  public BigDecimalField(DecimalFormat format) {
     this(format, 0);
   }
 
@@ -41,7 +41,7 @@ public final class BigDecimalField extends NumberField<BigDecimal> {
    * @param format the format to use
    * @param columns the number of columns
    */
-  public BigDecimalField(final DecimalFormat format, final int columns) {
+  public BigDecimalField(DecimalFormat format, int columns) {
     super(new DecimalDocument<>(format, true), columns);
   }
 
@@ -55,7 +55,7 @@ public final class BigDecimalField extends NumberField<BigDecimal> {
   /**
    * @param maximumFractionDigits the maximum number of fraction digits this field shows
    */
-  public void setMaximumFractionDigits(final int maximumFractionDigits) {
+  public void setMaximumFractionDigits(int maximumFractionDigits) {
     ((DecimalDocument<BigDecimal>) getTypedDocument()).setMaximumFractionDigits(maximumFractionDigits);
   }
 
@@ -70,7 +70,7 @@ public final class BigDecimalField extends NumberField<BigDecimal> {
   /**
    * @param value the value to set
    */
-  public void setBigDecimal(final BigDecimal value) {
+  public void setBigDecimal(BigDecimal value) {
     getTypedDocument().setNumber(value);
   }
 

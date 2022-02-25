@@ -12,7 +12,7 @@ import javafx.scene.layout.GridPane;
 
 public final class EmployeeEditView extends EntityEditView {
 
-  public EmployeeEditView(final FXEntityEditModel editModel) {
+  public EmployeeEditView(FXEntityEditModel editModel) {
     super(editModel);
   }
 

@@ -28,12 +28,12 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(PlaylistTablePanel.class.getName());
 
-  public PlaylistTablePanel(final SwingEntityTableModel tableModel) {
+  public PlaylistTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
   }
 
   @Override
-  protected Controls getPopupControls(final List<Controls> additionalPopupControls) {
+  protected Controls getPopupControls(List<Controls> additionalPopupControls) {
     Controls popupControls = super.getPopupControls(additionalPopupControls);
     popupControls.addAt(0, Control.builder(this::createRandomPlaylist)
             .caption(BUNDLE.getString("create_random_playlist"))
@@ -59,13 +59,13 @@ public final class PlaylistTablePanel extends EntityTablePanel {
     }
 
     @Override
-    protected RandomPlaylistParameters getComponentValue(final RandomPlaylistParametersPanel component) {
+    protected RandomPlaylistParameters getComponentValue(RandomPlaylistParametersPanel component) {
       return new RandomPlaylistParameters(component.playlistNameField.getText(), component.noOfTracksField.getInteger());
     }
 
     @Override
-    protected void setComponentValue(final RandomPlaylistParametersPanel component,
-                                     final RandomPlaylistParameters parameters) {
+    protected void setComponentValue(RandomPlaylistParametersPanel component,
+                                     RandomPlaylistParameters parameters) {
       component.playlistNameField.setText(parameters.getPlaylistName());
       component.noOfTracksField.setInteger(parameters.getNoOfTracks());
     }

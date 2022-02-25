@@ -20,8 +20,8 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
   private final List<Attribute<?>> attributes;
   private final List<Object> values;
 
-  DefaultCustomCondition(final ConditionType conditionType, final List<Attribute<?>> attributes,
-                         final List<Object> values) {
+  DefaultCustomCondition(ConditionType conditionType, List<Attribute<?>> attributes,
+                         List<Object> values) {
     super(requireNonNull(conditionType, "conditionType").getEntityType());
     this.conditionType = conditionType;
     this.attributes = unmodifiableList(requireNonNull(attributes, "attributes"));
@@ -44,7 +44,7 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
   }
 
   @Override
-  public String getConditionString(final EntityDefinition definition) {
+  public String getConditionString(EntityDefinition definition) {
     return definition.getConditionProvider(conditionType).getConditionString(attributes, values);
   }
 }

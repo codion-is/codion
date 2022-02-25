@@ -296,7 +296,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    */
-  public EntityPanel(final SwingEntityModel entityModel) {
+  public EntityPanel(SwingEntityModel entityModel) {
     this(entityModel, null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
   }
 
@@ -305,7 +305,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
    */
-  public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel) {
+  public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel) {
     this(entityModel, editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
   }
 
@@ -314,7 +314,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param entityModel the EntityModel
    * @param tablePanel the table panel
    */
-  public EntityPanel(final SwingEntityModel entityModel, final EntityTablePanel tablePanel) {
+  public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel) {
     this(entityModel, null, tablePanel);
   }
 
@@ -324,7 +324,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param editPanel the edit panel
    * @param tablePanel the table panel
    */
-  public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel, final EntityTablePanel tablePanel) {
+  public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel) {
     requireNonNull(entityModel, ENTITY_MODEL_PARAM);
     setFocusCycleRoot(true);
     this.entityModel = entityModel;
@@ -393,7 +393,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @throws IllegalStateException if the panel has been initialized
    * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
    */
-  public final void setControlPanelConstraints(final String controlPanelConstraints) {
+  public final void setControlPanelConstraints(String controlPanelConstraints) {
     checkIfInitialized();
     switch (controlPanelConstraints) {
       case BorderLayout.SOUTH:
@@ -410,9 +410,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * @param detailPanels the detail panels
    */
-  public final void addDetailPanels(final EntityPanel... detailPanels) {
+  public final void addDetailPanels(EntityPanel... detailPanels) {
     requireNonNull(detailPanels, "detailPanels");
-    for (final EntityPanel detailPanel : detailPanels) {
+    for (EntityPanel detailPanel : detailPanels) {
       addDetailPanel(detailPanel);
     }
   }
@@ -424,7 +424,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param detailPanel the detail panel to add
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final void addDetailPanel(final EntityPanel detailPanel) {
+  public final void addDetailPanel(EntityPanel detailPanel) {
     checkIfInitialized();
     detailPanel.setMasterPanel(this);
     detailEntityPanels.add(detailPanel);
@@ -518,8 +518,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the detail panel of the given type
    * @throws IllegalArgumentException in case the panel was not found
    */
-  public final EntityPanel getDetailPanel(final EntityType entityType) {
-    for (final EntityPanel detailPanel : detailEntityPanels) {
+  public final EntityPanel getDetailPanel(EntityType entityType) {
+    for (EntityPanel detailPanel : detailEntityPanels) {
       if (detailPanel.entityModel.getEntityType().equals(entityType)) {
         return detailPanel;
       }
@@ -541,7 +541,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param entityType the entityType
    * @return true if a detail panel for the given entityType is found
    */
-  public final boolean containsDetailPanel(final EntityType entityType) {
+  public final boolean containsDetailPanel(EntityType entityType) {
     return detailEntityPanels.stream()
             .anyMatch(detailPanel -> detailPanel.entityModel.getEntityType().equals(entityType));
   }
@@ -555,7 +555,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Sets the caption to use when this panel is displayed.
    * @param caption the caption
    */
-  public final void setCaption(final String caption) {
+  public final void setCaption(String caption) {
     this.caption = caption;
   }
 
@@ -597,10 +597,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final void setSelectedChildPanel(final HierarchyPanel childPanel) {
+  public final void setSelectedChildPanel(HierarchyPanel childPanel) {
     if (detailPanelTabbedPane != null) {
       detailPanelTabbedPane.setSelectedComponent((JComponent) childPanel);
-      for (final SwingEntityModel linkedModel : new ArrayList<>(entityModel.getLinkedDetailModels())) {
+      for (SwingEntityModel linkedModel : new ArrayList<>(entityModel.getLinkedDetailModels())) {
         entityModel.removeLinkedDetailModel(linkedModel);
       }
       entityModel.addLinkedDetailModel(getTabbedDetailPanel().getModel());
@@ -677,7 +677,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param exception the exception to handle
    * @see DefaultDialogExceptionHandler
    */
-  public final void displayException(final Throwable exception) {
+  public final void displayException(Throwable exception) {
     DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this).orElse(null));
   }
 
@@ -694,7 +694,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param detailSplitPanelResizeWeight the detail panel split size weight
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final void setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
+  public final void setDetailSplitPanelResizeWeight(double detailSplitPanelResizeWeight) {
     checkIfInitialized();
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
   }
@@ -710,7 +710,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param includeDetailTabPane true if the detail panel tab pane should be included
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final void setIncludeDetailTabPane(final boolean includeDetailTabPane) {
+  public final void setIncludeDetailTabPane(boolean includeDetailTabPane) {
     checkIfInitialized();
     this.includeDetailTabPane = includeDetailTabPane;
   }
@@ -727,7 +727,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param showToggleEditPanelControl true if a control for toggling the edit panel should be shown
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final void setShowToggleEditPanelControl(final boolean showToggleEditPanelControl) {
+  public final void setShowToggleEditPanelControl(boolean showToggleEditPanelControl) {
     checkIfInitialized();
     this.showToggleEditPanelControl = showToggleEditPanelControl;
   }
@@ -744,7 +744,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param showDetailPanelControls true if detail panel controls should be shown
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final void setShowDetailPanelControls(final boolean showDetailPanelControls) {
+  public final void setShowDetailPanelControls(boolean showDetailPanelControls) {
     checkIfInitialized();
     this.showDetailPanelControls = showDetailPanelControls;
   }
@@ -760,7 +760,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param includeControlPanel true if the control panel should be included
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final void setIncludeControlPanel(final boolean includeControlPanel) {
+  public final void setIncludeControlPanel(boolean includeControlPanel) {
     checkIfInitialized();
     this.includeControlPanel = includeControlPanel;
   }
@@ -777,7 +777,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param disposeEditDialogOnEscape if true then the edit dialog is disposed of on ESC
    * @see EntityPanel#DISPOSE_EDIT_DIALOG_ON_ESCAPE
    */
-  public final void setDisposeEditDialogOnEscape(final boolean disposeEditDialogOnEscape) {
+  public final void setDisposeEditDialogOnEscape(boolean disposeEditDialogOnEscape) {
     this.disposeEditDialogOnEscape = disposeEditDialogOnEscape;
   }
 
@@ -791,7 +791,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * @param useKeyboardNavigation true if keyboard navigation should be enabled
    */
-  public final void setUseKeyboardNavigation(final boolean useKeyboardNavigation) {
+  public final void setUseKeyboardNavigation(boolean useKeyboardNavigation) {
     checkIfInitialized();
     this.useKeyboardNavigation = useKeyboardNavigation;
   }
@@ -843,7 +843,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * @param state the detail panel state (HIDDEN, EMBEDDED or WINDOW)
    */
-  public final void setDetailPanelState(final PanelState state) {
+  public final void setDetailPanelState(PanelState state) {
     if (detailPanelTabbedPane == null) {
       this.detailPanelState = state;
       return;
@@ -854,7 +854,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     if (detailPanelState == WINDOW) {//if we are leaving the WINDOW state, hide all child detail windows
-      for (final EntityPanel detailPanel : detailEntityPanels) {
+      for (EntityPanel detailPanel : detailEntityPanels) {
         if (detailPanel.detailPanelState == WINDOW) {
           detailPanel.setDetailPanelState(HIDDEN);
         }
@@ -889,7 +889,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * @param state the edit panel state, either HIDDEN, EMBEDDED or DIALOG
    */
-  public final void setEditPanelState(final PanelState state) {
+  public final void setEditPanelState(PanelState state) {
     if (!containsEditPanel() || (editPanelState == state)) {
       return;
     }
@@ -903,7 +903,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * (detail panels and their detail panels etc.)
    * @param visible true if the active panels should be shown, false if they should be hidden
    */
-  public final void setFilterPanelsVisible(final boolean visible) {
+  public final void setFilterPanelsVisible(boolean visible) {
     if (!panelInitialized) {
       return;
     }
@@ -911,7 +911,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (containsTablePanel()) {
       tablePanel.getTable().setFilterPanelsVisible(visible);
     }
-    for (final EntityPanel detailEntityPanel : detailEntityPanels) {
+    for (EntityPanel detailEntityPanel : detailEntityPanels) {
       detailEntityPanel.setFilterPanelsVisible(visible);
     }
   }
@@ -921,7 +921,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param direction the resize direction
    * @param pixelAmount the resize amount
    */
-  public final void resizePanel(final Direction direction, final int pixelAmount) {
+  public final void resizePanel(Direction direction, int pixelAmount) {
     switch (direction) {
       case UP:
         setEditPanelState(HIDDEN);
@@ -984,7 +984,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param entityType the entity type to base this panel builder on
    * @return a panel builder
    */
-  public static EntityPanel.Builder builder(final EntityType entityType) {
+  public static EntityPanel.Builder builder(EntityType entityType) {
     return new EntityPanelBuilder(SwingEntityModel.builder(entityType));
   }
 
@@ -993,7 +993,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param modelBuilder the SwingEntityModel.Builder to base this panel builder on
    * @return a panel builder
    */
-  public static EntityPanel.Builder builder(final SwingEntityModel.Builder modelBuilder) {
+  public static EntityPanel.Builder builder(SwingEntityModel.Builder modelBuilder) {
     return new EntityPanelBuilder(modelBuilder);
   }
 
@@ -1002,7 +1002,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param model the SwingEntityModel to base this panel builder on
    * @return a panel builder
    */
-  public static EntityPanel.Builder builder(final SwingEntityModel model) {
+  public static EntityPanel.Builder builder(SwingEntityModel model) {
     return new EntityPanelBuilder(model);
   }
 
@@ -1113,7 +1113,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param masterPanel the panel serving as master panel for this entity panel
    * @throws IllegalStateException in case a master panel has already been set
    */
-  protected final void setMasterPanel(final EntityPanel masterPanel) {
+  protected final void setMasterPanel(EntityPanel masterPanel) {
     requireNonNull(masterPanel, "masterPanel");
     if (this.masterPanel != null) {
       throw new IllegalStateException("Master panel has already been set for " + this);
@@ -1342,14 +1342,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private JTabbedPane initializeDetailTabPane() {
     JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.setFocusable(false);
-    for (final EntityPanel detailPanel : detailEntityPanels) {
+    for (EntityPanel detailPanel : detailEntityPanels) {
       tabbedPane.addTab(detailPanel.caption, detailPanel);
     }
     tabbedPane.addChangeListener(e -> getTabbedDetailPanel().activatePanel());
     if (showDetailPanelControls) {
       tabbedPane.addMouseListener(new MouseAdapter() {
         @Override
-        public void mouseReleased(final MouseEvent e) {
+        public void mouseReleased(MouseEvent e) {
           if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
             setDetailPanelState(getDetailPanelState() == WINDOW ? EMBEDDED : WINDOW);
           }
@@ -1387,7 +1387,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param status the status
    * @return Controls for controlling the state of the detail panels
    */
-  private Controls getDetailPanelControls(final PanelState status) {
+  private Controls getDetailPanelControls(PanelState status) {
     if (detailEntityPanels.isEmpty()) {
       return null;
     }
@@ -1460,7 +1460,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param parentSize the size of the parent window
    * @return the size to use when showing the detail window
    */
-  private Dimension getDetailWindowSize(final Dimension parentSize) {
+  private Dimension getDetailWindowSize(Dimension parentSize) {
     return new Dimension((int) (parentSize.width / DETAIL_WINDOW_SIZE_RATIO), containsEditPanel() ?
             (int) (parentSize.height / DETAIL_WINDOW_SIZE_RATIO) : parentSize.height - DETAIL_WINDOW_HEIGHT_OFFSET);
   }
@@ -1549,7 +1549,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  private Control.Command createDetailPanelCommand(final PanelState status, final EntityPanel detailPanel) {
+  private Control.Command createDetailPanelCommand(PanelState status, EntityPanel detailPanel) {
     return () -> {
       setDetailPanelState(status);
       detailPanel.activatePanel();
@@ -1578,14 +1578,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     private final EntityPanel entityPanel;
     private final Direction direction;
 
-    private NavigateAction(final EntityPanel entityPanel, final Direction direction) {
+    private NavigateAction(EntityPanel entityPanel, Direction direction) {
       super("Navigate " + direction);
       this.entityPanel = entityPanel;
       this.direction = direction;
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
       switch (direction) {
         case LEFT:
           entityPanel.getPreviousSiblingPanel()
@@ -1617,14 +1617,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     private final EntityPanel panel;
     private final Direction direction;
 
-    private ResizeHorizontallyAction(final EntityPanel panel, final Direction direction) {
+    private ResizeHorizontallyAction(EntityPanel panel, Direction direction) {
       super("Resize " + direction);
       this.panel = panel;
       this.direction = direction;
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
       if (panel.masterPanel != null) {
         panel.masterPanel.resizePanel(direction, RESIZE_AMOUNT);
       }
@@ -1636,21 +1636,21 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     private final EntityPanel panel;
     private final Direction direction;
 
-    private ResizeVerticallyAction(final EntityPanel panel, final Direction direction) {
+    private ResizeVerticallyAction(EntityPanel panel, Direction direction) {
       super("Resize " + direction);
       this.panel = panel;
       this.direction = direction;
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
       panel.resizePanel(direction, RESIZE_AMOUNT);
     }
   }
 
   private static class FocusActivationListener implements PropertyChangeListener {
     @Override
-    public void propertyChange(final PropertyChangeEvent changeEvent) {
+    public void propertyChange(PropertyChangeEvent changeEvent) {
       EntityEditPanel editPanelParent = Utilities.getParentOfType((Component) changeEvent.getNewValue(), EntityEditPanel.class).orElse(null);
       if (editPanelParent != null) {
         editPanelParent.setActive(true);
@@ -1667,11 +1667,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private final class EntityPanelComponentAdapter extends ComponentAdapter {
     @Override
-    public void componentHidden(final ComponentEvent e) {
+    public void componentHidden(ComponentEvent e) {
       SwingUtilities.invokeLater(() -> setFilterPanelsVisible(false));
     }
     @Override
-    public void componentShown(final ComponentEvent e) {
+    public void componentShown(ComponentEvent e) {
       SwingUtilities.invokeLater(() -> setFilterPanelsVisible(true));
     }
   }

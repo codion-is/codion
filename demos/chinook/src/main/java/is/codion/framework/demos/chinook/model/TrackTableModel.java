@@ -17,12 +17,12 @@ import static is.codion.framework.demos.chinook.domain.Chinook.Track;
 
 public final class TrackTableModel extends SwingEntityTableModel {
 
-  public TrackTableModel(final EntityConnectionProvider connectionProvider) {
+  public TrackTableModel(EntityConnectionProvider connectionProvider) {
     super(Track.TYPE, connectionProvider);
     setEditable(true);
   }
 
-  public void raisePriceOfSelected(final BigDecimal increase) throws DatabaseException {
+  public void raisePriceOfSelected(BigDecimal increase) throws DatabaseException {
     if (getSelectionModel().isSelectionNotEmpty()) {
       Collection<Long> trackIds = Entity.get(Track.ID, getSelectionModel().getSelectedItems());
       List<Entity> result = getConnectionProvider().getConnection()

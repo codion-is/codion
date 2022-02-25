@@ -23,7 +23,7 @@ public final class IntegerField extends NumberField<Integer> {
    * Constructs a new IntegerField.
    * @param columns the number of columns
    */
-  public IntegerField(final int columns) {
+  public IntegerField(int columns) {
     this(Formats.getNonGroupingIntegerFormat(), columns);
   }
 
@@ -31,7 +31,7 @@ public final class IntegerField extends NumberField<Integer> {
    * Constructs a new IntegerField.
    * @param format the format to use
    */
-  public IntegerField(final NumberFormat format) {
+  public IntegerField(NumberFormat format) {
     this(format, 0);
   }
 
@@ -40,7 +40,7 @@ public final class IntegerField extends NumberField<Integer> {
    * @param format the format to use
    * @param columns the number of columns
    */
-  public IntegerField(final NumberFormat format, final int columns) {
+  public IntegerField(NumberFormat format, int columns) {
     super(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Integer.class))), columns);
   }
 
@@ -54,7 +54,7 @@ public final class IntegerField extends NumberField<Integer> {
   /**
    * @param value the value to set
    */
-  public void setInteger(final Integer value) {
+  public void setInteger(Integer value) {
     getTypedDocument().setNumber(value);
   }
 }

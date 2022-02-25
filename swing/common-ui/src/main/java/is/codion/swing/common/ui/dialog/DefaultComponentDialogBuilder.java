@@ -42,72 +42,72 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   private EventDataListener<State> confirmCloseListener;
   private boolean disposeOnEscape = true;
 
-  DefaultComponentDialogBuilder(final JComponent component) {
+  DefaultComponentDialogBuilder(JComponent component) {
     this.component = requireNonNull(component);
   }
 
   @Override
-  public ComponentDialogBuilder modal(final boolean modal) {
+  public ComponentDialogBuilder modal(boolean modal) {
     this.modal = modal;
     return this;
   }
 
   @Override
-  public ComponentDialogBuilder resizable(final boolean resizable) {
+  public ComponentDialogBuilder resizable(boolean resizable) {
     this.resizable = resizable;
     return this;
   }
 
   @Override
-  public ComponentDialogBuilder size(final Dimension size) {
+  public ComponentDialogBuilder size(Dimension size) {
     this.size = requireNonNull(size);
     return this;
   }
 
   @Override
-  public ComponentDialogBuilder enterAction(final Action enterAction) {
+  public ComponentDialogBuilder enterAction(Action enterAction) {
     this.enterAction = requireNonNull(enterAction);
     return this;
   }
 
   @Override
-  public ComponentDialogBuilder closeEvent(final EventObserver<?> closeEvent) {
+  public ComponentDialogBuilder closeEvent(EventObserver<?> closeEvent) {
     this.closeEvent = closeEvent;
     return this;
   }
 
   @Override
-  public ComponentDialogBuilder confirmCloseListener(final EventDataListener<State> confirmCloseListener) {
+  public ComponentDialogBuilder confirmCloseListener(EventDataListener<State> confirmCloseListener) {
     this.confirmCloseListener = confirmCloseListener;
     return this;
   }
 
   @Override
-  public ComponentDialogBuilder disposeOnEscape(final boolean disposeOnEscape) {
+  public ComponentDialogBuilder disposeOnEscape(boolean disposeOnEscape) {
     this.disposeOnEscape = disposeOnEscape;
     return this;
   }
 
   @Override
-  public ComponentDialogBuilder locationRelativeTo(final JComponent locationRelativeTo) {
+  public ComponentDialogBuilder locationRelativeTo(JComponent locationRelativeTo) {
     this.locationRelativeTo = requireNonNull(locationRelativeTo);
     return this;
   }
 
   @Override
-  public ComponentDialogBuilder onShown(final Consumer<JDialog> onShown) {
+  public ComponentDialogBuilder onShown(Consumer<JDialog> onShown) {
     this.onShown = onShown;
     return this;
   }
 
   @Override
-  public ComponentDialogBuilder onOpened(final Consumer<WindowEvent> onOpened) {
+  public ComponentDialogBuilder onOpened(Consumer<WindowEvent> onOpened) {
     this.onOpened = requireNonNull(onOpened);
     return this;
   }
 
   @Override
-  public ComponentDialogBuilder onClosed(final Consumer<WindowEvent> onClosed) {
+  public ComponentDialogBuilder onClosed(Consumer<WindowEvent> onClosed) {
     this.onClosed = requireNonNull(onClosed);
     return this;
   }
@@ -134,17 +134,17 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     Action disposeAction = new DisposeDialogAction(() -> dialog, confirmCloseListener);
     dialog.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(final WindowEvent e) {
+      public void windowClosing(WindowEvent e) {
         disposeAction.actionPerformed(null);
       }
       @Override
-      public void windowClosed(final WindowEvent e) {
+      public void windowClosed(WindowEvent e) {
         if (onClosed != null) {
           onClosed.accept(e);
         }
       }
       @Override
-      public void windowOpened(final WindowEvent e) {
+      public void windowOpened(WindowEvent e) {
         if (onOpened != null) {
           onOpened.accept(e);
         }
@@ -167,9 +167,9 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     return dialog;
   }
 
-  static JDialog createDialog(final Window owner, final String title, final ImageIcon icon,
-                              final JComponent component, final Dimension size, final JComponent locationRelativeTo,
-                              final boolean modal, final boolean resizable, final Consumer<JDialog> onShown) {
+  static JDialog createDialog(Window owner, String title, ImageIcon icon,
+                              JComponent component, Dimension size, JComponent locationRelativeTo,
+                              boolean modal, boolean resizable, Consumer<JDialog> onShown) {
     JDialog dialog = new JDialog(owner, title);
     if (icon != null) {
       dialog.setIconImage(icon.getImage());
@@ -193,7 +193,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     if (onShown != null) {
       dialog.addComponentListener(new ComponentAdapter() {
         @Override
-        public void componentShown(final ComponentEvent e) {
+        public void componentShown(ComponentEvent e) {
           onShown.accept(dialog);
         }
       });

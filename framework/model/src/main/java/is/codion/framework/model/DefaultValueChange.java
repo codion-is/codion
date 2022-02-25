@@ -30,7 +30,7 @@ final class DefaultValueChange<T> implements ValueChange<T> {
    * @param value the new value
    * @param previousValue the previous value
    */
-  DefaultValueChange(final Attribute<T> attribute, final T value, final T previousValue) {
+  DefaultValueChange(Attribute<T> attribute, T value, T previousValue) {
     this.attribute = requireNonNull(attribute, "attribute");
     this.value = value;
     this.previousValue = previousValue;

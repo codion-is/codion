@@ -85,7 +85,7 @@ public final class LoadTestPanel<T> extends JPanel {
    * Constructs a new LoadTestPanel.
    * @param loadTestModel the LoadTestModel to base this panel on
    */
-  public LoadTestPanel(final LoadTest<T> loadTestModel) {
+  public LoadTestPanel(LoadTest<T> loadTestModel) {
     this(loadTestModel, null);
   }
 
@@ -94,7 +94,7 @@ public final class LoadTestPanel<T> extends JPanel {
    * @param loadTestModel the LoadTestModel to base this panel on
    * @param pluginPanel a panel to add as a plugin panel
    */
-  public LoadTestPanel(final LoadTest<T> loadTestModel, final JPanel pluginPanel) {
+  public LoadTestPanel(LoadTest<T> loadTestModel, JPanel pluginPanel) {
     requireNonNull(loadTestModel, "loadTestModel");
     this.loadTestModel = loadTestModel;
     this.pluginPanel = pluginPanel;
@@ -242,7 +242,7 @@ public final class LoadTestPanel<T> extends JPanel {
     return buttonPanel;
   }
 
-  private JButton initializeAddRemoveApplicationButton(final boolean add) {
+  private JButton initializeAddRemoveApplicationButton(boolean add) {
     JButton button = Control.builder(add ? loadTestModel::addApplicationBatch : loadTestModel::removeApplicationBatch)
             .caption(add ? "+" : "-")
             .description(add ? "Add application batch" : "Remove application batch")
@@ -361,16 +361,16 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
   }
 
-  private void onScenarioSelectionChanged(final List<ItemRandomizer.RandomItem<UsageScenario<T>>> selectedScenarios) {
+  private void onScenarioSelectionChanged(List<ItemRandomizer.RandomItem<UsageScenario<T>>> selectedScenarios) {
     scenarioBase.removeAll();
-    for (final ItemRandomizer.RandomItem<UsageScenario<T>> selectedItem : selectedScenarios) {
+    for (ItemRandomizer.RandomItem<UsageScenario<T>> selectedItem : selectedScenarios) {
       scenarioBase.add(createScenarioPanel(selectedItem.getItem()));
     }
     validate();
     repaint();
   }
 
-  private JPanel createScenarioPanel(final UsageScenario<T> item) {
+  private JPanel createScenarioPanel(UsageScenario<T> item) {
     JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getScenarioDurationDataset(item.getName()),
             PlotOrientation.VERTICAL, true, true, false);
@@ -409,7 +409,7 @@ public final class LoadTestPanel<T> extends JPanel {
     return basePanel;
   }
 
-  private void setColors(final JFreeChart chart) {
+  private void setColors(JFreeChart chart) {
     ChartUtil.linkColors(this, chart);
   }
 
@@ -417,7 +417,7 @@ public final class LoadTestPanel<T> extends JPanel {
     private final JTextArea exceptionsTextArea;
     private final UsageScenario<?> scenario;
 
-    private ExceptionsAction(final String name, final JTextArea exceptionsTextArea, final UsageScenario<?> scenario) {
+    private ExceptionsAction(String name, JTextArea exceptionsTextArea, UsageScenario<?> scenario) {
       super(name);
       this.exceptionsTextArea = exceptionsTextArea;
       this.scenario = scenario;
@@ -434,12 +434,12 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private static final class ClearExceptionsAction extends ExceptionsAction {
 
-    private ClearExceptionsAction(final JTextArea exceptionsArea, final UsageScenario<?> scenario) {
+    private ClearExceptionsAction(JTextArea exceptionsArea, UsageScenario<?> scenario) {
       super("Clear", exceptionsArea, scenario);
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
       getScenario().clearExceptions();
       getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
     }
@@ -447,15 +447,15 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private static final class RefreshExceptionsAction extends ExceptionsAction {
 
-    private RefreshExceptionsAction(final JTextArea exceptionsArea, final UsageScenario<?> scenario) {
+    private RefreshExceptionsAction(JTextArea exceptionsArea, UsageScenario<?> scenario) {
       super("Refresh", exceptionsArea, scenario);
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
       getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
       List<Exception> exceptions = getScenario().getExceptions();
-      for (final Exception exception : exceptions) {
+      for (Exception exception : exceptions) {
         getExceptionsTextArea().append(exception.getMessage());
         getExceptionsTextArea().append(Util.LINE_SEPARATOR);
         getExceptionsTextArea().append(Util.LINE_SEPARATOR);

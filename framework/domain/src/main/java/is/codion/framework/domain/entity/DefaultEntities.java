@@ -38,7 +38,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
    * Instantiates a new DefaultEntities for the given domainType
    * @param domainType the domainType
    */
-  protected DefaultEntities(final DomainType domainType) {
+  protected DefaultEntities(DomainType domainType) {
     this.domainType = requireNonNull(domainType, "domainType");
     REGISTERED_ENTITIES.put(domainType, this);
   }
@@ -49,17 +49,17 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final EntityDefinition getDefinition(final EntityType entityType) {
+  public final EntityDefinition getDefinition(EntityType entityType) {
     return getDefinitionInternal(requireNonNull(entityType, "entityType").getName());
   }
 
   @Override
-  public final EntityDefinition getDefinition(final String entityTypeName) {
+  public final EntityDefinition getDefinition(String entityTypeName) {
     return getDefinitionInternal(requireNonNull(entityTypeName, "entityTypeName"));
   }
 
   @Override
-  public final boolean contains(final EntityType entityType) {
+  public final boolean contains(EntityType entityType) {
     return entityDefinitions.containsKey(requireNonNull(entityType).getName());
   }
 
@@ -69,22 +69,22 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Entity entity(final EntityType entityType) {
+  public final Entity entity(EntityType entityType) {
     return getDefinition(entityType).entity();
   }
 
   @Override
-  public final Entity entity(final Key key) {
+  public final Entity entity(Key key) {
     return getDefinition(key.getEntityType()).entity(key);
   }
 
   @Override
-  public final Entity.Builder builder(final EntityType entityType) {
+  public final Entity.Builder builder(EntityType entityType) {
     return new DefaultEntityBuilder(getDefinition(entityType));
   }
 
   @Override
-  public final Entity.Builder builder(final Key key) {
+  public final Entity.Builder builder(Key key) {
     Entity.Builder builder = builder(requireNonNull(key).getEntityType());
     key.getAttributes().forEach(attribute -> builder.with((Attribute<Object>) attribute, key.get(attribute)));
 
@@ -92,29 +92,29 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Key primaryKey(final EntityType entityType, final Integer value) {
+  public final Key primaryKey(EntityType entityType, Integer value) {
     return getDefinition(entityType).primaryKey(value);
   }
 
   @Override
-  public final Key primaryKey(final EntityType entityType, final Long value) {
+  public final Key primaryKey(EntityType entityType, Long value) {
     return getDefinition(entityType).primaryKey(value);
   }
 
   @Override
-  public final List<Key> primaryKeys(final EntityType entityType, final Integer... values) {
+  public final List<Key> primaryKeys(EntityType entityType, Integer... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> primaryKey(entityType, value)).collect(toList());
   }
 
   @Override
-  public final List<Key> primaryKeys(final EntityType entityType, final Long... values) {
+  public final List<Key> primaryKeys(EntityType entityType, Long... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> primaryKey(entityType, value)).collect(toList());
   }
 
   @Override
-  public final Key.Builder keyBuilder(final EntityType entityType) {
+  public final Key.Builder keyBuilder(EntityType entityType) {
     return new DefaultKeyBuilder(getDefinition(entityType));
   }
 
@@ -124,7 +124,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
    * @return the Entities instance registered for the given domainType
    * @throws IllegalArgumentException in case the domain has not been registered
    */
-  static Entities getEntities(final String domainName) {
+  static Entities getEntities(String domainName) {
     Entities entities = REGISTERED_ENTITIES.get(DomainType.getDomainType(domainName));
     if (entities == null) {
       throw new IllegalArgumentException("Entities for domain '" + domainName + "' have not been registered");
@@ -133,12 +133,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
     return entities;
   }
 
-  protected final void setStrictForeignKeys(final boolean strictForeignKeys) {
+  protected final void setStrictForeignKeys(boolean strictForeignKeys) {
     this.strictForeignKeys = strictForeignKeys;
   }
 
-  protected final EntityDefinition.Builder define(final EntityType entityType, final String tableName,
-                                                  final Property.Builder<?, ?>... propertyBuilders) {
+  protected final EntityDefinition.Builder define(EntityType entityType, String tableName,
+                                                  Property.Builder<?, ?>... propertyBuilders) {
     requireNonNull(propertyBuilders, "propertyBuilders");
     DefaultEntityDefinition.DefaultBuilder definitionBuilder =
             new DefaultEntityDefinition(domainType.getName(), entityType, tableName,
@@ -148,7 +148,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
     return definitionBuilder;
   }
 
-  protected final void addDefinition(final EntityDefinition definition) {
+  protected final void addDefinition(EntityDefinition definition) {
     if (entityDefinitions.containsKey(definition.getEntityType().getName())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
               definition.getEntityType() + ", for table: " + definition.getTableName());
@@ -162,7 +162,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
     populateForeignDefinitions();
   }
 
-  private EntityDefinition getDefinitionInternal(final String entityTypeName) {
+  private EntityDefinition getDefinitionInternal(String entityTypeName) {
     EntityDefinition definition = entityDefinitions.get(entityTypeName);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityTypeName);
@@ -171,9 +171,9 @@ public abstract class DefaultEntities implements Entities, Serializable {
     return definition;
   }
 
-  private void validateForeignKeyProperties(final EntityDefinition definition) {
+  private void validateForeignKeyProperties(EntityDefinition definition) {
     EntityType entityType = definition.getEntityType();
-    for (final ForeignKey foreignKey : definition.getForeignKeys()) {
+    for (ForeignKey foreignKey : definition.getForeignKeys()) {
       EntityType referencedType = foreignKey.getReferencedEntityType();
       EntityDefinition referencedEntity = referencedType.equals(entityType) ?
               definition : entityDefinitions.get(referencedType.getName());
@@ -195,8 +195,8 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   private void populateForeignDefinitions() {
-    for (final DefaultEntityDefinition definition : entityDefinitions.values()) {
-      for (final ForeignKey foreignKey : definition.getForeignKeys()) {
+    for (DefaultEntityDefinition definition : entityDefinitions.values()) {
+      for (ForeignKey foreignKey : definition.getForeignKeys()) {
         EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.getReferencedEntityType().getName());
         if (referencedDefinition != null && !definition.hasReferencedEntityDefinition(foreignKey)) {
           definition.setReferencedEntityDefinition(foreignKey, referencedDefinition);
@@ -205,7 +205,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
     }
   }
 
-  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+  private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     REGISTERED_ENTITIES.put(domainType, this);
   }

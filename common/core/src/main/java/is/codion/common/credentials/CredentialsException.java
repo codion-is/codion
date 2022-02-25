@@ -8,7 +8,7 @@ package is.codion.common.credentials;
  */
 public class CredentialsException extends Exception {
 
-  protected CredentialsException(final String message, final Throwable cause) {
+  protected CredentialsException(String message, Throwable cause) {
     super(message, cause);
   }
 }

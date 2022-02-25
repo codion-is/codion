@@ -23,13 +23,13 @@ public final class SliderMouseWheelListener implements MouseWheelListener {
    * @param boundedRangeModel the model
    * @param reversed if true then up/away decreases the value and down/towards increases it.
    */
-  private SliderMouseWheelListener(final BoundedRangeModel boundedRangeModel, final boolean reversed) {
+  private SliderMouseWheelListener(BoundedRangeModel boundedRangeModel, boolean reversed) {
     this.boundedRangeModel = boundedRangeModel;
     this.reversed = reversed;
   }
 
   @Override
-  public void mouseWheelMoved(final MouseWheelEvent event) {
+  public void mouseWheelMoved(MouseWheelEvent event) {
     int wheelRotation = event.getWheelRotation();
     if (wheelRotation != 0) {
       boundedRangeModel.setValue(boundedRangeModel.getValue() + (wheelRotation * (reversed ? 1 : -1)));
@@ -41,7 +41,7 @@ public final class SliderMouseWheelListener implements MouseWheelListener {
    * @param boundedRangeModel the model
    * @return a new MouseWheelListener
    */
-  public static MouseWheelListener create(final BoundedRangeModel boundedRangeModel) {
+  public static MouseWheelListener create(BoundedRangeModel boundedRangeModel) {
     return new SliderMouseWheelListener(boundedRangeModel, false);
   }
 
@@ -50,7 +50,7 @@ public final class SliderMouseWheelListener implements MouseWheelListener {
    * @param boundedRangeModel the model
    * @return a new MouseWheelListener
    */
-  public static MouseWheelListener createReversed(final BoundedRangeModel boundedRangeModel) {
+  public static MouseWheelListener createReversed(BoundedRangeModel boundedRangeModel) {
     return new SliderMouseWheelListener(boundedRangeModel, true);
   }
 }

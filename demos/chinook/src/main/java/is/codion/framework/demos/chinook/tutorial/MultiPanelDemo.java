@@ -28,7 +28,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
  */
 public final class MultiPanelDemo {
 
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 

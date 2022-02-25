@@ -37,7 +37,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
 
   @Override
-  protected List<EntityPanel> initializeEntityPanels(final EmpDeptApplicationModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(EmpDeptApplicationModel applicationModel) {
     SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
     SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
 
@@ -84,13 +84,13 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
   // tag::initializeApplicationModel[]
   @Override
-  protected EmpDeptApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
+  protected EmpDeptApplicationModel initializeApplicationModel(EntityConnectionProvider connectionProvider) throws CancelException {
     return new EmpDeptApplicationModel(connectionProvider);
   }
   // end::initializeApplicationModel[]
 
   // tag::main[]
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
@@ -104,7 +104,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   // tag::applicationModel[]
   public static final class EmpDeptApplicationModel extends SwingEntityApplicationModel {
 
-    public EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
+    public EmpDeptApplicationModel(EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
       SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
       departmentModel.addDetailModel(new SwingEntityModel(new EmployeeEditModel(connectionProvider)));

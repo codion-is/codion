@@ -37,7 +37,7 @@ final class ValueLink<T> {
    * @param linkedValue the value to link to the original value
    * @param originalValue the original value
    */
-  ValueLink(final Value<T> linkedValue, final Value<T> originalValue) {
+  ValueLink(Value<T> linkedValue, Value<T> originalValue) {
     preventLinkCycle(linkedValue, originalValue);
     this.linkedValue = linkedValue;
     this.originalValue = originalValue;
@@ -95,7 +95,7 @@ final class ValueLink<T> {
     }
   }
 
-  private static <T> void preventLinkCycle(final Value<T> linkedValue, final Value<T> originalValue) {
+  private static <T> void preventLinkCycle(Value<T> linkedValue, Value<T> originalValue) {
     if (originalValue == linkedValue) {
       throw new IllegalArgumentException("A Value can not be linked to itself");
     }
@@ -112,12 +112,12 @@ final class ValueLink<T> {
 
     private Value.Validator<T> excluded;
 
-    private LinkedValidator(final Value<T> linkedValue) {
+    private LinkedValidator(Value<T> linkedValue) {
       this.linkedValue = linkedValue;
     }
 
     @Override
-    public void validate(final T value) throws IllegalArgumentException {
+    public void validate(T value) throws IllegalArgumentException {
       linkedValue.getValidators().stream()
               .filter(validator -> validator != excluded)
               .forEach(validator -> validator.validate(value));

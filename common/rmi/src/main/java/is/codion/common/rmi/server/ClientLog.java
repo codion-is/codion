@@ -36,8 +36,8 @@ public interface ClientLog {
    * @param entries the log entries
    * @return a new ClientLog instance
    */
-  static ClientLog clientLog(final UUID clientId, final LocalDateTime connectionCreationDate,
-                             final List<MethodLogger.Entry> entries) {
+  static ClientLog clientLog(UUID clientId, LocalDateTime connectionCreationDate,
+                             List<MethodLogger.Entry> entries) {
     return new DefaultClientLog(clientId, connectionCreationDate, entries);
   }
 }

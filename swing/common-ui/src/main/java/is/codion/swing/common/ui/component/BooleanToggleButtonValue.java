@@ -7,18 +7,18 @@ import javax.swing.JToggleButton;
 
 final class BooleanToggleButtonValue extends AbstractComponentValue<Boolean, JToggleButton> {
 
-  BooleanToggleButtonValue(final JToggleButton button) {
+  BooleanToggleButtonValue(JToggleButton button) {
     super(button, false);
     button.getModel().addItemListener(itemEvent -> notifyValueChange());
   }
 
   @Override
-  protected Boolean getComponentValue(final JToggleButton component) {
+  protected Boolean getComponentValue(JToggleButton component) {
     return component.isSelected();
   }
 
   @Override
-  protected void setComponentValue(final JToggleButton component, final Boolean value) {
+  protected void setComponentValue(JToggleButton component, Boolean value) {
      component.setSelected(value != null && value);
   }
 }

@@ -24,54 +24,54 @@ final class EntityApplicationPanelStarter implements EntityApplicationPanel.Star
   private User defaultLoginUser;
   private User silentLoginUser;
 
-  EntityApplicationPanelStarter(final EntityApplicationPanel<?> applicationPanel) {
+  EntityApplicationPanelStarter(EntityApplicationPanel<?> applicationPanel) {
     this.applicationPanel = applicationPanel;
   }
 
   @Override
-  public EntityApplicationPanel.Starter includeMainMenu(final boolean includeMainMenu) {
+  public EntityApplicationPanel.Starter includeMainMenu(boolean includeMainMenu) {
     this.includeMainMenu = includeMainMenu;
     return this;
   }
 
   @Override
-  public EntityApplicationPanel.Starter maximizeFrame(final boolean maximizeFrame) {
+  public EntityApplicationPanel.Starter maximizeFrame(boolean maximizeFrame) {
     this.maximizeFrame = maximizeFrame;
     return this;
   }
 
   @Override
-  public EntityApplicationPanel.Starter displayFrame(final boolean displayFrame) {
+  public EntityApplicationPanel.Starter displayFrame(boolean displayFrame) {
     this.displayFrame = displayFrame;
     return this;
   }
 
   @Override
-  public EntityApplicationPanel.Starter displayProgressDialog(final boolean displayProgressDialog) {
+  public EntityApplicationPanel.Starter displayProgressDialog(boolean displayProgressDialog) {
     this.displayProgressDialog = displayProgressDialog;
     return this;
   }
 
   @Override
-  public EntityApplicationPanel.Starter frameSize(final Dimension frameSize) {
+  public EntityApplicationPanel.Starter frameSize(Dimension frameSize) {
     this.frameSize = requireNonNull(frameSize);
     return this;
   }
 
   @Override
-  public EntityApplicationPanel.Starter loginRequired(final boolean loginRequired) {
+  public EntityApplicationPanel.Starter loginRequired(boolean loginRequired) {
     this.loginRequired = loginRequired;
     return this;
   }
 
   @Override
-  public EntityApplicationPanel.Starter defaultLoginUser(final User defaultLoginUser) {
+  public EntityApplicationPanel.Starter defaultLoginUser(User defaultLoginUser) {
     this.defaultLoginUser = defaultLoginUser;
     return this;
   }
 
   @Override
-  public EntityApplicationPanel.Starter silentLoginUser(final User silentLoginUser) {
+  public EntityApplicationPanel.Starter silentLoginUser(User silentLoginUser) {
     this.silentLoginUser = silentLoginUser;
     return this;
   }

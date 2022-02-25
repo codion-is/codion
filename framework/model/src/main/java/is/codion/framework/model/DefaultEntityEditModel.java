@@ -166,7 +166,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public DefaultEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getValidator());
   }
 
@@ -176,8 +176,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public DefaultEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                                final EntityValidator validator) {
+  public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                EntityValidator validator) {
     this.entity = connectionProvider.getEntities().entity(entityType);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.validator = validator;
@@ -204,14 +204,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> void setDefaultValueSupplier(final Attribute<T> attribute, final Supplier<T> valueSupplier) {
+  public final <T> void setDefaultValueSupplier(Attribute<T> attribute, Supplier<T> valueSupplier) {
     requireNonNull(valueSupplier, "valueSupplier");
     getEntityDefinition().getProperty(attribute);
     defaultValueSupplierMap.put(attribute, valueSupplier);
   }
 
   @Override
-  public final void setModifiedSupplier(final Supplier<Boolean> modifiedSupplier) {
+  public final void setModifiedSupplier(Supplier<Boolean> modifiedSupplier) {
     this.modifiedSupplier = requireNonNull(modifiedSupplier, "isModifiedSupplier");
   }
 
@@ -221,7 +221,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setReadOnly(final boolean readOnly) {
+  public final void setReadOnly(boolean readOnly) {
     insertEnabledState.set(!readOnly);
     updateEnabledState.set(!readOnly);
     deleteEnabledState.set(!readOnly);
@@ -233,19 +233,19 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setWarnAboutUnsavedData(final boolean warnAboutUnsavedData) {
+  public final void setWarnAboutUnsavedData(boolean warnAboutUnsavedData) {
     this.warnAboutUnsavedData = warnAboutUnsavedData;
   }
 
   @Override
-  public boolean isPersistValue(final Attribute<?> attribute) {
+  public boolean isPersistValue(Attribute<?> attribute) {
     getEntityDefinition().getProperty(attribute);
 
     return Boolean.TRUE.equals(persistentValues.get(attribute));
   }
 
   @Override
-  public final void setPersistValue(final Attribute<?> attribute, final boolean persistValue) {
+  public final void setPersistValue(Attribute<?> attribute, boolean persistValue) {
     getEntityDefinition().getProperty(attribute);
     persistentValues.put(attribute, persistValue);
   }
@@ -256,7 +256,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setInsertEnabled(final boolean insertEnabled) {
+  public final void setInsertEnabled(boolean insertEnabled) {
     insertEnabledState.set(insertEnabled);
   }
 
@@ -271,7 +271,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setUpdateEnabled(final boolean updateEnabled) {
+  public final void setUpdateEnabled(boolean updateEnabled) {
     updateEnabledState.set(updateEnabled);
   }
 
@@ -286,7 +286,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setDeleteEnabled(final boolean deleteEnabled) {
+  public final void setDeleteEnabled(boolean deleteEnabled) {
     deleteEnabledState.set(deleteEnabled);
   }
 
@@ -306,7 +306,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setEntity(final Entity entity) {
+  public final void setEntity(Entity entity) {
     if (isSetEntityAllowed()) {
       doSetEntity(entity);
     }
@@ -330,11 +330,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void replaceForeignKeyValues(final Collection<Entity> entities) {
+  public final void replaceForeignKeyValues(Collection<Entity> entities) {
     Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
-    for (final Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
+    for (Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
       List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(entityTypeEntities.getKey());
-      for (final ForeignKey foreignKey : foreignKeys) {
+      for (ForeignKey foreignKey : foreignKeys) {
         replaceForeignKey(foreignKey, entityTypeEntities.getValue());
       }
     }
@@ -346,7 +346,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Entity getForeignKey(final ForeignKey foreignKey) {
+  public final Entity getForeignKey(ForeignKey foreignKey) {
     return entity.get(foreignKey);
   }
 
@@ -366,10 +366,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setForeignKeyValues(final Collection<Entity> entities) {
+  public final void setForeignKeyValues(Collection<Entity> entities) {
     Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
-    for (final Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
-      for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entityTypeEntities.getKey())) {
+    for (Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
+      for (ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entityTypeEntities.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
         put(foreignKey, entityTypeEntities.getValue().iterator().next());
       }
@@ -377,7 +377,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void initialize(final ForeignKey foreignKey, final Entity foreignKeyValue) {
+  public final void initialize(ForeignKey foreignKey, Entity foreignKeyValue) {
     requireNonNull(foreignKey);
     if (isEntityNew() && (foreignKeyValue != null || initializeForeignKeyToNull)) {
       put(foreignKey, foreignKeyValue);
@@ -385,17 +385,17 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> T get(final Attribute<T> attribute) {
+  public final <T> T get(Attribute<T> attribute) {
     return entity.get(attribute);
   }
 
   @Override
-  public final <T> Optional<T> getOptional(final Attribute<T> attribute) {
+  public final <T> Optional<T> getOptional(Attribute<T> attribute) {
     return entity.getOptional(attribute);
   }
 
   @Override
-  public final <T> void put(final Attribute<T> attribute, final T value) {
+  public final <T> void put(Attribute<T> attribute, T value) {
     requireNonNull(attribute, "attribute");
     Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
     T previousValue = entity.put(attribute, value);
@@ -405,7 +405,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> T remove(final Attribute<T> attribute) {
+  public final <T> T remove(Attribute<T> attribute) {
     requireNonNull(attribute, PROPERTY);
     T value = null;
     if (entity.contains(attribute)) {
@@ -418,17 +418,17 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isNullable(final Attribute<?> attribute) {
+  public final boolean isNullable(Attribute<?> attribute) {
     return validator.isNullable(entity, getEntityDefinition().getProperty(attribute));
   }
 
   @Override
-  public final boolean isNull(final Attribute<?> attribute) {
+  public final boolean isNull(Attribute<?> attribute) {
     return entity.isNull(attribute);
   }
 
   @Override
-  public final boolean isNotNull(final Attribute<?> attribute) {
+  public final boolean isNotNull(Attribute<?> attribute) {
     return !entity.isNull(attribute);
   }
 
@@ -443,7 +443,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void validate(final Attribute<?> attribute) throws ValidationException {
+  public final void validate(Attribute<?> attribute) throws ValidationException {
     EntityDefinition entityDefinition = getEntityDefinition();
     validator.validate(entity, entityDefinition, entityDefinition.getProperty(attribute));
   }
@@ -454,14 +454,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void validate(final Collection<Entity> entities) throws ValidationException {
-    for (final Entity entityToValidate : entities) {
+  public final void validate(Collection<Entity> entities) throws ValidationException {
+    for (Entity entityToValidate : entities) {
       validate(entityToValidate);
     }
   }
 
   @Override
-  public void validate(final Entity entity) throws ValidationException {
+  public void validate(Entity entity) throws ValidationException {
     EntityDefinition definition = getEntities().getDefinition(entity.getEntityType());
     if (definition.getEntityType().equals(getEntityType())) {
       validator.validate(entity, definition);
@@ -472,7 +472,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isValid(final Attribute<?> attribute) {
+  public final boolean isValid(Attribute<?> attribute) {
     try {
       validate(attribute);
       return true;
@@ -509,7 +509,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
+  public final List<Entity> insert(List<Entity> entities) throws DatabaseException, ValidationException {
     if (!isInsertEnabled()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
@@ -535,7 +535,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException {
+  public final List<Entity> update(List<Entity> entities) throws DatabaseException, ValidationException {
     if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not enabled!");
     }
@@ -573,7 +573,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final List<Entity> delete(final List<Entity> entities) throws DatabaseException {
+  public final List<Entity> delete(List<Entity> entities) throws DatabaseException {
     if (!isDeleteEnabled()) {
       throw new IllegalStateException("Delete is not enabled!");
     }
@@ -613,13 +613,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean containsSearchModel(final ForeignKey foreignKey) {
+  public final boolean containsSearchModel(ForeignKey foreignKey) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);
     return entitySearchModels.containsKey(foreignKey);
   }
 
   @Override
-  public EntitySearchModel createForeignKeySearchModel(final ForeignKey foreignKey) {
+  public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
     ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKey);
     Collection<Attribute<String>> searchAttributes = getEntities()
             .getDefinition(property.getReferencedEntityType()).getSearchAttributes();
@@ -634,7 +634,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntitySearchModel getForeignKeySearchModel(final ForeignKey foreignKey) {
+  public final EntitySearchModel getForeignKeySearchModel(ForeignKey foreignKey) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);
     synchronized (entitySearchModels) {
       EntitySearchModel searchModel = entitySearchModels.get(foreignKey);
@@ -648,7 +648,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> Value<T> value(final Attribute<T> attribute) {
+  public final <T> Value<T> value(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
     return (Value<T>) editModelValues.computeIfAbsent(attribute,
             valueAttribute -> new EditModelValue<>(this, attribute));
@@ -658,12 +658,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final boolean containsUnsavedData() {
     if (isEntityNew()) {
       EntityDefinition entityDefinition = getEntityDefinition();
-      for (final ColumnProperty<?> property : entityDefinition.getColumnProperties()) {
+      for (ColumnProperty<?> property : entityDefinition.getColumnProperties()) {
         if (!entityDefinition.isForeignKeyAttribute(property.getAttribute()) && valueModified(property.getAttribute())) {
           return true;
         }
       }
-      for (final ForeignKey foreignKey : entityDefinition.getForeignKeys()) {
+      for (ForeignKey foreignKey : entityDefinition.getForeignKeys()) {
         if (valueModified(foreignKey)) {
           return true;
         }
@@ -681,7 +681,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setPostEditEvents(final boolean postEditEvents) {
+  public final void setPostEditEvents(boolean postEditEvents) {
     this.postEditEvents = postEditEvents;
   }
 
@@ -691,131 +691,131 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setInitializeForeignKeyToNull(final boolean initializeForeignKeyToNull) {
+  public final void setInitializeForeignKeyToNull(boolean initializeForeignKeyToNull) {
     this.initializeForeignKeyToNull = initializeForeignKeyToNull;
   }
 
   @Override
-  public final <T> void removeValueEditListener(final Attribute<T> attribute, final EventDataListener<ValueChange<T>> listener) {
+  public final <T> void removeValueEditListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener) {
     if (valueEditEventMap.containsKey(attribute)) {
       ((Event<ValueChange<T>>) valueEditEventMap.get(attribute)).removeDataListener(listener);
     }
   }
 
   @Override
-  public final <T> void addValueEditListener(final Attribute<T> attribute, final EventDataListener<ValueChange<T>> listener) {
+  public final <T> void addValueEditListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener) {
     getValueEditEvent(attribute).addDataListener(listener);
   }
 
   @Override
-  public final <T> void removeValueListener(final Attribute<T> attribute, final EventDataListener<ValueChange<T>> listener) {
+  public final <T> void removeValueListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener) {
     if (valueChangeEventMap.containsKey(attribute)) {
       ((Event<ValueChange<T>>) valueChangeEventMap.get(attribute)).removeDataListener(listener);
     }
   }
 
   @Override
-  public final <T> void addValueListener(final Attribute<T> attribute, final EventDataListener<ValueChange<T>> listener) {
+  public final <T> void addValueListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener) {
     getValueChangeEvent(attribute).addDataListener(listener);
   }
 
   @Override
-  public final void removeValueListener(final EventDataListener<ValueChange<?>> listener) {
+  public final void removeValueListener(EventDataListener<ValueChange<?>> listener) {
     valueChangeEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addValueListener(final EventDataListener<ValueChange<?>> listener) {
+  public final void addValueListener(EventDataListener<ValueChange<?>> listener) {
     valueChangeEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeEntitySetListener(final EventDataListener<Entity> listener) {
+  public final void removeEntitySetListener(EventDataListener<Entity> listener) {
     entitySetEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addEntitySetListener(final EventDataListener<Entity> listener) {
+  public final void addEntitySetListener(EventDataListener<Entity> listener) {
     entitySetEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeBeforeInsertListener(final EventDataListener<List<Entity>> listener) {
+  public final void removeBeforeInsertListener(EventDataListener<List<Entity>> listener) {
     beforeInsertEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addBeforeInsertListener(final EventDataListener<List<Entity>> listener) {
+  public final void addBeforeInsertListener(EventDataListener<List<Entity>> listener) {
     beforeInsertEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeAfterInsertListener(final EventDataListener<List<Entity>> listener) {
+  public final void removeAfterInsertListener(EventDataListener<List<Entity>> listener) {
     afterInsertEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addAfterInsertListener(final EventDataListener<List<Entity>> listener) {
+  public final void addAfterInsertListener(EventDataListener<List<Entity>> listener) {
     afterInsertEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeBeforeUpdateListener(final EventDataListener<Map<Key, Entity>> listener) {
+  public final void removeBeforeUpdateListener(EventDataListener<Map<Key, Entity>> listener) {
     beforeUpdateEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addBeforeUpdateListener(final EventDataListener<Map<Key, Entity>> listener) {
+  public final void addBeforeUpdateListener(EventDataListener<Map<Key, Entity>> listener) {
     beforeUpdateEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeAfterUpdateListener(final EventDataListener<Map<Key, Entity>> listener) {
+  public final void removeAfterUpdateListener(EventDataListener<Map<Key, Entity>> listener) {
     afterUpdateEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addAfterUpdateListener(final EventDataListener<Map<Key, Entity>> listener) {
+  public final void addAfterUpdateListener(EventDataListener<Map<Key, Entity>> listener) {
     afterUpdateEvent.addDataListener(listener);
   }
 
   @Override
-  public final void addBeforeDeleteListener(final EventDataListener<List<Entity>> listener) {
+  public final void addBeforeDeleteListener(EventDataListener<List<Entity>> listener) {
     beforeDeleteEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeBeforeDeleteListener(final EventDataListener<List<Entity>> listener) {
+  public final void removeBeforeDeleteListener(EventDataListener<List<Entity>> listener) {
     beforeDeleteEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void removeAfterDeleteListener(final EventDataListener<List<Entity>> listener) {
+  public final void removeAfterDeleteListener(EventDataListener<List<Entity>> listener) {
     afterDeleteEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addAfterDeleteListener(final EventDataListener<List<Entity>> listener) {
+  public final void addAfterDeleteListener(EventDataListener<List<Entity>> listener) {
     afterDeleteEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeEntitiesEditedListener(final EventListener listener) {
+  public final void removeEntitiesEditedListener(EventListener listener) {
     entitiesEditedEvent.removeListener(listener);
   }
 
   @Override
-  public final void addEntitiesEditedListener(final EventListener listener) {
+  public final void addEntitiesEditedListener(EventListener listener) {
     entitiesEditedEvent.addListener(listener);
   }
 
   @Override
-  public void addConfirmSetEntityObserver(final EventDataListener<State> listener) {
+  public void addConfirmSetEntityObserver(EventDataListener<State> listener) {
     confirmSetEntityEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeConfirmSetEntityObserver(final EventDataListener<State> listener) {
+  public void removeConfirmSetEntityObserver(EventDataListener<State> listener) {
     confirmSetEntityEvent.removeDataListener(listener);
   }
 
@@ -832,7 +832,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @return a list containing the primary keys of the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  protected List<Key> doInsert(final List<Entity> entities) throws DatabaseException {
+  protected List<Key> doInsert(List<Entity> entities) throws DatabaseException {
     return connectionProvider.getConnection().insert(entities);
   }
 
@@ -842,7 +842,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @return a list containing the updated entities
    * @throws DatabaseException in case of a database exception
    */
-  protected List<Entity> doUpdate(final List<Entity> entities) throws DatabaseException {
+  protected List<Entity> doUpdate(List<Entity> entities) throws DatabaseException {
     return connectionProvider.getConnection().update(entities);
   }
 
@@ -852,7 +852,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @return a list containing the deleted entities
    * @throws DatabaseException in case of a database exception
    */
-  protected List<Entity> doDelete(final List<Entity> entities) throws DatabaseException {
+  protected List<Entity> doDelete(List<Entity> entities) throws DatabaseException {
     connectionProvider.getConnection().delete(Entity.getPrimaryKeys(entities));
 
     return entities;
@@ -868,7 +868,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see #update()
    * @see #update(java.util.List)
    */
-  protected List<Entity> getModifiedEntities(final List<Entity> entities) {
+  protected List<Entity> getModifiedEntities(List<Entity> entities) {
     return Entity.getModified(entities);
   }
 
@@ -881,10 +881,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param foreignKey the foreign key attribute
    * @param values the foreign key entities
    */
-  protected void replaceForeignKey(final ForeignKey foreignKey, final List<Entity> values) {
+  protected void replaceForeignKey(ForeignKey foreignKey, List<Entity> values) {
     Entity currentForeignKeyValue = getForeignKey(foreignKey);
     if (currentForeignKeyValue != null) {
-      for (final Entity replacementValue : values) {
+      for (Entity replacementValue : values) {
         if (currentForeignKeyValue.equals(replacementValue)) {
           put(foreignKey, null);
           put(foreignKey, replacementValue);
@@ -905,7 +905,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entitiesToInsert the entities about to be inserted
    * @see #addBeforeInsertListener(EventDataListener)
    */
-  protected final void notifyBeforeInsert(final List<Entity> entitiesToInsert) {
+  protected final void notifyBeforeInsert(List<Entity> entitiesToInsert) {
     beforeInsertEvent.onEvent(entitiesToInsert);
   }
 
@@ -914,7 +914,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param insertedEntities the inserted entities
    * @see #addAfterInsertListener(EventDataListener)
    */
-  protected final void notifyAfterInsert(final List<Entity> insertedEntities) {
+  protected final void notifyAfterInsert(List<Entity> insertedEntities) {
     afterInsertEvent.onEvent(insertedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyInserted(insertedEntities);
@@ -926,7 +926,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entitiesToUpdate the entities about to be updated
    * @see #addBeforeUpdateListener(EventDataListener)
    */
-  protected final void notifyBeforeUpdate(final Map<Key, Entity> entitiesToUpdate) {
+  protected final void notifyBeforeUpdate(Map<Key, Entity> entitiesToUpdate) {
     beforeUpdateEvent.onEvent(entitiesToUpdate);
   }
 
@@ -935,7 +935,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param updatedEntities the updated entities
    * @see #addAfterUpdateListener(EventDataListener)
    */
-  protected final void notifyAfterUpdate(final Map<Key, Entity> updatedEntities) {
+  protected final void notifyAfterUpdate(Map<Key, Entity> updatedEntities) {
     afterUpdateEvent.onEvent(updatedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyUpdated(updatedEntities);
@@ -947,7 +947,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entitiesToDelete the entities about to be deleted
    * @see #addBeforeDeleteListener(EventDataListener)
    */
-  protected final void notifyBeforeDelete(final List<Entity> entitiesToDelete) {
+  protected final void notifyBeforeDelete(List<Entity> entitiesToDelete) {
     beforeDeleteEvent.onEvent(entitiesToDelete);
   }
 
@@ -956,14 +956,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param deletedEntities the deleted entities
    * @see #addAfterDeleteListener(EventDataListener)
    */
-  protected final void notifyAfterDelete(final List<Entity> deletedEntities) {
+  protected final void notifyAfterDelete(List<Entity> deletedEntities) {
     afterDeleteEvent.onEvent(deletedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyDeleted(deletedEntities);
     }
   }
 
-  private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {
+  private List<Entity> insertEntities(List<Entity> entities) throws DatabaseException, ValidationException {
     LOG.debug("{} - insert {}", this, entities.toString());
     notifyBeforeInsert(unmodifiableList(entities));
     validate(entities);
@@ -982,9 +982,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return true;
   }
 
-  private void doSetEntity(final Entity entity) {
+  private void doSetEntity(Entity entity) {
     Map<Attribute<?>, Object> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity(this::getDefaultValue) : entity);
-    for (final Map.Entry<Attribute<?>, Object> entry : affectedAttributes.entrySet()) {
+    for (Map.Entry<Attribute<?>, Object> entry : affectedAttributes.entrySet()) {
       Attribute<Object> objectAttribute = (Attribute<Object>) entry.getKey();
       onValueChange(new DefaultValueChange<>(objectAttribute, this.entity.get(objectAttribute), entry.getValue()));
     }
@@ -995,16 +995,16 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     entitySetEvent.onEvent(entity);
   }
 
-  private boolean valueModified(final Attribute<?> attribute) {
+  private boolean valueModified(Attribute<?> attribute) {
     return !Objects.equals(get(attribute), getDefaultValue(attribute));
   }
 
-  private <T> Event<ValueChange<T>> getValueEditEvent(final Attribute<T> attribute) {
+  private <T> Event<ValueChange<T>> getValueEditEvent(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
     return (Event<ValueChange<T>>) valueEditEventMap.computeIfAbsent(attribute, k -> Event.event());
   }
 
-  private <T> Event<ValueChange<T>> getValueChangeEvent(final Attribute<T> attribute) {
+  private <T> Event<ValueChange<T>> getValueChangeEvent(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
     return (Event<ValueChange<T>>) valueChangeEventMap.computeIfAbsent(attribute, k -> Event.event());
   }
@@ -1025,21 +1025,21 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see ColumnProperty.Builder#columnHasDefaultValue()
    * @see ColumnProperty.Builder#defaultValue(Object)
    */
-  private Entity getDefaultEntity(final ValueSupplier valueSupplier) {
+  private Entity getDefaultEntity(ValueSupplier valueSupplier) {
     EntityDefinition definition = getEntityDefinition();
     Entity newEntity = definition.entity();
-    for (@SuppressWarnings("rawtypes") final ColumnProperty property : definition.getColumnProperties()) {
+    for (@SuppressWarnings("rawtypes") ColumnProperty property : definition.getColumnProperties()) {
       if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
         newEntity.put(property.getAttribute(), valueSupplier.get(property));
       }
     }
-    for (@SuppressWarnings("rawtypes") final TransientProperty transientProperty : definition.getTransientProperties()) {
+    for (@SuppressWarnings("rawtypes") TransientProperty transientProperty : definition.getTransientProperties()) {
       if (!(transientProperty instanceof DerivedProperty)) {
         newEntity.put(transientProperty.getAttribute(), valueSupplier.get(transientProperty));
       }
     }
-    for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
+    for (ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
       newEntity.put(foreignKeyProperty.getAttribute(), valueSupplier.get(foreignKeyProperty));
     }
     newEntity.saveAll();
@@ -1047,11 +1047,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return newEntity;
   }
 
-  private <T> T getDefaultValue(final Attribute<T> attribute) {
+  private <T> T getDefaultValue(Attribute<T> attribute) {
     return getDefaultValue(getEntityDefinition().getProperty(attribute));
   }
 
-  private <T> T getDefaultValue(final Property<T> property) {
+  private <T> T getDefaultValue(Property<T> property) {
     if (isPersistValue(property.getAttribute())) {
       if (property instanceof ForeignKeyProperty) {
         return (T) entity.getForeignKey((ForeignKey) property.getAttribute());
@@ -1069,7 +1069,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     afterUpdateEvent.addListener(entitiesEditedEvent);
   }
 
-  private Map<Attribute<?>, Object> getDependentValues(final Attribute<?> attribute) {
+  private Map<Attribute<?>, Object> getDependentValues(Attribute<?> attribute) {
     Map<Attribute<?>, Object> dependentValues = new HashMap<>();
     EntityDefinition entityDefinition = getEntityDefinition();
     entityDefinition.getDerivedAttributes(attribute).forEach(derivedAttribute ->
@@ -1084,7 +1084,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return dependentValues;
   }
 
-  private <T> void notifyValueEdit(final ValueChange<T> valueChange, final Map<Attribute<?>, Object> dependentValues) {
+  private <T> void notifyValueEdit(ValueChange<T> valueChange, Map<Attribute<?>, Object> dependentValues) {
     onValueChange(valueChange);
     getValueEditEvent(valueChange.getAttribute()).onEvent(valueChange);
     dependentValues.forEach((dependentAttribute, previousValue) -> {
@@ -1095,7 +1095,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     });
   }
 
-  private <T> void onValueChange(final ValueChange<T> valueChange) {
+  private <T> void onValueChange(ValueChange<T> valueChange) {
     updateEntityStates();
     Event<ValueChange<T>> changeEvent = (Event<ValueChange<T>>) valueChangeEventMap.get(valueChange.getAttribute());
     if (changeEvent != null) {
@@ -1118,18 +1118,18 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entitiesAfterUpdate the entities after update
    * @return the updated entities mapped to their respective original primary keys
    */
-  private static Map<Key, Entity> mapToOriginalPrimaryKey(final List<Entity> entitiesBeforeUpdate,
-                                                          final List<Entity> entitiesAfterUpdate) {
+  private static Map<Key, Entity> mapToOriginalPrimaryKey(List<Entity> entitiesBeforeUpdate,
+                                                          List<Entity> entitiesAfterUpdate) {
     List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
     Map<Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
-    for (final Entity entity : entitiesBeforeUpdate) {
+    for (Entity entity : entitiesBeforeUpdate) {
       keyMap.put(entity.getOriginalPrimaryKey(), findAndRemove(entity.getPrimaryKey(), entitiesAfterUpdateCopy.listIterator()));
     }
 
     return keyMap;
   }
 
-  private static Entity findAndRemove(final Key primaryKey, final ListIterator<Entity> iterator) {
+  private static Entity findAndRemove(Key primaryKey, ListIterator<Entity> iterator) {
     while (iterator.hasNext()) {
       Entity current = iterator.next();
       if (current.getPrimaryKey().equals(primaryKey)) {
@@ -1151,7 +1151,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     private final EntityEditModel editModel;
     private final Attribute<T> attribute;
 
-    private EditModelValue(final EntityEditModel editModel, final Attribute<T> attribute) {
+    private EditModelValue(EntityEditModel editModel, Attribute<T> attribute) {
       this.editModel = editModel;
       this.attribute = attribute;
       this.editModel.addValueListener(attribute, valueChange -> notifyValueChange());
@@ -1163,7 +1163,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
 
     @Override
-    protected void setValue(final T value) {
+    protected void setValue(T value) {
       editModel.put(attribute, value);
     }
   }

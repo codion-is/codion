@@ -24,7 +24,7 @@ public final class ConditionObjectMapper extends ObjectMapper {
    * Instantiates a new ConditionObjectMapper
    * @param entityObjectMapper a EntityObjectMapper
    */
-  public ConditionObjectMapper(final EntityObjectMapper entityObjectMapper) {
+  public ConditionObjectMapper(EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = entityObjectMapper;
     SimpleModule module = new SimpleModule();
     module.addSerializer(Condition.class, new ConditionSerializer(entityObjectMapper));

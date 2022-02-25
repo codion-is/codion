@@ -115,7 +115,7 @@ public final class EntitySearchField extends JTextField {
   private Color invalidBackgroundColor;
   private boolean performingSearch = false;
 
-  private EntitySearchField(final EntitySearchModel searchModel) {
+  private EntitySearchField(EntitySearchModel searchModel) {
     requireNonNull(searchModel, SEARCH_MODEL);
     this.model = searchModel;
     this.settingsPanel = new SettingsPanel(searchModel);
@@ -158,7 +158,7 @@ public final class EntitySearchField extends JTextField {
    * a selection dialog to the user
    * @throws NullPointerException in case {@code selectionProvider} is null
    */
-  public void setSelectionProvider(final SelectionProvider selectionProvider) {
+  public void setSelectionProvider(SelectionProvider selectionProvider) {
     this.selectionProvider = requireNonNull(selectionProvider);
   }
 
@@ -173,8 +173,8 @@ public final class EntitySearchField extends JTextField {
    * @throws is.codion.common.model.CancelException in case the user cancelled
    * @see EntityDefinition#getSearchAttributes()
    */
-  public static Optional<Entity> lookupEntity(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                                              final JComponent dialogParent, final String dialogTitle) {
+  public static Optional<Entity> lookupEntity(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                              JComponent dialogParent, String dialogTitle) {
     List<Entity> entities = lookupEntities(entityType, connectionProvider, true, dialogParent, dialogTitle);
 
     return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
@@ -191,8 +191,8 @@ public final class EntitySearchField extends JTextField {
    * @throws is.codion.common.model.CancelException in case the user cancelled
    * @see EntityDefinition#getSearchAttributes()
    */
-  public static List<Entity> lookupEntities(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                                            final JComponent dialogParent, final String dialogTitle) {
+  public static List<Entity> lookupEntities(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                            JComponent dialogParent, String dialogTitle) {
     return lookupEntities(entityType, connectionProvider, false, dialogParent, dialogTitle);
   }
 
@@ -201,7 +201,7 @@ public final class EntitySearchField extends JTextField {
    * @param searchModel the search model on which to base the search field
    * @return a new builder instance
    */
-  public static Builder builder(final EntitySearchModel searchModel) {
+  public static Builder builder(EntitySearchModel searchModel) {
     return new DefaultEntitySearchFieldBuilder(requireNonNull(searchModel));
   }
 
@@ -271,11 +271,11 @@ public final class EntitySearchField extends JTextField {
   private FocusListener initializeFocusListener() {
     return new FocusListener() {
       @Override
-      public void focusGained(final FocusEvent e) {
+      public void focusGained(FocusEvent e) {
         updateColors();
       }
       @Override
-      public void focusLost(final FocusEvent e) {
+      public void focusLost(FocusEvent e) {
         if (!e.isTemporary()) {
           if (getText().isEmpty()) {
             getModel().setSelectedEntity(null);
@@ -300,7 +300,7 @@ public final class EntitySearchField extends JTextField {
     setBackground(validBackground ? backgroundColor : invalidBackgroundColor);
   }
 
-  private void performSearch(final boolean promptUser) {
+  private void performSearch(boolean promptUser) {
     try {
       performingSearch = true;
       if (nullOrEmpty(model.getSearchString())) {
@@ -385,8 +385,8 @@ public final class EntitySearchField extends JTextField {
             .show();
   }
 
-  private static List<Entity> lookupEntities(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                                             final boolean singleSelection, final JComponent dialogParent, final String dialogTitle) {
+  private static List<Entity> lookupEntities(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                             boolean singleSelection, JComponent dialogParent, String dialogTitle) {
     EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
     searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
 
@@ -397,15 +397,15 @@ public final class EntitySearchField extends JTextField {
 
   private static final class SettingsPanel extends JPanel {
 
-    private SettingsPanel(final EntitySearchModel searchModel) {
+    private SettingsPanel(EntitySearchModel searchModel) {
       initializeUI(searchModel);
     }
 
-    private void initializeUI(final EntitySearchModel searchModel) {
+    private void initializeUI(EntitySearchModel searchModel) {
       JPanel propertyBasePanel = new JPanel(new CardLayout(5, 5));
       SwingFilteredComboBoxModel<Item<Attribute<String>>> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
       EntityDefinition definition = searchModel.getConnectionProvider().getEntities().getDefinition(searchModel.getEntityType());
-      for (final Map.Entry<Attribute<String>, EntitySearchModel.SearchSettings> entry :
+      for (Map.Entry<Attribute<String>, EntitySearchModel.SearchSettings> entry :
               searchModel.getAttributeSearchSettings().entrySet()) {
         propertyComboBoxModel.addItem(Item.item(entry.getKey(), definition.getProperty(entry.getKey()).getCaption()));
         propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getName());
@@ -437,7 +437,7 @@ public final class EntitySearchField extends JTextField {
       add(generalSettingsPanel, BorderLayout.SOUTH);
     }
 
-    private static JPanel initializePropertyPanel(final EntitySearchModel.SearchSettings settings) {
+    private static JPanel initializePropertyPanel(EntitySearchModel.SearchSettings settings) {
       JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
       panel.add(Components.checkBox(settings.getCaseSensitiveValue())
               .caption(MESSAGES.getString("case_sensitive"))
@@ -492,7 +492,7 @@ public final class EntitySearchField extends JTextField {
      * Instantiates a new {@link JList} based {@link SelectionProvider}.
      * @param searchModel the {@link EntitySearchModel}
      */
-    public ListSelectionProvider(final EntitySearchModel searchModel) {
+    public ListSelectionProvider(EntitySearchModel searchModel) {
       requireNonNull(searchModel, SEARCH_MODEL);
       selectControl = Control.builder(createSelectCommand(searchModel))
               .caption(Messages.get(Messages.OK))
@@ -503,7 +503,7 @@ public final class EntitySearchField extends JTextField {
               KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
       list.addMouseListener(new MouseAdapter() {
         @Override
-        public void mouseClicked(final MouseEvent e) {
+        public void mouseClicked(MouseEvent e) {
           if (e.getClickCount() == 2) {
             selectControl.actionPerformed(null);
           }
@@ -513,7 +513,7 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    public final void selectEntities(final JComponent dialogOwner, final List<Entity> entities) {
+    public final void selectEntities(JComponent dialogOwner, List<Entity> entities) {
       requireNonNull(entities).forEach(listModel::addElement);
       list.scrollRectToVisible(list.getCellBounds(0, 0));
 
@@ -527,7 +527,7 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    public final void setPreferredSize(final Dimension preferredSize) {
+    public final void setPreferredSize(Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
     }
 
@@ -536,7 +536,7 @@ public final class EntitySearchField extends JTextField {
       Utilities.updateUI(basePanel, list, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
     }
 
-    private Control.Command createSelectCommand(final EntitySearchModel searchModel) {
+    private Control.Command createSelectCommand(EntitySearchModel searchModel) {
       return () -> {
         searchModel.setSelectedEntities(list.getSelectedValuesList());
         Windows.getParentDialog(list).ifPresent(JDialog::dispose);
@@ -558,7 +558,7 @@ public final class EntitySearchField extends JTextField {
      * Instantiates a new {@link FilteredTable} based {@link SelectionProvider}.
      * @param searchModel the {@link EntitySearchModel}
      */
-    public TableSelectionProvider(final EntitySearchModel searchModel) {
+    public TableSelectionProvider(EntitySearchModel searchModel) {
       requireNonNull(searchModel, SEARCH_MODEL);
       SwingEntityTableModel tableModel = new SwingEntityTableModel(searchModel.getEntityType(), searchModel.getConnectionProvider()) {
         @Override
@@ -594,7 +594,7 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    public final void selectEntities(final JComponent dialogOwner, final List<Entity> entities) {
+    public final void selectEntities(JComponent dialogOwner, List<Entity> entities) {
       table.getModel().addEntitiesAt(0, requireNonNull(entities));
       table.scrollRectToVisible(table.getCellRect(0, 0, true));
 
@@ -608,7 +608,7 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    public final void setPreferredSize(final Dimension preferredSize) {
+    public final void setPreferredSize(Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
     }
 
@@ -617,7 +617,7 @@ public final class EntitySearchField extends JTextField {
       Utilities.updateUI(basePanel, table, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
     }
 
-    private Control.Command createSelectCommand(final EntitySearchModel searchModel, final SwingEntityTableModel tableModel) {
+    private Control.Command createSelectCommand(EntitySearchModel searchModel, SwingEntityTableModel tableModel) {
       return () -> {
         searchModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
         Windows.getParentDialog(table).ifPresent(JDialog::dispose);
@@ -627,45 +627,45 @@ public final class EntitySearchField extends JTextField {
 
   private static final class SearchFieldSingleValue extends AbstractComponentValue<Entity, EntitySearchField> {
 
-    private SearchFieldSingleValue(final EntitySearchField searchField) {
+    private SearchFieldSingleValue(EntitySearchField searchField) {
       super(searchField);
       searchField.getModel().addSelectedEntitiesListener(entities -> notifyValueChange());
     }
 
     @Override
-    protected Entity getComponentValue(final EntitySearchField component) {
+    protected Entity getComponentValue(EntitySearchField component) {
       List<Entity> selectedEntities = component.getModel().getSelectedEntities();
 
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
     @Override
-    protected void setComponentValue(final EntitySearchField component, final Entity value) {
+    protected void setComponentValue(EntitySearchField component, Entity value) {
       component.getModel().setSelectedEntity(value);
     }
   }
 
   private static final class SearchFieldMultipleValues extends AbstractComponentValue<List<Entity>, EntitySearchField> {
 
-    private SearchFieldMultipleValues(final EntitySearchField searchField) {
+    private SearchFieldMultipleValues(EntitySearchField searchField) {
       super(searchField);
       searchField.getModel().addSelectedEntitiesListener(entities -> notifyValueChange());
     }
 
     @Override
-    protected List<Entity> getComponentValue(final EntitySearchField component) {
+    protected List<Entity> getComponentValue(EntitySearchField component) {
       return component.getModel().getSelectedEntities();
     }
 
     @Override
-    protected void setComponentValue(final EntitySearchField component, final List<Entity> value) {
+    protected void setComponentValue(EntitySearchField component, List<Entity> value) {
       component.getModel().setSelectedEntities(value);
     }
   }
 
   private final class EnterKeyListener extends KeyAdapter {
     @Override
-    public void keyPressed(final KeyEvent e) {
+    public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_ENTER && !model.searchStringRepresentsSelected()) {
         e.consume();
         performSearch(true);
@@ -675,7 +675,7 @@ public final class EntitySearchField extends JTextField {
 
   private final class EscapeKeyListener extends KeyAdapter {
     @Override
-    public void keyPressed(final KeyEvent e) {
+    public void keyPressed(KeyEvent e) {
       if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !model.searchStringRepresentsSelected()) {
         e.consume();
         model.refreshSearchText();
@@ -693,18 +693,18 @@ public final class EntitySearchField extends JTextField {
     private boolean lowerCase;
     private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory;
 
-    private DefaultEntitySearchFieldBuilder(final EntitySearchModel searchModel) {
+    private DefaultEntitySearchFieldBuilder(EntitySearchModel searchModel) {
       this.searchModel = searchModel;
     }
 
     @Override
-    public Builder columns(final int columns) {
+    public Builder columns(int columns) {
       this.columns = columns;
       return this;
     }
 
     @Override
-    public Builder upperCase(final boolean upperCase) {
+    public Builder upperCase(boolean upperCase) {
       if (upperCase && lowerCase) {
         throw new IllegalArgumentException("Field is already lowercase");
       }
@@ -713,7 +713,7 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    public Builder lowerCase(final boolean lowerCase) {
+    public Builder lowerCase(boolean lowerCase) {
       if (lowerCase && upperCase) {
         throw new IllegalArgumentException("Field is already uppercase");
       }
@@ -722,7 +722,7 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    public Builder selectionProviderFactory(final Function<EntitySearchModel, SelectionProvider> selectionProviderFactory) {
+    public Builder selectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory) {
       this.selectionProviderFactory = requireNonNull(selectionProviderFactory);
       return this;
     }
@@ -751,17 +751,17 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    protected ComponentValue<Entity, EntitySearchField> buildComponentValue(final EntitySearchField component) {
+    protected ComponentValue<Entity, EntitySearchField> buildComponentValue(EntitySearchField component) {
       return new SearchFieldSingleValue(component);
     }
 
     @Override
-    protected void setInitialValue(final EntitySearchField component, final Entity initialValue) {
+    protected void setInitialValue(EntitySearchField component, Entity initialValue) {
       component.getModel().setSelectedEntity(initialValue);
     }
 
     @Override
-    protected void setTransferFocusOnEnter(final EntitySearchField component) {
+    protected void setTransferFocusOnEnter(EntitySearchField component) {
       component.transferFocusOnEnter();
     }
   }

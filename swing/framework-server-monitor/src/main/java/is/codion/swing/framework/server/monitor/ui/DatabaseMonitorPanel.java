@@ -38,7 +38,7 @@ public final class DatabaseMonitorPanel extends JPanel {
    * Instantiates a new DatabaseMonitorPanel
    * @param model the DatabaseMonitor to base this panel on
    */
-  public DatabaseMonitorPanel(final DatabaseMonitor model) {
+  public DatabaseMonitorPanel(DatabaseMonitor model) {
     this.model = model;
     this.queriesPerSecondChart.getXYPlot().setDataset(model.getQueriesPerSecondCollection());
     ChartUtil.linkColors(this, queriesPerSecondChart);

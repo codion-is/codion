@@ -359,8 +359,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   private static final class UpdateTotalsFunction implements DatabaseFunction<EntityConnection, Collection<Long>, Collection<Entity>> {
 
     @Override
-    public Collection<Entity> execute(final EntityConnection connection,
-                                      final Collection<Long> invoiceIds) throws DatabaseException {
+    public Collection<Entity> execute(EntityConnection connection,
+                                      Collection<Long> invoiceIds) throws DatabaseException {
       return connection.update(Entity.castTo(Invoice.class,
                       connection.select(where(Invoice.ID)
                               .equalTo(invoiceIds)
@@ -381,13 +381,13 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
     private final Entities entities;
 
-    private CreateRandomPlaylistFunction(final Entities entities) {
+    private CreateRandomPlaylistFunction(Entities entities) {
       this.entities = entities;
     }
 
     @Override
-    public Entity execute(final EntityConnection connection,
-                          final RandomPlaylistParameters parameters) throws DatabaseException {
+    public Entity execute(EntityConnection connection,
+                          RandomPlaylistParameters parameters) throws DatabaseException {
       connection.beginTransaction();
       try {
         Key playlistKey = insertPlaylistTracks(connection, parameters.getPlaylistName(),
@@ -403,8 +403,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       }
     }
 
-    private Key insertPlaylistTracks(final EntityConnection connection, final String playlistName,
-                                     final List<Long> trackIds) throws DatabaseException {
+    private Key insertPlaylistTracks(EntityConnection connection, String playlistName,
+                                     List<Long> trackIds) throws DatabaseException {
       Key playlistKey = connection.insert(createPlaylist(playlistName));
 
       connection.insert(createPlaylistTracks(playlistKey.get(), trackIds));
@@ -412,27 +412,27 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       return playlistKey;
     }
 
-    private Entity createPlaylist(final String playlistName) {
+    private Entity createPlaylist(String playlistName) {
       return entities.builder(Playlist.TYPE)
               .with(Playlist.NAME, playlistName)
               .build();
     }
 
-    private List<Entity> createPlaylistTracks(final Long playlistId, final List<Long> trackIds) {
+    private List<Entity> createPlaylistTracks(Long playlistId, List<Long> trackIds) {
       return trackIds.stream()
               .map(trackId -> createPlaylistTrack(playlistId, trackId))
               .collect(toList());
     }
 
-    private Entity createPlaylistTrack(final Long playlistId, final Long trackId) {
+    private Entity createPlaylistTrack(Long playlistId, Long trackId) {
       return entities.builder(PlaylistTrack.TYPE)
               .with(PlaylistTrack.PLAYLIST_ID, playlistId)
               .with(PlaylistTrack.TRACK_ID, trackId)
               .build();
     }
 
-    private static List<Long> getRandomTrackIds(final LocalEntityConnection connection,
-                                                final int noOfTracks) throws DatabaseException {
+    private static List<Long> getRandomTrackIds(LocalEntityConnection connection,
+                                                int noOfTracks) throws DatabaseException {
       try (Statement statement = connection.getDatabaseConnection().getConnection().createStatement();
            ResultSet resultSet = statement.executeQuery(TRACK_ID_QUERY + " " + noOfTracks)) {
         return TRACK_ID_PACKER.pack(resultSet);
@@ -446,8 +446,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, RaisePriceParameters, List<Entity>> {
 
     @Override
-    public List<Entity> execute(final EntityConnection entityConnection,
-                                final RaisePriceParameters parameters) throws DatabaseException {
+    public List<Entity> execute(EntityConnection entityConnection,
+                                RaisePriceParameters parameters) throws DatabaseException {
       SelectCondition selectCondition = where(Track.ID).equalTo(parameters.getTrackIds())
               .toSelectCondition().forUpdate();
 

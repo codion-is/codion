@@ -18,7 +18,7 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   private final Attribute<T> attribute;
   private final Operator operator;
 
-  protected AbstractAttributeCondition(final Attribute<T> attribute, final Operator operator) {
+  protected AbstractAttributeCondition(Attribute<T> attribute, Operator operator) {
     super(requireNonNull(attribute, "attribute").getEntityType());
     this.attribute = attribute;
     this.operator = operator;
@@ -35,12 +35,12 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   }
 
   @Override
-  public AttributeCondition<String> caseSensitive(final boolean caseSensitive) {
+  public AttributeCondition<String> caseSensitive(boolean caseSensitive) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public final String getConditionString(final EntityDefinition definition) {
+  public final String getConditionString(EntityDefinition definition) {
     return getConditionString(getColumnExpression(definition));
   }
 
@@ -51,7 +51,7 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
     return super.toString() + ": " + attribute;
   }
 
-  private String getColumnExpression(final EntityDefinition definition) {
+  private String getColumnExpression(EntityDefinition definition) {
     ColumnProperty<T> property = definition.getColumnProperty(attribute);
     if (property instanceof SubqueryProperty) {
       return "(" + ((SubqueryProperty<?>) property).getSubquery() + ")";

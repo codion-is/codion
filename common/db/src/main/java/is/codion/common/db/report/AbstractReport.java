@@ -24,7 +24,7 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
    * Instantiates a new AbstractReport.
    * @param reportPath the report path, relative to the central report path {@link Report#REPORT_PATH}.
    */
-  public AbstractReport(final String reportPath) {
+  public AbstractReport(String reportPath) {
     this.reportPath = requireNonNull(reportPath, "reportPath");
   }
 
@@ -34,7 +34,7 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
   }
 
   @Override
-  public final boolean equals(final Object obj) {
+  public final boolean equals(Object obj) {
     return obj instanceof AbstractReport && ((AbstractReport<?, ?, ?>) obj).getFullReportPath().equals(getFullReportPath());
   }
 

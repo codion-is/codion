@@ -20,42 +20,42 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private Action action;
   private ActionListener actionListener;
 
-  protected AbstractButtonBuilder(final Value<T> linkedValue) {
+  protected AbstractButtonBuilder(Value<T> linkedValue) {
     super(linkedValue);
   }
 
   @Override
-  public final B caption(final String caption) {
+  public final B caption(String caption) {
     this.caption = caption;
     return (B) this;
   }
 
   @Override
-  public final B mnemonic(final int mnemonic) {
+  public final B mnemonic(int mnemonic) {
     this.mnemonic = mnemonic;
     return (B) this;
   }
 
   @Override
-  public final B includeCaption(final boolean includeCaption) {
+  public final B includeCaption(boolean includeCaption) {
     this.includeCaption = includeCaption;
     return (B) this;
   }
 
   @Override
-  public final B icon(final Icon icon) {
+  public final B icon(Icon icon) {
     this.icon = icon;
     return (B) this;
   }
 
   @Override
-  public final B action(final Action action) {
+  public final B action(Action action) {
     this.action = action;
     return (B) this;
   }
 
   @Override
-  public final B actionListener(final ActionListener actionListener) {
+  public final B actionListener(ActionListener actionListener) {
     this.actionListener = actionListener;
     return (B) this;
   }

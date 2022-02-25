@@ -11,7 +11,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class ArtistEditPanel extends EntityEditPanel {
 
-  public ArtistEditPanel(final SwingEntityEditModel editModel) {
+  public ArtistEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

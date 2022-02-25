@@ -21,22 +21,22 @@ final class UpdateConditionSerializer extends StdSerializer<UpdateCondition> {
   private final ConditionSerializer conditionSerializer;
   private final EntityObjectMapper entityObjectMapper;
 
-  UpdateConditionSerializer(final EntityObjectMapper entityObjectMapper) {
+  UpdateConditionSerializer(EntityObjectMapper entityObjectMapper) {
     super(UpdateCondition.class);
     this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
     this.entityObjectMapper = entityObjectMapper;
   }
 
   @Override
-  public void serialize(final UpdateCondition condition, final JsonGenerator generator,
-                        final SerializerProvider provider) throws IOException {
+  public void serialize(UpdateCondition condition, JsonGenerator generator,
+                        SerializerProvider provider) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("entityType", condition.getEntityType().getName());
     generator.writeFieldName("condition");
     conditionSerializer.serialize(condition.getCondition(), generator);
     generator.writeFieldName("values");
     generator.writeStartObject();
-    for (final Map.Entry<Attribute<?>, Object> attributeValue : condition.getAttributeValues().entrySet()) {
+    for (Map.Entry<Attribute<?>, Object> attributeValue : condition.getAttributeValues().entrySet()) {
       generator.writeFieldName(attributeValue.getKey().getName());
       entityObjectMapper.writeValue(generator, attributeValue.getValue());
     }

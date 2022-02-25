@@ -132,7 +132,7 @@ public final class ClientTutorial {
     }
 
     @Override
-    protected SwingEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
+    protected SwingEntityApplicationModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {
       SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
       SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
       artistModel.addDetailModel(albumModel);
@@ -145,7 +145,7 @@ public final class ClientTutorial {
     }
 
     @Override
-    protected List<EntityPanel> initializeEntityPanels(final SwingEntityApplicationModel applicationModel) {
+    protected List<EntityPanel> initializeEntityPanels(SwingEntityApplicationModel applicationModel) {
       SwingEntityModel artistModel = applicationModel.getEntityModel(Artist.TYPE);
       SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
       EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
@@ -156,7 +156,7 @@ public final class ClientTutorial {
     }
   }
 
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Chinook.class.getName());

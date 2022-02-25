@@ -157,7 +157,7 @@ public interface Controls extends Control {
    * @param controls the controls
    * @return a new Controls instance.
    */
-  static Controls controls(final Control... controls) {
+  static Controls controls(Control... controls) {
     return builder().controls(controls).build();
   }
 

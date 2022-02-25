@@ -234,7 +234,7 @@ public class EntityServerTest {
     catch (LoginException ignored) {/*ignored*/}
     Collection<RemoteClient> empDeptClients = admin.getClients(testClientTypeId);
     assertEquals(2, empDeptClients.size());
-    for (final RemoteClient empDeptClient : empDeptClients) {
+    for (RemoteClient empDeptClient : empDeptClients) {
       assertEquals(UNIT_TEST_USER, empDeptClient.getDatabaseUser());
     }
     server.disconnect(connectionRequestJohn.getClientId());

@@ -11,12 +11,12 @@ final class QueryKeyGenerator extends AbstractQueriedKeyGenerator {
 
   private final String query;
 
-  QueryKeyGenerator(final String query) {
+  QueryKeyGenerator(String query) {
     this.query = requireNonNull(query, "query");
   }
 
   @Override
-  protected String getQuery(final Database database) {
+  protected String getQuery(Database database) {
     return query;
   }
 }

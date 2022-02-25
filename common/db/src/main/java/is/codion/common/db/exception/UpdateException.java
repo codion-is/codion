@@ -12,7 +12,7 @@ public class UpdateException extends DatabaseException {
    * Instantiates a new {@link UpdateException}
    * @param message the message
    */
-  public UpdateException(final String message) {
+  public UpdateException(String message) {
     super(message);
   }
 }

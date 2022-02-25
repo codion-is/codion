@@ -35,7 +35,7 @@ public class TemporalValuesTest {
     return timestamp;
   }
 
-  public void setTimestamp(final LocalDateTime timestamp) {
+  public void setTimestamp(LocalDateTime timestamp) {
     this.timestamp = timestamp;
     timestampValueChangedEvent.onEvent();
   }
@@ -44,7 +44,7 @@ public class TemporalValuesTest {
     return dateValue;
   }
 
-  public void setDate(final LocalDate dateValue) {
+  public void setDate(LocalDate dateValue) {
     this.dateValue = dateValue;
     dateValueChangedEvent.onEvent();
   }
@@ -53,7 +53,7 @@ public class TemporalValuesTest {
     return timeValue;
   }
 
-  public void setTime(final LocalTime timeValue) {
+  public void setTime(LocalTime timeValue) {
     this.timeValue = timeValue;
     timeValueChangedEvent.onEvent();
   }
@@ -206,13 +206,13 @@ public class TemporalValuesTest {
   private static final class DefaultCalendarProvider implements TemporalInputPanel.CalendarProvider {
 
     @Override
-    public <T extends Temporal> Optional<T> getTemporal(final Class<T> temporalClass, final JComponent dialogOwner,
-                                                        final T initialValue) {
+    public <T extends Temporal> Optional<T> getTemporal(Class<T> temporalClass, JComponent dialogOwner,
+                                                        T initialValue) {
       return Optional.empty();
     }
 
     @Override
-    public <T extends Temporal> boolean supports(final Class<T> temporalClass) {
+    public <T extends Temporal> boolean supports(Class<T> temporalClass) {
       return false;
     }
   }

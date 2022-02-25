@@ -50,7 +50,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
    * Instantiates a new SwingTableSelectionModel
    * @param tableModel the FilteredTableModel required for accessing table model items and size
    */
-  public SwingTableSelectionModel(final FilteredTableModel<R, ?> tableModel) {
+  public SwingTableSelectionModel(FilteredTableModel<R, ?> tableModel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.tableModel.addRowsRemovedListener(removal ->
             SwingTableSelectionModel.super.removeIndexInterval(removal.getFromRow(), removal.getToRow()));
@@ -58,7 +58,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   }
 
   @Override
-  public void setSelectionMode(final int selectionMode) {
+  public void setSelectionMode(int selectionMode) {
     if (getSelectionMode() != selectionMode) {
       clearSelection();
       super.setSelectionMode(selectionMode);
@@ -72,19 +72,19 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   }
 
   @Override
-  public void addSelectedIndex(final int index) {
+  public void addSelectedIndex(int index) {
     checkIndex(index, tableModel.getRowCount());
     addSelectionInterval(index, index);
   }
 
   @Override
-  public void removeSelectedIndex(final int index) {
+  public void removeSelectedIndex(int index) {
     checkIndex(index, tableModel.getRowCount());
     removeSelectionInterval(index, index);
   }
 
   @Override
-  public void removeSelectedIndexes(final Collection<Integer> indexes) {
+  public void removeSelectedIndexes(Collection<Integer> indexes) {
     indexes.forEach(index -> {
       checkIndex(index, tableModel.getRowCount());
       removeSelectionInterval(index, index);
@@ -92,7 +92,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   }
 
   @Override
-  public void setSelectedIndex(final int index) {
+  public void setSelectedIndex(int index) {
     checkIndex(index, tableModel.getRowCount());
     setSelectionInterval(index, index);
   }
@@ -108,20 +108,20 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   }
 
   @Override
-  public void addSelectedIndexes(final Collection<Integer> indexes) {
+  public void addSelectedIndexes(Collection<Integer> indexes) {
     if (requireNonNull(indexes).isEmpty()) {
       return;
     }
     checkIndexes(indexes);
     setValueIsAdjusting(true);
-    for (final Integer index : indexes) {
+    for (Integer index : indexes) {
       addSelectionInterval(index, index);
     }
     setValueIsAdjusting(false);
   }
 
   @Override
-  public void setSelectedIndexes(final Collection<Integer> indexes) {
+  public void setSelectedIndexes(Collection<Integer> indexes) {
     requireNonNull(indexes);
     checkIndexes(indexes);
     setValueIsAdjusting(true);
@@ -168,12 +168,12 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   }
 
   @Override
-  public void setSelectedItem(final R item) {
+  public void setSelectedItem(R item) {
     setSelectedItems(singletonList(item));
   }
 
   @Override
-  public void setSelectedItems(final Collection<R> items) {
+  public void setSelectedItems(Collection<R> items) {
     if (!isSelectionEmpty()) {
       clearSelection();
     }
@@ -181,12 +181,12 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   }
 
   @Override
-  public void addSelectedItem(final R item) {
+  public void addSelectedItem(R item) {
     addSelectedItems(singletonList(item));
   }
 
   @Override
-  public void addSelectedItems(final Collection<R> items) {
+  public void addSelectedItems(Collection<R> items) {
     requireNonNull(items, "items");
     addSelectedIndexes(items.stream()
             .mapToInt(tableModel::indexOf)
@@ -196,45 +196,45 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   }
 
   @Override
-  public void removeSelectedItem(final R item) {
+  public void removeSelectedItem(R item) {
     removeSelectedItems(singletonList(requireNonNull(item)));
   }
 
   @Override
-  public void removeSelectedItems(final Collection<R> items) {
+  public void removeSelectedItems(Collection<R> items) {
     requireNonNull(items).forEach(item -> removeSelectedIndex(tableModel.indexOf(item)));
   }
 
   @Override
-  public void addSelectionInterval(final int fromIndex, final int toIndex) {
+  public void addSelectionInterval(int fromIndex, int toIndex) {
     if (tableModel.allowSelectionChange()) {
       super.addSelectionInterval(fromIndex, toIndex);
     }
   }
 
   @Override
-  public void setSelectionInterval(final int fromIndex, final int toIndex) {
+  public void setSelectionInterval(int fromIndex, int toIndex) {
     if (tableModel.allowSelectionChange()) {
       super.setSelectionInterval(fromIndex, toIndex);
     }
   }
 
   @Override
-  public void removeSelectionInterval(final int fromIndex, final int toIndex) {
+  public void removeSelectionInterval(int fromIndex, int toIndex) {
     if (tableModel.allowSelectionChange()) {
       super.removeSelectionInterval(fromIndex, toIndex);
     }
   }
 
   @Override
-  public void insertIndexInterval(final int fromIndex, final int length, final boolean before) {
+  public void insertIndexInterval(int fromIndex, int length, boolean before) {
     if (tableModel.allowSelectionChange()) {
       super.insertIndexInterval(fromIndex, length, before);
     }
   }
 
   @Override
-  public void removeIndexInterval(final int fromIndex, final int toIndex) {
+  public void removeIndexInterval(int fromIndex, int toIndex) {
     if (tableModel.allowSelectionChange()) {
       super.removeIndexInterval(fromIndex, toIndex);
     }
@@ -275,7 +275,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   }
 
   @Override
-  public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
+  public void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
     super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
     if (!isAdjusting) {
       selectionEmptyState.set(isSelectionEmpty());
@@ -299,52 +299,52 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   }
 
   @Override
-  public void addSelectedIndexListener(final EventDataListener<Integer> listener) {
+  public void addSelectedIndexListener(EventDataListener<Integer> listener) {
     selectedIndexChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedIndexListener(final EventDataListener<Integer> listener) {
+  public void removeSelectedIndexListener(EventDataListener<Integer> listener) {
     selectedIndexChangedEvent.removeDataListener(listener);
   }
 
   @Override
-  public void addSelectedIndexesListener(final EventDataListener<List<Integer>> listener) {
+  public void addSelectedIndexesListener(EventDataListener<List<Integer>> listener) {
     selectedIndexesChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedIndexesListener(final EventDataListener<List<Integer>> listener) {
+  public void removeSelectedIndexesListener(EventDataListener<List<Integer>> listener) {
     selectedIndexesChangedEvent.removeDataListener(listener);
   }
 
   @Override
-  public void addSelectionChangedListener(final EventListener listener) {
+  public void addSelectionChangedListener(EventListener listener) {
     selectionChangedEvent.addListener(listener);
   }
 
   @Override
-  public void removeSelectionChangedListener(final EventListener listener) {
+  public void removeSelectionChangedListener(EventListener listener) {
     selectionChangedEvent.removeListener(listener);
   }
 
   @Override
-  public void addSelectedItemListener(final EventDataListener<R> listener) {
+  public void addSelectedItemListener(EventDataListener<R> listener) {
     selectedItemChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedItemListener(final EventDataListener<R> listener) {
+  public void removeSelectedItemListener(EventDataListener<R> listener) {
     selectedItemChangedEvent.removeDataListener(listener);
   }
 
   @Override
-  public void addSelectedItemsListener(final EventDataListener<List<R>> listener) {
+  public void addSelectedItemsListener(EventDataListener<List<R>> listener) {
     selectedItemsChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedItemsListener(final EventDataListener<List<R>> listener) {
+  public void removeSelectedItemsListener(EventDataListener<List<R>> listener) {
     selectedItemsChangedEvent.removeDataListener(listener);
   }
 
@@ -373,14 +373,14 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
             setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));
   }
 
-  private void checkIndexes(final Collection<Integer> indexes) {
+  private void checkIndexes(Collection<Integer> indexes) {
     int size = tableModel.getRowCount();
-    for (final Integer index : indexes) {
+    for (Integer index : indexes) {
       checkIndex(index, size);
     }
   }
 
-  private static void checkIndex(final int index, final int size) {
+  private static void checkIndex(int index, int size) {
     if (index < 0 || index > size - 1) {
       throw new IndexOutOfBoundsException("Index: " + index + ", size: " + size);
     }

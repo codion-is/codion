@@ -15,12 +15,12 @@ final class DefaultFunctionType<C, T, R> implements FunctionType<C, T, R>, Seria
 
   private final String name;
 
-  DefaultFunctionType(final String name) {
+  DefaultFunctionType(String name) {
     this.name = requireNonNull(name, "name");
   }
 
   @Override
-  public R execute(final C connection, final DatabaseFunction<C, T, R> function, final T argument) throws DatabaseException {
+  public R execute(C connection, DatabaseFunction<C, T, R> function, T argument) throws DatabaseException {
     return requireNonNull(function, "function").execute(connection, argument);
   }
 
@@ -30,7 +30,7 @@ final class DefaultFunctionType<C, T, R> implements FunctionType<C, T, R>, Seria
   }
 
   @Override
-  public boolean equals(final Object o) {
+  public boolean equals(Object o) {
     if (this == o) {
       return true;
     }

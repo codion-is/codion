@@ -289,11 +289,11 @@ public final class EntityTest {
     collection.add(entities.entity(Department.TYPE));
     collection.add(entities.entity(Department.TYPE));
     Entity.put(Department.NO, 1, collection);
-    for (final Entity entity : collection) {
+    for (Entity entity : collection) {
       assertEquals(Integer.valueOf(1), entity.get(Department.NO));
     }
     Entity.put(Department.NO, null, collection);
-    for (final Entity entity : collection) {
+    for (Entity entity : collection) {
       assertTrue(entity.isNull(Department.NO));
     }
   }
@@ -364,17 +364,17 @@ public final class EntityTest {
   @Test
   void putNull() {
     Entity dept = entities.entity(Department.TYPE);
-    for (final Property<?> property : entities.getDefinition(Department.TYPE).getProperties()) {
+    for (Property<?> property : entities.getDefinition(Department.TYPE).getProperties()) {
       assertFalse(dept.contains(property.getAttribute()));
       assertTrue(dept.isNull(property.getAttribute()));
       assertFalse(dept.isNotNull(property.getAttribute()));
     }
-    for (final Property<?> property : entities.getDefinition(Department.TYPE).getProperties()) {
+    for (Property<?> property : entities.getDefinition(Department.TYPE).getProperties()) {
       dept.put(property.getAttribute(), null);
     }
     //putting nulls should not have an effect
     assertFalse(dept.isModified());
-    for (final Property<?> property : entities.getDefinition(Department.TYPE).getProperties()) {
+    for (Property<?> property : entities.getDefinition(Department.TYPE).getProperties()) {
       assertTrue(dept.contains(property.getAttribute()));
       assertTrue(dept.isNull(property.getAttribute()));
       assertFalse(dept.isNotNull(property.getAttribute()));

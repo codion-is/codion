@@ -23,54 +23,54 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
   private int horizontalBlockIncrement;
   private LayoutManager layout;
 
-  DefaultScrollPaneBuilder(final JComponent view) {
+  DefaultScrollPaneBuilder(JComponent view) {
     this.view = requireNonNull(view);
   }
 
   @Override
-  public ScrollPaneBuilder verticalScrollBarPolicy(final int verticalScrollBarPolicy) {
+  public ScrollPaneBuilder verticalScrollBarPolicy(int verticalScrollBarPolicy) {
     this.vsbPolicy = verticalScrollBarPolicy;
     return this;
   }
 
   @Override
-  public ScrollPaneBuilder horizontalScrollBarPolicy(final int horizontalScrollBarPolicy) {
+  public ScrollPaneBuilder horizontalScrollBarPolicy(int horizontalScrollBarPolicy) {
     this.hsbPolicy = horizontalScrollBarPolicy;
     return this;
   }
 
   @Override
-  public ScrollPaneBuilder verticalUnitIncrement(final int verticalUnitIncrement) {
+  public ScrollPaneBuilder verticalUnitIncrement(int verticalUnitIncrement) {
     this.verticalUnitIncrement = verticalUnitIncrement;
     return this;
   }
 
   @Override
-  public ScrollPaneBuilder horizontalUnitIncrement(final int horizontalUnitIncrement) {
+  public ScrollPaneBuilder horizontalUnitIncrement(int horizontalUnitIncrement) {
     this.horizontalUnitIncrement = horizontalUnitIncrement;
     return this;
   }
 
   @Override
-  public ScrollPaneBuilder verticalBlockIncrement(final int verticalBlockIncrement) {
+  public ScrollPaneBuilder verticalBlockIncrement(int verticalBlockIncrement) {
     this.verticalBlockIncrement = verticalBlockIncrement;
     return this;
   }
 
   @Override
-  public ScrollPaneBuilder horizontalBlockIncrement(final int horizontalBlockIncrement) {
+  public ScrollPaneBuilder horizontalBlockIncrement(int horizontalBlockIncrement) {
     this.horizontalBlockIncrement = horizontalBlockIncrement;
     return this;
   }
 
   @Override
-  public ScrollPaneBuilder wheelScrollingEnable(final boolean wheelScrollingEnabled) {
+  public ScrollPaneBuilder wheelScrollingEnable(boolean wheelScrollingEnabled) {
     this.wheelScrollingEnabled = wheelScrollingEnabled;
     return this;
   }
 
   @Override
-  public ScrollPaneBuilder layout(final LayoutManager layout) {
+  public ScrollPaneBuilder layout(LayoutManager layout) {
     this.layout = layout;
     return this;
   }
@@ -99,10 +99,10 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
   }
 
   @Override
-  protected ComponentValue<Void, JScrollPane> buildComponentValue(final JScrollPane component) {
+  protected ComponentValue<Void, JScrollPane> buildComponentValue(JScrollPane component) {
     throw new UnsupportedOperationException("A ComponentValue can not be based on a JScrollPane");
   }
 
   @Override
-  protected void setInitialValue(final JScrollPane component, final Void initialValue) {}
+  protected void setInitialValue(JScrollPane component, Void initialValue) {}
 }

@@ -129,7 +129,7 @@ public interface Attribute<T> {
    * @param <T> the attribute type
    * @return a new {@link Attribute}
    */
-  static <T> Attribute<T> attribute(final EntityType entityType, final String name, final Class<T> typeClass) {
+  static <T> Attribute<T> attribute(EntityType entityType, String name, Class<T> typeClass) {
     return new DefaultAttribute<>(name, typeClass, entityType);
   }
 }

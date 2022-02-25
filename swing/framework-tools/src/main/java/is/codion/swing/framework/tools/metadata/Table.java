@@ -26,8 +26,8 @@ public final class Table {
   private final Map<String, Column> columns = new LinkedHashMap<>();
   private final List<ForeignKeyConstraint> foreignKeys = new ArrayList<>();
 
-  Table(final Schema schema, final String tableName, final List<Column> columns,
-        final List<ForeignKeyColumn> foreignKeyColumns) {
+  Table(Schema schema, String tableName, List<Column> columns,
+        List<ForeignKeyColumn> foreignKeyColumns) {
     this.schema = requireNonNull(schema);
     this.tableName = requireNonNull(tableName);
     this.foreignKeyColumns = requireNonNull(foreignKeyColumns);
@@ -63,7 +63,7 @@ public final class Table {
   }
 
   @Override
-  public boolean equals(final Object object) {
+  public boolean equals(Object object) {
     if (this == object) {
       return true;
     }
@@ -81,8 +81,8 @@ public final class Table {
     return Objects.hash(schema, tableName);
   }
 
-  void resolveForeignKeys(final Map<String, Schema> schemas) {
-    for (final ForeignKeyColumn foreignKeyColumn : foreignKeyColumns) {
+  void resolveForeignKeys(Map<String, Schema> schemas) {
+    for (ForeignKeyColumn foreignKeyColumn : foreignKeyColumns) {
       Table referencedTable = getReferencedTable(foreignKeyColumn, schemas);
       ForeignKeyConstraint foreignKeyConstraint;
       if (foreignKeyColumn.getKeySeq() == 1) {//new key
@@ -97,11 +97,11 @@ public final class Table {
     }
   }
 
-  private boolean referencesExternalSchema(final ForeignKeyColumn foreignKeyColumn) {
+  private boolean referencesExternalSchema(ForeignKeyColumn foreignKeyColumn) {
     return !foreignKeyColumn.getPkSchemaName().equals(schema.getName());
   }
 
-  private static Table getReferencedTable(final ForeignKeyColumn foreignKeyColumn, final Map<String, Schema> schemas) {
+  private static Table getReferencedTable(ForeignKeyColumn foreignKeyColumn, Map<String, Schema> schemas) {
     Table referencedTable = schemas.get(foreignKeyColumn.getPkSchemaName()).getTables().get(foreignKeyColumn.getPkTableName());
     if (referencedTable == null) {
       throw new IllegalStateException("Referenced table not found: " + foreignKeyColumn.getPkSchemaName() + "." + foreignKeyColumn.getPkTableName());

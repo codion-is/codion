@@ -7,19 +7,19 @@ import javax.swing.JTextField;
 
 final class CharacterFieldValue extends AbstractTextComponentValue<Character, JTextField> {
 
-  CharacterFieldValue(final JTextField textField, final UpdateOn updateOn) {
+  CharacterFieldValue(JTextField textField, UpdateOn updateOn) {
     super(textField, null, updateOn);
   }
 
   @Override
-  protected Character getComponentValue(final JTextField component) {
+  protected Character getComponentValue(JTextField component) {
     String string = component.getText();
 
     return string.isEmpty() ? null : string.charAt(0);
   }
 
   @Override
-  protected void setComponentValue(final JTextField component, final Character value) {
+  protected void setComponentValue(JTextField component, Character value) {
     component.setText(value == null ? "" : String.valueOf(value));
   }
 }

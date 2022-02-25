@@ -20,7 +20,7 @@ import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 // tag::constructor[]
 public class EmployeeEditPanel extends EntityEditPanel {
 
-  public EmployeeEditPanel(final SwingEntityEditModel editModel) {
+  public EmployeeEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
   // end::constructor[]

@@ -75,7 +75,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
     return applicationModel;
   }
 
-  public static void main(final String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
     SwingUtilities.invokeLater(new Runner());
   }
 

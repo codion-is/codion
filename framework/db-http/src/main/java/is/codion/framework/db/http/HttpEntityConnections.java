@@ -28,9 +28,9 @@ public final class HttpEntityConnections {
    * @param json true if json serialization should be used
    * @return a http based EntityConnection
    */
-  public static EntityConnection createConnection(final String domainTypeName, final String serverHostName,
-                                                  final int serverPort, final User user, final String clientTypeId,
-                                                  final UUID clientId, final boolean json) {
+  public static EntityConnection createConnection(String domainTypeName, String serverHostName,
+                                                  int serverPort, User user, String clientTypeId,
+                                                  UUID clientId, boolean json) {
     return json ?
             new HttpJsonEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.FALSE, user, clientTypeId, clientId, new BasicHttpClientConnectionManager()) :
             new HttpEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.FALSE, user, clientTypeId, clientId, new BasicHttpClientConnectionManager());
@@ -47,9 +47,9 @@ public final class HttpEntityConnections {
    * @param json true if json serialization should be used
    * @return a http based EntityConnection
    */
-  public static EntityConnection createSecureConnection(final String domainTypeName, final String serverHostName,
-                                                        final int serverPort, final User user, final String clientTypeId,
-                                                        final UUID clientId, final boolean json) {
+  public static EntityConnection createSecureConnection(String domainTypeName, String serverHostName,
+                                                        int serverPort, User user, String clientTypeId,
+                                                        UUID clientId, boolean json) {
     return json ?
             new HttpJsonEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.TRUE, user, clientTypeId, clientId, new BasicHttpClientConnectionManager()) :
             new HttpEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.TRUE, user, clientTypeId, clientId, new BasicHttpClientConnectionManager());

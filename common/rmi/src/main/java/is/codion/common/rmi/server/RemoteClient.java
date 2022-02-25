@@ -44,7 +44,7 @@ public interface RemoteClient extends ConnectionRequest {
    * @param connectionRequest the connection request
    * @return a new RemoteClient instance
    */
-  static RemoteClient remoteClient(final ConnectionRequest connectionRequest) {
+  static RemoteClient remoteClient(ConnectionRequest connectionRequest) {
     return remoteClient(connectionRequest, connectionRequest.getUser());
   }
 
@@ -54,7 +54,7 @@ public interface RemoteClient extends ConnectionRequest {
    * @param databaseUser the user to use when connecting to the underlying database
    * @return a new RemoteClient instance
    */
-  static RemoteClient remoteClient(final ConnectionRequest connectionRequest, final User databaseUser) {
+  static RemoteClient remoteClient(ConnectionRequest connectionRequest, User databaseUser) {
     return new DefaultRemoteClient(connectionRequest, databaseUser);
   }
 }

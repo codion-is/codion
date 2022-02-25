@@ -49,7 +49,7 @@ public final class HostMonitor {
    * @param updateRate the initial statistics update rate in seconds
    * @throws RemoteException in case of an exception
    */
-  public HostMonitor(final String hostName, final int registryPort, final User adminUser, final int updateRate) throws RemoteException {
+  public HostMonitor(String hostName, int registryPort, User adminUser, int updateRate) throws RemoteException {
     this.hostName = hostName;
     this.registryPort = registryPort;
     this.adminUser = adminUser;
@@ -78,7 +78,7 @@ public final class HostMonitor {
   public void refresh() throws RemoteException {
     removeUnreachableServers();
     try {
-      for (final ServerInformation serverInformation : getEntityServers(hostName, registryPort)) {
+      for (ServerInformation serverInformation : getEntityServers(hostName, registryPort)) {
         if (!containsServerMonitor(serverInformation.getServerId())) {
           ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInformation, registryPort, adminUser, updateRate);
           serverMonitor.addServerShutDownListener(() -> removeServer(serverMonitor));
@@ -101,42 +101,42 @@ public final class HostMonitor {
   /**
    * @param listener a listener notified when a server is added to this monitor
    */
-  public void addServerAddedListener(final EventDataListener<ServerMonitor> listener) {
+  public void addServerAddedListener(EventDataListener<ServerMonitor> listener) {
     serverAddedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener a listener notified when a server is removed from this monitor
    */
-  public void addServerRemovedListener(final EventDataListener<ServerMonitor> listener) {
+  public void addServerRemovedListener(EventDataListener<ServerMonitor> listener) {
     serverRemovedEvent.addDataListener(listener);
   }
 
-  private void addServer(final ServerMonitor serverMonitor) {
+  private void addServer(ServerMonitor serverMonitor) {
     serverMonitors.add(serverMonitor);
     serverAddedEvent.onEvent(serverMonitor);
   }
 
-  private void removeServer(final ServerMonitor serverMonitor) {
+  private void removeServer(ServerMonitor serverMonitor) {
     serverMonitors.remove(serverMonitor);
     serverRemovedEvent.onEvent(serverMonitor);
   }
 
-  private boolean containsServerMonitor(final UUID serverId) {
+  private boolean containsServerMonitor(UUID serverId) {
     return serverMonitors.stream()
             .anyMatch(serverMonitor -> serverMonitor.getServerInformation().getServerId().equals(serverId));
   }
 
   private void removeUnreachableServers() {
     Collection<ServerMonitor> monitors = new ArrayList<>(serverMonitors);
-    for (final ServerMonitor monitor : monitors) {
+    for (ServerMonitor monitor : monitors) {
       if (!monitor.isServerReachable()) {
         removeServer(monitor);
       }
     }
   }
 
-  private static List<ServerInformation> getEntityServers(final String serverHostName, final int registryPort) {
+  private static List<ServerInformation> getEntityServers(String serverHostName, int registryPort) {
     List<ServerInformation> servers = new ArrayList<>();
     try {
       LOG.debug("HostMonitor locating registry on host: {}, port: {}: ", serverHostName, registryPort);
@@ -146,7 +146,7 @@ public final class HostMonitor {
       if (boundNames.isEmpty()) {
         LOG.debug("HostMonitor found no server bound to registry: {} on port: {}", registry, registryPort);
       }
-      for (final String name : boundNames) {
+      for (String name : boundNames) {
         LOG.debug("HostMonitor found server '{}'", name);
         Server<?, ?> server = (Server<?, ?>) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
         servers.add(server.getServerInformation());
@@ -159,7 +159,7 @@ public final class HostMonitor {
     return servers;
   }
 
-  private static Collection<String> getEntityServers(final Registry registry) throws RemoteException {
+  private static Collection<String> getEntityServers(Registry registry) throws RemoteException {
     String[] boundNames = registry.list();
     String serverNamePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
 

@@ -12,7 +12,7 @@ import java.awt.event.ItemEvent;
 
 final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentValue<T, C> {
 
-  SelectedValue(final C comboBox) {
+  SelectedValue(C comboBox) {
     super(comboBox);
     if (comboBox.getModel() instanceof ItemComboBoxModel) {
       throw new IllegalArgumentException("comboBox() does not support ItemComboBoxModel, use itemComboBox()");
@@ -25,7 +25,7 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
   }
 
   @Override
-  protected T getComponentValue(final C component) {
+  protected T getComponentValue(C component) {
     ComboBoxModel<T> comboBoxModel = component.getModel();
     if (comboBoxModel instanceof FilteredComboBoxModel) {
       return ((FilteredComboBoxModel<T>) comboBoxModel).getSelectedValue();
@@ -35,7 +35,7 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
   }
 
   @Override
-  protected void setComponentValue(final C component, final T value) {
+  protected void setComponentValue(C component, T value) {
     component.getModel().setSelectedItem(value);
   }
 }

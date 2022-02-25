@@ -14,7 +14,7 @@ import static is.codion.framework.demos.petstore.domain.Petstore.*;
 
 public class ItemEditPanel extends EntityEditPanel {
 
-  public ItemEditPanel(final SwingEntityEditModel model) {
+  public ItemEditPanel(SwingEntityEditModel model) {
     super(model);
     setDefaultTextFieldColumns(14);
   }

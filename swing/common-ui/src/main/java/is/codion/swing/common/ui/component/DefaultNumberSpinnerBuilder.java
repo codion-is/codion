@@ -21,8 +21,8 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
   private boolean groupingUsed = true;
   private String decimalFormatPattern;
 
-  DefaultNumberSpinnerBuilder(final SpinnerNumberModel spinnerNumberModel, final Class<T> valueClass,
-                              final Value<T> linkedValue) {
+  DefaultNumberSpinnerBuilder(SpinnerNumberModel spinnerNumberModel, Class<T> valueClass,
+                              Value<T> linkedValue) {
     super(spinnerNumberModel, linkedValue);
     this.valueClass = requireNonNull(valueClass);
     if (!valueClass.equals(Integer.class) && !valueClass.equals(Double.class)) {
@@ -31,37 +31,37 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
   }
 
   @Override
-  public NumberSpinnerBuilder<T> minimum(final T minimum) {
+  public NumberSpinnerBuilder<T> minimum(T minimum) {
     this.minimum = minimum;
     return this;
   }
 
   @Override
-  public NumberSpinnerBuilder<T> maximum(final T maximum) {
+  public NumberSpinnerBuilder<T> maximum(T maximum) {
     this.maximum = maximum;
     return this;
   }
 
   @Override
-  public NumberSpinnerBuilder<T> stepSize(final T stepSize) {
+  public NumberSpinnerBuilder<T> stepSize(T stepSize) {
     this.stepSize = stepSize;
     return this;
   }
 
   @Override
-  public NumberSpinnerBuilder<T> groupingUsed(final boolean groupingUsed) {
+  public NumberSpinnerBuilder<T> groupingUsed(boolean groupingUsed) {
     this.groupingUsed = groupingUsed;
     return this;
   }
 
   @Override
-  public NumberSpinnerBuilder<T> decimalFormatPattern(final String decimalFormatPattern) {
+  public NumberSpinnerBuilder<T> decimalFormatPattern(String decimalFormatPattern) {
     this.decimalFormatPattern = requireNonNull(decimalFormatPattern);
     return this;
   }
 
   @Override
-  protected ComponentValue<T, JSpinner> buildComponentValue(final JSpinner component) {
+  protected ComponentValue<T, JSpinner> buildComponentValue(JSpinner component) {
     if (valueClass.equals(Integer.class)) {
       return (ComponentValue<T, JSpinner>) ComponentValues.integerSpinner(component);
     }

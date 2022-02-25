@@ -45,7 +45,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
-  DefaultDatabaseConnection(final Database database, final User user) throws DatabaseException {
+  DefaultDatabaseConnection(Database database, User user) throws DatabaseException {
     this.database = requireNonNull(database, "database");
     this.connection = disableAutoCommit(database.createConnection(user));
     this.user = requireNonNull(user, "user");
@@ -59,7 +59,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws IllegalArgumentException in case the given connection is invalid
    * @throws DatabaseException in case of an exception while retrieving the username from the connection meta-data
    */
-  DefaultDatabaseConnection(final Database database, final Connection connection) throws DatabaseException {
+  DefaultDatabaseConnection(Database database, Connection connection) throws DatabaseException {
     this.database = requireNonNull(database, "database");
     this.connection = disableAutoCommit(connection);
     this.user = getUser(connection);
@@ -76,7 +76,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   @Override
-  public void setMethodLogger(final MethodLogger methodLogger) {
+  public void setMethodLogger(MethodLogger methodLogger) {
     this.methodLogger = methodLogger;
   }
 
@@ -106,7 +106,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   @Override
-  public void setConnection(final Connection connection) {
+  public void setConnection(Connection connection) {
     this.connection = connection;
   }
 
@@ -121,7 +121,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   @Override
-  public int selectInteger(final String sql) throws SQLException {
+  public int selectInteger(String sql) throws SQLException {
     List<Integer> integers = select(sql, INTEGER_RESULT_PACKER, 1);
     if (!integers.isEmpty()) {
       return integers.get(0);
@@ -131,7 +131,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   @Override
-  public long selectLong(final String sql) throws SQLException {
+  public long selectLong(String sql) throws SQLException {
     List<Long> longs = select(sql, LONG_RESULT_PACKER, 1);
     if (!longs.isEmpty()) {
       return longs.get(0);
@@ -242,7 +242,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  private <T> List<T> select(final String sql, final ResultPacker<T> resultPacker, final int fetchLimit) throws SQLException {
+  private <T> List<T> select(String sql, ResultPacker<T> resultPacker, int fetchLimit) throws SQLException {
     checkIfClosed();
     database.countQuery(requireNonNull(sql, "sql"));
     Statement statement = null;
@@ -266,19 +266,19 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  private void logAccess(final String method) {
+  private void logAccess(String method) {
     if (methodLogger != null && methodLogger.isEnabled()) {
       methodLogger.logAccess(method);
     }
   }
 
-  private void logAccess(final String method, final Object argument) {
+  private void logAccess(String method, Object argument) {
     if (methodLogger != null && methodLogger.isEnabled()) {
       methodLogger.logAccess(method, argument);
     }
   }
 
-  private MethodLogger.Entry logExit(final String method, final Throwable exception) {
+  private MethodLogger.Entry logExit(String method, Throwable exception) {
     if (methodLogger != null && methodLogger.isEnabled()) {
       return methodLogger.logExit(method, exception);
     }
@@ -298,7 +298,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @return the connection with auto-commit disabled
    * @throws DatabaseException in case disabling auto-commit fails
    */
-  private static Connection disableAutoCommit(final Connection connection) throws DatabaseException {
+  private static Connection disableAutoCommit(Connection connection) throws DatabaseException {
     requireNonNull(connection, "connection");
     try {
       connection.setAutoCommit(false);
@@ -318,7 +318,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws DatabaseException in case of an exception while retrieving the username from the connection meta-data
    * @see java.sql.DatabaseMetaData#getUserName()
    */
-  private static User getUser(final Connection connection) throws DatabaseException {
+  private static User getUser(Connection connection) throws DatabaseException {
     try {
       return META_DATA_USER_CACHE.computeIfAbsent(connection.getMetaData().getUserName(), User::user);
     }

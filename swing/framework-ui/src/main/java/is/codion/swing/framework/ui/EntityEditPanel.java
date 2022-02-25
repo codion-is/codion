@@ -136,7 +136,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
-  public EntityEditPanel(final SwingEntityEditModel editModel) {
+  public EntityEditPanel(SwingEntityEditModel editModel) {
     this(editModel, getDefaultControlCodes(editModel));
   }
 
@@ -146,7 +146,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param controlCodes if specified only controls with those keys are initialized,
    * null or an empty String array will result in no controls being initialized
    */
-  public EntityEditPanel(final SwingEntityEditModel editModel, final ControlCode... controlCodes) {
+  public EntityEditPanel(SwingEntityEditModel editModel, ControlCode... controlCodes) {
     super(editModel);
     if (!ALL_PANELS_ACTIVE.get()) {
       ACTIVE_STATE_GROUP.addState(activeState);
@@ -162,14 +162,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * @param listener a listener notified each time the active state changes
    */
-  public final void addActiveListener(final EventDataListener<Boolean> listener) {
+  public final void addActiveListener(EventDataListener<Boolean> listener) {
     activeState.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeActiveListener(final EventDataListener<Boolean> listener) {
+  public final void removeActiveListener(EventDataListener<Boolean> listener) {
     activeState.removeDataListener(listener);
   }
 
@@ -185,7 +185,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * enabled and ready to receive input
    * @param active the active state
    */
-  public final void setActive(final boolean active) {
+  public final void setActive(boolean active) {
     activeState.set(active);
   }
 
@@ -216,7 +216,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * @param clearAfterInsert true if the UI should be cleared after insert has been performed
    */
-  public final void setClearAfterInsert(final boolean clearAfterInsert) {
+  public final void setClearAfterInsert(boolean clearAfterInsert) {
     this.clearAfterInsert = clearAfterInsert;
   }
 
@@ -232,14 +232,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param requestFocusAfterInsert true if the UI should request focus after insert has been performed
    * @see #requestInitialFocus()
    */
-  public final void setRequestFocusAfterInsert(final boolean requestFocusAfterInsert) {
+  public final void setRequestFocusAfterInsert(boolean requestFocusAfterInsert) {
     this.requestFocusAfterInsert = requestFocusAfterInsert;
   }
 
   /**
    * @param referentialIntegrityErrorHandling the action to take on a referential integrity error on delete
    */
-  public final void setReferentialIntegrityErrorHandling(final ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
+  public final void setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
     this.referentialIntegrityErrorHandling = referentialIntegrityErrorHandling;
   }
 
@@ -247,7 +247,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param controlCode the control code
    * @return true if this edit panel contains the given control
    */
-  public final boolean containsControl(final ControlCode controlCode) {
+  public final boolean containsControl(ControlCode controlCode) {
     return controls.containsKey(requireNonNull(controlCode));
   }
 
@@ -257,7 +257,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @throws IllegalArgumentException in case no control is associated with the given control code
    * @see #containsControl(EntityEditPanel.ControlCode)
    */
-  public final Control getControl(final ControlCode controlCode) {
+  public final Control getControl(ControlCode controlCode) {
     if (!containsControl(controlCode)) {
       throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
     }
@@ -364,7 +364,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param entity the entity causing the exception
    * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
-  public void onReferentialIntegrityException(final ReferentialIntegrityException exception, final Entity entity) {
+  public void onReferentialIntegrityException(ReferentialIntegrityException exception, Entity entity) {
     requireNonNull(exception);
     requireNonNull(entity);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
@@ -380,7 +380,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Displays the exception message after which the component involved receives the focus.
    * @param exception the exception
    */
-  public void onValidationException(final ValidationException exception) {
+  public void onValidationException(ValidationException exception) {
     JOptionPane.showMessageDialog(this, exception.getMessage(),
             Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
     requestComponentFocus(exception.getAttribute());
@@ -412,7 +412,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see SwingConstants#VERTICAL
    * @see SwingConstants#HORIZONTAL
    */
-  public final JToolBar createControlToolBar(final int orientation) {
+  public final JToolBar createControlToolBar(int orientation) {
     Controls controlPanelControls = initializeControlPanelControls();
     if (controlPanelControls.isEmpty()) {
       return null;
@@ -653,7 +653,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param title the dialog title
    * @return true if OK was selected
    */
-  protected boolean confirm(final String message, final String title) {
+  protected boolean confirm(String message, String title) {
     int res = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;
@@ -665,7 +665,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * as the message displayed in the dialog and the element at index 1 is used as the dialog title,
    * i.e. ["Are you sure you want to delete the selected records?", "About to delete selected records"]
    */
-  protected String[] getConfirmationMessages(final ConfirmType type) {
+  protected String[] getConfirmationMessages(ConfirmType type) {
     switch (type) {
       case DELETE:
         return new String[] {FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_ENTITY),
@@ -687,7 +687,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param control the control to associate with {@code controlCode}, null for none
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  protected final void setControl(final ControlCode controlCode, final Control control) {
+  protected final void setControl(ControlCode controlCode, Control control) {
     if (panelInitialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
@@ -778,7 +778,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
   }
 
-  private JPanel createControlPanel(final boolean horizontal) {
+  private JPanel createControlPanel(boolean horizontal) {
     Controls controlPanelControls = initializeControlPanelControls();
     if (controlPanelControls.isEmpty()) {
       return null;
@@ -810,7 +810,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     });
   }
 
-  private void onRefreshingChanged(final boolean refreshing) {
+  private void onRefreshingChanged(boolean refreshing) {
     if (refreshing) {
       WaitCursor.show(EntityEditPanel.this);
     }
@@ -828,7 +828,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return getEditModel().isEntityNew() || !getEditModel().isModified() || !getEditModel().isUpdateEnabled();
   }
 
-  private static ControlCode[] getDefaultControlCodes(final SwingEntityEditModel editModel) {
+  private static ControlCode[] getDefaultControlCodes(SwingEntityEditModel editModel) {
     List<ControlCode> codes = new ArrayList<>();
     if (USE_SAVE_CONTROL.get()) {
       codes.add(editModel.isUpdateEnabled() ? ControlCode.SAVE : ControlCode.INSERT);

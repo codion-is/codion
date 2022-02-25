@@ -18,38 +18,38 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   private Set<EventDataListener<T>> dataListeners;
 
   @Override
-  public void addDataListener(final EventDataListener<T> listener) {
+  public void addDataListener(EventDataListener<T> listener) {
     synchronized (lock) {
       getDataListeners().add(requireNonNull(listener, "listener"));
     }
   }
 
   @Override
-  public void removeDataListener(final EventDataListener<T> listener) {
+  public void removeDataListener(EventDataListener<T> listener) {
     synchronized (lock) {
       getDataListeners().remove(listener);
     }
   }
 
   @Override
-  public void addListener(final EventListener listener) {
+  public void addListener(EventListener listener) {
     synchronized (lock) {
       getListeners().add(requireNonNull(listener, "listener"));
     }
   }
 
   @Override
-  public void removeListener(final EventListener listener) {
+  public void removeListener(EventListener listener) {
     synchronized (lock) {
       getListeners().remove(listener);
     }
   }
 
-  void notifyListeners(final T data) {
-    for (final EventListener listener : getEventListeners()) {
+  void notifyListeners(T data) {
+    for (EventListener listener : getEventListeners()) {
       listener.onEvent();
     }
-    for (final EventDataListener<T> dataListener : getEventDataListeners()) {
+    for (EventDataListener<T> dataListener : getEventDataListeners()) {
       dataListener.onEvent(data);
     }
   }

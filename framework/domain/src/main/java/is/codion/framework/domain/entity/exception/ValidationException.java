@@ -21,7 +21,7 @@ public class ValidationException extends Exception {
    * @param value the value
    * @param message the exception message
    */
-  public ValidationException(final Attribute<?> attribute, final Object value, final String message) {
+  public ValidationException(Attribute<?> attribute, Object value, String message) {
     super(message);
     this.attribute = requireNonNull(attribute, "attribute");
     this.value = value;

@@ -40,7 +40,7 @@ public final class ComponentValues {
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(final C textComponent) {
+  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(C textComponent) {
     return textComponent(textComponent, null, UpdateOn.KEYSTROKE);
   }
 
@@ -50,8 +50,8 @@ public final class ComponentValues {
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(final C textComponent,
-                                                                                   final Format format) {
+  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(C textComponent,
+                                                                                   Format format) {
     return textComponent(textComponent, format, UpdateOn.KEYSTROKE);
   }
 
@@ -61,8 +61,8 @@ public final class ComponentValues {
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(final C textComponent,
-                                                                                   final UpdateOn updateOn) {
+  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(C textComponent,
+                                                                                   UpdateOn updateOn) {
     return textComponent(textComponent, null, updateOn);
   }
 
@@ -73,9 +73,9 @@ public final class ComponentValues {
    * @param <C> the text component type
    * @return a Value bound to the given component
    */
-  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(final C textComponent,
-                                                                                   final Format format,
-                                                                                   final UpdateOn updateOn) {
+  public static <C extends JTextComponent> ComponentValue<String, C> textComponent(C textComponent,
+                                                                                   Format format,
+                                                                                   UpdateOn updateOn) {
     return formattedTextComponentValue(textComponent, format, updateOn);
   }
 
@@ -83,7 +83,7 @@ public final class ComponentValues {
    * @param textField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Character, JTextField> characterTextField(final JTextField textField) {
+  public static ComponentValue<Character, JTextField> characterTextField(JTextField textField) {
     return characterTextField(textField, UpdateOn.KEYSTROKE);
   }
 
@@ -92,7 +92,7 @@ public final class ComponentValues {
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Character, JTextField> characterTextField(final JTextField textField, final UpdateOn updateOn) {
+  public static ComponentValue<Character, JTextField> characterTextField(JTextField textField, UpdateOn updateOn) {
     return new CharacterFieldValue(textField, updateOn);
   }
 
@@ -101,7 +101,7 @@ public final class ComponentValues {
    * @param textInputPanel the text input panel to base this component value on
    * @return a String based ComponentValue
    */
-  public static ComponentValue<String, TextInputPanel> textInputPanel(final TextInputPanel textInputPanel) {
+  public static ComponentValue<String, TextInputPanel> textInputPanel(TextInputPanel textInputPanel) {
     return textInputPanel.componentValue();
   }
 
@@ -111,7 +111,7 @@ public final class ComponentValues {
    * @param <T> the temporal value type
    * @return a Value bound to the given component
    */
-  public static <T extends Temporal> ComponentValue<T, TemporalInputPanel<T>> temporalInputPanel(final TemporalInputPanel<T> inputPanel) {
+  public static <T extends Temporal> ComponentValue<T, TemporalInputPanel<T>> temporalInputPanel(TemporalInputPanel<T> inputPanel) {
     return inputPanel.componentValue();
   }
 
@@ -121,7 +121,7 @@ public final class ComponentValues {
    * @param <T> the temporal value type
    * @return a Value bound to the given component
    */
-  public static <T extends Temporal> ComponentValue<T, TemporalField<T>> temporalField(final TemporalField<T> temporalField) {
+  public static <T extends Temporal> ComponentValue<T, TemporalField<T>> temporalField(TemporalField<T> temporalField) {
     return temporalField(temporalField, UpdateOn.KEYSTROKE);
   }
 
@@ -132,8 +132,8 @@ public final class ComponentValues {
    * @param <T> the temporal value type
    * @return a Value bound to the given component
    */
-  public static <T extends Temporal> ComponentValue<T, TemporalField<T>> temporalField(final TemporalField<T> temporalField,
-                                                                                       final UpdateOn updateOn) {
+  public static <T extends Temporal> ComponentValue<T, TemporalField<T>> temporalField(TemporalField<T> temporalField,
+                                                                                       UpdateOn updateOn) {
     return temporalField.componentValue(updateOn);
   }
 
@@ -144,7 +144,7 @@ public final class ComponentValues {
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */
-  public static <T, C extends JComboBox<Item<T>>> ComponentValue<T, C> itemComboBox(final C comboBox) {
+  public static <T, C extends JComboBox<Item<T>>> ComponentValue<T, C> itemComboBox(C comboBox) {
     return new SelectedItemValue<>(comboBox);
   }
 
@@ -154,7 +154,7 @@ public final class ComponentValues {
    * @param comboBox the combo box
    * @return a Value bound to the given component
    */
-  public static <T, C extends JComboBox<T>> ComponentValue<T, C> comboBox(final C comboBox) {
+  public static <T, C extends JComboBox<T>> ComponentValue<T, C> comboBox(C comboBox) {
     return new SelectedValue<>(comboBox);
   }
 
@@ -172,7 +172,7 @@ public final class ComponentValues {
    * @param <T> the attribute type
    * @return a Value bound to the given button
    */
-  public static <T extends JToggleButton> ComponentValue<Boolean, T> toggleButton(final JToggleButton toggleButton) {
+  public static <T extends JToggleButton> ComponentValue<Boolean, T> toggleButton(JToggleButton toggleButton) {
     if (toggleButton instanceof NullableCheckBox) {
       return (ComponentValue<Boolean, T>) new BooleanNullableCheckBoxValue((NullableCheckBox) toggleButton);
     }
@@ -185,7 +185,7 @@ public final class ComponentValues {
    * @param comboBox the combo box
    * @return a Boolean based ComponentValue
    */
-  public static ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBox(final JComboBox<Item<Boolean>> comboBox) {
+  public static ComponentValue<Boolean, JComboBox<Item<Boolean>>> booleanComboBox(JComboBox<Item<Boolean>> comboBox) {
     return new BooleanComboBoxValue(comboBox);
   }
 
@@ -193,7 +193,7 @@ public final class ComponentValues {
    * @param bigDecimalField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalField(final BigDecimalField bigDecimalField) {
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalField(BigDecimalField bigDecimalField) {
     return bigDecimalField(bigDecimalField, true);
   }
 
@@ -202,8 +202,8 @@ public final class ComponentValues {
    * @param nullable true if the value should be nullable
    * @return a Value bound to the given component
    */
-  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalField(final BigDecimalField bigDecimalField,
-                                                                            final boolean nullable) {
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalField(BigDecimalField bigDecimalField,
+                                                                            boolean nullable) {
     return bigDecimalField(bigDecimalField, nullable, UpdateOn.KEYSTROKE);
   }
 
@@ -213,8 +213,8 @@ public final class ComponentValues {
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalField(final BigDecimalField bigDecimalField,
-                                                                            final boolean nullable, final UpdateOn updateOn) {
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalField(BigDecimalField bigDecimalField,
+                                                                            boolean nullable, UpdateOn updateOn) {
     return new BigDecimalFieldValue(bigDecimalField, nullable, updateOn);
   }
 
@@ -222,7 +222,7 @@ public final class ComponentValues {
    * @param spinner the spinner
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, JSpinner> doubleSpinner(final JSpinner spinner) {
+  public static ComponentValue<Double, JSpinner> doubleSpinner(JSpinner spinner) {
     return new SpinnerNumberValue<>(spinner);
   }
 
@@ -230,7 +230,7 @@ public final class ComponentValues {
    * @param doubleField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, DoubleField> doubleField(final DoubleField doubleField) {
+  public static ComponentValue<Double, DoubleField> doubleField(DoubleField doubleField) {
     return doubleField(doubleField, true);
   }
 
@@ -239,7 +239,7 @@ public final class ComponentValues {
    * @param nullable true if the value should be nullable
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, DoubleField> doubleField(final DoubleField doubleField, final boolean nullable) {
+  public static ComponentValue<Double, DoubleField> doubleField(DoubleField doubleField, boolean nullable) {
     return doubleField(doubleField, nullable, UpdateOn.KEYSTROKE);
   }
 
@@ -249,7 +249,7 @@ public final class ComponentValues {
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, DoubleField> doubleField(final DoubleField doubleField, final boolean nullable, final UpdateOn updateOn) {
+  public static ComponentValue<Double, DoubleField> doubleField(DoubleField doubleField, boolean nullable, UpdateOn updateOn) {
     return new DoubleFieldValue(doubleField, nullable, updateOn);
   }
 
@@ -257,7 +257,7 @@ public final class ComponentValues {
    * @param spinner the spinner
    * @return a Value bound to the given spinner
    */
-  public static ComponentValue<Integer, JSpinner> integerSpinner(final JSpinner spinner) {
+  public static ComponentValue<Integer, JSpinner> integerSpinner(JSpinner spinner) {
     return new SpinnerNumberValue<>(spinner);
   }
 
@@ -265,7 +265,7 @@ public final class ComponentValues {
    * @param integerField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Integer, IntegerField> integerField(final IntegerField integerField) {
+  public static ComponentValue<Integer, IntegerField> integerField(IntegerField integerField) {
     return integerField(integerField, true);
   }
 
@@ -274,7 +274,7 @@ public final class ComponentValues {
    * @param nullable true if the value should be nullable
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Integer, IntegerField> integerField(final IntegerField integerField, final boolean nullable) {
+  public static ComponentValue<Integer, IntegerField> integerField(IntegerField integerField, boolean nullable) {
     return integerField(integerField, nullable, UpdateOn.KEYSTROKE);
   }
 
@@ -284,7 +284,7 @@ public final class ComponentValues {
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Integer, IntegerField> integerField(final IntegerField integerField, final boolean nullable, final UpdateOn updateOn) {
+  public static ComponentValue<Integer, IntegerField> integerField(IntegerField integerField, boolean nullable, UpdateOn updateOn) {
     return new IntegerFieldValue(integerField, nullable, updateOn);
   }
 
@@ -292,7 +292,7 @@ public final class ComponentValues {
    * @param longField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Long, LongField> longField(final LongField longField) {
+  public static ComponentValue<Long, LongField> longField(LongField longField) {
     return longField(longField, true);
   }
 
@@ -301,7 +301,7 @@ public final class ComponentValues {
    * @param nullable true if the value should be nullable
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Long, LongField> longField(final LongField longField, final boolean nullable) {
+  public static ComponentValue<Long, LongField> longField(LongField longField, boolean nullable) {
     return longField(longField, nullable, UpdateOn.KEYSTROKE);
   }
 
@@ -311,7 +311,7 @@ public final class ComponentValues {
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Long, LongField> longField(final LongField longField, final boolean nullable, final UpdateOn updateOn) {
+  public static ComponentValue<Long, LongField> longField(LongField longField, boolean nullable, UpdateOn updateOn) {
     return new LongFieldValue(longField, nullable, updateOn);
   }
 
@@ -321,7 +321,7 @@ public final class ComponentValues {
    * @param list the component
    * @return a Value bound to the given component
    */
-  public static <T> ComponentValue<T, JList<T>> list(final JList<T> list) {
+  public static <T> ComponentValue<T, JList<T>> list(JList<T> list) {
     return new ListValue<>(list);
   }
 
@@ -331,7 +331,7 @@ public final class ComponentValues {
    * @return a Value bound to the given spinner
    * @throws IllegalArgumentException in case the spinner model is not a SpinnerListModel
    */
-  public static <T> ComponentValue<T, JSpinner> listSpinner(final JSpinner spinner) {
+  public static <T> ComponentValue<T, JSpinner> listSpinner(JSpinner spinner) {
     return new SpinnerListValue<>(spinner);
   }
 
@@ -341,7 +341,7 @@ public final class ComponentValues {
    * @return a Value bound to the given spinner
    * @throws IllegalArgumentException in case the spinner model is not a SpinnerListModel
    */
-  public static <T> ComponentValue<T, JSpinner> itemSpinner(final JSpinner spinner) {
+  public static <T> ComponentValue<T, JSpinner> itemSpinner(JSpinner spinner) {
     return new SpinnerItemValue<>(spinner);
   }
 
@@ -349,7 +349,7 @@ public final class ComponentValues {
    * @param progressBar the progress bar
    * @return a Value bound to the given progress bar
    */
-  public static ComponentValue<Integer, JProgressBar> progressBar(final JProgressBar progressBar) {
+  public static ComponentValue<Integer, JProgressBar> progressBar(JProgressBar progressBar) {
     return new IntegerProgressBarValue(progressBar);
   }
 
@@ -357,7 +357,7 @@ public final class ComponentValues {
    * @param slider the slider
    * @return a Value bound to the given slider
    */
-  public static ComponentValue<Integer, JSlider> slider(final JSlider slider) {
+  public static ComponentValue<Integer, JSlider> slider(JSlider slider) {
     return new IntegerSliderValue(slider);
   }
 }

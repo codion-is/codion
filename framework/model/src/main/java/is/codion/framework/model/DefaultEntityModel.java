@@ -88,7 +88,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Instantiates a new DefaultEntityModel, without a table model
    * @param editModel the edit model
    */
-  public DefaultEntityModel(final E editModel) {
+  public DefaultEntityModel(E editModel) {
     requireNonNull(editModel, "editModel");
     this.connectionProvider = editModel.getConnectionProvider();
     this.editModel = editModel;
@@ -100,7 +100,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Instantiates a new DefaultEntityModel
    * @param tableModel the table model
    */
-  public DefaultEntityModel(final T tableModel) {
+  public DefaultEntityModel(T tableModel) {
     requireNonNull(tableModel, "tableModel");
     this.connectionProvider = tableModel.getConnectionProvider();
     this.editModel = tableModel.getEditModel();
@@ -138,7 +138,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void setMasterModel(final M entityModel) {
+  public final void setMasterModel(M entityModel) {
     requireNonNull(entityModel, "entityModel");
     if (this.masterModel != null) {
       throw new IllegalStateException("Master model has already been set for " + this);
@@ -163,15 +163,15 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   @SafeVarargs
-  public final void addDetailModels(final M... detailModels) {
+  public final void addDetailModels(M... detailModels) {
     requireNonNull(detailModels, "detailModels");
-    for (final M detailModel : detailModels) {
+    for (M detailModel : detailModels) {
       addDetailModel(detailModel);
     }
   }
 
   @Override
-  public final M addDetailModel(final M detailModel) {
+  public final M addDetailModel(M detailModel) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     if (this.detailModels.contains(detailModel)) {
       throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
@@ -189,21 +189,21 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final boolean containsDetailModel(final Class<? extends M> modelClass) {
+  public final boolean containsDetailModel(Class<? extends M> modelClass) {
     requireNonNull(modelClass, "modelClass");
     return detailModels.stream()
             .anyMatch(detailModel -> detailModel.getClass().equals(modelClass));
   }
 
   @Override
-  public final boolean containsDetailModel(final EntityType entityType) {
+  public final boolean containsDetailModel(EntityType entityType) {
     requireNonNull(entityType, "entityType");
     return detailModels.stream()
             .anyMatch(detailModel -> detailModel.getEntityType().equals(entityType));
   }
 
   @Override
-  public final boolean containsDetailModel(final M detailModel) {
+  public final boolean containsDetailModel(M detailModel) {
     return detailModels.contains(requireNonNull(detailModel, DETAIL_MODEL_PARAMETER));
   }
 
@@ -213,7 +213,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void addLinkedDetailModel(final M detailModel) {
+  public final void addLinkedDetailModel(M detailModel) {
     if (!detailModels.contains(requireNonNull(detailModel))) {
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
@@ -223,7 +223,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void removeLinkedDetailModel(final M detailModel) {
+  public final void removeLinkedDetailModel(M detailModel) {
     if (!detailModels.contains(requireNonNull(detailModel))) {
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
@@ -238,9 +238,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final <T extends M> T getDetailModel(final Class<? extends M> modelClass) {
+  public final <T extends M> T getDetailModel(Class<? extends M> modelClass) {
     requireNonNull(modelClass, "modelClass");
-    for (final M detailModel : detailModels) {
+    for (M detailModel : detailModels) {
       if (detailModel.getClass().equals(modelClass)) {
         return (T) detailModel;
       }
@@ -250,9 +250,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M getDetailModel(final EntityType entityType) {
+  public final M getDetailModel(EntityType entityType) {
     requireNonNull(entityType, "entityType");
-    for (final M detailModel : detailModels) {
+    for (M detailModel : detailModels) {
       if (detailModel.getEntityType().equals(entityType)) {
         return detailModel;
       }
@@ -262,7 +262,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void setDetailModelForeignKey(final M detailModel, final ForeignKey foreignKey) {
+  public final void setDetailModelForeignKey(M detailModel, ForeignKey foreignKey) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     if (!containsDetailModel(detailModel)) {
       throw new IllegalArgumentException(this + " does not contain detail model: " + detailModel);
@@ -277,7 +277,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final ForeignKey getDetailModelForeignKey(final M detailModel) {
+  public final ForeignKey getDetailModelForeignKey(M detailModel) {
     return detailModelForeignKeys.get(requireNonNull(detailModel, DETAIL_MODEL_PARAMETER));
   }
 
@@ -292,13 +292,13 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final void clearDetailModels() {
-    for (final M detailModel : detailModels) {
+    for (M detailModel : detailModels) {
       detailModel.clear();
     }
   }
 
   @Override
-  public final void initialize(final EntityType foreignKeyEntityType, final List<Entity> foreignKeyValues) {
+  public final void initialize(EntityType foreignKeyEntityType, List<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyEntityType);
     requireNonNull(foreignKeyValues);
     List<ForeignKey> foreignKeys = editModel.getEntityDefinition().getForeignKeys(foreignKeyEntityType);
@@ -308,7 +308,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void initialize(final ForeignKey foreignKey, final List<Entity> foreignKeyValues) {
+  public final void initialize(ForeignKey foreignKey, List<Entity> foreignKeyValues) {
     requireNonNull(foreignKey);
     requireNonNull(foreignKeyValues);
     if (containsTableModel()) {
@@ -331,27 +331,27 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void setSearchOnMasterInsert(final boolean searchOnMasterInsert) {
+  public final void setSearchOnMasterInsert(boolean searchOnMasterInsert) {
     this.searchOnMasterInsert = searchOnMasterInsert;
   }
 
   @Override
-  public final void addLinkedDetailModelAddedListener(final EventDataListener<M> listener) {
+  public final void addLinkedDetailModelAddedListener(EventDataListener<M> listener) {
     linkedDetailModelAddedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeLinkedDetailModelAddedListener(final EventDataListener<M> listener) {
+  public final void removeLinkedDetailModelAddedListener(EventDataListener<M> listener) {
     linkedDetailModelAddedEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addLinkedDetailModelRemovedListener(final EventDataListener<M> listener) {
+  public final void addLinkedDetailModelRemovedListener(EventDataListener<M> listener) {
     linkedDetailModelRemovedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeLinkedDetailModelRemovedListener(final EventDataListener<M> listener) {
+  public final void removeLinkedDetailModelRemovedListener(EventDataListener<M> listener) {
     linkedDetailModelRemovedEvent.removeDataListener(listener);
   }
 
@@ -361,7 +361,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model, empty list for none
    * @see EntityEditModel#initialize(ForeignKey, Entity)
    */
-  protected void onInitialization(final ForeignKey foreignKey, final List<Entity> foreignKeyValues) {
+  protected void onInitialization(ForeignKey foreignKey, List<Entity> foreignKeyValues) {
     editModel.initialize(foreignKey, foreignKeyValues.isEmpty() ? null : foreignKeyValues.get(0));
   }
 
@@ -372,7 +372,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   protected final void initializeDetailModels() {
     List<Entity> activeEntities = getActiveEntities();
-    for (final M detailModel : linkedDetailModels) {
+    for (M detailModel : linkedDetailModels) {
       initializeDetailModel(activeEntities, detailModel);
     }
   }
@@ -382,7 +382,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param activeEntities the currently active master entities
    * @param detailModel the detail model
    */
-  protected void initializeDetailModel(final List<Entity> activeEntities, final M detailModel) {
+  protected void initializeDetailModel(List<Entity> activeEntities, M detailModel) {
     if (detailModelForeignKeys.containsKey(detailModel)) {
       detailModel.initialize(detailModelForeignKeys.get(detailModel), activeEntities);
     }
@@ -397,7 +397,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param insertedEntities the inserted entities
    * @see EntityModel#SEARCH_ON_MASTER_INSERT
    */
-  protected final void onMasterInsert(final List<Entity> insertedEntities) {
+  protected final void onMasterInsert(List<Entity> insertedEntities) {
     editModel.addForeignKeyValues(insertedEntities);
     editModel.setForeignKeyValues(insertedEntities);
     if (containsTableModel() && searchOnMasterInsert) {
@@ -413,14 +413,14 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Replaces the updated master entities wherever they are referenced
    * @param updatedEntities the updated entities
    */
-  protected final void onMasterUpdate(final Map<Key, Entity> updatedEntities) {
+  protected final void onMasterUpdate(Map<Key, Entity> updatedEntities) {
     editModel.replaceForeignKeyValues(updatedEntities.values());
     if (containsTableModel()) {
       tableModel.replaceForeignKeyValues(masterModel.getEntityType(), updatedEntities.values());
     }
   }
 
-  protected final void onMasterDelete(final List<Entity> deletedEntities) {
+  protected final void onMasterDelete(List<Entity> deletedEntities) {
     editModel.removeForeignKeyValues(deletedEntities);
   }
 
@@ -450,15 +450,15 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
   }
 
-  private void onInsert(final List<Entity> insertedEntities) {
+  private void onInsert(List<Entity> insertedEntities) {
     detailModels.forEach(detailModel -> detailModel.onMasterInsert(insertedEntities));
   }
 
-  private void onUpdate(final Map<Key, Entity> updatedEntities) {
+  private void onUpdate(Map<Key, Entity> updatedEntities) {
     detailModels.forEach(detailModel -> detailModel.onMasterUpdate(updatedEntities));
   }
 
-  private void onDelete(final List<Entity> deletedEntities) {
+  private void onDelete(List<Entity> deletedEntities) {
     detailModels.forEach(detailModel -> detailModel.onMasterDelete(deletedEntities));
   }
 }

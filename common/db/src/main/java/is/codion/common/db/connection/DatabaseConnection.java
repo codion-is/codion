@@ -125,7 +125,7 @@ public interface DatabaseConnection extends AutoCloseable {
    * @return a new DatabaseConnection instance
    * @throws DatabaseException in case there is a problem connecting to the database
    */
-  static DatabaseConnection databaseConnection(final Database database, final User user) throws DatabaseException {
+  static DatabaseConnection databaseConnection(Database database, User user) throws DatabaseException {
     return new DefaultDatabaseConnection(database, user);
   }
 
@@ -137,7 +137,7 @@ public interface DatabaseConnection extends AutoCloseable {
    * @throws DatabaseException in case there is a problem connecting to the database
    * @return a new DatabaseConnection instance
    */
-  static DatabaseConnection databaseConnection(final Database database, final Connection connection) throws DatabaseException {
+  static DatabaseConnection databaseConnection(Database database, Connection connection) throws DatabaseException {
     return new DefaultDatabaseConnection(database, connection);
   }
 }

@@ -22,7 +22,7 @@ public final class UpdateTotals extends AbstractEntityUsageScenario<ChinookAppli
   private final Random random = new Random();
 
   @Override
-  protected void perform(final ChinookApplicationModel application) throws Exception {
+  protected void perform(ChinookApplicationModel application) throws Exception {
     SwingEntityModel customerModel = application.getEntityModel(Customer.TYPE);
     customerModel.getTableModel().refresh();
     selectRandomRows(customerModel.getTableModel(), random.nextInt(6) + 2);

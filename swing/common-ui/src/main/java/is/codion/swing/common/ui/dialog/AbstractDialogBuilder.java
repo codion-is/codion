@@ -20,13 +20,13 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
   protected ImageIcon icon;
 
   @Override
-  public final B owner(final Window owner) {
+  public final B owner(Window owner) {
     this.owner = owner;
     return (B) this;
   }
 
   @Override
-  public final B owner(final JComponent owner) {
+  public final B owner(JComponent owner) {
     if (this.owner != null) {
       throw new IllegalStateException("owner has alrady been set");
     }
@@ -35,13 +35,13 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
   }
 
   @Override
-  public final B title(final String title) {
+  public final B title(String title) {
     this.title = title;
     return (B) this;
   }
 
   @Override
-  public final B icon(final ImageIcon icon) {
+  public final B icon(ImageIcon icon) {
     this.icon = icon;
     return (B) this;
   }

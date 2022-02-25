@@ -134,7 +134,7 @@ public final class EmpDeptMinimalApp {
    */
   public static final class EmployeeEditModel extends SwingEntityEditModel {
 
-    public EmployeeEditModel(final EntityConnectionProvider connectionProvider) {
+    public EmployeeEditModel(EntityConnectionProvider connectionProvider) {
       super(Employee.TYPE, connectionProvider);
       //initialize the combo box models now, otherwise it
       //happens on the EDT later when the combo boxes are created
@@ -146,7 +146,7 @@ public final class EmpDeptMinimalApp {
      * so that is only shows managers.
      */
     @Override
-    public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKey foreignKey) {
+    public SwingEntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
       SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
       if (foreignKey.equals(Employee.MGR_FK)) {
         comboBoxModel.setSelectConditionSupplier(() ->
@@ -165,7 +165,7 @@ public final class EmpDeptMinimalApp {
    */
   public static final class DepartmentEditPanel extends EntityEditPanel {
 
-    public DepartmentEditPanel(final SwingEntityEditModel editModel) {
+    public DepartmentEditPanel(SwingEntityEditModel editModel) {
       super(editModel);
     }
 
@@ -188,7 +188,7 @@ public final class EmpDeptMinimalApp {
    */
   public static final class EmployeeEditPanel extends EntityEditPanel {
 
-    public EmployeeEditPanel(final SwingEntityEditModel editModel) {
+    public EmployeeEditPanel(SwingEntityEditModel editModel) {
       super(editModel);
     }
 
@@ -223,7 +223,7 @@ public final class EmpDeptMinimalApp {
    */
   public static final class EmpDeptApplicationModel extends SwingEntityApplicationModel {
 
-    private EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
+    private EmpDeptApplicationModel(EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
       SwingEntityModel employeeModel = new SwingEntityModel(new EmployeeEditModel(connectionProvider));
       SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
@@ -246,7 +246,7 @@ public final class EmpDeptMinimalApp {
     }
 
     @Override
-    protected List<EntityPanel> initializeEntityPanels(final EmpDeptApplicationModel applicationModel) {
+    protected List<EntityPanel> initializeEntityPanels(EmpDeptApplicationModel applicationModel) {
       //now, let's assemble our application
       SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
       SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
@@ -262,7 +262,7 @@ public final class EmpDeptMinimalApp {
 
     @Override
     protected EmpDeptApplicationModel initializeApplicationModel(
-            final EntityConnectionProvider connectionProvider) throws CancelException {
+            EntityConnectionProvider connectionProvider) throws CancelException {
       return new EmpDeptApplicationModel(connectionProvider);
     }
   }
@@ -270,7 +270,7 @@ public final class EmpDeptMinimalApp {
   /*
    * All that is left is setting the required environment variables and starting the application.
    */
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     //Let's set the locale, otherwise the application would be in icelandic
     Locale.setDefault(new Locale("en", "EN"));
     //the remote connection settings

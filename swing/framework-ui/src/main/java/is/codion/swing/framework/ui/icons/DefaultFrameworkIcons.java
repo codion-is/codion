@@ -143,7 +143,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
   }
 
   @Override
-  public ImageIcon logo(final int size) {
+  public ImageIcon logo(int size) {
     return LOGOS.computeIfAbsent(size, k -> new FontImageIcon(FrameworkIkons.LOGO, size, ICON_COLOR.get()) {
       @Override
       protected ImageIcon createImageIcon() {
@@ -164,7 +164,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
     protected final FontIcon fontIcon;
     protected final ImageIcon imageIcon;
 
-    private FontImageIcon(final Ikon ikon, final int size, final Color color) {
+    private FontImageIcon(Ikon ikon, int size, Color color) {
       fontIcon = FontIcon.of(ikon, size, color);
       imageIcon = createImageIcon();
       paintIcon();
@@ -178,16 +178,16 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
       fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, 0);
     }
 
-    private void setColor(final Color color) {
+    private void setColor(Color color) {
       fontIcon.setIconColor(color);
       paintIcon();
     }
 
-    private static FontImageIcon of(final Ikon ikon) {
+    private static FontImageIcon of(Ikon ikon) {
       return of(ikon, ICON_SIZE.get(), ICON_COLOR.get());
     }
 
-    private static FontImageIcon of(final Ikon ikon, final int size, final Color color) {
+    private static FontImageIcon of(Ikon ikon, int size, Color color) {
       return new FontImageIcon(ikon, size, color);
     }
   }

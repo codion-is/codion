@@ -33,7 +33,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
    * Instantiates a new UsageScenario with the given name
    * @param name the scenario name
    */
-  public AbstractUsageScenario(final String name) {
+  public AbstractUsageScenario(String name) {
     this(name, 0);
   }
 
@@ -42,7 +42,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
    * @param name the scenario name
    * @param maximumTimeMs the maximum time in milliseconds this scenario should take to run
    */
-  public AbstractUsageScenario(final String name, final int maximumTimeMs) {
+  public AbstractUsageScenario(String name, int maximumTimeMs) {
     this.name = requireNonNull(name, "name");
     if (maximumTimeMs < 0) {
       throw new IllegalArgumentException("Maximum time in ms must be a positive integer");
@@ -101,7 +101,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   }
 
   @Override
-  public final void run(final T application) {
+  public final void run(T application) {
     if (application == null) {
       throw new IllegalArgumentException("Can not run without an application");
     }
@@ -127,7 +127,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   }
 
   @Override
-  public final boolean equals(final Object obj) {
+  public final boolean equals(Object obj) {
     return obj instanceof UsageScenario && ((UsageScenario<T>) obj).getName().equals(name);
   }
 
@@ -147,11 +147,11 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
    * Called before this scenario is run, override to prepare the application for each run
    * @param application the application
    */
-  protected void prepare(final T application) {/*Provided for subclasses*/}
+  protected void prepare(T application) {/*Provided for subclasses*/}
 
   /**
    * Called after this scenario has been run, override to clean up the application after each run
    * @param application the application
    */
-  protected void cleanup(final T application) {/*Provided for subclasses*/}
+  protected void cleanup(T application) {/*Provided for subclasses*/}
 }

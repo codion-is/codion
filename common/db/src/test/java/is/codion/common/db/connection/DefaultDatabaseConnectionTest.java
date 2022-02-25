@@ -69,7 +69,7 @@ public class DefaultDatabaseConnectionTest {
 
   @Test
   void queryInteger() throws Exception {
-    try (final DatabaseConnection connection = new DefaultDatabaseConnection(DatabaseFactory.getDatabase(), UNIT_TEST_USER)) {
+    try (DatabaseConnection connection = new DefaultDatabaseConnection(DatabaseFactory.getDatabase(), UNIT_TEST_USER)) {
       int qInt = connection.selectInteger("select empno from scott.emp where ename = 'ADAMS'");
       assertEquals(10, qInt);
     }
@@ -77,7 +77,7 @@ public class DefaultDatabaseConnectionTest {
 
   @Test
   void queryLong() throws Exception {
-    try (final DatabaseConnection connection = new DefaultDatabaseConnection(DatabaseFactory.getDatabase(), UNIT_TEST_USER)) {
+    try (DatabaseConnection connection = new DefaultDatabaseConnection(DatabaseFactory.getDatabase(), UNIT_TEST_USER)) {
       long qLong = connection.selectLong("select empno from scott.emp where ename = 'ADAMS'");
       assertEquals(10L, qLong);
     }

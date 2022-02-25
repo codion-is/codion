@@ -135,7 +135,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param entityType the entityType
    * @param connectionProvider the db provider
    */
-  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this(new SwingEntityEditModel(entityType, connectionProvider));
   }
 
@@ -143,7 +143,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * Instantiates a new DefaultEntityTableModel.
    * @param editModel the edit model
    */
-  public SwingEntityTableModel(final SwingEntityEditModel editModel) {
+  public SwingEntityTableModel(SwingEntityEditModel editModel) {
     this(requireNonNull(editModel, "editModel"), new SwingEntityTableSortModel(editModel.getEntities()));
   }
 
@@ -153,8 +153,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param connectionProvider the db provider
    * @param sortModel the sort model
    */
-  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                               final TableSortModel<Entity, Attribute<?>> sortModel) {
+  public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                               TableSortModel<Entity, Attribute<?>> sortModel) {
     this(new SwingEntityEditModel(entityType, connectionProvider), sortModel);
   }
 
@@ -164,8 +164,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param connectionProvider the db provider
    * @param tableConditionModel the table condition model
    */
-  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                               final EntityTableConditionModel tableConditionModel) {
+  public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                               EntityTableConditionModel tableConditionModel) {
     this(new SwingEntityEditModel(entityType, connectionProvider), tableConditionModel);
   }
 
@@ -176,9 +176,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param sortModel the sort model
    * @param tableConditionModel the table condition model
    */
-  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                               final TableSortModel<Entity, Attribute<?>> sortModel,
-                               final EntityTableConditionModel tableConditionModel) {
+  public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                               TableSortModel<Entity, Attribute<?>> sortModel,
+                               EntityTableConditionModel tableConditionModel) {
     this(new SwingEntityEditModel(entityType, connectionProvider), sortModel, tableConditionModel);
   }
 
@@ -187,7 +187,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param editModel the edit model
    * @param sortModel the sort model
    */
-  public SwingEntityTableModel(final SwingEntityEditModel editModel, final TableSortModel<Entity, Attribute<?>> sortModel) {
+  public SwingEntityTableModel(SwingEntityEditModel editModel, TableSortModel<Entity, Attribute<?>> sortModel) {
     this(editModel, sortModel, new DefaultEntityTableConditionModel(editModel.getEntityType(), editModel.getConnectionProvider(),
             new DefaultFilterModelFactory(), new SwingConditionModelFactory(editModel.getConnectionProvider())));
   }
@@ -197,7 +197,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param editModel the edit model
    * @param tableConditionModel the table condition model
    */
-  public SwingEntityTableModel(final SwingEntityEditModel editModel, final EntityTableConditionModel tableConditionModel) {
+  public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
     this(editModel, new SwingEntityTableSortModel(editModel.getEntities()), tableConditionModel);
   }
 
@@ -208,8 +208,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param tableConditionModel the table condition model
    * @throws NullPointerException in case editModel, sortModel or tableConditionModel is null
    */
-  public SwingEntityTableModel(final SwingEntityEditModel editModel, final TableSortModel<Entity, Attribute<?>> sortModel,
-                               final EntityTableConditionModel tableConditionModel) {
+  public SwingEntityTableModel(SwingEntityEditModel editModel, TableSortModel<Entity, Attribute<?>> sortModel,
+                               EntityTableConditionModel tableConditionModel) {
     super(new SwingFilteredTableColumnModel<>(createColumns(requireNonNull(editModel, "editModel")
                     .getConnectionProvider().getEntities().getDefinition(editModel.getEntityType()))),
             sortModel, requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels().values());
@@ -244,7 +244,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void setLimit(final int limit) {
+  public final void setLimit(int limit) {
     this.limit = limit;
   }
 
@@ -254,7 +254,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void setQueryRowCountLimit(final int queryRowCountLimit) {
+  public final void setQueryRowCountLimit(int queryRowCountLimit) {
     this.queryRowCountLimit = queryRowCountLimit;
   }
 
@@ -264,7 +264,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void setQueryHiddenColumns(final boolean queryHiddenColumns) {
+  public final void setQueryHiddenColumns(boolean queryHiddenColumns) {
     this.queryHiddenColumns = queryHiddenColumns;
   }
 
@@ -274,7 +274,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void setOrderQueryBySortOrder(final boolean orderQueryBySortOrder) {
+  public final void setOrderQueryBySortOrder(boolean orderQueryBySortOrder) {
     this.orderQueryBySortOrder = orderQueryBySortOrder;
   }
 
@@ -289,7 +289,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void setInsertAction(final InsertAction insertAction) {
+  public final void setInsertAction(InsertAction insertAction) {
     this.insertAction = requireNonNull(insertAction, "insertAction");
   }
 
@@ -299,7 +299,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
+  public final void setRemoveEntitiesOnDelete(boolean removeEntitiesOnDelete) {
     this.removeEntitiesOnDelete = removeEntitiesOnDelete;
   }
 
@@ -332,7 +332,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void setEditable(final boolean editable) {
+  public final void setEditable(boolean editable) {
     this.editable = editable;
   }
 
@@ -342,12 +342,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void setBatchUpdateEnabled(final boolean batchUpdateEnabled) {
+  public final void setBatchUpdateEnabled(boolean batchUpdateEnabled) {
     this.batchUpdateEnabled = batchUpdateEnabled;
   }
 
   @Override
-  public final void setRefreshOnForeignKeyConditionValuesSet(final boolean refreshOnForeignKeyConditionValuesSet) {
+  public final void setRefreshOnForeignKeyConditionValuesSet(boolean refreshOnForeignKeyConditionValuesSet) {
     this.refreshOnForeignKeyConditionValuesSet = refreshOnForeignKeyConditionValuesSet;
   }
 
@@ -379,7 +379,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @see #setValueAt(Object, int, int)
    */
   @Override
-  public boolean isCellEditable(final int rowIndex, final int modelColumnIndex) {
+  public boolean isCellEditable(int rowIndex, int modelColumnIndex) {
     if (!editable || isReadOnly() || !isUpdateEnabled()) {
       return false;
     }
@@ -400,7 +400,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @return the value Object at the specified cell
    */
   @Override
-  public final Object getValueAt(final int rowIndex, final int modelColumnIndex) {
+  public final Object getValueAt(int rowIndex, int modelColumnIndex) {
     Attribute<?> attribute = getColumnModel().getColumnIdentifier(modelColumnIndex);
     Entity entity = getItemAt(rowIndex);
 
@@ -414,7 +414,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param modelColumnIndex the model index of the column to be changed
    */
   @Override
-  public final void setValueAt(final Object value, final int rowIndex, final int modelColumnIndex) {
+  public final void setValueAt(Object value, int rowIndex, int modelColumnIndex) {
     if (!editable || isReadOnly() || !isUpdateEnabled()) {
       throw new IllegalStateException("This table model is readOnly or has disabled update");
     }
@@ -432,21 +432,21 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public Color getBackgroundColor(final int row, final Attribute<?> attribute) {
+  public Color getBackgroundColor(int row, Attribute<?> attribute) {
     Object color = getEntityDefinition().getBackgroundColorProvider().getColor(getItemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
 
   @Override
-  public Color getForegroundColor(final int row, final Attribute<?> attribute) {
+  public Color getForegroundColor(int row, Attribute<?> attribute) {
     Object color = getEntityDefinition().getForegroundColorProvider().getColor(getItemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
 
   @Override
-  public final Entity getEntityByKey(final Key primaryKey) {
+  public final Entity getEntityByKey(Key primaryKey) {
     return getVisibleItems().stream()
             .filter(entity -> entity.getPrimaryKey().equals(primaryKey))
             .findFirst()
@@ -454,37 +454,37 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final int indexOf(final Key primaryKey) {
+  public final int indexOf(Key primaryKey) {
     return indexOf(getEntityByKey(primaryKey));
   }
 
   @Override
-  public final void addEntities(final Collection<Entity> entities) {
+  public final void addEntities(Collection<Entity> entities) {
     addEntitiesAt(getVisibleItemCount(), entities);
   }
 
   @Override
-  public final void addEntitiesSorted(final Collection<Entity> entities) {
+  public final void addEntitiesSorted(Collection<Entity> entities) {
     addEntitiesAtSorted(getVisibleItemCount(), entities);
   }
 
   @Override
-  public final void addEntitiesAt(final int index, final Collection<Entity> entities) {
+  public final void addEntitiesAt(int index, Collection<Entity> entities) {
     addItemsAt(index, entities);
   }
 
   @Override
-  public final void addEntitiesAtSorted(final int index, final Collection<Entity> entities) {
+  public final void addEntitiesAtSorted(int index, Collection<Entity> entities) {
     addItemsAtSorted(index, entities);
   }
 
   @Override
-  public final void replaceEntities(final Collection<Entity> entities) {
+  public final void replaceEntities(Collection<Entity> entities) {
     replaceEntitiesByKey(Entity.mapToPrimaryKey(entities));
   }
 
   @Override
-  public final void refreshEntities(final List<Key> keys) {
+  public final void refreshEntities(List<Key> keys) {
     try {
       replaceEntities(getConnectionProvider().getConnection().select(keys));
     }
@@ -494,7 +494,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public void setForeignKeyConditionValues(final ForeignKey foreignKey, final Collection<Entity> foreignKeyValues) {
+  public void setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKey, "foreignKey");
     getEntityDefinition().getForeignKeyProperty(foreignKey);
     if (tableConditionModel.setEqualConditionValues(foreignKey, foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
@@ -503,13 +503,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void replaceForeignKeyValues(final EntityType foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
+  public final void replaceForeignKeyValues(EntityType foreignKeyEntityType, Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyValues, "foreignKeyValues");
     List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(requireNonNull(foreignKeyEntityType, "foreignKeyEntityType"));
     boolean changed = false;
-    for (final Entity entity : getItems()) {
-      for (final ForeignKey foreignKey : foreignKeys) {
-        for (final Entity foreignKeyValue : foreignKeyValues) {
+    for (Entity entity : getItems()) {
+      for (ForeignKey foreignKey : foreignKeys) {
+        for (Entity foreignKeyValue : foreignKeyValues) {
           Entity currentForeignKeyValue = entity.getForeignKey(foreignKey);
           if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
             currentForeignKeyValue.setAs(foreignKeyValue);
@@ -524,11 +524,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void setSelectedByKey(final Collection<Key> keys) {
+  public final void setSelectedByKey(Collection<Key> keys) {
     requireNonNull(keys, "keys");
     List<Key> keyList = new ArrayList<>(keys);
     List<Integer> indexes = new ArrayList<>();
-    for (final Entity visibleEntity : getVisibleItems()) {
+    for (Entity visibleEntity : getVisibleItems()) {
       int index = keyList.indexOf(visibleEntity.getPrimaryKey());
       if (index >= 0) {
         indexes.add(indexOf(visibleEntity));
@@ -543,7 +543,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final Collection<Entity> getEntitiesByKey(final Collection<Key> keys) {
+  public final Collection<Entity> getEntitiesByKey(Collection<Key> keys) {
     requireNonNull(keys, "keys");
     return getItems().stream()
             .filter(entity -> keys.contains(entity.getPrimaryKey()))
@@ -559,7 +559,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
+  public final void update(List<Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities, "entities");
     if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not enabled in this table model");
@@ -576,7 +576,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void setColumns(final Attribute<?>... attributes) {
+  public final void setColumns(Attribute<?>... attributes) {
     getColumnModel().setColumns(attributes);
   }
 
@@ -593,7 +593,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final String getTableDataAsDelimitedString(final char delimiter) {
+  public final String getTableDataAsDelimitedString(char delimiter) {
     List<String> header = new ArrayList<>();
     List<Attribute<?>> attributes = new ArrayList<>();
     Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
@@ -609,7 +609,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  public final void addSelectionChangedListener(final EventListener listener) {
+  public final void addSelectionChangedListener(EventListener listener) {
     getSelectionModel().addSelectionChangedListener(listener);
   }
 
@@ -618,7 +618,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param definition the entity definition
    * @return a list of TableColumns based on the given entity
    */
-  public static List<TableColumn> createColumns(final EntityDefinition definition) {
+  public static List<TableColumn> createColumns(EntityDefinition definition) {
     return createColumns(requireNonNull(definition).getVisibleProperties());
   }
 
@@ -627,10 +627,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param properties the properties
    * @return a list of TableColumns based on the given properties
    */
-  public static List<TableColumn> createColumns(final List<Property<?>> properties) {
+  public static List<TableColumn> createColumns(List<Property<?>> properties) {
     requireNonNull(properties);
     List<TableColumn> columns = new ArrayList<>(properties.size());
-    for (final Property<?> property : properties) {
+    for (Property<?> property : properties) {
       TableColumn column = new TableColumn(columns.size());
       column.setIdentifier(property.getAttribute());
       column.setHeaderValue(property.getCaption());
@@ -644,7 +644,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  protected final <T extends Number> Optional<ColumnSummaryModel.ColumnValueProvider<T>> createColumnValueProvider(final Attribute<?> attribute) {
+  protected final <T extends Number> Optional<ColumnSummaryModel.ColumnValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
     if (attribute.isNumerical()) {
       return Optional.of(new DefaultColumnValueProvider<>(attribute, this, getEntityDefinition().getProperty(attribute).getFormat()));
     }
@@ -700,7 +700,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @return the value of the given attribute for the given entity for display
    * @throws NullPointerException in case entity or attribute is null
    */
-  protected Object getValue(final Entity entity, final Attribute<?> attribute) {
+  protected Object getValue(Entity entity, Attribute<?> attribute) {
     return requireNonNull(entity, "entity").get(attribute);
   }
 
@@ -715,7 +715,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @throws IllegalArgumentException in case the representation is not supported
    * @throws NullPointerException in case color is null
    */
-  protected Color getColor(final Object color) {
+  protected Color getColor(Object color) {
     requireNonNull(color);
     if (color instanceof Color) {
       return (Color) color;
@@ -728,7 +728,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   @Override
-  protected final String getSearchValueAt(final int rowIndex, final Attribute<?> columnIdentifier) {
+  protected final String getSearchValueAt(int rowIndex, Attribute<?> columnIdentifier) {
     return getItemAt(rowIndex).toString(columnIdentifier);
   }
 
@@ -806,7 +806,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     }
   }
 
-  private void onInsert(final List<Entity> insertedEntities) {
+  private void onInsert(List<Entity> insertedEntities) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
       List<Entity> entitiesToAdd = insertedEntities.stream()
@@ -826,23 +826,23 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     }
   }
 
-  private void onUpdate(final Map<Key, Entity> updatedEntities) {
+  private void onUpdate(Map<Key, Entity> updatedEntities) {
     replaceEntitiesByKey(new HashMap<>(updatedEntities));
   }
 
-  private void onDelete(final List<Entity> deletedEntities) {
+  private void onDelete(List<Entity> deletedEntities) {
     if (removeEntitiesOnDelete) {
       removeItems(deletedEntities);
     }
   }
 
-  private void onEntitySet(final Entity entity) {
+  private void onEntitySet(Entity entity) {
     if (entity == null && !getSelectionModel().isSelectionEmpty()) {
       getSelectionModel().clearSelection();
     }
   }
 
-  private void onTableModelEvent(final TableModelEvent tableModelEvent) {
+  private void onTableModelEvent(TableModelEvent tableModelEvent) {
     //if the selected record is updated via the table model, refresh the one in the edit model
     if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == getSelectionModel().getSelectedIndex()) {
       editModel.setEntity(getSelectionModel().getSelectedItem());
@@ -854,8 +854,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * Note that this does not trigger {@link #filterContents()}, that must be done explicitly.
    * @param entitiesByKey the entities to replace mapped to the corresponding primary key found in this table model
    */
-  private void replaceEntitiesByKey(final Map<Key, Entity> entitiesByKey) {
-    for (final Entity entity : getItems()) {
+  private void replaceEntitiesByKey(Map<Key, Entity> entitiesByKey) {
+    for (Entity entity : getItems()) {
       Iterator<Map.Entry<Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
       while (mapIterator.hasNext()) {
         Map.Entry<Key, Entity> entry = mapIterator.next();
@@ -874,7 +874,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     }
   }
 
-  private void onColumnHidden(final Attribute<?> attribute) {
+  private void onColumnHidden(Attribute<?> attribute) {
     //disable the condition and filter model for the column to be hidden, to prevent confusion
     ColumnConditionModel<?, ?> conditionModel = tableConditionModel.getConditionModels().get(attribute);
     if (conditionModel != null && !conditionModel.isLocked()) {
@@ -902,7 +902,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     return orderBy;
   }
 
-  private boolean isColumnProperty(final Attribute<?> attribute) {
+  private boolean isColumnProperty(Attribute<?> attribute) {
     Property<?> property = getEntityDefinition().getProperty(attribute);
 
     return property instanceof ColumnProperty;
@@ -917,7 +917,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
 
   private JSONObject createColumnPreferences() throws Exception {
     JSONObject columnPreferencesRoot = new JSONObject();
-    for (final TableColumn column : getColumnModel().getAllColumns()) {
+    for (TableColumn column : getColumnModel().getAllColumns()) {
       Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
       JSONObject columnObject = new JSONObject();
       boolean visible = getColumnModel().isColumnVisible(attribute);
@@ -944,9 +944,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     }
   }
 
-  private void applyColumnPreferences(final JSONObject preferences) {
+  private void applyColumnPreferences(JSONObject preferences) {
     SwingFilteredTableColumnModel<Attribute<?>> columnModel = getColumnModel();
-    for (final TableColumn column : Collections.list(columnModel.getColumns())) {
+    for (TableColumn column : Collections.list(columnModel.getColumns())) {
       Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
       if (columnModel.containsColumn(attribute)) {
         try {

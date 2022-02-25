@@ -55,7 +55,7 @@ public class EntityTableView extends TableView<Entity> {
    * Instantiates a new {@link EntityTableView}
    * @param listModel the list mode to base the table view on
    */
-  public EntityTableView(final FXEntityListModel listModel) {
+  public EntityTableView(FXEntityListModel listModel) {
     super(listModel.getSortedList());
     this.listModel = listModel;
     this.listModel.setSelectionModel(getSelectionModel());
@@ -72,7 +72,7 @@ public class EntityTableView extends TableView<Entity> {
    * Toggles the visibility of the property condition views
    * @param visible the toggle values
    */
-  public final void setConditionPaneVisible(final boolean visible) {
+  public final void setConditionPaneVisible(boolean visible) {
     getColumns().forEach(column -> ((EntityTableColumn<?>) column).setConditionViewVisible(visible));
   }
 
@@ -80,7 +80,7 @@ public class EntityTableView extends TableView<Entity> {
    * Toggles the advanced property condition view
    * @param advanced the toggle values
    */
-  public final void setConditionPaneAdvanced(final boolean advanced) {
+  public final void setConditionPaneAdvanced(boolean advanced) {
     getColumns().forEach(column -> ((EntityTableColumn<?>) column).setConditionViewAdvanced(advanced));
   }
 
@@ -125,22 +125,22 @@ public class EntityTableView extends TableView<Entity> {
    * @param <T> the value type
    * @return true if the user should be able to update the property value for multiple entities at a time
    */
-  protected <T> boolean includeUpdateSelectedProperty(final Property<T> property) {
+  protected <T> boolean includeUpdateSelectedProperty(Property<T> property) {
     return true;
   }
 
   private void initializeColumns() {
-    for (final Property<?> property : getListModel().getEntityDefinition().getVisibleProperties()) {
+    for (Property<?> property : getListModel().getEntityDefinition().getVisibleProperties()) {
       getColumns().add(entityTableColumn(property));
     }
     listModel.setColumns(getColumns());
   }
 
-  private <T extends Comparable<T>> EntityTableColumn<T> entityTableColumn(final Property<?> property) {
+  private <T extends Comparable<T>> EntityTableColumn<T> entityTableColumn(Property<?> property) {
     return new EntityTableColumn<>(listModel, (Property<T>) property, getCellValueFactory((Property<T>) property));
   }
 
-  private <T extends Comparable<T>> Callback<TableColumn.CellDataFeatures<Entity, T>, ObservableValue<T>> getCellValueFactory(final Property<T> property) {
+  private <T extends Comparable<T>> Callback<TableColumn.CellDataFeatures<Entity, T>, ObservableValue<T>> getCellValueFactory(Property<T> property) {
     return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.getAttribute()));
   }
 
@@ -232,7 +232,7 @@ public class EntityTableView extends TableView<Entity> {
     return updateSelected;
   }
 
-  private void addUpdateSelectedMenuItem(final Menu updateSelected, final Property<?> property) {
+  private void addUpdateSelectedMenuItem(Menu updateSelected, Property<?> property) {
     String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
     MenuItem updateProperty = new MenuItem(caption);
     updateProperty.setOnAction(actionEvent -> updateSelectedEntities(property));
@@ -261,7 +261,7 @@ public class EntityTableView extends TableView<Entity> {
     return refresh;
   }
 
-  private <T> void updateSelectedEntities(final Property<T> property) {
+  private <T> void updateSelectedEntities(Property<T> property) {
     List<Entity> selectedEntities = Entity.deepCopy(listModel.getSelectionModel().getSelectedItems());
 
     Collection<T> values = Entity.getDistinct(property.getAttribute(), selectedEntities);
@@ -299,7 +299,7 @@ public class EntityTableView extends TableView<Entity> {
     }
   }
 
-  private void onKeyRelease(final KeyEvent event) {
+  private void onKeyRelease(KeyEvent event) {
     switch (event.getCode()) {
       case DELETE:
         if (event.getTarget() == this && !getSelectionModel().isEmpty()) {

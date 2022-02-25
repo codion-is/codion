@@ -35,7 +35,7 @@ public final class TestDomainExtended extends DefaultDomain {
     this(DOMAIN);
   }
 
-  public TestDomainExtended(final DomainType domainType) {
+  public TestDomainExtended(DomainType domainType) {
     super(domainType);
     addEntities(new TestDomain());
     extended();
@@ -63,7 +63,7 @@ public final class TestDomainExtended extends DefaultDomain {
   void report() {
     defineReport(REP_TYPE, new Report<Object, Object, Object>() {
       @Override
-      public Object fillReport(final Connection connection, final Object parameters) throws ReportException {
+      public Object fillReport(Connection connection, Object parameters) throws ReportException {
         return null;
       }
 

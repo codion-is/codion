@@ -10,7 +10,7 @@ final class IntervalValue extends AbstractValue<Integer> {
 
   private final TaskScheduler scheduler;
 
-  IntervalValue(final TaskScheduler scheduler) {
+  IntervalValue(TaskScheduler scheduler) {
     super(0);
     this.scheduler = scheduler;
     this.scheduler.addIntervalListener(interval -> notifyValueChange());
@@ -22,7 +22,7 @@ final class IntervalValue extends AbstractValue<Integer> {
   }
 
   @Override
-  protected void setValue(final Integer value) {
+  protected void setValue(Integer value) {
     scheduler.setInterval(value);
   }
 }

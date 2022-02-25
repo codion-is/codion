@@ -42,7 +42,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final DateTimeParser<T> dateTimeParser;
   private final Value<T> value = Value.value();
 
-  private TemporalField(final DefaultBuilder<T> builder) {
+  private TemporalField(DefaultBuilder<T> builder) {
     super(initializeFormatter(builder.dateTimePattern));
     this.temporalClass = builder.temporalClass;
     this.dateTimePattern = builder.dateTimePattern;
@@ -82,14 +82,14 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * Sets the temporal value in this field, clears the field if {@code temporal} is null.
    * @param temporal the temporal value to set
    */
-  public void setTemporal(final Temporal temporal) {
+  public void setTemporal(Temporal temporal) {
     setText(temporal == null ? "" : formatter.format(temporal));
   }
 
   /**
    * @param listener notified each time the value changes
    */
-  public void addTemporalListener(final EventDataListener<T> listener) {
+  public void addTemporalListener(EventDataListener<T> listener) {
     value.addDataListener(listener);
   }
 
@@ -127,7 +127,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public ComponentValue<T, TemporalField<T>> componentValue(final UpdateOn updateOn) {
+  public ComponentValue<T, TemporalField<T>> componentValue(UpdateOn updateOn) {
     return new TemporalFieldValue<>(this, updateOn);
   }
 
@@ -136,7 +136,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @param timePattern the time pattern
    * @return a new temporal field
    */
-  public static TemporalField<LocalTime> localTimeField(final String timePattern) {
+  public static TemporalField<LocalTime> localTimeField(String timePattern) {
     return builder(LocalTime.class, timePattern).build();
   }
 
@@ -145,7 +145,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @param datePattern the date pattern
    * @return a new temporal field
    */
-  public static TemporalField<LocalDate> localDateField(final String datePattern) {
+  public static TemporalField<LocalDate> localDateField(String datePattern) {
     return builder(LocalDate.class, datePattern).build();
   }
 
@@ -154,7 +154,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @param dateTimePattern the date time pattern
    * @return a new temporal field
    */
-  public static TemporalField<LocalDateTime> localDateTimeField(final String dateTimePattern) {
+  public static TemporalField<LocalDateTime> localDateTimeField(String dateTimePattern) {
     return builder(LocalDateTime.class, dateTimePattern).build();
   }
 
@@ -163,7 +163,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @param dateTimePattern the date time pattern
    * @return a new temporal field
    */
-  public static TemporalField<OffsetDateTime> offsetDateTimeField(final String dateTimePattern) {
+  public static TemporalField<OffsetDateTime> offsetDateTimeField(String dateTimePattern) {
     return builder(OffsetDateTime.class, dateTimePattern).build();
   }
 
@@ -176,7 +176,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @param <T> the temporal type
    * @return a new builder
    */
-  public static <T extends Temporal> Builder<T> builder(final Class<T> temporalClass, final String dateTimePattern) {
+  public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, String dateTimePattern) {
     return new DefaultBuilder<>(temporalClass, dateTimePattern);
   }
 
@@ -224,7 +224,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     private T initialValue;
     private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
-    private DefaultBuilder(final Class<T> temporalClass, final String dateTimePattern) {
+    private DefaultBuilder(Class<T> temporalClass, String dateTimePattern) {
       this.temporalClass = requireNonNull(temporalClass);
       this.dateTimePattern = requireNonNull(dateTimePattern);
       this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern);
@@ -232,19 +232,19 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
 
     @Override
-    public Builder<T> dateTimeParser(final DateTimeParser<T> dateTimeParser) {
+    public Builder<T> dateTimeParser(DateTimeParser<T> dateTimeParser) {
       this.dateTimeParser = requireNonNull(dateTimeParser);
       return this;
     }
 
     @Override
-    public Builder<T> focusLostBehaviour(final int focusLostBehaviour) {
+    public Builder<T> focusLostBehaviour(int focusLostBehaviour) {
       this.focusLostBehaviour = focusLostBehaviour;
       return this;
     }
 
     @Override
-    public Builder<T> initialValue(final T initialValue) {
+    public Builder<T> initialValue(T initialValue) {
       this.initialValue = initialValue;
       return this;
     }
@@ -261,7 +261,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
       return temporalField;
     }
 
-    private static <T extends Temporal> DateTimeParser<T> initializeDateTimeParser(final Class<T> typeClass) {
+    private static <T extends Temporal> DateTimeParser<T> initializeDateTimeParser(Class<T> typeClass) {
       if (typeClass.equals(LocalTime.class)) {
         return (DateTimeParser<T>) (DateTimeParser<LocalTime>) LocalTime::parse;
       }
@@ -279,7 +279,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
   }
 
-  private static MaskFormatter initializeFormatter(final String dateTimePattern) {
+  private static MaskFormatter initializeFormatter(String dateTimePattern) {
     try {
       return FieldFormatter.create(LocaleDateTimePattern.getMask(dateTimePattern), true);
     }
@@ -290,17 +290,17 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
   private static final class TemporalFieldValue<T extends Temporal> extends FormattedTextComponentValue<T, TemporalField<T>> {
 
-    private TemporalFieldValue(final TemporalField<T> textComponent, final UpdateOn updateOn) {
+    private TemporalFieldValue(TemporalField<T> textComponent, UpdateOn updateOn) {
       super(textComponent, null, updateOn);
     }
 
     @Override
-    protected String formatTextFromValue(final T value) {
+    protected String formatTextFromValue(T value) {
       return getComponent().getDateTimeFormatter().format(value);
     }
 
     @Override
-    protected T parseValueFromText(final String text) {
+    protected T parseValueFromText(String text) {
       try {
         return getComponent().getDateTimeParser().parse(text, getComponent().getDateTimeFormatter());
       }

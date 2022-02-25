@@ -30,7 +30,7 @@ public final class Panels {
    * @param centerComponent the component to display in the BorderLayout.CENTER position
    * @return a panel displaying the given components in the NORTH an CENTER positions in a BorderLayout
    */
-  public static JPanel createNorthCenterPanel(final JComponent northComponent, final JComponent centerComponent) {
+  public static JPanel createNorthCenterPanel(JComponent northComponent, JComponent centerComponent) {
     requireNonNull(northComponent, "northComponent");
     requireNonNull(centerComponent, CENTER_COMPONENT);
 
@@ -46,7 +46,7 @@ public final class Panels {
    * @param centerComponent the component to display in the BorderLayout.CENTER position
    * @return a panel displaying the given components in the WEST an CENTER positions in a BorderLayout
    */
-  public static JPanel createWestCenterPanel(final JComponent westComponent, final JComponent centerComponent) {
+  public static JPanel createWestCenterPanel(JComponent westComponent, JComponent centerComponent) {
     requireNonNull(westComponent, "westComponent");
     requireNonNull(centerComponent, CENTER_COMPONENT);
 
@@ -64,7 +64,7 @@ public final class Panels {
    * @return a panel
    * @see #createEastFocusableButtonPanel(JComponent, Action)
    */
-  public static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction) {
+  public static JPanel createEastButtonPanel(JComponent centerComponent, Action buttonAction) {
     return createEastButtonPanel(centerComponent, buttonAction, false);
   }
 
@@ -75,12 +75,12 @@ public final class Panels {
    * @param buttonAction the button action
    * @return a panel
    */
-  public static JPanel createEastFocusableButtonPanel(final JComponent centerComponent, final Action buttonAction) {
+  public static JPanel createEastFocusableButtonPanel(JComponent centerComponent, Action buttonAction) {
     return createEastButtonPanel(centerComponent, buttonAction, true);
   }
 
-  private static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
-                                              final boolean buttonFocusable) {
+  private static JPanel createEastButtonPanel(JComponent centerComponent, Action buttonAction,
+                                              boolean buttonFocusable) {
     requireNonNull(centerComponent, CENTER_COMPONENT);
     requireNonNull(buttonAction, "buttonAction");
     JButton button = new JButton(buttonAction);

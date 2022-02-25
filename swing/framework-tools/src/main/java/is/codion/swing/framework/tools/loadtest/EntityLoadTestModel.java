@@ -64,7 +64,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * @param user the default user
    * @param usageScenarios the usage scenarios
    */
-  public EntityLoadTestModel(final User user, final Collection<? extends UsageScenario<M>> usageScenarios) {
+  public EntityLoadTestModel(User user, Collection<? extends UsageScenario<M>> usageScenarios) {
     super(user, usageScenarios, LOAD_TEST_THINKTIME.get(), LOAD_TEST_LOGIN_DELAY.get(),
             LOAD_TEST_BATCH_SIZE.get());
     EntityApplicationModel.SCHEDULE_CONNECTION_VALIDATION.set(false);
@@ -79,7 +79,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * Selects a random row in the given table model
    * @param tableModel the table model
    */
-  public static void selectRandomRow(final EntityTableModel<?> tableModel) {
+  public static void selectRandomRow(EntityTableModel<?> tableModel) {
     if (tableModel.getRowCount() == 0) {
       return;
     }
@@ -92,7 +92,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * @param tableModel the table model
    * @param count the number of rows to select
    */
-  public static void selectRandomRows(final EntityTableModel<?> tableModel, final int count) {
+  public static void selectRandomRows(EntityTableModel<?> tableModel, int count) {
     if (tableModel.getRowCount() == 0) {
       return;
     }
@@ -115,7 +115,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * @param tableModel the table model
    * @param ratio the ratio of available rows to select
    */
-  public static void selectRandomRows(final EntityTableModel<?> tableModel, final double ratio) {
+  public static void selectRandomRows(EntityTableModel<?> tableModel, double ratio) {
     if (tableModel.getRowCount() == 0) {
       return;
     }
@@ -133,7 +133,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * Selects a random non-null visible item in the given combobox model, if one is available
    * @param comboBoxModel the combobox model
    */
-  public static void selectRandomItem(final EntityComboBoxModel comboBoxModel) {
+  public static void selectRandomItem(EntityComboBoxModel comboBoxModel) {
     if (comboBoxModel.isCleared()) {
       comboBoxModel.refresh();
     }
@@ -146,7 +146,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
   }
 
   @Override
-  protected final void disconnectApplication(final M application) {
+  protected final void disconnectApplication(M application) {
     application.getConnectionProvider().close();
   }
 

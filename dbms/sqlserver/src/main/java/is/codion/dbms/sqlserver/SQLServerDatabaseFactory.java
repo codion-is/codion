@@ -17,13 +17,13 @@ public final class SQLServerDatabaseFactory implements DatabaseFactory {
   private static final String JTDS_DRIVER_PACKAGE = "net.sourceforge.jtds.jdbc";
 
   @Override
-  public boolean isDriverCompatible(final String driverClassName) {
+  public boolean isDriverCompatible(String driverClassName) {
     requireNonNull(driverClassName, "driverClassName");
     return driverClassName.startsWith(DRIVER_PACKAGE) || driverClassName.startsWith(JTDS_DRIVER_PACKAGE);
   }
 
   @Override
-  public Database createDatabase(final String jdbcUrl) {
+  public Database createDatabase(String jdbcUrl) {
     return new SQLServerDatabase(jdbcUrl);
   }
 }

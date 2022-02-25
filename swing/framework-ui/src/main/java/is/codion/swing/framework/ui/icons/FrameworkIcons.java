@@ -140,7 +140,7 @@ public interface FrameworkIcons extends Logos {
   static FrameworkIcons frameworkIcons() {
     String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.get();
     ServiceLoader<FrameworkIcons> loader = ServiceLoader.load(FrameworkIcons.class);
-    for (final FrameworkIcons icons : loader) {
+    for (FrameworkIcons icons : loader) {
       if (Objects.equals(icons.getClass().getName(), iconsClassName)) {
         return icons;
       }

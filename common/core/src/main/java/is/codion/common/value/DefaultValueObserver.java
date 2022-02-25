@@ -15,7 +15,7 @@ final class DefaultValueObserver<T> implements ValueObserver<T> {
 
   private final Value<T> value;
 
-  DefaultValueObserver(final Value<T> value) {
+  DefaultValueObserver(Value<T> value) {
     this.value = requireNonNull(value, "value");
   }
 
@@ -49,27 +49,27 @@ final class DefaultValueObserver<T> implements ValueObserver<T> {
   }
 
   @Override
-  public boolean equalTo(final T value) {
+  public boolean equalTo(T value) {
     return Objects.equals(get(), value);
   }
 
   @Override
-  public void addListener(final EventListener listener) {
+  public void addListener(EventListener listener) {
     value.addListener(listener);
   }
 
   @Override
-  public void removeListener(final EventListener listener) {
+  public void removeListener(EventListener listener) {
     value.removeListener(listener);
   }
 
   @Override
-  public void addDataListener(final EventDataListener<T> listener) {
+  public void addDataListener(EventDataListener<T> listener) {
     value.addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(final EventDataListener<T> listener) {
+  public void removeDataListener(EventDataListener<T> listener) {
     value.removeDataListener(listener);
   }
 }

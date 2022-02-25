@@ -66,7 +66,7 @@ class DefaultKey implements Key, Serializable {
    * @param attributes the attributes comprising this key
    * @param primaryKey true if this key represents a primary key
    */
-  DefaultKey(final EntityDefinition definition, final List<Attribute<?>> attributes, final boolean primaryKey) {
+  DefaultKey(EntityDefinition definition, List<Attribute<?>> attributes, boolean primaryKey) {
     this(definition, createNullValueMap(attributes), primaryKey);
     this.hashCodeDirty = false;
   }
@@ -77,7 +77,7 @@ class DefaultKey implements Key, Serializable {
    * @param value the value
    * @param primaryKey true if this key represents a primary key
    */
-  DefaultKey(final EntityDefinition definition, final Attribute<?> attribute, final Object value, final boolean primaryKey) {
+  DefaultKey(EntityDefinition definition, Attribute<?> attribute, Object value, boolean primaryKey) {
     this(definition, singletonMap(attribute, value), primaryKey);
   }
 
@@ -87,7 +87,7 @@ class DefaultKey implements Key, Serializable {
    * @param values the values associated with their respective attributes
    * @param primaryKey true if this key represents a primary key
    */
-  DefaultKey(final EntityDefinition definition, final Map<Attribute<?>, Object> values, final boolean primaryKey) {
+  DefaultKey(EntityDefinition definition, Map<Attribute<?>, Object> values, boolean primaryKey) {
     values.forEach((attribute, value) -> ((Attribute<Object>) attribute).validateType(value));
     this.values = unmodifiableMap(values);
     this.attributes = unmodifiableList(new ArrayList<>(values.keySet()));
@@ -133,7 +133,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> T get(final Attribute<T> attribute) {
+  public <T> T get(Attribute<T> attribute) {
     if (!values.containsKey(attribute)) {
       throw new IllegalArgumentException("Attribute " + attribute + " is not part of key: " + definition.getEntityType());
     }
@@ -142,7 +142,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> Optional<T> getOptional(final Attribute<T> attribute) {
+  public <T> Optional<T> getOptional(Attribute<T> attribute) {
     return Optional.ofNullable(get(attribute));
   }
 
@@ -172,7 +172,7 @@ class DefaultKey implements Key, Serializable {
    * @return true if object is equal to this key
    */
   @Override
-  public boolean equals(final Object object) {
+  public boolean equals(Object object) {
     if (this == object) {
       return true;
     }
@@ -227,12 +227,12 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public boolean isNull(final Attribute<?> attribute) {
+  public boolean isNull(Attribute<?> attribute) {
     return values.get(attribute) == null;
   }
 
   @Override
-  public boolean isNotNull(final Attribute<?> attribute) {
+  public boolean isNotNull(Attribute<?> attribute) {
     return !isNull(attribute);
   }
 
@@ -284,7 +284,7 @@ class DefaultKey implements Key, Serializable {
     }
   }
 
-  private void writeObject(final ObjectOutputStream stream) throws IOException {
+  private void writeObject(ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getDomainName());
     stream.writeObject(definition.getEntityType().getName());
     stream.writeInt(definition.getSerializationVersion());
@@ -297,7 +297,7 @@ class DefaultKey implements Key, Serializable {
     }
   }
 
-  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+  private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     Entities entities = DefaultEntities.getEntities((String) stream.readObject());
     definition = entities.getDefinition((String) stream.readObject());
     if (definition.getSerializationVersion() != stream.readInt()) {
@@ -315,9 +315,9 @@ class DefaultKey implements Key, Serializable {
     hashCodeDirty = true;
   }
 
-  private static Map<Attribute<?>, Object> createNullValueMap(final List<Attribute<?>> attributes) {
+  private static Map<Attribute<?>, Object> createNullValueMap(List<Attribute<?>> attributes) {
     Map<Attribute<?>, Object> values = new HashMap<>(attributes.size());
-    for (final Attribute<?> attribute : attributes) {
+    for (Attribute<?> attribute : attributes) {
       values.put(attribute, null);
     }
 

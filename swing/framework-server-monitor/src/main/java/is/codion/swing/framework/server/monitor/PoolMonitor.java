@@ -29,9 +29,9 @@ public final class PoolMonitor {
    * @param updateRate the initial statistics update rate in seconds
    * @throws RemoteException in case of an exception
    */
-  public PoolMonitor(final EntityServerAdmin server, final int updateRate) throws RemoteException {
+  public PoolMonitor(EntityServerAdmin server, int updateRate) throws RemoteException {
     this.server = server;
-    for (final String username : this.server.getConnectionPoolUsernames()) {
+    for (String username : this.server.getConnectionPoolUsernames()) {
       connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPoolWrapper(username, this.server), updateRate));
     }
   }
@@ -47,7 +47,7 @@ public final class PoolMonitor {
    * Shuts down this pool monitor
    */
   public void shutdown() {
-    for (final ConnectionPoolMonitor monitor : connectionPoolMonitors) {
+    for (ConnectionPoolMonitor monitor : connectionPoolMonitors) {
       monitor.shutdown();
     }
   }
@@ -57,7 +57,7 @@ public final class PoolMonitor {
     private final EntityServerAdmin server;
     private final User user;
 
-    private MonitorPoolWrapper(final String username, final EntityServerAdmin server) {
+    private MonitorPoolWrapper(String username, EntityServerAdmin server) {
       this.user = User.user(username);
       this.server = server;
     }
@@ -103,7 +103,7 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setMaximumPoolSize(final int value) {
+    public void setMaximumPoolSize(int value) {
       try {
         server.setMaximumConnectionPoolSize(user.getUsername(), value);
       }
@@ -113,7 +113,7 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setMinimumPoolSize(final int value) {
+    public void setMinimumPoolSize(int value) {
       try {
         server.setMinimumConnectionPoolSize(user.getUsername(), value);
       }
@@ -123,7 +123,7 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setConnectionTimeout(final int timeout) {
+    public void setConnectionTimeout(int timeout) {
       try {
         server.setPooledConnectionTimeout(user.getUsername(), timeout);
       }
@@ -143,7 +143,7 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setMaximumCheckOutTime(final int value) {
+    public void setMaximumCheckOutTime(int value) {
       try {
         server.setMaximumPoolCheckOutTime(user.getUsername(), value);
       }
@@ -153,7 +153,7 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setCleanupInterval(final int poolCleanupInterval) {
+    public void setCleanupInterval(int poolCleanupInterval) {
       try {
         server.setConnectionPoolCleanupInterval(user.getUsername(), poolCleanupInterval);
       }
@@ -163,7 +163,7 @@ public final class PoolMonitor {
     }
 
     @Override
-    public ConnectionPoolStatistics getStatistics(final long since) {
+    public ConnectionPoolStatistics getStatistics(long since) {
       try {
         return server.getConnectionPoolStatistics(user.getUsername(), since);
       }
@@ -188,7 +188,7 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
+    public void setCollectSnapshotStatistics(boolean collectSnapshotStatistics) {
       try {
         server.setCollectPoolSnapshotStatistics(user.getUsername(), collectSnapshotStatistics);
       }
@@ -208,7 +208,7 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setCollectCheckOutTimes(final boolean collectCheckOutTimes) {
+    public void setCollectCheckOutTimes(boolean collectCheckOutTimes) {
       try {
         server.setCollectPoolCheckOutTimes(user.getUsername(), collectCheckOutTimes);
       }
@@ -228,7 +228,7 @@ public final class PoolMonitor {
     }
 
     @Override
-    public Connection getConnection(final User user) {
+    public Connection getConnection(User user) {
       return null;
     }
 

@@ -166,7 +166,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Instantiates a new FilteredTable using the given model
    * @param tableModel the table model
    */
-  public FilteredTable(final T tableModel) {
+  public FilteredTable(T tableModel) {
     this(tableModel, new DefaultConditionPanelFactory<>(tableModel));
   }
 
@@ -175,7 +175,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param tableModel the table model
    * @param conditionPanelFactory the column condition panel factory
    */
-  public FilteredTable(final T tableModel, final ConditionPanelFactory conditionPanelFactory) {
+  public FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(), tableModel.getSelectionModel());
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
@@ -203,7 +203,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   @Override
-  public void setModel(final TableModel dataModel) {
+  public void setModel(TableModel dataModel) {
     if (this.tableModel != null) {
       throw new IllegalStateException("Table model has already been set");
     }
@@ -228,7 +228,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param doubleClickAction the action to perform when a double click is performed on the table,
    * null for no double click action
    */
-  public void setDoubleClickAction(final Action doubleClickAction) {
+  public void setDoubleClickAction(Action doubleClickAction) {
     this.doubleClickAction = doubleClickAction;
   }
 
@@ -249,7 +249,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * @param sortingEnabled true if sorting via the table header should be enabled
    */
-  public void setSortingEnabled(final boolean sortingEnabled) {
+  public void setSortingEnabled(boolean sortingEnabled) {
     this.sortingEnabled = sortingEnabled;
   }
 
@@ -265,7 +265,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param scrollToSelectedItem true if the JTable instance should scroll automatically
    * to the coordinate of the record selected in the underlying table model
    */
-  public void setScrollToSelectedItem(final boolean scrollToSelectedItem) {
+  public void setScrollToSelectedItem(boolean scrollToSelectedItem) {
     this.scrollToSelectedItem = scrollToSelectedItem;
   }
 
@@ -280,12 +280,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Specifies the scrolling behaviour when scrolling to the selected row/column
    * @param centerOnScroll the scrolling behaviour
    */
-  public void setCenterOnScroll(final CenterOnScroll centerOnScroll) {
+  public void setCenterOnScroll(CenterOnScroll centerOnScroll) {
     this.centerOnScroll = requireNonNull(centerOnScroll);
   }
 
   @Override
-  public void setSelectionMode(final int selectionMode) {
+  public void setSelectionMode(int selectionMode) {
     tableModel.getSelectionModel().setSelectionMode(selectionMode);
   }
 
@@ -293,7 +293,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Hides or shows the active filter panels for this table panel
    * @param filterPanelsVisible true if the active filter panels should be shown, false if they should be hidden
    */
-  public void setFilterPanelsVisible(final boolean filterPanelsVisible) {
+  public void setFilterPanelsVisible(boolean filterPanelsVisible) {
     columnFilterPanels.forEach((column, conditionPanel) -> SwingUtilities.invokeLater(() -> {
       if (filterPanelsVisible) {
         conditionPanel.showDialog(null);
@@ -323,7 +323,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param column the column
    * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
    */
-  public boolean isCellVisible(final int row, final int column) {
+  public boolean isCellVisible(int row, int column) {
     JViewport viewport = Utilities.getParentOfType(this, JViewport.class).orElse(null);
     if (viewport == null) {
       return false;
@@ -340,7 +340,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Has no effect if this table is not contained in a scrollpanel.
    * @param columnIdentifier the column identifier
    */
-  public void scrollToColumn(final C columnIdentifier) {
+  public void scrollToColumn(C columnIdentifier) {
     Utilities.getParentOfType(this, JViewport.class).ifPresent(viewport ->
             scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
                     getModel().getColumnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER));
@@ -352,7 +352,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param column the column
    * @param centerOnScroll specifies whether to center the selected row and or column
    */
-  public void scrollToCoordinate(final int row, final int column, final CenterOnScroll centerOnScroll) {
+  public void scrollToCoordinate(int row, int column, CenterOnScroll centerOnScroll) {
     requireNonNull(centerOnScroll);
     Utilities.getParentOfType(this, JViewport.class).ifPresent(viewport -> {
       Rectangle cellRectangle = getCellRect(row, column, true);
@@ -441,7 +441,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Performs a text search in the underlying table model, forward relative to the last search result coordinate.
    * @param searchText the text to search for
    */
-  public void findNext(final String searchText) {
+  public void findNext(String searchText) {
     performSearch(false, lastSearchResultCoordinate.getRow() + 1, true, searchText);
   }
 
@@ -449,7 +449,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * Performs a text search in the underlying table model, backwards relative to the last search result coordinate.
    * @param searchText the text to search for
    */
-  public void findPrevious(final String searchText) {
+  public void findPrevious(String searchText) {
     performSearch(false, lastSearchResultCoordinate.getRow() - 1, false, searchText);
   }
 
@@ -458,7 +458,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * adding the result to the current row selection.
    * @param searchText the text to search for
    */
-  public void findAndSelectNext(final String searchText) {
+  public void findAndSelectNext(String searchText) {
     performSearch(true, lastSearchResultCoordinate.getRow() + 1, true, searchText);
   }
 
@@ -467,7 +467,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * adding the result to the current row selection.
    * @param searchText the text to search for
    */
-  public void findAndSelectPrevious(final String searchText) {
+  public void findAndSelectPrevious(String searchText) {
     performSearch(true, lastSearchResultCoordinate.getRow() - 1, false, searchText);
   }
 
@@ -475,21 +475,21 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * A convenience method for setting the client property 'JTable.autoStartsEdit'.
    * @param autoStartsEdit the value
    */
-  public void setAutoStartsEdit(final boolean autoStartsEdit) {
+  public void setAutoStartsEdit(boolean autoStartsEdit) {
     putClientProperty("JTable.autoStartsEdit", autoStartsEdit);
   }
 
   /**
    * @param listener a listener notified each time the table is double-clicked
    */
-  public void addDoubleClickListener(final EventDataListener<MouseEvent> listener) {
+  public void addDoubleClickListener(EventDataListener<MouseEvent> listener) {
     doubleClickedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeDoubleClickListener(final EventDataListener<MouseEvent> listener) {
+  public void removeDoubleClickListener(EventDataListener<MouseEvent> listener) {
     doubleClickedEvent.removeDataListener(listener);
   }
 
@@ -548,7 +548,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     return searchFieldHint;
   }
 
-  private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
+  private void performSearch(boolean addToSelection, int fromIndex, boolean forward, String searchText) {
     if (!searchText.isEmpty()) {
       RowColumn coordinate = (forward ?
               tableModel.findNext(fromIndex, searchText) :
@@ -584,8 +584,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
             .build();
   }
 
-  private static void toggleFilterPanel(final ColumnConditionPanel<?, ?> columnFilterPanel, final Container parent,
-                                        final String title, final Point position) {
+  private static void toggleFilterPanel(ColumnConditionPanel<?, ?> columnFilterPanel, Container parent,
+                                        String title, Point position) {
     if (columnFilterPanel != null) {
       if (!columnFilterPanel.isDialogEnabled()) {
         columnFilterPanel.enableDialog(parent, title);
@@ -599,7 +599,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
   }
 
-  private ToggleControl createToggleColumnControl(final TableColumn column) {
+  private ToggleControl createToggleColumnControl(TableColumn column) {
     C identifier = (C) column.getIdentifier();
     State visibleState = State.state(tableModel.getColumnModel().isColumnVisible(identifier));
     visibleState.addDataListener(visible -> tableModel.getColumnModel().setColumnVisible(identifier, visible));
@@ -630,7 +630,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     addKeyListener(new MoveResizeColumnKeyListener());
   }
 
-  private void bindFilterIndicatorEvents(final TableColumn column) {
+  private void bindFilterIndicatorEvents(TableColumn column) {
     ColumnFilterModel<R, C, Object> model = (ColumnFilterModel<R, C, Object>) getModel().getColumnFilterModels().get(column.getIdentifier());
     if (model != null) {
       model.addEnabledListener(() -> getTableHeader().repaint());
@@ -647,7 +647,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private MouseListener initializeTableMouseListener() {
     return new MouseAdapter() {
       @Override
-      public void mouseClicked(final MouseEvent e) {
+      public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {
           if (doubleClickAction != null) {
             doubleClickAction.actionPerformed(new ActionEvent(this, -1, "doubleClick"));
@@ -662,12 +662,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
     private final FilteredTableModel<?, C> tableModel;
 
-    private DefaultConditionPanelFactory(final FilteredTableModel<?, C> tableModel) {
+    private DefaultConditionPanelFactory(FilteredTableModel<?, C> tableModel) {
       this.tableModel = tableModel;
     }
 
     @Override
-    public <T> ColumnConditionPanel<C, T> createConditionPanel(final TableColumn column) {
+    public <T> ColumnConditionPanel<C, T> createConditionPanel(TableColumn column) {
       ColumnFilterModel<?, C, Object> filterModel = (ColumnFilterModel<?, C, Object>) tableModel.getColumnFilterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
@@ -681,13 +681,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
     private final TableCellRenderer tableCellRenderer;
 
-    private SortableHeaderRenderer(final TableCellRenderer tableCellRenderer) {
+    private SortableHeaderRenderer(TableCellRenderer tableCellRenderer) {
       this.tableCellRenderer = tableCellRenderer;
     }
 
     @Override
-    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-                                                   final boolean hasFocus, final int row, final int column) {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                   boolean hasFocus, int row, int column) {
       Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       Font defaultFont = component.getFont();
       if (component instanceof JLabel) {
@@ -702,7 +702,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       return component;
     }
 
-    private Icon getHeaderRendererIcon(final C columnIdentifier, final int iconSizePixels) {
+    private Icon getHeaderRendererIcon(C columnIdentifier, int iconSizePixels) {
       SortOrder sortOrder = tableModel.getSortModel().getSortingState(columnIdentifier).getSortOrder();
       if (sortOrder == SortOrder.UNSORTED) {
         return null;
@@ -723,14 +723,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     private final int size;
     private final int priority;
 
-    private Arrow(final boolean descending, final int size, final int priority) {
+    private Arrow(boolean descending, int size, int priority) {
       this.descending = descending;
       this.size = size;
       this.priority = priority;
     }
 
     @Override
-    public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
+    public void paintIcon(Component c, Graphics g, int x, int y) {
       Color color = c == null ? Color.GRAY : c.getBackground();
       // In a compound sort, make each successive triangle 20% smaller than the previous one.
       int dx = (int) (size / PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
@@ -776,7 +776,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private final class MouseSortHandler extends MouseAdapter {
     @Override
-    public void mouseClicked(final MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
       if (!sortingEnabled || e.getButton() != MouseEvent.BUTTON1 || e.isAltDown()) {
         return;
       }
@@ -800,7 +800,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       }
     }
 
-    private SortOrder getSortOrder(final SortOrder currentSortOrder, final boolean isShiftDown) {
+    private SortOrder getSortOrder(SortOrder currentSortOrder, boolean isShiftDown) {
       switch (currentSortOrder) {
         case UNSORTED:
           return isShiftDown ? SortOrder.DESCENDING : SortOrder.ASCENDING;
@@ -814,13 +814,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private final class MouseColumnFilterPanelHandler extends MouseAdapter {
     @Override
-    public void mouseClicked(final MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
       if (e.isAltDown() && e.isControlDown()) {
         toggleColumnFilterPanel(e);
       }
     }
 
-    private void toggleColumnFilterPanel(final MouseEvent event) {
+    private void toggleColumnFilterPanel(MouseEvent event) {
       SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
       TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
       toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
@@ -831,7 +831,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private final class MouseColumnDragHandler extends MouseMotionAdapter {
     @Override
-    public void mouseDragged(final MouseEvent e) {
+    public void mouseDragged(MouseEvent e) {
       scrollRectToVisible(new Rectangle(e.getX(), e.getY(), 1, 1));
     }
   }
@@ -839,7 +839,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private final class MoveResizeColumnKeyListener extends KeyAdapter {
 
     @Override
-    public void keyPressed(final KeyEvent e) {
+    public void keyPressed(KeyEvent e) {
       if (e.isControlDown() && e.isShiftDown() && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT)) {
         moveSelectedColumn(e.getKeyCode() == KeyEvent.VK_LEFT);
         e.consume();
@@ -850,7 +850,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       }
     }
 
-    private void moveSelectedColumn(final boolean left) {
+    private void moveSelectedColumn(boolean left) {
       int selectedColumnIndex = getSelectedColumn();
       if (selectedColumnIndex != -1) {
         int columnCount = getColumnModel().getColumnCount();
@@ -876,7 +876,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       }
     }
 
-    private void resizeSelectedColumn(final boolean enlarge) {
+    private void resizeSelectedColumn(boolean enlarge) {
       int selectedColumnIndex = getSelectedColumn();
       if (selectedColumnIndex != -1) {
         TableColumn column = getColumnModel().getColumn(selectedColumnIndex);
@@ -890,7 +890,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     private final Collator columnCollator = Collator.getInstance();
 
     @Override
-    public int compare(final TableColumn col1, final TableColumn col2) {
+    public int compare(TableColumn col1, TableColumn col2) {
       return Text.collateSansSpaces(columnCollator, col1.getHeaderValue().toString(), col2.getHeaderValue().toString());
     }
   }

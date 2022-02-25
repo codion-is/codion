@@ -12,12 +12,12 @@ final class SchemaPacker implements ResultPacker<Schema> {
 
   private final String fieldName;
 
-  SchemaPacker(final String fieldName) {
+  SchemaPacker(String fieldName) {
     this.fieldName = fieldName;
   }
 
   @Override
-  public Schema fetch(final ResultSet resultSet) throws SQLException {
+  public Schema fetch(ResultSet resultSet) throws SQLException {
     return new Schema(resultSet.getString(fieldName));
   }
 }

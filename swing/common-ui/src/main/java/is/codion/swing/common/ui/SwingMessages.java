@@ -19,7 +19,7 @@ public final class SwingMessages {
    * @param key the key
    * @return the string associated with the key
    */
-  public static String get(final String key) {
+  public static String get(String key) {
     return MESSAGES.getString(key);
   }
 }

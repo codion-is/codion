@@ -11,7 +11,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class MediaTypeEditPanel extends EntityEditPanel {
 
-  public MediaTypeEditPanel(final SwingEntityEditModel editModel) {
+  public MediaTypeEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

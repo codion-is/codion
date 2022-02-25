@@ -45,8 +45,8 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @param tableConditionModel the table condition model
    * @param columnModel the column model
    */
-  public EntityTableConditionPanel(final EntityTableConditionModel tableConditionModel,
-                                   final SwingFilteredTableColumnModel<Attribute<?>> columnModel) {
+  public EntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
+                                   SwingFilteredTableColumnModel<Attribute<?>> columnModel) {
     this(tableConditionModel, columnModel, new EntityConditionPanelFactory(tableConditionModel));
   }
 
@@ -57,9 +57,9 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @param columnModel the column model
    * @param conditionPanelFactory the condition panel factory
    */
-  public EntityTableConditionPanel(final EntityTableConditionModel tableConditionModel,
-                                   final SwingFilteredTableColumnModel<Attribute<?>> columnModel,
-                                   final ConditionPanelFactory conditionPanelFactory) {
+  public EntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
+                                   SwingFilteredTableColumnModel<Attribute<?>> columnModel,
+                                   ConditionPanelFactory conditionPanelFactory) {
     super(tableConditionModel, requireNonNull(columnModel).getAllColumns());
     requireNonNull(conditionPanelFactory);
     this.conditionPanel = new TableColumnComponentPanel<>(columnModel, createConditionPanels(columnModel, conditionPanelFactory));
@@ -109,7 +109,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * for custom search panels
    */
   @Override
-  public void addFocusGainedListener(final EventDataListener<Attribute<?>> listener) {
+  public void addFocusGainedListener(EventDataListener<Attribute<?>> listener) {
     conditionPanel.getColumnComponents().values().forEach(panel -> panel.addFocusGainedListener(listener));
   }
 
@@ -138,8 +138,8 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @return the condition panel associated with the given property
    * @throws IllegalArgumentException in case no condition panel exists for the given attribute
    */
-  public <C extends Attribute<T>, T> ColumnConditionPanel<C, T> getConditionPanel(final C attribute) {
-    for (final TableColumn column : getTableColumns()) {
+  public <C extends Attribute<T>, T> ColumnConditionPanel<C, T> getConditionPanel(C attribute) {
+    for (TableColumn column : getTableColumns()) {
       if (column.getIdentifier().equals(attribute)) {
         return (ColumnConditionPanel<C, T>) conditionPanel.getColumnComponents().get(column);
       }
@@ -149,7 +149,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   }
 
   @Override
-  protected void setAdvanced(final boolean advanced) {
+  protected void setAdvanced(boolean advanced) {
     conditionPanel.getColumnComponents().forEach((column, panel) -> panel.setAdvanced(advanced));
   }
 
@@ -161,7 +161,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   }
 
   private static Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(
-          final SwingFilteredTableColumnModel<Attribute<?>> columnModel, final ConditionPanelFactory conditionPanelFactory) {
+          SwingFilteredTableColumnModel<Attribute<?>> columnModel, ConditionPanelFactory conditionPanelFactory) {
     Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new HashMap<>();
     columnModel.getAllColumns().forEach(column -> {
       ColumnConditionPanel<Attribute<?>, Object> conditionPanel = (ColumnConditionPanel<Attribute<?>, Object>) conditionPanelFactory.createConditionPanel(column);

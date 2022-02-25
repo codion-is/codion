@@ -29,7 +29,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   private static final User UNIT_TEST_USER =
           User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
-  public EmpDeptServletLoadTest(final User user) {
+  public EmpDeptServletLoadTest(User user) {
     super(user, asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),
             5000, 2, 10);
     setWeight(UpdateLocation.NAME, 2);
@@ -40,7 +40,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   }
 
   @Override
-  protected void disconnectApplication(final EntityConnectionProvider client) {
+  protected void disconnectApplication(EntityConnectionProvider client) {
     client.close();
   }
 
@@ -54,7 +54,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
             .setDomainClassName(EmpDept.class.getName()).setUser(UNIT_TEST_USER);
   }
 
-  public static void main(final String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
     new LoadTestPanel<>(new EmpDeptServletLoadTest(UNIT_TEST_USER)).showFrame();
   }
 
@@ -66,7 +66,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     }
 
     @Override
-    protected void perform(final EntityConnectionProvider client) throws Exception {
+    protected void perform(EntityConnectionProvider client) throws Exception {
       List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
       Entity entity = departments.get(new Random().nextInt(departments.size()));
       entity.put(Department.LOCATION, Text.randomString(10, 13));
@@ -82,7 +82,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     }
 
     @Override
-    protected void perform(final EntityConnectionProvider client) throws Exception {
+    protected void perform(EntityConnectionProvider client) throws Exception {
       client.getConnection().select(Department.NAME, "ACCOUNTING");
     }
   }
@@ -95,7 +95,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     }
 
     @Override
-    protected void perform(final EntityConnectionProvider client) throws Exception {
+    protected void perform(EntityConnectionProvider client) throws Exception {
       List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
 
       client.getConnection().select(Employee.DEPARTMENT,
@@ -111,7 +111,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     }
 
     @Override
-    protected void perform(final EntityConnectionProvider client) throws Exception {
+    protected void perform(EntityConnectionProvider client) throws Exception {
       int deptNo = new Random().nextInt(5000);
       client.getConnection().insert(client.getEntities().builder(Department.TYPE)
               .with(Department.ID, deptNo)
@@ -131,7 +131,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     }
 
     @Override
-    protected void perform(final EntityConnectionProvider client) throws Exception {
+    protected void perform(EntityConnectionProvider client) throws Exception {
       List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
       Entity department = departments.get(random.nextInt(departments.size()));
       client.getConnection().insert(client.getEntities().builder(Employee.TYPE)

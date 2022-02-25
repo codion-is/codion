@@ -24,7 +24,7 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
 
   private final SchemaTableModel schemaTableModel;
 
-  DefinitionTableModel(final SchemaTableModel schemaTableModel, final DefinitionSortModel sortModel) {
+  DefinitionTableModel(SchemaTableModel schemaTableModel, DefinitionSortModel sortModel) {
     super(new SwingFilteredTableColumnModel<>(createDefinitionColumns()), sortModel,
             asList(new DefaultColumnFilterModel<>(0, String.class, "%"),
                     new DefaultColumnFilterModel<>(1, String.class, "%")));
@@ -32,7 +32,7 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
   }
 
   @Override
-  public Object getValueAt(final int rowIndex, final int columnIndex) {
+  public Object getValueAt(int rowIndex, int columnIndex) {
     DefinitionRow definition = getItemAt(rowIndex);
     switch (columnIndex) {
       case DOMAIN:
@@ -52,7 +52,7 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
     return items;
   }
 
-  private static Collection<DefinitionRow> createDomainDefinitions(final Schema schema) {
+  private static Collection<DefinitionRow> createDomainDefinitions(Schema schema) {
     DatabaseDomain domain = new DatabaseDomain(domainType(schema.getName()), schema.getTables().values());
 
     return domain.getEntities().getDefinitions().stream()

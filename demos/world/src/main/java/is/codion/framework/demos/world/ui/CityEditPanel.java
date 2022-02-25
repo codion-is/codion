@@ -38,7 +38,7 @@ public final class CityEditPanel extends EntityEditPanel {
     this(editModel, null);
   }
 
-  CityEditPanel(SwingEntityEditModel editModel, final CityTableModel tableModel) {
+  CityEditPanel(SwingEntityEditModel editModel, CityTableModel tableModel) {
     super(editModel);
     this.mapKit = tableModel == null ? null : initializeMapKit(tableModel);
   }

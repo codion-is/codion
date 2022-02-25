@@ -33,7 +33,7 @@ public final class Dialogs {
    * @param component the component to display
    * @return a new {@link ComponentDialogBuilder} instance.
    */
-  public static ComponentDialogBuilder componentDialog(final JComponent component) {
+  public static ComponentDialogBuilder componentDialog(JComponent component) {
     return new DefaultComponentDialogBuilder(component);
   }
 
@@ -48,7 +48,7 @@ public final class Dialogs {
    * @param task the task to run
    * @return a new {@link ProgressWorkerDialogBuilder} instance
    */
-  public static ProgressWorkerDialogBuilder<?, ?> progressWorkerDialog(final Control.Command task) {
+  public static ProgressWorkerDialogBuilder<?, ?> progressWorkerDialog(Control.Command task) {
     requireNonNull(task);
 
     return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> {
@@ -62,7 +62,7 @@ public final class Dialogs {
    * @param <T> the worker result type
    * @return a new {@link ProgressWorkerDialogBuilder} instance
    */
-  public static <T> ProgressWorkerDialogBuilder<T, ?> progressWorkerDialog(final ProgressWorker.Task<T> task) {
+  public static <T> ProgressWorkerDialogBuilder<T, ?> progressWorkerDialog(ProgressWorker.Task<T> task) {
     requireNonNull(task);
 
     return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> task.perform()).indeterminate(true);
@@ -76,7 +76,7 @@ public final class Dialogs {
    * @return a new {@link ProgressWorkerDialogBuilder} instance
    * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
    */
-  public static <T, V> ProgressWorkerDialogBuilder<T, V> progressWorkerDialog(final ProgressWorker.ProgressTask<T, V> task) {
+  public static <T, V> ProgressWorkerDialogBuilder<T, V> progressWorkerDialog(ProgressWorker.ProgressTask<T, V> task) {
     requireNonNull(task);
 
     return new DefaultProgressWorkerDialogBuilder<>(task).indeterminate(false);
@@ -109,7 +109,7 @@ public final class Dialogs {
    * @return a new selection dialog builder
    * @throws IllegalArgumentException in case values is empty
    */
-  public static <T> SelectionDialogBuilder<T> selectionDialog(final Collection<T> values) {
+  public static <T> SelectionDialogBuilder<T> selectionDialog(Collection<T> values) {
     return new DefaultSelectionDialogBuilder<>(values);
   }
 
@@ -117,7 +117,7 @@ public final class Dialogs {
    * @param component the component to display
    * @return a new OkCancelDialogBuilder
    */
-  public static OkCancelDialogBuilder okCancelDialog(final JComponent component) {
+  public static OkCancelDialogBuilder okCancelDialog(JComponent component) {
     return new DefaultOkCancelDialogBuilder(component);
   }
 
@@ -128,7 +128,7 @@ public final class Dialogs {
    * @param valueProvider provides the values for the lookup dialog
    * @param <T> the type of values being looked up
    */
-  public static <T> void addLookupDialog(final JTextField textField, final Supplier<Collection<T>> valueProvider) {
+  public static <T> void addLookupDialog(JTextField textField, Supplier<Collection<T>> valueProvider) {
     requireNonNull(textField);
     requireNonNull(valueProvider);
     KeyEvents.builder(KeyEvent.VK_SPACE)
@@ -142,11 +142,11 @@ public final class Dialogs {
    * @param filenameField the text field for displaying the file path
    * @return the Action
    */
-  public static Action createBrowseAction(final JTextField filenameField) {
+  public static Action createBrowseAction(JTextField filenameField) {
     requireNonNull(filenameField, "filenameField");
     return new AbstractAction("...") {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(ActionEvent e) {
         try {
           File file = fileSelectionDialog()
                   .owner(filenameField)
@@ -159,7 +159,7 @@ public final class Dialogs {
     };
   }
 
-  private static String getParentPath(final String text) {
+  private static String getParentPath(String text) {
     if (nullOrEmpty(text)) {
       return null;
     }
@@ -176,14 +176,14 @@ public final class Dialogs {
     private final JTextField textField;
     private final Supplier<Collection<T>> valueProvider;
 
-    private LookupAction(final JTextField textField, final Supplier<Collection<T>> valueProvider) {
+    private LookupAction(JTextField textField, Supplier<Collection<T>> valueProvider) {
       super("Dialogs.LookupAction");
       this.textField = textField;
       this.valueProvider = valueProvider;
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
       selectionDialog(valueProvider.get())
               .owner(textField)
               .selectSingle()

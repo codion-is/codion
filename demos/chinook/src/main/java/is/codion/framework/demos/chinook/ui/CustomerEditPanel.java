@@ -15,7 +15,7 @@ import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
 public final class CustomerEditPanel extends EntityEditPanel {
 
-  public CustomerEditPanel(final SwingEntityEditModel editModel) {
+  public CustomerEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
     setDefaultTextFieldColumns(12);
   }

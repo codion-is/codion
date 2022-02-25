@@ -7,7 +7,7 @@ import is.codion.swing.common.ui.textfield.DoubleField;
 
 final class DoubleFieldValue extends AbstractTextComponentValue<Double, DoubleField> {
 
-  DoubleFieldValue(final DoubleField doubleField, final boolean nullable, final UpdateOn updateOn) {
+  DoubleFieldValue(DoubleField doubleField, boolean nullable, UpdateOn updateOn) {
     super(doubleField, nullable ? null : 0d, updateOn);
     if (!isNullable() && doubleField.getDouble() == null) {
       doubleField.setDouble(0d);
@@ -15,7 +15,7 @@ final class DoubleFieldValue extends AbstractTextComponentValue<Double, DoubleFi
   }
 
   @Override
-  protected Double getComponentValue(final DoubleField component) {
+  protected Double getComponentValue(DoubleField component) {
     Number number = component.getNumber();
     if (number == null) {
       return isNullable() ? null : 0d;
@@ -25,7 +25,7 @@ final class DoubleFieldValue extends AbstractTextComponentValue<Double, DoubleFi
   }
 
   @Override
-  protected void setComponentValue(final DoubleField component, final Double value) {
+  protected void setComponentValue(DoubleField component, Double value) {
     component.setNumber(value);
   }
 }

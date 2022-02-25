@@ -26,7 +26,7 @@ public final class ProgressDialog extends JDialog {
 
   private final JProgressBar progressBar;
 
-  ProgressDialog(final DefaultProgressDialogBuilder builder, final Window dialogOwner) {
+  ProgressDialog(DefaultProgressDialogBuilder builder, Window dialogOwner) {
     super(dialogOwner, dialogOwner == null ? ModalityType.MODELESS : ModalityType.APPLICATION_MODAL);
     setTitle(builder.title);
     if (builder.icon != null) {
@@ -42,7 +42,7 @@ public final class ProgressDialog extends JDialog {
    * Sets the progress in the underlying JProgressBar
    * @param progress the progress (0 - 100)
    */
-  public void setProgress(final int progress) {
+  public void setProgress(int progress) {
     progressBar.getModel().setValue(progress);
   }
 
@@ -50,7 +50,7 @@ public final class ProgressDialog extends JDialog {
    * Sets the message displayed on the JProgress bar
    * @param message the message
    */
-  public void setMessage(final String message) {
+  public void setMessage(String message) {
     progressBar.setString(message);
   }
 
@@ -60,7 +60,7 @@ public final class ProgressDialog extends JDialog {
    * @param westPanel a panel to display at the {@link BorderLayout#WEST} position
    * @param controls if specified buttons based on these controls are added to this dialog
    */
-  private void initializeUI(final JPanel northPanel, final JPanel westPanel, final Controls controls) {
+  private void initializeUI(JPanel northPanel, JPanel westPanel, Controls controls) {
     setLayout(Layouts.borderLayout());
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
@@ -77,8 +77,8 @@ public final class ProgressDialog extends JDialog {
     pack();
   }
 
-  private static JProgressBar initializeProgressBar(final boolean indeterminate, final boolean stringPainted,
-                                                    final Dimension size) {
+  private static JProgressBar initializeProgressBar(boolean indeterminate, boolean stringPainted,
+                                                    Dimension size) {
     JProgressBar progressBar = new JProgressBar();
     progressBar.setStringPainted(stringPainted);
     if (size != null) {
@@ -154,37 +154,37 @@ public final class ProgressDialog extends JDialog {
     private Dimension progressBarSize;
 
     @Override
-    public Builder indeterminate(final boolean indeterminate) {
+    public Builder indeterminate(boolean indeterminate) {
       this.indeterminate = indeterminate;
       return this;
     }
 
     @Override
-    public Builder stringPainted(final boolean stringPainted) {
+    public Builder stringPainted(boolean stringPainted) {
       this.stringPainted = stringPainted;
       return this;
     }
 
     @Override
-    public Builder northPanel(final JPanel northPanel) {
+    public Builder northPanel(JPanel northPanel) {
       this.northPanel = northPanel;
       return this;
     }
 
     @Override
-    public Builder westPanel(final JPanel westPanel) {
+    public Builder westPanel(JPanel westPanel) {
       this.westPanel = westPanel;
       return this;
     }
 
     @Override
-    public Builder controls(final Controls controls) {
+    public Builder controls(Controls controls) {
       this.controls = controls;
       return this;
     }
 
     @Override
-    public Builder progressBarSize(final Dimension progressBarSize) {
+    public Builder progressBarSize(Dimension progressBarSize) {
       this.progressBarSize = progressBarSize;
       return this;
     }

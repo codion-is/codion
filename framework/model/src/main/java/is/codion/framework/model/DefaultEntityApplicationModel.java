@@ -50,7 +50,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
    * @param connectionProvider the EntityConnectionProvider instance
    * @throws NullPointerException in case connectionProvider is null
    */
-  public DefaultEntityApplicationModel(final EntityConnectionProvider connectionProvider) {
+  public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, "connectionProvider");
     this.connectionProvider = connectionProvider;
     if (SCHEDULE_CONNECTION_VALIDATION.get()) {
@@ -63,7 +63,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final void login(final User user) {
+  public final void login(User user) {
     requireNonNull(user, "user");
     connectionProvider.setUser(user);
     refresh();
@@ -100,34 +100,34 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   @Override
   @SafeVarargs
-  public final void addEntityModels(final M... entityModels) {
+  public final void addEntityModels(M... entityModels) {
     requireNonNull(entityModels, "entityModels");
-    for (final M entityModel : entityModels) {
+    for (M entityModel : entityModels) {
       addEntityModel(entityModel);
     }
   }
 
   @Override
-  public final M addEntityModel(final M detailModel) {
+  public final M addEntityModel(M detailModel) {
     this.entityModels.add(detailModel);
 
     return detailModel;
   }
 
   @Override
-  public final boolean containsEntityModel(final Class<? extends M> modelClass) {
+  public final boolean containsEntityModel(Class<? extends M> modelClass) {
     return entityModels.stream()
             .anyMatch(entityModel -> entityModel.getClass().equals(modelClass));
   }
 
   @Override
-  public final boolean containsEntityModel(final EntityType entityType) {
+  public final boolean containsEntityModel(EntityType entityType) {
     return entityModels.stream()
             .anyMatch(entityModel -> entityModel.getEntityType().equals(entityType));
   }
 
   @Override
-  public final boolean containsEntityModel(final M entityModel) {
+  public final boolean containsEntityModel(M entityModel) {
     return entityModels.contains(entityModel);
   }
 
@@ -138,7 +138,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   @Override
   public final void refresh() {
-    for (final M entityModel : entityModels) {
+    for (M entityModel : entityModels) {
       if (entityModel.containsTableModel()) {
         entityModel.getTableModel().refresh();
       }
@@ -147,14 +147,14 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   @Override
   public final void clear() {
-    for (final M entityModel : entityModels) {
+    for (M entityModel : entityModels) {
       entityModel.clear();
     }
   }
 
   @Override
-  public final <T extends M> T getEntityModel(final Class<? extends M> modelClass) {
-    for (final M model : entityModels) {
+  public final <T extends M> T getEntityModel(Class<? extends M> modelClass) {
+    for (M model : entityModels) {
       if (model.getClass().equals(modelClass)) {
         return (T) model;
       }
@@ -164,8 +164,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final M getEntityModel(final EntityType entityType) {
-    for (final M entityModel : entityModels) {
+  public final M getEntityModel(EntityType entityType) {
+    for (M entityModel : entityModels) {
       if (entityModel.getEntityType().equals(entityType)) {
         return entityModel;
       }
@@ -180,7 +180,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final void setWarnAboutUnsavedData(final boolean warnAboutUnsavedData) {
+  public final void setWarnAboutUnsavedData(boolean warnAboutUnsavedData) {
     this.warnAboutUnsavedData = warnAboutUnsavedData;
   }
 
@@ -195,22 +195,22 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final void addLoginListener(final EventDataListener<User> listener) {
+  public final void addLoginListener(EventDataListener<User> listener) {
     loginEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeLoginListener(final EventDataListener<User> listener) {
+  public final void removeLoginListener(EventDataListener<User> listener) {
     loginEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addLogoutListener(final EventDataListener<User> listener) {
+  public final void addLogoutListener(EventDataListener<User> listener) {
     logoutEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeLogoutListener(final EventDataListener<User> listener) {
+  public final void removeLogoutListener(EventDataListener<User> listener) {
     logoutEvent.removeDataListener(listener);
   }
 
@@ -221,8 +221,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
     }
   }
 
-  private static boolean containsUnsavedData(final Collection<? extends EntityModel<?, ?, ?>> models) {
-    for (final EntityModel<?, ?, ?> model : models) {
+  private static boolean containsUnsavedData(Collection<? extends EntityModel<?, ?, ?>> models) {
+    for (EntityModel<?, ?, ?> model : models) {
       EntityEditModel editModel = model.getEditModel();
       if (editModel.containsUnsavedData() || containsUnsavedData(model.getDetailModels())) {
         return true;

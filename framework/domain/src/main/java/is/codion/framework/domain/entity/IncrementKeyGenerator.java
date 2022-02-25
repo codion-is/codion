@@ -16,14 +16,14 @@ final class IncrementKeyGenerator extends AbstractQueriedKeyGenerator {
 
   private final String query;
 
-  IncrementKeyGenerator(final String tableName, final String columnName) {
+  IncrementKeyGenerator(String tableName, String columnName) {
     this.query = "select max(" + requireNonNull(columnName, "columnName") + ") + 1 from " + requireNonNull(tableName,
             "tableName");
   }
 
   @Override
-  public void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
-                           final DatabaseConnection connection) throws SQLException {
+  public void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
+                           DatabaseConnection connection) throws SQLException {
     ColumnProperty<?> primaryKeyProperty = primaryKeyProperties.get(0);
     if (entity.isNull(primaryKeyProperty.getAttribute())) {
       selectAndPut(entity, primaryKeyProperty, connection);
@@ -31,7 +31,7 @@ final class IncrementKeyGenerator extends AbstractQueriedKeyGenerator {
   }
 
   @Override
-  protected String getQuery(final Database database) {
+  protected String getQuery(Database database) {
     return query;
   }
 }

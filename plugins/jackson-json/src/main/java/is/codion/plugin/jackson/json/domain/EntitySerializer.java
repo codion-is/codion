@@ -28,13 +28,13 @@ final class EntitySerializer extends StdSerializer<Entity> {
 
   private final EntityObjectMapper mapper;
 
-  EntitySerializer(final EntityObjectMapper mapper) {
+  EntitySerializer(EntityObjectMapper mapper) {
     super(Entity.class);
     this.mapper = mapper;
   }
 
   @Override
-  public void serialize(final Entity entity, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
+  public void serialize(Entity entity, JsonGenerator generator, SerializerProvider provider) throws IOException {
     requireNonNull(entity, "entity");
     generator.writeStartObject();
     generator.writeStringField("entityType", entity.getEntityType().getName());
@@ -47,18 +47,18 @@ final class EntitySerializer extends StdSerializer<Entity> {
     generator.writeEndObject();
   }
 
-  void setIncludeForeignKeyValues(final boolean includeForeignKeyValues) {
+  void setIncludeForeignKeyValues(boolean includeForeignKeyValues) {
     this.includeForeignKeyValues = includeForeignKeyValues;
   }
 
-  void setIncludeNullValues(final boolean includeNullValues) {
+  void setIncludeNullValues(boolean includeNullValues) {
     this.includeNullValues = includeNullValues;
   }
 
-  private void writeValues(final Entity entity, final JsonGenerator generator, final Set<Map.Entry<Attribute<?>, Object>> entrySet) throws IOException {
+  private void writeValues(Entity entity, JsonGenerator generator, Set<Map.Entry<Attribute<?>, Object>> entrySet) throws IOException {
     generator.writeStartObject();
     EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityType());
-    for (final Map.Entry<Attribute<?>, Object> entry : entrySet) {
+    for (Map.Entry<Attribute<?>, Object> entry : entrySet) {
       Property<?> property = definition.getProperty(entry.getKey());
       if (include(property, entity)) {
         generator.writeFieldName(property.getAttribute().getName());
@@ -68,7 +68,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
     generator.writeEndObject();
   }
 
-  private boolean include(final Property<?> property, final Entity entity) {
+  private boolean include(Property<?> property, Entity entity) {
     if (!includeForeignKeyValues && property instanceof ForeignKeyProperty) {
       return false;
     }

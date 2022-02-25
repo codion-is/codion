@@ -16,13 +16,13 @@ public final class FrameworkIkonHandler extends AbstractIkonHandler {
   private static final String DESCRIPTION_PREFIX = "fr-";
 
   @Override
-  public boolean supports(final String description) {
+  public boolean supports(String description) {
     return description != null && description.startsWith(DESCRIPTION_PREFIX);
   }
 
   @Override
-  public Ikon resolve(final String description) {
-    for (final FrameworkIkons font : FrameworkIkons.values()) {
+  public Ikon resolve(String description) {
+    for (FrameworkIkons font : FrameworkIkons.values()) {
       if (font.getDescription().equals(description)) {
         return font;
       }

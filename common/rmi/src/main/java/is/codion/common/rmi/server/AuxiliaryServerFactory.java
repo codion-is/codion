@@ -32,9 +32,9 @@ public interface AuxiliaryServerFactory<C extends Remote, A extends ServerAdmin,
    * @return a {@link AuxiliaryServerFactory} implementation of the given type from the {@link ServiceLoader}.
    * @throws IllegalStateException in case no such {@link AuxiliaryServerFactory} implementation is available.
    */
-  static <C extends Remote, A extends ServerAdmin, T extends AuxiliaryServer> AuxiliaryServerFactory<C, A, T> auxiliaryServerFactory(final String classname) {
+  static <C extends Remote, A extends ServerAdmin, T extends AuxiliaryServer> AuxiliaryServerFactory<C, A, T> auxiliaryServerFactory(String classname) {
     requireNonNull(classname, "classname");
-    for (final AuxiliaryServerFactory<C, A, T> serverProvider : ServiceLoader.load(AuxiliaryServerFactory.class)) {
+    for (AuxiliaryServerFactory<C, A, T> serverProvider : ServiceLoader.load(AuxiliaryServerFactory.class)) {
       if (serverProvider.getClass().getName().equals(classname)) {
         return serverProvider;
       }

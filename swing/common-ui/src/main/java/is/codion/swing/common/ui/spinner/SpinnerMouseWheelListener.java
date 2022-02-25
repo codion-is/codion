@@ -25,13 +25,13 @@ public final class SpinnerMouseWheelListener implements MouseWheelListener {
    * @param spinnerModel the spinner model
    * @param reversed if true then up/away decreases the value and down/towards increases it.
    */
-  private SpinnerMouseWheelListener(final SpinnerModel spinnerModel, final boolean reversed) {
+  private SpinnerMouseWheelListener(SpinnerModel spinnerModel, boolean reversed) {
     this.spinnerModel = requireNonNull(spinnerModel);
     this.reversed = reversed;
   }
 
   @Override
-  public void mouseWheelMoved(final MouseWheelEvent event) {
+  public void mouseWheelMoved(MouseWheelEvent event) {
     int wheelRotation = event.getWheelRotation();
     if (wheelRotation != 0) {
       Object newValue = (reversed ? wheelRotation > 0 : wheelRotation < 0) ? spinnerModel.getNextValue() : spinnerModel.getPreviousValue();
@@ -46,7 +46,7 @@ public final class SpinnerMouseWheelListener implements MouseWheelListener {
    * @param spinnerModel the spinner model
    * @return a new MouseWheelListener
    */
-  public static MouseWheelListener create(final SpinnerModel spinnerModel) {
+  public static MouseWheelListener create(SpinnerModel spinnerModel) {
     return new SpinnerMouseWheelListener(spinnerModel, false);
   }
 
@@ -55,7 +55,7 @@ public final class SpinnerMouseWheelListener implements MouseWheelListener {
    * @param spinnerModel the spinner model
    * @return a new MouseWheelListener
    */
-  public static MouseWheelListener createReversed(final SpinnerModel spinnerModel) {
+  public static MouseWheelListener createReversed(SpinnerModel spinnerModel) {
     return new SpinnerMouseWheelListener(spinnerModel, true);
   }
 }

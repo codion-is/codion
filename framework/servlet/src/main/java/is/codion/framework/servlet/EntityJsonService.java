@@ -64,7 +64,7 @@ public final class EntityJsonService extends AbstractEntityService {
   @POST
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("getEntities")
-  public Response getEntities(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response getEntities(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -84,7 +84,7 @@ public final class EntityJsonService extends AbstractEntityService {
   @POST
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("close")
-  public Response close(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response close(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
       request.getSession().invalidate();
@@ -105,7 +105,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("isTransactionOpen")
-  public Response isTransactionOpen(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response isTransactionOpen(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -126,7 +126,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("beginTransaction")
-  public Response beginTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response beginTransaction(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -147,7 +147,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("commitTransaction")
-  public Response commitTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response commitTransaction(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -168,7 +168,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("rollbackTransaction")
-  public Response rollbackTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response rollbackTransaction(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -190,7 +190,7 @@ public final class EntityJsonService extends AbstractEntityService {
   @POST
   @Path("procedure")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  public Response procedure(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response procedure(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
       List<Object> parameters = deserialize(request);
@@ -214,7 +214,7 @@ public final class EntityJsonService extends AbstractEntityService {
   @POST
   @Path("function")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  public Response function(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response function(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
       List<Object> parameters = deserialize(request);
@@ -237,7 +237,7 @@ public final class EntityJsonService extends AbstractEntityService {
   @POST
   @Path("report")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  public Response report(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response report(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
       List<Object> parameters = deserialize(request);
@@ -257,7 +257,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("dependencies")
-  public Response dependencies(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response dependencies(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -282,7 +282,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("count")
-  public Response count(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response count(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -304,7 +304,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("values")
-  public Response values(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response values(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -335,7 +335,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("selectByKey")
-  public Response selectByKey(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response selectByKey(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -358,7 +358,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("select")
-  public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response select(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -382,7 +382,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("insert")
-  public Response insert(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response insert(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -404,7 +404,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("update")
-  public Response update(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response update(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -426,7 +426,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("updateByCondition")
-  public Response updateByCondition(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response updateByCondition(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -449,7 +449,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("delete")
-  public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response delete(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -472,7 +472,7 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Path("deleteByKey")
-  public Response deleteByKey(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response deleteByKey(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
@@ -496,7 +496,7 @@ public final class EntityJsonService extends AbstractEntityService {
   @POST
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("writeBlob")
-  public Response writeBlob(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response writeBlob(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
       List<Object> parameters = deserialize(request);
@@ -519,7 +519,7 @@ public final class EntityJsonService extends AbstractEntityService {
   @POST
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("readBlob")
-  public Response readBlob(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  public Response readBlob(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
       List<Object> parameters = deserialize(request);
@@ -531,17 +531,17 @@ public final class EntityJsonService extends AbstractEntityService {
     }
   }
 
-  private EntityObjectMapper getEntityObjectMapper(final Entities entities) {
+  private EntityObjectMapper getEntityObjectMapper(Entities entities) {
     return entityObjectMappers.computeIfAbsent(entities.getDomainType(), domainType ->
             entityObjectMapperFactory(domainType).createEntityObjectMapper(entities));
   }
 
-  private ConditionObjectMapper getConditionObjectMapper(final Entities entities) {
+  private ConditionObjectMapper getConditionObjectMapper(Entities entities) {
     return conditionObjectMappers.computeIfAbsent(entities.getDomainType(), domainType ->
             new ConditionObjectMapper(getEntityObjectMapper(entities)));
   }
 
-  private static <T> T deserialize(final HttpServletRequest request) throws IOException, ClassNotFoundException {
+  private static <T> T deserialize(HttpServletRequest request) throws IOException, ClassNotFoundException {
     return (T) new ObjectInputStream(request.getInputStream()).readObject();
   }
 }

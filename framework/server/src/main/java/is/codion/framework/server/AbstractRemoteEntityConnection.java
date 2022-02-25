@@ -60,10 +60,10 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  protected AbstractRemoteEntityConnection(final Domain domain, final Database database,
-                                           final RemoteClient remoteClient, final int port,
-                                           final RMIClientSocketFactory clientSocketFactory,
-                                           final RMIServerSocketFactory serverSocketFactory)
+  protected AbstractRemoteEntityConnection(Domain domain, Database database,
+                                           RemoteClient remoteClient, int port,
+                                           RMIClientSocketFactory clientSocketFactory,
+                                           RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
     super(port, clientSocketFactory, serverSocketFactory);
     this.connectionHandler = new LocalConnectionHandler(domain, remoteClient, database);
@@ -124,11 +124,11 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @param timeout the number of milliseconds
    * @return true if this connection has been inactive for {@code timeout} milliseconds or longer
    */
-  final boolean hasBeenInactive(final int timeout) {
+  final boolean hasBeenInactive(int timeout) {
     return System.currentTimeMillis() - connectionHandler.getLastAccessTime() > timeout;
   }
 
-  final void setLoggingEnabled(final boolean status) {
+  final void setLoggingEnabled(boolean status) {
     connectionHandler.getMethodLogger().setEnabled(status);
   }
 
@@ -143,7 +143,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     return connectionHandler.isActive();
   }
 
-  final void addDisconnectListener(final EventDataListener<AbstractRemoteEntityConnection> listener) {
+  final void addDisconnectListener(EventDataListener<AbstractRemoteEntityConnection> listener) {
     disconnectedEvent.addDataListener(listener);
   }
 

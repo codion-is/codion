@@ -29,21 +29,21 @@ public final class EmpDeptLoginProxy implements LoginProxy {
   }
 
   @Override
-  public RemoteClient login(final RemoteClient remoteClient) throws LoginException {
+  public RemoteClient login(RemoteClient remoteClient) throws LoginException {
     authenticateUser(remoteClient.getUser());
 
     return remoteClient.withDatabaseUser(databaseUser);
   }
 
   @Override
-  public void logout(final RemoteClient remoteClient) {}
+  public void logout(RemoteClient remoteClient) {}
 
   @Override
   public void close() {
     users.clear();
   }
 
-  private void authenticateUser(final User user) throws LoginException {
+  private void authenticateUser(User user) throws LoginException {
     String password = users.get(user.getUsername());
     if (password == null || !password.equals(String.valueOf(user.getPassword()))) {
       throw new ServerAuthenticationException("Wrong username or password");

@@ -33,11 +33,11 @@ public class SwingFilteredComboBoxModelTest {
 
   private final ListDataListener listDataListener = new ListDataListener() {
     @Override
-    public void intervalAdded(final ListDataEvent e) {}
+    public void intervalAdded(ListDataEvent e) {}
     @Override
-    public void intervalRemoved(final ListDataEvent e) {}
+    public void intervalRemoved(ListDataEvent e) {}
     @Override
-    public void contentsChanged(final ListDataEvent e) {}
+    public void contentsChanged(ListDataEvent e) {}
   };
 
   @Test
@@ -242,13 +242,13 @@ public class SwingFilteredComboBoxModelTest {
       final int id;
       final String data;
 
-      Data(final int id, final String data) {
+      Data(int id, String data) {
         this.id = id;
         this.data = data;
       }
 
       @Override
-      public boolean equals(final Object o) {
+      public boolean equals(Object o) {
         if (this == o) {
           return true;
         }

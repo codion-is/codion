@@ -33,7 +33,7 @@ public interface Version extends Comparable<Version> {
    * @param major the major version
    * @return a Version
    */
-  static Version version(final int major) {
+  static Version version(int major) {
     return version(major, 0);
   }
 
@@ -43,7 +43,7 @@ public interface Version extends Comparable<Version> {
    * @param minor the minor version
    * @return a Version
    */
-  static Version version(final int major, final int minor) {
+  static Version version(int major, int minor) {
     return version(major, minor, 0);
   }
 
@@ -54,7 +54,7 @@ public interface Version extends Comparable<Version> {
    * @param patch the patch version
    * @return a Version
    */
-  static Version version(final int major, final int minor, final int patch) {
+  static Version version(int major, int minor, int patch) {
     return version(major, minor, patch, null);
   }
 
@@ -66,7 +66,7 @@ public interface Version extends Comparable<Version> {
    * @param metadata the metadata, fx. build information
    * @return a Version
    */
-  static Version version(final int major, final int minor, final int patch, final String metadata) {
+  static Version version(int major, int minor, int patch, String metadata) {
     return new DefaultVersion(major, minor, patch, metadata);
   }
 
@@ -101,7 +101,7 @@ public interface Version extends Comparable<Version> {
    * @param versionString the version string
    * @return a Version based on the given string
    */
-  static Version parse(final String versionString) {
+  static Version parse(String versionString) {
     if (versionString == null || versionString.isEmpty()) {
       throw new IllegalArgumentException("Invalid version string: " + versionString);
     }

@@ -59,7 +59,7 @@ public interface Report<T, R, P> {
    * @return a full report path
    * @throws IllegalStateException in case {@link Report#REPORT_PATH} is not specified
    */
-  static String getFullReportPath(final String reportPath) {
+  static String getFullReportPath(String reportPath) {
     final String slash = "/";
     String reportLocation = getReportPath();
     StringBuilder builder = new StringBuilder(reportLocation);

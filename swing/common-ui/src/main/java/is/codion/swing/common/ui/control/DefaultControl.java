@@ -14,13 +14,13 @@ final class DefaultControl extends AbstractControl {
 
   private final Command command;
 
-  DefaultControl(final Command command, final String name, final StateObserver enabledObserver) {
+  DefaultControl(Command command, String name, StateObserver enabledObserver) {
     super(name, enabledObserver);
     this.command = requireNonNull(command);
   }
 
   @Override
-  public void actionPerformed(final ActionEvent e) {
+  public void actionPerformed(ActionEvent e) {
     try {
       command.perform();
     }

@@ -21,7 +21,7 @@ import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selec
 public final class InsertEmployee extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   @Override
-  protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws Exception {
+  protected void perform(EmpDeptAppPanel.EmpDeptApplicationModel application) throws Exception {
     SwingEntityModel departmentModel = application.getEntityModel(Department.TYPE);
     selectRandomRow(departmentModel.getTableModel());
     SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);

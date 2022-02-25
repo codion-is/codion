@@ -104,7 +104,7 @@ public final class EventStateValue {
     // end::value[]
   }
 
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     event();
     state();
     action();

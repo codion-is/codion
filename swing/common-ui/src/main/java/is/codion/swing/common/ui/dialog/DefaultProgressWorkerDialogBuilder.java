@@ -27,73 +27,73 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   private Consumer<T> onResult;
   private Consumer<Throwable> onException;
 
-  DefaultProgressWorkerDialogBuilder(final ProgressTask<T, V> progressTask) {
+  DefaultProgressWorkerDialogBuilder(ProgressTask<T, V> progressTask) {
     this.progressTask = requireNonNull(progressTask);
     this.progressDialogBuilder = new ProgressDialog.DefaultProgressDialogBuilder();
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> indeterminate(final boolean indeterminate) {
+  public ProgressWorkerDialogBuilder<T, V> indeterminate(boolean indeterminate) {
     progressDialogBuilder.indeterminate(indeterminate);
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> stringPainted(final boolean stringPainted) {
+  public ProgressWorkerDialogBuilder<T, V> stringPainted(boolean stringPainted) {
     progressDialogBuilder.stringPainted(stringPainted);
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> northPanel(final JPanel northPanel) {
+  public ProgressWorkerDialogBuilder<T, V> northPanel(JPanel northPanel) {
     progressDialogBuilder.northPanel(northPanel);
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> westPanel(final JPanel westPanel) {
+  public ProgressWorkerDialogBuilder<T, V> westPanel(JPanel westPanel) {
     progressDialogBuilder.westPanel(westPanel);
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> controls(final Controls controls) {
+  public ProgressWorkerDialogBuilder<T, V> controls(Controls controls) {
     progressDialogBuilder.controls(controls);
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> progressBarSize(final Dimension progressBarSize) {
+  public ProgressWorkerDialogBuilder<T, V> progressBarSize(Dimension progressBarSize) {
     progressDialogBuilder.progressBarSize(progressBarSize);
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> onResult(final Runnable onResult) {
+  public ProgressWorkerDialogBuilder<T, V> onResult(Runnable onResult) {
     return onResult(result -> onResult.run());
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> onResult(final Consumer<T> onResult) {
+  public ProgressWorkerDialogBuilder<T, V> onResult(Consumer<T> onResult) {
     this.onResult = onResult;
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> onResult(final String resultMessage) {
+  public ProgressWorkerDialogBuilder<T, V> onResult(String resultMessage) {
     requireNonNull(resultMessage);
 
     return onResult(result -> JOptionPane.showMessageDialog(owner, resultMessage, null, JOptionPane.INFORMATION_MESSAGE));
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> onException(final Consumer<Throwable> onException) {
+  public ProgressWorkerDialogBuilder<T, V> onException(Consumer<Throwable> onException) {
     this.onException = onException;
     return this;
   }
 
   @Override
-  public ProgressWorkerDialogBuilder<T, V> onException(final String exceptionTitle) {
+  public ProgressWorkerDialogBuilder<T, V> onException(String exceptionTitle) {
     return onException(exception -> {
       if (!(exception instanceof CancelException)) {
         new DefaultExceptionDialogBuilder()
@@ -139,7 +139,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
             .build();
   }
 
-  private void handleException(final Throwable exception) {
+  private void handleException(Throwable exception) {
     if (!(exception instanceof CancelException)) {
       if (onException != null) {
         onException.accept(exception);
@@ -153,11 +153,11 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
     }
   }
 
-  private String getMessage(final List<V> chunks) {
+  private String getMessage(List<V> chunks) {
     return chunks.isEmpty() ? null : Objects.toString(chunks.get(chunks.size() - 1));
   }
 
-  private static void closeDialog(final ProgressDialog dialog) {
+  private static void closeDialog(ProgressDialog dialog) {
     dialog.setVisible(false);
     dialog.dispose();
   }

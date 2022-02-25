@@ -34,7 +34,7 @@ public interface SelectQuery {
    * @param from the from clause, without the FROM keyword.
    * @return a new {@link SelectQuery.Builder} instance.
    */
-  static Builder builder(final String from) {
+  static Builder builder(String from) {
     return new DefaultSelectQueryBuilder(from);
   }
 

@@ -96,7 +96,7 @@ public final class Clients {
     try {
       File file = File.createTempFile("combinedTrustStore", "tmp");
       file.deleteOnExit();
-      try (final OutputStream outputStream = new FileOutputStream(file)) {
+      try (OutputStream outputStream = new FileOutputStream(file)) {
         store.store(outputStream, password.toCharArray());
       }
       LOG.debug("Classpath trust store written to file: {} -> {}", JAVAX_NET_TRUSTSTORE, file);

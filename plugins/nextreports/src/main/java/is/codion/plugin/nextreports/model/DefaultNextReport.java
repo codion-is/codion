@@ -34,16 +34,16 @@ final class DefaultNextReport extends AbstractReport<ro.nextreports.engine.Repor
 
   private final String format;
 
-  DefaultNextReport(final String reportPath, final String format) {
+  DefaultNextReport(String reportPath, String format) {
     super(reportPath);
     this.format = requireNonNull(format, "format");
   }
 
   @Override
-  public NextReportsResult fillReport(final Connection connection, final Map<String, Object> parameters) throws ReportException {
+  public NextReportsResult fillReport(Connection connection, Map<String, Object> parameters) throws ReportException {
     requireNonNull(connection, "connection");
     File file = null;
-    try (final OutputStream output = new FileOutputStream(file = File.createTempFile("NextReportsWrapper", null, null))) {
+    try (OutputStream output = new FileOutputStream(file = File.createTempFile("NextReportsWrapper", null, null))) {
       FluentReportRunner.report(loadReport())
               .connectTo(connection)
               .withQueryTimeout(60)

@@ -90,7 +90,7 @@ public class SelectedValuesTest {
     return selectedItem;
   }
 
-  public void setSelectedItem(final String selectedItem) {
+  public void setSelectedItem(String selectedItem) {
     this.selectedItem = selectedItem;
     selectedItemChangedEvent.onEvent();
   }

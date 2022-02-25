@@ -19,7 +19,7 @@ public final class MemoryUsageField extends JTextField {
   /**
    * @param updateIntervalMilliseconds the update interval
    */
-  public MemoryUsageField(final int updateIntervalMilliseconds) {
+  public MemoryUsageField(int updateIntervalMilliseconds) {
     super(8);
     setEditable(false);
     setHorizontalAlignment(SwingConstants.CENTER);

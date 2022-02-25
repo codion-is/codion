@@ -19,7 +19,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
   private final JFormattedTextField.AbstractFormatter formatter;
   private final Format format;
 
-  FormattedTextComponentValue(final C textComponent, final Format format, final UpdateOn updateOn) {
+  FormattedTextComponentValue(C textComponent, Format format, UpdateOn updateOn) {
     super(textComponent, null, updateOn);
     if (textComponent instanceof JFormattedTextField) {
       this.formatter = ((JFormattedTextField) textComponent).getFormatter();
@@ -31,7 +31,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
   }
 
   @Override
-  protected final V getComponentValue(final C component) {
+  protected final V getComponentValue(C component) {
     String formattedText = getFormattedText(component);
     if (nullOrEmpty(formattedText)) {
       return null;
@@ -41,7 +41,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
   }
 
   @Override
-  protected final void setComponentValue(final C component, final V value) {
+  protected final void setComponentValue(C component, V value) {
     component.setText(value == null ? "" : formatTextFromValue(value));
   }
 
@@ -51,7 +51,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
    * @param value the value to return as String
    * @return a formatted String representation of the given value, an empty string if the value is null
    */
-  protected String formatTextFromValue(final V value) {
+  protected String formatTextFromValue(V value) {
     return format.format(value);
   }
 
@@ -62,7 +62,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
    * @param text the text from which to parse a value
    * @return a value from the given text, or null if the parsing did not yield a valid value
    */
-  protected V parseValueFromText(final String text) {
+  protected V parseValueFromText(String text) {
     try {
       return (V) format.parseObject(text);
     }
@@ -71,7 +71,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
     }
   }
 
-  private String getFormattedText(final C component) {
+  private String getFormattedText(C component) {
     try {
       String text = component.getText();
       if (formatter == null) {

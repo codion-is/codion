@@ -40,7 +40,7 @@ public final class KeyEvents {
    * @param keyEvent the key event
    * @return a {@link Builder} instance.
    */
-  public static Builder builder(final int keyEvent) {
+  public static Builder builder(int keyEvent) {
     return new DefaultBuilder()
             .keyEvent(keyEvent);
   }
@@ -117,19 +117,19 @@ public final class KeyEvents {
     private Action action;
 
     @Override
-    public Builder keyEvent(final int keyEvent) {
+    public Builder keyEvent(int keyEvent) {
       this.keyEvent = keyEvent;
       return this;
     }
 
     @Override
-    public Builder modifiers(final int modifiers) {
+    public Builder modifiers(int modifiers) {
       this.modifiers = modifiers;
       return this;
     }
 
     @Override
-    public Builder condition(final int condition) {
+    public Builder condition(int condition) {
       this.condition = condition;
       return this;
     }
@@ -147,7 +147,7 @@ public final class KeyEvents {
     }
 
     @Override
-    public Builder action(final Action action) {
+    public Builder action(Action action) {
       this.action = action;
       return this;
     }
@@ -158,7 +158,7 @@ public final class KeyEvents {
     }
 
     @Override
-    public Builder enable(final JComponent component) {
+    public Builder enable(JComponent component) {
       requireNonNull(component, "component");
       if (action == null) {
         throw new IllegalStateException("Can not enable a key event without an action");
@@ -174,7 +174,7 @@ public final class KeyEvents {
     }
 
     @Override
-    public Builder disable(final JComponent component) {
+    public Builder disable(JComponent component) {
       requireNonNull(component, "component");
       if (action == null) {
         throw new IllegalStateException("Can not disable a key event without an action");
@@ -189,7 +189,7 @@ public final class KeyEvents {
       return this;
     }
 
-    private String createDefaultActionName(final JComponent component) {
+    private String createDefaultActionName(JComponent component) {
       return component.getClass().getSimpleName() + keyEvent + modifiers + (onKeyRelease ? "keyReleased" : "keyPressed");
     }
   }

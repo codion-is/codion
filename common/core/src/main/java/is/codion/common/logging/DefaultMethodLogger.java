@@ -35,37 +35,37 @@ final class DefaultMethodLogger implements MethodLogger {
 
   private boolean enabled = false;
 
-  DefaultMethodLogger(final int maxSize, final Function<Object, String> argumentStringProvider) {
+  DefaultMethodLogger(int maxSize, Function<Object, String> argumentStringProvider) {
     this.maxSize = maxSize;
     this.argumentStringProvider = requireNonNull(argumentStringProvider, "argumentStringProvider");
   }
 
   @Override
-  public synchronized void logAccess(final String method) {
+  public synchronized void logAccess(String method) {
     if (enabled) {
       callStack.push(new DefaultEntry(method, null));
     }
   }
 
   @Override
-  public synchronized void logAccess(final String method, final Object argument) {
+  public synchronized void logAccess(String method, Object argument) {
     if (enabled) {
       callStack.push(new DefaultEntry(method, argumentStringProvider.apply(argument)));
     }
   }
 
   @Override
-  public Entry logExit(final String method) {
+  public Entry logExit(String method) {
     return logExit(method, null);
   }
 
   @Override
-  public Entry logExit(final String method, final Throwable exception) {
+  public Entry logExit(String method, Throwable exception) {
     return logExit(method, exception, null);
   }
 
   @Override
-  public synchronized Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+  public synchronized Entry logExit(String method, Throwable exception, String exitMessage) {
     if (!enabled) {
       return null;
     }
@@ -98,7 +98,7 @@ final class DefaultMethodLogger implements MethodLogger {
   }
 
   @Override
-  public synchronized void setEnabled(final boolean enabled) {
+  public synchronized void setEnabled(boolean enabled) {
     this.enabled = enabled;
     entries.clear();
     callStack.clear();
@@ -131,7 +131,7 @@ final class DefaultMethodLogger implements MethodLogger {
      * @param method the method being logged
      * @param accessMessage the message associated with accessing the method
      */
-    private DefaultEntry(final String method, final String accessMessage) {
+    private DefaultEntry(String method, String accessMessage) {
       this(method, accessMessage, System.currentTimeMillis(), System.nanoTime());
     }
 
@@ -142,7 +142,7 @@ final class DefaultMethodLogger implements MethodLogger {
      * @param accessTime the time to associate with accessing the method
      * @param accessTimeNano the nano time to associate with accessing the method
      */
-    private DefaultEntry(final String method, final String accessMessage, final long accessTime, final long accessTimeNano) {
+    private DefaultEntry(String method, String accessMessage, long accessTime, long accessTimeNano) {
       this.method = method;
       this.accessTime = accessTime;
       this.accessTimeNano = accessTimeNano;
@@ -190,7 +190,7 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     @Override
-    public void append(final StringBuilder builder) {
+    public void append(StringBuilder builder) {
       builder.append(this).append("\n");
       appendLogEntries(builder, getChildEntries(), 1);
     }
@@ -201,7 +201,7 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     @Override
-    public String toString(final int indentation) {
+    public String toString(int indentation) {
       String indentString = indentation > 0 ? Text.padString("", indentation, '\t', Text.Alignment.RIGHT) : "";
       StringBuilder stringBuilder = new StringBuilder();
       LocalDateTime accessDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(accessTime), TimeZone.getDefault().toZoneId());
@@ -228,7 +228,7 @@ final class DefaultMethodLogger implements MethodLogger {
      * Adds a child entry to this log entry
      * @param childEntry the child entry to add
      */
-    private void addChildEntry(final Entry childEntry) {
+    private void addChildEntry(Entry childEntry) {
       childEntries.addLast(childEntry);
     }
 
@@ -243,7 +243,7 @@ final class DefaultMethodLogger implements MethodLogger {
      * @param exitTime the exit time
      * @param exitTimeNano the exit time in nanoseconds
      */
-    private void setExitTime(final long exitTime, final long exitTimeNano) {
+    private void setExitTime(long exitTime, long exitTimeNano) {
       this.exitTime = exitTime;
       this.exitTimeNano = exitTimeNano;
     }
@@ -251,7 +251,7 @@ final class DefaultMethodLogger implements MethodLogger {
     /**
      * @param exception the exception that occurred during the method call logged by this entry
      */
-    private void setException(final Throwable exception) {
+    private void setException(Throwable exception) {
       if (exception != null) {
         this.stackTrace = getStackTrace(exception);
       }
@@ -260,7 +260,7 @@ final class DefaultMethodLogger implements MethodLogger {
     /**
      * @param exitMessage the exit message
      */
-    private void setExitMessage(final String exitMessage) {
+    private void setExitMessage(String exitMessage) {
       this.exitMessage = exitMessage;
     }
 
@@ -270,14 +270,14 @@ final class DefaultMethodLogger implements MethodLogger {
      * @param entries the List containing the entries to append
      * @param indentationLevel the indentation to use for the given log entries
      */
-    private static void appendLogEntries(final StringBuilder log, final List<Entry> entries, final int indentationLevel) {
-      for (final Entry entry : entries) {
+    private static void appendLogEntries(StringBuilder log, List<Entry> entries, int indentationLevel) {
+      for (Entry entry : entries) {
         log.append(entry.toString(indentationLevel)).append("\n");
         appendLogEntries(log, entry.getChildEntries(), indentationLevel + 1);
       }
     }
 
-    private static String getStackTrace(final Throwable exception) {
+    private static String getStackTrace(Throwable exception) {
       StringWriter sw = new StringWriter();
       exception.printStackTrace(new PrintWriter(sw));
 

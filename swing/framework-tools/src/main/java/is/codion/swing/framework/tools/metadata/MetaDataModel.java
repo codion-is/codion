@@ -22,7 +22,7 @@ public final class MetaDataModel {
   private final Map<String, Schema> schemas;
   private final DatabaseMetaData metaData;
 
-  public MetaDataModel(final DatabaseMetaData metaData) throws DatabaseException {
+  public MetaDataModel(DatabaseMetaData metaData) throws DatabaseException {
     this.metaData = requireNonNull(metaData);
     try {
       this.schemas = discoverSchemas(metaData);
@@ -36,7 +36,7 @@ public final class MetaDataModel {
     return unmodifiableCollection(schemas.values());
   }
 
-  public void populateSchema(final String schemaName, final EventDataListener<String> schemaNotifier) {
+  public void populateSchema(String schemaName, EventDataListener<String> schemaNotifier) {
     Schema schema = schemas.get(requireNonNull(schemaName));
     if (schema == null) {
       throw new IllegalArgumentException("Schema not found: " + schemaName);
@@ -44,13 +44,13 @@ public final class MetaDataModel {
     schema.populate(metaData, schemas, schemaNotifier);
   }
 
-  private static Map<String, Schema> discoverSchemas(final DatabaseMetaData metaData) throws SQLException {
+  private static Map<String, Schema> discoverSchemas(DatabaseMetaData metaData) throws SQLException {
     Map<String, Schema> schemas = new HashMap<>();
-    try (final ResultSet resultSet = metaData.getCatalogs()) {
+    try (ResultSet resultSet = metaData.getCatalogs()) {
       schemas.putAll(new SchemaPacker("TABLE_CAT").pack(resultSet).stream()
               .collect(toMap(Schema::getName, schema -> schema)));
     }
-    try (final ResultSet resultSet = metaData.getSchemas()) {
+    try (ResultSet resultSet = metaData.getSchemas()) {
       schemas.putAll(new SchemaPacker("TABLE_SCHEM").pack(resultSet).stream()
               .collect(toMap(Schema::getName, schema -> schema)));
     }

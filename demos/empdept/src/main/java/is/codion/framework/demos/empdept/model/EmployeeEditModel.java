@@ -15,7 +15,7 @@ import java.util.Objects;
 // tag::constructor[]
 public final class EmployeeEditModel extends SwingEntityEditModel {
 
-  public EmployeeEditModel(final EntityConnectionProvider connectionProvider) {
+  public EmployeeEditModel(EntityConnectionProvider connectionProvider) {
     super(Employee.TYPE, connectionProvider);
     initializeComboBoxModels(Employee.MGR_FK, Employee.DEPARTMENT_FK);
     bindEvents();
@@ -25,7 +25,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   // tag::createForeignKeyComboBox[]
   /** Providing a custom ComboBoxModel for the manager attribute, which only shows managers and the president */
   @Override
-  public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKey foreignKey) {
+  public SwingEntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
     SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
     if (foreignKey.equals(Employee.MGR_FK)) {
       //Customize the null value so that it displays the chosen

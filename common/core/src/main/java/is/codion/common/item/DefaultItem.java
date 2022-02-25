@@ -13,7 +13,7 @@ final class DefaultItem<T> extends AbstractItem<T> {
 
   private final String caption;
 
-  DefaultItem(final T value, final String caption) {
+  DefaultItem(T value, String caption) {
     super(value);
     this.caption = requireNonNull(caption, "caption");
   }

@@ -26,8 +26,8 @@ public final class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxMo
    * @param attribute the underlying attribute
    * @param nullString the String to use to represent a null value
    */
-  public SwingPropertyComboBoxModel(final EntityConnectionProvider connectionProvider,
-                                    final Attribute<T> attribute, final String nullString) {
+  public SwingPropertyComboBoxModel(EntityConnectionProvider connectionProvider,
+                                    Attribute<T> attribute, String nullString) {
     this(new DefaultValueSupplier<>(requireNonNull(connectionProvider, "connectionProvider"), attribute), nullString);
   }
 
@@ -35,7 +35,7 @@ public final class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxMo
    * @param valueSupplier provides the values to show in this combo box model
    * @param nullString the String to use to represent a null value
    */
-  public SwingPropertyComboBoxModel(final Supplier<Collection<T>> valueSupplier, final String nullString) {
+  public SwingPropertyComboBoxModel(Supplier<Collection<T>> valueSupplier, String nullString) {
     super(nullString);
     this.valueSupplier = requireNonNull(valueSupplier, "valueSupplier");
   }
@@ -50,7 +50,7 @@ public final class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxMo
     private final EntityConnectionProvider connectionProvider;
     private final Attribute<T> attribute;
 
-    private DefaultValueSupplier(final EntityConnectionProvider connectionProvider, final Attribute<T> attribute) {
+    private DefaultValueSupplier(EntityConnectionProvider connectionProvider, Attribute<T> attribute) {
       this.connectionProvider = connectionProvider;
       this.attribute = requireNonNull(attribute, "attribute");
     }

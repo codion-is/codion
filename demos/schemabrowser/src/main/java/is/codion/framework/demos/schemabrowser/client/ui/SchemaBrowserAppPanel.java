@@ -30,7 +30,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   }
 
   @Override
-  protected List<EntityPanel> initializeEntityPanels(final SchemaBrowserApplicationModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(SchemaBrowserApplicationModel applicationModel) {
     SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
     SwingEntityModel tableModel = schemaModel.getDetailModel(Table.TYPE);
     SwingEntityModel columnModel = tableModel.getDetailModel(Column.TYPE);
@@ -56,7 +56,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   }
 
   @Override
-  protected SchemaBrowserApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
+  protected SchemaBrowserApplicationModel initializeApplicationModel(EntityConnectionProvider connectionProvider) throws CancelException {
     return new SchemaBrowserApplicationModel(connectionProvider);
   }
 
@@ -65,7 +65,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     return "is.codion.demo.SchemaBrowser";
   }
 
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser");
@@ -76,7 +76,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   }
 
   public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {
-    public SchemaBrowserApplicationModel(final EntityConnectionProvider connectionProvider) {
+    public SchemaBrowserApplicationModel(EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
       SwingEntityModel schemaModel = new SwingEntityModel(Schema.TYPE, connectionProvider);
       SwingEntityModel tableModel = new SwingEntityModel(Table.TYPE, connectionProvider);

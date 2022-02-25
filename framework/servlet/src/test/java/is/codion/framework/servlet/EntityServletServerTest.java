@@ -608,14 +608,14 @@ public class EntityServletServerTest {
     return builder;
   }
 
-  private static <T> T deserializeResponse(final CloseableHttpResponse response) throws IOException, ClassNotFoundException {
+  private static <T> T deserializeResponse(CloseableHttpResponse response) throws IOException, ClassNotFoundException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     response.getEntity().writeTo(outputStream);
 
     return Serializer.deserialize(outputStream.toByteArray());
   }
 
-  private static HttpClientContext createHttpContext(final User user, final HttpHost targetHost) {
+  private static HttpClientContext createHttpContext(User user, HttpHost targetHost) {
     CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     credentialsProvider.setCredentials(
             new AuthScope(targetHost.getHostName(), targetHost.getPort()),

@@ -24,7 +24,7 @@ final class EntityResultIterator implements ResultIterator<Entity> {
    * @param resultSet the ResultSet, closed on exception or exhaustion
    * @param resultPacker the ResultPacker
    */
-  EntityResultIterator(final Statement statement, final ResultSet resultSet, final ResultPacker<Entity> resultPacker) {
+  EntityResultIterator(Statement statement, ResultSet resultSet, ResultPacker<Entity> resultPacker) {
     this.statement = statement;
     this.resultSet = resultSet;
     this.resultPacker = resultPacker;

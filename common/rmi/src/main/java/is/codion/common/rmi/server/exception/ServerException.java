@@ -8,7 +8,7 @@ package is.codion.common.rmi.server.exception;
  */
 public class ServerException extends Exception {
 
-  ServerException(final String message) {
+  ServerException(String message) {
     super(message);
   }
 }

@@ -22,12 +22,12 @@ final class DefaultTaskSchedulerBuilder implements TaskScheduler.Builder {
     return thread;
   };
 
-  DefaultTaskSchedulerBuilder(final Runnable task) {
+  DefaultTaskSchedulerBuilder(Runnable task) {
     this.task = requireNonNull(task);
   }
 
   @Override
-  public TaskScheduler.Builder interval(final int interval) {
+  public TaskScheduler.Builder interval(int interval) {
     if (interval <= 0) {
       throw new IllegalArgumentException("Interval must be a positive integer");
     }
@@ -36,7 +36,7 @@ final class DefaultTaskSchedulerBuilder implements TaskScheduler.Builder {
   }
 
   @Override
-  public TaskScheduler.Builder initialDelay(final int initialDelay) {
+  public TaskScheduler.Builder initialDelay(int initialDelay) {
     if (initialDelay < 0) {
       throw new IllegalArgumentException("Initial delay can not be negative");
     }
@@ -45,13 +45,13 @@ final class DefaultTaskSchedulerBuilder implements TaskScheduler.Builder {
   }
 
   @Override
-  public TaskScheduler.Builder timeUnit(final TimeUnit timeUnit) {
+  public TaskScheduler.Builder timeUnit(TimeUnit timeUnit) {
     this.timeUnit = requireNonNull(timeUnit);
     return this;
   }
 
   @Override
-  public TaskScheduler.Builder threadFactory(final ThreadFactory threadFactory) {
+  public TaskScheduler.Builder threadFactory(ThreadFactory threadFactory) {
     this.threadFactory = requireNonNull(threadFactory);
     return this;
   }

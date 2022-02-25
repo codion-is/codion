@@ -22,50 +22,50 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
   private int iconTextGap = -1;
   private JComponent component;
 
-  DefaultLabelBuilder(final Icon icon) {
+  DefaultLabelBuilder(Icon icon) {
     this.text = null;
     icon(requireNonNull(icon));
     horizontalAlignment(SwingConstants.CENTER);
     focusable(false);
   }
 
-  DefaultLabelBuilder(final String text) {
+  DefaultLabelBuilder(String text) {
     this.text = text;
     focusable(false);
   }
 
-  DefaultLabelBuilder(final ValueObserver<T> linkedValueObserver) {
+  DefaultLabelBuilder(ValueObserver<T> linkedValueObserver) {
     this.text = null;
     focusable(false);
     linkedValueObserver(requireNonNull(linkedValueObserver));
   }
 
   @Override
-  public LabelBuilder<T> horizontalAlignment(final int horizontalAlignment) {
+  public LabelBuilder<T> horizontalAlignment(int horizontalAlignment) {
     this.horizontalAlignment = horizontalAlignment;
     return this;
   }
 
   @Override
-  public LabelBuilder<T> displayedMnemonic(final int displayedMnemonic) {
+  public LabelBuilder<T> displayedMnemonic(int displayedMnemonic) {
     this.displayedMnemonic = displayedMnemonic;
     return this;
   }
 
   @Override
-  public LabelBuilder<T> labelFor(final JComponent component) {
+  public LabelBuilder<T> labelFor(JComponent component) {
     this.component = component;
     return this;
   }
 
   @Override
-  public LabelBuilder<T> icon(final Icon icon) {
+  public LabelBuilder<T> icon(Icon icon) {
     this.icon = icon;
     return this;
   }
 
   @Override
-  public LabelBuilder<T> iconTextGap(final int iconTextGap) {
+  public LabelBuilder<T> iconTextGap(int iconTextGap) {
     this.iconTextGap = iconTextGap;
     return this;
   }
@@ -87,22 +87,22 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
   }
 
   @Override
-  protected ComponentValue<T, JLabel> buildComponentValue(final JLabel component) {
+  protected ComponentValue<T, JLabel> buildComponentValue(JLabel component) {
     return new AbstractComponentValue<T, JLabel>(component) {
       @Override
-      protected T getComponentValue(final JLabel component) {
+      protected T getComponentValue(JLabel component) {
         return null;
       }
 
       @Override
-      protected void setComponentValue(final JLabel component, final T value) {
+      protected void setComponentValue(JLabel component, T value) {
         component.setText(value == null ? "" : value.toString());
       }
     };
   }
 
   @Override
-  protected void setInitialValue(final JLabel component, final T initialValue) {
+  protected void setInitialValue(JLabel component, T initialValue) {
     component.setText(initialValue.toString());
   }
 }

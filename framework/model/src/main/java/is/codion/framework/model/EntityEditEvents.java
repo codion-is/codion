@@ -40,7 +40,7 @@ public final class EntityEditEvents {
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
-  public static void addInsertListener(final EntityType entityType, final EventDataListener<List<Entity>> listener) {
+  public static void addInsertListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
     EDIT_LISTENER.addInsertListener(entityType, listener);
   }
 
@@ -51,7 +51,7 @@ public final class EntityEditEvents {
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
-  public static void addUpdateListener(final EntityType entityType, final EventDataListener<Map<Key, Entity>> listener) {
+  public static void addUpdateListener(EntityType entityType, EventDataListener<Map<Key, Entity>> listener) {
     EDIT_LISTENER.addUpdateListener(entityType, listener);
   }
 
@@ -62,7 +62,7 @@ public final class EntityEditEvents {
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
-  public static void addDeleteListener(final EntityType entityType, final EventDataListener<List<Entity>> listener) {
+  public static void addDeleteListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
     EDIT_LISTENER.addDeleteListener(entityType, listener);
   }
 
@@ -71,7 +71,7 @@ public final class EntityEditEvents {
    * @param entityType the entityType
    * @param listener the listener to remove
    */
-  public static void removeInsertListener(final EntityType entityType, final EventDataListener<List<Entity>> listener) {
+  public static void removeInsertListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
     EDIT_LISTENER.removeInsertListener(entityType, listener);
   }
 
@@ -80,7 +80,7 @@ public final class EntityEditEvents {
    * @param entityType the entityType
    * @param listener the listener to remove
    */
-  public static void removeUpdateListener(final EntityType entityType, final EventDataListener<Map<Key, Entity>> listener) {
+  public static void removeUpdateListener(EntityType entityType, EventDataListener<Map<Key, Entity>> listener) {
     EDIT_LISTENER.removeUpdateListener(entityType, listener);
   }
 
@@ -89,7 +89,7 @@ public final class EntityEditEvents {
    * @param entityType the entityType
    * @param listener the listener to remove
    */
-  public static void removeDeleteListener(final EntityType entityType, final EventDataListener<List<Entity>> listener) {
+  public static void removeDeleteListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
     EDIT_LISTENER.removeDeleteListener(entityType, listener);
   }
 
@@ -97,7 +97,7 @@ public final class EntityEditEvents {
    * Notifies insert
    * @param insertedEntities the inserted entities
    */
-  public static void notifyInserted(final List<Entity> insertedEntities) {
+  public static void notifyInserted(List<Entity> insertedEntities) {
     EDIT_LISTENER.notifyInserted(requireNonNull(insertedEntities));
   }
 
@@ -105,7 +105,7 @@ public final class EntityEditEvents {
    * Notifies update
    * @param updatedEntities the updated entities mapped to their original primary key
    */
-  public static void notifyUpdated(final Map<Key, Entity> updatedEntities) {
+  public static void notifyUpdated(Map<Key, Entity> updatedEntities) {
     EDIT_LISTENER.notifyUpdated(requireNonNull(updatedEntities));
   }
 
@@ -113,7 +113,7 @@ public final class EntityEditEvents {
    * Notifies delete
    * @param deletedEntities the deleted entities
    */
-  public static void notifyDeleted(final List<Entity> deletedEntities) {
+  public static void notifyDeleted(List<Entity> deletedEntities) {
     EDIT_LISTENER.notifyDeleted(requireNonNull(deletedEntities));
   }
 
@@ -123,31 +123,31 @@ public final class EntityEditEvents {
     private final Map<EntityType, Listeners<Map<Key, Entity>>> updateListeners = new ConcurrentHashMap<>();
     private final Map<EntityType, Listeners<List<Entity>>> deleteListeners = new ConcurrentHashMap<>();
 
-    private void addInsertListener(final EntityType entityType, final EventDataListener<List<Entity>> listener) {
+    private void addInsertListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
       getInsertListeners(entityType).addDataListener(listener);
     }
 
-    private void removeInsertListener(final EntityType entityType, final EventDataListener<List<Entity>> listener) {
+    private void removeInsertListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
       getInsertListeners(entityType).removeDataListener(listener);
     }
 
-    private void addUpdateListener(final EntityType entityType, final EventDataListener<Map<Key, Entity>> listener) {
+    private void addUpdateListener(EntityType entityType, EventDataListener<Map<Key, Entity>> listener) {
       getUpdateListeners(entityType).addDataListener(listener);
     }
 
-    private void removeUpdateListener(final EntityType entityType, final EventDataListener<Map<Key, Entity>> listener) {
+    private void removeUpdateListener(EntityType entityType, EventDataListener<Map<Key, Entity>> listener) {
       getUpdateListeners(entityType).removeDataListener(listener);
     }
 
-    private void addDeleteListener(final EntityType entityType, final EventDataListener<List<Entity>> listener) {
+    private void addDeleteListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
       getDeleteListeners(entityType).addDataListener(listener);
     }
 
-    private void removeDeleteListener(final EntityType entityType, final EventDataListener<List<Entity>> listener) {
+    private void removeDeleteListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
       getDeleteListeners(entityType).removeDataListener(listener);
     }
 
-    private void notifyInserted(final List<Entity> insertedEntities) {
+    private void notifyInserted(List<Entity> insertedEntities) {
       mapToType(insertedEntities).forEach((entityType, inserted) -> {
         Listeners<List<Entity>> event = insertListeners.get(entityType);
         if (event != null) {
@@ -156,7 +156,7 @@ public final class EntityEditEvents {
       });
     }
 
-    private void notifyUpdated(final Map<Key, Entity> updatedEntities) {
+    private void notifyUpdated(Map<Key, Entity> updatedEntities) {
       map(updatedEntities.entrySet(), entry -> entry.getKey().getEntityType()).forEach((entityType, updated) -> {
         Map<Key, Entity> updateMap = new HashMap<>();
         updated.forEach(entry -> updateMap.put(entry.getKey(), entry.getValue()));
@@ -167,7 +167,7 @@ public final class EntityEditEvents {
       });
     }
 
-    private void notifyDeleted(final List<Entity> deletedEntities) {
+    private void notifyDeleted(List<Entity> deletedEntities) {
       mapToType(deletedEntities).forEach((entityType, entities) -> {
         Listeners<List<Entity>> event = deleteListeners.get(entityType);
         if (event != null) {
@@ -176,15 +176,15 @@ public final class EntityEditEvents {
       });
     }
 
-    private Listeners<List<Entity>> getInsertListeners(final EntityType entityType) {
+    private Listeners<List<Entity>> getInsertListeners(EntityType entityType) {
       return insertListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
     }
 
-    private Listeners<Map<Key, Entity>> getUpdateListeners(final EntityType entityType) {
+    private Listeners<Map<Key, Entity>> getUpdateListeners(EntityType entityType) {
       return updateListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
     }
 
-    private Listeners<List<Entity>> getDeleteListeners(final EntityType entityType) {
+    private Listeners<List<Entity>> getDeleteListeners(EntityType entityType) {
       return deleteListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
     }
 
@@ -192,7 +192,7 @@ public final class EntityEditEvents {
 
       private final List<WeakReference<EventDataListener<T>>> listenerReferences = new ArrayList<>();
 
-      private synchronized void onEvent(final T data) {
+      private synchronized void onEvent(T data) {
         requireNonNull(data);
         Iterator<WeakReference<EventDataListener<T>>> iterator = listenerReferences.iterator();
         while (iterator.hasNext()) {
@@ -206,9 +206,9 @@ public final class EntityEditEvents {
         }
       }
 
-      private synchronized void addDataListener(final EventDataListener<T> listener) {
+      private synchronized void addDataListener(EventDataListener<T> listener) {
         requireNonNull(listener);
-        for (final WeakReference<EventDataListener<T>> reference : listenerReferences) {
+        for (WeakReference<EventDataListener<T>> reference : listenerReferences) {
           if (reference.get() == listener) {
             return;
           }
@@ -216,7 +216,7 @@ public final class EntityEditEvents {
         listenerReferences.add(new WeakReference<>(listener));
       }
 
-      private synchronized void removeDataListener(final EventDataListener<T> listener) {
+      private synchronized void removeDataListener(EventDataListener<T> listener) {
         requireNonNull(listener);
         listenerReferences.removeIf(reference -> reference.get() == null || reference.get() == listener);
       }

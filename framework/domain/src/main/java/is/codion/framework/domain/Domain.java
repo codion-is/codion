@@ -86,7 +86,7 @@ public interface Domain {
    * @param connection the connection to configure
    * @throws DatabaseException in case of an exception
    */
-  default void configureConnection(final DatabaseConnection connection) throws DatabaseException {}
+  default void configureConnection(DatabaseConnection connection) throws DatabaseException {}
 
   /**
    * @return a list containing all the Domains registered with {@link ServiceLoader}.
@@ -94,7 +94,7 @@ public interface Domain {
   static List<Domain> getDomains() {
     List<Domain> domains = new ArrayList<>();
     ServiceLoader<Domain> loader = ServiceLoader.load(Domain.class);
-    for (final Domain domain : loader) {
+    for (Domain domain : loader) {
       domains.add(domain);
     }
 
@@ -106,8 +106,8 @@ public interface Domain {
    * @return a {@link Domain} implementation with the given name, if found
    * @see DomainType#getName()
    */
-  static Optional<Domain> getInstanceByName(final String name) {
-    for (final Domain domain : getDomains()) {
+  static Optional<Domain> getInstanceByName(String name) {
+    for (Domain domain : getDomains()) {
       if (domain.getDomainType().getName().equals(name)) {
         return Optional.of(domain);
       }
@@ -121,8 +121,8 @@ public interface Domain {
    * @return a {@link Domain} implementation of the given type, if found
    * @see DomainType#getName()
    */
-  static Optional<Domain> getInstanceByClassName(final String className) {
-    for (final Domain domain : getDomains()) {
+  static Optional<Domain> getInstanceByClassName(String className) {
+    for (Domain domain : getDomains()) {
       if (domain.getClass().getName().equals(className)) {
         return Optional.of(domain);
       }

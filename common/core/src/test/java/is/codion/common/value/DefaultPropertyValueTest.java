@@ -59,7 +59,7 @@ public class DefaultPropertyValueTest {
       return booleanValue;
     }
 
-    public void setBooleanValue(final boolean booleanValue) {
+    public void setBooleanValue(boolean booleanValue) {
       this.booleanValue = booleanValue;
     }
 
@@ -71,7 +71,7 @@ public class DefaultPropertyValueTest {
       return intValue;
     }
 
-    public void setIntValue(final int intValue) {
+    public void setIntValue(int intValue) {
       this.intValue = intValue;
     }
   }

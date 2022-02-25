@@ -45,7 +45,7 @@ public final class Layouts {
    * @return a FlowLayout
    * @see #HORIZONTAL_VERTICAL_GAP
    */
-  public static FlowLayout flowLayout(final int alignment) {
+  public static FlowLayout flowLayout(int alignment) {
     return new FlowLayout(alignment, HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get());
   }
 
@@ -56,7 +56,7 @@ public final class Layouts {
    * @return a GridLayout
    * @see #HORIZONTAL_VERTICAL_GAP
    */
-  public static GridLayout gridLayout(final int rows, final int columns) {
+  public static GridLayout gridLayout(int rows, int columns) {
     return new GridLayout(rows, columns, HORIZONTAL_VERTICAL_GAP.get(), HORIZONTAL_VERTICAL_GAP.get());
   }
 
@@ -68,7 +68,7 @@ public final class Layouts {
    * @return a FlexibleGridLayout
    * @see #HORIZONTAL_VERTICAL_GAP
    */
-  public static FlexibleGridLayout flexibleGridLayout(final int rows, final int columns) {
+  public static FlexibleGridLayout flexibleGridLayout(int rows, int columns) {
     return flexibleGridLayout()
             .rowsColumns(rows, columns)
             .build();

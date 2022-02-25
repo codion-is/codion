@@ -14,7 +14,7 @@ public final class LoginLogout extends AbstractEntityUsageScenario<EmpDeptAppPan
   final Random random = new Random();
 
   @Override
-  protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) {
+  protected void perform(EmpDeptAppPanel.EmpDeptApplicationModel application) {
     try {
       application.getConnectionProvider().close();
       Thread.sleep(random.nextInt(1500));

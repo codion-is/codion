@@ -23,7 +23,7 @@ public abstract class AbstractEntityUsageScenario<M extends SwingEntityApplicati
    * Instantiates a new AbstractEntityUsageScenario
    * @param name the scenario name
    */
-  public AbstractEntityUsageScenario(final String name) {
+  public AbstractEntityUsageScenario(String name) {
     super(name);
   }
 }

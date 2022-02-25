@@ -36,7 +36,7 @@ public interface User {
    * @param username the username
    * @return a new User
    */
-  static User user(final String username) {
+  static User user(String username) {
     return user(username, null);
   }
 
@@ -46,7 +46,7 @@ public interface User {
    * @param password the password
    * @return a new User
    */
-  static User user(final String username, final char[] password) {
+  static User user(String username, char[] password) {
     return new DefaultUser(username, password);
   }
 
@@ -58,7 +58,7 @@ public interface User {
    * @param userPassword the username and password string
    * @return a User with the given username and password
    */
-  static User parseUser(final String userPassword) {
+  static User parseUser(String userPassword) {
     String[] split = requireNonNull(userPassword).split(":", 2);
     if (split.length == 1) {
       return new DefaultUser(split[0].trim(), null);

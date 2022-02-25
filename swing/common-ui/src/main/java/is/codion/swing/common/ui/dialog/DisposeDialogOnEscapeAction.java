@@ -24,14 +24,14 @@ final class DisposeDialogOnEscapeAction extends AbstractAction {
   private final JDialog dialog;
   private final EventDataListener<State> confirmCloseListener;
 
-  DisposeDialogOnEscapeAction(final JDialog dialog, final EventDataListener<State> confirmCloseListener) {
+  DisposeDialogOnEscapeAction(JDialog dialog, EventDataListener<State> confirmCloseListener) {
     super("DisposeDialogOnEscapeAction");
     this.dialog = dialog;
     this.confirmCloseListener = confirmCloseListener;
   }
 
   @Override
-  public void actionPerformed(final ActionEvent e) {
+  public void actionPerformed(ActionEvent e) {
     List<Window> heavyWeightWindows = Arrays.stream(dialog.getOwnedWindows()).filter(window ->
             window.getClass().getName().endsWith("Popup$HeavyWeightWindow") && window.isVisible()).collect(toList());
     if (!heavyWeightWindows.isEmpty()) {
@@ -48,9 +48,9 @@ final class DisposeDialogOnEscapeAction extends AbstractAction {
     }
   }
 
-  static <T extends Component> List<T> getComponentsOfType(final Container container, final Class<T> clazz) {
+  static <T extends Component> List<T> getComponentsOfType(Container container, Class<T> clazz) {
     List<T> components = new ArrayList<>();
-    for (final Component component : container.getComponents()) {
+    for (Component component : container.getComponents()) {
       if (clazz.isAssignableFrom(component.getClass())) {
         components.add((T) component);
       }

@@ -39,7 +39,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * Instantiates a new EntityComboBox
    * @param model the SwingEntityComboBoxModel
    */
-  EntityComboBox(final SwingEntityComboBoxModel model) {
+  EntityComboBox(SwingEntityComboBoxModel model) {
     super(model);
   }
 
@@ -53,7 +53,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @param foreignKey the foreign key on which to filter
    * @return a Control for filtering this combo box
    */
-  public Control createForeignKeyFilterControl(final ForeignKey foreignKey) {
+  public Control createForeignKeyFilterControl(ForeignKey foreignKey) {
     return Control.builder(createForeignKeyFilterCommand(requireNonNull(foreignKey)))
             .smallIcon(frameworkIcons().filter())
             .build();
@@ -66,7 +66,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link ComboBoxBuilder} for a foreign key filter combo box
    */
   public <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyFilterComboBox(
-          final ForeignKey foreignKey) {
+          ForeignKey foreignKey) {
     return (B) builder(getModel().createForeignKeyFilterComboBoxModel(requireNonNull(foreignKey)))
             .completionMode(Completion.Mode.MAXIMUM_MATCH);
   }
@@ -78,7 +78,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link IntegerField} builder bound to the selected value
    */
   public <B extends TextFieldBuilder<Integer, IntegerField, B>> TextFieldBuilder<Integer, IntegerField, B> integerFieldSelector(
-          final Attribute<Integer> attribute) {
+          Attribute<Integer> attribute) {
     requireNonNull(attribute);
     return (B) Components.integerField(getModel().selectorValue(attribute))
             .columns(2)
@@ -93,7 +93,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link IntegerField} builder bound to the selected value
    */
   public <B extends TextFieldBuilder<Integer, IntegerField, B>> TextFieldBuilder<Integer, IntegerField, B> integerFieldSelector(
-          final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
+          Attribute<Integer> attribute, EntityComboBoxModel.Finder<Integer> finder) {
     requireNonNull(attribute);
     requireNonNull(finder);
     return (B) Components.integerField(getModel().selectorValue(attribute, finder))
@@ -108,7 +108,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link JTextField} builder bound to the selected value
    */
   public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textFieldSelector(
-          final Attribute<String> attribute) {
+          Attribute<String> attribute) {
     requireNonNull(attribute);
     return (B) Components.textField(getModel().selectorValue(attribute))
             .columns(2)
@@ -123,8 +123,8 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return a {@link JTextField} builder bound to the selected value
    */
   public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textFieldSelector(
-          final Attribute<String> attribute,
-          final EntityComboBoxModel.Finder<String> finder) {
+          Attribute<String> attribute,
+          EntityComboBoxModel.Finder<String> finder) {
     requireNonNull(attribute);
     requireNonNull(finder);
     return (B) Components.textField(getModel().selectorValue(attribute, finder))
@@ -138,7 +138,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @param <B> the builder type
    * @return a builder for a {@link EntityComboBox}
    */
-  public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(final SwingEntityComboBoxModel comboBoxModel) {
+  public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(SwingEntityComboBoxModel comboBoxModel) {
     return builder(comboBoxModel, null);
   }
 
@@ -149,12 +149,12 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @param <B> the builder type
    * @return a builder for a {@link EntityComboBox}
    */
-  public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(final SwingEntityComboBoxModel comboBoxModel,
-                                                                                                                          final Value<Entity> linkedValue) {
+  public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(SwingEntityComboBoxModel comboBoxModel,
+                                                                                                                          Value<Entity> linkedValue) {
     return new DefaultBuilder<>(comboBoxModel, linkedValue);
   }
 
-  private Control.Command createForeignKeyFilterCommand(final ForeignKey foreignKey) {
+  private Control.Command createForeignKeyFilterCommand(ForeignKey foreignKey) {
     return () -> {
       Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKey);
       Dialogs.okCancelDialog(createForeignKeyFilterComboBox(foreignKey).build())
@@ -167,7 +167,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   private static final class DefaultBuilder<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> extends DefaultComboBoxBuilder<Entity, EntityComboBox, B> {
 
-    private DefaultBuilder(final SwingEntityComboBoxModel comboBoxModel, final Value<Entity> linkedValue) {
+    private DefaultBuilder(SwingEntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
       super(comboBoxModel, linkedValue);
       popupMenuControl(Control.builder(comboBoxModel::forceRefresh)
               .caption(FrameworkMessages.get(FrameworkMessages.REFRESH))

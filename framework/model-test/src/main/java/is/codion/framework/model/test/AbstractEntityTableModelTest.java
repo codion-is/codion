@@ -74,7 +74,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
     tableModel.setSelectedByKey(keys);
     List<Entity> selectedItems = tableModel.getSelectionModel().getSelectedItems();
-    for (final Entity selected : selectedItems) {
+    for (Entity selected : selectedItems) {
       assertTrue(keys.contains(selected.getPrimaryKey()));
     }
     assertEquals(2, tableModel.getSelectionModel().getSelectionCount());
@@ -343,7 +343,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   protected abstract EditModel createDetailEditModel();
 
-  private static List<Entity> initTestEntities(final Entities entities) {
+  private static List<Entity> initTestEntities(Entities entities) {
     List<Entity> testEntities = new ArrayList<>(5);
     String[] stringValues = new String[] {"a", "b", "c", "d", "e"};
     for (int i = 0; i < 5; i++) {

@@ -24,7 +24,7 @@ final class ConditionSerializer extends StdSerializer<Condition> {
   private final CustomConditionSerializer customConditionSerializer;
   private final Entities entities;
 
-  public ConditionSerializer(final EntityObjectMapper entityObjectMapper) {
+  public ConditionSerializer(EntityObjectMapper entityObjectMapper) {
     super(Condition.class);
     this.attributeConditionSerializer = new AttributeConditionSerializer(entityObjectMapper);
     this.conditionCombinationSerializer = new ConditionCombinationSerializer(attributeConditionSerializer);
@@ -33,8 +33,8 @@ final class ConditionSerializer extends StdSerializer<Condition> {
   }
 
   @Override
-  public void serialize(final Condition condition, final JsonGenerator generator,
-                        final SerializerProvider provider) throws IOException {
+  public void serialize(Condition condition, JsonGenerator generator,
+                        SerializerProvider provider) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("entityType", condition.getEntityType().getName());
     generator.writeFieldName("condition");
@@ -42,7 +42,7 @@ final class ConditionSerializer extends StdSerializer<Condition> {
     generator.writeEndObject();
   }
 
-  void serialize(final Condition condition, final JsonGenerator generator) throws IOException {
+  void serialize(Condition condition, JsonGenerator generator) throws IOException {
     if (condition instanceof Condition.Combination) {
       Condition.Combination combination = (Condition.Combination) condition;
       conditionCombinationSerializer.serialize(combination, generator);

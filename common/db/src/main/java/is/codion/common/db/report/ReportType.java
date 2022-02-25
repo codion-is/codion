@@ -37,7 +37,7 @@ public interface ReportType<T, R, P> {
    * @param <P> the report parameters type
    * @return a report
    */
-  static <T, R, P> ReportType<T, R, P> reportType(final String name) {
+  static <T, R, P> ReportType<T, R, P> reportType(String name) {
     return new DefaultReportType<>(name);
   }
 }

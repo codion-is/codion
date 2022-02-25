@@ -22,7 +22,7 @@ public class EntityApplicationPanelTestUnit {
    * @param panelClass the panel class
    * @param user the user
    */
-  protected EntityApplicationPanelTestUnit(final Class<? extends EntityApplicationPanel<?>> panelClass, final User user) {
+  protected EntityApplicationPanelTestUnit(Class<? extends EntityApplicationPanel<?>> panelClass, User user) {
     this.panelClass = requireNonNull(panelClass, "panelClass");
     this.user = requireNonNull(user, "user");
   }

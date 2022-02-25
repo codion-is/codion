@@ -16,18 +16,18 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   private int maximumFractionDigits = -1;
   private char decimalSeparator = 0;
 
-  DefaultBigDecimalFieldBuilder(final Value<BigDecimal> linkedValue) {
+  DefaultBigDecimalFieldBuilder(Value<BigDecimal> linkedValue) {
     super(BigDecimal.class, linkedValue);
   }
 
   @Override
-  public BigDecimalFieldBuilder maximumFractionDigits(final int maximumFractionDigits) {
+  public BigDecimalFieldBuilder maximumFractionDigits(int maximumFractionDigits) {
     this.maximumFractionDigits = maximumFractionDigits;
     return this;
   }
 
   @Override
-  public BigDecimalFieldBuilder decimalSeparator(final char decimalSeparator) {
+  public BigDecimalFieldBuilder decimalSeparator(char decimalSeparator) {
     if (decimalSeparator == groupingSeparator) {
       throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
     }
@@ -36,7 +36,7 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   }
 
   @Override
-  protected BigDecimalField createNumberField(final NumberFormat format) {
+  protected BigDecimalField createNumberField(NumberFormat format) {
     BigDecimalField field = format == null ? new BigDecimalField() : new BigDecimalField((DecimalFormat) format);
     if (decimalSeparator != 0) {
       field.setDecimalSeparator(decimalSeparator);
@@ -49,7 +49,7 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   }
 
   @Override
-  protected ComponentValue<BigDecimal, BigDecimalField> buildComponentValue(final BigDecimalField component) {
+  protected ComponentValue<BigDecimal, BigDecimalField> buildComponentValue(BigDecimalField component) {
     return ComponentValues.bigDecimalField(component, true, updateOn);
   }
 }

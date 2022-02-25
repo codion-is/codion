@@ -35,7 +35,7 @@ public interface TextFieldHint {
    * @param hintText the hint text
    * @return the {@link TextFieldHint} instance
    */
-  static TextFieldHint create(final JTextField textField, final String hintText) {
+  static TextFieldHint create(JTextField textField, String hintText) {
     return new DefaultTextFieldHint(textField, hintText);
   }
 }

@@ -12,7 +12,7 @@ public class RecordNotFoundException extends DatabaseException {
    * Instantiates a new RecordNotFoundException
    * @param message the exception message
    */
-  public RecordNotFoundException(final String message) {
+  public RecordNotFoundException(String message) {
     super(message);
   }
 }

@@ -15,7 +15,7 @@ import is.codion.framework.domain.property.Property;
 public class DefaultFilterModelFactory implements FilterModelFactory {
 
   @Override
-  public <T> ColumnFilterModel<Entity, Attribute<?>, T> createFilterModel(final Property<T> property) {
+  public <T> ColumnFilterModel<Entity, Attribute<?>, T> createFilterModel(Property<T> property) {
     if (property.getAttribute().isEntity()) {
       return null;
     }

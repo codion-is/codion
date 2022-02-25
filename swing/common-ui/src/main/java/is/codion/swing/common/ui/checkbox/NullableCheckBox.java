@@ -37,7 +37,7 @@ public class NullableCheckBox extends JCheckBox {
    * Instantiates a new NullableCheckBox with no caption.
    * @param model the model
    */
-  public NullableCheckBox(final NullableToggleButtonModel model) {
+  public NullableCheckBox(NullableToggleButtonModel model) {
     this(model, null);
   }
 
@@ -46,7 +46,7 @@ public class NullableCheckBox extends JCheckBox {
    * @param model the model
    * @param caption the caption, if any
    */
-  public NullableCheckBox(final NullableToggleButtonModel model, final String caption) {
+  public NullableCheckBox(NullableToggleButtonModel model, String caption) {
     this(model, caption, null);
   }
 
@@ -56,7 +56,7 @@ public class NullableCheckBox extends JCheckBox {
    * @param caption the caption, if any
    * @param icon the icon, if any
    */
-  public NullableCheckBox(final NullableToggleButtonModel model, final String caption, final Icon icon) {
+  public NullableCheckBox(NullableToggleButtonModel model, String caption, Icon icon) {
     super(caption, icon);
     super.setModel(requireNonNull(model, "model"));
     addMouseListener(new NullableMouseListener());
@@ -86,7 +86,7 @@ public class NullableCheckBox extends JCheckBox {
    * @throws UnsupportedOperationException always
    */
   @Override
-  public final void setModel(final ButtonModel model) {
+  public final void setModel(ButtonModel model) {
     if (getModel() instanceof NullableToggleButtonModel) {
       throw new UnsupportedOperationException("Setting the model of a NullableCheckBox after construction is not supported");
     }
@@ -98,19 +98,19 @@ public class NullableCheckBox extends JCheckBox {
    * @param listener the listener
    */
   @Override
-  public final synchronized void addMouseListener(final MouseListener listener) {
+  public final synchronized void addMouseListener(MouseListener listener) {
     super.addMouseListener(listener);
   }
 
   private final class NullableMouseListener extends MouseAdapter {
     @Override
-    public void mouseClicked(final MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
       if (e == null || notModified(e)) {
         getNullableModel().nextState();
       }
     }
 
-    private boolean notModified(final MouseEvent e) {
+    private boolean notModified(MouseEvent e) {
       return !e.isAltDown() && !e.isControlDown() && !e.isShiftDown() &&
               !e.isAltGraphDown() && !e.isMetaDown() && !e.isPopupTrigger();
     }
@@ -120,12 +120,12 @@ public class NullableCheckBox extends JCheckBox {
 
     private final NullableToggleButtonModel model;
 
-    private NextStateAction(final NullableToggleButtonModel model) {
+    private NextStateAction(NullableToggleButtonModel model) {
       this.model = model;
     }
 
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
       model.nextState();
     }
   }

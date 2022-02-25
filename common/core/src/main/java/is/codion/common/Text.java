@@ -64,7 +64,7 @@ public final class Text {
    * @param maximumLength the maximum length
    * @return a random string
    */
-  public static String randomString(final int minLength, final int maximumLength) {
+  public static String randomString(int minLength, int maximumLength) {
     if (minLength > maximumLength) {
       throw new IllegalArgumentException("Minimum length can not exceed maximum length");
     }
@@ -80,7 +80,7 @@ public final class Text {
    * @see Text#getSpaceAwareCollator()
    * @param values the list to sort (collate)
    */
-  public static void collate(final List<?> values) {
+  public static void collate(List<?> values) {
     values.sort(getSpaceAwareCollator());
   }
 
@@ -103,7 +103,7 @@ public final class Text {
    * @return a space aware collator
    * @see #DEFAULT_COLLATOR_LANGUAGE
    */
-  public static <T> Comparator<T> getSpaceAwareCollator(final Locale locale) {
+  public static <T> Comparator<T> getSpaceAwareCollator(Locale locale) {
     return new ComparatorSansSpace<>(locale);
   }
 
@@ -112,7 +112,7 @@ public final class Text {
    * @param collator the collator
    * @param list the list
    */
-  public static void collateSansSpaces(final Collator collator, final List<?> list) {
+  public static void collateSansSpaces(Collator collator, List<?> list) {
     list.sort((o1, o2) -> collateSansSpaces(collator, o1.toString(), o2.toString()));
   }
 
@@ -123,7 +123,7 @@ public final class Text {
    * @param stringTwo the second string
    * @return the collation result
    */
-  public static int collateSansSpaces(final Collator collator, final String stringOne, final String stringTwo) {
+  public static int collateSansSpaces(Collator collator, String stringOne, String stringTwo) {
     requireNonNull(collator, "collator");
     requireNonNull(stringOne, "stringOne");
     requireNonNull(stringTwo, "stringTwo");
@@ -139,7 +139,7 @@ public final class Text {
    * @param alignment the padding alignment, left or right side
    * @return the padded string
    */
-  public static String padString(final String string, final int length, final char padChar, final Alignment alignment) {
+  public static String padString(String string, int length, char padChar, Alignment alignment) {
     requireNonNull(string, "string");
     if (string.length() >= length) {
       return string;
@@ -165,8 +165,8 @@ public final class Text {
    * @param columnDelimiter the column delimiter
    * @return a String comprised of the given header and lines using the given column delimiter
    */
-  public static String getDelimitedString(final List<String> header, final List<List<String>> lines,
-                                          final String columnDelimiter) {
+  public static String getDelimitedString(List<String> header, List<List<String>> lines,
+                                          String columnDelimiter) {
     requireNonNull(header, "header");
     requireNonNull(lines, "lines");
     requireNonNull(columnDelimiter, "delimiter");
@@ -186,7 +186,7 @@ public final class Text {
    * @return the contents of the resource file
    * @throws IOException in case an IOException occurs
    */
-  public static <T> String getTextFileContents(final Class<T> resourceClass, final String resourceName) throws IOException {
+  public static <T> String getTextFileContents(Class<T> resourceClass, String resourceName) throws IOException {
     return getTextFileContents(resourceClass, resourceName, Charset.defaultCharset());
   }
 
@@ -199,7 +199,7 @@ public final class Text {
    * @return the contents of the resource file
    * @throws IOException in case an IOException occurs
    */
-  public static <T> String getTextFileContents(final Class<T> resourceClass, final String resourceName, final Charset charset) throws IOException {
+  public static <T> String getTextFileContents(Class<T> resourceClass, String resourceName, Charset charset) throws IOException {
     requireNonNull(resourceClass, "resourceClass");
     requireNonNull(resourceName, "resourceName");
     InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
@@ -217,7 +217,7 @@ public final class Text {
    * @return the file contents as a String
    * @throws IOException in case of an exception
    */
-  public static String getTextFileContents(final String filename, final Charset charset) throws IOException {
+  public static String getTextFileContents(String filename, Charset charset) throws IOException {
     requireNonNull(filename, "filename");
 
     return getTextFileContents(new File(filename), charset);
@@ -230,9 +230,9 @@ public final class Text {
    * @return the file contents as a String
    * @throws IOException in case of an exception
    */
-  public static String getTextFileContents(final File file, final Charset charset) throws IOException {
+  public static String getTextFileContents(File file, Charset charset) throws IOException {
     requireNonNull(file, "file");
-    try (final FileInputStream inputStream = new FileInputStream(file)) {
+    try (FileInputStream inputStream = new FileInputStream(file)) {
       return getTextFileContents(inputStream, charset);
     }
   }
@@ -245,10 +245,10 @@ public final class Text {
    * @return the stream contents as a String
    * @throws IOException in case of an exception
    */
-  public static String getTextFileContents(final InputStream inputStream, final Charset charset) throws IOException {
+  public static String getTextFileContents(InputStream inputStream, Charset charset) throws IOException {
     requireNonNull(inputStream, "inputStream");
     StringBuilder contents = new StringBuilder();
-    try (final BufferedReader input = new BufferedReader(new InputStreamReader(inputStream, charset))) {
+    try (BufferedReader input = new BufferedReader(new InputStreamReader(inputStream, charset))) {
       String line = input.readLine();
       while (line != null) {
         contents.append(line);
@@ -267,11 +267,11 @@ public final class Text {
    * @param commaSeparatedValues a String with comma separated values
    * @return the trimmed values
    */
-  public static List<String> parseCommaSeparatedValues(final String commaSeparatedValues) {
+  public static List<String> parseCommaSeparatedValues(String commaSeparatedValues) {
     List<String> values = new ArrayList<>();
     if (!nullOrEmpty(commaSeparatedValues)) {
       String[] strings = commaSeparatedValues.split(",");
-      for (final String value : strings) {
+      for (String value : strings) {
         values.add(value.trim());
       }
     }
@@ -285,7 +285,7 @@ public final class Text {
    * @param text the text
    * @return a camelCase version of the given text
    */
-  public static String underscoreToCamelCase(final String text) {
+  public static String underscoreToCamelCase(String text) {
     if (!requireNonNull(text, "text").contains("_")) {
       return text;
     }
@@ -296,7 +296,7 @@ public final class Text {
     if (strings.size() == 1) {
       return strings.get(0);
     }
-    for (final String split : strings) {
+    for (String split : strings) {
       if (!firstDone) {
         builder.append(Character.toLowerCase(split.charAt(0)));
         firstDone = true;
@@ -320,12 +320,12 @@ public final class Text {
 
     private transient Collator collator;
 
-    private ComparatorSansSpace(final Locale locale) {
+    private ComparatorSansSpace(Locale locale) {
       this.locale = locale;
     }
 
     @Override
-    public int compare(final T o1, final T o2) {
+    public int compare(T o1, T o2) {
       return collateSansSpaces(getCollator(), o1.toString(), o2.toString());
     }
 

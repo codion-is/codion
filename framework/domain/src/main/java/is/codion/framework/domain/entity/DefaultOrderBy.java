@@ -17,13 +17,13 @@ final class DefaultOrderBy implements OrderBy, Serializable {
   private final List<OrderByAttribute> orderByAttributes = new ArrayList<>(1);
 
   @Override
-  public OrderBy ascending(final Attribute<?>... attributes) {
+  public OrderBy ascending(Attribute<?>... attributes) {
     add(true, requireNonNull(attributes));
     return this;
   }
 
   @Override
-  public OrderBy descending(final Attribute<?>... attributes) {
+  public OrderBy descending(Attribute<?>... attributes) {
     add(false, requireNonNull(attributes));
     return this;
   }
@@ -33,11 +33,11 @@ final class DefaultOrderBy implements OrderBy, Serializable {
     return unmodifiableList(orderByAttributes);
   }
 
-  private void add(final boolean ascending, final Attribute<?>... attributes) {
+  private void add(boolean ascending, Attribute<?>... attributes) {
     if (attributes.length == 0) {
       throw new IllegalArgumentException("One or more attributes required for order by");
     }
-    for (final Attribute<?> attribute : attributes) {
+    for (Attribute<?> attribute : attributes) {
       DefaultOrderByAttribute orderByAttribute = new DefaultOrderByAttribute(attribute, ascending);
       if (orderByAttributes.contains(orderByAttribute)) {
         throw new IllegalArgumentException("Order by already contains attribute: " + attribute);
@@ -53,7 +53,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
     private final Attribute<?> attribute;
     private final boolean ascending;
 
-    private DefaultOrderByAttribute(final Attribute<?> attribute, final boolean ascending) {
+    private DefaultOrderByAttribute(Attribute<?> attribute, boolean ascending) {
       this.attribute = requireNonNull(attribute, "attribute");
       this.ascending = ascending;
     }
@@ -69,7 +69,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
     }
 
     @Override
-    public boolean equals(final Object object) {
+    public boolean equals(Object object) {
       if (this == object) {
         return true;
       }

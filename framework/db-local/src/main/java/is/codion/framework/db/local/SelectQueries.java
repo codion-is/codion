@@ -35,11 +35,11 @@ final class SelectQueries {
   private final Map<EntityType, List<ColumnProperty<?>>> selectablePropertiesCache = new HashMap<>();
   private final Map<EntityType, String> allColumnsClauseCache = new HashMap<>();
 
-  SelectQueries(final Database database) {
+  SelectQueries(Database database) {
     this.database = database;
   }
 
-  Builder builder(final EntityDefinition definition) {
+  Builder builder(EntityDefinition definition) {
     return new Builder(definition);
   }
 
@@ -73,7 +73,7 @@ final class SelectQueries {
 
     private boolean columnsClauseFromSelectQuery = false;
 
-    private Builder(final EntityDefinition definition) {
+    private Builder(EntityDefinition definition) {
       this.definition = definition;
     }
 
@@ -81,7 +81,7 @@ final class SelectQueries {
       return selectedProperties;
     }
 
-    Builder selectCondition(final SelectCondition condition) {
+    Builder selectCondition(SelectCondition condition) {
       entitySelectQuery();
       if (!columnsClauseFromSelectQuery) {
         setColumns(condition);
@@ -122,21 +122,21 @@ final class SelectQueries {
       return this;
     }
 
-    Builder columns(final String columns) {
+    Builder columns(String columns) {
       this.columns = columns;
       return this;
     }
 
-    Builder subquery(final String subquery) {
+    Builder subquery(String subquery) {
       return from("(" + subquery + ")" + (database.subqueryRequiresAlias() ? " as row_count" : ""));
     }
 
-    Builder from(final String from) {
+    Builder from(String from) {
       this.from = from;
       return this;
     }
 
-    Builder where(final Condition condition) {
+    Builder where(Condition condition) {
       String conditionString = condition.getConditionString(definition);
       if (!conditionString.isEmpty()) {
         where(conditionString);
@@ -144,39 +144,39 @@ final class SelectQueries {
       return this;
     }
 
-    Builder where(final String where) {
+    Builder where(String where) {
       if (!Util.nullOrEmpty(where)) {
         this.where.add(where);
       }
       return this;
     }
 
-    Builder orderBy(final String orderBy) {
+    Builder orderBy(String orderBy) {
       this.orderBy = orderBy;
       return this;
     }
 
-    Builder forUpdate(final boolean forUpdate) {
+    Builder forUpdate(boolean forUpdate) {
       this.forUpdate = forUpdate;
       return this;
     }
 
-    Builder groupBy(final String groupBy) {
+    Builder groupBy(String groupBy) {
       this.groupBy = groupBy;
       return this;
     }
 
-    Builder having(final String having) {
+    Builder having(String having) {
       this.having = having;
       return this;
     }
 
-    Builder limit(final int limit) {
+    Builder limit(int limit) {
       this.limit = limit;
       return this;
     }
 
-    Builder offset(final int offset) {
+    Builder offset(int offset) {
       this.offset = offset;
       return this;
     }
@@ -218,7 +218,7 @@ final class SelectQueries {
       return builder.toString();
     }
 
-    private void setColumns(final SelectCondition condition) {
+    private void setColumns(SelectCondition condition) {
       Collection<Attribute<?>> selectAttributes = condition.getSelectAttributes();
       if (selectAttributes.isEmpty()) {
         this.selectedProperties = getSelectableProperties();
@@ -234,7 +234,7 @@ final class SelectQueries {
       return from == null ? forUpdate ? definition.getTableName() : definition.getSelectTableName() : from;
     }
 
-    private List<ColumnProperty<?>> getPropertiesToSelect(final Collection<Attribute<?>> selectAttributes) {
+    private List<ColumnProperty<?>> getPropertiesToSelect(Collection<Attribute<?>> selectAttributes) {
       Set<Attribute<?>> attributesToSelect = new HashSet<>(definition.getPrimaryKeyAttributes());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
@@ -262,7 +262,7 @@ final class SelectQueries {
       return allColumnsClauseCache.computeIfAbsent(definition.getEntityType(), type -> getColumnsClause(getSelectableProperties()));
     }
 
-    private String getColumnsClause(final List<ColumnProperty<?>> columnProperties) {
+    private String getColumnsClause(List<ColumnProperty<?>> columnProperties) {
       StringBuilder stringBuilder = new StringBuilder();
       for (int i = 0; i < columnProperties.size(); i++) {
         ColumnProperty<?> property = columnProperties.get(i);
@@ -286,7 +286,7 @@ final class SelectQueries {
       return stringBuilder.toString();
     }
 
-    private String getOrderByClause(final OrderBy orderBy) {
+    private String getOrderByClause(OrderBy orderBy) {
       if (orderBy == null) {
         return null;
       }
@@ -303,7 +303,7 @@ final class SelectQueries {
               .collect(joining(", "));
     }
 
-    private String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByAttribute orderByAttribute) {
+    private String getColumnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByAttribute orderByAttribute) {
       return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).getColumnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
     }
   }

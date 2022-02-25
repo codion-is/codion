@@ -46,7 +46,7 @@ final class EntityPopupMenu extends JPopupMenu {
    * @param entity the entity
    * @param connectionProvider the connection provider
    */
-  EntityPopupMenu(final Entity entity, final EntityConnectionProvider connectionProvider) {
+  EntityPopupMenu(Entity entity, EntityConnectionProvider connectionProvider) {
     requireNonNull(entity);
     populateEntityMenu(this, entity, connectionProvider, new HashSet<>());
   }
@@ -58,8 +58,8 @@ final class EntityPopupMenu extends JPopupMenu {
    * @param connectionProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
    * @param visitedEntities used to prevent cyclical dependencies wreaking havoc
    */
-  private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
-                                         final EntityConnectionProvider connectionProvider, final Set<Entity> visitedEntities) {
+  private static void populateEntityMenu(JComponent rootMenu, Entity entity,
+                                         EntityConnectionProvider connectionProvider, Set<Entity> visitedEntities) {
     Entities entities = connectionProvider.getEntities();
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityType()).getPrimaryKeyProperties()));
     populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(entities.getDefinition(entity.getEntityType())
@@ -67,9 +67,9 @@ final class EntityPopupMenu extends JPopupMenu {
     populateValueMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityType()).getProperties()), entities);
   }
 
-  private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties) {
+  private static void populatePrimaryKeyMenu(JComponent rootMenu, Entity entity, List<ColumnProperty<?>> primaryKeyProperties) {
     Text.collate(primaryKeyProperties);
-    for (final ColumnProperty<?> property : primaryKeyProperties) {
+    for (ColumnProperty<?> property : primaryKeyProperties) {
       boolean modified = entity.isModified(property.getAttribute());
       String value = entity.toString(property.getAttribute());
       StringBuilder builder = new StringBuilder("[PK] ")
@@ -85,17 +85,17 @@ final class EntityPopupMenu extends JPopupMenu {
     }
   }
 
-  private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity,
-                                             final EntityConnectionProvider connectionProvider,
-                                             final List<ForeignKeyProperty> fkProperties,
-                                             final Set<Entity> visitedEntities) {
+  private static void populateForeignKeyMenu(JComponent rootMenu, Entity entity,
+                                             EntityConnectionProvider connectionProvider,
+                                             List<ForeignKeyProperty> fkProperties,
+                                             Set<Entity> visitedEntities) {
     try {
       if (!visitedEntities.contains(entity)) {
         visitedEntities.add(entity);
         Text.collate(fkProperties);
         EntityDefinition definition = connectionProvider.getEntities().getDefinition(entity.getEntityType());
         EntityValidator validator = definition.getValidator();
-        for (final ForeignKeyProperty property : fkProperties) {
+        for (ForeignKeyProperty property : fkProperties) {
           ForeignKey foreignKey = property.getAttribute();
           boolean fkValueNull = entity.isForeignKeyNull(foreignKey);
           boolean isLoaded = entity.isLoaded(foreignKey);
@@ -141,19 +141,19 @@ final class EntityPopupMenu extends JPopupMenu {
     }
   }
 
-  private static String getForeignKeyAttributeNames(final ForeignKey foreignKey) {
+  private static String getForeignKeyAttributeNames(ForeignKey foreignKey) {
     return foreignKey.getReferences().stream()
             .map(reference -> reference.getAttribute().getName())
             .collect(joining(", "));
   }
 
-  private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property<?>> properties,
-                                        final Entities entities) {
+  private static void populateValueMenu(JComponent rootMenu, Entity entity, List<Property<?>> properties,
+                                        Entities entities) {
     Text.collate(properties);
     final int maxValueLength = 20;
     EntityDefinition definition = entities.getDefinition(entity.getEntityType());
     EntityValidator validator = definition.getValidator();
-    for (final Property<?> property : properties) {
+    for (Property<?> property : properties) {
       boolean valid = isValid(validator, entity, definition, property);
       boolean modified = entity.isModified(property.getAttribute());
       boolean isForeignKeyProperty = property instanceof ColumnProperty
@@ -195,7 +195,7 @@ final class EntityPopupMenu extends JPopupMenu {
     }
   }
 
-  private static void setInvalidModified(final JMenuItem menuItem, final boolean valid, final boolean modified) {
+  private static void setInvalidModified(JMenuItem menuItem, boolean valid, boolean modified) {
     Font currentFont = menuItem.getFont();
     if (!valid) {
       menuItem.setBackground(Color.RED);
@@ -206,13 +206,13 @@ final class EntityPopupMenu extends JPopupMenu {
     }
   }
 
-  private static String getOriginalValue(final Entity entity, final Property<?> property) {
+  private static String getOriginalValue(Entity entity, Property<?> property) {
     Object originalValue = entity.getOriginal(property.getAttribute());
 
     return " | " + (originalValue == null ? "<null>" : originalValue.toString());
   }
 
-  private static boolean isValid(final EntityValidator validator, final Entity entity, final EntityDefinition definition, final Property<?> property) {
+  private static boolean isValid(EntityValidator validator, Entity entity, EntityDefinition definition, Property<?> property) {
     try {
       validator.validate(entity, definition, property);
       return true;

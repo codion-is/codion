@@ -51,7 +51,7 @@ public interface LoginProxy {
   static List<LoginProxy> getLoginProxies() {
     List<LoginProxy> loginProxies = new ArrayList<>();
     ServiceLoader<LoginProxy> loader = ServiceLoader.load(LoginProxy.class);
-    for (final LoginProxy loginProxy : loader) {
+    for (LoginProxy loginProxy : loader) {
       loginProxies.add(loginProxy);
     }
 

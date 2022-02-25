@@ -13,7 +13,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   private final Set<T> values = new HashSet<>();
 
-  DefaultValueSet(final Set<T> initialValues) {
+  DefaultValueSet(Set<T> initialValues) {
     super(emptySet(), NotifyOnSet.YES);
     values.addAll(requireNonNull(initialValues, "initialValues"));
   }
@@ -24,7 +24,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   }
 
   @Override
-  public boolean add(final T value) {
+  public boolean add(T value) {
     Set<T> newValues = new HashSet<>(values);
     boolean added = newValues.add(value);
     set(newValues);
@@ -33,7 +33,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   }
 
   @Override
-  public boolean remove(final T value) {
+  public boolean remove(T value) {
     Set<T> newValues = new HashSet<>(values);
     boolean removed = newValues.remove(value);
     set(newValues);
@@ -62,7 +62,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   }
 
   @Override
-  protected void setValue(final Set<T> values) {
+  protected void setValue(Set<T> values) {
     this.values.clear();
     this.values.addAll(values);
   }
@@ -71,7 +71,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
     private final ValueSet<T> valueSet;
 
-    private SingleValueSet(final ValueSet<T> valueSet) {
+    private SingleValueSet(ValueSet<T> valueSet) {
       super(null, NotifyOnSet.NO);
       this.valueSet = valueSet;
       valueSet.addListener(this::notifyValueChange);
@@ -85,7 +85,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
     }
 
     @Override
-    protected void setValue(final T value) {
+    protected void setValue(T value) {
       valueSet.set(value == null ? emptySet() : singleton(value));
     }
   }

@@ -22,26 +22,26 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
 
   private JTextComponent textComponent;
 
-  NumberParsingDocumentFilter(final NumberParser<T> parser) {
+  NumberParsingDocumentFilter(NumberParser<T> parser) {
     this.parser = requireNonNull(parser, "parser");
     this.rangeValidator = new NumberRangeValidator<>();
     addValidator(rangeValidator);
   }
 
   @Override
-  public void insertString(final FilterBypass filterBypass, final int offset, final String string,
-                           final AttributeSet attributeSet) throws BadLocationException {
+  public void insertString(FilterBypass filterBypass, int offset, String string,
+                           AttributeSet attributeSet) throws BadLocationException {
     replace(filterBypass, offset, 0, string, attributeSet);
   }
 
   @Override
-  public void remove(final FilterBypass filterBypass, final int offset, final int length) throws BadLocationException {
+  public void remove(FilterBypass filterBypass, int offset, int length) throws BadLocationException {
     replace(filterBypass, offset, length, "", null);
   }
 
   @Override
-  public void replace(final FilterBypass filterBypass, final int offset, final int length, final String text,
-                      final AttributeSet attributeSet) throws BadLocationException {
+  public void replace(FilterBypass filterBypass, int offset, int length, String text,
+                      AttributeSet attributeSet) throws BadLocationException {
     Document document = filterBypass.getDocument();
     StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.replace(offset, offset + length, text);
@@ -61,7 +61,7 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
     return parser;
   }
 
-  void setRange(final double min, final double max) {
+  void setRange(double min, double max) {
     rangeValidator.minimumValue = min;
     rangeValidator.maximumValue = max;
   }
@@ -78,7 +78,7 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
    * Sets the text component, necessary for keeping the correct caret position when editing
    * @param textComponent the text component
    */
-  void setTextComponent(final JTextComponent textComponent) {
+  void setTextComponent(JTextComponent textComponent) {
     this.textComponent = textComponent;
   }
 
@@ -88,7 +88,7 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
     private double maximumValue = Double.POSITIVE_INFINITY;
 
     @Override
-    public void validate(final T value) {
+    public void validate(T value) {
       if (!isWithinRange(value.doubleValue())) {
         throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + " " + minimumValue + " - " + maximumValue);
       }
@@ -98,7 +98,7 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
      * @param value the value to check
      * @return true if this value falls within the allowed range for this document
      */
-    boolean isWithinRange(final double value) {
+    boolean isWithinRange(double value) {
       return value >= minimumValue && value <= maximumValue;
     }
   }

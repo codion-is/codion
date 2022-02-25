@@ -218,7 +218,7 @@ public final class EntitiesTutorial {
     connection.delete(getPrimaryKeys(asList(album, myBand)));
   }
 
-  public static void main(final String[] args) throws DatabaseException {
+  public static void main(String[] args) throws DatabaseException {
     // Configure the database
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");

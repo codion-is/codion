@@ -480,7 +480,7 @@ public interface EntityDefinition {
      * @param foregroundColorProvider the foreground color provider
      * @return this {@link Builder} instance
      */
-    Builder foregroundColorProvider(final ColorProvider foregroundColorProvider);
+    Builder foregroundColorProvider(ColorProvider foregroundColorProvider);
 
     /**
      * Sets the caption for this entity type

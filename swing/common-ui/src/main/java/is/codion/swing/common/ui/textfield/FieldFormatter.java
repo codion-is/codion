@@ -14,7 +14,7 @@ import java.text.ParseException;
  */
 public final class FieldFormatter extends MaskFormatter {
 
-  private FieldFormatter(final String mask, final boolean valueContainsLiterals) throws ParseException {
+  private FieldFormatter(String mask, boolean valueContainsLiterals) throws ParseException {
     super(mask);
     setPlaceholderCharacter('_');
     setAllowsInvalid(false);
@@ -30,12 +30,12 @@ public final class FieldFormatter extends MaskFormatter {
    * @return a new MaskFormatter
    * @throws ParseException in case of an exception while parsing the mask
    */
-  public static MaskFormatter create(final String mask, final boolean valueContainsLiterals) throws ParseException {
+  public static MaskFormatter create(String mask, boolean valueContainsLiterals) throws ParseException {
     return new FieldFormatter(mask, valueContainsLiterals);
   }
 
   @Override
-  public void install(final JFormattedTextField field) {
+  public void install(JFormattedTextField field) {
     int previousLength = field.getDocument().getLength();
     int currentCaretPosition = field.getCaretPosition();
     int currentSelectionStart = field.getSelectionStart();

@@ -37,7 +37,7 @@ public final class DatabaseMonitor {
    * @param updateRate the initial statistics update rate in seconds
    * @throws RemoteException in case of an exception
    */
-  public DatabaseMonitor(final EntityServerAdmin server, final int updateRate) throws RemoteException {
+  public DatabaseMonitor(EntityServerAdmin server, int updateRate) throws RemoteException {
     this.server = server;
     this.poolMonitor = new PoolMonitor(server, updateRate);
     this.queriesPerSecondCollection.addSeries(queriesPerSecond);

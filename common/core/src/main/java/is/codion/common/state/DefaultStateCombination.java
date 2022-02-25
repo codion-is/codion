@@ -21,13 +21,13 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   private final List<StateCombinationListener> stateListeners = new ArrayList<>();
   private final Conjunction conjunction;
 
-  DefaultStateCombination(final Conjunction conjunction, final StateObserver... states) {
+  DefaultStateCombination(Conjunction conjunction, StateObserver... states) {
     this(conjunction, states == null ? Collections.emptyList() : Arrays.asList(states));
   }
 
-  DefaultStateCombination(final Conjunction conjunction, final Collection<? extends StateObserver> states) {
+  DefaultStateCombination(Conjunction conjunction, Collection<? extends StateObserver> states) {
     this.conjunction = requireNonNull(conjunction);
-    for (final StateObserver state : requireNonNull(states)) {
+    for (StateObserver state : requireNonNull(states)) {
       addState(state);
     }
   }
@@ -37,7 +37,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
     synchronized (lock) {
       StringBuilder stringBuilder = new StringBuilder("Combination");
       stringBuilder.append(toString(conjunction)).append(super.toString());
-      for (final StateCombinationListener listener : stateListeners) {
+      for (StateCombinationListener listener : stateListeners) {
         stringBuilder.append(", ").append(listener.getState());
       }
 
@@ -51,7 +51,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   }
 
   @Override
-  public void addState(final StateObserver state) {
+  public void addState(StateObserver state) {
     requireNonNull(state, "state");
     synchronized (lock) {
       if (!findListener(state).isPresent()) {
@@ -63,7 +63,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   }
 
   @Override
-  public void removeState(final StateObserver state) {
+  public void removeState(StateObserver state) {
     requireNonNull(state, "state");
     synchronized (lock) {
       boolean previousValue = get();
@@ -83,12 +83,12 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   }
 
   @Override
-  public void set(final Boolean value) {
+  public void set(Boolean value) {
     throw new UnsupportedOperationException("The state of state combination can't be set");
   }
 
-  private boolean get(final Conjunction conjunction, final StateObserver exclude, final boolean excludeReplacement) {
-    for (final StateCombinationListener listener : stateListeners) {
+  private boolean get(Conjunction conjunction, StateObserver exclude, boolean excludeReplacement) {
+    for (StateCombinationListener listener : stateListeners) {
       StateObserver state = listener.getState();
       boolean value = state.equals(exclude) ? excludeReplacement : state.get();
       if (conjunction == Conjunction.AND) {
@@ -104,7 +104,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
     return conjunction == Conjunction.AND;
   }
 
-  private Optional<StateCombinationListener> findListener(final StateObserver state) {
+  private Optional<StateCombinationListener> findListener(StateObserver state) {
     return stateListeners.stream()
             .filter(listener -> listener.getState().equals(state))
             .findFirst();
@@ -113,17 +113,17 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   private final class StateCombinationListener implements EventDataListener<Boolean> {
     private final StateObserver state;
 
-    private StateCombinationListener(final StateObserver state) {
+    private StateCombinationListener(StateObserver state) {
       this.state = state;
       this.state.addDataListener(this);
     }
 
     @Override
-    public void onEvent(final Boolean newValue) {
+    public void onEvent(Boolean newValue) {
       ((DefaultStateObserver) getObserver()).notifyObservers(get(), getPreviousState(state, !newValue));
     }
 
-    private boolean getPreviousState(final StateObserver excludeState, final boolean previousValue) {
+    private boolean getPreviousState(StateObserver excludeState, boolean previousValue) {
       synchronized (lock) {
         return get(conjunction, excludeState, previousValue);
       }
@@ -134,7 +134,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
     }
   }
 
-  private static String toString(final Conjunction conjunction) {
+  private static String toString(Conjunction conjunction) {
     switch (conjunction) {
       case AND: return " and ";
       case OR: return " or ";

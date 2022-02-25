@@ -79,7 +79,7 @@ public final class EntityServerMonitorPanel extends JPanel {
    * @param model the EntityServerMonitor to base this panel on
    * @throws RemoteException in case of an exception
    */
-  public EntityServerMonitorPanel(final EntityServerMonitor model) throws RemoteException {
+  public EntityServerMonitorPanel(EntityServerMonitor model) throws RemoteException {
     this.model = model;
     initializeUI();
     bindEvents();
@@ -125,7 +125,7 @@ public final class EntityServerMonitorPanel extends JPanel {
             .show();
   }
 
-  public static synchronized void setJDKDir(final JComponent dialogParent) {
+  public static synchronized void setJDKDir(JComponent dialogParent) {
     try {
       jdkDir = Dialogs.fileSelectionDialog()
               .owner(dialogParent)
@@ -141,7 +141,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   private void initializeUI() throws RemoteException {
     setLayout(new BorderLayout());
     JTabbedPane hostPane = new JTabbedPane();
-    for (final HostMonitor hostMonitor : model.getHostMonitors()) {
+    for (HostMonitor hostMonitor : model.getHostMonitors()) {
       hostPane.addTab(hostMonitor.getHostName() + ":" + hostMonitor.getRegistryPort(), new HostMonitorPanel(hostMonitor));
     }
     add(hostPane, BorderLayout.CENTER);
@@ -250,7 +250,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     return User.parseUser(ServerConfiguration.SERVER_ADMIN_USER.getOrThrow());
   }
 
-  public static void main(final String[] arguments) {
+  public static void main(String[] arguments) {
     UiManagerDefaults.initialize();
     Clients.resolveTrustStore();
     LookAndFeelProvider.CHANGE_DURING_SELECTION.set(true);

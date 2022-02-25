@@ -13,9 +13,9 @@ import is.codion.swing.framework.ui.EntitySearchField;
 public final class TrackComponentFactory extends DefaultEntityComponentFactory<Entity, ForeignKey, EntitySearchField> {
 
   @Override
-  public ComponentValue<Entity, EntitySearchField> createComponentValue(final ForeignKey foreignKey,
-                                                                        final SwingEntityEditModel editModel,
-                                                                        final Entity initialValue) {
+  public ComponentValue<Entity, EntitySearchField> createComponentValue(ForeignKey foreignKey,
+                                                                        SwingEntityEditModel editModel,
+                                                                        Entity initialValue) {
     ComponentValue<Entity, EntitySearchField> componentValue = super.createComponentValue(foreignKey, editModel, initialValue);
     EntitySearchField trackSearchField = componentValue.getComponent();
     trackSearchField.setSelectionProvider(new TrackSelectionProvider(trackSearchField.getModel()));

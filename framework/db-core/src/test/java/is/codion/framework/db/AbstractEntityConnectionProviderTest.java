@@ -62,7 +62,7 @@ public final class AbstractEntityConnectionProviderTest {
       return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(), new Class[] {EntityConnection.class}, new InvocationHandler() {
         private boolean connected = true;
         @Override
-        public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
           switch (method.getName()) {
             case "equals":
               return TestProvider.this == args[0];
@@ -81,7 +81,7 @@ public final class AbstractEntityConnectionProviderTest {
     }
 
     @Override
-    protected void close(final EntityConnection connection) {
+    protected void close(EntityConnection connection) {
       connection.close();
     }
 

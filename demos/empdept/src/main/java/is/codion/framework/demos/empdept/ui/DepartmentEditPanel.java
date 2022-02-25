@@ -14,7 +14,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 // tag::constructor[]
 public class DepartmentEditPanel extends EntityEditPanel {
 
-  public DepartmentEditPanel(final SwingEntityEditModel editModel) {
+  public DepartmentEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
   // end::constructor[]

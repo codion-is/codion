@@ -97,7 +97,7 @@ public final class ClientArchitecture {
   }
   // end::entityPanel[]
 
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     // Configure the database
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");

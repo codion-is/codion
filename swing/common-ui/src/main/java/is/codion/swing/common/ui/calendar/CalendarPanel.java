@@ -95,7 +95,7 @@ public final class CalendarPanel extends JPanel {
   private final JLabel formattedDateLabel;
   private final CalendarView calendarView;
 
-  CalendarPanel(final CalendarView calendarView) {
+  CalendarPanel(CalendarView calendarView) {
     this.calendarView = calendarView;
     LocalDateTime dateTime = LocalDateTime.now();
     yearValue = Value.value(dateTime.getYear(), dateTime.getYear());
@@ -127,7 +127,7 @@ public final class CalendarPanel extends JPanel {
    * Sets the date to present in this calendar
    * @param date the date to set
    */
-  public void setDate(final LocalDate date) {
+  public void setDate(LocalDate date) {
     setDateTime(requireNonNull(date).atStartOfDay());
   }
 
@@ -142,7 +142,7 @@ public final class CalendarPanel extends JPanel {
    * Sets the date/time to present in this calendar.
    * @param dateTime the date/time to set
    */
-  public void setDateTime(final LocalDateTime dateTime) {
+  public void setDateTime(LocalDateTime dateTime) {
     requireNonNull(dateTime);
     yearValue.set(dateTime.getYear());
     monthValue.set(dateTime.getMonth());
@@ -163,28 +163,28 @@ public final class CalendarPanel extends JPanel {
   /**
    * @param listener a listener notified each time the date changes
    */
-  public void addDateListener(final EventDataListener<LocalDate> listener) {
+  public void addDateListener(EventDataListener<LocalDate> listener) {
     localDateValue.addDataListener(listener);
   }
 
   /**
    * @param listener a listener notified each time the date or time changes
    */
-  public void addDateTimeListener(final EventDataListener<LocalDateTime> listener) {
+  public void addDateTimeListener(EventDataListener<LocalDateTime> listener) {
     localDateTimeValue.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeDateListener(final EventDataListener<LocalDate> listener) {
+  public void removeDateListener(EventDataListener<LocalDate> listener) {
     localDateValue.removeDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeDateTimeListener(final EventDataListener<LocalDateTime> listener) {
+  public void removeDateTimeListener(EventDataListener<LocalDateTime> listener) {
     localDateTimeValue.removeDataListener(listener);
   }
 
@@ -207,7 +207,7 @@ public final class CalendarPanel extends JPanel {
    * @param dialogOwner the dialog owner
    * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
    */
-  public static Optional<LocalDate> getLocalDate(final JComponent dialogOwner) {
+  public static Optional<LocalDate> getLocalDate(JComponent dialogOwner) {
     return getLocalDate(dialogOwner, null);
   }
 
@@ -217,8 +217,8 @@ public final class CalendarPanel extends JPanel {
    * @param startDate the starting date, if null the current date is used
    * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
    */
-  public static Optional<LocalDate> getLocalDate(final JComponent dialogOwner,
-                                                 final LocalDate startDate) {
+  public static Optional<LocalDate> getLocalDate(JComponent dialogOwner,
+                                                 LocalDate startDate) {
     CalendarPanel calendarPanel = dateCalendarPanel();
     if (startDate != null) {
       calendarPanel.setDate(startDate);
@@ -240,7 +240,7 @@ public final class CalendarPanel extends JPanel {
    * @param dialogOwner the dialog owner
    * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
    */
-  public static Optional<LocalDateTime> getLocalDateTime(final JComponent dialogOwner) {
+  public static Optional<LocalDateTime> getLocalDateTime(JComponent dialogOwner) {
     return getLocalDateTime(dialogOwner, null);
   }
 
@@ -250,8 +250,8 @@ public final class CalendarPanel extends JPanel {
    * @param startDateTime the starting date, if null the current date is used
    * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
    */
-  public static Optional<LocalDateTime> getLocalDateTime(final JComponent dialogOwner,
-                                                         final LocalDateTime startDateTime) {
+  public static Optional<LocalDateTime> getLocalDateTime(JComponent dialogOwner,
+                                                         LocalDateTime startDateTime) {
     CalendarPanel calendarPanel = dateTimeCalendarPanel();
     if (startDateTime != null) {
       calendarPanel.setDateTime(startDateTime);
@@ -364,7 +364,7 @@ public final class CalendarPanel extends JPanel {
     return states;
   }
 
-  private State createDayState(final int dayOfMonth) {
+  private State createDayState(int dayOfMonth) {
     State dayState = State.state(dayValue.get().intValue() == dayOfMonth);
     dayState.addDataListener(selected -> {
       if (selected) {
@@ -482,13 +482,13 @@ public final class CalendarPanel extends JPanel {
     dayButtons.get(dayValue.get()).requestFocusInWindow();
   }
 
-  private void setYearMonthDay(final LocalDate localDate) {
+  private void setYearMonthDay(LocalDate localDate) {
     yearValue.set(localDate.getYear());
     monthValue.set(localDate.getMonth());
     dayValue.set(localDate.getDayOfMonth());
   }
 
-  private void setYearMonthDayHourMinute(final LocalDateTime localDateTime) {
+  private void setYearMonthDayHourMinute(LocalDateTime localDateTime) {
     setYearMonthDay(localDateTime.toLocalDate());
     hourValue.set(localDateTime.getHour());
     minuteValue.set(localDateTime.getMinute());
@@ -608,7 +608,7 @@ public final class CalendarPanel extends JPanel {
             .build();
   }
 
-  private JSpinner createMonthSpinner(final JSpinner yearSpinner) {
+  private JSpinner createMonthSpinner(JSpinner yearSpinner) {
     List<Item<Month>> monthItems = createMonthItems();
     JSpinner monthSpinner = Components.itemSpinner(new SpinnerListModel(monthItems), monthValue)
             .horizontalAlignment(SwingConstants.CENTER)
@@ -645,7 +645,7 @@ public final class CalendarPanel extends JPanel {
             .build();
   }
 
-  private static JSpinner removeCtrlLeftRightArrowKeyEvents(final JSpinner spinner) {
+  private static JSpinner removeCtrlLeftRightArrowKeyEvents(JSpinner spinner) {
     InputMap inputMap = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().getInputMap(JComponent.WHEN_FOCUSED);
     //so it doesn't interfere with keyboard navigation when it has focus
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK,false), "none");
@@ -669,7 +669,7 @@ public final class CalendarPanel extends JPanel {
     return headerPanel;
   }
 
-  private static JLabel createDayLabel(final DayOfWeek dayOfWeek) {
+  private static JLabel createDayLabel(DayOfWeek dayOfWeek) {
     JLabel label = new JLabel(dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()), SwingConstants.CENTER);
     label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 

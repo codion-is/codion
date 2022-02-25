@@ -16,12 +16,12 @@ import is.codion.framework.model.DefaultConditionModelFactory;
  */
 public class FXConditionModelFactory extends DefaultConditionModelFactory {
 
-  public FXConditionModelFactory(final EntityConnectionProvider connectionProvider) {
+  public FXConditionModelFactory(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
   }
 
   @Override
-  public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(final A attribute) {
+  public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(A attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
       if (getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {

@@ -42,7 +42,7 @@ public final class ClientInstanceMonitor {
    * @param remoteClient the client info
    * @throws RemoteException in case of an exception
    */
-  public ClientInstanceMonitor(final EntityServerAdmin server, final RemoteClient remoteClient) throws RemoteException {
+  public ClientInstanceMonitor(EntityServerAdmin server, RemoteClient remoteClient) throws RemoteException {
     this.remoteClient = remoteClient;
     this.server = server;
     this.loggingEnabledValue = Value.value(server.isLoggingEnabled(remoteClient.getClientId()));
@@ -92,7 +92,7 @@ public final class ClientInstanceMonitor {
       logRootNode.removeAllChildren();
       if (log != null) {
         StringBuilder logBuilder = new StringBuilder();
-        for (final MethodLogger.Entry entry : log.getEntries()) {
+        for (MethodLogger.Entry entry : log.getEntries()) {
           entry.append(logBuilder);
           DefaultMutableTreeNode entryNode = new DefaultMutableTreeNode(getEntryString(entry));
           if (entry.hasChildEntries()) {
@@ -131,7 +131,7 @@ public final class ClientInstanceMonitor {
   /**
    * @param status true if logging should be enabled, false otherwise
    */
-  private void setLoggingEnabled(final boolean status) {
+  private void setLoggingEnabled(boolean status) {
     try {
       server.setLoggingEnabled(remoteClient.getClientId(), status);
     }
@@ -144,8 +144,8 @@ public final class ClientInstanceMonitor {
     loggingEnabledValue.addDataListener(this::setLoggingEnabled);
   }
 
-  private static void addChildEntries(final DefaultMutableTreeNode entryNode, final List<MethodLogger.Entry> childEntries) {
-    for (final MethodLogger.Entry entry : childEntries) {
+  private static void addChildEntries(DefaultMutableTreeNode entryNode, List<MethodLogger.Entry> childEntries) {
+    for (MethodLogger.Entry entry : childEntries) {
       DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(getEntryString(entry));
       if (entry.hasChildEntries()) {
         addChildEntries(subEntry, entry.getChildEntries());
@@ -154,7 +154,7 @@ public final class ClientInstanceMonitor {
     }
   }
 
-  private static String getEntryString(final MethodLogger.Entry entry) {
+  private static String getEntryString(MethodLogger.Entry entry) {
     StringBuilder builder = new StringBuilder(entry.getMethod()).append(" [")
             .append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.getDuration())))
             .append(" μs").append("]");

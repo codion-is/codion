@@ -15,7 +15,7 @@ import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selec
 public final class ViewGenre extends AbstractEntityUsageScenario<ChinookApplicationModel> {
 
   @Override
-  protected void perform(final ChinookApplicationModel application) throws Exception {
+  protected void perform(ChinookApplicationModel application) throws Exception {
     SwingEntityModel genreModel = application.getEntityModel(Genre.TYPE);
     genreModel.getTableModel().refresh();
     EntityLoadTestModel.selectRandomRow(genreModel.getTableModel());

@@ -10,17 +10,17 @@ import javax.swing.JToggleButton;
 abstract class AbstractToggleButtonBuilder<C extends JToggleButton, B extends ButtonBuilder<Boolean, C, B>>
         extends AbstractButtonBuilder<Boolean, C, B> implements ButtonBuilder<Boolean, C, B> {
 
-  protected AbstractToggleButtonBuilder(final Value<Boolean> linkedValue) {
+  protected AbstractToggleButtonBuilder(Value<Boolean> linkedValue) {
     super(linkedValue);
   }
 
   @Override
-  protected final ComponentValue<Boolean, JToggleButton> buildComponentValue(final JToggleButton component) {
+  protected final ComponentValue<Boolean, JToggleButton> buildComponentValue(JToggleButton component) {
     return ComponentValues.toggleButton(component);
   }
 
   @Override
-  protected final void setInitialValue(final JToggleButton component, final Boolean initialValue) {
+  protected final void setInitialValue(JToggleButton component, Boolean initialValue) {
     component.setSelected(initialValue);
   }
 }

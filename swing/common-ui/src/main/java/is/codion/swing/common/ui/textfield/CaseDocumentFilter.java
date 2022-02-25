@@ -23,7 +23,7 @@ public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
    * Instantiates a new CaseDocumentFilter
    * @param documentCase the document case setting
    */
-  private CaseDocumentFilter(final DocumentCase documentCase) {
+  private CaseDocumentFilter(DocumentCase documentCase) {
     super(STRING_PARSER);
     this.documentCase = documentCase;
   }
@@ -31,7 +31,7 @@ public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
   /**
    * @param documentCase the document case setting
    */
-  public void setDocumentCase(final DocumentCase documentCase) {
+  public void setDocumentCase(DocumentCase documentCase) {
     this.documentCase = documentCase == null ? DocumentCase.NONE : documentCase;
   }
 
@@ -55,16 +55,16 @@ public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
    * @param documentCase the document case
    * @return a new CaseDocumentFilter instance
    */
-  public static CaseDocumentFilter caseDocumentFilter(final DocumentCase documentCase) {
+  public static CaseDocumentFilter caseDocumentFilter(DocumentCase documentCase) {
     return new CaseDocumentFilter(documentCase);
   }
 
   @Override
-  protected String transform(final String string) {
+  protected String transform(String string) {
     return string == null ? null : setCase(string);
   }
 
-  private String setCase(final String string) {
+  private String setCase(String string) {
     switch (documentCase) {
       case UPPERCASE:
         return string.toUpperCase(Locale.getDefault());

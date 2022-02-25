@@ -12,7 +12,7 @@ final class DefaultHttpServerConfiguration implements HttpServerConfiguration {
   private String keystorePath;
   private String keystorePassword;
 
-  DefaultHttpServerConfiguration(final int serverPort, final ServerHttps secure) {
+  DefaultHttpServerConfiguration(int serverPort, ServerHttps secure) {
     this.serverPort = serverPort;
     this.secure = secure == ServerHttps.TRUE;
   }
@@ -43,12 +43,12 @@ final class DefaultHttpServerConfiguration implements HttpServerConfiguration {
   }
 
   @Override
-  public void setDocumentRoot(final String documentRoot) {
+  public void setDocumentRoot(String documentRoot) {
     this.documentRoot = documentRoot;
   }
 
   @Override
-  public void setKeystore(final String keystorePath, final String keystorePassword) {
+  public void setKeystore(String keystorePath, String keystorePassword) {
     this.keystorePath = keystorePath;
     this.keystorePassword = keystorePassword;
   }

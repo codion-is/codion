@@ -15,7 +15,7 @@ public final class QueryTimeoutException extends DatabaseException {
    * @param cause the underlying cause
    * @param message the error message
    */
-  public QueryTimeoutException(final SQLException cause, final String message) {
+  public QueryTimeoutException(SQLException cause, String message) {
     super(cause, message);
   }
 }

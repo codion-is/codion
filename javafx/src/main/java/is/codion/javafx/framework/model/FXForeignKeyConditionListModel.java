@@ -21,7 +21,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
    * @param foreignKey the foreign key
    * @param listModel the list model to use
    */
-  public FXForeignKeyConditionListModel(final ForeignKey foreignKey, final ObservableEntityList listModel) {
+  public FXForeignKeyConditionListModel(ForeignKey foreignKey, ObservableEntityList listModel) {
     super(foreignKey);
     this.listModel = listModel;
     if (listModel != null) {

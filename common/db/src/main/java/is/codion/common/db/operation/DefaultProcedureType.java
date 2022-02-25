@@ -15,12 +15,12 @@ final class DefaultProcedureType<C, T> implements ProcedureType<C, T>, Serializa
 
   private final String name;
 
-  DefaultProcedureType(final String name) {
+  DefaultProcedureType(String name) {
     this.name = requireNonNull(name, "name");
   }
 
   @Override
-  public void execute(final C connection, final DatabaseProcedure<C, T> procedure, final T argument) throws DatabaseException {
+  public void execute(C connection, DatabaseProcedure<C, T> procedure, T argument) throws DatabaseException {
     requireNonNull(procedure, "procedure").execute(connection, argument);
   }
 
@@ -30,7 +30,7 @@ final class DefaultProcedureType<C, T> implements ProcedureType<C, T>, Serializa
   }
 
   @Override
-  public boolean equals(final Object o) {
+  public boolean equals(Object o) {
     if (this == o) {
       return true;
     }

@@ -16,7 +16,7 @@ public final class SwingEntityApplicationModelTest
   }
 
   private static class DeptModel extends SwingEntityModel {
-    private DeptModel(final EntityConnectionProvider connectionProvider) {
+    private DeptModel(EntityConnectionProvider connectionProvider) {
       super(TestDomain.T_DEPARTMENT, connectionProvider);
       addDetailModel(new SwingEntityModel(TestDomain.T_EMP, connectionProvider));
     }

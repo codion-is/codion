@@ -49,20 +49,20 @@ public final class AbstractFilteredTableModelTest {
 
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
-    private TestAbstractFilteredTableModel(final Comparator<String> customComparator) {
+    private TestAbstractFilteredTableModel(Comparator<String> customComparator) {
       super(new SwingFilteredTableColumnModel<>(createColumns()), new AbstractTableSortModel<List<String>, Integer>() {
         @Override
-        public Class<?> getColumnClass(final Integer columnIdentifier) {
+        public Class<?> getColumnClass(Integer columnIdentifier) {
           return String.class;
         }
 
         @Override
-        protected Object getColumnValue(final List<String> row, final Integer columnIdentifier) {
+        protected Object getColumnValue(List<String> row, Integer columnIdentifier) {
           return row.get(columnIdentifier);
         }
 
         @Override
-        protected Comparator<String> initializeColumnComparator(final Integer columnIdentifier) {
+        protected Comparator<String> initializeColumnComparator(Integer columnIdentifier) {
           if (customComparator != null) {
             return customComparator;
           }
@@ -78,11 +78,11 @@ public final class AbstractFilteredTableModelTest {
     }
 
     @Override
-    public Object getValueAt(final int rowIndex, final int columnIndex) {
+    public Object getValueAt(int rowIndex, int columnIndex) {
       return getItemAt(rowIndex).get(columnIndex);
     }
 
-    void addItemsAt(final List<List<String>> items, final int index) {
+    void addItemsAt(List<List<String>> items, int index) {
       addItemsAt(index, items);
     }
   }
@@ -141,7 +141,7 @@ public final class AbstractFilteredTableModelTest {
   void nullSortModel() {
     assertThrows(NullPointerException.class, () -> new AbstractFilteredTableModel<String, Integer>(new SwingFilteredTableColumnModel<>(singletonList(new TableColumn())), null) {
       @Override
-      public Object getValueAt(final int rowIndex, final int columnIndex) {
+      public Object getValueAt(int rowIndex, int columnIndex) {
         return null;
       }
     });
@@ -152,18 +152,18 @@ public final class AbstractFilteredTableModelTest {
     assertThrows(IllegalArgumentException.class, () -> new AbstractFilteredTableModel<String, Integer>(new SwingFilteredTableColumnModel<>(emptyList()),
             new AbstractTableSortModel<String, Integer>() {
               @Override
-              protected Object getColumnValue(final String row, final Integer columnIdentifier) {
+              protected Object getColumnValue(String row, Integer columnIdentifier) {
                 return null;
               }
 
               @Override
-              public Class<?> getColumnClass(final Integer columnIdentifier) {
+              public Class<?> getColumnClass(Integer columnIdentifier) {
                 return null;
               }
             }) {
 
       @Override
-      public Object getValueAt(final int rowIndex, final int columnIndex) {
+      public Object getValueAt(int rowIndex, int columnIndex) {
         return null;
       }
     });
@@ -313,13 +313,13 @@ public final class AbstractFilteredTableModelTest {
       private final int id;
       private final String value;
 
-      Row(final int id, final String value) {
+      Row(int id, String value) {
         this.id = id;
         this.value = value;
       }
 
       @Override
-      public int compareTo(final Row o) {
+      public int compareTo(Row o) {
         return value.compareTo(o.value);
       }
     }
@@ -335,7 +335,7 @@ public final class AbstractFilteredTableModelTest {
     AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(new SwingFilteredTableColumnModel<>(asList(columnId, columnValue)),
             new AbstractTableSortModel<Row, Integer>() {
               @Override
-              public Class<? extends Object> getColumnClass(final Integer columnIdentifier) {
+              public Class<? extends Object> getColumnClass(Integer columnIdentifier) {
                 if (columnIdentifier == 0) {
                   return Integer.class;
                 }
@@ -344,7 +344,7 @@ public final class AbstractFilteredTableModelTest {
               }
 
               @Override
-              protected Object getColumnValue(final Row row, final Integer columnIdentifier) {
+              protected Object getColumnValue(Row row, Integer columnIdentifier) {
                 if (columnIdentifier == 0) {
                   return row.id;
                 }
@@ -358,7 +358,7 @@ public final class AbstractFilteredTableModelTest {
       }
 
       @Override
-      public Object getValueAt(final int rowIndex, final int columnIndex) {
+      public Object getValueAt(int rowIndex, int columnIndex) {
         Row row = getItemAt(rowIndex);
         if (columnIndex == 0) {
           return row.id;
@@ -834,9 +834,9 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(String.class, tableModel.getColumnClass(0));
   }
 
-  private static boolean tableModelContainsAll(final List<List<String>> rows, final boolean includeFiltered,
-                                               final AbstractFilteredTableModel<List<String>, Integer> model) {
-    for (final List<String> row : rows) {
+  private static boolean tableModelContainsAll(List<List<String>> rows, boolean includeFiltered,
+                                               AbstractFilteredTableModel<List<String>, Integer> model) {
+    for (List<String> row : rows) {
       if (includeFiltered) {
         if (!model.containsItem(row)) {
           return false;

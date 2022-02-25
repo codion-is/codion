@@ -15,7 +15,7 @@ final class DefaultConditionType implements ConditionType, Serializable {
   private final EntityType entityType;
   private final String name;
 
-  DefaultConditionType(final EntityType entityType, final String name) {
+  DefaultConditionType(EntityType entityType, String name) {
     this.entityType = requireNonNull(entityType);
     this.name = requireNonNull(name);
   }
@@ -31,7 +31,7 @@ final class DefaultConditionType implements ConditionType, Serializable {
   }
 
   @Override
-  public boolean equals(final Object object) {
+  public boolean equals(Object object) {
     if (this == object) {
       return true;
     }

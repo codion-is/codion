@@ -45,7 +45,7 @@ public final class ClientUserMonitorPanel extends JPanel {
    * @param model the ClientUserMonitor to base this panel on
    * @throws RemoteException in case of an exception
    */
-  public ClientUserMonitorPanel(final ClientUserMonitor model) throws RemoteException {
+  public ClientUserMonitorPanel(ClientUserMonitor model) throws RemoteException {
     this.model = model;
     initializeUI();
   }
@@ -165,7 +165,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     return maintenanceBox;
   }
 
-  private void onException(final Exception exception) {
+  private void onException(Exception exception) {
     Dialogs.exceptionDialog()
             .owner(this)
             .show(exception);

@@ -23,15 +23,15 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
   private final ConditionSerializer conditionSerializer;
   private final Entities entities;
 
-  SelectConditionSerializer(final EntityObjectMapper entityObjectMapper) {
+  SelectConditionSerializer(EntityObjectMapper entityObjectMapper) {
     super(SelectCondition.class);
     this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
     this.entities = entityObjectMapper.getEntities();
   }
 
   @Override
-  public void serialize(final SelectCondition condition, final JsonGenerator generator,
-                        final SerializerProvider provider) throws IOException {
+  public void serialize(SelectCondition condition, JsonGenerator generator,
+                        SerializerProvider provider) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("entityType", condition.getEntityType().getName());
     generator.writeFieldName("condition");
@@ -42,7 +42,7 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     }
     else {
       generator.writeStartArray();
-      for (final OrderBy.OrderByAttribute attribute : condition.getOrderBy().getOrderByAttributes()) {
+      for (OrderBy.OrderByAttribute attribute : condition.getOrderBy().getOrderByAttributes()) {
         generator.writeString(attribute.getAttribute().getName() + ":" + (attribute.isAscending() ? "asc" : "desc"));
       }
       generator.writeEndArray();
@@ -53,7 +53,7 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeObjectField("fetchDepth", condition.getFetchDepth());
     generator.writeFieldName("fkFetchDepth");
     generator.writeStartObject();
-    for (final ForeignKey foreignKey : entities.getDefinition(condition.getEntityType()).getForeignKeys()) {
+    for (ForeignKey foreignKey : entities.getDefinition(condition.getEntityType()).getForeignKeys()) {
       Integer fkFetchDepth = condition.getFetchDepth(foreignKey);
       if (fkFetchDepth != condition.getFetchDepth()) {
         generator.writeObjectField(foreignKey.getName(), fkFetchDepth);
@@ -62,7 +62,7 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeEndObject();
     generator.writeFieldName("selectAttributes");
     generator.writeStartArray();
-    for (final Attribute<?> attribute : condition.getSelectAttributes()) {
+    for (Attribute<?> attribute : condition.getSelectAttributes()) {
       generator.writeString(attribute.getName());
     }
     generator.writeEndArray();

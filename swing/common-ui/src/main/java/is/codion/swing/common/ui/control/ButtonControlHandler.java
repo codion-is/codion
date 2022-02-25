@@ -13,7 +13,7 @@ final class ButtonControlHandler extends ControlHandler {
   private final JPanel panel;
   private final boolean vertical;
 
-  ButtonControlHandler(final JPanel panel, final Controls controls, final boolean vertical) {
+  ButtonControlHandler(JPanel panel, Controls controls, boolean vertical) {
     this.panel = panel;
     this.vertical = vertical;
     controls.getActions().forEach(this);
@@ -25,7 +25,7 @@ final class ButtonControlHandler extends ControlHandler {
   }
 
   @Override
-  public void onControl(final Control control) {
+  public void onControl(Control control) {
     if (control instanceof ToggleControl) {
       panel.add(((ToggleControl) control).createCheckBox());
     }
@@ -35,12 +35,12 @@ final class ButtonControlHandler extends ControlHandler {
   }
 
   @Override
-  public void onControls(final Controls controls) {
+  public void onControls(Controls controls) {
     panel.add(vertical ? controls.createVerticalButtonPanel() : controls.createHorizontalButtonPanel());
   }
 
   @Override
-  public void onAction(final Action action) {
+  public void onAction(Action action) {
     panel.add(new JButton(action));
   }
 }

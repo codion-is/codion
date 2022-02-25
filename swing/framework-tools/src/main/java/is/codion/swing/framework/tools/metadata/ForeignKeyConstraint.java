@@ -14,7 +14,7 @@ public final class ForeignKeyConstraint {
   private final Table referencedTable;
   private final Map<Column, Column> references = new LinkedHashMap<>();
 
-  ForeignKeyConstraint(final Table referencedTable) {
+  ForeignKeyConstraint(Table referencedTable) {
     this.referencedTable = requireNonNull(referencedTable);
   }
 
@@ -26,7 +26,7 @@ public final class ForeignKeyConstraint {
     return Collections.unmodifiableMap(references);
   }
 
-  void addReference(final Column fkColumn, final Column pkColumn) {
+  void addReference(Column fkColumn, Column pkColumn) {
     references.put(fkColumn, pkColumn);
   }
 }

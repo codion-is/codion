@@ -23,7 +23,7 @@ public class StringValuesTest {
     return stringValue;
   }
 
-  public void setStringValue(final String stringValue) {
+  public void setStringValue(String stringValue) {
     this.stringValue = stringValue;
     stringValueChangedEvent.onEvent();
   }

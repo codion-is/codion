@@ -17,7 +17,7 @@ final class DefaultAttributeLessThanCondition<T> extends AbstractAttributeCondit
 
   private final T value;
 
-  DefaultAttributeLessThanCondition(final Attribute<T> attribute, final T value, final boolean orEqual) {
+  DefaultAttributeLessThanCondition(Attribute<T> attribute, T value, boolean orEqual) {
     super(attribute, orEqual ? Operator.LESS_THAN_OR_EQUAL : Operator.LESS_THAN);
     this.value = requireNonNull(value, "An upper bound is required");
   }
@@ -33,7 +33,7 @@ final class DefaultAttributeLessThanCondition<T> extends AbstractAttributeCondit
   }
 
   @Override
-  protected String getConditionString(final String columnExpression) {
+  protected String getConditionString(String columnExpression) {
     return columnExpression + (getOperator() == Operator.LESS_THAN_OR_EQUAL ? " <= ?" : " < ?");
   }
 }

@@ -51,7 +51,7 @@ public final class Completion {
    * @param <T> the type
    * @return the combo box
    */
-  public static <C extends JComboBox<T>, T> C maximumMatch(final C comboBox) {
+  public static <C extends JComboBox<T>, T> C maximumMatch(C comboBox) {
     return maximumMatch(comboBox, Normalize.YES);
   }
 
@@ -63,7 +63,7 @@ public final class Completion {
    * @param <T> the type
    * @return the combo box
    */
-  public static <C extends JComboBox<T>, T> C maximumMatch(final C comboBox, final Normalize normalize) {
+  public static <C extends JComboBox<T>, T> C maximumMatch(C comboBox, Normalize normalize) {
     new MaximumMatchDocument(comboBox, normalize);
 
     return comboBox;
@@ -76,7 +76,7 @@ public final class Completion {
    * @param <T> the type
    * @return the combo box
    */
-  public static <C extends JComboBox<T>, T> C autoComplete(final C comboBox) {
+  public static <C extends JComboBox<T>, T> C autoComplete(C comboBox) {
     return autoComplete(comboBox, Normalize.YES);
   }
 
@@ -88,7 +88,7 @@ public final class Completion {
    * @param <T> the type
    * @return the combo box
    */
-  public static <C extends JComboBox<T>, T> C autoComplete(final C comboBox, final Normalize normalize) {
+  public static <C extends JComboBox<T>, T> C autoComplete(C comboBox, Normalize normalize) {
     new AutoCompletionDocument(comboBox, normalize);
 
     return comboBox;
@@ -102,7 +102,7 @@ public final class Completion {
    * @return the combo box
    * @see #COMBO_BOX_COMPLETION_MODE
    */
-  public static <C extends JComboBox<T>, T> C enable(final C comboBox) {
+  public static <C extends JComboBox<T>, T> C enable(C comboBox) {
     return enable(comboBox, COMBO_BOX_COMPLETION_MODE.get());
   }
 
@@ -115,7 +115,7 @@ public final class Completion {
    * @return the combo box
    * @see #COMBO_BOX_COMPLETION_MODE
    */
-  public static <C extends JComboBox<T>, T> C enable(final C comboBox, final Mode completionMode) {
+  public static <C extends JComboBox<T>, T> C enable(C comboBox, Mode completionMode) {
     requireNonNull(comboBox);
     requireNonNull(completionMode);
     switch (completionMode) {
@@ -150,12 +150,12 @@ public final class Completion {
 
   private static final class MaximumMatchDocument extends CompletionDocument {
 
-    private MaximumMatchDocument(final JComboBox<?> comboBox, final Normalize normalize) {
+    private MaximumMatchDocument(JComboBox<?> comboBox, Normalize normalize) {
       super(comboBox, normalize == Normalize.YES);
     }
 
     @Override
-    public void insertString(final int offset, final String str, final AttributeSet a) throws BadLocationException {
+    public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
       int offs = offset;
       if (isSelecting() || getModel().getSize() == 0) {
         return;
@@ -183,7 +183,7 @@ public final class Completion {
     }
 
     // calculates how many characters are predetermined by the given pattern.
-    private int getMaximumMatchingOffset(final String pattern, final Object selectedItem) {
+    private int getMaximumMatchingOffset(String pattern, Object selectedItem) {
       String selectedAsString = selectedItem.toString();
       int match = selectedAsString.length();
       // look for items that match the given pattern
@@ -204,7 +204,7 @@ public final class Completion {
     }
 
     // returns how many leading characters two strings have in common?
-    private int equalStartLength(final String str1, final String str2) {
+    private int equalStartLength(String str1, String str2) {
       String one = isNormalize() ? normalize(str1) : str1;
       String two = isNormalize() ? normalize(str2) : str2;
       char[] ch1 = one.toUpperCase().toCharArray();
@@ -222,12 +222,12 @@ public final class Completion {
 
   private static final class AutoCompletionDocument extends CompletionDocument {
 
-    private AutoCompletionDocument(final JComboBox<?> comboBox, final Normalize normalize) {
+    private AutoCompletionDocument(JComboBox<?> comboBox, Normalize normalize) {
       super(comboBox, normalize == Normalize.YES);
     }
 
     @Override
-    public void insertString(final int offset, final String str, final AttributeSet a) throws BadLocationException {
+    public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
       int offs = offset;
       if (isSelecting()) {
         return;

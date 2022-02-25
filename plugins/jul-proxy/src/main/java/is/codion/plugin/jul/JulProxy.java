@@ -23,7 +23,7 @@ public final class JulProxy implements LoggerProxy {
   }
 
   @Override
-  public void setLogLevel(final Object logLevel) {
+  public void setLogLevel(Object logLevel) {
     if (!(logLevel instanceof Level)) {
       throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
     }

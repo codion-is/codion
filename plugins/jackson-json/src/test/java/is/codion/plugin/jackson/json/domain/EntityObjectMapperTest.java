@@ -248,7 +248,7 @@ public final class EntityObjectMapperTest {
     List<Entity> entityList = asList(emp1, emp2);
     jsonString = mapper.writeValueAsString(entityList);
     List<Entity> parsedEntities = mapper.deserializeEntities(jsonString);
-    for (final Entity entity : entityList) {
+    for (Entity entity : entityList) {
       Entity parsed = parsedEntities.get(parsedEntities.indexOf(entity));
       assertTrue(parsed.columnValuesEqual(entity));
     }

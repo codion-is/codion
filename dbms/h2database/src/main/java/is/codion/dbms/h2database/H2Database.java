@@ -49,15 +49,15 @@ final class H2Database extends AbstractDatabase {
 
   private final boolean nowait;
 
-  H2Database(final String jdbcUrl) {
+  H2Database(String jdbcUrl) {
     this(jdbcUrl, emptyList());
   }
 
-  H2Database(final String jdbcUrl, final List<String> scriptPaths) {
+  H2Database(String jdbcUrl, List<String> scriptPaths) {
     this(jdbcUrl, scriptPaths, true);
   }
 
-  H2Database(final String jdbcUrl, final List<String> scriptPaths, final boolean nowait) {
+  H2Database(String jdbcUrl, List<String> scriptPaths, boolean nowait) {
     super(jdbcUrl);
     this.nowait = nowait;
     synchronized (INITIALIZED_DATABASES) {
@@ -85,41 +85,41 @@ final class H2Database extends AbstractDatabase {
   }
 
   @Override
-  public String getAutoIncrementQuery(final String idSource) {
+  public String getAutoIncrementQuery(String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
   @Override
-  public String getSequenceQuery(final String sequenceName) {
+  public String getSequenceQuery(String sequenceName) {
     return SEQUENCE_VALUE_QUERY + requireNonNull(sequenceName, "sequenceName");
   }
 
   @Override
-  public boolean isAuthenticationException(final SQLException exception) {
+  public boolean isAuthenticationException(SQLException exception) {
     return exception.getErrorCode() == AUTHENTICATION_ERROR;
   }
 
   @Override
-  public boolean isReferentialIntegrityException(final SQLException exception) {
+  public boolean isReferentialIntegrityException(SQLException exception) {
     return exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS ||
             exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING;
   }
 
   @Override
-  public boolean isUniqueConstraintException(final SQLException exception) {
+  public boolean isUniqueConstraintException(SQLException exception) {
     return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR;
   }
 
   @Override
-  public boolean isTimeoutException(final SQLException exception) {
+  public boolean isTimeoutException(SQLException exception) {
     return exception.getErrorCode() == TIMEOUT_ERROR;
   }
 
-  private void initializeEmbeddedDatabase(final List<String> scriptPaths) {
+  private void initializeEmbeddedDatabase(List<String> scriptPaths) {
     if ((isEmbeddedInMemory() || !databaseFileExists())) {
       Properties properties = new Properties();
       properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
-      for (final String scriptPath : scriptPaths) {
+      for (String scriptPath : scriptPaths) {
         String initUrl = getUrl() + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
         try {
           DriverManager.getConnection(initUrl, properties).close();

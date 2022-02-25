@@ -36,7 +36,7 @@ public class NumberField<T extends Number> extends JTextField {
    * @param document the document to use
    * @param columns the number of columns
    */
-  public NumberField(final NumberDocument<T> document, final int columns) {
+  public NumberField(NumberDocument<T> document, int columns) {
     super(document, null, columns);
     document.setTextComponent(this);
     if (document.getFormat() instanceof DecimalFormat) {
@@ -52,14 +52,14 @@ public class NumberField<T extends Number> extends JTextField {
    * Set whether grouping will be used in this field.
    * @param groupingUsed true if grouping should be used false otherwise
    */
-  public final void setGroupingUsed(final boolean groupingUsed) {
+  public final void setGroupingUsed(boolean groupingUsed) {
     getTypedDocument().getFormat().setGroupingUsed(groupingUsed);
   }
 
   /**
    * @param number the number to display in this field
    */
-  public final void setNumber(final T number) {
+  public final void setNumber(T number) {
     getTypedDocument().setNumber(number);
   }
 
@@ -75,7 +75,7 @@ public class NumberField<T extends Number> extends JTextField {
    * @param min the minimum value
    * @param max the maximum value
    */
-  public final void setRange(final double min, final double max) {
+  public final void setRange(double min, double max) {
     getTypedDocument().getDocumentFilter().setRange(min, max);
   }
 
@@ -99,7 +99,7 @@ public class NumberField<T extends Number> extends JTextField {
    * @param groupingSeparator the grouping separator
    * @throws IllegalArgumentException in case both separators are the same character
    */
-  public final void setSeparators(final char decimalSeparator, final char groupingSeparator) {
+  public final void setSeparators(char decimalSeparator, char groupingSeparator) {
     getTypedDocument().setSeparators(decimalSeparator, groupingSeparator);
   }
 
@@ -107,7 +107,7 @@ public class NumberField<T extends Number> extends JTextField {
    * Sets the decimal separator
    * @param decimalSeparator the separator
    */
-  public final void setDecimalSeparator(final char decimalSeparator) {
+  public final void setDecimalSeparator(char decimalSeparator) {
     getTypedDocument().setDecimalSeparator(decimalSeparator);
   }
 
@@ -115,14 +115,14 @@ public class NumberField<T extends Number> extends JTextField {
    * Sets the grouping separator
    * @param groupingSeparator the separator
    */
-  public final void setGroupingSeparator(final char groupingSeparator) {
+  public final void setGroupingSeparator(char groupingSeparator) {
     getTypedDocument().setGroupingSeparator(groupingSeparator);
   }
 
   /**
    * @param listener a listener notified when the value changes
    */
-  public void addValueListener(final EventDataListener<T> listener) {
+  public void addValueListener(EventDataListener<T> listener) {
     value.addDataListener(listener);
   }
 
@@ -136,7 +136,7 @@ public class NumberField<T extends Number> extends JTextField {
 
   private final class GroupingSkipAdapter extends KeyAdapter {
     @Override
-    public void keyReleased(final KeyEvent e) {
+    public void keyReleased(KeyEvent e) {
       switch (e.getKeyCode()) {
         case KeyEvent.VK_BACK_SPACE:
           skipGroupingSeparator(false);
@@ -149,7 +149,7 @@ public class NumberField<T extends Number> extends JTextField {
       }
     }
 
-    private void skipGroupingSeparator(final boolean forward) {
+    private void skipGroupingSeparator(boolean forward) {
       NumberDocument<?> numberDocument = getTypedDocument();
       char groupingSeparator = ((DecimalFormat) numberDocument.getFormat()).getDecimalFormatSymbols().getGroupingSeparator();
       try {

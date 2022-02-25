@@ -20,7 +20,7 @@ public class DefaultColumnSummaryModelTest {
 
   final ColumnSummaryModel testIntModel = new DefaultColumnSummaryModel<>(new ColumnSummaryModel.ColumnValueProvider<Integer>() {
     @Override
-    public String format(final Object value) {return numberFormat.format(value);}
+    public String format(Object value) {return numberFormat.format(value);}
     @Override
     public Collection<Integer> getValues() {
       return asList(1, 2, 3, null, 4, 5);
@@ -30,12 +30,12 @@ public class DefaultColumnSummaryModelTest {
       return false;
     }
     @Override
-    public void addValuesChangedListener(final EventListener event) {}
+    public void addValuesChangedListener(EventListener event) {}
   });
 
   final ColumnSummaryModel testDoubleModel = new DefaultColumnSummaryModel<>(new ColumnSummaryModel.ColumnValueProvider<Double>() {
     @Override
-    public String format(final Object value) {return numberFormat.format(value);}
+    public String format(Object value) {return numberFormat.format(value);}
     @Override
     public Collection<Double> getValues() {
       return asList(1.1, 2.2, 3.3, null, 4.4, 5.5);
@@ -45,7 +45,7 @@ public class DefaultColumnSummaryModelTest {
       return false;
     }
     @Override
-    public void addValuesChangedListener(final EventListener event) {}
+    public void addValuesChangedListener(EventListener event) {}
   });
 
   @Test

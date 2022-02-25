@@ -25,7 +25,7 @@ public interface ResultPacker<T> {
    * @throws SQLException thrown if anything goes wrong during the packing
    * @throws NullPointerException in case resultSet is null
    */
-  default List<T> pack(final ResultSet resultSet) throws SQLException {
+  default List<T> pack(ResultSet resultSet) throws SQLException {
     return pack(resultSet, -1);
   }
 
@@ -40,7 +40,7 @@ public interface ResultPacker<T> {
    * @throws SQLException thrown if anything goes wrong during the packing
    * @throws NullPointerException in case resultSet is null
    */
-  default List<T> pack(final ResultSet resultSet, final int fetchLimit) throws SQLException {
+  default List<T> pack(ResultSet resultSet, int fetchLimit) throws SQLException {
     requireNonNull(resultSet, "resultSet");
     List<T> result = fetchLimit < 0 ? new ArrayList<>() : new ArrayList<>(fetchLimit);
     int counter = 0;

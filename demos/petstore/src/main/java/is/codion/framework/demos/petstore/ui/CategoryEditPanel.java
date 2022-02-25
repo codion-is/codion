@@ -11,7 +11,7 @@ import static is.codion.framework.demos.petstore.domain.Petstore.Category;
 
 public class CategoryEditPanel extends EntityEditPanel {
 
-  public CategoryEditPanel(final SwingEntityEditModel model) {
+  public CategoryEditPanel(SwingEntityEditModel model) {
     super(model);
   }
 

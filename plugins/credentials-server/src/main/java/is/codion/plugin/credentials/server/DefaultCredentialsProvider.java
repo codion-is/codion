@@ -30,7 +30,7 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
   private static final Logger LOG = LoggerFactory.getLogger(DefaultCredentialsProvider.class);
 
   @Override
-  public User getCredentials(final UUID authenticationToken) throws CredentialsException {
+  public User getCredentials(UUID authenticationToken) throws CredentialsException {
     LOG.debug("DefaultCredentialsProvider.getCredentials(" + authenticationToken + ")");
     if (authenticationToken == null) {
       return null;
@@ -44,7 +44,7 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
     }
   }
 
-  private static Remote getCredentialsService(final Registry registry) throws ProviderNotFoundException, ProviderNotReachableException {
+  private static Remote getCredentialsService(Registry registry) throws ProviderNotFoundException, ProviderNotReachableException {
     Remote credentialsService;
     try {
       credentialsService = registry.lookup(CredentialsService.class.getSimpleName());
@@ -60,7 +60,7 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
     }
   }
 
-  private static Registry getRegistry(final int registryPort) throws ProviderNotFoundException {
+  private static Registry getRegistry(int registryPort) throws ProviderNotFoundException {
     try {
       return LocateRegistry.getRegistry(registryPort);
     }

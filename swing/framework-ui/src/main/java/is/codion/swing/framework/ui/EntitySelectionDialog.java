@@ -60,8 +60,8 @@ public final class EntitySelectionDialog extends JDialog {
           .mnemonic(FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0))
           .build();
 
-  private EntitySelectionDialog(final SwingEntityTableModel tableModel, final Window owner, final String title,
-                                final ImageIcon icon, final Dimension preferredSize, final boolean singleSelection) {
+  private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, String title,
+                                ImageIcon icon, Dimension preferredSize, boolean singleSelection) {
     super(owner, title);
     if (icon != null) {
       setIconImage(icon.getImage());
@@ -94,7 +94,7 @@ public final class EntitySelectionDialog extends JDialog {
    * @param tableModel the table model on which to base the table panel
    * @return a new builder instance
    */
-  public static Builder builder(final SwingEntityTableModel tableModel) {
+  public static Builder builder(SwingEntityTableModel tableModel) {
     return new DefaultBuilder(requireNonNull(tableModel));
   }
 
@@ -122,8 +122,8 @@ public final class EntitySelectionDialog extends JDialog {
     Optional<Entity> selectSingle();
   }
 
-  private EntityTablePanel initializeTablePanel(final SwingEntityTableModel tableModel, final Dimension preferredSize,
-                                                final boolean singleSelection) {
+  private EntityTablePanel initializeTablePanel(SwingEntityTableModel tableModel, Dimension preferredSize,
+                                                boolean singleSelection) {
     EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
     tablePanel.initializePanel();
     tablePanel.getTable().addDoubleClickListener(mouseEvent -> {
@@ -172,12 +172,12 @@ public final class EntitySelectionDialog extends JDialog {
 
     private Dimension preferredSize;
 
-    private DefaultBuilder(final SwingEntityTableModel tableModel) {
+    private DefaultBuilder(SwingEntityTableModel tableModel) {
       this.tableModel = tableModel;
     }
 
     @Override
-    public EntitySelectionDialog.Builder preferredSize(final Dimension preferredSize) {
+    public EntitySelectionDialog.Builder preferredSize(Dimension preferredSize) {
       this.preferredSize = requireNonNull(preferredSize);
       return this;
     }

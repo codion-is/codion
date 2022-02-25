@@ -114,7 +114,7 @@ final class LocalConnectionHandler implements InvocationHandler {
    */
   private boolean closed = false;
 
-  LocalConnectionHandler(final Domain domain, final RemoteClient remoteClient, final Database database) throws DatabaseException {
+  LocalConnectionHandler(Domain domain, RemoteClient remoteClient, Database database) throws DatabaseException {
     this.domain = domain;
     this.remoteClient = remoteClient;
     this.connectionPool = database.getConnectionPool(remoteClient.getDatabaseUser().getUsername());
@@ -139,7 +139,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   }
 
   @Override
-  public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+  public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Exception {
     active.set(true);
     lastAccessTime = System.currentTimeMillis();
     String methodName = method.getName();
@@ -306,7 +306,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
   }
 
-  private void rollbackIfRequired(final LocalEntityConnection entityConnection) {
+  private void rollbackIfRequired(LocalEntityConnection entityConnection) {
     if (entityConnection.isTransactionOpen()) {
       LOG.info("Rollback open transaction on disconnect: {}", remoteClient);
       entityConnection.rollbackTransaction();
@@ -352,7 +352,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   private static final class DaemonThreadFactory implements ThreadFactory {
 
     @Override
-    public Thread newThread(final Runnable runnable) {
+    public Thread newThread(Runnable runnable) {
       Thread thread = new Thread(runnable);
       thread.setDaemon(true);
 
@@ -367,12 +367,12 @@ final class LocalConnectionHandler implements InvocationHandler {
 
     private final Entities entities;
 
-    private EntityArgumentToString(final Entities entities) {
+    private EntityArgumentToString(Entities entities) {
       this.entities = entities;
     }
 
     @Override
-    protected String toString(final Object object) {
+    protected String toString(Object object) {
       if (object == null) {
         return "null";
       }
@@ -389,7 +389,7 @@ final class LocalConnectionHandler implements InvocationHandler {
       return super.toString(object);
     }
 
-    private String entityToString(final Entity entity) {
+    private String entityToString(Entity entity) {
       StringBuilder builder = new StringBuilder(entity.getEntityType().getName()).append(" {");
       List<ColumnProperty<?>> columnProperties = entities.getDefinition(entity.getEntityType()).getColumnProperties();
       for (int i = 0; i < columnProperties.size(); i++) {
@@ -409,7 +409,7 @@ final class LocalConnectionHandler implements InvocationHandler {
       return builder.append("}").toString();
     }
 
-    private static String entityKeyToString(final Key key) {
+    private static String entityKeyToString(Key key) {
       return key.getEntityType() + " {" + key + "}";
     }
   }

@@ -37,7 +37,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
    * @param temporalField the temporal input field
    * @param calendarProvider a calendar UI provider
    */
-  public TemporalInputPanel(final TemporalField<T> temporalField, final CalendarProvider calendarProvider) {
+  public TemporalInputPanel(TemporalField<T> temporalField, CalendarProvider calendarProvider) {
     super(new BorderLayout());
     this.inputField = requireNonNull(temporalField, "temporalField");
     this.calendarProvider = requireNonNull(calendarProvider, "calendarProvider");
@@ -91,7 +91,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
    * Sets the date in the input field, clears the field if {@code date} is null.
    * @param temporal the temporal value to set
    */
-  public void setTemporal(final Temporal temporal) {
+  public void setTemporal(Temporal temporal) {
     inputField.setTemporal(temporal);
   }
 
@@ -105,7 +105,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   /**
    * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
    */
-  public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
+  public void setTransferFocusOnEnter(boolean transferFocusOnEnter) {
     if (transferFocusOnEnter) {
       TransferFocusOnEnter.enable(inputField);
       if (calendarButton != null) {
@@ -121,7 +121,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   @Override
-  public void setEnabled(final boolean enabled) {
+  public void setEnabled(boolean enabled) {
     super.setEnabled(enabled);
     inputField.setEnabled(enabled);
     if (calendarButton != null) {
@@ -168,30 +168,30 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   private static final class InputFocusAdapter extends FocusAdapter {
     private final JFormattedTextField inputField;
 
-    private InputFocusAdapter(final JFormattedTextField inputField) {
+    private InputFocusAdapter(JFormattedTextField inputField) {
       this.inputField = inputField;
     }
 
     @Override
-    public void focusGained(final FocusEvent e) {
+    public void focusGained(FocusEvent e) {
       inputField.requestFocusInWindow();
     }
   }
 
   private static final class TemporalInputPanelValue<T extends Temporal> extends AbstractComponentValue<T, TemporalInputPanel<T>> {
 
-    private TemporalInputPanelValue(final TemporalInputPanel<T> inputPanel) {
+    private TemporalInputPanelValue(TemporalInputPanel<T> inputPanel) {
       super(inputPanel);
       inputPanel.getInputField().addTemporalListener(temporal -> notifyValueChange());
     }
 
     @Override
-    protected T getComponentValue(final TemporalInputPanel<T> component) {
+    protected T getComponentValue(TemporalInputPanel<T> component) {
       return component.getTemporal();
     }
 
     @Override
-    protected void setComponentValue(final TemporalInputPanel<T> component, final T value) {
+    protected void setComponentValue(TemporalInputPanel<T> component, T value) {
       component.setTemporal(value);
     }
   }

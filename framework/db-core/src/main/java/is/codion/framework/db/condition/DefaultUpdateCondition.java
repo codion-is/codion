@@ -20,12 +20,12 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
   private final Condition condition;
   private final Map<Attribute<?>, Object> propertyValues = new LinkedHashMap<>();
 
-  DefaultUpdateCondition(final Condition condition) {
+  DefaultUpdateCondition(Condition condition) {
     super(requireNonNull(condition, "condition").getEntityType());
     this.condition = condition;
   }
 
-  private DefaultUpdateCondition(final DefaultUpdateCondition updateCondition) {
+  private DefaultUpdateCondition(DefaultUpdateCondition updateCondition) {
     super(updateCondition.getEntityType());
     this.condition = updateCondition.condition;
     this.propertyValues.putAll(updateCondition.propertyValues);
@@ -47,12 +47,12 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
   }
 
   @Override
-  public String getConditionString(final EntityDefinition definition) {
+  public String getConditionString(EntityDefinition definition) {
     return condition.getConditionString(definition);
   }
 
   @Override
-  public <T> UpdateCondition set(final Attribute<T> attribute, final T value) {
+  public <T> UpdateCondition set(Attribute<T> attribute, T value) {
     requireNonNull(attribute, "attribute");
     if (propertyValues.containsKey(attribute)) {
       throw new IllegalArgumentException("Update condition already contains a value for attribute: " + attribute);

@@ -363,7 +363,7 @@ public final class ConditionsTest {
     assertEquals(property.getColumnExpression() + " not like ?", condition.getConditionString(departmentDefinition));
   }
 
-  private static void assertDepartmentKeyCondition(final Condition condition, final EntityDefinition departmentDefinition) {
+  private static void assertDepartmentKeyCondition(Condition condition, EntityDefinition departmentDefinition) {
     assertEquals("deptno = ?", condition.getConditionString(departmentDefinition));
     assertEquals(1, condition.getValues().size());
     assertEquals(1, condition.getAttributes().size());
@@ -371,7 +371,7 @@ public final class ConditionsTest {
     assertEquals(TestDomain.DEPARTMENT_ID, condition.getAttributes().get(0));
   }
 
-  private static void assertDepartmentCondition(final Condition condition, final EntityDefinition departmentDefinition) {
+  private static void assertDepartmentCondition(Condition condition, EntityDefinition departmentDefinition) {
     assertEquals("dname <> ?", condition.getConditionString(departmentDefinition));
     assertEquals(1, condition.getValues().size());
     assertEquals(1, condition.getAttributes().size());

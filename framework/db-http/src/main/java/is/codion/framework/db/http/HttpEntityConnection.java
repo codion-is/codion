@@ -57,9 +57,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  HttpEntityConnection(final String domainTypeName, final String serverHostName, final int serverPort,
-                       final ClientHttps httpsEnabled, final User user, final String clientTypeId, final UUID clientId,
-                       final HttpClientConnectionManager connectionManager) {
+  HttpEntityConnection(String domainTypeName, String serverHostName, int serverPort,
+                       ClientHttps httpsEnabled, User user, String clientTypeId, UUID clientId,
+                       HttpClientConnectionManager connectionManager) {
     super(domainTypeName, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
             "application/octet-stream", "/entities/ser", connectionManager);
   }
@@ -114,12 +114,12 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws DatabaseException {
     return executeFunction(functionType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final T argument) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
     Objects.requireNonNull(functionType);
     try {
       return onResponse(execute(createHttpPost("function", byteArrayEntity(asList(functionType, argument)))));
@@ -133,12 +133,12 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType) throws DatabaseException {
     executeProcedure(procedureType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final T argument) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
     Objects.requireNonNull(procedureType);
     try {
       onResponse(execute(createHttpPost("procedure", byteArrayEntity(asList(procedureType, argument)))));
@@ -152,12 +152,12 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public Key insert(final Entity entity) throws DatabaseException {
+  public Key insert(Entity entity) throws DatabaseException {
     return insert(singletonList(entity)).get(0);
   }
 
   @Override
-  public List<Key> insert(final List<? extends Entity> entities) throws DatabaseException {
+  public List<Key> insert(List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       return onResponse(execute(createHttpPost("insert", byteArrayEntity(entities))));
@@ -171,12 +171,12 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public Entity update(final Entity entity) throws DatabaseException {
+  public Entity update(Entity entity) throws DatabaseException {
     return update(singletonList(entity)).get(0);
   }
 
   @Override
-  public List<Entity> update(final List<? extends Entity> entities) throws DatabaseException {
+  public List<Entity> update(List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       return onResponse(execute(createHttpPost("update", byteArrayEntity(entities))));
@@ -190,7 +190,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int update(final UpdateCondition condition) throws DatabaseException {
+  public int update(UpdateCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       return onResponse(execute(createHttpPost("updateByCondition", byteArrayEntity(condition))));
@@ -204,12 +204,12 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public void delete(final Key entityKey) throws DatabaseException {
+  public void delete(Key entityKey) throws DatabaseException {
     delete(singletonList(entityKey));
   }
 
   @Override
-  public void delete(final List<Key> keys) throws DatabaseException {
+  public void delete(List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
       onResponse(execute(createHttpPost("deleteByKey", byteArrayEntity(keys))));
@@ -223,7 +223,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int delete(final Condition condition) throws DatabaseException {
+  public int delete(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       return onResponse(execute(createHttpPost("delete", byteArrayEntity(condition))));
@@ -237,12 +237,12 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <T> List<T> select(final Attribute<T> attribute) throws DatabaseException {
+  public <T> List<T> select(Attribute<T> attribute) throws DatabaseException {
     return select(attribute, (Condition) null);
   }
 
   @Override
-  public <T> List<T> select(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
+  public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
     Objects.requireNonNull(attribute);
     try {
       return onResponse(execute(createHttpPost("values", byteArrayEntity(asList(attribute, condition)))));
@@ -256,17 +256,17 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException {
     return selectSingle(where(attribute).equalTo(value));
   }
 
   @Override
-  public Entity selectSingle(final Key key) throws DatabaseException {
+  public Entity selectSingle(Key key) throws DatabaseException {
     return selectSingle(condition(key));
   }
 
   @Override
-  public Entity selectSingle(final Condition condition) throws DatabaseException {
+  public Entity selectSingle(Condition condition) throws DatabaseException {
     List<Entity> selected = select(condition);
     if (Util.nullOrEmpty(selected)) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
@@ -279,7 +279,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public List<Entity> select(final List<Key> keys) throws DatabaseException {
+  public List<Entity> select(List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
       return onResponse(execute(createHttpPost("selectByKey", byteArrayEntity(keys))));
@@ -293,7 +293,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public List<Entity> select(final Condition condition) throws DatabaseException {
+  public List<Entity> select(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
       return onResponse(execute(createHttpPost("select", byteArrayEntity(condition))));
@@ -307,17 +307,17 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException {
     return select(where(attribute).equalTo(value));
   }
 
   @Override
-  public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
+  public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
     return select(where(attribute).equalTo(values));
   }
 
   @Override
-  public Map<EntityType, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       return onResponse(execute(createHttpPost("dependencies", byteArrayEntity(entities))));
@@ -331,7 +331,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int rowCount(final Condition condition) throws DatabaseException {
+  public int rowCount(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       return onResponse(execute(createHttpPost("count", byteArrayEntity(condition))));
@@ -345,7 +345,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <T, R, P> R fillReport(final ReportType<T, R, P> reportType, final P reportParameters) throws DatabaseException, ReportException {
+  public <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportType, "report");
     try {
       return onResponse(execute(createHttpPost("report", byteArrayEntity(asList(reportType, reportParameters)))));
@@ -359,7 +359,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public void writeBlob(final Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData)
+  public void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData)
           throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
@@ -376,7 +376,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public byte[] readBlob(final Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     try {
@@ -390,7 +390,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     }
   }
 
-  private static HttpEntity byteArrayEntity(final Object data) throws IOException {
+  private static HttpEntity byteArrayEntity(Object data) throws IOException {
     return new ByteArrayEntity(Serializer.serialize(data));
   }
 }

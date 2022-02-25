@@ -27,13 +27,13 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
   private EntityPanel invoiceLinePanel;
 
-  public InvoiceEditPanel(final SwingEntityEditModel editModel) {
+  public InvoiceEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
     setClearAfterInsert(false);
     setDefaultTextFieldColumns(16);
   }
 
-  public void setInvoiceLinePanel(final EntityPanel invoiceLinePanel) {
+  public void setInvoiceLinePanel(EntityPanel invoiceLinePanel) {
     this.invoiceLinePanel = invoiceLinePanel;
   }
 
@@ -72,7 +72,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
   private static final class CustomerSelectionProvider extends EntitySearchField.TableSelectionProvider {
 
-    private CustomerSelectionProvider(final EntitySearchModel searchModel) {
+    private CustomerSelectionProvider(EntitySearchModel searchModel) {
       super(searchModel);
       SwingEntityTableModel tableModel = getTable().getModel();
       tableModel.getColumnModel().setColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);

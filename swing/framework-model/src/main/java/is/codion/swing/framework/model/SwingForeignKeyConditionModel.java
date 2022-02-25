@@ -20,7 +20,7 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
    * @param foreignKey the foreign key
    * @param comboBoxModel a SwingEntityComboBoxModel
    */
-  public SwingForeignKeyConditionModel(final ForeignKey foreignKey, final SwingEntityComboBoxModel comboBoxModel) {
+  public SwingForeignKeyConditionModel(ForeignKey foreignKey, SwingEntityComboBoxModel comboBoxModel) {
     super(foreignKey);
     this.entityComboBoxModel = Objects.requireNonNull(comboBoxModel, "comboBoxModel");
     if (entityComboBoxModel.isCleared()) {

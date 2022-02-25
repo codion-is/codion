@@ -182,14 +182,14 @@ public class DefaultEntityTableConditionModelTest {
     final String value = "test";
     String wildcard = Property.WILDCARD_CHARACTER.get();
     conditionModel.getSimpleConditionStringValue().set(value);
-    for (final ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
+    for (ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
       if (model.getTypeClass().equals(String.class)) {
         assertEquals(wildcard + value + wildcard, model.getEqualValue());
         assertTrue(model.isEnabled());
       }
     }
     conditionModel.getSimpleConditionStringValue().set(null);
-    for (final ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
+    for (ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
       if (model.getTypeClass().equals(String.class)) {
         assertNull(model.getUpperBound());
         assertFalse(model.isEnabled());

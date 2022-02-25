@@ -63,7 +63,7 @@ public abstract class EntityEditView extends BorderPane {
    * Instantiates a new {@link EntityEditView} instance
    * @param editModel the edit model to base this edit view on
    */
-  public EntityEditView(final FXEntityEditModel editModel) {
+  public EntityEditView(FXEntityEditModel editModel) {
     this.editModel = editModel;
   }
 
@@ -133,7 +133,7 @@ public abstract class EntityEditView extends BorderPane {
    * Sets the given attribute as the attribute which component should receive focus when this edit view is initialized
    * @param initialFocusAttribute the attribute
    */
-  public final void setInitialFocusAttribute(final Attribute<?> initialFocusAttribute) {
+  public final void setInitialFocusAttribute(Attribute<?> initialFocusAttribute) {
     this.initialFocusAttribute = initialFocusAttribute;
   }
 
@@ -141,7 +141,7 @@ public abstract class EntityEditView extends BorderPane {
    * Sets the given property as the property which component should receive focus after an insert has been performed
    * @param afterInsertFocusAttribute the attribute
    */
-  public final void setAfterInsertFocusAttribute(final Attribute<?> afterInsertFocusAttribute) {
+  public final void setAfterInsertFocusAttribute(Attribute<?> afterInsertFocusAttribute) {
     this.afterInsertFocusAttribute = afterInsertFocusAttribute;
   }
 
@@ -149,7 +149,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param requestFocusAfterInsert if true then the input focus is set after insert
    * @see #setInitialFocusAttribute(Attribute)
    */
-  public void setRequestFocusAfterInsert(final boolean requestFocusAfterInsert) {
+  public void setRequestFocusAfterInsert(boolean requestFocusAfterInsert) {
     this.requestFocusAfterInsert = requestFocusAfterInsert;
   }
 
@@ -169,7 +169,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param foreignKey the foreign key
    * @return a {@link EntitySearchField} based on the given foreign key
    */
-  protected final EntitySearchField createForeignKeySearchField(final ForeignKey foreignKey) {
+  protected final EntitySearchField createForeignKeySearchField(ForeignKey foreignKey) {
     checkControl(foreignKey);
     getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey);
     EntitySearchField searchField = FXUiUtil.createSearchField(foreignKey, editModel);
@@ -184,7 +184,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param foreignKey the foreign key
    * @return a {@link ComboBox} based on the given foreign key
    */
-  protected final ComboBox<Entity> createForeignKeyComboBox(final ForeignKey foreignKey) {
+  protected final ComboBox<Entity> createForeignKeyComboBox(ForeignKey foreignKey) {
     checkControl(foreignKey);
     getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey);
     ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(foreignKey, editModel);
@@ -200,7 +200,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param <T> the property type
    * @return a {@link ComboBox} for the given property
    */
-  protected final <T> ComboBox<Item<T>> createItemComboBox(final Attribute<T> attribute) {
+  protected final <T> ComboBox<Item<T>> createItemComboBox(Attribute<T> attribute) {
     checkControl(attribute);
     ComboBox<Item<T>> box = FXUiUtil.createItemComboBox((ItemProperty<T>)
             getEditModel().getEntityDefinition().getProperty(attribute), editModel);
@@ -216,7 +216,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param <T> the value type
    * @return a {@link TextField} for the given attribute
    */
-  protected final <T> TextField createTextField(final Attribute<T> attribute) {
+  protected final <T> TextField createTextField(Attribute<T> attribute) {
     checkControl(attribute);
     Property<?> property = getEditModel().getEntityDefinition().getProperty(attribute);
     TextField textField;
@@ -249,7 +249,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param attribute the attribute
    * @return a {@link DatePicker} based on the given attribute
    */
-  protected final DatePicker createDatePicker(final Attribute<LocalDate> attribute) {
+  protected final DatePicker createDatePicker(Attribute<LocalDate> attribute) {
     checkControl(attribute);
     DatePicker picker = FXUiUtil.createDatePicker(getEditModel()
             .getEntityDefinition().getProperty(attribute), editModel);
@@ -263,11 +263,11 @@ public abstract class EntityEditView extends BorderPane {
    * @param attribute the attribute
    * @return a {@link Label} for the given attribute
    */
-  protected final Label createLabel(final Attribute<?> attribute) {
+  protected final Label createLabel(Attribute<?> attribute) {
     return new Label(getEditModel().getEntityDefinition().getProperty(attribute).getCaption());
   }
 
-  protected final BorderPane createPropertyPanel(final Attribute<?> attribute) {
+  protected final BorderPane createPropertyPanel(Attribute<?> attribute) {
     BorderPane pane = new BorderPane();
     pane.setTop(createLabel(attribute));
     Control control = controls.get(attribute);
@@ -377,7 +377,7 @@ public abstract class EntityEditView extends BorderPane {
     }
   }
 
-  private void update(final boolean confirm) {
+  private void update(boolean confirm) {
     if (!confirm || FXUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE))) {
       try {
         validateData();
@@ -405,14 +405,14 @@ public abstract class EntityEditView extends BorderPane {
     }
   }
 
-  private void requestComponentFocus(final Attribute<?> attribute) {
+  private void requestComponentFocus(Attribute<?> attribute) {
     Control control = controls.get(attribute);
     if (control != null) {
       control.requestFocus();
     }
   }
 
-  private void requestInitialFocus(final boolean afterInsert) {
+  private void requestInitialFocus(boolean afterInsert) {
     Control focusControl = afterInsert && afterInsertFocusAttribute != null ?
             controls.get(afterInsertFocusAttribute) :
             controls.get(initialFocusAttribute);
@@ -424,13 +424,13 @@ public abstract class EntityEditView extends BorderPane {
     }
   }
 
-  private void checkControl(final Attribute<?> attribute) {
+  private void checkControl(Attribute<?> attribute) {
     if (controls.containsKey(attribute)) {
       throw new IllegalStateException("Control has already been created for property: " + attribute);
     }
   }
 
-  private void onKeyReleased(final KeyEvent event) {
+  private void onKeyReleased(KeyEvent event) {
     if (event.isAltDown()) {
       if (event.getCode().equals(INSERT_KEY_CODE)) {
         save();

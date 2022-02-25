@@ -43,8 +43,8 @@ public interface KeyGenerator {
    * @param connection the connection to use
    * @throws SQLException in case of an exception
    */
-  default void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
-                            final DatabaseConnection connection) throws SQLException {/*for overriding*/}
+  default void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
+                            DatabaseConnection connection) throws SQLException {/*for overriding*/}
 
   /**
    * Prepares the given entity after insert, that is, fetches automatically generated primary
@@ -56,8 +56,8 @@ public interface KeyGenerator {
    * @param insertStatement the insert statement
    * @throws SQLException in case of an exception
    */
-  default void afterInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
-                           final DatabaseConnection connection, final Statement insertStatement) throws SQLException {/*for overriding*/}
+  default void afterInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
+                           DatabaseConnection connection, Statement insertStatement) throws SQLException {/*for overriding*/}
 
   /**
    * Specifies whether the insert statement should return the primary key column values via the resulting
@@ -80,7 +80,7 @@ public interface KeyGenerator {
    * @param columnName the primary key column name
    * @return an incrementing primary key generator
    */
-  static KeyGenerator increment(final String tableName, final String columnName) {
+  static KeyGenerator increment(String tableName, String columnName) {
     return new IncrementKeyGenerator(tableName, columnName);
   }
 
@@ -91,7 +91,7 @@ public interface KeyGenerator {
    * @param sequenceName the sequence name
    * @return a sequence based primary key generator
    */
-  static KeyGenerator sequence(final String sequenceName) {
+  static KeyGenerator sequence(String sequenceName) {
     return new SequenceKeyGenerator(sequenceName);
   }
 
@@ -102,7 +102,7 @@ public interface KeyGenerator {
    * @param query a query for retrieving the primary key value
    * @return a query based primary key generator
    */
-  static KeyGenerator queried(final String query) {
+  static KeyGenerator queried(String query) {
     return new QueryKeyGenerator(query);
   }
 
@@ -111,7 +111,7 @@ public interface KeyGenerator {
    * @param valueSource the value source, whether a sequence or a table name
    * @return an auto-increment based primary key generator
    */
-  static KeyGenerator automatic(final String valueSource) {
+  static KeyGenerator automatic(String valueSource) {
     return new AutomaticKeyGenerator(valueSource);
   }
 

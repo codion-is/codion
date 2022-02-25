@@ -26,7 +26,7 @@ public enum Operator {
   private final String caption;
   private final String description;
 
-  Operator(final String caption) {
+  Operator(String caption) {
     this.caption = caption;
     this.description = messages.getString(name().toLowerCase());
   }

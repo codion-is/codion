@@ -42,7 +42,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   private final Consumer<Throwable> onException;
   private final Runnable onInterrupted;
 
-  private ProgressWorker(final DefaultBuilder<T, V> builder) {
+  private ProgressWorker(DefaultBuilder<T, V> builder) {
     this.task = builder.task;
     this.onStarted = builder.onStarted;
     this.onDone = builder.onDone;
@@ -59,7 +59,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
    * @param <T> the worker result type
    * @return a new {@link Builder} instance
    */
-  public static <T> Builder<T, ?> builder(final Task<T> task) {
+  public static <T> Builder<T, ?> builder(Task<T> task) {
     requireNonNull(task);
 
     return builder(progressReporter -> task.perform());
@@ -71,7 +71,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
    * @param <V> the intermediate result type
    * @return a new {@link Builder} instance
    */
-  public static <T, V> Builder<T, V> builder(final ProgressTask<T, V> task) {
+  public static <T, V> Builder<T, V> builder(ProgressTask<T, V> task) {
     return new DefaultBuilder<>(task);
   }
 
@@ -81,7 +81,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   }
 
   @Override
-  protected void process(final List<V> chunks) {
+  protected void process(List<V> chunks) {
     onPublish.accept(chunks);
   }
 
@@ -98,7 +98,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     }
   }
 
-  private void onPropertyChangeEvent(final PropertyChangeEvent changeEvent) {
+  private void onPropertyChangeEvent(PropertyChangeEvent changeEvent) {
     if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
       Object newValue = changeEvent.getNewValue();
       if (StateValue.STARTED.equals(newValue)) {
@@ -225,12 +225,12 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   private final class TaskProgressReporter implements ProgressReporter<V> {
     @Override
-    public void setProgress(final int progress) {
+    public void setProgress(int progress) {
       ProgressWorker.this.setProgress(progress);
     }
 
     @Override
-    public void publish(final V... chunks) {
+    public void publish(V... chunks) {
       ProgressWorker.this.publish(chunks);
     }
   }
@@ -247,48 +247,48 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     private Consumer<Throwable> onException = DefaultBuilder::handleException;
     private Runnable onInterrupted = () -> Thread.currentThread().interrupt();
 
-    private DefaultBuilder(final ProgressTask<T, V> task) {
+    private DefaultBuilder(ProgressTask<T, V> task) {
       this.task = requireNonNull(task);
     }
 
     @Override
-    public Builder<T, V> onStarted(final Runnable onStarted) {
+    public Builder<T, V> onStarted(Runnable onStarted) {
       this.onStarted = requireNonNull(onStarted);
       return this;
     }
 
     @Override
-    public Builder<T, V> onDone(final Runnable onDone) {
+    public Builder<T, V> onDone(Runnable onDone) {
       this.onDone = requireNonNull(onDone);
       return this;
     }
 
     @Override
-    public Builder<T, V> onResult(final Consumer<T> onResult) {
+    public Builder<T, V> onResult(Consumer<T> onResult) {
       this.onResult = requireNonNull(onResult);
       return this;
     }
 
     @Override
-    public Builder<T, V> onProgress(final Consumer<Integer> onProgress) {
+    public Builder<T, V> onProgress(Consumer<Integer> onProgress) {
       this.onProgress = requireNonNull(onProgress);
       return this;
     }
 
     @Override
-    public Builder<T, V> onPublish(final Consumer<List<V>> onPublish) {
+    public Builder<T, V> onPublish(Consumer<List<V>> onPublish) {
       this.onPublish = requireNonNull(onPublish);
       return this;
     }
 
     @Override
-    public Builder<T, V> onException(final Consumer<Throwable> onException) {
+    public Builder<T, V> onException(Consumer<Throwable> onException) {
       this.onException = requireNonNull(onException);
       return this;
     }
 
     @Override
-    public Builder<T, V> onInterrupted(final Runnable onInterrupted) {
+    public Builder<T, V> onInterrupted(Runnable onInterrupted) {
       this.onInterrupted = requireNonNull(onInterrupted);
       return this;
     }
@@ -306,7 +306,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
       return new ProgressWorker<>(this);
     }
 
-    private static void handleException(final Throwable exception) {
+    private static void handleException(Throwable exception) {
       if (exception instanceof RuntimeException) {
         throw (RuntimeException) exception;
       }

@@ -42,17 +42,17 @@ public abstract class AbstractValue<T> implements Value<T> {
     this(null);
   }
 
-  protected AbstractValue(final T nullValue) {
+  protected AbstractValue(T nullValue) {
     this(nullValue, NotifyOnSet.NO);
   }
 
-  protected AbstractValue(final T nullValue, final NotifyOnSet notifyOnSet) {
+  protected AbstractValue(T nullValue, NotifyOnSet notifyOnSet) {
     this.nullValue = nullValue;
     this.notifyOnSet = notifyOnSet == NotifyOnSet.YES;
   }
 
   @Override
-  public final void set(final T value) {
+  public final void set(T value) {
     T actualValue = value == null ? nullValue : value;
     validators.forEach(validator -> validator.validate(actualValue));
     if (!Objects.equals(get(), actualValue)) {
@@ -99,37 +99,37 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final boolean equalTo(final T value) {
+  public final boolean equalTo(T value) {
     return Objects.equals(get(), value);
   }
 
   @Override
-  public final void onEvent(final T data) {
+  public final void onEvent(T data) {
     set(data);
   }
 
   @Override
-  public final void addListener(final EventListener listener) {
+  public final void addListener(EventListener listener) {
     getChangeObserver().addListener(listener);
   }
 
   @Override
-  public final void removeListener(final EventListener listener) {
+  public final void removeListener(EventListener listener) {
     getChangeObserver().removeListener(listener);
   }
 
   @Override
-  public final void addDataListener(final EventDataListener<T> listener) {
+  public final void addDataListener(EventDataListener<T> listener) {
     getChangeObserver().addDataListener(listener);
   }
 
   @Override
-  public final void removeDataListener(final EventDataListener<T> listener) {
+  public final void removeDataListener(EventDataListener<T> listener) {
     getChangeObserver().removeDataListener(listener);
   }
 
   @Override
-  public final void link(final Value<T> originalValue) {
+  public final void link(Value<T> originalValue) {
     if (linkedValues.containsKey(requireNonNull(originalValue, "originalValue"))) {
       throw new IllegalArgumentException("Values are already linked");
     }
@@ -137,7 +137,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final void unlink(final Value<T> originalValue) {
+  public final void unlink(Value<T> originalValue) {
     if (!linkedValues.containsKey(requireNonNull(originalValue, "originalValue"))) {
       throw new IllegalArgumentException("Values are not linked");
     }
@@ -145,13 +145,13 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final void link(final ValueObserver<T> originalValueObserver) {
+  public final void link(ValueObserver<T> originalValueObserver) {
     set(requireNonNull(originalValueObserver, "originalValueObserver").get());
     originalValueObserver.addDataListener(originalValueListener);
   }
 
   @Override
-  public final void unlink(final ValueObserver<T> originalValueObserver) {
+  public final void unlink(ValueObserver<T> originalValueObserver) {
     requireNonNull(originalValueObserver).removeDataListener(originalValueListener);
   }
 
@@ -161,13 +161,13 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final void addValidator(final Validator<T> validator) {
+  public final void addValidator(Validator<T> validator) {
     requireNonNull(validator, "validator").validate(get());
     validators.add(validator);
   }
 
   @Override
-  public final void removeValidator(final Validator<T> validator) {
+  public final void removeValidator(Validator<T> validator) {
     validators.remove(requireNonNull(validator));
   }
 
@@ -180,7 +180,7 @@ public abstract class AbstractValue<T> implements Value<T> {
    * Sets the actual internal value.
    * @param value the value
    */
-  protected abstract void setValue(final T value);
+  protected abstract void setValue(T value);
 
   /**
    * @return the change observer to use when adding listeners to this value

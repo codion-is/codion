@@ -41,7 +41,7 @@ public final class EntityObjectMapper extends ObjectMapper {
   private final EntityDeserializer entityDeserializer;
   private final Entities entities;
 
-  EntityObjectMapper(final Entities entities) {
+  EntityObjectMapper(Entities entities) {
     this.entities = requireNonNull(entities, "entities");
     this.entitySerializer = new EntitySerializer(this);
     this.entityDeserializer = new EntityDeserializer(entities, this);
@@ -68,7 +68,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @param includeForeignKeyValues if true then the foreign key graph is included in serialized entities
    * @return this {@link EntityObjectMapper} instance
    */
-  public EntityObjectMapper setIncludeForeignKeyValues(final boolean includeForeignKeyValues) {
+  public EntityObjectMapper setIncludeForeignKeyValues(boolean includeForeignKeyValues) {
     entitySerializer.setIncludeForeignKeyValues(includeForeignKeyValues);
     return this;
   }
@@ -77,7 +77,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @param includeNullValues true if null values should be included in exported entities
    * @return this {@link EntityObjectMapper} instance
    */
-  public EntityObjectMapper setIncludeNullValues(final boolean includeNullValues) {
+  public EntityObjectMapper setIncludeNullValues(boolean includeNullValues) {
     entitySerializer.setIncludeNullValues(includeNullValues);
     return this;
   }
@@ -88,7 +88,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return a JSON string representation of the given entities
    * @throws JsonProcessingException in case of an exception
    */
-  public String serializeEntities(final List<Entity> entities) throws JsonProcessingException {
+  public String serializeEntities(List<Entity> entities) throws JsonProcessingException {
     return writeValueAsString(entities);
   }
 
@@ -98,7 +98,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return a List containing the Entity instances represented by the given JSON string
    * @throws JsonProcessingException in case of an exception
    */
-  public List<Entity> deserializeEntities(final String jsonString) throws JsonProcessingException {
+  public List<Entity> deserializeEntities(String jsonString) throws JsonProcessingException {
     return readValue(jsonString, ENTITY_LIST_REFERENCE);
   }
 
@@ -108,7 +108,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return a List containing the Entity instances represented by the given JSON input stream
    * @throws IOException in case of an exception
    */
-  public List<Entity> deserializeEntities(final InputStream inputStream) throws IOException {
+  public List<Entity> deserializeEntities(InputStream inputStream) throws IOException {
     return readValue(inputStream, ENTITY_LIST_REFERENCE);
   }
 
@@ -118,7 +118,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return a JSON string representation of the given entity keys
    * @throws JsonProcessingException in case of an exception
    */
-  public String serializeKeys(final List<Key> keys) throws JsonProcessingException {
+  public String serializeKeys(List<Key> keys) throws JsonProcessingException {
     return writeValueAsString(keys);
   }
 
@@ -128,7 +128,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return a List containing the Key instances represented by the given JSON string
    * @throws JsonProcessingException in case of an exception
    */
-  public List<Key> deserializeKeys(final String jsonString) throws JsonProcessingException {
+  public List<Key> deserializeKeys(String jsonString) throws JsonProcessingException {
     return readValue(jsonString, KEY_LIST_REFERENCE);
   }
 
@@ -138,7 +138,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return a List containing the Key instances represented by the given JSON input stream
    * @throws IOException in case of an exception
    */
-  public List<Key> deserializeKeys(final InputStream inputStream) throws IOException {
+  public List<Key> deserializeKeys(InputStream inputStream) throws IOException {
     return readValue(inputStream, KEY_LIST_REFERENCE);
   }
 
@@ -148,7 +148,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @param serializer the serializer
    * @param <T> the type
    */
-  public <T> void addSerializer(final Class<? extends T> clazz, final StdSerializer<T> serializer) {
+  public <T> void addSerializer(Class<? extends T> clazz, StdSerializer<T> serializer) {
     module.addSerializer(requireNonNull(clazz), requireNonNull(serializer));
   }
 
@@ -158,7 +158,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @param deserializer the deserializer
    * @param <T> the type
    */
-  public <T> void addDeserializer(final Class<T> clazz, final StdDeserializer<? extends T> deserializer) {
+  public <T> void addDeserializer(Class<T> clazz, StdDeserializer<? extends T> deserializer) {
     module.addDeserializer(requireNonNull(clazz), requireNonNull(deserializer));
   }
 
@@ -167,7 +167,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @param entities the domain entities
    * @return a new {@link EntityObjectMapper} instance based on the given entities
    */
-  public static EntityObjectMapper createEntityObjectMapper(final Entities entities) {
+  public static EntityObjectMapper createEntityObjectMapper(Entities entities) {
     return new EntityObjectMapper(entities);
   }
 }

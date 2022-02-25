@@ -7,7 +7,7 @@ final class DefaultValue<T> extends AbstractValue<T> {
 
   private T value;
 
-  DefaultValue(final T initialValue, final T nullValue) {
+  DefaultValue(T initialValue, T nullValue) {
     super(nullValue, NotifyOnSet.YES);
     set(initialValue);
   }
@@ -18,7 +18,7 @@ final class DefaultValue<T> extends AbstractValue<T> {
   }
 
   @Override
-  protected void setValue(final T value) {
+  protected void setValue(T value) {
     this.value = value;
   }
 }

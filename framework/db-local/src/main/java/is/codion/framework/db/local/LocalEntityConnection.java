@@ -144,8 +144,8 @@ public interface LocalEntityConnection extends EntityConnection {
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
-  static LocalEntityConnection localEntityConnection(final Domain domain, final Database database,
-                                                     final User user) throws DatabaseException {
+  static LocalEntityConnection localEntityConnection(Domain domain, Database database,
+                                                     User user) throws DatabaseException {
     return new DefaultLocalEntityConnection(domain, database, user);
   }
 
@@ -159,8 +159,8 @@ public interface LocalEntityConnection extends EntityConnection {
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see Database#supportsIsValid()
    */
-  static LocalEntityConnection localEntityConnection(final Domain domain, final Database database,
-                                                     final Connection connection) throws DatabaseException {
+  static LocalEntityConnection localEntityConnection(Domain domain, Database database,
+                                                     Connection connection) throws DatabaseException {
     return new DefaultLocalEntityConnection(domain, database, connection);
   }
 }

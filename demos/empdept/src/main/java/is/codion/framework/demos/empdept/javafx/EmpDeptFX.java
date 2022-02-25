@@ -19,7 +19,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   }
 
   @Override
-  protected EmpDeptFXModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
+  protected EmpDeptFXModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {
     return new EmpDeptFXModel(connectionProvider);
   }
 
@@ -47,7 +47,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
     addEntityView(departmentView);
   }
 
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
     launch(args);
   }

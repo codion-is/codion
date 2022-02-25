@@ -18,7 +18,7 @@ public final class EntityTree extends JTree {
    * Instantiates a new {@link EntityTree};
    * @param treeModel the tree model
    */
-  public EntityTree(final SwingEntityTreeModel treeModel) {
+  public EntityTree(SwingEntityTreeModel treeModel) {
     super(requireNonNull(treeModel, "treeModel"));
     setSelectionModel(treeModel.getTreeSelectionModel());
     setRootVisible(false);

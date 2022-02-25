@@ -27,13 +27,13 @@ class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEd
 
   private JComponent component;
 
-  EntityTableCellEditor(final Supplier<ComponentValue<T, ? extends JComponent>> inputComponentSupplier) {
+  EntityTableCellEditor(Supplier<ComponentValue<T, ? extends JComponent>> inputComponentSupplier) {
     this.inputComponentSupplier = inputComponentSupplier;
   }
 
   @Override
-  public final Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
-                                                     final int row, final int column) {
+  public final Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
+                                                     int row, int column) {
     if (component == null) {
       component = initializeEditorComponent();
     }
@@ -48,7 +48,7 @@ class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEd
   }
 
   @Override
-  public final boolean isCellEditable(final EventObject event) {
+  public final boolean isCellEditable(EventObject event) {
     if (event instanceof MouseEvent) {
       return ((MouseEvent) event).getClickCount() >= 2;
     }

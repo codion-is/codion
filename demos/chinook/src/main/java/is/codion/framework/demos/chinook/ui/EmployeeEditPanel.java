@@ -11,7 +11,7 @@ import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
 public final class EmployeeEditPanel extends EntityEditPanel {
 
-  public EmployeeEditPanel(final SwingEntityEditModel editModel) {
+  public EmployeeEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
     setDefaultTextFieldColumns(16);
   }

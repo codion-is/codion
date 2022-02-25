@@ -25,25 +25,25 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   private boolean mouseWheelScrollingReversed = false;
   private int horizontalAlignment = -1;
 
-  protected AbstractSpinnerBuilder(final SpinnerModel spinnerModel, final Value<T> linkedValue) {
+  protected AbstractSpinnerBuilder(SpinnerModel spinnerModel, Value<T> linkedValue) {
     super(linkedValue);
     this.spinnerModel = requireNonNull(spinnerModel);
   }
 
   @Override
-  public final B editable(final boolean editable) {
+  public final B editable(boolean editable) {
     this.editable = editable;
     return (B) this;
   }
 
   @Override
-  public final B columns(final int columns) {
+  public final B columns(int columns) {
     this.columns = columns;
     return (B) this;
   }
 
   @Override
-  public final B mouseWheelScrolling(final boolean mouseWheelScrolling) {
+  public final B mouseWheelScrolling(boolean mouseWheelScrolling) {
     this.mouseWheelScrolling  = mouseWheelScrolling;
     if (mouseWheelScrolling) {
       this.mouseWheelScrollingReversed = false;
@@ -52,7 +52,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   }
 
   @Override
-  public B mouseWheelScrollingReversed(final boolean mouseWheelScrollingReversed) {
+  public B mouseWheelScrollingReversed(boolean mouseWheelScrollingReversed) {
     this.mouseWheelScrollingReversed = mouseWheelScrollingReversed;
     if (mouseWheelScrollingReversed) {
       this.mouseWheelScrolling = false;
@@ -61,7 +61,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   }
 
   @Override
-  public final B horizontalAlignment(final int horizontalAlignment) {
+  public final B horizontalAlignment(int horizontalAlignment) {
     this.horizontalAlignment = horizontalAlignment;
     return (B) this;
   }
@@ -93,12 +93,12 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   }
 
   @Override
-  protected final void setInitialValue(final JSpinner component, final T initialValue) {
+  protected final void setInitialValue(JSpinner component, T initialValue) {
     component.setValue(initialValue);
   }
 
   @Override
-  protected final void setTransferFocusOnEnter(final JSpinner component) {
+  protected final void setTransferFocusOnEnter(JSpinner component) {
     super.setTransferFocusOnEnter(component);
     TransferFocusOnEnter.enable(((JSpinner.DefaultEditor) component.getEditor()).getTextField());
   }

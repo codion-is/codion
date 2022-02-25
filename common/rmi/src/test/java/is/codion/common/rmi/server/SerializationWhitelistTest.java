@@ -70,7 +70,7 @@ public final class SerializationWhitelistTest {
     testFilter(new SerializationFilter("classpath:/whitelist_test.txt"));
   }
 
-  private static void testFilter(final SerializationFilter filter) {
+  private static void testFilter(SerializationFilter filter) {
     assertEquals(filter.checkInput("is.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("is.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("is.codion.common.state.States"), ObjectInputFilter.Status.ALLOWED);

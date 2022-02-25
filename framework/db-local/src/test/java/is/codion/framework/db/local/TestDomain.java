@@ -63,7 +63,7 @@ public final class TestDomain extends DefaultDomain {
     Report.REPORT_PATH.set("path/to/reports");
     defineReport(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path") {
       @Override
-      public String fillReport(final Connection connection, final Map<String, Object> parameters) throws ReportException {
+      public String fillReport(Connection connection, Map<String, Object> parameters) throws ReportException {
         return "result";
       }
 
@@ -244,9 +244,9 @@ public final class TestDomain extends DefaultDomain {
   private void uuidTestDefaultValue() {
     KeyGenerator uuidKeyGenerator = new KeyGenerator() {
       @Override
-      public void afterInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
-                              final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
-        try (final ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
+      public void afterInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
+                              DatabaseConnection connection, Statement insertStatement) throws SQLException {
+        try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
           if (generatedKeys.next()) {
             entity.put(UUIDTestDefault.ID, (UUID) generatedKeys.getObject(1));
           }
@@ -273,8 +273,8 @@ public final class TestDomain extends DefaultDomain {
   private void uuidTestNoDefaultValue() {
     KeyGenerator uuidKeyGenerator = new KeyGenerator() {
       @Override
-      public void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
-                               final DatabaseConnection connection) throws SQLException {
+      public void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
+                               DatabaseConnection connection) throws SQLException {
         entity.put(UUIDTestNoDefault.ID, UUID.randomUUID());
       }
     };

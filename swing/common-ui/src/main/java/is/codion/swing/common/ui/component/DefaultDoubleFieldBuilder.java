@@ -15,18 +15,18 @@ final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double,
   private int maximumFractionDigits = -1;
   private char decimalSeparator = 0;
 
-  DefaultDoubleFieldBuilder(final Value<Double> linkedValue) {
+  DefaultDoubleFieldBuilder(Value<Double> linkedValue) {
     super(Double.class, linkedValue);
   }
 
   @Override
-  public DoubleFieldBuilder maximumFractionDigits(final int maximumFractionDigits) {
+  public DoubleFieldBuilder maximumFractionDigits(int maximumFractionDigits) {
     this.maximumFractionDigits = maximumFractionDigits;
     return this;
   }
 
   @Override
-  public DoubleFieldBuilder decimalSeparator(final char decimalSeparator) {
+  public DoubleFieldBuilder decimalSeparator(char decimalSeparator) {
     if (decimalSeparator == groupingSeparator) {
       throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
     }
@@ -35,14 +35,14 @@ final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double,
   }
 
   @Override
-  public DoubleFieldBuilder range(final double from, final double to) {
+  public DoubleFieldBuilder range(double from, double to) {
     minimumValue(from);
     maximumValue(to);
     return this;
   }
 
   @Override
-  protected DoubleField createNumberField(final NumberFormat format) {
+  protected DoubleField createNumberField(NumberFormat format) {
     DoubleField field = format == null ? new DoubleField() : new DoubleField((DecimalFormat) format);
     if (decimalSeparator != 0) {
       field.setDecimalSeparator(decimalSeparator);
@@ -55,7 +55,7 @@ final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double,
   }
 
   @Override
-  protected ComponentValue<Double, DoubleField> buildComponentValue(final DoubleField component) {
+  protected ComponentValue<Double, DoubleField> buildComponentValue(DoubleField component) {
     return ComponentValues.doubleField(component, true, updateOn);
   }
 }

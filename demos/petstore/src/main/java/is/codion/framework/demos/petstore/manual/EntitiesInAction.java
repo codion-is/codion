@@ -18,7 +18,7 @@ import static is.codion.framework.demos.petstore.domain.Petstore.Product;
 
 public final class EntitiesInAction {
 
-  public static void main(final String[] args) throws DatabaseException {
+  public static void main(String[] args) throws DatabaseException {
     // tag::entitiesInAction[]
     EntityConnectionProvider connectionProvider = EntityConnectionProvider.connectionProvider()
             .setDomainClassName(Petstore.class.getName())

@@ -15,43 +15,43 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
   private double resizeWeight;
 
   @Override
-  public SplitPaneBuilder orientation(final int orientation) {
+  public SplitPaneBuilder orientation(int orientation) {
     this.orientation = orientation;
     return this;
   }
 
   @Override
-  public SplitPaneBuilder oneTouchExpandable(final boolean oneTouchExpandable) {
+  public SplitPaneBuilder oneTouchExpandable(boolean oneTouchExpandable) {
     this.oneTouchExpandable = oneTouchExpandable;
     return this;
   }
 
   @Override
-  public SplitPaneBuilder leftComponent(final JComponent leftComponent) {
+  public SplitPaneBuilder leftComponent(JComponent leftComponent) {
     this.leftTopComponent = leftComponent;
     return this;
   }
 
   @Override
-  public SplitPaneBuilder rightComponent(final JComponent rightComponent) {
+  public SplitPaneBuilder rightComponent(JComponent rightComponent) {
     this.rightBottomComponent = rightComponent;
     return this;
   }
 
   @Override
-  public SplitPaneBuilder topComponent(final JComponent topComponent) {
+  public SplitPaneBuilder topComponent(JComponent topComponent) {
     this.leftTopComponent = topComponent;
     return this;
   }
 
   @Override
-  public SplitPaneBuilder bottomComponent(final JComponent bottomComponent) {
+  public SplitPaneBuilder bottomComponent(JComponent bottomComponent) {
     this.rightBottomComponent = bottomComponent;
     return this;
   }
 
   @Override
-  public SplitPaneBuilder resizeWeight(final double resizeWeight) {
+  public SplitPaneBuilder resizeWeight(double resizeWeight) {
     this.resizeWeight = resizeWeight;
     return this;
   }
@@ -68,10 +68,10 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
   }
 
   @Override
-  protected ComponentValue<Void, JSplitPane> buildComponentValue(final JSplitPane component) {
+  protected ComponentValue<Void, JSplitPane> buildComponentValue(JSplitPane component) {
     throw new UnsupportedOperationException("A ComponentValue can not be based on a JSplitPane");
   }
 
   @Override
-  protected void setInitialValue(final JSplitPane component, final Void initialValue) {}
+  protected void setInitialValue(JSplitPane component, Void initialValue) {}
 }

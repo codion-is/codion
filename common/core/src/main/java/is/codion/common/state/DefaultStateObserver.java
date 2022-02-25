@@ -20,7 +20,7 @@ final class DefaultStateObserver implements StateObserver {
   private Event<Boolean> stateChangedEvent;
   private DefaultStateObserver reversedStateObserver;
 
-  DefaultStateObserver(final StateObserver stateObserver, final boolean reversed) {
+  DefaultStateObserver(StateObserver stateObserver, boolean reversed) {
     this.stateObserver = stateObserver;
     this.reversed = reversed;
   }
@@ -58,7 +58,7 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
-  public boolean equalTo(final Boolean value) {
+  public boolean equalTo(Boolean value) {
     return Objects.equals(stateObserver.get(), value);
   }
 
@@ -74,26 +74,26 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
-  public void addListener(final EventListener listener) {
+  public void addListener(EventListener listener) {
     getEventObserver().addListener(listener);
   }
 
   @Override
-  public void removeListener(final EventListener listener) {
+  public void removeListener(EventListener listener) {
     getEventObserver().removeListener(listener);
   }
 
   @Override
-  public void addDataListener(final EventDataListener<Boolean> listener) {
+  public void addDataListener(EventDataListener<Boolean> listener) {
     getEventObserver().addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(final EventDataListener<Boolean> listener) {
+  public void removeDataListener(EventDataListener<Boolean> listener) {
     getEventObserver().removeDataListener(listener);
   }
 
-  void notifyObservers(final boolean newValue, final boolean previousValue) {
+  void notifyObservers(boolean newValue, boolean previousValue) {
     synchronized (lock) {
       if (previousValue != newValue) {
         if (stateChangedEvent != null) {

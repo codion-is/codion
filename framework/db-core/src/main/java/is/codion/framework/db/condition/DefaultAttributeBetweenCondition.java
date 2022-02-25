@@ -18,8 +18,8 @@ final class DefaultAttributeBetweenCondition<T> extends AbstractAttributeConditi
   private final T lowerBound;
   private final T upperBound;
 
-  DefaultAttributeBetweenCondition(final Attribute<T> attribute, final T lowerBound, final T upperBound,
-                                   final boolean exclusive) {
+  DefaultAttributeBetweenCondition(Attribute<T> attribute, T lowerBound, T upperBound,
+                                   boolean exclusive) {
     super(attribute, exclusive ? Operator.BETWEEN_EXCLUSIVE : Operator.BETWEEN);
     this.lowerBound = requireNonNull(lowerBound, "A lower bound is required");
     this.upperBound = requireNonNull(upperBound, "An upper bound is required");
@@ -36,7 +36,7 @@ final class DefaultAttributeBetweenCondition<T> extends AbstractAttributeConditi
   }
 
   @Override
-  protected String getConditionString(final String columnExpression) {
+  protected String getConditionString(String columnExpression) {
     return getOperator() == Operator.BETWEEN ?
             "(" + columnExpression + " >= ? and " + columnExpression + " <= ?)" :
             "(" + columnExpression + " > ? and " + columnExpression + " < ?)";

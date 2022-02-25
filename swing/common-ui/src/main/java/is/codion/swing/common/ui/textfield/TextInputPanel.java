@@ -39,7 +39,7 @@ public final class TextInputPanel extends JPanel {
   private final Dimension textAreaSize;
   private final int maximumLength;
 
-  private TextInputPanel(final DefaultBuilder builder) {
+  private TextInputPanel(DefaultBuilder builder) {
     this.dialogTitle = builder.dialogTitle;
     this.textField = builder.textField;
     this.textAreaSize = builder.textAreaSize;
@@ -53,7 +53,7 @@ public final class TextInputPanel extends JPanel {
    * @param text the text to set
    * @throws IllegalArgumentException in case the text length exceeds maximum length
    */
-  public void setText(final String text) {
+  public void setText(String text) {
     if (text != null && maximumLength > 0 && text.length() > maximumLength) {
       throw new IllegalArgumentException("Maximum allowed text length exceeded");
     }
@@ -84,7 +84,7 @@ public final class TextInputPanel extends JPanel {
   }
 
   @Override
-  public void setEnabled(final boolean enabled) {
+  public void setEnabled(boolean enabled) {
     super.setEnabled(enabled);
     textField.setEnabled(enabled);
     button.setEnabled(enabled);
@@ -93,7 +93,7 @@ public final class TextInputPanel extends JPanel {
   /**
    * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
    */
-  public void setTransferFocusOnEnter(final boolean transferFocusOnEnter) {
+  public void setTransferFocusOnEnter(boolean transferFocusOnEnter) {
     if (transferFocusOnEnter) {
       TransferFocusOnEnter.enable(textField);
       TransferFocusOnEnter.enable(button);
@@ -116,7 +116,7 @@ public final class TextInputPanel extends JPanel {
    * @param textField the text field
    * @return a new builder
    */
-  public static Builder builder(final JTextField textField) {
+  public static Builder builder(JTextField textField) {
     return new DefaultBuilder(requireNonNull(textField));
   }
 
@@ -171,16 +171,16 @@ public final class TextInputPanel extends JPanel {
     }
     addFocusListener(new FocusAdapter() {
       @Override
-      public void focusGained(final FocusEvent e) {
+      public void focusGained(FocusEvent e) {
         textField.requestFocusInWindow();
       }
     });
   }
 
-  private JButton createButton(final boolean buttonFocusable, final Dimension buttonSize) {
+  private JButton createButton(boolean buttonFocusable, Dimension buttonSize) {
     JButton actionButton = new JButton(new AbstractAction("...") {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(ActionEvent e) {
         getInputFromUser();
       }
     });
@@ -225,36 +225,36 @@ public final class TextInputPanel extends JPanel {
     private boolean buttonFocusable;
     private int maximumLength = -1;
 
-    private DefaultBuilder(final JTextField textField) {
+    private DefaultBuilder(JTextField textField) {
       this.textField = textField;
     }
 
     @Override
-    public Builder dialogTitle(final String dialogTitle) {
+    public Builder dialogTitle(String dialogTitle) {
       this.dialogTitle = dialogTitle;
       return this;
     }
 
     @Override
-    public Builder caption(final String caption) {
+    public Builder caption(String caption) {
       this.caption = caption;
       return this;
     }
 
     @Override
-    public Builder textAreaSize(final Dimension textAreaSize) {
+    public Builder textAreaSize(Dimension textAreaSize) {
       this.textAreaSize = textAreaSize == null ? DEFAULT_TEXT_AREA_SIZE : textAreaSize;
       return this;
     }
 
     @Override
-    public Builder buttonFocusable(final boolean buttonFocusable) {
+    public Builder buttonFocusable(boolean buttonFocusable) {
       this.buttonFocusable = buttonFocusable;
       return this;
     }
 
     @Override
-    public Builder maximumLength(final int maximumLength) {
+    public Builder maximumLength(int maximumLength) {
       this.maximumLength = maximumLength;
       return this;
     }
@@ -267,18 +267,18 @@ public final class TextInputPanel extends JPanel {
 
   private static class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel> {
 
-    private TextInputPanelValue(final TextInputPanel textInputPanel) {
+    private TextInputPanelValue(TextInputPanel textInputPanel) {
       super(textInputPanel);
       textInputPanel.getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
     }
 
     @Override
-    protected String getComponentValue(final TextInputPanel component) {
+    protected String getComponentValue(TextInputPanel component) {
       return component.getText();
     }
 
     @Override
-    protected void setComponentValue(final TextInputPanel component, final String value) {
+    protected void setComponentValue(TextInputPanel component, String value) {
       component.setText(value);
     }
   }

@@ -11,7 +11,7 @@ final class DecimalDocument<T extends Number> extends NumberDocument<T> {
 
   static final int MAXIMUM_FRACTION_DIGITS = 340;
 
-  DecimalDocument(final DecimalFormat format, final boolean parseBigDecimal) {
+  DecimalDocument(DecimalFormat format, boolean parseBigDecimal) {
     super(new NumberParsingDocumentFilter<>(new DecimalDocumentParser<>(format, parseBigDecimal)));
     if (parseBigDecimal) {
       format.setParseBigDecimal(true);
@@ -24,7 +24,7 @@ final class DecimalDocument<T extends Number> extends NumberDocument<T> {
     return maximumFractionDigits == MAXIMUM_FRACTION_DIGITS ? -1 : maximumFractionDigits;
   }
 
-  void setMaximumFractionDigits(final int maximumFractionDigits) {
+  void setMaximumFractionDigits(int maximumFractionDigits) {
     if (maximumFractionDigits < -1) {
       throw new IllegalArgumentException("Maximum fraction digits must be => 0, or -1 for no maximum");
     }
@@ -35,12 +35,12 @@ final class DecimalDocument<T extends Number> extends NumberDocument<T> {
   /* Automatically adds a 0 in front of a decimal separator, when it's the first character entered */
   private static final class DecimalDocumentParser<T extends Number> extends NumberParser<T> {
 
-    private DecimalDocumentParser(final DecimalFormat format, final boolean parseBigDecimal) {
+    private DecimalDocumentParser(DecimalFormat format, boolean parseBigDecimal) {
       super(format, parseBigDecimal ? (Class<T>) BigDecimal.class : (Class<T>) Double.class);
     }
 
     @Override
-    public NumberParseResult<T> parse(final String string) {
+    public NumberParseResult<T> parse(String string) {
       char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
       if (string.equals(Character.toString(decimalSeparator))) {
         try {

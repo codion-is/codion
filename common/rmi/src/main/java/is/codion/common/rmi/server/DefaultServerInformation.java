@@ -22,8 +22,8 @@ final class DefaultServerInformation implements ServerInformation, Serializable 
   private final Locale locale = Locale.getDefault();
   private final Version serverVersion = Version.getVersion();
 
-  DefaultServerInformation(final UUID serverId, final String serverName, final int serverPort,
-                           final ZonedDateTime serverStartTime) {
+  DefaultServerInformation(UUID serverId, String serverName, int serverPort,
+                           ZonedDateTime serverStartTime) {
     this.serverId = serverId;
     this.serverName = serverName;
     this.serverPort = serverPort;

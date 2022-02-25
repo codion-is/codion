@@ -222,8 +222,8 @@ public final class DefaultEntitySearchModelTest {
     CONNECTION_PROVIDER.getConnection().rollbackTransaction();
   }
 
-  private static boolean contains(final List<Entity> result, final String employeeName) {
-    for (final Entity entity : result) {
+  private static boolean contains(List<Entity> result, String employeeName) {
+    for (Entity entity : result) {
       if (entity.get(TestDomain.EMP_NAME).equals(employeeName)) {
         return true;
       }

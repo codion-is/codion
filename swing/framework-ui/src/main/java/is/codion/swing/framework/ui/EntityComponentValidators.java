@@ -29,7 +29,7 @@ public final class EntityComponentValidators {
    * @param editModel the edit model
    * @param <T> the value type
    */
-  public static <T> void addValidator(final Attribute<T> attribute, final JTextComponent textComponent, final EntityEditModel editModel) {
+  public static <T> void addValidator(Attribute<T> attribute, JTextComponent textComponent, EntityEditModel editModel) {
     addValidator(attribute, textComponent, editModel, textComponent.getToolTipText());
   }
 
@@ -40,8 +40,8 @@ public final class EntityComponentValidators {
    * @param editModel the edit model
    * @param <T> the value type
    */
-  public static <T> void addFormattedValidator(final Attribute<T> attribute, final JTextComponent textComponent,
-                                               final EntityEditModel editModel) {
+  public static <T> void addFormattedValidator(Attribute<T> attribute, JTextComponent textComponent,
+                                               EntityEditModel editModel) {
     addFormattedValidator(attribute, textComponent, editModel, textComponent.getToolTipText());
   }
 
@@ -53,8 +53,8 @@ public final class EntityComponentValidators {
    * @param defaultToolTip the tooltip to use while the value is valid
    * @param <T> the value type
    */
-  public static <T> void addValidator(final Attribute<T> attribute, final JTextComponent textComponent,
-                                      final EntityEditModel editModel, final String defaultToolTip) {
+  public static <T> void addValidator(Attribute<T> attribute, JTextComponent textComponent,
+                                      EntityEditModel editModel, String defaultToolTip) {
     new TextValidator<>(attribute, textComponent, editModel, defaultToolTip).validate();
   }
 
@@ -66,8 +66,8 @@ public final class EntityComponentValidators {
    * @param defaultToolTip the tooltip to use while the value is valid
    * @param <T> the value type
    */
-  public static <T> void addFormattedValidator(final Attribute<T> attribute, final JTextComponent textComponent,
-                                               final EntityEditModel editModel, final String defaultToolTip) {
+  public static <T> void addFormattedValidator(Attribute<T> attribute, JTextComponent textComponent,
+                                               EntityEditModel editModel, String defaultToolTip) {
     new FormattedTextValidator<>(attribute, textComponent, editModel, defaultToolTip).validate();
   }
 
@@ -78,8 +78,8 @@ public final class EntityComponentValidators {
     private final EntityEditModel editModel;
     private final String defaultToolTip;
 
-    private AbstractValidator(final Attribute<T> attribute, final JComponent component, final EntityEditModel editModel,
-                              final String defaultToolTip) {
+    private AbstractValidator(Attribute<T> attribute, JComponent component, EntityEditModel editModel,
+                              String defaultToolTip) {
       this.attribute = attribute;
       this.component = component;
       this.editModel = editModel;
@@ -124,7 +124,7 @@ public final class EntityComponentValidators {
       return defaultToolTip;
     }
 
-    protected void setToolTipText(final String validationMessage) {
+    protected void setToolTipText(String validationMessage) {
       if (validationMessage == null) {
         component.setToolTipText(defaultToolTip);
       }
@@ -155,8 +155,8 @@ public final class EntityComponentValidators {
      * @param editModel the edit model handling the value editing
      * @param defaultToolTip the default tooltip to show when the field value is valid
      */
-    protected TextValidator(final Attribute<T> attribute, final JTextComponent textComponent, final EntityEditModel editModel,
-                            final String defaultToolTip) {
+    protected TextValidator(Attribute<T> attribute, JTextComponent textComponent, EntityEditModel editModel,
+                            String defaultToolTip) {
       super(attribute, textComponent, editModel, defaultToolTip);
       configureColors();
       textComponent.addPropertyChangeListener("UI", event -> configureColors());
@@ -184,8 +184,8 @@ public final class EntityComponentValidators {
 
     private final String maskString;
 
-    private FormattedTextValidator(final Attribute<T> attribute, final JTextComponent textComponent,
-                                   final EntityEditModel editModel, final String defaultToolTip) {
+    private FormattedTextValidator(Attribute<T> attribute, JTextComponent textComponent,
+                                   EntityEditModel editModel, String defaultToolTip) {
       super(attribute, textComponent, editModel, defaultToolTip);
       this.maskString = textComponent.getText();
     }

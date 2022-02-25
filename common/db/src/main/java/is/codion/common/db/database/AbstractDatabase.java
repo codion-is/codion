@@ -47,7 +47,7 @@ public abstract class AbstractDatabase implements Database {
    * Instantiates a new AbstractDatabase.
    * @param jdbcUrl the jdbc url
    */
-  public AbstractDatabase(final String jdbcUrl) {
+  public AbstractDatabase(String jdbcUrl) {
     this.jdbcUrl = requireNonNull(jdbcUrl, "jdbcUrl");
   }
 
@@ -57,7 +57,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final Connection createConnection(final User user) throws DatabaseException {
+  public final Connection createConnection(User user) throws DatabaseException {
     DriverManager.setLoginTimeout(getLoginTimeout());
     try {
       return connectionProvider.getConnection(user, jdbcUrl);
@@ -71,7 +71,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final boolean isConnectionValid(final Connection connection) {
+  public final boolean isConnectionValid(Connection connection) {
     requireNonNull(connection, "connection");
     try {
       if (supportsIsValid()) {
@@ -86,7 +86,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final void countQuery(final String query) {
+  public final void countQuery(String query) {
     if (queryCounterEnabled) {
       queryCounter.count(query);
     }
@@ -98,8 +98,8 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final void initializeConnectionPool(final ConnectionPoolFactory connectionPoolFactory,
-                                             final User poolUser) throws DatabaseException {
+  public final void initializeConnectionPool(ConnectionPoolFactory connectionPoolFactory,
+                                             User poolUser) throws DatabaseException {
     requireNonNull(connectionPoolFactory, "connectionPoolFactory");
     requireNonNull(poolUser, "poolUser");
     if (connectionPools.containsKey(poolUser.getUsername())) {
@@ -109,12 +109,12 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final ConnectionPoolWrapper getConnectionPool(final String username) {
+  public final ConnectionPoolWrapper getConnectionPool(String username) {
     return connectionPools.get(requireNonNull(username, "username").toLowerCase());
   }
 
   @Override
-  public final void closeConnectionPool(final String username) {
+  public final void closeConnectionPool(String username) {
     ConnectionPoolWrapper connectionPoolWrapper = connectionPools.remove(requireNonNull(username, "username").toLowerCase());
     if (connectionPoolWrapper != null) {
       connectionPoolWrapper.close();
@@ -123,7 +123,7 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public final void closeConnectionPools() {
-    for (final ConnectionPoolWrapper pool : connectionPools.values()) {
+    for (ConnectionPoolWrapper pool : connectionPools.values()) {
       closeConnectionPool(pool.getUser().getUsername());
     }
   }
@@ -134,7 +134,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final void setConnectionProvider(final ConnectionProvider connectionProvider) {
+  public final void setConnectionProvider(ConnectionProvider connectionProvider) {
     this.connectionProvider = connectionProvider == null ? new ConnectionProvider() {} : connectionProvider;
   }
 
@@ -162,12 +162,12 @@ public abstract class AbstractDatabase implements Database {
   public void shutdownEmbedded() {}
 
   @Override
-  public String getSequenceQuery(final String sequenceName) {
+  public String getSequenceQuery(String sequenceName) {
     throw new UnsupportedOperationException("Sequence support is not implemented for database: " + getClass().getSimpleName());
   }
 
   @Override
-  public String getErrorMessage(final SQLException exception) {
+  public String getErrorMessage(SQLException exception) {
     return exception.getMessage();
   }
 
@@ -177,7 +177,7 @@ public abstract class AbstractDatabase implements Database {
    * @return false
    */
   @Override
-  public boolean isAuthenticationException(final SQLException exception) {
+  public boolean isAuthenticationException(SQLException exception) {
     return false;
   }
 
@@ -187,17 +187,17 @@ public abstract class AbstractDatabase implements Database {
    * @return false
    */
   @Override
-  public boolean isReferentialIntegrityException(final SQLException exception) {
+  public boolean isReferentialIntegrityException(SQLException exception) {
     return false;
   }
 
   @Override
-  public boolean isUniqueConstraintException(final SQLException exception) {
+  public boolean isUniqueConstraintException(SQLException exception) {
     return false;
   }
 
   @Override
-  public boolean isTimeoutException(final SQLException exception) {
+  public boolean isTimeoutException(SQLException exception) {
     return false;
   }
 
@@ -209,9 +209,9 @@ public abstract class AbstractDatabase implements Database {
     return Database.LOGIN_TIMEOUT.getOrThrow();
   }
 
-  protected static String removeUrlPrefixOptionsAndParameters(final String url, final String... prefixes) {
+  protected static String removeUrlPrefixOptionsAndParameters(String url, String... prefixes) {
     String result = url;
-    for (final String prefix : prefixes) {
+    for (String prefix : prefixes) {
       if (url.toLowerCase().startsWith(prefix.toLowerCase())) {
         result = url.substring(prefix.length());
         break;
@@ -227,9 +227,9 @@ public abstract class AbstractDatabase implements Database {
     return result;
   }
 
-  private boolean validateWithQuery(final Connection connection) throws SQLException {
+  private boolean validateWithQuery(Connection connection) throws SQLException {
     ResultSet rs = null;
-    try (final Statement statement = connection.createStatement()) {
+    try (Statement statement = connection.createStatement()) {
       if (validityCheckTimeout > 0) {
         try {
           statement.setQueryTimeout(validityCheckTimeout);
@@ -261,7 +261,7 @@ public abstract class AbstractDatabase implements Database {
      * Counts the given query, based on its first character
      * @param query the sql query
      */
-    private void count(final String query) {
+    private void count(String query) {
       requireNonNull(query);
       queriesPerSecondCounter.incrementAndGet();
       switch (Character.toLowerCase(query.charAt(0))) {
@@ -332,8 +332,8 @@ public abstract class AbstractDatabase implements Database {
      * @param deletesPerSecond the number of delete queries being run per second
      * @param updatesPerSecond the number of update queries being run per second
      */
-    private DefaultDatabaseStatistics(final long timestamp, final int queriesPerSecond, final int selectsPerSecond,
-                                      final int insertsPerSecond, final int deletesPerSecond, final int updatesPerSecond) {
+    private DefaultDatabaseStatistics(long timestamp, int queriesPerSecond, int selectsPerSecond,
+                                      int insertsPerSecond, int deletesPerSecond, int updatesPerSecond) {
       this.timestamp = timestamp;
       this.queriesPerSecond = queriesPerSecond;
       this.selectsPerSecond = selectsPerSecond;

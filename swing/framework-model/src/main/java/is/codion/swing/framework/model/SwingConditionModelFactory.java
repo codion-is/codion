@@ -17,12 +17,12 @@ import is.codion.framework.model.DefaultConditionModelFactory;
  */
 public class SwingConditionModelFactory extends DefaultConditionModelFactory {
 
-  public SwingConditionModelFactory(final EntityConnectionProvider connectionProvider) {
+  public SwingConditionModelFactory(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
   }
 
   @Override
-  public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(final A attribute) {
+  public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(A attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
       if (getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
@@ -39,7 +39,7 @@ public class SwingConditionModelFactory extends DefaultConditionModelFactory {
    * @param foreignKey the foreign key
    * @return a combo box model based on the given foreign key
    */
-  protected SwingEntityComboBoxModel createComboBoxModel(final ForeignKey foreignKey) {
+  protected SwingEntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
     SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
     comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
 

@@ -17,7 +17,7 @@ final class DefaultAttributeGreaterThanCondition<T> extends AbstractAttributeCon
 
   private final T value;
 
-  DefaultAttributeGreaterThanCondition(final Attribute<T> attribute, final T value, final boolean orEqual) {
+  DefaultAttributeGreaterThanCondition(Attribute<T> attribute, T value, boolean orEqual) {
     super(attribute, orEqual ? Operator.GREATER_THAN_OR_EQUAL : Operator.GREATER_THAN);
     this.value = requireNonNull(value, "A lower bound is required");
   }
@@ -33,7 +33,7 @@ final class DefaultAttributeGreaterThanCondition<T> extends AbstractAttributeCon
   }
 
   @Override
-  protected String getConditionString(final String columnExpression) {
+  protected String getConditionString(String columnExpression) {
     return columnExpression + (getOperator() == Operator.GREATER_THAN_OR_EQUAL ? " >= ?" : " > ?");
   }
 }

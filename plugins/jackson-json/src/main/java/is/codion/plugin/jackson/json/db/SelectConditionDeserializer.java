@@ -29,14 +29,14 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
   private final ConditionDeserializer conditionDeserializer;
   private final Entities entities;
 
-  SelectConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
+  SelectConditionDeserializer(EntityObjectMapper entityObjectMapper) {
     super(SelectCondition.class);
     this.conditionDeserializer = new ConditionDeserializer(entityObjectMapper);
     this.entities = entityObjectMapper.getEntities();
   }
 
   @Override
-  public SelectCondition deserialize(final JsonParser parser, final DeserializationContext ctxt)
+  public SelectCondition deserialize(JsonParser parser, DeserializationContext ctxt)
           throws IOException {
     JsonNode jsonNode = parser.getCodec().readTree(parser);
     EntityType entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
@@ -63,7 +63,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     }
     JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
     if (fkFetchDepth != null && !fkFetchDepth.isNull()) {
-      for (final ForeignKey foreignKey : definition.getForeignKeys()) {
+      for (ForeignKey foreignKey : definition.getForeignKeys()) {
         JsonNode fetchDepthNode = fkFetchDepth.get(foreignKey.getName());
         if (fetchDepthNode != null) {
           selectCondition = selectCondition.fetchDepth(foreignKey, fetchDepthNode.asInt());
@@ -82,13 +82,13 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     return selectCondition;
   }
 
-  private static OrderBy deserializeOrderBy(final EntityDefinition definition, final JsonNode jsonNode) {
+  private static OrderBy deserializeOrderBy(EntityDefinition definition, JsonNode jsonNode) {
     if (jsonNode.isEmpty()) {
       return null;
     }
 
     OrderBy orderBy = OrderBy.orderBy();
-    for (final JsonNode node : jsonNode) {
+    for (JsonNode node : jsonNode) {
       String[] split = node.asText().split(":");
       String attributeName = split[0];
       if ("asc".equals(split[1])) {
@@ -102,9 +102,9 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     return orderBy;
   }
 
-  private static Attribute<?>[] deserializeSelectAttributes(final EntityDefinition definition, final JsonNode jsonNode) {
+  private static Attribute<?>[] deserializeSelectAttributes(EntityDefinition definition, JsonNode jsonNode) {
     List<Attribute<?>> attributes = new ArrayList<>(jsonNode.size());
-    for (final JsonNode node : jsonNode) {
+    for (JsonNode node : jsonNode) {
       attributes.add(definition.getAttribute(node.asText()));
     }
 

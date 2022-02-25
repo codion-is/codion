@@ -12,7 +12,7 @@ import java.awt.Dimension;
 
 public final class InvoiceLineTablePanel extends EntityTablePanel {
 
-  public InvoiceLineTablePanel(final SwingEntityTableModel tableModel) {
+  public InvoiceLineTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
     setUpdateSelectedComponentFactory(InvoiceLine.TRACK_FK, new TrackComponentFactory());
     setIncludeSouthPanel(false);

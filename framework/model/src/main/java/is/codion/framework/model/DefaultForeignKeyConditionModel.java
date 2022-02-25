@@ -26,7 +26,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
    * Constructs a DefaultForeignKeyConditionModel instance
    * @param foreignKey the foreign key
    */
-  public DefaultForeignKeyConditionModel(final ForeignKey foreignKey) {
+  public DefaultForeignKeyConditionModel(ForeignKey foreignKey) {
     this(foreignKey, null);
   }
 
@@ -35,7 +35,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
    * @param foreignKey the foreign key
    * @param entitySearchModel a EntitySearchModel
    */
-  public DefaultForeignKeyConditionModel(final ForeignKey foreignKey, final EntitySearchModel entitySearchModel) {
+  public DefaultForeignKeyConditionModel(ForeignKey foreignKey, EntitySearchModel entitySearchModel) {
     super(foreignKey, Entity.class, Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL), Property.WILDCARD_CHARACTER.get());
     this.entitySearchModel = entitySearchModel;
     if (entitySearchModel != null) {
@@ -55,7 +55,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
     return updatingModel;
   }
 
-  protected final void setUpdatingModel(final boolean updatingModel) {
+  protected final void setUpdatingModel(boolean updatingModel) {
     this.updatingModel = updatingModel;
   }
 

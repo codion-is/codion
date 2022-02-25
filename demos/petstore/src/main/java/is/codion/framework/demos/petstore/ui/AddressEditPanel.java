@@ -13,7 +13,7 @@ import static is.codion.framework.demos.petstore.domain.Petstore.Address;
 
 public class AddressEditPanel extends EntityEditPanel {
 
-  public AddressEditPanel(final SwingEntityEditModel model) {
+  public AddressEditPanel(SwingEntityEditModel model) {
     super(model);
   }
 

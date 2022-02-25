@@ -243,7 +243,7 @@ public interface Database extends ConnectionFactory {
    * Closes the given ResultSet instance, suppressing any SQLExceptions that may occur.
    * @param resultSet the result set to close
    */
-  static void closeSilently(final ResultSet resultSet) {
+  static void closeSilently(ResultSet resultSet) {
     try {
       if (resultSet != null) {
         resultSet.close();
@@ -256,7 +256,7 @@ public interface Database extends ConnectionFactory {
    * Closes the given Statement instance, suppressing any SQLExceptions that may occur.
    * @param statement the statement to close
    */
-  static void closeSilently(final Statement statement) {
+  static void closeSilently(Statement statement) {
     try {
       if (statement != null) {
         statement.close();
@@ -269,7 +269,7 @@ public interface Database extends ConnectionFactory {
    * Closes the given Connection instance, suppressing any SQLExceptions that may occur.
    * @param connection the connection to close
    */
-  static void closeSilently(final Connection connection) {
+  static void closeSilently(Connection connection) {
     try {
       if (connection != null) {
         connection.close();

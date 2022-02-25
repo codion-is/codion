@@ -20,8 +20,8 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
   private final Method getMethod;
   private final Method setMethod;
 
-  DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class<T> valueClass,
-                       final EventObserver<T> changeObserver) {
+  DefaultPropertyValue(Object valueOwner, String propertyName, Class<T> valueClass,
+                       EventObserver<T> changeObserver) {
     super(requireNonNull(valueClass).isPrimitive() ? Util.getPrimitiveDefaultValue(valueClass) : null);
     if (nullOrEmpty(propertyName)) {
       throw new IllegalArgumentException("propertyName is null or an empty string");
@@ -57,7 +57,7 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
   }
 
   @Override
-  public T getOrThrow(final String message) throws IllegalStateException {
+  public T getOrThrow(String message) throws IllegalStateException {
     requireNonNull(message, "message");
     T value = get();
     if (value == null) {
@@ -68,7 +68,7 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
   }
 
   @Override
-  protected void setValue(final T value) {
+  protected void setValue(T value) {
     if (setMethod == null) {
       throw new IllegalStateException("Set method for property not found: " + propertyName);
     }
@@ -88,7 +88,7 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
     return changeObserver;
   }
 
-  static Optional<Method> getSetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) {
+  static Optional<Method> getSetMethod(Class<?> valueType, String property, Class<?> ownerClass) {
     if (requireNonNull(property, "property").isEmpty()) {
       throw new IllegalArgumentException("Property must be specified");
     }
@@ -102,7 +102,7 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
     }
   }
 
-  static Method getGetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) {
+  static Method getGetMethod(Class<?> valueType, String property, Class<?> ownerClass) {
     requireNonNull(valueType, "valueType");
     requireNonNull(property, "property");
     requireNonNull(ownerClass, "ownerClass");

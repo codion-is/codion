@@ -17,7 +17,7 @@ import java.util.Map;
 public final class ViewCustomerReport extends AbstractEntityUsageScenario<ChinookApplicationModel> {
 
   @Override
-  protected void perform(final ChinookApplicationModel application) throws Exception {
+  protected void perform(ChinookApplicationModel application) throws Exception {
     SwingEntityTableModel customerModel = application.getEntityModel(Customer.TYPE).getTableModel();
     customerModel.refresh();
     EntityLoadTestModel.selectRandomRow(customerModel);

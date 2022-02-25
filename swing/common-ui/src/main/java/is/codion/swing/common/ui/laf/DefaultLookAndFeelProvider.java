@@ -26,7 +26,7 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
   private final String name;
   private final Runnable enabler;
 
-  DefaultLookAndFeelProvider(final String classname, final String name, final Runnable enabler) {
+  DefaultLookAndFeelProvider(String classname, String name, Runnable enabler) {
     this.classname = requireNonNull(classname);
     this.name = requireNonNull(name);
     this.enabler = requireNonNull(enabler);

@@ -33,7 +33,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
   private final boolean fourDigitYear;
   private final String timeFormat;
 
-  private DefaultLocaleDateTimePattern(final String delimiter, final boolean fourDigitYear, final String timeFormat) {
+  private DefaultLocaleDateTimePattern(String delimiter, boolean fourDigitYear, String timeFormat) {
     this.delimiter = requireNonNull(delimiter, "delimiter");
     this.fourDigitYear = fourDigitYear;
     this.timeFormat = timeFormat;
@@ -55,12 +55,12 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
   }
 
   @Override
-  public String getDatePattern(final Locale locale) {
+  public String getDatePattern(Locale locale) {
     return getDatePattern(locale, delimiter, fourDigitYear);
   }
 
   @Override
-  public String getDateTimePattern(final Locale locale) {
+  public String getDateTimePattern(Locale locale) {
     return getDateTimePattern(locale, delimiter, fourDigitYear, timeFormat);
   }
 
@@ -69,12 +69,12 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
     return DateTimeFormatter.ofPattern(getDateTimePattern());
   }
 
-  private static String getDatePattern(final Locale locale, final String delimiter, final boolean fourDigitYear) {
+  private static String getDatePattern(Locale locale, String delimiter, boolean fourDigitYear) {
     return getDateTimePattern(locale, delimiter, fourDigitYear, null);
   }
 
-  private static String getDateTimePattern(final Locale locale, final String delimiter, final boolean fourDigitYear,
-                                           final String timePattern) {
+  private static String getDateTimePattern(Locale locale, String delimiter, boolean fourDigitYear,
+                                           String timePattern) {
     String datePattern = DateTimeFormatterBuilder.
             getLocalizedDateTimePattern(FormatStyle.SHORT, null, IsoChronology.INSTANCE, locale).toLowerCase(locale);
     List<String> pattern = new ArrayList<>(Arrays.asList(null, null, null));
@@ -89,7 +89,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
     return builder.toString();
   }
 
-  private static int indexOf(final String pattern, final Element element) {
+  private static int indexOf(String pattern, Element element) {
     return Stream.of(pattern.indexOf('y'), pattern.indexOf('m'), pattern.indexOf('d'))
             .sorted().collect(Collectors.toList()).indexOf(pattern.indexOf(element.getChar()));
   }
@@ -124,7 +124,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
     private String timeFormat;
 
     @Override
-    public Builder delimiter(final String delimiter) {
+    public Builder delimiter(String delimiter) {
       this.delimiter = requireNonNull(delimiter);
       return this;
     }

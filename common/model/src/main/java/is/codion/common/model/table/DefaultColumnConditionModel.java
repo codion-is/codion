@@ -57,8 +57,8 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
    * @param operators the conditional operators available to this condition model
    * @param wildcard the string to use as wildcard
    */
-  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final List<Operator> operators,
-                                     final String wildcard) {
+  public DefaultColumnConditionModel(C columnIdentifier, Class<T> typeClass, List<Operator> operators,
+                                     String wildcard) {
     this(columnIdentifier, typeClass, operators, wildcard, null, null);
   }
 
@@ -71,8 +71,8 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    */
-  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final List<Operator> operators,
-                                     final String wildcard, final Format format, final String dateTimePattern) {
+  public DefaultColumnConditionModel(C columnIdentifier, Class<T> typeClass, List<Operator> operators,
+                                     String wildcard, Format format, String dateTimePattern) {
     this(columnIdentifier, typeClass, operators, wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
   }
 
@@ -86,9 +86,9 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    * @param automaticWildcard the automatic wildcard type to use
    */
-  public DefaultColumnConditionModel(final C columnIdentifier, final Class<T> typeClass, final List<Operator> operators,
-                                     final String wildcard, final Format format, final String dateTimePattern,
-                                     final AutomaticWildcard automaticWildcard) {
+  public DefaultColumnConditionModel(C columnIdentifier, Class<T> typeClass, List<Operator> operators,
+                                     String wildcard, Format format, String dateTimePattern,
+                                     AutomaticWildcard automaticWildcard) {
     if (requireNonNull(operators, "operators").isEmpty()) {
       throw new IllegalArgumentException("One or more operators must be specified");
     }
@@ -119,7 +119,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void setCaseSensitive(final boolean caseSensitive) {
+  public final void setCaseSensitive(boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
   }
 
@@ -134,7 +134,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void setLocked(final boolean locked) {
+  public final void setLocked(boolean locked) {
     lockedState.set(locked);
   }
 
@@ -149,7 +149,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void setEqualValue(final T value) {
+  public final void setEqualValue(T value) {
     equalValues.set(value == null ? Collections.emptySet() : Collections.singleton(value));
   }
 
@@ -159,7 +159,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void setEqualValues(final Collection<T> values) {
+  public final void setEqualValues(Collection<T> values) {
     equalValues.set(values == null ? Collections.emptySet() : new HashSet<>(values));
   }
 
@@ -171,7 +171,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void setUpperBound(final T value) {
+  public final void setUpperBound(T value) {
     upperBoundValue.set(value);
   }
 
@@ -181,7 +181,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void setLowerBound(final T value) {
+  public final void setLowerBound(T value) {
     lowerBoundValue.set(value);
   }
 
@@ -196,7 +196,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void setOperator(final Operator operator) {
+  public final void setOperator(Operator operator) {
     validateOperator(operator);
     operatorValue.set(operator);
   }
@@ -226,7 +226,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   /**
    * @param wildcard the search wildcard
    */
-  public final void setWildcard(final String wildcard) {
+  public final void setWildcard(String wildcard) {
     this.wildcard = wildcard;
   }
 
@@ -236,7 +236,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void setAutoEnable(final boolean autoEnable) {
+  public final void setAutoEnable(boolean autoEnable) {
     this.autoEnable = autoEnable;
   }
 
@@ -246,12 +246,12 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void setEnabled(final boolean enabled) {
+  public final void setEnabled(boolean enabled) {
     enabledState.set(enabled);
   }
 
   @Override
-  public final void setAutomaticWildcard(final AutomaticWildcard automaticWildcard) {
+  public final void setAutomaticWildcard(AutomaticWildcard automaticWildcard) {
     this.automaticWildcard = requireNonNull(automaticWildcard);
   }
 
@@ -296,72 +296,72 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void addEnabledListener(final EventListener listener) {
+  public final void addEnabledListener(EventListener listener) {
     enabledState.addListener(listener);
   }
 
   @Override
-  public final void removeEnabledListener(final EventListener listener) {
+  public final void removeEnabledListener(EventListener listener) {
     enabledState.removeListener(listener);
   }
 
   @Override
-  public final void addEqualsValueListener(final EventListener listener) {
+  public final void addEqualsValueListener(EventListener listener) {
     equalValues.addListener(listener);
   }
 
   @Override
-  public final void removeEqualsValueListener(final EventListener listener) {
+  public final void removeEqualsValueListener(EventListener listener) {
     equalValues.removeListener(listener);
   }
 
   @Override
-  public final void addUpperBoundListener(final EventListener listener) {
+  public final void addUpperBoundListener(EventListener listener) {
     upperBoundValue.addListener(listener);
   }
 
   @Override
-  public final void removeUpperBoundListener(final EventListener listener) {
+  public final void removeUpperBoundListener(EventListener listener) {
     upperBoundValue.removeListener(listener);
   }
 
   @Override
-  public final void addLowerBoundListener(final EventListener listener) {
+  public final void addLowerBoundListener(EventListener listener) {
     lowerBoundValue.addListener(listener);
   }
 
   @Override
-  public final void removeLowerBoundListener(final EventListener listener) {
+  public final void removeLowerBoundListener(EventListener listener) {
     lowerBoundValue.removeListener(listener);
   }
 
   @Override
-  public final void addClearedListener(final EventListener listener) {
+  public final void addClearedListener(EventListener listener) {
     conditionModelClearedEvent.addListener(listener);
   }
 
   @Override
-  public final void removeClearedListener(final EventListener listener) {
+  public final void removeClearedListener(EventListener listener) {
     conditionModelClearedEvent.removeListener(listener);
   }
 
   @Override
-  public final void addConditionChangedListener(final EventListener listener) {
+  public final void addConditionChangedListener(EventListener listener) {
     conditionChangedEvent.addListener(listener);
   }
 
   @Override
-  public final void removeConditionChangedListener(final EventListener listener) {
+  public final void removeConditionChangedListener(EventListener listener) {
     conditionChangedEvent.removeListener(listener);
   }
 
   @Override
-  public final void addOperatorListener(final EventDataListener<Operator> listener) {
+  public final void addOperatorListener(EventDataListener<Operator> listener) {
     operatorValue.addDataListener(listener);
   }
 
   @Override
-  public final void removeOperatorListener(final EventDataListener<Operator> listener) {
+  public final void removeOperatorListener(EventDataListener<Operator> listener) {
     operatorValue.removeDataListener(listener);
   }
 
@@ -370,7 +370,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     return operatorValue;
   }
 
-  private T getBoundValue(final Object bound) {
+  private T getBoundValue(Object bound) {
     if (typeClass.equals(String.class)) {
       if (bound == null || (bound instanceof String && ((String) bound).isEmpty())) {
         return null;
@@ -385,7 +385,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     return (T) bound;
   }
 
-  private String addWildcard(final String value) {
+  private String addWildcard(String value) {
     //only use wildcard for EQUAL and NOT_EQUAL
     if (operatorValue.equalTo(Operator.EQUAL) || operatorValue.equalTo(Operator.NOT_EQUAL)) {
       switch (automaticWildcard) {
@@ -434,7 +434,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     }
   }
 
-  private void validateOperator(final Operator operator) {
+  private void validateOperator(Operator operator) {
     if (!operators.contains(requireNonNull(operator, "operator"))) {
       throw new IllegalArgumentException("Operator " + operator + " not available in this condition model");
     }

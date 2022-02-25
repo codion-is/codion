@@ -28,7 +28,7 @@ public final class FXEntityApplicationModelTest extends AbstractEntityApplicatio
   }
 
   private static class DeptModel extends FXEntityModel {
-    private DeptModel(final EntityConnectionProvider connectionProvider) {
+    private DeptModel(EntityConnectionProvider connectionProvider) {
       super(TestDomain.T_DEPARTMENT, connectionProvider);
       addDetailModel(new FXEntityModel(TestDomain.T_EMP, connectionProvider));
     }

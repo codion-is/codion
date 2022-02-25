@@ -26,7 +26,7 @@ public final class FileInputPanel extends JPanel {
     add(filePathField, BorderLayout.CENTER);
     JButton browseButton = new JButton(new AbstractAction("...") {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void actionPerformed(ActionEvent e) {
         browseFile();
       }
     });

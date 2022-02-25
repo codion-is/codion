@@ -18,7 +18,7 @@ import java.awt.BorderLayout;
 // tag::customerAddressEditPanel[]
 public class CustomerAddressEditPanel extends EntityEditPanel {
 
-  public CustomerAddressEditPanel(final SwingEntityEditModel editModel) {
+  public CustomerAddressEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

@@ -12,7 +12,7 @@ final class ClassPathJRReport extends AbstractJRReport {
 
   private final Class<?> resourceClass;
 
-  ClassPathJRReport(final Class<?> resourceClass, final String reportPath) {
+  ClassPathJRReport(Class<?> resourceClass, String reportPath) {
     super(reportPath);
     this.resourceClass = resourceClass;
   }

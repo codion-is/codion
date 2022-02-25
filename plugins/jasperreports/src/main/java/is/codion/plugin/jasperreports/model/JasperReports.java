@@ -27,7 +27,7 @@ public final class JasperReports {
    * @param name the report name
    * @return a JRReport
    */
-  public static JRReportType reportType(final String name) {
+  public static JRReportType reportType(String name) {
     return new DefaultJRReportType(name);
   }
 
@@ -37,7 +37,7 @@ public final class JasperReports {
    * @param reportPath the report classpath
    * @return a report wrapper
    */
-  public static JRReport classPathReport(final Class<?> resourceClass, final String reportPath) {
+  public static JRReport classPathReport(Class<?> resourceClass, String reportPath) {
     return new ClassPathJRReport(resourceClass, reportPath);
   }
 
@@ -46,7 +46,7 @@ public final class JasperReports {
    * @param reportPath the report path, relative to the central report path {@link Report#REPORT_PATH}
    * @return a report wrapper
    */
-  public static JRReport fileReport(final String reportPath) {
+  public static JRReport fileReport(String reportPath) {
     return new FileJRReport(reportPath);
   }
 
@@ -57,8 +57,8 @@ public final class JasperReports {
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  public static JasperPrint fillReport(final Report<JasperReport, JasperPrint, Map<String, Object>> report,
-                                       final JRDataSource dataSource) throws ReportException {
+  public static JasperPrint fillReport(Report<JasperReport, JasperPrint, Map<String, Object>> report,
+                                       JRDataSource dataSource) throws ReportException {
     return fillReport(report, dataSource, new HashMap<>());
   }
 
@@ -70,8 +70,8 @@ public final class JasperReports {
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  public static JasperPrint fillReport(final Report<JasperReport, JasperPrint, Map<String, Object>> report,
-                                       final JRDataSource dataSource, final Map<String, Object> reportParameters) throws ReportException {
+  public static JasperPrint fillReport(Report<JasperReport, JasperPrint, Map<String, Object>> report,
+                                       JRDataSource dataSource, Map<String, Object> reportParameters) throws ReportException {
     requireNonNull(report, "report");
     requireNonNull(dataSource, "dataSource");
     requireNonNull(reportParameters, "reportParameters");

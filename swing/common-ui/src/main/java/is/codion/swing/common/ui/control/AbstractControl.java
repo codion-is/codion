@@ -32,7 +32,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
    * @param name the control name
    * @param enabledObserver the state observer controlling the enabled state of this control
    */
-  AbstractControl(final String name, final StateObserver enabledObserver) {
+  AbstractControl(String name, StateObserver enabledObserver) {
     this(name, enabledObserver, null);
   }
 
@@ -42,7 +42,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
    * @param enabledObserver the state observer controlling the enabled state of this control
    * @param smallIcon the icon
    */
-  AbstractControl(final String name, final StateObserver enabledObserver, final Icon smallIcon) {
+  AbstractControl(String name, StateObserver enabledObserver, Icon smallIcon) {
     super(name, smallIcon);
     this.enabledObserver = enabledObserver == null ? State.state(true) : enabledObserver;
     this.enabledObserver.addDataListener(super::setEnabled);
@@ -55,7 +55,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final void setEnabled(final boolean newValue) {
+  public final void setEnabled(boolean newValue) {
     throw new UnsupportedOperationException();
   }
 
@@ -65,7 +65,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setDescription(final String description) {
+  public final Control setDescription(String description) {
     super.putValue(Action.SHORT_DESCRIPTION, description);
     return this;
   }
@@ -76,7 +76,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setCaption(final String caption) {
+  public final Control setCaption(String caption) {
     super.putValue(NAME, caption);
     return this;
   }
@@ -87,7 +87,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setMnemonic(final int key) {
+  public final Control setMnemonic(int key) {
     super.putValue(MNEMONIC_KEY, key);
     return this;
   }
@@ -99,7 +99,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setKeyStroke(final KeyStroke keyStroke) {
+  public final Control setKeyStroke(KeyStroke keyStroke) {
     super.putValue(ACCELERATOR_KEY, keyStroke);
     return this;
   }
@@ -110,7 +110,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setSmallIcon(final Icon smallIcon) {
+  public final Control setSmallIcon(Icon smallIcon) {
     super.putValue(SMALL_ICON, smallIcon);
     return this;
   }
@@ -121,7 +121,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setBackground(final Color background) {
+  public final Control setBackground(Color background) {
     putValue(BACKGROUND, background);
     return this;
   }
@@ -132,7 +132,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setForeground(final Color foreground) {
+  public final Control setForeground(Color foreground) {
     putValue(FOREGROUND, foreground);
     return this;
   }
@@ -143,7 +143,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setFont(final Font font) {
+  public final Control setFont(Font font) {
     putValue(FONT, font);
     return this;
   }
@@ -173,12 +173,12 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
     private final AbstractButton button;
 
-    ButtonPropertyChangeListener(final AbstractButton button) {
+    ButtonPropertyChangeListener(AbstractButton button) {
       this.button = requireNonNull(button);
     }
 
     @Override
-    public void propertyChange(final PropertyChangeEvent evt) {
+    public void propertyChange(PropertyChangeEvent evt) {
       switch (evt.getPropertyName()) {
         case BACKGROUND: {
           button.setBackground((Color) evt.getNewValue());

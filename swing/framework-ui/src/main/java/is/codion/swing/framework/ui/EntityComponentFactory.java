@@ -25,5 +25,5 @@ public interface EntityComponentFactory<T, A extends Attribute<T>, C extends JCo
    * @param initialValue the initial value to display
    * @return the ComponentValue handling input for {@code attribute}
    */
-  ComponentValue<T, C> createComponentValue(final A attribute, final SwingEntityEditModel editModel, final T initialValue);
+  ComponentValue<T, C> createComponentValue(A attribute, SwingEntityEditModel editModel, T initialValue);
 }

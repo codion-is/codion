@@ -12,7 +12,7 @@ public final class DefaultAuditTimeProperty<T extends Temporal> extends DefaultA
 
   private static final long serialVersionUID = 1;
 
-  DefaultAuditTimeProperty(final Attribute<T> attribute, final AuditAction auditAction, final String caption) {
+  DefaultAuditTimeProperty(Attribute<T> attribute, AuditAction auditAction, String caption) {
     super(attribute, auditAction, caption);
   }
 }

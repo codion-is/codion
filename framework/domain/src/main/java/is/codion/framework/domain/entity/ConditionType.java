@@ -24,7 +24,7 @@ public interface ConditionType {
    * @param name the name
    * @return a new condition type
    */
-  static ConditionType conditionType(final EntityType entityType, final String name) {
+  static ConditionType conditionType(EntityType entityType, String name) {
     return new DefaultConditionType(entityType, name);
   }
 }

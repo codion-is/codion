@@ -73,7 +73,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
-  public EntityServer(final EntityServerConfiguration configuration) throws RemoteException {
+  public EntityServer(EntityServerConfiguration configuration) throws RemoteException {
     super(configuration);
     addShutdownListener(new ShutdownListener());
     this.configuration = configuration;
@@ -100,7 +100,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @throws IllegalStateException in case no server admin instance is available
    */
   @Override
-  public final EntityServerAdmin getServerAdmin(final User user) throws ServerAuthenticationException {
+  public final EntityServerAdmin getServerAdmin(User user) throws ServerAuthenticationException {
     validateUserCredentials(user, configuration.getAdminUser());
 
     return getAdmin();
@@ -112,7 +112,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   @Override
-  protected final AbstractRemoteEntityConnection connect(final RemoteClient remoteClient) throws RemoteException, LoginException {
+  protected final AbstractRemoteEntityConnection connect(RemoteClient remoteClient) throws RemoteException, LoginException {
     requireNonNull(remoteClient, "remoteClient");
     try {
       AbstractRemoteEntityConnection connection = createRemoteConnection(getDatabase(), remoteClient,
@@ -137,7 +137,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   @Override
-  protected final void disconnect(final AbstractRemoteEntityConnection connection) throws RemoteException {
+  protected final void disconnect(AbstractRemoteEntityConnection connection) throws RemoteException {
     connection.close();
   }
 
@@ -153,10 +153,10 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * if a wrong username or password is provided
    * @return a remote connection
    */
-  protected AbstractRemoteEntityConnection createRemoteConnection(final Database database,
-                                                                  final RemoteClient remoteClient, final int port,
-                                                                  final RMIClientSocketFactory clientSocketFactory,
-                                                                  final RMIServerSocketFactory serverSocketFactory)
+  protected AbstractRemoteEntityConnection createRemoteConnection(Database database,
+                                                                  RemoteClient remoteClient, int port,
+                                                                  RMIClientSocketFactory clientSocketFactory,
+                                                                  RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
     return new DefaultRemoteEntityConnection(getClientDomainModel(remoteClient), database, remoteClient, port,
             clientSocketFactory, serverSocketFactory);
@@ -180,7 +180,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param timeout the new timeout value in milliseconds
    * @throws IllegalArgumentException in case timeout is less than zero
    */
-  final void setConnectionTimeout(final int timeout) {
+  final void setConnectionTimeout(int timeout) {
     if (timeout < 0) {
       throw new IllegalArgumentException("Connection timeout must be a positive integer");
     }
@@ -190,7 +190,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   /**
    * @param clientTypeConnectionTimeouts the timeout values mapped to each clientTypeId
    */
-  final void setClientTypeConnectionTimeouts(final Map<String, Integer> clientTypeConnectionTimeouts) {
+  final void setClientTypeConnectionTimeouts(Map<String, Integer> clientTypeConnectionTimeouts) {
     this.clientTypeConnectionTimeouts.putAll(clientTypeConnectionTimeouts);
   }
 
@@ -204,8 +204,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   @Override
-  protected final void maintainConnections(final Collection<ClientConnection<AbstractRemoteEntityConnection>> connections) throws RemoteException {
-    for (final ClientConnection<AbstractRemoteEntityConnection> client : connections) {
+  protected final void maintainConnections(Collection<ClientConnection<AbstractRemoteEntityConnection>> connections) throws RemoteException {
+    for (ClientConnection<AbstractRemoteEntityConnection> client : connections) {
       AbstractRemoteEntityConnection connection = client.getConnection();
       if (!connection.isActive()) {
         boolean connected = connection.isConnected();
@@ -219,7 +219,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   @Override
-  protected final Collection<RemoteClient> getClients(final String clientTypeId) {
+  protected final Collection<RemoteClient> getClients(String clientTypeId) {
     //using the remoteClient from the connection since it contains the correct database user
     return getConnections().values().stream()
             .map(AbstractRemoteEntityConnection::getRemoteClient)
@@ -232,8 +232,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    */
   final Map<EntityType, String> getEntityDefinitions() {
     Map<EntityType, String> definitions = new HashMap<>();
-    for (final Domain domain : domainModels.values()) {
-      for (final EntityDefinition definition : domain.getEntities().getDefinitions()) {
+    for (Domain domain : domainModels.values()) {
+      for (EntityDefinition definition : domain.getEntities().getDefinitions()) {
         definitions.put(definition.getEntityType(), definition.getTableName());
       }
     }
@@ -246,7 +246,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param clientId the UUID identifying the client
    * @return the client log for the given connection
    */
-  final ClientLog getClientLog(final UUID clientId) {
+  final ClientLog getClientLog(UUID clientId) {
     return getConnection(clientId).getClientLog();
   }
 
@@ -254,7 +254,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param clientId the client id
    * @return true if logging is enabled for the given client
    */
-  final boolean isLoggingEnabled(final UUID clientId) {
+  final boolean isLoggingEnabled(UUID clientId) {
     return getConnection(clientId).isLoggingEnabled();
   }
 
@@ -262,7 +262,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param clientId the client id
    * @param loggingEnabled the new logging status
    */
-  final void setLoggingEnabled(final UUID clientId, final boolean loggingEnabled) {
+  final void setLoggingEnabled(UUID clientId, boolean loggingEnabled) {
     getConnection(clientId).setLoggingEnabled(loggingEnabled);
   }
 
@@ -271,9 +271,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @throws RemoteException in case of an exception
    * @see #hasConnectionTimedOut(AbstractRemoteEntityConnection)
    */
-  final void disconnectClients(final boolean timedOutOnly) throws RemoteException {
+  final void disconnectClients(boolean timedOutOnly) throws RemoteException {
     List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
-    for (final RemoteClient client : clients) {
+    for (RemoteClient client : clients) {
       AbstractRemoteEntityConnection connection = getConnection(client.getClientId());
       if (timedOutOnly) {
         boolean active = connection.isActive();
@@ -287,7 +287,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
   }
 
-  private void disconnectQuietly(final AbstractRemoteEntityConnection connection) {
+  private void disconnectQuietly(AbstractRemoteEntityConnection connection) {
     try {
       disconnect(connection.getRemoteClient().getClientId());
     }
@@ -302,7 +302,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @return a admin instance
    * @throws RemoteException in case of an exception
    */
-  private EntityServerAdmin initializeServerAdmin(final EntityServerConfiguration configuration) throws RemoteException {
+  private EntityServerAdmin initializeServerAdmin(EntityServerConfiguration configuration) throws RemoteException {
     if (configuration.getServerAdminPort() != 0) {
       return new DefaultEntityServerAdmin(this, configuration);
     }
@@ -315,14 +315,14 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @throws RemoteException in case of an exception
    * @param registryPort the registry port
    */
-  private void bindToRegistry(final int registryPort) throws RemoteException {
+  private void bindToRegistry(int registryPort) throws RemoteException {
     getRegistry().rebind(getServerInformation().getServerName(), this);
     String connectInfo = getServerInformation().getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
   }
 
-  private boolean hasConnectionTimedOut(final AbstractRemoteEntityConnection connection) {
+  private boolean hasConnectionTimedOut(AbstractRemoteEntityConnection connection) {
     Integer timeout = clientTypeConnectionTimeouts.get(connection.getRemoteClient().getClientTypeId());
     if (timeout == null) {
       timeout = connectionTimeout;
@@ -331,7 +331,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     return connection.hasBeenInactive(timeout);
   }
 
-  private Domain getClientDomainModel(final RemoteClient remoteClient) {
+  private Domain getClientDomainModel(RemoteClient remoteClient) {
     String domainTypeName = (String) remoteClient.getParameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
     if (domainTypeName == null) {
       throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
@@ -340,7 +340,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     return domainModels.get(DomainType.getDomainType(domainTypeName));
   }
 
-  private static Map<DomainType, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
+  private static Map<DomainType, Domain> loadDomainModels(Collection<String> domainModelClassNames) throws Throwable {
     Map<DomainType, Domain> domains = new HashMap<>();
     List<Domain> serviceDomains = Domain.getDomains();
     try {
@@ -348,7 +348,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
         LOG.info("Server loading and registering domain model '" + domain.getDomainType() + "' as a service");
         domains.put(domain.getDomainType(), domain);
       });
-      for (final String className : domainModelClassNames) {
+      for (String className : domainModelClassNames) {
         LOG.info("Server loading and registering domain model class '" + className + "' from classpath");
         Domain domain = (Domain) Class.forName(className).getConstructor().newInstance();
         domains.put(domain.getDomainType(), domain);
@@ -366,8 +366,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
   }
 
-  private static void initializeConnectionPools(final Database database, final String connectionPoolFactoryClassName,
-                                                final Collection<User> startupPoolUsers) throws DatabaseException {
+  private static void initializeConnectionPools(Database database, String connectionPoolFactoryClassName,
+                                                Collection<User> startupPoolUsers) throws DatabaseException {
     if (!startupPoolUsers.isEmpty()) {
       ConnectionPoolFactory poolFactory;
       if (Util.nullOrEmpty(connectionPoolFactoryClassName)) {
@@ -376,7 +376,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       else {
         poolFactory = ConnectionPoolFactory.connectionPoolFactory(connectionPoolFactoryClassName);
       }
-      for (final User user : startupPoolUsers) {
+      for (User user : startupPoolUsers) {
         database.initializeConnectionPool(poolFactory, user);
       }
     }
@@ -397,7 +397,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @return the server instance
    * @throws RemoteException in case of an exception
    */
-  public static synchronized EntityServer startServer(final EntityServerConfiguration configuration) throws RemoteException {
+  public static synchronized EntityServer startServer(EntityServerConfiguration configuration) throws RemoteException {
     requireNonNull(configuration, "configuration");
     try {
       return new EntityServer(configuration);
@@ -451,7 +451,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @throws RemoteException in case of a remote exception during service export
    * @throws ServerAuthenticationException in case of missing or incorrect admin user information
    */
-  public static void main(final String[] arguments) throws RemoteException, ServerAuthenticationException {
+  public static void main(String[] arguments) throws RemoteException, ServerAuthenticationException {
     String argument = arguments.length == 0 ? START : arguments[0];
     switch (argument) {
       case START:

@@ -11,7 +11,7 @@ final class SchemaSortModel extends AbstractTableSortModel<Schema, Integer> {
   SchemaSortModel() {}
 
   @Override
-  public Class<?> getColumnClass(final Integer columnIdentifier) {
+  public Class<?> getColumnClass(Integer columnIdentifier) {
     switch (columnIdentifier) {
       case SchemaTableModel.SCHEMA:
         return String.class;
@@ -23,7 +23,7 @@ final class SchemaSortModel extends AbstractTableSortModel<Schema, Integer> {
   }
 
   @Override
-  protected Object getColumnValue(final Schema row, final Integer columnIdentifier) {
+  protected Object getColumnValue(Schema row, Integer columnIdentifier) {
     switch (columnIdentifier) {
       case SchemaTableModel.SCHEMA:
         return row.getName();

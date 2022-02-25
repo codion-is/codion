@@ -24,7 +24,7 @@ final class DefaultTextFieldHint implements TextFieldHint {
   private Color foregroundColor;
   private Color hintForegroundColor;
 
-  DefaultTextFieldHint(final JTextField textField, final String hintText) {
+  DefaultTextFieldHint(JTextField textField, String hintText) {
     requireNonNull(textField, "textField");
     if (nullOrEmpty(hintText)) {
       throw new IllegalArgumentException("Hint text is null or empty");
@@ -66,12 +66,12 @@ final class DefaultTextFieldHint implements TextFieldHint {
   private FocusListener initializeFocusListener() {
     return new FocusListener() {
       @Override
-      public void focusGained(final FocusEvent e) {
+      public void focusGained(FocusEvent e) {
         updateHint();
       }
 
       @Override
-      public void focusLost(final FocusEvent e) {
+      public void focusLost(FocusEvent e) {
         updateHint();
       }
     };
@@ -90,7 +90,7 @@ final class DefaultTextFieldHint implements TextFieldHint {
     updateColor();
   }
 
-  private static Color getHintForegroundColor(final Color background, final Color foreground) {
+  private static Color getHintForegroundColor(Color background, Color foreground) {
     //simplistic averaging of background and foreground
     int r = (int) sqrt((pow(background.getRed(), 2) + pow(foreground.getRed(), 2)) / 2);
     int g = (int) sqrt((pow(background.getGreen(), 2) + pow(foreground.getGreen(), 2)) / 2);

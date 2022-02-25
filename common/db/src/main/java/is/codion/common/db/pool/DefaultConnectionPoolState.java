@@ -17,7 +17,7 @@ final class DefaultConnectionPoolState implements ConnectionPoolState, Serializa
   private int connectionsInUse = -1;
   private int connectionsWaiting = -1;
 
-  DefaultConnectionPoolState set(final long time, final int connectionCount, final int connectionsInUse, final int connectionsWaiting) {
+  DefaultConnectionPoolState set(long time, int connectionCount, int connectionsInUse, int connectionsWaiting) {
     this.time = time;
     this.connectionCount = connectionCount;
     this.connectionsInUse = connectionsInUse;

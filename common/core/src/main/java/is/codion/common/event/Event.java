@@ -40,7 +40,7 @@ public interface Event<T> extends EventListener, EventDataListener<T>, EventObse
    * @param <T> the value type
    * @return a {@link EventListener} causing the given {@link EventDataListener} to be fired with null data on each occurrence
    */
-  static <T> EventListener listener(final EventDataListener<T> listener) {
+  static <T> EventListener listener(EventDataListener<T> listener) {
     return () -> listener.onEvent(null);
   }
 
@@ -51,7 +51,7 @@ public interface Event<T> extends EventListener, EventDataListener<T>, EventObse
    * @param listener the listener
    * @return a {@link EventDataListener} causing the given {@link EventListener} to be fired on each occurrence
    */
-  static <T> EventDataListener<T> dataListener(final EventListener listener) {
+  static <T> EventDataListener<T> dataListener(EventListener listener) {
     return data -> listener.onEvent();
   }
 }

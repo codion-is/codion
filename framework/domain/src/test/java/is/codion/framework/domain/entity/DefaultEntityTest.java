@@ -804,9 +804,9 @@ public class DefaultEntityTest {
     assertNotNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
   }
 
-  private static Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,
-                                        final String stringValue, final LocalDate dateValue, final LocalDateTime timestampValue,
-                                        final Boolean booleanValue, final Entity entityValue) {
+  private static Entity getDetailEntity(long id, Integer intValue, Double doubleValue,
+                                        String stringValue, LocalDate dateValue, LocalDateTime timestampValue,
+                                        Boolean booleanValue, Entity entityValue) {
     return ENTITIES.builder(Detail.TYPE)
             .with(Detail.ID, id)
             .with(Detail.INT, intValue)

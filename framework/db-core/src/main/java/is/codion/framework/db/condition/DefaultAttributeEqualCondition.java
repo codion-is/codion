@@ -28,11 +28,11 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
 
   private boolean caseSensitive = true;
 
-  DefaultAttributeEqualCondition(final Attribute<T> attribute, final Collection<? extends T> conditionValues) {
+  DefaultAttributeEqualCondition(Attribute<T> attribute, Collection<? extends T> conditionValues) {
     this(attribute, conditionValues, false);
   }
 
-  DefaultAttributeEqualCondition(final Attribute<T> attribute, final Collection<? extends T> conditionValues, final boolean negated) {
+  DefaultAttributeEqualCondition(Attribute<T> attribute, Collection<? extends T> conditionValues, boolean negated) {
     super(attribute, negated ? Operator.NOT_EQUAL : Operator.EQUAL);
     this.values = unmodifiableList(new ArrayList<>(conditionValues));
     this.negated = negated;
@@ -56,7 +56,7 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
   }
 
   @Override
-  public AttributeCondition<String> caseSensitive(final boolean caseSensitive) {
+  public AttributeCondition<String> caseSensitive(boolean caseSensitive) {
     if (!getAttribute().isString()) {
       throw new IllegalStateException("Attribute " + getAttribute() + " is not a String attribute");
     }
@@ -66,7 +66,7 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
   }
 
   @Override
-  protected String getConditionString(final String columnExpression) {
+  protected String getConditionString(String columnExpression) {
     String identifier = columnExpression;
     if (values.isEmpty()) {
       return identifier + (negated ? " is not null" : " is null");
@@ -86,7 +86,7 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
     return identifier + (negated ? " <> " : " = ") + valuePlaceholder;
   }
 
-  private static String getInList(final String columnIdentifier, final String valuePlaceholder, final int valueCount, final boolean negated) {
+  private static String getInList(String columnIdentifier, String valuePlaceholder, int valueCount, boolean negated) {
     boolean exceedsLimit = valueCount > IN_CLAUSE_LIMIT;
     StringBuilder stringBuilder = new StringBuilder(exceedsLimit ? "(" : "").append(columnIdentifier).append(negated ? NOT_IN_PREFIX : IN_PREFIX);
     int cnt = 1;
@@ -105,7 +105,7 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
     return stringBuilder.toString();
   }
 
-  private static boolean containsWildcards(final String value) {
+  private static boolean containsWildcards(String value) {
     return value.contains("%") || value.contains("_");
   }
 }

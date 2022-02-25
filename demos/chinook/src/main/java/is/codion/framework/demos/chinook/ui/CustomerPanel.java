@@ -10,7 +10,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 
 public final class CustomerPanel extends EntityPanel {
 
-  public CustomerPanel(final SwingEntityModel customerModel) {
+  public CustomerPanel(SwingEntityModel customerModel) {
     super(customerModel, new CustomerEditPanel(customerModel.getEditModel()), new CustomerTablePanel(customerModel.getTableModel()));
 
     SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);

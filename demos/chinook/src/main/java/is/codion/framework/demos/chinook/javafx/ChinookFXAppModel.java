@@ -17,7 +17,7 @@ import is.codion.javafx.framework.model.FXEntityModel;
 
 public final class ChinookFXAppModel extends FXEntityApplicationModel {
 
-  public ChinookFXAppModel(final EntityConnectionProvider connectionProvider) {
+  public ChinookFXAppModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
     setupEntityModels();
   }

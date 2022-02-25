@@ -44,7 +44,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private boolean serializationFilterDryRun;
   private int connectionMaintenanceIntervalMs;
 
-  DefaultServerConfiguration(final int serverPort, final int registryPort) {
+  DefaultServerConfiguration(int serverPort, int registryPort) {
     this.serverPort = serverPort;
     this.registryPort = registryPort;
   }
@@ -127,37 +127,37 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     private Boolean serializationFilterDryRun = false;
     private Integer connectionMaintenanceIntervalMs = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
 
-    DefaultBuilder(final int serverPort, final int registryPort) {
+    DefaultBuilder(int serverPort, int registryPort) {
       this.serverPort = serverPort;
       this.registryPort = registryPort;
     }
 
     @Override
-    public DefaultBuilder adminPort(final int adminPort) {
+    public DefaultBuilder adminPort(int adminPort) {
       this.serverAdminPort = adminPort;
       return this;
     }
 
     @Override
-    public DefaultBuilder serverNameProvider(final Supplier<String> serverNameProvider) {
+    public DefaultBuilder serverNameProvider(Supplier<String> serverNameProvider) {
       this.serverNameProvider = requireNonNull(serverNameProvider);
       return this;
     }
 
     @Override
-    public DefaultBuilder serverName(final String serverName) {
+    public DefaultBuilder serverName(String serverName) {
       this.serverName = requireNonNull(serverName);
       return this;
     }
 
     @Override
-    public DefaultBuilder auxiliaryServerFactoryClassNames(final Collection<String> auxiliaryServerFactoryClassNames) {
+    public DefaultBuilder auxiliaryServerFactoryClassNames(Collection<String> auxiliaryServerFactoryClassNames) {
       this.auxiliaryServerFactoryClassNames.addAll(requireNonNull(auxiliaryServerFactoryClassNames));
       return this;
     }
 
     @Override
-    public DefaultBuilder sslEnabled(final boolean sslEnabled) {
+    public DefaultBuilder sslEnabled(boolean sslEnabled) {
       this.sslEnabled = sslEnabled;
       if (sslEnabled) {
         rmiClientSocketFactory(new SslRMIClientSocketFactory());
@@ -171,31 +171,31 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     }
 
     @Override
-    public DefaultBuilder rmiClientSocketFactory(final RMIClientSocketFactory rmiClientSocketFactory) {
+    public DefaultBuilder rmiClientSocketFactory(RMIClientSocketFactory rmiClientSocketFactory) {
       this.rmiClientSocketFactory = rmiClientSocketFactory;
       return this;
     }
 
     @Override
-    public DefaultBuilder rmiServerSocketFactory(final RMIServerSocketFactory rmiServerSocketFactory) {
+    public DefaultBuilder rmiServerSocketFactory(RMIServerSocketFactory rmiServerSocketFactory) {
       this.rmiServerSocketFactory = rmiServerSocketFactory;
       return this;
     }
 
     @Override
-    public DefaultBuilder serializationFilterWhitelist(final String serializationFilterWhitelist) {
+    public DefaultBuilder serializationFilterWhitelist(String serializationFilterWhitelist) {
       this.serializationFilterWhitelist = serializationFilterWhitelist;
       return this;
     }
 
     @Override
-    public DefaultBuilder serializationFilterDryRun(final boolean serializationFilterDryRun) {
+    public DefaultBuilder serializationFilterDryRun(boolean serializationFilterDryRun) {
       this.serializationFilterDryRun = serializationFilterDryRun;
       return this;
     }
 
     @Override
-    public DefaultBuilder connectionMaintenanceIntervalMs(final int connectionMaintenanceIntervalMs) {
+    public DefaultBuilder connectionMaintenanceIntervalMs(int connectionMaintenanceIntervalMs) {
       this.connectionMaintenanceIntervalMs = connectionMaintenanceIntervalMs;
       return this;
     }
@@ -227,7 +227,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
         throw new IllegalStateException("Classpath keystore (" + keystore + ") can not be specified when "
                 + JAVAX_NET_KEYSTORE + " is already set to " + KEYSTORE.get());
       }
-      try (final InputStream inputStream = Util.class.getClassLoader().getResourceAsStream(keystore)) {
+      try (InputStream inputStream = Util.class.getClassLoader().getResourceAsStream(keystore)) {
         if (inputStream == null) {
           LOG.debug("Specified key store not found on classpath: {}", keystore);
           return;
@@ -245,7 +245,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
       }
     }
 
-    private static byte[] getBytes(final InputStream stream) throws IOException {
+    private static byte[] getBytes(InputStream stream) throws IOException {
       ByteArrayOutputStream os = new ByteArrayOutputStream();
       byte[] buffer = new byte[8192];
       int line;

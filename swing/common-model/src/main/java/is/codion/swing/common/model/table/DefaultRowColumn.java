@@ -8,7 +8,7 @@ final class DefaultRowColumn implements FilteredTableModel.RowColumn {
   private final int row;
   private final int column;
 
-  DefaultRowColumn(final int row, final int column) {
+  DefaultRowColumn(int row, int column) {
     this.row = row;
     this.column = column;
   }
@@ -24,7 +24,7 @@ final class DefaultRowColumn implements FilteredTableModel.RowColumn {
   }
 
   @Override
-  public boolean equals(final Object obj) {
+  public boolean equals(Object obj) {
     if (obj == this) {
       return true;
     }

@@ -18,7 +18,7 @@ final class DefaultUser implements User, Serializable {
   private String username;
   private char[] password;
 
-  DefaultUser(final String username, final char[] password) {
+  DefaultUser(String username, char[] password) {
     if (requireNonNull(username, "username").isEmpty()) {
       throw new IllegalArgumentException("Username must be non-empty");
     }
@@ -32,7 +32,7 @@ final class DefaultUser implements User, Serializable {
   }
 
   @Override
-  public void setPassword(final char[] password) {
+  public void setPassword(char[] password) {
     this.password = password == null ? new char[0] : password;
   }
 
@@ -54,7 +54,7 @@ final class DefaultUser implements User, Serializable {
 
   /** User objects are equal if the usernames match */
   @Override
-  public boolean equals(final Object obj) {
+  public boolean equals(Object obj) {
     return this == obj || obj instanceof User && ((User) obj).getUsername().equals(username);
   }
 
@@ -63,12 +63,12 @@ final class DefaultUser implements User, Serializable {
     return username.hashCode();
   }
 
-  private void writeObject(final ObjectOutputStream stream) throws IOException {
+  private void writeObject(ObjectOutputStream stream) throws IOException {
     stream.writeObject(username);
     stream.writeObject(password);
   }
 
-  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+  private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     this.username = (String) stream.readObject();
     setPassword((char[]) stream.readObject());
   }

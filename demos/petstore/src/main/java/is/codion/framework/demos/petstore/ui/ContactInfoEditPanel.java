@@ -11,7 +11,7 @@ import static is.codion.framework.demos.petstore.domain.Petstore.SellerContactIn
 
 public class ContactInfoEditPanel extends EntityEditPanel {
 
-  public ContactInfoEditPanel(final SwingEntityEditModel model) {
+  public ContactInfoEditPanel(SwingEntityEditModel model) {
     super(model);
   }
 

@@ -36,44 +36,44 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   private int maximumRowCount = -1;
   private boolean moveCaretOnSelection = true;
 
-  protected DefaultComboBoxBuilder(final ComboBoxModel<T> comboBoxModel, final Value<T> linkedValue) {
+  protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
     super(linkedValue);
     this.comboBoxModel = requireNonNull(comboBoxModel);
     preferredHeight(getPreferredTextFieldHeight());
   }
 
   @Override
-  public final B popupWidth(final int popupWidth) {
+  public final B popupWidth(int popupWidth) {
     this.popupWidth = popupWidth;
     return (B) this;
   }
 
   @Override
-  public final B editable(final boolean editable) {
+  public final B editable(boolean editable) {
     this.editable = editable;
     return (B) this;
   }
 
   @Override
-  public final B completionMode(final Completion.Mode completionMode) {
+  public final B completionMode(Completion.Mode completionMode) {
     this.completionMode = requireNonNull(completionMode);
     return (B) this;
   }
 
   @Override
-  public final B renderer(final ListCellRenderer<T> renderer) {
+  public final B renderer(ListCellRenderer<T> renderer) {
     this.renderer = requireNonNull(renderer);
     return (B) this;
   }
 
   @Override
-  public final B editor(final ComboBoxEditor editor) {
+  public final B editor(ComboBoxEditor editor) {
     this.editor = requireNonNull(editor);
     return (B) this;
   }
 
   @Override
-  public final B mouseWheelScrolling(final boolean mouseWheelScrolling) {
+  public final B mouseWheelScrolling(boolean mouseWheelScrolling) {
     this.mouseWheelScrolling = mouseWheelScrolling;
     if (mouseWheelScrolling) {
       this.mouseWheelScrollingWithWrapAround = false;
@@ -82,7 +82,7 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   }
 
   @Override
-  public final B mouseWheelScrollingWithWrapAround(final boolean mouseWheelScrollingWithWrapAround) {
+  public final B mouseWheelScrollingWithWrapAround(boolean mouseWheelScrollingWithWrapAround) {
     this.mouseWheelScrollingWithWrapAround = mouseWheelScrollingWithWrapAround;
     if (mouseWheelScrollingWithWrapAround) {
       this.mouseWheelScrolling = false;
@@ -91,13 +91,13 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   }
 
   @Override
-  public final B maximumRowCount(final int maximumRowCount) {
+  public final B maximumRowCount(int maximumRowCount) {
     this.maximumRowCount = maximumRowCount;
     return (B) this;
   }
 
   @Override
-  public final B moveCaretOnSelection(final boolean moveCaretOnSelection) {
+  public final B moveCaretOnSelection(boolean moveCaretOnSelection) {
     this.moveCaretOnSelection = moveCaretOnSelection;
     return (B) this;
   }
@@ -137,18 +137,18 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   }
 
   @Override
-  protected final ComponentValue<T, C> buildComponentValue(final C component) {
+  protected final ComponentValue<T, C> buildComponentValue(C component) {
     return ComponentValues.comboBox(component);
   }
 
   @Override
-  protected final void setTransferFocusOnEnter(final C component) {
+  protected final void setTransferFocusOnEnter(C component) {
     component.setTransferFocusOnEnter(true);
     TransferFocusOnEnter.enable((JComponent) component.getEditor().getEditorComponent());
   }
 
   @Override
-  protected final void setInitialValue(final C component, final T initialValue) {
+  protected final void setInitialValue(C component, T initialValue) {
     component.setSelectedItem(initialValue);
   }
 
@@ -160,12 +160,12 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
 
     private final SteppedComboBox<?> comboBox;
 
-    private MoveCaretListener(final SteppedComboBox<T> comboBox) {
+    private MoveCaretListener(SteppedComboBox<T> comboBox) {
       this.comboBox = comboBox;
     }
 
     @Override
-    public void onEvent(final Object selectedItem) {
+    public void onEvent(Object selectedItem) {
       Component editorComponent = comboBox.getEditor().getEditorComponent();
       if (selectedItem != null && editorComponent instanceof JTextComponent) {
         ((JTextComponent) editorComponent).setCaretPosition(0);

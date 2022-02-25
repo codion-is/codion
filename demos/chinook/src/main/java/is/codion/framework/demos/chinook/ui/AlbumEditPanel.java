@@ -15,7 +15,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class AlbumEditPanel extends EntityEditPanel {
 
-  public AlbumEditPanel(final SwingEntityEditModel editModel) {
+  public AlbumEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
     setDefaultTextFieldColumns(18);
   }

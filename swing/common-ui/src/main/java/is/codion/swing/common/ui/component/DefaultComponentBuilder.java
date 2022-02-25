@@ -9,7 +9,7 @@ final class DefaultComponentBuilder<T, C extends JComponent, B extends Component
 
   private final C component;
 
-  DefaultComponentBuilder(final C component) {
+  DefaultComponentBuilder(C component) {
     this.component = component;
   }
 
@@ -19,10 +19,10 @@ final class DefaultComponentBuilder<T, C extends JComponent, B extends Component
   }
 
   @Override
-  protected ComponentValue<T, C> buildComponentValue(final C component) {
+  protected ComponentValue<T, C> buildComponentValue(C component) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  protected void setInitialValue(final C component, final T initialValue) {/*Not implemented*/}
+  protected void setInitialValue(C component, T initialValue) {/*Not implemented*/}
 }

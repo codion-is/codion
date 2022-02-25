@@ -22,19 +22,19 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
     this(false);
   }
 
-  MinutesSecondsPanelValue(final boolean horizontal) {
+  MinutesSecondsPanelValue(boolean horizontal) {
     super(new MinutesSecondsPanel(horizontal));
     getComponent().minutesField.addValueListener(minutes -> notifyValueChange());
     getComponent().secondsField.addValueListener(seconds -> notifyValueChange());
   }
 
   @Override
-  protected Integer getComponentValue(final MinutesSecondsPanel component) {
+  protected Integer getComponentValue(MinutesSecondsPanel component) {
     return getMilliseconds(component.minutesField.getInteger(), component.secondsField.getInteger());
   }
 
   @Override
-  protected void setComponentValue(final MinutesSecondsPanel component, final Integer milliseconds) {
+  protected void setComponentValue(MinutesSecondsPanel component, Integer milliseconds) {
     component.minutesField.setInteger(getMinutes(milliseconds));
     component.secondsField.setInteger(getSeconds(milliseconds));
   }
@@ -55,7 +55,7 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
             .columns(2)
             .build();
 
-    private MinutesSecondsPanel(final boolean horizontal) {
+    private MinutesSecondsPanel(boolean horizontal) {
       super(borderLayout());
       if (horizontal) {
         Components.panel(gridLayout(1, 4))

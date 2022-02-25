@@ -18,8 +18,8 @@ final class DefaultAttributeNotBetweenCondition<T> extends AbstractAttributeCond
   private final T lowerBound;
   private final T upperBound;
 
-  DefaultAttributeNotBetweenCondition(final Attribute<T> attribute, final T lowerBound, final T upperBound,
-                                      final boolean exclusive) {
+  DefaultAttributeNotBetweenCondition(Attribute<T> attribute, T lowerBound, T upperBound,
+                                      boolean exclusive) {
     super(attribute, exclusive ? Operator.NOT_BETWEEN_EXCLUSIVE : Operator.NOT_BETWEEN);
     this.lowerBound = requireNonNull(lowerBound, "A lower bound is required");
     this.upperBound = requireNonNull(upperBound, "An upper bound is required");
@@ -36,7 +36,7 @@ final class DefaultAttributeNotBetweenCondition<T> extends AbstractAttributeCond
   }
 
   @Override
-  protected String getConditionString(final String columnExpression) {
+  protected String getConditionString(String columnExpression) {
     return getOperator() == Operator.NOT_BETWEEN ?
             "(" + columnExpression + " <= ? or " + columnExpression + " >= ?)" :
             "(" + columnExpression + " < ? or " + columnExpression + " > ?)";

@@ -27,7 +27,7 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
    * @param component the component
    * @param nullValue the value to use instead of null
    */
-  public AbstractTextComponentValue(final C component, final T nullValue) {
+  public AbstractTextComponentValue(C component, T nullValue) {
     this(component, nullValue, UpdateOn.KEYSTROKE);
   }
 
@@ -37,7 +37,7 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
    * @param nullValue the value to use instead of null
    * @param updateOn the update on policy
    */
-  public AbstractTextComponentValue(final C component, final T nullValue, final UpdateOn updateOn) {
+  public AbstractTextComponentValue(C component, T nullValue, UpdateOn updateOn) {
     super(component, nullValue);
     DocumentFilter documentFilter = ((AbstractDocument) component.getDocument()).getDocumentFilter();
     if (documentFilter instanceof ValidationDocumentFilter) {
@@ -54,14 +54,14 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
 
   private final class NotifyOnContentsChanged implements DocumentAdapter {
     @Override
-    public void contentsChanged(final DocumentEvent e) {
+    public void contentsChanged(DocumentEvent e) {
       notifyValueChange();
     }
   }
 
   private final class NotifyOnFocusLost extends FocusAdapter {
     @Override
-    public void focusLost(final FocusEvent e) {
+    public void focusLost(FocusEvent e) {
       if (!e.isTemporary()) {
         notifyValueChange();
       }

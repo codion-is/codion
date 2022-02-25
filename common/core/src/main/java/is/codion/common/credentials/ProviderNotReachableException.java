@@ -13,7 +13,7 @@ public final class ProviderNotReachableException extends CredentialsException {
    * @param message the exception message
    * @param cause the root cause
    */
-  public ProviderNotReachableException(final String message, final Throwable cause) {
+  public ProviderNotReachableException(String message, Throwable cause) {
     super(message, cause);
   }
 }

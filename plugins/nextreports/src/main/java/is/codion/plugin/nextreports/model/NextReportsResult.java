@@ -27,7 +27,7 @@ public final class NextReportsResult implements Serializable {
    * @param bytes the bytes comprising the report result
    * @param format the report format
    */
-  public NextReportsResult(final byte[] bytes, final String format) {
+  public NextReportsResult(byte[] bytes, String format) {
     this.bytes = requireNonNull(bytes, "bytes");
     this.format = requireNonNull(format, "format");
   }
@@ -46,7 +46,7 @@ public final class NextReportsResult implements Serializable {
    * @return the file
    * @throws IOException in case of an exception
    */
-  public File writeResultToFile(final String parentDirectory, final String filename) throws IOException {
+  public File writeResultToFile(String parentDirectory, String filename) throws IOException {
     requireNonNull(parentDirectory, "parentDirectory");
     requireNonNull(filename, "filename");
     File file = new File(parentDirectory + Util.FILE_SEPARATOR + filename + "." + format.toLowerCase());
@@ -63,7 +63,7 @@ public final class NextReportsResult implements Serializable {
    * @return the file
    * @throws IOException in case of an exception
    */
-  public File writeResultToFile(final File file) throws IOException {
+  public File writeResultToFile(File file) throws IOException {
     Files.write(file.toPath(), bytes);
 
     return file;

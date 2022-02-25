@@ -48,7 +48,7 @@ public interface ForeignKey extends Attribute<Entity> {
    * @param <T> the attribute type
    * @return a new {@link Reference} based on the given attributes
    */
-  static <T> Reference<T> reference(final Attribute<T> attribute, final Attribute<T> referencedAttribute) {
+  static <T> Reference<T> reference(Attribute<T> attribute, Attribute<T> referencedAttribute) {
     return new DefaultForeignKey.DefaultReference<>(attribute, referencedAttribute);
   }
 
@@ -60,7 +60,7 @@ public interface ForeignKey extends Attribute<Entity> {
    * @return a new {@link ForeignKey}
    * @see ForeignKey#reference(Attribute, Attribute)
    */
-  static ForeignKey foreignKey(final EntityType entityType, final String name, final List<ForeignKey.Reference<?>> references) {
+  static ForeignKey foreignKey(EntityType entityType, String name, List<ForeignKey.Reference<?>> references) {
     return new DefaultForeignKey(name, entityType, references);
   }
 }

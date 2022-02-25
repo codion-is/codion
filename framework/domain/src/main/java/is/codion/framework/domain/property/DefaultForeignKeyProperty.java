@@ -32,7 +32,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    * @param foreignKey the foreign key
    * @param caption the property caption
    */
-  DefaultForeignKeyProperty(final ForeignKey foreignKey, final String caption) {
+  DefaultForeignKeyProperty(ForeignKey foreignKey, String caption) {
     super(foreignKey, caption);
     this.referencedEntityType = foreignKey.getReferences().get(0).getReferencedAttribute().getEntityType();
   }
@@ -58,7 +58,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   @Override
-  public boolean isReadOnly(final Attribute<?> referenceAttribute) {
+  public boolean isReadOnly(Attribute<?> referenceAttribute) {
     return readOnlyAttributes.contains(referenceAttribute);
   }
 
@@ -84,7 +84,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
     private final DefaultForeignKeyProperty foreignKeyProperty;
 
-    private DefaultForeignKeyPropertyBuilder(final DefaultForeignKeyProperty foreignKeyProperty) {
+    private DefaultForeignKeyPropertyBuilder(DefaultForeignKeyProperty foreignKeyProperty) {
       super(foreignKeyProperty);
       this.foreignKeyProperty = foreignKeyProperty;
       foreignKeyProperty.fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
@@ -97,7 +97,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     }
 
     @Override
-    public ForeignKeyProperty.Builder fetchDepth(final int fetchDepth) {
+    public ForeignKeyProperty.Builder fetchDepth(int fetchDepth) {
       foreignKeyProperty.fetchDepth = fetchDepth;
       return this;
     }
@@ -109,7 +109,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     }
 
     @Override
-    public ForeignKeyProperty.Builder readOnly(final Attribute<?> referenceAttribute) {
+    public ForeignKeyProperty.Builder readOnly(Attribute<?> referenceAttribute) {
       if (foreignKeyProperty.getAttribute().getReference(referenceAttribute) == null) {
         throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key: " + foreignKeyProperty.getAttribute());
       }
@@ -118,9 +118,9 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     }
 
     @Override
-    public ForeignKeyProperty.Builder selectAttributes(final Attribute<?>... attributes) {
+    public ForeignKeyProperty.Builder selectAttributes(Attribute<?>... attributes) {
       Set<Attribute<?>> selectAttributes = new HashSet<>();
-      for (final Attribute<?> attribute : requireNonNull(attributes)) {
+      for (Attribute<?> attribute : requireNonNull(attributes)) {
         if (!attribute.getEntityType().equals(foreignKeyProperty.referencedEntityType)) {
           throw new IllegalArgumentException("Select attribute must be part of the referenced entity type");
         }
@@ -132,7 +132,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     }
 
     @Override
-    public ForeignKeyProperty.Builder comparator(final Comparator<Entity> comparator) {
+    public ForeignKeyProperty.Builder comparator(Comparator<Entity> comparator) {
       throw new UnsupportedOperationException("Foreign key values are compared using the comparator of the underlying entity");
     }
   }

@@ -43,7 +43,7 @@ final class CoverArtPanel extends JPanel {
   /**
    * @param imageBytesValue the image bytes value to base this panel on.
    */
-  CoverArtPanel(final Value<byte[]> imageBytesValue) {
+  CoverArtPanel(Value<byte[]> imageBytesValue) {
     super(borderLayout());
     this.imageBytesValue = imageBytesValue;
     this.imagePanel = createImagePanel();
@@ -95,7 +95,7 @@ final class CoverArtPanel extends JPanel {
     return panel;
   }
 
-  private static BufferedImage readImage(final byte[] bytes) {
+  private static BufferedImage readImage(byte[] bytes) {
     if (bytes == null) {
       return null;
     }

@@ -67,7 +67,7 @@ public class TableColumnComponentPanelTest {
     assertEquals(80, panel.getColumnComponents().get(column2).getPreferredSize().width);
   }
 
-  private static Map<TableColumn, JPanel> createColumnComponents(final SwingFilteredTableColumnModel<?> columnModel) {
+  private static Map<TableColumn, JPanel> createColumnComponents(SwingFilteredTableColumnModel<?> columnModel) {
     Map<TableColumn, JPanel> columnComponents = new HashMap<>();
     columnModel.getAllColumns().forEach(column -> columnComponents.put(column, new JPanel()));
 

@@ -24,7 +24,7 @@ public final class FlexibleGridLayout extends GridLayout {
   private int fixedColumnWidth;
   private int fixedRowHeight;
 
-  private FlexibleGridLayout(final DefaultBuilder builder) {
+  private FlexibleGridLayout(DefaultBuilder builder) {
     super(builder.rows, builder.columns, builder.horizontalGap, builder.verticalGap);
     this.fixedRowHeights = builder.fixRowHeights;
     this.fixedColumnWidths = builder.fixColumnWidths;
@@ -34,7 +34,7 @@ public final class FlexibleGridLayout extends GridLayout {
    * @param height the fixed row height to use in this layout
    * @return this layout instance
    */
-  public FlexibleGridLayout setFixedRowHeight(final int height) {
+  public FlexibleGridLayout setFixedRowHeight(int height) {
     fixedRowHeight = height;
     return this;
   }
@@ -43,23 +43,23 @@ public final class FlexibleGridLayout extends GridLayout {
    * @param width the fixed column width to use in this layout
    * @return this layout instance
    */
-  public FlexibleGridLayout setFixedColumnWidth(final int width) {
+  public FlexibleGridLayout setFixedColumnWidth(int width) {
     fixedColumnWidth = width;
     return this;
   }
 
   @Override
-  public Dimension preferredLayoutSize(final Container parent) {
+  public Dimension preferredLayoutSize(Container parent) {
     return layoutSize(parent, true);
   }
 
   @Override
-  public Dimension minimumLayoutSize(final Container parent) {
+  public Dimension minimumLayoutSize(Container parent) {
     return layoutSize(parent, false);
   }
 
   @Override
-  public void layoutContainer(final Container parent) {
+  public void layoutContainer(Container parent) {
     synchronized (parent.getTreeLock()) {
       Insets insets = parent.getInsets();
       int numberOfComponents = parent.getComponentCount();
@@ -201,11 +201,11 @@ public final class FlexibleGridLayout extends GridLayout {
     FlexibleGridLayout build();
   }
 
-  private void arrangeFixedSizes(final int[] columnWidths, final int[] rowHeights) {
+  private void arrangeFixedSizes(int[] columnWidths, int[] rowHeights) {
     if (fixedColumnWidths) {
       int maxColumnWidth = 0;
       if (fixedColumnWidth <= 0) {
-        for (final int columnWidth : columnWidths) {
+        for (int columnWidth : columnWidths) {
           maxColumnWidth = Math.max(columnWidth, maxColumnWidth);
         }
       }
@@ -217,7 +217,7 @@ public final class FlexibleGridLayout extends GridLayout {
     if (fixedRowHeights) {
       int maxRowHeight = 0;
       if (fixedRowHeight <= 0) {
-        for (final int rowHeight : rowHeights) {
+        for (int rowHeight : rowHeights) {
           maxRowHeight = Math.max(rowHeight, maxRowHeight);
         }
       }
@@ -228,7 +228,7 @@ public final class FlexibleGridLayout extends GridLayout {
     }
   }
 
-  private Dimension layoutSize(final Container parent, final boolean preferredSize) {
+  private Dimension layoutSize(Container parent, boolean preferredSize) {
     synchronized (parent.getTreeLock()) {
       Insets insets = parent.getInsets();
       int numberOfComponents = parent.getComponentCount();
@@ -277,64 +277,64 @@ public final class FlexibleGridLayout extends GridLayout {
     private int fixedColumnWidth;
 
     @Override
-    public Builder rows(final int rows) {
+    public Builder rows(int rows) {
       this.rows = rows;
       return this;
     }
 
     @Override
-    public Builder columns(final int columns) {
+    public Builder columns(int columns) {
       this.columns = columns;
       return this;
     }
 
     @Override
-    public Builder rowsColumns(final int rows, final int columns) {
+    public Builder rowsColumns(int rows, int columns) {
       this.rows = rows;
       this.columns = columns;
       return this;
     }
 
     @Override
-    public Builder gap(final int gap) {
+    public Builder gap(int gap) {
       this.horizontalGap = gap;
       this.verticalGap = gap;
       return this;
     }
 
     @Override
-    public Builder horizontalGap(final int horizontalGap) {
+    public Builder horizontalGap(int horizontalGap) {
       this.horizontalGap = horizontalGap;
       return this;
     }
 
     @Override
-    public Builder verticalGap(final int verticalGap) {
+    public Builder verticalGap(int verticalGap) {
       this.verticalGap = verticalGap;
       return this;
     }
 
     @Override
-    public Builder fixRowHeights(final boolean fixRowHeights) {
+    public Builder fixRowHeights(boolean fixRowHeights) {
       this.fixRowHeights = fixRowHeights;
       return this;
     }
 
     @Override
-    public Builder fixColumnWidths(final boolean fixColumnWidths) {
+    public Builder fixColumnWidths(boolean fixColumnWidths) {
       this.fixColumnWidths = fixColumnWidths;
       return this;
     }
 
     @Override
-    public Builder fixedRowHeight(final int fixedRowHeight) {
+    public Builder fixedRowHeight(int fixedRowHeight) {
       fixRowHeights(true);
       this.fixedRowHeight = fixedRowHeight;
       return this;
     }
 
     @Override
-    public Builder fixedColumnWidth(final int fixedColumnWidth) {
+    public Builder fixedColumnWidth(int fixedColumnWidth) {
       fixColumnWidths(true);
       this.fixedColumnWidth = fixedColumnWidth;
       return this;

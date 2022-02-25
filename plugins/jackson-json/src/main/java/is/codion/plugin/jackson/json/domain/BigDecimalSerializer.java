@@ -19,7 +19,7 @@ final class BigDecimalSerializer extends StdSerializer<BigDecimal> {
   }
 
   @Override
-  public void serialize(final BigDecimal value, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
+  public void serialize(BigDecimal value, JsonGenerator generator, SerializerProvider provider) throws IOException {
     generator.writeString(value.toString());
   }
 }

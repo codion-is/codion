@@ -15,12 +15,12 @@ public final class AlbumTableModel extends SwingEntityTableModel {
 
   private final NumberFormat kbFormat = NumberFormat.getIntegerInstance();
 
-  public AlbumTableModel(final EntityConnectionProvider connectionProvider) {
+  public AlbumTableModel(EntityConnectionProvider connectionProvider) {
     super(Album.TYPE, connectionProvider);
   }
 
   @Override
-  protected Object getValue(final Entity entity, final Attribute<?> attribute) {
+  protected Object getValue(Entity entity, Attribute<?> attribute) {
     Object value = super.getValue(entity, attribute);
     if (value != null && attribute.equals(Album.COVER)) {
       byte[] bytes = (byte[]) value;

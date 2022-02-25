@@ -94,7 +94,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
      * @param value the value to validate
      * @throws IllegalArgumentException in case of an invalid value
      */
-    void validate(final T value) throws IllegalArgumentException;
+    void validate(T value) throws IllegalArgumentException;
   }
 
   /**
@@ -112,7 +112,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @param <T> type to wrap
    * @return a Value for the given type with the given initial value
    */
-  static <T> Value<T> value(final T initialValue) {
+  static <T> Value<T> value(T initialValue) {
     return value(initialValue, null);
   }
 
@@ -123,7 +123,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @param <T> type to wrap
    * @return a Value for the given type with the given initial value
    */
-  static <T> Value<T> value(final T initialValue, final T nullValue) {
+  static <T> Value<T> value(T initialValue, T nullValue) {
     return new DefaultValue<>(initialValue, nullValue);
   }
 
@@ -142,7 +142,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @param <T> the value type
    * @return a ValueSet
    */
-  static <T> ValueSet<T> valueSet(final Set<T> initialValues) {
+  static <T> ValueSet<T> valueSet(Set<T> initialValues) {
     return new DefaultValueSet<>(initialValues);
   }
 
@@ -155,8 +155,8 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @param <T> type to wrap
    * @return a Value for the given property
    */
-  static <T> PropertyValue<T> propertyValue(final Object owner, final String propertyName, final Class<T> valueClass,
-                                            final EventObserver<T> valueChangeObserver) {
+  static <T> PropertyValue<T> propertyValue(Object owner, String propertyName, Class<T> valueClass,
+                                            EventObserver<T> valueChangeObserver) {
     return new DefaultPropertyValue<>(owner, propertyName, valueClass, valueChangeObserver);
   }
 }

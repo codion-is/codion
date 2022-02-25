@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 abstract class ControlHandler implements Consumer<Action> {
 
   @Override
-  public final void accept(final Action action) {
+  public final void accept(Action action) {
     if (action == null) {
       onSeparator();
     }

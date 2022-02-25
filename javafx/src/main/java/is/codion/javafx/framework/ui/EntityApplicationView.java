@@ -50,7 +50,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * Instantiates a new {@link EntityApplicationView} instance.
    * @param applicationTitle the title to display in the view header
    */
-  public EntityApplicationView(final String applicationTitle) {
+  public EntityApplicationView(String applicationTitle) {
     this(applicationTitle, DEFAULT_ICON_FILE_NAME);
   }
 
@@ -59,7 +59,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @param applicationTitle the title to display in the view header
    * @param iconFileName the name of an icon file on the classpath to display
    */
-  public EntityApplicationView(final String applicationTitle, final String iconFileName) {
+  public EntityApplicationView(String applicationTitle, String iconFileName) {
     this.applicationTitle = applicationTitle;
     this.iconFileName = iconFileName;
     Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> onException((Exception) throwable));
@@ -79,7 +79,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * Adds a {@link EntityView} to this application
    * @param entityView the {@link EntityView} to add
    */
-  public final void addEntityView(final EntityView entityView) {
+  public final void addEntityView(EntityView entityView) {
     entityViews.add(entityView);
     entityView.setParentView(this);
   }
@@ -122,7 +122,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @param stage the State on which to set this application
    */
   @Override
-  public final void start(final Stage stage) {
+  public final void start(Stage stage) {
     try {
       this.mainStage = stage;
       User user = getApplicationUser();
@@ -150,7 +150,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @param clientTypeId a String identifying the client type
    * @return a {@link EntityConnectionProvider} based on the given user and client type
    */
-  protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
+  protected EntityConnectionProvider initializeConnectionProvider(User user, String clientTypeId) {
     return EntityConnectionProvider.connectionProvider().setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
             .setClientTypeId(clientTypeId).setUser(user);
   }
@@ -205,7 +205,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @return the user retrieved from the login panel
    * @throws CancelException in case the login action is cancelled
    */
-  protected final User showLoginPanel(final User defaultUser) {
+  protected final User showLoginPanel(User defaultUser) {
     return FXUiUtil.showLoginDialog(applicationTitle, defaultUser,
             new ImageView(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName))));
   }
@@ -230,12 +230,12 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @param primaryStage the primary stage
    * @return the application scene
    */
-  protected Scene initializeApplicationScene(final Stage primaryStage) {
+  protected Scene initializeApplicationScene(Stage primaryStage) {
     if (entityViews.isEmpty()) {
       throw new IllegalStateException("No entity views have been added");
     }
     TabPane tabPane = new TabPane();
-    for (final EntityView entityView : entityViews) {
+    for (EntityView entityView : entityViews) {
       entityView.initializePanel();
       tabPane.getTabs().add(new Tab(entityView.getCaption(), entityView));
     }
@@ -250,7 +250,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    */
   protected abstract M initializeApplicationModel(EntityConnectionProvider connectionProvider);
 
-  private static void onException(final Exception e) {
+  private static void onException(Exception e) {
     if (e instanceof CancelException) {
       return;
     }

@@ -17,7 +17,7 @@ public class RangeValidationException extends ValidationException {
    * @param value the value that is out of range
    * @param message the message
    */
-  public RangeValidationException(final Attribute<?> attribute, final Object value, final String message) {
+  public RangeValidationException(Attribute<?> attribute, Object value, String message) {
     super(attribute, value, message);
   }
 }

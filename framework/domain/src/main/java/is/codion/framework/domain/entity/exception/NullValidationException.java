@@ -16,7 +16,7 @@ public class NullValidationException extends ValidationException {
    * @param attribute the attribute with which the null value is associated
    * @param message the message
    */
-  public NullValidationException(final Attribute<?> attribute, final String message) {
+  public NullValidationException(Attribute<?> attribute, String message) {
     super(attribute, null, message);
   }
 }

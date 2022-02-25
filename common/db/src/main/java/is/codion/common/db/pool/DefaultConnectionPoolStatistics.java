@@ -37,7 +37,7 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
   /**
    * @param username the database user the pool is based on
    */
-  DefaultConnectionPoolStatistics(final String username) {
+  DefaultConnectionPoolStatistics(String username) {
     this.username = username;
   }
 
@@ -126,63 +126,63 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
     return resetDate;
   }
 
-  public void setSnapshot(final List<ConnectionPoolState> snapshot) {
+  public void setSnapshot(List<ConnectionPoolState> snapshot) {
     this.snapshot = snapshot;
   }
 
-  public void setAvailableInPool(final int availableInPool) {
+  public void setAvailableInPool(int availableInPool) {
     this.availableInPool = availableInPool;
   }
 
-  public void setConnectionsInUse(final int connectionsInUse) {
+  public void setConnectionsInUse(int connectionsInUse) {
     this.connectionsInUse = connectionsInUse;
   }
 
-  public void setTimestamp(final long timestamp) {
+  public void setTimestamp(long timestamp) {
     this.timestamp = timestamp;
   }
 
-  public void setCreationDate(final long time) {
+  public void setCreationDate(long time) {
     this.creationDate = time;
   }
 
-  public void setConnectionsCreated(final int connectionsCreated) {
+  public void setConnectionsCreated(int connectionsCreated) {
     this.connectionsCreated = connectionsCreated;
   }
 
-  public void setConnectionsDestroyed(final int connectionsDestroyed) {
+  public void setConnectionsDestroyed(int connectionsDestroyed) {
     this.connectionsDestroyed = connectionsDestroyed;
   }
 
-  public void setConnectionRequests(final int connectionRequests) {
+  public void setConnectionRequests(int connectionRequests) {
     this.connectionRequests = connectionRequests;
   }
 
-  public void setRequestsPerSecond(final int requestsPerSecond) {
+  public void setRequestsPerSecond(int requestsPerSecond) {
     this.requestsPerSecond = requestsPerSecond;
   }
 
-  public void setAverageCheckOutTime(final int averageCheckOutTime) {
+  public void setAverageCheckOutTime(int averageCheckOutTime) {
     this.averageCheckOutTime = averageCheckOutTime;
   }
 
-  public void setMinimumCheckOutTime(final int minimumCheckOutTime) {
+  public void setMinimumCheckOutTime(int minimumCheckOutTime) {
     this.minimumCheckOutTime = minimumCheckOutTime;
   }
 
-  public void setMaximumCheckOutTime(final int maximumCheckOutTime) {
+  public void setMaximumCheckOutTime(int maximumCheckOutTime) {
     this.maximumCheckOutTime = maximumCheckOutTime;
   }
 
-  public void setResetDate(final long resetDate) {
+  public void setResetDate(long resetDate) {
     this.resetDate = resetDate;
   }
 
-  public void setConnectionRequestsFailed(final int connectionRequestsFailed) {
+  public void setConnectionRequestsFailed(int connectionRequestsFailed) {
     this.connectionRequestsFailed = connectionRequestsFailed;
   }
 
-  public void setRequestsFailedPerSecond(final int requestsFailedPerSecond) {
+  public void setRequestsFailedPerSecond(int requestsFailedPerSecond) {
     this.requestsFailedPerSecond = requestsFailedPerSecond;
   }
 }

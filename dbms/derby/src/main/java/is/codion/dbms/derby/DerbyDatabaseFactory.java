@@ -16,12 +16,12 @@ public final class DerbyDatabaseFactory implements DatabaseFactory {
   private static final String DRIVER_PACKAGE = "org.apache.derby.jdbc";
 
   @Override
-  public boolean isDriverCompatible(final String driverClassName) {
+  public boolean isDriverCompatible(String driverClassName) {
     return requireNonNull(driverClassName, "driverClassName").startsWith(DRIVER_PACKAGE);
   }
 
   @Override
-  public Database createDatabase(final String jdbcUrl) {
+  public Database createDatabase(String jdbcUrl) {
     return new DerbyDatabase(jdbcUrl);
   }
 }

@@ -48,8 +48,8 @@ public final class EntityTestUtil {
    * @param referenceEntities entities referenced by the given entityType
    * @return an Entity instance containing randomized values, based on the property definitions
    */
-  public static Entity createRandomEntity(final Entities entities, final EntityType entityType,
-                                          final Map<EntityType, Entity> referenceEntities) {
+  public static Entity createRandomEntity(Entities entities, EntityType entityType,
+                                          Map<EntityType, Entity> referenceEntities) {
     return createEntity(entities, entityType, property -> createRandomValue(property, referenceEntities));
   }
 
@@ -59,7 +59,7 @@ public final class EntityTestUtil {
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
    */
-  public static Entity createEntity(final Entities entities, final EntityType entityType, final Function<Property<?>, Object> valueProvider) {
+  public static Entity createEntity(Entities entities, EntityType entityType, Function<Property<?>, Object> valueProvider) {
     requireNonNull(entities);
     requireNonNull(entityType);
     Entity entity = entities.entity(entityType);
@@ -76,7 +76,7 @@ public final class EntityTestUtil {
    * @param entity the entity to randomize
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
-  public static void randomize(final Entities entities, final Entity entity, final Map<EntityType, Entity> foreignKeyEntities) {
+  public static void randomize(Entities entities, Entity entity, Map<EntityType, Entity> foreignKeyEntities) {
     requireNonNull(entities);
     requireNonNull(entity);
     populateEntity(entities, entity,
@@ -91,7 +91,7 @@ public final class EntityTestUtil {
    * @param <T> the property type
    * @return a random value
    */
-  public static <T> T createRandomValue(final Property<T> property, final Map<EntityType, Entity> referenceEntities) {
+  public static <T> T createRandomValue(Property<T> property, Map<EntityType, Entity> referenceEntities) {
     requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
       return (T) getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
@@ -140,16 +140,16 @@ public final class EntityTestUtil {
     return null;
   }
 
-  private static void populateEntity(final Entities entities, final Entity entity, final Collection<ColumnProperty<?>> properties,
-                                     final Function<Property<?>, Object> valueProvider) {
+  private static void populateEntity(Entities entities, Entity entity, Collection<ColumnProperty<?>> properties,
+                                     Function<Property<?>, Object> valueProvider) {
     requireNonNull(valueProvider, "valueProvider");
     EntityDefinition definition = entities.getDefinition(entity.getEntityType());
-    for (@SuppressWarnings("rawtypes") final ColumnProperty property : properties) {
+    for (@SuppressWarnings("rawtypes") ColumnProperty property : properties) {
       if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()) {
         entity.put(property.getAttribute(), valueProvider.apply(property));
       }
     }
-    for (final ForeignKeyProperty property : entities.getDefinition(entity.getEntityType()).getForeignKeyProperties()) {
+    for (ForeignKeyProperty property : entities.getDefinition(entity.getEntityType()).getForeignKeyProperties()) {
       Entity value = (Entity) valueProvider.apply(property);
       if (value != null) {
         entity.put(property.getAttribute(), value);
@@ -157,13 +157,13 @@ public final class EntityTestUtil {
     }
   }
 
-  private static String getRandomString(final Property<?> property) {
+  private static String getRandomString(Property<?> property) {
     int length = property.getMaximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaximumLength();
 
     return Text.randomString(length, length);
   }
 
-  private static byte[] getRandomBlob(final Property<?> property) {
+  private static byte[] getRandomBlob(Property<?> property) {
     if ((property instanceof BlobProperty) && ((BlobProperty) property).isEagerlyLoaded()) {
       return getRandomBlob(1024);
     }
@@ -171,32 +171,32 @@ public final class EntityTestUtil {
     return null;
   }
 
-  private static byte[] getRandomBlob(final int numberOfBytes) {
+  private static byte[] getRandomBlob(int numberOfBytes) {
     byte[] bytes = new byte[numberOfBytes];
     RANDOM.nextBytes(bytes);
 
     return bytes;
   }
 
-  private static Object getReferenceEntity(final ForeignKeyProperty property, final Map<EntityType, Entity> referenceEntities) {
+  private static Object getReferenceEntity(ForeignKeyProperty property, Map<EntityType, Entity> referenceEntities) {
     return referenceEntities == null ? null : referenceEntities.get(property.getReferencedEntityType());
   }
 
-  private static <T> T getRandomItem(final ItemProperty<T> property) {
+  private static <T> T getRandomItem(ItemProperty<T> property) {
     List<Item<T>> items = property.getItems();
     Item<T> item = items.get(RANDOM.nextInt(items.size()));
 
     return item.getValue();
   }
 
-  private static int getRandomInteger(final Property<?> property) {
+  private static int getRandomInteger(Property<?> property) {
     int min = (int) (property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue());
     int max = (int) (property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue());
 
     return RANDOM.nextInt((max - min) + 1) + min;
   }
 
-  private static double getRandomDouble(final Property<?> property) {
+  private static double getRandomDouble(Property<?> property) {
     double min = property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue();
     double max = property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue();
 

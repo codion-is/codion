@@ -16,30 +16,30 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
   protected char groupingSeparator = 0;
   private boolean groupingUsed;
 
-  protected AbstractNumberFieldBuilder(final Class<T> type, final Value<T> linkedValue) {
+  protected AbstractNumberFieldBuilder(Class<T> type, Value<T> linkedValue) {
     super(type, linkedValue);
   }
 
   @Override
-  public final B minimumValue(final Double minimumValue) {
+  public final B minimumValue(Double minimumValue) {
     this.minimumValue = minimumValue;
     return (B) this;
   }
 
   @Override
-  public final B maximumValue(final Double maximumValue) {
+  public final B maximumValue(Double maximumValue) {
     this.maximumValue = maximumValue;
     return (B) this;
   }
 
   @Override
-  public final B groupingSeparator(final char groupingSeparator) {
+  public final B groupingSeparator(char groupingSeparator) {
     this.groupingSeparator = groupingSeparator;
     return (B) this;
   }
 
   @Override
-  public final B groupingUsed(final boolean groupingUsed) {
+  public final B groupingUsed(boolean groupingUsed) {
     this.groupingUsed = groupingUsed;
     return (B) this;
   }
@@ -61,14 +61,14 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
     return numberField;
   }
 
-  protected abstract C createNumberField(final NumberFormat format);
+  protected abstract C createNumberField(NumberFormat format);
 
   @Override
-  protected final void setInitialValue(final C component, final T initialValue) {
+  protected final void setInitialValue(C component, T initialValue) {
     component.setNumber(initialValue);
   }
 
-  private static NumberFormat cloneFormat(final NumberFormat format) {
+  private static NumberFormat cloneFormat(NumberFormat format) {
     if (format == null) {
       return null;
     }

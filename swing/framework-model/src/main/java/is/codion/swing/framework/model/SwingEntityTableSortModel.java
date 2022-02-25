@@ -24,17 +24,17 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, At
    * Instantiates a new {@link SwingEntityTableSortModel}
    * @param entities the domain entities
    */
-  public SwingEntityTableSortModel(final Entities entities) {
+  public SwingEntityTableSortModel(Entities entities) {
     this.entities = requireNonNull(entities, "entities");
   }
 
   @Override
-  public final Class<?> getColumnClass(final Attribute<?> attribute) {
+  public final Class<?> getColumnClass(Attribute<?> attribute) {
     return attribute.getTypeClass();
   }
 
   @Override
-  protected Comparator<?> initializeColumnComparator(final Attribute<?> attribute) {
+  protected Comparator<?> initializeColumnComparator(Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
       return entities.getDefinition(((ForeignKey) attribute).getReferencedEntityType()).getComparator();
     }
@@ -43,7 +43,7 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, At
   }
 
   @Override
-  protected final Object getColumnValue(final Entity entity, final Attribute<?> attribute) {
+  protected final Object getColumnValue(Entity entity, Attribute<?> attribute) {
     return entity.get(attribute);
   }
 }

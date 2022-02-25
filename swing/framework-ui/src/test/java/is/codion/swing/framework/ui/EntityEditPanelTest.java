@@ -64,7 +64,7 @@ public final class EntityEditPanelTest {
 
   private static final class TestEditPanel extends EntityEditPanel {
 
-    public TestEditPanel(final SwingEntityEditModel editModel) {
+    public TestEditPanel(SwingEntityEditModel editModel) {
       super(editModel);
       createTextField(TestDomain.EMP_NAME);
       createItemComboBox(TestDomain.EMP_JOB);

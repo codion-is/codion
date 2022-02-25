@@ -94,7 +94,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    */
-  public ColumnConditionPanel(final ColumnConditionModel<C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton) {
+  public ColumnConditionPanel(ColumnConditionModel<C, T> conditionModel, ToggleAdvancedButton toggleAdvancedButton) {
     this(conditionModel, toggleAdvancedButton, new DefaultBoundFieldFactory<>(conditionModel));
   }
 
@@ -105,8 +105,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @param boundFieldFactory the input field factory
    * @throws IllegalArgumentException in case operators is empty
    */
-  public ColumnConditionPanel(final ColumnConditionModel<C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
-                              final BoundFieldFactory boundFieldFactory) {
+  public ColumnConditionPanel(ColumnConditionModel<C, T> conditionModel, ToggleAdvancedButton toggleAdvancedButton,
+                              BoundFieldFactory boundFieldFactory) {
     requireNonNull(conditionModel, "conditionModel");
     requireNonNull(boundFieldFactory, "boundFieldFactory");
     this.conditionModel = conditionModel;
@@ -160,7 +160,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @param dialogParent the dialog parent
    * @param title the dialog title
    */
-  public void enableDialog(final Container dialogParent, final String title) {
+  public void enableDialog(Container dialogParent, String title) {
     if (!isDialogEnabled()) {
       initializeConditionDialog(dialogParent, title);
     }
@@ -170,7 +170,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * Displays this panel in a dialog
    * @param position the location, used if specified
    */
-  public void showDialog(final Point position) {
+  public void showDialog(Point position) {
     if (!isDialogEnabled()) {
       throw new IllegalStateException("Dialog has not been enabled for this condition panel");
     }
@@ -231,7 +231,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @param advanced true if advanced condition should be enabled
    */
-  public void setAdvanced(final boolean advanced) {
+  public void setAdvanced(boolean advanced) {
     advancedConditionState.set(advanced);
   }
 
@@ -273,21 +273,21 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @param listener a listener notified each time the advanced condition state changes
    */
-  public void addAdvancedListener(final EventDataListener<Boolean> listener) {
+  public void addAdvancedListener(EventDataListener<Boolean> listener) {
     advancedConditionState.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeAdvancedListener(final EventDataListener<Boolean> listener) {
+  public void removeAdvancedListener(EventDataListener<Boolean> listener) {
     advancedConditionState.removeDataListener(listener);
   }
 
   /**
    * @param listener listener notified when this condition panels input fields receive focus
    */
-  public void addFocusGainedListener(final EventDataListener<C> listener) {
+  public void addFocusGainedListener(EventDataListener<C> listener) {
     focusGainedEvent.addDataListener(listener);
   }
 
@@ -319,7 +319,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
     private final ColumnConditionModel<?, T> columnConditionModel;
 
-    private DefaultBoundFieldFactory(final ColumnConditionModel<?, T> columnConditionModel) {
+    private DefaultBoundFieldFactory(ColumnConditionModel<?, T> columnConditionModel) {
       this.columnConditionModel = requireNonNull(columnConditionModel, "columnConditionModel");
     }
 
@@ -345,7 +345,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       return Optional.of(createField(columnConditionModel.getLowerBoundValue()));
     }
 
-    private JComponent createField(final Value<?> value) {
+    private JComponent createField(Value<?> value) {
       Class<?> typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Boolean.class)) {
         return checkBox((Value<Boolean>) value)
@@ -406,7 +406,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     conditionModel.getOperatorValue().addDataListener(this::onOperatorChanged);
     FocusAdapter focusGainedListener = new FocusAdapter() {
       @Override
-      public void focusGained(final FocusEvent e) {
+      public void focusGained(FocusEvent e) {
         if (!e.isTemporary()) {
           focusGainedEvent.onEvent(conditionModel.getColumnIdentifier());
         }
@@ -428,7 +428,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     toggleEnabledButton.addFocusListener(focusGainedListener);
   }
 
-  private void onOperatorChanged(final Operator operator) {
+  private void onOperatorChanged(Operator operator) {
     switch (operator) {
       case EQUAL:
       case NOT_EQUAL:
@@ -455,7 +455,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     repaint();
   }
 
-  private void onAdvancedChange(final boolean advanced) {
+  private void onAdvancedChange(boolean advanced) {
     if (advanced) {
       setAdvanced();
     }
@@ -493,7 +493,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
   }
 
-  private SteppedComboBox<Operator> initializeOperatorComboBox(final List<Operator> operators) {
+  private SteppedComboBox<Operator> initializeOperatorComboBox(List<Operator> operators) {
     return Components.comboBox(new DefaultComboBoxModel<>(operators.toArray(new Operator[0])),
                     conditionModel.getOperatorValue())
             .completionMode(Completion.Mode.NONE)
@@ -514,7 +514,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     onAdvancedChange(advancedConditionState.get());
   }
 
-  private void initializeConditionDialog(final Container parent, final String title) {
+  private void initializeConditionDialog(Container parent, String title) {
     if (dialog != null) {
       return;
     }
@@ -533,7 +533,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     addAdvancedListener(advanced -> dialog.pack());
   }
 
-  private void singleValuePanel(final JComponent boundField) {
+  private void singleValuePanel(JComponent boundField) {
     if (singleValuePanelValue.isNull() || !singleValuePanelValue.get()) {
       inputPanel.removeAll();
       inputPanel.add(boundField, BorderLayout.CENTER);
@@ -542,7 +542,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
   }
 
-  private void rangePanel(final JComponent lowerBoundField, final JComponent upperBoundField) {
+  private void rangePanel(JComponent lowerBoundField, JComponent upperBoundField) {
     if (singleValuePanelValue.isNull() || singleValuePanelValue.get()) {
       inputPanel.removeAll();
       inputPanel.add(Components.panel(new GridLayout(1, 2))
@@ -556,7 +556,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final class OperatorBoxPopupWidthListener extends ComponentAdapter {
 
     @Override
-    public void componentResized(final ComponentEvent e) {
+    public void componentResized(ComponentEvent e) {
       operatorCombo.setPopupWidth(getWidth() - 1);
     }
   }
@@ -570,8 +570,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
 
     @Override
-    public Component getListCellRendererComponent(final JList<? extends Operator> list, final Operator value,
-                                                  final int index, final boolean isSelected, final boolean cellHasFocus) {
+    public Component getListCellRendererComponent(JList<? extends Operator> list, Operator value,
+                                                  int index, boolean isSelected, boolean cellHasFocus) {
       return listCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
     }
   }

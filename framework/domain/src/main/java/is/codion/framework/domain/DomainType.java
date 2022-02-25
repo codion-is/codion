@@ -68,7 +68,7 @@ public interface DomainType {
    * @param domainClass the domain class
    * @return a {@link DomainType}
    */
-  static DomainType domainType(final Class<?> domainClass) {
+  static DomainType domainType(Class<?> domainClass) {
     return domainType(requireNonNull(domainClass, "domainClass").getSimpleName());
   }
 
@@ -77,7 +77,7 @@ public interface DomainType {
    * @param domainName domain name
    * @return a {@link DomainType} with the given name
    */
-  static DomainType domainType(final String domainName) {
+  static DomainType domainType(String domainName) {
     return DefaultDomainType.getOrCreateDomainType(domainName);
   }
 
@@ -87,7 +87,7 @@ public interface DomainType {
    * @return the domain type with the given name
    * @throws IllegalArgumentException in case the domain has not been defined
    */
-  static DomainType getDomainType(final String domainName) {
+  static DomainType getDomainType(String domainName) {
     return DefaultDomainType.getDomainType(domainName);
   }
 }

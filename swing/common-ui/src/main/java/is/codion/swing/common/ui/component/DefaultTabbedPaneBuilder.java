@@ -23,25 +23,25 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
   private final List<ChangeListener> changeListeners = new ArrayList<>();
 
   @Override
-  public TabbedPaneBuilder tabPlacement(final int tabPlacement) {
+  public TabbedPaneBuilder tabPlacement(int tabPlacement) {
     this.tabPlacement = tabPlacement;
     return this;
   }
 
   @Override
-  public TabbedPaneBuilder tab(final String title, final JComponent component) {
+  public TabbedPaneBuilder tab(String title, JComponent component) {
     tabs.put(requireNonNull(title), requireNonNull(component));
     return this;
   }
 
   @Override
-  public TabbedPaneBuilder mnemonicAt(final int index, final int mnemonic) {
+  public TabbedPaneBuilder mnemonicAt(int index, int mnemonic) {
     mnemonicAt.put(index, mnemonic);
     return this;
   }
 
   @Override
-  public TabbedPaneBuilder changeListener(final ChangeListener changeListener) {
+  public TabbedPaneBuilder changeListener(ChangeListener changeListener) {
     changeListeners.add(requireNonNull(changeListener));
     return this;
   }
@@ -57,10 +57,10 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
   }
 
   @Override
-  protected ComponentValue<Void, JTabbedPane> buildComponentValue(final JTabbedPane component) {
+  protected ComponentValue<Void, JTabbedPane> buildComponentValue(JTabbedPane component) {
     throw new UnsupportedOperationException("A ComponentValue can not be based on a JTabbedPane");
   }
 
   @Override
-  protected void setInitialValue(final JTabbedPane component, final Void initialValue) {}
+  protected void setInitialValue(JTabbedPane component, Void initialValue) {}
 }

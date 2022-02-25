@@ -18,7 +18,7 @@ final class Queries {
    * @param insertProperties the properties used to insert the given entity type
    * @return a query for inserting
    */
-  static String insertQuery(final String tableName, final List<ColumnProperty<?>> insertProperties) {
+  static String insertQuery(String tableName, List<ColumnProperty<?>> insertProperties) {
     StringBuilder queryBuilder = new StringBuilder("insert ").append("into ").append(tableName).append("(");
     StringBuilder columnValues = new StringBuilder(") values(");
     for (int i = 0; i < insertProperties.size(); i++) {
@@ -39,8 +39,8 @@ final class Queries {
    * @param conditionString the condition string, without the WHERE keyword
    * @return a query for updating
    */
-  static String updateQuery(final String tableName, final List<ColumnProperty<?>> updateProperties,
-                            final String conditionString) {
+  static String updateQuery(String tableName, List<ColumnProperty<?>> updateProperties,
+                            String conditionString) {
     StringBuilder queryBuilder = new StringBuilder("update ").append(tableName).append(" set ");
     for (int i = 0; i < updateProperties.size(); i++) {
       queryBuilder.append(updateProperties.get(i).getColumnName()).append(" = ?");
@@ -57,7 +57,7 @@ final class Queries {
    * @param conditionString the condition string
    * @return a query for deleting the entities specified by the given condition
    */
-  static String deleteQuery(final String tableName, final String conditionString) {
+  static String deleteQuery(String tableName, String conditionString) {
     return "delete from " + tableName + (conditionString.isEmpty() ? "" : WHERE_SPACE_PREFIX_POSTFIX + conditionString);
   }
 }

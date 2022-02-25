@@ -16,7 +16,7 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
 
   private final List<Reference<?>> references;
 
-  DefaultForeignKey(final String name, final EntityType entityType, final List<Reference<?>> references) {
+  DefaultForeignKey(String name, EntityType entityType, List<Reference<?>> references) {
     super(name, Entity.class, entityType);
     this.references = validate(requireNonNull(references));
   }
@@ -32,7 +32,7 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
   }
 
   @Override
-  public <T> Reference<T> getReference(final Attribute<T> attribute) {
+  public <T> Reference<T> getReference(Attribute<T> attribute) {
     for (int i = 0; i < references.size(); i++) {
       Reference<?> reference = references.get(i);
       if (reference.getAttribute().equals(attribute)) {
@@ -43,13 +43,13 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
     throw new IllegalArgumentException("Attribute " + attribute + " is not part of foreign key " + getName());
   }
 
-  private List<Reference<?>> validate(final List<Reference<?>> references) {
+  private List<Reference<?>> validate(List<Reference<?>> references) {
     if (references.isEmpty()) {
       throw new IllegalArgumentException("No references provided for foreign key: " + getName());
     }
     EntityType referencedEntityType = references.get(0).getReferencedAttribute().getEntityType();
     List<Reference<?>> referenceList = new ArrayList<>(references.size());
-    for (final Reference<?> reference : references) {
+    for (Reference<?> reference : references) {
       if (!getEntityType().equals(reference.getAttribute().getEntityType())) {
         throw new IllegalArgumentException("Entity type " + getEntityType() +
                 " expected, got " + reference.getAttribute().getEntityType());
@@ -75,7 +75,7 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
     private final Attribute<T> attribute;
     private final Attribute<T> referencedAttribute;
 
-    DefaultReference(final Attribute<T> attribute, final Attribute<T> referencedAttribute) {
+    DefaultReference(Attribute<T> attribute, Attribute<T> referencedAttribute) {
       if (requireNonNull(attribute, "attribute").equals(requireNonNull(referencedAttribute, "referencedAttribute"))) {
         throw new IllegalArgumentException("attribute and referencedAttribute can not be the same");
       }

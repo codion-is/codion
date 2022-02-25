@@ -22,7 +22,7 @@ final class SchemaTableModel extends AbstractFilteredTableModel<Schema, Integer>
 
   private final Collection<Schema> schemas;
 
-  SchemaTableModel(final Collection<Schema> schemas, final SchemaSortModel sortModel) {
+  SchemaTableModel(Collection<Schema> schemas, SchemaSortModel sortModel) {
     super(new SwingFilteredTableColumnModel<>(createSchemaColumns()), sortModel,
             asList(new DefaultColumnFilterModel<>(0, String.class, "%"),
                     new DefaultColumnFilterModel<>(0, Boolean.class, "%")));
@@ -31,7 +31,7 @@ final class SchemaTableModel extends AbstractFilteredTableModel<Schema, Integer>
   }
 
   @Override
-  public Object getValueAt(final int rowIndex, final int columnIndex) {
+  public Object getValueAt(int rowIndex, int columnIndex) {
     Schema schema = getItemAt(rowIndex);
     switch (columnIndex) {
       case SCHEMA:
