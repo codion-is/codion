@@ -235,18 +235,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setLimit(int limit);
 
   /**
-   * Returns the query row count limit, a value of -1 means no limit.
-   * @return the query row count limit
-   */
-  int getQueryRowCountLimit();
-
-  /**
-   * Sets the query row count limit, a value of -1 means no limit.
-   * @param queryRowCountLimit the query row count limit
-   */
-  void setQueryRowCountLimit(int queryRowCountLimit);
-
-  /**
    * Returns whether the values of hidden columns are included when querying data
    * @return true if the values of hidden columns are included when querying data
    */

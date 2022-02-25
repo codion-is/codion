@@ -58,7 +58,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
   private Condition selectCondition;
   private Predicate<Entity> includeCondition;
-  private int queryRowCountLimit = -1;
 
   /**
    * Instantiates a new {@link ObservableEntityList}
@@ -111,22 +110,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   @Override
   public final StateObserver getRefreshingObserver() {
     return refreshingState.getObserver();
-  }
-
-  /**
-   * Returns the query row count limit, a value of -1 means no limit.
-   * @return the query row count limit
-   */
-  public final int getQueryRowCountLimit() {
-    return queryRowCountLimit;
-  }
-
-  /**
-   * Sets the query row count limit, a value of -1 means no limit.
-   * @param queryRowCountLimit the query row count limit
-   */
-  public final void setQueryRowCountLimit(int queryRowCountLimit) {
-    this.queryRowCountLimit = queryRowCountLimit;
   }
 
   /**
@@ -338,7 +321,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @return the entities to display in this list
    */
   protected List<Entity> performQuery() {
-    checkQueryRowCount();
     try {
       Condition condition = selectCondition;
       if (condition == null) {
@@ -354,33 +336,10 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   /**
-   * @return the number of rows {@link #performQuery()} would return on next invocation
-   */
-  protected int getQueryRowCount() {
-    Condition condition = selectCondition;
-    if (condition == null) {
-      condition = condition(entityType);
-    }
-
-    try {
-      return connectionProvider.getConnection().rowCount(condition);
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
    * Binds model events to the selection model
    */
   protected void bindSelectionModelEvents() {
     selectionModel.addSelectionChangedListener(selectionChangedEvent);
-  }
-
-  protected final void checkQueryRowCount() {
-    if (queryRowCountLimit >= 0 && getQueryRowCount() > queryRowCountLimit) {
-      throw new IllegalStateException("Too many rows returned, add query condition");
-    }
   }
 
   private void onRefreshStarted() {

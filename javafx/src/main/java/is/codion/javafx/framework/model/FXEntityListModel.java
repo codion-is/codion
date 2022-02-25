@@ -449,30 +449,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       return emptyList();
     }
 
-    checkQueryRowCount();
     try {
       return getConnectionProvider().getConnection().select(tableConditionModel.getCondition()
               .toSelectCondition()
               .selectAttributes(getSelectAttributes())
               .limit(limit)
               .orderBy(getOrderBy()));
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * @return the number of rows {@link #performQuery()} would return on next invocation
-   */
-  @Override
-  protected int getQueryRowCount() {
-    if (!tableConditionModel.isConditionEnabled() && queryConditionRequiredState.get()) {
-      return 0;
-    }
-
-    try {
-      return getConnectionProvider().getConnection().rowCount(tableConditionModel.getCondition());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
