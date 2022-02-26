@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.combobox.Completion;
 
 import javax.swing.JComboBox;
@@ -59,4 +60,16 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
    * @return this builder instance
    */
   ItemComboBoxBuilder<T> maximumRowCount(int maximumRowCount);
+
+  /**
+   * @param popupWidth a fixed popup width
+   * @return this builder instance
+   */
+  ItemComboBoxBuilder<T> popupWidth(int popupWidth);
+
+  /**
+   * @param popupWidthProvider the popup width provider
+   * @return this builder instance
+   */
+  ItemComboBoxBuilder<T> popupWidthProvider(ValueObserver<Integer> popupWidthProvider);
 }

@@ -7833,3 +7833,5 @@
   SteppedComboBox, transferFocusOnEnter functionality removed
   ComboBoxBuilder and ItemComboBoxBuilder popupSize() removed, type now JComboBox instead of SteppedComboBox
   Utilities.getParentOfType(), switched parameter locations, so it's the same as SwingUtilities.getAncestorOfClass()
+  SteppedComboBox reduced to DefaultComboBoxBuilder.SteppedComboBoxUI, no longer part of public API
+  ComboBoxBuilder, ItemComboBoxBuilder, popupWidth() and popupWidthProvider() added
