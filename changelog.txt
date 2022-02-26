@@ -7830,3 +7830,5 @@
   SwingEntityTableModel.getStatusMessageObserver() added, functionality moved from EntityTablePanel
   SplitPaneBuilder.continuousLayout() added
   FilteredTable bug fixed, dragging columns around no longer resets the y-axis scroll location
+  SteppedComboBox, transferFocusOnEnter functionality removed
+  ComboBoxBuilder and ItemComboBoxBuilder popupSize() removed, type now JComboBox instead of SteppedComboBox

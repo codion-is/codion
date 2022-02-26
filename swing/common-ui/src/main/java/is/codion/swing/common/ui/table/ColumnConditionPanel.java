@@ -494,7 +494,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private SteppedComboBox<Operator> initializeOperatorComboBox(List<Operator> operators) {
-    return Components.comboBox(new DefaultComboBoxModel<>(operators.toArray(new Operator[0])),
+    return (SteppedComboBox<Operator>) Components.comboBox(new DefaultComboBoxModel<>(operators.toArray(new Operator[0])),
                     conditionModel.getOperatorValue())
             .completionMode(Completion.Mode.NONE)
             .renderer(new OperatorComboBoxRenderer())

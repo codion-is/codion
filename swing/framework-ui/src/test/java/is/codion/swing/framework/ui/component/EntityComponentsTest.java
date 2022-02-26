@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.UpdateOn;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
@@ -112,7 +111,7 @@ public final class EntityComponentsTest {
   void createBooleanComboBox() {
     editModel.setDefaultValues();
     editModel.put(TestDomain.DETAIL_BOOLEAN, true);
-    ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
+    ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue =
             inputComponents.booleanComboBox(TestDomain.DETAIL_BOOLEAN)
                     .transferFocusOnEnter(true)
                     .linkedValue(editModel.value(TestDomain.DETAIL_BOOLEAN))
@@ -128,7 +127,7 @@ public final class EntityComponentsTest {
 
   @Test
   void createItemComboBox() {
-    ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
+    ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue =
             inputComponents.itemComboBox(TestDomain.DETAIL_INT_VALUE_LIST)
                     .transferFocusOnEnter(true)
                     .linkedValue(editModel.value(TestDomain.DETAIL_INT_VALUE_LIST))
@@ -148,7 +147,7 @@ public final class EntityComponentsTest {
 
   @Test
   void createNullableUnsortedItemComboBox() {
-    ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
+    ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue =
             inputComponents.itemComboBox(TestDomain.DETAIL_INT_VALUE_LIST)
                     .sorted(false)
                     .buildComponentValue();
@@ -161,7 +160,7 @@ public final class EntityComponentsTest {
   @Test
   void createComboBox() {
     DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
-    ComponentValue<Integer, SteppedComboBox<Integer>> componentValue =
+    ComponentValue<Integer, JComboBox<Integer>> componentValue =
             inputComponents.comboBox(TestDomain.DETAIL_INT, boxModel)
                     .completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
                     .transferFocusOnEnter(true)
@@ -278,7 +277,6 @@ public final class EntityComponentsTest {
   @Test
   void createForeignKeyComboBox() {
     inputComponents.foreignKeyComboBox(TestDomain.DETAIL_MASTER_FK, editModel.getForeignKeyComboBoxModel(TestDomain.DETAIL_MASTER_FK))
-            .popupWidth(100)
             .linkedValue(editModel.value(TestDomain.DETAIL_MASTER_FK))
             .buildComponentValue();
   }
@@ -286,11 +284,11 @@ public final class EntityComponentsTest {
   @Test
   void itemComboBox() {
     Value<Integer> value = Value.value();
-    ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue =
+    ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue =
             inputComponents.itemComboBox(TestDomain.DETAIL_INT_VALUE_LIST)
                     .linkedValue(value)
                     .buildComponentValue();
-    SteppedComboBox<Item<Integer>> comboBox = componentValue.getComponent();
+    JComboBox<Item<Integer>> comboBox = componentValue.getComponent();
     ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
     assertTrue(model.containsItem(Item.item(null)));

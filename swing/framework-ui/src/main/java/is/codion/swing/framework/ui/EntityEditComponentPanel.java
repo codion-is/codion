@@ -11,7 +11,6 @@ import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
@@ -635,7 +634,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <B> the builder type
    * @return a combo box builder
    */
-  protected final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Attribute<T> attribute, ComboBoxModel<T> comboBoxModel) {
+  protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Attribute<T> attribute, ComboBoxModel<T> comboBoxModel) {
     return setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel));
   }
 
@@ -657,7 +656,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <B> the builder type
    * @return a combo box builder
    */
-  protected final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createAttributeComboBox(Attribute<T> attribute) {
+  protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createAttributeComboBox(Attribute<T> attribute) {
     FilteredComboBoxModel<T> comboBoxModel = getEditModel().getComboBoxModel(attribute);
     comboBoxModel.addRefreshFailedListener(this::onException);
 

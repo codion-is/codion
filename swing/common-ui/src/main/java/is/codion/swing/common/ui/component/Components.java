@@ -7,7 +7,6 @@ import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.textfield.TemporalField;
 
 import javax.swing.Action;
@@ -15,6 +14,7 @@ import javax.swing.BoundedRangeModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -183,7 +183,7 @@ public final class Components {
    * @param comboBoxModel the combo box model
    * @return a builder for a component
    */
-  public static <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel) {
+  public static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel) {
     return new DefaultComboBoxBuilder<>(comboBoxModel, null);
   }
 
@@ -195,8 +195,8 @@ public final class Components {
    * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel,
-                                                                                                                        Value<T> linkedValue) {
+  public static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel,
+                                                                                                                  Value<T> linkedValue) {
     return new DefaultComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
   }
 

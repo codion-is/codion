@@ -9,7 +9,6 @@ import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.plaf.metal.MetalComboBoxUI;
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
 import java.util.Objects;
 
 /**
@@ -21,7 +20,6 @@ import java.util.Objects;
 public class SteppedComboBox<T> extends JComboBox<T> {
 
   private int popupWidth = 0;
-  private boolean transferFocusOnEnter = false;
 
   /**
    * Instantiates a new SteppedComboBox.
@@ -47,49 +45,6 @@ public class SteppedComboBox<T> extends JComboBox<T> {
     Dimension size = getSize();
 
     return new Dimension(Math.max(size.width, popupWidth <= 0 ? displaySize.width : popupWidth), size.height);
-  }
-
-  /**
-   * @return true if focus should be transferred on Enter
-   */
-  public final boolean isTransferFocusOnEnter() {
-    return transferFocusOnEnter;
-  }
-
-  /**
-   * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
-   */
-  public final void setTransferFocusOnEnter(boolean transferFocusOnEnter) {
-    this.transferFocusOnEnter = transferFocusOnEnter;
-  }
-
-  @Override
-  public final void requestFocus() {
-    if (isEditable) {
-      getEditor().getEditorComponent().requestFocus();
-    }
-    else {
-      super.requestFocus();
-    }
-  }
-
-  @Override
-  public final void processKeyEvent(KeyEvent e) {
-    if (isTransferFocusEvent(e)){
-      if (e.isShiftDown()) {
-        transferFocusBackward();
-      }
-      else {
-        transferFocus();
-      }
-    }
-    else {
-      super.processKeyEvent(e);
-    }
-  }
-
-  private boolean isTransferFocusEvent(KeyEvent e) {
-    return e.getKeyCode() == KeyEvent.VK_ENTER && e.getID() == KeyEvent.KEY_PRESSED && !isPopupVisible() && transferFocusOnEnter;
   }
 
   private static final class SteppedComboBoxUI extends MetalComboBoxUI {
