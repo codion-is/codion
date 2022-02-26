@@ -324,7 +324,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
    */
   public boolean isCellVisible(int row, int column) {
-    JViewport viewport = Utilities.getParentOfType(this, JViewport.class).orElse(null);
+    JViewport viewport = Utilities.getParentOfType(JViewport.class, this).orElse(null);
     if (viewport == null) {
       return false;
     }
@@ -341,7 +341,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @param columnIdentifier the column identifier
    */
   public void scrollToColumn(C columnIdentifier) {
-    Utilities.getParentOfType(this, JViewport.class).ifPresent(viewport ->
+    Utilities.getParentOfType(JViewport.class, this).ifPresent(viewport ->
             scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
                     getModel().getColumnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER));
   }
@@ -354,7 +354,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public void scrollToCoordinate(int row, int column, CenterOnScroll centerOnScroll) {
     requireNonNull(centerOnScroll);
-    Utilities.getParentOfType(this, JViewport.class).ifPresent(viewport -> {
+    Utilities.getParentOfType(JViewport.class, this).ifPresent(viewport -> {
       Rectangle cellRectangle = getCellRect(row, column, true);
       Rectangle viewRectangle = viewport.getViewRect();
       cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
