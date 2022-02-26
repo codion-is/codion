@@ -7,7 +7,6 @@ import is.codion.common.Configuration;
 import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
-import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
@@ -28,6 +27,7 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -51,13 +51,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -71,7 +69,6 @@ import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -220,8 +217,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     MENU
   }
 
-  private static final NumberFormat STATUS_MESSAGE_NUMBER_FORMAT = NumberFormat.getIntegerInstance();
-  private static final int STATUS_MESSAGE_FONT_SIZE = 12;
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
 
   private final State conditionPanelVisibleState = State.state();
@@ -257,9 +252,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private final JToolBar refreshToolBar;
 
   /**
-   * the label for showing the status of the table, that is, the number of rows, number of selected rows etc.
+   * the label for showing the status of the table model, that is, the number of rows, number of selected rows etc.
    */
-  private final JLabel statusMessageLabel = initializeStatusMessageLabel();
+  private final JLabel statusMessageLabel;
 
   private final List<Controls> additionalPopupControls = new ArrayList<>();
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
@@ -333,6 +328,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     this.summaryScrollPane = initializeSummaryScrollPane(tableScrollPane);
     this.tablePanel = initializeTablePanel(tableScrollPane);
     this.refreshToolBar = initializeRefreshToolBar();
+    this.statusMessageLabel = Components.label(tableModel.getStatusMessageObserver())
+            .horizontalAlignment(SwingConstants.CENTER)
+            .build();
   }
 
   @Override
@@ -340,7 +338,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     super.updateUI();
     Utilities.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane, summaryScrollPane, southPanel);
     if (refreshToolBar != null) {
-      Utilities.updateUI(refreshToolBar, (JComponent) refreshToolBar.getComponent(0));
+      Utilities.updateUI(refreshToolBar);
     }
     if (tableScrollPane != null) {
       Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
@@ -1034,7 +1032,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
         bindEvents();
         initializeKeyboardActions();
-        updateStatusMessage();
       }
       finally {
         panelInitialized = true;
@@ -1051,12 +1048,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
-    JSplitPane southCenterSplitPane = new JSplitPane();
-    southCenterSplitPane.setContinuousLayout(true);
-    southCenterSplitPane.setResizeWeight(0.35);
-    southCenterSplitPane.setTopComponent(table.getSearchField());
-    southCenterSplitPane.setBottomComponent(statusMessageLabel);
-    southPanel.add(southCenterSplitPane, BorderLayout.CENTER);
+    southPanel.add(Components.splitPane()
+            .continuousLayout(true)
+            .resizeWeight(0.35)
+            .leftComponent(table.getSearchField())
+            .rightComponent(statusMessageLabel)
+            .build(), BorderLayout.CENTER);
     southPanel.add(refreshToolBar, BorderLayout.WEST);
     JToolBar southToolBar = initializeSouthToolBar();
     if (southToolBar != null) {
@@ -1470,21 +1467,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return panel;
   }
 
-  private void updateStatusMessage() {
-    if (statusMessageLabel != null) {
-      statusMessageLabel.setText(getStatusMessage());
-    }
-  }
-
-  private String getStatusMessage() {
-    int filteredItemCount = tableModel.getFilteredItemCount();
-
-    return STATUS_MESSAGE_NUMBER_FORMAT.format(tableModel.getRowCount()) + " (" +
-            STATUS_MESSAGE_NUMBER_FORMAT.format(tableModel.getSelectionModel().getSelectionCount()) + " " +
-            MESSAGES.getString("selected") + (filteredItemCount > 0 ? " - " +
-            STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
-  }
-
   private void bindEvents() {
     KeyEvents.builder(KeyEvent.VK_C)
             .action(Control.control(table::copySelectedCell))
@@ -1503,10 +1485,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisibleInternal);
     summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisibleInternal);
-    EventListener statusListener = () -> SwingUtilities.invokeLater(EntityTablePanel.this::updateStatusMessage);
-    tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
-    tableModel.addFilterListener(statusListener);
-    tableModel.addTableDataChangedListener(statusListener);
     tableModel.getTableConditionModel().getConditionModels().values().forEach(conditionModel ->
             conditionModel.addConditionChangedListener(this::onConditionChanged));
     tableModel.getRefreshingObserver().addDataListener(this::onRefreshingChanged);
@@ -1677,13 +1655,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     scrollPane.setVisible(false);
 
     return scrollPane;
-  }
-
-  private static JLabel initializeStatusMessageLabel() {
-    JLabel label = new JLabel("", SwingConstants.CENTER);
-    label.setFont(new Font(label.getFont().getName(), Font.PLAIN, STATUS_MESSAGE_FONT_SIZE));
-
-    return label;
   }
 
   private static JPanel createDependenciesPanel(Map<EntityType, Collection<Entity>> dependencies,

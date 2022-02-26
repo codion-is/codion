@@ -52,4 +52,10 @@ public interface SplitPaneBuilder extends ComponentBuilder<Void, JSplitPane, Spl
    * @return this builder instance
    */
   SplitPaneBuilder resizeWeight(double resizeWeight);
+
+  /**
+   * @param continuousLayout the value of the continuousLayout
+   * @return this builder instance
+   */
+  SplitPaneBuilder continuousLayout(boolean continuousLayout);
 }

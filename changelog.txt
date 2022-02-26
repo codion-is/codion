@@ -7861,3 +7861,5 @@
   Unnecessary final keyword removed from local variables, finally getting rid of this old habit, keeping method parameters final for now
   On a second thought, let's remove the final keyword from method parameters as well
   EntityTableModel.queryRowCountLimit removed
+  SwingEntityTableModel.getStatusMessageObserver() added, functionality moved from EntityTablePanel
+  SplitPaneBuilder.continuousLayout() added
