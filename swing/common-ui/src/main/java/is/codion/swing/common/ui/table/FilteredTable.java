@@ -832,7 +832,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private final class MouseColumnDragHandler extends MouseMotionAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
-      scrollRectToVisible(new Rectangle(e.getX(), e.getY(), 1, 1));
+      scrollRectToVisible(new Rectangle(e.getX(), getVisibleRect().y, 1, 1));
     }
   }
 
