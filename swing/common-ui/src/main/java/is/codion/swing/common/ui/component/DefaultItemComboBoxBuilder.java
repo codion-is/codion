@@ -10,8 +10,9 @@ import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
 import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.component.DefaultComboBoxBuilder.SteppedComboBoxUI;
 
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,13 +22,12 @@ import java.util.List;
 import static is.codion.swing.common.ui.textfield.TextComponents.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, SteppedComboBox<Item<T>>, ItemComboBoxBuilder<T>>
+final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>>
         implements ItemComboBoxBuilder<T> {
 
   private final List<Item<T>> items;
 
   private ItemComboBoxModel<T> comboBoxModel;
-  private int popupWidth;
   private Comparator<Item<T>> sortComparator;
   private boolean sorted = true;
   private boolean nullable;
@@ -35,6 +35,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   private boolean mouseWheelScrolling = true;
   private boolean mouseWheelScrollingWithWrapAround = false;
   private int maximumRowCount = -1;
+  private int popupWidth = 0;
 
   DefaultItemComboBoxBuilder(List<Item<T>> items, Value<T> linkedValue) {
     super(linkedValue);
@@ -52,12 +53,6 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   @Override
   public ItemComboBoxBuilder<T> nullable(boolean nullable) {
     this.nullable = nullable;
-    return this;
-  }
-
-  @Override
-  public ItemComboBoxBuilder<T> popupWidth(int popupWidth) {
-    this.popupWidth = popupWidth;
     return this;
   }
 
@@ -110,13 +105,16 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
   }
 
   @Override
-  protected SteppedComboBox<Item<T>> buildComponent() {
+  public ItemComboBoxBuilder<T> popupWidth(int popupWidth) {
+    this.popupWidth = popupWidth;
+    return this;
+  }
+
+  @Override
+  protected JComboBox<Item<T>> buildComponent() {
     ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
-    SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(itemComboBoxModel);
+    JComboBox<Item<T>> comboBox = new JComboBox<>(itemComboBoxModel);
     Completion.enable(comboBox, completionMode);
-    if (popupWidth > 0) {
-      comboBox.setPopupWidth(popupWidth);
-    }
     if (mouseWheelScrolling) {
       comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.create(itemComboBoxModel));
     }
@@ -126,23 +124,24 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, St
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
+    new SteppedComboBoxUI(comboBox, popupWidth);
 
     return comboBox;
   }
 
   @Override
-  protected ComponentValue<T, SteppedComboBox<Item<T>>> buildComponentValue(SteppedComboBox<Item<T>> component) {
+  protected ComponentValue<T, JComboBox<Item<T>>> buildComponentValue(JComboBox<Item<T>> component) {
     return ComponentValues.itemComboBox(component);
   }
 
   @Override
-  protected void setTransferFocusOnEnter(SteppedComboBox<Item<T>> component) {
-    component.setTransferFocusOnEnter(true);
+  protected void setTransferFocusOnEnter(JComboBox<Item<T>> component) {
+    TransferFocusOnEnter.enable(component);
     TransferFocusOnEnter.enable((JComponent) component.getEditor().getEditorComponent());
   }
 
   @Override
-  protected void setInitialValue(SteppedComboBox<Item<T>> component, T initialValue) {
+  protected void setInitialValue(JComboBox<Item<T>> component, T initialValue) {
     component.setSelectedItem(initialValue);
   }
 

@@ -5,27 +5,21 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
+import javax.swing.JComboBox;
 import java.util.Comparator;
 
 /**
  * Builds a item combo box.
  * @param <T> the value type
  */
-public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, SteppedComboBox<Item<T>>, ItemComboBoxBuilder<T>> {
+public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>> {
 
   /**
    * @param nullable true if a null value should be added to the model if missing
    * @return this builder instance
    */
   ItemComboBoxBuilder<T> nullable(boolean nullable);
-
-  /**
-   * @param popupWidth the required popup with
-   * @return this builder instance
-   */
-  ItemComboBoxBuilder<T> popupWidth(int popupWidth);
 
   /**
    * Sorts the contents by caption
@@ -65,4 +59,10 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, SteppedCombo
    * @return this builder instance
    */
   ItemComboBoxBuilder<T> maximumRowCount(int maximumRowCount);
+
+  /**
+   * @param popupWidth a fixed popup width
+   * @return this builder instance
+   */
+  ItemComboBoxBuilder<T> popupWidth(int popupWidth);
 }

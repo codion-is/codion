@@ -8,7 +8,6 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
@@ -315,7 +314,7 @@ public final class ComponentsTest {
   @Test
   void booleanComboBox() {
     Value<Boolean> value = Value.value(true);
-    ComponentValue<Boolean, SteppedComboBox<Item<Boolean>>> componentValue =
+    ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue =
             Components.booleanComboBox(ItemComboBoxModel.createBooleanModel())
                     .maximumRowCount(5)
                     .transferFocusOnEnter(true)
@@ -336,7 +335,7 @@ public final class ComponentsTest {
     List<Item<Integer>> items = asList(item(0, "0"), item(1, "1"),
             item(2, "2"), item(3, "3"));
     Value<Integer> value = Value.value();
-    ComponentValue<Integer, SteppedComboBox<Item<Integer>>> componentValue = Components.itemComboBox(items)
+    ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue = Components.itemComboBox(items)
             .mouseWheelScrollingWithWrapAround(true)
             .transferFocusOnEnter(true)
             .sorted(true)
@@ -364,7 +363,7 @@ public final class ComponentsTest {
   void comboBox() {
     DefaultComboBoxModel<String> boxModel = new DefaultComboBoxModel<>(new String[] {"0", "1", "2", "3"});
     Value<String> value = Value.value();
-    ComponentValue<String, SteppedComboBox<String>> componentValue = Components.comboBox(boxModel)
+    ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(boxModel)
             .completionMode(Completion.Mode.NONE)//otherwise, a non-existing element can be selected, last test fails
             .editable(true)
             .orientation(ComponentOrientation.RIGHT_TO_LEFT)

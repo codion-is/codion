@@ -10,7 +10,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.DefaultComboBoxBuilder;
@@ -20,6 +19,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
+import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import java.util.Collection;
 import java.util.ResourceBundle;
@@ -31,7 +31,7 @@ import static java.util.Objects.requireNonNull;
  * A UI component based on the SwingEntityComboBoxModel.
  * @see EntityComboBoxModel
  */
-public final class EntityComboBox extends SteppedComboBox<Entity> {
+public final class EntityComboBox extends JComboBox<Entity> {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityComboBox.class.getName());
 

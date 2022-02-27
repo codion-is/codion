@@ -12,7 +12,6 @@ import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
 import is.codion.swing.common.ui.component.ButtonBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
@@ -36,6 +35,7 @@ import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntitySearchField;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -253,8 +253,8 @@ public class EntityComponents {
    * @param <B> the builder type
    * @return a builder
    */
-  public final <T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(Attribute<T> attribute,
-                                                                                                                       ComboBoxModel<T> comboBoxModel) {
+  public final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(Attribute<T> attribute,
+                                                                                                                 ComboBoxModel<T> comboBoxModel) {
     Property<T> property = entityDefinition.getProperty(attribute);
 
     return (ComboBoxBuilder<T, C, B>) Components.comboBox(comboBoxModel)

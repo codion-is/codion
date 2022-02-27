@@ -7863,3 +7863,16 @@
   EntityTableModel.queryRowCountLimit removed
   SwingEntityTableModel.getStatusMessageObserver() added, functionality moved from EntityTablePanel
   SplitPaneBuilder.continuousLayout() added
+  FilteredTable bug fixed, dragging columns around no longer resets the y-axis scroll location
+  SteppedComboBox, transferFocusOnEnter functionality removed
+  ComboBoxBuilder and ItemComboBoxBuilder popupSize() removed, type now JComboBox instead of SteppedComboBox
+  Utilities.getParentOfType(), switched parameter locations, so it's the same as SwingUtilities.getAncestorOfClass()
+  SteppedComboBox reduced to DefaultComboBoxBuilder.SteppedComboBoxUI, no longer part of public API
+  ComboBoxBuilder, ItemComboBoxBuilder, popupWidth() and popupWidthProvider() added
+  ComboBoxBuilder, ItemComboBoxBuilder, popupWidthProvider() removed
+  ColumnConditionPanel, operator combo box no longer with RIGHT_TO_LEFT orientation
+  EntityTablePanel, search field now centered instead of stretched
+  DefaultTextFieldHint bug fixed, moved cursor instead of setting it, thereby selecting the hint text
+  TextFieldBuilder.onTextChanged() and hintText() added
+  KeyEvents, onKeyReleased no longer defaults to true
+  EntityPopupMenu, bug fixed, did not select all values from foreign key references, refactored

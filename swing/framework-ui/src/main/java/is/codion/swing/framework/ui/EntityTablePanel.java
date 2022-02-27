@@ -34,6 +34,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.table.ColumnSummaryPanel;
@@ -63,6 +64,9 @@ import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
@@ -1051,7 +1055,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     southPanel.add(Components.splitPane()
             .continuousLayout(true)
             .resizeWeight(0.35)
-            .leftComponent(table.getSearchField())
+            .leftComponent(Components.panel(new GridBagLayout())
+                    .addConstrained(table.getSearchField(), createSearchFieldConstraints())
+                    .build())
             .rightComponent(statusMessageLabel)
             .build(), BorderLayout.CENTER);
     southPanel.add(refreshToolBar, BorderLayout.WEST);
@@ -1414,6 +1420,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.getEditModel(), initialValue);
   }
 
+  private GridBagConstraints createSearchFieldConstraints() {
+    GridBagConstraints constraints = new GridBagConstraints();
+    constraints.fill = GridBagConstraints.HORIZONTAL;
+    constraints.weightx = 1.0;
+    constraints.insets = new Insets(0, Layouts.HORIZONTAL_VERTICAL_GAP.get(), 0, Layouts.HORIZONTAL_VERTICAL_GAP.get());
+
+    return constraints;
+  }
+
   /**
    * @return the refresh toolbar
    */
@@ -1594,7 +1609,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     Entity selected = tableModel.getSelectionModel().getSelectedItem();
     if (selected != null) {
       Point location = getPopupLocation(table);
-      new EntityPopupMenu(selected.copy(), tableModel.getConnectionProvider()).show(this, location.x, location.y);
+      new EntityPopupMenu(selected.copy(), tableModel.getConnectionProvider().getConnection()).show(this, location.x, location.y);
     }
   }
 

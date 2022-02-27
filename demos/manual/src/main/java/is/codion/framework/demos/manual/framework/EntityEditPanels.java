@@ -8,7 +8,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
@@ -178,7 +177,7 @@ public final class EntityEditPanels {
       DefaultComboBoxModel<String> comboBoxModel =
               new DefaultComboBoxModel<>(new String[] {"One", "Two"});
 
-      SteppedComboBox<String> comboBox =
+      JComboBox<String> comboBox =
               createComboBox(Demo.TEXT, comboBoxModel)
                       .editable(true)
                       .build();
@@ -187,7 +186,7 @@ public final class EntityEditPanels {
 
     private void item() {
       // tag::item[]
-      SteppedComboBox<Item<String>> comboBox =
+      JComboBox<Item<String>> comboBox =
               createItemComboBox(Demo.ITEM_LIST)
                       .build();
       // end::item[]

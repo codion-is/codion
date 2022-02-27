@@ -343,11 +343,11 @@ public final class Utilities {
    * Searches the parent component hierarchy of the given component for
    * an ancestor of the given type
    * @param <T> the type of parent to find
-   * @param component the component
    * @param clazz the class of the parent to find
+   * @param component the component
    * @return the parent of the given component of the given type, an empty Optional if none is found
    */
-  public static <T> Optional<T> getParentOfType(Component component, Class<T> clazz) {
+  public static <T> Optional<T> getParentOfType(Class<T> clazz, Component component) {
     return Optional.ofNullable((T) SwingUtilities.getAncestorOfClass(clazz, component));
   }
 

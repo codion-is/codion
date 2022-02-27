@@ -12,7 +12,6 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.Components;
 
 import javax.swing.DefaultComboBoxModel;
@@ -27,7 +26,6 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -75,7 +73,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final ColumnConditionModel<C, T> conditionModel;
   private final JToggleButton toggleEnabledButton;
   private final JToggleButton toggleAdvancedButton;
-  private final SteppedComboBox<Operator> operatorCombo;
+  private final JComboBox<Operator> operatorCombo;
   private final JComponent equalField;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
@@ -86,6 +84,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final Event<C> focusGainedEvent = Event.event();
   private final State advancedConditionState = State.state();
   private final Value<Boolean> singleValuePanelValue = Value.value();
+  private final Value<Integer> operatorPopupWidthValue = Value.value(0, 0);
 
   private JDialog dialog;
 
@@ -426,6 +425,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       toggleAdvancedButton.addFocusListener(focusGainedListener);
     }
     toggleEnabledButton.addFocusListener(focusGainedListener);
+    addComponentListener(new OperatorBoxPopupWidthListener());
   }
 
   private void onOperatorChanged(Operator operator) {
@@ -493,15 +493,13 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
   }
 
-  private SteppedComboBox<Operator> initializeOperatorComboBox(List<Operator> operators) {
+  private JComboBox<Operator> initializeOperatorComboBox(List<Operator> operators) {
     return Components.comboBox(new DefaultComboBoxModel<>(operators.toArray(new Operator[0])),
                     conditionModel.getOperatorValue())
             .completionMode(Completion.Mode.NONE)
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
-            .orientation(ComponentOrientation.RIGHT_TO_LEFT)
             .maximumRowCount(operators.size())
-            .onBuild(comboBox -> addComponentListener(new OperatorBoxPopupWidthListener()))
             .build();
   }
 
@@ -557,7 +555,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
     @Override
     public void componentResized(ComponentEvent e) {
-      operatorCombo.setPopupWidth(getWidth() - 1);
+      operatorPopupWidthValue.set(getWidth() - 1);
     }
   }
 

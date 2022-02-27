@@ -126,7 +126,6 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     if (enterAction != null) {
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .onKeyPressed()
               .action(enterAction)
               .enable(dialog.getRootPane());
     }
@@ -155,7 +154,6 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
       if (disposeOnEscape) {
         KeyEvents.builder(KeyEvent.VK_ESCAPE)
                 .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .onKeyPressed()
                 .action(new DisposeDialogOnEscapeAction(dialog, confirmCloseListener))
                 .enable(dialog.getRootPane());
       }

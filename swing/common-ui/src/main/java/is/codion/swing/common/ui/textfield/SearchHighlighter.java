@@ -95,15 +95,12 @@ public final class SearchHighlighter {
                     .caption("Case-sensitive"))
             .build().createPopupMenu());
     KeyEvents.builder(KeyEvent.VK_DOWN)
-            .onKeyPressed()
             .action(control(this::nextSearchPosition))
             .enable(searchField);
     KeyEvents.builder(KeyEvent.VK_UP)
-            .onKeyPressed()
             .action(control(this::previousSearchPosition))
             .enable(searchField);
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
-            .onKeyReleased()
             .action(control(() -> searchStringValue.set(null)))
             .enable(searchField);
 

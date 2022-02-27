@@ -113,7 +113,7 @@ public final class KeyEvents {
     private int keyEvent;
     private int modifiers;
     private int condition = JComponent.WHEN_FOCUSED;
-    private boolean onKeyRelease = true;
+    private boolean onKeyReleased = false;
     private Action action;
 
     @Override
@@ -136,13 +136,13 @@ public final class KeyEvents {
 
     @Override
     public Builder onKeyPressed() {
-      this.onKeyRelease = false;
+      this.onKeyReleased = false;
       return this;
     }
 
     @Override
     public Builder onKeyReleased() {
-      this.onKeyRelease = true;
+      this.onKeyReleased = true;
       return this;
     }
 
@@ -154,7 +154,7 @@ public final class KeyEvents {
 
     @Override
     public KeyStroke getKeyStroke() {
-      return KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease);
+      return KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyReleased);
     }
 
     @Override
@@ -190,7 +190,7 @@ public final class KeyEvents {
     }
 
     private String createDefaultActionName(JComponent component) {
-      return component.getClass().getSimpleName() + keyEvent + modifiers + (onKeyRelease ? "keyReleased" : "keyPressed");
+      return component.getClass().getSimpleName() + keyEvent + modifiers + (onKeyReleased ? "keyReleased" : "keyPressed");
     }
   }
 }

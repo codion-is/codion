@@ -30,10 +30,9 @@ public class ItemEditPanel extends EntityEditPanel {
     createTextField(Item.PRICE);
     EntityComboBox contactInfoBox = createForeignKeyComboBox(Item.CONTACT_INFO_FK)
             .preferredWidth(140)
-            .popupWidth(200)
             .build();
     EntityComboBox addressBox = createForeignKeyComboBox(Item.ADDRESS_FK)
-            .popupWidth(200)
+            .preferredWidth(140)
             .build();
     createTextField(Item.IMAGE_URL);
     createTextField(Item.IMAGE_THUMB_URL);

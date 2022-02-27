@@ -9,19 +9,24 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
 import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
+import javax.swing.plaf.basic.BasicComboPopup;
+import javax.swing.plaf.basic.ComboPopup;
+import javax.swing.plaf.metal.MetalComboBoxUI;
 import javax.swing.text.JTextComponent;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 
 import static is.codion.swing.common.ui.textfield.TextComponents.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
-public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B>
+public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B>
         implements ComboBoxBuilder<T, C, B> {
 
   protected final ComboBoxModel<T> comboBoxModel;
@@ -30,22 +35,16 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
   private ListCellRenderer<T> renderer;
   private ComboBoxEditor editor;
-  private int popupWidth;
   private boolean mouseWheelScrolling = true;
   private boolean mouseWheelScrollingWithWrapAround = false;
   private int maximumRowCount = -1;
   private boolean moveCaretOnSelection = true;
+  private int popupWidth = 0;
 
   protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
     super(linkedValue);
     this.comboBoxModel = requireNonNull(comboBoxModel);
     preferredHeight(getPreferredTextFieldHeight());
-  }
-
-  @Override
-  public final B popupWidth(int popupWidth) {
-    this.popupWidth = popupWidth;
-    return (B) this;
   }
 
   @Override
@@ -103,6 +102,12 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   }
 
   @Override
+  public final B popupWidth(int popupWidth) {
+    this.popupWidth = popupWidth;
+    return (B) this;
+  }
+
+  @Override
   protected final C buildComponent() {
     C comboBox = createComboBox();
     if (renderer != null) {
@@ -117,9 +122,6 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
     if (!editable && editor == null) {
       Completion.enable(comboBox, completionMode);
     }
-    if (popupWidth > 0) {
-      comboBox.setPopupWidth(popupWidth);
-    }
     if (mouseWheelScrolling) {
       comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.create(comboBoxModel));
     }
@@ -132,6 +134,7 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
     if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretOnSelection) {
       ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
     }
+    new SteppedComboBoxUI(comboBox, popupWidth);
 
     return comboBox;
   }
@@ -143,7 +146,7 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
 
   @Override
   protected final void setTransferFocusOnEnter(C component) {
-    component.setTransferFocusOnEnter(true);
+    TransferFocusOnEnter.enable(component);
     TransferFocusOnEnter.enable((JComponent) component.getEditor().getEditorComponent());
   }
 
@@ -153,14 +156,14 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
   }
 
   protected C createComboBox() {
-    return (C) new SteppedComboBox<>(comboBoxModel);
+    return (C) new JComboBox<>(comboBoxModel);
   }
 
   private static final class MoveCaretListener<T> implements EventDataListener<T> {
 
-    private final SteppedComboBox<?> comboBox;
+    private final JComboBox<?> comboBox;
 
-    private MoveCaretListener(SteppedComboBox<T> comboBox) {
+    private MoveCaretListener(JComboBox<T> comboBox) {
       this.comboBox = comboBox;
     }
 
@@ -169,6 +172,65 @@ public class DefaultComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends C
       Component editorComponent = comboBox.getEditor().getEditorComponent();
       if (selectedItem != null && editorComponent instanceof JTextComponent) {
         ((JTextComponent) editorComponent).setCaretPosition(0);
+      }
+    }
+  }
+
+  /**
+   * A JComboBox UI which automatically sets the popup width according to the largest value in the combo box.
+   * Slightly modified, automatic popup size according to getDisplaySize().
+   * @author Nobuo Tamemasa (originally)
+   */
+  static final class SteppedComboBoxUI extends MetalComboBoxUI {
+
+    private int popupWidth = 0;
+
+    SteppedComboBoxUI(JComboBox<?> comboBox, int popupWidth) {
+      requireNonNull(comboBox).setUI(this);
+      this.popupWidth = popupWidth;
+    }
+
+    @Override
+    protected ComboPopup createPopup() {
+      return new SteppedComboBoxPopup(comboBox);
+    }
+
+    private Dimension getPopupSize(JComboBox<?> comboBox) {
+      Dimension displaySize = getDisplaySize();
+      Dimension size = comboBox.getSize();
+
+      return new Dimension(Math.max(size.width, popupWidth <= 0 ? displaySize.width : popupWidth), size.height);
+    }
+
+    private static final class SteppedComboBoxPopup extends BasicComboPopup {
+
+      private SteppedComboBoxPopup(JComboBox comboBox) {
+        super(comboBox);
+        getAccessibleContext().setAccessibleParent(comboBox);
+      }
+
+      @Override
+      public void setVisible(boolean visible) {
+        if (visible) {
+          Dimension popupSize = ((SteppedComboBoxUI) comboBox.getUI()).getPopupSize(comboBox);
+          popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
+          Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height, popupSize.width, popupSize.height);
+          scroller.setMaximumSize(popupBounds.getSize());
+          scroller.setPreferredSize(popupBounds.getSize());
+          scroller.setMinimumSize(popupBounds.getSize());
+          getList().invalidate();
+          int selectedIndex = comboBox.getSelectedIndex();
+          if (selectedIndex == -1) {
+            getList().clearSelection();
+          }
+          else {
+            getList().setSelectedIndex(selectedIndex);
+          }
+          getList().ensureIndexIsVisible(getList().getSelectedIndex());
+          setLightWeightPopupEnabled(comboBox.isLightWeightPopupEnabled());
+        }
+
+        super.setVisible(visible);
       }
     }
   }

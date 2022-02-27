@@ -153,7 +153,6 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
             .action(cancelAction)
-            .onKeyPressed()
             .enable(dialog.getRootPane());
 
     return dialog;

@@ -4,24 +4,18 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.combobox.Completion;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 
 import javax.swing.ComboBoxEditor;
+import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
 
 /**
- * Builds a {@link SteppedComboBox}.
+ * Builds a {@link JComboBox}.
  * @param <T> the value type
  * @param <C> the component type
  * @param <B> the builder type
  */
-public interface ComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends ComponentBuilder<T, C, B> {
-
-  /**
-   * @param popupWidth the required popup with
-   * @return this builder instance
-   */
-  B popupWidth(int popupWidth);
+public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends ComponentBuilder<T, C, B> {
 
   /**
    * @param editable specifies whether the combo box should be editable
@@ -78,4 +72,10 @@ public interface ComboBoxBuilder<T, C extends SteppedComboBox<T>, B extends Comb
    * @return this builder instance
    */
   B moveCaretOnSelection(boolean moveCaretOnSelection);
+
+  /**
+   * @param popupWidth a fixed popup width
+   * @return this builder instance
+   */
+  B popupWidth(int popupWidth);
 }

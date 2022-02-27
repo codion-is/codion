@@ -5,12 +5,14 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -44,25 +46,24 @@ final class EntityPopupMenu extends JPopupMenu {
   /**
    * Note that this has a side effect, as it populates the full foreign key graph of the given entity, so use a copy.
    * @param entity the entity
-   * @param connectionProvider the connection provider
+   * @param connection the connection
    */
-  EntityPopupMenu(Entity entity, EntityConnectionProvider connectionProvider) {
+  EntityPopupMenu(Entity entity, EntityConnection connection) {
     requireNonNull(entity);
-    populateEntityMenu(this, entity, connectionProvider, new HashSet<>());
+    populateEntityMenu(this, selectEntity(entity.getPrimaryKey(), connection), connection, new HashSet<>());
   }
 
   /**
    * Populates the given root menu with the property values of the given entity
    * @param rootMenu the menu to populate
    * @param entity the entity
-   * @param connectionProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
+   * @param connection the connection to use when selecting foreign key references
    * @param visitedEntities used to prevent cyclical dependencies wreaking havoc
    */
-  private static void populateEntityMenu(JComponent rootMenu, Entity entity,
-                                         EntityConnectionProvider connectionProvider, Set<Entity> visitedEntities) {
-    Entities entities = connectionProvider.getEntities();
+  private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection, Set<Entity> visitedEntities) {
+    Entities entities = connection.getEntities();
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityType()).getPrimaryKeyProperties()));
-    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(entities.getDefinition(entity.getEntityType())
+    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entities.getDefinition(entity.getEntityType())
             .getForeignKeyProperties()), visitedEntities);
     populateValueMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityType()).getProperties()), entities);
   }
@@ -85,59 +86,43 @@ final class EntityPopupMenu extends JPopupMenu {
     }
   }
 
-  private static void populateForeignKeyMenu(JComponent rootMenu, Entity entity,
-                                             EntityConnectionProvider connectionProvider,
-                                             List<ForeignKeyProperty> fkProperties,
-                                             Set<Entity> visitedEntities) {
-    try {
-      if (!visitedEntities.contains(entity)) {
-        visitedEntities.add(entity);
-        Text.collate(fkProperties);
-        EntityDefinition definition = connectionProvider.getEntities().getDefinition(entity.getEntityType());
-        EntityValidator validator = definition.getValidator();
-        for (ForeignKeyProperty property : fkProperties) {
-          ForeignKey foreignKey = property.getAttribute();
-          boolean fkValueNull = entity.isForeignKeyNull(foreignKey);
-          boolean isLoaded = entity.isLoaded(foreignKey);
-          boolean valid = isValid(validator, entity, definition, property);
-          boolean modified = entity.isModified(foreignKey);
-          String toolTipText = getForeignKeyAttributeNames(foreignKey);
-          if (!fkValueNull) {
-            Entity referencedEntity;
-            if (isLoaded) {
-              referencedEntity = entity.getForeignKey(foreignKey);
-            }
-            else {
-              referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedKey(foreignKey));
-              entity.remove(foreignKey);
-              entity.put(foreignKey, referencedEntity);
-            }
-            StringBuilder builder = new StringBuilder("[FK").append(isLoaded ? "] " : "+] ")
-                    .append(property.getCaption()).append(": ").append(referencedEntity.toString());
-            if (modified) {
-              builder.append(getOriginalValue(entity, property));
-            }
-            JMenu foreignKeyMenu = new JMenu(builder.toString());
-            setInvalidModified(foreignKeyMenu, valid, modified);
-            foreignKeyMenu.setToolTipText(toolTipText);
-            populateEntityMenu(foreignKeyMenu, referencedEntity, connectionProvider, visitedEntities);
-            rootMenu.add(foreignKeyMenu);
+  private static void populateForeignKeyMenu(JComponent rootMenu, Entity entity, EntityConnection connection,
+                                             List<ForeignKeyProperty> fkProperties, Set<Entity> visitedEntities) {
+    if (!visitedEntities.contains(entity)) {
+      visitedEntities.add(entity);
+      Text.collate(fkProperties);
+      EntityDefinition definition = connection.getEntities().getDefinition(entity.getEntityType());
+      EntityValidator validator = definition.getValidator();
+      for (ForeignKeyProperty property : fkProperties) {
+        ForeignKey foreignKey = property.getAttribute();
+        boolean fkValueNull = entity.isForeignKeyNull(foreignKey);
+        boolean valid = isValid(validator, entity, definition, property);
+        boolean modified = entity.isModified(foreignKey);
+        String toolTipText = getForeignKeyAttributeNames(foreignKey);
+        if (!fkValueNull) {
+          Entity referencedEntity = selectEntity(entity.getReferencedKey(foreignKey), connection);
+          StringBuilder builder = new StringBuilder("[FK").append("] ")
+                  .append(property.getCaption()).append(": ").append(referencedEntity.toString());
+          if (modified) {
+            builder.append(getOriginalValue(entity, property));
           }
-          else {
-            StringBuilder builder = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
-            if (modified) {
-              builder.append(getOriginalValue(entity, property));
-            }
-            JMenuItem menuItem = new JMenuItem(builder.toString());
-            setInvalidModified(menuItem, valid, modified);
-            menuItem.setToolTipText(toolTipText);
-            rootMenu.add(menuItem);
+          JMenu foreignKeyMenu = new JMenu(builder.toString());
+          setInvalidModified(foreignKeyMenu, valid, modified);
+          foreignKeyMenu.setToolTipText(toolTipText);
+          populateEntityMenu(foreignKeyMenu, referencedEntity, connection, visitedEntities);
+          rootMenu.add(foreignKeyMenu);
+        }
+        else {
+          StringBuilder builder = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
+          if (modified) {
+            builder.append(getOriginalValue(entity, property));
           }
+          JMenuItem menuItem = new JMenuItem(builder.toString());
+          setInvalidModified(menuItem, valid, modified);
+          menuItem.setToolTipText(toolTipText);
+          rootMenu.add(menuItem);
         }
       }
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
     }
   }
 
@@ -219,6 +204,16 @@ final class EntityPopupMenu extends JPopupMenu {
     }
     catch (ValidationException e) {
       return false;
+    }
+  }
+
+  private static Entity selectEntity(Key primaryKey, EntityConnection connection) {
+    try {
+      return connection.selectSingle(Conditions.condition(primaryKey)
+              .toSelectCondition().fetchDepth(0));
+    }
+    catch (DatabaseException e) {
+      throw new RuntimeException(e);
     }
   }
 }

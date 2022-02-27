@@ -128,11 +128,9 @@ final class SelectColumnsPanel<C> extends JPanel {
             .build();
     KeyEvents.Builder upEventBuilder = KeyEvents.builder(KeyEvent.VK_UP)
             .condition(JComponent.WHEN_FOCUSED)
-            .onKeyPressed()
             .action(control(new TransferFocusCommand(checkBoxes, false)));
     KeyEvents.Builder downEventBuilder = KeyEvents.builder(KeyEvent.VK_DOWN)
             .condition(JComponent.WHEN_FOCUSED)
-            .onKeyPressed()
             .action(control(new TransferFocusCommand(checkBoxes, true)));
     checkBoxes.forEach(checkBox -> {
       upEventBuilder.enable(checkBox);

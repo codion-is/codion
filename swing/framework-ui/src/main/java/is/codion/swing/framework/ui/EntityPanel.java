@@ -580,7 +580,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   @Override
   public final Optional<HierarchyPanel> getParentPanel() {
     if (masterPanel == null) {
-      return Utilities.getParentOfType(this, HierarchyPanel.class);
+      return Utilities.getParentOfType(HierarchyPanel.class, this);
     }
 
     return Optional.of(masterPanel);
@@ -1651,12 +1651,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private static class FocusActivationListener implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
-      EntityEditPanel editPanelParent = Utilities.getParentOfType((Component) changeEvent.getNewValue(), EntityEditPanel.class).orElse(null);
+      EntityEditPanel editPanelParent = Utilities.getParentOfType(EntityEditPanel.class, (Component) changeEvent.getNewValue()).orElse(null);
       if (editPanelParent != null) {
         editPanelParent.setActive(true);
       }
       else {
-        Utilities.getParentOfType((Component) changeEvent.getNewValue(), EntityPanel.class).ifPresent(parent -> {
+        Utilities.getParentOfType(EntityPanel.class, (Component) changeEvent.getNewValue()).ifPresent(parent -> {
           if (parent.getEditPanel() != null) {
             parent.getEditPanel().setActive(true);
           }

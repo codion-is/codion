@@ -69,7 +69,6 @@ public final class TransferFocusOnEnter {
     return KeyEvents.builder(KeyEvent.VK_ENTER)
             .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .condition(JComponent.WHEN_FOCUSED)
-            .onKeyPressed()
             .action(backwardAction(component));
   }
 
@@ -77,7 +76,6 @@ public final class TransferFocusOnEnter {
     return KeyEvents.builder(KeyEvent.VK_ENTER)
             .modifiers(component instanceof JTextArea ? InputEvent.CTRL_DOWN_MASK : 0)
             .condition(JComponent.WHEN_FOCUSED)
-            .onKeyPressed()
             .action(forwardAction(component));
   }
 

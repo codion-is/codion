@@ -9,7 +9,6 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.Components;
@@ -25,6 +24,7 @@ import is.codion.swing.common.ui.textfield.TemporalField;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
@@ -159,7 +159,7 @@ public final class InputControls {
     // tag::booleanComboBox[]
     Value<Boolean> booleanValue = Value.value();
 
-    SteppedComboBox<Item<Boolean>> comboBox =
+    JComboBox<Item<Boolean>> comboBox =
             Components.booleanComboBox(booleanValue)
                     .toolTipText("Select a value")
                     .build();
@@ -275,7 +275,7 @@ public final class InputControls {
     DefaultComboBoxModel<String> comboBoxModel =
             new DefaultComboBoxModel<>(new String[] {"one", "two", "three"});
 
-    SteppedComboBox<String> comboBox =
+    JComboBox<String> comboBox =
             Components.comboBox(comboBoxModel, stringValue)
                     .preferredWidth(160)
                     .build();
