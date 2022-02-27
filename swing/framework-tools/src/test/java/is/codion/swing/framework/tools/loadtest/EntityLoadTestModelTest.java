@@ -27,11 +27,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EntityLoadTestModelTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final String CONNECTION_TYPE_BEFORE_TEST = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
 
-  private static final User ADMIN_USER = User.parseUser("scott:tiger");
+  private static final User ADMIN_USER = User.parse("scott:tiger");
   private static Server<?, EntityServerAdmin> server;
   private static EntityServerAdmin admin;
 
@@ -132,7 +132,7 @@ public class EntityLoadTestModelTest {
 
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
-            .adminUser(User.parseUser("scott:tiger"))
+            .adminUser(User.parse("scott:tiger"))
             .startupPoolUsers(Collections.singletonList(UNIT_TEST_USER))
             .clientSpecificConnectionTimeouts(Collections.singletonMap("ClientTypeID", 10000))
             .domainModelClassNames(Collections.singletonList("is.codion.swing.framework.tools.loadtest.TestDomain"))

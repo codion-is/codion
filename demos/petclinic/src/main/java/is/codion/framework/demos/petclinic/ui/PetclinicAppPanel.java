@@ -94,7 +94,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.PetClinic");
     SwingUtilities.invokeLater(() -> new PetclinicAppPanel().starter()
             .frameSize(Windows.getScreenSizeRatio(0.6))
-            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }
 }

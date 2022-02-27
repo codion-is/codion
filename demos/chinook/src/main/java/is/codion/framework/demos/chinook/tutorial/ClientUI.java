@@ -160,7 +160,7 @@ public final class ClientUI {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
                     .setDomainClassName(ChinookImpl.class.getName())
-                    .setUser(User.parseUser("scott:tiger"));
+                    .setUser(User.parse("scott:tiger"));
 
     artistPanel(connectionProvider);
     albumPanel(connectionProvider);

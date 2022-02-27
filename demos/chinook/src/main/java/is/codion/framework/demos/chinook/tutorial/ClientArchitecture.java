@@ -108,7 +108,7 @@ public final class ClientArchitecture {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
                     .setDomainClassName(ChinookImpl.class.getName())
-                    .setUser(User.parseUser("scott:tiger"));
+                    .setUser(User.parse("scott:tiger"));
 
     EntityPanel artistPanel = artistPanel(connectionProvider);
 

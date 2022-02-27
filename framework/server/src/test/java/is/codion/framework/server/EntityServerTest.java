@@ -42,9 +42,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EntityServerTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final User ADMIN_USER = User.parseUser("scott:tiger");
+  private static final User ADMIN_USER = User.parse("scott:tiger");
   private static Server<RemoteEntityConnection, EntityServerAdmin> server;
   private static EntityServerAdmin admin;
 
@@ -210,17 +210,17 @@ public class EntityServerTest {
     admin.setConnectionLimit(3);
     assertEquals(3, admin.getConnectionLimit());
     final String testClientTypeId = "TestLoginProxy";
-    User john = User.parseUser("john:hello");
+    User john = User.parse("john:hello");
     ConnectionRequest connectionRequestJohn = ConnectionRequest.builder()
             .user(john)
             .clientTypeId(testClientTypeId)
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     ConnectionRequest connectionRequestHelen = ConnectionRequest.builder()
-            .user(User.parseUser("helen:juno"))
+            .user(User.parse("helen:juno"))
             .clientTypeId(testClientTypeId)
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     ConnectionRequest connectionRequestInvalid = ConnectionRequest.builder()
-            .user(User.parseUser("foo:bar"))
+            .user(User.parse("foo:bar"))
             .clientTypeId(testClientTypeId)
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     server.connect(connectionRequestJohn);
@@ -324,7 +324,7 @@ public class EntityServerTest {
 
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
-            .adminUser(User.parseUser("scott:tiger"))
+            .adminUser(User.parse("scott:tiger"))
             .database(DatabaseFactory.getDatabase())
             .startupPoolUsers(singletonList(UNIT_TEST_USER))
             .clientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000))

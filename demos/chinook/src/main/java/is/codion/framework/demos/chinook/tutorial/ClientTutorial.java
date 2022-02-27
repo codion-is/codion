@@ -165,7 +165,7 @@ public final class ClientTutorial {
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     SwingUtilities.invokeLater(() -> new ApplicationPanel().starter()
             .frameSize(getScreenSizeRatio(0.5))
-            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }
 }

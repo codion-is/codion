@@ -24,7 +24,7 @@ public final class CredentialsServerTest {
       CredentialsProvider provider = CredentialsProvider.credentialsProvider();
 
       System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
-      User scott = User.parseUser("scott:tiger");
+      User scott = User.parse("scott:tiger");
       int serverPort = 1100;
 
       CredentialsServer server = new CredentialsServer(serverPort, 900, 50);

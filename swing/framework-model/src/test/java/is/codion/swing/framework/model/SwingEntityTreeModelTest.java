@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class SwingEntityTreeModelTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
   void test() {

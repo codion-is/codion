@@ -148,7 +148,7 @@ public final class Example {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
                     .setDomainClassName(Store.class.getName())
-                    .setUser(User.parseUser("scott:tiger"));
+                    .setUser(User.parse("scott:tiger"));
 
     SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 
@@ -199,7 +199,7 @@ public final class Example {
     class StoreTest extends EntityTestUnit {
 
       public StoreTest() {
-        super(Store.class.getName(), User.parseUser("scott:tiger"));
+        super(Store.class.getName(), User.parse("scott:tiger"));
       }
 
       @Test
@@ -226,7 +226,7 @@ public final class Example {
 
     EntityConnection connection =
             LocalEntityConnection.localEntityConnection(
-                    domain, DatabaseFactory.getDatabase(), User.parseUser("scott:tiger"));
+                    domain, DatabaseFactory.getDatabase(), User.parse("scott:tiger"));
 
     //select customer where last name = Doe
     Entity johnDoe = connection.selectSingle(Customer.LAST_NAME, "Doe");
@@ -251,7 +251,7 @@ public final class Example {
 
     EntityConnection connection =
             LocalEntityConnection.localEntityConnection(
-                    domain, DatabaseFactory.getDatabase(), User.parseUser("scott:tiger"));
+                    domain, DatabaseFactory.getDatabase(), User.parse("scott:tiger"));
 
     Entities entities = domain.getEntities();
 

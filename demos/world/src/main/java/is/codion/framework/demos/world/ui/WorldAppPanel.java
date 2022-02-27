@@ -77,7 +77,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
     SwingUtilities.invokeLater(() -> new WorldAppPanel().starter()
             .frameSize(new Dimension(1280, 720))
-            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }
 }

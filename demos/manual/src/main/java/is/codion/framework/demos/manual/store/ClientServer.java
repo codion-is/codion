@@ -22,7 +22,7 @@ import is.codion.framework.servlet.EntityServletServerFactory;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import static is.codion.common.user.User.parseUser;
+import static is.codion.common.user.User.parse;
 import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Collections.singletonList;
 
@@ -49,7 +49,7 @@ public final class ClientServer {
     RemoteEntityConnectionProvider connectionProvider =
             new RemoteEntityConnectionProvider("localhost", SERVER_PORT, REGISTRY_PORT);
     connectionProvider.setDomainClassName(Store.class.getName());
-    connectionProvider.setUser(parseUser("scott:tiger"));
+    connectionProvider.setUser(parse("scott:tiger"));
     connectionProvider.setClientTypeId("ClientServer");
 
     EntityConnection connection = connectionProvider.getConnection();
@@ -84,7 +84,7 @@ public final class ClientServer {
     HttpEntityConnectionProvider connectionProvider =
             new HttpEntityConnectionProvider("localhost", HTTP_PORT, ClientHttps.FALSE);
     connectionProvider.setDomainClassName(Store.class.getName());
-    connectionProvider.setUser(parseUser("scott:tiger"));
+    connectionProvider.setUser(parse("scott:tiger"));
     connectionProvider.setClientTypeId("ClientServer");
 
     EntityConnection connection = connectionProvider.getConnection();

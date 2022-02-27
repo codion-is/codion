@@ -210,7 +210,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
             .database(DatabaseFactory.getDatabase())
             .domainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()))
             .startupPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get()).stream()
-                    .map(User::parseUser)
+                    .map(User::parse)
                     .collect(toList()))
             .clientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get())
             .connectionTimeout(SERVER_CONNECTION_TIMEOUT.get());
@@ -224,7 +224,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     }
     builder.clientSpecificConnectionTimeouts(timeoutMap);
     String adminUserString = SERVER_ADMIN_USER.get();
-    User adminUser = nullOrEmpty(adminUserString) ? null : User.parseUser(adminUserString);
+    User adminUser = nullOrEmpty(adminUserString) ? null : User.parse(adminUserString);
     if (adminUser == null) {
       EntityServerConfiguration.LOG.info("No admin user specified");
     }

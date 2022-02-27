@@ -96,7 +96,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
     SwingUtilities.invokeLater(() -> new EmpDeptAppPanel().starter()
             .frameSize(Windows.getScreenSizeRatio(0.6))
-            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }
   // end::main[]

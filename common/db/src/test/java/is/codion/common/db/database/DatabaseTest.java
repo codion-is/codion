@@ -28,7 +28,7 @@ public class DatabaseTest {
   @Test
   void validateWithQuery() throws DatabaseException, SQLException {
     Database testDatabase = new TestDatabase();
-    Connection connection = testDatabase.createConnection(User.parseUser("scott:tiger"));
+    Connection connection = testDatabase.createConnection(User.parse("scott:tiger"));
     assertTrue(testDatabase.isConnectionValid(connection));
     connection.close();
     assertFalse(testDatabase.isConnectionValid(connection));

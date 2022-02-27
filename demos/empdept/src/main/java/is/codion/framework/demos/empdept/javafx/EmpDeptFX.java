@@ -25,7 +25,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 
   @Override
   protected User getDefaultUser() {
-    return User.parseUser("scott:tiger");
+    return User.parse("scott:tiger");
   }
 
   @Override

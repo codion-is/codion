@@ -33,7 +33,7 @@ public class StoreDatabase {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(database)
                     .setDomainClassName(Store.class.getName())
-                    .setUser(User.parseUser("scott:tiger"));
+                    .setUser(User.parse("scott:tiger"));
 
     EntityConnection connection = connectionProvider.getConnection();
 

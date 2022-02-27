@@ -45,6 +45,6 @@ public final class TrackTableModelTest {
   private EntityConnectionProvider createConnectionProvider() {
     return new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
             .setDomainClassName(ChinookImpl.class.getName())
-            .setUser(User.parseUser("scott:tiger"));
+            .setUser(User.parse("scott:tiger"));
   }
 }

@@ -40,7 +40,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
         EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
   protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           DatabaseFactory.getDatabase()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 

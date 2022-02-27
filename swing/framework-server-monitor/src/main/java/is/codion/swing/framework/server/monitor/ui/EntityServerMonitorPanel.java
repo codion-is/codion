@@ -247,7 +247,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private static User getAdminUser() {
-    return User.parseUser(ServerConfiguration.SERVER_ADMIN_USER.getOrThrow());
+    return User.parse(ServerConfiguration.SERVER_ADMIN_USER.getOrThrow());
   }
 
   public static void main(String[] arguments) {

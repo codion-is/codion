@@ -32,7 +32,7 @@ public final class Misc {
    EntityConnectionProvider connectionProvider =
             EntityConnectionProvider.connectionProvider()
                     .setDomainClassName(Store.class.getName())
-                    .setUser(User.parseUser("scott:tiger"))
+                    .setUser(User.parse("scott:tiger"))
                     .setClientTypeId("StoreMisc");
 
    // tag::jasperReportDataSource[]
@@ -60,7 +60,7 @@ public final class Misc {
     EntityConnectionProvider connectionProvider =
             EntityConnectionProvider.connectionProvider()
                     .setDomainClassName(Store.class.getName())
-                    .setUser(User.parseUser("scott:tiger"))
+                    .setUser(User.parse("scott:tiger"))
                     .setClientTypeId("StoreMisc");
 
     CustomerEditModel editModel = new CustomerEditModel(connectionProvider);

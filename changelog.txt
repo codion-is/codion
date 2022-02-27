@@ -7878,3 +7878,4 @@
   EntityPopupMenu, bug fixed, did not select all values from foreign key references, refactored
   ColumnConditionPanel bug fixed, did not show correct bound fields when changing operator, no longer requests bound field focus when changing operator
   EntityTablePanel, refresh key event on condition panel now onKeyReleased, otherwise enter on a combobox (operator f.ex) did not trigger
+  User.parseUser() renamed parse()

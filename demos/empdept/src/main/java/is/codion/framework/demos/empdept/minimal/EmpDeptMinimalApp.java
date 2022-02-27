@@ -284,7 +284,7 @@ public final class EmpDeptMinimalApp {
     //we create an instance of our application panel and start it
     SwingUtilities.invokeLater(() -> new EmpDeptApplicationPanel().starter()
             .frameSize(new Dimension(800, 600))
-            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }
 }

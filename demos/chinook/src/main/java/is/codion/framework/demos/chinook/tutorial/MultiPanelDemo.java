@@ -34,7 +34,7 @@ public final class MultiPanelDemo {
 
     LocalEntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(DatabaseFactory.getDatabase());
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
-    connectionProvider.setUser(User.parseUser("scott:tiger"));
+    connectionProvider.setUser(User.parse("scott:tiger"));
 
     EntityEditModel.POST_EDIT_EVENTS.set(true);
 

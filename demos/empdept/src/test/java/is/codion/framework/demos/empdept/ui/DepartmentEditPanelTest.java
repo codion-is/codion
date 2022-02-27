@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class DepartmentEditPanelTest extends EntityEditPanelTestUnit {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   public DepartmentEditPanelTest() {
     super(new SwingEntityEditModel(EmpDept.Department.TYPE,
