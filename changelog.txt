@@ -7841,3 +7841,4 @@
   DefaultTextFieldHint bug fixed, moved cursor instead of setting it, thereby selecting the hint text
   TextFieldBuilder.onTextChanged() and hintText() added
   KeyEvents, onKeyReleased no longer defaults to true
+  EntityPopupMenu, bug fixed, did not select all values from foreign key references, refactored

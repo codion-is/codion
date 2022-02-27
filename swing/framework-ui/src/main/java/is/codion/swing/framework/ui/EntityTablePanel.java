@@ -1609,7 +1609,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     Entity selected = tableModel.getSelectionModel().getSelectedItem();
     if (selected != null) {
       Point location = getPopupLocation(table);
-      new EntityPopupMenu(selected.copy(), tableModel.getConnectionProvider()).show(this, location.x, location.y);
+      new EntityPopupMenu(selected.copy(), tableModel.getConnectionProvider().getConnection()).show(this, location.x, location.y);
     }
   }
 
