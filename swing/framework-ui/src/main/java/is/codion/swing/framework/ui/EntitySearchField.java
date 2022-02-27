@@ -257,13 +257,11 @@ public final class EntitySearchField extends JTextField {
   private void transferFocusOnEnter() {
     KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_FOCUSED)
-              .onKeyPressed()
               .action(transferFocusAction)
               .enable(this);
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_FOCUSED)
               .modifiers(InputEvent.SHIFT_DOWN_MASK)
-              .onKeyPressed()
               .action(transferFocusBackwardAction)
               .enable(this);
   }
@@ -364,11 +362,9 @@ public final class EntitySearchField extends JTextField {
             .caption(Messages.get(Messages.OK))
             .build();
     KeyEvents.builder(KeyEvent.VK_ENTER)
-            .onKeyPressed()
             .action(control(okButton::doClick))
             .enable(okButton);
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
-            .onKeyPressed()
             .action(control(closeEvent::onEvent))
             .enable(okButton);
     JPanel buttonPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
@@ -572,7 +568,6 @@ public final class EntitySearchField extends JTextField {
               .build();
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
       KeyEvents.builder(KeyEvent.VK_ENTER)
-              .onKeyPressed()
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectControl)
               .enable(table);

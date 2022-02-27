@@ -7840,3 +7840,4 @@
   EntityTablePanel, search field now centered instead of stretched
   DefaultTextFieldHint bug fixed, moved cursor instead of setting it, thereby selecting the hint text
   TextFieldBuilder.onTextChanged() and hintText() added
+  KeyEvents, onKeyReleased no longer defaults to true

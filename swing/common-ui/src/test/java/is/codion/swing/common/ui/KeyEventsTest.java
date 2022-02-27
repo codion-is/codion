@@ -31,7 +31,7 @@ public class KeyEventsTest {
   @Test
   void addKeyEventWithoutName() {
     JTextField textField = new JTextField();
-    String actionName = textField.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "keyReleased";
+    String actionName = textField.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "keyPressed";
     assertNull(textField.getActionMap().get(actionName));
     KeyEvents.Builder builder = KeyEvents.builder(KeyEvent.VK_ENTER).action(Control.control(() -> {}));
     builder.enable(textField);
