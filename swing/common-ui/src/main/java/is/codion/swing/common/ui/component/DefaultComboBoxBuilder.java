@@ -192,27 +192,23 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 
     @Override
     protected ComboPopup createPopup() {
-      return new SteppedComboBoxPopup(comboBox);
-    }
-
-    private Dimension getPopupSize(JComboBox<?> comboBox) {
-      Dimension displaySize = getDisplaySize();
-      Dimension size = comboBox.getSize();
-
-      return new Dimension(Math.max(size.width, popupWidth <= 0 ? displaySize.width : popupWidth), size.height);
+      return new SteppedComboBoxPopup(comboBox, this);
     }
 
     private static final class SteppedComboBoxPopup extends BasicComboPopup {
 
-      private SteppedComboBoxPopup(JComboBox comboBox) {
+      private final SteppedComboBoxUI comboBoxUI;
+
+      private SteppedComboBoxPopup(JComboBox comboBox, SteppedComboBoxUI comboBoxUI) {
         super(comboBox);
+        this.comboBoxUI = comboBoxUI;
         getAccessibleContext().setAccessibleParent(comboBox);
       }
 
       @Override
       public void setVisible(boolean visible) {
         if (visible) {
-          Dimension popupSize = ((SteppedComboBoxUI) comboBox.getUI()).getPopupSize(comboBox);
+          Dimension popupSize = getPopupSize(comboBox);
           popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
           Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height, popupSize.width, popupSize.height);
           scroller.setMaximumSize(popupBounds.getSize());
@@ -231,6 +227,13 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
         }
 
         super.setVisible(visible);
+      }
+
+      private Dimension getPopupSize(JComboBox<?> comboBox) {
+        Dimension displaySize = comboBoxUI.getDisplaySize();
+        Dimension size = comboBox.getSize();
+
+        return new Dimension(Math.max(size.width, comboBoxUI.popupWidth <= 0 ? displaySize.width : comboBoxUI.popupWidth), size.height);
       }
     }
   }

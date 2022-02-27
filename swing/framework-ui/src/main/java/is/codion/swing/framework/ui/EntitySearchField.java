@@ -254,18 +254,6 @@ public final class EntitySearchField extends JTextField {
     });
   }
 
-  private void transferFocusOnEnter() {
-    KeyEvents.builder(KeyEvent.VK_ENTER)
-              .condition(JComponent.WHEN_FOCUSED)
-              .action(transferFocusAction)
-              .enable(this);
-      KeyEvents.builder(KeyEvent.VK_ENTER)
-              .condition(JComponent.WHEN_FOCUSED)
-              .modifiers(InputEvent.SHIFT_DOWN_MASK)
-              .action(transferFocusBackwardAction)
-              .enable(this);
-  }
-
   private FocusListener initializeFocusListener() {
     return new FocusListener() {
       @Override
@@ -757,7 +745,15 @@ public final class EntitySearchField extends JTextField {
 
     @Override
     protected void setTransferFocusOnEnter(EntitySearchField component) {
-      component.transferFocusOnEnter();
+      KeyEvents.builder(KeyEvent.VK_ENTER)
+              .condition(JComponent.WHEN_FOCUSED)
+              .action(component.transferFocusAction)
+              .enable(component);
+      KeyEvents.builder(KeyEvent.VK_ENTER)
+              .condition(JComponent.WHEN_FOCUSED)
+              .modifiers(InputEvent.SHIFT_DOWN_MASK)
+              .action(component.transferFocusBackwardAction)
+              .enable(component);
     }
   }
 }
