@@ -7837,3 +7837,4 @@
   ComboBoxBuilder, ItemComboBoxBuilder, popupWidth() and popupWidthProvider() added
   ComboBoxBuilder, ItemComboBoxBuilder, popupWidthProvider() removed
   ColumnConditionPanel, operator combo box no longer with RIGHT_TO_LEFT orientation
+  EntityTablePanel, search field now centered instead of stretched
