@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.combobox.Completion;
 
 import javax.swing.ComboBoxEditor;
@@ -79,10 +78,4 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
    * @return this builder instance
    */
   B popupWidth(int popupWidth);
-
-  /**
-   * @param popupWidthProvider the popup width provider
-   * @return this builder instance
-   */
-  B popupWidthProvider(ValueObserver<Integer> popupWidthProvider);
 }

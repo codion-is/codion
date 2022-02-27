@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
 import is.codion.swing.common.ui.combobox.Completion;
@@ -41,7 +40,6 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   private int maximumRowCount = -1;
   private boolean moveCaretOnSelection = true;
   private int popupWidth = 0;
-  private ValueObserver<Integer> popupWidthProvider;
 
   protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
     super(linkedValue);
@@ -110,12 +108,6 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   }
 
   @Override
-  public final B popupWidthProvider(ValueObserver<Integer> popupWidthProvider) {
-    this.popupWidthProvider = requireNonNull(popupWidthProvider);
-    return (B) this;
-  }
-
-  @Override
   protected final C buildComponent() {
     C comboBox = createComboBox();
     if (renderer != null) {
@@ -142,7 +134,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
     if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretOnSelection) {
       ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
     }
-    new SteppedComboBoxUI(comboBox, popupWidthProvider, popupWidth);
+    new SteppedComboBoxUI(comboBox, popupWidth);
 
     return comboBox;
   }
@@ -193,21 +185,14 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 
     private int popupWidth = 0;
 
-    SteppedComboBoxUI(JComboBox<?> comboBox, ValueObserver<Integer> popupWidthProvider, int popupWidth) {
+    SteppedComboBoxUI(JComboBox<?> comboBox, int popupWidth) {
       requireNonNull(comboBox).setUI(this);
-      setPopupWidth(popupWidthProvider == null ? popupWidth : popupWidthProvider.get());
-      if (popupWidthProvider != null) {
-        popupWidthProvider.addDataListener(this::setPopupWidth);
-      }
+      this.popupWidth = popupWidth;
     }
 
     @Override
     protected ComboPopup createPopup() {
       return new SteppedComboBoxPopup(comboBox);
-    }
-
-    private void setPopupWidth(Integer width) {
-      popupWidth = width == null ? 0 : width;
     }
 
     private Dimension getPopupSize(JComboBox<?> comboBox) {

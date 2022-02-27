@@ -26,7 +26,6 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -500,9 +499,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .completionMode(Completion.Mode.NONE)
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
-            .orientation(ComponentOrientation.RIGHT_TO_LEFT)
             .maximumRowCount(operators.size())
-            .popupWidthProvider(operatorPopupWidthValue.getObserver())
             .build();
   }
 

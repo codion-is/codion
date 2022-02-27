@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.item.Item;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
@@ -37,7 +36,6 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   private boolean mouseWheelScrollingWithWrapAround = false;
   private int maximumRowCount = -1;
   private int popupWidth = 0;
-  private ValueObserver<Integer> popupWidthProvider;
 
   DefaultItemComboBoxBuilder(List<Item<T>> items, Value<T> linkedValue) {
     super(linkedValue);
@@ -113,12 +111,6 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   }
 
   @Override
-  public ItemComboBoxBuilder<T> popupWidthProvider(ValueObserver<Integer> popupWidthProvider) {
-    this.popupWidthProvider = requireNonNull(popupWidthProvider);
-    return this;
-  }
-
-  @Override
   protected JComboBox<Item<T>> buildComponent() {
     ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
     JComboBox<Item<T>> comboBox = new JComboBox<>(itemComboBoxModel);
@@ -132,7 +124,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
-    new SteppedComboBoxUI(comboBox, popupWidthProvider, popupWidth);
+    new SteppedComboBoxUI(comboBox, popupWidth);
 
     return comboBox;
   }
