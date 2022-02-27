@@ -115,14 +115,14 @@ class DefaultKey implements Key, Serializable {
 
   @Override
   public <T> Attribute<T> getAttribute() {
-    checkValueCount();
+    assertSingleValueKey();
 
     return (Attribute<T>) attributes.get(0);
   }
 
   @Override
   public <T> T get() {
-    checkValueCount();
+    assertSingleValueKey();
 
     return (T) values.get(attributes.get(0));
   }
@@ -275,7 +275,7 @@ class DefaultKey implements Key, Serializable {
     return value.hashCode();
   }
 
-  private void checkValueCount() {
+  private void assertSingleValueKey() {
     if (attributes.isEmpty()) {
       throw new IllegalStateException("Key contains no values");
     }

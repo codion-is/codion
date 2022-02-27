@@ -143,11 +143,6 @@ public final class TestDomain extends DefaultDomain {
   public static final ConditionType EMP_CONDITION_2_TYPE = T_EMP.conditionType("condition2Id");
   public static final ConditionType EMP_CONDITION_3_TYPE = T_EMP.conditionType("condition3Id");
 
-  /**
-   * Otherwise we'd depend on java.awt.Color
-   */
-  public static final Object CYAN = new Object();
-
   void employee() {
     define(T_EMP,
             primaryKeyProperty(EMP_ID, EMP_ID.getName()),
