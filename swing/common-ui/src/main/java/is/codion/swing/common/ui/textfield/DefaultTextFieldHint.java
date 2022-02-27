@@ -58,7 +58,7 @@ final class DefaultTextFieldHint implements TextFieldHint {
     }
     else if (showHint) {
       textField.setText(hintText);
-      textField.moveCaretPosition(0);
+      textField.setCaretPosition(0);
     }
     updateColor();
   }
