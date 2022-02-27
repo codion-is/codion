@@ -16,7 +16,6 @@ import is.codion.swing.common.model.table.FilteredTableModel;
 import is.codion.swing.common.model.table.FilteredTableModel.RowColumn;
 import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 import is.codion.swing.common.model.table.TableSortModel;
-import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -25,7 +24,6 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
-import is.codion.swing.common.ui.textfield.TextFieldHint;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -61,6 +59,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.control.Control.control;
@@ -130,7 +129,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * The text field used for entering the search condition
    */
   private final JTextField searchField;
-  private final TextFieldHint searchFieldHint;
 
   /**
    * Fired each time the table is double-clicked
@@ -180,7 +178,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
     this.searchField = initializeSearchField();
-    this.searchFieldHint = initializeSearchFieldHint();
     initializeTableHeader();
     bindEvents();
   }
@@ -189,9 +186,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   public void updateUI() {
     super.updateUI();
     Utilities.updateUI(getTableHeader(), searchField);
-    if (searchFieldHint != null) {
-      searchFieldHint.updateHint();
-    }
     if (columnFilterPanels != null) {
       Utilities.updateUI(columnFilterPanels.values());
     }
@@ -478,6 +472,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     Control findAndSelectPrevious = control(() -> findAndSelectPrevious(searchString.get()));
     Control cancel = control(this::requestFocusInWindow);
 
+    String hintText = Messages.get(Messages.SEARCH_FIELD_HINT);
     return Components.textField(searchString)
             .columns(SEARCH_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)
@@ -506,19 +501,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
                     .onKeyPressed()
                     .action(cancel))
             .popupMenuControls(getSearchFieldPopupMenuControls())
+            .hintText(hintText)
+            .onTextChanged(searchText -> {
+              if (!Objects.equals(searchText, hintText)) {
+                performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
+                        lastSearchResultCoordinate.getRow(), true, searchText);
+              }
+            })
             .build();
-  }
-
-  private TextFieldHint initializeSearchFieldHint() {
-    TextFieldHint searchFieldHint = TextFieldHint.create(searchField, Messages.get(Messages.SEARCH_FIELD_HINT));
-    searchField.getDocument().addDocumentListener((DocumentAdapter) e -> {
-      if (!searchFieldHint.isHintVisible()) {
-        performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
-                lastSearchResultCoordinate.getRow(), true, searchField.getText());
-      }
-    });
-
-    return searchFieldHint;
   }
 
   private void performSearch(boolean addToSelection, int fromIndex, boolean forward, String searchText) {

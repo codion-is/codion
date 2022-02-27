@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.text.Format;
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -77,4 +78,16 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
    * @return this builder instance
    */
   B horizontalAlignment(int horizontalAlignment);
+
+  /**
+   * @param hintText the hint text to display when the field is empty and unfocused
+   * @return this builder instance
+   */
+  B hintText(String hintText);
+
+  /**
+   * @param onTextChanged called when the text field text changes
+   * @return this builder instance
+   */
+  B onTextChanged(Consumer<String> onTextChanged);
 }

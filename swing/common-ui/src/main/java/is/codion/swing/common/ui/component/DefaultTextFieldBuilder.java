@@ -4,9 +4,11 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TextComponents;
+import is.codion.swing.common.ui.textfield.TextFieldHint;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
@@ -14,8 +16,10 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.text.Format;
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends AbstractTextComponentBuilder<T, C, B>
@@ -30,6 +34,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private Supplier<Collection<T>> valueSupplier;
   private Format format;
   private int horizontalAlignment = SwingConstants.LEADING;
+  private String hintText;
+  private Consumer<String> onTextChanged;
 
   DefaultTextFieldBuilder(Class<T> valueClass, Value<T> linkedValue) {
     super(linkedValue);
@@ -88,6 +94,21 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
+  public final B hintText(String hintText) {
+    if (nullOrEmpty(hintText)) {
+      throw new IllegalArgumentException("Hint text is null or empty");
+    }
+    this.hintText = hintText;
+    return (B) this;
+  }
+
+  @Override
+  public final B onTextChanged(Consumer<String> onTextChanged) {
+    this.onTextChanged = requireNonNull(onTextChanged);
+    return (B) this;
+  }
+
+  @Override
   protected final C createTextComponent() {
     C textField = createTextField();
     textField.setColumns(columns);
@@ -103,6 +124,14 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     }
     if (valueSupplier != null) {
       Dialogs.addLookupDialog(textField, valueSupplier);
+    }
+    if (hintText != null) {
+      TextFieldHint textFieldHint = TextFieldHint.create(textField, hintText);
+      onSetVisible(field -> textFieldHint.updateHint());
+    }
+    if (onTextChanged != null) {
+      textField.getDocument().addDocumentListener((DocumentAdapter) documentEvent ->
+              onTextChanged.accept(textField.getText()));
     }
 
     return textField;
