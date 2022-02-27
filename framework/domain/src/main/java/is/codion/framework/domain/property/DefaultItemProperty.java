@@ -56,7 +56,7 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
             .map(Item::getValue)
             .collect(Collectors.toSet())
             .size()) {
-      throw new IllegalArgumentException("Item contains duplicate values: " + items);
+      throw new IllegalArgumentException("Item list contains duplicate values: " + items);
     }
   }
 }
