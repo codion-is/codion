@@ -1498,6 +1498,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
     if (conditionPanel != null) {
       KeyEvents.builder(KeyEvent.VK_ENTER)
+              .onKeyReleased()
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(Control.builder(tableModel::refresh)
                       .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
