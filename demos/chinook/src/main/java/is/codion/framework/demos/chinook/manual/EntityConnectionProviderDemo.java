@@ -32,7 +32,7 @@ public final class EntityConnectionProviderDemo {
             new LocalEntityConnectionProvider(DatabaseFactory.getDatabase());
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
-    connectionProvider.setUser(User.parseUser("scott:tiger"));
+    connectionProvider.setUser(User.parse("scott:tiger"));
 
     LocalEntityConnection entityConnection =
             (LocalEntityConnection) connectionProvider.getConnection();
@@ -53,7 +53,7 @@ public final class EntityConnectionProviderDemo {
             new RemoteEntityConnectionProvider("localhost", -1, 1099);
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
-    connectionProvider.setUser(User.parseUser("scott:tiger"));
+    connectionProvider.setUser(User.parse("scott:tiger"));
     connectionProvider.setClientTypeId(EntityConnectionProviderDemo.class.getSimpleName());
 
     EntityConnection entityConnection =
@@ -74,7 +74,7 @@ public final class EntityConnectionProviderDemo {
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
     connectionProvider.setClientTypeId(EntityConnectionProviderDemo.class.getSimpleName());
-    connectionProvider.setUser(User.parseUser("scott:tiger"));
+    connectionProvider.setUser(User.parse("scott:tiger"));
 
     EntityConnection entityConnection = connectionProvider.getConnection();
 

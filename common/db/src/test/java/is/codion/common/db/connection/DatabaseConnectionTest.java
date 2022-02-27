@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DatabaseConnectionTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final Database DATABASE = DatabaseFactory.getDatabase();
 

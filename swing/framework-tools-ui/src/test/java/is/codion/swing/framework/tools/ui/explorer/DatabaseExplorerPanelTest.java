@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 public class DatabaseExplorerPanelTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
   void test() throws ClassNotFoundException, DatabaseException {

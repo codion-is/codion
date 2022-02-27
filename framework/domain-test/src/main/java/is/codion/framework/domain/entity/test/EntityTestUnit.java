@@ -299,6 +299,6 @@ public class EntityTestUnit {
   }
 
   private static User initializeDefaultUser() {
-    return User.parseUser(TEST_USER.getOrThrow());
+    return User.parse(TEST_USER.getOrThrow());
   }
 }

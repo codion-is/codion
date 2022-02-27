@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LoadTestModelTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final UsageScenario<Object> SCENARIO = new AbstractUsageScenario<Object>("test") {
     int counter = 0;

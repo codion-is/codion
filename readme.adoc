@@ -270,7 +270,7 @@ public class StoreDemo {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(database)
                     .setDomainClassName(Store.class.getName())
-                    .setUser(User.parseUser("scott:tiger"));
+                    .setUser(User.parse("scott:tiger"));
 
     SwingEntityModel customerModel =
             new SwingEntityModel(Customer.TYPE, connectionProvider);

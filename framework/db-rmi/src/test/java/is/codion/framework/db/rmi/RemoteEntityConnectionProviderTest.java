@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RemoteEntityConnectionProviderTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
   void test() throws DatabaseException, RemoteException, ServerAuthenticationException, NotBoundException {
@@ -46,13 +46,13 @@ public class RemoteEntityConnectionProviderTest {
     EntityServer.startServer(configuration);
     Server<RemoteEntityConnection, EntityServerAdmin> server = (Server<RemoteEntityConnection, EntityServerAdmin>)
             LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(), configuration.getRegistryPort()).lookup(serverName);
-    EntityServerAdmin admin = server.getServerAdmin(User.parseUser("scott:tiger"));
+    EntityServerAdmin admin = server.getServerAdmin(User.parse("scott:tiger"));
 
     RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(Clients.SERVER_HOST_NAME.get(),
             configuration.getServerPort(), configuration.getRegistryPort());
     provider.setClientTypeId("RemoteEntityConnectionProviderTest");
     provider.setDomainClassName("is.codion.framework.db.rmi.TestDomain");
-    provider.setUser(User.parseUser("scott:tiger"));
+    provider.setUser(User.parse("scott:tiger"));
 
     EntityConnection connection = provider.getConnection();
     connection.select(condition(TestDomain.T_DEPARTMENT));
@@ -92,7 +92,7 @@ public class RemoteEntityConnectionProviderTest {
 
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
-            .adminUser(User.parseUser("scott:tiger"))
+            .adminUser(User.parse("scott:tiger"))
             .database(DatabaseFactory.getDatabase())
             .domainModelClassNames(singletonList("is.codion.framework.db.rmi.TestDomain"))
             .sslEnabled(true)

@@ -23,7 +23,7 @@ public final class EntitiesInAction {
     EntityConnectionProvider connectionProvider = EntityConnectionProvider.connectionProvider()
             .setDomainClassName(Petstore.class.getName())
             .setClientTypeId("Manual")
-            .setUser(User.parseUser("scott:tiger"));
+            .setUser(User.parse("scott:tiger"));
 
     Entities entities = connectionProvider.getEntities();
 

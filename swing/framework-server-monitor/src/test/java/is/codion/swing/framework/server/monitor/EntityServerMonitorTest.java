@@ -27,9 +27,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EntityServerMonitorTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final User ADMIN_USER = User.parseUser("scott:tiger");
+  private static final User ADMIN_USER = User.parse("scott:tiger");
   private static Server<?, EntityServerAdmin> server;
   private static EntityServerAdmin admin;
 
@@ -92,7 +92,7 @@ public class EntityServerMonitorTest {
 
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
-            .adminUser(User.parseUser("scott:tiger"))
+            .adminUser(User.parse("scott:tiger"))
             .startupPoolUsers(Collections.singletonList(UNIT_TEST_USER))
             .domainModelClassNames(Collections.singletonList(TestDomain.class.getName()))
             .database(DatabaseFactory.getDatabase())

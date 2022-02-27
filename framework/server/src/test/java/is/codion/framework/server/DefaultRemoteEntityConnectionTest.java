@@ -32,7 +32,7 @@ public class DefaultRemoteEntityConnectionTest {
   private static final Domain DOMAIN = new TestDomain();
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
   void wrongUsername() throws Exception {

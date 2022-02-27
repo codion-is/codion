@@ -40,7 +40,7 @@ public final class EmployeeServerTest {
             .adminPort(SERVER_ADMIN_PORT)
             .database(DatabaseFactory.getDatabase())
             .connectionTimeout(60_000)
-            .adminUser(User.parseUser("scott:tiger"))
+            .adminUser(User.parse("scott:tiger"))
             .sslEnabled(false)
             .serverName("Employee Server")
             .build();
@@ -52,7 +52,7 @@ public final class EmployeeServerTest {
 
     UUID clientId = UUID.randomUUID();
     EmployeeService employeeService = remoteServer.connect(ConnectionRequest.builder()
-            .user(User.parseUser("scott:tiger"))
+            .user(User.parse("scott:tiger"))
             .clientId(clientId)
             .clientTypeId("EmployeeServerTest")
             .build());

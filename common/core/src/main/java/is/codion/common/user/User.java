@@ -58,7 +58,7 @@ public interface User {
    * @param userPassword the username and password string
    * @return a User with the given username and password
    */
-  static User parseUser(String userPassword) {
+  static User parse(String userPassword) {
     String[] split = requireNonNull(userPassword).split(":", 2);
     if (split.length == 1) {
       return new DefaultUser(split[0].trim(), null);

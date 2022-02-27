@@ -70,7 +70,7 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
 
   @Override
   protected User getDefaultUser() {
-    return User.parseUser("scott:tiger");
+    return User.parse("scott:tiger");
   }
 
   public static void main(String[] args) {

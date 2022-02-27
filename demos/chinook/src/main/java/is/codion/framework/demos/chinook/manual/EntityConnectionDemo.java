@@ -367,7 +367,7 @@ public final class EntityConnectionDemo {
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
                     .setDomainClassName(ChinookImpl.class.getName())
-                    .setUser(User.parseUser("scott:tiger"));
+                    .setUser(User.parse("scott:tiger"));
 
     EntityConnection connection = connectionProvider.getConnection();
     selectConditionDemo(connection);

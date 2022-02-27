@@ -26,7 +26,7 @@ public final class AbstractConnectionPoolWrapperTest {
     ConnectionPoolFactory poolFactory = ConnectionPoolFactory.connectionPoolFactory();
     assertNotNull(ConnectionPoolFactory.connectionPoolFactory("is.codion.plugin.hikari.pool.HikariConnectionPoolFactory"));
 
-    User user = User.parseUser("scott:tiger");
+    User user = User.parse("scott:tiger");
     long startTime = System.currentTimeMillis();
     ConnectionPoolWrapper poolWrapper = poolFactory.createConnectionPoolWrapper(database, user);
     poolWrapper.getUser();

@@ -80,7 +80,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     Report.REPORT_PATH.set("http://test.io");
     SwingUtilities.invokeLater(() -> new StoreAppPanel().starter()
             .frameSize(Windows.getScreenSizeRatio(0.6))
-            .defaultLoginUser(User.parseUser("scott:tiger"))
+            .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }
 }

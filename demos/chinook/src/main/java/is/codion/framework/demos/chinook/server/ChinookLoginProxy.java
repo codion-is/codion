@@ -42,7 +42,7 @@ public final class ChinookLoginProxy implements LoginProxy {
    * The actual user credentials to return for successfully authenticated users.
    * Also used for user lookup.
    */
-  private final User databaseUser = User.parseUser("scott:tiger");
+  private final User databaseUser = User.parse("scott:tiger");
 
   /**
    * The Domain containing the authentication table.

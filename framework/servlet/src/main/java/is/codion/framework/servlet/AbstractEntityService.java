@@ -128,7 +128,7 @@ abstract class AbstractEntityService extends Application {
 
     String basicAuth = basic.get(0);
     if (basicAuth.length() > BASIC_PREFIX_LENGTH && BASIC_PREFIX.equalsIgnoreCase(basicAuth.substring(0, BASIC_PREFIX_LENGTH))) {
-      return User.parseUser(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH))));
+      return User.parse(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH))));
     }
 
     throw new ServerAuthenticationException("Invalid authorization format");

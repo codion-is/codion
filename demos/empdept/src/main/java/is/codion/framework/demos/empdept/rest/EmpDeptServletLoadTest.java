@@ -27,7 +27,7 @@ import static java.util.Arrays.asList;
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   public EmpDeptServletLoadTest(User user) {
     super(user, asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),

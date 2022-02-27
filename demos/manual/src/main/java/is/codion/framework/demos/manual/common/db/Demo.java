@@ -56,7 +56,7 @@ public final class Demo {
 
     Database database = DatabaseFactory.getDatabase();
 
-    User user = User.parseUser("scott:tiger");
+    User user = User.parse("scott:tiger");
 
     java.sql.Connection connection = database.createConnection(user);
     // end::connection[]
@@ -68,7 +68,7 @@ public final class Demo {
 
     Database database = DatabaseFactory.getDatabase();
 
-    User user = User.parseUser("scott:tiger");
+    User user = User.parse("scott:tiger");
 
     DatabaseConnection databaseConnection =
             DatabaseConnection.databaseConnection(database, user);

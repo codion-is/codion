@@ -10,7 +10,7 @@ import java.util.UUID;
 public final class HttpJsonEntityConnectionTest extends AbstractHttpEntityConnectionTest {
 
   private static final User UNIT_TEST_USER =
-          User.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+          User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   public HttpJsonEntityConnectionTest() {
     super(new HttpJsonEntityConnection(TestDomain.DOMAIN.getName(),

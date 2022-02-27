@@ -102,7 +102,7 @@ public class H2DatabaseTest {
     H2Database database = new H2Database(url, singletonList("src/test/resources/create_schema.sql"));
     assertTrue(dbFile.exists());
 
-    User user = User.parseUser("scott:tiger");
+    User user = User.parse("scott:tiger");
 
     Connection connection = database.createConnection(user);
     connection.prepareStatement("select id from test.test_table").execute();
