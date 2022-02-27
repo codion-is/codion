@@ -1420,15 +1420,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.getEditModel(), initialValue);
   }
 
-  private GridBagConstraints createSearchFieldConstraints() {
-    GridBagConstraints constraints = new GridBagConstraints();
-    constraints.fill = GridBagConstraints.HORIZONTAL;
-    constraints.weightx = 1.0;
-    constraints.insets = new Insets(0, Layouts.HORIZONTAL_VERTICAL_GAP.get(), 0, Layouts.HORIZONTAL_VERTICAL_GAP.get());
-
-    return constraints;
-  }
-
   /**
    * @return the refresh toolbar
    */
@@ -1625,6 +1616,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     else {
       WaitCursor.hide(EntityTablePanel.this);
     }
+  }
+
+  private static GridBagConstraints createSearchFieldConstraints() {
+    GridBagConstraints constraints = new GridBagConstraints();
+    constraints.fill = GridBagConstraints.HORIZONTAL;
+    constraints.weightx = 1.0;
+    constraints.insets = new Insets(0, Layouts.HORIZONTAL_VERTICAL_GAP.get(), 0, Layouts.HORIZONTAL_VERTICAL_GAP.get());
+
+    return constraints;
   }
 
   private static void addAdditionalControls(Controls popupControls, List<Controls> additionalPopupControls) {
