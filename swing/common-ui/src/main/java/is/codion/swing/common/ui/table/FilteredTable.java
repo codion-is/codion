@@ -324,15 +324,9 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
    */
   public boolean isCellVisible(int row, int column) {
-    JViewport viewport = Utilities.getParentOfType(JViewport.class, this).orElse(null);
-    if (viewport == null) {
-      return false;
-    }
-    Rectangle cellRect = getCellRect(row, column, true);
-    Point viewPosition = viewport.getViewPosition();
-    cellRect.setLocation(cellRect.x - viewPosition.x, cellRect.y - viewPosition.y);
-
-    return new Rectangle(viewport.getExtentSize()).contains(cellRect);
+    return Utilities.getParentOfType(JViewport.class, this)
+            .map(viewport -> isCellVisible(viewport, row, column))
+            .orElse(false);
   }
 
   /**
@@ -342,7 +336,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public void scrollToColumn(C columnIdentifier) {
     Utilities.getParentOfType(JViewport.class, this).ifPresent(viewport ->
-            scrollToCoordinate(rowAtPoint(viewport.getViewPosition()),
+            scrollToRowColumn(viewport, rowAtPoint(viewport.getViewPosition()),
                     getModel().getColumnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER));
   }
 
@@ -354,29 +348,8 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
    */
   public void scrollToCoordinate(int row, int column, CenterOnScroll centerOnScroll) {
     requireNonNull(centerOnScroll);
-    Utilities.getParentOfType(JViewport.class, this).ifPresent(viewport -> {
-      Rectangle cellRectangle = getCellRect(row, column, true);
-      Rectangle viewRectangle = viewport.getViewRect();
-      cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
-      int x = cellRectangle.x;
-      int y = cellRectangle.y;
-      if (centerOnScroll != CenterOnScroll.NEITHER) {
-        if (centerOnScroll == CenterOnScroll.COLUMN || centerOnScroll == CenterOnScroll.BOTH) {
-          x = (viewRectangle.width - cellRectangle.width) / 2;
-          if (cellRectangle.x < x) {
-            x = -x;
-          }
-        }
-        if (centerOnScroll == CenterOnScroll.ROW || centerOnScroll == CenterOnScroll.BOTH) {
-          y = (viewRectangle.height - cellRectangle.height) / 2;
-          if (cellRectangle.y < y) {
-            y = -y;
-          }
-        }
-        cellRectangle.translate(x, y);
-      }
-      viewport.scrollRectToVisible(cellRectangle);
-    });
+    Utilities.getParentOfType(JViewport.class, this).ifPresent(viewport ->
+            scrollToRowColumn(viewport, row, column, centerOnScroll));
   }
 
   /**
@@ -582,6 +555,38 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
             .controls(ToggleControl.builder(tableModel.getRegularExpressionSearchState())
                     .caption(MESSAGES.getString("regular_expression_search")))
             .build();
+  }
+
+  private boolean isCellVisible(JViewport viewport, int row, int column) {
+    Rectangle cellRect = getCellRect(row, column, true);
+    Point viewPosition = viewport.getViewPosition();
+    cellRect.setLocation(cellRect.x - viewPosition.x, cellRect.y - viewPosition.y);
+
+    return new Rectangle(viewport.getExtentSize()).contains(cellRect);
+  }
+
+  private void scrollToRowColumn(JViewport viewport, int row, int column, CenterOnScroll centerOnScroll) {
+    Rectangle cellRectangle = getCellRect(row, column, true);
+    Rectangle viewRectangle = viewport.getViewRect();
+    cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
+    int x = cellRectangle.x;
+    int y = cellRectangle.y;
+    if (centerOnScroll != CenterOnScroll.NEITHER) {
+      if (centerOnScroll == CenterOnScroll.COLUMN || centerOnScroll == CenterOnScroll.BOTH) {
+        x = (viewRectangle.width - cellRectangle.width) / 2;
+        if (cellRectangle.x < x) {
+          x = -x;
+        }
+      }
+      if (centerOnScroll == CenterOnScroll.ROW || centerOnScroll == CenterOnScroll.BOTH) {
+        y = (viewRectangle.height - cellRectangle.height) / 2;
+        if (cellRectangle.y < y) {
+          y = -y;
+        }
+      }
+      cellRectangle.translate(x, y);
+    }
+    viewport.scrollRectToVisible(cellRectangle);
   }
 
   private static void toggleFilterPanel(ColumnConditionPanel<?, ?> columnFilterPanel, Container parent,

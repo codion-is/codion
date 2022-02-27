@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.OptionalInt;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.framework.domain.entity.ForeignKey.reference;
@@ -62,9 +61,11 @@ final class DatabaseDomain extends DefaultDomain {
       builders.add(getColumnPropertyBuilder(column, entityType));
       if (column.isForeignKeyColumn()) {
         foreignKeyConstraints.stream()
-                .filter(key -> isLastKeyColumn(key, column))
+                //if this is the last column in the foreign key
+                .filter(foreignKeyConstraint -> isLastKeyColumn(foreignKeyConstraint, column))
                 .findFirst()
                 .ifPresent(foreignKeyConstraint -> {
+                  //we add the foreign key property just below it
                   foreignKeyConstraints.remove(foreignKeyConstraint);
                   builders.add(getForeignKeyPropertyBuilder(foreignKeyConstraint, entityType));
                 });
@@ -128,11 +129,10 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private static boolean isLastKeyColumn(ForeignKeyConstraint foreignKeyConstraint, Column column) {
-    OptionalInt lastColumnPosition = foreignKeyConstraint.getReferences().keySet().stream()
+    return foreignKeyConstraint.getReferences().keySet().stream()
             .mapToInt(Column::getPosition)
-            .max();
-
-    return lastColumnPosition.isPresent() && column.getPosition() == lastColumnPosition.getAsInt();
+            .max()
+            .orElse(-1) == column.getPosition();
   }
 
   private static String createForeignKeyName(ForeignKeyConstraint foreignKeyConstraint) {
