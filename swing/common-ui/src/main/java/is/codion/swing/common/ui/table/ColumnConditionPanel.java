@@ -39,6 +39,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,10 +81,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final JPanel buttonPanel = new JPanel();
   private final JPanel controlPanel = new JPanel(new BorderLayout());
   private final JPanel inputPanel = new JPanel(new BorderLayout());
+  private final JPanel rangePanel = new JPanel(new GridLayout(1, 2));
 
   private final Event<C> focusGainedEvent = Event.event();
   private final State advancedConditionState = State.state();
-  private final Value<Boolean> singleValuePanelValue = Value.value();
   private final Value<Integer> operatorPopupWidthValue = Value.value(0, 0);
 
   private JDialog dialog;
@@ -129,8 +130,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(toggleEnabledButton, toggleAdvancedButton, operatorCombo,
-            equalField, lowerBoundField, upperBoundField, buttonPanel, controlPanel, inputPanel);
+    Utilities.updateUI(toggleEnabledButton, toggleAdvancedButton, operatorCombo, equalField,
+            lowerBoundField, upperBoundField, buttonPanel, controlPanel, inputPanel, rangePanel);
   }
 
   /**
@@ -446,7 +447,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       case BETWEEN:
       case NOT_BETWEEN_EXCLUSIVE:
       case NOT_BETWEEN:
-        rangePanel(lowerBoundField, upperBoundField);
+        rangePanel();
         break;
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
@@ -532,22 +533,26 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void singleValuePanel(JComponent boundField) {
-    if (singleValuePanelValue.isNull() || !singleValuePanelValue.get()) {
+    List<Component> inputPanelComponents = Arrays.asList(inputPanel.getComponents());
+    if (inputPanelComponents.contains(rangePanel)) {
+      //going from range to single value
       inputPanel.removeAll();
       inputPanel.add(boundField, BorderLayout.CENTER);
-      singleValuePanelValue.set(true);
-      boundField.requestFocusInWindow();
+    }
+    else if (!inputPanelComponents.contains(boundField)) {
+      inputPanel.removeAll();
+      inputPanel.add(boundField, BorderLayout.CENTER);
     }
   }
 
-  private void rangePanel(JComponent lowerBoundField, JComponent upperBoundField) {
-    if (singleValuePanelValue.isNull() || singleValuePanelValue.get()) {
+  private void rangePanel() {
+    List<Component> inputPanelComponents = Arrays.asList(inputPanel.getComponents());
+    if (!inputPanelComponents.contains(rangePanel)) {
+      //going from single value to range
       inputPanel.removeAll();
-      inputPanel.add(Components.panel(new GridLayout(1, 2))
-              .add(lowerBoundField, upperBoundField)
-              .build(), BorderLayout.CENTER);
-      singleValuePanelValue.set(false);
-      lowerBoundField.requestFocusInWindow();
+      rangePanel.add(lowerBoundField);
+      rangePanel.add(upperBoundField);
+      inputPanel.add(rangePanel, BorderLayout.CENTER);
     }
   }
 
