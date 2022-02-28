@@ -7884,3 +7884,4 @@
   DefaultEntityTableCellRenderer bug fixed, uses the above to present the item caption, special handling was indeed necessary, see above
   Database.getLimitOffsetClause(), AbstractDatabase.createLimitOffsetClause() and createOffsetFetchNextClause() added
   AbstractDatabase.createOffsetFetchNextClause() bug fixed, missing rows keyword
+  EntityTableConditionPanel bug fixed, now calls updateUI() on the condition panel
