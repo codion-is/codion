@@ -49,6 +49,20 @@ public final class EntityComboBox extends JComboBox<Entity> {
   }
 
   /**
+   * Overridden as a workaround for editable combo boxes as initial focus components on
+   * detail panels stealing the focus from the parent panel on initialization
+   */
+  @Override
+  public void requestFocus() {
+    if (isEditable()) {
+      getEditor().getEditorComponent().requestFocus();
+    }
+    else {
+      super.requestFocus();
+    }
+  }
+
+  /**
    * Creates an Action which displays a dialog for filtering this combo box via a foreign key
    * @param foreignKey the foreign key on which to filter
    * @return a Control for filtering this combo box

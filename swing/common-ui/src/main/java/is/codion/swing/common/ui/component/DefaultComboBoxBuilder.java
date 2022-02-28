@@ -156,7 +156,21 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   }
 
   protected C createComboBox() {
-    return (C) new JComboBox<>(comboBoxModel);
+    return (C) new JComboBox<T>(comboBoxModel) {
+      /**
+       * Overridden as a workaround for editable combo boxes as initial focus components on
+       * detail panels stealing the focus from the parent panel on initialization
+       */
+      @Override
+      public void requestFocus() {
+        if (isEditable()) {
+          getEditor().getEditorComponent().requestFocus();
+        }
+        else {
+          super.requestFocus();
+        }
+      }
+    };
   }
 
   private static final class MoveCaretListener<T> implements EventDataListener<T> {
