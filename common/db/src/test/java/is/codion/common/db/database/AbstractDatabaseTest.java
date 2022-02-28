@@ -63,9 +63,9 @@ public final class AbstractDatabaseTest {
   @Test
   void limitOffset() {
     assertEquals("", database.createOffsetFetchNextClause(null, null));
-    assertEquals("offset 5", database.createOffsetFetchNextClause(null, 5));
+    assertEquals("offset 5 rows", database.createOffsetFetchNextClause(null, 5));
     assertEquals("fetch next 10 rows only", database.createOffsetFetchNextClause(10, null));
-    assertEquals("offset 5 fetch next 10 rows only", database.createOffsetFetchNextClause(10, 5));
+    assertEquals("offset 5 rows fetch next 10 rows only", database.createOffsetFetchNextClause(10, 5));
     assertEquals("", database.getLimitOffsetClause(null, null));
     assertEquals("offset 5", database.getLimitOffsetClause(null, 5));
     assertEquals("limit 10", database.getLimitOffsetClause(10, null));

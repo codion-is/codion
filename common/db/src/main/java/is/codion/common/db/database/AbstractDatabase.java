@@ -232,7 +232,7 @@ public abstract class AbstractDatabase implements Database {
     //OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY
     StringBuilder builder = new StringBuilder();
     if (offset != null) {
-      builder.append(OFFSET).append(offset);
+      builder.append(OFFSET).append(offset).append(ROWS);
     }
     if (limit != null) {
       builder.append(builder.length() == 0 ? "" : " ").append(FETCH_NEXT).append(limit).append(ROWS).append(ONLY);
