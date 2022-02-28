@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static is.codion.framework.domain.property.Properties.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class PropertiesTest {
 
@@ -219,7 +218,16 @@ public final class PropertiesTest {
 
   @Test
   void itemProperty() {
-    List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(1));
-    assertThrows(IllegalArgumentException.class, () -> Properties.itemProperty(ENTITY_TYPE.integerAttribute("item"), items));
+    List<Item<Integer>> itemsDuplicate = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(1));
+    assertThrows(IllegalArgumentException.class, () -> Properties.itemProperty(ENTITY_TYPE.integerAttribute("item"), itemsDuplicate));
+
+    List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(3));
+    ItemProperty<Integer> property = (ItemProperty<Integer>) Properties.itemProperty(ENTITY_TYPE.integerAttribute("item"), items).get();
+    assertFalse(property.isValid(4));
+    assertThrows(IllegalArgumentException.class, () -> property.getItem(4));
+    assertTrue(property.isValid(null));
+    assertTrue(property.isValid(2));
+    assertNotNull(property.getItem(null));
+    assertNotNull(property.getItem(1));
   }
 }

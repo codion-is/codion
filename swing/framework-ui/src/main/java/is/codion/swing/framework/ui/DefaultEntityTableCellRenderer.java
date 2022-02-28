@@ -100,7 +100,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   @Override
   protected void setValue(Object value) {
     if (property instanceof ItemProperty) {
-      setText((String) value);
+      setText(((ItemProperty<Object>) property).getItem(value).getCaption());
     }
     else if (value instanceof Temporal) {
       setText(dateTimeFormatter.format((Temporal) value));
