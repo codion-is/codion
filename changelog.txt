@@ -7879,3 +7879,4 @@
   ColumnConditionPanel bug fixed, did not show correct bound fields when changing operator, no longer requests bound field focus when changing operator
   EntityTablePanel, refresh key event on condition panel now onKeyReleased, otherwise enter on a combobox (operator f.ex) did not trigger
   User.parseUser() renamed parse()
+  EntityComboBox, DefaultComboBoxBuilder, regression introduced when SteppedComboBox was removed, see 'SteppedComboBox bug fixed, requestFocus() overridden' above, editable combo boxes as initial focus components on detail panels steal the focus from the parent panel on initialization, override requestFocus() as a workaround
