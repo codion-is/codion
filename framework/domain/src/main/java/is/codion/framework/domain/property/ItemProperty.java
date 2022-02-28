@@ -23,4 +23,11 @@ public interface ItemProperty<T> extends ColumnProperty<T> {
    * @return an unmodifiable view of the available items
    */
   List<Item<T>> getItems();
+
+  /**
+   * @param value the value
+   * @return the item associated with the given value
+   * @throws IllegalArgumentException in case this value is not associated with a valid item
+   */
+  Item<T> getItem(T value);
 }

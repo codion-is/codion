@@ -7,7 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
@@ -18,6 +18,7 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
   private static final long serialVersionUID = 1;
 
   private final List<Item<T>> items;
+  private final Map<T, Item<T>> itemMap;
 
   /**
    * @param attribute the attribute
@@ -28,11 +29,13 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
     super(attribute, caption);
     validateItems(items);
     this.items = unmodifiableList(items);
+    this.itemMap = items.stream()
+            .collect(Collectors.toMap(Item::getValue, item -> item));
   }
 
   @Override
   public boolean isValid(T value) {
-    return findItem(value) != null;
+    return itemMap.containsKey(value);
   }
 
   @Override
@@ -40,15 +43,14 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
     return items;
   }
 
-  private Item<T> findItem(T value) {
-    for (int i = 0; i < items.size(); i++) {
-      Item<T> item = items.get(i);
-      if (Objects.equals(item.getValue(), value)) {
-        return item;
-      }
+  @Override
+  public Item<T> getItem(T value) {
+    Item<T> item = itemMap.get(value);
+    if (item == null) {
+      throw new IllegalArgumentException("Invalid item value: " + value);
     }
 
-    return null;
+    return item;
   }
 
   private static <T> void validateItems(List<Item<T>> items) {
