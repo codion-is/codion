@@ -52,8 +52,6 @@ final class SelectQueries {
     private static final String GROUP_BY = "group by ";
     private static final String HAVING = "having ";
     private static final String ORDER_BY = "order by ";
-    private static final String LIMIT = "limit ";
-    private static final String OFFSET = "offset ";
     private static final String NEWLINE = "\n";
 
     private final EntityDefinition definition;
@@ -202,11 +200,9 @@ final class SelectQueries {
       if (orderBy != null) {
         builder.append(NEWLINE).append(ORDER_BY).append(orderBy);
       }
-      if (limit != null) {
-        builder.append(NEWLINE).append(LIMIT).append(limit);
-      }
-      if (offset != null) {
-        builder.append(NEWLINE).append(OFFSET).append(offset);
+      String limitOffsetClause = database.getLimitOffsetClause(limit, offset);
+      if (!limitOffsetClause.isEmpty()) {
+        builder.append(NEWLINE).append(limitOffsetClause);
       }
       if (forUpdate) {
         String forUpdateClause = database.getSelectForUpdateClause();

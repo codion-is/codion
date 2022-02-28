@@ -7882,3 +7882,4 @@
   EntityComboBox, DefaultComboBoxBuilder, regression introduced when SteppedComboBox was removed, see 'SteppedComboBox bug fixed, requestFocus() overridden' above, editable combo boxes as initial focus components on detail panels steal the focus from the parent panel on initialization, override requestFocus() as a workaround
   ItemProperty.getItem(value) added
   DefaultEntityTableCellRenderer bug fixed, uses the above to present the item caption, special handling was indeed necessary, see above
+  Database.getLimitOffsetClause(), AbstractDatabase.createLimitOffsetClause() and createOffsetFetchNextClause() added

@@ -43,6 +43,11 @@ final class SQLServerDatabase extends AbstractDatabase {
     return "";
   }
 
+  @Override
+  public String getLimitOffsetClause(Integer limit, Integer offset) {
+    return createOffsetFetchNextClause(limit, offset);
+  }
+
   /**
    * @return true
    */

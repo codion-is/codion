@@ -33,6 +33,12 @@ public abstract class AbstractDatabase implements Database {
   protected static final String FOR_UPDATE = "for update";
   protected static final String FOR_UPDATE_NOWAIT = "for update nowait";
 
+  private static final String FETCH_NEXT = "fetch next ";
+  private static final String ROWS = " rows";
+  private static final String ONLY = " only";
+  private static final String OFFSET = "offset ";
+  private static final String LIMIT = "limit ";
+
   static Database instance;
 
   private final Map<String, ConnectionPoolWrapper> connectionPools = new HashMap<>();
@@ -207,6 +213,32 @@ public abstract class AbstractDatabase implements Database {
    */
   protected int getLoginTimeout() {
     return Database.LOGIN_TIMEOUT.getOrThrow();
+  }
+
+  protected final String createLimitOffsetClause(Integer limit, Integer offset) {
+    //LIMIT {limit} OFFSET {offset}
+    StringBuilder builder = new StringBuilder();
+    if (limit != null) {
+      builder.append(LIMIT).append(limit);
+    }
+    if (offset != null) {
+      builder.append(builder.length() == 0 ? "" : " ").append(OFFSET).append(offset);
+    }
+
+    return builder.toString();
+  }
+
+  protected final String createOffsetFetchNextClause(Integer limit, Integer offset) {
+    //OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY
+    StringBuilder builder = new StringBuilder();
+    if (offset != null) {
+      builder.append(OFFSET).append(offset);
+    }
+    if (limit != null) {
+      builder.append(builder.length() == 0 ? "" : " ").append(FETCH_NEXT).append(limit).append(ROWS).append(ONLY);
+    }
+
+    return builder.toString();
   }
 
   protected static String removeUrlPrefixOptionsAndParameters(String url, String... prefixes) {

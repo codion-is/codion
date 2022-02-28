@@ -96,6 +96,11 @@ final class OracleDatabase extends AbstractDatabase {
     return FOR_UPDATE;
   }
 
+  @Override
+  public String getLimitOffsetClause(Integer limit, Integer offset) {
+    return createOffsetFetchNextClause(limit, offset);
+  }
+
   /**
    * @return false
    */
