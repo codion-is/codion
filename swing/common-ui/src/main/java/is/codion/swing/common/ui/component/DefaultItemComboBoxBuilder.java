@@ -113,7 +113,21 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   @Override
   protected JComboBox<Item<T>> buildComponent() {
     ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
-    JComboBox<Item<T>> comboBox = new JComboBox<>(itemComboBoxModel);
+    JComboBox<Item<T>> comboBox = new JComboBox<Item<T>>(itemComboBoxModel) {
+      /**
+       * Overridden as a workaround for editable combo boxes as initial focus components on
+       * detail panels stealing the focus from the parent panel on initialization
+       */
+      @Override
+      public void requestFocus() {
+        if (isEditable()) {
+          getEditor().getEditorComponent().requestFocus();
+        }
+        else {
+          super.requestFocus();
+        }
+      }
+    };
     Completion.enable(comboBox, completionMode);
     if (mouseWheelScrolling) {
       comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.create(itemComboBoxModel));
