@@ -64,6 +64,11 @@ public class DatabaseTest {
     }
 
     @Override
+    public String getLimitOffsetClause(Integer limit, Integer offset) {
+      return createLimitOffsetClause(limit, offset);
+    }
+
+    @Override
     public String getAutoIncrementQuery(String idSource) {
       return database.getAutoIncrementQuery(idSource);
     }

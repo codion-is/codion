@@ -36,6 +36,11 @@ final class SQLiteDatabase extends AbstractDatabase {
     return "for update";
   }
 
+  @Override
+  public String getLimitOffsetClause(Integer limit, Integer offset) {
+    return createLimitOffsetClause(limit, offset);
+  }
+
   /**
    * @param exception the exception
    * @return true if this exception is a referential integrity error

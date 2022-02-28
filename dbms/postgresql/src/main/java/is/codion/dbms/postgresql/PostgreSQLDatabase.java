@@ -55,6 +55,11 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   @Override
+  public String getLimitOffsetClause(Integer limit, Integer offset) {
+    return createLimitOffsetClause(limit, offset);
+  }
+
+  @Override
   public String getAutoIncrementQuery(String idSource) {
     return "select currval('" + requireNonNull(idSource, "idSource") + "')";
   }

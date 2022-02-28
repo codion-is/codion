@@ -46,6 +46,11 @@ final class DerbyDatabase extends AbstractDatabase {
   }
 
   @Override
+  public String getLimitOffsetClause(Integer limit, Integer offset) {
+    return createOffsetFetchNextClause(limit, offset);
+  }
+
+  @Override
   public String getAutoIncrementQuery(String idSource) {
     return AUTO_INCREMENT_QUERY + requireNonNull(idSource, "idSource");
   }

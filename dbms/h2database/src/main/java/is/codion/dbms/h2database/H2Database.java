@@ -85,6 +85,11 @@ final class H2Database extends AbstractDatabase {
   }
 
   @Override
+  public String getLimitOffsetClause(Integer limit, Integer offset) {
+    return createLimitOffsetClause(limit, offset);
+  }
+
+  @Override
   public String getAutoIncrementQuery(String idSource) {
     return AUTO_INCREMENT_QUERY;
   }

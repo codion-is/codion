@@ -45,6 +45,11 @@ final class MySQLDatabase extends AbstractDatabase {
   }
 
   @Override
+  public String getLimitOffsetClause(Integer limit, Integer offset) {
+    return createLimitOffsetClause(limit, offset);
+  }
+
+  @Override
   public boolean isReferentialIntegrityException(SQLException exception) {
     return exception.getErrorCode() == REFERENTIAL_CONSTRAINT_ERROR;
   }

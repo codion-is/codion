@@ -128,6 +128,15 @@ public interface Database extends ConnectionFactory {
   String getSelectForUpdateClause();
 
   /**
+   * Returns a limit/offset clause variation for this database, based on the given limit and offset values.
+   * If both are null an empty string should be returned.
+   * @param limit the limit
+   * @param offset the offset
+   * @return a limit/offset clause
+   */
+  String getLimitOffsetClause(Integer limit, Integer offset);
+
+  /**
    * Returns true if the dbms supports the Java 6 jdbc call {@link Connection#isValid(int)}.
    * @return true if the dbms supports the Java 6 jdbc call {@link Connection#isValid(int)}
    */
