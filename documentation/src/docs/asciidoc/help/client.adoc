@@ -178,9 +178,9 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 
 [cols="1,3"]
 |===
-2+|Entity combo box with new item action
+2+|Entity field (combo box or search field) with new item action
 
-|kbd:[Insert] or kbd:[Ctrl + +]|Add new item
+|kbd:[Insert]|Add new item
 |===
 
 [cols="1,3"]
