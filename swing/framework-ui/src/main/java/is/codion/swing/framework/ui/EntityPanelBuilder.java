@@ -25,12 +25,12 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -496,23 +496,25 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     private void addShortcutKey() {
       JComponent keyComponent = component;
-      if (component instanceof JComboBox && ((JComboBox<?>) component).isEditable()) {
-        keyComponent = (JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent();
+      if (component instanceof JComboBox) {
+        JComboBox<?> comboBox = (JComboBox<?>) component;
+        if (comboBox.isEditable()) {
+          keyComponent = (JComponent) comboBox.getEditor().getEditorComponent();
+          comboBox.addPropertyChangeListener("editor", changeEvent -> {
+            ComboBoxEditor editor = (ComboBoxEditor) changeEvent.getNewValue();
+            if (editor != null) {
+              addShortcutKey((JComponent) editor.getEditorComponent());
+            }
+          });
+        }
       }
+      addShortcutKey(keyComponent);
+    }
+
+    private void addShortcutKey(JComponent component) {
       KeyEvents.builder(KeyEvent.VK_INSERT)
-              .onKeyReleased()
               .action(this)
-              .enable(keyComponent);
-      KeyEvents.builder(KeyEvent.VK_ADD)
-              .onKeyReleased()
-              .modifiers(InputEvent.CTRL_DOWN_MASK)
-              .action(this)
-              .enable(keyComponent);
-      KeyEvents.builder(KeyEvent.VK_PLUS)
-              .onKeyReleased()
-              .modifiers(InputEvent.CTRL_DOWN_MASK)
-              .action(this)
-              .enable(keyComponent);
+              .enable(component);
     }
   }
 }
