@@ -500,13 +500,16 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         keyComponent = (JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent();
       }
       KeyEvents.builder(KeyEvent.VK_INSERT)
+              .onKeyReleased()
               .action(this)
               .enable(keyComponent);
       KeyEvents.builder(KeyEvent.VK_ADD)
+              .onKeyReleased()
               .modifiers(InputEvent.CTRL_DOWN_MASK)
               .action(this)
               .enable(keyComponent);
       KeyEvents.builder(KeyEvent.VK_PLUS)
+              .onKeyReleased()
               .modifiers(InputEvent.CTRL_DOWN_MASK)
               .action(this)
               .enable(keyComponent);
