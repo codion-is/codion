@@ -23,7 +23,7 @@
 |*NOT BETWEEN*|&#x2265;&#x2219;&#x2265;|Not between an upper and lower bound, including the bounds
 |===
 
-Each table has an associated search panel, which can be displayed by using the button highlighted in the screenshot below. This button toggles through the avilable search panel views; *hidden*, *visible* and *advanced*.
+Each table has an associated search panel, which can be displayed by using the button highlighted in the screenshot below. This button toggles through the available search panel states; *hidden*, *visible* and *advanced*.
 
 image::search/search_cleared.png[Search, cleared]
 
@@ -33,7 +33,7 @@ In the screenshot below we have added a wildcard condition to the *Name* column,
 
 NOTE: The condition is automatically enabled when a value has been entered.
 
-When the search condition has been changed, as in, when it does not represent the data currently in the table, the refresh button in the lower left corner becomes enabled, indicating that a refresh is in order. Further column conditions can be added before a refresh is performed.
+When the search condition has changed, as in, when it does not represent the data currently in the table, the refresh button in the lower left corner becomes enabled, indicating that a refresh is in order. Further column conditions can be added before a refresh is performed.
 
 image::search/search_string_wildcard_no_refresh.png[Search, string wildcard, no refresh]
 
@@ -56,7 +56,7 @@ With multiple conditions enabled, all of them are included next time the table i
 
 image::search/search_string_wildcard_and_selection.png[Search, string wildcard and selection]
 
-Enabling the *advanced* condition panel view in order to change the *Name* condition to *NOT EQUAL*.
+Enabling the *advanced* condition panel view, in order to change the *Name* condition to *NOT EQUAL*.
 
 image::search/search_string_wildcard_negated_and_selection.png[Search, string wildcard negated and selection]
 
