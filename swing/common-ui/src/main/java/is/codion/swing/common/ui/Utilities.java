@@ -122,7 +122,7 @@ public final class Utilities {
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
     LookAndFeelProvider selectedLookAndFeel = comboBoxModel.getSelectedValue().getValue();
     if (option == JOptionPane.OK_OPTION) {
-      if (currentLookAndFeel.get().getValue() != selectedLookAndFeel) {
+      if (!changeDuringSelection) {
         LookAndFeelProvider.enableLookAndFeel(selectedLookAndFeel);
       }
 

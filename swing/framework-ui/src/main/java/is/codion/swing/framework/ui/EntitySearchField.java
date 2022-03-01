@@ -106,8 +106,8 @@ public final class EntitySearchField extends JTextField {
   private final EntitySearchModel model;
   private final TextFieldHint searchHint;
   private final SettingsPanel settingsPanel;
-  private final Action transferFocusAction = TransferFocusOnEnter.forwardAction(this);
-  private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction(this);
+  private final Action transferFocusAction = TransferFocusOnEnter.forwardAction();
+  private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
 
   private SelectionProvider selectionProvider;
 

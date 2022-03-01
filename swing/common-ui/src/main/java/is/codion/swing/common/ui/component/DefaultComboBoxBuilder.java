@@ -6,13 +6,14 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
+import javax.swing.ActionMap;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
+import javax.swing.InputMap;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
@@ -23,6 +24,9 @@ import javax.swing.text.JTextComponent;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 
 import static is.codion.swing.common.ui.textfield.TextComponents.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
@@ -138,6 +142,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
     if (LookAndFeelProvider.isSystemLookAndFeelEnabled()) {
       new SteppedComboBoxUI(comboBox, popupWidth);
     }
+    comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());
 
     return comboBox;
   }
@@ -145,12 +150,6 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   @Override
   protected final ComponentValue<T, C> buildComponentValue(C component) {
     return ComponentValues.comboBox(component);
-  }
-
-  @Override
-  protected final void setTransferFocusOnEnter(C component) {
-    TransferFocusOnEnter.enable(component);
-    TransferFocusOnEnter.enable((JComponent) component.getEditor().getEditorComponent());
   }
 
   @Override
@@ -252,6 +251,33 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 
         return new Dimension(Math.max(size.width, comboBoxUI.popupWidth <= 0 ? displaySize.width : comboBoxUI.popupWidth), size.height);
       }
+    }
+  }
+
+  static final class CopyEditorActionsListener implements PropertyChangeListener {
+
+    private JComponent previousEditor;
+
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+      ComboBoxEditor oldEditor = (ComboBoxEditor) event.getOldValue();
+      if (oldEditor != null) {
+        previousEditor = (JComponent) oldEditor.getEditorComponent();
+      }
+      ComboBoxEditor newEditor = (ComboBoxEditor) event.getNewValue();
+      if (newEditor != null && previousEditor != null) {
+        copyActions(previousEditor, (JComponent) newEditor.getEditorComponent());
+        previousEditor = null;
+      }
+    }
+
+    private void copyActions(JComponent previousComponent, JComponent newComponent) {
+      ActionMap previousActionMap = previousComponent.getActionMap();
+      ActionMap newActionMap = newComponent.getActionMap();
+      Arrays.stream(previousActionMap.allKeys()).forEach(key -> newActionMap.put(key, previousActionMap.get(key)));
+      InputMap previousInputMap = previousComponent.getInputMap();
+      InputMap newInputMap = newComponent.getInputMap();
+      Arrays.stream(previousInputMap.allKeys()).forEach(key -> newInputMap.put(key, previousInputMap.get(key)));
     }
   }
 }

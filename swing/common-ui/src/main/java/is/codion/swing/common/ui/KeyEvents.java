@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui;
 
 import javax.swing.Action;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
@@ -167,8 +168,12 @@ public final class KeyEvents {
       if (actionName == null) {
         actionName = createDefaultActionName(component);
       }
-      component.getActionMap().put(actionName, action);
-      component.getInputMap(condition).put(getKeyStroke(), actionName);
+      KeyStroke keyStroke = getKeyStroke();
+      enable(component, action, condition, keyStroke, actionName);
+      if (component instanceof JComboBox<?>) {
+        JComponent editorComponent = (JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent();
+        enable(editorComponent, action, condition, keyStroke, actionName);
+      }
 
       return this;
     }
@@ -183,14 +188,28 @@ public final class KeyEvents {
       if (actionName == null) {
         actionName = createDefaultActionName(component);
       }
-      component.getActionMap().put(actionName, null);
-      component.getInputMap(condition).put(getKeyStroke(), null);
+      KeyStroke keyStroke = getKeyStroke();
+      disable(component, condition, keyStroke, actionName);
+      if (component instanceof JComboBox<?>) {
+        JComponent editorComponent = (JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent();
+        disable(editorComponent, condition, keyStroke, actionName);
+      }
 
       return this;
     }
 
     private String createDefaultActionName(JComponent component) {
       return component.getClass().getSimpleName() + keyEvent + modifiers + (onKeyReleased ? "keyReleased" : "keyPressed");
+    }
+
+    private static void enable(JComponent component, Action action, int condition, KeyStroke keyStroke, Object actionName) {
+      component.getActionMap().put(actionName, action);
+      component.getInputMap(condition).put(keyStroke, actionName);
+    }
+
+    private static void disable(JComponent component, int condition, KeyStroke keyStroke, Object actionName) {
+      component.getActionMap().put(actionName, null);
+      component.getInputMap(condition).put(keyStroke, null);
     }
   }
 }

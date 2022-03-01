@@ -7891,3 +7891,7 @@
   DefaultComboBoxBuilder, DefaultItemComboBoxBuilder, only set the SteppedComboBoxUI if the system look and feel is enabled
   Look and feel selection moved to Utilities from LookAndFeelProvider, getting rid of a cyclical dependency, due to the above
   EntityPanelBuilder.InsertEntityAction keyboard action back to onKeyPressed, only INSERT, did not survive look and feel change, now listens to editor changes and enables key event on the new editor component
+  Utilities.selectLookAndFeel() bug fixed, no need to enable the selected look and feel if changeDuringSelection is enabled
+  TransferFocusOnEnter.TransferFocusAction component field removed, uses the ActionEvent source
+  KeyEvents, added special handling for JComboBox, now enables/disables the key event on the editor as well, special handling removed from EntityPanelBuilder.InsertEntityAction, DefaultComboBoxBuilder and DefaultItemComboBox builder no longer override setTransferFocusOnEnter()
+  DefaultComboBoxBuilder, DefaultItemComboBoxBuilder, now add a property change listener for the editor and copy the action and input map contents from the old editor to the new, otherwise input actions don't survive look and feel change

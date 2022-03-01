@@ -7,14 +7,13 @@ import is.codion.common.item.Item;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
 import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.component.DefaultComboBoxBuilder.CopyEditorActionsListener;
 import is.codion.swing.common.ui.component.DefaultComboBoxBuilder.SteppedComboBoxUI;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -142,6 +141,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
     if (LookAndFeelProvider.isSystemLookAndFeelEnabled()) {
       new SteppedComboBoxUI(comboBox, popupWidth);
     }
+    comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());
 
     return comboBox;
   }
@@ -149,12 +149,6 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   @Override
   protected ComponentValue<T, JComboBox<Item<T>>> buildComponentValue(JComboBox<Item<T>> component) {
     return ComponentValues.itemComboBox(component);
-  }
-
-  @Override
-  protected void setTransferFocusOnEnter(JComboBox<Item<T>> component) {
-    TransferFocusOnEnter.enable(component);
-    TransferFocusOnEnter.enable((JComponent) component.getEditor().getEditorComponent());
   }
 
   @Override
