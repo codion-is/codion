@@ -30,6 +30,7 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private boolean selectAllOnFocusGained;
   private CalendarProvider calendarProvider = calendarProvider();
+  private boolean buttonFocusable = true;
 
   DefaultTemporalInputPanelBuiler(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
     super(linkedValue);
@@ -62,8 +63,18 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   }
 
   @Override
+  public TemporalInputPanelBuilder<T> buttonFocusable(boolean buttonFocusable) {
+    this.buttonFocusable = buttonFocusable;
+    return this;
+  }
+
+  @Override
   protected TemporalInputPanel<T> buildComponent() {
-    return new TemporalInputPanel<>(createTemporalField(), calendarProvider);
+    TemporalInputPanel<T> inputPanel = new TemporalInputPanel<>(createTemporalField(), calendarProvider);
+    inputPanel.getCalendarButton().ifPresent(button ->
+            button.setFocusable(buttonFocusable));
+
+    return inputPanel;
   }
 
   @Override

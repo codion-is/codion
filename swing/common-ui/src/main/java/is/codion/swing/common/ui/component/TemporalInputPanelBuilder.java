@@ -37,4 +37,10 @@ public interface TemporalInputPanelBuilder<T extends Temporal> extends Component
    * @return this builder instance
    */
   TemporalInputPanelBuilder<T> calendarProvider(CalendarProvider calendarProvider);
+
+  /**
+   * @param buttonFocusable true if the calendar button should be focusable
+   * @return this builder instance
+   */
+  TemporalInputPanelBuilder<T> buttonFocusable(boolean buttonFocusable);
 }
