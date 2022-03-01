@@ -3,14 +3,26 @@
  */
 package is.codion.swing.common.ui;
 
+import is.codion.common.Configuration;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
+import is.codion.common.item.Item;
+import is.codion.common.model.UserPreferences;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.PropertyValue;
+import is.codion.common.value.Value;
+import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
@@ -36,9 +48,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import static java.util.Arrays.stream;
@@ -50,9 +64,105 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Utilities {
 
+  /**
+   * Specifies whether to change the Look and Feel dynamically when choosing<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static PropertyValue<Boolean> CHANGE_LOOK_AND_FEEL_DURING_SELECTION = Configuration.booleanValue("codion.swing.lookAndFeel.changeDuringSelection", false);
+
   private static final String COMPONENT = "component";
 
   private Utilities() {}
+
+  /**
+   * Allows the user the select between all available Look and Feels.
+   * @param dialogOwner the dialog owner
+   * @return the selected look and feel provider, an empty Optional if cancelled
+   */
+  public static Optional<LookAndFeelProvider> selectLookAndFeel(JComponent dialogOwner) {
+    return selectLookAndFeel(dialogOwner, CHANGE_LOOK_AND_FEEL_DURING_SELECTION.get());
+  }
+
+  /**
+   * Allows the user the select between all available Look and Feels.
+   * @param dialogOwner the dialog owner
+   * @param changeDuringSelection true if the Look and Feel should change dynamically when choosing
+   * @return the selected look and feel provider, an empty Optional if cancelled
+   */
+  public static Optional<LookAndFeelProvider> selectLookAndFeel(JComponent dialogOwner, boolean changeDuringSelection) {
+    List<Item<LookAndFeelProvider>> items = new ArrayList<>();
+    Value<Item<LookAndFeelProvider>> currentLookAndFeel = Value.value();
+    String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
+    LookAndFeelProvider.getLookAndFeelProviders().values().stream()
+            .sorted(Comparator.comparing(LookAndFeelProvider::getName))
+            .map(provider -> Item.item(provider, provider.getName()))
+            .forEach(item -> {
+              items.add(item);
+              if (currentLookAndFeelClassName.equals(item.getValue().getClassName())) {
+                currentLookAndFeel.set(item);
+              }
+            });
+    ItemComboBoxModel<LookAndFeelProvider> comboBoxModel = ItemComboBoxModel.createModel(items);
+    currentLookAndFeel.toOptional().ifPresent(comboBoxModel::setSelectedItem);
+    if (changeDuringSelection) {
+      comboBoxModel.addSelectionListener(lookAndFeelProvider ->
+              LookAndFeelProvider.enableLookAndFeel(lookAndFeelProvider.getValue()));
+    }
+
+    JComboBox<Item<LookAndFeelProvider>> comboBox = Components.comboBox(comboBoxModel)
+            .completionMode(Completion.Mode.NONE)
+            .mouseWheelScrolling(true)
+            .build();
+
+    ResourceBundle resourceBundle = ResourceBundle.getBundle(LookAndFeelProvider.class.getName());
+    String dialogTitle = resourceBundle.getString("select_look_and_feel");
+
+    int option = JOptionPane.showOptionDialog(dialogOwner, comboBox, dialogTitle,
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+    LookAndFeelProvider selectedLookAndFeel = comboBoxModel.getSelectedValue().getValue();
+    if (option == JOptionPane.OK_OPTION) {
+      if (currentLookAndFeel.get().getValue() != selectedLookAndFeel) {
+        LookAndFeelProvider.enableLookAndFeel(selectedLookAndFeel);
+      }
+
+      return Optional.of(selectedLookAndFeel);
+    }
+    if (changeDuringSelection && currentLookAndFeel.get().getValue() != selectedLookAndFeel) {
+      LookAndFeelProvider.enableLookAndFeel(currentLookAndFeel.get().getValue());
+    }
+
+    return Optional.empty();
+  }
+
+  /**
+   * Creates a {@link Control} for selecting the Look and Feel.
+   * @param dialogOwner the dialog owner
+   * @return a look and feel selection control
+   */
+  public static Control selectLookAndFeelControl(JComponent dialogOwner) {
+    return selectLookAndFeelControl(dialogOwner, null);
+  }
+
+  /**
+   * Creates a {@link Control} for selecting the Look and Feel.
+   * @param dialogOwner the dialog owner
+   * @param userPreferencePropertyName the name of the property to use when saving the selected look and feel as a user preference
+   * @return a look and feel selection control
+   */
+  public static Control selectLookAndFeelControl(JComponent dialogOwner, String userPreferencePropertyName) {
+    ResourceBundle resourceBundle = ResourceBundle.getBundle(LookAndFeelProvider.class.getName());
+    String caption = resourceBundle.getString("select_look_and_feel");
+
+    return Control.builder(() -> selectLookAndFeel(dialogOwner)
+                    .ifPresent(provider -> {
+                      if (userPreferencePropertyName != null) {
+                        UserPreferences.putUserPreference(userPreferencePropertyName, provider.getName());
+                      }
+                    }))
+            .caption(caption)
+            .build();
+  }
 
   /**
    * Calls {@link JComponent#updateUI()} for the given components, ignores null components.

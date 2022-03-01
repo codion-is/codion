@@ -7888,3 +7888,5 @@
   EntityPanelBuilder bug fixed, keyboard actions now onKeyReleased, otherwise they are consumed by the editor, apparently
   TemporalInputPanelBuilder.buttonFocusable() added
   TextInputPanel, INSERT triggers text area input
+  DefaultComboBoxBuilder, DefaultItemComboBoxBuilder, only set the SteppedComboBoxUI if the system look and feel is enabled
+  Look and feel selection moved to Utilities from LookAndFeelProvider, getting rid of a cyclical dependency, due to the above
