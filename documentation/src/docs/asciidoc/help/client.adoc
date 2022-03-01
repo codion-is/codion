@@ -130,7 +130,7 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 |kbd:[Del]|Delete selected
 |kbd:[Ctrl + C]|Copy selected rows to clipboard
 |kbd:[Ctrl + Alt + C]|Copy selected cell to clipboard
-|kbd:[Shift + Alt + &#x2190;/&#x2192;]|Move selected column left/right
+|kbd:[Ctrl + Alt + &#x2190;/&#x2192;]|Move selected column left/right
 |kbd:[Ctrl + &#x002B;/&#x2212;]|Increase/decrease selected column size
 |kbd:[Ctrl + G]|Show popup menu
 |kbd:[F5]|Refresh when condition refresh button is visible and enabled
