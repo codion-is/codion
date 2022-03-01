@@ -148,12 +148,6 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   }
 
   @Override
-  protected final void setTransferFocusOnEnter(C component) {
-    TransferFocusOnEnter.enable(component);
-    TransferFocusOnEnter.enable((JComponent) component.getEditor().getEditorComponent());
-  }
-
-  @Override
   protected final void setInitialValue(C component, T initialValue) {
     component.setSelectedItem(initialValue);
   }

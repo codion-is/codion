@@ -152,12 +152,6 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   }
 
   @Override
-  protected void setTransferFocusOnEnter(JComboBox<Item<T>> component) {
-    TransferFocusOnEnter.enable(component);
-    TransferFocusOnEnter.enable((JComponent) component.getEditor().getEditorComponent());
-  }
-
-  @Override
   protected void setInitialValue(JComboBox<Item<T>> component, T initialValue) {
     component.setSelectedItem(initialValue);
   }

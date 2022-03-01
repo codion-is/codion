@@ -25,7 +25,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -495,23 +494,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
 
     private void addShortcutKey() {
-      JComponent keyComponent = component;
-      if (component instanceof JComboBox) {
-        JComboBox<?> comboBox = (JComboBox<?>) component;
-        if (comboBox.isEditable()) {
-          keyComponent = (JComponent) comboBox.getEditor().getEditorComponent();
-          comboBox.addPropertyChangeListener("editor", changeEvent -> {
-            ComboBoxEditor editor = (ComboBoxEditor) changeEvent.getNewValue();
-            if (editor != null) {
-              addShortcutKey((JComponent) editor.getEditorComponent());
-            }
-          });
-        }
-      }
-      addShortcutKey(keyComponent);
-    }
-
-    private void addShortcutKey(JComponent component) {
       KeyEvents.builder(KeyEvent.VK_INSERT)
               .action(this)
               .enable(component);
