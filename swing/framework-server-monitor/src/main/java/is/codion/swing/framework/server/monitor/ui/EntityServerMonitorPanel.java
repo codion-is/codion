@@ -10,6 +10,7 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.UiManagerDefaults;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
@@ -45,7 +46,9 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.*;
+import static is.codion.swing.common.ui.Utilities.selectLookAndFeelControl;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.getDefaultLookAndFeelName;
 
 /**
  * A UI based on the EntityServerMonitor model
@@ -253,7 +256,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public static void main(String[] arguments) {
     UiManagerDefaults.initialize();
     Clients.resolveTrustStore();
-    LookAndFeelProvider.CHANGE_DURING_SELECTION.set(true);
+    Utilities.CHANGE_LOOK_AND_FEEL_DURING_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
     SwingUtilities.invokeLater(() -> {

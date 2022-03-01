@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.DefaultComboBoxBuilder.SteppedComboBoxUI;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -138,7 +139,9 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
-    new SteppedComboBoxUI(comboBox, popupWidth);
+    if (LookAndFeelProvider.isSystemLookAndFeelEnabled()) {
+      new SteppedComboBoxUI(comboBox, popupWidth);
+    }
 
     return comboBox;
   }

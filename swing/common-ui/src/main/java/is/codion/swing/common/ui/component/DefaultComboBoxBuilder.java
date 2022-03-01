@@ -9,6 +9,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
 import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
@@ -134,7 +135,9 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
     if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretOnSelection) {
       ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
     }
-    new SteppedComboBoxUI(comboBox, popupWidth);
+    if (LookAndFeelProvider.isSystemLookAndFeelEnabled()) {
+      new SteppedComboBoxUI(comboBox, popupWidth);
+    }
 
     return comboBox;
   }

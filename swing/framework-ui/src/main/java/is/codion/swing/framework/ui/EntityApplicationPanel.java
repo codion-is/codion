@@ -101,7 +101,7 @@ import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.selectLookAndFeelControl;
+import static is.codion.swing.common.ui.Utilities.selectLookAndFeelControl;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -725,8 +725,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Allows the user the select between the available Look and Feels, saves the selection as a user preference.
    * @see LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)
    * @see LookAndFeelProvider#getLookAndFeelProvider(String)
-   * @see LookAndFeelProvider#selectLookAndFeel(JComponent)
-   * @see LookAndFeelProvider#CHANGE_DURING_SELECTION
+   * @see Utilities#selectLookAndFeel(JComponent)
+   * @see Utilities#CHANGE_LOOK_AND_FEEL_DURING_SELECTION
    * @return a Control for selecting the application look and feel
    */
   protected final Control createSelectLookAndFeelControl() {
