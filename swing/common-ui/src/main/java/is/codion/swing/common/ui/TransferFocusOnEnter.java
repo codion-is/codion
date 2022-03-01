@@ -10,7 +10,6 @@ import javax.swing.JTextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.util.Objects;
 
 /**
  * A utility class for adding focus traversal events based on the Enter key.
@@ -29,7 +28,7 @@ public final class TransferFocusOnEnter {
    */
   public static <T extends JComponent> T enable(T component) {
     forwardBuilder(component).enable(component);
-    backwardsBuilder(component).enable(component);
+    backwardsBuilder().enable(component);
 
     return component;
   }
@@ -42,41 +41,39 @@ public final class TransferFocusOnEnter {
    */
   public static <T extends JComponent> T disable(T component) {
     forwardBuilder(component).disable(component);
-    backwardsBuilder(component).disable(component);
+    backwardsBuilder().disable(component);
 
     return component;
   }
 
   /**
    * Instantiates an Action for transferring keyboard focus forward.
-   * @param component the component
    * @return an Action for transferring focus
    */
-  public static Action forwardAction(JComponent component) {
-    return new TransferFocusAction(component);
+  public static Action forwardAction() {
+    return new TransferFocusAction(false);
   }
 
   /**
    * Instantiates an Action for transferring keyboard focus backward.
-   * @param component the component
    * @return an Action for transferring focus
    */
-  public static Action backwardAction(JComponent component) {
-    return new TransferFocusAction(component, true);
+  public static Action backwardAction() {
+    return new TransferFocusAction(true);
   }
 
-  private static <T extends JComponent> KeyEvents.Builder backwardsBuilder(T component) {
+  private static KeyEvents.Builder backwardsBuilder() {
     return KeyEvents.builder(KeyEvent.VK_ENTER)
             .modifiers(InputEvent.SHIFT_DOWN_MASK)
             .condition(JComponent.WHEN_FOCUSED)
-            .action(backwardAction(component));
+            .action(backwardAction());
   }
 
   private static <T extends JComponent> KeyEvents.Builder forwardBuilder(T component) {
     return KeyEvents.builder(KeyEvent.VK_ENTER)
             .modifiers(component instanceof JTextArea ? InputEvent.CTRL_DOWN_MASK : 0)
             .condition(JComponent.WHEN_FOCUSED)
-            .action(forwardAction(component));
+            .action(forwardAction());
   }
 
   /**
@@ -84,24 +81,13 @@ public final class TransferFocusOnEnter {
    */
   private static final class TransferFocusAction extends AbstractAction {
 
-    private final JComponent component;
     private final boolean backward;
 
     /**
-     * Instantiates an Action for transferring keyboard focus.
-     * @param component the component
-     */
-    private TransferFocusAction(JComponent component) {
-      this(component, false);
-    }
-
-    /**
-     * @param component the component
      * @param backward if true the focus is transferred backward
      */
-    private TransferFocusAction(JComponent component, boolean backward) {
+    private TransferFocusAction(boolean backward) {
       super(backward ? "TransferFocusOnEnter.transferFocusBackward" : "KeyTransferFocusOnEnter.transferFocusForward");
-      this.component = Objects.requireNonNull(component, "component");
       this.backward = backward;
     }
 
@@ -111,11 +97,12 @@ public final class TransferFocusOnEnter {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+      JComponent source = (JComponent) e.getSource();
       if (backward) {
-        component.transferFocusBackward();
+        source.transferFocusBackward();
       }
       else {
-        component.transferFocus();
+        source.transferFocus();
       }
     }
   }

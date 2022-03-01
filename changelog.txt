@@ -7858,3 +7858,4 @@
   Look and feel selection moved to Utilities from LookAndFeelProvider, getting rid of a cyclical dependency, due to the above
   EntityPanelBuilder.InsertEntityAction keyboard action back to onKeyPressed, only INSERT, did not survive look and feel change, now listens to editor changes and enables key event on the new editor component
   Utilities.selectLookAndFeel() bug fixed, no need to enable the selected look and feel if changeDuringSelection is enabled
+  TransferFocusOnEnter.TransferFocusAction component field removed, uses the ActionEvent source
