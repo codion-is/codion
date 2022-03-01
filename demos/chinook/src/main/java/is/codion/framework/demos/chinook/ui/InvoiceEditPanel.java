@@ -42,7 +42,8 @@ public final class InvoiceEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(Invoice.CUSTOMER_FK);
     createForeignKeySearchField(Invoice.CUSTOMER_FK)
             .selectionProviderFactory(CustomerSelectionProvider::new);
-    createTemporalInputPanel(Invoice.DATE);
+    createTemporalInputPanel(Invoice.DATE)
+            .buttonFocusable(false);
     createTextField(Invoice.BILLINGADDRESS)
             .selectAllOnFocusGained(true);
     createTextField(Invoice.BILLINGCITY)
