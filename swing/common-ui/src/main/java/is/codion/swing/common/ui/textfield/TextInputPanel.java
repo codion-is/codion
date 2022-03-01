@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.textfield;
 
 import is.codion.swing.common.model.textfield.DocumentAdapter;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.ComponentValue;
@@ -22,6 +23,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
 
 import static java.util.Objects.requireNonNull;
 
@@ -178,12 +180,16 @@ public final class TextInputPanel extends JPanel {
   }
 
   private JButton createButton(boolean buttonFocusable, Dimension buttonSize) {
-    JButton actionButton = new JButton(new AbstractAction("...") {
+    AbstractAction buttonAction = new AbstractAction("...") {
       @Override
       public void actionPerformed(ActionEvent e) {
         getInputFromUser();
       }
-    });
+    };
+    KeyEvents.builder(KeyEvent.VK_INSERT)
+            .action(buttonAction)
+            .enable(textField);
+    JButton actionButton = new JButton(buttonAction);
     actionButton.setFocusable(buttonFocusable);
     if (buttonSize != null) {
       actionButton.setPreferredSize(buttonSize);

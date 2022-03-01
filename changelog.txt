@@ -7853,3 +7853,4 @@
   EntityTableConditionPanel bug fixed, now calls updateUI() on the condition panel
   EntityPanelBuilder bug fixed, keyboard actions now onKeyReleased, otherwise they are consumed by the editor, apparently
   TemporalInputPanelBuilder.buttonFocusable() added
+  TextInputPanel, INSERT triggers text area input
