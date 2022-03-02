@@ -114,8 +114,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   }
 
   private static String getItemCaption(Object value, ItemProperty<Object> itemProperty) {
-    if (value == null && !itemProperty.isValid(value)) {
-      //allow invalid null values
+    if (!itemProperty.isValid(value)) {
+      //display empty string for invalid values
       return "";
     }
 
