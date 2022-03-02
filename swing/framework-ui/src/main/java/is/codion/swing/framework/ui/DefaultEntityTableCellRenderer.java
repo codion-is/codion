@@ -100,7 +100,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   @Override
   protected void setValue(Object value) {
     if (property instanceof ItemProperty) {
-      setText(((ItemProperty<Object>) property).getItem(value).getCaption());
+      setText(getItemCaption(value, (ItemProperty<Object>) property));
     }
     else if (value instanceof Temporal) {
       setText(dateTimeFormatter.format((Temporal) value));
@@ -111,6 +111,15 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     else {
       super.setValue(value);
     }
+  }
+
+  private static String getItemCaption(Object value, ItemProperty<Object> itemProperty) {
+    if (value == null && !itemProperty.isValid(value)) {
+      //allow invalid null values
+      return "";
+    }
+
+    return itemProperty.getItem(value).getCaption();
   }
 
   private static final class BooleanRenderer extends NullableCheckBox

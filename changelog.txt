@@ -7863,3 +7863,4 @@
   DefaultComboBoxBuilder, DefaultItemComboBoxBuilder, now add a property change listener for the editor and copy the action and input map contents from the old editor to the new, otherwise input actions don't survive look and feel change
   DefaultColumnConditionModel, auto enable back to disabling on operator change to equal/not_equal when no value is entered, a bit more convenient/intuitive
   EntityTablePanel.getPopopLocation() bug fixed, now handles a selected row correctly
+  DefaultEntityTableCellRenderer, handle invalid null values for ItemProperty by displaying an empty string instead of throwing an exception
