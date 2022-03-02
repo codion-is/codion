@@ -1601,7 +1601,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     Entity selected = tableModel.getSelectionModel().getSelectedItem();
     if (selected != null) {
       Point location = getPopupLocation(table);
-      new EntityPopupMenu(selected.copy(), tableModel.getConnectionProvider().getConnection()).show(this, location.x, location.y);
+      new EntityPopupMenu(selected.copy(), tableModel.getConnectionProvider().getConnection()).show(table, location.x, location.y);
     }
   }
 
@@ -1694,9 +1694,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     int x = visibleRect.x + visibleRect.width / 2;
     int y = table.getSelectionModel().isSelectionEmpty() ?
             visibleRect.y + visibleRect.height / 2 :
-            table.getSelectedRow() * table.getRowHeight() + table.getRowHeight() / 2;
+            table.getCellRect(table.getSelectedRow(), table.getSelectedColumn(), true).y;
 
-    return new Point(x, y);
+    return new Point(x, y + table.getRowHeight() / 2);
   }
 
   private final class HeaderRenderer implements TableCellRenderer {
