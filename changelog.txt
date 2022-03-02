@@ -7861,3 +7861,4 @@
   TransferFocusOnEnter.TransferFocusAction component field removed, uses the ActionEvent source
   KeyEvents, added special handling for JComboBox, now enables/disables the key event on the editor as well, special handling removed from EntityPanelBuilder.InsertEntityAction, DefaultComboBoxBuilder and DefaultItemComboBox builder no longer override setTransferFocusOnEnter()
   DefaultComboBoxBuilder, DefaultItemComboBoxBuilder, now add a property change listener for the editor and copy the action and input map contents from the old editor to the new, otherwise input actions don't survive look and feel change
+  DefaultColumnConditionModel, auto enable back to disabling on operator change to equal/not_equal when no value is entered, a bit more convenient/intuitive
