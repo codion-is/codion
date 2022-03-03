@@ -210,8 +210,7 @@ public class DefaultColumnConditionModelTest {
     conditionModel.setEqualValue(1);
     assertTrue(conditionModel.isEnabled());
     conditionModel.setEqualValue(null);
-    //null values are ok when EQUAL or NOT_EQUAL
-    assertTrue(conditionModel.isEnabled());
+    assertFalse(conditionModel.isEnabled());
     conditionModel.setEnabled(false);
     conditionModel.setUpperBound(1);
     conditionModel.setLowerBound(1);
@@ -224,8 +223,7 @@ public class DefaultColumnConditionModelTest {
     conditionModel.setEqualValue(1);
     assertTrue(conditionModel.isEnabled());
     conditionModel.setEqualValue(null);
-    //null values are ok when EQUAL or NOT_EQUAL
-    assertTrue(conditionModel.isEnabled());
+    assertFalse(conditionModel.isEnabled());
     conditionModel.setEnabled(false);
     conditionModel.setUpperBound(1);
     conditionModel.setLowerBound(1);
