@@ -124,15 +124,13 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
   }
 
   protected final CloseableHttpResponse execute(HttpUriRequest operation) throws IOException {
-    synchronized (httpClient) {
-      try {
-        return httpClient.execute(targetHost, operation, httpContext);
-      }
-      catch (NoHttpResponseException e) {
-        LOG.debug(e.getMessage(), e);
-        //retry once, todo fix server side if possible
-        return httpClient.execute(targetHost, operation, httpContext);
-      }
+    try {
+      return httpClient.execute(targetHost, operation, httpContext);
+    }
+    catch (NoHttpResponseException e) {
+      LOG.debug(e.getMessage(), e);
+      //retry once, todo fix server side if possible
+      return httpClient.execute(targetHost, operation, httpContext);
     }
   }
 

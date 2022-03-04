@@ -67,7 +67,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public boolean isTransactionOpen() {
     try {
-      return onResponse(execute(createHttpPost("isTransactionOpen")));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("isTransactionOpen")));
+      }
     }
     catch (Exception e) {
       throw logAndWrap(e);
@@ -77,7 +79,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public void beginTransaction() {
     try {
-      onResponse(execute(createHttpPost("beginTransaction")));
+      synchronized (entities) {
+        onResponse(execute(createHttpPost("beginTransaction")));
+      }
     }
     catch (RuntimeException e) {
       throw e;
@@ -90,7 +94,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public void rollbackTransaction() {
     try {
-      onResponse(execute(createHttpPost("rollbackTransaction")));
+      synchronized (entities) {
+        onResponse(execute(createHttpPost("rollbackTransaction")));
+      }
     }
     catch (RuntimeException e) {
       throw e;
@@ -103,7 +109,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public void commitTransaction() {
     try {
-      onResponse(execute(createHttpPost("commitTransaction")));
+      synchronized (entities) {
+        onResponse(execute(createHttpPost("commitTransaction")));
+      }
     }
     catch (RuntimeException e) {
       throw e;
@@ -122,7 +130,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
     Objects.requireNonNull(functionType);
     try {
-      return onResponse(execute(createHttpPost("function", byteArrayEntity(asList(functionType, argument)))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("function", byteArrayEntity(asList(functionType, argument)))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -141,7 +151,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
     Objects.requireNonNull(procedureType);
     try {
-      onResponse(execute(createHttpPost("procedure", byteArrayEntity(asList(procedureType, argument)))));
+      synchronized (entities) {
+        onResponse(execute(createHttpPost("procedure", byteArrayEntity(asList(procedureType, argument)))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -160,7 +172,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public List<Key> insert(List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      return onResponse(execute(createHttpPost("insert", byteArrayEntity(entities))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("insert", byteArrayEntity(entities))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -179,7 +193,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public List<Entity> update(List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      return onResponse(execute(createHttpPost("update", byteArrayEntity(entities))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("update", byteArrayEntity(entities))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -193,7 +209,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public int update(UpdateCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      return onResponse(execute(createHttpPost("updateByCondition", byteArrayEntity(condition))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("updateByCondition", byteArrayEntity(condition))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -212,7 +230,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public void delete(List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
-      onResponse(execute(createHttpPost("deleteByKey", byteArrayEntity(keys))));
+      synchronized (entities) {
+        onResponse(execute(createHttpPost("deleteByKey", byteArrayEntity(keys))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -226,7 +246,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public int delete(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      return onResponse(execute(createHttpPost("delete", byteArrayEntity(condition))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("delete", byteArrayEntity(condition))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -245,7 +267,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
     Objects.requireNonNull(attribute);
     try {
-      return onResponse(execute(createHttpPost("values", byteArrayEntity(asList(attribute, condition)))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("values", byteArrayEntity(asList(attribute, condition)))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -282,7 +306,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public List<Entity> select(List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
-      return onResponse(execute(createHttpPost("selectByKey", byteArrayEntity(keys))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("selectByKey", byteArrayEntity(keys))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -296,7 +322,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public List<Entity> select(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
-      return onResponse(execute(createHttpPost("select", byteArrayEntity(condition))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("select", byteArrayEntity(condition))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -320,7 +348,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
-      return onResponse(execute(createHttpPost("dependencies", byteArrayEntity(entities))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("dependencies", byteArrayEntity(entities))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -334,7 +364,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public int rowCount(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      return onResponse(execute(createHttpPost("count", byteArrayEntity(condition))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("count", byteArrayEntity(condition))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -348,7 +380,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportType, "report");
     try {
-      return onResponse(execute(createHttpPost("report", byteArrayEntity(asList(reportType, reportParameters)))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("report", byteArrayEntity(asList(reportType, reportParameters)))));
+      }
     }
     catch (ReportException | DatabaseException e) {
       throw e;
@@ -365,7 +399,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     Objects.requireNonNull(blobData, "blobData");
     try {
-      onResponse(execute(createHttpPost("writeBlob", byteArrayEntity(asList(primaryKey, blobAttribute, blobData)))));
+      synchronized (entities) {
+        onResponse(execute(createHttpPost("writeBlob", byteArrayEntity(asList(primaryKey, blobAttribute, blobData)))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -380,7 +416,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     try {
-      return onResponse(execute(createHttpPost("readBlob", byteArrayEntity(asList(primaryKey, blobAttribute)))));
+      synchronized (entities) {
+        return onResponse(execute(createHttpPost("readBlob", byteArrayEntity(asList(primaryKey, blobAttribute)))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
