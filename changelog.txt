@@ -7865,3 +7865,4 @@
   EntityTablePanel.getPopopLocation() bug fixed, now handles a selected row correctly
   DefaultEntityTableCellRenderer, handle invalid null values for ItemProperty by displaying an empty string instead of throwing an exception
   DefaultEntityTableCellRenderer, handle invalid values for ItemProperty by displaying an empty string instead of throwing an exception
+  HttpEntityConnection, HttpJsonEntityConnection, AbstractHttpEntityConnection bug fixed, synchronization improved and moved to subclasses, http client errors appeared with async client refresh enabled
