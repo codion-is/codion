@@ -117,14 +117,18 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public boolean isConnected() {
-    return !closed;
+    synchronized (entities) {
+      return !closed;
+    }
   }
 
   @Override
   public void close() {
     try {
-      handleResponse(execute(createRequest("close")));
-      closed = true;
+      synchronized (entities) {
+        handleResponse(execute(createRequest("close")));
+        closed = true;
+      }
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -135,7 +139,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   @Override
   public boolean isTransactionOpen() {
     try {
-      return handleResponse(execute(createRequest("isTransactionOpen")));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("isTransactionOpen")));
+      }
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -146,7 +152,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   @Override
   public void beginTransaction() {
     try {
-      handleResponse(execute(createRequest("beginTransaction")));
+      synchronized (entities) {
+        handleResponse(execute(createRequest("beginTransaction")));
+      }
     }
     catch (RuntimeException e) {
       throw e;
@@ -160,7 +168,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   @Override
   public void rollbackTransaction() {
     try {
-      handleResponse(execute(createRequest("rollbackTransaction")));
+      synchronized (entities) {
+        handleResponse(execute(createRequest("rollbackTransaction")));
+      }
     }
     catch (RuntimeException e) {
       throw e;
@@ -174,7 +184,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   @Override
   public void commitTransaction() {
     try {
-      handleResponse(execute(createRequest("commitTransaction")));
+      synchronized (entities) {
+        handleResponse(execute(createRequest("commitTransaction")));
+      }
     }
     catch (RuntimeException e) {
       throw e;
@@ -194,7 +206,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
     Objects.requireNonNull(functionType);
     try {
-      return handleResponse(execute(createRequest("function", asList(functionType, argument))));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("function", asList(functionType, argument))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -214,7 +228,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
     Objects.requireNonNull(procedureType);
     try {
-      handleResponse(execute(createRequest("procedure", asList(procedureType, argument))));
+      synchronized (entities) {
+        handleResponse(execute(createRequest("procedure", asList(procedureType, argument))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -234,7 +250,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public List<Key> insert(List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      return handleResponse(execute(createRequest("insert", entities)));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("insert", entities)));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -254,7 +272,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public List<Entity> update(List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      return handleResponse(execute(createRequest("update", entities)));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("update", entities)));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -269,7 +289,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public int update(UpdateCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      return handleResponse(execute(createRequest("updateByCondition", condition)));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("updateByCondition", condition)));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -289,7 +311,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public void delete(List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
-      handleResponse(execute(createRequest("deleteByKey", keys)));
+      synchronized (entities) {
+        handleResponse(execute(createRequest("deleteByKey", keys)));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -304,7 +328,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public int delete(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      return handleResponse(execute(createRequest("delete", condition)));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("delete", condition)));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -324,7 +350,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
     Objects.requireNonNull(attribute);
     try {
-      return handleResponse(execute(createRequest("values", asList(attribute, condition))));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("values", asList(attribute, condition))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -362,7 +390,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public List<Entity> select(List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
-      return handleResponse(execute(createRequest("selectByKey", keys)));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("selectByKey", keys)));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -377,7 +407,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public List<Entity> select(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
-      return handleResponse(execute(createRequest("select", condition)));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("select", condition)));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -402,7 +434,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
-      return handleResponse(execute(createRequest("dependencies", entities)));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("dependencies", entities)));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -417,7 +451,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public int rowCount(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      return handleResponse(execute(createRequest("count", condition)));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("count", condition)));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -432,7 +468,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   public <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportType, "reportType");
     try {
-      return handleResponse(execute(createRequest("report", Arrays.asList(reportType, reportParameters))));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("report", Arrays.asList(reportType, reportParameters))));
+      }
     }
     catch (ReportException | DatabaseException e) {
       throw e;
@@ -450,7 +488,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     Objects.requireNonNull(blobData, "blobData");
     try {
-      handleResponse(execute(createRequest("writeBlob", Arrays.asList(primaryKey, blobAttribute, blobData))));
+      synchronized (entities) {
+        handleResponse(execute(createRequest("writeBlob", Arrays.asList(primaryKey, blobAttribute, blobData))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
@@ -466,7 +506,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     try {
-      return handleResponse(execute(createRequest("readBlob", Arrays.asList(primaryKey, blobAttribute))));
+      synchronized (entities) {
+        return handleResponse(execute(createRequest("readBlob", Arrays.asList(primaryKey, blobAttribute))));
+      }
     }
     catch (DatabaseException e) {
       throw e;
