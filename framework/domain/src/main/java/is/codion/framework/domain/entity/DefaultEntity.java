@@ -717,7 +717,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private boolean isModified(boolean overrideModifiesEntity) {
-    if (originalValues != null) {
+    if (originalValues != null && !originalValues.isEmpty()) {
       for (Attribute<?> attribute : originalValues.keySet()) {
         Property<?> property = definition.getProperty(attribute);
         if (property instanceof ColumnProperty) {
