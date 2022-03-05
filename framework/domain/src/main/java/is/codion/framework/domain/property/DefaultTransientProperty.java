@@ -32,7 +32,7 @@ class DefaultTransientProperty<T> extends AbstractProperty<T> implements Transie
 
     @Override
     public Property<T> build() {
-      return new DefaultTransientProperty<T>(this);
+      return new DefaultTransientProperty<>(this);
     }
 
     @Override

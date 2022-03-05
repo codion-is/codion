@@ -59,7 +59,7 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
 
     @Override
     public Property<T> build() {
-      return new DefaultDerivedProperty<T>(this);
+      return new DefaultDerivedProperty<>(this);
     }
   }
 }

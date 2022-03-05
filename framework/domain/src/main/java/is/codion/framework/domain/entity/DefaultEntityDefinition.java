@@ -850,27 +850,27 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     private Map<Attribute<?>, Property<?>> initializePropertyMap(List<Property.Builder<?, ?>> builders) {
-      Map<Attribute<?>, Property<?>> properties = new HashMap<>(builders.size());
+      Map<Attribute<?>, Property<?>> map = new HashMap<>(builders.size());
       for (Property.Builder<?, ?> builder : builders) {
         if (!(builder instanceof ForeignKeyProperty.Builder)) {
-          validateAndAddProperty(builder.build(), properties, entityType);
+          validateAndAddProperty(builder.build(), map, entityType);
         }
       }
-      validatePrimaryKeyProperties(properties, entityType);
+      validatePrimaryKeyProperties(map, entityType);
 
       initializeForeignKeyColumnProperties(builders.stream()
               .filter(ForeignKeyProperty.Builder.class::isInstance)
               .map(ForeignKeyProperty.Builder.class::cast)
-              .collect(toList()), properties);
+              .collect(toList()), map);
       for (Property.Builder<?, ?> builder : builders) {
         if (builder instanceof ForeignKeyProperty.Builder) {
-          validateAndAddProperty(builder.build(), properties, entityType);
+          validateAndAddProperty(builder.build(), map, entityType);
         }
       }
       Map<Attribute<?>, Property<?>> ordereredMap = new LinkedHashMap<>(builders.size());
       //retain the original attribute order
       for (Property.Builder<?, ?> builder : builders) {
-        ordereredMap.put(builder.getAttribute(), properties.get(builder.getAttribute()));
+        ordereredMap.put(builder.getAttribute(), map.get(builder.getAttribute()));
       }
 
       return unmodifiableMap(ordereredMap);
