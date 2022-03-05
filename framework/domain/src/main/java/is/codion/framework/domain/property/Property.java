@@ -258,8 +258,13 @@ public interface Property<T> {
   interface Builder<T, P extends Property<T>, B extends Builder<T, P, B>> {
 
     /**
-     * Returns the underlying property.
-     * @return the property
+     * @return the underying attribute
+     */
+    Attribute<T> getAttribute();
+
+    /**
+     * Builds a new Property instance
+     * @return a new property instance based on this builder
      */
     P build();
 

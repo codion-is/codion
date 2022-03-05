@@ -22,19 +22,19 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
 
   private static final long serialVersionUID = 1;
 
-  private final Set<Attribute<?>> readOnlyAttributes = new HashSet<>(1);
+  private final Set<Attribute<?>> readOnlyAttributes;
   private final EntityType referencedEntityType;
-  private List<Attribute<?>> selectAttributes = emptyList();
-  private int fetchDepth;
-  private boolean softReference;
+  private final List<Attribute<?>> selectAttributes;
+  private final int fetchDepth;
+  private final boolean softReference;
 
-  /**
-   * @param foreignKey the foreign key
-   * @param caption the property caption
-   */
-  DefaultForeignKeyProperty(ForeignKey foreignKey, String caption) {
-    super(foreignKey, caption);
-    this.referencedEntityType = foreignKey.getReferences().get(0).getReferencedAttribute().getEntityType();
+  private DefaultForeignKeyProperty(DefaultForeignKeyPropertyBuilder builder) {
+    super(builder);
+    this.readOnlyAttributes = builder.readOnlyAttributes;
+    this.referencedEntityType = builder.referencedEntityType;
+    this.selectAttributes = builder.selectAttributes;
+    this.fetchDepth = builder.fetchDepth;
+    this.softReference = builder.softReference;
   }
 
   @Override
@@ -72,43 +72,45 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
     return selectAttributes;
   }
 
-  /**
-   * @return a builder for this property instance
-   */
-  ForeignKeyProperty.Builder builder() {
-    return new DefaultForeignKeyPropertyBuilder(this);
-  }
-
-  private static final class DefaultForeignKeyPropertyBuilder
+  static final class DefaultForeignKeyPropertyBuilder
           extends AbstractPropertyBuilder<Entity, ForeignKeyProperty, ForeignKeyProperty.Builder> implements ForeignKeyProperty.Builder {
 
-    private final DefaultForeignKeyProperty foreignKeyProperty;
+    private final Set<Attribute<?>> readOnlyAttributes = new HashSet<>(1);
+    private final EntityType referencedEntityType;
+    private List<Attribute<?>> selectAttributes = emptyList();
+    private int fetchDepth;
+    private boolean softReference;
 
-    private DefaultForeignKeyPropertyBuilder(DefaultForeignKeyProperty foreignKeyProperty) {
-      super(foreignKeyProperty);
-      this.foreignKeyProperty = foreignKeyProperty;
-      foreignKeyProperty.fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
-      foreignKeyProperty.softReference = false;
+    DefaultForeignKeyPropertyBuilder(ForeignKey foreignKey, String caption) {
+      super(foreignKey, caption);
+      this.referencedEntityType = foreignKey.getReferences().get(0).getReferencedAttribute().getEntityType();
+      this.fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
+      this.softReference = false;
+    }
+
+    @Override
+    public ForeignKeyProperty build() {
+      return new DefaultForeignKeyProperty(this);
     }
 
     @Override
     public ForeignKeyProperty.Builder fetchDepth(int fetchDepth) {
-      foreignKeyProperty.fetchDepth = fetchDepth;
+      this.fetchDepth = fetchDepth;
       return this;
     }
 
     @Override
     public ForeignKeyProperty.Builder softReference() {
-      foreignKeyProperty.softReference = true;
+      this.softReference = true;
       return this;
     }
 
     @Override
     public ForeignKeyProperty.Builder readOnly(Attribute<?> referenceAttribute) {
-      if (foreignKeyProperty.getAttribute().getReference(referenceAttribute) == null) {
-        throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key: " + foreignKeyProperty.getAttribute());
+      if (((ForeignKey) attribute).getReference(referenceAttribute) == null) {
+        throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key: " + attribute);
       }
-      foreignKeyProperty.readOnlyAttributes.add(referenceAttribute);
+      this.readOnlyAttributes.add(referenceAttribute);
       return this;
     }
 
@@ -116,12 +118,12 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
     public ForeignKeyProperty.Builder selectAttributes(Attribute<?>... attributes) {
       Set<Attribute<?>> selectAttributes = new HashSet<>();
       for (Attribute<?> attribute : requireNonNull(attributes)) {
-        if (!attribute.getEntityType().equals(foreignKeyProperty.referencedEntityType)) {
+        if (!attribute.getEntityType().equals(referencedEntityType)) {
           throw new IllegalArgumentException("Select attribute must be part of the referenced entity type");
         }
         selectAttributes.add(attribute);
       }
-      foreignKeyProperty.selectAttributes = unmodifiableList(new ArrayList<>(selectAttributes));
+      this.selectAttributes = unmodifiableList(new ArrayList<>(selectAttributes));
 
       return this;
     }

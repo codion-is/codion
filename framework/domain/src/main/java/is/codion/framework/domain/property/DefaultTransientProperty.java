@@ -9,16 +9,11 @@ class DefaultTransientProperty<T> extends AbstractProperty<T> implements Transie
 
   private static final long serialVersionUID = 1;
 
-  private boolean modifiesEntity = true;
+  private final boolean modifiesEntity;
 
-  /**
-   * @param attribute the attribute, since TransientProperties do not map to underlying table columns,
-   * the property id should not be column name, only be unique for this entity
-   * @param type the data type of this property
-   * @param caption the caption of this property
-   */
-  DefaultTransientProperty(Attribute<T> attribute, String caption) {
-    super(attribute, caption);
+  protected DefaultTransientProperty(DefaultTransientPropertyBuilder<T, ?, ?> builder) {
+    super(builder);
+    this.modifiesEntity = builder.modifiesEntity;
   }
 
   @Override
@@ -26,23 +21,23 @@ class DefaultTransientProperty<T> extends AbstractProperty<T> implements Transie
     return modifiesEntity;
   }
 
-  <P extends TransientProperty<T>, B extends TransientProperty.Builder<T, P, B>> TransientProperty.Builder<T, P, B> builder() {
-    return new DefaultTransientPropertyBuilder<>(this);
-  }
-
   static class DefaultTransientPropertyBuilder<T, P extends TransientProperty<T>, B extends TransientProperty.Builder<T, P, B>>
           extends AbstractPropertyBuilder<T, P, B> implements TransientProperty.Builder<T, P, B> {
 
-    private final DefaultTransientProperty<T> transientProperty;
+    private boolean modifiesEntity = true;
 
-    DefaultTransientPropertyBuilder(DefaultTransientProperty<T> transientProperty) {
-      super(transientProperty);
-      this.transientProperty = transientProperty;
+    DefaultTransientPropertyBuilder(Attribute<T> attribute, String caption) {
+      super(attribute, caption);
     }
 
     @Override
-    public TransientProperty.Builder<T, P, B> modifiesEntity(boolean modifiesEntity) {
-      transientProperty.modifiesEntity = modifiesEntity;
+    public P build() {
+      return (P) new DefaultTransientProperty<T>(this);
+    }
+
+    @Override
+    public final TransientProperty.Builder<T, P, B> modifiesEntity(boolean modifiesEntity) {
+      this.modifiesEntity = modifiesEntity;
       return this;
     }
   }

@@ -17,23 +17,10 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
   private final Provider<T> valueProvider;
   private final List<Attribute<?>> sourceAttributes;
 
-  DefaultDerivedProperty(Attribute<T> attribute, String caption,
-                         Provider<T> valueProvider, Attribute<?>... sourceAttributes) {
-    super(attribute, caption);
-    requireNonNull(sourceAttributes);
-    this.valueProvider = requireNonNull(valueProvider);
-    if (sourceAttributes.length == 0) {
-      throw new IllegalArgumentException("No source attributes, a derived property must be derived from one or more existing attributes");
-    }
-    for (Attribute<?> sourceAttribute : sourceAttributes) {
-      if (!attribute.getEntityType().equals(sourceAttribute.getEntityType())) {
-        throw new IllegalArgumentException("Source attribute must be from same entity as the derived property");
-      }
-      if (attribute.equals(sourceAttribute)) {
-        throw new IllegalArgumentException("Derived property attribute can not be derived from itself");
-      }
-    }
-    this.sourceAttributes = asList(sourceAttributes);
+  private DefaultDerivedProperty(DefaultDerivedPropertyBuilder<T, ?> builder) {
+    super(builder);
+    this.valueProvider = builder.valueProvider;
+    this.sourceAttributes = builder.sourceAttributes;
   }
 
   @Override
@@ -46,8 +33,33 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
     return sourceAttributes;
   }
 
-  @Override
-  <P extends TransientProperty<T>, B extends TransientProperty.Builder<T, P, B>> TransientProperty.Builder<T, P, B> builder() {
-    return new DefaultTransientPropertyBuilder<>(this);
+  static final class DefaultDerivedPropertyBuilder<T, B extends TransientProperty.Builder<T, DerivedProperty<T>, B>>
+          extends DefaultTransientPropertyBuilder<T, DerivedProperty<T>, B> implements TransientProperty.Builder<T, DerivedProperty<T>, B> {
+
+    private final Provider<T> valueProvider;
+    private final List<Attribute<?>> sourceAttributes;
+
+    DefaultDerivedPropertyBuilder(Attribute<T> attribute, String caption,
+                                  Provider<T> valueProvider, Attribute<?>... sourceAttributes) {
+      super(attribute, caption);
+      this.valueProvider = requireNonNull(valueProvider);
+      if (sourceAttributes.length == 0) {
+        throw new IllegalArgumentException("No source attributes, a derived property must be derived from one or more existing attributes");
+      }
+      for (Attribute<?> sourceAttribute : sourceAttributes) {
+        if (!attribute.getEntityType().equals(sourceAttribute.getEntityType())) {
+          throw new IllegalArgumentException("Source attribute must be from same entity as the derived property");
+        }
+        if (attribute.equals(sourceAttribute)) {
+          throw new IllegalArgumentException("Derived property attribute can not be derived from itself");
+        }
+      }
+      this.sourceAttributes = asList(sourceAttributes);
+    }
+
+    @Override
+    public DerivedProperty<T> build() {
+      return new DefaultDerivedProperty<T>(this);
+    }
   }
 }

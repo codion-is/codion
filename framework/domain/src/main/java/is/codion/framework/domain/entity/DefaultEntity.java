@@ -152,7 +152,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public boolean isModified(Attribute<?> attribute) {
-    requireNonNull(attribute, ATTRIBUTE);
+    definition.getProperty(requireNonNull(attribute, ATTRIBUTE));
     return originalValues != null && originalValues.containsKey(attribute);
   }
 

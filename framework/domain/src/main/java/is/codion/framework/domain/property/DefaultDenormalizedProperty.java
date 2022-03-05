@@ -16,18 +16,10 @@ final class DefaultDenormalizedProperty<T> extends DefaultColumnProperty<T> impl
   private final Attribute<Entity> entityAttribute;
   private final Attribute<T> denormalizedAttribute;
 
-  /**
-   * @param attribute the attribute
-   * @param entityAttribute the attribute of the foreign key references the entity which owns
-   * the denormalized attribute
-   * @param denormalizedAttribute the attribute from which this property should get its value
-   * @param caption the caption if this property
-   */
-  DefaultDenormalizedProperty(Attribute<T> attribute, Attribute<Entity> entityAttribute,
-                              Attribute<T> denormalizedAttribute, String caption) {
-    super(attribute, caption);
-    this.entityAttribute = entityAttribute;
-    this.denormalizedAttribute = denormalizedAttribute;
+  private DefaultDenormalizedProperty(DefaultDenormalizedPropertyBuilder<T, ?> builder) {
+    super(builder);
+    this.entityAttribute = builder.entityAttribute;
+    this.denormalizedAttribute = builder.denormalizedAttribute;
   }
 
   @Override
@@ -43,5 +35,24 @@ final class DefaultDenormalizedProperty<T> extends DefaultColumnProperty<T> impl
   @Override
   public boolean isDenormalized() {
     return true;
+  }
+
+  static final class DefaultDenormalizedPropertyBuilder<T, B extends ColumnProperty.Builder<T, ColumnProperty<T>, B>>
+          extends DefaultColumnPropertyBuilder<T, ColumnProperty<T>, B> {
+
+    private final Attribute<Entity> entityAttribute;
+    private final Attribute<T> denormalizedAttribute;
+
+    DefaultDenormalizedPropertyBuilder(Attribute<T> attribute, Attribute<Entity> entityAttribute,
+                                       Attribute<T> denormalizedAttribute, String caption) {
+      super(attribute, caption);
+      this.entityAttribute = entityAttribute;
+      this.denormalizedAttribute = denormalizedAttribute;
+    }
+
+    @Override
+    public ColumnProperty<T> build() {
+      return new DefaultDenormalizedProperty<>(this);
+    }
   }
 }

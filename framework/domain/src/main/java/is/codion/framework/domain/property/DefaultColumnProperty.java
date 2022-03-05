@@ -26,24 +26,37 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
 
   private static final ValueConverter<Object, Object> DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
 
-  private int columnType;
-  private int primaryKeyIndex;
-  private boolean columnHasDefaultValue;
-  private boolean insertable;
-  private boolean updatable;
-  private boolean searchProperty;
+  private final int columnType;
+  private final int primaryKeyIndex;
+  private final boolean columnHasDefaultValue;
+  private final boolean insertable;
+  private final boolean updatable;
+  private final boolean searchProperty;
 
   private final transient ResultPacker<T> resultPacker = new PropertyResultPacker();
-  private transient String columnName;
-  private transient String columnExpression;
-  private transient ValueFetcher<T> valueFetcher;
-  private transient ValueConverter<T, Object> valueConverter;
-  private transient boolean groupingColumn;
-  private transient boolean aggregateColumn;
-  private transient boolean selectable;
+  private final transient String columnName;
+  private final transient String columnExpression;
+  private final transient ValueFetcher<T> valueFetcher;
+  private final transient ValueConverter<T, Object> valueConverter;
+  private final transient boolean groupingColumn;
+  private final transient boolean aggregateColumn;
+  private final transient boolean selectable;
 
-  DefaultColumnProperty(Attribute<T> attribute, String caption) {
-    super(attribute, caption);
+  protected DefaultColumnProperty(DefaultColumnPropertyBuilder<T, ?, ?> builder) {
+    super(builder);
+    this.columnType = builder.columnType;
+    this.primaryKeyIndex = builder.primaryKeyIndex;
+    this.columnHasDefaultValue = builder.columnHasDefaultValue;
+    this.insertable = builder.insertable;
+    this.updatable = builder.updatable;
+    this.searchProperty = builder.searchProperty;
+    this.columnName = builder.columnName;
+    this.columnExpression = builder.columnExpression;
+    this.valueFetcher = builder.valueFetcher;
+    this.valueConverter = builder.valueConverter;
+    this.groupingColumn = builder.groupingColumn;
+    this.aggregateColumn = builder.aggregateColumn;
+    this.selectable = builder.selectable;
   }
 
   @Override
@@ -129,16 +142,6 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   @Override
   public final ResultPacker<T> getResultPacker() {
     return resultPacker;
-  }
-
-  /**
-   * @param <T> the value type
-   * @param <P> the property type
-   * @param <B> the builder type
-   * @return a builder for this property instance
-   */
-  <P extends ColumnProperty<T>, B extends ColumnProperty.Builder<T, P, B>> ColumnProperty.Builder<T, P, B> builder() {
-    return new DefaultColumnPropertyBuilder<>(this);
   }
 
   private class PropertyResultPacker implements ResultPacker<T> {
@@ -265,57 +268,73 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   static class DefaultColumnPropertyBuilder<T, P extends ColumnProperty<T>, B extends ColumnProperty.Builder<T, P, B>>
           extends AbstractPropertyBuilder<T, P, B> implements ColumnProperty.Builder<T, P, B> {
 
-    private final DefaultColumnProperty<T> columnProperty;
+    private int columnType;
+    private int primaryKeyIndex;
+    private boolean columnHasDefaultValue;
+    private boolean insertable;
+    private boolean updatable;
+    private boolean searchProperty;
+    private String columnName;
+    private String columnExpression;
+    private ValueFetcher<T> valueFetcher;
+    private ValueConverter<T, Object> valueConverter;
+    private boolean groupingColumn;
+    private boolean aggregateColumn;
+    private boolean selectable;
 
-    DefaultColumnPropertyBuilder(DefaultColumnProperty<T> columnProperty) {
-      super(columnProperty);
-      this.columnProperty = columnProperty;
-      columnProperty.primaryKeyIndex = -1;
-      columnProperty.columnType = getSqlType(columnProperty.getAttribute().getTypeClass());
-      columnProperty.columnHasDefaultValue = false;
-      columnProperty.insertable = true;
-      columnProperty.updatable = true;
-      columnProperty.searchProperty = false;
-      columnProperty.columnName = columnProperty.getAttribute().getName();
-      columnProperty.valueFetcher = initializeValueFetcher(columnProperty.columnType, columnProperty.getAttribute().getTypeClass());
-      columnProperty.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
-      columnProperty.groupingColumn = false;
-      columnProperty.aggregateColumn = false;
-      columnProperty.selectable = true;
+    DefaultColumnPropertyBuilder(Attribute<T> attribute, String caption) {
+      super(attribute, caption);
+      this.primaryKeyIndex = -1;
+      this.columnType = getSqlType(attribute.getTypeClass());
+      this.columnHasDefaultValue = false;
+      this.insertable = true;
+      this.updatable = true;
+      this.searchProperty = false;
+      this.columnName = attribute.getName();
+      this.valueFetcher = initializeValueFetcher(this.columnType, attribute.getTypeClass());
+      this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
+      this.groupingColumn = false;
+      this.aggregateColumn = false;
+      this.selectable = true;
+    }
+
+    @Override
+    public P build() {
+      return (P) new DefaultColumnProperty<T>(this);
     }
 
     @Override
     public final <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter) {
-      columnProperty.columnType = getSqlType(columnClass);
-      columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      columnProperty.valueFetcher = initializeValueFetcher(columnProperty.columnType, columnProperty.getAttribute().getTypeClass());
+      this.columnType = getSqlType(columnClass);
+      this.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
+      this.valueFetcher = initializeValueFetcher(this.columnType, attribute.getTypeClass());
       return (B) this;
     }
 
     @Override
     public final <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter,
                                    ValueFetcher<C> valueFetcher) {
-      columnProperty.columnType = getSqlType(columnClass);
-      columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      columnProperty.valueFetcher = (ValueFetcher<T>) requireNonNull(valueFetcher, "valueFetcher");
+      this.columnType = getSqlType(columnClass);
+      this.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
+      this.valueFetcher = (ValueFetcher<T>) requireNonNull(valueFetcher, "valueFetcher");
       return (B) this;
     }
 
     @Override
     public final B columnName(String columnName) {
-      columnProperty.columnName = requireNonNull(columnName, "columnName");
+      this.columnName = requireNonNull(columnName, "columnName");
       return (B) this;
     }
 
     @Override
     public final B columnExpression(String columnExpression) {
-      columnProperty.columnExpression = requireNonNull(columnExpression, "columnExpression");
+      this.columnExpression = requireNonNull(columnExpression, "columnExpression");
       return (B) this;
     }
 
     @Override
     public final B columnHasDefaultValue() {
-      columnProperty.columnHasDefaultValue = true;
+      this.columnHasDefaultValue = true;
       return (B) this;
     }
 
@@ -326,29 +345,29 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
 
     @Override
     public B readOnly(boolean readOnly) {
-      columnProperty.insertable = !readOnly;
-      columnProperty.updatable = !readOnly;
+      this.insertable = !readOnly;
+      this.updatable = !readOnly;
       return (B) this;
     }
 
     @Override
     public B insertable(boolean insertable) {
-      columnProperty.insertable = insertable;
+      this.insertable = insertable;
       return (B) this;
     }
 
     @Override
     public B updatable(boolean updatable) {
-      columnProperty.updatable = updatable;
+      this.updatable = updatable;
       return (B) this;
     }
 
     @Override
     public final B primaryKeyIndex(int index) {
       if (index < 0) {
-        throw new IllegalArgumentException("Primary key index must be at least 0: " + columnProperty.getAttribute());
+        throw new IllegalArgumentException("Primary key index must be at least 0: " + attribute);
       }
-      columnProperty.primaryKeyIndex = index;
+      this.primaryKeyIndex = index;
       nullable(false);
       updatable(false);
       return (B) this;
@@ -356,34 +375,34 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
 
     @Override
     public final B groupingColumn() {
-      if (columnProperty.aggregateColumn) {
-        throw new IllegalStateException(columnProperty.columnName + " is an aggregate column: " + columnProperty.getAttribute());
+      if (this.aggregateColumn) {
+        throw new IllegalStateException(this.columnName + " is an aggregate column: " + attribute);
       }
-      columnProperty.groupingColumn = true;
+      this.groupingColumn = true;
       return (B) this;
     }
 
     @Override
     public final B aggregateColumn() {
-      if (columnProperty.groupingColumn) {
-        throw new IllegalStateException(columnProperty.columnName + " is a grouping column: " + columnProperty.getAttribute());
+      if (this.groupingColumn) {
+        throw new IllegalStateException(this.columnName + " is a grouping column: " + attribute);
       }
-      columnProperty.aggregateColumn = true;
+      this.aggregateColumn = true;
       return (B) this;
     }
 
     @Override
     public final B nonSelectable() {
-      columnProperty.selectable = false;
+      this.selectable = false;
       return (B) this;
     }
 
     @Override
     public final B searchProperty() {
-      if (!columnProperty.getAttribute().isString()) {
-        throw new IllegalStateException("Search properties must be String based: " + columnProperty.getAttribute());
+      if (!attribute.isString()) {
+        throw new IllegalStateException("Search properties must be String based: " + attribute);
       }
-      columnProperty.searchProperty = true;
+      this.searchProperty = true;
       return (B) this;
     }
 

@@ -11,7 +11,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Properties;
-import is.codion.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -45,7 +44,8 @@ public final class TestDomain extends DefaultDomain {
     department();
     employee();
     noPKEntity();
-    transientTest();
+    transientModifies();
+    transientModifiesNot();
   }
 
   public static final EntityType T_COMPOSITE_MASTER = DOMAIN.entityType("domain.composite_master");
@@ -341,15 +341,30 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(NoPk.COL3));
   }
 
-  public static final EntityType T_TRANS = DOMAIN.entityType("trans");
+  public interface TransModifies {
+    EntityType TYPE = DOMAIN.entityType("trans_modifies");
 
-  public static final Attribute<Integer> TRANS_ID = T_TRANS.integerAttribute("id");
-  public static final Attribute<Integer> TRANS_TRANS = T_TRANS.integerAttribute("trans");
-  public static final TransientProperty.Builder<Integer, TransientProperty<Integer>, ?> TRANS_BUILDER = Properties.transientProperty(TRANS_TRANS);
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<Integer> TRANS = TYPE.integerAttribute("trans");
+  }
 
-  void transientTest() {
-    define(T_TRANS,
-            Properties.primaryKeyProperty(TRANS_ID),
-            TRANS_BUILDER);
+  void transientModifies() {
+    define(TransModifies.TYPE,
+            Properties.primaryKeyProperty(TransModifies.ID),
+            Properties.transientProperty(TransModifies.TRANS));
+  }
+
+  public interface TransModifiesNot {
+    EntityType TYPE = DOMAIN.entityType("trans_modifies_not");
+
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<Integer> TRANS = TYPE.integerAttribute("trans");
+  }
+
+  void transientModifiesNot() {
+    define(TransModifiesNot.TYPE,
+            Properties.primaryKeyProperty(TransModifiesNot.ID),
+            Properties.transientProperty(TransModifiesNot.TRANS)
+                    .modifiesEntity(false));
   }
 }
