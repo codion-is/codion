@@ -22,7 +22,7 @@ class DefaultAuditProperty<T> extends DefaultColumnProperty<T> implements AuditP
   }
 
   @Override
-  <B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> builder() {
-    return (ColumnProperty.Builder<T, B>) new DefaultColumnPropertyBuilder<>(this).readOnly();
+  <P extends ColumnProperty<T>, B extends ColumnProperty.Builder<T, P, B>> ColumnProperty.Builder<T, P, B> builder() {
+    return (ColumnProperty.Builder<T, P, B>) new DefaultColumnPropertyBuilder<>(this).readOnly();
   }
 }

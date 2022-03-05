@@ -389,7 +389,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
   }
 
-  abstract static class AbstractPropertyBuilder<T, B extends Property.Builder<T, B>> implements Property.Builder<T, B> {
+  abstract static class AbstractPropertyBuilder<T, P extends Property<T>, B extends Property.Builder<T, P, B>> implements Property.Builder<T, P, B> {
 
     private final AbstractProperty<T> property;
 
@@ -408,8 +408,8 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public Property<T> get() {
-      return property;
+    public final P build() {
+      return (P) property;
     }
 
     @Override

@@ -28,12 +28,12 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
   }
 
   @Override
-  <B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> builder() {
+  <P extends ColumnProperty<T>, B extends ColumnProperty.Builder<T, P, B>> ColumnProperty.Builder<T, P, B> builder() {
     return new DefaultSubqueryPropertyBuilder<>(this);
   }
 
-  private static final class DefaultSubqueryPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
-          extends DefaultColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
+  private static final class DefaultSubqueryPropertyBuilder<T, P extends ColumnProperty<T>, B extends ColumnProperty.Builder<T, P, B>>
+          extends DefaultColumnPropertyBuilder<T, P, B> implements Property.Builder<T, P, B> {
 
     private final DefaultSubqueryProperty<T> subqueryProperty;
 
@@ -41,11 +41,6 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
       super(subqueryProperty);
       this.subqueryProperty = subqueryProperty;
       super.readOnly(true);
-    }
-
-    @Override
-    public SubqueryProperty<T> get() {
-      return subqueryProperty;
     }
 
     @Override

@@ -26,12 +26,12 @@ class DefaultTransientProperty<T> extends AbstractProperty<T> implements Transie
     return modifiesEntity;
   }
 
-  <B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> builder() {
+  <P extends TransientProperty<T>, B extends TransientProperty.Builder<T, P, B>> TransientProperty.Builder<T, P, B> builder() {
     return new DefaultTransientPropertyBuilder<>(this);
   }
 
-  static class DefaultTransientPropertyBuilder<T, B extends TransientProperty.Builder<T, B>>
-          extends AbstractPropertyBuilder<T, B> implements TransientProperty.Builder<T, B> {
+  static class DefaultTransientPropertyBuilder<T, P extends TransientProperty<T>, B extends TransientProperty.Builder<T, P, B>>
+          extends AbstractPropertyBuilder<T, P, B> implements TransientProperty.Builder<T, P, B> {
 
     private final DefaultTransientProperty<T> transientProperty;
 
@@ -41,12 +41,7 @@ class DefaultTransientProperty<T> extends AbstractProperty<T> implements Transie
     }
 
     @Override
-    public TransientProperty<T> get() {
-      return transientProperty;
-    }
-
-    @Override
-    public TransientProperty.Builder<T, B> modifiesEntity(boolean modifiesEntity) {
+    public TransientProperty.Builder<T, P, B> modifiesEntity(boolean modifiesEntity) {
       transientProperty.modifiesEntity = modifiesEntity;
       return this;
     }

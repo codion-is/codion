@@ -80,7 +80,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
   }
 
   private static final class DefaultForeignKeyPropertyBuilder
-          extends AbstractPropertyBuilder<Entity, ForeignKeyProperty.Builder> implements ForeignKeyProperty.Builder {
+          extends AbstractPropertyBuilder<Entity, ForeignKeyProperty, ForeignKeyProperty.Builder> implements ForeignKeyProperty.Builder {
 
     private final DefaultForeignKeyProperty foreignKeyProperty;
 
@@ -89,11 +89,6 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
       this.foreignKeyProperty = foreignKeyProperty;
       foreignKeyProperty.fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
       foreignKeyProperty.softReference = false;
-    }
-
-    @Override
-    public ForeignKeyProperty get() {
-      return foreignKeyProperty;
     }
 
     @Override

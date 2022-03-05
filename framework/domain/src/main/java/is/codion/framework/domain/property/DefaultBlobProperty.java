@@ -26,7 +26,7 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
     return new DefaultBlobPropertyBuilder(this);
   }
 
-  static final class DefaultBlobPropertyBuilder extends DefaultColumnPropertyBuilder<byte[], BlobProperty.Builder>
+  static final class DefaultBlobPropertyBuilder extends DefaultColumnPropertyBuilder<byte[], BlobProperty, BlobProperty.Builder>
           implements BlobProperty.Builder {
 
     private final DefaultBlobProperty blobProperty;
@@ -34,11 +34,6 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
     DefaultBlobPropertyBuilder(DefaultBlobProperty blobProperty) {
       super(blobProperty);
       this.blobProperty = blobProperty;
-    }
-
-    @Override
-    public BlobProperty get() {
-      return blobProperty;
     }
 
     @Override

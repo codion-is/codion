@@ -47,7 +47,7 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
   }
 
   @Override
-  <B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> builder() {
+  <P extends TransientProperty<T>, B extends TransientProperty.Builder<T, P, B>> TransientProperty.Builder<T, P, B> builder() {
     return new DefaultTransientPropertyBuilder<>(this);
   }
 }

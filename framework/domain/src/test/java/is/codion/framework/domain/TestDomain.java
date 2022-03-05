@@ -345,7 +345,7 @@ public final class TestDomain extends DefaultDomain {
 
   public static final Attribute<Integer> TRANS_ID = T_TRANS.integerAttribute("id");
   public static final Attribute<Integer> TRANS_TRANS = T_TRANS.integerAttribute("trans");
-  public static final TransientProperty.Builder<Integer, ?> TRANS_BUILDER = Properties.transientProperty(TRANS_TRANS);
+  public static final TransientProperty.Builder<Integer, TransientProperty<Integer>, ?> TRANS_BUILDER = Properties.transientProperty(TRANS_TRANS);
 
   void transientTest() {
     define(T_TRANS,

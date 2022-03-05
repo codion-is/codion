@@ -252,15 +252,16 @@ public interface Property<T> {
   /**
    * Builds a Property instance
    * @param <T> the property value type
+   * @param <P> the property type
    * @param <B> the builder type
    */
-  interface Builder<T, B extends Builder<T, B>> {
+  interface Builder<T, P extends Property<T>, B extends Builder<T, P, B>> {
 
     /**
      * Returns the underlying property.
      * @return the property
      */
-    Property<T> get();
+    P build();
 
     /**
      * Specifies the resource bundle from which to retrieve the caption

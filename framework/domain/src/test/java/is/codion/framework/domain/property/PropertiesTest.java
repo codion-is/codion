@@ -122,7 +122,7 @@ public final class PropertiesTest {
 
   @Test
   void getMaximumFractionDigitsNotNumerical() {
-    assertEquals(-1, columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).get().getMaximumFractionDigits());
+    assertEquals(-1, columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).build().getMaximumFractionDigits());
   }
 
   @Test
@@ -142,13 +142,13 @@ public final class PropertiesTest {
 
   @Test
   void minimumMaximumValue() {
-    ColumnProperty.Builder<Double, ?> builder = columnProperty(ENTITY_TYPE.doubleAttribute("attribute"));
+    ColumnProperty.Builder<Double, ColumnProperty<Double>, ?> builder = columnProperty(ENTITY_TYPE.doubleAttribute("attribute"));
     assertThrows(IllegalArgumentException.class, () -> builder.range(5, 4));
   }
 
   @Test
   void setColumnName() {
-    assertEquals("hello", columnProperty(ENTITY_TYPE.integerAttribute("attribute")).columnName("hello").get().getColumnName());
+    assertEquals("hello", columnProperty(ENTITY_TYPE.integerAttribute("attribute")).columnName("hello").build().getColumnName());
   }
 
   @Test
@@ -159,14 +159,14 @@ public final class PropertiesTest {
   @Test
   void description() {
     final String description = "Here is a description";
-    Property<Integer> property = columnProperty(ENTITY_TYPE.integerAttribute("attribute")).description(description).get();
+    Property<Integer> property = columnProperty(ENTITY_TYPE.integerAttribute("attribute")).description(description).build();
     assertEquals(description, property.getDescription());
   }
 
   @Test
   void mnemonic() {
     final Character mnemonic = 'M';
-    Property<Integer> property = columnProperty(ENTITY_TYPE.integerAttribute("attribute")).mnemonic(mnemonic).get();
+    Property<Integer> property = columnProperty(ENTITY_TYPE.integerAttribute("attribute")).mnemonic(mnemonic).build();
     assertEquals(mnemonic, property.getMnemonic());
   }
 
@@ -199,7 +199,7 @@ public final class PropertiesTest {
   void i18n() throws IOException, ClassNotFoundException {
     Property<Integer> property =
             columnProperty(ENTITY_TYPE.integerAttribute("i18n"))
-                    .captionResourceKey("test").get();
+                    .captionResourceKey("test").build();
 
     Locale.setDefault(new Locale("en", "EN"));
     assertEquals("Test", property.getCaption());
@@ -222,7 +222,7 @@ public final class PropertiesTest {
     assertThrows(IllegalArgumentException.class, () -> Properties.itemProperty(ENTITY_TYPE.integerAttribute("item"), itemsDuplicate));
 
     List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(3));
-    ItemProperty<Integer> property = (ItemProperty<Integer>) Properties.itemProperty(ENTITY_TYPE.integerAttribute("item"), items).get();
+    ItemProperty<Integer> property = (ItemProperty<Integer>) Properties.itemProperty(ENTITY_TYPE.integerAttribute("item"), items).build();
     assertFalse(property.isValid(4));
     assertThrows(IllegalArgumentException.class, () -> property.getItem(4));
     assertTrue(property.isValid(null));

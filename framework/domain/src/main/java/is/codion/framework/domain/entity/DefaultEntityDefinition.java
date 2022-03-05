@@ -203,7 +203,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * Defines a new entity type with the entityType name serving as the initial entity caption.
    */
   DefaultEntityDefinition(String domainName, EntityType entityType, String tableName,
-                          List<Property.Builder<?, ?>> propertyBuilders) {
+                          List<Property.Builder<?, ?, ?>> propertyBuilders) {
     if (propertyBuilders.isEmpty()) {
       throw new IllegalArgumentException("An entity must have one or more properties");
     }
@@ -828,7 +828,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private final int serializationVersion;
 
-    private EntityProperties(EntityType entityType, List<Property.Builder<?, ?>> propertyBuilders) {
+    private EntityProperties(EntityType entityType, List<Property.Builder<?, ?, ?>> propertyBuilders) {
       this.entityType = entityType;
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.attributeMap = initializeAttributeMap();
@@ -852,10 +852,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.serializationVersion = createSerializationVersion();
     }
 
-    private Map<Attribute<?>, Property<?>> initializePropertyMap(List<Property.Builder<?, ?>> propertyBuilders) {
+    private Map<Attribute<?>, Property<?>> initializePropertyMap(List<Property.Builder<?, ?, ?>> propertyBuilders) {
       Map<Attribute<?>, Property<?>> map = new LinkedHashMap<>(propertyBuilders.size());
-      for (Property.Builder<?, ?> builder : propertyBuilders) {
-        validateAndAddProperty(builder.get(), map);
+      for (Property.Builder<?, ?, ?> builder : propertyBuilders) {
+        validateAndAddProperty(builder.build(), map);
       }
       validatePrimaryKeyProperties(map);
 
@@ -1061,7 +1061,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private static void setForeignKeyNullable(ForeignKeyProperty.Builder foreignKeyBuilder,
                                               Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties) {
       //make foreign key properties nullable if and only if any of their constituent column properties are nullable
-      foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.get().getAttribute())
+      foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.build().getAttribute())
               .stream()
               .anyMatch(Property::isNullable));
     }

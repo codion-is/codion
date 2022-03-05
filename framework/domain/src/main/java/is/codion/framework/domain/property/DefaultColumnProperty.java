@@ -133,10 +133,11 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
 
   /**
    * @param <T> the value type
+   * @param <P> the property type
    * @param <B> the builder type
    * @return a builder for this property instance
    */
-  <B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> builder() {
+  <P extends ColumnProperty<T>, B extends ColumnProperty.Builder<T, P, B>> ColumnProperty.Builder<T, P, B> builder() {
     return new DefaultColumnPropertyBuilder<>(this);
   }
 
@@ -261,8 +262,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
   }
 
-  static class DefaultColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
-          extends AbstractPropertyBuilder<T, B> implements ColumnProperty.Builder<T, B> {
+  static class DefaultColumnPropertyBuilder<T, P extends ColumnProperty<T>, B extends ColumnProperty.Builder<T, P, B>>
+          extends AbstractPropertyBuilder<T, P, B> implements ColumnProperty.Builder<T, P, B> {
 
     private final DefaultColumnProperty<T> columnProperty;
 
@@ -281,11 +282,6 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
       columnProperty.groupingColumn = false;
       columnProperty.aggregateColumn = false;
       columnProperty.selectable = true;
-    }
-
-    @Override
-    public ColumnProperty<T> get() {
-      return columnProperty;
     }
 
     @Override

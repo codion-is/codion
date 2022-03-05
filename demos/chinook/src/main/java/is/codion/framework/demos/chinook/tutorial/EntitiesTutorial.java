@@ -18,6 +18,8 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.util.List;
@@ -74,9 +76,9 @@ public final class EntitiesTutorial {
       //a fluent call chain in the *define* methods parameter list.
 
       // create properties for the columns in the table 'chinook.artist'
-      Property.Builder<Long, ?> artistId = primaryKeyProperty(Artist.ID);
+      ColumnProperty.Builder<Long, ColumnProperty<Long>, ?> artistId = primaryKeyProperty(Artist.ID);
 
-      Property.Builder<String, ?> artistName = columnProperty(Artist.NAME, "Name");
+      Property.Builder<String, ColumnProperty<String>, ?> artistName = columnProperty(Artist.NAME, "Name");
 
       artistName.nullable(false).maximumLength(120);
 
@@ -89,17 +91,17 @@ public final class EntitiesTutorial {
               .caption("Artist");
 
       // create properties for the columns in the table 'chinook.album'
-      Property.Builder<Long, ?> albumId = primaryKeyProperty(Album.ID);
+      Property.Builder<Long, ColumnProperty<Long>, ?> albumId = primaryKeyProperty(Album.ID);
 
-      Property.Builder<String, ?> albumTitle = columnProperty(Album.TITLE, "Title");
+      Property.Builder<String, ColumnProperty<String>, ?> albumTitle = columnProperty(Album.TITLE, "Title");
 
       albumTitle.nullable(false).maximumLength(160);
 
-      Property.Builder<Long, ?> albumArtistId = columnProperty(Album.ARTIST_ID);
+      Property.Builder<Long, ColumnProperty<Long>, ?> albumArtistId = columnProperty(Album.ARTIST_ID);
 
       albumId.nullable(false);
 
-      Property.Builder<Entity, ?> albumArtist =
+      Property.Builder<Entity, ForeignKeyProperty, ?> albumArtist =
               foreignKeyProperty(Album.ARTIST_FK, "Artist");
 
       // define an entity based on the table 'chinook.album',
