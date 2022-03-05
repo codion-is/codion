@@ -5,7 +5,6 @@ package is.codion.framework.demos.chinook.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.ValueChange;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
@@ -23,8 +22,7 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
     addValueEditListener(Invoice.CUSTOMER_FK, this::setAddress);
   }
 
-  private void setAddress(ValueChange<Entity> valueChange) {
-    Entity customer = valueChange.getValue();
+  private void setAddress(Entity customer) {
     if (customer == null) {
       put(Invoice.BILLINGADDRESS, null);
       put(Invoice.BILLINGCITY, null);

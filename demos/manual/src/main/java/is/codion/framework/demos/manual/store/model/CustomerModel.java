@@ -23,10 +23,8 @@ public class CustomerModel extends SwingEntityModel {
       }
     });
 
-    getEditModel().addValueListener(Customer.FIRST_NAME, valueChange ->
-            System.out.println("Attribute " + valueChange.getAttribute() +
-                    " changed from " + valueChange.getPreviousValue() +
-                    " to " + valueChange.getValue()));
+    getEditModel().addValueListener(Customer.FIRST_NAME, value ->
+            System.out.println("First name changed to " + value));
   }
   // end::bindEvents[]
 }
