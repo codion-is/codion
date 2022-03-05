@@ -7867,3 +7867,4 @@
   DefaultEntityTableCellRenderer, handle invalid values for ItemProperty by displaying an empty string instead of throwing an exception
   HttpEntityConnection, HttpJsonEntityConnection, AbstractHttpEntityConnection bug fixed, synchronization improved and moved to subclasses, http client errors appeared with async client refresh enabled
   DefaultEntity, minor optimization in isModified()
+  DefaultProperty, DefaultPropertyBuilder renamed AbstractProperty and AbstractPropertyBuilder

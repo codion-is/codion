@@ -27,10 +27,7 @@ import static is.codion.common.Util.nullOrEmpty;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
 
-/**
- * A default Property implementation
- */
-abstract class DefaultProperty<T> implements Property<T>, Serializable {
+abstract class AbstractProperty<T> implements Property<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -144,13 +141,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
    */
   private transient DateTimeFormatter dateTimeFormatter;
 
-  /**
-   * @param attribute the attribute
-   * @param type the data type of this property
-   * @param caption the caption of this property, if this is null then this property is defined as hidden
-   * @param typeClass the type associated with this property
-   */
-  DefaultProperty(Attribute<T> attribute, String caption) {
+  AbstractProperty(Attribute<T> attribute, String caption) {
     requireNonNull(attribute, "attribute");
     this.attribute = attribute;
     this.caption = caption;
@@ -254,7 +245,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public Comparator<T> getComparator() {
+  public final Comparator<T> getComparator() {
     return comparator;
   }
 
@@ -296,7 +287,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    DefaultProperty<?> that = (DefaultProperty<?>) obj;
+    AbstractProperty<?> that = (AbstractProperty<?>) obj;
 
     return attribute.equals(that.attribute);
   }
@@ -398,11 +389,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
   }
 
-  abstract static class DefaultPropertyBuilder<T, B extends Property.Builder<T, B>> implements Property.Builder<T, B> {
+  abstract static class AbstractPropertyBuilder<T, B extends Property.Builder<T, B>> implements Property.Builder<T, B> {
 
-    private final DefaultProperty<T> property;
+    private final AbstractProperty<T> property;
 
-    DefaultPropertyBuilder(DefaultProperty<T> property) {
+    AbstractPropertyBuilder(AbstractProperty<T> property) {
       this.property = property;
       property.format = initializeDefaultFormat(property.getAttribute());
       property.comparator = initializeDefaultComparator(property.getAttribute());

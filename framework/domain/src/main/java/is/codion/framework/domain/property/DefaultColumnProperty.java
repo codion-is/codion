@@ -20,7 +20,7 @@ import java.util.Objects;
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnProperty<T> {
+class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProperty<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -261,7 +261,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
   }
 
-  static class DefaultColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>> extends DefaultPropertyBuilder<T, B> implements ColumnProperty.Builder<T, B> {
+  static class DefaultColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
+          extends AbstractPropertyBuilder<T, B> implements ColumnProperty.Builder<T, B> {
 
     private final DefaultColumnProperty<T> columnProperty;
 

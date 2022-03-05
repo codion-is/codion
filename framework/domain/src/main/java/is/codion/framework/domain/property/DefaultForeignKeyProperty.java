@@ -18,7 +18,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements ForeignKeyProperty {
+final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implements ForeignKeyProperty {
 
   private static final long serialVersionUID = 1;
 
@@ -80,7 +80,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   private static final class DefaultForeignKeyPropertyBuilder
-          extends DefaultPropertyBuilder<Entity, ForeignKeyProperty.Builder> implements ForeignKeyProperty.Builder {
+          extends AbstractPropertyBuilder<Entity, ForeignKeyProperty.Builder> implements ForeignKeyProperty.Builder {
 
     private final DefaultForeignKeyProperty foreignKeyProperty;
 

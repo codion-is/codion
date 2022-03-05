@@ -5,7 +5,7 @@ package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.entity.Attribute;
 
-class DefaultTransientProperty<T> extends DefaultProperty<T> implements TransientProperty<T> {
+class DefaultTransientProperty<T> extends AbstractProperty<T> implements TransientProperty<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -31,7 +31,7 @@ class DefaultTransientProperty<T> extends DefaultProperty<T> implements Transien
   }
 
   static class DefaultTransientPropertyBuilder<T, B extends TransientProperty.Builder<T, B>>
-          extends DefaultPropertyBuilder<T, B> implements TransientProperty.Builder<T, B> {
+          extends AbstractPropertyBuilder<T, B> implements TransientProperty.Builder<T, B> {
 
     private final DefaultTransientProperty<T> transientProperty;
 
