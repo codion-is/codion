@@ -591,7 +591,7 @@ public interface EntityEditModel {
    * @param listener a listener notified each time the value of the given property is edited via this model
    * @param <T> the value type
    */
-  <T> void addValueEditListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener);
+  <T> void addValueEditListener(Attribute<T> attribute, EventDataListener<T> listener);
 
   /**
    * Removes the given listener.
@@ -599,7 +599,7 @@ public interface EntityEditModel {
    * @param listener the listener to remove
    * @param <T> the value type
    */
-  <T> void removeValueEditListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener);
+  <T> void removeValueEditListener(Attribute<T> attribute, EventDataListener<T> listener);
 
   /**
    * Adds a listener notified each time the value associated with the given attribute changes, either
@@ -609,7 +609,7 @@ public interface EntityEditModel {
    * @param <T> the value type
    * @see #setEntity(Entity)
    */
-  <T> void addValueListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener);
+  <T> void addValueListener(Attribute<T> attribute, EventDataListener<T> listener);
 
   /**
    * Removes the given listener.
@@ -617,17 +617,17 @@ public interface EntityEditModel {
    * @param listener the listener to remove
    * @param <T> the value type
    */
-  <T> void removeValueListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener);
+  <T> void removeValueListener(Attribute<T> attribute, EventDataListener<T> listener);
 
   /**
    * @param listener a listener notified each time a value changes
    */
-  void addValueListener(EventDataListener<ValueChange<?>> listener);
+  void addValueListener(EventDataListener<Attribute<?>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeValueListener(EventDataListener<ValueChange<?>> listener);
+  void removeValueListener(EventDataListener<Attribute<?>> listener);
 
   /**
    * @param listener a listener notified each time the entity is set

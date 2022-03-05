@@ -106,7 +106,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * An event notified each time a value changes
    */
-  private final Event<ValueChange<?>> valueChangeEvent = Event.event();
+  private final Event<Attribute<?>> valueChangeEvent = Event.event();
 
   /**
    * The validator used by this edit model
@@ -400,7 +400,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
     T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
-      notifyValueEdit(new DefaultValueChange<>(attribute, value, previousValue), dependingValues);
+      notifyValueEdit(attribute, value, dependingValues);
     }
   }
 
@@ -411,7 +411,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     if (entity.contains(attribute)) {
       Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
       value = entity.remove(attribute);
-      notifyValueEdit(new DefaultValueChange<>(attribute, null, value), dependingValues);
+      notifyValueEdit(attribute, null, dependingValues);
     }
 
     return value;
@@ -696,36 +696,36 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> void removeValueEditListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener) {
+  public final <T> void removeValueEditListener(Attribute<T> attribute, EventDataListener<T> listener) {
     if (valueEditEventMap.containsKey(attribute)) {
-      ((Event<ValueChange<T>>) valueEditEventMap.get(attribute)).removeDataListener(listener);
+      ((Event<T>) valueEditEventMap.get(attribute)).removeDataListener(listener);
     }
   }
 
   @Override
-  public final <T> void addValueEditListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener) {
+  public final <T> void addValueEditListener(Attribute<T> attribute, EventDataListener<T> listener) {
     getValueEditEvent(attribute).addDataListener(listener);
   }
 
   @Override
-  public final <T> void removeValueListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener) {
+  public final <T> void removeValueListener(Attribute<T> attribute, EventDataListener<T> listener) {
     if (valueChangeEventMap.containsKey(attribute)) {
-      ((Event<ValueChange<T>>) valueChangeEventMap.get(attribute)).removeDataListener(listener);
+      ((Event<T>) valueChangeEventMap.get(attribute)).removeDataListener(listener);
     }
   }
 
   @Override
-  public final <T> void addValueListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener) {
+  public final <T> void addValueListener(Attribute<T> attribute, EventDataListener<T> listener) {
     getValueChangeEvent(attribute).addDataListener(listener);
   }
 
   @Override
-  public final void removeValueListener(EventDataListener<ValueChange<?>> listener) {
+  public final void removeValueListener(EventDataListener<Attribute<?>> listener) {
     valueChangeEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addValueListener(EventDataListener<ValueChange<?>> listener) {
+  public final void addValueListener(EventDataListener<Attribute<?>> listener) {
     valueChangeEvent.addDataListener(listener);
   }
 
@@ -986,7 +986,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     Map<Attribute<?>, Object> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity(this::getDefaultValue) : entity);
     for (Map.Entry<Attribute<?>, Object> entry : affectedAttributes.entrySet()) {
       Attribute<Object> objectAttribute = (Attribute<Object>) entry.getKey();
-      onValueChange(new DefaultValueChange<>(objectAttribute, this.entity.get(objectAttribute), entry.getValue()));
+      onValueChange(objectAttribute, this.entity.get(objectAttribute));
     }
     if (affectedAttributes.isEmpty()) {//no value changes to trigger state updates
       updateEntityStates();
@@ -999,14 +999,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return !Objects.equals(get(attribute), getDefaultValue(attribute));
   }
 
-  private <T> Event<ValueChange<T>> getValueEditEvent(Attribute<T> attribute) {
+  private <T> Event<T> getValueEditEvent(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
-    return (Event<ValueChange<T>>) valueEditEventMap.computeIfAbsent(attribute, k -> Event.event());
+    return (Event<T>) valueEditEventMap.computeIfAbsent(attribute, k -> Event.event());
   }
 
-  private <T> Event<ValueChange<T>> getValueChangeEvent(Attribute<T> attribute) {
+  private <T> Event<T> getValueChangeEvent(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
-    return (Event<ValueChange<T>>) valueChangeEventMap.computeIfAbsent(attribute, k -> Event.event());
+    return (Event<T>) valueChangeEventMap.computeIfAbsent(attribute, k -> Event.event());
   }
 
   private void initializePersistentValues() {
@@ -1084,24 +1084,24 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return dependentValues;
   }
 
-  private <T> void notifyValueEdit(ValueChange<T> valueChange, Map<Attribute<?>, Object> dependentValues) {
-    onValueChange(valueChange);
-    getValueEditEvent(valueChange.getAttribute()).onEvent(valueChange);
+  private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependentValues) {
+    onValueChange(attribute, value);
+    getValueEditEvent(attribute).onEvent(value);
     dependentValues.forEach((dependentAttribute, previousValue) -> {
       Object currentValue = get(dependentAttribute);
       if (!Objects.equals(previousValue, currentValue)) {
-        notifyValueEdit(new DefaultValueChange<>((Attribute<Object>) dependentAttribute, currentValue, previousValue), emptyMap());
+        notifyValueEdit((Attribute<Object>) dependentAttribute, currentValue, emptyMap());
       }
     });
   }
 
-  private <T> void onValueChange(ValueChange<T> valueChange) {
+  private <T> void onValueChange(Attribute<T> attribute, T value) {
     updateEntityStates();
-    Event<ValueChange<T>> changeEvent = (Event<ValueChange<T>>) valueChangeEventMap.get(valueChange.getAttribute());
+    Event<T> changeEvent = (Event<T>) valueChangeEventMap.get(attribute);
     if (changeEvent != null) {
-      changeEvent.onEvent(valueChange);
+      changeEvent.onEvent(value);
     }
-    valueChangeEvent.onEvent(valueChange);
+    valueChangeEvent.onEvent(attribute);
   }
 
   private void updateEntityStates() {
