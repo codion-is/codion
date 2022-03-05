@@ -27,10 +27,7 @@ import static is.codion.common.Util.nullOrEmpty;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
 
-/**
- * A default Property implementation
- */
-abstract class DefaultProperty<T> implements Property<T>, Serializable {
+abstract class AbstractProperty<T> implements Property<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -54,17 +51,17 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   /**
    * The name of a bean property linked to this property, if any
    */
-  private String beanProperty;
+  private final String beanProperty;
 
   /**
    * The default value supplier for this property
    */
-  private ValueSupplier<T> defaultValueSupplier;
+  private final ValueSupplier<T> defaultValueSupplier;
 
   /**
    * The resource bundle key specifying the caption
    */
-  private String captionResourceKey;
+  private final String captionResourceKey;
 
   /**
    * The caption from the resource bundle, if any
@@ -74,65 +71,65 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   /**
    * True if the value of this property is allowed to be null
    */
-  private boolean nullable;
+  private final boolean nullable;
 
   /**
    * The preferred column width when this property is presented in a table
    */
-  private int preferredColumnWidth;
+  private final int preferredColumnWidth;
 
   /**
    * True if this property should be hidden in table views
    */
-  private boolean hidden;
+  private final boolean hidden;
 
   /**
    * The maximum length of the data.
    * Only applicable to string based properties.
    */
-  private int maximumLength;
+  private final int maximumLength;
 
   /**
    * The maximum value for this property.
    * Only applicable to numerical properties
    */
-  private Double maximumValue;
+  private final Double maximumValue;
 
   /**
    * The minimum value for this property.
    * Only applicable to numerical properties
    */
-  private Double minimumValue;
+  private final Double minimumValue;
 
   /**
    * A string describing this property
    */
-  private String description;
+  private final String description;
 
   /**
    * A mnemonic to use when creating a label for this property
    */
-  private Character mnemonic;
+  private final Character mnemonic;
 
   /**
    * The Format used when presenting the value of this property
    */
-  private Format format;
+  private final Format format;
 
   /**
    * A locale sensitive numerical date/time pattern
    */
-  private LocaleDateTimePattern localeDateTimePattern;
+  private final LocaleDateTimePattern localeDateTimePattern;
 
   /**
    * The rounding mode to use when working with decimal numbers
    */
-  private RoundingMode decimalRoundingMode;
+  private final RoundingMode decimalRoundingMode;
 
   /**
    * The comparator for this attribute
    */
-  private Comparator<T> comparator;
+  private final Comparator<T> comparator;
 
   /**
    * The date/time format pattern
@@ -144,16 +141,28 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
    */
   private transient DateTimeFormatter dateTimeFormatter;
 
-  /**
-   * @param attribute the attribute
-   * @param type the data type of this property
-   * @param caption the caption of this property, if this is null then this property is defined as hidden
-   * @param typeClass the type associated with this property
-   */
-  DefaultProperty(Attribute<T> attribute, String caption) {
-    requireNonNull(attribute, "attribute");
-    this.attribute = attribute;
-    this.caption = caption;
+  protected AbstractProperty(AbstractPropertyBuilder<T, ?> builder) {
+    requireNonNull(builder, "builder");
+    this.attribute = builder.attribute;
+    this.caption = builder.caption;
+    this.beanProperty = builder.beanProperty;
+    this.defaultValueSupplier = builder.defaultValueSupplier;
+    this.captionResourceKey = builder.captionResourceKey;
+    this.resourceCaption = builder.resourceCaption;
+    this.nullable = builder.nullable;
+    this.preferredColumnWidth = builder.preferredColumnWidth;
+    this.hidden = builder.hidden;
+    this.maximumLength = builder.maximumLength;
+    this.maximumValue = builder.maximumValue;
+    this.minimumValue = builder.minimumValue;
+    this.description = builder.description;
+    this.mnemonic = builder.mnemonic;
+    this.format = builder.format;
+    this.localeDateTimePattern = builder.localeDateTimePattern;
+    this.decimalRoundingMode = builder.decimalRoundingMode;
+    this.comparator = builder.comparator;
+    this.dateTimePattern = builder.dateTimePattern;
+    this.dateTimeFormatter = builder.dateTimeFormatter;
   }
 
   @Override
@@ -254,7 +263,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public Comparator<T> getComparator() {
+  public final Comparator<T> getComparator() {
     return comparator;
   }
 
@@ -296,7 +305,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    DefaultProperty<?> that = (DefaultProperty<?>) obj;
+    AbstractProperty<?> that = (AbstractProperty<?>) obj;
 
     return attribute.equals(that.attribute);
   }
@@ -398,52 +407,72 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
   }
 
-  abstract static class DefaultPropertyBuilder<T, B extends Property.Builder<T, B>> implements Property.Builder<T, B> {
+  abstract static class AbstractPropertyBuilder<T, B extends Property.Builder<T, B>> implements Property.Builder<T, B> {
 
-    private final DefaultProperty<T> property;
+    protected final Attribute<T> attribute;
+    private final String caption;
+    private String beanProperty;
+    private ValueSupplier<T> defaultValueSupplier;
+    private String captionResourceKey;
+    private String resourceCaption;
+    private boolean nullable;
+    private int preferredColumnWidth;
+    private boolean hidden;
+    private int maximumLength;
+    private Double maximumValue;
+    private Double minimumValue;
+    private String description;
+    private Character mnemonic;
+    private Format format;
+    private LocaleDateTimePattern localeDateTimePattern;
+    private RoundingMode decimalRoundingMode;
+    private Comparator<T> comparator;
+    private String dateTimePattern;
+    private DateTimeFormatter dateTimeFormatter;
 
-    DefaultPropertyBuilder(DefaultProperty<T> property) {
-      this.property = property;
-      property.format = initializeDefaultFormat(property.getAttribute());
-      property.comparator = initializeDefaultComparator(property.getAttribute());
-      property.beanProperty = Text.underscoreToCamelCase(property.attribute.getName());
-      property.captionResourceKey = property.attribute.getName();
-      property.hidden = property.caption == null && resourceNotFound(property.attribute.getEntityType().getResourceBundleName(), property.captionResourceKey);
-      property.nullable = true;
-      property.preferredColumnWidth = -1;
-      property.maximumLength = -1;
-      property.defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
-      property.decimalRoundingMode = DECIMAL_ROUNDING_MODE.get();
+    AbstractPropertyBuilder(Attribute<T> attribute, String caption) {
+      this.attribute = requireNonNull(attribute);
+      this.caption = caption;
+      format = initializeDefaultFormat(attribute);
+      comparator = initializeDefaultComparator(attribute);
+      beanProperty = Text.underscoreToCamelCase(attribute.getName());
+      captionResourceKey = attribute.getName();
+      hidden = caption == null && resourceNotFound(attribute.getEntityType().getResourceBundleName(), captionResourceKey);
+      nullable = true;
+      preferredColumnWidth = -1;
+      maximumLength = -1;
+      defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
+      decimalRoundingMode = DECIMAL_ROUNDING_MODE.get();
     }
 
     @Override
-    public Property<T> get() {
-      return property;
+    public final Attribute<T> getAttribute() {
+      return attribute;
     }
 
     @Override
     public final B captionResourceKey(String captionResourceKey) {
-      if (property.caption != null) {
-        throw new IllegalStateException("Caption has already been set for property: " + property.attribute);
+      if (caption != null) {
+        throw new IllegalStateException("Caption has already been set for property: " + attribute);
       }
-      String resourceBundleName = property.attribute.getEntityType().getResourceBundleName();
+      String resourceBundleName = attribute.getEntityType().getResourceBundleName();
       if (resourceBundleName == null) {
-        throw new IllegalStateException("No resource bundle specified for entity: " + property.attribute.getEntityType());
+        throw new IllegalStateException("No resource bundle specified for entity: " + attribute.getEntityType());
       }
       if (resourceNotFound(resourceBundleName, requireNonNull(captionResourceKey, "captionResourceKey"))) {
         throw new IllegalArgumentException("Resource " + captionResourceKey + " not found in bundle: " + resourceBundleName);
       }
-      property.captionResourceKey = captionResourceKey;
-      property.hidden = false;
+      this.captionResourceKey = captionResourceKey;
+      this.hidden = false;
       return (B) this;
     }
 
     @Override
     public final B beanProperty(String beanProperty) {
       if (nullOrEmpty(beanProperty)) {
-        throw new IllegalArgumentException("beanProperty must be a non-empty string: " + property.attribute);
+        throw new IllegalArgumentException("beanProperty must be a non-empty string: " + attribute);
       }
-      property.beanProperty = beanProperty;
+      this.beanProperty = beanProperty;
       return (B) this;
     }
 
@@ -454,7 +483,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
     @Override
     public final B hidden(boolean hidden) {
-      property.hidden = hidden;
+      this.hidden = hidden;
       return (B) this;
     }
 
@@ -466,49 +495,49 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     @Override
     public final B defaultValueSupplier(ValueSupplier<T> supplier) {
       if (supplier != null) {
-        property.attribute.validateType(supplier.get());
+        attribute.validateType(supplier.get());
       }
-      property.defaultValueSupplier = supplier == null ? (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
+      this.defaultValueSupplier = supplier == null ? (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
       return (B) this;
     }
 
     @Override
     public final B nullable(boolean nullable) {
-      property.nullable = nullable;
+      this.nullable = nullable;
       return (B) this;
     }
 
     @Override
     public final B maximumLength(int maximumLength) {
-      if (!property.attribute.isString()) {
-        throw new IllegalStateException("maximumLength is only applicable to string properties: " + property.attribute);
+      if (!attribute.isString()) {
+        throw new IllegalStateException("maximumLength is only applicable to string properties: " + attribute);
       }
       if (maximumLength <= 0) {
-        throw new IllegalArgumentException("maximumLength must be a positive integer: " + property.attribute);
+        throw new IllegalArgumentException("maximumLength must be a positive integer: " + attribute);
       }
-      property.maximumLength = maximumLength;
+      this.maximumLength = maximumLength;
       return (B) this;
     }
 
     @Override
     public final B range(double minimumValue, double maximumValue) {
-      if (!property.attribute.isNumerical()) {
+      if (!attribute.isNumerical()) {
         throw new IllegalStateException("range is only applicable to numerical properties");
       }
       if (maximumValue < minimumValue) {
-        throw new IllegalArgumentException("minimum value must be smaller than maximum value: " + property.attribute);
+        throw new IllegalArgumentException("minimum value must be smaller than maximum value: " + attribute);
       }
-      property.minimumValue = minimumValue;
-      property.maximumValue = maximumValue;
+      this.minimumValue = minimumValue;
+      this.maximumValue = maximumValue;
       return (B) this;
     }
 
     @Override
     public final B numberFormatGrouping(boolean numberFormatGrouping) {
-      if (!property.attribute.isNumerical()) {
-        throw new IllegalStateException("numberFormatGrouping is only applicable to numerical properties: " + property.attribute);
+      if (!attribute.isNumerical()) {
+        throw new IllegalStateException("numberFormatGrouping is only applicable to numerical properties: " + attribute);
       }
-      ((NumberFormat) property.format).setGroupingUsed(numberFormatGrouping);
+      ((NumberFormat) format).setGroupingUsed(numberFormatGrouping);
       return (B) this;
     }
 
@@ -517,86 +546,86 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       if (preferredColumnWidth <= 0) {
         throw new IllegalArgumentException("preferredColumnWidth must be larger than 0");
       }
-      property.preferredColumnWidth = preferredColumnWidth;
+      this.preferredColumnWidth = preferredColumnWidth;
       return (B) this;
     }
 
     @Override
     public final B description(String description) {
-      property.description = description;
+      this.description = description;
       return (B) this;
     }
 
     @Override
     public final B mnemonic(Character mnemonic) {
-      property.mnemonic = mnemonic;
+      this.mnemonic = mnemonic;
       return (B) this;
     }
 
     @Override
     public final B format(Format format) {
       requireNonNull(format, "format");
-      if (property.attribute.isNumerical() && !(format instanceof NumberFormat)) {
-        throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.attribute);
+      if (attribute.isNumerical() && !(format instanceof NumberFormat)) {
+        throw new IllegalArgumentException("NumberFormat required for numerical property: " + attribute);
       }
-      if (property.attribute.isTemporal()) {
-        throw new IllegalStateException("Use dateTimePattern() or localeDateTimePattern() for temporal properties: " + property.attribute);
+      if (attribute.isTemporal()) {
+        throw new IllegalStateException("Use dateTimePattern() or localeDateTimePattern() for temporal properties: " + attribute);
       }
-      property.format = format;
+      this.format = format;
       return (B) this;
     }
 
     @Override
     public final B dateTimePattern(String dateTimePattern) {
       requireNonNull(dateTimePattern, "dateTimePattern");
-      if (!property.attribute.isTemporal()) {
-        throw new IllegalStateException("dateTimePattern is only applicable to temporal properties: " + property.attribute);
+      if (!attribute.isTemporal()) {
+        throw new IllegalStateException("dateTimePattern is only applicable to temporal properties: " + attribute);
       }
-      if (property.localeDateTimePattern != null) {
-        throw new IllegalStateException("localeDateTimePattern has already been set for property: " + property.attribute);
+      if (this.localeDateTimePattern != null) {
+        throw new IllegalStateException("localeDateTimePattern has already been set for property: " + attribute);
       }
-      property.dateTimePattern = dateTimePattern;
-      property.dateTimeFormatter = ofPattern(property.dateTimePattern);
+      this.dateTimePattern = dateTimePattern;
+      this.dateTimeFormatter = ofPattern(dateTimePattern);
       return (B) this;
     }
 
     @Override
     public final B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern) {
       requireNonNull(localeDateTimePattern, "localeDateTimePattern");
-      if (!property.attribute.isTemporal()) {
-        throw new IllegalStateException("localeDateTimePattern is only applicable to temporal properties: " + property.attribute);
+      if (!attribute.isTemporal()) {
+        throw new IllegalStateException("localeDateTimePattern is only applicable to temporal properties: " + attribute);
       }
-      if (property.dateTimePattern != null) {
-        throw new IllegalStateException("dateTimePattern has already been set for property: " + property.attribute);
+      if (this.dateTimePattern != null) {
+        throw new IllegalStateException("dateTimePattern has already been set for property: " + attribute);
       }
-      property.localeDateTimePattern = localeDateTimePattern;
-      property.dateTimePattern = localeDateTimePattern.getDateTimePattern();
-      property.dateTimeFormatter = localeDateTimePattern.getFormatter();
+      this.localeDateTimePattern = localeDateTimePattern;
+      this.dateTimePattern = localeDateTimePattern.getDateTimePattern();
+      this.dateTimeFormatter = localeDateTimePattern.getFormatter();
 
       return (B) this;
     }
 
     @Override
     public final B maximumFractionDigits(int maximumFractionDigits) {
-      if (!property.attribute.isDecimal()) {
-        throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties: " + property.attribute);
+      if (!attribute.isDecimal()) {
+        throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties: " + attribute);
       }
-      ((NumberFormat) property.format).setMaximumFractionDigits(maximumFractionDigits);
+      ((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
       return (B) this;
     }
 
     @Override
     public final B decimalRoundingMode(RoundingMode decimalRoundingMode) {
-      if (!property.attribute.isDecimal()) {
-        throw new IllegalStateException("decimalRoundingMode is only applicable to decimal properties: " + property.attribute);
+      if (!attribute.isDecimal()) {
+        throw new IllegalStateException("decimalRoundingMode is only applicable to decimal properties: " + attribute);
       }
-      property.decimalRoundingMode = requireNonNull(decimalRoundingMode, "decimalRoundingMode");
+      this.decimalRoundingMode = requireNonNull(decimalRoundingMode, "decimalRoundingMode");
       return (B) this;
     }
 
     @Override
     public B comparator(Comparator<T> comparator) {
-      property.comparator = requireNonNull(comparator);
+      this.comparator = requireNonNull(comparator);
       return (B) this;
     }
 

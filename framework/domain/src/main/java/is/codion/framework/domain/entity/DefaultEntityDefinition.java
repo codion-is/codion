@@ -832,7 +832,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private EntityProperties(EntityType entityType, List<Property.Builder<?, ?>> propertyBuilders) {
       this.entityType = entityType;
       this.propertyMap = initializePropertyMap(propertyBuilders);
-      this.attributeMap = initializeAttributeMap();
+      this.attributeMap = initializeAttributeMap(propertyMap);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
       this.columnProperties = unmodifiableList(getColumnProperties());
       this.lazyLoadedBlobProperties = initializeLazyLoadedByteArrayProperties();
@@ -842,10 +842,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.foreignKeyProperties = unmodifiableList(getForeignKeyProperties());
       this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap();
       this.columnPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties();
-      initializeForeignKeyColumnProperties(propertyBuilders.stream()
-              .filter(ForeignKeyProperty.Builder.class::isInstance)
-              .map(ForeignKeyProperty.Builder.class::cast)
-              .collect(toList()));
       this.derivedAttributes = initializeDerivedAttributes();
       this.transientProperties = unmodifiableList(getTransientProperties());
       this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties());
@@ -853,77 +849,31 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.serializationVersion = createSerializationVersion();
     }
 
-    private Map<Attribute<?>, Property<?>> initializePropertyMap(List<Property.Builder<?, ?>> propertyBuilders) {
-      Map<Attribute<?>, Property<?>> map = new LinkedHashMap<>(propertyBuilders.size());
-      for (Property.Builder<?, ?> builder : propertyBuilders) {
-        validateAndAddProperty(builder.get(), map);
-      }
-      validatePrimaryKeyProperties(map);
-
-      return unmodifiableMap(map);
-    }
-
-    private Map<String, Attribute<?>> initializeAttributeMap() {
-      Map<String, Attribute<?>> map = new HashMap<>();
-      propertyMap.values().forEach(property -> map.put(property.getAttribute().getName(), property.getAttribute()));
-
-      return map;
-    }
-
-    private void validateAndAddProperty(Property<?> property, Map<Attribute<?>, Property<?>> propertyMap) {
-      validate(property, propertyMap);
-      propertyMap.put(property.getAttribute(), property);
-    }
-
-    private void validatePrimaryKeyProperties(Map<Attribute<?>, Property<?>> propertyMap) {
-      Set<Integer> usedPrimaryKeyIndexes = new LinkedHashSet<>();
-      for (Property<?> property : propertyMap.values()) {
-        if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) {
-          Integer index = ((ColumnProperty<?>) property).getPrimaryKeyIndex();
-          if (usedPrimaryKeyIndexes.contains(index)) {
-            throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
-          }
-          usedPrimaryKeyIndexes.add(index);
+    private Map<Attribute<?>, Property<?>> initializePropertyMap(List<Property.Builder<?, ?>> builders) {
+      Map<Attribute<?>, Property<?>> properties = new HashMap<>(builders.size());
+      for (Property.Builder<?, ?> builder : builders) {
+        if (!(builder instanceof ForeignKeyProperty.Builder)) {
+          validateAndAddProperty(builder.build(), properties, entityType);
         }
       }
-      usedPrimaryKeyIndexes.stream()
-              .min(Integer::compareTo)
-              .ifPresent(minPrimaryKeyIndex -> {
-                if (minPrimaryKeyIndex != 0) {
-                  throw new IllegalArgumentException("Minimum primary key index is "
-                          + minPrimaryKeyIndex + " for entity " + entityType + ", when it should be 0");
-                }
-              });
-      usedPrimaryKeyIndexes.stream()
-              .max(Integer::compareTo)
-              .ifPresent(maxPrimaryKeyIndex -> {
-                if (usedPrimaryKeyIndexes.size() != maxPrimaryKeyIndex + 1) {
-                  throw new IllegalArgumentException("Expecting " + (maxPrimaryKeyIndex + 1)
-                          + " primary key properties for entity " + entityType + ", but found only "
-                          + usedPrimaryKeyIndexes.size() + " distinct primary key indexes " + usedPrimaryKeyIndexes + "");
-                }
-              });
-    }
+      validatePrimaryKeyProperties(properties, entityType);
 
-    private void validate(Property<?> property, Map<Attribute<?>, Property<?>> propertyMap) {
-      if (!entityType.equals(property.getEntityType())) {
-        throw new IllegalArgumentException("Attribute entityType (" +
-                property.getEntityType() + ") in property " + property.getAttribute() +
-                " does not match the definition entityType: " + entityType);
+      initializeForeignKeyColumnProperties(builders.stream()
+              .filter(ForeignKeyProperty.Builder.class::isInstance)
+              .map(ForeignKeyProperty.Builder.class::cast)
+              .collect(toList()), properties);
+      for (Property.Builder<?, ?> builder : builders) {
+        if (builder instanceof ForeignKeyProperty.Builder) {
+          validateAndAddProperty(builder.build(), properties, entityType);
+        }
       }
-      if (propertyMap.containsKey(property.getAttribute())) {
-        throw new IllegalArgumentException("Property " + property.getAttribute()
-                + (property.getCaption() != null ? " (" + property.getCaption() + ")" : "")
-                + " has already been defined as: " + propertyMap.get(property.getAttribute()) + " in entity: " + entityType);
+      Map<Attribute<?>, Property<?>> ordereredMap = new LinkedHashMap<>(builders.size());
+      //retain the original attribute order
+      for (Property.Builder<?, ?> builder : builders) {
+        ordereredMap.put(builder.getAttribute(), properties.get(builder.getAttribute()));
       }
-    }
 
-    private Map<ForeignKey, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
-      Map<ForeignKey, ForeignKeyProperty> foreignKeyMap = new LinkedHashMap<>(foreignKeyProperties.size());
-      foreignKeyProperties.forEach(foreignKeyProperty ->
-              foreignKeyMap.put(foreignKeyProperty.getAttribute(), foreignKeyProperty));
-
-      return unmodifiableMap(foreignKeyMap);
+      return unmodifiableMap(ordereredMap);
     }
 
     private Map<Attribute<?>, List<ForeignKeyProperty>> initializeColumnPropertyForeignKeyProperties() {
@@ -936,30 +886,16 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return foreignKeyMap;
     }
 
-    private void initializeForeignKeyColumnProperties(List<ForeignKeyProperty.Builder> foreignKeyBuilders) {
-      Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties = foreignKeyProperties.stream()
-              .map(ForeignKeyProperty::getAttribute)
-              .collect(toMap(foreignKey -> foreignKey, this::getForeignKeyColumnProperties));
+    private void initializeForeignKeyColumnProperties(List<ForeignKeyProperty.Builder> foreignKeyBuilders,
+                                                      Map<Attribute<?>, Property<?>> propertyMap) {
+      Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties = foreignKeyBuilders.stream()
+              .map(ForeignKeyProperty.Builder::getAttribute)
+              .map(ForeignKey.class::cast)
+              .collect(toMap(foreignKey -> foreignKey, foreignKey -> getForeignKeyColumnProperties(foreignKey, propertyMap)));
       foreignKeyColumnAttributes.addAll(foreignKeyColumnProperties.values().stream()
               .flatMap(columnProperties -> columnProperties.stream().map(Property::getAttribute))
               .collect(toSet()));
       foreignKeyBuilders.forEach(foreignKeyBuilder -> setForeignKeyNullable(foreignKeyBuilder, foreignKeyColumnProperties));
-    }
-
-    private List<ColumnProperty<?>> getForeignKeyColumnProperties(ForeignKey foreignKey) {
-      return foreignKey.getReferences().stream()
-              .map(this::getForeignKeyColumnProperty)
-              .collect(toList());
-    }
-
-    private ColumnProperty<?> getForeignKeyColumnProperty(ForeignKey.Reference<?> reference) {
-      ColumnProperty<?> columnProperty = (ColumnProperty<?>) propertyMap.get(reference.getAttribute());
-      if (columnProperty == null) {
-        throw new IllegalArgumentException("ColumnProperty based on attribute: " + reference.getAttribute()
-                + " not found when initializing foreign key");
-      }
-
-      return columnProperty;
     }
 
     private Map<Attribute<?>, ColumnProperty<?>> initializePrimaryKeyPropertyMap() {
@@ -1059,10 +995,89 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .hashCode();
     }
 
+    private static Map<String, Attribute<?>> initializeAttributeMap(Map<Attribute<?>, Property<?>> properties) {
+      Map<String, Attribute<?>> map = new HashMap<>();
+      properties.values().forEach(property -> map.put(property.getAttribute().getName(), property.getAttribute()));
+
+      return map;
+    }
+
+    private static void validateAndAddProperty(Property<?> property, Map<Attribute<?>, Property<?>> properties, EntityType entityType) {
+      validate(property, properties, entityType);
+      properties.put(property.getAttribute(), property);
+    }
+
+    private static void validatePrimaryKeyProperties(Map<Attribute<?>, Property<?>> properties, EntityType entityType) {
+      Set<Integer> usedPrimaryKeyIndexes = new LinkedHashSet<>();
+      for (Property<?> property : properties.values()) {
+        if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) {
+          Integer index = ((ColumnProperty<?>) property).getPrimaryKeyIndex();
+          if (usedPrimaryKeyIndexes.contains(index)) {
+            throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
+          }
+          usedPrimaryKeyIndexes.add(index);
+        }
+      }
+      usedPrimaryKeyIndexes.stream()
+              .min(Integer::compareTo)
+              .ifPresent(minPrimaryKeyIndex -> {
+                if (minPrimaryKeyIndex != 0) {
+                  throw new IllegalArgumentException("Minimum primary key index is "
+                          + minPrimaryKeyIndex + " for entity " + entityType + ", when it should be 0");
+                }
+              });
+      usedPrimaryKeyIndexes.stream()
+              .max(Integer::compareTo)
+              .ifPresent(maxPrimaryKeyIndex -> {
+                if (usedPrimaryKeyIndexes.size() != maxPrimaryKeyIndex + 1) {
+                  throw new IllegalArgumentException("Expecting " + (maxPrimaryKeyIndex + 1)
+                          + " primary key properties for entity " + entityType + ", but found only "
+                          + usedPrimaryKeyIndexes.size() + " distinct primary key indexes " + usedPrimaryKeyIndexes + "");
+                }
+              });
+    }
+
+    private static void validate(Property<?> property, Map<Attribute<?>, Property<?>> properties, EntityType entityType) {
+      if (!entityType.equals(property.getEntityType())) {
+        throw new IllegalArgumentException("Attribute entityType (" +
+                property.getEntityType() + ") in property " + property.getAttribute() +
+                " does not match the definition entityType: " + entityType);
+      }
+      if (properties.containsKey(property.getAttribute())) {
+        throw new IllegalArgumentException("Property " + property.getAttribute()
+                + (property.getCaption() != null ? " (" + property.getCaption() + ")" : "")
+                + " has already been defined as: " + properties.get(property.getAttribute()) + " in entity: " + entityType);
+      }
+    }
+
+    private Map<ForeignKey, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
+      Map<ForeignKey, ForeignKeyProperty> foreignKeyMap = new LinkedHashMap<>(foreignKeyProperties.size());
+      foreignKeyProperties.forEach(foreignKeyProperty ->
+              foreignKeyMap.put(foreignKeyProperty.getAttribute(), foreignKeyProperty));
+
+      return unmodifiableMap(foreignKeyMap);
+    }
+
+    private static List<ColumnProperty<?>> getForeignKeyColumnProperties(ForeignKey foreignKey, Map<Attribute<?>, Property<?>> propertyMap) {
+      return foreignKey.getReferences().stream()
+              .map(reference -> getForeignKeyColumnProperty(reference, propertyMap))
+              .collect(toList());
+    }
+
+    private static ColumnProperty<?> getForeignKeyColumnProperty(ForeignKey.Reference<?> reference, Map<Attribute<?>, Property<?>> propertyMap) {
+      ColumnProperty<?> columnProperty = (ColumnProperty<?>) propertyMap.get(reference.getAttribute());
+      if (columnProperty == null) {
+        throw new IllegalArgumentException("ColumnProperty based on attribute: " + reference.getAttribute()
+                + " not found when initializing foreign key");
+      }
+
+      return columnProperty;
+    }
+
     private static void setForeignKeyNullable(ForeignKeyProperty.Builder foreignKeyBuilder,
                                               Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties) {
       //make foreign key properties nullable if and only if any of their constituent column properties are nullable
-      foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.get().getAttribute())
+      foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.getAttribute())
               .stream()
               .anyMatch(Property::isNullable));
     }

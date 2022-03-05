@@ -18,6 +18,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.util.List;
@@ -74,7 +75,7 @@ public final class EntitiesTutorial {
       //a fluent call chain in the *define* methods parameter list.
 
       // create properties for the columns in the table 'chinook.artist'
-      Property.Builder<Long, ?> artistId = primaryKeyProperty(Artist.ID);
+      ColumnProperty.Builder<Long, ?> artistId = primaryKeyProperty(Artist.ID);
 
       Property.Builder<String, ?> artistName = columnProperty(Artist.NAME, "Name");
 

@@ -19,11 +19,6 @@ public interface BlobProperty extends ColumnProperty<byte[]> {
   interface Builder extends ColumnProperty.Builder<byte[], Builder> {
 
     /**
-     * @return the property
-     */
-    BlobProperty get();
-
-    /**
      * Specifies that this value should be loaded eagerly when selected
      * @return this instance
      */

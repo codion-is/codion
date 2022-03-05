@@ -9,11 +9,12 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
 
   private static final long serialVersionUID = 1;
 
-  private boolean eagerlyLoaded = false;
+  private final boolean eagerlyLoaded;
 
-  DefaultBlobProperty(Attribute<byte[]> attribute, String caption) {
-    super(attribute, caption);
-    builder().hidden();
+  private DefaultBlobProperty(DefaultBlobPropertyBuilder builder) {
+    super(builder);
+    this.eagerlyLoaded = builder.eagerlyLoaded;
+    builder.hidden();
   }
 
   @Override
@@ -21,29 +22,23 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
     return eagerlyLoaded;
   }
 
-  @Override
-  BlobProperty.Builder builder() {
-    return new DefaultBlobPropertyBuilder(this);
-  }
-
   static final class DefaultBlobPropertyBuilder extends DefaultColumnPropertyBuilder<byte[], BlobProperty.Builder>
           implements BlobProperty.Builder {
 
-    private final DefaultBlobProperty blobProperty;
+    private boolean eagerlyLoaded = false;
 
-    DefaultBlobPropertyBuilder(DefaultBlobProperty blobProperty) {
-      super(blobProperty);
-      this.blobProperty = blobProperty;
+    DefaultBlobPropertyBuilder(Attribute<byte[]> attribute, String caption) {
+      super(attribute, caption);
     }
 
     @Override
-    public BlobProperty get() {
-      return blobProperty;
+    public BlobProperty build() {
+      return new DefaultBlobProperty(this);
     }
 
     @Override
     public BlobProperty.Builder eagerlyLoaded() {
-      blobProperty.eagerlyLoaded = true;
+      eagerlyLoaded = true;
       return this;
     }
   }

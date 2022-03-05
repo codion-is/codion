@@ -10,6 +10,8 @@ import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.TestDomain.Master;
 import is.codion.framework.domain.TestDomain.NoPk;
+import is.codion.framework.domain.TestDomain.TransModifies;
+import is.codion.framework.domain.TestDomain.TransModifiesNot;
 import is.codion.framework.domain.entity.ForeignKeyDomain.Maturity;
 import is.codion.framework.domain.entity.ForeignKeyDomain.Otolith;
 import is.codion.framework.domain.entity.ForeignKeyDomain.OtolithCategory;
@@ -628,19 +630,29 @@ public class DefaultEntityTest {
 
   @Test
   void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
-    Entity entity = ENTITIES.builder(TestDomain.T_TRANS)
-            .with(TestDomain.TRANS_ID, 42)
-            .with(TestDomain.TRANS_TRANS, null)
+    Entity entity = ENTITIES.builder(TransModifies.TYPE)
+            .with(TransModifies.ID, 42)
+            .with(TransModifies.TRANS, null)
             .build();
 
-    entity.put(TestDomain.TRANS_TRANS, 1);
+    entity.put(TransModifies.TRANS, 1);
     assertTrue(entity.isModified());
 
-    TestDomain.TRANS_BUILDER.modifiesEntity(false);
+    Entity deserialized = Serializer.deserialize(Serializer.serialize(entity));
+    assertTrue(deserialized.isModified(TransModifies.TRANS));
+    assertTrue(entity.isModified());
+
+    entity = ENTITIES.builder(TransModifiesNot.TYPE)
+            .with(TransModifiesNot.ID, 42)
+            .with(TransModifiesNot.TRANS, null)
+            .build();
+
+    entity.put(TransModifiesNot.TRANS, 1);
     assertFalse(entity.isModified());
 
-    Entity deserialized = Serializer.deserialize(Serializer.serialize(entity));
-    assertTrue(deserialized.isModified(TestDomain.TRANS_TRANS));
+    deserialized = Serializer.deserialize(Serializer.serialize(entity));
+    assertTrue(deserialized.isModified(TransModifiesNot.TRANS));
+    assertFalse(deserialized.isModified());
   }
 
   @Test

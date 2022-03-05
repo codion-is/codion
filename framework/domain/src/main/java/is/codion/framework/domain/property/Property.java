@@ -257,10 +257,9 @@ public interface Property<T> {
   interface Builder<T, B extends Builder<T, B>> {
 
     /**
-     * Returns the underlying property.
-     * @return the property
+     * @return the underying attribute
      */
-    Property<T> get();
+    Attribute<T> getAttribute();
 
     /**
      * Specifies the resource bundle from which to retrieve the caption
@@ -421,5 +420,11 @@ public interface Property<T> {
      * @throws IllegalStateException in case {@link #dateTimePattern(String)} has been set
      */
     B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern);
+
+    /**
+     * Builds a new Property instance
+     * @return a new property instance based on this builder
+     */
+    Property<T> build();
   }
 }

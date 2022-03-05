@@ -60,11 +60,6 @@ public interface ForeignKeyProperty extends Property<Entity> {
   interface Builder extends Property.Builder<Entity, Builder> {
 
     /**
-     * @return the property
-     */
-    ForeignKeyProperty get();
-
-    /**
      * @param fetchDepth the default query fetch depth for this foreign key
      * @return this instance
      */

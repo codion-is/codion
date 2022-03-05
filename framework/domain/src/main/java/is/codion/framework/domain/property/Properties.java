@@ -7,6 +7,15 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.property.DefaultAuditProperty.DefaultAuditPropertyBuilder;
+import is.codion.framework.domain.property.DefaultBlobProperty.DefaultBlobPropertyBuilder;
+import is.codion.framework.domain.property.DefaultColumnProperty.DefaultColumnPropertyBuilder;
+import is.codion.framework.domain.property.DefaultDenormalizedProperty.DefaultDenormalizedPropertyBuilder;
+import is.codion.framework.domain.property.DefaultDerivedProperty.DefaultDerivedPropertyBuilder;
+import is.codion.framework.domain.property.DefaultForeignKeyProperty.DefaultForeignKeyPropertyBuilder;
+import is.codion.framework.domain.property.DefaultItemProperty.DefaultItemPropertyBuilder;
+import is.codion.framework.domain.property.DefaultSubqueryProperty.DefaultSubqueryPropertyBuilder;
+import is.codion.framework.domain.property.DefaultTransientProperty.DefaultTransientPropertyBuilder;
 
 import java.text.Collator;
 import java.time.temporal.Temporal;
@@ -43,7 +52,7 @@ public final class Properties {
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> columnProperty(Attribute<T> attribute, String caption) {
-    return new DefaultColumnProperty<>(attribute, caption).builder();
+    return new DefaultColumnPropertyBuilder<>(attribute, caption);
   }
 
   /**
@@ -64,10 +73,11 @@ public final class Properties {
    * @param attribute the attribute
    * @param caption the property caption
    * @param <T> the attribute value type
+   * @param <P> the property type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
-  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Attribute<T> attribute, String caption) {
+  public static <T, P extends ColumnProperty<T>, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Attribute<T> attribute, String caption) {
     return (ColumnProperty.Builder<T, B>) columnProperty(attribute, caption).primaryKeyIndex(0);
   }
 
@@ -87,7 +97,7 @@ public final class Properties {
    * @return a new {@link ForeignKeyProperty.Builder}
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(ForeignKey foreignKey, String caption) {
-    return new DefaultForeignKeyProperty(foreignKey, caption).builder();
+    return new DefaultForeignKeyPropertyBuilder(foreignKey, caption);
   }
 
   /**
@@ -124,7 +134,7 @@ public final class Properties {
       return foreignKeyValue == null ? null : foreignKeyValue.get(denormalizedAttribute);
     };
 
-    return new DefaultDerivedProperty<>(attribute, caption, valueProvider, entityAttribute).builder();
+    return new DefaultDerivedPropertyBuilder<>(attribute, caption, valueProvider, entityAttribute);
   }
 
   /**
@@ -157,7 +167,7 @@ public final class Properties {
   public static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> derivedProperty(Attribute<T> attribute, String caption,
                                                                                                                DerivedProperty.Provider<T> valueProvider,
                                                                                                                Attribute<?>... linkedAttributes) {
-    return new DefaultDerivedProperty<>(attribute, caption, valueProvider, linkedAttributes).builder();
+    return new DefaultDerivedPropertyBuilder<>(attribute, caption, valueProvider, linkedAttributes);
   }
 
   /**
@@ -188,7 +198,7 @@ public final class Properties {
   public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> denormalizedProperty(Attribute<T> attribute, String caption,
                                                                                                               Attribute<Entity> entityAttribute,
                                                                                                               Attribute<T> denormalizedAttribute) {
-    return new DefaultDenormalizedProperty<>(attribute, entityAttribute, denormalizedAttribute, caption).builder();
+    return new DefaultDenormalizedPropertyBuilder<T, B>(attribute, caption, entityAttribute, denormalizedAttribute);
   }
 
   /**
@@ -214,7 +224,7 @@ public final class Properties {
    */
   public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> subqueryProperty(Attribute<T> attribute, String caption,
                                                                                                           String subquery) {
-    return new DefaultSubqueryProperty<>(attribute, caption, subquery).builder();
+    return new DefaultSubqueryPropertyBuilder<>(attribute, caption, subquery);
   }
 
   /**
@@ -242,7 +252,7 @@ public final class Properties {
    */
   public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(Attribute<T> attribute, String caption,
                                                                                                       List<Item<T>> validItems) {
-    return new DefaultItemProperty<>(attribute, caption, validItems).builder();
+    return new DefaultItemPropertyBuilder<>(attribute, caption, validItems);
   }
 
   /**
@@ -265,7 +275,7 @@ public final class Properties {
    * @return a new {@link TransientProperty.Builder}
    */
   public static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> transientProperty(Attribute<T> attribute, String caption) {
-    return new DefaultTransientProperty<>(attribute, caption).builder();
+    return new DefaultTransientPropertyBuilder<>(attribute, caption);
   }
 
   /**
@@ -296,7 +306,7 @@ public final class Properties {
    */
   public static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B> booleanProperty(Attribute<Boolean> attribute, String caption,
                                                                                                                      Class<C> columnClass, C trueValue, C falseValue) {
-    return (ColumnProperty.Builder<Boolean, B>) new DefaultColumnProperty<>(attribute, caption).builder()
+    return (ColumnProperty.Builder<Boolean, B>) new DefaultColumnPropertyBuilder<>(attribute, caption)
             .columnClass(columnClass, booleanValueConverter(trueValue, falseValue));
   }
 
@@ -316,7 +326,7 @@ public final class Properties {
    * @return a new {@link BlobProperty.Builder}
    */
   public static BlobProperty.Builder blobProperty(Attribute<byte[]> attribute, String caption) {
-    return new DefaultBlobProperty(attribute, caption).builder();
+    return new DefaultBlobPropertyBuilder(attribute, caption);
   }
 
   /**
@@ -339,7 +349,7 @@ public final class Properties {
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditInsertTimeProperty(Attribute<T> attribute, String caption) {
-    return new DefaultAuditTimeProperty<>(attribute, INSERT, caption).builder();
+    return new DefaultAuditPropertyBuilder<>(attribute, caption, INSERT);
   }
 
   /**
@@ -362,7 +372,7 @@ public final class Properties {
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditUpdateTimeProperty(Attribute<T> attribute, String caption) {
-    return new DefaultAuditTimeProperty<>(attribute, UPDATE, caption).builder();
+    return new DefaultAuditPropertyBuilder<>(attribute, caption, UPDATE);
   }
 
   /**
@@ -383,7 +393,7 @@ public final class Properties {
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditInsertUserProperty(Attribute<String> attribute, String caption) {
-    return new DefaultAuditUserProperty(attribute, INSERT, caption).builder();
+    return new DefaultAuditPropertyBuilder<>(attribute, caption, INSERT);
   }
 
   /**
@@ -404,7 +414,7 @@ public final class Properties {
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditUpdateUserProperty(Attribute<String> attribute, String caption) {
-    return new DefaultAuditUserProperty(attribute, UPDATE, caption).builder();
+    return new DefaultAuditPropertyBuilder<>(attribute, caption, UPDATE);
   }
 
   /**

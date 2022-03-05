@@ -11,15 +11,9 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
 
   private final transient String subquery;
 
-  /**
-   * @param attribute the attribute, since SubqueryProperties do not map to underlying table columns,
-   * the attribute should not be based on a column, only be unique for this entity
-   * @param caption the caption of this property
-   * @param subquery the sql query
-   */
-  DefaultSubqueryProperty(Attribute<T> attribute, String caption, String subquery) {
-    super(attribute, caption);
-    this.subquery = subquery;
+  private DefaultSubqueryProperty(DefaultSubqueryPropertyBuilder<T, ?> builder) {
+    super(builder);
+    this.subquery = builder.subquery;
   }
 
   @Override
@@ -27,45 +21,40 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
     return subquery;
   }
 
-  @Override
-  <B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> builder() {
-    return new DefaultSubqueryPropertyBuilder<>(this);
-  }
-
-  private static final class DefaultSubqueryPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
+  static final class DefaultSubqueryPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
           extends DefaultColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
 
-    private final DefaultSubqueryProperty<T> subqueryProperty;
+    private final String subquery;
 
-    private DefaultSubqueryPropertyBuilder(DefaultSubqueryProperty<T> subqueryProperty) {
-      super(subqueryProperty);
-      this.subqueryProperty = subqueryProperty;
+    DefaultSubqueryPropertyBuilder(Attribute<T> attribute, String caption, String subquery) {
+      super(attribute, caption);
+      this.subquery = subquery;
       super.readOnly(true);
     }
 
     @Override
-    public SubqueryProperty<T> get() {
-      return subqueryProperty;
+    public Property<T> build() {
+      return new DefaultSubqueryProperty<T>(this);
     }
 
     @Override
     public B readOnly() {
-      throw new UnsupportedOperationException("Subquery properties are read only by default: " + subqueryProperty.getAttribute());
+      throw new UnsupportedOperationException("Subquery properties are read only by default: " + attribute);
     }
 
     @Override
     public B readOnly(boolean readOnly) {
-      throw new UnsupportedOperationException("Subquery properties are read only by default: " + subqueryProperty.getAttribute());
+      throw new UnsupportedOperationException("Subquery properties are read only by default: " + attribute);
     }
 
     @Override
     public B insertable(boolean insertable) {
-      throw new UnsupportedOperationException("Subquery properties are never insertable: " + subqueryProperty.getAttribute());
+      throw new UnsupportedOperationException("Subquery properties are never insertable: " + attribute);
     }
 
     @Override
     public B updatable(boolean updatable) {
-      throw new UnsupportedOperationException("Subquery properties are never updatable: " + subqueryProperty.getAttribute());
+      throw new UnsupportedOperationException("Subquery properties are never updatable: " + attribute);
     }
   }
 }

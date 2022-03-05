@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements ItemProperty<T> {
@@ -20,15 +19,9 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
   private final List<Item<T>> items;
   private final Map<T, Item<T>> itemMap;
 
-  /**
-   * @param attribute the attribute
-   * @param caption the property caption
-   * @param items the allowed items for this property
-   */
-  DefaultItemProperty(Attribute<T> attribute, String caption, List<Item<T>> items) {
-    super(attribute, caption);
-    validateItems(items);
-    this.items = unmodifiableList(items);
+  private DefaultItemProperty(DefaultItemPropertyBuilder<T, ?> builder) {
+    super(builder);
+    this.items = builder.items;
     this.itemMap = items.stream()
             .collect(Collectors.toMap(Item::getValue, item -> item));
   }
@@ -53,12 +46,28 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
     return item;
   }
 
-  private static <T> void validateItems(List<Item<T>> items) {
-    if (requireNonNull(items).size() != items.stream()
-            .map(Item::getValue)
-            .collect(Collectors.toSet())
-            .size()) {
-      throw new IllegalArgumentException("Item list contains duplicate values: " + items);
+  static final class DefaultItemPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>> extends DefaultColumnPropertyBuilder<T, B> {
+
+    private final List<Item<T>> items;
+
+    DefaultItemPropertyBuilder(Attribute<T> attribute, String caption, List<Item<T>> items) {
+      super(attribute, caption);
+      validateItems(items);
+      this.items = items;
+    }
+
+    @Override
+    public Property<T> build() {
+      return new DefaultItemProperty<>(this);
+    }
+
+    private static <T> void validateItems(List<Item<T>> items) {
+      if (requireNonNull(items).size() != items.stream()
+              .map(Item::getValue)
+              .collect(Collectors.toSet())
+              .size()) {
+        throw new IllegalArgumentException("Item list contains duplicate values: " + items);
+      }
     }
   }
 }

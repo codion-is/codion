@@ -164,9 +164,6 @@ public interface ColumnProperty<T> extends Property<T> {
    */
   interface Builder<T, B extends Builder<T, B>> extends Property.Builder<T, B> {
 
-    @Override
-    ColumnProperty<T> get();
-
     /**
      * Sets the actual column type, and the required {@link ValueConverter}.
      * @param <C> the column type

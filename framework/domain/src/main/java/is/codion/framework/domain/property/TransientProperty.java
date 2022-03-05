@@ -25,11 +25,6 @@ public interface TransientProperty<T> extends Property<T> {
   interface Builder<T, B extends Builder<T, B>> extends Property.Builder<T, B> {
 
     /**
-     * @return the property
-     */
-    TransientProperty<T> get();
-
-    /**
      * @param modifiesEntity if false then modifications to the value will not result in the owning entity becoming modified
      * @return this property instance
      */
