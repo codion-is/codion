@@ -73,11 +73,10 @@ public final class Properties {
    * @param attribute the attribute
    * @param caption the property caption
    * @param <T> the attribute value type
-   * @param <P> the property type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
-  public static <T, P extends ColumnProperty<T>, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Attribute<T> attribute, String caption) {
+  public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Attribute<T> attribute, String caption) {
     return (ColumnProperty.Builder<T, B>) columnProperty(attribute, caption).primaryKeyIndex(0);
   }
 
@@ -198,7 +197,7 @@ public final class Properties {
   public static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> denormalizedProperty(Attribute<T> attribute, String caption,
                                                                                                               Attribute<Entity> entityAttribute,
                                                                                                               Attribute<T> denormalizedAttribute) {
-    return new DefaultDenormalizedPropertyBuilder<T, B>(attribute, caption, entityAttribute, denormalizedAttribute);
+    return new DefaultDenormalizedPropertyBuilder<>(attribute, caption, entityAttribute, denormalizedAttribute);
   }
 
   /**

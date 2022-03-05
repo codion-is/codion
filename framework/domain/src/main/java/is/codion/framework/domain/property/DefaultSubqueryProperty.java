@@ -34,7 +34,7 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
 
     @Override
     public Property<T> build() {
-      return new DefaultSubqueryProperty<T>(this);
+      return new DefaultSubqueryProperty<>(this);
     }
 
     @Override

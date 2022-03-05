@@ -271,7 +271,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
       }
     }
 
-    private void copyActions(JComponent previousComponent, JComponent newComponent) {
+    private static void copyActions(JComponent previousComponent, JComponent newComponent) {
       ActionMap previousActionMap = previousComponent.getActionMap();
       ActionMap newActionMap = newComponent.getActionMap();
       Arrays.stream(previousActionMap.allKeys()).forEach(key -> newActionMap.put(key, previousActionMap.get(key)));

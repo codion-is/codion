@@ -300,7 +300,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
 
     @Override
     public Property<T> build() {
-      return new DefaultColumnProperty<T>(this);
+      return new DefaultColumnProperty<>(this);
     }
 
     @Override
