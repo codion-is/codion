@@ -203,7 +203,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * Defines a new entity type with the entityType name serving as the initial entity caption.
    */
   DefaultEntityDefinition(String domainName, EntityType entityType, String tableName,
-                          List<Property.Builder<?, ?, ?>> propertyBuilders) {
+                          List<Property.Builder<?, ?>> propertyBuilders) {
     if (propertyBuilders.isEmpty()) {
       throw new IllegalArgumentException("An entity must have one or more properties");
     }
@@ -828,7 +828,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private final int serializationVersion;
 
-    private EntityProperties(EntityType entityType, List<Property.Builder<?, ?, ?>> propertyBuilders) {
+    private EntityProperties(EntityType entityType, List<Property.Builder<?, ?>> propertyBuilders) {
       this.entityType = entityType;
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.attributeMap = initializeAttributeMap(propertyMap);
@@ -848,9 +848,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.serializationVersion = createSerializationVersion();
     }
 
-    private Map<Attribute<?>, Property<?>> initializePropertyMap(List<Property.Builder<?, ?, ?>> builders) {
+    private Map<Attribute<?>, Property<?>> initializePropertyMap(List<Property.Builder<?, ?>> builders) {
       Map<Attribute<?>, Property<?>> properties = new HashMap<>(builders.size());
-      for (Property.Builder<?, ?, ?> builder : builders) {
+      for (Property.Builder<?, ?> builder : builders) {
         if (!(builder instanceof ForeignKeyProperty.Builder)) {
           validateAndAddProperty(builder.build(), properties, entityType);
         }
@@ -861,14 +861,14 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .filter(ForeignKeyProperty.Builder.class::isInstance)
               .map(ForeignKeyProperty.Builder.class::cast)
               .collect(toList()), properties);
-      for (Property.Builder<?, ?, ?> builder : builders) {
+      for (Property.Builder<?, ?> builder : builders) {
         if (builder instanceof ForeignKeyProperty.Builder) {
           validateAndAddProperty(builder.build(), properties, entityType);
         }
       }
       Map<Attribute<?>, Property<?>> ordereredMap = new LinkedHashMap<>(builders.size());
       //retain the original attribute order
-      for (Property.Builder<?, ?, ?> builder : builders) {
+      for (Property.Builder<?, ?> builder : builders) {
         ordereredMap.put(builder.getAttribute(), properties.get(builder.getAttribute()));
       }
 

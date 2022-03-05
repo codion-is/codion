@@ -33,8 +33,8 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
     return sourceAttributes;
   }
 
-  static final class DefaultDerivedPropertyBuilder<T, B extends TransientProperty.Builder<T, DerivedProperty<T>, B>>
-          extends DefaultTransientPropertyBuilder<T, DerivedProperty<T>, B> implements TransientProperty.Builder<T, DerivedProperty<T>, B> {
+  static final class DefaultDerivedPropertyBuilder<T, B extends TransientProperty.Builder<T, B>>
+          extends DefaultTransientPropertyBuilder<T, B> implements TransientProperty.Builder<T, B> {
 
     private final Provider<T> valueProvider;
     private final List<Attribute<?>> sourceAttributes;
@@ -58,7 +58,7 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
     }
 
     @Override
-    public DerivedProperty<T> build() {
+    public Property<T> build() {
       return new DefaultDerivedProperty<T>(this);
     }
   }

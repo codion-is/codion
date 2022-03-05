@@ -7870,3 +7870,4 @@
   DefaultProperty, DefaultPropertyBuilder renamed AbstractProperty and AbstractPropertyBuilder
   Property.Builder, P property type parameter added, get() removed, build() added, one step towards a proper builder implementation
   Property.Builder and subclasses now proper builders, related refactoring
+  Property.Builder, P property type parameter removed, simply unnecessary

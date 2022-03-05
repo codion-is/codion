@@ -37,21 +37,21 @@ final class DefaultDenormalizedProperty<T> extends DefaultColumnProperty<T> impl
     return true;
   }
 
-  static final class DefaultDenormalizedPropertyBuilder<T, B extends ColumnProperty.Builder<T, ColumnProperty<T>, B>>
-          extends DefaultColumnPropertyBuilder<T, ColumnProperty<T>, B> {
+  static final class DefaultDenormalizedPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
+          extends DefaultColumnPropertyBuilder<T, B> {
 
     private final Attribute<Entity> entityAttribute;
     private final Attribute<T> denormalizedAttribute;
 
-    DefaultDenormalizedPropertyBuilder(Attribute<T> attribute, Attribute<Entity> entityAttribute,
-                                       Attribute<T> denormalizedAttribute, String caption) {
+    DefaultDenormalizedPropertyBuilder(Attribute<T> attribute, String caption, Attribute<Entity> entityAttribute,
+                                       Attribute<T> denormalizedAttribute) {
       super(attribute, caption);
       this.entityAttribute = entityAttribute;
       this.denormalizedAttribute = denormalizedAttribute;
     }
 
     @Override
-    public ColumnProperty<T> build() {
+    public Property<T> build() {
       return new DefaultDenormalizedProperty<>(this);
     }
   }

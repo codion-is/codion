@@ -72,8 +72,8 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
     return selectAttributes;
   }
 
-  static final class DefaultForeignKeyPropertyBuilder
-          extends AbstractPropertyBuilder<Entity, ForeignKeyProperty, ForeignKeyProperty.Builder> implements ForeignKeyProperty.Builder {
+  static final class DefaultForeignKeyPropertyBuilder extends AbstractPropertyBuilder<Entity, ForeignKeyProperty.Builder>
+          implements ForeignKeyProperty.Builder {
 
     private final Set<Attribute<?>> readOnlyAttributes = new HashSet<>(1);
     private final EntityType referencedEntityType;

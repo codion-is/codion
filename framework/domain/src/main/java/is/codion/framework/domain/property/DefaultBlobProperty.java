@@ -22,7 +22,7 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
     return eagerlyLoaded;
   }
 
-  static final class DefaultBlobPropertyBuilder extends DefaultColumnPropertyBuilder<byte[], BlobProperty, BlobProperty.Builder>
+  static final class DefaultBlobPropertyBuilder extends DefaultColumnPropertyBuilder<byte[], BlobProperty.Builder>
           implements BlobProperty.Builder {
 
     private boolean eagerlyLoaded = false;

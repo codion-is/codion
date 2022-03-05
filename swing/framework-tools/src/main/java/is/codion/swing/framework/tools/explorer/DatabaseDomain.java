@@ -48,15 +48,15 @@ final class DatabaseDomain extends DefaultDomain {
     }
   }
 
-  private void define(EntityType entityType, List<Property.Builder<?, ?, ?>> propertyBuilders) {
+  private void define(EntityType entityType, List<Property.Builder<?, ?>> propertyBuilders) {
     if (!propertyBuilders.isEmpty()) {
       define(entityType, entityType.getName(), propertyBuilders.toArray(new Property.Builder[0]));
     }
   }
 
-  private List<Property.Builder<?, ?, ?>> getPropertyBuilders(Table table, EntityType entityType,
+  private List<Property.Builder<?, ?>> getPropertyBuilders(Table table, EntityType entityType,
                                                            List<ForeignKeyConstraint> foreignKeyConstraints) {
-    List<Property.Builder<?, ?, ?>> builders = new ArrayList<>();
+    List<Property.Builder<?, ?>> builders = new ArrayList<>();
     table.getColumns().forEach(column -> {
       builders.add(getColumnPropertyBuilder(column, entityType));
       if (column.isForeignKeyColumn()) {
@@ -75,7 +75,7 @@ final class DatabaseDomain extends DefaultDomain {
     return builders;
   }
 
-  private Property.Builder<?, ?, ?> getForeignKeyPropertyBuilder(ForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
+  private Property.Builder<?, ?> getForeignKeyPropertyBuilder(ForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
     Table referencedTable = foreignKeyConstraint.getReferencedTable();
     EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
     ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
@@ -86,10 +86,10 @@ final class DatabaseDomain extends DefaultDomain {
     return foreignKeyProperty(foreignKey, getCaption(referencedTable.getTableName()));
   }
 
-  private static ColumnProperty.Builder<?, ?, ?> getColumnPropertyBuilder(Column column, EntityType entityType) {
+  private static ColumnProperty.Builder<?, ?> getColumnPropertyBuilder(Column column, EntityType entityType) {
     String caption = getCaption(column.getColumnName());
     Attribute<?> attribute = getAttribute(entityType, column);
-    ColumnProperty.Builder<?, ?, ?> builder;
+    ColumnProperty.Builder<?, ?> builder;
     if (attribute.isByteArray()) {
       builder = blobProperty((Attribute<byte[]>) attribute, caption);
     }

@@ -141,7 +141,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
    */
   private transient DateTimeFormatter dateTimeFormatter;
 
-  protected AbstractProperty(AbstractPropertyBuilder<T, ?, ?> builder) {
+  protected AbstractProperty(AbstractPropertyBuilder<T, ?> builder) {
     requireNonNull(builder, "builder");
     this.attribute = builder.attribute;
     this.caption = builder.caption;
@@ -407,7 +407,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
   }
 
-  abstract static class AbstractPropertyBuilder<T, P extends Property<T>, B extends Property.Builder<T, P, B>> implements Property.Builder<T, P, B> {
+  abstract static class AbstractPropertyBuilder<T, B extends Property.Builder<T, B>> implements Property.Builder<T, B> {
 
     protected final Attribute<T> attribute;
     private final String caption;

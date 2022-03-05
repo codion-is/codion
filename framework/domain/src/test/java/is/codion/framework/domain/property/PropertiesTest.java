@@ -142,13 +142,13 @@ public final class PropertiesTest {
 
   @Test
   void minimumMaximumValue() {
-    ColumnProperty.Builder<Double, ColumnProperty<Double>, ?> builder = columnProperty(ENTITY_TYPE.doubleAttribute("attribute"));
+    ColumnProperty.Builder<Double, ?> builder = columnProperty(ENTITY_TYPE.doubleAttribute("attribute"));
     assertThrows(IllegalArgumentException.class, () -> builder.range(5, 4));
   }
 
   @Test
   void setColumnName() {
-    assertEquals("hello", columnProperty(ENTITY_TYPE.integerAttribute("attribute")).columnName("hello").build().getColumnName());
+    assertEquals("hello", ((ColumnProperty<?>) columnProperty(ENTITY_TYPE.integerAttribute("attribute")).columnName("hello").build()).getColumnName());
   }
 
   @Test

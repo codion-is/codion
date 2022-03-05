@@ -252,21 +252,14 @@ public interface Property<T> {
   /**
    * Builds a Property instance
    * @param <T> the property value type
-   * @param <P> the property type
    * @param <B> the builder type
    */
-  interface Builder<T, P extends Property<T>, B extends Builder<T, P, B>> {
+  interface Builder<T, B extends Builder<T, B>> {
 
     /**
      * @return the underying attribute
      */
     Attribute<T> getAttribute();
-
-    /**
-     * Builds a new Property instance
-     * @return a new property instance based on this builder
-     */
-    P build();
 
     /**
      * Specifies the resource bundle from which to retrieve the caption
@@ -427,5 +420,11 @@ public interface Property<T> {
      * @throws IllegalStateException in case {@link #dateTimePattern(String)} has been set
      */
     B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern);
+
+    /**
+     * Builds a new Property instance
+     * @return a new property instance based on this builder
+     */
+    Property<T> build();
   }
 }

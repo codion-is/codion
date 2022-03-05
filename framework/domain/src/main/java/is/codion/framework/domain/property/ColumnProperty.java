@@ -160,10 +160,9 @@ public interface ColumnProperty<T> extends Property<T> {
   /**
    * Provides setters for ColumnProperty properties
    * @param <T> the underlying type
-   * @param <P> the property type
    * @param <B> the builder type
    */
-  interface Builder<T, P extends ColumnProperty<T>, B extends Builder<T, P, B>> extends Property.Builder<T, P, B> {
+  interface Builder<T, B extends Builder<T, B>> extends Property.Builder<T, B> {
 
     /**
      * Sets the actual column type, and the required {@link ValueConverter}.

@@ -42,7 +42,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private final transient boolean aggregateColumn;
   private final transient boolean selectable;
 
-  protected DefaultColumnProperty(DefaultColumnPropertyBuilder<T, ?, ?> builder) {
+  protected DefaultColumnProperty(DefaultColumnPropertyBuilder<T, ?> builder) {
     super(builder);
     this.columnType = builder.columnType;
     this.primaryKeyIndex = builder.primaryKeyIndex;
@@ -265,8 +265,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
   }
 
-  static class DefaultColumnPropertyBuilder<T, P extends ColumnProperty<T>, B extends ColumnProperty.Builder<T, P, B>>
-          extends AbstractPropertyBuilder<T, P, B> implements ColumnProperty.Builder<T, P, B> {
+  static class DefaultColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
+          extends AbstractPropertyBuilder<T, B> implements ColumnProperty.Builder<T, B> {
 
     private int columnType;
     private int primaryKeyIndex;
@@ -299,8 +299,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public P build() {
-      return (P) new DefaultColumnProperty<T>(this);
+    public Property<T> build() {
+      return new DefaultColumnProperty<T>(this);
     }
 
     @Override

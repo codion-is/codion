@@ -23,7 +23,8 @@ class DefaultAuditProperty<T> extends DefaultColumnProperty<T> implements AuditP
     return auditAction;
   }
 
-  static final class DefaultAuditPropertyBuilder<T, B extends ColumnProperty.Builder<T, AuditProperty<T>, B>> extends DefaultColumnPropertyBuilder<T, AuditProperty<T>, B> {
+  static final class DefaultAuditPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
+          extends DefaultColumnPropertyBuilder<T, B> {
 
     private final AuditAction auditAction;
 

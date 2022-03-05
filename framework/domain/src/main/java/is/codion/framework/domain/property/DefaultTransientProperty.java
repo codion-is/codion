@@ -11,7 +11,7 @@ class DefaultTransientProperty<T> extends AbstractProperty<T> implements Transie
 
   private final boolean modifiesEntity;
 
-  protected DefaultTransientProperty(DefaultTransientPropertyBuilder<T, ?, ?> builder) {
+  protected DefaultTransientProperty(DefaultTransientPropertyBuilder<T, ?> builder) {
     super(builder);
     this.modifiesEntity = builder.modifiesEntity;
   }
@@ -21,8 +21,8 @@ class DefaultTransientProperty<T> extends AbstractProperty<T> implements Transie
     return modifiesEntity;
   }
 
-  static class DefaultTransientPropertyBuilder<T, P extends TransientProperty<T>, B extends TransientProperty.Builder<T, P, B>>
-          extends AbstractPropertyBuilder<T, P, B> implements TransientProperty.Builder<T, P, B> {
+  static class DefaultTransientPropertyBuilder<T, B extends TransientProperty.Builder<T, B>>
+          extends AbstractPropertyBuilder<T, B> implements TransientProperty.Builder<T, B> {
 
     private boolean modifiesEntity = true;
 
@@ -31,12 +31,12 @@ class DefaultTransientProperty<T> extends AbstractProperty<T> implements Transie
     }
 
     @Override
-    public P build() {
-      return (P) new DefaultTransientProperty<T>(this);
+    public Property<T> build() {
+      return new DefaultTransientProperty<T>(this);
     }
 
     @Override
-    public final TransientProperty.Builder<T, P, B> modifiesEntity(boolean modifiesEntity) {
+    public final TransientProperty.Builder<T, B> modifiesEntity(boolean modifiesEntity) {
       this.modifiesEntity = modifiesEntity;
       return this;
     }

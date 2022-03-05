@@ -46,7 +46,7 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
     return item;
   }
 
-  static final class DefaultItemPropertyBuilder<T, B extends ColumnProperty.Builder<T, ItemProperty<T>, B>> extends DefaultColumnPropertyBuilder<T, ItemProperty<T>, B> {
+  static final class DefaultItemPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>> extends DefaultColumnPropertyBuilder<T, B> {
 
     private final List<Item<T>> items;
 
@@ -57,7 +57,7 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
     }
 
     @Override
-    public ItemProperty<T> build() {
+    public Property<T> build() {
       return new DefaultItemProperty<>(this);
     }
 

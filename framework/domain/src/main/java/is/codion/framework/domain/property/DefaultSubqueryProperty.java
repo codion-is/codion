@@ -11,7 +11,7 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
 
   private final transient String subquery;
 
-  private DefaultSubqueryProperty(DefaultSubqueryPropertyBuilder<T, ?, ?> builder) {
+  private DefaultSubqueryProperty(DefaultSubqueryPropertyBuilder<T, ?> builder) {
     super(builder);
     this.subquery = builder.subquery;
   }
@@ -21,8 +21,8 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
     return subquery;
   }
 
-  static final class DefaultSubqueryPropertyBuilder<T, P extends ColumnProperty<T>, B extends ColumnProperty.Builder<T, P, B>>
-          extends DefaultColumnPropertyBuilder<T, P, B> implements Property.Builder<T, P, B> {
+  static final class DefaultSubqueryPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
+          extends DefaultColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
 
     private final String subquery;
 
@@ -33,8 +33,8 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
     }
 
     @Override
-    public P build() {
-      return (P) new DefaultSubqueryProperty<T>(this);
+    public Property<T> build() {
+      return new DefaultSubqueryProperty<T>(this);
     }
 
     @Override
