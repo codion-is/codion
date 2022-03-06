@@ -7874,3 +7874,4 @@
   ValueChange removed, not really useful, related refactoring
   DefaultAuditProperty bug fixed, wasn't set to read only, AbstractReadOnlyColumnPropertyBuilder added
   Property.Builder.minimumValue() and maximumValue() re-added
+  AbstractProperty.dateTimePattern initialized to default if null, instead of getDateTimePattern() returning the default configuration value, since that can change

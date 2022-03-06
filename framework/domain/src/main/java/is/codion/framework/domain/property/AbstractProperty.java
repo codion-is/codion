@@ -242,10 +242,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   @Override
   public final String getDateTimePattern() {
     if (dateTimePattern == null) {
-      if (localeDateTimePattern == null) {
-        return getDefaultDateTimePattern();
-      }
-      dateTimePattern = localeDateTimePattern.getDateTimePattern();
+      dateTimePattern = localeDateTimePattern == null ? getDefaultDateTimePattern() : localeDateTimePattern.getDateTimePattern();
     }
 
     return dateTimePattern;
