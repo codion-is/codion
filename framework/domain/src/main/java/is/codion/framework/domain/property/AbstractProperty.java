@@ -49,6 +49,11 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   private final String caption;
 
   /**
+   * The resource bundle key specifying the caption
+   */
+  private final String captionResourceKey;
+
+  /**
    * The name of a bean property linked to this property, if any
    */
   private final String beanProperty;
@@ -57,16 +62,6 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
    * The default value supplier for this property
    */
   private final ValueSupplier<T> defaultValueSupplier;
-
-  /**
-   * The resource bundle key specifying the caption
-   */
-  private final String captionResourceKey;
-
-  /**
-   * The caption from the resource bundle, if any
-   */
-  private transient String resourceCaption;
 
   /**
    * True if the value of this property is allowed to be null
@@ -132,6 +127,11 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   private final Comparator<T> comparator;
 
   /**
+   * The caption from the resource bundle, if any
+   */
+  private transient String resourceCaption;
+
+  /**
    * The date/time format pattern
    */
   private transient String dateTimePattern;
@@ -145,10 +145,9 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     requireNonNull(builder, "builder");
     this.attribute = builder.attribute;
     this.caption = builder.caption;
+    this.captionResourceKey = builder.captionResourceKey;
     this.beanProperty = builder.beanProperty;
     this.defaultValueSupplier = builder.defaultValueSupplier;
-    this.captionResourceKey = builder.captionResourceKey;
-    this.resourceCaption = builder.resourceCaption;
     this.nullable = builder.nullable;
     this.preferredColumnWidth = builder.preferredColumnWidth;
     this.hidden = builder.hidden;
@@ -243,10 +242,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   @Override
   public final String getDateTimePattern() {
     if (dateTimePattern == null) {
-      if (localeDateTimePattern == null) {
-        return getDefaultDateTimePattern();
-      }
-      dateTimePattern = localeDateTimePattern.getDateTimePattern();
+      dateTimePattern = localeDateTimePattern == null ? getDefaultDateTimePattern() : localeDateTimePattern.getDateTimePattern();
     }
 
     return dateTimePattern;
@@ -414,7 +410,6 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     private String beanProperty;
     private ValueSupplier<T> defaultValueSupplier;
     private String captionResourceKey;
-    private String resourceCaption;
     private boolean nullable;
     private int preferredColumnWidth;
     private boolean hidden;
@@ -517,6 +512,16 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       }
       this.maximumLength = maximumLength;
       return (B) this;
+    }
+
+    @Override
+    public final B minimumValue(double minimumValue) {
+      return range(minimumValue, Double.MAX_VALUE);
+    }
+
+    @Override
+    public final B maximumValue(double maximumValue) {
+      return range(Double.MIN_VALUE, maximumValue);
     }
 
     @Override

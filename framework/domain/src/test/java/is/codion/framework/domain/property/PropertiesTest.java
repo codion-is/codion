@@ -171,18 +171,11 @@ public final class PropertiesTest {
   }
 
   @Test
-  void subqueryPropertySetReadOnlyFalse() {
-    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty(ENTITY_TYPE.integerAttribute("test"), "caption", "select").readOnly());
-  }
-
-  @Test
-  void subqueryPropertySetUpdatableFalse() {
-    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty(ENTITY_TYPE.integerAttribute("test"), "caption", "select").updatable(false));
-  }
-
-  @Test
-  void subqueryPropertySetInsertableFalse() {
-    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty(ENTITY_TYPE.integerAttribute("test"), "caption", "select").insertable(false));
+  void subqueryProperties() {
+    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty(ENTITY_TYPE.integerAttribute("test"), "select").readOnly());
+    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty(ENTITY_TYPE.integerAttribute("test"), "select").readOnly(false));
+    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty(ENTITY_TYPE.integerAttribute("test"), "select").updatable(false));
+    assertThrows(UnsupportedOperationException.class, () -> subqueryProperty(ENTITY_TYPE.integerAttribute("test"), "select").insertable(false));
   }
 
   @Test

@@ -24,7 +24,7 @@ class DefaultAuditProperty<T> extends DefaultColumnProperty<T> implements AuditP
   }
 
   static final class DefaultAuditPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
-          extends DefaultColumnPropertyBuilder<T, B> {
+          extends AbstractReadOnlyColumnPropertyBuilder<T, B> {
 
     private final AuditAction auditAction;
 

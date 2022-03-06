@@ -22,39 +22,18 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
   }
 
   static final class DefaultSubqueryPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
-          extends DefaultColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
+          extends AbstractReadOnlyColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
 
     private final String subquery;
 
     DefaultSubqueryPropertyBuilder(Attribute<T> attribute, String caption, String subquery) {
       super(attribute, caption);
       this.subquery = subquery;
-      super.readOnly(true);
     }
 
     @Override
     public Property<T> build() {
       return new DefaultSubqueryProperty<>(this);
-    }
-
-    @Override
-    public B readOnly() {
-      throw new UnsupportedOperationException("Subquery properties are read only by default: " + attribute);
-    }
-
-    @Override
-    public B readOnly(boolean readOnly) {
-      throw new UnsupportedOperationException("Subquery properties are read only by default: " + attribute);
-    }
-
-    @Override
-    public B insertable(boolean insertable) {
-      throw new UnsupportedOperationException("Subquery properties are never insertable: " + attribute);
-    }
-
-    @Override
-    public B updatable(boolean updatable) {
-      throw new UnsupportedOperationException("Subquery properties are never updatable: " + attribute);
     }
   }
 }
