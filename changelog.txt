@@ -7872,3 +7872,4 @@
   Property.Builder and subclasses now proper builders, related refactoring
   Property.Builder, P property type parameter removed, simply unnecessary
   ValueChange removed, not really useful, related refactoring
+  DefaultAuditProperty bug fixed, wasn't set to read only, AbstractReadOnlyColumnPropertyBuilder added

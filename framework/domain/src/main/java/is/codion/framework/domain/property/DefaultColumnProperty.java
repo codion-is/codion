@@ -484,4 +484,33 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
       }
     }
   }
+  
+  static abstract class AbstractReadOnlyColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
+          extends DefaultColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
+
+    protected AbstractReadOnlyColumnPropertyBuilder(Attribute<T> attribute, String caption) {
+      super(attribute, caption);
+      super.readOnly(true);
+    }
+
+    @Override
+    public final B readOnly() {
+      throw new UnsupportedOperationException("Read only by default: " + attribute);
+    }
+
+    @Override
+    public final B readOnly(boolean readOnly) {
+      throw new UnsupportedOperationException("Read only by default: " + attribute);
+    }
+
+    @Override
+    public final B insertable(boolean insertable) {
+      throw new UnsupportedOperationException("Property is not insertable: " + attribute);
+    }
+
+    @Override
+    public final B updatable(boolean updatable) {
+      throw new UnsupportedOperationException("Property is not updatable: " + attribute);
+    }
+  }
 }
