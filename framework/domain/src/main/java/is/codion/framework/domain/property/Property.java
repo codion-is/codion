@@ -311,6 +311,20 @@ public interface Property<T> {
     /**
      * Only applicable to numerical properties
      * @param minimumValue the minimum allowed value for this property
+     * @return this instance
+     */
+    B minimumValue(double minimumValue);
+
+    /**
+     * Only applicable to numerical properties
+     * @param maximumValue the maximum allowed value for this property
+     * @return this instance
+     */
+    B maximumValue(double maximumValue);
+
+    /**
+     * Only applicable to numerical properties
+     * @param minimumValue the minimum allowed value for this property
      * @param maximumValue the maximum allowed value for this property
      * @return this instance
      */

@@ -518,6 +518,16 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
+    public final B minimumValue(double minimumValue) {
+      return range(minimumValue, Double.MAX_VALUE);
+    }
+
+    @Override
+    public final B maximumValue(double maximumValue) {
+      return range(Double.MIN_VALUE, maximumValue);
+    }
+
+    @Override
     public final B range(double minimumValue, double maximumValue) {
       if (!attribute.isNumerical()) {
         throw new IllegalStateException("range is only applicable to numerical properties");
