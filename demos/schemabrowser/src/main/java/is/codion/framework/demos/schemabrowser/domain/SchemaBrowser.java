@@ -86,8 +86,9 @@ public final class SchemaBrowser extends DefaultDomain {
     if (!tableQueryFrom.isEmpty()) {
       String tableQueryColumns = bundle.getString("t_table_query_columns");
       String tableQueryWhere = bundle.getString("t_table_query_where");
-      tableBuilder.selectQuery(SelectQuery.builder(tableQueryFrom)
+      tableBuilder.selectQuery(SelectQuery.builder()
               .columns(tableQueryColumns)
+              .from(tableQueryFrom)
               .where(tableQueryWhere)
               .build());
     }

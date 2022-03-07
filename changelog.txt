@@ -7875,3 +7875,4 @@
   DefaultAuditProperty bug fixed, wasn't set to read only, AbstractReadOnlyColumnPropertyBuilder added
   Property.Builder.minimumValue() and maximumValue() re-added
   AbstractProperty.dateTimePattern initialized to default if null, instead of getDateTimePattern() returning the default configuration value, since that can change
+  SelectQuery.Builder.from() added, even though the from clause is required, it just looks wrong when it comes before the columns clause, when the builder constructor took the from clause as a parameter, so we compromise, throwing an exception if build() is called without having specified a from clause
