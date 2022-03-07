@@ -5,7 +5,8 @@ package is.codion.framework.domain.entity.query;
 
 /**
  * Defines a select query, by specifying a from clause with optional columns, where and orderBy clauses.
- * {@link Builder} provided by {@link #builder(String)}.
+ * Note that at a minimum a from clause is required for building a select query.
+ * {@link Builder} provided by {@link #builder()}.
  */
 public interface SelectQuery {
 
@@ -30,12 +31,12 @@ public interface SelectQuery {
   String getOrderBy();
 
   /**
-   * Creates a {@link Builder} with the given from clause
-   * @param from the from clause, without the FROM keyword.
+   * Creates a {@link Builder}, note that at a minimum a FROM
+   * clause is required for building a select query.
    * @return a new {@link SelectQuery.Builder} instance.
    */
-  static Builder builder(String from) {
-    return new DefaultSelectQueryBuilder(from);
+  static Builder builder() {
+    return new DefaultSelectQuery.DefaultSelectQueryBuilder();
   }
 
   /**
@@ -49,6 +50,13 @@ public interface SelectQuery {
      * @return this Builder instance
      */
     Builder columns(String columns);
+
+    /**
+     * Specifies the from clause to use.
+     * @param from the from clause, without the FROM keyword
+     * @return this Builder instance
+     */
+    Builder from(String from);
 
     /**
      * Specifies the where clause to use, without the WHERE keyword.
@@ -66,6 +74,7 @@ public interface SelectQuery {
 
     /**
      * @return a new SelectQuery instance
+     * @throws IllegalStateException in case a from clause has not been specified
      */
     SelectQuery build();
   }

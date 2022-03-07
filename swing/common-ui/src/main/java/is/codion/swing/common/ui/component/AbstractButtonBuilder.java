@@ -69,7 +69,10 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     if (actionListener != null) {
       button.addActionListener(actionListener);
     }
-    if (includeCaption) {
+    if (!includeCaption) {
+      button.setText(null);
+    }
+    else if (caption != null) {
       button.setText(caption);
     }
     if (mnemonic != 0) {
