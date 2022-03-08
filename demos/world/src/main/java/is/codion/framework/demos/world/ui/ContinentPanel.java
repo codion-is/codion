@@ -1,6 +1,7 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.framework.demos.world.model.ContinentModel;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -41,14 +42,16 @@ final class ContinentPanel extends EntityPanel {
     surfaceAreaChartPanel.setPreferredSize(pieChartSize);
     gnpChartPanel.setPreferredSize(pieChartSize);
 
-    JPanel centerPanel = new JPanel(borderLayout());
-    centerPanel.add(tablePanel, BorderLayout.NORTH);
-    centerPanel.add(lifeExpectancyChartPanel, BorderLayout.CENTER);
+    JPanel centerPanel = Components.panel(borderLayout())
+            .addConstrained(tablePanel, BorderLayout.NORTH)
+            .addConstrained(lifeExpectancyChartPanel, BorderLayout.CENTER)
+            .build();
 
-    JPanel southChartPanel = new JPanel(gridLayout(1, 3));
-    southChartPanel.add(populationChartPanel);
-    southChartPanel.add(surfaceAreaChartPanel);
-    southChartPanel.add(gnpChartPanel);
+    JPanel southChartPanel = Components.panel(gridLayout(1, 3))
+            .add(populationChartPanel)
+            .add(surfaceAreaChartPanel)
+            .add(gnpChartPanel)
+            .build();
 
     setLayout(borderLayout());
 

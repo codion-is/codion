@@ -5,6 +5,7 @@ import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Location;
 import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
@@ -53,24 +54,21 @@ public final class CityEditPanel extends EntityEditPanel {
     createTextField(City.DISTRICT);
     createTextField(City.POPULATION);
 
-    JPanel inputPanel = new JPanel(gridLayout(0, 1));
-    inputPanel.add(createInputPanel(City.COUNTRY_FK));
-    inputPanel.add(createInputPanel(City.NAME));
-    inputPanel.add(createInputPanel(City.DISTRICT));
-    inputPanel.add(createInputPanel(City.POPULATION));
+    JPanel inputPanel = Components.panel(gridLayout(0, 1))
+            .add(createInputPanel(City.COUNTRY_FK))
+            .add(createInputPanel(City.NAME))
+            .add(createInputPanel(City.DISTRICT))
+            .add(createInputPanel(City.POPULATION))
+            .build();
 
-    JPanel inputBasePanel = new JPanel();
-    if (mapKit == null) {
-      inputBasePanel.setLayout(borderLayout());
-      inputBasePanel.add(inputPanel, BorderLayout.NORTH);
-    }
-    else {
-      inputBasePanel.setLayout(gridLayout(1, 2));
-      inputBasePanel.add(inputPanel);
-      inputBasePanel.add(mapKit, BorderLayout.CENTER);
+    JPanel centerPanel = Components.panel(gridLayout(1, 0))
+            .add(inputPanel)
+            .build();
+    if (mapKit != null) {
+      centerPanel.add(mapKit);
     }
     setLayout(borderLayout());
-    add(inputBasePanel, BorderLayout.CENTER);
+    add(centerPanel, BorderLayout.CENTER);
   }
 
   private static JXMapKit initializeMapKit(CityTableModel tableModel) {

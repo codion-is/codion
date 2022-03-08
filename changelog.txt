@@ -7915,3 +7915,5 @@
   EntityTablePanel.updateSelectedEntities() now handles exceptions and allowes the user to retry
   DefaultTemporalPanelBuilder.buttonFocusable now false by default
   EntityComponentValidators.TextValidator now performes validation each time the document contents change, not only when the edit model value changes, refactored
+  TabbedPaneBuilder, tab() overloaded with mnemonic parameter, mnemonicAt() removed
+  PanelBuilder.add(component) removed
