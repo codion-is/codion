@@ -30,7 +30,7 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private boolean selectAllOnFocusGained;
   private CalendarProvider calendarProvider = calendarProvider();
-  private boolean buttonFocusable = true;
+  private boolean buttonFocusable;
 
   DefaultTemporalInputPanelBuiler(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
     super(linkedValue);

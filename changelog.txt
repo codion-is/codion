@@ -7913,3 +7913,4 @@
   SelectQuery.Builder.from() added, even though the from clause is required, it just looks wrong when it comes before the columns clause, when the builder constructor took the from clause as a parameter, so we compromise, throwing an exception if build() is called without having specified a from clause
   AbstractButtonBuilder bug fixed, did not use the caption from the action, now a false includeCaption overrides the action caption, if specified
   EntityTablePanel.updateSelectedEntities() now handles exceptions and allowes the user to retry
+  DefaultTemporalPanelBuilder.buttonFocusable now false by default
