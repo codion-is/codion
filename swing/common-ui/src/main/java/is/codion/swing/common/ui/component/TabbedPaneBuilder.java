@@ -26,11 +26,12 @@ public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, T
   TabbedPaneBuilder tab(String title, JComponent component);
 
   /**
-   * @param index the tab index
+   * @param title the tab title
    * @param mnemonic the tab mnemonic
+   * @param component the tab component
    * @return this builder instance
    */
-  TabbedPaneBuilder mnemonicAt(int index, int mnemonic);
+  TabbedPaneBuilder tab(String title, int mnemonic, JComponent component);
 
   /**
    * @param changeListener the change listener

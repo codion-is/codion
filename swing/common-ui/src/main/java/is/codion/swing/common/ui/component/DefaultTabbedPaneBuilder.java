@@ -35,9 +35,9 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
   }
 
   @Override
-  public TabbedPaneBuilder mnemonicAt(int index, int mnemonic) {
-    mnemonicAt.put(index, mnemonic);
-    return this;
+  public TabbedPaneBuilder tab(String title, int mnemonic, JComponent component) {
+    mnemonicAt.put(tabs.size(), mnemonic);
+    return tab(title, component);
   }
 
   @Override
