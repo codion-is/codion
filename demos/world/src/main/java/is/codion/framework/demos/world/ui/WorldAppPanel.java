@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
@@ -73,6 +74,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     FilteredModel.ASYNC_REFRESH.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
+    EntityEditPanel.USE_SAVE_CONTROL.set(false);
     EntityTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
