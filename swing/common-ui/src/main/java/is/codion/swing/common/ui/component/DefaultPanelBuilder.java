@@ -31,13 +31,7 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
   @Override
   public PanelBuilder layout(LayoutManager layoutManager) {
-    this.layout = requireNonNull(layoutManager);
-    return this;
-  }
-
-  @Override
-  public PanelBuilder add(JComponent component) {
-    componentConstraints.add(new ComponentConstraints(requireNonNull(component)));
+    layout = requireNonNull(layoutManager);
     return this;
   }
 
@@ -55,7 +49,7 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
   @Override
   public PanelBuilder add(Collection<? extends JComponent> components) {
-    requireNonNull(components).forEach(this::add);
+    requireNonNull(components).forEach(component -> componentConstraints.add(new ComponentConstraints(component)));
     return this;
   }
 
