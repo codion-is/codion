@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
+import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JComponent;
 import javax.swing.UIManager;
@@ -84,7 +85,7 @@ public final class EntityComponentValidators {
       this.component = component;
       this.editModel = editModel;
       this.defaultToolTip = defaultToolTip;
-      this.editModel.addValueListener(attribute, valueChange -> validate());
+      this.editModel.addValueListener(attribute, value -> validate());
     }
 
     /**
@@ -159,6 +160,7 @@ public final class EntityComponentValidators {
                             String defaultToolTip) {
       super(attribute, textComponent, editModel, defaultToolTip);
       configureColors();
+      textComponent.getDocument().addDocumentListener((DocumentAdapter) event -> validate());
       textComponent.addPropertyChangeListener("UI", event -> configureColors());
     }
 
@@ -166,10 +168,19 @@ public final class EntityComponentValidators {
     protected void validate() {
       JComponent component = getComponent();
       boolean enabled = component.isEnabled();
+      boolean stringValid = isStringValid();
       String validationMessage = getValidationMessage();
-      component.setBackground(validationMessage == null ?
-              (enabled ? backgroundColor : inactiveBackgroundColor) : invalidBackgroundColor);
+      if (stringValid && validationMessage == null) {
+        component.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
+      }
+      else {
+        component.setBackground(invalidBackgroundColor);
+      }
       setToolTipText(validationMessage);
+    }
+
+    protected boolean isStringValid() {
+      return !isNull() || isNullable();
     }
 
     private void configureColors() {
@@ -190,20 +201,10 @@ public final class EntityComponentValidators {
       this.maskString = textComponent.getText();
     }
 
-    @Override
-    protected void validate() {
-      JTextComponent textComponent = (JTextComponent) getComponent();
-      boolean enabled = textComponent.isEnabled();
-      boolean stringEqualsMask = textComponent.getText().equals(maskString);
-      boolean validInputString = !isNull() || (stringEqualsMask && isNullable());
-      String validationMessage = getValidationMessage();
-      if (validInputString && validationMessage == null) {
-        textComponent.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
-      }
-      else {
-        textComponent.setBackground(invalidBackgroundColor);
-      }
-      setToolTipText(validationMessage);
+    protected boolean isStringValid() {
+      boolean stringEqualsMask = ((JTextComponent) getComponent()).getText().equals(maskString);
+
+      return !isNull() || (stringEqualsMask && isNullable());
     }
   }
 }

@@ -7879,3 +7879,4 @@
   AbstractButtonBuilder bug fixed, did not use the caption from the action, now a false includeCaption overrides the action caption, if specified
   EntityTablePanel.updateSelectedEntities() now handles exceptions and allowes the user to retry
   DefaultTemporalPanelBuilder.buttonFocusable now false by default
+  EntityComponentValidators.TextValidator now performes validation each time the document contents change, not only when the edit model value changes, refactored
