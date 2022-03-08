@@ -16,6 +16,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
@@ -731,19 +732,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
     Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    T newValue = createUpdateSelectedComponentValue(propertyToUpdate.getAttribute(), initialValue)
-            .showDialog(this, propertyToUpdate.getCaption());
-    Entity.put(propertyToUpdate.getAttribute(), newValue, selectedEntities);
-    WaitCursor.show(this);
-    try {
-      tableModel.update(selectedEntities);
-    }
-    catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      onException(e);
-    }
-    finally {
-      WaitCursor.hide(this);
+    ComponentValue<T, ? extends JComponent> componentValue = createUpdateSelectedComponentValue(propertyToUpdate.getAttribute(), initialValue);
+    boolean updatePerformed = false;
+    while (!updatePerformed) {
+      T newValue = componentValue.showDialog(this, propertyToUpdate.getCaption());
+      Entity.put(propertyToUpdate.getAttribute(), newValue, selectedEntities);
+      updatePerformed = update(selectedEntities);
     }
   }
 
@@ -1608,6 +1602,30 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private void onConditionChanged() {
     table.getTableHeader().repaint();
     table.repaint();
+  }
+
+  private boolean update(List<Entity> entities) {
+    try {
+      WaitCursor.show(this);
+      try {
+        tableModel.update(entities);
+
+        return true;
+      }
+      finally {
+        WaitCursor.hide(this);
+      }
+    }
+    catch (ValidationException e) {
+      JOptionPane.showMessageDialog(this, e.getMessage(),
+              Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
+    }
+    catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      onException(e);
+    }
+
+    return false;
   }
 
   private void onRefreshingChanged(boolean refreshing) {

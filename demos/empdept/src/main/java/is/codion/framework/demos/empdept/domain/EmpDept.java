@@ -157,7 +157,7 @@ public final class EmpDept extends DefaultDomain {
                     .beanProperty("job"),
             columnProperty(Employee.SALARY, "Salary")
                     .nullable(false)
-                    .range(1000, 10000)
+                    .range(900, 10000)
                     .maximumFractionDigits(2)
                     .beanProperty("salary"),
             columnProperty(Employee.COMMISSION, "Commission")
