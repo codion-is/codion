@@ -61,18 +61,14 @@ public final class CityEditPanel extends EntityEditPanel {
             .add(createInputPanel(City.POPULATION))
             .build();
 
-    JPanel inputBasePanel = new JPanel();
-    if (mapKit == null) {
-      inputBasePanel.setLayout(borderLayout());
-      inputBasePanel.add(inputPanel, BorderLayout.NORTH);
-    }
-    else {
-      inputBasePanel.setLayout(gridLayout(1, 2));
-      inputBasePanel.add(inputPanel);
-      inputBasePanel.add(mapKit, BorderLayout.CENTER);
+    JPanel centerPanel = Components.panel(gridLayout(1, 0))
+            .add(inputPanel)
+            .build();
+    if (mapKit != null) {
+      centerPanel.add(mapKit);
     }
     setLayout(borderLayout());
-    add(inputBasePanel, BorderLayout.CENTER);
+    add(centerPanel, BorderLayout.CENTER);
   }
 
   private static JXMapKit initializeMapKit(CityTableModel tableModel) {
