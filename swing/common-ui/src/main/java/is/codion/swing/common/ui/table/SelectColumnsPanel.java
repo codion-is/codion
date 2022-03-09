@@ -124,7 +124,7 @@ final class SelectColumnsPanel<C> extends JPanel {
 
   private JScrollPane createCheckBoxPanel() {
     JPanel northPanel = Components.panel(gridLayout(0, 1))
-            .add(checkBoxes)
+            .addAll(checkBoxes)
             .build();
     KeyEvents.Builder upEventBuilder = KeyEvents.builder(KeyEvent.VK_UP)
             .condition(JComponent.WHEN_FOCUSED)
@@ -144,7 +144,7 @@ final class SelectColumnsPanel<C> extends JPanel {
     });
 
     return Components.panel(borderLayout())
-            .addConstrained(northPanel, BorderLayout.NORTH)
+            .add(northPanel, BorderLayout.NORTH)
             .scrollPane()
             .preferredHeight(COLUMNS_SELECTION_PANEL_HEIGHT)
             .verticalUnitIncrement(COLUMN_SCROLL_BAR_UNIT_INCREMENT)

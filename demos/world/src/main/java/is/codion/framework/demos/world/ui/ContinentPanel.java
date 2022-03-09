@@ -43,8 +43,8 @@ final class ContinentPanel extends EntityPanel {
     gnpChartPanel.setPreferredSize(pieChartSize);
 
     JPanel centerPanel = Components.panel(borderLayout())
-            .addConstrained(tablePanel, BorderLayout.NORTH)
-            .addConstrained(lifeExpectancyChartPanel, BorderLayout.CENTER)
+            .add(tablePanel, BorderLayout.NORTH)
+            .add(lifeExpectancyChartPanel, BorderLayout.CENTER)
             .build();
 
     JPanel southChartPanel = Components.panel(gridLayout(1, 3))

@@ -132,8 +132,8 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
             .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
             .build();
     JPanel panel = Components.panel(new BorderLayout())
-            .addConstrained(component, BorderLayout.CENTER)
-            .addConstrained(Components.panel(Layouts.flowLayout(buttonPanelConstraints))
+            .add(component, BorderLayout.CENTER)
+            .add(Components.panel(Layouts.flowLayout(buttonPanelConstraints))
                     .add(Components.panel(Layouts.gridLayout(1, 2))
                             .add(okButton, cancelButton)
                             .build())
