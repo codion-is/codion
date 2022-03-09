@@ -110,8 +110,8 @@ final class LoginPanel extends JPanel {
     progressBar.setIndeterminate(true);
     CardLayout passwordProgressLayout = new CardLayout();
     JPanel passwordProgressPanel = Components.panel(passwordProgressLayout)
-            .addConstrained(passwordField, PASSWORD_CARD)
-            .addConstrained(progressBar, PROGRESS_CARD)
+            .add(passwordField, PASSWORD_CARD)
+            .add(progressBar, PROGRESS_CARD)
             .build();
     validatingState.addDataListener(validating ->
             passwordProgressLayout.show(passwordProgressPanel, validating ? PROGRESS_CARD : PASSWORD_CARD));

@@ -1050,7 +1050,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .continuousLayout(true)
             .resizeWeight(0.35)
             .leftComponent(Components.panel(new GridBagLayout())
-                    .addConstrained(table.getSearchField(), createSearchFieldConstraints())
+                    .add(table.getSearchField(), createSearchFieldConstraints())
                     .build())
             .rightComponent(statusMessageLabel)
             .build(), BorderLayout.CENTER);

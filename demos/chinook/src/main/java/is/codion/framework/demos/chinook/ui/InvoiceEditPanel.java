@@ -56,7 +56,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
             .selectAllOnFocusGained(true);
 
     JPanel centerBasePanel = Components.panel(borderLayout())
-            .addConstrained(Components.panel(gridLayout(4, 2))
+            .add(Components.panel(gridLayout(4, 2))
                     .add(createInputPanel(Invoice.CUSTOMER_FK)).add(createInputPanel(Invoice.DATE))
                     .add(createInputPanel(Invoice.BILLINGADDRESS)).add(createInputPanel(Invoice.BILLINGCITY))
                     .add(createInputPanel(Invoice.BILLINGSTATE)).add(createInputPanel(Invoice.BILLINGCOUNTRY))

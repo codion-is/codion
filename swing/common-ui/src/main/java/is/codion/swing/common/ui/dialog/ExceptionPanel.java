@@ -133,9 +133,9 @@ final class ExceptionPanel extends JPanel {
     setLayout(borderLayout());
     add(Components.panel(borderLayout())
             .border(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE))
-            .addConstrained(createNorthPanel(), BorderLayout.NORTH)
-            .addConstrained(centerPanel, BorderLayout.CENTER)
-            .addConstrained(createButtonPanel(), BorderLayout.SOUTH)
+            .add(createNorthPanel(), BorderLayout.NORTH)
+            .add(centerPanel, BorderLayout.CENTER)
+            .add(createButtonPanel(), BorderLayout.SOUTH)
             .build(), BorderLayout.CENTER);
   }
 
@@ -162,10 +162,10 @@ final class ExceptionPanel extends JPanel {
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
 
     return Components.panel(borderLayout())
-            .addConstrained(Components.panel(flowLayout(FlowLayout.LEFT))
+            .add(Components.panel(flowLayout(FlowLayout.LEFT))
                     .add(descriptionLabel)
                     .build(), BorderLayout.NORTH)
-            .addConstrained(descriptionLabel, BorderLayout.CENTER)
+            .add(descriptionLabel, BorderLayout.CENTER)
             .build();
   }
 
@@ -174,7 +174,7 @@ final class ExceptionPanel extends JPanel {
     scrollPane.setPreferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT));
 
     return Components.panel(new BorderLayout())
-            .addConstrained(scrollPane, BorderLayout.CENTER)
+            .add(scrollPane, BorderLayout.CENTER)
             .build();
   }
 
@@ -197,11 +197,11 @@ final class ExceptionPanel extends JPanel {
             .enable(this);
 
     return Components.panel(new BorderLayout())
-            .addConstrained(Components.panel(new FlowLayout(FlowLayout.LEFT, 0, 0))
+            .add(Components.panel(new FlowLayout(FlowLayout.LEFT, 0, 0))
                     .add(detailsControl.createCheckBox())
                     .build(), BorderLayout.WEST)
-            .addConstrained(Components.panel(new FlowLayout(FlowLayout.RIGHT, 0, 0))
-                    .add(copyButton, printButton, saveButton, closeControl.createButton())
+            .add(Components.panel(new FlowLayout(FlowLayout.RIGHT, 0, 0))
+                    .addAll(copyButton, printButton, saveButton, closeControl.createButton())
                     .build(), BorderLayout.CENTER)
             .build();
   }

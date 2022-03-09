@@ -7882,3 +7882,4 @@
   EntityComponentValidators.TextValidator now performes validation each time the document contents change, not only when the edit model value changes, refactored
   TabbedPaneBuilder, tab() overloaded with mnemonic parameter, mnemonicAt() removed
   PanelBuilder.add(component) removed
+  PanelBuilder.add() re-added, addConstrained() renamed add(), add() with vararg and collection parameter renamed addAll()
