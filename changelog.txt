@@ -7883,3 +7883,4 @@
   TabbedPaneBuilder, tab() overloaded with mnemonic parameter, mnemonicAt() removed
   PanelBuilder.add(component) removed
   PanelBuilder.add() re-added, addConstrained() renamed add(), add() with vararg and collection parameter renamed addAll()
+  EntitySearchField.DefaultEntitySearchFieldBuilder and DefaultTextInputPanelBuilder.columns now default to TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS

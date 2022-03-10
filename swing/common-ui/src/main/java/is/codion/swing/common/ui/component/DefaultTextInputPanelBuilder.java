@@ -16,7 +16,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   private UpdateOn updateOn = UpdateOn.KEYSTROKE;
   private boolean buttonFocusable;
-  private int columns;
+  private int columns = TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS.get();
   private boolean upperCase = false;
   private boolean lowerCase = false;
   private boolean selectAllOnFocusGained;
