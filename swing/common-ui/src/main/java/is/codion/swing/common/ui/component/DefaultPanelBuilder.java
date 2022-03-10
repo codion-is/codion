@@ -43,6 +43,9 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
   @Override
   public PanelBuilder add(JComponent component, Object constraints) {
+    if (constraints instanceof JComponent) {
+      throw new IllegalArgumentException("Use addAll() when adding multiple components");
+    }
     componentConstraints.add(new ComponentConstraints(requireNonNull(component), requireNonNull(constraints)));
     return this;
   }

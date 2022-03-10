@@ -27,6 +27,7 @@ import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -671,7 +672,7 @@ public final class EntitySearchField extends JTextField {
 
     private final EntitySearchModel searchModel;
 
-    private int columns;
+    private int columns = TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS.get();
     private boolean upperCase;
     private boolean lowerCase;
     private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory;
