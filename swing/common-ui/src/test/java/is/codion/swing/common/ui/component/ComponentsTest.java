@@ -618,4 +618,10 @@ public final class ComponentsTest {
             .validator(validator)
             .build());
   }
+
+  @Test
+  void addConstraintsComponent() {
+    assertThrows(IllegalArgumentException.class, () -> Components.panel()
+            .add(new JLabel(), new JLabel()));
+  }
 }

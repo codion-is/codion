@@ -109,7 +109,7 @@ final class SelectColumnsPanel<C> extends JPanel {
     selectNoneButton.addActionListener(new SelectNone(selectAllButton, selectNoneButton));
 
     return Components.panel(gridLayout(2, 1))
-            .add(selectAllButton, selectNoneButton)
+            .addAll(selectAllButton, selectNoneButton)
             .border(createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right))
             .build();
   }

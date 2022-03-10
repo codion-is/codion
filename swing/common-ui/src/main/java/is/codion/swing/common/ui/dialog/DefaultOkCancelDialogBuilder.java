@@ -135,7 +135,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
             .add(component, BorderLayout.CENTER)
             .add(Components.panel(Layouts.flowLayout(buttonPanelConstraints))
                     .add(Components.panel(Layouts.gridLayout(1, 2))
-                            .add(okButton, cancelButton)
+                            .addAll(okButton, cancelButton)
                             .build())
                     .border(buttonPanelBorder)
                     .build(), BorderLayout.SOUTH)
