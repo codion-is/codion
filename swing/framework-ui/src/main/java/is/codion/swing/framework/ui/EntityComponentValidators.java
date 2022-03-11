@@ -201,6 +201,7 @@ public final class EntityComponentValidators {
       this.maskString = textComponent.getText();
     }
 
+    @Override
     protected boolean isStringValid() {
       boolean stringEqualsMask = ((JTextComponent) getComponent()).getText().equals(maskString);
 

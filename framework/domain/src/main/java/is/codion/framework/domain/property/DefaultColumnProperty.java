@@ -485,7 +485,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
   }
   
-  static abstract class AbstractReadOnlyColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
+  abstract static class AbstractReadOnlyColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
           extends DefaultColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
 
     protected AbstractReadOnlyColumnPropertyBuilder(Attribute<T> attribute, String caption) {

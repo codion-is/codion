@@ -116,14 +116,14 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
 
     @Override
     public ForeignKeyProperty.Builder selectAttributes(Attribute<?>... attributes) {
-      Set<Attribute<?>> selectAttributes = new HashSet<>();
+      Set<Attribute<?>> selectAttributeSet = new HashSet<>();
       for (Attribute<?> attribute : requireNonNull(attributes)) {
         if (!attribute.getEntityType().equals(referencedEntityType)) {
           throw new IllegalArgumentException("Select attribute must be part of the referenced entity type");
         }
-        selectAttributes.add(attribute);
+        selectAttributeSet.add(attribute);
       }
-      this.selectAttributes = unmodifiableList(new ArrayList<>(selectAttributes));
+      this.selectAttributes = unmodifiableList(new ArrayList<>(selectAttributeSet));
 
       return this;
     }
