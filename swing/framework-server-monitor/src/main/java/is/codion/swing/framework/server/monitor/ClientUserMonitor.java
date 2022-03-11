@@ -70,18 +70,12 @@ public final class ClientUserMonitor {
    */
   public ClientUserMonitor(EntityServerAdmin server, int updateRate) throws RemoteException {
     this.server = server;
-    this.connectionTimeoutValue = Value.value(server.getConnectionTimeout() / THOUSAND);
-    this.connectionTimeoutValue.addValidator(value -> {
-      if (value == null || value < 0) {
-        throw new IllegalArgumentException("Connection timeout must be a positive integer");
-      }
-    });
+    this.connectionTimeoutValue = Value.value(this::getConnectionTimeout, this::setConnectionTimeout, 0);
     this.updateScheduler = TaskScheduler.builder(this::refreshUserHistoryTableModel)
             .interval(updateRate)
             .timeUnit(TimeUnit.SECONDS)
             .start();
-    this.updateIntervalValue = new IntervalValue(updateScheduler);
-    bindEvents();
+    this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
     refresh();
   }
 
@@ -126,7 +120,6 @@ public final class ClientUserMonitor {
     for (User user : getSortedUsers()) {
       userListModel.addElement(new ClientMonitor(server, null, user));
     }
-    connectionTimeoutValue.set(server.getConnectionTimeout() / THOUSAND);
   }
 
   /**
@@ -199,11 +192,23 @@ public final class ClientUserMonitor {
     return users;
   }
 
+  private int getConnectionTimeout() {
+    try {
+      return server.getConnectionTimeout() / THOUSAND;
+    }
+    catch (RemoteException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   /**
    * Sets the server connection timeout
    * @param timeout the timeout in seconds
    */
   private void setConnectionTimeout(int timeout) {
+    if (timeout < 0) {
+      throw new IllegalArgumentException("Connection timeout must be a positive integer");
+    }
     try {
       server.setConnectionTimeout(timeout * THOUSAND);
     }
@@ -219,10 +224,6 @@ public final class ClientUserMonitor {
     catch (Exception e) {
       LOG.error("Error while refreshing user history table model", e);
     }
-  }
-
-  private void bindEvents() {
-    connectionTimeoutValue.addDataListener(this::setConnectionTimeout);
   }
 
   private static List<TableColumn> createUserHistoryColumns() {

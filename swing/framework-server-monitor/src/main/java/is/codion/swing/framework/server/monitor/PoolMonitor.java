@@ -104,6 +104,12 @@ public final class PoolMonitor {
 
     @Override
     public void setMaximumPoolSize(int value) {
+      if (value < 0) {
+        throw new IllegalArgumentException("Maximum pool size must be a positive integer");
+      }
+      if (value < getMinimumPoolSize()) {
+        throw new IllegalArgumentException("Maximum pool size must be equal to or exceed minimum pool size");
+      }
       try {
         server.setMaximumConnectionPoolSize(user.getUsername(), value);
       }
@@ -114,6 +120,12 @@ public final class PoolMonitor {
 
     @Override
     public void setMinimumPoolSize(int value) {
+      if (value < 0) {
+        throw new IllegalArgumentException("Minimum pool size must be a positive integer");
+      }
+      if (value > getMaximumPoolSize()) {
+        throw new IllegalArgumentException("Minimum pool size equal to or below maximum pool size time");
+      }
       try {
         server.setMinimumConnectionPoolSize(user.getUsername(), value);
       }
@@ -124,6 +136,9 @@ public final class PoolMonitor {
 
     @Override
     public void setConnectionTimeout(int timeout) {
+      if (timeout < 0) {
+        throw new IllegalArgumentException("Timeout must be a positive integer");
+      }
       try {
         server.setPooledConnectionTimeout(user.getUsername(), timeout);
       }
@@ -144,6 +159,9 @@ public final class PoolMonitor {
 
     @Override
     public void setMaximumCheckOutTime(int value) {
+      if (value < 0) {
+        throw new IllegalArgumentException("Maximum check out time must be a positive integer");
+      }
       try {
         server.setMaximumPoolCheckOutTime(user.getUsername(), value);
       }
@@ -154,6 +172,9 @@ public final class PoolMonitor {
 
     @Override
     public void setCleanupInterval(int poolCleanupInterval) {
+      if (poolCleanupInterval < 0) {
+        throw new IllegalArgumentException("Cleanup interval must be a positive integer");
+      }
       try {
         server.setConnectionPoolCleanupInterval(user.getUsername(), poolCleanupInterval);
       }

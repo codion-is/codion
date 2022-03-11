@@ -49,7 +49,7 @@ public final class DatabaseMonitor {
             .interval(updateRate)
             .timeUnit(TimeUnit.SECONDS)
             .start();
-    this.updateIntervalValue = new IntervalValue(updateScheduler);
+    this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
   }
 
   /**
