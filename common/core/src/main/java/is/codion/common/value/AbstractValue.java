@@ -25,8 +25,20 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractValue<T> implements Value<T> {
 
+  /**
+   * Specifies whether a {@link AbstractValue} instance should automatically call
+   * {@link #notifyValueChange()} when the value is changed via {@link AbstractValue#set(Object)}.
+   * Some implementations may want to do this manually.
+   */
   public enum NotifyOnSet {
-    YES, NO
+    /**
+     * Change event is fired on a call to {@link AbstractValue#set(Object)}.
+     */
+    YES,
+    /**
+     * Change event is not fired on a call to {@link AbstractValue#set(Object)}.
+     */
+    NO
   }
 
   private final Event<T> changeEvent = Event.event();
@@ -42,10 +54,17 @@ public abstract class AbstractValue<T> implements Value<T> {
     this(null);
   }
 
+  /**
+   * @param nullValue the value to use instead of null
+   */
   protected AbstractValue(T nullValue) {
     this(nullValue, NotifyOnSet.NO);
   }
 
+  /**
+   * @param nullValue the value to use instead of null
+   * @param notifyOnSet specifies whether to notify on set
+   */
   protected AbstractValue(T nullValue, NotifyOnSet notifyOnSet) {
     this.nullValue = nullValue;
     this.notifyOnSet = notifyOnSet == NotifyOnSet.YES;
@@ -54,8 +73,8 @@ public abstract class AbstractValue<T> implements Value<T> {
   @Override
   public final void set(T value) {
     T actualValue = value == null ? nullValue : value;
-    validators.forEach(validator -> validator.validate(actualValue));
     if (!Objects.equals(get(), actualValue)) {
+      validators.forEach(validator -> validator.validate(actualValue));
       setValue(actualValue);
       if (notifyOnSet) {
         notifyValueChange();

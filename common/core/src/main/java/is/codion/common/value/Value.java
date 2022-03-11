@@ -9,6 +9,8 @@ import is.codion.common.event.EventObserver;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A wrapper class for setting and getting a value.
@@ -125,6 +127,19 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    */
   static <T> Value<T> value(T initialValue, T nullValue) {
     return new DefaultValue<>(initialValue, nullValue);
+  }
+
+  /**
+   * Creates a {@link Value} based on the given getter and setter.
+   * The setter may throw an unchecked exception in case of an invalid value.
+   * @param <T> the value type
+   * @param getter the getter
+   * @param setter the setter
+   * @return a Value based on the given setter and getter
+   * @throws NullPointerException in case either getter or setter is null
+   */
+  static <T> Value<T> value(Supplier<T> getter, Consumer<T> setter) {
+    return new GetterSetterValue<>(getter, setter);
   }
 
   /**
