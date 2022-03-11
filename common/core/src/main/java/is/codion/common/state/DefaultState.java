@@ -12,6 +12,8 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 class DefaultState implements State {
 
@@ -19,12 +21,13 @@ class DefaultState implements State {
 
   private DefaultStateObserver observer;
 
-  DefaultState() {
-    this(false);
-  }
-
   DefaultState(boolean value) {
     this.value = Value.value(value, false);
+    this.value.addDataListener(new Notifier());
+  }
+
+  DefaultState(Supplier<Boolean> getter, Consumer<Boolean> setter) {
+    this.value = Value.value(getter, setter, false);
     this.value.addDataListener(new Notifier());
   }
 
@@ -157,8 +160,10 @@ class DefaultState implements State {
 
     @Override
     public void onEvent(Boolean value) {
-      if (observer != null) {
-        observer.notifyObservers(value, !value);
+      synchronized (DefaultState.this.value) {
+        if (observer != null) {
+          observer.notifyObservers(value, !value);
+        }
       }
     }
   }

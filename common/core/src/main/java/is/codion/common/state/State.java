@@ -7,6 +7,8 @@ import is.codion.common.Conjunction;
 import is.codion.common.value.Value;
 
 import java.util.Collection;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A class encapsulating a boolean state, non-nullable with null values translated to false.
@@ -85,6 +87,17 @@ public interface State extends StateObserver, Value<Boolean> {
    */
   static State state(boolean value) {
     return new DefaultState(value);
+  }
+
+  /**
+   * Instantiates a new State based on the given getter and setter.
+   * @param getter the getter
+   * @param setter the setter
+   * @return a new State
+   * @throws NullPointerException in case either getter or setter is null
+   */
+  static State state(Supplier<Boolean> getter, Consumer<Boolean> setter) {
+    return new DefaultState(getter, setter);
   }
 
   /**

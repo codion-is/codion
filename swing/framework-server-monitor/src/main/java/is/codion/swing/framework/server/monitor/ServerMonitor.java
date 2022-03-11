@@ -113,12 +113,7 @@ public final class ServerMonitor {
     this.registryPort = registryPort;
     this.serverAdminUser = serverAdminUser;
     this.server = connectServer(serverInformation.getServerName());
-    this.connectionLimitValue = Value.value(this.server.getConnectionLimit());
-    this.connectionLimitValue.addValidator(value -> {
-      if (value == null || value < -1) {
-        throw new IllegalArgumentException("Connection limit must be -1 or above");
-      }
-    });
+    this.connectionLimitValue = Value.value(this::getConnectionLimit, this::setConnectionLimit, -1);
     this.logLevelValue = Value.value(this.server.getLogLevel());
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
     this.memoryUsageCollection.addSeries(maxMemorySeries);
@@ -136,7 +131,7 @@ public final class ServerMonitor {
             .interval(updateRate)
             .timeUnit(TimeUnit.SECONDS)
             .start();
-    this.updateIntervalValue = new IntervalValue(updateScheduler);
+    this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
     refreshDomainList();
     bindEvents();
   }
@@ -358,10 +353,22 @@ public final class ServerMonitor {
     return logLevelValue;
   }
 
+  private int getConnectionLimit() {
+    try {
+      return server.getConnectionLimit();
+    }
+    catch (RemoteException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   /**
    * @param value the connection number limit
    */
-  private void setConnectionLimit(int value) {
+  private void setConnectionLimit(Integer value) {
+    if (value == null || value < -1) {
+      throw new IllegalArgumentException("Connection limit must be -1 or above");
+    }
     try {
       server.setConnectionLimit(value);
     }

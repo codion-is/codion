@@ -139,7 +139,21 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @throws NullPointerException in case either getter or setter is null
    */
   static <T> Value<T> value(Supplier<T> getter, Consumer<T> setter) {
-    return new GetterSetterValue<>(getter, setter);
+    return value(getter, setter, null);
+  }
+
+  /**
+   * Creates a {@link Value} based on the given getter and setter.
+   * The setter may throw an unchecked exception in case of an invalid value.
+   * @param <T> the value type
+   * @param getter the getter
+   * @param setter the setter
+   * @param nullValue the value to use instead of null
+   * @return a Value based on the given setter and getter
+   * @throws NullPointerException in case either getter or setter is null
+   */
+  static <T> Value<T> value(Supplier<T> getter, Consumer<T> setter, T nullValue) {
+    return new GetterSetterValue<>(getter, setter, nullValue);
   }
 
   /**

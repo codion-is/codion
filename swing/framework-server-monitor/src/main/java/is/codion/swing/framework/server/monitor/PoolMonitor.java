@@ -103,9 +103,15 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setMaximumPoolSize(int value) {
+    public void setMaximumPoolSize(int maximumPoolSize) {
+      if (maximumPoolSize < 0) {
+        throw new IllegalArgumentException("Maximum pool size must be a positive integer");
+      }
+      if (maximumPoolSize < getMinimumPoolSize()) {
+        throw new IllegalArgumentException("Maximum pool size must be equal to or exceed minimum pool size");
+      }
       try {
-        server.setMaximumConnectionPoolSize(user.getUsername(), value);
+        server.setMaximumConnectionPoolSize(user.getUsername(), maximumPoolSize);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -113,9 +119,15 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setMinimumPoolSize(int value) {
+    public void setMinimumPoolSize(int minimumPoolSize) {
+      if (minimumPoolSize < 0) {
+        throw new IllegalArgumentException("Minimum pool size must be a positive integer");
+      }
+      if (minimumPoolSize > getMaximumPoolSize()) {
+        throw new IllegalArgumentException("Minimum pool size equal to or below maximum pool size time");
+      }
       try {
-        server.setMinimumConnectionPoolSize(user.getUsername(), value);
+        server.setMinimumConnectionPoolSize(user.getUsername(), minimumPoolSize);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -124,6 +136,9 @@ public final class PoolMonitor {
 
     @Override
     public void setConnectionTimeout(int timeout) {
+      if (timeout < 0) {
+        throw new IllegalArgumentException("Timeout must be a positive integer");
+      }
       try {
         server.setPooledConnectionTimeout(user.getUsername(), timeout);
       }
@@ -143,9 +158,12 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setMaximumCheckOutTime(int value) {
+    public void setMaximumCheckOutTime(int maximumCheckOutTime) {
+      if (maximumCheckOutTime < 0) {
+        throw new IllegalArgumentException("Maximum check out time must be a positive integer");
+      }
       try {
-        server.setMaximumPoolCheckOutTime(user.getUsername(), value);
+        server.setMaximumPoolCheckOutTime(user.getUsername(), maximumCheckOutTime);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -154,6 +172,9 @@ public final class PoolMonitor {
 
     @Override
     public void setCleanupInterval(int poolCleanupInterval) {
+      if (poolCleanupInterval < 0) {
+        throw new IllegalArgumentException("Cleanup interval must be a positive integer");
+      }
       try {
         server.setConnectionPoolCleanupInterval(user.getUsername(), poolCleanupInterval);
       }

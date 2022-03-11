@@ -131,10 +131,10 @@ public interface ConnectionPoolWrapper {
   int getMinimumPoolSize();
 
   /**
-   * @param value the minimum number of connections to keep in the pool
-   * @throws IllegalArgumentException if value is less than 0 or larger than maximum pool size
+   * @param minimumPoolSize the minimum number of connections to keep in the pool
+   * @throws IllegalArgumentException if the value is less than 0 or larger than maximum pool size
    */
-  void setMinimumPoolSize(int value);
+  void setMinimumPoolSize(int minimumPoolSize);
 
   /**
    * @return the maximum number of connections this pool can create
@@ -145,10 +145,10 @@ public interface ConnectionPoolWrapper {
    * Sets the maximum number of connections to keep in this pool.
    * Note that if the current number of connections exceeds this value when set, excess connections
    * are not actively discarded.
-   * @param value the maximum number of connections this pool can create
-   * @throws IllegalArgumentException if value is less than 1 or less than minimum pool size
+   * @param maximumPoolSize the maximum number of connections this pool can create
+   * @throws IllegalArgumentException if the value is less than 1 or less than minimum pool size
    */
-  void setMaximumPoolSize(int value);
+  void setMaximumPoolSize(int maximumPoolSize);
 
   /**
    * @return the maximum number of milliseconds to retry connection checkout before throwing an exception
@@ -156,9 +156,9 @@ public interface ConnectionPoolWrapper {
   int getMaximumCheckOutTime();
 
   /**
-   * @param value the maximum number of milliseconds to retry connection checkout before throwing an exception,
+   * @param maximumCheckOutTime the maximum number of milliseconds to retry connection checkout before throwing an exception,
    * note that this also modifies the new connection threshold, keeping its value to 1/4 of this one
-   * @throws IllegalArgumentException if value is less than 0
+   * @throws IllegalArgumentException if the value is less than 0
    */
-  void setMaximumCheckOutTime(int value);
+  void setMaximumCheckOutTime(int maximumCheckOutTime);
 }

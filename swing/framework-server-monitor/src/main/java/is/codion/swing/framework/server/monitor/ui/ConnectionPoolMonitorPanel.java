@@ -153,8 +153,10 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .columns(6)
             .editable(false)
             .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Idle timeout (s)"), Components.integerSpinner(model.getPooledConnectionTimeoutValue())
-            .columns(3)
+    configBase.add(createWestCenterPanel(new JLabel("Idle timeout (ms)"), Components.integerSpinner(model.getPooledConnectionTimeoutValue())
+            .stepSize(1000)
+            .columns(6)
+            .groupingUsed(true)
             .editable(false)
             .build()));
     configBase.add(createWestCenterPanel(new JLabel("Cleanup interval (s)"), Components.integerSpinner(model.getPoolCleanupIntervalValue())

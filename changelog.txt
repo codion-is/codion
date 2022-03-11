@@ -7921,5 +7921,10 @@
   EntitySearchField.DefaultEntitySearchFieldBuilder and DefaultTextInputPanelBuilder.columns now default to TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS
   DefaultOkCancelDialogBuilder, SelectColumnsPanel bug fixed, PanelBuilder.add() was being used to add two components, instead of addAll()
   DefaultPanelBuilder now throws an exception if constraints is a component instance, preventing add() being used to add two components
-  Value.value(setter, getter) added, ValuesTest renamed ValueTest, AbstractValue, javadoc improvements
+  Value.value(getter, setter) added, ValuesTest renamed ValueTest, AbstractValue, javadoc improvements
   AbstractValue.set(), validation only performed if the value is actually about to change
+  Value.value(getter, setter) overloaded with a nullValue parameter
+  State.state(getter, setter) added
+  ServerMonitor, use the above value and state where applicable
+  DefaultState.Notifier now synchronizes on value
+  DefaultStateCombination no longer extends DefaultState, delegates to a DefaultStateObserver instance

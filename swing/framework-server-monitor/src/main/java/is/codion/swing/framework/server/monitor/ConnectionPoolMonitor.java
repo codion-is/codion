@@ -69,19 +69,13 @@ public final class ConnectionPoolMonitor {
   public ConnectionPoolMonitor(ConnectionPoolWrapper connectionPool, int updateRate) {
     this.username = connectionPool.getUser().getUsername();
     this.connectionPool = connectionPool;
-    this.pooledConnectionTimeoutValue = Value.value(connectionPool.getConnectionTimeout() / THOUSAND);
-    this.pooledCleanupIntervalValue = Value.value(connectionPool.getCleanupInterval() / THOUSAND);
-    this.minimumPoolSizeValue = Value.value(connectionPool.getMinimumPoolSize());
-    this.maximumPoolSizeValue = Value.value(connectionPool.getMinimumPoolSize());
-    this.maximumCheckoutTimeValue = Value.value(connectionPool.getMaximumCheckOutTime());
-    this.collectSnapshotStatisticsState = State.state(connectionPool.isCollectSnapshotStatistics());
-    this.collectCheckOutTimesState = State.state(connectionPool.isCollectCheckOutTimes());
-
-    this.pooledConnectionTimeoutValue.addValidator(new MinimumValidator(0));
-    this.pooledCleanupIntervalValue.addValidator(new MinimumValidator(0));
-    this.minimumPoolSizeValue.addValidator(new MinimumPoolSizeValidator());
-    this.maximumPoolSizeValue.addValidator(new MaximumPoolSizeValidator());
-    this.maximumCheckoutTimeValue.addValidator(new MinimumValidator(0));
+    this.pooledConnectionTimeoutValue = Value.value(connectionPool::getConnectionTimeout, connectionPool::setConnectionTimeout, 0);
+    this.pooledCleanupIntervalValue = Value.value(connectionPool::getCleanupInterval, connectionPool::setCleanupInterval, 0);
+    this.minimumPoolSizeValue = Value.value(connectionPool::getMinimumPoolSize, connectionPool::setMinimumPoolSize, 0);
+    this.maximumPoolSizeValue = Value.value(connectionPool::getMaximumPoolSize, connectionPool::setMaximumPoolSize, 0);
+    this.maximumCheckoutTimeValue = Value.value(connectionPool::getMaximumCheckOutTime, connectionPool::setMaximumCheckOutTime, 0);
+    this.collectSnapshotStatisticsState = State.state(connectionPool::isCollectSnapshotStatistics, connectionPool::setCollectSnapshotStatistics);
+    this.collectCheckOutTimesState = State.state(connectionPool::isCollectCheckOutTimes, connectionPool::setCollectCheckOutTimes);
 
     this.statisticsCollection.addSeries(inPoolSeries);
     this.statisticsCollection.addSeries(inUseSeries);
@@ -95,7 +89,7 @@ public final class ConnectionPoolMonitor {
             .interval(updateRate)
             .timeUnit(TimeUnit.SECONDS)
             .start();
-    this.updateIntervalValue = new IntervalValue(updateScheduler);
+    this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
     bindEvents();
   }
 
@@ -114,7 +108,7 @@ public final class ConnectionPoolMonitor {
   }
 
   /**
-   * @return the pool connection timeout in seconds
+   * @return the pool connection timeout in milliseconds
    */
   public Value<Integer> getPooledConnectionTimeoutValue() {
     return pooledConnectionTimeoutValue;
@@ -311,51 +305,5 @@ public final class ConnectionPoolMonitor {
     maximumCheckoutTimeValue.addDataListener(this::setMaximumCheckOutTime);
     collectSnapshotStatisticsState.addDataListener(connectionPool::setCollectSnapshotStatistics);
     collectCheckOutTimesState.addDataListener(connectionPool::setCollectCheckOutTimes);
-  }
-
-  private static class MinimumValidator implements Value.Validator<Integer> {
-
-    private final int minimumValue;
-
-    private MinimumValidator(int minimumValue) {
-      this.minimumValue = minimumValue;
-    }
-
-    @Override
-    public void validate(Integer value) {
-      if (value == null || value < minimumValue) {
-        throw new IllegalArgumentException("Value must be larger than: " + minimumValue);
-      }
-    }
-  }
-
-  private final class MinimumPoolSizeValidator extends MinimumValidator {
-
-    private MinimumPoolSizeValidator() {
-      super(0);
-    }
-
-    @Override
-    public void validate(Integer value) {
-      super.validate(value);
-      if (value > maximumPoolSizeValue.get()) {
-        throw new IllegalArgumentException("Minimum pool sizeequal to or below maximum pool size time");
-      }
-    }
-  }
-
-  private final class MaximumPoolSizeValidator extends MinimumValidator {
-
-    private MaximumPoolSizeValidator() {
-      super(0);
-    }
-
-    @Override
-    public void validate(Integer value) {
-      super.validate(value);
-      if (value < minimumPoolSizeValue.get()) {
-        throw new IllegalArgumentException("Maximum pool size must be equal to or exceed minimum pool size");
-      }
-    }
   }
 }

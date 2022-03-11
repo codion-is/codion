@@ -126,7 +126,6 @@ public final class ApplicationModel {
     booleanValue.addDataListener(this::setMessage);
     booleanSelectionValue.addDataListener(this::setMessage);
     integerItemValue.addDataListener(this::setMessage);
-    stringSelectionValue.addValidator(this::setMessage);
     stringSelectionValue.addDataListener(this::setMessage);
     integerSlideValue.addDataListener(this::setMessage);
     integerSpinValue.addDataListener(this::setMessage);

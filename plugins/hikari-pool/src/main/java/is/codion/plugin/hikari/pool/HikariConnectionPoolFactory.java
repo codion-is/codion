@@ -84,8 +84,8 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public void setMinimumPoolSize(int value) {
-      config.setMinimumIdle(value);
+    public void setMinimumPoolSize(int minimumPoolSize) {
+      config.setMinimumIdle(minimumPoolSize);
     }
 
     @Override
@@ -94,8 +94,8 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public void setMaximumPoolSize(int value) {
-      config.setMaximumPoolSize(value);
+    public void setMaximumPoolSize(int maximumPoolSize) {
+      config.setMaximumPoolSize(maximumPoolSize);
     }
 
     @Override
@@ -114,8 +114,8 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public void setMaximumCheckOutTime(int value) {
-      config.setConnectionTimeout(value);
+    public void setMaximumCheckOutTime(int maximumCheckOutTime) {
+      config.setConnectionTimeout(maximumCheckOutTime);
     }
 
     @Override

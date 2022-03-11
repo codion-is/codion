@@ -88,8 +88,8 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public void setMinimumPoolSize(int value) {
-      getPool().setMinIdle(value);
+    public void setMinimumPoolSize(int minimumPoolSize) {
+      getPool().setMinIdle(minimumPoolSize);
     }
 
     @Override
@@ -98,9 +98,9 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public void setMaximumPoolSize(int value) {
-      getPool().setMaxActive(value);
-      getPool().setMaxIdle(value);
+    public void setMaximumPoolSize(int maximumPoolSize) {
+      getPool().setMaxActive(maximumPoolSize);
+      getPool().setMaxIdle(maximumPoolSize);
     }
 
     @Override
@@ -109,8 +109,8 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public void setMaximumCheckOutTime(int value) {
-      getPool().setMaxWait(value);
+    public void setMaximumCheckOutTime(int maximumCheckOutTime) {
+      getPool().setMaxWait(maximumCheckOutTime);
     }
 
     @Override
