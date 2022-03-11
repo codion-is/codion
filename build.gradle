@@ -110,7 +110,8 @@ configure(project.frameworkModules) {
         System.setProperty("sonar.java.source", "8")
         System.setProperty("sonar.sourceEncoding", "UTF-8")
         System.setProperty("sonar.exclusions", "**/*TestDomain.java")
-        System.setProperty("sonar.coverage.exclusions", "**/is/codion/framework/model/tests/**," +
+        System.setProperty("sonar.coverage.exclusions",
+                "**/is/codion/framework/model/tests/**," +
                 "**/is/codion/framework/domain/entity/test/**," +
                 "**/is/codion/swing/framework/ui/test/**")
     }
