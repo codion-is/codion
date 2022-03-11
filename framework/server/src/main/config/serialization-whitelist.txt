@@ -11,6 +11,7 @@
 [Lnet.sf.jasperreports.engine.JRQueryChunk;
 [Lnet.sf.jasperreports.engine.JRVariable;
 ch.qos.logback.classic.Level
+com.sun.proxy.$Proxy*
 java.lang.Boolean
 java.lang.Character
 java.lang.Double
@@ -20,6 +21,7 @@ java.lang.Integer
 java.lang.Long
 java.lang.Number
 java.lang.String
+java.lang.reflect.Proxy
 java.math.BigDecimal
 java.math.BigInteger
 java.time.LocalDate
@@ -115,6 +117,7 @@ is.codion.framework.domain.entity.DefaultKey
 is.codion.framework.domain.entity.DefaultOrderBy
 is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByAttribute
 is.codion.framework.domain.entity.DefaultAttribute
+is.codion.framework.domain.entity.DefaultEntity$EntityInvoker
 is.codion.framework.domain.entity.DefaultForeignKey
 is.codion.framework.domain.entity.DefaultForeignKey$DefaultReference
 is.codion.framework.domain.entity.Entity

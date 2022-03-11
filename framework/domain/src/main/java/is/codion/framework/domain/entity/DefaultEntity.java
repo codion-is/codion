@@ -323,7 +323,7 @@ final class DefaultEntity implements Entity, Serializable {
     }
 
     return (T) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {entityClass}, new EntityInvoker(this, definition));
+            new Class[] {entityClass}, new EntityInvoker(this));
   }
 
   @Override
@@ -871,12 +871,10 @@ final class DefaultEntity implements Entity, Serializable {
 
     private static final String CAST_TO = "castTo";
 
-    private final Entity entity;
-    private final EntityDefinition definition;
+    private final DefaultEntity entity;
 
-    private EntityInvoker(Entity entity, EntityDefinition definition) {
+    private EntityInvoker(DefaultEntity entity) {
       this.entity = entity;
-      this.definition = definition;
     }
 
     @Override
@@ -886,19 +884,19 @@ final class DefaultEntity implements Entity, Serializable {
         return proxy;
       }
       if (method.getParameterCount() == 0) {
-        Attribute<?> attribute = definition.getGetterAttribute(method);
+        Attribute<?> attribute = entity.definition.getGetterAttribute(method);
         if (attribute != null) {
           return getValue(attribute, method.getReturnType());
         }
       }
       else if (method.getParameterCount() == 1) {
-        Attribute<?> attribute = definition.getSetterAttribute(method);
+        Attribute<?> attribute = entity.definition.getSetterAttribute(method);
         if (attribute != null) {
           return setValue(attribute, args[0]);
         }
       }
       if (method.isDefault()) {
-        return definition.getDefaultMethodHandle(method).bindTo(proxy).invokeWithArguments(args);
+        return entity.definition.getDefaultMethodHandle(method).bindTo(proxy).invokeWithArguments(args);
       }
 
       return method.invoke(entity, args);

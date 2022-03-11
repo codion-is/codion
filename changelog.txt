@@ -7894,3 +7894,4 @@
   DefaultState.Notifier now synchronizes on value
   DefaultStateCombination no longer extends DefaultState, delegates to a DefaultStateObserver instance
   HttpEntityConnection, HttpJsonEntityConnection bug fixed, was synchronizing on a method parameter
+  DefaultEntity.EntityInvoker.definition field removed, not needed since the entity contains a reference to it, was being serialized along with the entity
