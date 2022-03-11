@@ -7893,3 +7893,4 @@
   ServerMonitor, use the above value and state where applicable
   DefaultState.Notifier now synchronizes on value
   DefaultStateCombination no longer extends DefaultState, delegates to a DefaultStateObserver instance
+  HttpEntityConnection, HttpJsonEntityConnection bug fixed, was synchronizing on a method parameter
