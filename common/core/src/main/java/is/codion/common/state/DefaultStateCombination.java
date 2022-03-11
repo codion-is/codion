@@ -5,6 +5,7 @@ package is.codion.common.state;
 
 import is.codion.common.Conjunction;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,9 +16,9 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultStateCombination extends DefaultState implements State.Combination {
+final class DefaultStateCombination implements State.Combination {
 
-  private final Object lock = new Object();
+  private final DefaultStateObserver observer;
   private final List<StateCombinationListener> stateListeners = new ArrayList<>();
   private final Conjunction conjunction;
 
@@ -26,6 +27,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   }
 
   DefaultStateCombination(Conjunction conjunction, Collection<? extends StateObserver> states) {
+    this.observer = new DefaultStateObserver(this, false);
     this.conjunction = requireNonNull(conjunction);
     for (StateObserver state : requireNonNull(states)) {
       addState(state);
@@ -34,9 +36,9 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
 
   @Override
   public String toString() {
-    synchronized (lock) {
+    synchronized (observer) {
       StringBuilder stringBuilder = new StringBuilder("Combination");
-      stringBuilder.append(toString(conjunction)).append(super.toString());
+      stringBuilder.append(toString(conjunction)).append(observer);
       for (StateCombinationListener listener : stateListeners) {
         stringBuilder.append(", ").append(listener.getState());
       }
@@ -53,11 +55,11 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   @Override
   public void addState(StateObserver state) {
     requireNonNull(state, "state");
-    synchronized (lock) {
+    synchronized (observer) {
       if (!findListener(state).isPresent()) {
         boolean previousValue = get();
         stateListeners.add(new StateCombinationListener(state));
-        ((DefaultStateObserver) getObserver()).notifyObservers(get(), previousValue);
+        observer.notifyObservers(get(), previousValue);
       }
     }
   }
@@ -65,26 +67,71 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   @Override
   public void removeState(StateObserver state) {
     requireNonNull(state, "state");
-    synchronized (lock) {
+    synchronized (observer) {
       boolean previousValue = get();
       findListener(state).ifPresent(listener -> {
         state.removeDataListener(listener);
         stateListeners.remove(listener);
-        ((DefaultStateObserver) getObserver()).notifyObservers(get(), previousValue);
+        observer.notifyObservers(get(), previousValue);
       });
     }
   }
 
   @Override
   public Boolean get() {
-    synchronized (lock) {
+    synchronized (observer) {
       return get(conjunction, null, false);
     }
   }
 
   @Override
-  public void set(Boolean value) {
-    throw new UnsupportedOperationException("The state of state combination can't be set");
+  public Optional<Boolean> toOptional() {
+    return observer.toOptional();
+  }
+
+  @Override
+  public boolean isNull() {
+    return observer.isNull();
+  }
+
+  @Override
+  public boolean isNotNull() {
+    return observer.isNotNull();
+  }
+
+  @Override
+  public boolean isNullable() {
+    return observer.isNullable();
+  }
+
+  @Override
+  public boolean equalTo(Boolean value) {
+    return observer.equalTo(value);
+  }
+
+  @Override
+  public StateObserver getReversedObserver() {
+    return observer.getReversedObserver();
+  }
+
+  @Override
+  public void addListener(EventListener listener) {
+    observer.addListener(listener);
+  }
+
+  @Override
+  public void removeListener(EventListener listener) {
+    observer.removeListener(listener);
+  }
+
+  @Override
+  public void addDataListener(EventDataListener<Boolean> listener) {
+    observer.addDataListener(listener);
+  }
+
+  @Override
+  public void removeDataListener(EventDataListener<Boolean> listener) {
+    observer.removeDataListener(listener);
   }
 
   private boolean get(Conjunction conjunction, StateObserver exclude, boolean excludeReplacement) {
@@ -120,11 +167,11 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
 
     @Override
     public void onEvent(Boolean newValue) {
-      ((DefaultStateObserver) getObserver()).notifyObservers(get(), getPreviousState(state, !newValue));
+      observer.notifyObservers(get(), getPreviousState(state, !newValue));
     }
 
     private boolean getPreviousState(StateObserver excludeState, boolean previousValue) {
-      synchronized (lock) {
+      synchronized (observer) {
         return get(conjunction, excludeState, previousValue);
       }
     }

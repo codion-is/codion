@@ -11,6 +11,8 @@ import is.codion.common.event.EventObserver;
 import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
+
 final class DefaultStateObserver implements StateObserver {
 
   private final Object lock = new Object();
@@ -21,7 +23,7 @@ final class DefaultStateObserver implements StateObserver {
   private DefaultStateObserver reversedStateObserver;
 
   DefaultStateObserver(StateObserver stateObserver, boolean reversed) {
-    this.stateObserver = stateObserver;
+    this.stateObserver = requireNonNull(stateObserver);
     this.reversed = reversed;
   }
 

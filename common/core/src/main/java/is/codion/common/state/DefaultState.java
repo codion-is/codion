@@ -21,10 +21,6 @@ class DefaultState implements State {
 
   private DefaultStateObserver observer;
 
-  DefaultState() {
-    this(false);
-  }
-
   DefaultState(boolean value) {
     this.value = Value.value(value, false);
     this.value.addDataListener(new Notifier());
