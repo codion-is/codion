@@ -103,15 +103,15 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setMaximumPoolSize(int value) {
-      if (value < 0) {
+    public void setMaximumPoolSize(int maximumPoolSize) {
+      if (maximumPoolSize < 0) {
         throw new IllegalArgumentException("Maximum pool size must be a positive integer");
       }
-      if (value < getMinimumPoolSize()) {
+      if (maximumPoolSize < getMinimumPoolSize()) {
         throw new IllegalArgumentException("Maximum pool size must be equal to or exceed minimum pool size");
       }
       try {
-        server.setMaximumConnectionPoolSize(user.getUsername(), value);
+        server.setMaximumConnectionPoolSize(user.getUsername(), maximumPoolSize);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -119,15 +119,15 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setMinimumPoolSize(int value) {
-      if (value < 0) {
+    public void setMinimumPoolSize(int minimumPoolSize) {
+      if (minimumPoolSize < 0) {
         throw new IllegalArgumentException("Minimum pool size must be a positive integer");
       }
-      if (value > getMaximumPoolSize()) {
+      if (minimumPoolSize > getMaximumPoolSize()) {
         throw new IllegalArgumentException("Minimum pool size equal to or below maximum pool size time");
       }
       try {
-        server.setMinimumConnectionPoolSize(user.getUsername(), value);
+        server.setMinimumConnectionPoolSize(user.getUsername(), minimumPoolSize);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -158,12 +158,12 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setMaximumCheckOutTime(int value) {
-      if (value < 0) {
+    public void setMaximumCheckOutTime(int maximumCheckOutTime) {
+      if (maximumCheckOutTime < 0) {
         throw new IllegalArgumentException("Maximum check out time must be a positive integer");
       }
       try {
-        server.setMaximumPoolCheckOutTime(user.getUsername(), value);
+        server.setMaximumPoolCheckOutTime(user.getUsername(), maximumCheckOutTime);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
