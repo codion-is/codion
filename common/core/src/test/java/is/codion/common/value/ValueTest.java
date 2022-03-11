@@ -16,10 +16,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ValuesTest {
+public class ValueTest {
 
   private final Event<Integer> integerValueChange = Event.event();
   private Integer integerValue = 42;
+  private Double doubleValue = 42d;
 
   public Integer getIntegerValue() {
     return integerValue;
@@ -32,8 +33,33 @@ public class ValuesTest {
     }
   }
 
+  private Double getDoubleValue() {
+    return doubleValue;
+  }
+
+  private void setDoubleValue(Double value) {
+    if (value == null) {
+      throw new IllegalArgumentException("Non-null");
+    }
+    doubleValue = value;
+  }
+
   public int getIntValue() {
     return integerValue;
+  }
+
+  @Test
+  void valueSetterGetter() {
+    Value<Boolean> changeEventFired = Value.value(false);
+    Value<Double> value = Value.value(this::getDoubleValue, this::setDoubleValue);
+    value.addListener(() -> changeEventFired.set(true));
+    assertEquals(42d, value.get());
+    assertThrows(IllegalArgumentException.class, () -> value.set(null));
+    assertFalse(changeEventFired.get());
+    value.set(1d);
+    assertTrue(changeEventFired.get());
+    assertEquals(1d, doubleValue);
+    assertEquals(1d, value.get());
   }
 
   @Test
