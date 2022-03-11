@@ -86,7 +86,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public boolean isTransactionOpen() {
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("isTransactionOpen")), entityObjectMapper, Boolean.class);
       }
     }
@@ -98,7 +98,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public void beginTransaction() {
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         onJsonResponse(execute(createHttpPost("beginTransaction")));
       }
     }
@@ -113,7 +113,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public void rollbackTransaction() {
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         onJsonResponse(execute(createHttpPost("rollbackTransaction")));
       }
     }
@@ -128,7 +128,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public void commitTransaction() {
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         onJsonResponse(execute(createHttpPost("commitTransaction")));
       }
     }
@@ -149,7 +149,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
     Objects.requireNonNull(functionType);
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onResponse(execute(createHttpPost("function", byteArrayEntity(asList(functionType, argument)))));
       }
     }
@@ -170,7 +170,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
     Objects.requireNonNull(procedureType);
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         onResponse(execute(createHttpPost("procedure", byteArrayEntity(asList(procedureType, argument)))));
       }
     }
@@ -191,7 +191,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public List<Key> insert(List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("insert",
                         stringEntity(entityObjectMapper.writeValueAsString(entities)))),
                 entityObjectMapper, EntityObjectMapper.KEY_LIST_REFERENCE);
@@ -214,7 +214,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public List<Entity> update(List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("update",
                         stringEntity(entityObjectMapper.writeValueAsString(entities)))),
                 entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
@@ -232,7 +232,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public int update(UpdateCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("updateByCondition",
                         stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
                 entityObjectMapper, Integer.class);
@@ -255,7 +255,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public void delete(List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         onJsonResponse(execute(createHttpPost("deleteByKey",
                 stringEntity(entityObjectMapper.writeValueAsString(keys)))));
       }
@@ -272,7 +272,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public int delete(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("delete",
                         stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
                 entityObjectMapper, Integer.class);
@@ -302,7 +302,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
         node.set("condition", conditionObjectMapper.valueToTree(condition));
       }
 
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("values", stringEntity(node.toString()))), entityObjectMapper, List.class);
       }
     }
@@ -341,7 +341,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public List<Entity> select(List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("selectByKey",
                         stringEntity(entityObjectMapper.writeValueAsString(keys)))),
                 entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
@@ -359,7 +359,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public List<Entity> select(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("select",
                         stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
                 entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
@@ -390,7 +390,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
       Map<EntityType, Collection<Entity>> dependencies = new HashMap<>();
       DomainType domainType = getEntities().getDomainType();
 
-      synchronized (entities) {
+      synchronized (this.entities) {
         onJsonResponse(execute(createHttpPost("dependencies",
                         stringEntity(entityObjectMapper.writeValueAsString(new ArrayList<>(entities))))),
                 entityObjectMapper, new TypeReference<Map<String, Collection<Entity>>>() {}).forEach((entityTypeName, deps) ->
@@ -411,7 +411,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public int rowCount(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("count",
                         stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
                 entityObjectMapper, Integer.class);
@@ -429,7 +429,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportType, "report");
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onResponse(execute(createHttpPost("report", byteArrayEntity(asList(reportType, reportParameters)))));
       }
     }
@@ -448,7 +448,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     Objects.requireNonNull(blobData, "blobData");
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         onResponse(execute(createHttpPost("writeBlob", byteArrayEntity(asList(primaryKey, blobAttribute, blobData)))));
       }
     }
@@ -465,7 +465,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     try {
-      synchronized (entities) {
+      synchronized (this.entities) {
         return onResponse(execute(createHttpPost("readBlob", byteArrayEntity(asList(primaryKey, blobAttribute)))));
       }
     }
