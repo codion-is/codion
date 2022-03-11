@@ -7887,3 +7887,4 @@
   DefaultOkCancelDialogBuilder, SelectColumnsPanel bug fixed, PanelBuilder.add() was being used to add two components, instead of addAll()
   DefaultPanelBuilder now throws an exception if constraints is a component instance, preventing add() being used to add two components
   Value.value(setter, getter) added, ValuesTest renamed ValueTest, AbstractValue, javadoc improvements
+  AbstractValue.set(), validation only performed if the value is actually about to change
