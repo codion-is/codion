@@ -7891,3 +7891,4 @@
   Value.value(getter, setter) overloaded with a nullValue parameter
   State.state(getter, setter) added
   ServerMonitor, use the above value and state where applicable
+  DefaultState.Notifier now synchronizes on value

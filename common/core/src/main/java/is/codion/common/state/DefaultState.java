@@ -164,8 +164,10 @@ class DefaultState implements State {
 
     @Override
     public void onEvent(Boolean value) {
-      if (observer != null) {
-        observer.notifyObservers(value, !value);
+      synchronized (DefaultState.this.value) {
+        if (observer != null) {
+          observer.notifyObservers(value, !value);
+        }
       }
     }
   }
