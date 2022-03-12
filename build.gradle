@@ -97,41 +97,45 @@ configure(project.frameworkModules) {
         }
     }
 
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                groupId 'is.codion.' + project.targetJdk
-                from components.java
-            }
-        }
-        repositories {
-            maven {
-                credentials {
-                    username "${artifactoryUsername}"
-                    password "${artifactoryPassword}"
+    if (hasPublicationProperties()) {
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    groupId 'is.codion.' + project.targetJdk
+                    from components.java
                 }
-                allowInsecureProtocol = true
-                if (project.version.endsWith('-SNAPSHOT')) {
-                    url "${artifactorySnapshotUrl}"
-                } else {
-                    url "${artifactoryReleaseUrl}"
+            }
+            repositories {
+                maven {
+                    credentials {
+                        username "${artifactoryUsername}"
+                        password "${artifactoryPassword}"
+                    }
+                    allowInsecureProtocol = true
+                    if (project.version.endsWith('-SNAPSHOT')) {
+                        url "${artifactorySnapshotUrl}"
+                    } else {
+                        url "${artifactoryReleaseUrl}"
+                    }
                 }
             }
         }
     }
 
-    sonarqube {
-        System.setProperty("sonar.host.url", "${sonarHostUrl}")
-        System.setProperty("sonar.login", "${sonarLogin}")
-        System.setProperty("sonar.password", "${sonarPassword}")
-        System.setProperty("sonar.projectVersion", project.version.replace('-SNAPSHOT', ''))
-        System.setProperty("sonar.java.source", "11")
-        System.setProperty("sonar.sourceEncoding", "UTF-8")
-        System.setProperty("sonar.exclusions", "**/*TestDomain.java")
-        System.setProperty("sonar.coverage.exclusions",
-                "**/is/codion/framework/model/tests/**," +
-                "**/is/codion/framework/domain/entity/test/**," +
-                "**/is/codion/swing/framework/ui/test/**")
+    if (hasSonarqubeProperties()) {
+        sonarqube {
+            System.setProperty("sonar.host.url", "${sonarHostUrl}")
+            System.setProperty("sonar.login", "${sonarLogin}")
+            System.setProperty("sonar.password", "${sonarPassword}")
+            System.setProperty("sonar.projectVersion", project.version.replace('-SNAPSHOT', ''))
+            System.setProperty("sonar.java.source", "11")
+            System.setProperty("sonar.sourceEncoding", "UTF-8")
+            System.setProperty("sonar.exclusions", "**/*TestDomain.java")
+            System.setProperty("sonar.coverage.exclusions",
+                    "**/is/codion/framework/model/tests/**," +
+                            "**/is/codion/framework/domain/entity/test/**," +
+                            "**/is/codion/swing/framework/ui/test/**")
+        }
     }
 
     /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
@@ -201,4 +205,17 @@ task tagRelease {
         exec { commandLine 'git', 'tag', '-a', tagName, '-m', '"' + tagName + ' release"' }
         exec { commandLine 'git', 'push', 'origin', tagName }
     }
+}
+
+boolean hasPublicationProperties() {
+    return project.hasProperty('artifactoryUsername') &&
+            project.hasProperty('artifactoryPassword') &&
+            project.hasProperty('artifactorySnapshotUrl') &&
+            project.hasProperty('artifactoryReleaseUrl');
+}
+
+boolean hasSonarqubeProperties() {
+    return project.hasProperty('sonarHostUrl') &&
+            project.hasProperty('sonarLogin') &&
+            project.hasProperty('sonarPassword')
 }
