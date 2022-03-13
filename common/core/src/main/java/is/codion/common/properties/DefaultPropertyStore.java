@@ -65,41 +65,41 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public PropertyValue<Boolean> booleanValue(String propertyName) {
-    return booleanValue(propertyName, null);
+    return value(propertyName, value -> value.equalsIgnoreCase(Boolean.TRUE.toString()), Objects::toString);
   }
 
   @Override
-  public PropertyValue<Boolean> booleanValue(String propertyName, Boolean defaultValue) {
+  public PropertyValue<Boolean> booleanValue(String propertyName, boolean defaultValue) {
     return value(propertyName, value -> value.equalsIgnoreCase(Boolean.TRUE.toString()), Objects::toString, defaultValue);
   }
 
   @Override
   public PropertyValue<Double> doubleValue(String propertyName) {
-    return doubleValue(propertyName, null);
+    return value(propertyName, Double::parseDouble, Objects::toString);
   }
 
   @Override
-  public PropertyValue<Double> doubleValue(String propertyName, Double defaultValue) {
+  public PropertyValue<Double> doubleValue(String propertyName, double defaultValue) {
     return value(propertyName, Double::parseDouble, Objects::toString, defaultValue);
   }
 
   @Override
   public PropertyValue<Integer> integerValue(String propertyName) {
-    return integerValue(propertyName, null);
+    return value(propertyName, Integer::parseInt, Objects::toString);
   }
 
   @Override
-  public PropertyValue<Integer> integerValue(String propertyName, Integer defaultValue) {
+  public PropertyValue<Integer> integerValue(String propertyName, int defaultValue) {
     return value(propertyName, Integer::parseInt, Objects::toString, defaultValue);
   }
 
   @Override
   public PropertyValue<Long> longValue(String propertyName) {
-    return longValue(propertyName, null);
+    return value(propertyName, Long::parseLong, Objects::toString);
   }
 
   @Override
-  public PropertyValue<Long> longValue(String propertyName, Long defaultValue) {
+  public PropertyValue<Long> longValue(String propertyName, long defaultValue) {
     return value(propertyName, Long::parseLong, Objects::toString, defaultValue);
   }
 

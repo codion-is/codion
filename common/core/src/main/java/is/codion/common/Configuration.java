@@ -55,7 +55,7 @@ public final class Configuration {
    * @return a configuration value builder
    */
   public static PropertyValue<Boolean> booleanValue(String key) {
-    return booleanValue(key, null);
+    return STORE.booleanValue(key);
   }
 
   /**
@@ -64,7 +64,7 @@ public final class Configuration {
    * @param defaultValue the default value
    * @return a configuration value builder
    */
-  public static PropertyValue<Boolean> booleanValue(String key, Boolean defaultValue) {
+  public static PropertyValue<Boolean> booleanValue(String key, boolean defaultValue) {
     return STORE.booleanValue(key, defaultValue);
   }
 
@@ -74,7 +74,7 @@ public final class Configuration {
    * @return a configuration value builder
    */
   public static PropertyValue<Integer> integerValue(String key) {
-    return integerValue(key, null);
+    return STORE.integerValue(key);
   }
 
   /**
@@ -83,7 +83,7 @@ public final class Configuration {
    * @param defaultValue the default value
    * @return a configuration value builder
    */
-  public static PropertyValue<Integer> integerValue(String key, Integer defaultValue) {
+  public static PropertyValue<Integer> integerValue(String key, int defaultValue) {
     return STORE.integerValue(key, defaultValue);
   }
 
@@ -93,7 +93,7 @@ public final class Configuration {
    * @return a configuration value builder
    */
   public static PropertyValue<Long> longValue(String key) {
-    return longValue(key, null);
+    return STORE.longValue(key);
   }
 
   /**
@@ -102,7 +102,7 @@ public final class Configuration {
    * @param defaultValue the default value
    * @return a configuration value builder
    */
-  public static PropertyValue<Long> longValue(String key, Long defaultValue) {
+  public static PropertyValue<Long> longValue(String key, long defaultValue) {
     return STORE.longValue(key, defaultValue);
   }
 
@@ -112,7 +112,7 @@ public final class Configuration {
    * @return a configuration value builder
    */
   public static PropertyValue<Double> doubleValue(String key) {
-    return doubleValue(key, null);
+    return STORE.doubleValue(key);
   }
 
   /**
@@ -121,7 +121,7 @@ public final class Configuration {
    * @param defaultValue the default value
    * @return a configuration value builder
    */
-  public static PropertyValue<Double> doubleValue(String key, Double defaultValue) {
+  public static PropertyValue<Double> doubleValue(String key, double defaultValue) {
     return STORE.doubleValue(key, defaultValue);
   }
 

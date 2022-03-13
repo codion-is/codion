@@ -59,7 +59,7 @@ public interface PropertyStore {
    * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
    */
-  PropertyValue<Boolean> booleanValue(String propertyName, Boolean defaultValue);
+  PropertyValue<Boolean> booleanValue(String propertyName, boolean defaultValue);
 
   /**
    * Instantiates a value for the given double property
@@ -76,7 +76,7 @@ public interface PropertyStore {
    * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
    */
-  PropertyValue<Double> doubleValue(String propertyName, Double defaultValue);
+  PropertyValue<Double> doubleValue(String propertyName, double defaultValue);
 
   /**
    * Instantiates a value for the given integer property
@@ -93,7 +93,7 @@ public interface PropertyStore {
    * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
    */
-  PropertyValue<Integer> integerValue(String propertyName, Integer defaultValue);
+  PropertyValue<Integer> integerValue(String propertyName, int defaultValue);
 
   /**
    * Instantiates a value for the given long property
@@ -110,7 +110,7 @@ public interface PropertyStore {
    * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
    */
-  PropertyValue<Long> longValue(String propertyName, Long defaultValue);
+  PropertyValue<Long> longValue(String propertyName, long defaultValue);
 
   /**
    * Instantiates a value for the given string property
