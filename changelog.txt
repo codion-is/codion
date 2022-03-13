@@ -7903,3 +7903,4 @@
   PropertyValue, boolean value no longer automatically gets false as a default value
   PropertyValue.Builder removed, not required when defaultValue serves as the nullValue
   PropertyStore, Configuration, now use primitive types for default value parameter
+  DefaultPropertyStore, minor refactoring
