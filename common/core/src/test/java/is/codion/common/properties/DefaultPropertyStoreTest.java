@@ -165,6 +165,8 @@ public final class DefaultPropertyStoreTest {
     assertThrows(IllegalArgumentException.class, () -> store.setProperty("test", "bla"));
     assertThrows(IllegalArgumentException.class, () -> store.setProperty("testList", "bla;bla"));
     assertThrows(IllegalArgumentException.class, () -> store.removeAll("test"));
+
+    assertThrows(IllegalArgumentException.class, () -> store.stringValue(""));
   }
 
   @Test
