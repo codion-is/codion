@@ -30,9 +30,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Default value: false
    */
   PropertyValue<Boolean> SEARCH_ON_MASTER_INSERT =
-          Configuration.booleanValue("is.codion.framework.model.EntityModel.searchOnMasterInsert")
-                  .defaultValue(false)
-                  .build();
+          Configuration.booleanValue("is.codion.framework.model.EntityModel.searchOnMasterInsert", false);
 
   /**
    * Specifies whether the client should save and apply user preferences<br>
@@ -40,9 +38,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Default value: true
    */
   PropertyValue<Boolean> USE_CLIENT_PREFERENCES =
-          Configuration.booleanValue("is.codion.framework.model.EntityModel.useClientPreferences")
-                  .defaultValue(true)
-                  .build();
+          Configuration.booleanValue("is.codion.framework.model.EntityModel.useClientPreferences", true);
 
   /**
    * @return the type of the entity this entity model is based on

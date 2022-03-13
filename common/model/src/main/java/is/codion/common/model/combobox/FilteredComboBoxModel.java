@@ -26,9 +26,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
    * Value type: String<br>
    * Default value: -
    */
-  PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("is.codion.common.model.combobox.comboBoxNullValueItem")
-          .defaultValue("-")
-          .build();
+  PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("is.codion.common.model.combobox.comboBoxNullValueItem", "-");
 
   /**
    * @param listener a listener notified each time the selection changes

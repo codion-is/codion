@@ -32,28 +32,7 @@ public interface PropertyValue<T> extends Value<T> {
   T getOrThrow(String message) throws IllegalStateException;
 
   /**
-   * A builder for {@link PropertyValue}
-   * @param <T> the value type
+   * Sets this value to null as well as removing it from the underlying store and clearing the system property.
    */
-  interface Builder<T> {
-
-    /**
-     * @param defaultValue the default value to use if no initial value is present
-     * @return this builder instance
-     */
-    Builder<T> defaultValue(T defaultValue);
-
-    /**
-     * @param nullValue the value to use instead of null
-     * @return this builder instance
-     */
-    Builder<T> nullValue(T nullValue);
-
-    /**
-     * Builds a value based on this builder instance
-     * @return a new {@link PropertyValue} instance
-     * @throws IllegalStateException in case a Value for the given property name has already been built
-     */
-    PropertyValue<T> build();
-  }
+  void clear();
 }

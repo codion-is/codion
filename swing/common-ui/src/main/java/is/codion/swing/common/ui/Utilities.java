@@ -70,9 +70,7 @@ public final class Utilities {
    * Default value: false
    */
   public static final PropertyValue<Boolean> CHANGE_LOOK_AND_FEEL_DURING_SELECTION =
-          Configuration.booleanValue("codion.swing.lookAndFeel.changeDuringSelection")
-                  .defaultValue(false)
-                  .build();
+          Configuration.booleanValue("codion.swing.lookAndFeel.changeDuringSelection", false);
 
   private static final String COMPONENT = "component";
 

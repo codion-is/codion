@@ -94,9 +94,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @see is.codion.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE
    */
   public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useFocusActivation")
-                  .defaultValue(true)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useFocusActivation", true);
 
   /**
    * Indicates whether keyboard navigation will be enabled<br>
@@ -104,9 +102,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useKeyboardNavigation")
-                  .defaultValue(true)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useKeyboardNavigation", true);
 
   /**
    * Indicates whether entity edit panel dialogs should be closed on escape<br>
@@ -114,9 +110,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape")
-                  .defaultValue(true)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape", true);
 
   /**
    * Specifies whether a control for toggling the edit panel is available to the user<br>
@@ -124,9 +118,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> SHOW_TOGGLE_EDIT_PANEL_CONTROL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.showToggleEditPanelControl")
-                  .defaultValue(true)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.showToggleEditPanelControl", true);
 
   /**
    * Specifies whether actions to hide detail panels or show them in a dialog are available to the user<br>
@@ -134,9 +126,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> SHOW_DETAIL_PANEL_CONTROLS =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.showDetailPanelControls")
-                  .defaultValue(true)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.showDetailPanelControls", true);
 
   /**
    * Specifies the default size of the divider for detail panel split panes.<br>
@@ -144,9 +134,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: 18<br>
    */
   public static final PropertyValue<Integer> SPLIT_PANE_DIVIDER_SIZE =
-          Configuration.integerValue("is.codion.swing.framework.ui.EntityPanel.splitPaneDividerSize")
-                  .defaultValue(DEFAULT_SPLIT_PANE_DIVIDER_SIZE)
-                  .build();
+          Configuration.integerValue("is.codion.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
 
   /**
    * Specifies whether the action buttons (Save, update, delete, clear, refresh) should be on a toolbar<br>
@@ -154,9 +142,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: false
    */
   public static final PropertyValue<Boolean> TOOLBAR_BUTTONS =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.toolbarButtons")
-                  .defaultValue(false)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.toolbarButtons", false);
 
   /**
    * Specifies if detail and edit panels should be displayed in a frame instead of the default dialog<br>
@@ -164,9 +150,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: false
    */
   public static final PropertyValue<Boolean> DISPLAY_PANELS_IN_FRAME =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.displayPanelsInFrame")
-                  .defaultValue(false)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.displayPanelsInFrame", false);
 
   /**
    * The possible states of a detail or edit panel.

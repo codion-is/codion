@@ -3,8 +3,6 @@
  */
 package is.codion.common.properties;
 
-import is.codion.common.properties.PropertyValue.Builder;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,90 +22,161 @@ import static java.util.stream.Collectors.joining;
  * Provides configuration values which sync with a central configuration store as well as system properties,
  * which can be written to file.
  * Initial values parsed from a configuration file are overridden by system properties.
- * If values are not found in the configuration file or in system properties the default value is used.
+ * If values are not found in the configuration file or in system properties the default value is used as the inital value.
+ * When the value is set to null via {@link is.codion.common.value.Value#set(Object)} the default value is used, if one has been specified.
  * <pre>
  * File configurationFile = new File(System.getProperty("user.home") + "/app.properties");
  *
  * PropertyStore store = PropertyStore.propertyStore(configurationFile);
  *
- * Value&lt;Boolean&gt; featureEnabled = store.stringValue("feature.enabled")
- *    .defaultValue(false)
- *    .build();
- * Value&lt;String&gt; defaultUsername = store.stringValue("default.username")
- *    .defaultValue(System.getProperty("user.name"))
- *    .build();
+ * Value&lt;Boolean&gt; featureEnabled = store.booleanValue("feature.enabled", false);
+ * Value&lt;String&gt; defaultUsername = store.stringValue("default.username", System.getProperty("user.name"));
  *
  * featureEnabled.set(true);
  * defaultUsername.set("scott");
  *
  * store.writeToFile(configurationFile);
+ *
+ * //reverts to the default value
+ * featureEnabled.set(null);
+ * defaultUsername.set(null);
  * </pre>
  */
 public interface PropertyStore {
 
   /**
-   * Instantiates a builder for the given boolean property
+   * Instantiates a value for the given boolean property
    * @param propertyName the property name
-   * @return a new {@link Builder} instance
+   * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
    */
-  Builder<Boolean> booleanValue(String propertyName);
+  PropertyValue<Boolean> booleanValue(String propertyName);
 
   /**
-   * Instantiates a builder for the given double property
+   * Instantiates a value for the given boolean property
    * @param propertyName the property name
-   * @return a new {@link Builder} instance
+   * @param defaultValue the default value
+   * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
    */
-  Builder<Double> doubleValue(String propertyName);
+  PropertyValue<Boolean> booleanValue(String propertyName, boolean defaultValue);
 
   /**
-   * Instantiates a builder for the given integer property
+   * Instantiates a value for the given double property
    * @param propertyName the property name
-   * @return a new {@link Builder} instance
+   * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
    */
-  Builder<Integer> integerValue(String propertyName);
+  PropertyValue<Double> doubleValue(String propertyName);
 
   /**
-   * Instantiates a builder for the given long property
+   * Instantiates a value for the given double property
    * @param propertyName the property name
-   * @return a new {@link Builder} instance
+   * @param defaultValue the default value
+   * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
    */
-  Builder<Long> longValue(String propertyName);
+  PropertyValue<Double> doubleValue(String propertyName, double defaultValue);
 
   /**
-   * Instantiates a builder for the given string property
+   * Instantiates a value for the given integer property
    * @param propertyName the property name
-   * @return a new {@link Builder} instance
+   * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
    */
-  Builder<String> stringValue(String propertyName);
+  PropertyValue<Integer> integerValue(String propertyName);
 
   /**
-   * Instantiates a builder for the given enum property
+   * Instantiates a value for the given integer property
+   * @param propertyName the property name
+   * @param defaultValue the default value
+   * @return a new {@link PropertyValue} instance
+   * @throws NullPointerException if {@code propertyName} is null
+   */
+  PropertyValue<Integer> integerValue(String propertyName, int defaultValue);
+
+  /**
+   * Instantiates a value for the given long property
+   * @param propertyName the property name
+   * @return a new {@link PropertyValue} instance
+   * @throws NullPointerException if {@code propertyName} is null
+   */
+  PropertyValue<Long> longValue(String propertyName);
+
+  /**
+   * Instantiates a value for the given long property
+   * @param propertyName the property name
+   * @param defaultValue the default value
+   * @return a new {@link PropertyValue} instance
+   * @throws NullPointerException if {@code propertyName} is null
+   */
+  PropertyValue<Long> longValue(String propertyName, long defaultValue);
+
+  /**
+   * Instantiates a value for the given string property
+   * @param propertyName the property name
+   * @return a new {@link PropertyValue} instance
+   * @throws NullPointerException if {@code propertyName} is null
+   */
+  PropertyValue<String> stringValue(String propertyName);
+
+  /**
+   * Instantiates a value for the given string property
+   * @param propertyName the property name
+   * @param defaultValue the default value
+   * @return a new {@link PropertyValue} instance
+   * @throws NullPointerException if {@code propertyName} is null
+   */
+  PropertyValue<String> stringValue(String propertyName, String defaultValue);
+
+  /**
+   * Instantiates a value for the given enum property
    * @param <T> the enum type
    * @param propertyName the property name
    * @param enumClass the enum class
-   * @return a new {@link Builder} instance
+   * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} or {@code enumClass} is null
    */
-  <T extends Enum<T>> Builder<T> enumValue(String propertyName, Class<T> enumClass);
+  <T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass);
 
   /**
-   * Instantiates a builder for the given boolean property
+   * Instantiates a value for the given enum property
+   * @param <T> the enum type
+   * @param propertyName the property name
+   * @param enumClass the enum class
+   * @param defaultValue the default value
+   * @return a new {@link PropertyValue} instance
+   * @throws NullPointerException if {@code propertyName} or {@code enumClass} is null
+   */
+  <T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass, T defaultValue);
+
+  /**
+   * Instantiates a value for the given list property.
+   * Note that a list property automatically gets an {@link Collections#emptyList()} as its default value.
    * @param <T> the value type
    * @param propertyName the property name
    * @param decoder a decoder for decoding the value from a string
    * @param encoder an encoder for encoding the value to a string
-   * @return a new {@link Builder} instance
+   * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
    */
-  <T> Builder<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder);
+  <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder);
 
   /**
-   * Instantiates a new builder representing the given property name.
+   * Instantiates a value for the given list property.
+   * Note that a list property automatically gets an {@link Collections#emptyList()} as its default value.
+   * @param <T> the value type
+   * @param propertyName the property name
+   * @param decoder a decoder for decoding the value from a string
+   * @param encoder an encoder for encoding the value to a string
+   * @param defaultValue the default value
+   * @return a new {@link PropertyValue} instance
+   * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
+   */
+  <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, List<T> defaultValue);
+
+  /**
+   * Instantiates a value representing the given property name.
    * @param <T> the value type
    * @param propertyName the configuration property name identifying this value
    * @param decoder a decoder for decoding the value from a string
@@ -115,7 +184,19 @@ public interface PropertyStore {
    * @return the configuration value
    * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
    */
-  <T> Builder<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder);
+  <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder);
+
+  /**
+   * Instantiates a value representing the given property name.
+   * @param <T> the value type
+   * @param propertyName the configuration property name identifying this value
+   * @param decoder a decoder for decoding the value from a string
+   * @param encoder an encoder for encoding the value to a string
+   * @param defaultValue the default value
+   * @return the configuration value
+   * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
+   */
+  <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue);
 
   /**
    * Returns the Value associated with the given property, an empty Optional if none has been created.

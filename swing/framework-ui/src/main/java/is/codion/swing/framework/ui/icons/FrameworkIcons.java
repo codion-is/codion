@@ -25,22 +25,16 @@ public interface FrameworkIcons extends Logos {
    * Value type: Integer<br>
    * Default value: 16
    */
-  PropertyValue<Integer> ICON_SIZE = Configuration.integerValue("codion.swing.iconSize")
-          .defaultValue(DEFAULT_ICON_SIZE)
-          .build();
+  PropertyValue<Integer> ICON_SIZE = Configuration.integerValue("codion.swing.iconSize", DEFAULT_ICON_SIZE);
 
   /**
    * The icon color<br>
    * Value type: Color<br>
    * Default value: UIManager.getColor("Button.foreground")
    */
-  PropertyValue<Color> ICON_COLOR = Configuration.value("codion.swing.iconColor", Color::decode)
-          .defaultValue(UIManager.getColor("Button.foreground"))
-          .build();
+  PropertyValue<Color> ICON_COLOR = Configuration.value("codion.swing.iconColor", Color::decode, UIManager.getColor("Button.foreground"));
 
-  PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("codion.swing.frameworkIconsClassName")
-          .defaultValue(DefaultFrameworkIcons.class.getName())
-          .build();
+  PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("codion.swing.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
 
   /**
    * @return icon for the 'filter' action.

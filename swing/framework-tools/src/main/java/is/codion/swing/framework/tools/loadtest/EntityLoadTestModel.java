@@ -34,9 +34,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * Value type: String<br>
    * Default value: localhost
    */
-  public static final PropertyValue<String> LOAD_TEST_REMOTE_HOSTNAME = Configuration.stringValue("codion.loadtest.remote.hostname")
-          .defaultValue("localhost")
-          .build();
+  public static final PropertyValue<String> LOAD_TEST_REMOTE_HOSTNAME = Configuration.stringValue("codion.loadtest.remote.hostname", "localhost");
 
   /**
    * Specifies the initial think time setting for the load test client
@@ -44,27 +42,21 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * Value type: Integer<br>
    * Default value: 2000
    */
-  public static final PropertyValue<Integer> LOAD_TEST_THINKTIME = Configuration.integerValue("codion.loadtest.thinktime")
-          .defaultValue(DEFAULT_LOAD_TEST_THINKTIME)
-          .build();
+  public static final PropertyValue<Integer> LOAD_TEST_THINKTIME = Configuration.integerValue("codion.loadtest.thinktime", DEFAULT_LOAD_TEST_THINKTIME);
 
   /**
    * Specifies the initial client batch size<br>
    * Value type: Integer<br>
    * Default value: 10
    */
-  public static final PropertyValue<Integer> LOAD_TEST_BATCH_SIZE = Configuration.integerValue("codion.loadtest.batchsize")
-          .defaultValue(DEFAULT_LOAD_TEST_BATCH_SIZE)
-          .build();
+  public static final PropertyValue<Integer> LOAD_TEST_BATCH_SIZE = Configuration.integerValue("codion.loadtest.batchsize", DEFAULT_LOAD_TEST_BATCH_SIZE);
 
   /**
    * Specifies the number which the max think time is multiplied with when initializing the clients<br>
    * Value type: Integer<br>
    * Default value: 2
    */
-  public static final PropertyValue<Integer> LOAD_TEST_LOGIN_DELAY = Configuration.integerValue("codion.loadtest.logindelay")
-          .defaultValue(DEFAULT_LOAD_TEST_LOGIN_DELAY)
-          .build();
+  public static final PropertyValue<Integer> LOAD_TEST_LOGIN_DELAY = Configuration.integerValue("codion.loadtest.logindelay", DEFAULT_LOAD_TEST_LOGIN_DELAY);
 
   /**
    * Instantiates a new EntityLoadTestModel.

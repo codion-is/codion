@@ -4,13 +4,16 @@
 package is.codion.common;
 
 import is.codion.common.properties.PropertyStore;
-import is.codion.common.properties.PropertyValue.Builder;
+import is.codion.common.properties.PropertyValue;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A utility class for static configuration values.
@@ -51,8 +54,18 @@ public final class Configuration {
    * @param key the configuration value key
    * @return a configuration value builder
    */
-  public static Builder<Boolean> booleanValue(String key) {
+  public static PropertyValue<Boolean> booleanValue(String key) {
     return STORE.booleanValue(key);
+  }
+
+  /**
+   * Creates a boolean configuration value
+   * @param key the configuration value key
+   * @param defaultValue the default value
+   * @return a configuration value builder
+   */
+  public static PropertyValue<Boolean> booleanValue(String key, boolean defaultValue) {
+    return STORE.booleanValue(key, defaultValue);
   }
 
   /**
@@ -60,8 +73,18 @@ public final class Configuration {
    * @param key the configuration value key
    * @return a configuration value builder
    */
-  public static Builder<Integer> integerValue(String key) {
+  public static PropertyValue<Integer> integerValue(String key) {
     return STORE.integerValue(key);
+  }
+
+  /**
+   * Creates an integer configuration value
+   * @param key the configuration value key
+   * @param defaultValue the default value
+   * @return a configuration value builder
+   */
+  public static PropertyValue<Integer> integerValue(String key, int defaultValue) {
+    return STORE.integerValue(key, defaultValue);
   }
 
   /**
@@ -69,8 +92,18 @@ public final class Configuration {
    * @param key the configuration value key
    * @return a configuration value builder
    */
-  public static Builder<Long> longValue(String key) {
+  public static PropertyValue<Long> longValue(String key) {
     return STORE.longValue(key);
+  }
+
+  /**
+   * Creates a long configuration value
+   * @param key the configuration value key
+   * @param defaultValue the default value
+   * @return a configuration value builder
+   */
+  public static PropertyValue<Long> longValue(String key, long defaultValue) {
+    return STORE.longValue(key, defaultValue);
   }
 
   /**
@@ -78,8 +111,18 @@ public final class Configuration {
    * @param key the configuration value key
    * @return a configuration value builder
    */
-  public static Builder<Double> doubleValue(String key) {
+  public static PropertyValue<Double> doubleValue(String key) {
     return STORE.doubleValue(key);
+  }
+
+  /**
+   * Creates a double configuration value
+   * @param key the configuration value key
+   * @param defaultValue the default value
+   * @return a configuration value builder
+   */
+  public static PropertyValue<Double> doubleValue(String key, double defaultValue) {
+    return STORE.doubleValue(key, defaultValue);
   }
 
   /**
@@ -87,8 +130,18 @@ public final class Configuration {
    * @param key the configuration value key
    * @return a configuration value builder
    */
-  public static Builder<String> stringValue(String key) {
-    return STORE.stringValue(key);
+  public static PropertyValue<String> stringValue(String key) {
+    return stringValue(key, null);
+  }
+
+  /**
+   * Creates a string configuration value
+   * @param key the configuration value key
+   * @param defaultValue the default value
+   * @return a configuration value builder
+   */
+  public static PropertyValue<String> stringValue(String key, String defaultValue) {
+    return STORE.stringValue(key, defaultValue);
   }
 
   /**
@@ -98,8 +151,43 @@ public final class Configuration {
    * @param <T> the enum type
    * @return a configuration value builder
    */
-  public static <T extends Enum<T>> Builder<T> enumValue(String key, Class<T> enumClass) {
-    return STORE.enumValue(key, enumClass);
+  public static <T extends Enum<T>> PropertyValue<T> enumValue(String key, Class<T> enumClass) {
+    return enumValue(key, enumClass, null);
+  }
+
+  /**
+   * Creates an enum configuration value
+   * @param key the configuration value key
+   * @param enumClass the enum class
+   * @param defaultValue the default value
+   * @param <T> the enum type
+   * @return a configuration value builder
+   */
+  public static <T extends Enum<T>> PropertyValue<T> enumValue(String key, Class<T> enumClass, T defaultValue) {
+    return STORE.enumValue(key, enumClass, defaultValue);
+  }
+
+  /**
+   * Creates a list configuration value
+   * @param key the configuration value key
+   * @param parser the parser used to parse a string representation of the value
+   * @param <T> the value type
+   * @return a configuration value builder
+   */
+  public static <T> PropertyValue<List<T>> listValue(String key, Function<String, T> parser) {
+    return listValue(key, parser, emptyList());
+  }
+
+  /**
+   * Creates a list configuration value
+   * @param key the configuration value key
+   * @param parser the parser used to parse a string representation of the value
+   * @param defaultValue the default value
+   * @param <T> the value type
+   * @return a configuration value builder
+   */
+  public static <T> PropertyValue<List<T>> listValue(String key, Function<String, T> parser, List<T> defaultValue) {
+    return STORE.listValue(key, parser, Objects::toString, defaultValue);
   }
 
   /**
@@ -109,8 +197,20 @@ public final class Configuration {
    * @param <T> the value type
    * @return a configuration value builder
    */
-  public static <T> Builder<T> value(String key, Function<String, T> parser) {
-    return STORE.value(key, parser, Objects::toString);
+  public static <T> PropertyValue<T> value(String key, Function<String, T> parser) {
+    return value(key, parser, null);
+  }
+
+  /**
+   * Creates a configuration value
+   * @param key the configuration value key
+   * @param parser the parser used to parse a string representation of the value
+   * @param defaultValue the default value
+   * @param <T> the value type
+   * @return a configuration value builder
+   */
+  public static <T> PropertyValue<T> value(String key, Function<String, T> parser, T defaultValue) {
+    return STORE.value(key, parser, Objects::toString, defaultValue);
   }
 
   private static PropertyStore loadConfiguration() {

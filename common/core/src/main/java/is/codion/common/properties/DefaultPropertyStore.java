@@ -64,55 +64,92 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public PropertyValue.Builder<Boolean> booleanValue(String propertyName) {
-    return new DefaultPropertyValueBuilder<>(propertyName, value -> value.equalsIgnoreCase(Boolean.TRUE.toString()), Objects::toString)
-            .nullValue(false);
+  public PropertyValue<Boolean> booleanValue(String propertyName) {
+    return value(propertyName, value -> value.equalsIgnoreCase(Boolean.TRUE.toString()), Objects::toString);
   }
 
   @Override
-  public PropertyValue.Builder<Double> doubleValue(String propertyName) {
-    return new DefaultPropertyValueBuilder<>(propertyName, Double::parseDouble, Objects::toString);
+  public PropertyValue<Boolean> booleanValue(String propertyName, boolean defaultValue) {
+    return value(propertyName, value -> value.equalsIgnoreCase(Boolean.TRUE.toString()), Objects::toString, defaultValue);
   }
 
   @Override
-  public PropertyValue.Builder<Integer> integerValue(String propertyName) {
-    return new DefaultPropertyValueBuilder<>(propertyName, Integer::parseInt, Objects::toString);
+  public PropertyValue<Double> doubleValue(String propertyName) {
+    return value(propertyName, Double::parseDouble, Objects::toString);
   }
 
   @Override
-  public PropertyValue.Builder<Long> longValue(String propertyName) {
-    return new DefaultPropertyValueBuilder<>(propertyName, Long::parseLong, Objects::toString);
+  public PropertyValue<Double> doubleValue(String propertyName, double defaultValue) {
+    return value(propertyName, Double::parseDouble, Objects::toString, defaultValue);
   }
 
   @Override
-  public PropertyValue.Builder<String> stringValue(String propertyName) {
-    return new DefaultPropertyValueBuilder<>(propertyName, Objects::toString, Objects::toString);
+  public PropertyValue<Integer> integerValue(String propertyName) {
+    return value(propertyName, Integer::parseInt, Objects::toString);
   }
 
   @Override
-  public <T extends Enum<T>> PropertyValue.Builder<T> enumValue(String propertyName, Class<T> enumClass) {
+  public PropertyValue<Integer> integerValue(String propertyName, int defaultValue) {
+    return value(propertyName, Integer::parseInt, Objects::toString, defaultValue);
+  }
+
+  @Override
+  public PropertyValue<Long> longValue(String propertyName) {
+    return value(propertyName, Long::parseLong, Objects::toString);
+  }
+
+  @Override
+  public PropertyValue<Long> longValue(String propertyName, long defaultValue) {
+    return value(propertyName, Long::parseLong, Objects::toString, defaultValue);
+  }
+
+  @Override
+  public PropertyValue<String> stringValue(String propertyName) {
+    return stringValue(propertyName, null);
+  }
+
+  @Override
+  public PropertyValue<String> stringValue(String propertyName, String defaultValue) {
+    return value(propertyName, Objects::toString, Objects::toString, defaultValue);
+  }
+
+  @Override
+  public <T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass) {
+    return enumValue(propertyName, enumClass, null);
+  }
+
+  @Override
+  public <T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass, T defaultValue) {
     requireNonNull(enumClass);
 
-    return new DefaultPropertyValueBuilder<>(propertyName, value -> Enum.valueOf(enumClass, value.toUpperCase()), Objects::toString);
+    return value(propertyName, value -> Enum.valueOf(enumClass, value.toUpperCase()), Objects::toString, defaultValue);
   }
 
   @Override
-  public <T> PropertyValue.Builder<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
-    DefaultPropertyValueBuilder<List<T>> builder = new DefaultPropertyValueBuilder<>(propertyName, stringValue -> stringValue == null ? emptyList() :
-            Arrays.stream(stringValue.split(VALUE_SEPARATOR))
-                    .map(decoder)
-                    .collect(toList()),
-            valueList -> valueList.stream()
-                    .map(encoder)
-                    .collect(joining(VALUE_SEPARATOR)));
-    builder.defaultValue(emptyList());
-
-    return builder;
+  public <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
+    return listValue(propertyName, decoder, encoder, emptyList());
   }
 
   @Override
-  public <T> PropertyValue.Builder<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
-    return new DefaultPropertyValueBuilder<>(propertyName, decoder, encoder);
+  public <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, List<T> defaultValue) {
+    DefaultPropertyValue<List<T>> value = new DefaultPropertyValue<>(propertyName,
+            new ListValueDecoder<>(decoder), new ListValueEncoder<>(encoder), defaultValue);
+    propertyValues.put(propertyName, value);
+
+    return value;
+  }
+
+  @Override
+  public <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
+    return value(propertyName, decoder, encoder, null);
+  }
+
+  @Override
+  public <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
+    DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, decoder, encoder, defaultValue);
+    propertyValues.put(propertyName, value);
+
+    return value;
   }
 
   @Override
@@ -205,45 +242,6 @@ final class DefaultPropertyStore implements PropertyStore {
     return propertiesFromFile;
   }
 
-  private final class DefaultPropertyValueBuilder<T> implements PropertyValue.Builder<T> {
-
-    private final String propertyName;
-    private final Function<String, T> decoder;
-    private final Function<T, String> encoder;
-
-    private T defaultValue;
-    private T nullValue;
-
-    private DefaultPropertyValueBuilder(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
-      this.propertyName = requireNonNull(propertyName);
-      this.decoder = requireNonNull(decoder);
-      this.encoder = requireNonNull(encoder);
-    }
-
-    @Override
-    public PropertyValue.Builder<T> defaultValue(T defaultValue) {
-      this.defaultValue = defaultValue;
-      return this;
-    }
-
-    @Override
-    public PropertyValue.Builder<T> nullValue(T nullValue) {
-      this.nullValue = nullValue;
-      return this;
-    }
-
-    @Override
-    public PropertyValue<T> build() {
-      if (propertyValues.containsKey(propertyName)) {
-        throw new IllegalStateException("A value has already been associated with this property name  '" + propertyName + "'");
-      }
-      DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, defaultValue, nullValue, decoder, encoder);
-      propertyValues.put(propertyName, value);
-
-      return value;
-    }
-  }
-
   private final class DefaultPropertyValue<T> extends AbstractValue<T> implements PropertyValue<T> {
 
     private final String propertyName;
@@ -251,13 +249,14 @@ final class DefaultPropertyStore implements PropertyStore {
 
     private T value;
 
-    private DefaultPropertyValue(String propertyName, T defaultValue, T nullValue,
-                                 Function<String, T> decoder, Function<T, String> encoder) {
-      super(nullValue, NotifyOnSet.YES);
+    private DefaultPropertyValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
+      super(defaultValue, NotifyOnSet.YES);
+      if (propertyValues.containsKey(propertyName)) {
+        throw new IllegalStateException("A value has already been associated with this property name  '" + propertyName + "'");
+      }
       this.propertyName = propertyName;
-      this.encoder = requireNonNull(encoder, "encoder");
-      T initialValue = getInitialValue(propertyName, requireNonNull(decoder, "decoder"));
-      set(initialValue == null ? defaultValue : initialValue);
+      this.encoder = requireNonNull(encoder);
+      set(getInitialValue(propertyName, requireNonNull(decoder)));
     }
 
     @Override
@@ -286,6 +285,15 @@ final class DefaultPropertyStore implements PropertyStore {
     }
 
     @Override
+    public void clear() {
+      boolean wasNotNull = value != null;
+      setValue(null);
+      if (wasNotNull) {
+        notifyValueChange();
+      }
+    }
+
+    @Override
     public String toString() {
       return propertyName;
     }
@@ -310,6 +318,39 @@ final class DefaultPropertyStore implements PropertyStore {
       }
 
       return initialValue == null ? null : decoder.apply(initialValue);
+    }
+  }
+
+  private static final class ListValueDecoder<T> implements Function<String, List<T>> {
+
+    private final Function<String, T> decoder;
+
+    private ListValueDecoder(Function<String, T> decoder) {
+      this.decoder = requireNonNull(decoder);
+    }
+
+    @Override
+    public List<T> apply(String stringValue) {
+      return stringValue == null ? emptyList() :
+            Arrays.stream(stringValue.split(VALUE_SEPARATOR))
+                    .map(decoder)
+                    .collect(toList());
+    }
+  }
+
+  private static final class ListValueEncoder<T> implements Function<List<T>, String> {
+
+    private final Function<T, String> encoder;
+
+    private ListValueEncoder(Function<T, String> encoder) {
+      this.encoder = requireNonNull(encoder);
+    }
+
+    @Override
+    public String apply(List<T> valueList) {
+      return valueList.stream()
+            .map(encoder)
+            .collect(joining(VALUE_SEPARATOR));
     }
   }
 }

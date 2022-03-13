@@ -43,18 +43,14 @@ public interface ServerConfiguration {
    * Value type: String<br>
    * Default value: localhost
    */
-  PropertyValue<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname")
-          .defaultValue(LOCALHOST)
-          .build();
+  PropertyValue<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname", LOCALHOST);
 
   /**
    * Specifies the prefix used when exporting/looking up the Codion server<br>
    * Value type: String<br>
    * Default value: Codion Server
    */
-  PropertyValue<String> SERVER_NAME_PREFIX = Configuration.stringValue("codion.server.namePrefix")
-          .defaultValue("Codion Server")
-          .build();
+  PropertyValue<String> SERVER_NAME_PREFIX = Configuration.stringValue("codion.server.namePrefix", "Codion Server");
 
   /**
    * The port on which the server is made available to clients.<br>
@@ -63,17 +59,14 @@ public interface ServerConfiguration {
    * Value type: Integer<br>
    * Default value: none
    */
-  PropertyValue<Integer> SERVER_PORT = Configuration.integerValue("codion.server.port")
-          .build();
+  PropertyValue<Integer> SERVER_PORT = Configuration.integerValue("codion.server.port");
 
   /**
    * The port on which to locate the server registry<br>
    * Value type: Integer<br>
    * Default value: Registry.REGISTRY_PORT (1099)
    */
-  PropertyValue<Integer> REGISTRY_PORT = Configuration.integerValue("codion.server.registryPort")
-          .defaultValue(Registry.REGISTRY_PORT)
-          .build();
+  PropertyValue<Integer> REGISTRY_PORT = Configuration.integerValue("codion.server.registryPort", Registry.REGISTRY_PORT);
 
   /**
    * The rmi ssl keystore to use on the classpath, this will be resolved to a temporary file and set
@@ -81,8 +74,7 @@ public interface ServerConfiguration {
    * Value type: String
    * Default value: null
    */
-  PropertyValue<String> CLASSPATH_KEYSTORE = Configuration.stringValue("codion.server.classpathKeyStore")
-          .build();
+  PropertyValue<String> CLASSPATH_KEYSTORE = Configuration.stringValue("codion.server.classpathKeyStore");
 
   /**
    * The rmi ssl keystore to use<br>
@@ -90,49 +82,41 @@ public interface ServerConfiguration {
    * Default value: null
    * @see #CLASSPATH_KEYSTORE
    */
-  PropertyValue<String> KEYSTORE = Configuration.stringValue(JAVAX_NET_KEYSTORE)
-          .build();
+  PropertyValue<String> KEYSTORE = Configuration.stringValue(JAVAX_NET_KEYSTORE);
 
   /**
    * The rmi ssl keystore password to use<br>
    * Value type: String
    * Default value: null
    */
-  PropertyValue<String> KEYSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_KEYSTORE_PASSWORD)
-          .build();
+  PropertyValue<String> KEYSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_KEYSTORE_PASSWORD);
 
   /**
    * The port on which the server should export the remote admin interface<br>
    * Value type: Integer<br>
-   * Default value: none
+   * Default value: null
    */
-  PropertyValue<Integer> SERVER_ADMIN_PORT = Configuration.integerValue("codion.server.admin.port")
-          .build();
+  PropertyValue<Integer> SERVER_ADMIN_PORT = Configuration.integerValue("codion.server.admin.port");
 
   /**
    * Specifies a username:password combination representing the server admin user<br>
    * Example: scott:tiger
    */
-  PropertyValue<String> SERVER_ADMIN_USER = Configuration.stringValue("codion.server.admin.user")
-          .build();
+  PropertyValue<String> SERVER_ADMIN_USER = Configuration.stringValue("codion.server.admin.user");
 
   /**
    * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off)<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> SERVER_CONNECTION_SSL_ENABLED = Configuration.booleanValue("codion.server.connection.sslEnabled")
-          .defaultValue(true)
-          .build();
+  PropertyValue<Boolean> SERVER_CONNECTION_SSL_ENABLED = Configuration.booleanValue("codion.server.connection.sslEnabled", true);
 
   /**
    * Specifies the default client connection inactivity timeout in milliseconds.
    * Value type: Integer<br>
    * Default value: 120000ms (2 minutes)
    */
-  PropertyValue<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("codion.server.connectionTimeout")
-          .defaultValue(DEFAULT_SERVER_CONNECTION_TIMEOUT)
-          .build();
+  PropertyValue<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("codion.server.connectionTimeout", DEFAULT_SERVER_CONNECTION_TIMEOUT);
 
   /**
    * A comma separated list of auxiliary server factories, providing servers to run alongside this Server<br>
@@ -141,31 +125,25 @@ public interface ServerConfiguration {
    * Default value: none
    * @see AuxiliaryServer
    */
-  PropertyValue<String> AUXILIARY_SERVER_FACTORY_CLASS_NAMES = Configuration.stringValue("codion.server.auxiliaryServerFactoryClassNames")
-          .build();
+  PropertyValue<String> AUXILIARY_SERVER_FACTORY_CLASS_NAMES = Configuration.stringValue("codion.server.auxiliaryServerFactoryClassNames");
 
   /**
    * The serialization whitelist file to use if any
    */
-  PropertyValue<String> SERIALIZATION_FILTER_WHITELIST = Configuration.stringValue("codion.server.serializationFilterWhitelist")
-          .build();
+  PropertyValue<String> SERIALIZATION_FILTER_WHITELIST = Configuration.stringValue("codion.server.serializationFilterWhitelist");
 
   /**
    * If true then the serialization whitelist specified by {@link #SERIALIZATION_FILTER_WHITELIST} is populated
    * with the names of all deserialized classes on server shutdown. Note this overwrites the file if it already exists.
    */
-  PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("codion.server.serializationFilterDryRun")
-          .defaultValue(false)
-          .build();
+  PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("codion.server.serializationFilterDryRun", false);
 
   /**
    * Specifies the interval between server connection maintenance runs, in milliseconds.<br>
    * Value type: Integer<br>
    * Default value: 30_000ms (30 seconds)
    */
-  PropertyValue<Integer> CONNECTION_MAINTENANCE_INTERVAL_MS = Configuration.integerValue("codion.server.connectionMaintenanceIntervalMs")
-          .defaultValue(DEFAULT_CONNECTION_MAINTENANCE_INTERVAL)
-          .build();
+  PropertyValue<Integer> CONNECTION_MAINTENANCE_INTERVAL_MS = Configuration.integerValue("codion.server.connectionMaintenanceIntervalMs", DEFAULT_CONNECTION_MAINTENANCE_INTERVAL);
 
   /**
    * @return the server name

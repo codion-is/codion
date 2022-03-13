@@ -45,18 +45,14 @@ public interface LocalEntityConnection extends EntityConnection {
    * Value type: Integer<br>
    * Default value: 40
    */
-  PropertyValue<Integer> CONNECTION_LOG_SIZE = Configuration.integerValue("codion.db.clientLogSize")
-          .defaultValue(DEFAULT_CONNECTION_LOG_SIZE)
-          .build();
+  PropertyValue<Integer> CONNECTION_LOG_SIZE = Configuration.integerValue("codion.db.clientLogSize", DEFAULT_CONNECTION_LOG_SIZE);
 
   /**
    * Specifies the query timeout in seconds<br>
    * Value type: Integer<br>
    * Default value: 120
    */
-  PropertyValue<Integer> QUERY_TIMEOUT_SECONDS = Configuration.integerValue("codion.db.queryTimeoutSeconds")
-          .defaultValue(DEFAULT_QUERY_TIMEOUT_SECONDS)
-          .build();
+  PropertyValue<Integer> QUERY_TIMEOUT_SECONDS = Configuration.integerValue("codion.db.queryTimeoutSeconds", DEFAULT_QUERY_TIMEOUT_SECONDS);
 
   /**
    * Specifies whether optimistic locking should be performed, that is, if entities should
@@ -64,9 +60,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> USE_OPTIMISTIC_LOCKING = Configuration.booleanValue("codion.db.useOptimisticLocking")
-          .defaultValue(true)
-          .build();
+  PropertyValue<Boolean> USE_OPTIMISTIC_LOCKING = Configuration.booleanValue("codion.db.useOptimisticLocking", true);
 
   /**
    * Specifies whether the foreign key value graph should be fully populated instead of
@@ -74,9 +68,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * Value type: Boolean<br>
    * Default value: true<br>
    */
-  PropertyValue<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = Configuration.booleanValue("codion.db.limitForeignKeyFetchDepth")
-          .defaultValue(true)
-          .build();
+  PropertyValue<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = Configuration.booleanValue("codion.db.limitForeignKeyFetchDepth", true);
 
   /**
    * @param methodLogger the MethodLogger to use
