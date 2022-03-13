@@ -16,7 +16,7 @@ import java.util.function.Function;
 import static java.util.Collections.emptyList;
 
 /**
- * A utility class for static configuration values.
+ * A utility class for central configuration values.
  * Parses a property file on class load, specified by the {@link #CONFIGURATION_FILE} system property.
  * @see #CONFIGURATION_FILE_REQUIRED
  */

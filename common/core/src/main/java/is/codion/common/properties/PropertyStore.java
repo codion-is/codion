@@ -307,7 +307,7 @@ public interface PropertyStore {
    * @return a String containing all system properties, one per line
    */
   static String getSystemProperties(PropertyFormatter propertyFormatter) {
-    requireNonNull(propertyFormatter, "propertyWriter");
+    requireNonNull(propertyFormatter);
     try {
       SecurityManager manager = System.getSecurityManager();
       if (manager != null) {

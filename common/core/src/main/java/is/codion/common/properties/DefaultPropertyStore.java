@@ -132,11 +132,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, List<T> defaultValue) {
-    DefaultPropertyValue<List<T>> value = new DefaultPropertyValue<>(propertyName,
-            new ListValueDecoder<>(decoder), new ListValueEncoder<>(encoder), defaultValue);
-    propertyValues.put(propertyName, value);
-
-    return value;
+    return value(propertyName, new ListValueDecoder<>(decoder), new ListValueEncoder<>(encoder), defaultValue);
   }
 
   @Override
@@ -146,6 +142,9 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
+    if (propertyValues.containsKey(requireNonNull(propertyName))) {
+      throw new IllegalStateException("A value has already been created for the property '" + propertyName + "'");
+    }
     DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, decoder, encoder, defaultValue);
     propertyValues.put(propertyName, value);
 
@@ -251,10 +250,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
     private DefaultPropertyValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
       super(defaultValue, NotifyOnSet.YES);
-      if (propertyValues.containsKey(propertyName)) {
-        throw new IllegalStateException("A value has already been associated with this property name  '" + propertyName + "'");
-      }
-      this.propertyName = propertyName;
+      this.propertyName = requireNonNull(propertyName);
       this.encoder = requireNonNull(encoder);
       set(getInitialValue(propertyName, requireNonNull(decoder)));
     }
@@ -331,10 +327,9 @@ final class DefaultPropertyStore implements PropertyStore {
 
     @Override
     public List<T> apply(String stringValue) {
-      return stringValue == null ? emptyList() :
-            Arrays.stream(stringValue.split(VALUE_SEPARATOR))
-                    .map(decoder)
-                    .collect(toList());
+      return stringValue == null ? emptyList() : Arrays.stream(stringValue.split(VALUE_SEPARATOR))
+              .map(decoder)
+              .collect(toList());
     }
   }
 
@@ -349,8 +344,8 @@ final class DefaultPropertyStore implements PropertyStore {
     @Override
     public String apply(List<T> valueList) {
       return valueList.stream()
-            .map(encoder)
-            .collect(joining(VALUE_SEPARATOR));
+              .map(encoder)
+              .collect(joining(VALUE_SEPARATOR));
     }
   }
 }
