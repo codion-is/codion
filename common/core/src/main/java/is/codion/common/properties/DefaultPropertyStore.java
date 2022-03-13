@@ -132,12 +132,8 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, List<T> defaultValue) {
-    DefaultPropertyValue<List<T>> value = new DefaultPropertyValue<>(propertyName, stringValue -> stringValue == null ? emptyList() :
-            Arrays.stream(stringValue.split(VALUE_SEPARATOR))
-                    .map(decoder)
-                    .collect(toList()), valueList -> valueList.stream()
-                    .map(encoder)
-                    .collect(joining(VALUE_SEPARATOR)), defaultValue);
+    DefaultPropertyValue<List<T>> value = new DefaultPropertyValue<>(propertyName,
+            new ListValueDecoder<>(decoder), new ListValueEncoder<>(encoder), defaultValue);
     propertyValues.put(propertyName, value);
 
     return value;
@@ -322,6 +318,39 @@ final class DefaultPropertyStore implements PropertyStore {
       }
 
       return initialValue == null ? null : decoder.apply(initialValue);
+    }
+  }
+
+  private static final class ListValueDecoder<T> implements Function<String, List<T>> {
+
+    private final Function<String, T> decoder;
+
+    private ListValueDecoder(Function<String, T> decoder) {
+      this.decoder = requireNonNull(decoder);
+    }
+
+    @Override
+    public List<T> apply(String stringValue) {
+      return stringValue == null ? emptyList() :
+            Arrays.stream(stringValue.split(VALUE_SEPARATOR))
+                    .map(decoder)
+                    .collect(toList());
+    }
+  }
+
+  private static final class ListValueEncoder<T> implements Function<List<T>, String> {
+
+    private final Function<T, String> encoder;
+
+    private ListValueEncoder(Function<T, String> encoder) {
+      this.encoder = requireNonNull(encoder);
+    }
+
+    @Override
+    public String apply(List<T> valueList) {
+      return valueList.stream()
+            .map(encoder)
+            .collect(joining(VALUE_SEPARATOR));
     }
   }
 }
