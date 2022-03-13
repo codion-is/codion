@@ -9,8 +9,8 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.properties.PropertyStore;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
-import is.codion.common.value.PropertyValue;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.Utilities;
@@ -57,7 +57,9 @@ final class ExceptionPanel extends JPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES =
-          Configuration.booleanValue("codion.swing.common.ui.ExceptionDialog.displaySystemProperties", true);
+          Configuration.booleanValue("codion.swing.common.ui.ExceptionDialog.displaySystemProperties")
+                  .defaultValue(true)
+                  .build();
 
   private static final int DESCRIPTION_LABEL_WIDTH = 250;
   private static final int MESSAGE_LABEL_WIDTH = 50;

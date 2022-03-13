@@ -6,8 +6,8 @@ package is.codion.common.model;
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.StateObserver;
-import is.codion.common.value.PropertyValue;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -24,7 +24,9 @@ public interface FilteredModel<T> {
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh", false);
+  PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh")
+          .defaultValue(false)
+          .build();
 
   /**
    * @param listener a listener notified each time this model is filtered

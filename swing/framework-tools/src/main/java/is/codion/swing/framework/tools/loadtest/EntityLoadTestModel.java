@@ -4,8 +4,8 @@
 package is.codion.swing.framework.tools.loadtest;
 
 import is.codion.common.Configuration;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.user.User;
-import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityApplicationModel;
@@ -34,7 +34,9 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * Value type: String<br>
    * Default value: localhost
    */
-  public static final PropertyValue<String> LOAD_TEST_REMOTE_HOSTNAME = Configuration.stringValue("codion.loadtest.remote.hostname", "localhost");
+  public static final PropertyValue<String> LOAD_TEST_REMOTE_HOSTNAME = Configuration.stringValue("codion.loadtest.remote.hostname")
+          .defaultValue("localhost")
+          .build();
 
   /**
    * Specifies the initial think time setting for the load test client
@@ -42,21 +44,27 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * Value type: Integer<br>
    * Default value: 2000
    */
-  public static final PropertyValue<Integer> LOAD_TEST_THINKTIME = Configuration.integerValue("codion.loadtest.thinktime", DEFAULT_LOAD_TEST_THINKTIME);
+  public static final PropertyValue<Integer> LOAD_TEST_THINKTIME = Configuration.integerValue("codion.loadtest.thinktime")
+          .defaultValue(DEFAULT_LOAD_TEST_THINKTIME)
+          .build();
 
   /**
    * Specifies the initial client batch size<br>
    * Value type: Integer<br>
    * Default value: 10
    */
-  public static final PropertyValue<Integer> LOAD_TEST_BATCH_SIZE = Configuration.integerValue("codion.loadtest.batchsize", DEFAULT_LOAD_TEST_BATCH_SIZE);
+  public static final PropertyValue<Integer> LOAD_TEST_BATCH_SIZE = Configuration.integerValue("codion.loadtest.batchsize")
+          .defaultValue(DEFAULT_LOAD_TEST_BATCH_SIZE)
+          .build();
 
   /**
    * Specifies the number which the max think time is multiplied with when initializing the clients<br>
    * Value type: Integer<br>
    * Default value: 2
    */
-  public static final PropertyValue<Integer> LOAD_TEST_LOGIN_DELAY = Configuration.integerValue("codion.loadtest.logindelay", DEFAULT_LOAD_TEST_LOGIN_DELAY);
+  public static final PropertyValue<Integer> LOAD_TEST_LOGIN_DELAY = Configuration.integerValue("codion.loadtest.logindelay")
+          .defaultValue(DEFAULT_LOAD_TEST_LOGIN_DELAY)
+          .build();
 
   /**
    * Instantiates a new EntityLoadTestModel.

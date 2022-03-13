@@ -12,7 +12,7 @@ import java.util.Optional;
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultPropertyValue<T> extends AbstractValue<T> implements PropertyValue<T> {
+final class DefaultPropertyValue<T> extends AbstractValue<T> {
 
   private final EventObserver<T> changeObserver;
   private final String propertyName;
@@ -44,27 +44,6 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> implements Property
     catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  public String getPropertyName() {
-    return propertyName;
-  }
-
-  @Override
-  public T getOrThrow() throws IllegalStateException {
-    return getOrThrow("Value of " + propertyName + " is null");
-  }
-
-  @Override
-  public T getOrThrow(String message) throws IllegalStateException {
-    requireNonNull(message, "message");
-    T value = get();
-    if (value == null) {
-      throw new IllegalStateException(message);
-    }
-
-    return value;
   }
 
   @Override

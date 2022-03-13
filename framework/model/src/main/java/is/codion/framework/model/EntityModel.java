@@ -5,7 +5,7 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -29,16 +29,20 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> SEARCH_ON_MASTER_INSERT = Configuration.booleanValue(
-          "is.codion.framework.model.EntityModel.searchOnMasterInsert", false);
+  PropertyValue<Boolean> SEARCH_ON_MASTER_INSERT =
+          Configuration.booleanValue("is.codion.framework.model.EntityModel.searchOnMasterInsert")
+                  .defaultValue(false)
+                  .build();
 
   /**
    * Specifies whether the client should save and apply user preferences<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> USE_CLIENT_PREFERENCES = Configuration.booleanValue(
-          "is.codion.framework.model.EntityModel.useClientPreferences", true);
+  PropertyValue<Boolean> USE_CLIENT_PREFERENCES =
+          Configuration.booleanValue("is.codion.framework.model.EntityModel.useClientPreferences")
+                  .defaultValue(true)
+                  .build();
 
   /**
    * @return the type of the entity this entity model is based on

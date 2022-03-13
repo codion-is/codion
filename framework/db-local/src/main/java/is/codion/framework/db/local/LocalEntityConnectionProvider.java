@@ -7,7 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
@@ -32,7 +32,10 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT = Configuration.booleanValue("codion.db.shutdownEmbeddedOnDisconnect", false);
+  public static final PropertyValue<Boolean> SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT =
+          Configuration.booleanValue("codion.db.shutdownEmbeddedOnDisconnect")
+                  .defaultValue(false)
+                  .build();
 
   private final boolean shutdownDatabaseOnDisconnect = SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get();
 

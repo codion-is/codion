@@ -184,8 +184,8 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @param <T> type to wrap
    * @return a Value for the given property
    */
-  static <T> PropertyValue<T> propertyValue(Object owner, String propertyName, Class<T> valueClass,
-                                            EventObserver<T> valueChangeObserver) {
+  static <T> Value<T> propertyValue(Object owner, String propertyName, Class<T> valueClass,
+                                    EventObserver<T> valueChangeObserver) {
     return new DefaultPropertyValue<>(owner, propertyName, valueClass, valueChangeObserver);
   }
 }

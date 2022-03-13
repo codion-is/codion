@@ -4,7 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Configuration;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -31,7 +31,9 @@ public interface EntityDefinition {
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.strictForeignKeys", true);
+  PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.strictForeignKeys")
+          .defaultValue(true)
+          .build();
 
   /**
    * @return the entity type

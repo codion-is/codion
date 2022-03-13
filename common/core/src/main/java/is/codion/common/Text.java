@@ -3,7 +3,7 @@
  */
 package is.codion.common;
 
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,7 +42,9 @@ public final class Text {
    * @see Locale#toLanguageTag()
    */
   public static final PropertyValue<String> DEFAULT_COLLATOR_LANGUAGE =
-          Configuration.stringValue("codion.defaultCollatorLanguage", Locale.getDefault().getLanguage());
+          Configuration.stringValue("codion.defaultCollatorLanguage")
+                  .defaultValue(Locale.getDefault().getLanguage())
+                  .build();
 
   /**
    * Left or right alignment

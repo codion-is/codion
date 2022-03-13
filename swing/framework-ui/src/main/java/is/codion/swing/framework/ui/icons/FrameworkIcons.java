@@ -4,7 +4,7 @@
 package is.codion.swing.framework.ui.icons;
 
 import is.codion.common.Configuration;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 import is.codion.swing.common.ui.icons.Logos;
 
 import javax.swing.ImageIcon;
@@ -25,16 +25,22 @@ public interface FrameworkIcons extends Logos {
    * Value type: Integer<br>
    * Default value: 16
    */
-  PropertyValue<Integer> ICON_SIZE = Configuration.integerValue("codion.swing.iconSize", DEFAULT_ICON_SIZE);
+  PropertyValue<Integer> ICON_SIZE = Configuration.integerValue("codion.swing.iconSize")
+          .defaultValue(DEFAULT_ICON_SIZE)
+          .build();
 
   /**
    * The icon color<br>
    * Value type: Color<br>
    * Default value: UIManager.getColor("Button.foreground")
    */
-  PropertyValue<Color> ICON_COLOR = Configuration.value("codion.swing.iconColor", UIManager.getColor("Button.foreground"), Color::decode);
+  PropertyValue<Color> ICON_COLOR = Configuration.value("codion.swing.iconColor", Color::decode)
+          .defaultValue(UIManager.getColor("Button.foreground"))
+          .build();
 
-  PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("codion.swing.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
+  PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("codion.swing.frameworkIconsClassName")
+          .defaultValue(DefaultFrameworkIcons.class.getName())
+          .build();
 
   /**
    * @return icon for the 'filter' action.

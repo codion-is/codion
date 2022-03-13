@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.Configuration;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -22,8 +22,10 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
    * Value type: Integer (SwingConstants.LEFT, SwingConstants.RIGHT, SwingConstants.CENTER)<br>
    * Default value: SwingConstants.LEADING
    */
-  PropertyValue<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue(
-          "is.codion.swing.common.ui.LabelBuilder.labelTextAlignment", SwingConstants.LEADING);
+  PropertyValue<Integer> LABEL_TEXT_ALIGNMENT =
+          Configuration.integerValue("is.codion.swing.common.ui.LabelBuilder.labelTextAlignment")
+                  .defaultValue(SwingConstants.LEADING)
+                  .build();
 
   /**
    * @param horizontalAlignment the horizontal text alignment

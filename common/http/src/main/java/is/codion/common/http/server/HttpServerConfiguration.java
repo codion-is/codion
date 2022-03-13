@@ -4,7 +4,7 @@
 package is.codion.common.http.server;
 
 import is.codion.common.Configuration;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 
 /**
  * Configuration values for a {@link HttpServer}.
@@ -16,35 +16,42 @@ public interface HttpServerConfiguration {
    * Value type: Integer<br>
    * Default value: 8080
    */
-  PropertyValue<Integer> HTTP_SERVER_PORT = Configuration.integerValue("codion.server.http.port", 8080);
+  PropertyValue<Integer> HTTP_SERVER_PORT = Configuration.integerValue("codion.server.http.port")
+          .defaultValue(8080)
+          .build();
 
   /**
    * Specifies whether https should be used.<br>
    * Value types: Https<br>
    * Default value: true
    */
-  PropertyValue<ServerHttps> HTTP_SERVER_SECURE = Configuration.enumValue("codion.server.http.secure", ServerHttps.class, ServerHttps.TRUE);
+  PropertyValue<ServerHttps> HTTP_SERVER_SECURE = Configuration.enumValue("codion.server.http.secure", ServerHttps.class)
+          .defaultValue(ServerHttps.TRUE)
+          .build();
 
   /**
    * Specifies the keystore to use for securing http connections.<br>
    * Value type: String<br>
    * Default value: null
    */
-  PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("codion.server.http.keyStore", null);
+  PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("codion.server.http.keyStore")
+          .build();
 
   /**
    * Specifies the password for the keystore used for securing http connections.<br>
    * Value type: String<br>
    * Default value: null
    */
-  PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("codion.server.http.keyStorePassword", null);
+  PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("codion.server.http.keyStorePassword")
+          .build();
 
   /**
    * Specifies the document root for file serving<br>.
    * Value type: String<br>
    * Default value: null
    */
-  PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("codion.server.http.documentRoot", null);
+  PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("codion.server.http.documentRoot")
+          .build();
 
   /**
    * Instantiates a new HttpServerConfiguration.

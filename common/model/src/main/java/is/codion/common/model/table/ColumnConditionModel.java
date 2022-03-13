@@ -7,9 +7,9 @@ import is.codion.common.Configuration;
 import is.codion.common.Operator;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 
@@ -30,17 +30,20 @@ public interface ColumnConditionModel<C, T> {
    * Value type: {@link AutomaticWildcard}<br>
    * Default value: {@link AutomaticWildcard#NONE}
    */
-  PropertyValue<AutomaticWildcard> AUTOMATIC_WILDCARD = Configuration.value(
-          "is.codion.common.model.table.ColumnConditionModel.automaticWildard",
-          AutomaticWildcard.NONE, AutomaticWildcard::valueOf);
+  PropertyValue<AutomaticWildcard> AUTOMATIC_WILDCARD =
+          Configuration.enumValue("is.codion.common.model.table.ColumnConditionModel.automaticWildard", AutomaticWildcard.class)
+                  .defaultValue(AutomaticWildcard.NONE)
+                  .build();
 
   /**
    * Specifies whether string based conditions are case-sensitive or not by default<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> CASE_SENSITIVE = Configuration.booleanValue(
-          "is.codion.common.model.table.ColumnConditionModel.caseSensitive", true);
+  PropertyValue<Boolean> CASE_SENSITIVE =
+          Configuration.booleanValue("is.codion.common.model.table.ColumnConditionModel.caseSensitive")
+                  .defaultValue(true)
+                  .build();
 
   /**
    * The possible automatic wildcard types

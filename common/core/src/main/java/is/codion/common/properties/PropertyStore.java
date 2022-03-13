@@ -3,7 +3,7 @@
  */
 package is.codion.common.properties;
 
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue.Builder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Function;
 
@@ -29,8 +30,12 @@ import static java.util.stream.Collectors.joining;
  *
  * PropertyStore store = PropertyStore.propertyStore(configurationFile);
  *
- * Value&lt;Boolean&gt; featureEnabled = store.propertyValue("feature.enabled", false);
- * Value&lt;String&gt; defaultUsername = store.propertyValue("default.username", System.getProperty("user.name"));
+ * Value&lt;Boolean&gt; featureEnabled = store.stringValue("feature.enabled")
+ *    .defaultValue(false)
+ *    .build();
+ * Value&lt;String&gt; defaultUsername = store.stringValue("default.username")
+ *    .defaultValue(System.getProperty("user.name"))
+ *    .build();
  *
  * featureEnabled.set(true);
  * defaultUsername.set("scott");
@@ -41,81 +46,84 @@ import static java.util.stream.Collectors.joining;
 public interface PropertyStore {
 
   /**
-   * Instantiates a Value representing the given property.
-   * @param propertyName the configuration property name identifying this value
-   * @param defaultValue the default value to use if no value is present and when the value is set to null
-   * @return the configuration value
+   * Instantiates a builder for the given boolean property
+   * @param propertyName the property name
+   * @return a new {@link Builder} instance
    * @throws NullPointerException if {@code propertyName} is null
-   * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  PropertyValue<Boolean> propertyValue(String propertyName, Boolean defaultValue);
+  Builder<Boolean> booleanValue(String propertyName);
 
   /**
-   * Instantiates a Value representing the given property.
-   * @param propertyName the configuration property name identifying this value
-   * @param defaultValue the default value to use if no value is present and when the value is set to null
-   * @return the configuration value
+   * Instantiates a builder for the given double property
+   * @param propertyName the property name
+   * @return a new {@link Builder} instance
    * @throws NullPointerException if {@code propertyName} is null
-   * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  PropertyValue<String> propertyValue(String propertyName, String defaultValue);
+  Builder<Double> doubleValue(String propertyName);
 
   /**
-   * Instantiates a Value representing the given property.
-   * @param propertyName the configuration property name identifying this value
-   * @param defaultValue the default value to use if no value is present and when the value is set to null
-   * @return the configuration value
+   * Instantiates a builder for the given integer property
+   * @param propertyName the property name
+   * @return a new {@link Builder} instance
    * @throws NullPointerException if {@code propertyName} is null
-   * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  PropertyValue<Integer> propertyValue(String propertyName, Integer defaultValue);
+  Builder<Integer> integerValue(String propertyName);
 
   /**
-   * Instantiates a Value representing the given property.
-   * @param propertyName the configuration property name identifying this value
-   * @param defaultValue the default value to use if no value is present and when the value is set to null
-   * @return the configuration value
+   * Instantiates a builder for the given long property
+   * @param propertyName the property name
+   * @return a new {@link Builder} instance
    * @throws NullPointerException if {@code propertyName} is null
-   * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  PropertyValue<Double> propertyValue(String propertyName, Double defaultValue);
+  Builder<Long> longValue(String propertyName);
 
   /**
-   * Instantiates a Value representing the given property.
+   * Instantiates a builder for the given string property
+   * @param propertyName the property name
+   * @return a new {@link Builder} instance
+   * @throws NullPointerException if {@code propertyName} is null
+   */
+  Builder<String> stringValue(String propertyName);
+
+  /**
+   * Instantiates a builder for the given enum property
+   * @param <T> the enum type
+   * @param propertyName the property name
+   * @param enumClass the enum class
+   * @return a new {@link Builder} instance
+   * @throws NullPointerException if {@code propertyName} or {@code enumClass} is null
+   */
+  <T extends Enum<T>> Builder<T> enumValue(String propertyName, Class<T> enumClass);
+
+  /**
+   * Instantiates a builder for the given boolean property
+   * @param <T> the value type
+   * @param propertyName the property name
+   * @param decoder a decoder for decoding the value from a string
+   * @param encoder an encoder for encoding the value to a string
+   * @return a new {@link Builder} instance
+   * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
+   */
+  <T> Builder<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder);
+
+  /**
+   * Instantiates a new builder representing the given property name.
    * @param <T> the value type
    * @param propertyName the configuration property name identifying this value
-   * @param defaultValue the default value to use if no initial value is present
-   * @param nullValue the value to use instead of null, if any
    * @param decoder a decoder for decoding the value from a string
    * @param encoder an encoder for encoding the value to a string
    * @return the configuration value
    * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
-   * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  <T> PropertyValue<T> propertyValue(String propertyName, T defaultValue, T nullValue,
-                                     Function<String, T> decoder, Function<T, String> encoder);
+  <T> Builder<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder);
 
   /**
-   * Instantiates a Value representing the given property.
-   * @param <T> the value type
-   * @param propertyName the configuration property name identifying this value
-   * @param defaultValue the default value to use if no initial value is present
-   * @param decoder a decoder for decoding the value from a string
-   * @param encoder an encoder for encoding the value to a string
-   * @return the configuration value
-   * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
-   * @throws IllegalArgumentException in case a Value for the given property has already been created
-   */
-  <T> PropertyValue<List<T>> propertyListValue(String propertyName, List<T> defaultValue,
-                                               Function<String, T> decoder, Function<T, String> encoder);
-
-  /**
-   * Returns the Value associated with the given property, null if none has been created.
+   * Returns the Value associated with the given property, an empty Optional if none has been created.
    * @param propertyName the property name
    * @param <T> the value type
-   * @return the configuration value or null if none is found
+   * @return the configuration value or an empty Optional if none exists
    */
-  <T> PropertyValue<T> getPropertyValue(String propertyName);
+  <T> Optional<PropertyValue<T>> getPropertyValue(String propertyName);
 
   /**
    * Sets the value of the given property

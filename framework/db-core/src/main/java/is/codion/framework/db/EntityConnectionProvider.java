@@ -5,8 +5,8 @@ package is.codion.framework.db;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.user.User;
-import is.codion.common.value.PropertyValue;
 import is.codion.common.version.Version;
 import is.codion.framework.domain.entity.Entities;
 
@@ -43,7 +43,8 @@ public interface EntityConnectionProvider extends AutoCloseable {
    * Value type: String<br>
    * Default value: null
    */
-  PropertyValue<String> CLIENT_DOMAIN_CLASS = Configuration.stringValue("codion.client.domainClass", null);
+  PropertyValue<String> CLIENT_DOMAIN_CLASS = Configuration.stringValue("codion.client.domainClass")
+          .build();
 
   /**
    * Specifies whether the client should connect locally, via rmi or http,
@@ -54,7 +55,9 @@ public interface EntityConnectionProvider extends AutoCloseable {
    * @see #CONNECTION_TYPE_REMOTE
    * @see #CONNECTION_TYPE_HTTP
    */
-  PropertyValue<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("codion.client.connectionType", CONNECTION_TYPE_LOCAL);
+  PropertyValue<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("codion.client.connectionType")
+          .defaultValue(CONNECTION_TYPE_LOCAL)
+          .build();
 
   /**
    * Returns the domain entities this connection is based on

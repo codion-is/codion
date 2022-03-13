@@ -4,7 +4,7 @@
 package is.codion.framework.db.http;
 
 import is.codion.common.Configuration;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
 
@@ -29,28 +29,36 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * Value type: String<br>
    * Default value: localhost
    */
-  public static final PropertyValue<String> HTTP_CLIENT_HOST_NAME = Configuration.stringValue("codion.client.http.hostname", "localhost");
+  public static final PropertyValue<String> HTTP_CLIENT_HOST_NAME = Configuration.stringValue("codion.client.http.hostname")
+          .defaultValue("localhost")
+          .build();
 
   /**
    * The port which the http client should use.<br>
    * Value type: Integer<br>
    * Default value: 8080
    */
-  public static final PropertyValue<Integer> HTTP_CLIENT_PORT = Configuration.integerValue("codion.client.http.port", 8080);
+  public static final PropertyValue<Integer> HTTP_CLIENT_PORT = Configuration.integerValue("codion.client.http.port")
+          .defaultValue(8080)
+          .build();
 
   /**
    * Specifies whether https should be used.<br>
    * Value types: Https<br>
    * Default value: true
    */
-  public static final PropertyValue<ClientHttps> HTTP_CLIENT_SECURE = Configuration.enumValue("codion.client.http.secure", ClientHttps.class, ClientHttps.TRUE);
+  public static final PropertyValue<ClientHttps> HTTP_CLIENT_SECURE = Configuration.enumValue("codion.client.http.secure", ClientHttps.class)
+          .defaultValue(ClientHttps.TRUE)
+          .build();
 
   /**
    * Specifies whether json serialization should be used.<br>
    * Value types: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> HTTP_CLIENT_JSON = Configuration.booleanValue("codion.client.http.json", true);
+  public static final PropertyValue<Boolean> HTTP_CLIENT_JSON = Configuration.booleanValue("codion.client.http.json")
+          .defaultValue(true)
+          .build();
 
   private String serverHostName;
   private Integer serverPort;

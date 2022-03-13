@@ -4,7 +4,7 @@
 package is.codion.common.rmi.client;
 
 import is.codion.common.Configuration;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 
 import nl.altindag.ssl.SSLFactory;
 import nl.altindag.ssl.util.KeyStoreUtils;
@@ -41,24 +41,25 @@ public final class Clients {
    * Value type: String
    * Default value: null
    */
-  public static final PropertyValue<String> TRUSTSTORE =
-          Configuration.stringValue("codion.client.trustStore", null);
+  public static final PropertyValue<String> TRUSTSTORE = Configuration.stringValue("codion.client.trustStore")
+          .build();
 
   /**
    * The rmi ssl truststore password to use<br>
    * Value type: String
    * Default value: null
    */
-  public static final PropertyValue<String> TRUSTSTORE_PASSWORD =
-          Configuration.stringValue("codion.client.trustStorePassword", null);
+  public static final PropertyValue<String> TRUSTSTORE_PASSWORD = Configuration.stringValue("codion.client.trustStorePassword")
+          .build();
 
   /**
    * The host on which to locate the server<br>
    * Value type: String<br>
    * Default value: localhost
    */
-  public static final PropertyValue<String> SERVER_HOST_NAME =
-          Configuration.stringValue("codion.server.hostname", "localhost");
+  public static final PropertyValue<String> SERVER_HOST_NAME = Configuration.stringValue("codion.server.hostname")
+          .defaultValue("localhost")
+          .build();
 
   private Clients() {}
 

@@ -5,8 +5,8 @@ package is.codion.common.db.pool;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.user.User;
-import is.codion.common.value.PropertyValue;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -21,21 +21,27 @@ public interface ConnectionPoolWrapper {
    * Value type: Integer<br>
    * Default value: 8
    */
-  PropertyValue<Integer> DEFAULT_MAXIMUM_POOL_SIZE = Configuration.integerValue("codion.db.pool.defaultMaximumPoolSize", 8);
+  PropertyValue<Integer> DEFAULT_MAXIMUM_POOL_SIZE = Configuration.integerValue("codion.db.pool.defaultMaximumPoolSize")
+          .defaultValue(8)
+          .build();
 
   /**
    * Specifies the default minimum connection pool size.
    * Value type: Integer<br>
    * Default value: 4
    */
-  PropertyValue<Integer> DEFAULT_MINIMUM_POOL_SIZE = Configuration.integerValue("codion.db.pool.defaultMinimumPoolSize", 4);
+  PropertyValue<Integer> DEFAULT_MINIMUM_POOL_SIZE = Configuration.integerValue("codion.db.pool.defaultMinimumPoolSize")
+          .defaultValue(4)
+          .build();
 
   /**
    * Specifies the default idle timeout in milliseconds.
    * Value type: Integer<br>
    * Default value: 60.000
    */
-  PropertyValue<Integer> DEFAULT_IDLE_TIMEOUT = Configuration.integerValue("codion.db.pool.defaultIdleTimeout", 60000);
+  PropertyValue<Integer> DEFAULT_IDLE_TIMEOUT = Configuration.integerValue("codion.db.pool.defaultIdleTimeout")
+          .defaultValue(60000)
+          .build();
 
   /**
    * Fetches a connection from the pool. Close the connection to return it to the pool.

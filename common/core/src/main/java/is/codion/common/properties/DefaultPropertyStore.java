@@ -4,7 +4,6 @@
 package is.codion.common.properties;
 
 import is.codion.common.value.AbstractValue;
-import is.codion.common.value.PropertyValue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Function;
 
@@ -64,65 +64,65 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public PropertyValue<Boolean> propertyValue(String propertyName, Boolean defaultValue) {
-    return propertyValue(propertyName, defaultValue, false, Boolean::parseBoolean, Objects::toString);
+  public PropertyValue.Builder<Boolean> booleanValue(String propertyName) {
+    return new DefaultPropertyValueBuilder<>(propertyName, value -> value.equalsIgnoreCase(Boolean.TRUE.toString()), Objects::toString)
+            .nullValue(false);
   }
 
   @Override
-  public PropertyValue<String> propertyValue(String propertyName, String defaultValue) {
-    return propertyValue(propertyName, defaultValue, null, Objects::toString, Objects::toString);
+  public PropertyValue.Builder<Double> doubleValue(String propertyName) {
+    return new DefaultPropertyValueBuilder<>(propertyName, Double::parseDouble, Objects::toString);
   }
 
   @Override
-  public PropertyValue<Integer> propertyValue(String propertyName, Integer defaultValue) {
-    return propertyValue(propertyName, defaultValue, null, Integer::parseInt, Objects::toString);
+  public PropertyValue.Builder<Integer> integerValue(String propertyName) {
+    return new DefaultPropertyValueBuilder<>(propertyName, Integer::parseInt, Objects::toString);
   }
 
   @Override
-  public PropertyValue<Double> propertyValue(String propertyName, Double defaultValue) {
-    return propertyValue(propertyName, defaultValue, null, Double::parseDouble, Objects::toString);
+  public PropertyValue.Builder<Long> longValue(String propertyName) {
+    return new DefaultPropertyValueBuilder<>(propertyName, Long::parseLong, Objects::toString);
   }
 
   @Override
-  public <T> PropertyValue<T> propertyValue(String propertyName, T defaultValue, T nullValue,
-                                            Function<String, T> decoder, Function<T, String> encoder) {
-    if (propertyValues.containsKey(requireNonNull(propertyName, "propertyName"))) {
-      throw new IllegalArgumentException("Configuration value for property '" + propertyName + "' has already been created");
-    }
-    DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, defaultValue, nullValue, decoder, encoder);
-    propertyValues.put(propertyName, value);
-
-    return value;
+  public PropertyValue.Builder<String> stringValue(String propertyName) {
+    return new DefaultPropertyValueBuilder<>(propertyName, Objects::toString, Objects::toString);
   }
 
   @Override
-  public <T> PropertyValue<List<T>> propertyListValue(String propertyName, List<T> defaultValue,
-                                                      Function<String, T> decoder, Function<T, String> encoder) {
-    if (propertyValues.containsKey(requireNonNull(propertyName, "propertyName"))) {
-      throw new IllegalArgumentException("Configuration value for property '" + propertyName + "' has already been created");
-    }
+  public <T extends Enum<T>> PropertyValue.Builder<T> enumValue(String propertyName, Class<T> enumClass) {
+    requireNonNull(enumClass);
 
-    DefaultPropertyValue<List<T>> value = new DefaultPropertyValue<>(propertyName, defaultValue, null,
-            stringValue -> stringValue == null ? emptyList() :
-                    Arrays.stream(stringValue.split(VALUE_SEPARATOR))
-                            .map(decoder)
-                            .collect(toList()),
+    return new DefaultPropertyValueBuilder<>(propertyName, value -> Enum.valueOf(enumClass, value.toUpperCase()), Objects::toString);
+  }
+
+  @Override
+  public <T> PropertyValue.Builder<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
+    DefaultPropertyValueBuilder<List<T>> builder = new DefaultPropertyValueBuilder<>(propertyName, stringValue -> stringValue == null ? emptyList() :
+            Arrays.stream(stringValue.split(VALUE_SEPARATOR))
+                    .map(decoder)
+                    .collect(toList()),
             valueList -> valueList.stream()
                     .map(encoder)
                     .collect(joining(VALUE_SEPARATOR)));
-    propertyValues.put(propertyName, value);
+    builder.defaultValue(emptyList());
 
-    return value;
+    return builder;
   }
 
   @Override
-  public <T> PropertyValue<T> getPropertyValue(String propertyName) {
-    return (PropertyValue<T>) propertyValues.get(propertyName);
+  public <T> PropertyValue.Builder<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
+    return new DefaultPropertyValueBuilder<>(propertyName, decoder, encoder);
+  }
+
+  @Override
+  public <T> Optional<PropertyValue<T>> getPropertyValue(String propertyName) {
+    return Optional.ofNullable((PropertyValue<T>) propertyValues.get(requireNonNull(propertyName)));
   }
 
   @Override
   public void setProperty(String propertyName, String value) {
-    if (propertyValues.containsKey(propertyName)) {
+    if (propertyValues.containsKey(requireNonNull(propertyName))) {
       throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
     }
     properties.setProperty(propertyName, value);
@@ -130,11 +130,12 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public String getProperty(String propertyName) {
-    return properties.getProperty(propertyName);
+    return properties.getProperty(requireNonNull(propertyName));
   }
 
   @Override
   public List<String> getProperties(String prefix) {
+    requireNonNull(prefix);
     return properties.stringPropertyNames().stream()
             .filter(propertyName -> propertyName.startsWith(prefix))
             .map(properties::getProperty)
@@ -143,6 +144,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public List<String> getPropertyNames(String prefix) {
+    requireNonNull(prefix);
     return properties.stringPropertyNames().stream()
             .filter(propertyName -> propertyName.startsWith(prefix))
             .collect(toList());
@@ -150,7 +152,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public boolean containsProperty(String propertyName) {
-    return properties.containsKey(propertyName);
+    return properties.containsKey(requireNonNull(propertyName));
   }
 
   @Override
@@ -203,6 +205,44 @@ final class DefaultPropertyStore implements PropertyStore {
     return propertiesFromFile;
   }
 
+  private final class DefaultPropertyValueBuilder<T> implements PropertyValue.Builder<T> {
+
+    private final String propertyName;
+    private final Function<String, T> decoder;
+    private final Function<T, String> encoder;
+
+    private T defaultValue;
+    private T nullValue;
+
+    private DefaultPropertyValueBuilder(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
+      this.propertyName = requireNonNull(propertyName);
+      this.decoder = requireNonNull(decoder);
+      this.encoder = requireNonNull(encoder);
+    }
+
+    @Override
+    public PropertyValue.Builder<T> defaultValue(T defaultValue) {
+      this.defaultValue = defaultValue;
+      return this;
+    }
+
+    @Override
+    public PropertyValue.Builder<T> nullValue(T nullValue) {
+      this.nullValue = nullValue;
+      return this;
+    }
+
+    @Override
+    public PropertyValue<T> build() {
+      if (propertyValues.containsKey(propertyName)) {
+        throw new IllegalStateException("A value has already been associated with this property name  '" + propertyName + "'");
+      }
+      DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, defaultValue, nullValue, decoder, encoder);
+      propertyValues.put(propertyName, value);
+
+      return value;
+    }
+  }
 
   private final class DefaultPropertyValue<T> extends AbstractValue<T> implements PropertyValue<T> {
 
@@ -215,10 +255,9 @@ final class DefaultPropertyStore implements PropertyStore {
                                  Function<String, T> decoder, Function<T, String> encoder) {
       super(nullValue, NotifyOnSet.YES);
       this.propertyName = propertyName;
-      requireNonNull(decoder, "decoder");
       this.encoder = requireNonNull(encoder, "encoder");
-      String initialValue = getInitialValue(propertyName);
-      set(initialValue == null ? defaultValue : decoder.apply(initialValue));
+      T initialValue = getInitialValue(propertyName, requireNonNull(decoder, "decoder"));
+      set(initialValue == null ? defaultValue : initialValue);
     }
 
     @Override
@@ -264,13 +303,13 @@ final class DefaultPropertyStore implements PropertyStore {
       }
     }
 
-    private String getInitialValue(String property) {
+    private T getInitialValue(String property, Function<String, T> decoder) {
       String initialValue = System.getProperty(property);
       if (initialValue == null) {
         initialValue = properties.getProperty(property);
       }
 
-      return initialValue;
+      return initialValue == null ? null : decoder.apply(initialValue);
     }
   }
 }

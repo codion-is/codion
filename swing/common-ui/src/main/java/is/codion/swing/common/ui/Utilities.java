@@ -8,8 +8,8 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.item.Item;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.StateObserver;
-import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.combobox.Completion;
@@ -69,7 +69,10 @@ public final class Utilities {
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> CHANGE_LOOK_AND_FEEL_DURING_SELECTION = Configuration.booleanValue("codion.swing.lookAndFeel.changeDuringSelection", false);
+  public static final PropertyValue<Boolean> CHANGE_LOOK_AND_FEEL_DURING_SELECTION =
+          Configuration.booleanValue("codion.swing.lookAndFeel.changeDuringSelection")
+                  .defaultValue(false)
+                  .build();
 
   private static final String COMPONENT = "component";
 
