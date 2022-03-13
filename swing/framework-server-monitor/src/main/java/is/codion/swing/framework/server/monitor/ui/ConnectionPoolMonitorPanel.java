@@ -149,7 +149,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .editable(false)
             .build()));
     configBase.add(createWestCenterPanel(new JLabel("Checkout timeout (ms)"), Components.integerSpinner(model.getMaximumCheckOutTimeValue())
-            .stepSize(100)
+            .stepSize(1000)
             .columns(6)
             .editable(false)
             .build()));
