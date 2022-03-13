@@ -67,8 +67,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public Builder<Boolean> booleanValue(String propertyName) {
-    return new DefaultPropertyValueBuilder<>(propertyName, value -> value.equalsIgnoreCase(Boolean.TRUE.toString()), Objects::toString)
-            .nullValue(false);
+    return new DefaultPropertyValueBuilder<>(propertyName, value -> value.equalsIgnoreCase(Boolean.TRUE.toString()), Objects::toString);
   }
 
   @Override
@@ -214,7 +213,6 @@ final class DefaultPropertyStore implements PropertyStore {
     private final Function<T, String> encoder;
 
     private T defaultValue;
-    private T nullValue;
 
     private DefaultPropertyValueBuilder(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
       if (Util.nullOrEmpty(propertyName)) {
@@ -228,12 +226,6 @@ final class DefaultPropertyStore implements PropertyStore {
     @Override
     public Builder<T> defaultValue(T defaultValue) {
       this.defaultValue = defaultValue;
-      return this;
-    }
-
-    @Override
-    public Builder<T> nullValue(T nullValue) {
-      this.nullValue = nullValue;
       return this;
     }
 
@@ -257,11 +249,10 @@ final class DefaultPropertyStore implements PropertyStore {
     private T value;
 
     private DefaultPropertyValue(DefaultPropertyValueBuilder<T> builder) {
-      super(builder.nullValue, NotifyOnSet.YES);
+      super(builder.defaultValue, NotifyOnSet.YES);
       this.propertyName = builder.propertyName;
       this.encoder = builder.encoder;
-      T initialValue = getInitialValue(propertyName, builder.decoder);
-      set(initialValue == null ? builder.defaultValue : initialValue);
+      set(getInitialValue(propertyName, builder.decoder));
     }
 
     @Override
@@ -287,6 +278,15 @@ final class DefaultPropertyStore implements PropertyStore {
     @Override
     public T get() {
       return value;
+    }
+
+    @Override
+    public void clear() {
+      boolean wasNotNull = value != null;
+      setValue(null);
+      if (wasNotNull) {
+        notifyValueChange();
+      }
     }
 
     @Override

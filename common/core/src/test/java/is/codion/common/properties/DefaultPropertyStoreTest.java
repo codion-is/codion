@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -44,8 +45,12 @@ public final class DefaultPropertyStoreTest {
     assertEquals("value", stringValue.get());
     assertEquals("value", System.getProperty(stringValue.getPropertyName()));
     assertSame(stringValue, store.getPropertyValue(stringValue.getPropertyName()).get());
+    stringValue.set("another");
     stringValue.set(null);
-    assertEquals(1, counter.get());
+    assertEquals("value", stringValue.get());
+    assertEquals(2, counter.get());
+    stringValue.clear();
+    assertEquals(3, counter.get());
     assertFalse(store.containsProperty(stringValue.getPropertyName()));
     assertNull(System.getProperty(stringValue.getPropertyName()));
 
@@ -58,7 +63,7 @@ public final class DefaultPropertyStoreTest {
 
     stringListValue.set(emptyList());
     assertEquals("", store.getProperty(stringListValue.getPropertyName()));
-    stringListValue.set(null);
+    stringListValue.clear();
     assertFalse(store.containsProperty(stringListValue.getPropertyName()));
 
     PropertyValue<List<Integer>> integerListValue = store.listValue("intlist.property", Integer::parseInt, Objects::toString).build();
@@ -79,6 +84,8 @@ public final class DefaultPropertyStoreTest {
     assertEquals(3.14, doubleValue.get());
     assertEquals("3.14", System.getProperty(doubleValue.getPropertyName()));
     doubleValue.set(null);
+    assertEquals(0d, doubleValue.get());
+    doubleValue.clear();
     assertFalse(store.containsProperty(doubleValue.getPropertyName()));
 
     PropertyValue<Boolean> booleanValue = store.booleanValue("boolean.property").defaultValue(false).build();
@@ -127,29 +134,55 @@ public final class DefaultPropertyStoreTest {
     DefaultPropertyStore store = new DefaultPropertyStore(configFile);
     PropertyValue<String> stringValue = store.stringValue("string.property").defaultValue("value").build();
     assertEquals("value", stringValue.get());
+    stringValue.set("another");
     stringValue.set(null);
-    assertNull(stringValue.get());
+    assertEquals("value", stringValue.get());
     PropertyValue<Boolean> booleanValue1 = store.booleanValue("boolean.property").defaultValue(true).build();
     assertTrue(booleanValue1.get());
     booleanValue1.set(false);
     assertFalse(booleanValue1.get());
     booleanValue1.set(null);
-    assertFalse(booleanValue1.get());
+    assertTrue(booleanValue1.get());
     PropertyValue<Integer> integerValue = store.integerValue("integer.property").defaultValue(42).build();
     assertEquals(42, integerValue.get());
+    integerValue.set(64);
     integerValue.set(null);
-    assertNull(integerValue.get());
+    assertEquals(42, integerValue.get());
     PropertyValue<Double> doubleValue = store.doubleValue("double.property").defaultValue(3.14).build();
     assertEquals(3.14, doubleValue.get());
+    doubleValue.set(42d);
     doubleValue.set(null);
-    assertNull(doubleValue.get());
+    assertEquals(3.14, doubleValue.get());
     PropertyValue<List<String>> listValue = store.listValue("stringlist.property", Objects::toString, Objects::toString)
             .defaultValue(asList("value1", "value2")).build();
     List<String> strings = listValue.get();
     assertTrue(strings.contains("value1"));
     assertTrue(strings.contains("value2"));
+    listValue.set(Arrays.asList("another1", "another2"));
     listValue.set(null);
-    assertNull(listValue.get());
+    strings = listValue.get();
+    assertTrue(strings.contains("value1"));
+    assertTrue(strings.contains("value2"));
+  }
+
+  @Test
+  void testNoDefaultValue() {
+    DefaultPropertyStore store = new DefaultPropertyStore(new Properties());
+    PropertyValue<String> stringValue = store.stringValue("string.property.noDefault").build();
+    assertNull(stringValue.get());
+    stringValue.set("value");
+    assertEquals("value", stringValue.get());
+    stringValue.set(null);
+    assertNull(stringValue.get());
+    assertFalse(store.containsProperty(stringValue.getPropertyName()));
+
+    PropertyValue<Boolean> booleanValue = store.booleanValue("boolean.property.noDefault").build();
+    assertNull(booleanValue.get());
+    booleanValue.set(true);
+    assertTrue(booleanValue.get());
+    booleanValue.set(null);
+    assertNull(booleanValue.get());
+    assertFalse(store.containsProperty(booleanValue.getPropertyName()));
   }
 
   @Test
@@ -196,8 +229,12 @@ public final class DefaultPropertyStoreTest {
     Properties properties = new Properties();
     properties.put("property", "");
     DefaultPropertyStore store = new DefaultPropertyStore(properties);
-    PropertyValue<String> propertyValue = store.stringValue("property").defaultValue("").build();
+    PropertyValue<String> propertyValue = store.stringValue("property").build();
     propertyValue.set(null);
     assertThrows(IllegalStateException.class, propertyValue::getOrThrow);
+
+    propertyValue = store.stringValue("property2").defaultValue("def").build();
+    propertyValue.set(null);
+    assertEquals("def", propertyValue.get());
   }
 }

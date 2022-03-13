@@ -24,7 +24,8 @@ import static java.util.stream.Collectors.joining;
  * Provides configuration values which sync with a central configuration store as well as system properties,
  * which can be written to file.
  * Initial values parsed from a configuration file are overridden by system properties.
- * If values are not found in the configuration file or in system properties the default value is used.
+ * If values are not found in the configuration file or in system properties the default value is used as the inital value.
+ * When the value is set to null via {@link is.codion.common.value.Value#set(Object)} the default value is used, if one has been specified.
  * <pre>
  * File configurationFile = new File(System.getProperty("user.home") + "/app.properties");
  *
@@ -41,6 +42,10 @@ import static java.util.stream.Collectors.joining;
  * defaultUsername.set("scott");
  *
  * store.writeToFile(configurationFile);
+ *
+ * //reverts to the default value
+ * featureEnabled.set(null);
+ * defaultUsername.set(null);
  * </pre>
  */
 public interface PropertyStore {
@@ -96,7 +101,8 @@ public interface PropertyStore {
   <T extends Enum<T>> Builder<T> enumValue(String propertyName, Class<T> enumClass);
 
   /**
-   * Instantiates a builder for the given boolean property
+   * Instantiates a builder for the given list property.
+   * Note that a list property automatically gets an {@link Collections#emptyList()} as its default value.
    * @param <T> the value type
    * @param propertyName the property name
    * @param decoder a decoder for decoding the value from a string

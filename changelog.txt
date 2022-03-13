@@ -7898,3 +7898,6 @@
   is.codion.common.value.DefaultPropertyValue no longer implements PropertyValue
   PropertyValue moved to properties package, PropertyValue.Builder added, PropertyStore and Configuration refactored accordingly
   DefaultPropertyStore, now throws exception on empty property name, some refactoring
+  PropertyValue now uses the default value as a null value, so properties with a non-null default value are functionally non-nullable
+  PropertyValue.clear() added, for removing a value from the store and clearing the system property
+  PropertyValue, boolean value no longer automatically gets false as a default value
