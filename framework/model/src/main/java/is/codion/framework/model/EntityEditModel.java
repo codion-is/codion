@@ -7,9 +7,9 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
@@ -39,7 +39,9 @@ public interface EntityEditModel {
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> PERSIST_FOREIGN_KEY_VALUES = Configuration.booleanValue("codion.client.persistForeignKeyValues", true);
+  PropertyValue<Boolean> PERSIST_FOREIGN_KEY_VALUES = Configuration.booleanValue("codion.client.persistForeignKeyValues")
+          .defaultValue(true)
+          .build();
 
   /**
    * Indicates whether the application should ask for confirmation when exiting if some data is unsaved<br>
@@ -47,21 +49,27 @@ public interface EntityEditModel {
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue("codion.client.warnAboutUnsavedData", false);
+  PropertyValue<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue("codion.client.warnAboutUnsavedData")
+          .defaultValue(false)
+          .build();
 
   /**
    * Specifies whether edit models post their insert, update and delete events to {@link EntityEditEvents}<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("codion.client.editModelPostEditEvents", true);
+  PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("codion.client.editModelPostEditEvents")
+          .defaultValue(true)
+          .build();
 
   /**
    * Specifies whether edit models set the master foreign key to null when initialized with a null foreign key value via {@link #initialize(ForeignKey, Entity)}<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> INITIALIZE_FOREIGN_KEY_TO_NULL = Configuration.booleanValue("codion.client.initializeForeignKeyToNull", false);
+  PropertyValue<Boolean> INITIALIZE_FOREIGN_KEY_TO_NULL = Configuration.booleanValue("codion.client.initializeForeignKeyToNull")
+          .defaultValue(false)
+          .build();
 
   /**
    * @return the type of the entity this edit model is based on

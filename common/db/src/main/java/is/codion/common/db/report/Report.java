@@ -4,7 +4,7 @@
 package is.codion.common.db.report;
 
 import is.codion.common.Configuration;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 
 import java.sql.Connection;
 
@@ -19,14 +19,17 @@ public interface Report<T, R, P> {
   /**
    * The report path used for file based report generation.
    */
-  PropertyValue<String> REPORT_PATH = Configuration.stringValue("codion.report.path", null);
+  PropertyValue<String> REPORT_PATH = Configuration.stringValue("codion.report.path")
+          .build();
 
   /**
    * Specifies whether to cache reports when loaded from disk/network, this prevents "hot deploy" of reports.<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("codion.report.cacheReports", true);
+  PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("codion.report.cacheReports")
+          .defaultValue(true)
+          .build();
 
   /**
    * Loads and fills the report using the given database connection

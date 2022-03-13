@@ -25,8 +25,9 @@ public final class Layouts {
    * @see #gridLayout(int, int)
    * @see #flexibleGridLayout(int, int)
    */
-  public static final Value<Integer> HORIZONTAL_VERTICAL_GAP =
-          Configuration.integerValue("codion.swing.ui.horizontalVerticalGap", DEFAULT_HOR_VERT_GAP);
+  public static final Value<Integer> HORIZONTAL_VERTICAL_GAP = Configuration.integerValue("codion.swing.ui.horizontalVerticalGap")
+          .defaultValue(DEFAULT_HOR_VERT_GAP)
+          .build();
 
   private Layouts() {}
 

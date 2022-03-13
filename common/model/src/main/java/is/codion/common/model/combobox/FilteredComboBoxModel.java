@@ -7,7 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -26,7 +26,9 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
    * Value type: String<br>
    * Default value: -
    */
-  PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("is.codion.common.model.combobox.comboBoxNullValueItem", "-");
+  PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("is.codion.common.model.combobox.comboBoxNullValueItem")
+          .defaultValue("-")
+          .build();
 
   /**
    * @param listener a listener notified each time the selection changes

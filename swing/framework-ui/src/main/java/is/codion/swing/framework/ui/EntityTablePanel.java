@@ -9,9 +9,9 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnFilterModel;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -131,56 +131,70 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING = Configuration.booleanValue(
-          "is.codion.swing.framework.ui.EntityTablePanel.allowColumnReordering", true);
+  public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.allowColumnReordering")
+                  .defaultValue(true)
+                  .build();
 
   /**
    * Specifies whether the table condition panels should be visible or not by default<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> TABLE_CONDITION_PANEL_VISIBLE = Configuration.booleanValue(
-          "is.codion.swing.framework.ui.EntityTablePanel.tableConditionPanelVisible", false);
+  public static final PropertyValue<Boolean> TABLE_CONDITION_PANEL_VISIBLE =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.tableConditionPanelVisible")
+                  .defaultValue(false)
+                  .build();
 
   /**
    * Specifies the default table column resize mode for tables in the application<br>
    * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
    * Default value: JTable.AUTO_RESIZE_OFF
    */
-  public static final PropertyValue<Integer> TABLE_AUTO_RESIZE_MODE = Configuration.integerValue(
-          "is.codion.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
+  public static final PropertyValue<Integer> TABLE_AUTO_RESIZE_MODE =
+          Configuration.integerValue("is.codion.swing.framework.ui.EntityTablePanel.tableAutoResizeMode")
+                  .defaultValue(JTable.AUTO_RESIZE_OFF)
+                  .build();
 
   /**
    * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU = Configuration.booleanValue(
-          "is.codion.swing.framework.ui.EntityTablePanel.includeEntityMenu", true);
+  public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeEntityMenu")
+                  .defaultValue(true)
+                  .build();
 
   /**
    * Specifies whether to include a 'Clear' control in the popup menu.<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> INCLUDE_CLEAR_CONTROL = Configuration.booleanValue(
-          "is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
+  public static final PropertyValue<Boolean> INCLUDE_CLEAR_CONTROL =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl")
+                  .defaultValue(false)
+                  .build();
 
   /**
    * Specifies whether the refresh button toolbar should be hidden automatically when the condition panel is not visible.<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> AUTOMATICALLY_HIDE_REFRESH_TOOLBAR = Configuration.booleanValue(
-          "is.codion.swing.framework.ui.EntityTablePanel.automaticallyHideRefreshToolbar", true);
+  public static final PropertyValue<Boolean> AUTOMATICALLY_HIDE_REFRESH_TOOLBAR =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.automaticallyHideRefreshToolbar")
+                  .defaultValue(true)
+                  .build();
 
   /**
    * Specifies how column selection is presented to the user.<br>
    * Value type: {@link ColumnSelection}<br>
    * Default value: {@link ColumnSelection#DIALOG}
    */
-  public static final PropertyValue<ColumnSelection> COLUMN_SELECTION = Configuration.enumValue(
-          "is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
+  public static final PropertyValue<ColumnSelection> COLUMN_SELECTION =
+          Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class)
+                  .defaultValue(ColumnSelection.DIALOG)
+                  .build();
 
   /**
    * The standard controls available

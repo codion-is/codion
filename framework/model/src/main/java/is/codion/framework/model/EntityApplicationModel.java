@@ -5,9 +5,9 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
-import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
@@ -27,14 +27,18 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * Value type: String<br>
    * Default value: [empty string]
    */
-  PropertyValue<String> USERNAME_PREFIX = Configuration.stringValue("codion.client.usernamePrefix", "");
+  PropertyValue<String> USERNAME_PREFIX = Configuration.stringValue("codion.client.usernamePrefix")
+          .defaultValue("")
+          .build();
 
   /**
    * Specifies whether user authentication is required<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> AUTHENTICATION_REQUIRED = Configuration.booleanValue("codion.client.authenticationRequired", true);
+  PropertyValue<Boolean> AUTHENTICATION_REQUIRED = Configuration.booleanValue("codion.client.authenticationRequired")
+          .defaultValue(true)
+          .build();
 
   /**
    * Specifies whether the client saves the last successful login username,<br>
@@ -42,14 +46,18 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("codion.client.saveDefaultUsername", true);
+  PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("codion.client.saveDefaultUsername")
+          .defaultValue(true)
+          .build();
 
   /**
    * Specifies whether a periodic (30 sec) validity check of the underlying connection should be scheduled.
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> SCHEDULE_CONNECTION_VALIDATION = Configuration.booleanValue("codion.client.scheduleConnectionValidation", true);
+  PropertyValue<Boolean> SCHEDULE_CONNECTION_VALIDATION = Configuration.booleanValue("codion.client.scheduleConnectionValidation")
+          .defaultValue(true)
+          .build();
 
   /**
    * Closes the underlying database connection.

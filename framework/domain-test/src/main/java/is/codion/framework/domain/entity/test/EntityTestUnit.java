@@ -6,8 +6,8 @@ package is.codion.framework.domain.entity.test;
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.RecordNotFoundException;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.user.User;
-import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -45,7 +45,8 @@ public class EntityTestUnit {
   /**
    * Specifies the database user to use when running domain unit tests.
    */
-  public static final PropertyValue<String> TEST_USER = Configuration.stringValue("codion.test.user", null);
+  public static final PropertyValue<String> TEST_USER = Configuration.stringValue("codion.test.user")
+          .build();
 
   private static final int SELECT_FETCH_COUNT = 10;
 

@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 
@@ -27,7 +27,9 @@ public class NumberField<T extends Number> extends JTextField {
    * Default value: false.
    */
   public static final PropertyValue<Boolean> DISABLE_GROUPING =
-          Configuration.booleanValue("codion.swing.common.ui.disableNumberFieldGrouping", false);
+          Configuration.booleanValue("codion.swing.common.ui.disableNumberFieldGrouping")
+                  .defaultValue(false)
+                  .build();
 
   private final Value<T> value = Value.value();
 

@@ -110,6 +110,7 @@ is.codion.framework.db.condition.SelectAllCondition
 is.codion.framework.domain.DefaultDomainType
 is.codion.framework.domain.entity.DefaultConditionType
 is.codion.framework.domain.entity.DefaultEntity
+is.codion.framework.domain.entity.DefaultEntity$EntityInvoker
 is.codion.framework.domain.entity.DefaultEntityType
 is.codion.framework.domain.entity.DefaultForeignKey
 is.codion.framework.domain.entity.DefaultForeignKey$DefaultReference
@@ -117,7 +118,6 @@ is.codion.framework.domain.entity.DefaultKey
 is.codion.framework.domain.entity.DefaultOrderBy
 is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByAttribute
 is.codion.framework.domain.entity.DefaultAttribute
-is.codion.framework.domain.entity.DefaultEntity$EntityInvoker
 is.codion.framework.domain.entity.DefaultForeignKey
 is.codion.framework.domain.entity.DefaultForeignKey$DefaultReference
 is.codion.framework.domain.entity.Entity

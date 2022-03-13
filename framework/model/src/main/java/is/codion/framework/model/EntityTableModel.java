@@ -8,8 +8,8 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.SelectionModel;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
-import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
@@ -37,7 +37,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue("codion.client.queryHiddenColumns", true);
+  PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue("codion.client.queryHiddenColumns")
+          .defaultValue(true)
+          .build();
 
   /**
    * Specifies whether the table model sort order is used as a basis for the query order by clause.
@@ -45,7 +47,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue("codion.client.orderQueryBySortOrder", false);
+  PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue("codion.client.orderQueryBySortOrder")
+          .defaultValue(false)
+          .build();
 
   String PREFERENCES_COLUMNS = "columns";
   String PREFERENCES_COLUMN_WIDTH = "width";

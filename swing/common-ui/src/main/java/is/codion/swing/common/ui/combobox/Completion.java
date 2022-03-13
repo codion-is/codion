@@ -1,7 +1,7 @@
 package is.codion.swing.common.ui.combobox;
 
 import is.codion.common.Configuration;
-import is.codion.common.value.PropertyValue;
+import is.codion.common.properties.PropertyValue;
 
 import javax.swing.JComboBox;
 import javax.swing.text.AttributeSet;
@@ -41,8 +41,10 @@ public final class Completion {
    * Value type:String<br>
    * Default value: {@link Completion.Mode#MAXIMUM_MATCH}
    */
-  public static final PropertyValue<Mode> COMBO_BOX_COMPLETION_MODE = Configuration.enumValue("codion.swing.comboBoxCompletionMode",
-          Mode.class, Mode.MAXIMUM_MATCH);
+  public static final PropertyValue<Mode> COMBO_BOX_COMPLETION_MODE =
+          Configuration.enumValue("codion.swing.comboBoxCompletionMode", Mode.class)
+                  .defaultValue(Mode.MAXIMUM_MATCH)
+                  .build();
 
   /**
    * Enables maximum match on the given combobox

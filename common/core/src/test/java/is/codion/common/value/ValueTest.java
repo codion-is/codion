@@ -215,13 +215,6 @@ public class ValueTest {
   }
 
   @Test
-  void getOrThrow() {
-    PropertyValue<Integer> integerValue = Value.propertyValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
-    integerValue.set(null);
-    assertThrows(IllegalStateException.class, integerValue::getOrThrow);
-  }
-
-  @Test
   void propertyValueNoGetter() {
     assertThrows(IllegalArgumentException.class, () -> Value.propertyValue(this, "nonexistent", Integer.class, integerValueChange.getObserver()));
   }

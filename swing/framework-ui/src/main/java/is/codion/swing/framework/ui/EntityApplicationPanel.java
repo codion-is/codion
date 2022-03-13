@@ -16,9 +16,9 @@ import is.codion.common.item.Item;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
-import is.codion.common.value.PropertyValue;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -128,22 +128,27 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Value type: String<br>
    * Default value: https://codion.is/doc/{version}/{jdk}/help/client.html
    */
-  public static final PropertyValue<String> HELP_URL = Configuration.stringValue("codion.swing.helpUrl",
-          "https://codion.is/doc/" + Version.getVersionString() + "/jdk11/help/client.html");
+  public static final PropertyValue<String> HELP_URL = Configuration.stringValue("codion.swing.helpUrl")
+          .defaultValue("https://codion.is/doc/" + Version.getVersionString() + "/jdk11/help/client.html")
+          .build();
 
   /**
    * Indicates whether the application should ask for confirmation when exiting<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue("codion.swing.confirmExit", false);
+  public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue("codion.swing.confirmExit")
+          .defaultValue(false)
+          .build();
 
   /**
    * Specifies whether a startup dialog should be shown<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("codion.swing.showStartupDialog", true);
+  public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("codion.swing.showStartupDialog")
+          .defaultValue(true)
+          .build();
 
   /**
    * Specifies if EntityPanels opened via the {@link EntityApplicationPanel#displayEntityPanel(EntityPanel.Builder)} method
@@ -152,7 +157,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Default value: false
    * @see EntityApplicationPanel#displayEntityPanel(EntityPanel.Builder)
    */
-  public static final PropertyValue<Boolean> DISPLAY_ENTITY_PANELS_IN_FRAME = Configuration.booleanValue("codion.swing.displayEntityPanelsInFrame", false);
+  public static final PropertyValue<Boolean> DISPLAY_ENTITY_PANELS_IN_FRAME = Configuration.booleanValue("codion.swing.displayEntityPanelsInFrame")
+          .defaultValue(false)
+          .build();
 
   /**
    * Specifies if EntityPanels opened via the {@code EntityApplicationPanel.displayEntityPanel} method
@@ -161,14 +168,18 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Default value: false
    * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanel.Builder)
    */
-  public static final PropertyValue<Boolean> PERSIST_ENTITY_PANELS = Configuration.booleanValue("codion.swing.persistEntityPanels", false);
+  public static final PropertyValue<Boolean> PERSIST_ENTITY_PANELS = Configuration.booleanValue("codion.swing.persistEntityPanels")
+          .defaultValue(false)
+          .build();
 
   /**
    * Specifies the tab placement<br>
    * Value type: Integer (SwingConstants.TOP, SwingConstants.BOTTOM, SwingConstants.LEFT, SwingConstants.RIGHT)<br>
    * Default value: SwingConstants.TOP
    */
-  public static final PropertyValue<Integer> TAB_PLACEMENT = Configuration.integerValue("codion.swing.tabPlacement", SwingConstants.TOP);
+  public static final PropertyValue<Integer> TAB_PLACEMENT = Configuration.integerValue("codion.swing.tabPlacement")
+          .defaultValue(SwingConstants.TOP)
+          .build();
 
   private static final String DEFAULT_USERNAME_PROPERTY = "is.codion.swing.framework.ui.defaultUsername";
   private static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";

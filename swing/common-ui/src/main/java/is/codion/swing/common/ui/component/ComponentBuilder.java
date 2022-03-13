@@ -4,8 +4,8 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.Configuration;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.StateObserver;
-import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Validator;
 import is.codion.common.value.ValueObserver;
@@ -44,8 +44,10 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue(
-          "is.codion.swing.common.ui.ComponentBuilder.transferFocusOnEnter", false);
+  PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER =
+          Configuration.booleanValue("is.codion.swing.common.ui.ComponentBuilder.transferFocusOnEnter")
+                  .defaultValue(false)
+                  .build();
 
   /**
    * @param focusable false if the component should not be focusable

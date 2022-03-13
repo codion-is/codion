@@ -7,9 +7,9 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -62,8 +62,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Default value: false
    * @see EntityPanel#USE_FOCUS_ACTIVATION
    */
-  public static final PropertyValue<Boolean> ALL_PANELS_ACTIVE = Configuration.booleanValue(
-          "is.codion.swing.framework.ui.EntityEditPanel.allPanelsActive", false);
+  public static final PropertyValue<Boolean> ALL_PANELS_ACTIVE =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.allPanelsActive")
+                  .defaultValue(false)
+                  .build();
 
   /**
    * Specifies whether edit panels should include a SAVE button (insert or update, depending on selection) or just an INSERT button.<br>
@@ -71,8 +73,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> USE_SAVE_CONTROL = Configuration.booleanValue(
-          "is.codion.swing.framework.ui.EntityEditPanel.useSaveControl", true);
+  public static final PropertyValue<Boolean> USE_SAVE_CONTROL =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useSaveControl")
+                  .defaultValue(true)
+                  .build();
 
   /**
    * The standard controls available to the EditPanel
