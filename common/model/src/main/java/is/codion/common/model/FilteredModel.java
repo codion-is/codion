@@ -24,9 +24,7 @@ public interface FilteredModel<T> {
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh")
-          .defaultValue(false)
-          .build();
+  PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh", false);
 
   /**
    * @param listener a listener notified each time this model is filtered

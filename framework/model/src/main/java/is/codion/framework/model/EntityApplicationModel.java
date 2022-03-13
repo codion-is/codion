@@ -27,18 +27,14 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * Value type: String<br>
    * Default value: [empty string]
    */
-  PropertyValue<String> USERNAME_PREFIX = Configuration.stringValue("codion.client.usernamePrefix")
-          .defaultValue("")
-          .build();
+  PropertyValue<String> USERNAME_PREFIX = Configuration.stringValue("codion.client.usernamePrefix", "");
 
   /**
    * Specifies whether user authentication is required<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> AUTHENTICATION_REQUIRED = Configuration.booleanValue("codion.client.authenticationRequired")
-          .defaultValue(true)
-          .build();
+  PropertyValue<Boolean> AUTHENTICATION_REQUIRED = Configuration.booleanValue("codion.client.authenticationRequired", true);
 
   /**
    * Specifies whether the client saves the last successful login username,<br>
@@ -46,18 +42,14 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("codion.client.saveDefaultUsername")
-          .defaultValue(true)
-          .build();
+  PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("codion.client.saveDefaultUsername", true);
 
   /**
    * Specifies whether a periodic (30 sec) validity check of the underlying connection should be scheduled.
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> SCHEDULE_CONNECTION_VALIDATION = Configuration.booleanValue("codion.client.scheduleConnectionValidation")
-          .defaultValue(true)
-          .build();
+  PropertyValue<Boolean> SCHEDULE_CONNECTION_VALIDATION = Configuration.booleanValue("codion.client.scheduleConnectionValidation", true);
 
   /**
    * Closes the underlying database connection.

@@ -19,17 +19,14 @@ public interface Report<T, R, P> {
   /**
    * The report path used for file based report generation.
    */
-  PropertyValue<String> REPORT_PATH = Configuration.stringValue("codion.report.path")
-          .build();
+  PropertyValue<String> REPORT_PATH = Configuration.stringValue("codion.report.path");
 
   /**
    * Specifies whether to cache reports when loaded from disk/network, this prevents "hot deploy" of reports.<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("codion.report.cacheReports")
-          .defaultValue(true)
-          .build();
+  PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("codion.report.cacheReports", true);
 
   /**
    * Loads and fills the report using the given database connection

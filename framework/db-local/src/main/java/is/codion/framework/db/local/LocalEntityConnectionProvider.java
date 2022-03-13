@@ -33,9 +33,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * Default value: false
    */
   public static final PropertyValue<Boolean> SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT =
-          Configuration.booleanValue("codion.db.shutdownEmbeddedOnDisconnect")
-                  .defaultValue(false)
-                  .build();
+          Configuration.booleanValue("codion.db.shutdownEmbeddedOnDisconnect", false);
 
   private final boolean shutdownDatabaseOnDisconnect = SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get();
 

@@ -37,9 +37,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue("codion.client.queryHiddenColumns")
-          .defaultValue(true)
-          .build();
+  PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue("codion.client.queryHiddenColumns", true);
 
   /**
    * Specifies whether the table model sort order is used as a basis for the query order by clause.
@@ -47,9 +45,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue("codion.client.orderQueryBySortOrder")
-          .defaultValue(false)
-          .build();
+  PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue("codion.client.orderQueryBySortOrder", false);
 
   String PREFERENCES_COLUMNS = "columns";
   String PREFERENCES_COLUMN_WIDTH = "width";

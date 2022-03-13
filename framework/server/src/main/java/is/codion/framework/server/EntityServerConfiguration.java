@@ -39,9 +39,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * Value type: Integer<br>
    * Default value: -1
    */
-  PropertyValue<Integer> SERVER_CONNECTION_LIMIT = Configuration.integerValue("codion.server.connectionLimit")
-          .defaultValue(DEFAULT_SERVER_CONNECTION_LIMIT)
-          .build();
+  PropertyValue<Integer> SERVER_CONNECTION_LIMIT = Configuration.integerValue("codion.server.connectionLimit", DEFAULT_SERVER_CONNECTION_LIMIT);
 
   /**
    * Specifies the class name of the connection pool factory to user.<br>
@@ -49,8 +47,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * Default value: none
    * @see ConnectionPoolFactory
    */
-  PropertyValue<String> SERVER_CONNECTION_POOL_FACTORY_CLASS = Configuration.stringValue("codion.server.pooling.poolFactoryClass")
-          .build();
+  PropertyValue<String> SERVER_CONNECTION_POOL_FACTORY_CLASS = Configuration.stringValue("codion.server.pooling.poolFactoryClass");
 
   /**
    * Specifies the default client connection timeout (ms) in a comma separated list.
@@ -58,31 +55,26 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * Value type: String<br>
    * Default value: none
    */
-  PropertyValue<String> SERVER_CLIENT_CONNECTION_TIMEOUT = Configuration.stringValue("codion.server.clientConnectionTimeout")
-          .build();
+  PropertyValue<String> SERVER_CLIENT_CONNECTION_TIMEOUT = Configuration.stringValue("codion.server.clientConnectionTimeout");
 
   /**
    * The initial connection logging status on the server, either true (on) or false (off)<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> SERVER_CLIENT_LOGGING_ENABLED = Configuration.booleanValue("codion.server.clientLoggingEnabled")
-          .defaultValue(false)
-          .build();
+  PropertyValue<Boolean> SERVER_CLIENT_LOGGING_ENABLED = Configuration.booleanValue("codion.server.clientLoggingEnabled", false);
 
   /**
    * Specifies a comma separated list of username:password combinations for which to create connection pools on startup
    * Example: scott:tiger,john:foo,paul:bar
    */
-  PropertyValue<String> SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS = Configuration.stringValue("codion.server.pooling.startupPoolUsers")
-          .build();
+  PropertyValue<String> SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS = Configuration.stringValue("codion.server.pooling.startupPoolUsers");
 
   /**
    * Specifies a comma separated list of domain model class names, these classes must be
    * available on the server classpath
    */
-  PropertyValue<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("codion.server.domain.classes")
-          .build();
+  PropertyValue<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("codion.server.domain.classes");
 
   /**
    * @return the Database implementation

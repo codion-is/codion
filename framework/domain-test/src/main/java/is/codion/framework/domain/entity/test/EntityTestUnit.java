@@ -45,8 +45,7 @@ public class EntityTestUnit {
   /**
    * Specifies the database user to use when running domain unit tests.
    */
-  public static final PropertyValue<String> TEST_USER = Configuration.stringValue("codion.test.user")
-          .build();
+  public static final PropertyValue<String> TEST_USER = Configuration.stringValue("codion.test.user");
 
   private static final int SELECT_FETCH_COUNT = 10;
 

@@ -31,9 +31,7 @@ public interface EntityDefinition {
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.strictForeignKeys")
-          .defaultValue(true)
-          .build();
+  PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.strictForeignKeys", true);
 
   /**
    * @return the entity type

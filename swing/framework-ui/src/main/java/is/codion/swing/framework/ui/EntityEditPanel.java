@@ -63,9 +63,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see EntityPanel#USE_FOCUS_ACTIVATION
    */
   public static final PropertyValue<Boolean> ALL_PANELS_ACTIVE =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.allPanelsActive")
-                  .defaultValue(false)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.allPanelsActive", false);
 
   /**
    * Specifies whether edit panels should include a SAVE button (insert or update, depending on selection) or just an INSERT button.<br>
@@ -74,9 +72,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> USE_SAVE_CONTROL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useSaveControl")
-                  .defaultValue(true)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useSaveControl", true);
 
   /**
    * The standard controls available to the EditPanel

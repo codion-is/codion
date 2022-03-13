@@ -7901,3 +7901,4 @@
   PropertyValue now uses the default value as a null value, so properties with a non-null default value are functionally non-nullable
   PropertyValue.clear() added, for removing a value from the store and clearing the system property
   PropertyValue, boolean value no longer automatically gets false as a default value
+  PropertyValue.Builder removed, not required when defaultValue serves as the nullValue

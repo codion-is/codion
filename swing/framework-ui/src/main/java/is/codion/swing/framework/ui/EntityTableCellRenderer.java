@@ -25,54 +25,42 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
    * Value type: Integer<br>
    * Default value: 0
    */
-  PropertyValue<Integer> TABLE_CELL_LEFT_PADDING = Configuration.integerValue("codion.client.tableCellLeftPadding")
-          .defaultValue(0)
-          .build();
+  PropertyValue<Integer> TABLE_CELL_LEFT_PADDING = Configuration.integerValue("codion.client.tableCellLeftPadding", 0);
 
   /**
    * The default right padding for table cells.<br>
    * Value type: Integer<br>
    * Default value: 5
    */
-  PropertyValue<Integer> TABLE_CELL_RIGHT_PADDING = Configuration.integerValue("codion.client.tableCellRightPadding")
-          .defaultValue(5)
-          .build();
+  PropertyValue<Integer> TABLE_CELL_RIGHT_PADDING = Configuration.integerValue("codion.client.tableCellRightPadding", 5);
 
   /**
    * The default horizontal alignment for numerical columns.<br>
    * Value type: Integer<br>
    * Default value: {@link javax.swing.SwingConstants#RIGHT}
    */
-  PropertyValue<Integer> NUMERICAL_HORIZONTAL_ALIGNMENT = Configuration.integerValue("codion.client.tableNumericalHorizontalAlignment")
-          .defaultValue(SwingConstants.RIGHT)
-          .build();
+  PropertyValue<Integer> NUMERICAL_HORIZONTAL_ALIGNMENT = Configuration.integerValue("codion.client.tableNumericalHorizontalAlignment", SwingConstants.RIGHT);
 
   /**
    * The default horizontal alignment for temporal columns.<br>
    * Value type: Integer<br>
    * Default value: {@link javax.swing.SwingConstants#RIGHT}
    */
-  PropertyValue<Integer> TEMPORAL_HORIZONTAL_ALIGNMENT = Configuration.integerValue("codion.client.tableTemporalHorizontalAlignment")
-          .defaultValue(SwingConstants.RIGHT)
-          .build();
+  PropertyValue<Integer> TEMPORAL_HORIZONTAL_ALIGNMENT = Configuration.integerValue("codion.client.tableTemporalHorizontalAlignment", SwingConstants.RIGHT);
 
   /**
    * The default horizontal alignment for boolean columns.<br>
    * Value type: Integer<br>
    * Default value: {@link javax.swing.SwingConstants#CENTER}
    */
-  PropertyValue<Integer> BOOLEAN_HORIZONTAL_ALIGNMENT = Configuration.integerValue("codion.client.tableBooleanHorizontalAlignment")
-          .defaultValue(SwingConstants.CENTER)
-          .build();
+  PropertyValue<Integer> BOOLEAN_HORIZONTAL_ALIGNMENT = Configuration.integerValue("codion.client.tableBooleanHorizontalAlignment", SwingConstants.CENTER);
 
   /**
    * The default horizontal alignment.<br>
    * Value type: Integer<br>
    * Default value: {@link javax.swing.SwingConstants#LEADING}
    */
-  PropertyValue<Integer> HORIZONTAL_ALIGNMENT = Configuration.integerValue("codion.client.tableHorizontalAlignment")
-          .defaultValue(SwingConstants.LEADING)
-          .build();
+  PropertyValue<Integer> HORIZONTAL_ALIGNMENT = Configuration.integerValue("codion.client.tableHorizontalAlignment", SwingConstants.LEADING);
 
   /**
    * @return true if the column condition state should be represented visually

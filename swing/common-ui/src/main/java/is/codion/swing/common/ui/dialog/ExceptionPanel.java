@@ -57,9 +57,7 @@ final class ExceptionPanel extends JPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES =
-          Configuration.booleanValue("codion.swing.common.ui.ExceptionDialog.displaySystemProperties")
-                  .defaultValue(true)
-                  .build();
+          Configuration.booleanValue("codion.swing.common.ui.ExceptionDialog.displaySystemProperties", true);
 
   private static final int DESCRIPTION_LABEL_WIDTH = 250;
   private static final int MESSAGE_LABEL_WIDTH = 50;

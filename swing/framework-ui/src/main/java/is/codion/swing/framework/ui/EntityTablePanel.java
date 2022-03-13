@@ -132,9 +132,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: true
    */
   public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.allowColumnReordering")
-                  .defaultValue(true)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.allowColumnReordering", true);
 
   /**
    * Specifies whether the table condition panels should be visible or not by default<br>
@@ -142,9 +140,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: false
    */
   public static final PropertyValue<Boolean> TABLE_CONDITION_PANEL_VISIBLE =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.tableConditionPanelVisible")
-                  .defaultValue(false)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.tableConditionPanelVisible", false);
 
   /**
    * Specifies the default table column resize mode for tables in the application<br>
@@ -152,9 +148,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: JTable.AUTO_RESIZE_OFF
    */
   public static final PropertyValue<Integer> TABLE_AUTO_RESIZE_MODE =
-          Configuration.integerValue("is.codion.swing.framework.ui.EntityTablePanel.tableAutoResizeMode")
-                  .defaultValue(JTable.AUTO_RESIZE_OFF)
-                  .build();
+          Configuration.integerValue("is.codion.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
 
   /**
    * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
@@ -162,9 +156,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: true
    */
   public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeEntityMenu")
-                  .defaultValue(true)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeEntityMenu", true);
 
   /**
    * Specifies whether to include a 'Clear' control in the popup menu.<br>
@@ -172,9 +164,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: false
    */
   public static final PropertyValue<Boolean> INCLUDE_CLEAR_CONTROL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl")
-                  .defaultValue(false)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
 
   /**
    * Specifies whether the refresh button toolbar should be hidden automatically when the condition panel is not visible.<br>
@@ -182,9 +172,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: true
    */
   public static final PropertyValue<Boolean> AUTOMATICALLY_HIDE_REFRESH_TOOLBAR =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.automaticallyHideRefreshToolbar")
-                  .defaultValue(true)
-                  .build();
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.automaticallyHideRefreshToolbar", true);
 
   /**
    * Specifies how column selection is presented to the user.<br>
@@ -192,9 +180,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: {@link ColumnSelection#DIALOG}
    */
   public static final PropertyValue<ColumnSelection> COLUMN_SELECTION =
-          Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class)
-                  .defaultValue(ColumnSelection.DIALOG)
-                  .build();
+          Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
 
   /**
    * The standard controls available

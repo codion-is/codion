@@ -16,42 +16,35 @@ public interface HttpServerConfiguration {
    * Value type: Integer<br>
    * Default value: 8080
    */
-  PropertyValue<Integer> HTTP_SERVER_PORT = Configuration.integerValue("codion.server.http.port")
-          .defaultValue(8080)
-          .build();
+  PropertyValue<Integer> HTTP_SERVER_PORT = Configuration.integerValue("codion.server.http.port", 8080);
 
   /**
    * Specifies whether https should be used.<br>
    * Value types: Https<br>
    * Default value: true
    */
-  PropertyValue<ServerHttps> HTTP_SERVER_SECURE = Configuration.enumValue("codion.server.http.secure", ServerHttps.class)
-          .defaultValue(ServerHttps.TRUE)
-          .build();
+  PropertyValue<ServerHttps> HTTP_SERVER_SECURE = Configuration.enumValue("codion.server.http.secure", ServerHttps.class, ServerHttps.TRUE);
 
   /**
    * Specifies the keystore to use for securing http connections.<br>
    * Value type: String<br>
    * Default value: null
    */
-  PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("codion.server.http.keyStore")
-          .build();
+  PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("codion.server.http.keyStore");
 
   /**
    * Specifies the password for the keystore used for securing http connections.<br>
    * Value type: String<br>
    * Default value: null
    */
-  PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("codion.server.http.keyStorePassword")
-          .build();
+  PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("codion.server.http.keyStorePassword");
 
   /**
    * Specifies the document root for file serving<br>.
    * Value type: String<br>
    * Default value: null
    */
-  PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("codion.server.http.documentRoot")
-          .build();
+  PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("codion.server.http.documentRoot");
 
   /**
    * Instantiates a new HttpServerConfiguration.

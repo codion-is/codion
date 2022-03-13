@@ -43,8 +43,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
    * Value type: String<br>
    * Default value: null
    */
-  PropertyValue<String> CLIENT_DOMAIN_CLASS = Configuration.stringValue("codion.client.domainClass")
-          .build();
+  PropertyValue<String> CLIENT_DOMAIN_CLASS = Configuration.stringValue("codion.client.domainClass");
 
   /**
    * Specifies whether the client should connect locally, via rmi or http,
@@ -55,9 +54,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
    * @see #CONNECTION_TYPE_REMOTE
    * @see #CONNECTION_TYPE_HTTP
    */
-  PropertyValue<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("codion.client.connectionType")
-          .defaultValue(CONNECTION_TYPE_LOCAL)
-          .build();
+  PropertyValue<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("codion.client.connectionType", CONNECTION_TYPE_LOCAL);
 
   /**
    * Returns the domain entities this connection is based on

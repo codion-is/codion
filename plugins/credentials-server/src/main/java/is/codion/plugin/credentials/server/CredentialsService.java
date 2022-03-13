@@ -22,9 +22,7 @@ public interface CredentialsService extends Remote {
    * Specifies the RMI registry port to use when looking up the credentials service.
    * Default value: {@link Registry#REGISTRY_PORT}
    */
-  PropertyValue<Integer> REGISTRY_PORT = Configuration.integerValue("codion.credentials.registryPort")
-          .defaultValue(Registry.REGISTRY_PORT)
-          .build();
+  PropertyValue<Integer> REGISTRY_PORT = Configuration.integerValue("codion.credentials.registryPort", Registry.REGISTRY_PORT);
 
   /**
    * @param authenticationToken the token

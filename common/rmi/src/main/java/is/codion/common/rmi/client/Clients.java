@@ -41,25 +41,21 @@ public final class Clients {
    * Value type: String
    * Default value: null
    */
-  public static final PropertyValue<String> TRUSTSTORE = Configuration.stringValue("codion.client.trustStore")
-          .build();
+  public static final PropertyValue<String> TRUSTSTORE = Configuration.stringValue("codion.client.trustStore");
 
   /**
    * The rmi ssl truststore password to use<br>
    * Value type: String
    * Default value: null
    */
-  public static final PropertyValue<String> TRUSTSTORE_PASSWORD = Configuration.stringValue("codion.client.trustStorePassword")
-          .build();
+  public static final PropertyValue<String> TRUSTSTORE_PASSWORD = Configuration.stringValue("codion.client.trustStorePassword");
 
   /**
    * The host on which to locate the server<br>
    * Value type: String<br>
    * Default value: localhost
    */
-  public static final PropertyValue<String> SERVER_HOST_NAME = Configuration.stringValue("codion.server.hostname")
-          .defaultValue("localhost")
-          .build();
+  public static final PropertyValue<String> SERVER_HOST_NAME = Configuration.stringValue("codion.server.hostname", "localhost");
 
   private Clients() {}
 

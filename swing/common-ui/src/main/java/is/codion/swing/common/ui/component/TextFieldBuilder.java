@@ -28,9 +28,7 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
    * Default value: 12
    */
   PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
-          Configuration.integerValue("is.codion.swing.common.ui.TextFieldBuilder.defaultTextFieldColumns")
-                  .defaultValue(12)
-                  .build();
+          Configuration.integerValue("is.codion.swing.common.ui.TextFieldBuilder.defaultTextFieldColumns", 12);
 
   /**
    * @param columns the number of colums in the text component

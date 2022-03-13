@@ -29,36 +29,28 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * Value type: String<br>
    * Default value: localhost
    */
-  public static final PropertyValue<String> HTTP_CLIENT_HOST_NAME = Configuration.stringValue("codion.client.http.hostname")
-          .defaultValue("localhost")
-          .build();
+  public static final PropertyValue<String> HTTP_CLIENT_HOST_NAME = Configuration.stringValue("codion.client.http.hostname", "localhost");
 
   /**
    * The port which the http client should use.<br>
    * Value type: Integer<br>
    * Default value: 8080
    */
-  public static final PropertyValue<Integer> HTTP_CLIENT_PORT = Configuration.integerValue("codion.client.http.port")
-          .defaultValue(8080)
-          .build();
+  public static final PropertyValue<Integer> HTTP_CLIENT_PORT = Configuration.integerValue("codion.client.http.port", 8080);
 
   /**
    * Specifies whether https should be used.<br>
    * Value types: Https<br>
    * Default value: true
    */
-  public static final PropertyValue<ClientHttps> HTTP_CLIENT_SECURE = Configuration.enumValue("codion.client.http.secure", ClientHttps.class)
-          .defaultValue(ClientHttps.TRUE)
-          .build();
+  public static final PropertyValue<ClientHttps> HTTP_CLIENT_SECURE = Configuration.enumValue("codion.client.http.secure", ClientHttps.class, ClientHttps.TRUE);
 
   /**
    * Specifies whether json serialization should be used.<br>
    * Value types: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> HTTP_CLIENT_JSON = Configuration.booleanValue("codion.client.http.json")
-          .defaultValue(true)
-          .build();
+  public static final PropertyValue<Boolean> HTTP_CLIENT_JSON = Configuration.booleanValue("codion.client.http.json", true);
 
   private String serverHostName;
   private Integer serverPort;

@@ -42,9 +42,7 @@ public final class Completion {
    * Default value: {@link Completion.Mode#MAXIMUM_MATCH}
    */
   public static final PropertyValue<Mode> COMBO_BOX_COMPLETION_MODE =
-          Configuration.enumValue("codion.swing.comboBoxCompletionMode", Mode.class)
-                  .defaultValue(Mode.MAXIMUM_MATCH)
-                  .build();
+          Configuration.enumValue("codion.swing.comboBoxCompletionMode", Mode.class, Mode.MAXIMUM_MATCH);
 
   /**
    * Enables maximum match on the given combobox
