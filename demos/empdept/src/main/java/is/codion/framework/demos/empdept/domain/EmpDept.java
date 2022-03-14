@@ -172,7 +172,7 @@ public final class EmpDept extends DefaultDomain {
                     .beanProperty("hiredate")
                     .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDash()
-                            .yearFourDigits()
+                            .yearTwoDigits()
                             .build()),
             denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, "Location",
                     Employee.DEPARTMENT_FK, Department.LOCATION)

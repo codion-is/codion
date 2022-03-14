@@ -7939,3 +7939,4 @@
   PropertyValue.Builder removed, not required when defaultValue serves as the nullValue
   PropertyStore, Configuration, now use primitive types for default value parameter
   DefaultPropertyStore, minor refactoring
+  TemporalField.Builder.dateTimePattern() re-added, TemporalFieldBuilder extends TemporalField.Builder

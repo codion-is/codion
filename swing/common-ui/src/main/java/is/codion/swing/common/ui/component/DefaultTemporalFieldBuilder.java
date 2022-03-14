@@ -3,37 +3,44 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.common.DateTimeParser;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.textfield.TemporalField;
 
-import javax.swing.JFormattedTextField;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
-
-import static java.util.Objects.requireNonNull;
 
 final class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>>
         extends DefaultTextFieldBuilder<T, C, TemporalFieldBuilder<T, C>> implements TemporalFieldBuilder<T, C> {
 
-  private final String dateTimePattern;
-
-  private int focusLostBehaviour = JFormattedTextField.COMMIT;
+  private final TemporalField.Builder<T> builder;
 
   DefaultTemporalFieldBuilder(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
     super(valueClass, linkedValue);
-    this.dateTimePattern = requireNonNull(dateTimePattern);
+    this.builder = TemporalField.builder(valueClass, dateTimePattern);
+  }
+
+  @Override
+  public TemporalFieldBuilder<T, C> dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+    builder.dateTimeFormatter(dateTimeFormatter);
+    return this;
+  }
+
+  @Override
+  public TemporalFieldBuilder<T, C> dateTimeParser(DateTimeParser<T> dateTimeParser) {
+    builder.dateTimeParser(dateTimeParser);
+    return this;
   }
 
   @Override
   public TemporalFieldBuilder<T, C> focusLostBehaviour(int focusLostBehaviour) {
-    this.focusLostBehaviour = focusLostBehaviour;
+    builder.focusLostBehaviour(focusLostBehaviour);
     return this;
   }
 
   @Override
   protected C createTextField() {
-    return (C) TemporalField.builder((Class<Temporal>) getValueClass(), dateTimePattern)
-            .focusLostBehaviour(focusLostBehaviour)
-            .build();
+    return (C) builder.build();
   }
 
   @Override
