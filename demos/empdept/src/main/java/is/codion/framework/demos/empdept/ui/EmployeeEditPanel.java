@@ -13,6 +13,9 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
@@ -37,7 +40,13 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createForeignKeyComboBox(Employee.MGR_FK);
     createTextField(Employee.SALARY);
     createTextField(Employee.COMMISSION);
-    createTemporalInputPanel(Employee.HIREDATE);
+    String hiredatePattern = getEditModel().getEntityDefinition().getProperty(Employee.HIREDATE).getDateTimePattern();
+    DateTimeFormatter hiredateFormatter = new DateTimeFormatterBuilder()
+            .appendPattern(hiredatePattern.substring(0, hiredatePattern.length() - 2))
+            .appendValueReduced(ChronoField.YEAR, 2, 2, 1940)
+            .toFormatter();
+    createLocalDateField(Employee.HIREDATE)
+            .dateTimeFormatter(hiredateFormatter);
 
     setLayout(flexibleGridLayout()
             .rowsColumns(3, 3)

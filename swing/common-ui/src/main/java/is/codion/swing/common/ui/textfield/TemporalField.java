@@ -187,6 +187,14 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   public interface Builder<T extends Temporal> {
 
     /**
+     * Sets the {@link DateTimeFormatter} for this field, this formatter must
+     * be able to parse the date time pattern this field is based on.
+     * @param dateTimeFormatter the date/time formatter
+     * @return this builder instance
+     */
+    Builder<T> dateTimeFormatter(DateTimeFormatter dateTimeFormatter);
+
+    /**
      * @param dateTimeParser the date/time parser
      * @return this builder instance
      */
@@ -218,8 +226,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
     private final Class<T> temporalClass;
     private final String dateTimePattern;
-    private final DateTimeFormatter dateTimeFormatter;
 
+    private DateTimeFormatter dateTimeFormatter;
     private DateTimeParser<T> dateTimeParser;
     private T initialValue;
     private int focusLostBehaviour = JFormattedTextField.COMMIT;
@@ -229,6 +237,12 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
       this.dateTimePattern = requireNonNull(dateTimePattern);
       this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern);
       this.dateTimeParser = initializeDateTimeParser(temporalClass);
+    }
+
+    @Override
+    public Builder<T> dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+      this.dateTimeFormatter = requireNonNull(dateTimeFormatter);
+      return this;
     }
 
     @Override
