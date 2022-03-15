@@ -47,6 +47,9 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -71,6 +74,7 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
@@ -1491,14 +1495,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.addRefreshFailedListener(this::onException);
     tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
     if (conditionPanel != null) {
+      Control refreshControl = Control.builder(tableModel::refresh)
+              .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
+              .build();
       KeyEvents.builder(KeyEvent.VK_ENTER)
-              .onKeyReleased()
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(Control.builder(tableModel::refresh)
-                      .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
-                      .build())
+              .action(refreshControl)
               .enable(conditionPanel);
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
+      if (conditionPanel instanceof EntityTableConditionPanel) {
+        addComboBoxRefreshOnEnterControl((EntityTableConditionPanel) conditionPanel, refreshControl);
+      }
       if (conditionPanel.hasAdvancedView()) {
         conditionPanel.addAdvancedListener(advanced -> {
           if (isConditionPanelVisible()) {
@@ -1506,6 +1513,24 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
           }
         });
       }
+    }
+  }
+
+  private void addComboBoxRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
+    tableConditionPanel.getTableColumns().forEach(column -> {
+      ColumnConditionPanel<? extends Attribute<?>, ?> conditionPanel = tableConditionPanel.getConditionPanel((Attribute<?>) column.getIdentifier());
+      if (conditionPanel != null) {
+        enableRefreshOnEnterControl(conditionPanel.getOperatorComboBox(), refreshControl);
+        enableRefreshOnEnterControl(conditionPanel.getEqualField(), refreshControl);
+        enableRefreshOnEnterControl(conditionPanel.getLowerBoundField(), refreshControl);
+        enableRefreshOnEnterControl(conditionPanel.getUpperBoundField(), refreshControl);
+      }
+    });
+  }
+
+  private void enableRefreshOnEnterControl(JComponent component, Control refreshControl) {
+    if (component instanceof JComboBox) {
+      new RefreshOnEnterAction((JComboBox<?>) component, refreshControl);
     }
   }
 
@@ -1759,6 +1784,32 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       }
 
       return new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES);
+    }
+  }
+
+  private static final class RefreshOnEnterAction extends AbstractAction {
+
+    private static final String ENTER_PRESSED = "enterPressed";
+
+    private final JComboBox<?> comboBox;
+    private final Control refreshControl;
+    private final Action enterPressedAction;
+
+    private RefreshOnEnterAction(JComboBox<?> comboBox, Control refreshControl) {
+      this.comboBox = comboBox;
+      this.refreshControl = refreshControl;
+      this.enterPressedAction = comboBox.getActionMap().get(ENTER_PRESSED);
+      this.comboBox.getActionMap().put(ENTER_PRESSED, this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (comboBox.isPopupVisible()) {
+        enterPressedAction.actionPerformed(e);
+      }
+      else if (refreshControl.isEnabled()) {
+        refreshControl.actionPerformed(e);
+      }
     }
   }
 }
