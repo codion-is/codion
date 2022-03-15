@@ -8,6 +8,7 @@ import is.codion.swing.common.ui.combobox.Completion;
 import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
+import java.awt.event.ItemListener;
 
 /**
  * Builds a {@link JComboBox}.
@@ -78,4 +79,10 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
    * @return this builder instance
    */
   B popupWidth(int popupWidth);
+
+  /**
+   * @param itemListener the item listener
+   * @return this builder instance
+   */
+  B itemListener(ItemListener itemListener);
 }

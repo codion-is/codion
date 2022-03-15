@@ -24,6 +24,7 @@ import javax.swing.text.JTextComponent;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   private int maximumRowCount = -1;
   private boolean moveCaretOnSelection = true;
   private int popupWidth = 0;
+  private ItemListener itemListener;
 
   protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
     super(linkedValue);
@@ -113,6 +115,12 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   }
 
   @Override
+  public final B itemListener(ItemListener itemListener) {
+    this.itemListener = requireNonNull(itemListener);
+    return (B) this;
+  }
+
+  @Override
   protected final C buildComponent() {
     C comboBox = createComboBox();
     if (renderer != null) {
@@ -135,6 +143,9 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
     }
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
+    }
+    if (itemListener != null) {
+      comboBox.addItemListener(itemListener);
     }
     if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretOnSelection) {
       ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
