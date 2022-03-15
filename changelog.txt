@@ -7907,3 +7907,4 @@
   TemporalField.Builder.dateTimePattern() re-added, TemporalFieldBuilder extends TemporalField.Builder
   ComboBoxBuilder.itemListener() added
   ColumnConditionPanel, operator combo box tooltip now describes the selected operator
+  EntityTableConditionPanel, hacky fix for refreshing when enter is pressed, combo box kept stealing the ENTER key
