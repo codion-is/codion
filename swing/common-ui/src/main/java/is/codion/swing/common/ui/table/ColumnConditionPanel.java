@@ -9,12 +9,12 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.Components;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -495,12 +495,17 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private JComboBox<Operator> initializeOperatorComboBox(List<Operator> operators) {
-    return Components.comboBox(new DefaultComboBoxModel<>(operators.toArray(new Operator[0])),
-                    conditionModel.getOperatorValue())
+    SwingFilteredComboBoxModel<Operator> operatorComboBoxModel = new SwingFilteredComboBoxModel<Operator>();
+    operatorComboBoxModel.setContents(operators);
+    operatorComboBoxModel.setSelectedItem(operators.get(0));
+    return Components.comboBox(operatorComboBoxModel, conditionModel.getOperatorValue())
             .completionMode(Completion.Mode.NONE)
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
             .maximumRowCount(operators.size())
+            .toolTipText(operatorComboBoxModel.getSelectedValue().getDescription())
+            .onBuild(comboBox -> operatorComboBoxModel.addSelectionListener(selectedOperator ->
+                    comboBox.setToolTipText(selectedOperator.getDescription())))
             .build();
   }
 
