@@ -550,7 +550,7 @@ public interface EntityDefinition {
      * @return this {@link Builder} instance
      * @throws IllegalStateException in case a group by clause has already been set,
      * for example automatically, based on grouping properties
-     * @see ColumnProperty.Builder#groupingColumn()
+     * @see ColumnProperty.Builder#groupingColumn(boolean)
      */
     Builder groupByClause(String groupByClause);
 
