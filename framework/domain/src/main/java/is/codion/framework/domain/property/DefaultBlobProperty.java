@@ -14,7 +14,7 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
   private DefaultBlobProperty(DefaultBlobPropertyBuilder builder) {
     super(builder);
     this.eagerlyLoaded = builder.eagerlyLoaded;
-    builder.hidden();
+    builder.hidden(true);
   }
 
   @Override

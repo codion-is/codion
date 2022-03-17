@@ -98,7 +98,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             columnProperty(Country.INDEPYEAR_SEARCHABLE)
                     .columnExpression("to_char(indepyear)")
                     .searchProperty()
-                    .readOnly(),
+                    .readOnly(true),
             columnProperty(Country.POPULATION, "Population")
                     .nullable(false)
                     .numberFormatGrouping(true),

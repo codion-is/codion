@@ -283,7 +283,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     "select sum(unitprice * quantity) from chinook.invoiceline " +
                             "where invoiceid = invoice.invoiceid")
                     .maximumFractionDigits(2)
-                    .hidden())
+                    .hidden(true))
             // tag::identity[]
             .keyGenerator(identity())
             // end::identity[]

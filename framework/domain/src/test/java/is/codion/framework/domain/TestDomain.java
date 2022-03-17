@@ -227,7 +227,7 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(150).maximumLength(13)
                     .beanProperty("location"),
             booleanProperty(Department.ACTIVE, null, Integer.class, 1, 0)
-                    .readOnly()
+                    .readOnly(true)
                     .beanProperty("active"),
             blobProperty(Department.DATA))
             .smallDataset()

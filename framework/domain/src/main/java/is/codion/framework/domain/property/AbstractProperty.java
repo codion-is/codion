@@ -472,11 +472,6 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B hidden() {
-      return hidden(true);
-    }
-
-    @Override
     public final B hidden(boolean hidden) {
       this.hidden = hidden;
       return (B) this;

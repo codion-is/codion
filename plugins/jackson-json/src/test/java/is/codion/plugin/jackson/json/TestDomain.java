@@ -50,7 +50,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(ENTITY_OFFSET_DATE_TIME),
             columnProperty(ENTITY_BLOB),
             columnProperty(ENTITY_READ_ONLY)
-                    .readOnly(),
+                    .readOnly(true),
             columnProperty(ENTITY_BOOLEAN),
             columnProperty(ENTITY_TIME))
             .conditionProvider(ENTITY_CONDITION_TYPE, (attributes, values) -> "1 = 2");

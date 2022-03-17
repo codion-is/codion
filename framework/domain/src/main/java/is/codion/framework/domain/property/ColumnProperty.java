@@ -197,12 +197,6 @@ public interface ColumnProperty<T> extends Property<T> {
     B columnExpression(String columnExpression);
 
     /**
-     * Specifies that this property should not be included during insert and update operations
-     * @return this instance
-     */
-    B readOnly();
-
-    /**
      * Specifies whether this property should be included during insert and update operations
      * @param readOnly true if this property should be read-only
      * @return this instance

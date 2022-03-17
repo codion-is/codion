@@ -339,11 +339,6 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public B readOnly() {
-      return readOnly(true);
-    }
-
-    @Override
     public B readOnly(boolean readOnly) {
       this.insertable = !readOnly;
       this.updatable = !readOnly;
@@ -491,11 +486,6 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     protected AbstractReadOnlyColumnPropertyBuilder(Attribute<T> attribute, String caption) {
       super(attribute, caption);
       super.readOnly(true);
-    }
-
-    @Override
-    public final B readOnly() {
-      throw new UnsupportedOperationException("Read only by default: " + attribute);
     }
 
     @Override
