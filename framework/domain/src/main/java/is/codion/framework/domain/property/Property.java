@@ -294,12 +294,6 @@ public interface Property<T> {
     B defaultValueSupplier(ValueSupplier<T> supplier);
 
     /**
-     * Specifies that this property should be hidden in table views
-     * @return this instance
-     */
-    B hidden();
-
-    /**
      * Specifies whether this property should be hidden in table views
      * @param hidden true if this property should be hidden
      * @return this instance

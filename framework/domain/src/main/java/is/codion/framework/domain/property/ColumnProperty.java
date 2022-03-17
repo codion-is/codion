@@ -197,12 +197,6 @@ public interface ColumnProperty<T> extends Property<T> {
     B columnExpression(String columnExpression);
 
     /**
-     * Specifies that this property should not be included during insert and update operations
-     * @return this instance
-     */
-    B readOnly();
-
-    /**
      * Specifies whether this property should be included during insert and update operations
      * @param readOnly true if this property should be read-only
      * @return this instance
@@ -223,9 +217,10 @@ public interface ColumnProperty<T> extends Property<T> {
 
     /**
      * Specifies that the underlying table column has a default value
+     * @param columnHasDefaultValue true if the column has a default value
      * @return this instance
      */
-    B columnHasDefaultValue();
+    B columnHasDefaultValue(boolean columnHasDefaultValue);
 
     /**
      * Sets the zero based primary key index of this property.
@@ -240,24 +235,27 @@ public interface ColumnProperty<T> extends Property<T> {
     B primaryKeyIndex(int index);
 
     /**
-     * Specifies that this column should be used in a group by clause
-     * @throws IllegalStateException in case the column has already been defined as an aggregate column
+     * Specifies that this column should be used in a group by clause.
+     * Also specifies that this column should not be an aggregate column.
+     * @param groupingColumn true if this is a grouping column
      * @return this instance
      */
-    B groupingColumn();
+    B groupingColumn(boolean groupingColumn);
 
     /**
      * Specifies that this column is an aggregate function column
-     * @throws IllegalStateException in case the column has already been defined as a grouping column
+     * Also specifies that this column should not be a grouping column.
+     * @param aggregateColumn true if this is an aggregate column
      * @return this instance
      */
-    B aggregateColumn();
+    B aggregateColumn(boolean aggregateColumn);
 
     /**
-     * Specifies that this property should not be included in select queries
+     * Specifies whether this property should be included in select queries
+     * @param selectable true if this property should be included in select queries
      * @return this instance
      */
-    B nonSelectable();
+    B selectable(boolean selectable);
 
     /**
      * Specifies that this property is included when searching for an entity by a string value.

@@ -7943,3 +7943,7 @@
   ComboBoxBuilder.itemListener() added
   ColumnConditionPanel, operator combo box tooltip now describes the selected operator
   EntityTableConditionPanel, hacky fix for refreshing when enter is pressed, combo box kept stealing the ENTER key
+  ColumnProperty.Builder.nonSelectable() renamed selectable(), now with boolean parameter
+  Property.hidden() and ColumnProperty.readOnly() without boolean parameter removed
+  ColumnProperty.columnHasDefaultValue() boolean parameter added
+  ColumnProperty.groupingColumn() and aggregateColumn() boolean parameter added

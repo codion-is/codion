@@ -106,7 +106,7 @@ public final class Petstore extends DefaultDomain {
                     .nullable(false),
             columnProperty(Category.IMAGE_URL, Category.IMAGE_URL.getName())
                     .columnName("imageurl")
-                    .hidden())
+                    .hidden(true))
             .keyGenerator(increment("petstore.category", "categoryid"))
             .orderBy(orderBy().ascending(Category.NAME))
             .stringFactory(stringFactory(Category.NAME))
@@ -144,7 +144,7 @@ public final class Petstore extends DefaultDomain {
             columnProperty(Product.IMAGE_URL, Product.IMAGE_URL.getName())
                     .columnName("imageurl")
                     .maximumLength(55)
-                    .hidden())
+                    .hidden(true))
             .keyGenerator(increment("petstore.product", "productid"))
             .orderBy(orderBy().ascending(Product.NAME))
             .stringFactory(stringFactory(Product.CATEGORY_FK)
@@ -226,11 +226,11 @@ public final class Petstore extends DefaultDomain {
             columnProperty(Item.IMAGE_URL, Item.IMAGE_URL.getName())
                     .columnName("imageurl")
                     .maximumLength(55)
-                    .hidden(),
+                    .hidden(true),
             columnProperty(Item.IMAGE_THUMB_URL, Item.IMAGE_THUMB_URL.getName())
                     .columnName("imagethumburl")
                     .maximumLength(55)
-                    .hidden(),
+                    .hidden(true),
             columnProperty(Item.PRICE, Item.PRICE.getName())
                     .columnName("price")
                     .nullable(false)

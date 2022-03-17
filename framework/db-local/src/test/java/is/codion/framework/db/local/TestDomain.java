@@ -303,19 +303,19 @@ public final class TestDomain extends DefaultDomain {
     define(Job.TYPE, "scott.emp",
             columnProperty(Job.JOB)
                     .primaryKeyIndex(0)
-                    .groupingColumn(),
+                    .groupingColumn(true),
             columnProperty(Job.MAX_SALARY)
                     .columnExpression("max(sal)")
-                    .aggregateColumn(),
+                    .aggregateColumn(true),
             columnProperty(Job.MIN_SALARY)
                     .columnExpression("min(sal)")
-                    .aggregateColumn(),
+                    .aggregateColumn(true),
             columnProperty(Job.MAX_COMMISSION)
                     .columnExpression("max(comm)")
-                    .aggregateColumn(),
+                    .aggregateColumn(true),
             columnProperty(Job.MIN_COMMISSION)
                     .columnExpression("min(comm)")
-                    .aggregateColumn())
+                    .aggregateColumn(true))
             .havingClause("job <> 'PRESIDENT'");
   }
 
