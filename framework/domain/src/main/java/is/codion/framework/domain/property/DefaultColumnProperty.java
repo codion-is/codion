@@ -392,8 +392,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public final B nonSelectable() {
-      this.selectable = false;
+    public final B selectable(boolean selectable) {
+      this.selectable = selectable;
       return (B) this;
     }
 

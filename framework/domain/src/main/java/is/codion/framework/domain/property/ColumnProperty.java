@@ -254,10 +254,11 @@ public interface ColumnProperty<T> extends Property<T> {
     B aggregateColumn();
 
     /**
-     * Specifies that this property should not be included in select queries
+     * Specifies whether this property should be included in select queries
+     * @param selectable true if this property should be included in select queries
      * @return this instance
      */
-    B nonSelectable();
+    B selectable(boolean selectable);
 
     /**
      * Specifies that this property is included when searching for an entity by a string value.

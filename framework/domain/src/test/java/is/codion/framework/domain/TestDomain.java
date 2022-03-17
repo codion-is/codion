@@ -159,7 +159,7 @@ public final class TestDomain extends DefaultDomain {
                     .columnHasDefaultValue()
                     .beanProperty("double"),
             columnProperty(Detail.STRING, "Detail string")
-                    .nonSelectable(),
+                    .selectable(false),
             columnProperty(Detail.DATE, Detail.DATE.getName())
                     .columnHasDefaultValue(),
             columnProperty(Detail.TIMESTAMP, Detail.TIMESTAMP.getName()),
