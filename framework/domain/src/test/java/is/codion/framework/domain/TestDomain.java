@@ -156,19 +156,19 @@ public final class TestDomain extends DefaultDomain {
                     .beanProperty("id"),
             columnProperty(Detail.INT, Detail.INT.getName()),
             columnProperty(Detail.DOUBLE, Detail.DOUBLE.getName())
-                    .columnHasDefaultValue()
+                    .columnHasDefaultValue(true)
                     .beanProperty("double"),
             columnProperty(Detail.STRING, "Detail string")
                     .selectable(false),
             columnProperty(Detail.DATE, Detail.DATE.getName())
-                    .columnHasDefaultValue(),
+                    .columnHasDefaultValue(true),
             columnProperty(Detail.TIMESTAMP, Detail.TIMESTAMP.getName()),
             columnProperty(Detail.BOOLEAN, Detail.BOOLEAN.getName())
                     .nullable(false)
                     .defaultValue(true)
                     .description("A boolean property"),
             columnProperty(Detail.BOOLEAN_NULLABLE, Detail.BOOLEAN_NULLABLE.getName())
-                    .columnHasDefaultValue()
+                    .columnHasDefaultValue(true)
                     .defaultValue(true),
             columnProperty(Detail.MASTER_ID),
             foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.getName())

@@ -86,7 +86,7 @@ public final class Store extends DefaultDomain {
                     .maximumLength(40),
             columnProperty(Customer.EMAIL, "Email"),
             columnProperty(Customer.IS_ACTIVE, "Is active")
-                    .columnHasDefaultValue()
+                    .columnHasDefaultValue(true)
                     .defaultValue(true))
             .keyGenerator(new UUIDKeyGenerator())
             // tag::customerStringFactory[]
@@ -107,7 +107,7 @@ public final class Store extends DefaultDomain {
                     .nullable(false)
                     .maximumLength(50),
             columnProperty(Address.VALID, "Valid")
-                    .columnHasDefaultValue()
+                    .columnHasDefaultValue(true)
                     .nullable(false))
             .stringFactory(stringFactory(Address.STREET)
                     .text(", ").value(Address.CITY))

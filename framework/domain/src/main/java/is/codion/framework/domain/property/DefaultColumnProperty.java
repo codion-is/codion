@@ -333,8 +333,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public final B columnHasDefaultValue() {
-      this.columnHasDefaultValue = true;
+    public final B columnHasDefaultValue(boolean columnHasDefaultValue) {
+      this.columnHasDefaultValue = columnHasDefaultValue;
       return (B) this;
     }
 

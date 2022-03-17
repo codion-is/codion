@@ -161,7 +161,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             foreignKeyProperty(CountryLanguage.COUNTRY_FK, "Country"),
             // tag::booleanProperty[]
             columnProperty(CountryLanguage.IS_OFFICIAL, "Is official")
-                    .columnHasDefaultValue()
+                    .columnHasDefaultValue(true)
                     .nullable(false),
             // end::booleanProperty[]
             // tag::derivedProperty[]

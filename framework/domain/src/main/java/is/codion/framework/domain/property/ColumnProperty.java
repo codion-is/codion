@@ -217,9 +217,10 @@ public interface ColumnProperty<T> extends Property<T> {
 
     /**
      * Specifies that the underlying table column has a default value
+     * @param columnHasDefaultValue true if the column has a default value
      * @return this instance
      */
-    B columnHasDefaultValue();
+    B columnHasDefaultValue(boolean columnHasDefaultValue);
 
     /**
      * Sets the zero based primary key index of this property.
