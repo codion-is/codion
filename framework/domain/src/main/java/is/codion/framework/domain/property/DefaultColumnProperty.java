@@ -369,20 +369,16 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public final B groupingColumn() {
-      if (this.aggregateColumn) {
-        throw new IllegalStateException(this.columnName + " is an aggregate column: " + attribute);
-      }
-      this.groupingColumn = true;
+    public final B groupingColumn(boolean groupingColumn) {
+      this.groupingColumn = groupingColumn;
+      this.aggregateColumn = !groupingColumn;
       return (B) this;
     }
 
     @Override
-    public final B aggregateColumn() {
-      if (this.groupingColumn) {
-        throw new IllegalStateException(this.columnName + " is a grouping column: " + attribute);
-      }
-      this.aggregateColumn = true;
+    public final B aggregateColumn(boolean aggregateColumn) {
+      this.aggregateColumn = aggregateColumn;
+      this.groupingColumn = !aggregateColumn;
       return (B) this;
     }
 

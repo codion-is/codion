@@ -235,18 +235,20 @@ public interface ColumnProperty<T> extends Property<T> {
     B primaryKeyIndex(int index);
 
     /**
-     * Specifies that this column should be used in a group by clause
-     * @throws IllegalStateException in case the column has already been defined as an aggregate column
+     * Specifies that this column should be used in a group by clause.
+     * Also specifies that this column should not be an aggregate column.
+     * @param groupingColumn true if this is a grouping column
      * @return this instance
      */
-    B groupingColumn();
+    B groupingColumn(boolean groupingColumn);
 
     /**
      * Specifies that this column is an aggregate function column
-     * @throws IllegalStateException in case the column has already been defined as a grouping column
+     * Also specifies that this column should not be a grouping column.
+     * @param aggregateColumn true if this is an aggregate column
      * @return this instance
      */
-    B aggregateColumn();
+    B aggregateColumn(boolean aggregateColumn);
 
     /**
      * Specifies whether this property should be included in select queries

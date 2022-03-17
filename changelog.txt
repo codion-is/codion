@@ -7911,3 +7911,4 @@
   ColumnProperty.Builder.nonSelectable() renamed selectable(), now with boolean parameter
   Property.hidden() and ColumnProperty.readOnly() without boolean parameter removed
   ColumnProperty.columnHasDefaultValue() boolean parameter added
+  ColumnProperty.groupingColumn() and aggregateColumn() boolean parameter added

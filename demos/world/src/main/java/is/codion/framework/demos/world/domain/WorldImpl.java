@@ -216,31 +216,31 @@ public final class WorldImpl extends DefaultDomain implements World {
   void continent() {
     define(Continent.TYPE, "world.country",
             columnProperty(Continent.NAME, "Continent")
-                    .groupingColumn()
+                    .groupingColumn(true)
                     .beanProperty("name"),
             columnProperty(Continent.SURFACE_AREA, "Surface area")
                     .columnExpression("sum(surfacearea)")
-                    .aggregateColumn()
+                    .aggregateColumn(true)
                     .numberFormatGrouping(true),
             columnProperty(Continent.POPULATION, "Population")
                     .columnExpression("sum(population)")
-                    .aggregateColumn()
+                    .aggregateColumn(true)
                     .numberFormatGrouping(true),
             columnProperty(Continent.MIN_LIFE_EXPECTANCY, "Min. life expectancy")
                     .columnExpression("min(lifeexpectancy)")
-                    .aggregateColumn(),
+                    .aggregateColumn(true),
             columnProperty(Continent.MAX_LIFE_EXPECTANCY, "Max. life expectancy")
                     .columnExpression("max(lifeexpectancy)")
-                    .aggregateColumn(),
+                    .aggregateColumn(true),
             columnProperty(Continent.MIN_INDEPENDENCE_YEAR, "Min. ind. year")
                     .columnExpression("min(indepyear)")
-                    .aggregateColumn(),
+                    .aggregateColumn(true),
             columnProperty(Continent.MAX_INDEPENDENCE_YEAR, "Max. ind. year")
                     .columnExpression("max(indepyear)")
-                    .aggregateColumn(),
+                    .aggregateColumn(true),
             columnProperty(Continent.GNP, "GNP")
                     .columnExpression("sum(gnp)")
-                    .aggregateColumn()
+                    .aggregateColumn(true)
                     .numberFormatGrouping(true))
             .readOnly()
             .caption("Continent");
