@@ -1518,20 +1518,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void addComboBoxRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
     tableConditionPanel.getTableColumns().forEach(column -> {
-      ColumnConditionPanel<? extends Attribute<?>, ?> conditionPanel = tableConditionPanel.getConditionPanel((Attribute<?>) column.getIdentifier());
-      if (conditionPanel != null) {
-        enableRefreshOnEnterControl(conditionPanel.getOperatorComboBox(), refreshControl);
-        enableRefreshOnEnterControl(conditionPanel.getEqualField(), refreshControl);
-        enableRefreshOnEnterControl(conditionPanel.getLowerBoundField(), refreshControl);
-        enableRefreshOnEnterControl(conditionPanel.getUpperBoundField(), refreshControl);
+      ColumnConditionPanel<? extends Attribute<?>, ?> columnConditionPanel = tableConditionPanel.getConditionPanel((Attribute<?>) column.getIdentifier());
+      if (columnConditionPanel != null) {
+        enableRefreshOnEnterControl(columnConditionPanel.getOperatorComboBox(), refreshControl);
+        enableRefreshOnEnterControl(columnConditionPanel.getEqualField(), refreshControl);
+        enableRefreshOnEnterControl(columnConditionPanel.getLowerBoundField(), refreshControl);
+        enableRefreshOnEnterControl(columnConditionPanel.getUpperBoundField(), refreshControl);
       }
     });
-  }
-
-  private void enableRefreshOnEnterControl(JComponent component, Control refreshControl) {
-    if (component instanceof JComboBox) {
-      new RefreshOnEnterAction((JComboBox<?>) component, refreshControl);
-    }
   }
 
   private void setConditionPanelVisibleInternal(boolean visible) {
@@ -1659,6 +1653,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     else {
       WaitCursor.hide(EntityTablePanel.this);
+    }
+  }
+
+  private static void enableRefreshOnEnterControl(JComponent component, Control refreshControl) {
+    if (component instanceof JComboBox) {
+      new RefreshOnEnterAction((JComboBox<?>) component, refreshControl);
     }
   }
 
