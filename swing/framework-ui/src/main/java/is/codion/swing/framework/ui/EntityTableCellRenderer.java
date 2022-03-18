@@ -14,6 +14,7 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.text.Format;
 import java.time.format.DateTimeFormatter;
+import java.util.function.Function;
 
 /**
  * Provides TableCellRenderer implementations for EntityTablePanels via {@link #builder(SwingEntityTableModel, Property)}.
@@ -153,6 +154,12 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
      * @return this builder instance
      */
     Builder rightPadding(int rightPadding);
+
+    /**
+     * @param displayValueProvider provides the value to display in the cell, formatted or otherwise
+     * @return this builder instance
+     */
+    Builder displayValueProvider(Function<Object, Object> displayValueProvider);
 
     /**
      * @return a new {@link EntityTableCellRenderer} instance based on this builder

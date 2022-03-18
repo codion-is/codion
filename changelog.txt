@@ -7950,3 +7950,4 @@
   DomainToString bug fixed, did not add the aforementioned boolean parameter to columnHasDefaultValue()
   EntitySearchField.Builder.searchHintEnabled() added
   FilteredEditModel.ASYNC_REFRESH now defaults to true, no longer experimental, seems to just work
+  EntityTableCellRenderer.Builder.displayValueProvider() added, for custom display values, f.ex. for displaying the actual item instead the caption for ItemProperty values

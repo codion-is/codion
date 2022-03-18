@@ -22,6 +22,7 @@ import java.awt.Component;
 import java.text.Format;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
+import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Utilities.darker;
 import static java.util.Objects.requireNonNull;
@@ -40,6 +41,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   private final boolean toolTipData;
   private final boolean displayConditionState;
   private final Border border;
+  private final Function<Object, Object> displayValueProvider;
 
   private DefaultEntityTableCellRenderer(DefaultBuilder builder, Border border) {
     this.tableModel = requireNonNull(builder.tableModel, "tableModel");
@@ -49,6 +51,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     this.toolTipData = builder.toolTipData;
     this.displayConditionState = builder.displayConditionState;
     this.border = border;
+    this.displayValueProvider = builder.displayValueProvider == null ? new DefaultDisplayValueProvider() : builder.displayValueProvider;
     setHorizontalAlignment(builder.horizontalAlignment);
   }
 
@@ -99,18 +102,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
    */
   @Override
   protected void setValue(Object value) {
-    if (property instanceof ItemProperty) {
-      setText(getItemCaption(value, (ItemProperty<Object>) property));
-    }
-    else if (value instanceof Temporal) {
-      setText(dateTimeFormatter.format((Temporal) value));
-    }
-    else if (format != null && value != null) {
-      setText(format.format(value));
-    }
-    else {
-      super.setValue(value);
-    }
+    super.setValue(displayValueProvider.apply(value));
   }
 
   private static String getItemCaption(Object value, ItemProperty<Object> itemProperty) {
@@ -120,6 +112,23 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     }
 
     return itemProperty.getItem(value).getCaption();
+  }
+
+  private final class DefaultDisplayValueProvider implements Function<Object, Object> {
+    @Override
+    public Object apply(Object value) {
+      if (property instanceof ItemProperty) {
+        return getItemCaption(value, (ItemProperty<Object>) property);
+      }
+      else if (value instanceof Temporal) {
+        return dateTimeFormatter.format((Temporal) value);
+      }
+      else if (format != null && value != null) {
+        return format.format(value);
+      }
+
+      return value;
+    }
   }
 
   private static final class BooleanRenderer extends NullableCheckBox
@@ -258,6 +267,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private boolean displayConditionState = true;
     private int leftPadding = EntityTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
     private int rightPadding = EntityTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
+    private Function<Object, Object> displayValueProvider;
 
     DefaultBuilder(SwingEntityTableModel tableModel, Property<?> property) {
       this.tableModel = requireNonNull(tableModel);
@@ -307,6 +317,12 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     @Override
     public Builder rightPadding(int rightPadding) {
       this.rightPadding = rightPadding;
+      return this;
+    }
+
+    @Override
+    public Builder displayValueProvider(Function<Object, Object> displayValueProvider) {
+      this.displayValueProvider = requireNonNull(displayValueProvider);
       return this;
     }
 
