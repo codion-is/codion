@@ -495,7 +495,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private JComboBox<Operator> initializeOperatorComboBox(List<Operator> operators) {
-    SwingFilteredComboBoxModel<Operator> operatorComboBoxModel = new SwingFilteredComboBoxModel<Operator>();
+    SwingFilteredComboBoxModel<Operator> operatorComboBoxModel = new SwingFilteredComboBoxModel<>();
     operatorComboBoxModel.setContents(operators);
     operatorComboBoxModel.setSelectedItem(operators.get(0));
     return Components.comboBox(operatorComboBoxModel, conditionModel.getOperatorValue())
@@ -538,27 +538,38 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void singleValuePanel(JComponent boundField) {
-    List<Component> inputPanelComponents = Arrays.asList(inputPanel.getComponents());
-    if (inputPanelComponents.contains(rangePanel)) {
-      //going from range to single value
+    if (!Arrays.asList(inputPanel.getComponents()).contains(boundField)) {
+      boolean requestFocus = boundFieldHasFocus();
       inputPanel.removeAll();
       inputPanel.add(boundField, BorderLayout.CENTER);
-    }
-    else if (!inputPanelComponents.contains(boundField)) {
-      inputPanel.removeAll();
-      inputPanel.add(boundField, BorderLayout.CENTER);
+      if (requestFocus) {
+        boundField.requestFocusInWindow();
+      }
     }
   }
 
   private void rangePanel() {
-    List<Component> inputPanelComponents = Arrays.asList(inputPanel.getComponents());
-    if (!inputPanelComponents.contains(rangePanel)) {
-      //going from single value to range
+    if (!Arrays.asList(inputPanel.getComponents()).contains(rangePanel)) {
+      boolean requestFocus = boundFieldHasFocus();
+      if (requestFocus) {
+        //keep the focus here temporarily while we remove all
+        //otherwise it jumps to the first focusable component
+        inputPanel.requestFocusInWindow();
+      }
       inputPanel.removeAll();
       rangePanel.add(lowerBoundField);
       rangePanel.add(upperBoundField);
       inputPanel.add(rangePanel, BorderLayout.CENTER);
+      if (requestFocus) {
+        lowerBoundField.requestFocusInWindow();
+      }
     }
+  }
+
+  private boolean boundFieldHasFocus() {
+    return equalField.hasFocus() ||
+            lowerBoundField != null && lowerBoundField.hasFocus() ||
+            upperBoundField != null && upperBoundField.hasFocus();
   }
 
   private final class OperatorBoxPopupWidthListener extends ComponentAdapter {
