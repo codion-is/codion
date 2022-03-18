@@ -124,7 +124,7 @@ public final class EntitySearchField extends JTextField {
     linkToModel();
     setToolTipText(searchModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
-    addFocusListener(initializeFocusListener());
+    addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterKeyListener());
     addKeyListener(new EscapeKeyListener());
     this.searchHint = searchHintEnabled ? TextFieldHint.create(this, Messages.get(Messages.SEARCH_FIELD_HINT)) : null;
@@ -261,32 +261,6 @@ public final class EntitySearchField extends JTextField {
         searchHint.updateHint();
       }
     });
-  }
-
-  private FocusListener initializeFocusListener() {
-    return new FocusListener() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        updateColors();
-      }
-      @Override
-      public void focusLost(FocusEvent e) {
-        if (!e.isTemporary()) {
-          if (getText().isEmpty()) {
-            getModel().setSelectedEntity(null);
-          }
-          else if (shouldPerformSearch()) {
-            performSearch(false);
-          }
-        }
-        updateColors();
-      }
-
-      private boolean shouldPerformSearch() {
-        return searchHint != null && !searchHint.isHintVisible() &&
-                !performingSearch && !model.searchStringRepresentsSelected();
-      }
-    };
   }
 
   private void configureColors() {
@@ -657,6 +631,32 @@ public final class EntitySearchField extends JTextField {
     @Override
     protected void setComponentValue(EntitySearchField component, List<Entity> value) {
       component.getModel().setSelectedEntities(value);
+    }
+  }
+
+  private final class SearchFocusListener implements FocusListener {
+
+    @Override
+    public void focusGained(FocusEvent e) {
+      updateColors();
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+      if (!e.isTemporary()) {
+        if (getText().isEmpty()) {
+          getModel().setSelectedEntity(null);
+        }
+        else if (shouldPerformSearch()) {
+          performSearch(false);
+        }
+      }
+      updateColors();
+    }
+
+    private boolean shouldPerformSearch() {
+      return searchHint != null && !searchHint.isHintVisible() &&
+              !performingSearch && !model.searchStringRepresentsSelected();
     }
   }
 
