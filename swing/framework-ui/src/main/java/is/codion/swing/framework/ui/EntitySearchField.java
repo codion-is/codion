@@ -116,7 +116,7 @@ public final class EntitySearchField extends JTextField {
   private Color invalidBackgroundColor;
   private boolean performingSearch = false;
 
-  private EntitySearchField(EntitySearchModel searchModel) {
+  private EntitySearchField(EntitySearchModel searchModel, boolean searchHintEnabled) {
     requireNonNull(searchModel, SEARCH_MODEL);
     this.model = searchModel;
     this.settingsPanel = new SettingsPanel(searchModel);
@@ -127,7 +127,7 @@ public final class EntitySearchField extends JTextField {
     addFocusListener(initializeFocusListener());
     addKeyListener(new EnterKeyListener());
     addKeyListener(new EscapeKeyListener());
-    this.searchHint = TextFieldHint.create(this, Messages.get(Messages.SEARCH_FIELD_HINT));
+    this.searchHint = searchHintEnabled ? TextFieldHint.create(this, Messages.get(Messages.SEARCH_FIELD_HINT)) : null;
     configureColors();
     Utilities.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
     Utilities.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
@@ -138,7 +138,9 @@ public final class EntitySearchField extends JTextField {
     super.updateUI();
     if (model != null) {
       configureColors();
-      searchHint.updateHint();
+      if (searchHint != null) {
+        searchHint.updateHint();
+      }
     }
     if (selectionProvider != null) {
       selectionProvider.updateUI();
@@ -232,6 +234,12 @@ public final class EntitySearchField extends JTextField {
     Builder lowerCase(boolean lowerCase);
 
     /**
+     * @param searchHintEnabled true if a search hint text should be visible when the field is empty and not focused
+     * @return this builder instance
+     */
+    Builder searchHintEnabled(boolean searchHintEnabled);
+
+    /**
      * @param selectionProviderFactory the selection provider factory to use
      * @return this builder instance
      */
@@ -249,7 +257,7 @@ public final class EntitySearchField extends JTextField {
     model.getSearchStringValue().addDataListener(searchString -> updateColors());
     model.addSelectedEntitiesListener(entities -> {
       setCaretPosition(0);
-      if (entities.isEmpty()) {
+      if (entities.isEmpty() && searchHint != null) {
         searchHint.updateHint();
       }
     });
@@ -267,11 +275,16 @@ public final class EntitySearchField extends JTextField {
           if (getText().isEmpty()) {
             getModel().setSelectedEntity(null);
           }
-          else if (!searchHint.isHintVisible() && !performingSearch && !model.searchStringRepresentsSelected()) {
+          else if (shouldPerformSearch()) {
             performSearch(false);
           }
         }
         updateColors();
+      }
+
+      private boolean shouldPerformSearch() {
+        return searchHint != null && !searchHint.isHintVisible() &&
+                !performingSearch && !model.searchStringRepresentsSelected();
       }
     };
   }
@@ -675,6 +688,7 @@ public final class EntitySearchField extends JTextField {
     private int columns = TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS.get();
     private boolean upperCase;
     private boolean lowerCase;
+    private boolean searchHintEnabled = true;
     private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory;
 
     private DefaultEntitySearchFieldBuilder(EntitySearchModel searchModel) {
@@ -706,6 +720,12 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
+    public Builder searchHintEnabled(boolean searchHintEnabled) {
+      this.searchHintEnabled = searchHintEnabled;
+      return this;
+    }
+
+    @Override
     public Builder selectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory) {
       this.selectionProviderFactory = requireNonNull(selectionProviderFactory);
       return this;
@@ -718,7 +738,7 @@ public final class EntitySearchField extends JTextField {
 
     @Override
     protected EntitySearchField buildComponent() {
-      EntitySearchField searchField = new EntitySearchField(searchModel);
+      EntitySearchField searchField = new EntitySearchField(searchModel, searchHintEnabled);
       searchField.setColumns(columns);
       if (upperCase) {
         TextComponents.upperCase(searchField.getDocument());

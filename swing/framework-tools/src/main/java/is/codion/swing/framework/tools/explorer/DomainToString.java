@@ -120,7 +120,7 @@ final class DomainToString {
               .append(property.getPrimaryKeyIndex()).append(")");
     }
     if (property.columnHasDefaultValue()) {
-      builder.append(Util.LINE_SEPARATOR).append("                .columnHasDefaultValue()");
+      builder.append(Util.LINE_SEPARATOR).append("                .columnHasDefaultValue(true)");
     }
     if (!property.isNullable() && !property.isPrimaryKeyColumn()) {
       builder.append(Util.LINE_SEPARATOR).append("                .nullable(false)");
