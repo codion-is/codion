@@ -7949,3 +7949,4 @@
   ColumnProperty.groupingColumn() and aggregateColumn() boolean parameter added
   DomainToString bug fixed, did not add the aforementioned boolean parameter to columnHasDefaultValue()
   EntitySearchField.Builder.searchHintEnabled() added
+  FilteredEditModel.ASYNC_REFRESH now defaults to true, no longer experimental, seems to just work
