@@ -20,11 +20,10 @@ public interface FilteredModel<T> {
 
   /**
    * Specifies whether data models should refresh data on the EDT or asynchronously.<br>
-   * EXPERIMENTAL, enable at your own risk.<br>
    * Value type: Boolean<br>
-   * Default value: false
+   * Default value: true
    */
-  PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh", false);
+  PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh", true);
 
   /**
    * @param listener a listener notified each time this model is filtered
