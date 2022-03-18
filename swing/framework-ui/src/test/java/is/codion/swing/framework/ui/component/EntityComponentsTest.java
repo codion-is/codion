@@ -271,6 +271,7 @@ public final class EntityComponentsTest {
             .columns(20)
             .upperCase(true)
             .lowerCase(false)
+            .searchHintEnabled(true)
             .buildComponentValue();
   }
 
