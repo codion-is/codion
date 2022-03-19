@@ -112,7 +112,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     }
   }
 
-  private Domain initializeDomain(String domainClassName) {
+  private static Domain initializeDomain(String domainClassName) {
     Optional<Domain> optionalDomain = Domain.getInstanceByClassName(domainClassName);
     if (optionalDomain.isPresent()) {
       return optionalDomain.get();
