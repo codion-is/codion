@@ -18,6 +18,6 @@ public class EntityConnectionProviderTest {
 
   @Test
   void test() {
-    assertNotNull(EntityConnectionProvider.connectionProvider().setDomainClassName(TestDomain.class.getName()).setClientTypeId("test"));
+    assertNotNull(EntityConnectionProvider.builder().domainClassName(TestDomain.class.getName()).clientTypeId("test"));
   }
 }

@@ -10,6 +10,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.properties.PropertyValue;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A class responsible for managing a local EntityConnection.
+ * @see LocalEntityConnectionProvider#builder()
  */
 public final class LocalEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
@@ -37,29 +39,15 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   private final boolean shutdownDatabaseOnDisconnect = SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get();
 
-  /**
-   * The underlying domain model
-   */
-  private Domain domain;
+  private final Domain domain;
+  private final Database database;
+  private final int defaultQueryTimeout;
 
-  /**
-   * The underlying database implementation
-   */
-  private Database database;
-
-  private int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
-
-  /**
-   * Instantiates a new LocalEntityConnectionProvider
-   */
-  public LocalEntityConnectionProvider() {}
-
-  /**
-   * Instantiates a new LocalEntityConnectionProvider
-   * @param database the Database instance to base this connection provider on
-   */
-  public LocalEntityConnectionProvider(Database database) {
-    this.database = requireNonNull(database, "database");
+  private LocalEntityConnectionProvider(DefaultBuilder builder) {
+    super(builder);
+    this.domain = initializeDomain(getDomainClassName());
+    this.database = builder.database == null ? DatabaseFactory.getDatabase() : builder.database;
+    this.defaultQueryTimeout = builder.defaultQueryTimeout;
   }
 
   @Override
@@ -79,26 +67,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * @return the underlying domain model
    */
   public Domain getDomain() {
-    if (domain == null) {
-      String domainClassName = getDomainClassName();
-      Optional<Domain> optionalDomain = Domain.getInstanceByClassName(domainClassName);
-      if (optionalDomain.isPresent()) {
-        domain = optionalDomain.get();
-      }
-      else {
-        LOG.debug("Domain of type " + domainClassName + " not found in services");
-      }
-      try {
-        if (domain == null) {
-          domain = (Domain) Class.forName(domainClassName).getConstructor().newInstance();
-        }
-      }
-      catch (Exception e) {
-        LOG.error("Error when instantiating Domain of type " + domainClassName);
-        throw new RuntimeException(e);
-      }
-    }
-
     return domain;
   }
 
@@ -106,10 +74,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * @return the underlying {@link Database} instance
    */
   public Database getDatabase() {
-    if (database == null) {
-      database = DatabaseFactory.getDatabase();
-    }
-
     return database;
   }
 
@@ -121,14 +85,11 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   }
 
   /**
-   * Note that calling this method closes the underlying connection, if one has been established.
-   * @param defaultQueryTimeout the default query timeout in seconds
-   * @return this LocalEntityConnectionProvider instance
+   * Instantiates a new builder instance.
+   * @return a new builder
    */
-  public LocalEntityConnectionProvider setDefaultQueryTimeout(int defaultQueryTimeout) {
-    close();
-    this.defaultQueryTimeout = defaultQueryTimeout;
-    return this;
+  public static Builder builder() {
+    return new DefaultBuilder();
   }
 
   @Override
@@ -146,8 +107,70 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   @Override
   protected void close(EntityConnection connection) {
     connection.close();
-    if (database != null && shutdownDatabaseOnDisconnect) {
+    if (shutdownDatabaseOnDisconnect) {
       database.shutdownEmbedded();
+    }
+  }
+
+  private Domain initializeDomain(String domainClassName) {
+    Optional<Domain> optionalDomain = Domain.getInstanceByClassName(domainClassName);
+    if (optionalDomain.isPresent()) {
+      return optionalDomain.get();
+    }
+    else {
+      LOG.debug("Domain of type " + domainClassName + " not found in services");
+    }
+    try {
+      return (Domain) Class.forName(domainClassName).getConstructor().newInstance();
+    }
+    catch (Exception e) {
+      LOG.error("Error when instantiating Domain of type " + domainClassName);
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * Builds a {@link LocalEntityConnectionProvider}.
+   */
+  public interface Builder extends EntityConnectionProvider.Builder<Builder, LocalEntityConnectionProvider> {
+
+    /**
+     * @param database the database instance to use
+     * @return this builder instance
+     */
+    Builder database(Database database);
+
+    /**
+     * @param defaultQueryTimeout the default query timeout
+     * @return this builder instance
+     */
+    Builder defaultQueryTimeout(int defaultQueryTimeout);
+  }
+
+  public static final class DefaultBuilder extends AbstractBuilder<Builder, LocalEntityConnectionProvider> implements Builder {
+
+    private Database database;
+    private int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
+
+    public DefaultBuilder() {
+      super(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
+    }
+
+    @Override
+    public Builder database(Database database) {
+      this.database = requireNonNull(database);
+      return this;
+    }
+
+    @Override
+    public Builder defaultQueryTimeout(int defaultQueryTimeout) {
+      this.defaultQueryTimeout = defaultQueryTimeout;
+      return this;
+    }
+
+    @Override
+    public LocalEntityConnectionProvider build() {
+      return new LocalEntityConnectionProvider(this);
     }
   }
 }

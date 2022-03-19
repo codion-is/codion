@@ -5,7 +5,6 @@ package is.codion.framework.model.test;
 
 import is.codion.common.Operator;
 import is.codion.common.Util;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
@@ -38,8 +37,11 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          DatabaseFactory.getDatabase()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+          .user(UNIT_TEST_USER)
+          .domainClassName(TestDomain.class.getName())
+          .build();
 
   private final EntityConnectionProvider connectionProvider;
 

@@ -146,9 +146,10 @@ public final class Example {
     }
 
     EntityConnectionProvider connectionProvider =
-            new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
-                    .setDomainClassName(Store.class.getName())
-                    .setUser(User.parse("scott:tiger"));
+            LocalEntityConnectionProvider.builder()
+                    .domainClassName(Store.class.getName())
+                    .user(User.parse("scott:tiger"))
+                    .build();
 
     SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 

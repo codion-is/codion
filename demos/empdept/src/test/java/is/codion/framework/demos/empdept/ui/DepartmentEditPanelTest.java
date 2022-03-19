@@ -6,6 +6,7 @@ package is.codion.framework.demos.empdept.ui;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.test.EntityEditPanelTestUnit;
 
@@ -17,9 +18,11 @@ public class DepartmentEditPanelTest extends EntityEditPanelTestUnit {
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   public DepartmentEditPanelTest() {
-    super(new SwingEntityEditModel(EmpDept.Department.TYPE,
-                    EntityConnectionProvider.connectionProvider().setDomainClassName(EmpDept.class.getName())
-                            .setClientTypeId(DepartmentEditPanelTest.class.getName()).setUser(UNIT_TEST_USER)),
+    super(new SwingEntityEditModel(Department.TYPE, EntityConnectionProvider.builder()
+                    .domainClassName(EmpDept.class.getName())
+                    .clientTypeId(DepartmentEditPanel.class.getName())
+                    .user(UNIT_TEST_USER)
+                    .build()),
             DepartmentEditPanel.class);
   }
 

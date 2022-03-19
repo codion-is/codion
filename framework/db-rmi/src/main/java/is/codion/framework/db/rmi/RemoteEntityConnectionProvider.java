@@ -11,6 +11,7 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A class responsible for managing a remote entity connection.
+ * @see RemoteEntityConnectionProvider#builder()
  */
 public final class RemoteEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
@@ -44,25 +46,15 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   private ServerInformation serverInformation;
   private boolean truststoreResolved = false;
 
-  private String serverHostName;
-  private Integer serverPort;
-  private Integer registryPort;
+  private final String serverHostName;
+  private final int serverPort;
+  private final int registryPort;
 
-  /**
-   * Instantiates a new unconfigured {@link RemoteEntityConnectionProvider}.
-   */
-  public RemoteEntityConnectionProvider() {}
-
-  /**
-   * Instantiates a new {@link RemoteEntityConnectionProvider}.
-   * @param serverHostName the server host name
-   * @param serverPort the server port, -1 if no specific port is required
-   * @param registryPort the registry port
-   */
-  public RemoteEntityConnectionProvider(String serverHostName, Integer serverPort, Integer registryPort) {
-    this.serverHostName = requireNonNull(serverHostName, "serverHostName");
-    this.serverPort = requireNonNull(serverPort, "serverPort");
-    this.registryPort = requireNonNull(registryPort, "registryPort");
+  private RemoteEntityConnectionProvider(DefaultBuilder builder) {
+    super(builder);
+    this.serverHostName = requireNonNull(builder.serverHostName, "serverHostName");
+    this.serverPort = builder.serverPort;
+    this.registryPort = builder.registryPort;
   }
 
   @Override
@@ -82,10 +74,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @return the name of the host of the server providing the connection
    */
   public String getServerHostName() {
-    if (serverHostName == null) {
-      serverHostName = Clients.SERVER_HOST_NAME.get();
-    }
-
     return serverHostName;
   }
 
@@ -94,6 +82,14 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   public ServerInformation getServerInformation() {
     return serverInformation;
+  }
+
+  /**
+   * Instantiates a new builder instance.
+   * @return a new builder
+   */
+  public static Builder builder() {
+    return new DefaultBuilder();
   }
 
   @Override
@@ -155,26 +151,15 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    this.server = Server.Locator.locator().getServer(getServerHostName(), ServerConfiguration.SERVER_NAME_PREFIX.get(), getRegistryPort(), getServerPort());
+    this.server = Server.Locator.locator().getServer(serverHostName, ServerConfiguration.SERVER_NAME_PREFIX.get(), getRegistryPort(), getServerPort());
     this.serverInformation = this.server.getServerInformation();
   }
 
-  private Integer getServerPort() {
-    if (serverPort == null) {
-      serverPort = ServerConfiguration.SERVER_PORT.get();
-      if (serverPort == null) {
-        serverPort = -1;
-      }
-    }
-
+  private int getServerPort() {
     return serverPort;
   }
 
-  private Integer getRegistryPort() {
-    if (registryPort == null) {
-      registryPort = ServerConfiguration.REGISTRY_PORT.get();
-    }
-
+  private int getRegistryPort() {
     return registryPort;
   }
 
@@ -224,6 +209,64 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       catch (NoSuchMethodException e) {
         throw new RuntimeException(e);
       }
+    }
+  }
+
+  /**
+   * Builds a {@link RemoteEntityConnectionProvider}.
+   */
+  public interface Builder extends EntityConnectionProvider.Builder<Builder, RemoteEntityConnectionProvider> {
+
+    /**
+     * @param serverHostName the server host name
+     * @return this builder instance
+     */
+    Builder serverHostName(String serverHostName);
+
+    /**
+     * @param serverPort the server port
+     * @return this builder instance
+     */
+    Builder serverPort(int serverPort);
+
+    /**
+     * @param registryPort the rmi registry port
+     * @return this builder instance
+     */
+    Builder registryPort(int registryPort);
+  }
+
+  public static final class DefaultBuilder extends AbstractBuilder<Builder, RemoteEntityConnectionProvider> implements Builder {
+
+    private String serverHostName = Clients.SERVER_HOST_NAME.get();
+    private int serverPort = ServerConfiguration.SERVER_PORT.get();
+    private int registryPort = ServerConfiguration.REGISTRY_PORT.get();
+
+    public DefaultBuilder() {
+      super(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
+    }
+
+    @Override
+    public Builder serverHostName(String serverHostName) {
+      this.serverHostName = requireNonNull(serverHostName);
+      return this;
+    }
+
+    @Override
+    public Builder serverPort(int serverPort) {
+      this.serverPort = serverPort;
+      return this;
+    }
+
+    @Override
+    public Builder registryPort(int registryPort) {
+      this.registryPort = registryPort;
+      return this;
+    }
+
+    @Override
+    public RemoteEntityConnectionProvider build() {
+      return new RemoteEntityConnectionProvider(this);
     }
   }
 }

@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.Configuration;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
@@ -50,20 +49,6 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * Default value: true
    */
   PropertyValue<Boolean> SCHEDULE_CONNECTION_VALIDATION = Configuration.booleanValue("codion.client.scheduleConnectionValidation", true);
-
-  /**
-   * Closes the underlying database connection.
-   * @see #addLogoutListener(EventDataListener)
-   */
-  void logout();
-
-  /**
-   * Logs in the given user
-   * @param user the user to login
-   * @throws NullPointerException in case user is null
-   * @see #addLoginListener(EventDataListener)
-   */
-  void login(User user);
 
   /**
    * @return the current user
@@ -170,24 +155,4 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * Clears all data from models contained in this application model
    */
   void clear();
-
-  /**
-   * @param listener a listener notified each time a login is performed
-   */
-  void addLoginListener(EventDataListener<User> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeLoginListener(EventDataListener<User> listener);
-
-  /**
-   * @param listener a listener notified each time a logout is performed
-   */
-  void addLogoutListener(EventDataListener<User> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeLogoutListener(EventDataListener<User> listener);
 }

@@ -17,9 +17,11 @@ public class EmployeeEditPanelTest extends EntityEditPanelTestUnit {
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   public EmployeeEditPanelTest() {
-    super(new EmployeeEditModel(EntityConnectionProvider.connectionProvider()
-                    .setDomainClassName(EmpDept.class.getName())
-                    .setClientTypeId(EmployeeEditPanelTest.class.getName()).setUser(UNIT_TEST_USER)),
+    super(new EmployeeEditModel(EntityConnectionProvider.builder()
+                    .domainClassName(EmpDept.class.getName())
+                    .clientTypeId(EmployeeEditPanelTest.class.getName())
+                    .user(UNIT_TEST_USER)
+                    .build()),
             EmployeeEditPanel.class);
   }
 

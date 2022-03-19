@@ -4,7 +4,6 @@
 package is.codion.framework.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.user.User;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Employee;
@@ -32,9 +31,10 @@ public final class MultiPanelDemo {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
-    LocalEntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(DatabaseFactory.getDatabase());
-    connectionProvider.setDomainClassName(ChinookImpl.class.getName());
-    connectionProvider.setUser(User.parse("scott:tiger"));
+    LocalEntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
+            .domainClassName(ChinookImpl.class.getName())
+            .user(User.parse("scott:tiger"))
+            .build();
 
     EntityEditModel.POST_EDIT_EVENTS.set(true);
 

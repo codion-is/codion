@@ -3,7 +3,6 @@
  */
 package is.codion.framework.model.test;
 
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
@@ -41,8 +40,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
-  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          DatabaseFactory.getDatabase()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
+
+  protected static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+          .user(UNIT_TEST_USER)
+          .domainClassName(TestDomain.class.getName())
+          .build();
 
   private final EntityConnectionProvider connectionProvider;
 

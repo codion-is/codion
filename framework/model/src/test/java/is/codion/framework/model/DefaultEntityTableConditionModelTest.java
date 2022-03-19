@@ -5,7 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
@@ -29,8 +28,11 @@ public class DefaultEntityTableConditionModelTest {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          DatabaseFactory.getDatabase()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+          .domainClassName(TestDomain.class.getName())
+          .user(UNIT_TEST_USER)
+          .build();
 
   private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_EMP,
           CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory(CONNECTION_PROVIDER));

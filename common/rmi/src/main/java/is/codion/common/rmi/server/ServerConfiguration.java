@@ -57,9 +57,9 @@ public interface ServerConfiguration {
    * If specified on the client side, the client will only connect to a server running on this port,
    * use -1 or no value if the client should connect to any available server<br>
    * Value type: Integer<br>
-   * Default value: none
+   * Default value: -1
    */
-  PropertyValue<Integer> SERVER_PORT = Configuration.integerValue("codion.server.port");
+  PropertyValue<Integer> SERVER_PORT = Configuration.integerValue("codion.server.port", -1);
 
   /**
    * The port on which to locate the server registry<br>

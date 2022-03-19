@@ -27,10 +27,11 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
   @Override
   protected StoreAppModel initializeApplication() {
     EntityConnectionProvider connectionProvider =
-            new RemoteEntityConnectionProvider()
-                    .setClientId(UUID.randomUUID())
-                    .setUser(getUser())
-                    .setDomainClassName(Store.class.getName());
+            RemoteEntityConnectionProvider.builder()
+                    .clientId(UUID.randomUUID())
+                    .user(getUser())
+                    .domainClassName(Store.class.getName())
+                    .build();
 
     return new StoreAppModel(connectionProvider);
   }

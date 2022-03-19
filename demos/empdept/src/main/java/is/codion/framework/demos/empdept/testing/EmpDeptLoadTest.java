@@ -36,10 +36,12 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppPanel.E
 
   @Override
   protected EmpDeptAppPanel.EmpDeptApplicationModel initializeApplication() throws CancelException {
-    EmpDeptAppPanel.EmpDeptApplicationModel applicationModel = new EmpDeptAppPanel.EmpDeptApplicationModel(
-            EntityConnectionProvider.connectionProvider().setDomainClassName(EmpDept.class.getName())
-                    .setClientTypeId(EmpDeptLoadTest.class.getSimpleName())
-                    .setUser(getUser()));
+    EmpDeptAppPanel.EmpDeptApplicationModel applicationModel =
+            new EmpDeptAppPanel.EmpDeptApplicationModel(EntityConnectionProvider.builder()
+                    .domainClassName(EmpDept.class.getName())
+                    .clientTypeId(EmpDeptLoadTest.class.getSimpleName())
+                    .user(getUser())
+                    .build());
 
     SwingEntityModel model = applicationModel.getEntityModel(Department.TYPE);
     model.addLinkedDetailModel(model.getDetailModel(Employee.TYPE));

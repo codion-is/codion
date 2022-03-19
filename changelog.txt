@@ -7921,3 +7921,5 @@
   EntityPopupMenu bug fixed, no longer tries to populate non-existing entities by querying, such as a new entity in a edit panel
   SelectCondition.queryTimeout() added
   LocalEntityConnection, LocalEntityConnectionProvider.setQueryTimeout() renamed setDefaultQueryTimeout()
+  EntityConnectionProvider instances now immutable, Builder added
+  EntityApplicationModel, EntityApplicationPanel.logout() and login() removed

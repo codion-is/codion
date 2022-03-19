@@ -3,7 +3,6 @@
  */
 package is.codion.framework.model.test;
 
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -30,8 +29,11 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          DatabaseFactory.getDatabase()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
+          .user(UNIT_TEST_USER)
+          .domainClassName(TestDomain.class.getName())
+          .build();
 
   private final EntityConnectionProvider connectionProvider;
 
@@ -47,9 +49,6 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     assertNotNull(model.getEntityModel(TestDomain.T_DEPARTMENT));
     assertEquals(1, model.getEntityModels().size());
     model.clear();
-    model.logout();
-    assertFalse(model.getConnectionProvider().isConnected());
-    model.login(UNIT_TEST_USER);
     assertEquals(UNIT_TEST_USER, model.getUser());
 
     assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(TestDomain.T_EMP));
@@ -64,12 +63,6 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
   @Test
   public void constructorNullConnectionProvider() {
     assertThrows(NullPointerException.class, () -> new DefaultEntityApplicationModel<>(null));
-  }
-
-  @Test
-  public void loginNullUser() {
-    EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    assertThrows(NullPointerException.class, () -> model.login(null));
   }
 
   @Test

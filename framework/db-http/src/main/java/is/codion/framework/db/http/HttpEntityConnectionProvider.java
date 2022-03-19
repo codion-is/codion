@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.properties.PropertyValue;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A class responsible for managing a HttpEntityConnection.
+ * @see HttpEntityConnectionProvider#builder()
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_HOST_NAME
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_PORT
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_SECURE
@@ -52,26 +54,17 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    */
   public static final PropertyValue<Boolean> HTTP_CLIENT_JSON = Configuration.booleanValue("codion.client.http.json", true);
 
-  private String serverHostName;
-  private Integer serverPort;
-  private Boolean https;
-  private Boolean json;
+  private final String serverHostName;
+  private final int serverPort;
+  private final boolean https;
+  private final boolean json;
 
-  /**
-   * Instantiates a new HttpEntityConnectionProvider.
-   */
-  public HttpEntityConnectionProvider() {}
-
-  /**
-   * Instantiates a new HttpEntityConnectionProvider.
-   * @param serverHostName the server host name
-   * @param serverPort the server port
-   * @param https true if https should be used
-   */
-  public HttpEntityConnectionProvider(String serverHostName, Integer serverPort, ClientHttps https) {
-    this.serverHostName = requireNonNull(serverHostName, "serverHostName");
-    this.serverPort = requireNonNull(serverPort, "serverPort");
-    this.https = requireNonNull(https, "https").equals(ClientHttps.TRUE);
+  private HttpEntityConnectionProvider(DefaultBuilder builder) {
+    super(builder);
+    this.serverHostName = requireNonNull(builder.serverHostName, "serverHostName");
+    this.serverPort = builder.serverPort;
+    this.https = builder.https;
+    this.json = builder.json;
   }
 
   @Override
@@ -91,24 +84,28 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * @return the name of the host of the server providing the connection
    */
   public String getServerHostName() {
-    if (serverHostName == null) {
-      serverHostName = HTTP_CLIENT_HOST_NAME.get();
-    }
-
     return serverHostName;
+  }
+
+  /**
+   * Instantiates a new builder instance.
+   * @return a new builder
+   */
+  public static Builder builder() {
+    return new DefaultBuilder();
   }
 
   @Override
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      if (getHttps()) {
+      if (https) {
         HttpEntityConnections.createSecureConnection(getDomainTypeName(getDomainClassName()), getServerHostName(),
-              getServerPort(), getUser(), getClientTypeId(), getClientId(), getJson());
+                serverPort, getUser(), getClientTypeId(), getClientId(), json);
       }
 
       return HttpEntityConnections.createConnection(getDomainTypeName(getDomainClassName()), getServerHostName(),
-              getServerPort(), getUser(), getClientTypeId(), getClientId(), getJson());
+              serverPort, getUser(), getClientTypeId(), getClientId(), json);
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -120,27 +117,74 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
     connection.close();
   }
 
-  private Integer getServerPort() {
-    if (serverPort == null) {
-      serverPort = HTTP_CLIENT_PORT.get();
-    }
+  /**
+   * Builds a {@link HttpEntityConnectionProvider} instance.
+   */
+  public interface Builder extends EntityConnectionProvider.Builder<Builder, HttpEntityConnectionProvider> {
 
-    return serverPort;
+    /**
+     * @param serverHostName the server host name
+     * @return this builder instance
+     */
+    Builder serverHostName(String serverHostName);
+
+    /**
+     * @param serverPort the server port
+     * @return this builder instance
+     */
+    Builder serverPort(int serverPort);
+
+    /**
+     * @param https true if https should be enabled
+     * @return this builder instance
+     */
+    Builder https(boolean https);
+
+    /**
+     * @param json true if json serialization should be used
+     * @return this builder instance
+     */
+    Builder json(boolean json);
   }
 
-  private Boolean getHttps() {
-    if (https == null) {
-      https = ClientHttps.TRUE.equals(HTTP_CLIENT_SECURE.get());
+  public static final class DefaultBuilder extends AbstractBuilder<HttpEntityConnectionProvider.Builder, HttpEntityConnectionProvider> implements Builder {
+
+    private String serverHostName = HTTP_CLIENT_HOST_NAME.get();
+    private int serverPort = HTTP_CLIENT_PORT.get();
+    private boolean https = ClientHttps.TRUE.equals(HTTP_CLIENT_SECURE.get());
+    private boolean json = HTTP_CLIENT_JSON.get();
+
+    public DefaultBuilder() {
+      super(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
     }
 
-    return https;
-  }
-
-  private Boolean getJson() {
-    if (json == null) {
-      json = HTTP_CLIENT_JSON.get();
+    @Override
+    public Builder serverHostName(String serverHostName) {
+      this.serverHostName = requireNonNull(serverHostName);
+      return this;
     }
 
-    return json;
+    @Override
+    public Builder serverPort(int serverPort) {
+      this.serverPort = serverPort;
+      return this;
+    }
+
+    @Override
+    public Builder https(boolean https) {
+      this.https = https;
+      return this;
+    }
+
+    @Override
+    public Builder json(boolean json) {
+      this.json = json;
+      return this;
+    }
+
+    @Override
+    public HttpEntityConnectionProvider build() {
+      return new HttpEntityConnectionProvider(this);
+    }
   }
 }

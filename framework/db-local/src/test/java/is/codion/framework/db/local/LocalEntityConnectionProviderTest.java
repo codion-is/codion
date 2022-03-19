@@ -3,8 +3,6 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -20,11 +18,12 @@ public class LocalEntityConnectionProviderTest {
 
   @Test
   void test() {
-    Database database = DatabaseFactory.getDatabase();
-    LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(database);
-    provider.setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
+    LocalEntityConnectionProvider provider = LocalEntityConnectionProvider.builder()
+            .user(UNIT_TEST_USER)
+            .domainClassName(TestDomain.class.getName())
+            .build();
 
-    assertNotNull(new LocalEntityConnectionProvider().getDatabase());
+    assertNotNull(provider.getDatabase());
 
     EntityConnection firstConnection = provider.getConnection();
     assertNotNull(firstConnection);
@@ -42,8 +41,10 @@ public class LocalEntityConnectionProviderTest {
   void entityConnectionProviders() {
     String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
-    EntityConnectionProvider connectionProvider = EntityConnectionProvider.connectionProvider()
-            .setDomainClassName(TestDomain.class.getName()).setClientTypeId("test");
+    EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
+            .domainClassName(TestDomain.class.getName())
+            .user(User.parse("scott:tiger"))
+            .build();
     assertEquals("LocalEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);

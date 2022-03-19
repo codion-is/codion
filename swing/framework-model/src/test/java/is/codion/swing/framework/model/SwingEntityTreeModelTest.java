@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -22,8 +21,10 @@ public final class SwingEntityTreeModelTest {
 
   @Test
   void test() {
-    EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
-            DatabaseFactory.getDatabase()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
+    EntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
+            .domainClassName(TestDomain.class.getName())
+            .user(UNIT_TEST_USER)
+            .build();
 
     SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, connectionProvider);
     SwingEntityTreeModel treeModel = new SwingEntityTreeModel(tableModel, TestDomain.EMP_MGR_FK);

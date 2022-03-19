@@ -39,10 +39,14 @@ public class JasperReportsTest {
 
   private static final String REPORT_PATH = "build/resources/test";
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          new H2DatabaseFactory().createDatabase("jdbc:h2:mem:JasperReportsWrapperTest",
-                  Database.DATABASE_INIT_SCRIPTS.get()))
-          .setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
+  private static final EntityConnectionProvider CONNECTION_PROVIDER =
+          LocalEntityConnectionProvider.builder()
+                  .database(new H2DatabaseFactory()
+                          .createDatabase("jdbc:h2:mem:JasperReportsWrapperTest",
+                                  Database.DATABASE_INIT_SCRIPTS.get()))
+                  .domainClassName(TestDomain.class.getName())
+                  .user(UNIT_TEST_USER)
+                  .build();
 
   @AfterAll
   public static void tearDown() {

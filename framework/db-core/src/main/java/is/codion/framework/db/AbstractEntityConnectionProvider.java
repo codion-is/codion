@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -27,14 +26,23 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private final Object lock = new Object();
   private final Event<EntityConnection> onConnectEvent = Event.event();
 
-  private User user;
-  private String domainClassName;
-  private UUID clientId = UUID.randomUUID();
-  private Version clientVersion;
-  private String clientTypeId;
+  private final User user;
+  private final String domainClassName;
+  private final UUID clientId;
+  private final Version clientVersion;
+  private final String clientTypeId;
 
   private EntityConnection entityConnection;
   private Entities entities;
+
+  protected AbstractEntityConnectionProvider(AbstractBuilder<?, ?> builder) {
+    requireNonNull(builder);
+    this.user = requireNonNull(builder.user, "user");
+    this.domainClassName = requireNonNull(builder.domainClassName, "domainClassName");
+    this.clientId = requireNonNull(builder.clientId, "clientId");
+    this.clientTypeId = builder.clientTypeId;
+    this.clientVersion = builder.clientVersion;
+  }
 
   @Override
   public final Entities getEntities() {
@@ -49,101 +57,27 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   @Override
   public final User getUser() {
-    synchronized (lock) {
-      return user;
-    }
-  }
-
-  @Override
-  public final EntityConnectionProvider setUser(User user) {
-    synchronized (lock) {
-      close();
-      this.user = user;
-
-      return this;
-    }
+    return user;
   }
 
   @Override
   public final String getDomainClassName() {
-    synchronized (lock) {
-      if (nullOrEmpty(domainClassName)) {
-        throw new IllegalArgumentException("Domain class name has not been specified");
-      }
-
-      return domainClassName;
-    }
-  }
-
-  @Override
-  public final EntityConnectionProvider setDomainClassName(String domainClassName) {
-    synchronized (lock) {
-      if (nullOrEmpty(domainClassName)) {
-        throw new IllegalArgumentException("Domain class name must be specified");
-      }
-      close();
-      this.domainClassName = domainClassName;
-
-      return this;
-    }
+    return domainClassName;
   }
 
   @Override
   public final UUID getClientId() {
-    synchronized (lock) {
-      return clientId;
-    }
-  }
-
-  @Override
-  public final EntityConnectionProvider setClientId(UUID clientId) {
-    synchronized (lock) {
-      if (clientId == null) {
-        throw new IllegalArgumentException("Client id must be specified");
-      }
-      close();
-      this.clientId = clientId;
-
-      return this;
-    }
+    return clientId;
   }
 
   @Override
   public final String getClientTypeId() {
-    synchronized (lock) {
-      if (nullOrEmpty(clientTypeId)) {
-        throw new IllegalArgumentException("Client type id has not been specified");
-      }
-
-      return clientTypeId;
-    }
-  }
-
-  @Override
-  public final EntityConnectionProvider setClientTypeId(String clientTypeId) {
-    synchronized (lock) {
-      close();
-      this.clientTypeId = requireNonNull(clientTypeId);
-
-      return this;
-    }
+    return clientTypeId;
   }
 
   @Override
   public final Version getClientVersion() {
-    synchronized (lock) {
-      return clientVersion;
-    }
-  }
-
-  @Override
-  public final EntityConnectionProvider setClientVersion(Version clientVersion) {
-    synchronized (lock) {
-      close();
-      this.clientVersion = clientVersion;
-
-      return this;
-    }
+    return clientVersion;
   }
 
   @Override
@@ -242,5 +176,56 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     entityConnection = connect();
     entities = entityConnection.getEntities();
     onConnectEvent.onEvent(entityConnection);
+  }
+
+  protected static abstract class AbstractBuilder<B extends Builder<B, T>, T
+          extends EntityConnectionProvider> implements Builder<B, T> {
+
+    private final String connectionType;
+
+    private User user;
+    private String domainClassName;
+    private UUID clientId = UUID.randomUUID();
+    private String clientTypeId;
+    private Version clientVersion;
+
+    protected AbstractBuilder(String connectionType) {
+      this.connectionType = requireNonNull(connectionType);
+    }
+
+    @Override
+    public final String getConnectionType() {
+      return connectionType;
+    }
+
+    @Override
+    public final B user(User user) {
+      this.user = requireNonNull(user);
+      return (B) this;
+    }
+
+    @Override
+    public final B domainClassName(String domainClassName) {
+      this.domainClassName = requireNonNull(domainClassName);
+      return (B) this;
+    }
+
+    @Override
+    public final B clientId(UUID clientId) {
+      this.clientId = requireNonNull(clientId);
+      return (B) this;
+    }
+
+    @Override
+    public final B clientTypeId(String clientTypeId) {
+      this.clientTypeId = clientTypeId;
+      return (B) this;
+    }
+
+    @Override
+    public final B clientVersion(Version clientVersion) {
+      this.clientVersion = clientVersion;
+      return (B) this;
+    }
   }
 }

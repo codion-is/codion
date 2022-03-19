@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static is.codion.framework.db.EntityConnectionProvider.connectionProvider;
 import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -68,10 +67,11 @@ public class EntityTestUnit {
    * @throws NullPointerException in case domainClass or user is null
    */
   public EntityTestUnit(String domainClass, User user) {
-    this.connectionProvider = connectionProvider()
-            .setDomainClassName(requireNonNull(domainClass, "domainClass"))
-            .setClientTypeId(getClass().getName())
-            .setUser(requireNonNull(user, "user"));
+    this.connectionProvider = EntityConnectionProvider.builder()
+            .domainClassName(requireNonNull(domainClass, "domainClass"))
+            .clientTypeId(getClass().getName())
+            .user(requireNonNull(user, "user"))
+            .build();
   }
 
   /**

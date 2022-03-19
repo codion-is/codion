@@ -1,6 +1,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.user.User;
+import is.codion.framework.db.AbstractEntityConnectionProvider.AbstractBuilder;
 import is.codion.framework.domain.entity.Entities;
 
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,10 @@ public final class AbstractEntityConnectionProviderTest {
 
   @Test
   void connectClose() {
-    EntityConnectionProvider provider = new TestProvider().setUser(UNIT_TEST_USER);
+    TestProviderBuilder builder = new TestProviderBuilder()
+            .user(UNIT_TEST_USER)
+            .domainClassName(TestDomain.class.getName());
+    EntityConnectionProvider provider = builder.build();
     assertEquals("description", provider.getDescription());
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.getConnectionType());
     assertEquals(provider.getEntities(), ENTITIES);
@@ -40,24 +44,18 @@ public final class AbstractEntityConnectionProviderTest {
     EntityConnection connection3 = provider.getConnection();
     assertNotEquals(connection2, connection3);
 
-    provider.setUser(UNIT_TEST_USER);
-    assertFalse(provider.isConnected());
-    assertFalse(provider.isConnectionValid());
-
     EntityConnection connection4 = provider.getConnection();
     assertTrue(provider.isConnectionValid());
     assertNotEquals(connection3, connection4);
-
-    provider.setUser(null);
-    assertThrows(IllegalStateException.class, provider::getConnection);
-
-    assertThrows(IllegalArgumentException.class, () -> provider.setClientId(null));
-    assertThrows(IllegalArgumentException.class, () -> provider.setDomainClassName(null));
   }
 
   private static final class TestProvider extends AbstractEntityConnectionProvider {
 
-    @Override
+  public TestProvider(AbstractBuilder<?, ?> builder) {
+    super(builder);
+  }
+
+  @Override
     protected EntityConnection connect() {
       return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(), new Class[] {EntityConnection.class}, new InvocationHandler() {
         private boolean connected = true;
@@ -93,6 +91,18 @@ public final class AbstractEntityConnectionProviderTest {
     @Override
     public String getDescription() {
       return "description";
+    }
+  }
+
+  private static final class TestProviderBuilder extends AbstractBuilder<TestProviderBuilder, TestProvider> {
+
+    private TestProviderBuilder() {
+      super(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
+    }
+
+    @Override
+    public TestProvider build() {
+      return new TestProvider(this);
     }
   }
 }

@@ -4,7 +4,6 @@
 package is.codion.framework.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -106,9 +105,10 @@ public final class ClientArchitecture {
     // for supplying a valid connection or throwing an exception
     // in case a connection can not be established
     EntityConnectionProvider connectionProvider =
-            new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
-                    .setDomainClassName(ChinookImpl.class.getName())
-                    .setUser(User.parse("scott:tiger"));
+            LocalEntityConnectionProvider.builder()
+                    .domainClassName(ChinookImpl.class.getName())
+                    .user(User.parse("scott:tiger"))
+                    .build();
 
     EntityPanel artistPanel = artistPanel(connectionProvider);
 

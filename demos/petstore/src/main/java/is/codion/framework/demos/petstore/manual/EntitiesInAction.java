@@ -20,10 +20,11 @@ public final class EntitiesInAction {
 
   public static void main(String[] args) throws DatabaseException {
     // tag::entitiesInAction[]
-    EntityConnectionProvider connectionProvider = EntityConnectionProvider.connectionProvider()
-            .setDomainClassName(Petstore.class.getName())
-            .setClientTypeId("Manual")
-            .setUser(User.parse("scott:tiger"));
+    EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
+            .domainClassName(Petstore.class.getName())
+            .clientTypeId("Manual")
+            .user(User.parse("scott:tiger"))
+            .build();
 
     Entities entities = connectionProvider.getEntities();
 

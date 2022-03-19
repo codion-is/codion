@@ -245,9 +245,15 @@ public class EntityServerTest {
 
   @Test
   void remoteEntityConnectionProvider() throws Exception {
-    RemoteEntityConnectionProvider provider = (RemoteEntityConnectionProvider)
-            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())
-                    .setDomainClassName("TestDomain").setClientTypeId("TestClient").setUser(UNIT_TEST_USER);
+    RemoteEntityConnectionProvider provider =
+            RemoteEntityConnectionProvider.builder()
+                    .serverHostName("localhost")
+                    .serverPort(CONFIGURATION.getServerPort())
+                    .registryPort(CONFIGURATION.getRegistryPort())
+                    .domainClassName("TestDomain")
+                    .clientTypeId("TestClient")
+                    .user(UNIT_TEST_USER)
+                    .build();
 
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, provider.getConnectionType());
 
