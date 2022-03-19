@@ -47,7 +47,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    */
   private Database database;
 
-  private int queryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
+  private int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
@@ -114,20 +114,20 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   }
 
   /**
-   * @return the query timeout being used
+   * @return the default query timeout being used
    */
-  public int getQueryTimeout() {
-    return queryTimeout;
+  public int getDefaultQueryTimeout() {
+    return defaultQueryTimeout;
   }
 
   /**
    * Note that calling this method closes the underlying connection, if one has been established.
-   * @param queryTimeout the query timeout in seconds
+   * @param defaultQueryTimeout the default query timeout in seconds
    * @return this LocalEntityConnectionProvider instance
    */
-  public LocalEntityConnectionProvider setQueryTimeout(int queryTimeout) {
+  public LocalEntityConnectionProvider setDefaultQueryTimeout(int defaultQueryTimeout) {
     close();
-    this.queryTimeout = queryTimeout;
+    this.defaultQueryTimeout = defaultQueryTimeout;
     return this;
   }
 
@@ -136,7 +136,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     try {
       LOG.debug("Initializing connection for {}", getUser());
       return localEntityConnection(getDomain(), getDatabase(), getUser())
-              .setQueryTimeout(queryTimeout);
+              .setDefaultQueryTimeout(defaultQueryTimeout);
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);

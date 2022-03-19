@@ -14,6 +14,8 @@ import java.util.Collection;
  */
 public interface SelectCondition extends Condition {
 
+  int DEFAULT_QUERY_TIMEOUT_SECONDS = 120;
+
   /**
    * @return the underlying condition
    */
@@ -38,6 +40,11 @@ public interface SelectCondition extends Condition {
    * @return true if this select should lock the result for update
    */
   boolean isForUpdate();
+
+  /**
+   * @return the query timeout
+   */
+  int getQueryTimeout();
 
   /**
    * @return the global fetch depth limit for this condition, null if none has been specified
@@ -117,4 +124,10 @@ public interface SelectCondition extends Condition {
    * @return a new SelectCondition instance with the given select attributes
    */
   SelectCondition selectAttributes(Collection<Attribute<?>> attributes);
+
+  /**
+   * @param queryTimeout the query timeout, 0 for no timeout
+   * @return a new SelectCondition instance with the given query timeout
+   */
+  SelectCondition queryTimeout(int queryTimeout);
 }
