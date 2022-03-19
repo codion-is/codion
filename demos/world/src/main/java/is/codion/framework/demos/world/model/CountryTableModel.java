@@ -1,7 +1,14 @@
 package is.codion.framework.demos.world.model;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.ReportException;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.Country;
+import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -9,6 +16,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static is.codion.plugin.jasperreports.model.JasperReports.fillReport;
@@ -22,6 +30,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
 
   CountryTableModel(EntityConnectionProvider connectionProvider) {
     super(new CountryEditModel(connectionProvider));
+    configureCapitalConditionModel();
   }
 
   public JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) throws ReportException {
@@ -34,5 +43,25 @@ public final class CountryTableModel extends SwingEntityTableModel {
   private static Map<String, Object> getReportParameters() throws ReportException {
     return new HashMap<>(singletonMap(CITY_SUBREPORT_PARAMETER,
             classPathReport(CityTableModel.class, CITY_REPORT).loadReport()));
+  }
+
+  private void configureCapitalConditionModel() {
+    ((ForeignKeyConditionModel) getTableConditionModel()
+            .getConditionModel(Country.CAPITAL_FK))
+            .getEntitySearchModel()
+            .setAdditionalConditionSupplier(new CapitalConditionSupplier());
+  }
+
+  private final class CapitalConditionSupplier implements Supplier<Condition> {
+    @Override
+    public Condition get() {
+      EntityConnection connection = getConnectionProvider().getConnection();
+      try {
+        return Conditions.where(City.ID).equalTo(connection.select(Country.CAPITAL));
+      }
+      catch (DatabaseException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 }

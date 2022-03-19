@@ -7953,3 +7953,4 @@
   EntityTableCellRenderer.Builder.displayValueProvider() added, for custom display values, f.ex. for displaying the actual item instead the caption for ItemProperty values
   ColumnConditionPanel, bug fixed, focus no longer jumps away from the condition panel when changing operators, if a bound field had the focus
   EntityTablePanel, EntitySearchField, minor refactoring
+  EntityPopupMenu bug fixed, no longer tries to populate non-existing entities by querying, such as a new entity in a edit panel

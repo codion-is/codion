@@ -50,7 +50,7 @@ final class EntityPopupMenu extends JPopupMenu {
    */
   EntityPopupMenu(Entity entity, EntityConnection connection) {
     requireNonNull(entity);
-    populateEntityMenu(this, selectEntity(entity.getPrimaryKey(), connection), connection, new HashSet<>());
+    populateEntityMenu(this, entity, connection, new HashSet<>());
   }
 
   /**
