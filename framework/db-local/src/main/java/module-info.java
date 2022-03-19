@@ -8,6 +8,6 @@ module is.codion.framework.db.local {
 
   exports is.codion.framework.db.local;
 
-  provides is.codion.framework.db.EntityConnectionProvider
-          with is.codion.framework.db.local.LocalEntityConnectionProvider;
+  provides is.codion.framework.db.EntityConnectionProvider.Builder
+          with is.codion.framework.db.local.LocalEntityConnectionProvider.DefaultBuilder;
 }

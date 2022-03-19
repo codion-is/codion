@@ -9,6 +9,6 @@ module is.codion.framework.db.rmi {
 
   exports is.codion.framework.db.rmi;
 
-  provides is.codion.framework.db.EntityConnectionProvider
-          with is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+  provides is.codion.framework.db.EntityConnectionProvider.Builder
+          with is.codion.framework.db.rmi.RemoteEntityConnectionProvider.DefaultBuilder;
 }

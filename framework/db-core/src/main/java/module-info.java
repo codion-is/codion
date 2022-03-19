@@ -1,6 +1,6 @@
 /**
  * Framework database core connection classes.
- * @uses is.codion.framework.db.EntityConnectionProvider
+ * @uses is.codion.framework.db.EntityConnectionProvider.Builder
  */
 module is.codion.framework.db.core {
   requires org.slf4j;
@@ -9,5 +9,5 @@ module is.codion.framework.db.core {
   exports is.codion.framework.db;
   exports is.codion.framework.db.condition;
 
-  uses is.codion.framework.db.EntityConnectionProvider;
+  uses is.codion.framework.db.EntityConnectionProvider.Builder;
 }
