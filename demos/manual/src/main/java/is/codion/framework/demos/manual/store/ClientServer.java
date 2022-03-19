@@ -9,7 +9,6 @@ import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.http.ClientHttps;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store;
@@ -47,10 +46,14 @@ public final class ClientServer {
     EntityServer server = EntityServer.startServer(configuration);
 
     RemoteEntityConnectionProvider connectionProvider =
-            new RemoteEntityConnectionProvider("localhost", SERVER_PORT, REGISTRY_PORT);
-    connectionProvider.setDomainClassName(Store.class.getName());
-    connectionProvider.setUser(parse("scott:tiger"));
-    connectionProvider.setClientTypeId("ClientServer");
+            RemoteEntityConnectionProvider.builder()
+                    .serverHostName("localhost")
+                    .serverPort(SERVER_PORT)
+                    .registryPort(REGISTRY_PORT)
+                    .domainClassName(Store.class.getName())
+                    .user(parse("scott:tiger"))
+                    .clientTypeId("ClientServer")
+                    .build();
 
     EntityConnection connection = connectionProvider.getConnection();
 
@@ -82,10 +85,14 @@ public final class ClientServer {
     EntityServer server = EntityServer.startServer(configuration);
 
     HttpEntityConnectionProvider connectionProvider =
-            new HttpEntityConnectionProvider("localhost", HTTP_PORT, ClientHttps.FALSE);
-    connectionProvider.setDomainClassName(Store.class.getName());
-    connectionProvider.setUser(parse("scott:tiger"));
-    connectionProvider.setClientTypeId("ClientServer");
+            HttpEntityConnectionProvider.builder()
+                    .serverHostName("localhost")
+                    .serverPort(HTTP_PORT)
+                    .https(false)
+                    .domainClassName(Store.class.getName())
+                    .user(parse("scott:tiger"))
+                    .clientTypeId("ClientServer")
+                    .build();
 
     EntityConnection connection = connectionProvider.getConnection();
 

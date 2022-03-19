@@ -9,7 +9,6 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
@@ -52,9 +51,13 @@ public class EntityServerMonitorTest {
   @Test
   void test() throws Exception {
     String clientTypeId = EntityServerMonitorTest.class.getName();
-    EntityConnectionProvider connectionProvider =
-            new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())
-            .setDomainClassName("TestDomain").setClientTypeId(clientTypeId).setUser(UNIT_TEST_USER);
+    RemoteEntityConnectionProvider connectionProvider =
+            RemoteEntityConnectionProvider.builder()
+                    .serverHostName("localhost").serverPort(CONFIGURATION.getServerPort()).registryPort(CONFIGURATION.getRegistryPort())
+                    .domainClassName("TestDomain")
+                    .clientTypeId(clientTypeId)
+                    .user(UNIT_TEST_USER)
+                    .build();
     connectionProvider.getConnection();
     EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.getRegistryPort(), CONFIGURATION.getAdminUser());
     model.refresh();

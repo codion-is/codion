@@ -4,7 +4,6 @@
 package is.codion.framework.demos.chinook.manual;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.result.ResultIterator;
@@ -365,9 +364,10 @@ public final class EntityConnectionDemo {
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
     EntityConnectionProvider connectionProvider =
-            new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
-                    .setDomainClassName(ChinookImpl.class.getName())
-                    .setUser(User.parse("scott:tiger"));
+            LocalEntityConnectionProvider.builder()
+                    .domainClassName(ChinookImpl.class.getName())
+                    .user(User.parse("scott:tiger"))
+                    .build();
 
     EntityConnection connection = connectionProvider.getConnection();
     selectConditionDemo(connection);

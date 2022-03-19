@@ -74,9 +74,11 @@ public class StoreDemo {
                     "src/main/sql/create_schema_minimal.sql");
 
     EntityConnectionProvider connectionProvider =
-            new LocalEntityConnectionProvider(database)
-                    .setDomainClassName(Store.class.getName())
-                    .setUser(User.parse("scott:tiger"));
+            LocalEntityConnectionProvider.builder()
+                    .database(database)
+                    .domainClassName(Store.class.getName())
+                    .user(User.parse("scott:tiger"))
+                    .build();
 
     SwingEntityModel customerModel =
             new SwingEntityModel(Customer.TYPE, connectionProvider);

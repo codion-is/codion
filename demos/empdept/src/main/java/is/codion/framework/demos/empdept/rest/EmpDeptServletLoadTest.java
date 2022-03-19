@@ -7,6 +7,7 @@ import is.codion.common.Text;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.http.ClientHttps;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
@@ -46,12 +47,14 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
   @Override
   protected EntityConnectionProvider initializeApplication() throws CancelException {
-    return new HttpEntityConnectionProvider(
-            HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
-            HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
-            HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get())
-            .setClientTypeId("EmpDeptServletLoadTest")
-            .setDomainClassName(EmpDept.class.getName()).setUser(UNIT_TEST_USER);
+    return HttpEntityConnectionProvider.builder()
+            .serverHostName(HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get())
+            .serverPort(HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get())
+            .https(HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get().equals(ClientHttps.TRUE))
+            .clientTypeId("EmpDeptServletLoadTest")
+            .domainClassName(EmpDept.class.getName())
+            .user(UNIT_TEST_USER)
+            .build();
   }
 
   public static void main(String[] args) throws Exception {

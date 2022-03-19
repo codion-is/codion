@@ -29,13 +29,14 @@ import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
 public final class Misc {
 
   static void jasperReports() throws DatabaseException, ReportException {
-   EntityConnectionProvider connectionProvider =
-            EntityConnectionProvider.connectionProvider()
-                    .setDomainClassName(Store.class.getName())
-                    .setUser(User.parse("scott:tiger"))
-                    .setClientTypeId("StoreMisc");
+    EntityConnectionProvider connectionProvider =
+            EntityConnectionProvider.builder()
+                    .domainClassName(Store.class.getName())
+                    .user(User.parse("scott:tiger"))
+                    .clientTypeId("StoreMisc")
+                    .build();
 
-   // tag::jasperReportDataSource[]
+    // tag::jasperReportDataSource[]
     EntityConnection connection = connectionProvider.getConnection();
 
     EntityDefinition customerDefinition =
@@ -58,10 +59,11 @@ public final class Misc {
   public static void main(String[] args) throws DatabaseException, ValidationException {
     // tag::editModel[]
     EntityConnectionProvider connectionProvider =
-            EntityConnectionProvider.connectionProvider()
-                    .setDomainClassName(Store.class.getName())
-                    .setUser(User.parse("scott:tiger"))
-                    .setClientTypeId("StoreMisc");
+            EntityConnectionProvider.builder()
+                    .domainClassName(Store.class.getName())
+                    .user(User.parse("scott:tiger"))
+                    .clientTypeId("StoreMisc")
+                    .build();
 
     CustomerEditModel editModel = new CustomerEditModel(connectionProvider);
 

@@ -315,21 +315,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Performs a login, fetching user information
-   * @throws CancelException in case the login is cancelled
-   */
-  public final void login() {
-    applicationModel.login(getLoginUser(null, new EntityLoginValidator(getModel().getConnectionProvider())));
-  }
-
-  /**
-   * Performs a logout
-   */
-  public final void logout() {
-    applicationModel.logout();
-  }
-
-  /**
    * Shows a dialog for setting the log level
    */
   public final void setLogLevel() {
@@ -802,11 +787,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the initialization is cancelled
    */
   protected EntityConnectionProvider initializeConnectionProvider(User user, String clientTypeId) {
-    return EntityConnectionProvider.connectionProvider()
-            .setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
-            .setClientTypeId(clientTypeId)
-            .setClientVersion(getClientVersion())
-            .setUser(user);
+    return EntityConnectionProvider.builder()
+            .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+            .clientTypeId(clientTypeId)
+            .clientVersion(getClientVersion())
+            .user(user)
+            .build();
   }
 
   /**
@@ -1566,22 +1552,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     private EntityConnectionProvider connectionProvider;
 
-    private EntityLoginValidator() {
-      this(null);
-    }
-
-    private EntityLoginValidator(EntityConnectionProvider connectionProvider) {
-      this.connectionProvider = connectionProvider;
-    }
-
     @Override
     public void validate(User user) throws Exception {
-      if (connectionProvider == null) {
-        connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
-      }
-      else {
-        connectionProvider.setUser(user);
-      }
+      connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
       connectionProvider.getConnection();//throws exception if the server is not reachable
     }
   }

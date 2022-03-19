@@ -78,6 +78,10 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     if (selectAttributes != null && !selectAttributes.isNull()) {
       selectCondition = selectCondition.selectAttributes(deserializeSelectAttributes(definition, selectAttributes));
     }
+    JsonNode queryTimeout = jsonNode.get("queryTimeout");
+    if (queryTimeout != null && !queryTimeout.isNull()) {
+      selectCondition = selectCondition.queryTimeout(queryTimeout.asInt());
+    }
 
     return selectCondition;
   }

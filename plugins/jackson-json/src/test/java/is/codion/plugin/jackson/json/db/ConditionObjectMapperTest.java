@@ -94,6 +94,7 @@ public final class ConditionObjectMapperTest {
             .limit(2)
             .offset(1)
             .forUpdate()
+            .queryTimeout(42)
             .fetchDepth(2)
             .fetchDepth(TestDomain.EMP_DEPARTMENT_FK, 0)
             .selectAttributes(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT);
@@ -111,6 +112,7 @@ public final class ConditionObjectMapperTest {
     }
     assertEquals(selectCondition.getSelectAttributes(), readCondition.getSelectAttributes());
     assertTrue(readCondition.isForUpdate());
+    assertEquals(42, readCondition.getQueryTimeout());
 
     selectCondition = Conditions.where(TestDomain.EMP_ID).equalTo(1).toSelectCondition();
 

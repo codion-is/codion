@@ -3,8 +3,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -34,8 +32,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   private final EntityConnectionProvider connectionProvider;
   private final State connectionValidState = State.state();
-  private final Event<User> loginEvent = Event.event();
-  private final Event<User> logoutEvent = Event.event();
   private final TaskScheduler validityCheckScheduler = TaskScheduler.builder(this::checkConnectionValidity)
           .interval(VALIDITY_CHECK_INTERVAL_SECONDS)
           .initialDelay(VALIDITY_CHECK_INTERVAL_SECONDS)
@@ -60,22 +56,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
         validityCheckScheduler.start();
       });
     }
-  }
-
-  @Override
-  public final void login(User user) {
-    requireNonNull(user, "user");
-    connectionProvider.setUser(user);
-    refresh();
-    loginEvent.onEvent(user);
-  }
-
-  @Override
-  public final void logout() {
-    User user = connectionProvider.getUser();
-    connectionProvider.setUser(null);
-    clear();
-    logoutEvent.onEvent(user);
   }
 
   @Override
@@ -192,26 +172,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   @Override
   public void savePreferences() {
     getEntityModels().forEach(EntityModel::savePreferences);
-  }
-
-  @Override
-  public final void addLoginListener(EventDataListener<User> listener) {
-    loginEvent.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeLoginListener(EventDataListener<User> listener) {
-    loginEvent.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addLogoutListener(EventDataListener<User> listener) {
-    logoutEvent.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeLogoutListener(EventDataListener<User> listener) {
-    logoutEvent.removeDataListener(listener);
   }
 
   private void checkConnectionValidity() {

@@ -110,24 +110,9 @@ public interface EntityConnectionProvider extends AutoCloseable {
   void close();
 
   /**
-   * Disconnects the underlying connection if connected.
-   * @param user the user
-   * @return this EntityConnectionProvider instance
-   */
-  EntityConnectionProvider setUser(User user);
-
-  /**
    * @return the user used by this connection provider
    */
   User getUser();
-
-  /**
-   * Disconnects the underlying connection if connected.
-   * @param domainClassName the name of the class specifying the domain model for this connection provider
-   * @return this EntityConnectionProvider instance
-   * @throws IllegalArgumentException in case {@code domainClassName} is null
-   */
-  EntityConnectionProvider setDomainClassName(String domainClassName);
 
   /**
    * @return the domain model classname
@@ -135,24 +120,9 @@ public interface EntityConnectionProvider extends AutoCloseable {
   String getDomainClassName();
 
   /**
-   * Disconnects the underlying connection if connected.
-   * @param clientId the UUID identifying this client connection
-   * @return this EntityConnectionProvider instance
-   * @throws IllegalArgumentException in case {@code clientId} is null
-   */
-  EntityConnectionProvider setClientId(UUID clientId);
-
-  /**
    * @return the UUID identifying this client connection
    */
   UUID getClientId();
-
-  /**
-   * Disconnects the underlying connection if connected.
-   * @param clientTypeId a String identifying the client type for this connection provider
-   * @return this EntityConnectionProvider instance
-   */
-  EntityConnectionProvider setClientTypeId(String clientTypeId);
 
   /**
    * @return the String identifying the client type for this connection provider
@@ -160,30 +130,73 @@ public interface EntityConnectionProvider extends AutoCloseable {
   String getClientTypeId();
 
   /**
-   * @param clientVersion the client version
-   * @return this EntityConnectionProvider instance
-   */
-  EntityConnectionProvider setClientVersion(Version clientVersion);
-
-  /**
    * @return the client version
    */
   Version getClientVersion();
 
   /**
-   * @return a unconfigured {@link EntityConnectionProvider} instance,
+   * @return a unconfigured {@link Builder} instance,
    * based on {@link EntityConnectionProvider#CLIENT_CONNECTION_TYPE} configuration value
    * @see EntityConnectionProvider#CLIENT_CONNECTION_TYPE
    */
-  static EntityConnectionProvider connectionProvider() {
+  static Builder<?, ?> builder() {
     String clientConnectionType = CLIENT_CONNECTION_TYPE.getOrThrow();
-    ServiceLoader<EntityConnectionProvider> loader = ServiceLoader.load(EntityConnectionProvider.class);
-    for (EntityConnectionProvider provider : loader) {
-      if (provider.getConnectionType().equalsIgnoreCase(clientConnectionType)) {
-        return provider;
+    for (Builder<?, ?> builder : ServiceLoader.load(Builder.class)) {
+      if (builder.getConnectionType().equalsIgnoreCase(clientConnectionType)) {
+        return builder;
       }
     }
 
-    throw new IllegalArgumentException("No connection provider available for requested client connection type: " + clientConnectionType);
+    throw new IllegalArgumentException("No connection provider builder available for requested client connection type: " + clientConnectionType);
+  }
+
+  /**
+   * Builds a {@link EntityConnectionProvider} instances
+   * @param <B> the builder type
+   * @param <T> the connection provider type
+   */
+  interface Builder<B extends Builder<B, T>, T extends EntityConnectionProvider> {
+
+    /**
+     * Returns a String specifying the type of connection provided by this connection provider builder
+     * @return a String specifying the type of connection, e.g. "local" or "remote"
+     */
+    String getConnectionType();
+
+    /**
+     * @param user the user
+     * @return this EntityConnectionProviderBuilder instance
+     */
+    B user(User user);
+
+    /**
+     * @param domainClassName the name of the class specifying the domain model for this connection provider
+     * @return this EntityConnectionProviderBuilder instance
+     */
+    B domainClassName(String domainClassName);
+
+    /**
+     * @param clientId the UUID identifying this client connection
+     * @return this EntityConnectionProviderBuilder instance
+     */
+    B clientId(UUID clientId);
+
+    /**
+     * @param clientTypeId a String identifying the client type for this connection provider
+     * @return this EntityConnectionProviderBuilder instance
+     */
+    B clientTypeId(String clientTypeId);
+
+    /**
+     * @param clientVersion the client version
+     * @return this EntityConnectionProviderBuilder instance
+     */
+    B clientVersion(Version clientVersion);
+
+    /**
+     * Builds a {@link EntityConnectionProvider} instance based on this builder
+     * @return a new {@link EntityConnectionProvider} instance
+     */
+    T build();
   }
 }

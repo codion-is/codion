@@ -32,9 +32,14 @@ public class NextReportsTest {
 
   @Test
   void fillReport() throws ReportException, IOException, DatabaseException {
-    EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
-            new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", Database.DATABASE_INIT_SCRIPTS.get()))
-            .setDomainClassName(NextDomain.class.getName()).setUser(UNIT_TEST_USER);
+    EntityConnectionProvider connectionProvider =
+            LocalEntityConnectionProvider.builder()
+                    .database(new H2DatabaseFactory()
+                            .createDatabase("jdbc:h2:mem:h2db",
+                                    Database.DATABASE_INIT_SCRIPTS.get()))
+                    .domainClassName(NextDomain.class.getName())
+                    .user(UNIT_TEST_USER)
+                    .build();
     Report.REPORT_PATH.set("src/test/reports/");
     LocalEntityConnection connection = (LocalEntityConnection) connectionProvider.getConnection();
     NextReportsResult result = NextReports.nextReport("test-report.report", ReportRunner.CSV_FORMAT)

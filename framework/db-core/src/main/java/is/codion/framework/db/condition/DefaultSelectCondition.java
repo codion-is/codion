@@ -32,6 +32,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   private boolean forUpdate;
   private int limit = -1;
   private int offset = -1;
+  private int queryTimeout = DEFAULT_QUERY_TIMEOUT_SECONDS;
 
   /**
    * Instantiates a new {@link DefaultSelectCondition}
@@ -52,6 +53,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
     this.forUpdate = selectCondition.forUpdate;
     this.limit = selectCondition.limit;
     this.offset = selectCondition.offset;
+    this.queryTimeout = selectCondition.queryTimeout;
   }
 
   @Override
@@ -106,6 +108,11 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
     }
 
     return fetchDepth;
+  }
+
+  @Override
+  public int getQueryTimeout() {
+    return queryTimeout;
   }
 
   @Override
@@ -176,6 +183,14 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   public SelectCondition selectAttributes(Collection<Attribute<?>> attributes) {
     DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
     selectCondition.selectAttributes = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
+
+    return selectCondition;
+  }
+
+  @Override
+  public SelectCondition queryTimeout(int queryTimeout) {
+    DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
+    selectCondition.queryTimeout = queryTimeout;
 
     return selectCondition;
   }

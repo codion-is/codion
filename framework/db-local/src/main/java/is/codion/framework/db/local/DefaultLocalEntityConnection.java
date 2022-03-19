@@ -95,7 +95,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private boolean optimisticLockingEnabled = LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get();
   private boolean limitForeignKeyFetchDepth = LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get();
-  private int queryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
+  private int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
 
   /**
    * Constructs a new LocalEntityConnection instance
@@ -855,13 +855,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public int getQueryTimeout() {
-    return queryTimeout;
+  public int getDefaultQueryTimeout() {
+    return defaultQueryTimeout;
   }
 
   @Override
-  public LocalEntityConnection setQueryTimeout(int queryTimeout) {
-    this.queryTimeout = queryTimeout;
+  public LocalEntityConnection setDefaultQueryTimeout(int defaultQueryTimeout) {
+    this.defaultQueryTimeout = defaultQueryTimeout;
     return this;
   }
 
@@ -1017,7 +1017,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .selectCondition(selectCondition);
     try {
       selectQuery = selectQueryBuilder.build();
-      statement = prepareStatement(selectQuery);
+      statement = prepareStatement(selectQuery, false, selectCondition.getQueryTimeout());
       resultSet = executeStatement(statement, selectQuery, selectCondition, entityDefinition);
 
       return new EntityResultIterator(statement, resultSet,
@@ -1082,6 +1082,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private PreparedStatement prepareStatement(String query, boolean returnGeneratedKeys) throws SQLException {
+    return prepareStatement(query, returnGeneratedKeys, defaultQueryTimeout);
+  }
+
+  private PreparedStatement prepareStatement(String query, boolean returnGeneratedKeys,
+                                             int queryTimeout) throws SQLException {
     try {
       logAccess("prepareStatement", query);
       PreparedStatement statement;

@@ -151,8 +151,10 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @return a {@link EntityConnectionProvider} based on the given user and client type
    */
   protected EntityConnectionProvider initializeConnectionProvider(User user, String clientTypeId) {
-    return EntityConnectionProvider.connectionProvider().setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
-            .setClientTypeId(clientTypeId).setUser(user);
+    return EntityConnectionProvider.builder()
+            .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+            .clientTypeId(clientTypeId).user(user)
+            .build();
   }
 
   /**

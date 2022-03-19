@@ -38,8 +38,6 @@ public interface LocalEntityConnection extends EntityConnection {
 
   int DEFAULT_CONNECTION_LOG_SIZE = 40;
 
-  int DEFAULT_QUERY_TIMEOUT_SECONDS = 120;
-
   /**
    * Specifies the size of the (circular) log that is kept in memory for each connection<br>
    * Value type: Integer<br>
@@ -52,7 +50,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * Value type: Integer<br>
    * Default value: 120
    */
-  PropertyValue<Integer> QUERY_TIMEOUT_SECONDS = Configuration.integerValue("codion.db.queryTimeoutSeconds", DEFAULT_QUERY_TIMEOUT_SECONDS);
+  PropertyValue<Integer> QUERY_TIMEOUT_SECONDS = Configuration.integerValue("codion.db.queryTimeoutSeconds", SelectCondition.DEFAULT_QUERY_TIMEOUT_SECONDS);
 
   /**
    * Specifies whether optimistic locking should be performed, that is, if entities should
@@ -120,15 +118,15 @@ public interface LocalEntityConnection extends EntityConnection {
   LocalEntityConnection setLimitFetchDepth(boolean limitFetchDepth);
 
   /**
-   * @return the query timeout being used
+   * @return the default query timeout being used
    */
-  int getQueryTimeout();
+  int getDefaultQueryTimeout();
 
   /**
    * @param queryTimeout the query timeout in seconds
    * @return this LocalEntityConnection instance
    */
-  LocalEntityConnection setQueryTimeout(int queryTimeout);
+  LocalEntityConnection setDefaultQueryTimeout(int queryTimeout);
 
   /**
    * @return the underlying domain model

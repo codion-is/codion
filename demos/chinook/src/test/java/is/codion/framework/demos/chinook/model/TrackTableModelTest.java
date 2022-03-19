@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.chinook.model;
 
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -43,8 +42,9 @@ public final class TrackTableModelTest {
   }
 
   private EntityConnectionProvider createConnectionProvider() {
-    return new LocalEntityConnectionProvider(DatabaseFactory.getDatabase())
-            .setDomainClassName(ChinookImpl.class.getName())
-            .setUser(User.parse("scott:tiger"));
+    return LocalEntityConnectionProvider.builder()
+            .domainClassName(ChinookImpl.class.getName())
+            .user(User.parse("scott:tiger"))
+            .build();
   }
 }
