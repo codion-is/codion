@@ -273,7 +273,7 @@ abstract class AbstractHttpEntityConnectionTest {
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.TRUE);
-    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(ClientHttps.TRUE);
+    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(true);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "../../framework/server/src/main/config/all_permissions.policy");
 
@@ -298,7 +298,7 @@ abstract class AbstractHttpEntityConnectionTest {
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.FALSE);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(null);
-    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(ClientHttps.FALSE);
+    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
     System.clearProperty("java.security.policy");
   }
 }

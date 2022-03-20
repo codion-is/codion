@@ -75,7 +75,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
    * @param clientId the client id
    */
   HttpJsonEntityConnection(String domainTypeName, String serverHostName, int serverPort,
-                           ClientHttps httpsEnabled, User user, String clientTypeId, UUID clientId,
+                           boolean httpsEnabled, User user, String clientTypeId, UUID clientId,
                            HttpClientConnectionManager connectionManager) {
     super(domainTypeName, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
             "application/json", "/entities/json", connectionManager);
