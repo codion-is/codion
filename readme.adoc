@@ -260,7 +260,7 @@ public class StoreDemo {
     }
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     UIManager.setLookAndFeel(new FlatDarculaLaf());
 
     Database database = new H2DatabaseFactory()
@@ -268,9 +268,11 @@ public class StoreDemo {
                     "src/main/sql/create_schema_minimal.sql");
 
     EntityConnectionProvider connectionProvider =
-            new LocalEntityConnectionProvider(database)
-                    .setDomainClassName(Store.class.getName())
-                    .setUser(User.parse("scott:tiger"));
+            LocalEntityConnectionProvider.builder()
+                    .database(database)
+                    .domainClassName(Store.class.getName())
+                    .user(User.parse("scott:tiger"))
+                    .build();
 
     SwingEntityModel customerModel =
             new SwingEntityModel(Customer.TYPE, connectionProvider);
@@ -286,16 +288,16 @@ public class StoreDemo {
                     new AddressEditPanel(addressModel.getEditModel()));
     customerPanel.addDetailPanel(addressPanel);
 
-    customerPanel.getTablePanel().setConditionPanelVisible(true);
     customerPanel.getTablePanel().getTable()
             .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
     addressPanel.getTablePanel().getTable()
             .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
+    addressPanel.getTablePanel().setConditionPanelVisible(true);
 
-    customerModel.refresh();
+    customerModel.getTableModel().refresh();
     customerPanel.initializePanel();
 
-    Dialogs.componentDialogBuilder(customerPanel)
+    Dialogs.componentDialog(customerPanel)
             .title("Customers")
             .show();
 
@@ -330,9 +332,11 @@ Database database = new H2DatabaseFactory()
                 "src/main/sql/create_schema_minimal.sql");
 
 EntityConnectionProvider connectionProvider =
-        new LocalEntityConnectionProvider(database)
-                .setDomainClassName(Store.class.getName())
-                .setUser(User.parse("scott:tiger"));
+        LocalEntityConnectionProvider.builder()
+                .database(database)
+                .domainClassName(Store.class.getName())
+                .user(User.parse("scott:tiger"))
+                .build();
 
 EntityConnection connection = connectionProvider.getConnection();
 
@@ -343,15 +347,15 @@ List<Entity> doesAddresses =
         connection.select(Address.CUSTOMER_FK, customersNamedDoe);
 
 List<Entity> customersWithoutEmail =
-            connection.select(where(Customer.EMAIL).isNull());
+        connection.select(where(Customer.EMAIL).isNull());
 
 List<String> activeCustomerEmailAddresses =
-            connection.select(Customer.EMAIL,
-                    where(Customer.IS_ACTIVE).equalTo(true));
+        connection.select(Customer.EMAIL,
+                where(Customer.IS_ACTIVE).equalTo(true));
 
 List<Entity> activeCustomersWithEmailAddresses =
-            connection.select(where(Customer.IS_ACTIVE).equalTo(true)
-                    .and(where(Customer.EMAIL).isNotNull()));
+        connection.select(where(Customer.IS_ACTIVE).equalTo(true)
+                .and(where(Customer.EMAIL).isNotNull()));
 
 //The domain model entities, a factory for Entity instances.
 Entities entities = connection.getEntities();
