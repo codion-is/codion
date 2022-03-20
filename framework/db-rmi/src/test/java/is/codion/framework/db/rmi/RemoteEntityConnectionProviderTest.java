@@ -74,7 +74,7 @@ public class RemoteEntityConnectionProviderTest {
   }
 
   @Test
-  void entityConnectionProviders() {
+  void entityConnectionProviderBuilder() {
     String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
     EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
@@ -82,7 +82,7 @@ public class RemoteEntityConnectionProviderTest {
             .clientTypeId("test")
             .user(UNIT_TEST_USER)
             .build();
-    assertEquals("RemoteEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
+    assertTrue(connectionProvider instanceof RemoteEntityConnectionProvider);
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
   }

@@ -7923,3 +7923,4 @@
   LocalEntityConnection, LocalEntityConnectionProvider.setQueryTimeout() renamed setDefaultQueryTimeout()
   EntityConnectionProvider instances now immutable, Builder added
   EntityApplicationModel, EntityApplicationPanel.logout() and login() removed
+  LocalEntityConnectionProvider, RemoteEntityConnectionProvider and HttpEntityConnectionProvider now interfaces, related refactoring

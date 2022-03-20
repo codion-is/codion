@@ -38,14 +38,14 @@ public class LocalEntityConnectionProviderTest {
   }
 
   @Test
-  void entityConnectionProviders() {
+  void entityConnectionProviderBuilder() {
     String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
     EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
             .domainClassName(TestDomain.class.getName())
             .user(User.parse("scott:tiger"))
             .build();
-    assertEquals("LocalEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
+    assertTrue(connectionProvider instanceof  LocalEntityConnectionProvider);
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
   }
