@@ -130,8 +130,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     synchronized (lock) {
       if (isConnectionValid()) {
         close(entityConnection);
-        entityConnection = null;
       }
+      entityConnection = null;
     }
   }
 

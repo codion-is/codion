@@ -68,7 +68,7 @@ public class RemoteEntityConnectionProviderTest {
 
     provider.close();
 
-    assertTrue(provider.isConnected());
+    assertFalse(provider.isConnected());
 
     assertThrows(RuntimeException.class, provider::getConnection);
   }
