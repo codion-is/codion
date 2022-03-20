@@ -9,11 +9,12 @@ import is.codion.framework.db.EntityConnectionProvider;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HttpEntityConnectionProviderTest {
 
   @Test
-  void entityConnectionProviders() {
+  void entityConnectionProviderBuilder() {
     String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(8089);
@@ -22,7 +23,7 @@ public class HttpEntityConnectionProviderTest {
             .clientTypeId("test")
             .user(User.parse("scott:tiger"))
             .build();
-    assertEquals("HttpEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
+    assertTrue(connectionProvider instanceof HttpEntityConnectionProvider);
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_HTTP, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
   }
