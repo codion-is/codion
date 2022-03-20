@@ -33,10 +33,10 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
 
   /**
    * Specifies whether https should be used.<br>
-   * Value types: Https<br>
+   * Value type: boolean<br>
    * Default value: true
    */
-  PropertyValue<ClientHttps> HTTP_CLIENT_SECURE = Configuration.enumValue("codion.client.http.secure", ClientHttps.class, ClientHttps.TRUE);
+  PropertyValue<Boolean> HTTP_CLIENT_SECURE = Configuration.booleanValue("codion.client.http.secure", true);
 
   /**
    * Specifies whether json serialization should be used.<br>

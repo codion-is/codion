@@ -81,11 +81,11 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
    * @param connectionManager the connection manager
    */
   AbstractHttpEntityConnection(String domainTypeName, String serverHostName, int serverPort,
-                               ClientHttps httpsEnabled, User user, String clientTypeId, UUID clientId,
+                               boolean httpsEnabled, User user, String clientTypeId, UUID clientId,
                                String contentType, String path, HttpClientConnectionManager connectionManager) {
     this.domainTypeName = Objects.requireNonNull(domainTypeName, DOMAIN_TYPE_NAME);
     this.user = Objects.requireNonNull(user, "user");
-    this.httpsEnabled = ClientHttps.TRUE.equals(httpsEnabled);
+    this.httpsEnabled = httpsEnabled;
     this.baseurl = Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + path;
     this.connectionManager = Objects.requireNonNull(connectionManager, "connectionManager");
     this.httpClient = createHttpClient(clientTypeId, clientId, contentType);

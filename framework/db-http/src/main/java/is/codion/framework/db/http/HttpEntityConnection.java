@@ -58,7 +58,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
    * @param clientId the client id
    */
   HttpEntityConnection(String domainTypeName, String serverHostName, int serverPort,
-                       ClientHttps httpsEnabled, User user, String clientTypeId, UUID clientId,
+                       boolean httpsEnabled, User user, String clientTypeId, UUID clientId,
                        HttpClientConnectionManager connectionManager) {
     super(domainTypeName, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
             "application/octet-stream", "/entities/ser", connectionManager);

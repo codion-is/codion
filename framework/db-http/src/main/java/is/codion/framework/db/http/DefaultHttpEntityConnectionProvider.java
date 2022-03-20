@@ -52,13 +52,16 @@ public final class DefaultHttpEntityConnectionProvider extends AbstractEntityCon
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      if (https) {
-        HttpEntityConnections.createSecureConnection(getDomainTypeName(getDomainClassName()), getServerHostName(),
-                serverPort, getUser(), getClientTypeId(), getClientId(), json);
-      }
-
-      return HttpEntityConnections.createConnection(getDomainTypeName(getDomainClassName()), getServerHostName(),
-              serverPort, getUser(), getClientTypeId(), getClientId(), json);
+      return HttpEntityConnections.builder()
+              .domainTypeName(getDomainTypeName(getDomainClassName()))
+              .serverHostName(getServerHostName())
+              .serverPort(serverPort)
+              .user(getUser())
+              .clientTypeId(getClientTypeId())
+              .clientId(getClientId())
+              .json(json)
+              .https(https)
+              .build();
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -75,7 +78,7 @@ public final class DefaultHttpEntityConnectionProvider extends AbstractEntityCon
 
     private String serverHostName = HTTP_CLIENT_HOST_NAME.get();
     private int serverPort = HTTP_CLIENT_PORT.get();
-    private boolean https = ClientHttps.TRUE.equals(HTTP_CLIENT_SECURE.get());
+    private boolean https = HTTP_CLIENT_SECURE.get();
     private boolean json = HTTP_CLIENT_JSON.get();
 
     public DefaultBuilder() {
