@@ -45,9 +45,11 @@ public class Store extends DefaultDomain {
     define(Customer.TYPE,
             primaryKeyProperty(Customer.ID),
             columnProperty(Customer.FIRST_NAME, "First name")
-                    .nullable(false).maximumLength(40),
+                    .nullable(false)
+                    .maximumLength(40),
             columnProperty(Customer.LAST_NAME, "Last name")
-                    .nullable(false).maximumLength(40),
+                    .nullable(false)
+                    .maximumLength(40),
             columnProperty(Customer.EMAIL, "Email")
                     .maximumLength(100),
             columnProperty(Customer.IS_ACTIVE, "Is active")

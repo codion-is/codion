@@ -94,8 +94,10 @@ public class StoreDemo {
                     new AddressEditPanel(addressModel.getEditModel()));
     customerPanel.addDetailPanel(addressPanel);
 
-    customerPanel.getTablePanel().getTable().setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
-    addressPanel.getTablePanel().getTable().setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
+    customerPanel.getTablePanel().getTable()
+            .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
+    addressPanel.getTablePanel().getTable()
+            .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
     addressPanel.getTablePanel().setConditionPanelVisible(true);
 
     customerModel.getTableModel().refresh();
