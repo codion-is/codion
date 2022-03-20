@@ -15,5 +15,5 @@ module is.codion.framework.db.http {
   exports is.codion.framework.db.http;
 
   provides is.codion.framework.db.EntityConnectionProvider.Builder
-          with is.codion.framework.db.http.HttpEntityConnectionProvider.DefaultBuilder;
+          with is.codion.framework.db.http.DefaultHttpEntityConnectionProvider.DefaultBuilder;
 }
