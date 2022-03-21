@@ -184,7 +184,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     private final String connectionType;
 
     private User user;
-    private String domainClassName;
+    private String domainClassName = CLIENT_DOMAIN_CLASS.get();
     private UUID clientId = UUID.randomUUID();
     private String clientTypeId;
     private Version clientVersion;
