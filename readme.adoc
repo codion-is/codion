@@ -54,7 +54,7 @@ Codion uses a very limited set of third-party libraries, a simple Swing CRUD cli
 * *JDBC driver*
 * *Logging framework*
 
-A simple CRUD client pulls in ~15 Codion modules totalling ~1.2MB, so the combined weight of the Pet Clinic demo client for example is ~2MB (excluding the JDBC driver and logging framework).
+A simple CRUD client pulls in ~15 Codion modules totalling ~1.5MB, so the combined weight of the Pet Clinic demo client for example is ~2MB (excluding the JDBC driver and logging framework).
 
 == Rich Swing Client
 
