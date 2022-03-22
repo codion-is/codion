@@ -7927,3 +7927,4 @@
   AbstractEntityConnectionProvider.close() now sets the connection to null even if it's not valid
   HttpEntityConnections.Builder added, replaces factory methods
   AbstractEntityConnectionProvider.AbstractBuilder.domainClassName defaults to EntityConnectionProvider.CLIENT_DOMAIN_CLASS
+  EntityConnectionProvider.Builder implementations moved up to package level, EntityConnectionProvider implementations now package private

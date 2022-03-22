@@ -55,7 +55,7 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
    * @return a new builder
    */
   static Builder builder() {
-    return new DefaultHttpEntityConnectionProvider.DefaultBuilder();
+    return new DefaultHttpEntityConnectionProviderBuilder();
   }
 
   /**

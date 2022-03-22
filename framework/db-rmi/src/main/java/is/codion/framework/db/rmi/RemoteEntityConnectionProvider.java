@@ -32,7 +32,7 @@ public interface RemoteEntityConnectionProvider extends EntityConnectionProvider
    * @return a new builder
    */
   static Builder builder() {
-    return new DefaultRemoteEntityConnectionProvider.DefaultBuilder();
+    return new DefaultRemoteEntityConnectionProviderBuilder();
   }
 
   /**

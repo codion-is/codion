@@ -43,7 +43,7 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider 
    * @return a new builder
    */
   static Builder builder() {
-    return new DefaultLocalEntityConnectionProvider.DefaultBuilder();
+    return new DefaultLocalEntityConnectionProviderBuilder();
   }
 
   /**
