@@ -8,7 +8,6 @@ import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 
 import org.slf4j.Logger;
@@ -17,13 +16,12 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
-import static java.util.Objects.requireNonNull;
 
 /**
  * A class responsible for managing a local EntityConnection.
  * @see LocalEntityConnectionProvider#builder()
  */
-public final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectionProvider
+final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectionProvider
         implements LocalEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
@@ -34,7 +32,7 @@ public final class DefaultLocalEntityConnectionProvider extends AbstractEntityCo
   private final Database database;
   private final int defaultQueryTimeout;
 
-  private DefaultLocalEntityConnectionProvider(DefaultBuilder builder) {
+  DefaultLocalEntityConnectionProvider(DefaultLocalEntityConnectionProviderBuilder builder) {
     super(builder);
     this.domain = initializeDomain(getDomainClassName());
     this.database = builder.database == null ? DatabaseFactory.getDatabase() : builder.database;
@@ -100,31 +98,4 @@ public final class DefaultLocalEntityConnectionProvider extends AbstractEntityCo
     }
   }
 
-  public static final class DefaultBuilder extends AbstractBuilder<LocalEntityConnectionProvider.Builder, LocalEntityConnectionProvider>
-          implements LocalEntityConnectionProvider.Builder {
-
-    private Database database;
-    private int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
-
-    public DefaultBuilder() {
-      super(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
-    }
-
-    @Override
-    public LocalEntityConnectionProvider.Builder database(Database database) {
-      this.database = requireNonNull(database);
-      return this;
-    }
-
-    @Override
-    public LocalEntityConnectionProvider.Builder defaultQueryTimeout(int defaultQueryTimeout) {
-      this.defaultQueryTimeout = defaultQueryTimeout;
-      return this;
-    }
-
-    @Override
-    public LocalEntityConnectionProvider build() {
-      return new DefaultLocalEntityConnectionProvider(this);
-    }
-  }
 }

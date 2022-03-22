@@ -11,7 +11,6 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.EntityConnectionProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,7 @@ import static java.util.Objects.requireNonNull;
  * A class responsible for managing a remote entity connection.
  * @see RemoteEntityConnectionProvider#builder()
  */
-public final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnectionProvider
+final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnectionProvider
         implements RemoteEntityConnectionProvider{
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
@@ -46,7 +45,7 @@ public final class DefaultRemoteEntityConnectionProvider extends AbstractEntityC
   private final int serverPort;
   private final int registryPort;
 
-  private DefaultRemoteEntityConnectionProvider(DefaultBuilder builder) {
+  DefaultRemoteEntityConnectionProvider(DefaultRemoteEntityConnectionProviderBuilder builder) {
     super(builder);
     this.serverHostName = requireNonNull(builder.serverHostName, "serverHostName");
     this.serverPort = builder.serverPort;
@@ -192,38 +191,4 @@ public final class DefaultRemoteEntityConnectionProvider extends AbstractEntityC
     }
   }
 
-  public static final class DefaultBuilder extends AbstractBuilder<RemoteEntityConnectionProvider.Builder, RemoteEntityConnectionProvider>
-          implements RemoteEntityConnectionProvider.Builder {
-
-    private String serverHostName = Clients.SERVER_HOST_NAME.get();
-    private int serverPort = ServerConfiguration.SERVER_PORT.get();
-    private int registryPort = ServerConfiguration.REGISTRY_PORT.get();
-
-    public DefaultBuilder() {
-      super(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
-    }
-
-    @Override
-    public RemoteEntityConnectionProvider.Builder serverHostName(String serverHostName) {
-      this.serverHostName = requireNonNull(serverHostName);
-      return this;
-    }
-
-    @Override
-    public RemoteEntityConnectionProvider.Builder serverPort(int serverPort) {
-      this.serverPort = serverPort;
-      return this;
-    }
-
-    @Override
-    public RemoteEntityConnectionProvider.Builder registryPort(int registryPort) {
-      this.registryPort = registryPort;
-      return this;
-    }
-
-    @Override
-    public RemoteEntityConnectionProvider build() {
-      return new DefaultRemoteEntityConnectionProvider(this);
-    }
-  }
 }
