@@ -9,5 +9,5 @@ module is.codion.framework.db.local {
   exports is.codion.framework.db.local;
 
   provides is.codion.framework.db.EntityConnectionProvider.Builder
-          with is.codion.framework.db.local.DefaultLocalEntityConnectionProvider.DefaultBuilder;
+          with is.codion.framework.db.local.DefaultLocalEntityConnectionProviderBuilder;
 }
