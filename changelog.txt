@@ -7963,3 +7963,4 @@
   HttpEntityConnections.Builder added, replaces factory methods
   AbstractEntityConnectionProvider.AbstractBuilder.domainClassName defaults to EntityConnectionProvider.CLIENT_DOMAIN_CLASS
   EntityConnectionProvider.Builder implementations moved up to package level, EntityConnectionProvider implementations now package private
+  DefaultServerAdmin.getSystemProperties() now formats module path like class path, one item per line
