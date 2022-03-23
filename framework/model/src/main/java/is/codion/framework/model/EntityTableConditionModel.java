@@ -172,8 +172,8 @@ public interface EntityTableConditionModel {
   /**
    * Note that modifying this value may (and probably will) change the automatic prefix and case sensetivity settings of
    * the underlying {@link ColumnConditionModel}s
-   * @see ColumnConditionModel#setCaseSensitive(boolean)
-   * @see ColumnConditionModel#setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard)
+   * @see ColumnConditionModel#getCaseSensitiveState()
+   * @see ColumnConditionModel#getAutomaticWildcardValue()
    * @return the value used when performing a simple search.
    */
   Value<String> getSimpleConditionStringValue();
