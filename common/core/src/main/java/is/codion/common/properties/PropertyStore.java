@@ -113,6 +113,23 @@ public interface PropertyStore {
   PropertyValue<Long> longValue(String propertyName, long defaultValue);
 
   /**
+   * Instantiates a value for the given long property
+   * @param propertyName the property name
+   * @return a new {@link PropertyValue} instance
+   * @throws NullPointerException if {@code propertyName} is null
+   */
+  PropertyValue<Character> characterValue(String propertyName);
+
+  /**
+   * Instantiates a value for the given long property
+   * @param propertyName the property name
+   * @param defaultValue the default value
+   * @return a new {@link PropertyValue} instance
+   * @throws NullPointerException if {@code propertyName} is null
+   */
+  PropertyValue<Character> characterValue(String propertyName, char defaultValue);
+
+  /**
    * Instantiates a value for the given string property
    * @param propertyName the property name
    * @return a new {@link PropertyValue} instance

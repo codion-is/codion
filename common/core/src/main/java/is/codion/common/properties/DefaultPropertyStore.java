@@ -104,6 +104,16 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
+  public PropertyValue<Character> characterValue(String propertyName) {
+    return value(propertyName, string -> string.charAt(0), Object::toString);
+  }
+
+  @Override
+  public PropertyValue<Character> characterValue(String propertyName, char defaultValue) {
+    return value(propertyName, string -> string.charAt(0), Object::toString, defaultValue);
+  }
+
+  @Override
   public PropertyValue<String> stringValue(String propertyName) {
     return stringValue(propertyName, null);
   }

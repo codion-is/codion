@@ -126,6 +126,25 @@ public final class Configuration {
   }
 
   /**
+   * Creates a character configuration value
+   * @param key the configuration value key
+   * @return a configuration value builder
+   */
+  public static PropertyValue<Character> characterValue(String key) {
+    return characterValue(key);
+  }
+
+  /**
+   * Creates a character configuration value
+   * @param key the configuration value key
+   * @param defaultValue the default value
+   * @return a configuration value builder
+   */
+  public static PropertyValue<Character> characterValue(String key, char defaultValue) {
+    return STORE.characterValue(key, defaultValue);
+  }
+
+  /**
    * Creates a string configuration value
    * @param key the configuration value key
    * @return a configuration value builder
