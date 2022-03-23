@@ -75,11 +75,11 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Value<String> searchStringValue = Value.value("");
   private final Value<String> multipleItemSeparatorValue = Value.value(DEFAULT_SEPARATOR, DEFAULT_SEPARATOR);
   private final Value<Boolean> multipleSelectionEnabledValue = Value.value(true, false);
+  private final Value<Character> wildcardValue = Value.value(Property.WILDCARD_CHARACTER.get(), Property.WILDCARD_CHARACTER.get());
 
   private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
   private Supplier<Condition> additionalConditionSupplier;
   private Comparator<Entity> resultSorter = new EntityComparator();
-  private String wildcard = Property.WILDCARD_CHARACTER.get();
   private String description;
 
   /**
@@ -179,13 +179,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public String getWildcard() {
-    return wildcard;
-  }
-
-  @Override
-  public void setWildcard(String wildcard) {
-    this.wildcard = wildcard;
+  public Value<Character> getWildcardValue() {
+    return wildcardValue;
   }
 
   @Override
@@ -298,8 +293,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     boolean wildcardPrefix = searchSettings.getWildcardPrefixValue().get();
     boolean wildcardPostfix = searchSettings.getWildcardPostfixValue().get();
 
-    return rawSearchText.equals(wildcard) ? wildcard :
-            ((wildcardPrefix ? wildcard : "") + rawSearchText.trim() + (wildcardPostfix ? wildcard : ""));
+    return rawSearchText.equals(String.valueOf(wildcardValue.get())) ? String.valueOf(wildcardValue.get()) :
+            ((wildcardPrefix ? wildcardValue.get() : "") + rawSearchText.trim() + (wildcardPostfix ? wildcardValue.get() : ""));
   }
 
   private void bindEventsInternal() {

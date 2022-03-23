@@ -267,8 +267,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
             .filter(conditionModel -> searchAttributes.contains(conditionModel.getColumnIdentifier()))
             .map(conditionModel -> (ColumnConditionModel<Attribute<String>, String>) conditionModel)
             .forEach(conditionModel -> {
-              conditionModel.setCaseSensitive(false);
-              conditionModel.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
+              conditionModel.getCaseSensitiveState().set(false);
+              conditionModel.getAutomaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
               conditionModel.setEqualValue(searchString);
               conditionModel.setOperator(Operator.EQUAL);
               conditionModel.setEnabled(true);
@@ -335,13 +335,13 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       case EQUAL:
         AttributeCondition<T> equalCondition = builder.equalTo(equalToValues);
         if (equalCondition.getAttribute().isString()) {
-          equalCondition.caseSensitive(conditionModel.isCaseSensitive());
+          equalCondition.caseSensitive(conditionModel.getCaseSensitiveState().get());
         }
         return equalCondition;
       case NOT_EQUAL:
         AttributeCondition<T> notEqualCondition = builder.notEqualTo(equalToValues);
         if (notEqualCondition.getAttribute().isString()) {
-          notEqualCondition.caseSensitive(conditionModel.isCaseSensitive());
+          notEqualCondition.caseSensitive(conditionModel.getCaseSensitiveState().get());
         }
         return notEqualCondition;
       case LESS_THAN:

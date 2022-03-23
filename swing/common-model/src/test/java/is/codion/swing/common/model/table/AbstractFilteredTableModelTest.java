@@ -96,7 +96,7 @@ public final class AbstractFilteredTableModelTest {
 
   private static List<ColumnFilterModel<List<String>, Integer, String>> createFilterModels() {
     ColumnFilterModel<List<String>, Integer, String> filterModel =
-            new DefaultColumnFilterModel<>(0, String.class, "%");
+            new DefaultColumnFilterModel<>(0, String.class, '%');
 
     filterModel.setComparableFunction(row -> row.get(0));
 

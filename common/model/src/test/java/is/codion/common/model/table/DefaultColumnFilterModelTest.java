@@ -14,7 +14,7 @@ public class DefaultColumnFilterModelTest {
 
   @Test
   void includeInteger() {
-    DefaultColumnFilterModel<String, String, Integer> conditionModel = new DefaultColumnFilterModel<>("test", Integer.class, "%");
+    DefaultColumnFilterModel<String, String, Integer> conditionModel = new DefaultColumnFilterModel<>("test", Integer.class, '%');
     conditionModel.setAutoEnable(false);
     conditionModel.setOperator(Operator.EQUAL);
 
@@ -128,7 +128,7 @@ public class DefaultColumnFilterModelTest {
 
   @Test
   void includeString() {
-    DefaultColumnFilterModel<String, String, String> conditionModel = new DefaultColumnFilterModel<>("test", String.class, "%");
+    DefaultColumnFilterModel<String, String, String> conditionModel = new DefaultColumnFilterModel<>("test", String.class, '%');
     conditionModel.setAutoEnable(false);
     conditionModel.setEnabled(true);
 
@@ -142,7 +142,7 @@ public class DefaultColumnFilterModelTest {
     assertTrue(conditionModel.include("hello"));
     assertFalse(conditionModel.include("helo"));
 
-    conditionModel.setCaseSensitive(false);
+    conditionModel.getCaseSensitiveState().set(false);
     assertTrue(conditionModel.include("HELlo"));
     assertFalse(conditionModel.include("heLo"));
     assertFalse(conditionModel.include(null));
@@ -151,7 +151,7 @@ public class DefaultColumnFilterModelTest {
     assertTrue(conditionModel.include("hello"));
     assertTrue(conditionModel.include("helo"));
 
-    conditionModel.setCaseSensitive(true);
+    conditionModel.getCaseSensitiveState().set(true);
     conditionModel.setEqualValue("hello");
     conditionModel.setOperator(Operator.NOT_EQUAL);
     assertFalse(conditionModel.include("hello"));
@@ -162,7 +162,7 @@ public class DefaultColumnFilterModelTest {
     assertFalse(conditionModel.include("hello"));
     assertTrue(conditionModel.include("helo"));
 
-    conditionModel.setCaseSensitive(false);
+    conditionModel.getCaseSensitiveState().set(false);
     assertFalse(conditionModel.include("HELlo"));
     assertTrue(conditionModel.include("heLo"));
     assertTrue(conditionModel.include(null));

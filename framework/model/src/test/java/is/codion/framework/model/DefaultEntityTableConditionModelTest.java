@@ -182,7 +182,7 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   void testSimpleSearchString() {
     final String value = "test";
-    String wildcard = Property.WILDCARD_CHARACTER.get();
+    Character wildcard = Property.WILDCARD_CHARACTER.get();
     conditionModel.getSimpleConditionStringValue().set(value);
     for (ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
       if (model.getTypeClass().equals(String.class)) {

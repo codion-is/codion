@@ -74,7 +74,7 @@ public final class DefaultEntitySearchModelTest {
     assertEquals("description", searchModel.getDescription());
     assertNotNull(searchModel.getConnectionProvider());
     assertTrue(searchModel.getSearchAttributes().containsAll(searchAttributes));
-    assertNotNull(searchModel.getWildcard());
+    assertNotNull(searchModel.getWildcardValue().get());
   }
 
   @Test
@@ -107,7 +107,7 @@ public final class DefaultEntitySearchModelTest {
   @Test
   void searchModel() throws Exception {
     searchModel.getMultipleSelectionEnabledValue().set(true);
-    searchModel.setWildcard("%");
+    searchModel.getWildcardValue().set('%');
     searchModel.setSearchString("joh");
     assertFalse(searchModel.searchStringRepresentsSelected());
     List<Entity> result = searchModel.performQuery();
@@ -200,7 +200,7 @@ public final class DefaultEntitySearchModelTest {
   @Test
   void setAdditionalConditionProvider() {
     searchModel.getMultipleSelectionEnabledValue().set(false);
-    searchModel.setWildcard("%");
+    searchModel.getWildcardValue().set('%');
     searchModel.setSearchString("johnson");
     List<Entity> result = searchModel.performQuery();
     assertEquals(1, result.size());

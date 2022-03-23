@@ -29,9 +29,9 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
    * Instantiates a DefaultColumnFilterModel.
    * @param columnIdentifier the column identifier
    * @param typeClass the data type
-   * @param wildcard the string to use as wildcard
+   * @param wildcard the character to use as wildcard
    */
-  public DefaultColumnFilterModel(C columnIdentifier, Class<T> typeClass, String wildcard) {
+  public DefaultColumnFilterModel(C columnIdentifier, Class<T> typeClass, char wildcard) {
     this(columnIdentifier, typeClass, wildcard, null, null);
   }
 
@@ -39,11 +39,11 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
    * Instantiates a DefaultColumnFilterModel.
    * @param columnIdentifier the column identifier
    * @param typeClass the data type
-   * @param wildcard the string to use as wildcard
+   * @param wildcard the character to use as wildcard
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    */
-  public DefaultColumnFilterModel(C columnIdentifier, Class<T> typeClass, String wildcard,
+  public DefaultColumnFilterModel(C columnIdentifier, Class<T> typeClass, char wildcard,
                                   Format format, String dateTimePattern) {
     super(columnIdentifier, typeClass, getOperators(typeClass), wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
   }
@@ -98,7 +98,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
       return comparable == null;
     }
 
-    if (comparable instanceof String && ((String) equalValue).contains(getWildcard())) {
+    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(getWildcardValue().get()))) {
       return includeExactWildcard((String) comparable);
     }
 
@@ -114,7 +114,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
       return comparable != null;
     }
 
-    if (comparable instanceof String && ((String) equalValue).contains(getWildcard())) {
+    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(getWildcardValue().get()))) {
       return !includeExactWildcard((String) comparable);
     }
 
@@ -126,17 +126,17 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
     if (equalsValue == null) {
       equalsValue = "";
     }
-    if (equalsValue.equals(getWildcard())) {
+    if (equalsValue.equals(String.valueOf(getWildcardValue().get()))) {
       return true;
     }
 
     String realValue = value;
-    if (!isCaseSensitive()) {
+    if (!getCaseSensitiveState().get()) {
       equalsValue = equalsValue.toUpperCase(Locale.getDefault());
       realValue = realValue.toUpperCase(Locale.getDefault());
     }
 
-    if (!equalsValue.contains(getWildcard())) {
+    if (!equalsValue.contains(String.valueOf(getWildcardValue().get()))) {
       return realValue.compareTo(equalsValue) == 0;
     }
 
@@ -145,7 +145,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
 
   private String prepareForRegex(String string) {
     //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replace(getWildcard(), ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
+    return string.replace(String.valueOf(getWildcardValue().get()), ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
   }
 
   private boolean includeLessThan(Comparable<T> comparable) {
