@@ -7,8 +7,8 @@ import is.codion.common.db.database.DatabaseFactory;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.TestDomain.Query;
+import is.codion.framework.db.local.TestDomain.QueryColumnsWhereClause;
 import is.codion.framework.db.local.TestDomain.QueryFromClause;
-import is.codion.framework.db.local.TestDomain.QueryFromWhereColumnsClause;
 import is.codion.framework.domain.entity.OrderBy;
 
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ public final class SelectQueriesTest {
     builder.columns("empno");
     assertEquals("select empno\nfrom scott.emp\norder by ename", builder.build());
 
-    builder = queries.builder(testDomain.getEntities().getDefinition(QueryFromWhereColumnsClause.TYPE))
+    builder = queries.builder(testDomain.getEntities().getDefinition(QueryColumnsWhereClause.TYPE))
             .entitySelectQuery();
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\norder by ename desc", builder.build());
 
@@ -43,17 +43,17 @@ public final class SelectQueriesTest {
 
   @Test
   void selectCondition() {
-    SelectQueries.Builder builder = queries.builder(testDomain.getEntities().getDefinition(QueryFromWhereColumnsClause.TYPE))
+    SelectQueries.Builder builder = queries.builder(testDomain.getEntities().getDefinition(QueryColumnsWhereClause.TYPE))
             .entitySelectQuery();
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\norder by ename desc", builder.build());
 
-    SelectCondition condition = Conditions.where(QueryFromWhereColumnsClause.ENAME)
+    SelectCondition condition = Conditions.where(QueryColumnsWhereClause.ENAME)
             .equalTo("SCOTT")
             .toSelectCondition()
-            .selectAttributes(QueryFromWhereColumnsClause.ENAME)
+            .selectAttributes(QueryColumnsWhereClause.ENAME)
             .orderBy(OrderBy.orderBy()
-                    .descending(QueryFromWhereColumnsClause.EMPNO));
-    builder = queries.builder(testDomain.getEntities().getDefinition(QueryFromWhereColumnsClause.TYPE))
+                    .descending(QueryColumnsWhereClause.EMPNO));
+    builder = queries.builder(testDomain.getEntities().getDefinition(QueryColumnsWhereClause.TYPE))
             .selectCondition(condition);
 
     //select condition should not affect columns when the columns are hardcoded in the entity query

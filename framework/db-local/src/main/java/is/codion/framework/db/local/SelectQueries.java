@@ -112,7 +112,7 @@ final class SelectQueries {
         else {
           columns(getAllColumnsClause());
         }
-        from(selectQuery.getFrom());
+        from(selectQuery.getFrom() == null ? definition.getSelectTableName() : selectQuery.getFrom());
         where(selectQuery.getWhere());
         orderBy(selectQuery.getOrderBy() == null ? getOrderByClause(definition.getOrderBy()) : selectQuery.getOrderBy());
       }

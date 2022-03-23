@@ -7935,3 +7935,5 @@
   AutomaticWildcard, i18n captions added
   ColumnConditionPanel, now adds a popup menu to the bound fields to configure the case sensitivity and automatic wildcard, only applies to string based conditions
   DefaultColumnConditionModel, DefaultEntityTableConditionModel, case sensitivity and automatic wildcard now included in the search state
+  SelectQueries.Builder.entitySelectQuery() now uses the entity select table name if no from clause is provided by the SelectQuery
+  DefaultSelectQuery.DefaultSelectQueryBuilder.build() no longer throws exception if no from clause is provided

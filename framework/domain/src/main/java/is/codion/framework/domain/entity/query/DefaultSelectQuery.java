@@ -86,10 +86,6 @@ final class DefaultSelectQuery implements SelectQuery {
 
     @Override
     public SelectQuery build() {
-      if (from == null) {
-        throw new IllegalStateException("A 'FROM' clause is required to build a select query");
-      }
-
       return new DefaultSelectQuery(this);
     }
   }
