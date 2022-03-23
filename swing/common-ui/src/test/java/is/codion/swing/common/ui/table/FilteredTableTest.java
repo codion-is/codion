@@ -37,7 +37,7 @@ public class FilteredTableTest {
     TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     ColumnFilterModel<List<String>, Integer, String> filterModel =
-            new DefaultColumnFilterModel<>(0, String.class, "%");
+            new DefaultColumnFilterModel<>(0, String.class, '%');
 
     TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column),
             new TestAbstractTableSortModel(), singletonList(filterModel)) {

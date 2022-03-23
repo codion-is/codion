@@ -16,6 +16,7 @@ import is.codion.common.value.ValueSet;
 import java.text.Format;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
@@ -61,7 +62,20 @@ public interface ColumnConditionModel<C, T> {
     /**
      * Wildcard added at front and at end
      */
-    PREFIX_AND_POSTFIX
+    PREFIX_AND_POSTFIX;
+
+    private final String description;
+
+    AutomaticWildcard() {
+      this.description = ResourceBundle.getBundle(AutomaticWildcard.class.getName()).getString(this.toString());
+    }
+
+    /**
+     * @return a description
+     */
+    public String getDescription() {
+      return description;
+    }
   }
 
   /**
@@ -70,14 +84,9 @@ public interface ColumnConditionModel<C, T> {
   C getColumnIdentifier();
 
   /**
-   * @return true if this condition is case-sensitive
+   * @return the State controlling whether this model is case-sensitive, when working with strings
    */
-  boolean isCaseSensitive();
-
-  /**
-   * @param caseSensitive true if this condition model should be case-sensitive when working with strings
-   */
-  void setCaseSensitive(boolean caseSensitive);
+  State getCaseSensitiveState();
 
   /**
    * @return the Format object to use when formatting input, if any
@@ -90,17 +99,11 @@ public interface ColumnConditionModel<C, T> {
   String getDateTimePattern();
 
   /**
-   * Sets the automatic wildcard type.
    * Note that this is only applicable to string based condition models and only used for
    * operators {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL}
-   * @param automaticWildcard the automatic wildcard type to use
+   * @return the Value controlling whether automatic wildcards are enabled when working with strings
    */
-  void setAutomaticWildcard(AutomaticWildcard automaticWildcard);
-
-  /**
-   * @return the automatic wildcard type being used by this model
-   */
-  AutomaticWildcard getAutomaticWildcard();
+  Value<AutomaticWildcard> getAutomaticWildcardValue();
 
   /**
    * @param locked true to lock this model, false to unlock
@@ -183,6 +186,11 @@ public interface ColumnConditionModel<C, T> {
    * @return the operators available in this condition model
    */
   List<Operator> getOperators();
+
+  /**
+   * @return the Value controlling the character used as a wildcard when working with strings
+   */
+  Value<Character> getWildcardValue();
 
   /**
    * @return true if auto enable is enabled

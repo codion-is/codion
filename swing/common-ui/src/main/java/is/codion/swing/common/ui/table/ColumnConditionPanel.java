@@ -7,6 +7,7 @@ import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
@@ -14,6 +15,8 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -21,6 +24,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
@@ -42,6 +46,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Objects.requireNonNull;
@@ -53,6 +58,8 @@ import static javax.swing.SwingConstants.CENTER;
  * @param <T> the column value type
  */
 public final class ColumnConditionPanel<C, T> extends JPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnConditionPanel.class.getName());
 
   /**
    * Specifies whether a condition panel should include
@@ -516,6 +523,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
     onOperatorChanged(conditionModel.getOperator());
     onAdvancedChange(advancedConditionState.get());
+    addStringConfigurationPopupMenu();
   }
 
   private void initializeConditionDialog(Container parent, String title) {
@@ -570,6 +578,70 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     return equalField.hasFocus() ||
             lowerBoundField != null && lowerBoundField.hasFocus() ||
             upperBoundField != null && upperBoundField.hasFocus();
+  }
+
+  private void addStringConfigurationPopupMenu() {
+    if (conditionModel.getTypeClass().equals(String.class)) {
+      JPopupMenu popupMenu = Controls.builder()
+              .control(ToggleControl.builder(conditionModel.getCaseSensitiveState())
+                      .caption(MESSAGES.getString("case_sensitive"))
+                      .build())
+              .controls(createAutomaticWildcardControls())
+              .build()
+              .createPopupMenu();
+      equalField.setComponentPopupMenu(popupMenu);
+      if (lowerBoundField != null) {
+        lowerBoundField.setComponentPopupMenu(popupMenu);
+      }
+      if (upperBoundField != null) {
+        upperBoundField.setComponentPopupMenu(popupMenu);
+      }
+    }
+  }
+
+  private Controls createAutomaticWildcardControls() {
+    Value<AutomaticWildcard> automaticWildcardValue = conditionModel.getAutomaticWildcardValue();
+    AutomaticWildcard automaticWildcard = automaticWildcardValue.get();
+
+    State automaticWildcardNoneState = State.state(automaticWildcard.equals(AutomaticWildcard.NONE));
+    State automaticWildcardPostfixState = State.state(automaticWildcard.equals(AutomaticWildcard.POSTFIX));
+    State automaticWildcardPrefixState = State.state(automaticWildcard.equals(AutomaticWildcard.PREFIX));
+    State automaticWildcardPrefixAndPostfixState = State.state(automaticWildcard.equals(AutomaticWildcard.PREFIX_AND_POSTFIX));
+
+    State.group(automaticWildcardNoneState, automaticWildcardPostfixState, automaticWildcardPrefixState, automaticWildcardPrefixAndPostfixState);
+
+    automaticWildcardNoneState.addDataListener(enabled -> {
+      if (enabled) {
+        automaticWildcardValue.set(AutomaticWildcard.NONE);
+      }
+    });
+    automaticWildcardPostfixState.addDataListener(enabled -> {
+      if (enabled) {
+        automaticWildcardValue.set(AutomaticWildcard.POSTFIX);
+      }
+    });
+    automaticWildcardPrefixState.addDataListener(enabled -> {
+      if (enabled) {
+        automaticWildcardValue.set(AutomaticWildcard.PREFIX);
+      }
+    });
+    automaticWildcardPrefixAndPostfixState.addDataListener(enabled -> {
+      if (enabled) {
+        automaticWildcardValue.set(AutomaticWildcard.PREFIX_AND_POSTFIX);
+      }
+    });
+
+    return Controls.builder()
+            .caption(MESSAGES.getString("automatic_wildcard"))
+            .control(ToggleControl.builder(automaticWildcardNoneState)
+                    .caption(AutomaticWildcard.NONE.getDescription()))
+            .control(ToggleControl.builder(automaticWildcardPostfixState)
+                    .caption(AutomaticWildcard.POSTFIX.getDescription()))
+            .control(ToggleControl.builder(automaticWildcardPrefixState)
+                    .caption(AutomaticWildcard.PREFIX.getDescription()))
+            .control(ToggleControl.builder(automaticWildcardPrefixAndPostfixState)
+                    .caption(AutomaticWildcard.PREFIX_AND_POSTFIX.getDescription()))
+            .build();
   }
 
   private final class OperatorBoxPopupWidthListener extends ComponentAdapter {

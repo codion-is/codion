@@ -97,10 +97,10 @@ public interface Property<T> {
 
   /**
    * Specifies the wildcard character used by the framework<br>
-   * Value type: String<br>
+   * Value type: Character<br>
    * Default value: %
    */
-  PropertyValue<String> WILDCARD_CHARACTER = Configuration.stringValue("codion.wildcardCharacter", "%");
+  PropertyValue<Character> WILDCARD_CHARACTER = Configuration.characterValue("codion.wildcardCharacter", '%');
 
   /**
    * Specifies whether String values should use a lexical comparator by default<br>

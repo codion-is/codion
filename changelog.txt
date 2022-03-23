@@ -7964,3 +7964,9 @@
   AbstractEntityConnectionProvider.AbstractBuilder.domainClassName defaults to EntityConnectionProvider.CLIENT_DOMAIN_CLASS
   EntityConnectionProvider.Builder implementations moved up to package level, EntityConnectionProvider implementations now package private
   DefaultServerAdmin.getSystemProperties() now formats module path like class path, one item per line
+  PropertyStore.characterValue() and Configuration.characterValue() added
+  ColumnConditionModel.getWildcard(), isCaseSensitive() and getAutomaticWildcard() replaced with getWildcardValue(), getCaseSensitiveState() and getAutomaticWildcardValue() respectively
+  EntitySearchModel.getWildcard() replaced with getWildcardValue()
+  AutomaticWildcard, i18n captions added
+  ColumnConditionPanel, now adds a popup menu to the bound fields to configure the case sensitivity and automatic wildcard, only applies to string based conditions
+  DefaultColumnConditionModel, DefaultEntityTableConditionModel, case sensitivity and automatic wildcard now included in the search state

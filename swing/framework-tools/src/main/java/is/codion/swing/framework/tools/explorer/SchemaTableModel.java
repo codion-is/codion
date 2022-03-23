@@ -24,8 +24,8 @@ final class SchemaTableModel extends AbstractFilteredTableModel<Schema, Integer>
 
   SchemaTableModel(Collection<Schema> schemas, SchemaSortModel sortModel) {
     super(new SwingFilteredTableColumnModel<>(createSchemaColumns()), sortModel,
-            asList(new DefaultColumnFilterModel<>(0, String.class, "%"),
-                    new DefaultColumnFilterModel<>(0, Boolean.class, "%")));
+            asList(new DefaultColumnFilterModel<>(0, String.class, '%'),
+                    new DefaultColumnFilterModel<>(0, Boolean.class, '%')));
     this.schemas = schemas;
     getSortModel().setSortOrder(0, SortOrder.ASCENDING);
   }

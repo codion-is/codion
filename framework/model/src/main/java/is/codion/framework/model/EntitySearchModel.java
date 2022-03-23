@@ -89,15 +89,9 @@ public interface EntitySearchModel {
   String getSearchString();
 
   /**
-   * Sets the wildcard to use
-   * @param wildcard the wildcard
+   * @return the Value controlling the wildcard character
    */
-  void setWildcard(String wildcard);
-
-  /**
-   * @return the wildcard being used by this model
-   */
-  String getWildcard();
+  Value<Character> getWildcardValue();
 
   /**
    * @return true if the current search string represents the selected entities

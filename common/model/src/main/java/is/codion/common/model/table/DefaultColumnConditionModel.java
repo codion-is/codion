@@ -36,6 +36,10 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   private final Event<?> conditionChangedEvent = Event.event();
   private final Event<?> conditionModelClearedEvent = Event.event();
 
+  private final State caseSensitiveState = State.state(CASE_SENSITIVE.get());
+  private final Value<AutomaticWildcard> automaticWildcardValue = Value.value(AUTOMATIC_WILDCARD.get(), AutomaticWildcard.NONE);
+  private final Value<Character> wildcardValue = Value.value('%', '%');
+
   private final State enabledState = State.state();
   private final State lockedState = State.state();
 
@@ -46,19 +50,16 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   private final List<Operator> operators;
 
   private boolean autoEnable = true;
-  private AutomaticWildcard automaticWildcard;
-  private boolean caseSensitive = CASE_SENSITIVE.get();
-  private String wildcard;
 
   /**
    * Instantiates a DefaultColumnConditionModel.
    * @param columnIdentifier the column identifier
    * @param typeClass the data type
    * @param operators the conditional operators available to this condition model
-   * @param wildcard the string to use as wildcard
+   * @param wildcard the character to use as wildcard
    */
   public DefaultColumnConditionModel(C columnIdentifier, Class<T> typeClass, List<Operator> operators,
-                                     String wildcard) {
+                                     char wildcard) {
     this(columnIdentifier, typeClass, operators, wildcard, null, null);
   }
 
@@ -67,12 +68,12 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
    * @param columnIdentifier the column identifier
    * @param typeClass the data type
    * @param operators the conditional operators available to this condition model
-   * @param wildcard the string to use as wildcard
+   * @param wildcard the character to use as wildcard
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    */
   public DefaultColumnConditionModel(C columnIdentifier, Class<T> typeClass, List<Operator> operators,
-                                     String wildcard, Format format, String dateTimePattern) {
+                                     char wildcard, Format format, String dateTimePattern) {
     this(columnIdentifier, typeClass, operators, wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
   }
 
@@ -81,13 +82,13 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
    * @param columnIdentifier the column identifier
    * @param typeClass the data type
    * @param operators the conditional operators available to this condition model
-   * @param wildcard the string to use as wildcard
+   * @param wildcard the character to use as wildcard
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    * @param automaticWildcard the automatic wildcard type to use
    */
   public DefaultColumnConditionModel(C columnIdentifier, Class<T> typeClass, List<Operator> operators,
-                                     String wildcard, Format format, String dateTimePattern,
+                                     char wildcard, Format format, String dateTimePattern,
                                      AutomaticWildcard automaticWildcard) {
     if (requireNonNull(operators, "operators").isEmpty()) {
       throw new IllegalArgumentException("One or more operators must be specified");
@@ -95,10 +96,10 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     this.columnIdentifier = requireNonNull(columnIdentifier, "columnIdentifier");
     this.operators = unmodifiableList(operators);
     this.typeClass = typeClass;
-    this.wildcard = wildcard;
+    this.wildcardValue.set(wildcard);
     this.format = format;
     this.dateTimePattern = dateTimePattern;
-    this.automaticWildcard = automaticWildcard;
+    this.automaticWildcardValue.set(automaticWildcard);
     this.enabledState.addValidator(value -> checkLock());
     this.equalValues.addValidator(value -> checkLock());
     this.upperBoundValue.addValidator(value -> checkLock());
@@ -114,13 +115,8 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final boolean isCaseSensitive() {
-    return caseSensitive;
-  }
-
-  @Override
-  public final void setCaseSensitive(boolean caseSensitive) {
-    this.caseSensitive = caseSensitive;
+  public final State getCaseSensitiveState() {
+    return caseSensitiveState;
   }
 
   @Override
@@ -216,18 +212,9 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     return operators;
   }
 
-  /**
-   * @return the search wildcard
-   */
-  public final String getWildcard() {
-    return wildcard;
-  }
-
-  /**
-   * @param wildcard the search wildcard
-   */
-  public final void setWildcard(String wildcard) {
-    this.wildcard = wildcard;
+  @Override
+  public final Value<Character> getWildcardValue() {
+    return wildcardValue;
   }
 
   @Override
@@ -251,13 +238,8 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void setAutomaticWildcard(AutomaticWildcard automaticWildcard) {
-    this.automaticWildcard = requireNonNull(automaticWildcard);
-  }
-
-  @Override
-  public final AutomaticWildcard getAutomaticWildcard() {
-    return automaticWildcard;
+  public final Value<AutomaticWildcard> getAutomaticWildcardValue() {
+    return automaticWildcardValue;
   }
 
   @Override
@@ -388,13 +370,13 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   private String addWildcard(String value) {
     //only use wildcard for EQUAL and NOT_EQUAL
     if (operatorValue.equalTo(Operator.EQUAL) || operatorValue.equalTo(Operator.NOT_EQUAL)) {
-      switch (automaticWildcard) {
+      switch (automaticWildcardValue.get()) {
         case PREFIX_AND_POSTFIX:
-          return wildcard + value + wildcard;
+          return wildcardValue.get() + value + wildcardValue.get();
         case PREFIX:
-          return wildcard + value;
+          return wildcardValue.get() + value;
         case POSTFIX:
-          return value + wildcard;
+          return value + wildcardValue.get();
         default:
           return value;
       }
@@ -426,6 +408,8 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     lowerBoundValue.addListener(conditionChangedEvent);
     operatorValue.addListener(conditionChangedEvent);
     enabledState.addListener(conditionChangedEvent);
+    caseSensitiveState.addListener(conditionChangedEvent);
+    automaticWildcardValue.addListener(conditionChangedEvent);
   }
 
   private void checkLock() {
