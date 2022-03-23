@@ -7932,3 +7932,6 @@
   PropertyStore.characterValue() and Configuration.characterValue() added
   ColumnConditionModel.getWildcard(), isCaseSensitive() and getAutomaticWildcard() replaced with getWildcardValue(), getCaseSensitiveState() and getAutomaticWildcardValue() respectively
   EntitySearchModel.getWildcard() replaced with getWildcardValue()
+  AutomaticWildcard, i18n captions added
+  ColumnConditionPanel, now adds a popup menu to the bound fields to configure the case sensitivity and automatic wildcard, only applies to string based conditions
+  DefaultColumnConditionModel, DefaultEntityTableConditionModel, case sensitivity and automatic wildcard now included in the search state

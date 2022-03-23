@@ -408,6 +408,8 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     lowerBoundValue.addListener(conditionChangedEvent);
     operatorValue.addListener(conditionChangedEvent);
     enabledState.addListener(conditionChangedEvent);
+    caseSensitiveState.addListener(conditionChangedEvent);
+    automaticWildcardValue.addListener(conditionChangedEvent);
   }
 
   private void checkLock() {

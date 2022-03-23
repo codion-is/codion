@@ -372,6 +372,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       stringBuilder.append(boundToString(conditionModel.getEqualValues()));
       stringBuilder.append(boundToString(conditionModel.getUpperBound()));
       stringBuilder.append(boundToString(conditionModel.getLowerBound()));
+      stringBuilder.append(conditionModel.getCaseSensitiveState().get());
+      stringBuilder.append(conditionModel.getAutomaticWildcardValue().get());
     }
     return stringBuilder.toString();
   }

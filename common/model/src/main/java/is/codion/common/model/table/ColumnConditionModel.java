@@ -16,6 +16,7 @@ import is.codion.common.value.ValueSet;
 import java.text.Format;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
@@ -61,7 +62,20 @@ public interface ColumnConditionModel<C, T> {
     /**
      * Wildcard added at front and at end
      */
-    PREFIX_AND_POSTFIX
+    PREFIX_AND_POSTFIX;
+
+    private final String description;
+
+    AutomaticWildcard() {
+      this.description = ResourceBundle.getBundle(AutomaticWildcard.class.getName()).getString(this.toString());
+    }
+
+    /**
+     * @return a description
+     */
+    public String getDescription() {
+      return description;
+    }
   }
 
   /**
