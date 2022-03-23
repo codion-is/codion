@@ -73,7 +73,7 @@ public final class TestDomain extends DefaultDomain {
       }
     });
     query();
-    queryFromWhereColumnsClause();
+    queryColumnsWhereClause();
     queryFromClause();
     queryFromWhereClause();
   }
@@ -369,28 +369,28 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Query.EMPNO),
             columnProperty(Query.ENAME))
             .orderBy(OrderBy.orderBy().descending(Query.ENAME))
+            .selectTableName("scott.emp")
             .selectQuery(SelectQuery.builder()
                     .columns("empno, ename")
-                    .from("scott.emp")
                     .orderBy("ename")
                     .build());
   }
 
-  public interface QueryFromWhereColumnsClause {
+  public interface QueryColumnsWhereClause {
     EntityType TYPE = DOMAIN.entityType("query_where");
 
     Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
     Attribute<String> ENAME = TYPE.stringAttribute("ename");
   }
 
-  private void queryFromWhereColumnsClause() {
-    define(QueryFromWhereColumnsClause.TYPE,
-            columnProperty(QueryFromWhereColumnsClause.EMPNO),
-            columnProperty(QueryFromWhereColumnsClause.ENAME))
-            .orderBy(OrderBy.orderBy().descending(QueryFromWhereColumnsClause.ENAME))
+  private void queryColumnsWhereClause() {
+    define(QueryColumnsWhereClause.TYPE,
+            columnProperty(QueryColumnsWhereClause.EMPNO),
+            columnProperty(QueryColumnsWhereClause.ENAME))
+            .orderBy(OrderBy.orderBy().descending(QueryColumnsWhereClause.ENAME))
+            .selectTableName("scott.emp e")
             .selectQuery(SelectQuery.builder()
                     .columns("e.empno, e.ename")
-                    .from("scott.emp e")
                     .where("e.deptno > 10")
                     .build());
   }
