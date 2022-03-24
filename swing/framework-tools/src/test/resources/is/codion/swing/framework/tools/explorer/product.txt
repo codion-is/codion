@@ -7,7 +7,7 @@ public interface Product {
   Attribute<String> DESCRIPTION = TYPE.stringAttribute("description");
   Attribute<String> IMAGEURL = TYPE.stringAttribute("imageurl");
 
-  ForeignKey CATEGORYID_FK = TYPE.foreignKey("categoryid_fk", Product.CATEGORYID, Category.CATEGORYID);
+  ForeignKey CATEGORYID_FK = TYPE.foreignKey("categoryid_fk", CATEGORYID, Category.CATEGORYID);
 }
 
 void product() {

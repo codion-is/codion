@@ -62,8 +62,7 @@ final class DomainToString {
       List<String> references = new ArrayList<>();
       foreignKeyProperty.getReferences().forEach(reference -> {
         StringBuilder referenceBuilder = new StringBuilder();
-        referenceBuilder.append(interfaceName).append(".")
-                .append(reference.getAttribute().getName().toUpperCase()).append(", ")
+        referenceBuilder.append(reference.getAttribute().getName().toUpperCase()).append(", ")
                 .append(getInterfaceName(reference.getReferencedAttribute().getEntityType().getName(), true))
                 .append(".").append(reference.getReferencedAttribute().getName().toUpperCase());
         references.add(referenceBuilder.toString());
