@@ -7939,3 +7939,4 @@
   DefaultSelectQuery.DefaultSelectQueryBuilder.build() no longer throws exception if no from clause is provided
   SelectQuery.Builder.groupBy() and having() added
   EntityDefinition.Builder.groupBy() and having() removed
+  DomainToString, no longer prefixes foreign key reference with interface name

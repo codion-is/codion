@@ -4,8 +4,8 @@ public interface TagItem {
   Attribute<Integer> TAGID = TYPE.integerAttribute("tagid");
   Attribute<Integer> ITEMID = TYPE.integerAttribute("itemid");
 
-  ForeignKey TAGID_FK = TYPE.foreignKey("tagid_fk", TagItem.TAGID, Tag.TAGID);
-  ForeignKey ITEMID_FK = TYPE.foreignKey("itemid_fk", TagItem.ITEMID, Item.ITEMID);
+  ForeignKey TAGID_FK = TYPE.foreignKey("tagid_fk", TAGID, Tag.TAGID);
+  ForeignKey ITEMID_FK = TYPE.foreignKey("itemid_fk", ITEMID, Item.ITEMID);
 }
 
 void tagItem() {
