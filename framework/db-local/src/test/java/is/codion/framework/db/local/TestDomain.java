@@ -316,7 +316,9 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Job.MIN_COMMISSION)
                     .columnExpression("min(comm)")
                     .aggregateColumn(true))
-            .havingClause("job <> 'PRESIDENT'");
+            .selectQuery(SelectQuery.builder()
+                    .having("job <> 'PRESIDENT'")
+                    .build());
   }
 
   public interface NoPrimaryKey {

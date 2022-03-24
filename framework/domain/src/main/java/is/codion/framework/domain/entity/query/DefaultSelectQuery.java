@@ -10,12 +10,16 @@ final class DefaultSelectQuery implements SelectQuery {
   private final String columns;
   private final String from;
   private final String where;
+  private final String groupBy;
+  private final String having;
   private final String orderBy;
 
   DefaultSelectQuery(DefaultSelectQueryBuilder builder) {
     this.columns = builder.columns;
     this.from = builder.from;
     this.where = builder.where;
+    this.groupBy = builder.groupBy;
+    this.having = builder.having;
     this.orderBy = builder.orderBy;
   }
 
@@ -35,6 +39,16 @@ final class DefaultSelectQuery implements SelectQuery {
   }
 
   @Override
+  public String getGroupBy() {
+    return groupBy;
+  }
+
+  @Override
+  public String getHaving() {
+    return having;
+  }
+
+  @Override
   public String getOrderBy() {
     return orderBy;
   }
@@ -44,6 +58,8 @@ final class DefaultSelectQuery implements SelectQuery {
     private String from;
     private String columns;
     private String where;
+    private String groupBy;
+    private String having;
     private String orderBy;
 
     @Override
@@ -70,6 +86,26 @@ final class DefaultSelectQuery implements SelectQuery {
         throw new IllegalArgumentException("where clause should not include the 'WHERE' keyword");
       }
       this.where = where;
+
+      return this;
+    }
+
+    @Override
+    public Builder groupBy(String groupBy) {
+      if (requireNonNull(groupBy, "groupBy").trim().toLowerCase().startsWith("group by")) {
+        throw new IllegalArgumentException("group by clause should not include the 'GROUP BY' keywords");
+      }
+      this.groupBy = groupBy;
+
+      return this;
+    }
+
+    @Override
+    public Builder having(String having) {
+      if (requireNonNull(having, "having").trim().toLowerCase().startsWith("having")) {
+        throw new IllegalArgumentException("having clause should not include the 'HAVING' keywords");
+      }
+      this.having = having;
 
       return this;
     }

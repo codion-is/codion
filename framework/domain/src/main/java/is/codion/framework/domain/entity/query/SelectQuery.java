@@ -25,6 +25,16 @@ public interface SelectQuery {
   String getWhere();
 
   /**
+   * @return the GROUP BY clause
+   */
+  String getGroupBy();
+
+  /**
+   * @return the HAVING clause
+   */
+  String getHaving();
+
+  /**
    * @return the order by clause
    */
   String getOrderBy();
@@ -62,6 +72,20 @@ public interface SelectQuery {
      * @return this Builder instance
      */
     Builder where(String where);
+
+    /**
+     * Specifies the group by clause to use, without the GROUP BY keywords.
+     * @param groupBy the group by clause
+     * @return this Builder instance
+     */
+    Builder groupBy(String groupBy);
+
+    /**
+     * Specifies the having clause to use, without the HAVING keyword.
+     * @param having the having clause
+     * @return this Builder instance
+     */
+    Builder having(String having);
 
     /**
      * Specifies the order by clause to use, without the ORDER BY keywords.

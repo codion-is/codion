@@ -106,12 +106,6 @@ public interface EntityDefinition {
   String getGroupByClause();
 
   /**
-   * @return the having clause to use when querying entities of this type,
-   * without the "having" keyword
-   */
-  String getHavingClause();
-
-  /**
    * @return the name of the table to use when selecting entities of this type
    */
   String getSelectTableName();
@@ -532,27 +526,6 @@ public interface EntityDefinition {
      * @return this {@link Builder} instance
      */
     Builder orderBy(OrderBy orderBy);
-
-    /**
-     * Sets the having clause for this entity type, this clause should not
-     * include the "having" keyword.
-     * @param havingClause the having clause
-     * @return this {@link Builder} instance
-     * @throws IllegalStateException in case a having clause has already been set,
-     * for example automatically, based on grouping properties
-     */
-    Builder havingClause(String havingClause);
-
-    /**
-     * Sets the group by clause for this entity type, this clause should not
-     * include the "group by" keywords.
-     * @param groupByClause the group by clause
-     * @return this {@link Builder} instance
-     * @throws IllegalStateException in case a group by clause has already been set,
-     * for example automatically, based on grouping properties
-     * @see ColumnProperty.Builder#groupingColumn(boolean)
-     */
-    Builder groupByClause(String groupByClause);
 
     /**
      * Sets the name of the table to use when selecting entities of this type,

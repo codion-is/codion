@@ -162,12 +162,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * Holds the group by clause
    */
-  private transient String groupByClause;
-
-  /**
-   * Holds the having clause
-   */
-  private transient String havingClause;
+  private final transient String groupByClause;
 
   /**
    * The primary key value generator
@@ -318,11 +313,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public String getGroupByClause() {
     return groupByClause;
-  }
-
-  @Override
-  public String getHavingClause() {
-    return havingClause;
   }
 
   @Override
@@ -1159,26 +1149,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
         throw new IllegalStateException("Order by has already been set: " + definition.orderBy);
       }
       definition.orderBy = orderBy;
-      return this;
-    }
-
-    @Override
-    public Builder groupByClause(String groupByClause) {
-      requireNonNull(groupByClause, "groupByClause");
-      if (definition.groupByClause != null) {
-        throw new IllegalStateException("Group by clause has already been set: " + definition.groupByClause);
-      }
-      definition.groupByClause = groupByClause;
-      return this;
-    }
-
-    @Override
-    public Builder havingClause(String havingClause) {
-      requireNonNull(havingClause, "havingClause");
-      if (definition.havingClause != null) {
-        throw new IllegalStateException("Having clause has already been set: " + definition.havingClause);
-      }
-      definition.havingClause = havingClause;
       return this;
     }
 

@@ -546,15 +546,6 @@ public class DomainTest {
   }
 
   @Test
-  void havingClause() {
-    final String havingClause = "p1 > 1";
-    EntityType entityType = DOMAIN.entityType("entityType3");
-    domain.define(entityType,
-            Properties.primaryKeyProperty(entityType.attribute("p0", Integer.class))).havingClause(havingClause);
-    assertEquals(havingClause, entities.getDefinition(entityType).getHavingClause());
-  }
-
-  @Test
   void validateTypeEntity() {
     Entity entity = entities.entity(Detail.TYPE);
     Entity entity1 = entities.entity(Detail.TYPE);

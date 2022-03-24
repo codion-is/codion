@@ -46,11 +46,18 @@ public class DefaultEntityDefinitionTest {
         super(DOMAIN_TYPE);
         define(entityType, "tableName",
                 primaryKeyProperty(id),
-                Properties.columnProperty(name))
-                .selectQuery(SelectQuery.builder().columns("*").from("dual").build())
+                Properties.columnProperty(name)
+                        .groupingColumn(true))
+                .selectQuery(SelectQuery.builder()
+                        .columns("*")
+                        .from("dual")
+                        .groupBy("name")
+                        .build())
                 .orderBy(orderBy().descending(name))
-                .readOnly().selectTableName("selectTableName").groupByClause("name")
-                .stringFactory(stringFactory).comparator(comparator);
+                .readOnly()
+                .selectTableName("selectTableName")
+                .stringFactory(stringFactory)
+                .comparator(comparator);
       }
     }
     Domain domain = new TestDomain();
@@ -62,6 +69,7 @@ public class DefaultEntityDefinitionTest {
     assertFalse(definition.isKeyGenerated());
     assertEquals("*", definition.getSelectQuery().getColumns());
     assertEquals("dual", definition.getSelectQuery().getFrom());
+    assertEquals("name", definition.getSelectQuery().getGroupBy());
     assertFalse(definition.isSmallDataset());
     assertTrue(definition.isReadOnly());
     assertEquals("selectTableName", definition.getSelectTableName());
@@ -217,21 +225,6 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  void testSetGroupByClauseWithGroupingProperties() {
-    class TestDomain extends DefaultDomain {
-      public TestDomain() {
-        super(DOMAIN_TYPE);
-        EntityType entityType = DOMAIN_TYPE.entityType("testSetGroupByClauseWithGroupingProperties");
-        define(entityType,
-                primaryKeyProperty(entityType.integerAttribute("p0")).aggregateColumn(true),
-                Properties.columnProperty(entityType.integerAttribute("p1")).groupingColumn(true),
-                Properties.columnProperty(entityType.integerAttribute("p2")).groupingColumn(true)).groupByClause("p1, p2");
-      }
-    }
-    assertThrows(IllegalStateException.class, () -> new TestDomain());
-  }
-
-  @Test
   void testSetHavingClause() {
     final String havingClause = "p1 > 1";
     EntityType entityType = DOMAIN_TYPE.entityType("testSetHavingClause");
@@ -239,28 +232,16 @@ public class DefaultEntityDefinitionTest {
       public TestDomain() {
         super(DOMAIN_TYPE);
         define(entityType,
-                primaryKeyProperty(entityType.integerAttribute("p0"))).havingClause(havingClause);
+                primaryKeyProperty(entityType.integerAttribute("p0")))
+                .selectQuery(SelectQuery.builder()
+                        .having(havingClause)
+                        .build());
       }
     }
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.getEntities().getDefinition(entityType);
-    assertEquals(havingClause, definition.getHavingClause());
-  }
-
-  @Test
-  void testSetHavingClauseAlreadySet() {
-    EntityType entityType = DOMAIN_TYPE.entityType("testSetHavingClauseAlreadySet");
-    final String havingClause = "p1 > 1";
-    class TestDomain extends DefaultDomain {
-      public TestDomain() {
-        super(DOMAIN_TYPE);
-        define(entityType,
-                primaryKeyProperty(entityType.integerAttribute("p0"))).havingClause(havingClause)
-                .havingClause(havingClause);
-      }
-    }
-    assertThrows(IllegalStateException.class, () -> new TestDomain());
+    assertEquals(havingClause, definition.getSelectQuery().getHaving());
   }
 
   @Test
