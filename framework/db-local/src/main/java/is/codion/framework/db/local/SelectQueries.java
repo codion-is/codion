@@ -84,13 +84,17 @@ final class SelectQueries {
       if (!columnsClauseFromSelectQuery) {
         setColumns(condition);
       }
-      where(condition);
-      groupBy(definition.getGroupByClause());
-      having(definition.getHavingClause());
-      forUpdate(condition.isForUpdate());
-      if (condition.getOrderBy() != null) {
-        orderBy(getOrderByClause(condition.getOrderBy()));
+      if (from == null) {
+        from(definition.getSelectTableName());
       }
+      where(condition);
+      if (groupBy == null) {
+        groupBy(definition.getGroupByClause());
+      }
+      if (orderBy == null) {
+        orderBy(getOrderByClause(condition.getOrderBy() == null ? definition.getOrderBy() : condition.getOrderBy()));
+      }
+      forUpdate(condition.isForUpdate());
       if (condition.getLimit() >= 0) {
         limit(condition.getLimit());
         if (condition.getOffset() >= 0) {
@@ -112,9 +116,11 @@ final class SelectQueries {
         else {
           columns(getAllColumnsClause());
         }
-        from(selectQuery.getFrom() == null ? definition.getSelectTableName() : selectQuery.getFrom());
+        from(selectQuery.getFrom());
         where(selectQuery.getWhere());
-        orderBy(selectQuery.getOrderBy() == null ? getOrderByClause(definition.getOrderBy()) : selectQuery.getOrderBy());
+        orderBy(selectQuery.getOrderBy());
+        groupBy(selectQuery.getGroupBy());
+        having(selectQuery.getHaving());
       }
 
       return this;

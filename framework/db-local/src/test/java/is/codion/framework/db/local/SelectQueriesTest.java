@@ -31,7 +31,7 @@ public final class SelectQueriesTest {
 
     builder = queries.builder(testDomain.getEntities().getDefinition(QueryColumnsWhereClause.TYPE))
             .entitySelectQuery();
-    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\norder by ename desc", builder.build());
+    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
 
     builder.orderBy("ename");
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\norder by ename", builder.build());
@@ -45,7 +45,7 @@ public final class SelectQueriesTest {
   void selectCondition() {
     SelectQueries.Builder builder = queries.builder(testDomain.getEntities().getDefinition(QueryColumnsWhereClause.TYPE))
             .entitySelectQuery();
-    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\norder by ename desc", builder.build());
+    assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
 
     SelectCondition condition = Conditions.where(QueryColumnsWhereClause.ENAME)
             .equalTo("SCOTT")

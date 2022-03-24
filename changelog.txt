@@ -7972,3 +7972,5 @@
   DefaultColumnConditionModel, DefaultEntityTableConditionModel, case sensitivity and automatic wildcard now included in the search state
   SelectQueries.Builder.entitySelectQuery() now uses the entity select table name if no from clause is provided by the SelectQuery
   DefaultSelectQuery.DefaultSelectQueryBuilder.build() no longer throws exception if no from clause is provided
+  SelectQuery.Builder.groupBy() and having() added
+  EntityDefinition.Builder.groupBy() and having() removed
