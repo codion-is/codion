@@ -12,9 +12,11 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
+import static is.codion.swing.common.ui.component.Components.label;
+import static is.codion.swing.common.ui.component.Components.panel;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static is.codion.swing.common.ui.panel.Panels.createEastButtonPanel;
 
@@ -29,21 +31,29 @@ final class CountryEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(Country.CODE);
 
     createTextField(Country.CODE)
+            .columns(6)
             .upperCase(true);
     createTextField(Country.CODE_2)
+            .columns(6)
             .upperCase(true);
     createTextField(Country.NAME);
+    createTextField(Country.LOCALNAME);
     createItemComboBox(Country.CONTINENT)
             .preferredWidth(120);
     createAttributeComboBox(Country.REGION)
             .preferredWidth(120);
-    createTextField(Country.SURFACEAREA);
-    createTextField(Country.INDEPYEAR);
-    createTextField(Country.POPULATION);
-    createTextField(Country.LIFE_EXPECTANCY);
-    createTextField(Country.GNP);
-    createTextField(Country.GNPOLD);
-    createTextField(Country.LOCALNAME);
+    createTextField(Country.SURFACEAREA)
+            .columns(5);
+    createTextField(Country.INDEPYEAR)
+            .columns(5);
+    createTextField(Country.POPULATION)
+            .columns(5);
+    createTextField(Country.LIFE_EXPECTANCY)
+            .columns(5);
+    createTextField(Country.GNP)
+            .columns(6);
+    createTextField(Country.GNPOLD)
+            .columns(6);
     createAttributeComboBox(Country.GOVERNMENTFORM)
             .preferredWidth(120)
             .editable(true);
@@ -62,28 +72,47 @@ final class CountryEditPanel extends EntityEditPanel {
             .linkedValueObserver(editModel.getAverageCityPopulationValue())
             .maximumFractionDigits(2)
             .groupingUsed(true)
+            .horizontalAlignment(SwingConstants.CENTER)
             .focusable(false)
             .editable(false)
             .build();
 
+    JPanel codePanel = panel(gridLayout(1, 2))
+            .add(createInputPanel(Country.CODE))
+            .add(createInputPanel(Country.CODE_2))
+            .build();
+
+    JPanel gnpPanel = panel(gridLayout(1, 2))
+            .add(createInputPanel(Country.GNP))
+            .add(createInputPanel(Country.GNPOLD))
+            .build();
+
+    JPanel surfaceAreaIndYear = panel(gridLayout(1, 2))
+            .add(createInputPanel(Country.SURFACEAREA))
+            .add(createInputPanel(Country.INDEPYEAR))
+            .build();
+
+    JPanel populationLifeExpectancyPanel = panel(gridLayout(1, 2))
+            .add(createInputPanel(Country.POPULATION))
+            .add(createInputPanel(Country.LIFE_EXPECTANCY))
+            .build();
+
     setLayout(gridLayout(4, 5));
 
-    addInputPanel(Country.CODE);
-    addInputPanel(Country.CODE_2);
+    add(codePanel);
     addInputPanel(Country.NAME);
+    addInputPanel(Country.LOCALNAME);
+    addInputPanel(Country.CAPITAL_FK, capitalPanel);
     addInputPanel(Country.CONTINENT);
     addInputPanel(Country.REGION);
-    addInputPanel(Country.SURFACEAREA);
-    addInputPanel(Country.INDEPYEAR);
-    addInputPanel(Country.POPULATION);
-    addInputPanel(Country.LIFE_EXPECTANCY);
-    addInputPanel(Country.GNP);
-    addInputPanel(Country.GNPOLD);
-    addInputPanel(Country.LOCALNAME);
+    add(surfaceAreaIndYear);
+    add(populationLifeExpectancyPanel);
+    add(gnpPanel);
     addInputPanel(Country.GOVERNMENTFORM);
     addInputPanel(Country.HEADOFSTATE);
-    addInputPanel(Country.CAPITAL_FK, capitalPanel);
-    add(createInputPanel(new JLabel("Avg. city population"), averageCityPopulationField));
+    add(createInputPanel(label("Avg. city population")
+            .horizontalAlignment(SwingConstants.CENTER)
+            .build(), averageCityPopulationField));
   }
 
   private void initializeCapitalEditPanel(EntityEditPanel capitalEditPanel) {

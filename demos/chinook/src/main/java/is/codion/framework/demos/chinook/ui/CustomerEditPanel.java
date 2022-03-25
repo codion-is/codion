@@ -7,11 +7,14 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
+import javax.swing.JPanel;
 import java.util.Collection;
 import java.util.function.Supplier;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
+import static is.codion.swing.common.ui.component.Components.panel;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class CustomerEditPanel extends EntityEditPanel {
 
@@ -24,33 +27,53 @@ public final class CustomerEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusAttribute(Customer.FIRSTNAME);
 
-    createTextField(Customer.FIRSTNAME);
-    createTextField(Customer.LASTNAME);
+    createTextField(Customer.FIRSTNAME)
+            .columns(6);
+    createTextField(Customer.LASTNAME)
+            .columns(6);
+    createTextField(Customer.EMAIL);
     createTextField(Customer.COMPANY);
     createTextField(Customer.ADDRESS);
-    createTextField(Customer.CITY);
+    createTextField(Customer.CITY)
+            .columns(8);
+    createTextField(Customer.POSTALCODE)
+            .columns(4);
     createTextField(Customer.STATE)
+            .columns(4)
             .upperCase(true)
             .lookupDialog(new StateValueSupplier());
-    createTextField(Customer.COUNTRY);
-    createTextField(Customer.POSTALCODE);
+    createTextField(Customer.COUNTRY)
+            .columns(8);
     createTextField(Customer.PHONE);
     createTextField(Customer.FAX);
-    createTextField(Customer.EMAIL);
-    createForeignKeyComboBox(Customer.SUPPORTREP_FK);
+    createForeignKeyComboBox(Customer.SUPPORTREP_FK)
+            .preferredWidth(120);
+
+    JPanel firstLastNamePanel = panel(gridLayout(1, 2))
+            .add(createInputPanel(Customer.FIRSTNAME))
+            .add(createInputPanel(Customer.LASTNAME))
+            .build();
+
+    JPanel cityPostalCodePanel = panel(flexibleGridLayout(1, 2))
+            .add(createInputPanel(Customer.CITY))
+            .add(createInputPanel(Customer.POSTALCODE))
+            .build();
+
+    JPanel stateCountryPanel = panel(flexibleGridLayout(1, 2))
+            .add(createInputPanel(Customer.STATE))
+            .add(createInputPanel(Customer.COUNTRY))
+            .build();
 
     setLayout(flexibleGridLayout(4, 3));
-    addInputPanel(Customer.FIRSTNAME);
-    addInputPanel(Customer.LASTNAME);
+
+    add(firstLastNamePanel);
+    addInputPanel(Customer.EMAIL);
     addInputPanel(Customer.COMPANY);
     addInputPanel(Customer.ADDRESS);
-    addInputPanel(Customer.CITY);
-    addInputPanel(Customer.STATE);
-    addInputPanel(Customer.COUNTRY);
-    addInputPanel(Customer.POSTALCODE);
+    add(cityPostalCodePanel);
+    add(stateCountryPanel);
     addInputPanel(Customer.PHONE);
     addInputPanel(Customer.FAX);
-    addInputPanel(Customer.EMAIL);
     addInputPanel(Customer.SUPPORTREP_FK);
   }
 

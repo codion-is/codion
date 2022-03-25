@@ -58,4 +58,10 @@ public interface SplitPaneBuilder extends ComponentBuilder<Void, JSplitPane, Spl
    * @return this builder instance
    */
   SplitPaneBuilder continuousLayout(boolean continuousLayout);
+
+  /**
+   * @param dividerSize the divider size
+   * @return this builder instance
+   */
+  SplitPaneBuilder dividerSize(int dividerSize);
 }

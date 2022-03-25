@@ -5,7 +5,6 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -19,8 +18,8 @@ import java.awt.Dimension;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import static is.codion.framework.demos.chinook.domain.Chinook.Invoice;
-import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.swing.common.ui.component.Components.panel;
+import static is.codion.swing.common.ui.layout.Layouts.*;
 import static javax.swing.SortOrder.ASCENDING;
 
 public final class InvoiceEditPanel extends EntityEditPanel {
@@ -30,7 +29,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
   public InvoiceEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
     setClearAfterInsert(false);
-    setDefaultTextFieldColumns(16);
+    setDefaultTextFieldColumns(12);
   }
 
   public void setInvoiceLinePanel(EntityPanel invoiceLinePanel) {
@@ -40,34 +39,62 @@ public final class InvoiceEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusAttribute(Invoice.CUSTOMER_FK);
+
     createForeignKeySearchField(Invoice.CUSTOMER_FK)
+            .columns(18)
             .selectionProviderFactory(CustomerSelectionProvider::new);
     createTemporalInputPanel(Invoice.DATE)
+            .columns(6)
             .buttonFocusable(false);
+
     createTextField(Invoice.BILLINGADDRESS)
             .selectAllOnFocusGained(true);
+
     createTextField(Invoice.BILLINGCITY)
-            .selectAllOnFocusGained(true);
-    createTextField(Invoice.BILLINGSTATE)
-            .selectAllOnFocusGained(true);
-    createTextField(Invoice.BILLINGCOUNTRY)
+            .columns(8)
             .selectAllOnFocusGained(true);
     createTextField(Invoice.BILLINGPOSTALCODE)
+            .columns(4)
             .selectAllOnFocusGained(true);
 
-    JPanel centerBasePanel = Components.panel(borderLayout())
-            .add(Components.panel(gridLayout(4, 2))
-                    .add(createInputPanel(Invoice.CUSTOMER_FK)).add(createInputPanel(Invoice.DATE))
-                    .add(createInputPanel(Invoice.BILLINGADDRESS)).add(createInputPanel(Invoice.BILLINGCITY))
-                    .add(createInputPanel(Invoice.BILLINGSTATE)).add(createInputPanel(Invoice.BILLINGCOUNTRY))
-                    .add(createInputPanel(Invoice.BILLINGPOSTALCODE))
-                    .build(), BorderLayout.CENTER)
+    createTextField(Invoice.BILLINGSTATE)
+            .columns(4)
+            .selectAllOnFocusGained(true);
+    createTextField(Invoice.BILLINGCOUNTRY)
+            .columns(8)
+            .selectAllOnFocusGained(true);
+
+    JPanel customerDatePanel = panel(flexibleGridLayout(1, 2))
+            .add(createInputPanel(Invoice.CUSTOMER_FK))
+            .add(createInputPanel(Invoice.DATE))
+            .build();
+
+    JPanel cityPostalCodePanel = panel(flexibleGridLayout(1, 2))
+            .add(createInputPanel(Invoice.BILLINGCITY))
+            .add(createInputPanel(Invoice.BILLINGPOSTALCODE))
+            .build();
+
+    JPanel stateCountryPanel = panel(flexibleGridLayout(1, 2))
+            .add(createInputPanel(Invoice.BILLINGSTATE))
+            .add(createInputPanel(Invoice.BILLINGCOUNTRY))
+            .build();
+
+    JPanel cityPostalCodeStateCountryPanel = panel(gridLayout(1, 2))
+            .add(cityPostalCodePanel)
+            .add(stateCountryPanel)
+            .build();
+
+    JPanel centerPanel = panel(gridLayout(4, 1))
+            .add(customerDatePanel)
+            .add(createInputPanel(Invoice.BILLINGADDRESS))
+            .add(cityPostalCodeStateCountryPanel)
             .build();
 
     invoiceLinePanel.setBorder(BorderFactory.createTitledBorder(getEditModel().getEntities().getDefinition(InvoiceLine.TYPE).getCaption()));
 
     setLayout(borderLayout());
-    add(centerBasePanel, BorderLayout.CENTER);
+
+    add(centerPanel, BorderLayout.CENTER);
     add(invoiceLinePanel, BorderLayout.EAST);
   }
 
