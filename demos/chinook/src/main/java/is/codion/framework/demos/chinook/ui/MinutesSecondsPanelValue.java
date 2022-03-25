@@ -4,7 +4,6 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.swing.common.ui.component.AbstractComponentValue;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.textfield.IntegerField;
 
 import javax.swing.JLabel;
@@ -13,6 +12,8 @@ import java.awt.BorderLayout;
 import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.swing.common.ui.component.Components.integerField;
+import static is.codion.swing.common.ui.component.Components.panel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
@@ -43,12 +44,12 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(MinutesSecondsPanel.class.getName());
 
-    private final IntegerField minutesField = Components.integerField()
+    private final IntegerField minutesField = integerField()
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
             .columns(2)
             .build();
-    private final IntegerField secondsField = Components.integerField()
+    private final IntegerField secondsField = integerField()
             .range(0, 59)
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
@@ -58,7 +59,7 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
     private MinutesSecondsPanel(boolean horizontal) {
       super(borderLayout());
       if (horizontal) {
-        Components.panel(gridLayout(1, 4))
+        panel(gridLayout(1, 4))
                 .add(new JLabel(BUNDLE.getString("min")))
                 .add(minutesField)
                 .add(new JLabel(BUNDLE.getString("sec")))
@@ -66,11 +67,11 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
                 .build(panel -> add(panel, BorderLayout.CENTER));
       }
       else {
-        Components.panel(gridLayout(1, 2))
+        panel(gridLayout(1, 2))
                 .add(new JLabel(BUNDLE.getString("min")))
                 .add(new JLabel(BUNDLE.getString("sec")))
                 .build(panel -> add(panel, BorderLayout.NORTH));
-        Components.panel(gridLayout(1, 2))
+        panel(gridLayout(1, 2))
                 .add(minutesField)
                 .add(secondsField)
                 .build(panel -> add(panel, BorderLayout.CENTER));

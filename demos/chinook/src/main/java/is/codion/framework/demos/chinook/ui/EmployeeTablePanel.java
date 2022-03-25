@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
-import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -15,6 +15,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+
 public final class EmployeeTablePanel extends EntityTablePanel {
 
   public EmployeeTablePanel(SwingEntityTableModel tableModel) {
@@ -23,13 +25,15 @@ public final class EmployeeTablePanel extends EntityTablePanel {
 
   @Override
   protected void layoutPanel(JPanel tablePanel, JPanel southPanel) {
-    setLayout(Layouts.borderLayout());
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    splitPane.setDividerSize(EntityPanel.SPLIT_PANE_DIVIDER_SIZE.get());
-    splitPane.setContinuousLayout(true);
-    splitPane.setOneTouchExpandable(true);
-    splitPane.setTopComponent(new JScrollPane(new EntityTree(((EmployeeTableModel) getTableModel()).getTreeModel())));
-    splitPane.setBottomComponent(tablePanel);
+    setLayout(borderLayout());
+    JSplitPane splitPane = Components.splitPane()
+            .orientation(JSplitPane.HORIZONTAL_SPLIT)
+            .dividerSize(EntityPanel.SPLIT_PANE_DIVIDER_SIZE.get())
+            .continuousLayout(true)
+            .oneTouchExpandable(true)
+            .leftComponent(new JScrollPane(new EntityTree(((EmployeeTableModel) getTableModel()).getTreeModel())))
+            .rightComponent(tablePanel)
+            .build();
     add(splitPane, BorderLayout.CENTER);
     add(southPanel, BorderLayout.SOUTH);
   }
