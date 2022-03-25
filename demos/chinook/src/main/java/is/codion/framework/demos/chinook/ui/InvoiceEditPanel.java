@@ -41,7 +41,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(Invoice.CUSTOMER_FK);
 
     createForeignKeySearchField(Invoice.CUSTOMER_FK)
-            .columns(18)
+            .columns(14)
             .selectionProviderFactory(CustomerSelectionProvider::new);
     createTemporalInputPanel(Invoice.DATE)
             .columns(6)
