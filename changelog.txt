@@ -7941,3 +7941,4 @@
   EntityDefinition.Builder.groupBy() and having() removed
   DomainToString, no longer prefixes foreign key reference with interface name
   SplitPaneBuilder.dividerSize() added
+  EntityTablePanel bug fixed, summary panel UI now updated

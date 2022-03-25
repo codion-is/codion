@@ -246,6 +246,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final JScrollPane conditionScrollPane;
 
+  private final TableColumnComponentPanel<JPanel> summaryPanel;
+
   private final JScrollPane summaryScrollPane;
 
   private final JPanel southPanel = new JPanel(new BorderLayout());
@@ -334,6 +336,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     this.conditionPanel = conditionPanel;
     this.tableScrollPane = new JScrollPane(table);
     this.conditionScrollPane = initializeConditionScrollPane(tableScrollPane);
+    this.summaryPanel = initializeSummaryPanel();
     this.summaryScrollPane = initializeSummaryScrollPane(tableScrollPane);
     this.tablePanel = initializeTablePanel(tableScrollPane);
     this.refreshToolBar = initializeRefreshToolBar();
@@ -345,10 +348,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane, summaryScrollPane, southPanel);
-    if (refreshToolBar != null) {
-      Utilities.updateUI(refreshToolBar);
-    }
+    Utilities.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane,
+            summaryScrollPane, summaryPanel, southPanel, refreshToolBar);
     if (tableScrollPane != null) {
       Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
               tableScrollPane.getHorizontalScrollBar(), tableScrollPane.getVerticalScrollBar());
@@ -1449,13 +1450,21 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
   }
 
-  private JScrollPane initializeSummaryScrollPane(JScrollPane tableScrollPane) {
+  private TableColumnComponentPanel<JPanel> initializeSummaryPanel() {
     Map<TableColumn, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
     if (columnSummaryPanels.isEmpty()) {
       return null;
     }
 
-    return createHiddenLinkedScrollPane(tableScrollPane, new TableColumnComponentPanel<>(tableModel.getColumnModel(), columnSummaryPanels));
+    return new TableColumnComponentPanel<>(tableModel.getColumnModel(), columnSummaryPanels);
+  }
+
+  private JScrollPane initializeSummaryScrollPane(JScrollPane tableScrollPane) {
+    if (summaryPanel == null) {
+      return null;
+    }
+
+    return createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
   }
 
   private JPanel initializeTablePanel(JScrollPane tableScrollPane) {
