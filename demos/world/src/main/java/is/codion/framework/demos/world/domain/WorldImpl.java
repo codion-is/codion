@@ -70,7 +70,7 @@ public final class WorldImpl extends DefaultDomain implements World {
   void country() {
     define(Country.TYPE,
             // tag::primaryKey[]
-            primaryKeyProperty(Country.CODE, "Country code")
+            primaryKeyProperty(Country.CODE, "Code")
                     .updatable(true)
                     .maximumLength(3),
             // end::primaryKey[]
@@ -140,7 +140,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             blobProperty(Country.FLAG, "Flag")
                     .eagerlyLoaded(),
             // end::blobProperty[]
-            columnProperty(Country.CODE_2, "Code2")
+            columnProperty(Country.CODE_2, "Code 2")
                     .nullable(false)
                     .maximumLength(2))
             .orderBy(orderBy().ascending(Country.NAME))
@@ -160,7 +160,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             // end::compositePrimaryKey[]
             foreignKeyProperty(CountryLanguage.COUNTRY_FK, "Country"),
             // tag::booleanProperty[]
-            columnProperty(CountryLanguage.IS_OFFICIAL, "Is official")
+            columnProperty(CountryLanguage.IS_OFFICIAL, "Official")
                     .columnHasDefaultValue(true)
                     .nullable(false),
             // end::booleanProperty[]
