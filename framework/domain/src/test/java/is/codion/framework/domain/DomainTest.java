@@ -457,7 +457,7 @@ public class DomainTest {
             .with(Employee.SALARY, 1200.0)
             .build();
     DefaultEntityValidator validator = new DefaultEntityValidator();
-    assertDoesNotThrow(() -> validator.validate(singletonList(emp)));
+    assertDoesNotThrow(() -> validator.validate(emp));
     emp.put(Employee.NAME, "LooooongName");
     assertThrows(LengthValidationException.class, () -> validator.validate(emp));
   }
@@ -472,7 +472,7 @@ public class DomainTest {
             .with(Employee.COMMISSION, 300d)
             .build();
     DefaultEntityValidator validator = new DefaultEntityValidator();
-    assertDoesNotThrow(() -> validator.validate(singletonList(emp)));
+    assertDoesNotThrow(() -> validator.validate(emp));
     emp.put(Employee.COMMISSION, 10d);
     assertThrows(RangeValidationException.class, () -> validator.validate(emp));
     emp.put(Employee.COMMISSION, 2100d);

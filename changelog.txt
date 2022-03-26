@@ -7948,3 +7948,4 @@
   DefaultEntityValidator.performNullValidation removed
   Entity.getDefinition() added
   EntityValidator, EntityDefinition parameter removed
+  EntityValidator.validate(Collection<Entity>) removed along with a few unnecessary public methods
