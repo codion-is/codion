@@ -7,6 +7,7 @@ import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
@@ -94,7 +95,7 @@ final class EntityPopupMenu extends JPopupMenu {
       for (ForeignKeyProperty property : fkProperties) {
         ForeignKey foreignKey = property.getAttribute();
         boolean fkValueNull = entity.isForeignKeyNull(foreignKey);
-        boolean valid = isValid(validator, entity, definition, property);
+        boolean valid = isValid(validator, entity, foreignKey);
         boolean modified = entity.isModified(foreignKey);
         String toolTipText = getForeignKeyAttributeNames(foreignKey);
         if (!fkValueNull) {
@@ -136,7 +137,7 @@ final class EntityPopupMenu extends JPopupMenu {
     EntityDefinition definition = entity.getDefinition();
     EntityValidator validator = definition.getValidator();
     for (Property<?> property : properties) {
-      boolean valid = isValid(validator, entity, definition, property);
+      boolean valid = isValid(validator, entity, property.getAttribute());
       boolean modified = entity.isModified(property.getAttribute());
       boolean isForeignKeyProperty = property instanceof ColumnProperty
               && definition.isForeignKeyAttribute(property.getAttribute());
@@ -194,9 +195,9 @@ final class EntityPopupMenu extends JPopupMenu {
     return " | " + (originalValue == null ? "<null>" : originalValue.toString());
   }
 
-  private static boolean isValid(EntityValidator validator, Entity entity, EntityDefinition definition, Property<?> property) {
+  private static boolean isValid(EntityValidator validator, Entity entity, Attribute<?> attribute) {
     try {
-      validator.validate(entity, definition, property);
+      validator.validate(entity, attribute);
       return true;
     }
     catch (ValidationException e) {

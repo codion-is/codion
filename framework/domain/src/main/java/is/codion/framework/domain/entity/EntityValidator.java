@@ -17,77 +17,72 @@ import java.util.Collection;
 public interface EntityValidator {
 
   /**
-   * Returns true if the given property accepts a null value for the given entity,
-   * by default this method simply returns {@code property.isNullable()}
+   * Returns true if the property based on the given attribute accepts a null value for the given entity,
+   * by default this method simply returns the nullable state of the property.
    * @param entity the entity being validated
-   * @param property the property
+   * @param attribute the attribute
    * @param <T> the value type
-   * @return true if the property accepts a null value
+   * @return true if the attribute accepts a null value
    */
-  <T> boolean isNullable(Entity entity, Property<T> property);
+  <T> boolean isNullable(Entity entity, Attribute<T> attribute);
 
   /**
    * Returns true if the given entity contains only valid values.
    * @param entity the entity
-   * @param definition the definition of the entity to validate
    * @return true if the given entity contains only valid values
    */
-  boolean isValid(Entity entity, EntityDefinition definition);
+  boolean isValid(Entity entity);
 
   /**
    * Checks if the values in the given entity are valid
    * @param entity the entity
-   * @param definition the definition of the entity to validate
    * @throws ValidationException in case of an invalid value
    */
-  void validate(Entity entity, EntityDefinition definition) throws ValidationException;
+  void validate(Entity entity) throws ValidationException;
 
   /**
-   * Checks if the value associated with the give property is valid, throws a ValidationException if not
+   * Checks if the value associated with the give attribute is valid, throws a ValidationException if not
    * @param entity the entity to validate
-   * @param definition the definition of the entity to validate
-   * @param property the property the value is associated with
+   * @param attribute the attribute the value is associated with
    * @param <T> the value type
-   * @throws ValidationException if the given value is not valid for the given property
+   * @throws ValidationException if the given value is not valid for the given attribute
    */
-  <T> void validate(Entity entity, EntityDefinition definition, Property<T> property) throws ValidationException;
+  <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException;
 
   /**
    * Validates the given entities, assumes they are all the same type.
    * @param entities the entities to validate
-   * @param definition the definition of the entity to validate
    * @throws ValidationException in case the validation fails
    */
-  void validate(Collection<Entity> entities, EntityDefinition definition) throws ValidationException;
+  void validate(Collection<Entity> entities) throws ValidationException;
 
   /**
-   * Performs a null validation on the given property
+   * Performs a null validation on the given attribute
    * @param entity the entity
-   * @param definition the definition of the entity to validate
-   * @param property the property
+   * @param attribute the attribute
    * @param <T> the value type
-   * @throws NullValidationException in case the property value is null and the property is not nullable
+   * @throws NullValidationException in case the attribute value is null and the attribute is not nullable
    * @see Property.Builder#nullable(boolean)
    * @see Property#isNullable()
    */
-  <T> void performNullValidation(Entity entity, EntityDefinition definition, Property<T> property) throws NullValidationException;
+  <T> void performNullValidation(Entity entity, Attribute<T> attribute) throws NullValidationException;
 
   /**
-   * Performs a range validation on the given number based property
+   * Performs a range validation on the given number based attribute
    * @param entity the entity
-   * @param property the property
+   * @param attribute the attribute
    * @param <T> the value type
-   * @throws RangeValidationException in case the value of the given property is outside the legal range
+   * @throws RangeValidationException in case the value of the given attribute is outside the legal range
    * @see Property.Builder#range(double, double)
    */
-  <T extends Number> void performRangeValidation(Entity entity, Property<T> property) throws RangeValidationException;
+  <T extends Number> void performRangeValidation(Entity entity, Attribute<T> attribute) throws RangeValidationException;
 
   /**
-   * Performs a length validation on the given string based property
+   * Performs a length validation on the given string based attribute
    * @param entity the entity
-   * @param property the property
-   * @throws LengthValidationException in case the length of the value of the given property
+   * @param attribute the attribute
+   * @throws LengthValidationException in case the length of the value of the given attribute
    * @see Property.Builder#maximumLength(int)
    */
-  void performLengthValidation(Entity entity, Property<String> property) throws LengthValidationException;
+  void performLengthValidation(Entity entity, Attribute<String> attribute) throws LengthValidationException;
 }

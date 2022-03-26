@@ -356,7 +356,7 @@ public interface EntityEditModel {
    * @throws DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case inserting is not enabled
-   * @see EntityValidator#validate(Collection, EntityDefinition)
+   * @see EntityValidator#validate(Collection)
    */
   Entity insert() throws DatabaseException, ValidationException;
 
@@ -369,7 +369,7 @@ public interface EntityEditModel {
    * @throws IllegalStateException in case inserting is not enabled
    * @see #addBeforeInsertListener(EventDataListener)
    * @see #addAfterInsertListener(EventDataListener)
-   * @see EntityValidator#validate(Collection, EntityDefinition)
+   * @see EntityValidator#validate(Collection)
    */
   List<Entity> insert(List<Entity> entities) throws DatabaseException, ValidationException;
 
@@ -381,7 +381,7 @@ public interface EntityEditModel {
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case updating is not enabled
    * @throws is.codion.common.db.exception.UpdateException in case the active entity is not modified
-   * @see EntityValidator#validate(Collection, EntityDefinition)
+   * @see EntityValidator#validate(Collection)
    */
   Entity update() throws DatabaseException, ValidationException;
 
@@ -395,7 +395,7 @@ public interface EntityEditModel {
    * @throws IllegalStateException in case updating is not enabled
    * @see #addBeforeUpdateListener(EventDataListener)
    * @see #addAfterUpdateListener(EventDataListener)
-   * @see EntityValidator#validate(Collection, EntityDefinition)
+   * @see EntityValidator#validate(Collection)
    */
   List<Entity> update(List<Entity> entities) throws DatabaseException, ValidationException;
 
@@ -521,7 +521,7 @@ public interface EntityEditModel {
    * @param attribute the attribute the value is associated with
    * @return true if the value is valid
    * @see #validate(Attribute)
-   * @see EntityValidator#validate(Entity, EntityDefinition)
+   * @see EntityValidator#validate(Entity)
    */
   boolean isValid(Attribute<?> attribute);
 

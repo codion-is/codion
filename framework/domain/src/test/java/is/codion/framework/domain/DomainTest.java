@@ -415,7 +415,6 @@ public class DomainTest {
 
   @Test
   void nullValidation() {
-    EntityDefinition definition = entities.getDefinition(Employee.TYPE);
     Entity emp = entities.builder(Employee.TYPE)
             .with(Employee.NAME, "Name")
             .with(Employee.HIREDATE, LocalDateTime.now())
@@ -424,7 +423,7 @@ public class DomainTest {
 
     DefaultEntityValidator validator = new DefaultEntityValidator();
     try {
-      validator.validate(emp, definition);
+      validator.validate(emp);
       fail();
     }
     catch (ValidationException e) {
@@ -433,14 +432,14 @@ public class DomainTest {
     }
     emp.put(Employee.DEPARTMENT, 1);
     try {
-      validator.validate(emp, definition);
+      validator.validate(emp);
     }
     catch (ValidationException e) {
       fail();
     }
     emp.put(Employee.SALARY, null);
     try {
-      validator.validate(emp, definition);
+      validator.validate(emp);
       fail();
     }
     catch (ValidationException e) {
@@ -451,7 +450,6 @@ public class DomainTest {
 
   @Test
   void maxLengthValidation() {
-    EntityDefinition definition = entities.getDefinition(Employee.TYPE);
     Entity emp = entities.builder(Employee.TYPE)
             .with(Employee.DEPARTMENT, 1)
             .with(Employee.NAME, "Name")
@@ -459,14 +457,13 @@ public class DomainTest {
             .with(Employee.SALARY, 1200.0)
             .build();
     DefaultEntityValidator validator = new DefaultEntityValidator();
-    assertDoesNotThrow(() -> validator.validate(singletonList(emp), definition));
+    assertDoesNotThrow(() -> validator.validate(singletonList(emp)));
     emp.put(Employee.NAME, "LooooongName");
-    assertThrows(LengthValidationException.class, () -> validator.validate(emp, definition));
+    assertThrows(LengthValidationException.class, () -> validator.validate(emp));
   }
 
   @Test
   void rangeValidation() {
-    EntityDefinition definition = entities.getDefinition(Employee.TYPE);
     Entity emp = entities.builder(Employee.TYPE)
             .with(Employee.DEPARTMENT, 1)
             .with(Employee.NAME, "Name")
@@ -475,11 +472,11 @@ public class DomainTest {
             .with(Employee.COMMISSION, 300d)
             .build();
     DefaultEntityValidator validator = new DefaultEntityValidator();
-    assertDoesNotThrow(() -> validator.validate(singletonList(emp), definition));
+    assertDoesNotThrow(() -> validator.validate(singletonList(emp)));
     emp.put(Employee.COMMISSION, 10d);
-    assertThrows(RangeValidationException.class, () -> validator.validate(emp, definition));
+    assertThrows(RangeValidationException.class, () -> validator.validate(emp));
     emp.put(Employee.COMMISSION, 2100d);
-    assertThrows(RangeValidationException.class, () -> validator.validate(emp, definition));
+    assertThrows(RangeValidationException.class, () -> validator.validate(emp));
   }
 
   @Test

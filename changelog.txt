@@ -7947,3 +7947,4 @@
   SwingPropertyCombBoxModel, nullString constructor parameter removed, related refactoring
   DefaultEntityValidator.performNullValidation removed
   Entity.getDefinition() added
+  EntityValidator, EntityDefinition parameter removed
