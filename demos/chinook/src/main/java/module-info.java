@@ -10,9 +10,10 @@ module is.codion.framework.demos.chinook {
   requires is.codion.plugin.jasperreports;
   requires is.codion.plugin.imagepanel;
   requires jasperreports;
-  requires com.formdev.flatlaf;
   requires com.formdev.flatlaf.intellijthemes;
 
+  exports is.codion.framework.demos.chinook.model
+          to is.codion.swing.framework.model;
   exports is.codion.framework.demos.chinook.ui
           to is.codion.swing.framework.ui;
   exports is.codion.framework.demos.chinook.tutorial
