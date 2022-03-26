@@ -5,7 +5,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -224,8 +223,8 @@ public interface World {
     private static final long serialVersionUID = 1;
 
     @Override
-    public void validate(Entity city, EntityDefinition cityDefinition) throws ValidationException {
-      super.validate(city, cityDefinition);
+    public void validate(Entity city) throws ValidationException {
+      super.validate(city);
       //after a call to super.validate() property values that are not nullable
       //(such as country and population) are guaranteed to be non-null
       Entity country = city.get(City.COUNTRY_FK);

@@ -235,7 +235,7 @@ public class EntityTestUnit {
 
     Entity updated = connection.update(testEntity);
     assertEquals(testEntity.getPrimaryKey(), updated.getPrimaryKey());
-    for (ColumnProperty<?> property : connection.getEntities().getDefinition(testEntity.getEntityType()).getColumnProperties()) {
+    for (ColumnProperty<?> property : testEntity.getDefinition().getColumnProperties()) {
       if (property.isUpdatable()) {
         Object beforeUpdate = testEntity.get(property.getAttribute());
         Object afterUpdate = updated.get(property.getAttribute());

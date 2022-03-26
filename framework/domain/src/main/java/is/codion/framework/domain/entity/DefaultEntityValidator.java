@@ -39,13 +39,13 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultEntityValidator.class.getName());
 
   private static final String ENTITY_PARAM = "entity";
-  private static final String PROPERTY_PARAM = "property";
+  private static final String ATTRIBUTE_PARAM = "attribute";
   private static final String VALUE_REQUIRED_KEY = "property_value_is_required";
 
   @Override
-  public boolean isValid(Entity entity, EntityDefinition definition) {
+  public boolean isValid(Entity entity) {
     try {
-      validate(entity, definition);
+      validate(entity);
       return true;
     }
     catch (ValidationException e) {
@@ -54,51 +54,53 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   }
 
   @Override
-  public <T> boolean isNullable(Entity entity, Property<T> property) {
-    return property.isNullable();
+  public <T> boolean isNullable(Entity entity, Attribute<T> attribute) {
+    return requireNonNull(entity).getDefinition().getProperty(attribute).isNullable();
   }
 
   @Override
-  public final void validate(Collection<Entity> entities, EntityDefinition definition) throws ValidationException {
+  public final void validate(Collection<Entity> entities) throws ValidationException {
     for (Entity entity : entities) {
-      validate(entity, definition);
+      validate(entity);
     }
   }
 
   @Override
-  public void validate(Entity entity, EntityDefinition definition) throws ValidationException {
+  public void validate(Entity entity) throws ValidationException {
     requireNonNull(entity, ENTITY_PARAM);
-    List<Property<?>> properties = definition.getProperties().stream()
+    List<Attribute<?>> attributes = entity.getDefinition().getProperties().stream()
             .filter(DefaultEntityValidator::validationRequired)
+            .map(Property::getAttribute)
             .collect(Collectors.toList());
-    for (Property<?> property : properties) {
-      validate(entity, definition, property);
+    for (Attribute<?> attribute : attributes) {
+      validate(entity, attribute);
     }
   }
 
   @Override
-  public <T> void validate(Entity entity, EntityDefinition definition, Property<T> property) throws ValidationException {
+  public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
     requireNonNull(entity, ENTITY_PARAM);
-    requireNonNull(property, PROPERTY_PARAM);
-    if (!definition.isForeignKeyAttribute(property.getAttribute())) {
-      performNullValidation(entity, definition, property);
+    requireNonNull(attribute, ATTRIBUTE_PARAM);
+    if (!entity.getDefinition().isForeignKeyAttribute(attribute)) {
+      performNullValidation(entity, attribute);
     }
-    if (property.getAttribute().isNumerical()) {
-      performRangeValidation(entity, (Property<Number>) property);
+    if (attribute.isNumerical()) {
+      performRangeValidation(entity, (Attribute<Number>) attribute);
     }
-    else if (property.getAttribute().isString()) {
-      performLengthValidation(entity, (Property<String>) property);
+    else if (attribute.isString()) {
+      performLengthValidation(entity, (Attribute<String>) attribute);
     }
   }
 
   @Override
-  public final <T extends Number> void performRangeValidation(Entity entity, Property<T> property) throws RangeValidationException {
+  public final <T extends Number> void performRangeValidation(Entity entity, Attribute<T> attribute) throws RangeValidationException {
     requireNonNull(entity, ENTITY_PARAM);
-    requireNonNull(property, PROPERTY_PARAM);
-    if (entity.isNull(property.getAttribute())) {
+    requireNonNull(attribute, ATTRIBUTE_PARAM);
+    if (entity.isNull(attribute)) {
       return;
     }
 
+    Property<T> property = entity.getDefinition().getProperty(attribute);
     Number value = entity.get(property.getAttribute());
     if (value.doubleValue() < (property.getMinimumValue() == null ? Double.NEGATIVE_INFINITY : property.getMinimumValue())) {
       throw new RangeValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
@@ -111,15 +113,15 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   }
 
   @Override
-  public final <T> void performNullValidation(Entity entity, EntityDefinition definition,
-                                              Property<T> property) throws NullValidationException {
+  public final <T> void performNullValidation(Entity entity, Attribute<T> attribute) throws NullValidationException {
     requireNonNull(entity, ENTITY_PARAM);
-    requireNonNull(property, PROPERTY_PARAM);
-    if (!isNullable(entity, property) && entity.isNull(property.getAttribute())) {
+    requireNonNull(attribute, ATTRIBUTE_PARAM);
+    Property<T> property = entity.getDefinition().getProperty(attribute);
+    if (!isNullable(entity, attribute) && entity.isNull(attribute)) {
       if ((entity.getPrimaryKey().isNull() || entity.getOriginalPrimaryKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
         boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
-        boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(definition, property);
+        boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(entity.getDefinition(), property);
         if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
           throw new NullValidationException(property.getAttribute(),
                   MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.getCaption()));
@@ -133,15 +135,16 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   }
 
   @Override
-  public final void performLengthValidation(Entity entity, Property<String> property) throws LengthValidationException {
+  public final void performLengthValidation(Entity entity, Attribute<String> attribute) throws LengthValidationException {
     requireNonNull(entity, ENTITY_PARAM);
-    requireNonNull(property, PROPERTY_PARAM);
-    if (entity.isNull(property.getAttribute())) {
+    requireNonNull(attribute, ATTRIBUTE_PARAM);
+    if (entity.isNull(attribute)) {
       return;
     }
 
+    Property<?> property = entity.getDefinition().getProperty(attribute);
     int maximumLength = property.getMaximumLength();
-    String value = entity.get(property.getAttribute());
+    String value = entity.get(attribute);
     if (maximumLength != -1 && value.length() > maximumLength) {
       throw new LengthValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
               MESSAGES.getString("property_value_too_long") + " " + maximumLength + "\n:'" + value + "'");

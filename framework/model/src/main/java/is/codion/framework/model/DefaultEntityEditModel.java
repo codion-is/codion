@@ -195,7 +195,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final EntityDefinition getEntityDefinition() {
-    return getEntities().getDefinition(entity.getEntityType());
+    return entity.getDefinition();
   }
 
   @Override
@@ -419,7 +419,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean isNullable(Attribute<?> attribute) {
-    return validator.isNullable(entity, getEntityDefinition().getProperty(attribute));
+    return validator.isNullable(entity, attribute);
   }
 
   @Override
@@ -444,8 +444,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void validate(Attribute<?> attribute) throws ValidationException {
-    EntityDefinition entityDefinition = getEntityDefinition();
-    validator.validate(entity, entityDefinition, entityDefinition.getProperty(attribute));
+    validator.validate(entity, attribute);
   }
 
   @Override
@@ -462,12 +461,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public void validate(Entity entity) throws ValidationException {
-    EntityDefinition definition = getEntities().getDefinition(entity.getEntityType());
-    if (definition.getEntityType().equals(getEntityType())) {
-      validator.validate(entity, definition);
+    if (entity.getEntityType().equals(getEntityType())) {
+      validator.validate(entity);
     }
     else {
-      definition.getValidator().validate(entity, definition);
+      entity.getDefinition().getValidator().validate(entity);
     }
   }
 
@@ -1106,7 +1104,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private void updateEntityStates() {
     entityModifiedState.set(isModified());
-    validState.set(validator.isValid(entity, getEntityDefinition()));
+    validState.set(validator.isValid(entity));
     primaryKeyNullState.set(entity.getPrimaryKey().isNull());
     entityNewState.set(isEntityNew());
   }

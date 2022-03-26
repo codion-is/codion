@@ -7,7 +7,7 @@ import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
@@ -61,11 +61,10 @@ final class EntityPopupMenu extends JPopupMenu {
    * @param visitedEntities used to prevent cyclical dependencies wreaking havoc
    */
   private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection, Set<Entity> visitedEntities) {
-    Entities entities = connection.getEntities();
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityType()).getPrimaryKeyProperties()));
-    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entities.getDefinition(entity.getEntityType())
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.getDefinition().getPrimaryKeyProperties()));
+    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entity.getDefinition()
             .getForeignKeyProperties()), visitedEntities);
-    populateValueMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityType()).getProperties()), entities);
+    populateValueMenu(rootMenu, entity, new ArrayList<>(entity.getDefinition().getProperties()));
   }
 
   private static void populatePrimaryKeyMenu(JComponent rootMenu, Entity entity, List<ColumnProperty<?>> primaryKeyProperties) {
@@ -91,12 +90,12 @@ final class EntityPopupMenu extends JPopupMenu {
     if (!visitedEntities.contains(entity)) {
       visitedEntities.add(entity);
       Text.collate(fkProperties);
-      EntityDefinition definition = connection.getEntities().getDefinition(entity.getEntityType());
+      EntityDefinition definition = entity.getDefinition();
       EntityValidator validator = definition.getValidator();
       for (ForeignKeyProperty property : fkProperties) {
         ForeignKey foreignKey = property.getAttribute();
         boolean fkValueNull = entity.isForeignKeyNull(foreignKey);
-        boolean valid = isValid(validator, entity, definition, property);
+        boolean valid = isValid(validator, entity, foreignKey);
         boolean modified = entity.isModified(foreignKey);
         String toolTipText = getForeignKeyAttributeNames(foreignKey);
         if (!fkValueNull) {
@@ -132,14 +131,13 @@ final class EntityPopupMenu extends JPopupMenu {
             .collect(joining(", "));
   }
 
-  private static void populateValueMenu(JComponent rootMenu, Entity entity, List<Property<?>> properties,
-                                        Entities entities) {
+  private static void populateValueMenu(JComponent rootMenu, Entity entity, List<Property<?>> properties) {
     Text.collate(properties);
     final int maxValueLength = 20;
-    EntityDefinition definition = entities.getDefinition(entity.getEntityType());
+    EntityDefinition definition = entity.getDefinition();
     EntityValidator validator = definition.getValidator();
     for (Property<?> property : properties) {
-      boolean valid = isValid(validator, entity, definition, property);
+      boolean valid = isValid(validator, entity, property.getAttribute());
       boolean modified = entity.isModified(property.getAttribute());
       boolean isForeignKeyProperty = property instanceof ColumnProperty
               && definition.isForeignKeyAttribute(property.getAttribute());
@@ -197,9 +195,9 @@ final class EntityPopupMenu extends JPopupMenu {
     return " | " + (originalValue == null ? "<null>" : originalValue.toString());
   }
 
-  private static boolean isValid(EntityValidator validator, Entity entity, EntityDefinition definition, Property<?> property) {
+  private static boolean isValid(EntityValidator validator, Entity entity, Attribute<?> attribute) {
     try {
-      validator.validate(entity, definition, property);
+      validator.validate(entity, attribute);
       return true;
     }
     catch (ValidationException e) {

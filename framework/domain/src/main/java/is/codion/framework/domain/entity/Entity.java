@@ -33,6 +33,11 @@ public interface Entity extends Comparable<Entity> {
   EntityType getEntityType();
 
   /**
+   * @return the entity definition
+   */
+  EntityDefinition getDefinition();
+
+  /**
    * Sets the value of the given attribute, returning the old value if any
    * @param attribute the attribute
    * @param value the value

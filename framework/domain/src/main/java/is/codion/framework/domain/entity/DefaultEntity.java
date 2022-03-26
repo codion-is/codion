@@ -107,6 +107,11 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
+  public EntityDefinition getDefinition() {
+    return definition;
+  }
+
+  @Override
   public Key getPrimaryKey() {
     if (primaryKey == null) {
       primaryKey = initializePrimaryKey(false);
