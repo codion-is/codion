@@ -174,14 +174,14 @@ public abstract class DefaultDomain implements Domain {
   }
 
   /**
-   * Copies all entities, procedures, functions and reports from the given domain model.
+   * Adds all entities, procedures, functions and reports from the given domain model.
    * @param domain the domain model to copy from
+   * @see #addEntities(Domain)
    * @see #addProcedures(Domain)
    * @see #addFunctions(Domain)
    * @see #addReports(Domain)
    */
-  protected final void copyFrom(Domain domain) {
-    requireNonNull(domain, "domain");
+  protected final void addAll(Domain domain) {
     addEntities(domain);
     addProcedures(domain);
     addFunctions(domain);
@@ -196,7 +196,7 @@ public abstract class DefaultDomain implements Domain {
    * @see EntityType#getName()
    */
   protected final void addEntities(Domain domain) {
-    domain.getEntities().getDefinitions().forEach(definition -> {
+    requireNonNull(domain).getEntities().getDefinitions().forEach(definition -> {
       if (!entities.contains(definition.getEntityType())) {
         entities.addDefinitionInternal(definition);
       }
@@ -208,7 +208,7 @@ public abstract class DefaultDomain implements Domain {
    * @param domain the domain model which procedures to add
    */
   protected final void addProcedures(Domain domain) {
-    domain.getProcedures().forEach((procedureType, procedure) -> {
+    requireNonNull(domain).getProcedures().forEach((procedureType, procedure) -> {
       if (!procedures.procedures.containsKey(procedureType)) {
         procedures.procedures.put(procedureType, procedure);
       }
@@ -220,7 +220,7 @@ public abstract class DefaultDomain implements Domain {
    * @param domain the domain model which functions to add
    */
   protected final void addFunctions(Domain domain) {
-    domain.getFunctions().forEach((functionType, function) -> {
+    requireNonNull(domain).getFunctions().forEach((functionType, function) -> {
       if (!functions.functions.containsKey(functionType)) {
         functions.functions.put(functionType, function);
       }
@@ -232,7 +232,7 @@ public abstract class DefaultDomain implements Domain {
    * @param domain the domain model which reports to add
    */
   protected final void addReports(Domain domain) {
-    domain.getReports().forEach((reportType, report) -> {
+    requireNonNull(domain).getReports().forEach((reportType, report) -> {
       if (!reports.reports.containsKey(reportType)) {
         reports.reports.put(reportType, report);
       }

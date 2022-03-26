@@ -84,7 +84,7 @@ public final class TestDomainExtended extends DefaultDomain {
 
     public TestDomainSecondExtension() {
       super(DOMAIN);
-      copyFrom(new TestDomainExtended());
+      addAll(new TestDomainExtended());
       extendedSecond();
     }
 

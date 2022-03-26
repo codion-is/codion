@@ -444,11 +444,6 @@ public interface EntityDefinition {
   interface Builder {
 
     /**
-     * @return the {@link EntityDefinition} instance
-     */
-    EntityDefinition get();
-
-    /**
      * @param validator the validator for this entity type
      * @return this {@link Builder} instance
      */
@@ -499,8 +494,8 @@ public interface EntityDefinition {
     Builder smallDataset();
 
     /**
-     * Specifies that this entity should be regarded as based on a static dataset, that is,
-     * one that changes only infrequently.
+     * Specifies that this entity should be regarded as based on a static dataset, that is, one that rarely changes.
+     * This is useful in deciding how often to refresh, say, a combo box based on the entity.
      * @return this {@link Builder} instance
      */
     Builder staticData();

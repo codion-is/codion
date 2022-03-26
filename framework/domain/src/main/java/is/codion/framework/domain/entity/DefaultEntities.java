@@ -139,22 +139,17 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   protected final EntityDefinition.Builder define(EntityType entityType, String tableName,
                                                   Property.Builder<?, ?>... propertyBuilders) {
-    requireNonNull(propertyBuilders, "propertyBuilders");
-    DefaultEntityDefinition.DefaultBuilder definitionBuilder =
-            new DefaultEntityDefinition(domainType.getName(), entityType, tableName,
-                    Arrays.asList(propertyBuilders)).builder();
-    addDefinition(definitionBuilder.get());
+    DefaultEntityDefinition definition = new DefaultEntityDefinition(domainType.getName(),
+            entityType, tableName, Arrays.asList(requireNonNull(propertyBuilders, "propertyBuilders")));
 
-    return definitionBuilder;
+    addDefinition(definition);
+
+    return new DefaultEntityDefinition.DefaultBuilder(definition);
   }
 
   protected final void addDefinition(EntityDefinition definition) {
     if (entityDefinitions.containsKey(definition.getEntityType().getName())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
-              definition.getEntityType() + ", for table: " + definition.getTableName());
-    }
-    if (contains(definition.getEntityType())) {
-      throw new IllegalArgumentException("Entity with the same entity type name has already been defined: " +
               definition.getEntityType() + ", for table: " + definition.getTableName());
     }
     validateForeignKeyProperties(definition);
