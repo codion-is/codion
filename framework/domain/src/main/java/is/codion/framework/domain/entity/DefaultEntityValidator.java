@@ -16,7 +16,6 @@ import is.codion.framework.domain.property.SubqueryProperty;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -59,13 +58,6 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   }
 
   @Override
-  public final void validate(Collection<Entity> entities) throws ValidationException {
-    for (Entity entity : entities) {
-      validate(entity);
-    }
-  }
-
-  @Override
   public void validate(Entity entity) throws ValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     List<Attribute<?>> attributes = entity.getDefinition().getProperties().stream()
@@ -92,8 +84,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
   }
 
-  @Override
-  public final <T extends Number> void performRangeValidation(Entity entity, Attribute<T> attribute) throws RangeValidationException {
+  private <T extends Number> void performRangeValidation(Entity entity, Attribute<T> attribute) throws RangeValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
     if (entity.isNull(attribute)) {
@@ -112,8 +103,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
   }
 
-  @Override
-  public final <T> void performNullValidation(Entity entity, Attribute<T> attribute) throws NullValidationException {
+  private <T> void performNullValidation(Entity entity, Attribute<T> attribute) throws NullValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
     Property<T> property = entity.getDefinition().getProperty(attribute);
@@ -134,8 +124,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
   }
 
-  @Override
-  public final void performLengthValidation(Entity entity, Attribute<String> attribute) throws LengthValidationException {
+  private void performLengthValidation(Entity entity, Attribute<String> attribute) throws LengthValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
     if (entity.isNull(attribute)) {
