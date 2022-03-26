@@ -7946,3 +7946,4 @@
   DefaultDomain.copyFrom() renamed addAll()
   SwingPropertyCombBoxModel, nullString constructor parameter removed, related refactoring
   DefaultEntityValidator.performNullValidation removed
+  Entity.getDefinition() added

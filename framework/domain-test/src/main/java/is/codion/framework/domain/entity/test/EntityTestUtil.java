@@ -63,7 +63,7 @@ public final class EntityTestUtil {
     requireNonNull(entities);
     requireNonNull(entityType);
     Entity entity = entities.entity(entityType);
-    populateEntity(entities, entity, entities.getDefinition(entityType).getWritableColumnProperties(
+    populateEntity(entity, entities.getDefinition(entityType).getWritableColumnProperties(
             !entities.getDefinition(entityType).isKeyGenerated(), true), valueProvider);
 
     return entity;
@@ -79,8 +79,8 @@ public final class EntityTestUtil {
   public static void randomize(Entities entities, Entity entity, Map<EntityType, Entity> foreignKeyEntities) {
     requireNonNull(entities);
     requireNonNull(entity);
-    populateEntity(entities, entity,
-            entities.getDefinition(entity.getEntityType()).getWritableColumnProperties(false, true),
+    populateEntity(entity,
+            entity.getDefinition().getWritableColumnProperties(false, true),
             property -> createRandomValue(property, foreignKeyEntities));
   }
 
@@ -140,16 +140,16 @@ public final class EntityTestUtil {
     return null;
   }
 
-  private static void populateEntity(Entities entities, Entity entity, Collection<ColumnProperty<?>> properties,
+  private static void populateEntity(Entity entity, Collection<ColumnProperty<?>> properties,
                                      Function<Property<?>, Object> valueProvider) {
     requireNonNull(valueProvider, "valueProvider");
-    EntityDefinition definition = entities.getDefinition(entity.getEntityType());
+    EntityDefinition definition = entity.getDefinition();
     for (@SuppressWarnings("rawtypes") ColumnProperty property : properties) {
       if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()) {
         entity.put(property.getAttribute(), valueProvider.apply(property));
       }
     }
-    for (ForeignKeyProperty property : entities.getDefinition(entity.getEntityType()).getForeignKeyProperties()) {
+    for (ForeignKeyProperty property : entity.getDefinition().getForeignKeyProperties()) {
       Entity value = (Entity) valueProvider.apply(property);
       if (value != null) {
         entity.put(property.getAttribute(), value);

@@ -195,7 +195,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final EntityDefinition getEntityDefinition() {
-    return getEntities().getDefinition(entity.getEntityType());
+    return entity.getDefinition();
   }
 
   @Override
@@ -462,7 +462,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public void validate(Entity entity) throws ValidationException {
-    EntityDefinition definition = getEntities().getDefinition(entity.getEntityType());
+    EntityDefinition definition = entity.getDefinition();
     if (definition.getEntityType().equals(getEntityType())) {
       validator.validate(entity, definition);
     }
