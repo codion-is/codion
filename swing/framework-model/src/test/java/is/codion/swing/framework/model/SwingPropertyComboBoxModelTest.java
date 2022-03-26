@@ -29,7 +29,7 @@ public final class SwingPropertyComboBoxModelTest {
   private final Event<?> refreshEvent = Event.event();
 
   public SwingPropertyComboBoxModelTest() {
-    comboBoxModel = new SwingPropertyComboBoxModel<>(CONNECTION_PROVIDER, TestDomain.DEPARTMENT_NAME, null);
+    comboBoxModel = new SwingPropertyComboBoxModel<>(CONNECTION_PROVIDER, TestDomain.DEPARTMENT_NAME);
     refreshEvent.addListener(comboBoxModel::refresh);
   }
 
