@@ -18,9 +18,10 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link EntityValidator} implementation providing null validation for properties marked as not null,
@@ -40,24 +41,6 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   private static final String ENTITY_PARAM = "entity";
   private static final String PROPERTY_PARAM = "property";
   private static final String VALUE_REQUIRED_KEY = "property_value_is_required";
-
-  private boolean performNullValidation = true;
-
-  /**
-   * @return true if this validator performs null validation
-   */
-  public boolean isPerformNullValidation() {
-    return performNullValidation;
-  }
-
-  /**
-   * @param performNullValidation true if this validator should perform null validation
-   * @return this validator instance
-   */
-  public DefaultEntityValidator setPerformNullValidation(boolean performNullValidation) {
-    this.performNullValidation = performNullValidation;
-    return this;
-  }
 
   @Override
   public boolean isValid(Entity entity, EntityDefinition definition) {
@@ -84,7 +67,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   @Override
   public void validate(Entity entity, EntityDefinition definition) throws ValidationException {
-    Objects.requireNonNull(entity, ENTITY_PARAM);
+    requireNonNull(entity, ENTITY_PARAM);
     List<Property<?>> properties = definition.getProperties().stream()
             .filter(DefaultEntityValidator::validationRequired)
             .collect(Collectors.toList());
@@ -95,9 +78,9 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   @Override
   public <T> void validate(Entity entity, EntityDefinition definition, Property<T> property) throws ValidationException {
-    Objects.requireNonNull(entity, ENTITY_PARAM);
-    Objects.requireNonNull(property, PROPERTY_PARAM);
-    if (performNullValidation && !definition.isForeignKeyAttribute(property.getAttribute())) {
+    requireNonNull(entity, ENTITY_PARAM);
+    requireNonNull(property, PROPERTY_PARAM);
+    if (!definition.isForeignKeyAttribute(property.getAttribute())) {
       performNullValidation(entity, definition, property);
     }
     if (property.getAttribute().isNumerical()) {
@@ -110,8 +93,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   @Override
   public final <T extends Number> void performRangeValidation(Entity entity, Property<T> property) throws RangeValidationException {
-    Objects.requireNonNull(entity, ENTITY_PARAM);
-    Objects.requireNonNull(property, PROPERTY_PARAM);
+    requireNonNull(entity, ENTITY_PARAM);
+    requireNonNull(property, PROPERTY_PARAM);
     if (entity.isNull(property.getAttribute())) {
       return;
     }
@@ -130,8 +113,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   @Override
   public final <T> void performNullValidation(Entity entity, EntityDefinition definition,
                                               Property<T> property) throws NullValidationException {
-    Objects.requireNonNull(entity, ENTITY_PARAM);
-    Objects.requireNonNull(property, PROPERTY_PARAM);
+    requireNonNull(entity, ENTITY_PARAM);
+    requireNonNull(property, PROPERTY_PARAM);
     if (!isNullable(entity, property) && entity.isNull(property.getAttribute())) {
       if ((entity.getPrimaryKey().isNull() || entity.getOriginalPrimaryKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
@@ -151,8 +134,8 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   @Override
   public final void performLengthValidation(Entity entity, Property<String> property) throws LengthValidationException {
-    Objects.requireNonNull(entity, ENTITY_PARAM);
-    Objects.requireNonNull(property, PROPERTY_PARAM);
+    requireNonNull(entity, ENTITY_PARAM);
+    requireNonNull(property, PROPERTY_PARAM);
     if (entity.isNull(property.getAttribute())) {
       return;
     }

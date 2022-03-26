@@ -7977,3 +7977,7 @@
   DomainToString, no longer prefixes foreign key reference with interface name
   SplitPaneBuilder.dividerSize() added
   EntityTablePanel bug fixed, summary panel UI now updated
+  EntityDefinition.Builder.get() removed
+  DefaultDomain.copyFrom() renamed addAll()
+  SwingPropertyCombBoxModel, nullString constructor parameter removed, related refactoring
+  DefaultEntityValidator.performNullValidation removed

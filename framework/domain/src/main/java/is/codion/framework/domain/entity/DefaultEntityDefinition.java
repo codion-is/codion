@@ -650,13 +650,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     foreignEntityDefinitions.put(foreignKey, definition);
   }
 
-  /**
-   * @return a {@link Builder} for this definition instance
-   */
-  DefaultBuilder builder() {
-    return new DefaultBuilder(this);
-  }
-
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     defaultMethodHandles = new ConcurrentHashMap<>();
@@ -1077,13 +1070,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private final DefaultEntityDefinition definition;
 
-    private DefaultBuilder(DefaultEntityDefinition definition) {
+    DefaultBuilder(DefaultEntityDefinition definition) {
       this.definition = definition;
-    }
-
-    @Override
-    public DefaultEntityDefinition get() {
-      return definition;
     }
 
     @Override
