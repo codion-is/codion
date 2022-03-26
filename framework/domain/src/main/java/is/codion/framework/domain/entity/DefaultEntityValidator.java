@@ -41,24 +41,6 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   private static final String PROPERTY_PARAM = "property";
   private static final String VALUE_REQUIRED_KEY = "property_value_is_required";
 
-  private boolean performNullValidation = true;
-
-  /**
-   * @return true if this validator performs null validation
-   */
-  public boolean isPerformNullValidation() {
-    return performNullValidation;
-  }
-
-  /**
-   * @param performNullValidation true if this validator should perform null validation
-   * @return this validator instance
-   */
-  public DefaultEntityValidator setPerformNullValidation(boolean performNullValidation) {
-    this.performNullValidation = performNullValidation;
-    return this;
-  }
-
   @Override
   public boolean isValid(Entity entity, EntityDefinition definition) {
     try {
@@ -97,7 +79,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   public <T> void validate(Entity entity, EntityDefinition definition, Property<T> property) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
-    if (performNullValidation && !definition.isForeignKeyAttribute(property.getAttribute())) {
+    if (!definition.isForeignKeyAttribute(property.getAttribute())) {
       performNullValidation(entity, definition, property);
     }
     if (property.getAttribute().isNumerical()) {
