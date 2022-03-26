@@ -496,16 +496,22 @@ public interface EntityEditModel {
 
   /**
    * Validates the given entities, using the underlying validator.
+   * For entities of a type other than this edit model is based on,
+   * their respective validators are used.
    * @param entities the entities to validate
    * @throws ValidationException on finding the first invalid entity
    * @see #getValidator()
+   * @see EntityDefinition#getValidator()
    */
   void validate(Collection<Entity> entities) throws ValidationException;
 
   /**
    * Validates the given entity, using the underlying validator.
+   * For entities of a type other than this edit model is based on,
+   * their respective validators are used.
    * @param entity the entity to validate
    * @throws ValidationException in case the entity is invalid
+   * @throws NullPointerException in case the entity is null
    * @see #getValidator()
    */
   void validate(Entity entity) throws ValidationException;

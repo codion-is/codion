@@ -184,7 +184,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     ForeignKeyProperty foreignKeyProperty = getEntityDefinition().getForeignKeyProperty(foreignKey);
     SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), getConnectionProvider());
     model.setSelectAttributes(foreignKeyProperty.getSelectAttributes());
-    if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
+    if (isNullable(foreignKey)) {
       model.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     }
 
@@ -202,7 +202,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   public <T> SwingPropertyComboBoxModel<T> createComboBoxModel(Attribute<T> attribute) {
     requireNonNull(attribute, "attribute");
     SwingPropertyComboBoxModel<T> model = new SwingPropertyComboBoxModel<>(getConnectionProvider(), attribute);
-    if (getValidator().isNullable(getEntity(), getEntityDefinition().getProperty(attribute))) {
+    if (isNullable(attribute)) {
       model.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     }
     addEntitiesEditedListener(model::refresh);
