@@ -56,6 +56,6 @@ final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double,
 
   @Override
   protected ComponentValue<Double, DoubleField> buildComponentValue(DoubleField component) {
-    return ComponentValues.doubleField(component, true, updateOn);
+    return new DoubleFieldValue(component, true, updateOn);
   }
 }

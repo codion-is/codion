@@ -10,7 +10,7 @@ import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 
-final class DefaultCheckBoxBuilder extends AbstractToggleButtonBuilder<JCheckBox, CheckBoxBuilder> implements CheckBoxBuilder {
+final class DefaultCheckBoxBuilder extends DefaultToggleButtonBuilder<JCheckBox, CheckBoxBuilder> implements CheckBoxBuilder {
 
   private boolean nullable = false;
   private int horizontalAlignment = SwingConstants.LEADING;

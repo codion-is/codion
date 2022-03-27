@@ -148,7 +148,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 
   @Override
   protected ComponentValue<T, JComboBox<Item<T>>> buildComponentValue(JComboBox<Item<T>> component) {
-    return ComponentValues.itemComboBox(component);
+    return new SelectedItemValue<>(component);
   }
 
   @Override

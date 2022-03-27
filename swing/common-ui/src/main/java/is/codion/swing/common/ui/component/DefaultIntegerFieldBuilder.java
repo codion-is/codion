@@ -29,6 +29,6 @@ final class DefaultIntegerFieldBuilder extends AbstractNumberFieldBuilder<Intege
 
   @Override
   protected ComponentValue<Integer, IntegerField> buildComponentValue(IntegerField component) {
-    return ComponentValues.integerField(component, true, updateOn);
+    return new IntegerFieldValue(component, true, updateOn);
   }
 }

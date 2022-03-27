@@ -151,10 +151,10 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   protected ComponentValue<T, C> buildComponentValue(C component) {
     requireNonNull(component);
     if (valueClass.equals(String.class)) {
-      return (ComponentValue<T, C>) ComponentValues.textComponent(component, format, updateOn);
+      return new FormattedTextComponentValue<>(component, format, updateOn);
     }
 
-    return (ComponentValue<T, C>) ComponentValues.characterTextField(component, updateOn);
+    return (ComponentValue<T, C>) new CharacterFieldValue(component, updateOn);
   }
 
   @Override

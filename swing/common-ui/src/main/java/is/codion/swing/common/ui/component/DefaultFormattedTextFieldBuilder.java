@@ -71,7 +71,7 @@ final class DefaultFormattedTextFieldBuilder
 
   @Override
   protected ComponentValue<String, JFormattedTextField> buildComponentValue(JFormattedTextField component) {
-    return ComponentValues.textComponent(component, null, updateOn);
+    return new FormattedTextComponentValue<>(component, null, updateOn);
   }
 
   @Override
