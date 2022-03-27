@@ -14,22 +14,15 @@ public final class CustomerPanel extends EntityPanel {
     super(customerModel, new CustomerEditPanel(customerModel.getEditModel()), new CustomerTablePanel(customerModel.getTableModel()));
 
     SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
-    EntityPanel invoicePanel = new EntityPanel(invoiceModel, new InvoiceEditPanel(invoiceModel.getEditModel()));
-    invoicePanel.setIncludeDetailTabPane(false);
-    invoicePanel.setShowDetailPanelControls(false);
-
     SwingEntityModel invoiceLineModel = invoiceModel.getDetailModel(InvoiceLine.TYPE);
+
     InvoiceLineTablePanel invoiceLineTablePanel = new InvoiceLineTablePanel(invoiceLineModel.getTableModel());
     InvoiceLineEditPanel invoiceLineEditPanel = new InvoiceLineEditPanel(invoiceLineModel.getEditModel(),
             invoiceLineTablePanel.getTable().getSearchField());
 
     EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel, invoiceLineEditPanel, invoiceLineTablePanel);
     invoiceLinePanel.setIncludeControlPanel(false);
-    invoiceLinePanel.initializePanel();
-    ((InvoiceEditPanel) invoicePanel.getEditPanel()).setInvoiceLinePanel(invoiceLinePanel);
 
-    invoicePanel.addDetailPanel(invoiceLinePanel);
-
-    addDetailPanel(invoicePanel);
+    addDetailPanel(new InvoicePanel(invoiceModel, invoiceLinePanel));
   }
 }
