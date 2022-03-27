@@ -31,8 +31,9 @@ public final class EmployeeTablePanel extends EntityTablePanel {
             .dividerSize(EntityPanel.SPLIT_PANE_DIVIDER_SIZE.get())
             .continuousLayout(true)
             .oneTouchExpandable(true)
-            .leftComponent(new JScrollPane(new EntityTree(((EmployeeTableModel) getTableModel()).getTreeModel())))
-            .rightComponent(tablePanel)
+            .resizeWeight(0.65)
+            .leftComponent(tablePanel)
+            .rightComponent(new JScrollPane(new EntityTree(((EmployeeTableModel) getTableModel()).getTreeModel())))
             .build();
     add(splitPane, BorderLayout.CENTER);
     add(southPanel, BorderLayout.SOUTH);

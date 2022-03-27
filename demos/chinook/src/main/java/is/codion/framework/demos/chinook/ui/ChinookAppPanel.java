@@ -104,7 +104,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
                     .editPanelClass(EmployeeEditPanel.class)
                     .tablePanelClass(EmployeeTablePanel.class)
                     .detailPanelBuilder(customerBuilder)
-                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
+                    .detailPanelState(EntityPanel.PanelState.HIDDEN)
+                    .panelInitializer(panel -> panel.setPreferredSize(new Dimension(1000, 500)));
 
     return Arrays.asList(genreBuilder, mediaTypeBuilder, employeeBuilder);
   }
