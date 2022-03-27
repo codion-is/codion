@@ -7949,3 +7949,4 @@
   Entity.getDefinition() added
   EntityValidator, EntityDefinition parameter removed
   EntityValidator.validate(Collection<Entity>) removed along with a few unnecessary public methods
+  DefaultTextFieldHint bug fixed, now updates hint text on ancestorAdded

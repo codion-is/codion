@@ -126,8 +126,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
       Dialogs.addLookupDialog(textField, valueSupplier);
     }
     if (hintText != null) {
-      TextFieldHint textFieldHint = TextFieldHint.create(textField, hintText);
-      onSetVisible(field -> textFieldHint.updateHint());
+      TextFieldHint.create(textField, hintText);
     }
     if (onTextChanged != null) {
       textField.getDocument().addDocumentListener((DocumentAdapter) documentEvent ->
