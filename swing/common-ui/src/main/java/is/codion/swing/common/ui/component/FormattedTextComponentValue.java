@@ -12,7 +12,7 @@ import java.text.ParseException;
 
 import static is.codion.common.Util.nullOrEmpty;
 
-class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractTextComponentValue<V, C> {
+class FormattedTextComponentValue<T, C extends JTextComponent> extends AbstractTextComponentValue<T, C> {
 
   private final JFormattedTextField.AbstractFormatter formatter;
   private final Format format;
@@ -29,7 +29,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
   }
 
   @Override
-  protected final V getComponentValue(C component) {
+  protected final T getComponentValue(C component) {
     String formattedText = getFormattedText(component);
     if (nullOrEmpty(formattedText)) {
       return null;
@@ -39,7 +39,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
   }
 
   @Override
-  protected final void setComponentValue(C component, V value) {
+  protected final void setComponentValue(C component, T value) {
     component.setText(value == null ? "" : formatTextFromValue(value));
   }
 
@@ -49,7 +49,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
    * @param value the value to return as String
    * @return a formatted String representation of the given value, an empty string if the value is null
    */
-  protected String formatTextFromValue(V value) {
+  protected String formatTextFromValue(T value) {
     return format.format(value);
   }
 
@@ -60,9 +60,9 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
    * @param text the text from which to parse a value
    * @return a value from the given text, or null if the parsing did not yield a valid value
    */
-  protected V parseValueFromText(String text) {
+  protected T parseValueFromText(String text) {
     try {
-      return (V) format.parseObject(text);
+      return (T) format.parseObject(text);
     }
     catch (ParseException e) {
       return null;
