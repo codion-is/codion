@@ -4,7 +4,6 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
@@ -34,7 +33,7 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
     createTextField(InvoiceLine.QUANTITY)
             .selectAllOnFocusGained(true)
             .columns(2)
-            .action(Control.control(this::save));
+            .action(getControl(ControlCode.SAVE));
 
     setLayout(borderLayout());
     addInputPanel(InvoiceLine.TRACK_FK, BorderLayout.WEST);

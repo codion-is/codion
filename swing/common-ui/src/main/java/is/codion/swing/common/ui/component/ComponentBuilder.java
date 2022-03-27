@@ -243,7 +243,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B componentListener(ComponentListener componentListener);
 
   /**
-   * @param onSetVisible called when the combo box is made visible for the first time
+   * @param onSetVisible called when the component is made visible for the first time
    * @return this builder instance
    */
   B onSetVisible(Consumer<C> onSetVisible);

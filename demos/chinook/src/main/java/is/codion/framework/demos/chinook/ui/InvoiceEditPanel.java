@@ -24,16 +24,13 @@ import static javax.swing.SortOrder.ASCENDING;
 
 public final class InvoiceEditPanel extends EntityEditPanel {
 
-  private EntityPanel invoiceLinePanel;
+  private final EntityPanel invoiceLinePanel;
 
-  public InvoiceEditPanel(SwingEntityEditModel editModel) {
+  public InvoiceEditPanel(SwingEntityEditModel editModel, EntityPanel invoiceLinePanel) {
     super(editModel);
+    this.invoiceLinePanel = invoiceLinePanel;
     setClearAfterInsert(false);
     setDefaultTextFieldColumns(12);
-  }
-
-  public void setInvoiceLinePanel(EntityPanel invoiceLinePanel) {
-    this.invoiceLinePanel = invoiceLinePanel;
   }
 
   @Override
@@ -91,6 +88,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
             .build();
 
     invoiceLinePanel.setBorder(BorderFactory.createTitledBorder(getEditModel().getEntities().getDefinition(InvoiceLine.TYPE).getCaption()));
+    invoiceLinePanel.initializePanel();
 
     setLayout(borderLayout());
 

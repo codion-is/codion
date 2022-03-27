@@ -7,6 +7,8 @@ import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -32,6 +34,7 @@ final class DefaultTextFieldHint implements TextFieldHint {
     this.textField = textField;
     this.hintText = hintText;
     this.textField.addFocusListener(initializeFocusListener());
+    this.textField.addAncestorListener(initializeAncestorListener());
     this.textField.getDocument().addDocumentListener((DocumentAdapter) e -> updateColor());
     configureColors();
     textField.addPropertyChangeListener("UI", event -> configureColors());
@@ -74,6 +77,21 @@ final class DefaultTextFieldHint implements TextFieldHint {
       public void focusLost(FocusEvent e) {
         updateHint();
       }
+    };
+  }
+
+  private AncestorListener initializeAncestorListener() {
+    return new AncestorListener() {
+      @Override
+      public void ancestorAdded(AncestorEvent event) {
+        updateHint();
+      }
+
+      @Override
+      public void ancestorRemoved(AncestorEvent event) {}
+
+      @Override
+      public void ancestorMoved(AncestorEvent event) {}
     };
   }
 

@@ -517,12 +517,13 @@ public final class EntitySearchField extends JTextField {
   }
 
   /**
-   * A {@link SelectionProvider} implementation based on {@link EntityTablePanel}
+   * A {@link SelectionProvider} implementation based on {@link FilteredTable}
    */
   public static class TableSelectionProvider implements SelectionProvider {
 
     private final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table;
     private final JScrollPane scrollPane;
+    private final JPanel searchPanel = new JPanel(Layouts.borderLayout());
     private final JPanel basePanel = new JPanel(Layouts.borderLayout());
     private final Control selectControl;
 
@@ -547,6 +548,13 @@ public final class EntitySearchField extends JTextField {
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectControl)
               .enable(table);
+      KeyEvents.builder(KeyEvent.VK_ENTER)
+              .action(selectControl)
+              .enable(table.getSearchField());
+      KeyEvents.builder(KeyEvent.VK_F)
+              .modifiers(KeyEvent.CTRL_DOWN_MASK)
+              .action(Control.control(() -> table.getSearchField().requestFocusInWindow()))
+              .enable(table);
       Collection<Attribute<String>> searchAttributes = searchModel.getSearchAttributes();
       tableModel.getColumnModel().setColumns(searchAttributes.toArray(new Attribute[0]));
       tableModel.getSortModel().setSortOrder(searchAttributes.iterator().next(), SortOrder.ASCENDING);
@@ -554,11 +562,15 @@ public final class EntitySearchField extends JTextField {
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       table.setDoubleClickAction(selectControl);
       scrollPane = new JScrollPane(table);
+      searchPanel.add(table.getSearchField(), BorderLayout.WEST);
       basePanel.add(scrollPane, BorderLayout.CENTER);
+      basePanel.add(searchPanel, BorderLayout.SOUTH);
+      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+      basePanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, 0, gap));
     }
 
     /**
-     * @return the underlying FilteredTablePanel
+     * @return the underlying FilteredTable
      */
     public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> getTable() {
       return table;
@@ -576,6 +588,7 @@ public final class EntitySearchField extends JTextField {
               .show();
 
       table.getModel().clear();
+      table.getSearchField().setText("");
     }
 
     @Override
@@ -585,7 +598,7 @@ public final class EntitySearchField extends JTextField {
 
     @Override
     public void updateUI() {
-      Utilities.updateUI(basePanel, table, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
+      Utilities.updateUI(basePanel, searchPanel, table, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
     }
 
     private Control.Command createSelectCommand(EntitySearchModel searchModel, SwingEntityTableModel tableModel) {
