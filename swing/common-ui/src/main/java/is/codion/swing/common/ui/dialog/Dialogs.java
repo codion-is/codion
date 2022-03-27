@@ -122,6 +122,13 @@ public final class Dialogs {
   }
 
   /**
+   * @return a builder for a dialog for selecting a look and feel
+   */
+  public static LookAndFeelSelectionDialogBuilder lookAndFeelSelectionDialog() {
+    return new DefaultLookAndFeelDialogBuilder();
+  }
+
+  /**
    * Adds a CTRL-SPACE action the given text field for displaying a lookup dialog showing the values provided
    * by the given value provider
    * @param textField the text field

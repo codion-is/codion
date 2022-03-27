@@ -62,11 +62,8 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 
   @Override
   protected ComponentValue<T, JSpinner> buildComponentValue(JSpinner component) {
-    if (valueClass.equals(Integer.class)) {
-      return (ComponentValue<T, JSpinner>) ComponentValues.integerSpinner(component);
-    }
-    if (valueClass.equals(Double.class)) {
-      return (ComponentValue<T, JSpinner>) ComponentValues.doubleSpinner(component);
+    if (valueClass.equals(Integer.class) || valueClass.equals(Double.class)) {
+      return new SpinnerNumberValue<>(component);
     }
 
     throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);

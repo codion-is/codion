@@ -28,6 +28,6 @@ class DefaultLongFieldBuilder extends AbstractNumberFieldBuilder<Long, LongField
 
   @Override
   protected ComponentValue<Long, LongField> buildComponentValue(LongField component) {
-    return ComponentValues.longField(component, true, updateOn);
+    return new LongFieldValue(component, true, updateOn);
   }
 }

@@ -63,7 +63,7 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
 
   @Override
   protected ComponentValue<T, JList<T>> buildComponentValue(JList<T> component) {
-    return ComponentValues.list(component);
+    return new ListValue<>(component);
   }
 
   @Override

@@ -43,7 +43,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
   private void displayException(Throwable exception) {
     ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message);
 
-    JDialog dialog = Dialogs.componentDialog(exceptionPanel)
+    JDialog dialog = new DefaultComponentDialogBuilder(exceptionPanel)
             .title(title == null ? Messages.get(Messages.ERROR) : title)
             .owner(owner)
             .closeEvent(exceptionPanel.getCloseObserver())

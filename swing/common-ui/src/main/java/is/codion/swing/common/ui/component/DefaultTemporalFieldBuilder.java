@@ -45,7 +45,7 @@ final class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalFi
 
   @Override
   protected ComponentValue<T, C> buildComponentValue(C component) {
-    return (ComponentValue<T, C>) component.componentValue(updateOn);
+    return (ComponentValue<T, C>) new TemporalFieldValue<>(component, updateOn);
   }
 
   @Override

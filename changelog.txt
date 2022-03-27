@@ -7986,3 +7986,7 @@
   EntityValidator.validate(Collection<Entity>) removed along with a few unnecessary public methods
   DefaultTextFieldHint bug fixed, now updates hint text on ancestorAdded
   EntitySearchField.TableSelectionProvider now includes a search field, empty border added
+  TextComponents.formattedTextFieldValue() moved to ComponentValues
+  TemporalField.componentValue() removed, ComponentValues.temporalField() added
+  FormattedTextComponentValue and TemporalFieldValue moved to ui.component package
+  LookAndFeelSelectionDialogBuilder along with Dialogs.lookAndFeelSelectionDialog() added

@@ -8,7 +8,7 @@ import is.codion.common.value.Value;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-final class DefaultRadioButtonBuilder extends AbstractToggleButtonBuilder<JRadioButton, RadioButtonBuilder> implements RadioButtonBuilder {
+final class DefaultRadioButtonBuilder extends DefaultToggleButtonBuilder<JRadioButton, RadioButtonBuilder> implements RadioButtonBuilder {
 
   private int horizontalAlignment = SwingConstants.LEADING;
 

@@ -26,8 +26,6 @@ import java.math.BigDecimal;
 import java.text.Format;
 import java.time.temporal.Temporal;
 
-import static is.codion.swing.common.ui.textfield.TextComponents.formattedTextComponentValue;
-
 /**
  * A factory for {@link ComponentValue}.
  */
@@ -76,7 +74,20 @@ public final class ComponentValues {
   public static <C extends JTextComponent> ComponentValue<String, C> textComponent(C textComponent,
                                                                                    Format format,
                                                                                    UpdateOn updateOn) {
-    return formattedTextComponentValue(textComponent, format, updateOn);
+    return formattedTextComponent(textComponent, format, updateOn);
+  }
+
+  /**
+   * @param textComponent the text component
+   * @param format the format
+   * @param updateOn the updateOn policy
+   * @param <C> the component type
+   * @return a text component value
+   */
+  public static <C extends JTextComponent> ComponentValue<String, C> formattedTextComponent(C textComponent,
+                                                                                            Format format,
+                                                                                            UpdateOn updateOn) {
+    return new FormattedTextComponentValue<>(textComponent, format, updateOn);
   }
 
   /**
@@ -134,7 +145,7 @@ public final class ComponentValues {
    */
   public static <T extends Temporal> ComponentValue<T, TemporalField<T>> temporalField(TemporalField<T> temporalField,
                                                                                        UpdateOn updateOn) {
-    return temporalField.componentValue(updateOn);
+    return new TemporalFieldValue<>(temporalField, updateOn);
   }
 
   /**

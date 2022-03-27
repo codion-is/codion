@@ -10,7 +10,6 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.UiManagerDefaults;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
@@ -18,6 +17,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.LookAndFeelSelectionDialogBuilder;
 import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -46,7 +46,6 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
-import static is.codion.swing.common.ui.Utilities.selectLookAndFeelControl;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.getDefaultLookAndFeelName;
 
@@ -163,7 +162,10 @@ public final class EntityServerMonitorPanel extends JPanel {
                     .control(initializeRefreshControl())
                     .control(initializeUpateIntervalControl())
                     .separator()
-                    .control(selectLookAndFeelControl(this, EntityServerMonitorPanel.class.getName()))
+                    .control(Dialogs.lookAndFeelSelectionDialog()
+                            .dialogOwner(this)
+                            .userPreferencePropertyName(EntityServerMonitorPanel.class.getName())
+                            .createControl())
                     .control(initializeAlwaysOnTopControl()))
             .control(Controls.builder()
                     .caption("Tools")
@@ -256,7 +258,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public static void main(String[] arguments) {
     UiManagerDefaults.initialize();
     Clients.resolveTrustStore();
-    Utilities.CHANGE_LOOK_AND_FEEL_DURING_SELECTION.set(true);
+    LookAndFeelSelectionDialogBuilder.CHANGE_LOOK_AND_FEEL_DURING_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
     SwingUtilities.invokeLater(() -> {

@@ -8,8 +8,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
-import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.UpdateOn;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.text.MaskFormatter;
@@ -112,23 +110,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    */
   public DateTimeParser<T> getDateTimeParser() {
     return dateTimeParser;
-  }
-
-  /**
-   * Instantiates a new {@link ComponentValue} for {@link Temporal} values.
-   * @return a Value bound to the given component
-   */
-  public ComponentValue<T, TemporalField<T>> componentValue() {
-    return componentValue(UpdateOn.KEYSTROKE);
-  }
-
-  /**
-   * Instantiates a new {@link ComponentValue} for {@link Temporal} values.
-   * @param updateOn specifies when the underlying value should be updated
-   * @return a Value bound to the given component
-   */
-  public ComponentValue<T, TemporalField<T>> componentValue(UpdateOn updateOn) {
-    return new TemporalFieldValue<>(this, updateOn);
   }
 
   /**
@@ -299,28 +280,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
     catch (ParseException e) {
       throw new RuntimeException(e);
-    }
-  }
-
-  private static final class TemporalFieldValue<T extends Temporal> extends FormattedTextComponentValue<T, TemporalField<T>> {
-
-    private TemporalFieldValue(TemporalField<T> textComponent, UpdateOn updateOn) {
-      super(textComponent, null, updateOn);
-    }
-
-    @Override
-    protected String formatTextFromValue(T value) {
-      return getComponent().getDateTimeFormatter().format(value);
-    }
-
-    @Override
-    protected T parseValueFromText(String text) {
-      try {
-        return getComponent().getDateTimeParser().parse(text, getComponent().getDateTimeFormatter());
-      }
-      catch (DateTimeParseException e) {
-        return null;
-      }
     }
   }
 }
