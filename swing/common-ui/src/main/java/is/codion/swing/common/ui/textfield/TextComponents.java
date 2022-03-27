@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.UpdateOn;
 import is.codion.swing.common.ui.textfield.CaseDocumentFilter.DocumentCase;
 
 import javax.swing.JTextField;
@@ -16,7 +14,6 @@ import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.text.Format;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -176,19 +173,6 @@ public final class TextComponents {
    */
   public static synchronized int getPreferredTextFieldHeight() {
     return getPreferredTextFieldSize().height;
-  }
-
-  /**
-   * @param textComponent the text component
-   * @param format the format
-   * @param updateOn the updateOn policy
-   * @param <C> the component type
-   * @return a text component value
-   */
-  public static <C extends JTextComponent> ComponentValue<String, C> formattedTextComponentValue(C textComponent,
-                                                                                                 Format format,
-                                                                                                 UpdateOn updateOn) {
-    return new FormattedTextComponentValue<>(textComponent, format, updateOn);
   }
 
   private static void documentCase(Document document, DocumentCase documentCase) {

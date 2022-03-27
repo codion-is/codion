@@ -10,11 +10,12 @@ import is.codion.swing.common.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.tools.loadtest.UsageScenario;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.LookAndFeelSelectionDialogBuilder;
 import is.codion.swing.common.ui.icons.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -51,7 +52,6 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
-import static is.codion.swing.common.ui.Utilities.selectLookAndFeelControl;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.getDefaultLookAndFeelName;
 import static java.util.Objects.requireNonNull;
@@ -77,7 +77,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private final ItemRandomizerPanel<UsageScenario<T>> scenarioPanel;
 
   static {
-    Utilities.CHANGE_LOOK_AND_FEEL_DURING_SELECTION.set(true);
+    LookAndFeelSelectionDialogBuilder.CHANGE_LOOK_AND_FEEL_DURING_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
     LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName(LoadTestPanel.class.getName()))
@@ -137,7 +137,10 @@ public final class LoadTestPanel<T> extends JPanel {
             .control(Controls.builder()
                     .caption("View")
                     .mnemonic('V')
-                    .control(selectLookAndFeelControl(this, LoadTestPanel.class.getName())))
+                    .control(Dialogs.lookAndFeelSelectionDialog()
+                            .dialogOwner(this)
+                            .userPreferencePropertyName(LoadTestPanel.class.getName())
+                            .createControl()))
             .build();
   }
 
