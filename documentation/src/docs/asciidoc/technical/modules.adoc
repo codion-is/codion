@@ -333,7 +333,7 @@ Common Swing UI classes.
 * {url-javadoc}/is/codion/swing/common/ui/component/package-summary.html[is.codion.swing.common.ui.component]
 * {url-javadoc}/is/codion/swing/common/ui/control/package-summary.html[is.codion.swing.common.ui.control]
 * {url-javadoc}/is/codion/swing/common/ui/dialog/package-summary.html[is.codion.swing.common.ui.dialog]
-* {url-javadoc}/is/codion/swing/common/ui/icons/package-summary.html[is.codion.swing.common.ui.icons]
+* {url-javadoc}/is/codion/swing/common/ui/icon/package-summary.html[is.codion.swing.common.ui.icon]
 * {url-javadoc}/is/codion/swing/common/ui/layout/package-summary.html[is.codion.swing.common.ui.layout]
 * {url-javadoc}/is/codion/swing/common/ui/package-summary.html[is.codion.swing.common.ui]
 

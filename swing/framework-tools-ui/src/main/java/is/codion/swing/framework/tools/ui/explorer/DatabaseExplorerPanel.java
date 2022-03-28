@@ -12,7 +12,7 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.icons.Logos;
+import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.tools.explorer.DatabaseExplorerModel;
 import is.codion.swing.framework.tools.explorer.DefinitionRow;

@@ -7956,3 +7956,4 @@
   FormattedTextComponentValue and TemporalFieldValue moved to ui.component package
   LookAndFeelSelectionDialogBuilder along with Dialogs.lookAndFeelSelectionDialog() added
   swing.common.model, swing.common.ui restructured, packages for specific components moved under component package
+  swing.common.ui.icons package renamed icon

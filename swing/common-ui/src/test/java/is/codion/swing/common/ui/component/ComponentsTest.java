@@ -16,7 +16,7 @@ import is.codion.swing.common.ui.component.textfield.TemporalField;
 import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.component.textfield.TextInputPanel;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.icons.Logos;
+import is.codion.swing.common.ui.icon.Logos;
 
 import org.junit.jupiter.api.Test;
 

@@ -7,7 +7,7 @@ import is.codion.common.event.Event;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.icons.Logos;
+import is.codion.swing.common.ui.icon.Logos;
 
 import org.junit.jupiter.api.Test;
 
