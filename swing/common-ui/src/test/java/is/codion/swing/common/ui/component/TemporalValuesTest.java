@@ -5,8 +5,8 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.event.Event;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.textfield.TemporalField;
-import is.codion.swing.common.ui.textfield.TemporalInputPanel;
+import is.codion.swing.common.ui.component.textfield.TemporalField;
+import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
 
 import org.junit.jupiter.api.Test;
 

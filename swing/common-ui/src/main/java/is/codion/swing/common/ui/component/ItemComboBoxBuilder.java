@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
-import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.component.combobox.Completion;
 
 import javax.swing.JComboBox;
 import java.util.Comparator;

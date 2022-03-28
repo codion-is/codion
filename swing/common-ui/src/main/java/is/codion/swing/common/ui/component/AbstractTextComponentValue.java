@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.model.textfield.DocumentAdapter;
-import is.codion.swing.common.ui.textfield.ValidationDocumentFilter;
+import is.codion.swing.common.model.component.textfield.DocumentAdapter;
+import is.codion.swing.common.ui.component.textfield.ValidationDocumentFilter;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;

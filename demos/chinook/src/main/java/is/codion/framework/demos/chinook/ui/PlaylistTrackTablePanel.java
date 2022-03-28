@@ -7,7 +7,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.model.EntityTableConditionModel;
-import is.codion.swing.common.ui.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityConditionPanelFactory;
 import is.codion.swing.framework.ui.EntitySearchField;

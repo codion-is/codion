@@ -6,9 +6,9 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.item.Item;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 

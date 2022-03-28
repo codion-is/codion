@@ -6,8 +6,8 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.textfield.TemporalField;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.component.textfield.TemporalField;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;

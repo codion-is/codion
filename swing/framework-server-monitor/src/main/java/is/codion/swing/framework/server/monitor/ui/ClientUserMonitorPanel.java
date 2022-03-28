@@ -4,9 +4,9 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.framework.server.monitor.ClientMonitor;
 import is.codion.swing.framework.server.monitor.ClientUserMonitor;
 

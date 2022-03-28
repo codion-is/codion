@@ -5,8 +5,8 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.event.Event;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.textfield.SizedDocument;
-import is.codion.swing.common.ui.textfield.TextInputPanel;
+import is.codion.swing.common.ui.component.textfield.SizedDocument;
+import is.codion.swing.common.ui.component.textfield.TextInputPanel;
 
 import org.junit.jupiter.api.Test;
 

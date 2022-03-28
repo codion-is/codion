@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.textfield.TextComponents;
+import is.codion.swing.common.ui.component.textfield.TextComponents;
 
 import javax.swing.text.JTextComponent;
 import java.awt.Insets;

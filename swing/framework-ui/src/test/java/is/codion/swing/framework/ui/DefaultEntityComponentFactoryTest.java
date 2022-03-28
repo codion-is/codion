@@ -6,7 +6,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.IntegerField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import org.junit.jupiter.api.Test;

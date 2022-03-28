@@ -305,10 +305,10 @@ Swing client implementation.
 
 Common Swing model classes.
 
-* {url-javadoc}/is/codion/swing/common/model/checkbox/package-summary.html[is.codion.swing.common.model.checkbox]
-* {url-javadoc}/is/codion/swing/common/model/combobox/package-summary.html[is.codion.swing.common.model.combobox]
-* {url-javadoc}/is/codion/swing/common/model/table/package-summary.html[is.codion.swing.common.model.table]
-* {url-javadoc}/is/codion/swing/common/model/textfield/package-summary.html[is.codion.swing.common.model.textfield]
+* {url-javadoc}/is/codion/swing/common/model/component/checkbox/package-summary.html[is.codion.swing.common.model.component.checkbox]
+* {url-javadoc}/is/codion/swing/common/model/component/combobox/package-summary.html[is.codion.swing.common.model.component.combobox]
+* {url-javadoc}/is/codion/swing/common/model/component/table/package-summary.html[is.codion.swing.common.model.component.table]
+* {url-javadoc}/is/codion/swing/common/model/component/textfield/package-summary.html[is.codion.swing.common.model.component.textfield]
 * {url-javadoc}/is/codion/swing/common/model/worker/package-summary.html[is.codion.swing.common.model.worker]
 
 .Dependency graph
@@ -322,20 +322,20 @@ image::modules/swing/common-model/build/reports/dependency-graph/dependency-grap
 
 Common Swing UI classes.
 
-* {url-javadoc}/is/codion/swing/common/ui/package-summary.html[is.codion.swing.common.ui]
-* {url-javadoc}/is/codion/swing/common/ui/calendar/package-summary.html[is.codion.swing.common.ui.calendar]
-* {url-javadoc}/is/codion/swing/common/ui/checkbox/package-summary.html[is.codion.swing.common.ui.checkbox]
-* {url-javadoc}/is/codion/swing/common/ui/combobox/package-summary.html[is.codion.swing.common.ui.combobox]
+* {url-javadoc}/is/codion/swing/common/ui/component/calendar/package-summary.html[is.codion.swing.common.ui.component.calendar]
+* {url-javadoc}/is/codion/swing/common/ui/component/checkbox/package-summary.html[is.codion.swing.common.ui.component.checkbox]
+* {url-javadoc}/is/codion/swing/common/ui/component/combobox/package-summary.html[is.codion.swing.common.ui.component.combobox]
+* {url-javadoc}/is/codion/swing/common/ui/component/panel/package-summary.html[is.codion.swing.common.ui.component.panel]
+* {url-javadoc}/is/codion/swing/common/ui/component/slider/package-summary.html[is.codion.swing.common.ui.component.slider]
+* {url-javadoc}/is/codion/swing/common/ui/component/spinner/package-summary.html[is.codion.swing.common.ui.component.spinner]
+* {url-javadoc}/is/codion/swing/common/ui/component/table/package-summary.html[is.codion.swing.common.ui.component.table]
+* {url-javadoc}/is/codion/swing/common/ui/component/textfield/package-summary.html[is.codion.swing.common.ui.component.textfield]
 * {url-javadoc}/is/codion/swing/common/ui/component/package-summary.html[is.codion.swing.common.ui.component]
 * {url-javadoc}/is/codion/swing/common/ui/control/package-summary.html[is.codion.swing.common.ui.control]
 * {url-javadoc}/is/codion/swing/common/ui/dialog/package-summary.html[is.codion.swing.common.ui.dialog]
 * {url-javadoc}/is/codion/swing/common/ui/icons/package-summary.html[is.codion.swing.common.ui.icons]
 * {url-javadoc}/is/codion/swing/common/ui/layout/package-summary.html[is.codion.swing.common.ui.layout]
-* {url-javadoc}/is/codion/swing/common/ui/panel/package-summary.html[is.codion.swing.common.ui.panel]
-* {url-javadoc}/is/codion/swing/common/ui/slider/package-summary.html[is.codion.swing.common.ui.slider]
-* {url-javadoc}/is/codion/swing/common/ui/spinner/package-summary.html[is.codion.swing.common.ui.spinner]
-* {url-javadoc}/is/codion/swing/common/ui/table/package-summary.html[is.codion.swing.common.ui.table]
-* {url-javadoc}/is/codion/swing/common/ui/textfield/package-summary.html[is.codion.swing.common.ui.textfield]
+* {url-javadoc}/is/codion/swing/common/ui/package-summary.html[is.codion.swing.common.ui]
 
 .Dependency graph
 [%collapsible]

@@ -10,7 +10,7 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.swing.common.model.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
 import is.codion.swing.framework.tools.metadata.MetaDataModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 

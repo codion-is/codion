@@ -14,7 +14,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.DefaultEntitySearchModel;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
@@ -28,13 +28,13 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
+import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.textfield.TextComponents;
+import is.codion.swing.common.ui.component.textfield.TextFieldHint;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.table.FilteredTable;
-import is.codion.swing.common.ui.textfield.TextComponents;
-import is.codion.swing.common.ui.textfield.TextFieldHint;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
@@ -76,8 +76,8 @@ import java.util.function.Function;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.darker;
+import static is.codion.swing.common.ui.component.textfield.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.textfield.TextComponents.selectAllOnFocusGained;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 

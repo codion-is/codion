@@ -10,9 +10,9 @@ import is.codion.framework.demos.chinook.ui.MinutesSecondsPanelValue.MinutesSeco
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.ComponentValues;
+import is.codion.swing.common.ui.component.textfield.BigDecimalField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.DefaultEntityComponentFactory;

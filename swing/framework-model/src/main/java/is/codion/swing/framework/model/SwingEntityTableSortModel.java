@@ -7,7 +7,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.swing.common.model.table.AbstractTableSortModel;
+import is.codion.swing.common.model.component.table.AbstractTableSortModel;
 
 import java.util.Comparator;
 

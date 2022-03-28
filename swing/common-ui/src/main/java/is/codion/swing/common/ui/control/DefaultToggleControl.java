@@ -6,8 +6,8 @@ package is.codion.swing.common.ui.control;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
-import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.model.component.checkbox.NullableToggleButtonModel;
+import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
 
 import javax.swing.Action;
 import javax.swing.ButtonModel;

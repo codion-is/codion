@@ -6,8 +6,8 @@ package is.codion.swing.framework.server.monitor.ui;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.textfield.TextComponents;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.TextComponents;
 import is.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -29,8 +29,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import static is.codion.swing.common.ui.component.panel.Panels.createWestCenterPanel;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.panel.Panels.createWestCenterPanel;
 import static javax.swing.SwingConstants.CENTER;
 import static javax.swing.SwingConstants.RIGHT;
 

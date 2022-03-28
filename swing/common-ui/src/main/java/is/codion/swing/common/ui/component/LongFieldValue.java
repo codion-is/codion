@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.LongField;
 
 final class LongFieldValue extends AbstractTextComponentValue<Long, LongField> {
 

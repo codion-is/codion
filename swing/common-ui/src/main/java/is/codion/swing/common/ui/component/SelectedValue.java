@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.model.combobox.FilteredComboBoxModel;
-import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;

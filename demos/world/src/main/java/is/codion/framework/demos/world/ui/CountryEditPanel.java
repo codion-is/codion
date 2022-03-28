@@ -5,7 +5,7 @@ import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.CountryEditModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.textfield.DoubleField;
+import is.codion.swing.common.ui.component.textfield.DoubleField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -17,8 +17,8 @@ import javax.swing.SwingConstants;
 
 import static is.codion.swing.common.ui.component.Components.label;
 import static is.codion.swing.common.ui.component.Components.panel;
+import static is.codion.swing.common.ui.component.panel.Panels.createEastButtonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static is.codion.swing.common.ui.panel.Panels.createEastButtonPanel;
 
 final class CountryEditPanel extends EntityEditPanel {
 

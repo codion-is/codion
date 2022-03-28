@@ -6,7 +6,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
 
 import java.util.Collection;
 import java.util.function.Supplier;

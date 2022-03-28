@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.textfield.TemporalInputPanel;
-import is.codion.swing.common.ui.textfield.TemporalInputPanel.CalendarProvider;
+import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
+import is.codion.swing.common.ui.component.textfield.TemporalInputPanel.CalendarProvider;
 
 import java.time.temporal.Temporal;
 

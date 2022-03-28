@@ -5,7 +5,7 @@ package is.codion.framework.demos.manual.store.ui;
 
 import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
-import is.codion.swing.common.ui.panel.Panels;
+import is.codion.swing.common.ui.component.panel.Panels;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;

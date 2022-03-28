@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.textfield.BigDecimalField;
+import is.codion.swing.common.ui.component.textfield.BigDecimalField;
 
 import java.math.BigDecimal;
 

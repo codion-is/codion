@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.swing.common.ui.component.AbstractComponentValue;
-import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.IntegerField;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;

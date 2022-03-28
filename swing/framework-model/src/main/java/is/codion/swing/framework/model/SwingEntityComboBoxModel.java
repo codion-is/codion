@@ -21,7 +21,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.EntityEditEvents;
-import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;

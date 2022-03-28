@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.slider.SliderMouseWheelListener;
+import is.codion.swing.common.ui.component.slider.SliderMouseWheelListener;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JSlider;

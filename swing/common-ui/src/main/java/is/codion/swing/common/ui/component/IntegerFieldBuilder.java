@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.IntegerField;
 
 /**
  * A builder {@link IntegerField}.

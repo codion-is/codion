@@ -5,10 +5,10 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.event.Event;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.textfield.BigDecimalField;
-import is.codion.swing.common.ui.textfield.DoubleField;
-import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.BigDecimalField;
+import is.codion.swing.common.ui.component.textfield.DoubleField;
+import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.LongField;
 
 import org.junit.jupiter.api.Test;
 

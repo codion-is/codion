@@ -3,8 +3,8 @@
  */
 package is.codion.framework.demos.petstore.ui;
 
+import is.codion.swing.common.ui.component.panel.Panels;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.panel.Panels;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;

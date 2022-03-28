@@ -11,7 +11,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.ComponentValues;
-import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.IntegerField;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

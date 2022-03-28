@@ -10,9 +10,9 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
-import is.codion.swing.common.model.table.AbstractFilteredTableModel;
-import is.codion.swing.common.model.table.AbstractTableSortModel;
-import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.component.table.AbstractTableSortModel;
+import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

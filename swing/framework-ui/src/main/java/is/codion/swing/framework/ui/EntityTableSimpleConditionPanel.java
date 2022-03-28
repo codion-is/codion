@@ -4,7 +4,7 @@ import is.codion.common.Conjunction;
 import is.codion.common.event.EventListener;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityTableConditionModel;
-import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
 import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;

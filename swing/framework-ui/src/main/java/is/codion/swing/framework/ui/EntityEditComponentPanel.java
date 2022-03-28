@@ -27,11 +27,12 @@ import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.TextInputPanelBuilder;
+import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.component.textfield.TemporalField;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.TemporalField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
@@ -608,7 +609,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
 
   /**
    * Creates a builder for check boxes. If {@link CheckBoxBuilder#nullable(boolean)} is set to true,
-   * a {@link is.codion.swing.common.ui.checkbox.NullableCheckBox} is built.
+   * a {@link NullableCheckBox} is built.
    * @param attribute the attribute for which to build a check-box
    * @return a check-box builder
    */
