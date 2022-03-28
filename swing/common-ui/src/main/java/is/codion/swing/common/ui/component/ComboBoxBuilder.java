@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.component.combobox.Completion;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;

@@ -6,11 +6,11 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.item.Item;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.combobox.ComboBoxMouseWheelListener;
-import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.DefaultComboBoxBuilder.CopyEditorActionsListener;
 import is.codion.swing.common.ui.component.DefaultComboBoxBuilder.SteppedComboBoxUI;
+import is.codion.swing.common.ui.component.combobox.ComboBoxMouseWheelListener;
+import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.JComboBox;
@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static is.codion.swing.common.ui.textfield.TextComponents.getPreferredTextFieldHeight;
+import static is.codion.swing.common.ui.component.textfield.TextComponents.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>>

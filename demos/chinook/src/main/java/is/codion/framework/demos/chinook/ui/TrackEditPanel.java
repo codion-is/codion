@@ -16,9 +16,9 @@ import java.awt.BorderLayout;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.panel;
+import static is.codion.swing.common.ui.component.panel.Panels.createEastButtonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
-import static is.codion.swing.common.ui.panel.Panels.createEastButtonPanel;
 
 public final class TrackEditPanel extends EntityEditPanel {
 

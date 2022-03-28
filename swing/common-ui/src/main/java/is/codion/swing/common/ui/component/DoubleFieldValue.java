@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.textfield.DoubleField;
+import is.codion.swing.common.ui.component.textfield.DoubleField;
 
 final class DoubleFieldValue extends AbstractTextComponentValue<Double, DoubleField> {
 

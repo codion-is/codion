@@ -4,14 +4,14 @@ import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Sizes;
-import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.icons.Logos;
+import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;

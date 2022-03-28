@@ -12,15 +12,15 @@ import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.textfield.MemoryUsageField;
+import is.codion.swing.common.ui.component.textfield.TextComponents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LookAndFeelSelectionDialogBuilder;
-import is.codion.swing.common.ui.icons.Logos;
+import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.textfield.MemoryUsageField;
-import is.codion.swing.common.ui.textfield.TextComponents;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import org.jfree.chart.ChartFactory;

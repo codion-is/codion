@@ -6,9 +6,9 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.event.Event;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
-import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.model.component.checkbox.NullableToggleButtonModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
 
 import org.junit.jupiter.api.Test;
 

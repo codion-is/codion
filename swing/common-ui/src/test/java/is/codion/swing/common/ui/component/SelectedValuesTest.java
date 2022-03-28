@@ -6,7 +6,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.event.Event;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 
 import org.junit.jupiter.api.Test;
 

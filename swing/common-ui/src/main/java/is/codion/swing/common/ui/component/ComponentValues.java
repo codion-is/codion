@@ -4,15 +4,15 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
-import is.codion.swing.common.ui.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.textfield.BigDecimalField;
-import is.codion.swing.common.ui.textfield.DoubleField;
-import is.codion.swing.common.ui.textfield.FileInputPanel;
-import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.textfield.LongField;
-import is.codion.swing.common.ui.textfield.TemporalField;
-import is.codion.swing.common.ui.textfield.TemporalInputPanel;
-import is.codion.swing.common.ui.textfield.TextInputPanel;
+import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.component.textfield.BigDecimalField;
+import is.codion.swing.common.ui.component.textfield.DoubleField;
+import is.codion.swing.common.ui.component.textfield.FileInputPanel;
+import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.TemporalField;
+import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
+import is.codion.swing.common.ui.component.textfield.TextInputPanel;
 
 import javax.swing.JComboBox;
 import javax.swing.JList;

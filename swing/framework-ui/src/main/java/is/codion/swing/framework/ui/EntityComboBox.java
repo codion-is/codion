@@ -9,14 +9,14 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityComboBoxModel;
-import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.DefaultComboBoxBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
+import is.codion.swing.common.ui.component.combobox.Completion;
+import is.codion.swing.common.ui.component.textfield.IntegerField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JComboBox;

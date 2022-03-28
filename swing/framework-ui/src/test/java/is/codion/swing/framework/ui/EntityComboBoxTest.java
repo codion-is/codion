@@ -10,7 +10,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.ComponentValues;
-import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.IntegerField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import org.junit.jupiter.api.Test;

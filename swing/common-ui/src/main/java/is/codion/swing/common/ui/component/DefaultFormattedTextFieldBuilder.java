@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.textfield.FieldFormatter;
+import is.codion.swing.common.ui.component.textfield.FieldFormatter;
 
 import javax.swing.JFormattedTextField;
 import java.text.ParseException;

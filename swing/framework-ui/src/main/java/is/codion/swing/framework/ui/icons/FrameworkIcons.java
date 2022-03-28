@@ -5,7 +5,7 @@ package is.codion.swing.framework.ui.icons;
 
 import is.codion.common.Configuration;
 import is.codion.common.properties.PropertyValue;
-import is.codion.swing.common.ui.icons.Logos;
+import is.codion.swing.common.ui.icon.Logos;
 
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;

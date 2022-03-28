@@ -14,7 +14,6 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
@@ -57,13 +56,13 @@ final class LoginPanel extends JPanel {
   private final JTextField usernameField = new JTextField(DEFAULT_FIELD_COLUMNS);
   private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
   private final Value<User> userValue = Value.value();
-  private final LoginValidator loginValidator;
+  private final LoginDialogBuilder.LoginValidator loginValidator;
   private final ImageIcon icon;
   private final Control okControl;
   private final Control cancelControl;
   private final State validatingState = State.state();
 
-  LoginPanel(User defaultUser, LoginValidator loginValidator,
+  LoginPanel(User defaultUser, LoginDialogBuilder.LoginValidator loginValidator,
              ImageIcon icon, JComponent southComponent) {
     this.icon = icon;
     this.okControl = Control.builder(this::onOkPressed)

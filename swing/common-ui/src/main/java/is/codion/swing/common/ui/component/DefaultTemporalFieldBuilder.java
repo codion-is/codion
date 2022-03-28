@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.DateTimeParser;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.textfield.TemporalField;
+import is.codion.swing.common.ui.component.textfield.TemporalField;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;

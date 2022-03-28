@@ -14,7 +14,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.LookAndFeelSelectionDialogBuilder;

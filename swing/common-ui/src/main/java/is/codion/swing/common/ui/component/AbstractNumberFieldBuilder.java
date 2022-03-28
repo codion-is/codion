@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.textfield.NumberField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import java.text.NumberFormat;
 

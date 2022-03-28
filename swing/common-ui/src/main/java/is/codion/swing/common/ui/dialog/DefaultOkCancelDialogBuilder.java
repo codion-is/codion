@@ -26,7 +26,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.dialog.DefaultComponentDialogBuilder.createDialog;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelDialogBuilder> implements OkCancelDialogBuilder {
@@ -141,7 +140,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
                     .build(), BorderLayout.SOUTH)
             .build();
 
-    JDialog dialog = createDialog(owner, title, icon, panel, size, locationRelativeTo, modal, resizable, onShown);
+    JDialog dialog = DefaultComponentDialogBuilder.createDialog(owner, title, icon, panel, size, locationRelativeTo, modal, resizable, onShown);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.addWindowListener(new WindowAdapter() {
       @Override

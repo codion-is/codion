@@ -4,11 +4,11 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.textfield.DocumentAdapter;
+import is.codion.swing.common.model.component.textfield.DocumentAdapter;
+import is.codion.swing.common.ui.component.textfield.SizedDocument;
+import is.codion.swing.common.ui.component.textfield.TextComponents;
+import is.codion.swing.common.ui.component.textfield.TextFieldHint;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.textfield.SizedDocument;
-import is.codion.swing.common.ui.textfield.TextComponents;
-import is.codion.swing.common.ui.textfield.TextFieldHint;
 
 import javax.swing.Action;
 import javax.swing.JTextField;

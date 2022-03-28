@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.model.textfield.DocumentAdapter;
-import is.codion.swing.common.ui.textfield.FileInputPanel;
+import is.codion.swing.common.model.component.textfield.DocumentAdapter;
+import is.codion.swing.common.ui.component.textfield.FileInputPanel;
 
 import java.io.File;
 import java.io.IOException;

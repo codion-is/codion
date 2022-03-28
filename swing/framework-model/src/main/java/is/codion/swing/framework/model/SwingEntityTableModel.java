@@ -29,9 +29,9 @@ import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.swing.common.model.table.AbstractFilteredTableModel;
-import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
-import is.codion.swing.common.model.table.TableSortModel;
+import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.TableSortModel;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;

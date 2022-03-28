@@ -5,18 +5,18 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.combobox.Completion;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.component.combobox.Completion;
+import is.codion.swing.common.ui.component.textfield.BigDecimalField;
+import is.codion.swing.common.ui.component.textfield.DoubleField;
+import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.TemporalField;
+import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
+import is.codion.swing.common.ui.component.textfield.TextInputPanel;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.icons.Logos;
-import is.codion.swing.common.ui.textfield.BigDecimalField;
-import is.codion.swing.common.ui.textfield.DoubleField;
-import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.textfield.LongField;
-import is.codion.swing.common.ui.textfield.TemporalField;
-import is.codion.swing.common.ui.textfield.TemporalInputPanel;
-import is.codion.swing.common.ui.textfield.TextInputPanel;
+import is.codion.swing.common.ui.icon.Logos;
 
 import org.junit.jupiter.api.Test;
 

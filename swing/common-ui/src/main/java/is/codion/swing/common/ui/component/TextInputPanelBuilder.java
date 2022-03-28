@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.textfield.TextInputPanel;
+import is.codion.swing.common.ui.component.textfield.TextInputPanel;
 
 import java.awt.Dimension;
 

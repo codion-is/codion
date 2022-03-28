@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.tools.explorer;
 
-import is.codion.swing.common.model.table.AbstractTableSortModel;
+import is.codion.swing.common.model.component.table.AbstractTableSortModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 
 final class SchemaSortModel extends AbstractTableSortModel<Schema, Integer> {

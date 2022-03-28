@@ -4,8 +4,8 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
-import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.model.component.checkbox.NullableToggleButtonModel;
+import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
 
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;

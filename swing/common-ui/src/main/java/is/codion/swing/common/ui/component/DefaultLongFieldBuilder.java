@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.LongField;
 
 import java.text.NumberFormat;
 
