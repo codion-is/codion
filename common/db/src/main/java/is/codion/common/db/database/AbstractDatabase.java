@@ -66,7 +66,12 @@ public abstract class AbstractDatabase implements Database {
   public final Connection createConnection(User user) throws DatabaseException {
     DriverManager.setLoginTimeout(getLoginTimeout());
     try {
-      return connectionProvider.getConnection(user, jdbcUrl);
+      Connection connection = connectionProvider.getConnection(user, jdbcUrl);
+      if (Database.TRANSACTION_ISOLATION.isNotNull()) {
+        connection.setTransactionIsolation(Database.TRANSACTION_ISOLATION.get());
+      }
+
+      return connection;
     }
     catch (SQLException e) {
       if (isAuthenticationException(e)) {
