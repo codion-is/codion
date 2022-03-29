@@ -3,6 +3,7 @@
  */
 package is.codion.common.db.database;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
@@ -70,5 +71,18 @@ public final class AbstractDatabaseTest {
     assertEquals("offset 5", database.getLimitOffsetClause(null, 5));
     assertEquals("limit 10", database.getLimitOffsetClause(10, null));
     assertEquals("limit 10 offset 5", database.getLimitOffsetClause(10, 5));
+  }
+
+  @Test
+  void transactionIsolation() throws DatabaseException, SQLException {
+    User sa = User.user("sa");
+    Connection connection = database.createConnection(sa);
+    assertEquals(Connection.TRANSACTION_READ_COMMITTED, connection.getTransactionIsolation());
+    connection.close();
+    Database.TRANSACTION_ISOLATION.set(Connection.TRANSACTION_SERIALIZABLE);
+    connection = database.createConnection(sa);
+    assertEquals(Connection.TRANSACTION_SERIALIZABLE, connection.getTransactionIsolation());
+    connection.close();
+    Database.TRANSACTION_ISOLATION.set(null);
   }
 }

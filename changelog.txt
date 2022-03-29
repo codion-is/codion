@@ -7992,3 +7992,5 @@
   LookAndFeelSelectionDialogBuilder along with Dialogs.lookAndFeelSelectionDialog() added
   swing.common.model, swing.common.ui restructured, packages for specific components moved under component package
   swing.common.ui.icons package renamed icon
+  Database.TRANSACTION_ISOLATION configuration value added
+  AbstractDatabase.createConnection() now sets the transaction isolation if specified

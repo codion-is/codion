@@ -77,11 +77,18 @@ public interface Database extends ConnectionFactory {
   PropertyValue<Boolean> SELECT_FOR_UPDATE_NOWAIT = Configuration.booleanValue("codion.db.selectForUpdateNowait", true);
 
   /**
-   * Specifies the default login timeout (in seconds).
+   * Specifies the default login timeout (in seconds).<br>
    * Value type: Integer<br>
    * Default value: 2
    */
   PropertyValue<Integer> LOGIN_TIMEOUT = Configuration.integerValue("codion.db.loginTimeout", 2);
+
+  /**
+   * Specifies the transaction isolation to set for created connections.<br>
+   * Value type: Integer<br>
+   * Default value: null
+   */
+  PropertyValue<Integer> TRANSACTION_ISOLATION = Configuration.integerValue("codion.db.transactionIsolation");
 
   /**
    * The constant used to denote the username value in the connection properties
