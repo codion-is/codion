@@ -31,7 +31,7 @@ public final class TestDomain extends DefaultDomain {
             primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
                     .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
-                    .searchProperty().preferredColumnWidth(120).maximumLength(14).nullable(false),
+                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset()

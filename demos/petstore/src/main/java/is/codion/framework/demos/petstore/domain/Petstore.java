@@ -166,12 +166,12 @@ public final class Petstore extends DefaultDomain {
             primaryKeyProperty(SellerContactInfo.ID)
                     .columnName("contactinfoid"),
             columnProperty(SellerContactInfo.FIRST_NAME, SellerContactInfo.FIRST_NAME.getName())
-                    .searchProperty()
+                    .searchProperty(true)
                     .columnName("firstname")
                     .maximumLength(24)
                     .nullable(false),
             columnProperty(SellerContactInfo.LAST_NAME, SellerContactInfo.LAST_NAME.getName())
-                    .searchProperty()
+                    .searchProperty(true)
                     .columnName("lastname")
                     .maximumLength(24)
                     .nullable(false),

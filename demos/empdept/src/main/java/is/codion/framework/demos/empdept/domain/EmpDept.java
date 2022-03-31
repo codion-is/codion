@@ -145,7 +145,7 @@ public final class EmpDept extends DefaultDomain {
             primaryKeyProperty(Employee.ID, "Employee no.")
                     .beanProperty("id"),
             columnProperty(Employee.NAME, "Name")
-                    .searchProperty()
+                    .searchProperty(true)
                     .maximumLength(10)
                     .nullable(false)
                     .beanProperty("name"),

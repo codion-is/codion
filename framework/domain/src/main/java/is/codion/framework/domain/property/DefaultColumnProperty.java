@@ -389,11 +389,11 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public final B searchProperty() {
-      if (!attribute.isString()) {
+    public final B searchProperty(boolean searchProperty) {
+      if (searchProperty && !attribute.isString()) {
         throw new IllegalStateException("Search properties must be String based: " + attribute);
       }
-      this.searchProperty = true;
+      this.searchProperty = searchProperty;
       return (B) this;
     }
 

@@ -244,7 +244,7 @@ public interface EntityDefinition {
   /**
    * Returns the attributes to search by when searching for entities of this type by a string value
    * @return the attributes to use when searching by string
-   * @see ColumnProperty.Builder#searchProperty()
+   * @see ColumnProperty.Builder#searchProperty(boolean)
    */
   Collection<Attribute<String>> getSearchAttributes();
 

@@ -68,7 +68,7 @@ public final class ClientTutorial {
       define(Artist.TYPE,
               primaryKeyProperty(Artist.ID),
               columnProperty(Artist.NAME, "Name")
-                      .searchProperty().nullable(false).maximumLength(120),
+                      .searchProperty(true).nullable(false).maximumLength(120),
               subqueryProperty(Artist.NUMBER_OF_ALBUMS, "Albums",
                       "select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid"))

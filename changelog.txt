@@ -7996,3 +7996,4 @@
   AbstractDatabase.createConnection() now sets the transaction isolation if specified
   DefaultEntityModel.getForeignKeySearchModel() now uses computeIfAbsent(), editModelValues, valueEditEvents, valueChangeEvents and defaultValueSuppliers now ConcurrentHashMap
   SwingEntityEditModel.getForeignKeyComboBoxModel() and getComboBoxModel() now use computeIfAbsent()
+  ColumnProperty.Builder.searchProperty() boolean parameter added, for consistency
