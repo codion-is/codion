@@ -90,7 +90,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds the edit model values created via {@link #value(Attribute)}
    */
-  private final Map<Attribute<?>, Value<?>> editModelValues = new HashMap<>();
+  private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
 
   /**
    * Contains true if values should persist for the given property when the model is cleared
@@ -121,17 +121,17 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds events signaling value changes made via {@link #put(Attribute, Object)} or {@link #remove(Attribute)}
    */
-  private final Map<Attribute<?>, Event<?>> valueEditEventMap = new HashMap<>();
+  private final Map<Attribute<?>, Event<?>> valueEditEvents = new ConcurrentHashMap<>();
 
   /**
    * Holds events signaling value changes in the underlying {@link Entity}
    */
-  private final Map<Attribute<?>, Event<?>> valueChangeEventMap = new HashMap<>();
+  private final Map<Attribute<?>, Event<?>> valueChangeEvents = new ConcurrentHashMap<>();
 
   /**
    * Holds the default value suppliers for attributes
    */
-  private final Map<Attribute<?>, Supplier<?>> defaultValueSupplierMap = new HashMap<>();
+  private final Map<Attribute<?>, Supplier<?>> defaultValueSuppliers = new ConcurrentHashMap<>();
 
   /**
    * A state indicating whether the entity being edited is new
@@ -207,12 +207,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final <T> void setDefaultValueSupplier(Attribute<T> attribute, Supplier<T> valueSupplier) {
     requireNonNull(valueSupplier, "valueSupplier");
     getEntityDefinition().getProperty(attribute);
-    defaultValueSupplierMap.put(attribute, valueSupplier);
+    defaultValueSuppliers.put(attribute, valueSupplier);
   }
 
   @Override
   public final void setModifiedSupplier(Supplier<Boolean> modifiedSupplier) {
-    this.modifiedSupplier = requireNonNull(modifiedSupplier, "isModifiedSupplier");
+    this.modifiedSupplier = requireNonNull(modifiedSupplier, "modifiedSupplier");
   }
 
   @Override
@@ -634,22 +634,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final EntitySearchModel getForeignKeySearchModel(ForeignKey foreignKey) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);
-    synchronized (entitySearchModels) {
-      EntitySearchModel searchModel = entitySearchModels.get(foreignKey);
-      if (searchModel == null) {
-        searchModel = createForeignKeySearchModel(foreignKey);
-        entitySearchModels.put(foreignKey, searchModel);
-      }
-
-      return searchModel;
-    }
+    return entitySearchModels.computeIfAbsent(foreignKey, k -> createForeignKeySearchModel(foreignKey));
   }
 
   @Override
   public final <T> Value<T> value(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
-    return (Value<T>) editModelValues.computeIfAbsent(attribute,
-            valueAttribute -> new EditModelValue<>(this, attribute));
+    return (Value<T>) editModelValues.computeIfAbsent(attribute, k -> new EditModelValue<>(this, attribute));
   }
 
   @Override
@@ -695,8 +686,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void removeValueEditListener(Attribute<T> attribute, EventDataListener<T> listener) {
-    if (valueEditEventMap.containsKey(attribute)) {
-      ((Event<T>) valueEditEventMap.get(attribute)).removeDataListener(listener);
+    if (valueEditEvents.containsKey(attribute)) {
+      ((Event<T>) valueEditEvents.get(attribute)).removeDataListener(listener);
     }
   }
 
@@ -707,8 +698,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void removeValueListener(Attribute<T> attribute, EventDataListener<T> listener) {
-    if (valueChangeEventMap.containsKey(attribute)) {
-      ((Event<T>) valueChangeEventMap.get(attribute)).removeDataListener(listener);
+    if (valueChangeEvents.containsKey(attribute)) {
+      ((Event<T>) valueChangeEvents.get(attribute)).removeDataListener(listener);
     }
   }
 
@@ -999,12 +990,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private <T> Event<T> getValueEditEvent(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
-    return (Event<T>) valueEditEventMap.computeIfAbsent(attribute, k -> Event.event());
+    return (Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
   private <T> Event<T> getValueChangeEvent(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
-    return (Event<T>) valueChangeEventMap.computeIfAbsent(attribute, k -> Event.event());
+    return (Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
   private void initializePersistentValues() {
@@ -1058,7 +1049,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       return entity.get(property.getAttribute());
     }
 
-    return (T) defaultValueSupplierMap.computeIfAbsent(property.getAttribute(), a -> property::getDefaultValue).get();
+    return (T) defaultValueSuppliers.computeIfAbsent(property.getAttribute(), k -> property::getDefaultValue).get();
   }
 
   private void bindEventsInternal() {
@@ -1095,7 +1086,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private <T> void onValueChange(Attribute<T> attribute, T value) {
     updateEntityStates();
-    Event<T> changeEvent = (Event<T>) valueChangeEventMap.get(attribute);
+    Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
     if (changeEvent != null) {
       changeEvent.onEvent(value);
     }
