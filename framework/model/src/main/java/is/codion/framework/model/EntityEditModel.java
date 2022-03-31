@@ -180,7 +180,7 @@ public interface EntityEditModel {
 
   /**
    * Returns a Value based on {@code attribute} in this edit model, note that
-   * subsequent calls for the same attribute may return the same value.
+   * subsequent calls for the same attribute return the same value instance.
    * @param attribute the attribute
    * @param <T> the value type
    * @return a Value based on the given edit model value

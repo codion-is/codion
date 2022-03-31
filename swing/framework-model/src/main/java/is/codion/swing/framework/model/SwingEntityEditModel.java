@@ -123,16 +123,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(ForeignKey foreignKey) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);
-    synchronized (comboBoxModels) {
-      SwingEntityComboBoxModel comboBoxModel = (SwingEntityComboBoxModel) comboBoxModels.get(foreignKey);
-      if (comboBoxModel == null) {
-        comboBoxModel = createForeignKeyComboBoxModel(foreignKey);
-        refreshingObserver.addState(comboBoxModel.getRefreshingObserver());
-        comboBoxModels.put(foreignKey, comboBoxModel);
-      }
-
-      return comboBoxModel;
-    }
+    return (SwingEntityComboBoxModel) comboBoxModels.computeIfAbsent(foreignKey,
+            k -> createAndInitializeForeignKeyComboBoxModel(foreignKey));
   }
 
   /**
@@ -144,16 +136,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public final <T> FilteredComboBoxModel<T> getComboBoxModel(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
-    synchronized (comboBoxModels) {
-      FilteredComboBoxModel<?> comboBoxModel = comboBoxModels.get(attribute);
-      if (comboBoxModel == null) {
-        comboBoxModel = createComboBoxModel(attribute);
-        comboBoxModels.put(attribute, comboBoxModel);
-        refreshingObserver.addState(comboBoxModel.getRefreshingObserver());
-      }
-
-      return (FilteredComboBoxModel<T>) comboBoxModel;
-    }
+    return (FilteredComboBoxModel<T>) comboBoxModels.computeIfAbsent(attribute,
+            k -> createAndInitializeAttributeComboBoxModel(attribute));
   }
 
   /**
@@ -167,9 +151,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   /**
    * Creates a default {@link SwingEntityComboBoxModel} for the given attribute, override to provide
    * a specific {@link SwingEntityComboBoxModel} (filtered for example) for attributes.
-   * This method is called when creating a {@link SwingEntityComboBoxModel} for entity attributes, both
-   * for the edit fields used when editing a single record and the edit field used
-   * when updating multiple records.
+   * This method is called when creating a {@link SwingEntityComboBoxModel} for foreign keys, both
+   * for the edit fields used when editing a single record and the edit field used when updating multiple records.
    * This default implementation returns a sorted {@link SwingEntityComboBoxModel} with the default nullValueItem
    * if the underlying attribute is nullable.
    * If the foreign key property has select attributes defined, those are set in the combo box model.
@@ -292,5 +275,19 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
         put(foreignKey, null);
       }
     });
+  }
+
+  private FilteredComboBoxModel<?> createAndInitializeForeignKeyComboBoxModel(ForeignKey foreignKey) {
+    SwingEntityComboBoxModel comboBoxModel = createForeignKeyComboBoxModel(foreignKey);
+    refreshingObserver.addState(comboBoxModel.getRefreshingObserver());
+
+    return comboBoxModel;
+  }
+
+  private <T> FilteredComboBoxModel<?> createAndInitializeAttributeComboBoxModel(Attribute<T> attribute) {
+    FilteredComboBoxModel<T> comboBoxModel = createComboBoxModel(attribute);
+    refreshingObserver.addState(comboBoxModel.getRefreshingObserver());
+
+    return comboBoxModel;
   }
 }

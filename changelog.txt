@@ -7994,3 +7994,5 @@
   swing.common.ui.icons package renamed icon
   Database.TRANSACTION_ISOLATION configuration value added
   AbstractDatabase.createConnection() now sets the transaction isolation if specified
+  DefaultEntityModel.getForeignKeySearchModel() now uses computeIfAbsent(), editModelValues, valueEditEvents, valueChangeEvents and defaultValueSuppliers now ConcurrentHashMap
+  SwingEntityEditModel.getForeignKeyComboBoxModel() and getComboBoxModel() now use computeIfAbsent()
