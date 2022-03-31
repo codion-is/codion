@@ -258,11 +258,12 @@ public interface ColumnProperty<T> extends Property<T> {
     B selectable(boolean selectable);
 
     /**
-     * Specifies that this property is included when searching for an entity by a string value.
+     * Specifies whether this property should be included when searching for an entity by a string value.
      * Only applicable to properties of type {@link java.sql.Types#VARCHAR}.
+     * @param searchProperty true if this property is a search property
      * @throws IllegalStateException in case this property type is not String
      * @return this instance
      */
-    B searchProperty();
+    B searchProperty(boolean searchProperty);
   }
 }

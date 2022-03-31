@@ -87,7 +87,7 @@ public final class EmpDeptMinimalApp {
       define(Department.TYPE,
               primaryKeyProperty(Department.DEPTNO),
               columnProperty(Department.DEPTNO, "Department name")
-                      .searchProperty()
+                      .searchProperty(true)
                       .nullable(false)
                       .maximumLength(14),
               columnProperty(Department.LOC, "Department location")
@@ -103,7 +103,7 @@ public final class EmpDeptMinimalApp {
       define(Employee.TYPE,
               primaryKeyProperty(Employee.EMPNO),
               columnProperty(Employee.ENAME, "Name")
-                      .searchProperty()
+                      .searchProperty(true)
                       .nullable(false)
                       .maximumLength(10),
               columnProperty(Employee.DEPTNO)

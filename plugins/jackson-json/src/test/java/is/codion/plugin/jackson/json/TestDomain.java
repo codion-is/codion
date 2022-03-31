@@ -67,7 +67,7 @@ public final class TestDomain extends DefaultDomain {
             primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
                     .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
-                    .searchProperty().preferredColumnWidth(120).maximumLength(14).nullable(false),
+                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13),
             columnProperty(DEPARTMENT_LOGO))
@@ -92,13 +92,13 @@ public final class TestDomain extends DefaultDomain {
     define(T_EMP,
             primaryKeyProperty(EMP_ID, EMP_ID.getName()),
             columnProperty(EMP_NAME, EMP_NAME.getName())
-                    .searchProperty().maximumLength(10).nullable(false),
+                    .searchProperty(true).maximumLength(10).nullable(false),
             columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName()),
             itemProperty(EMP_JOB, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .searchProperty(),
+                    .searchProperty(true),
             columnProperty(EMP_SALARY, EMP_SALARY.getName())
                     .nullable(false).range(1000, 10000).maximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())

@@ -35,11 +35,11 @@ public final class PetClinic extends DefaultDomain {
     define(Vet.TYPE,
             primaryKeyProperty(Vet.ID),
             columnProperty(Vet.FIRST_NAME, "First name")
-                    .searchProperty()
+                    .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(Vet.LAST_NAME, "Last name")
-                    .searchProperty()
+                    .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false))
             .keyGenerator(identity())
@@ -54,7 +54,7 @@ public final class PetClinic extends DefaultDomain {
     define(Specialty.TYPE,
             primaryKeyProperty(Specialty.ID),
             columnProperty(Specialty.NAME, "Name")
-                    .searchProperty()
+                    .searchProperty(true)
                     .maximumLength(80)
                     .nullable(false))
             .keyGenerator(identity())
@@ -80,7 +80,7 @@ public final class PetClinic extends DefaultDomain {
     define(PetType.TYPE,
             primaryKeyProperty(PetType.ID),
             columnProperty(PetType.NAME, "Name")
-                    .searchProperty()
+                    .searchProperty(true)
                     .maximumLength(80)
                     .nullable(false))
             .keyGenerator(identity())
@@ -94,11 +94,11 @@ public final class PetClinic extends DefaultDomain {
     define(Owner.TYPE,
             primaryKeyProperty(Owner.ID),
             columnProperty(Owner.FIRST_NAME, "First name")
-                    .searchProperty()
+                    .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(Owner.LAST_NAME, "Last name")
-                    .searchProperty()
+                    .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(Owner.ADDRESS, "Address")
@@ -118,7 +118,7 @@ public final class PetClinic extends DefaultDomain {
     define(Pet.TYPE,
             primaryKeyProperty(Pet.ID),
             columnProperty(Pet.NAME, "Name")
-                    .searchProperty()
+                    .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(Pet.BIRTH_DATE, "Birth date")

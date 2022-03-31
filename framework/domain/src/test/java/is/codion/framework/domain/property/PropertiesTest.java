@@ -185,7 +185,7 @@ public final class PropertiesTest {
 
   @Test
   void searchPropertyNonVarchar() {
-    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("property")).searchProperty());
+    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("property")).searchProperty(true));
   }
 
   @Test

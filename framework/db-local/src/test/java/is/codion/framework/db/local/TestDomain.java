@@ -102,7 +102,7 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false)
                     .beanProperty("id"),
             columnProperty(Department.DNAME, Department.DNAME.getName())
-                    .searchProperty().preferredColumnWidth(120).maximumLength(14).nullable(false)
+                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false)
                     .beanProperty("name"),
             columnProperty(Department.LOC, Department.LOC.getName())
                     .preferredColumnWidth(150).maximumLength(13)
@@ -148,13 +148,13 @@ public final class TestDomain extends DefaultDomain {
     define(Employee.TYPE,
             primaryKeyProperty(Employee.ID, Employee.ID.getName()),
             columnProperty(Employee.NAME, Employee.NAME.getName())
-                    .searchProperty().maximumLength(10).nullable(false),
+                    .searchProperty(true).maximumLength(10).nullable(false),
             columnProperty(Employee.DEPARTMENT)
                     .nullable(false),
             foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName()),
             itemProperty(Employee.JOB, Employee.JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .searchProperty(),
+                    .searchProperty(true),
             columnProperty(Employee.SALARY, Employee.SALARY.getName())
                     .nullable(false).range(1000, 10000).maximumFractionDigits(2),
             columnProperty(Employee.COMMISSION, Employee.COMMISSION.getName())

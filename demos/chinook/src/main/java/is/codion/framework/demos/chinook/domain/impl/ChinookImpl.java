@@ -54,7 +54,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     define(Artist.TYPE, "chinook.artist",
             primaryKeyProperty(Artist.ID),
             columnProperty(Artist.NAME)
-                    .searchProperty()
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160),
@@ -81,7 +81,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .selectAttributes(Artist.NAME)
                     .preferredColumnWidth(160),
             columnProperty(Album.TITLE)
-                    .searchProperty()
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(160)
                     .preferredColumnWidth(160),
@@ -102,11 +102,11 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     define(Employee.TYPE, "chinook.employee",
             primaryKeyProperty(Employee.ID),
             columnProperty(Employee.LASTNAME)
-                    .searchProperty()
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(20),
             columnProperty(Employee.FIRSTNAME)
-                    .searchProperty()
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(20),
             columnProperty(Employee.TITLE)
@@ -135,7 +135,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Employee.FAX)
                     .maximumLength(24),
             columnProperty(Employee.EMAIL)
-                    .searchProperty()
+                    .searchProperty(true)
                     .maximumLength(60))
             .keyGenerator(identity())
             .orderBy(orderBy().ascending(Employee.LASTNAME, Employee.FIRSTNAME))
@@ -147,11 +147,11 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     define(Customer.TYPE, "chinook.customer",
             primaryKeyProperty(Customer.ID),
             columnProperty(Customer.LASTNAME)
-                    .searchProperty()
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(20),
             columnProperty(Customer.FIRSTNAME)
-                    .searchProperty()
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(40),
             columnProperty(Customer.COMPANY)
@@ -171,7 +171,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Customer.FAX)
                     .maximumLength(24),
             columnProperty(Customer.EMAIL)
-                    .searchProperty()
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(60),
             columnProperty(Customer.SUPPORTREP_ID),
@@ -188,7 +188,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     define(Genre.TYPE, "chinook.genre",
             primaryKeyProperty(Genre.ID),
             columnProperty(Genre.NAME)
-                    .searchProperty()
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160))
@@ -224,7 +224,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .preferredColumnWidth(160),
             // end::fetchDepth2[]
             columnProperty(Track.NAME)
-                    .searchProperty()
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(200)
                     .preferredColumnWidth(160),
@@ -322,7 +322,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     define(Playlist.TYPE, "chinook.playlist",
             primaryKeyProperty(Playlist.ID),
             columnProperty(Playlist.NAME)
-                    .searchProperty()
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160))

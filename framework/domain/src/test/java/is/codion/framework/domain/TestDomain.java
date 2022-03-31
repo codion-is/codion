@@ -220,7 +220,7 @@ public final class TestDomain extends DefaultDomain {
                     .updatable(true).nullable(false)
                     .beanProperty("deptNo"),
             columnProperty(Department.NAME, Department.NAME.getName())
-                    .searchProperty()
+                    .searchProperty(true)
                     .preferredColumnWidth(120).maximumLength(14).nullable(false)
                     .beanProperty("name"),
             columnProperty(Department.LOCATION, Department.LOCATION.getName())
@@ -270,7 +270,7 @@ public final class TestDomain extends DefaultDomain {
                     .columnName("empno")
                     .beanProperty("id"),
             columnProperty(Employee.NAME, Employee.NAME.getName())
-                    .searchProperty()
+                    .searchProperty(true)
                     .columnName("ename").maximumLength(10).nullable(false)
                     .beanProperty("name"),
             columnProperty(Employee.DEPARTMENT)
@@ -281,7 +281,7 @@ public final class TestDomain extends DefaultDomain {
             itemProperty(Employee.JOB, Employee.JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .searchProperty()
+                    .searchProperty(true)
                     .beanProperty("job"),
             columnProperty(Employee.SALARY, Employee.SALARY.getName())
                     .nullable(false).range(1000, 10000).maximumFractionDigits(2)
