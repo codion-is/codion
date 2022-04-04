@@ -24,10 +24,13 @@ public final class SelectQueriesTest {
   void builder() {
     SelectQueries.Builder builder = queries.builder(testDomain.getEntities().getDefinition(Query.TYPE))
             .entitySelectQuery();
-    assertEquals("select empno, ename\nfrom scott.emp\norder by ename", builder.build());
+    assertEquals("select empno, ename\nfrom scott.emp e\norder by ename", builder.build());
 
     builder.columns("empno");
-    assertEquals("select empno\nfrom scott.emp\norder by ename", builder.build());
+    assertEquals("select empno\nfrom scott.emp e\norder by ename", builder.build());
+
+    builder.forUpdate(true);
+    assertEquals("select empno\nfrom scott.emp\norder by ename\nfor update nowait", builder.build());
 
     builder = queries.builder(testDomain.getEntities().getDefinition(QueryColumnsWhereClause.TYPE))
             .entitySelectQuery();
