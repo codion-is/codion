@@ -7962,3 +7962,4 @@
   DefaultEntityModel.getForeignKeySearchModel() now uses computeIfAbsent(), editModelValues, valueEditEvents, valueChangeEvents and defaultValueSuppliers now ConcurrentHashMap
   SwingEntityEditModel.getForeignKeyComboBoxModel() and getComboBoxModel() now use computeIfAbsent()
   ColumnProperty.Builder.searchProperty() boolean parameter added, for consistency
+  SelectQueries no longer sets the order by clause from the entity definition if no order by clause is specified in the condition, sometimes we don't really want/need to order the result

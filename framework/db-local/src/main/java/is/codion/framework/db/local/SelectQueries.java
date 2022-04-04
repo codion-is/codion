@@ -91,8 +91,8 @@ final class SelectQueries {
       if (groupBy == null) {
         groupBy(definition.getGroupByClause());
       }
-      if (orderBy == null) {
-        orderBy(getOrderByClause(condition.getOrderBy() == null ? definition.getOrderBy() : condition.getOrderBy()));
+      if (condition.getOrderBy() != null) {
+        orderBy(getOrderByClause(condition.getOrderBy()));
       }
       forUpdate(condition.isForUpdate());
       if (condition.getLimit() >= 0) {
