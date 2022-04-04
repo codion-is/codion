@@ -84,9 +84,7 @@ final class SelectQueries {
       if (!columnsClauseFromSelectQuery) {
         setColumns(condition);
       }
-      if (from == null) {
-        from(definition.getSelectTableName());
-      }
+      //default from clause is handled by getFrom()
       where(condition);
       if (groupBy == null) {
         groupBy(definition.getGroupByClause());

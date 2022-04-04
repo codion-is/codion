@@ -367,11 +367,11 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void query() {
-    define(Query.TYPE,
+    define(Query.TYPE, "scott.emp",
             columnProperty(Query.EMPNO),
             columnProperty(Query.ENAME))
             .orderBy(OrderBy.orderBy().descending(Query.ENAME))
-            .selectTableName("scott.emp")
+            .selectTableName("scott.emp e")
             .selectQuery(SelectQuery.builder()
                     .columns("empno, ename")
                     .orderBy("ename")
@@ -386,11 +386,10 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void queryColumnsWhereClause() {
-    define(QueryColumnsWhereClause.TYPE,
+    define(QueryColumnsWhereClause.TYPE, "scott.emp e",
             columnProperty(QueryColumnsWhereClause.EMPNO),
             columnProperty(QueryColumnsWhereClause.ENAME))
             .orderBy(OrderBy.orderBy().descending(QueryColumnsWhereClause.ENAME))
-            .selectTableName("scott.emp e")
             .selectQuery(SelectQuery.builder()
                     .columns("e.empno, e.ename")
                     .where("e.deptno > 10")
