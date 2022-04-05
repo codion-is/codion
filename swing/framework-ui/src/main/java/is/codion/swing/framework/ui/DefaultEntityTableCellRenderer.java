@@ -86,7 +86,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   @Override
   public Color getBackground(JTable table, int row, boolean selected) {
     if (selected) {
-      return table.getSelectionBackground();
+      return settings.getSelectionBackgroundColor(row);
     }
 
     return settings.getBackgroundColor(tableModel, property.getAttribute(), row, displayConditionState);
@@ -206,6 +206,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private Color alternateBackgroundColor;
     private Color alternateBackgroundColorSearch;
     private Color alternateBackgroundColorDoubleSearch;
+    private Color selectionBackground;
+    private Color alternateSelectionBackground;
     private Border focusedCellBorder;
 
     private UISettings(Border defaultCellBorder) {
@@ -216,29 +218,30 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private void configure() {
       foregroundColor = UIManager.getColor("Table.foreground");
       backgroundColor = UIManager.getColor("Table.background");
+      selectionBackground = UIManager.getColor("Table.selectionBackground");
       backgroundColorSearch = darker(backgroundColor, DARKENING_FACTOR);
       backgroundColorDoubleSearch = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
       alternateBackgroundColor = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
       alternateBackgroundColorSearch = darker(alternateBackgroundColor, DARKENING_FACTOR);
       alternateBackgroundColorDoubleSearch = darker(alternateBackgroundColor, DOUBLE_DARKENING_FACTOR);
+      alternateSelectionBackground = darker(selectionBackground, DARKENING_FACTOR);
       focusedCellBorder = createCompoundBorder(createLineBorder(foregroundColor, FOCUSED_CELL_BORDER_THICKNESS), defaultCellBorder);
     }
 
-    private Color getBackgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute, int row,
-                                     boolean indicateCondition) {
+    private Color getBackgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute,
+                                     int row, boolean indicateCondition) {
       boolean conditionEnabled = tableModel.getTableConditionModel().isConditionEnabled(attribute);
       boolean filterEnabled = tableModel.getTableConditionModel().isFilterEnabled(attribute);
       boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
       Color cellColor = tableModel.getBackgroundColor(row, attribute);
       if (showCondition) {
-        return getConditionEnabledColor(row, conditionEnabled, filterEnabled, cellColor);
+        return getConditionEnabledColor(row, conditionEnabled && filterEnabled, cellColor);
       }
       else if (cellColor != null) {
         return cellColor;
       }
-      else {
-        return row % 2 == 0 ? backgroundColor : alternateBackgroundColor;
-      }
+
+      return isEven(row) ? backgroundColor : alternateBackgroundColor;
     }
 
     private Color getForegroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute, int row) {
@@ -247,17 +250,22 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       return cellColor == null ? foregroundColor : cellColor;
     }
 
-    private Color getConditionEnabledColor(int row, boolean conditionEnabled,
-                                           boolean filterEnabled, Color cellColor) {
-      boolean conditionAndFilterEnabled = conditionEnabled && filterEnabled;
+    private Color getSelectionBackgroundColor(int row) {
+      return isEven(row) ? selectionBackground : alternateSelectionBackground;
+    }
+
+    private Color getConditionEnabledColor(int row, boolean conditionAndFilterEnabled, Color cellColor) {
       if (cellColor != null) {
         return darker(cellColor, DARKENING_FACTOR);
       }
-      else {
-        return row % 2 == 0 ?
-                (conditionAndFilterEnabled ? backgroundColorDoubleSearch : backgroundColorSearch) :
-                (conditionAndFilterEnabled ? alternateBackgroundColorDoubleSearch : alternateBackgroundColorSearch);
-      }
+
+      return isEven(row) ?
+              (conditionAndFilterEnabled ? backgroundColorDoubleSearch : backgroundColorSearch) :
+              (conditionAndFilterEnabled ? alternateBackgroundColorDoubleSearch : alternateBackgroundColorSearch);
+    }
+
+    private static boolean isEven(int row) {
+      return row % 2 == 0;
     }
   }
 
