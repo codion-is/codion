@@ -11,7 +11,6 @@ import is.codion.swing.common.model.component.checkbox.NullableToggleButtonModel
 import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
-import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -26,6 +25,7 @@ import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Utilities.darker;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.*;
 
 /**
  * The default table cell renderer for a {@link EntityTablePanel}
@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
  */
 final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 
-  private final UISettings settings = new UISettings();
+  private final UISettings settings;
   private final SwingEntityTableModel tableModel;
   private final Property<?> property;
   private final Format format;
@@ -44,6 +44,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   private final Function<Object, Object> displayValueProvider;
 
   private DefaultEntityTableCellRenderer(DefaultBuilder builder, Border border) {
+    this.settings = new UISettings(border);
     this.tableModel = requireNonNull(builder.tableModel, "tableModel");
     this.property = requireNonNull(builder.property, "property");
     this.format = builder.format == null ? property.getFormat() : builder.format;
@@ -134,7 +135,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   private static final class BooleanRenderer extends NullableCheckBox
           implements TableCellRenderer, javax.swing.plaf.UIResource, EntityTableCellRenderer {
 
-    private final UISettings settings = new UISettings();
+    private final UISettings settings;
     private final SwingEntityTableModel tableModel;
     private final Property<?> property;
     private final boolean displayConditionState;
@@ -142,6 +143,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
     private BooleanRenderer(DefaultBuilder builder, Border border) {
       super(new NullableToggleButtonModel());
+      this.settings = new UISettings(border);
       this.tableModel = requireNonNull(builder.tableModel, "tableModel");
       this.property = requireNonNull(builder.property, "property");
       this.displayConditionState = builder.displayConditionState;
@@ -194,6 +196,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private static final double DARKENING_FACTOR = 0.9;
     private static final double DOUBLE_DARKENING_FACTOR = 0.8;
 
+    private final Border defaultCellBorder;
+
     private Color foregroundColor;
     private Color backgroundColor;
     private Color backgroundColorSearch;
@@ -203,7 +207,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private Color alternateBackgroundColorDoubleSearch;
     private Border focusedCellBorder;
 
-    private UISettings() {
+    private UISettings(Border defaultCellBorder) {
+      this.defaultCellBorder = defaultCellBorder;
       configure();
     }
 
@@ -215,7 +220,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       alternateBackgroundColor = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
       alternateBackgroundColorSearch = darker(alternateBackgroundColor, DARKENING_FACTOR);
       alternateBackgroundColorDoubleSearch = darker(alternateBackgroundColor, DOUBLE_DARKENING_FACTOR);
-      focusedCellBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
+      focusedCellBorder = createCompoundBorder(createLineBorder(foregroundColor, 1), defaultCellBorder);
     }
 
     private Color getBackgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute, int row,
@@ -328,7 +333,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
     @Override
     public EntityTableCellRenderer build() {
-      Border border = leftPadding > 0 || rightPadding > 0 ? BorderFactory.createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
+      Border border = leftPadding > 0 || rightPadding > 0 ? createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
         return new DefaultEntityTableCellRenderer.BooleanRenderer(this, border);
       }
