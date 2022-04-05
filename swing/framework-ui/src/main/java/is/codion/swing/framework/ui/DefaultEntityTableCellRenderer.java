@@ -45,9 +45,9 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
   private DefaultEntityTableCellRenderer(DefaultBuilder builder, Border border) {
     this.settings = new UISettings(border);
-    this.tableModel = requireNonNull(builder.tableModel, "tableModel");
-    this.property = requireNonNull(builder.property, "property");
-    this.format = builder.format == null ? property.getFormat() : builder.format;
+    this.tableModel = builder.tableModel;
+    this.property = builder.property;
+    this.format = builder.format;
     this.dateTimeFormatter = builder.dateTimeFormatter;
     this.toolTipData = builder.toolTipData;
     this.displayConditionState = builder.displayConditionState;
@@ -195,6 +195,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
     private static final double DARKENING_FACTOR = 0.9;
     private static final double DOUBLE_DARKENING_FACTOR = 0.8;
+    private static final int FOCUSED_CELL_BORDER_THICKNESS = 1;
 
     private final Border defaultCellBorder;
 
@@ -220,7 +221,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       alternateBackgroundColor = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
       alternateBackgroundColorSearch = darker(alternateBackgroundColor, DARKENING_FACTOR);
       alternateBackgroundColorDoubleSearch = darker(alternateBackgroundColor, DOUBLE_DARKENING_FACTOR);
-      focusedCellBorder = createCompoundBorder(createLineBorder(foregroundColor, 1), defaultCellBorder);
+      focusedCellBorder = createCompoundBorder(createLineBorder(foregroundColor, FOCUSED_CELL_BORDER_THICKNESS), defaultCellBorder);
     }
 
     private Color getBackgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute, int row,
@@ -285,13 +286,13 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
     @Override
     public Builder format(Format format) {
-      this.format = format;
+      this.format = requireNonNull(format);
       return this;
     }
 
     @Override
     public Builder dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
-      this.dateTimeFormatter = dateTimeFormatter;
+      this.dateTimeFormatter = requireNonNull(dateTimeFormatter);
       return this;
     }
 
