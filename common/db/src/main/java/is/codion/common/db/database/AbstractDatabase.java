@@ -221,7 +221,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   protected static final String createLimitOffsetClause(Integer limit, Integer offset) {
-    //LIMIT {limit} OFFSET {offset}
+    /* LIMIT {limit} OFFSET {offset} */
     StringBuilder builder = new StringBuilder();
     if (limit != null) {
       builder.append(LIMIT).append(limit);
@@ -234,7 +234,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   protected static final String createOffsetFetchNextClause(Integer limit, Integer offset) {
-    //OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY
+    /* OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY */
     StringBuilder builder = new StringBuilder();
     if (offset != null) {
       builder.append(OFFSET).append(offset).append(ROWS);

@@ -359,7 +359,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
       return value;
     }
 
-    private boolean isClassOrModulePath(String property) {
+    private static boolean isClassOrModulePath(String property) {
       return property.endsWith("class.path") || property.endsWith("module.path");
     }
   }

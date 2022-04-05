@@ -84,25 +84,6 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
   }
 
-  private <T extends Number> void performRangeValidation(Entity entity, Attribute<T> attribute) throws RangeValidationException {
-    requireNonNull(entity, ENTITY_PARAM);
-    requireNonNull(attribute, ATTRIBUTE_PARAM);
-    if (entity.isNull(attribute)) {
-      return;
-    }
-
-    Property<T> property = entity.getDefinition().getProperty(attribute);
-    Number value = entity.get(property.getAttribute());
-    if (value.doubleValue() < (property.getMinimumValue() == null ? Double.NEGATIVE_INFINITY : property.getMinimumValue())) {
-      throw new RangeValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
-              MESSAGES.getString("property_value_too_small") + " " + property.getMinimumValue());
-    }
-    if (value.doubleValue() > (property.getMaximumValue() == null ? Double.POSITIVE_INFINITY : property.getMaximumValue())) {
-      throw new RangeValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
-              MESSAGES.getString("property_value_too_large") + " " + property.getMaximumValue());
-    }
-  }
-
   private <T> void performNullValidation(Entity entity, Attribute<T> attribute) throws NullValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
@@ -124,7 +105,26 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
   }
 
-  private void performLengthValidation(Entity entity, Attribute<String> attribute) throws LengthValidationException {
+  private static <T extends Number> void performRangeValidation(Entity entity, Attribute<T> attribute) throws RangeValidationException {
+    requireNonNull(entity, ENTITY_PARAM);
+    requireNonNull(attribute, ATTRIBUTE_PARAM);
+    if (entity.isNull(attribute)) {
+      return;
+    }
+
+    Property<T> property = entity.getDefinition().getProperty(attribute);
+    Number value = entity.get(property.getAttribute());
+    if (value.doubleValue() < (property.getMinimumValue() == null ? Double.NEGATIVE_INFINITY : property.getMinimumValue())) {
+      throw new RangeValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
+              MESSAGES.getString("property_value_too_small") + " " + property.getMinimumValue());
+    }
+    if (value.doubleValue() > (property.getMaximumValue() == null ? Double.POSITIVE_INFINITY : property.getMaximumValue())) {
+      throw new RangeValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
+              MESSAGES.getString("property_value_too_large") + " " + property.getMaximumValue());
+    }
+  }
+
+  private static void performLengthValidation(Entity entity, Attribute<String> attribute) throws LengthValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
     if (entity.isNull(attribute)) {
