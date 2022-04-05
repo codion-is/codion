@@ -8000,3 +8000,5 @@
   SelectQueries no longer sets the order by clause from the entity definition if no order by clause is specified in the condition, sometimes we don't really want/need to order the result
   SelectQueries bug fixed, used selectTableName instead of tableName when select condition was for update
   DefaultEntityTableCellRenderer, now uses a compound empty border and a line border with the table foreground color for the focused cell
+  DefaultEntityTableCellRenderer, minor refactoring
+  DefaultEntityTableCellRenderer, alternate selection background color added

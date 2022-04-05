@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toSet;
 
 public final class CityEditPanel extends EntityEditPanel {
 
-  private static final int MAX_ZOOM = 19;
+  private static final int MIN_ZOOM = 19;
 
   private final JXMapKit mapKit;
 
@@ -77,7 +77,7 @@ public final class CityEditPanel extends EntityEditPanel {
     mapKit.setMiniMapVisible(false);
     mapKit.setZoomSliderVisible(false);
     mapKit.setZoomButtonsVisible(false);
-    mapKit.getMainMap().setZoom(MAX_ZOOM);
+    mapKit.getMainMap().setZoom(MIN_ZOOM);
     mapKit.getMainMap().setOverlayPainter(new WaypointPainter<>());
 
     tableModel.addDisplayLocationListener(new DisplayLocationListener(mapKit.getMainMap()));
@@ -116,7 +116,7 @@ public final class CityEditPanel extends EntityEditPanel {
               .map(DefaultWaypoint::new)
               .collect(toSet()));
       if (geoPositions.isEmpty()) {
-        mapViewer.setZoom(MAX_ZOOM);
+        mapViewer.setZoom(MIN_ZOOM);
         mapViewer.repaint();
       }
       else if (geoPositions.size() == 1) {

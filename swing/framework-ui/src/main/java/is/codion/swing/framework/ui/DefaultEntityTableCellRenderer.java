@@ -45,9 +45,9 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
   private DefaultEntityTableCellRenderer(DefaultBuilder builder, Border border) {
     this.settings = new UISettings(border);
-    this.tableModel = requireNonNull(builder.tableModel, "tableModel");
-    this.property = requireNonNull(builder.property, "property");
-    this.format = builder.format == null ? property.getFormat() : builder.format;
+    this.tableModel = builder.tableModel;
+    this.property = builder.property;
+    this.format = builder.format;
     this.dateTimeFormatter = builder.dateTimeFormatter;
     this.toolTipData = builder.toolTipData;
     this.displayConditionState = builder.displayConditionState;
@@ -86,7 +86,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   @Override
   public Color getBackground(JTable table, int row, boolean selected) {
     if (selected) {
-      return table.getSelectionBackground();
+      return settings.getSelectionBackgroundColor(row);
     }
 
     return settings.getBackgroundColor(tableModel, property.getAttribute(), row, displayConditionState);
@@ -195,6 +195,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
     private static final double DARKENING_FACTOR = 0.9;
     private static final double DOUBLE_DARKENING_FACTOR = 0.8;
+    private static final int FOCUSED_CELL_BORDER_THICKNESS = 1;
 
     private final Border defaultCellBorder;
 
@@ -205,6 +206,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private Color alternateBackgroundColor;
     private Color alternateBackgroundColorSearch;
     private Color alternateBackgroundColorDoubleSearch;
+    private Color selectionBackground;
+    private Color alternateSelectionBackground;
     private Border focusedCellBorder;
 
     private UISettings(Border defaultCellBorder) {
@@ -215,29 +218,30 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private void configure() {
       foregroundColor = UIManager.getColor("Table.foreground");
       backgroundColor = UIManager.getColor("Table.background");
+      selectionBackground = UIManager.getColor("Table.selectionBackground");
       backgroundColorSearch = darker(backgroundColor, DARKENING_FACTOR);
       backgroundColorDoubleSearch = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
       alternateBackgroundColor = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
       alternateBackgroundColorSearch = darker(alternateBackgroundColor, DARKENING_FACTOR);
       alternateBackgroundColorDoubleSearch = darker(alternateBackgroundColor, DOUBLE_DARKENING_FACTOR);
-      focusedCellBorder = createCompoundBorder(createLineBorder(foregroundColor, 1), defaultCellBorder);
+      alternateSelectionBackground = darker(selectionBackground, DARKENING_FACTOR);
+      focusedCellBorder = createCompoundBorder(createLineBorder(foregroundColor, FOCUSED_CELL_BORDER_THICKNESS), defaultCellBorder);
     }
 
-    private Color getBackgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute, int row,
-                                     boolean indicateCondition) {
+    private Color getBackgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute,
+                                     int row, boolean indicateCondition) {
       boolean conditionEnabled = tableModel.getTableConditionModel().isConditionEnabled(attribute);
       boolean filterEnabled = tableModel.getTableConditionModel().isFilterEnabled(attribute);
       boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
       Color cellColor = tableModel.getBackgroundColor(row, attribute);
       if (showCondition) {
-        return getConditionEnabledColor(row, conditionEnabled, filterEnabled, cellColor);
+        return getConditionEnabledColor(row, conditionEnabled && filterEnabled, cellColor);
       }
       else if (cellColor != null) {
         return cellColor;
       }
-      else {
-        return row % 2 == 0 ? backgroundColor : alternateBackgroundColor;
-      }
+
+      return isEven(row) ? backgroundColor : alternateBackgroundColor;
     }
 
     private Color getForegroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute, int row) {
@@ -246,17 +250,22 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       return cellColor == null ? foregroundColor : cellColor;
     }
 
-    private Color getConditionEnabledColor(int row, boolean conditionEnabled,
-                                           boolean filterEnabled, Color cellColor) {
-      boolean conditionAndFilterEnabled = conditionEnabled && filterEnabled;
+    private Color getSelectionBackgroundColor(int row) {
+      return isEven(row) ? selectionBackground : alternateSelectionBackground;
+    }
+
+    private Color getConditionEnabledColor(int row, boolean conditionAndFilterEnabled, Color cellColor) {
       if (cellColor != null) {
         return darker(cellColor, DARKENING_FACTOR);
       }
-      else {
-        return row % 2 == 0 ?
-                (conditionAndFilterEnabled ? backgroundColorDoubleSearch : backgroundColorSearch) :
-                (conditionAndFilterEnabled ? alternateBackgroundColorDoubleSearch : alternateBackgroundColorSearch);
-      }
+
+      return isEven(row) ?
+              (conditionAndFilterEnabled ? backgroundColorDoubleSearch : backgroundColorSearch) :
+              (conditionAndFilterEnabled ? alternateBackgroundColorDoubleSearch : alternateBackgroundColorSearch);
+    }
+
+    private static boolean isEven(int row) {
+      return row % 2 == 0;
     }
   }
 
@@ -285,13 +294,13 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
     @Override
     public Builder format(Format format) {
-      this.format = format;
+      this.format = requireNonNull(format);
       return this;
     }
 
     @Override
     public Builder dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
-      this.dateTimeFormatter = dateTimeFormatter;
+      this.dateTimeFormatter = requireNonNull(dateTimeFormatter);
       return this;
     }
 
