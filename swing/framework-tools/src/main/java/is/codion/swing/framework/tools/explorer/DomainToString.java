@@ -31,13 +31,13 @@ final class DomainToString {
     List<Property<?>> columnProperties = definition.getProperties().stream()
             .filter(ColumnProperty.class::isInstance)
             .collect(toList());
-    columnProperties.forEach(property -> appendAttribute(builder, property, interfaceName));
+    columnProperties.forEach(property -> appendAttribute(builder, property));
     List<Property<?>> foreignKeyProperties = definition.getProperties().stream()
             .filter(ForeignKeyProperty.class::isInstance)
             .collect(toList());
     if (!foreignKeyProperties.isEmpty()) {
       builder.append(Util.LINE_SEPARATOR);
-      foreignKeyProperties.forEach(property -> appendAttribute(builder, property, interfaceName));
+      foreignKeyProperties.forEach(property -> appendAttribute(builder, property));
     }
     builder.append("}").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
     builder.append("void ").append(getInterfaceName(definition.getTableName(), false)).append("() {").append(Util.LINE_SEPARATOR);
@@ -49,7 +49,7 @@ final class DomainToString {
     return builder.toString();
   }
 
-  private static void appendAttribute(StringBuilder builder, Property<?> property, String interfaceName) {
+  private static void appendAttribute(StringBuilder builder, Property<?> property) {
     if (property instanceof ColumnProperty) {
       ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
       String typeClassName = columnProperty.getAttribute().getTypeClass().getSimpleName();

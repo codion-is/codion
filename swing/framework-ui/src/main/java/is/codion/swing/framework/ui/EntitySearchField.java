@@ -552,7 +552,7 @@ public final class EntitySearchField extends JTextField {
               .action(selectControl)
               .enable(table.getSearchField());
       KeyEvents.builder(KeyEvent.VK_F)
-              .modifiers(KeyEvent.CTRL_DOWN_MASK)
+              .modifiers(InputEvent.CTRL_DOWN_MASK)
               .action(Control.control(() -> table.getSearchField().requestFocusInWindow()))
               .enable(table);
       Collection<Attribute<String>> searchAttributes = searchModel.getSearchAttributes();
