@@ -179,7 +179,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     @Override
     public Color getBackground(JTable table, int row, boolean selected) {
       if (selected) {
-        return table.getSelectionBackground();
+        return settings.getSelectionBackgroundColor(row);
       }
 
       return settings.getBackgroundColor(tableModel, property.getAttribute(), row, displayConditionState);
