@@ -7967,3 +7967,4 @@
   DefaultEntityTableCellRenderer, now uses a compound empty border and a line border with the table foreground color for the focused cell
   DefaultEntityTableCellRenderer, minor refactoring
   DefaultEntityTableCellRenderer, alternate selection background color added
+  DefaultEntityTableCellRenderer bug fixed, boolean renderer did not implement alternate selection background color
