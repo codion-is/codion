@@ -14,6 +14,7 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
@@ -225,7 +226,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       alternateBackgroundColorSearch = darker(alternateBackgroundColor, DARKENING_FACTOR);
       alternateBackgroundColorDoubleSearch = darker(alternateBackgroundColor, DOUBLE_DARKENING_FACTOR);
       alternateSelectionBackground = darker(selectionBackground, DARKENING_FACTOR);
-      focusedCellBorder = createCompoundBorder(createLineBorder(foregroundColor, FOCUSED_CELL_BORDER_THICKNESS), defaultCellBorder);
+      focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
     }
 
     private Color getBackgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute,
@@ -266,6 +267,11 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
     private static boolean isEven(int row) {
       return row % 2 == 0;
+    }
+
+    private static CompoundBorder createFocusedCellBorder(Color foregroundColor, Border defaultCellBorder) {
+      return createCompoundBorder(createLineBorder(darker(foregroundColor, DOUBLE_DARKENING_FACTOR),
+              FOCUSED_CELL_BORDER_THICKNESS), defaultCellBorder);
     }
   }
 
