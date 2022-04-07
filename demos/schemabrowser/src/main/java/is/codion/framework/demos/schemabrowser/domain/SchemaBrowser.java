@@ -57,7 +57,7 @@ public final class SchemaBrowser extends DefaultDomain {
     define(Schema.TYPE, bundle.getString("t_schema"),
             primaryKeyProperty(Schema.NAME, "Name"))
             .orderBy(orderBy().ascending(Schema.NAME))
-            .readOnly()
+            .readOnly(true)
             .stringFactory(stringFactory(Schema.NAME))
             .caption("Schemas");
   }
@@ -79,7 +79,7 @@ public final class SchemaBrowser extends DefaultDomain {
             columnProperty(Table.NAME, "Name")
                     .primaryKeyIndex(1))
             .orderBy(orderBy().ascending(Table.SCHEMA, Table.NAME))
-            .readOnly()
+            .readOnly(true)
             .stringFactory(stringFactory(Table.SCHEMA_FK).text(".").value(Table.NAME))
             .caption("Tables");
     String tableQueryFrom = bundle.getString("t_table_query_from");
@@ -119,7 +119,7 @@ public final class SchemaBrowser extends DefaultDomain {
                     .primaryKeyIndex(2),
             columnProperty(Column.DATA_TYPE, "Data type"))
             .orderBy(orderBy().ascending(Column.SCHEMA, Column.TABLE_NAME, Column.NAME))
-            .readOnly()
+            .readOnly(true)
             .stringFactory(stringFactory(Column.TABLE_FK).text(".").value(Column.NAME))
             .caption("Columns");
   }
@@ -149,7 +149,7 @@ public final class SchemaBrowser extends DefaultDomain {
                     .primaryKeyIndex(2),
             columnProperty(Constraint.CONSTRAINT_TYPE, "Type"))
             .orderBy(orderBy().ascending(Constraint.SCHEMA, Constraint.TABLE_NAME, Constraint.NAME))
-            .readOnly()
+            .readOnly(true)
             .stringFactory(stringFactory(Constraint.TABLE_FK).text(".").value(Constraint.NAME))
             .caption("Constraints");
   }
@@ -182,7 +182,7 @@ public final class SchemaBrowser extends DefaultDomain {
             columnProperty(ConstraintColumn.COLUMN_NAME, "Column name"),
             columnProperty(ConstraintColumn.POSITION, "Position"))
             .orderBy(orderBy().ascending(ConstraintColumn.SCHEMA, ConstraintColumn.TABLE_NAME, ConstraintColumn.CONSTRAINT_NAME))
-            .readOnly()
+            .readOnly(true)
             .caption("Constraint columns");
   }
 }

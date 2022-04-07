@@ -209,7 +209,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .from("world.country join world.city on city.countrycode = country.code")
                     .build())
             .orderBy(orderBy().ascending(Lookup.COUNTRY_NAME).descending(Lookup.CITY_POPULATION))
-            .readOnly()
+            .readOnly(true)
             .caption("Lookup");
   }
 
@@ -242,7 +242,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .columnExpression("sum(gnp)")
                     .aggregateColumn(true)
                     .numberFormatGrouping(true))
-            .readOnly()
+            .readOnly(true)
             .caption("Continent");
   }
 

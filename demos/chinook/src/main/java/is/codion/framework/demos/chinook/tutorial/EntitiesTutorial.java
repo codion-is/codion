@@ -85,7 +85,7 @@ public final class EntitiesTutorial {
       define(Artist.TYPE, artistId, artistName)
               .keyGenerator(identity())
               .stringFactory(stringFactory(Artist.NAME))
-              .smallDataset()
+              .smallDataset(true)
               .caption("Artist");
 
       // create properties for the columns in the table 'chinook.album'

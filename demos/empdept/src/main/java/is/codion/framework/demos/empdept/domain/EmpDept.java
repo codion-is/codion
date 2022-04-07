@@ -131,7 +131,7 @@ public final class EmpDept extends DefaultDomain {
                     .preferredColumnWidth(150)
                     .maximumLength(13)
                     .beanProperty("location"))
-            .smallDataset()
+            .smallDataset(true)
             .orderBy(orderBy().ascending(Department.NAME))
             .stringFactory(stringFactory(Department.NAME))
             .caption("Departments");

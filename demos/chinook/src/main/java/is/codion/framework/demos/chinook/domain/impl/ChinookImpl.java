@@ -195,7 +195,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .keyGenerator(identity())
             .orderBy(orderBy().ascending(Genre.NAME))
             .stringFactory(stringFactory(Genre.NAME))
-            .smallDataset();
+            .smallDataset(true);
   }
 
   void mediaType() {
@@ -207,7 +207,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .preferredColumnWidth(160))
             .keyGenerator(identity())
             .stringFactory(stringFactory(MediaType.NAME))
-            .smallDataset();
+            .smallDataset(true);
   }
 
   void track() {

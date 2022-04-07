@@ -112,7 +112,7 @@ public final class Store extends DefaultDomain {
             .stringFactory(stringFactory(Address.STREET)
                     .text(", ").value(Address.CITY))
             .keyGenerator(identity())
-            .smallDataset()
+            .smallDataset(true)
             .caption("Address");
     // end::address[]
   }

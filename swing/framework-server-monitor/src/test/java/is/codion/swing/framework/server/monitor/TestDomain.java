@@ -43,7 +43,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13),
             columnProperty(DEPARTMENT_LOGO))
-            .smallDataset()
+            .smallDataset(true)
             .stringFactory(stringFactory(DEPARTMENT_NAME))
             .caption("Department");
   }
