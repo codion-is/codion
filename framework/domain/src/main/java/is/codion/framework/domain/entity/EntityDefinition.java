@@ -487,25 +487,28 @@ public interface EntityDefinition {
     Builder captionResourceKey(String captionResourceKey);
 
     /**
-     * Specifies that this entity should be regarded as based on a small dataset,
+     * Specifies whether this entity should be regarded as being based on a small dataset,
      * which primarily means that combo box models can be based on this entity.
+     * @param smallDataset true if this entity is based on a small dataset
      * @return this {@link Builder} instance
      */
-    Builder smallDataset();
+    Builder smallDataset(boolean smallDataset);
 
     /**
-     * Specifies that this entity should be regarded as based on a static dataset, that is, one that rarely changes.
+     * Specifies whether this entity should be regarded as based on a static dataset, that is, one that rarely changes.
      * This is useful in deciding how often to refresh, say, a combo box based on the entity.
+     * @param staticData true if the underlying data should be regarded as static
      * @return this {@link Builder} instance
      */
-    Builder staticData();
+    Builder staticData(boolean staticData);
 
     /**
-     * Specifies that this entity should be read-only, that it should not be possible to
+     * Specifies whether this entity should be read-only, that it should not be possible to
      * insert, update or delete entities of this type
+     * @param readOnly true if this entity is read-only
      * @return this {@link Builder} instance
      */
-    Builder readOnly();
+    Builder readOnly(boolean readOnly);
 
     /**
      * Sets the primary key generator

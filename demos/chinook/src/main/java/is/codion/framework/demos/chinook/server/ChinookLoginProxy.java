@@ -119,7 +119,7 @@ public final class ChinookLoginProxy implements LoginProxy {
               primaryKeyProperty(User.ID),
               columnProperty(User.USERNAME),
               columnProperty(User.PASSWORD_HASH))
-              .readOnly();
+              .readOnly(true);
     }
   }
 }

@@ -47,7 +47,7 @@ public final class PetClinic extends DefaultDomain {
             .stringFactory(stringFactory(Vet.LAST_NAME)
                     .text(", ").value(Vet.FIRST_NAME))
             .orderBy(orderBy().ascending(Vet.LAST_NAME, Vet.FIRST_NAME))
-            .smallDataset();
+            .smallDataset(true);
   }
 
   private void specialty() {
@@ -60,7 +60,7 @@ public final class PetClinic extends DefaultDomain {
             .keyGenerator(identity())
             .caption("Specialties")
             .stringFactory(stringFactory(Specialty.NAME))
-            .smallDataset();
+            .smallDataset(true);
   }
 
   private void vetSpecialty() {
@@ -87,7 +87,7 @@ public final class PetClinic extends DefaultDomain {
             .caption("Pet types")
             .stringFactory(stringFactory(PetType.NAME))
             .orderBy(orderBy().ascending(PetType.NAME))
-            .smallDataset();
+            .smallDataset(true);
   }
 
   private void owner() {

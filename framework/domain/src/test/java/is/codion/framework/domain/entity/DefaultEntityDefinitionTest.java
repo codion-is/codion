@@ -54,7 +54,7 @@ public class DefaultEntityDefinitionTest {
                         .groupBy("name")
                         .build())
                 .orderBy(orderBy().descending(name))
-                .readOnly()
+                .readOnly(true)
                 .selectTableName("selectTableName")
                 .stringFactory(stringFactory)
                 .comparator(comparator);

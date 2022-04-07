@@ -194,7 +194,7 @@ public final class TestDomain extends DefaultDomain {
             .keyGenerator(queried("select id from dual"))
             .orderBy(orderBy().ascending(Detail.STRING))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
-            .smallDataset()
+            .smallDataset(true)
             .stringFactory(stringFactory(Detail.STRING));
   }
 
@@ -230,7 +230,7 @@ public final class TestDomain extends DefaultDomain {
                     .readOnly(true)
                     .beanProperty("active"),
             blobProperty(Department.DATA))
-            .smallDataset()
+            .smallDataset(true)
             .orderBy(orderBy().ascending(Department.NAME))
             .stringFactory(stringFactory(Department.NAME))
             .caption("Department");

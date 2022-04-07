@@ -107,7 +107,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Department.LOC, Department.LOC.getName())
                     .preferredColumnWidth(150).maximumLength(13)
                     .beanProperty("location"))
-            .smallDataset()
+            .smallDataset(true)
             .stringFactory(stringFactory(Department.DNAME))
             .conditionProvider(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {
               StringBuilder builder = new StringBuilder("deptno in (");

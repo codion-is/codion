@@ -8004,3 +8004,4 @@
   DefaultEntityTableCellRenderer, alternate selection background color added
   DefaultEntityTableCellRenderer bug fixed, boolean renderer did not implement alternate selection background color
   DefaultEntityTableCellRenderer, focused cell border darkened a bit
+  EntityDefinition.Builder.readOnly(), smallDataset() and staticData(), boolean parameter added, for consistency

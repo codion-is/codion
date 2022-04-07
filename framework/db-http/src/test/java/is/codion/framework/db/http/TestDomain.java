@@ -64,7 +64,7 @@ public final class TestDomain extends DefaultDomain {
                     .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
-            .smallDataset()
+            .smallDataset(true)
             .orderBy(orderBy().ascending(DEPARTMENT_NAME))
             .stringFactory(stringFactory(DEPARTMENT_NAME))
             .caption("Department");
