@@ -68,16 +68,14 @@ final class SelectColumnsPanel<C> extends JPanel {
   }
 
   void applyChanges() {
-    columnModel.getVisibleColumns().forEach(identifier -> {
-      TableColumn tableColumn = columnModel.getTableColumn(identifier);
+    columnModel.getVisibleColumns().forEach(tableColumn -> {
       if (!states.get(tableColumn).get()) {
-        columnModel.setColumnVisible(identifier, false);
+        columnModel.setColumnVisible((C) tableColumn.getIdentifier(), false);
       }
     });
-    new ArrayList<>(columnModel.getHiddenColumns()).forEach(identifier -> {
-      TableColumn tableColumn = columnModel.getTableColumn(identifier);
+    new ArrayList<>(columnModel.getHiddenColumns()).forEach(tableColumn -> {
       if (states.get(tableColumn).get()) {
-        columnModel.setColumnVisible(identifier, true);
+        columnModel.setColumnVisible((C) tableColumn.getIdentifier(), true);
       }
     });
   }

@@ -123,15 +123,15 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
   }
 
   @Override
-  public List<C> getVisibleColumns() {
-    return unmodifiableList(Collections.list(tableColumnModel.getColumns()).stream()
-            .map(column -> (C) column.getIdentifier())
-            .collect(Collectors.toList()));
+  public List<TableColumn> getVisibleColumns() {
+    return unmodifiableList(Collections.list(tableColumnModel.getColumns()));
   }
 
   @Override
-  public Collection<C> getHiddenColumns() {
-    return unmodifiableCollection(new HashSet<>(hiddenColumns.keySet()));
+  public Collection<TableColumn> getHiddenColumns() {
+    return unmodifiableCollection(hiddenColumns.values().stream()
+            .map(hiddenColumn -> hiddenColumn.column)
+            .collect(Collectors.toList()));
   }
 
   @Override

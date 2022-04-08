@@ -7970,3 +7970,4 @@
   DefaultEntityTableCellRenderer bug fixed, boolean renderer did not implement alternate selection background color
   DefaultEntityTableCellRenderer, focused cell border darkened a bit
   EntityDefinition.Builder.readOnly(), smallDataset() and staticData(), boolean parameter added, for consistency
+  FilteredTableColumnModel.getVisibleColumns() and getHiddenColumns() now return TableColumn instead of column identifiers, more consistent with getAllColumns()
