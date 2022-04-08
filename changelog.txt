@@ -7980,3 +7980,5 @@
   TableSelectionModel and TableSortModel and renamed FilteredTableSelectionModel and FilteredTableSortModel respectively
   FilteredTableModel.getColumnValue() removed, DefaultFilteredSortModel now uses columnClassProvider and columnValueProvider
   FilteredTableSortModel and FilteredTableSelectionModel, unused factory methods removed
+  DefaultFilteredTableModel, FilteredTableColumnModel constructor parameter replaced with List of TableColumn
+  FilteredTableColumnModel unused factory method removed

@@ -24,7 +24,7 @@ public class DefaultFilteredTableSelectionModelTest {
     TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     FilteredTableModel<String, Integer> tableModel = new DefaultFilteredTableModel<String, Integer>(
-            new DefaultFilteredTableColumnModel<>(singletonList(column)),
+            singletonList(column),
             columnIdentifier -> String.class, (row, columnIdentifier) -> row) {
       @Override
       protected Collection<String> refreshItems() {

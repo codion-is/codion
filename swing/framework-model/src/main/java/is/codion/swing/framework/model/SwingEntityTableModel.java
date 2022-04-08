@@ -173,8 +173,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @param tableConditionModel the table condition model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
-    super(FilteredTableColumnModel.create(createColumns(requireNonNull(editModel, "editModel")
-                    .getConnectionProvider().getEntities().getDefinition(editModel.getEntityType()))),
+    super(createColumns(requireNonNull(editModel, "editModel")
+                    .getConnectionProvider().getEntities().getDefinition(editModel.getEntityType())),
             new EntityColumnClassProvider(), new EntityColumnValueProvider(),
             new EntityColumnComparatorFactory(editModel.getEntities()), requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels().values());
     if (!tableConditionModel.getEntityType().equals(editModel.getEntityType())) {

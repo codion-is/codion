@@ -14,8 +14,7 @@ import java.util.List;
 /**
  * A TableColumnModel handling hidden columns.
  * Note that this column model does not support dynamically adding or removing columns,
- * {@link #addColumn(TableColumn)} and {@link #removeColumn(TableColumn)} both throw {@link UnsupportedOperationException}
- * Instantiate with the {@link #create(List)} factory method.
+ * {@link #addColumn(TableColumn)} and {@link #removeColumn(TableColumn)} both throw {@link UnsupportedOperationException}.
  * @param <C> the type of column identifier
  */
 public interface FilteredTableColumnModel<C> extends TableColumnModel {
@@ -113,14 +112,4 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * @param listener the listener to remove
    */
   void removeColumnShownListener(EventDataListener<C> listener);
-
-  /**
-   * Creates a {@link FilteredTableColumnModel} based on the given columns.
-   * @param tableColumns the table columns to base the column model on
-   * @param <C> the column identifier type
-   * @return a new {@link  FilteredTableColumnModel}
-   */
-  static <C> FilteredTableColumnModel<C> create(List<TableColumn> tableColumns) {
-    return new DefaultFilteredTableColumnModel<>(tableColumns);
-  }
 }
