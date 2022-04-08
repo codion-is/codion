@@ -13,7 +13,7 @@ import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.swing.common.model.component.table.TableSortModel.ColumnComparatorFactory;
+import is.codion.swing.common.model.component.table.FilteredTableSortModel.ColumnComparatorFactory;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.SwingUtilities;
@@ -82,7 +82,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   /**
    * The selection model
    */
-  private final TableSelectionModel<R> selectionModel;
+  private final FilteredTableSelectionModel<R> selectionModel;
 
   /**
    * The TableColumnModel
@@ -92,7 +92,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   /**
    * The sort model
    */
-  private final TableSortModel<R, C> sortModel;
+  private final FilteredTableSortModel<R, C> sortModel;
 
   /**
    * The ColumnFilterModels used for filtering
@@ -189,8 +189,10 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     this.columnModel = requireNonNull(columnModel, "columnModel");
     this.columnClassProvider = requireNonNull(columnClassProvider);
     this.columnValueProvider = requireNonNull(columnValueProvider);
-    this.sortModel = columnComparatorFactory == null ? TableSortModel.create(this) : TableSortModel.create(this, columnComparatorFactory);
-    this.selectionModel = TableSelectionModel.create(this);
+    this.sortModel = columnComparatorFactory == null ?
+            FilteredTableSortModel.create(this) :
+            FilteredTableSortModel.create(this, columnComparatorFactory);
+    this.selectionModel = FilteredTableSelectionModel.create(this);
     if (columnFilterModels != null) {
       for (ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
         this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
@@ -318,12 +320,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final TableSelectionModel<R> getSelectionModel() {
+  public final FilteredTableSelectionModel<R> getSelectionModel() {
     return selectionModel;
   }
 
   @Override
-  public final TableSortModel<R, C> getSortModel() {
+  public final FilteredTableSortModel<R, C> getSortModel() {
     return sortModel;
   }
 
@@ -638,7 +640,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * If sorting is enabled this model is sorted after the items have been added.
    * @param index the index at which to add the items
    * @param items the items to add
-   * @see TableSortModel#isSortingEnabled()
+   * @see FilteredTableSortModel#isSortingEnabled()
    */
   protected final void addItemsAtSorted(int index, Collection<R> items) {
     if (addItemsAtInternal(index, items)) {

@@ -15,16 +15,16 @@ import static java.util.Collections.singletonList;
 import static javax.swing.ListSelectionModel.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SwingTableSelectionModelTest {
+public class DefaultFilteredTableSelectionModelTest {
 
-  private final TableSelectionModel<String> testModel;
+  private final FilteredTableSelectionModel<String> testModel;
 
-  public SwingTableSelectionModelTest() {
+  public DefaultFilteredTableSelectionModelTest() {
     List<String> data = asList("A", "B", "C");
     TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     FilteredTableModel<String, Integer> tableModel = new DefaultFilteredTableModel<String, Integer>(
-            new SwingFilteredTableColumnModel<>(singletonList(column)),
+            new DefaultFilteredTableColumnModel<>(singletonList(column)),
             columnIdentifier -> String.class, (row, columnIdentifier) -> row) {
       @Override
       protected Collection<String> refreshItems() {

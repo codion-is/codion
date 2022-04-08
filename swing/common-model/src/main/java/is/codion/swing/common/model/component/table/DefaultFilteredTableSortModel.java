@@ -16,7 +16,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class SwingTableSortModel<R, C> implements TableSortModel<R, C> {
+final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortModel<R, C> {
 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
   private static final Comparator<?> TO_STRING_COMPARATOR = new ToStringComparator();
@@ -42,11 +42,11 @@ final class SwingTableSortModel<R, C> implements TableSortModel<R, C> {
   private final Map<C, SortingState> sortingStates = new HashMap<>();
   private final SortingStatesComparator sortingStatesComparator = new SortingStatesComparator();
 
-  SwingTableSortModel(FilteredTableModel<R, C> tableModel) {
+  DefaultFilteredTableSortModel(FilteredTableModel<R, C> tableModel) {
     this(tableModel, new DefaultColumnComparatorFactory<>());
   }
 
-  SwingTableSortModel(FilteredTableModel<R, C> tableModel, ColumnComparatorFactory<C> columnComparatorFactory) {
+  DefaultFilteredTableSortModel(FilteredTableModel<R, C> tableModel, ColumnComparatorFactory<C> columnComparatorFactory) {
     this.tableModel = requireNonNull(tableModel);
     this.columnComparatorFactory = requireNonNull(columnComparatorFactory);
   }
@@ -153,7 +153,7 @@ final class SwingTableSortModel<R, C> implements TableSortModel<R, C> {
 
     @Override
     public int compare(R rowOne, R rowTwo) {
-      for (Map.Entry<C, TableSortModel.SortingState> state : sortedSortingStates) {
+      for (Map.Entry<C, FilteredTableSortModel.SortingState> state : sortedSortingStates) {
         int comparison = compareRows(rowOne, rowTwo, state.getKey(), state.getValue().getSortOrder());
         if (comparison != 0) {
           return comparison;

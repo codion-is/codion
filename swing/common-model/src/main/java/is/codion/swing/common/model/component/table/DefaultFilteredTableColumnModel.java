@@ -28,7 +28,7 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class SwingFilteredTableColumnModel<C> implements FilteredTableColumnModel<C> {
+final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnModel<C> {
 
   private static final String COLUMN_IDENTIFIER = "columnIdentifier";
 
@@ -55,10 +55,10 @@ final class SwingFilteredTableColumnModel<C> implements FilteredTableColumnModel
   private final State lockedState = State.state();
 
   /**
-   * Instantiates a new SwingFilteredTableColumnModel.
+   * Instantiates a new DefaultFilteredTableColumnModel.
    * @param tableColumns the columns to base this model on
    */
-  SwingFilteredTableColumnModel(List<TableColumn> tableColumns) {
+  DefaultFilteredTableColumnModel(List<TableColumn> tableColumns) {
     if (requireNonNull(tableColumns, "columns").isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }

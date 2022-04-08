@@ -14,7 +14,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.RowColumn;
-import is.codion.swing.common.model.component.table.TableSortModel;
+import is.codion.swing.common.model.component.table.FilteredTableSortModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -775,7 +775,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
           setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
         }
         C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
-        TableSortModel<R, C> sortModel = getModel().getSortModel();
+        FilteredTableSortModel<R, C> sortModel = getModel().getSortModel();
         SortOrder sortOrder = getSortOrder(sortModel.getSortingState(columnIdentifier).getSortOrder(), e.isShiftDown());
         if (e.isControlDown()) {
           sortModel.addSortOrder(columnIdentifier, sortOrder);

@@ -50,7 +50,7 @@ public final class DefaultFilteredTableModelTest {
   private static class TestAbstractFilteredTableModel extends DefaultFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(Comparator<String> customComparator) {
-      super(new SwingFilteredTableColumnModel<>(createColumns()),
+      super(new DefaultFilteredTableColumnModel<>(createColumns()),
               columnIdentifier -> String.class, List::get, (columnIdentifier, columnClass) -> {
                 if (customComparator != null) {
                   return customComparator;
@@ -123,12 +123,13 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void nullSortModel() {
     assertThrows(NullPointerException.class, () -> new DefaultFilteredTableModel<String, Integer>(
-            new SwingFilteredTableColumnModel<>(singletonList(new TableColumn())), null, null));
+            new DefaultFilteredTableColumnModel<>(singletonList(new TableColumn())), null, null));
   }
 
   @Test
   void noColumns() {
-    assertThrows(IllegalArgumentException.class, () -> new DefaultFilteredTableModel<String, Integer>(new SwingFilteredTableColumnModel<>(emptyList()),
+    assertThrows(IllegalArgumentException.class, () -> new DefaultFilteredTableModel<String, Integer>(
+            new DefaultFilteredTableColumnModel<>(emptyList()),
             columnIdentifier -> null, (row, columnIdentifier) -> null));
   }
 
@@ -296,7 +297,7 @@ public final class DefaultFilteredTableModelTest {
             new Row(2, "c"), new Row(3, "d"), new Row(4, "e"));
 
     FilteredTableModel<Row, Integer> testModel = new DefaultFilteredTableModel<Row, Integer>(
-            new SwingFilteredTableColumnModel<>(asList(columnId, columnValue)),
+            new DefaultFilteredTableColumnModel<>(asList(columnId, columnValue)),
             columnIdentifier -> {
               if (columnIdentifier == 0) {
                 return Integer.class;
@@ -388,7 +389,7 @@ public final class DefaultFilteredTableModelTest {
   void customSorting() {
     FilteredTableModel<List<String>, Integer> tableModel = new TestAbstractFilteredTableModel(Comparator.reverseOrder());
     tableModel.refresh();
-    TableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
+    FilteredTableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
     sortModel.setSortOrder(0, SortOrder.ASCENDING);
     assertEquals(E, tableModel.getItemAt(0));
     sortModel.setSortOrder(0, SortOrder.DESCENDING);
@@ -402,7 +403,7 @@ public final class DefaultFilteredTableModelTest {
     tableModel.addSortListener(listener);
 
     tableModel.refresh();
-    TableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
+    FilteredTableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
     sortModel.setSortOrder(0, SortOrder.DESCENDING);
     assertEquals(SortOrder.DESCENDING, sortModel.getSortingState(0).getSortOrder());
     assertEquals(E, tableModel.getItemAt(0));
@@ -495,7 +496,7 @@ public final class DefaultFilteredTableModelTest {
     AtomicInteger events = new AtomicInteger();
     EventListener listener = events::incrementAndGet;
     EventDataListener dataListener = Event.dataListener(listener);
-    TableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
+    FilteredTableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
     selectionModel.addSelectedIndexListener(dataListener);
     selectionModel.addSelectionChangedListener(listener);
     selectionModel.addSelectedItemListener(dataListener);
@@ -638,7 +639,7 @@ public final class DefaultFilteredTableModelTest {
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
     //test selection and filtering together
-    TableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
+    FilteredTableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
     tableModel.getSelectionModel().addSelectedIndexes(singletonList(3));
     assertEquals(3, selectionModel.getMinSelectionIndex());
 

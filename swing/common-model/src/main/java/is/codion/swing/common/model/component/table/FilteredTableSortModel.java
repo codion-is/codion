@@ -16,7 +16,7 @@ import java.util.List;
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifiers in the table model
  */
-public interface TableSortModel<R, C> {
+public interface FilteredTableSortModel<R, C> {
 
   /**
    * Sorts the given list according to the sort configuration
@@ -112,26 +112,26 @@ public interface TableSortModel<R, C> {
   }
 
   /**
-   * A factory for {@link TableSortModel} instances.
+   * A factory for {@link FilteredTableSortModel} instances.
    * @param tableModel the table model
    * @param <R> the row type
    * @param <C> the column identifier type
-   * @return a new {@link TableSortModel} instance
+   * @return a new {@link FilteredTableSortModel} instance
    */
-  static <R, C> TableSortModel<R, C> create(FilteredTableModel<R, C> tableModel) {
-    return new SwingTableSortModel<>(tableModel);
+  static <R, C> FilteredTableSortModel<R, C> create(FilteredTableModel<R, C> tableModel) {
+    return new DefaultFilteredTableSortModel<>(tableModel);
   }
 
   /**
-   * A factory for {@link TableSortModel} instances.
+   * A factory for {@link FilteredTableSortModel} instances.
    * @param tableModel the table model
    * @param columnComparatorFactory the column comparator factory
    * @param <R> the row type
    * @param <C> the column identifier type
-   * @return a new {@link TableSortModel} instance
+   * @return a new {@link FilteredTableSortModel} instance
    */
-  static <R, C> TableSortModel<R, C> create(FilteredTableModel<R, C> tableModel,
-                                            ColumnComparatorFactory<C> columnComparatorFactory) {
-    return new SwingTableSortModel<>(tableModel, columnComparatorFactory);
+  static <R, C> FilteredTableSortModel<R, C> create(FilteredTableModel<R, C> tableModel,
+                                                    ColumnComparatorFactory<C> columnComparatorFactory) {
+    return new DefaultFilteredTableSortModel<>(tableModel, columnComparatorFactory);
   }
 }

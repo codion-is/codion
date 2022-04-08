@@ -19,7 +19,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class SwingTableSelectionModel<R> extends DefaultListSelectionModel implements TableSelectionModel<R> {
+final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionModel implements FilteredTableSelectionModel<R> {
 
   private final Event<?> selectionChangedEvent = Event.event();
   private final Event<Integer> selectedIndexChangedEvent = Event.event();
@@ -41,10 +41,10 @@ final class SwingTableSelectionModel<R> extends DefaultListSelectionModel implem
    */
   private final FilteredTableModel<R, ?> tableModel;
 
-  SwingTableSelectionModel(FilteredTableModel<R, ?> tableModel) {
+  DefaultFilteredTableSelectionModel(FilteredTableModel<R, ?> tableModel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.tableModel.addRowsRemovedListener(removal ->
-            SwingTableSelectionModel.super.removeIndexInterval(removal.getFromRow(), removal.getToRow()));
+            DefaultFilteredTableSelectionModel.super.removeIndexInterval(removal.getFromRow(), removal.getToRow()));
     bindEvents();
   }
 

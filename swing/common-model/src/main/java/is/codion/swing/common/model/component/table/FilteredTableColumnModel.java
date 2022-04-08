@@ -121,6 +121,6 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * @return a new {@link  FilteredTableColumnModel}
    */
   static <C> FilteredTableColumnModel<C> create(List<TableColumn> tableColumns) {
-    return new SwingFilteredTableColumnModel<>(tableColumns);
+    return new DefaultFilteredTableColumnModel<>(tableColumns);
   }
 }

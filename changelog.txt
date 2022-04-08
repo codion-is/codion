@@ -7977,3 +7977,4 @@
   FilteredTableModel.getColumnValue() and getColumnClass() and ColumnValueProvider and ColumnClassProvider added, related refactoring
   FilteredTableModel extends TableModel
   AbstractFilteredTableModel no longer abstract, renamed DefaultFilteredTableModel
+  TableSelectionModel and TableSortModel and renamed FilteredTableSelectionModel and FilteredTableSortModel respectively

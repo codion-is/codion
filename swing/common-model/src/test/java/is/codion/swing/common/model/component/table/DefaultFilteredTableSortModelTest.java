@@ -15,7 +15,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SwingTableSortModelTest {
+public class DefaultFilteredTableSortModelTest {
 
   @Test
   void test() {
@@ -45,7 +45,7 @@ public class SwingTableSortModelTest {
                   return null;
               }
             });
-    SwingTableSortModel<Row, Integer> model = new SwingTableSortModel<Row, Integer>(tableModel);
+    DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<Row, Integer>(tableModel);
 
     Row firstRow = new Row(1, 2, null);
     Row secondRow = new Row(1, 2, 5);
@@ -102,7 +102,7 @@ public class SwingTableSortModelTest {
     FilteredTableModel<ArrayList, Integer> tableModel = new DefaultFilteredTableModel<>(
             FilteredTableColumnModel.create(Collections.singletonList(firstColumn)),
             columnIdentifier -> ArrayList.class, (row, columnIdentifier) -> row.toString());
-    SwingTableSortModel<ArrayList, Integer> model = new SwingTableSortModel<ArrayList, Integer>(tableModel);
+    DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<ArrayList, Integer>(tableModel);
     List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
     model.setSortOrder(0, SortOrder.DESCENDING);
     model.sort(collections);

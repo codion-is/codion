@@ -11,15 +11,15 @@ import javax.swing.ListSelectionModel;
  * A table selection model
  * @param <R> the type of rows
  */
-public interface TableSelectionModel<R> extends ListSelectionModel, SelectionModel<R> {
+public interface FilteredTableSelectionModel<R> extends ListSelectionModel, SelectionModel<R> {
 
   /**
-   * Instantiates a new {@link TableSelectionModel}
+   * Instantiates a new {@link FilteredTableSelectionModel}
    * @param tableModel the FilteredTableModel to base this selection model on
    * @param <R> the row type
-   * @return a new {@link TableSelectionModel}
+   * @return a new {@link FilteredTableSelectionModel}
    */
-  static <R> TableSelectionModel<R> create(FilteredTableModel<R, ?> tableModel) {
-    return new SwingTableSelectionModel<>(tableModel);
+  static <R> FilteredTableSelectionModel<R> create(FilteredTableModel<R, ?> tableModel) {
+    return new DefaultFilteredTableSelectionModel<>(tableModel);
   }
 }
