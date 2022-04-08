@@ -72,9 +72,9 @@ public class EntityComponents {
 
   /**
    * @param attribute the attribute
-   * @return true if {@link #inputComponent(Attribute)} supports the given attribute
+   * @return true if {@link #component(Attribute)} supports the given attribute
    */
-  public boolean inputComponentSupported(Attribute<?> attribute) {
+  public boolean supports(Attribute<?> attribute) {
     requireNonNull(attribute);
     if (attribute instanceof ForeignKey) {
       return false;
@@ -106,7 +106,7 @@ public class EntityComponents {
    * @return the component builder handling input for {@code attribute}
    * @throws IllegalArgumentException in case the attribute type is not supported
    */
-  public <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> inputComponent(Attribute<T> attribute) {
+  public <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> component(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
     if (property instanceof ItemProperty) {
       return (ComponentBuilder<T, C, B>) itemComboBox(attribute);
