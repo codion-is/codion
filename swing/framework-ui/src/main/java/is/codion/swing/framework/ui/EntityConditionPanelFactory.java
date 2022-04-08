@@ -84,7 +84,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
     if (conditionModel instanceof ForeignKeyConditionModel) {
       boundFieldFactory = new ForeignKeyBoundFieldFactory((ForeignKeyConditionModel) conditionModel, entityComponents);
     }
-    else if (entityComponents.inputComponentSupported(conditionModel.getColumnIdentifier())) {
+    else if (entityComponents.supports(conditionModel.getColumnIdentifier())) {
       boundFieldFactory = new AttributeBoundFieldFactory<>(conditionModel, entityComponents, conditionModel.getColumnIdentifier());
     }
     else {
@@ -156,7 +156,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
     @Override
     public JComponent createEqualField() {
-      return inputComponents.inputComponent(attribute)
+      return inputComponents.component(attribute)
               .linkedValue(conditionModel.getEqualValueSet().value())
               .onBuild(AttributeBoundFieldFactory::configureComponent)
               .build();
@@ -168,7 +168,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
         return Optional.empty();//no upper bound field required for booleans
       }
 
-      return Optional.of(inputComponents.inputComponent(attribute)
+      return Optional.of(inputComponents.component(attribute)
               .linkedValue(conditionModel.getUpperBoundValue())
               .onBuild(AttributeBoundFieldFactory::configureComponent)
               .build());
@@ -180,7 +180,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
         return Optional.empty();//no lower bound field required for booleans
       }
 
-      return Optional.of(inputComponents.inputComponent(attribute)
+      return Optional.of(inputComponents.component(attribute)
               .linkedValue(conditionModel.getLowerBoundValue())
               .onBuild(AttributeBoundFieldFactory::configureComponent)
               .build());

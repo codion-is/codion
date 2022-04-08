@@ -44,7 +44,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
       return (ComponentValue<T, C>) fileInputPanel();
     }
 
-    return (ComponentValue<T, C>) inputComponents.inputComponent(attribute)
+    return (ComponentValue<T, C>) inputComponents.component(attribute)
             .initialValue(initialValue)
             .buildComponentValue();
   }

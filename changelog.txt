@@ -8017,3 +8017,4 @@
   FilteredTableSortModel and FilteredTableSelectionModel, unused factory methods removed
   DefaultFilteredTableModel, FilteredTableColumnModel constructor parameter replaced with List of TableColumn
   FilteredTableColumnModel unused factory method removed
+  EntityComponents.inputComponentSupported() and inputComponent() renamed supports() and component() respectively
