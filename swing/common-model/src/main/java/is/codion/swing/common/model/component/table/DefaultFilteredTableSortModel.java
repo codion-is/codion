@@ -47,16 +47,11 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   private final SortingStatesComparator sortingStatesComparator = new SortingStatesComparator();
 
   DefaultFilteredTableSortModel(ColumnClassProvider<C> columnClassProvider,
-                                ColumnValueProvider<R, C> columnValueProvider) {
-    this(columnClassProvider, columnValueProvider, new DefaultColumnComparatorFactory<>());
-  }
-
-  DefaultFilteredTableSortModel(ColumnClassProvider<C> columnClassProvider,
                                 ColumnValueProvider<R, C> columnValueProvider,
                                 ColumnComparatorFactory<C> columnComparatorFactory) {
     this.columnClassProvider = requireNonNull(columnClassProvider);
     this.columnValueProvider = requireNonNull(columnValueProvider);
-    this.columnComparatorFactory = requireNonNull(columnComparatorFactory);
+    this.columnComparatorFactory = columnComparatorFactory == null ? new DefaultColumnComparatorFactory<>() : columnComparatorFactory;
   }
 
   @Override
