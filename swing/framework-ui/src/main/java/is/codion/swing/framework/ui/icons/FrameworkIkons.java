@@ -5,7 +5,7 @@ package is.codion.swing.framework.ui.icons;
 
 import org.kordamp.ikonli.Ikon;
 
-public enum FrameworkIkons implements Ikon {
+enum FrameworkIkons implements Ikon {
 
   FILTER("fr-filter", '\uf14b'),
   ADD("fr-add", '\uf17f'),
