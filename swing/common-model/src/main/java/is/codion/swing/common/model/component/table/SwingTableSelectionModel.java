@@ -6,7 +6,6 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
@@ -20,11 +19,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-/**
- * A default table selection model implementation
- * @param <R> the type of rows
- */
-public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel implements SelectionModel<R> {
+final class SwingTableSelectionModel<R> extends DefaultListSelectionModel implements TableSelectionModel<R> {
 
   private final Event<?> selectionChangedEvent = Event.event();
   private final Event<Integer> selectedIndexChangedEvent = Event.event();
@@ -46,11 +41,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
    */
   private final FilteredTableModel<R, ?> tableModel;
 
-  /**
-   * Instantiates a new SwingTableSelectionModel
-   * @param tableModel the FilteredTableModel required for accessing table model items and size
-   */
-  public SwingTableSelectionModel(FilteredTableModel<R, ?> tableModel) {
+  SwingTableSelectionModel(FilteredTableModel<R, ?> tableModel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.tableModel.addRowsRemovedListener(removal ->
             SwingTableSelectionModel.super.removeIndexInterval(removal.getFromRow(), removal.getToRow()));

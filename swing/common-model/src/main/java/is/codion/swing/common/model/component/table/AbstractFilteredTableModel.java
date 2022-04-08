@@ -78,7 +78,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The selection model
    */
-  private final SwingTableSelectionModel<R> selectionModel;
+  private final TableSelectionModel<R> selectionModel;
 
   /**
    * The TableColumnModel
@@ -146,7 +146,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
                                     Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     this.columnModel = requireNonNull(columnModel, "columnModel");
     this.sortModel = requireNonNull(sortModel, "sortModel");
-    this.selectionModel = new SwingTableSelectionModel<>(this);
+    this.selectionModel = TableSelectionModel.create(this);
     if (columnFilterModels != null) {
       for (ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
         this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
@@ -274,7 +274,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final SwingTableSelectionModel<R> getSelectionModel() {
+  public final TableSelectionModel<R> getSelectionModel() {
     return selectionModel;
   }
 

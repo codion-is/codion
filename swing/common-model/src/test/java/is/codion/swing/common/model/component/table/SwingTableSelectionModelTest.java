@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingTableSelectionModelTest {
 
-  private final SwingTableSelectionModel<String> testModel;
+  private final TableSelectionModel<String> testModel;
 
   public SwingTableSelectionModelTest() {
     List<String> data = asList("A", "B", "C");

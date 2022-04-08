@@ -547,7 +547,7 @@ public final class AbstractFilteredTableModelTest {
     AtomicInteger events = new AtomicInteger();
     EventListener listener = events::incrementAndGet;
     EventDataListener dataListener = Event.dataListener(listener);
-    SwingTableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
+    TableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
     selectionModel.addSelectedIndexListener(dataListener);
     selectionModel.addSelectionChangedListener(listener);
     selectionModel.addSelectedItemListener(dataListener);
@@ -690,7 +690,7 @@ public final class AbstractFilteredTableModelTest {
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
     //test selection and filtering together
-    SwingTableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
+    TableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
     tableModel.getSelectionModel().addSelectedIndexes(singletonList(3));
     assertEquals(3, selectionModel.getMinSelectionIndex());
 
