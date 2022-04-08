@@ -13,7 +13,6 @@ import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.swing.common.model.component.table.FilteredTableSortModel.ColumnComparatorFactory;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.SwingUtilities;
@@ -131,68 +130,65 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   /**
    * Instantiates a new table model.
-   * @param columnModel the table column model to base this table model on
+   * @param tableColumns the table columns to base this table model on
    * @param columnClassProvider the column class provider
    * @param columnValueProvider the column value provider
    * @throws NullPointerException in case {@code columnModel} is null
    */
-  public DefaultFilteredTableModel(FilteredTableColumnModel<C> columnModel,
+  public DefaultFilteredTableModel(List<TableColumn> tableColumns,
                                    ColumnClassProvider<C> columnClassProvider,
                                    ColumnValueProvider<R, C> columnValueProvider) {
-    this(columnModel, columnClassProvider, columnValueProvider, (ColumnComparatorFactory<C>) null);
+    this(tableColumns, columnClassProvider, columnValueProvider, (ColumnComparatorFactory<C>) null);
   }
 
   /**
    * Instantiates a new table model.
-   * @param columnModel the table column model to base this table model on
+   * @param tableColumns the table columns to base this table model on
    * @param columnClassProvider the column class provider
    * @param columnValueProvider the column value provider
    * @param columnComparatorFactory the column comparator factory
-   * @throws NullPointerException in case {@code columnModel} is null
    */
-  public DefaultFilteredTableModel(FilteredTableColumnModel<C> columnModel,
+  public DefaultFilteredTableModel(List<TableColumn> tableColumns,
                                    ColumnClassProvider<C> columnClassProvider,
                                    ColumnValueProvider<R, C> columnValueProvider,
                                    ColumnComparatorFactory<C> columnComparatorFactory) {
-    this(columnModel, columnClassProvider, columnValueProvider, columnComparatorFactory, null);
+    this(tableColumns, columnClassProvider, columnValueProvider, columnComparatorFactory, null);
   }
 
   /**
    * Instantiates a new table model.
-   * @param columnModel the table column model to base this table model on
+   * @param tableColumns the table columns to base this table model on
    * @param columnClassProvider the column class provider
    * @param columnValueProvider the column value provider
    * @param columnFilterModels the filter models if any
-   * @throws NullPointerException in case {@code columnModel} is null
    */
-  public DefaultFilteredTableModel(FilteredTableColumnModel<C> columnModel,
+  public DefaultFilteredTableModel(List<TableColumn> tableColumns,
                                    ColumnClassProvider<C> columnClassProvider,
                                    ColumnValueProvider<R, C> columnValueProvider,
                                    Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
-    this(columnModel, columnClassProvider, columnValueProvider, null, columnFilterModels);
+    this(tableColumns, columnClassProvider, columnValueProvider, null, columnFilterModels);
   }
 
   /**
    * Instantiates a new table model.
-   * @param columnModel the table column model to base this table model on
+   * @param tableColumns the table columns to base this table model on
    * @param columnClassProvider the column class provider
    * @param columnValueProvider the column value provider
    * @param columnComparatorFactory the column comparator factory
    * @param columnFilterModels the filter models if any
-   * @throws NullPointerException in case {@code columnModel} is null
    */
-  public DefaultFilteredTableModel(FilteredTableColumnModel<C> columnModel,
+  public DefaultFilteredTableModel(List<TableColumn> tableColumns,
                                    ColumnClassProvider<C> columnClassProvider,
                                    ColumnValueProvider<R, C> columnValueProvider,
                                    ColumnComparatorFactory<C> columnComparatorFactory,
                                    Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
-    this.columnModel = requireNonNull(columnModel, "columnModel");
+    this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
     this.columnClassProvider = requireNonNull(columnClassProvider);
     this.columnValueProvider = requireNonNull(columnValueProvider);
     this.sortModel = columnComparatorFactory == null ?
-            FilteredTableSortModel.create(this) :
-            FilteredTableSortModel.create(this, columnComparatorFactory);
-    this.selectionModel = FilteredTableSelectionModel.create(this);
+            new DefaultFilteredTableSortModel<>(columnClassProvider, columnValueProvider) :
+            new DefaultFilteredTableSortModel<>(columnClassProvider, columnValueProvider, columnComparatorFactory);
+    this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     if (columnFilterModels != null) {
       for (ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
         this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
@@ -505,11 +501,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final Object getColumnValue(R row, C columnIdentifier) {
-    return columnValueProvider.getColumnValue(row, columnIdentifier);
-  }
-
-  @Override
   public final Class<?> getColumnClass(C columnIdentifier) {
     return columnClassProvider.getColumnClass(columnIdentifier);
   }
@@ -524,7 +515,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     C columnIdentifier = getColumnModel().getColumnIdentifier(columnIndex);
     R row = getItemAt(rowIndex);
 
-    return getColumnValue(row, columnIdentifier);
+    return columnValueProvider.getColumnValue(row, columnIdentifier);
   }
 
   @Override

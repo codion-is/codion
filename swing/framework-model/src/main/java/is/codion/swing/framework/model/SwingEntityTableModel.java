@@ -31,7 +31,6 @@ import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.model.component.table.FilteredTableSortModel.ColumnComparatorFactory;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -174,8 +173,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @param tableConditionModel the table condition model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
-    super(FilteredTableColumnModel.create(createColumns(requireNonNull(editModel, "editModel")
-                    .getConnectionProvider().getEntities().getDefinition(editModel.getEntityType()))),
+    super(createColumns(requireNonNull(editModel, "editModel")
+                    .getConnectionProvider().getEntities().getDefinition(editModel.getEntityType())),
             new EntityColumnClassProvider(), new EntityColumnValueProvider(),
             new EntityColumnComparatorFactory(editModel.getEntities()), requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels().values());
     if (!tableConditionModel.getEntityType().equals(editModel.getEntityType())) {

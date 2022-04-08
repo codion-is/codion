@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -96,7 +95,7 @@ public class FilteredTableTest {
 
     private TestAbstractFilteredTableModel(List<TableColumn> columns,
                                            List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
-      super(FilteredTableColumnModel.create(columns), columnIdentifier -> String.class, List::get, columnFilterModels);
+      super(columns, columnIdentifier -> String.class, List::get, columnFilterModels);
     }
 
     @Override

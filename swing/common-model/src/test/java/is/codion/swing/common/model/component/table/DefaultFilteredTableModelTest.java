@@ -50,7 +50,7 @@ public final class DefaultFilteredTableModelTest {
   private static class TestAbstractFilteredTableModel extends DefaultFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(Comparator<String> customComparator) {
-      super(new DefaultFilteredTableColumnModel<>(createColumns()),
+      super(createColumns(),
               columnIdentifier -> String.class, List::get, (columnIdentifier, columnClass) -> {
                 if (customComparator != null) {
                   return customComparator;
@@ -123,14 +123,13 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void nullSortModel() {
     assertThrows(NullPointerException.class, () -> new DefaultFilteredTableModel<String, Integer>(
-            new DefaultFilteredTableColumnModel<>(singletonList(new TableColumn())), null, null));
+            singletonList(new TableColumn()), null, null));
   }
 
   @Test
   void noColumns() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultFilteredTableModel<String, Integer>(
-            new DefaultFilteredTableColumnModel<>(emptyList()),
-            columnIdentifier -> null, (row, columnIdentifier) -> null));
+            emptyList(), columnIdentifier -> null, (row, columnIdentifier) -> null));
   }
 
   @Test
@@ -297,7 +296,7 @@ public final class DefaultFilteredTableModelTest {
             new Row(2, "c"), new Row(3, "d"), new Row(4, "e"));
 
     FilteredTableModel<Row, Integer> testModel = new DefaultFilteredTableModel<Row, Integer>(
-            new DefaultFilteredTableColumnModel<>(asList(columnId, columnValue)),
+            asList(columnId, columnValue),
             columnIdentifier -> {
               if (columnIdentifier == 0) {
                 return Integer.class;

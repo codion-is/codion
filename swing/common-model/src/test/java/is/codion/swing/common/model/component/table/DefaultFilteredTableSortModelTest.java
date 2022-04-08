@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -25,27 +23,24 @@ public class DefaultFilteredTableSortModelTest {
     secondColumn.setIdentifier(1);
     TableColumn thirdColumn = new TableColumn(2);
     thirdColumn.setIdentifier(2);
-    FilteredTableModel<Row, Integer> tableModel = new DefaultFilteredTableModel<>(
-            FilteredTableColumnModel.create(Arrays.asList(firstColumn, secondColumn, thirdColumn)),
-            columnIdentifier -> {
-              if (columnIdentifier.equals(1)) {
-                return String.class;
-              }
+    DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<Row, Integer>(columnIdentifier -> {
+      if (columnIdentifier.equals(1)) {
+        return String.class;
+      }
 
-              return Integer.class;
-            }, (row, columnIdentifier) -> {
-              switch (columnIdentifier) {
-                case 0:
-                  return row.firstValue;
-                case 1:
-                  return row.secondValue.toString();
-                case 2:
-                  return row.thirdValue;
-                default:
-                  return null;
-              }
-            });
-    DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<Row, Integer>(tableModel);
+      return Integer.class;
+    }, (row, columnIdentifier) -> {
+      switch (columnIdentifier) {
+        case 0:
+          return row.firstValue;
+        case 1:
+          return row.secondValue.toString();
+        case 2:
+          return row.thirdValue;
+        default:
+          return null;
+      }
+    });
 
     Row firstRow = new Row(1, 2, null);
     Row secondRow = new Row(1, 2, 5);
@@ -99,10 +94,8 @@ public class DefaultFilteredTableSortModelTest {
   void nonComparableColumnClass() {
     TableColumn firstColumn = new TableColumn(0);
     firstColumn.setIdentifier(0);
-    FilteredTableModel<ArrayList, Integer> tableModel = new DefaultFilteredTableModel<>(
-            FilteredTableColumnModel.create(Collections.singletonList(firstColumn)),
+    DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<ArrayList, Integer>(
             columnIdentifier -> ArrayList.class, (row, columnIdentifier) -> row.toString());
-    DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<ArrayList, Integer>(tableModel);
     List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
     model.setSortOrder(0, SortOrder.DESCENDING);
     model.sort(collections);

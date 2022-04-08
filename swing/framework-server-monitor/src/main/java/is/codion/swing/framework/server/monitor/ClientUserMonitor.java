@@ -11,7 +11,6 @@ import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnClassProvider;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
@@ -257,7 +256,7 @@ public final class ClientUserMonitor {
   private final class UserHistoryTableModel extends DefaultFilteredTableModel<UserInfo, Integer> {
 
     private UserHistoryTableModel() {
-      super(FilteredTableColumnModel.create(createUserHistoryColumns()),
+      super(createUserHistoryColumns(),
               new UserHistoryColumnClassProvider(), new UserHistoryColumnValueProvider());
       setMergeOnRefresh(true);
     }
