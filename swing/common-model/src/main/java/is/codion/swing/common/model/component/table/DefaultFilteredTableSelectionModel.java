@@ -128,7 +128,9 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
     }
 
     return IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
-            .filter(this::isSelectedIndex).boxed().collect(toList());
+            .filter(this::isSelectedIndex)
+            .boxed()
+            .collect(toList());
   }
 
   @Override
@@ -154,7 +156,8 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   @Override
   public List<R> getSelectedItems() {
     return getSelectedIndexes().stream()
-            .mapToInt(modelIndex ->modelIndex).mapToObj(tableModel::getItemAt)
+            .mapToInt(Integer::intValue)
+            .mapToObj(tableModel::getItemAt)
             .collect(toList());
   }
 
