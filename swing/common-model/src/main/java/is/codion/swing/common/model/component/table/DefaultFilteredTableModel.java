@@ -688,7 +688,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @see #findPrevious(int, String)
    */
   protected String getSearchValueAt(int rowIndex, C columnIdentifier) {
-    Object value = getValueAt(rowIndex, columnModel.getTableColumn(columnIdentifier).getModelIndex());
+    Object value = columnValueProvider.getColumnValue(getItemAt(rowIndex), columnIdentifier);
 
     return value == null ? "" : value.toString();
   }
