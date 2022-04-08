@@ -32,6 +32,9 @@ import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.TableSortModel;
+import is.codion.swing.common.model.component.table.TableSortModel.ColumnClassProvider;
+import is.codion.swing.common.model.component.table.TableSortModel.ColumnComparatorFactory;
+import is.codion.swing.common.model.component.table.TableSortModel.ColumnValueProvider;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -45,6 +48,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -152,7 +156,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param editModel the edit model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel) {
-    this(requireNonNull(editModel, "editModel"), new SwingEntityTableSortModel(editModel.getEntities()));
+    this(requireNonNull(editModel, "editModel"), TableSortModel.create(new EntityColumnClassProvider(),
+            new EntityColumnValueProvider(), new EntityColumnComparatorFactory(editModel.getEntities())));
   }
 
   /**
@@ -206,7 +211,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    * @param tableConditionModel the table condition model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
-    this(editModel, new SwingEntityTableSortModel(editModel.getEntities()), tableConditionModel);
+    this(editModel, TableSortModel.create(new EntityColumnClassProvider(), new EntityColumnValueProvider(),
+            new EntityColumnComparatorFactory(editModel.getEntities())), tableConditionModel);
   }
 
   /**
@@ -960,5 +966,39 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
             STATUS_MESSAGE_NUMBER_FORMAT.format(getSelectionModel().getSelectionCount()) + " " +
             MESSAGES.getString("selected") + (filteredItemCount > 0 ? " - " +
             STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
+  }
+
+  private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {
+
+    @Override
+    public Object getColumnValue(Entity entity, Attribute<?> attribute) {
+      return entity.get(attribute);
+    }
+  }
+
+  private static final class EntityColumnClassProvider implements ColumnClassProvider<Attribute<?>> {
+
+    @Override
+    public Class<?> getColumnClass(Attribute<?> attribute) {
+      return attribute.getTypeClass();
+    }
+  }
+
+  private static final class EntityColumnComparatorFactory implements ColumnComparatorFactory<Attribute<?>> {
+
+    private final Entities entities;
+
+    private EntityColumnComparatorFactory(Entities entities) {
+      this.entities = entities;
+    }
+
+    @Override
+    public Comparator<?> createComparator(Attribute<?> attribute, Class<?> columnClass) {
+      if (attribute instanceof ForeignKey) {
+        return entities.getDefinition(((ForeignKey) attribute).getReferencedEntityType()).getComparator();
+      }
+
+      return entities.getDefinition(attribute.getEntityType()).getProperty(attribute).getComparator();
+    }
   }
 }

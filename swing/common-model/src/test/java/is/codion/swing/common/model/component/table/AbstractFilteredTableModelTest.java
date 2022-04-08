@@ -50,26 +50,14 @@ public final class AbstractFilteredTableModelTest {
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(Comparator<String> customComparator) {
-      super(new SwingFilteredTableColumnModel<>(createColumns()), new AbstractTableSortModel<List<String>, Integer>() {
-        @Override
-        public Class<?> getColumnClass(Integer columnIdentifier) {
-          return String.class;
-        }
+      super(new SwingFilteredTableColumnModel<>(createColumns()), new SwingTableSortModel<List<String>, Integer>(
+              columnIdentifier -> String.class, List::get, (columnIdentifier, columnClass) -> {
+                if (customComparator != null) {
+                  return customComparator;
+                }
 
-        @Override
-        protected Object getColumnValue(List<String> row, Integer columnIdentifier) {
-          return row.get(columnIdentifier);
-        }
-
-        @Override
-        protected Comparator<String> initializeColumnComparator(Integer columnIdentifier) {
-          if (customComparator != null) {
-            return customComparator;
-          }
-
-          return (Comparator<String>) super.initializeColumnComparator(columnIdentifier);
-        }
-      }, createFilterModels());
+                return (Comparator<String>) String::compareTo;
+              }), createFilterModels());
     }
 
     @Override
@@ -150,17 +138,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   void noColumns() {
     assertThrows(IllegalArgumentException.class, () -> new AbstractFilteredTableModel<String, Integer>(new SwingFilteredTableColumnModel<>(emptyList()),
-            new AbstractTableSortModel<String, Integer>() {
-              @Override
-              protected Object getColumnValue(String row, Integer columnIdentifier) {
-                return null;
-              }
-
-              @Override
-              public Class<?> getColumnClass(Integer columnIdentifier) {
-                return null;
-              }
-            }) {
+            new SwingTableSortModel<String, Integer>(columnIdentifier -> null, (row, columnIdentifier) -> null)) {
 
       @Override
       public Object getValueAt(int rowIndex, int columnIndex) {
@@ -333,25 +311,19 @@ public final class AbstractFilteredTableModelTest {
             new Row(2, "c"), new Row(3, "d"), new Row(4, "e"));
 
     AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(new SwingFilteredTableColumnModel<>(asList(columnId, columnValue)),
-            new AbstractTableSortModel<Row, Integer>() {
-              @Override
-              public Class<? extends Object> getColumnClass(Integer columnIdentifier) {
-                if (columnIdentifier == 0) {
-                  return Integer.class;
-                }
-
-                return String.class;
+            new SwingTableSortModel<Row, Integer>(columnIdentifier -> {
+              if (columnIdentifier == 0) {
+                return Integer.class;
               }
 
-              @Override
-              protected Object getColumnValue(Row row, Integer columnIdentifier) {
-                if (columnIdentifier == 0) {
-                  return row.id;
-                }
-
-                return row.value;
+              return String.class;
+            }, (row, columnIdentifier) -> {
+              if (columnIdentifier == 0) {
+                return row.id;
               }
-            }) {
+
+              return row.value;
+            })) {
       @Override
       protected Collection<Row> refreshItems() {
         return items;

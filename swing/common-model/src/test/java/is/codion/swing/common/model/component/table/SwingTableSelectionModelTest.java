@@ -23,17 +23,8 @@ public class SwingTableSelectionModelTest {
     List<String> data = asList("A", "B", "C");
     TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    AbstractTableSortModel<String, Integer> sortModel = new AbstractTableSortModel<String, Integer>() {
-      @Override
-      public Class<String> getColumnClass(Integer columnIdentifier) {
-        return String.class;
-      }
-
-      @Override
-      protected Object getColumnValue(String row, Integer columnIdentifier) {
-        return row;
-      }
-    };
+    SwingTableSortModel<String, Integer> sortModel = new SwingTableSortModel<String, Integer>(
+            columnIdentifier -> String.class, (row, columnIdentifier) -> row);
     AbstractFilteredTableModel<String, Integer> tableModel = new AbstractFilteredTableModel<String, Integer>(
             new SwingFilteredTableColumnModel<>(singletonList(column)), sortModel) {
       @Override

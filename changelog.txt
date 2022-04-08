@@ -7973,3 +7973,4 @@
   FilteredTableColumnModel.getVisibleColumns() and getHiddenColumns() now return TableColumn instead of column identifiers, more consistent with getAllColumns()
   SwingFilteredTableColumnModel no longer public, FilteredTableColumnModel.create() factory method added
   SwingTableSelectionModel no longer public, TableSelectionModel added along with create() factory method
+  AbstractTableSortModel no longer public nor abstract, renamed SwingTableSortModel, TableSortModel.create() factory method added

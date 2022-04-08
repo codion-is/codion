@@ -13,7 +13,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AbstractTableSortModelTest {
+public class SwingTableSortModelTest {
 
   @Test
   void test() {
@@ -23,7 +23,25 @@ public class AbstractTableSortModelTest {
     secondColumn.setIdentifier(1);
     TableColumn thirdColumn = new TableColumn(2);
     thirdColumn.setIdentifier(2);
-    TestTableSortModel model = new TestTableSortModel();
+    SwingTableSortModel<Row, Integer> model = new SwingTableSortModel<Row, Integer>(
+            columnIdentifier -> {
+              if (columnIdentifier.equals(1)) {
+                return String.class;
+              }
+
+              return Integer.class;
+            }, (row, columnIdentifier) -> {
+              switch (columnIdentifier) {
+                case 0:
+                  return row.firstValue;
+                case 1:
+                  return row.secondValue.toString();
+                case 2:
+                  return row.thirdValue;
+                default:
+                  return null;
+              }
+            });
 
     Row firstRow = new Row(1, 2, null);
     Row secondRow = new Row(1, 2, 5);
@@ -75,17 +93,8 @@ public class AbstractTableSortModelTest {
 
   @Test
   void nonComparableColumnClass() {
-    AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>() {
-      @Override
-      public Class getColumnClass(Integer columnIdentifier) {
-        return ArrayList.class;
-      }
-
-      @Override
-      protected Object getColumnValue(ArrayList row, Integer columnIdentifier) {
-        return row.toString();
-      }
-    };
+    SwingTableSortModel<ArrayList, Integer> model = new SwingTableSortModel<ArrayList, Integer>(
+            columnIdentifier -> ArrayList.class, (row, columnIdentifier) -> row.toString());
     List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
     model.setSortOrder(0, SortOrder.DESCENDING);
     model.sort(collections);
@@ -113,32 +122,6 @@ public class AbstractTableSortModelTest {
     @Override
     public String toString() {
       return value.toString();
-    }
-  }
-
-  private static final class TestTableSortModel extends AbstractTableSortModel<Row, Integer> {
-
-    @Override
-    public Class<? extends Object> getColumnClass(Integer columnIdentifier) {
-      if (columnIdentifier.equals(1)) {
-        return String.class;
-      }
-
-      return Integer.class;
-    }
-
-    @Override
-    protected Object getColumnValue(Row row, Integer columnIdentifier) {
-      switch (columnIdentifier) {
-        case 0:
-          return row.firstValue;
-        case 1:
-          return row.secondValue.toString();
-        case 2:
-          return row.thirdValue;
-        default:
-          return null;
-      }
     }
   }
 }

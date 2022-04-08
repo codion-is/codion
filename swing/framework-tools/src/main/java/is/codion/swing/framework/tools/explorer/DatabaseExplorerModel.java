@@ -35,8 +35,8 @@ public final class DatabaseExplorerModel {
     this.connection = requireNonNull(database, "database").createConnection(user);
     try {
       this.metaDataModel = new MetaDataModel(connection.getMetaData());
-      this.schemaTableModel = new SchemaTableModel(metaDataModel.getSchemas(), new SchemaSortModel());
-      this.definitionTableModel = new DefinitionTableModel(schemaTableModel, new DefinitionSortModel());
+      this.schemaTableModel = new SchemaTableModel(metaDataModel.getSchemas());
+      this.definitionTableModel = new DefinitionTableModel(schemaTableModel);
       this.schemaTableModel.refresh();
       bindEvents();
     }

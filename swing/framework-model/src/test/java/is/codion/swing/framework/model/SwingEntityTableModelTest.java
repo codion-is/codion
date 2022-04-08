@@ -16,6 +16,7 @@ import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain;
+import is.codion.swing.common.model.component.table.TableSortModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -99,7 +99,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
             new DefaultFilterModelFactory(), new DefaultConditionModelFactory(getConnectionProvider()));
     assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(new SwingEntityEditModel(TestDomain.T_EMP, getConnectionProvider()),
-            new SwingEntityTableSortModel(getConnectionProvider().getEntities()), conditionModel));
+            TableSortModel.create(columnIdentifier -> null, (row, columnIdentifier) -> null), conditionModel));
   }
 
   @Test
@@ -164,13 +164,6 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     Entity entity = tableModel.getItemAt(0);
     assertEquals("newname", entity.get(TestDomain.EMP_NAME));
     assertThrows(RuntimeException.class, () -> tableModel.setValueAt("newname", 0, 0));
-  }
-
-  @Test
-  void testSortComparator() {
-    Comparator<?> comparator = ((SwingEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(TestDomain.DETAIL_MASTER_FK);
-    //make sure we get the comparator from the entity referenced by the foreign key
-    assertEquals(comparator, getConnectionProvider().getEntities().getDefinition(TestDomain.T_MASTER).getComparator());
   }
 
   @Test

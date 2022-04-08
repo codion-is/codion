@@ -6,6 +6,9 @@ package is.codion.swing.framework.tools.explorer;
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.TableSortModel;
+import is.codion.swing.common.model.component.table.TableSortModel.ColumnClassProvider;
+import is.codion.swing.common.model.component.table.TableSortModel.ColumnValueProvider;
 import is.codion.swing.framework.tools.metadata.Schema;
 
 import javax.swing.table.TableColumn;
@@ -24,8 +27,9 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
 
   private final SchemaTableModel schemaTableModel;
 
-  DefinitionTableModel(SchemaTableModel schemaTableModel, DefinitionSortModel sortModel) {
-    super(FilteredTableColumnModel.create(createDefinitionColumns()), sortModel,
+  DefinitionTableModel(SchemaTableModel schemaTableModel) {
+    super(FilteredTableColumnModel.create(createDefinitionColumns()), TableSortModel.create(
+                    new DefinitionColumnClassProvider(), new DefinitionColumnValueProvider()),
             asList(new DefaultColumnFilterModel<>(0, String.class, '%'),
                     new DefaultColumnFilterModel<>(1, String.class, '%')));
     this.schemaTableModel = schemaTableModel;
@@ -69,5 +73,34 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
     entityTypeColumn.setHeaderValue("Entity");
 
     return asList(domainColumn, entityTypeColumn);
+  }
+
+  private static final class DefinitionColumnClassProvider implements ColumnClassProvider<Integer> {
+
+    @Override
+    public Class<?> getColumnClass(Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case DefinitionTableModel.DOMAIN:
+        case DefinitionTableModel.ENTITY:
+          return String.class;
+        default:
+          throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
+      }
+    }
+  }
+
+  private static final class DefinitionColumnValueProvider implements ColumnValueProvider<DefinitionRow, Integer> {
+
+    @Override
+    public Object getColumnValue(DefinitionRow row, Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case DefinitionTableModel.DOMAIN:
+          return row.domain.getDomainType().getName();
+        case DefinitionTableModel.ENTITY:
+          return row.definition.getEntityType().getName();
+        default:
+          throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
+      }
+    }
   }
 }

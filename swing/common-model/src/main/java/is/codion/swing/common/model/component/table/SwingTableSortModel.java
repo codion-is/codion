@@ -16,12 +16,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-/**
- * A default TableSortModel implementation
- * @param <R> the type representing a row in the table model
- * @param <C> the type representing the column identifier in the table model
- */
-public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, C> {
+final class SwingTableSortModel<R, C> implements TableSortModel<R, C> {
 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
   private static final Comparator<?> TO_STRING_COMPARATOR = new ToStringComparator();
@@ -44,36 +39,53 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   private final Map<C, SortingState> sortingStates = new HashMap<>();
   private final SortingStatesComparator sortingStatesComparator = new SortingStatesComparator();
 
+  private final ColumnClassProvider<C> columnClassProvider;
+  private final ColumnValueProvider<R, C> columnValueProvider;
+  private final ColumnComparatorFactory<C> columnComparatorFactory;
+
+  SwingTableSortModel(ColumnClassProvider<C> columnClassProvider,
+                      ColumnValueProvider<R, C> columnValueProvider) {
+    this(columnClassProvider, columnValueProvider, new DefaultColumnComparatorFactory<>());
+  }
+
+  SwingTableSortModel(ColumnClassProvider<C> columnClassProvider,
+                      ColumnValueProvider<R, C> columnValueProvider,
+                      ColumnComparatorFactory<C> columnComparatorFactory) {
+    this.columnClassProvider = requireNonNull(columnClassProvider);
+    this.columnValueProvider = requireNonNull(columnValueProvider);
+    this.columnComparatorFactory = requireNonNull(columnComparatorFactory);
+  }
+
   @Override
-  public final void sort(List<R> items) {
+  public void sort(List<R> items) {
     requireNonNull(items, "items").sort(new RowComparator(getSortingStatesOrderedByPriority()));
   }
 
   @Override
-  public final SortingState getSortingState(C columnIdentifier) {
+  public SortingState getSortingState(C columnIdentifier) {
     requireNonNull(columnIdentifier, "columnIdentifier");
 
     return sortingStates.getOrDefault(columnIdentifier, EMPTY_SORTING_STATE);
   }
 
   @Override
-  public final void setSortOrder(C columnIdentifier, SortOrder sortOrder) {
+  public void setSortOrder(C columnIdentifier, SortOrder sortOrder) {
     setSortOrder(columnIdentifier, sortOrder, false);
   }
 
   @Override
-  public final void addSortOrder(C columnIdentifier, SortOrder sortOrder) {
+  public void addSortOrder(C columnIdentifier, SortOrder sortOrder) {
     setSortOrder(columnIdentifier, sortOrder, true);
   }
 
   @Override
-  public final boolean isSortingEnabled() {
+  public boolean isSortingEnabled() {
     return sortingStates.values().stream()
             .anyMatch(state -> !state.equals(EMPTY_SORTING_STATE));
   }
 
   @Override
-  public final LinkedHashMap<C, SortOrder> getColumnSortOrder() {
+  public LinkedHashMap<C, SortOrder> getColumnSortOrder() {
     LinkedHashMap<C, SortOrder> columnSortOrder = new LinkedHashMap<>();
     getSortingStatesOrderedByPriority().forEach(entry ->
             columnSortOrder.put(entry.getKey(), entry.getValue().getSortOrder()));
@@ -82,7 +94,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   }
 
   @Override
-  public final void clear() {
+  public void clear() {
     if (!sortingStates.isEmpty()) {
       C firstSortColumn = getSortingStatesOrderedByPriority().get(0).getKey();
       sortingStates.clear();
@@ -91,31 +103,13 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   }
 
   @Override
-  public final void addSortingChangedListener(EventDataListener<C> listener) {
+  public void addSortingChangedListener(EventDataListener<C> listener) {
     sortingChangedEvent.addDataListener(listener);
   }
 
-  /**
-   * Returns a value the given row and columnIdentifier, used for sorting
-   * @param row the object representing a given row
-   * @param columnIdentifier the column identifier
-   * @return a value for the given row and column
-   */
-  protected abstract Object getColumnValue(R row, C columnIdentifier);
-
-  /**
-   * Initializes a comparator used when sorting by the give column,
-   * the comparator receives the column values, but never null.
-   * @param columnIdentifier the column identifier
-   * @return the comparator to use when sorting by the given column
-   */
-  protected Comparator<?> initializeColumnComparator(C columnIdentifier) {
-    Class<?> columnClass = getColumnClass(columnIdentifier);
-    if (Comparable.class.isAssignableFrom(columnClass)) {
-      return COMPARABLE_COMPARATOR;
-    }
-
-    return TO_STRING_COMPARATOR;
+  @Override
+  public Class<?> getColumnClass(C columnIdentifier) {
+    return columnClassProvider.getColumnClass(columnIdentifier);
   }
 
   private void setSortOrder(C columnIdentifier, SortOrder sortOrder, boolean addColumnToSort) {
@@ -163,9 +157,9 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }
 
     @Override
-    public int compare(R o1, R o2) {
+    public int compare(R rowOne, R rowTwo) {
       for (Map.Entry<C, TableSortModel.SortingState> state : sortedSortingStates) {
-        int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getSortOrder());
+        int comparison = compareRows(rowOne, rowTwo, state.getKey(), state.getValue().getSortOrder());
         if (comparison != 0) {
           return comparison;
         }
@@ -175,8 +169,8 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }
 
     private int compareRows(R rowOne, R rowTwo, C columnIdentifier, SortOrder sortOrder) {
-      Object valueOne = getColumnValue(rowOne, columnIdentifier);
-      Object valueTwo = getColumnValue(rowTwo, columnIdentifier);
+      Object valueOne = columnValueProvider.getColumnValue(rowOne, columnIdentifier);
+      Object valueTwo = columnValueProvider.getColumnValue(rowTwo, columnIdentifier);
       int comparison;
       // Define null less than everything, except null.
       if (valueOne == null && valueTwo == null) {
@@ -190,7 +184,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       }
       else {
         comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(columnIdentifier,
-                k -> initializeColumnComparator(columnIdentifier))).compare(valueOne, valueTwo);
+                k -> columnComparatorFactory.createComparator(columnIdentifier, columnClassProvider.getColumnClass(columnIdentifier)))).compare(valueOne, valueTwo);
       }
       if (comparison != 0) {
         return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;
@@ -232,6 +226,18 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     @Override
     public SortOrder getSortOrder() {
       return sortOrder;
+    }
+  }
+
+  private static final class DefaultColumnComparatorFactory<C> implements ColumnComparatorFactory<C> {
+
+    @Override
+    public Comparator<?> createComparator(C columnIdentifier, Class<?> columnClass) {
+      if (Comparable.class.isAssignableFrom(columnClass)) {
+        return COMPARABLE_COMPARATOR;
+      }
+
+      return TO_STRING_COMPARATOR;
     }
   }
 }

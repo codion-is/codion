@@ -16,6 +16,7 @@ public interface TableSelectionModel<R> extends ListSelectionModel, SelectionMod
   /**
    * Instantiates a new {@link TableSelectionModel}
    * @param tableModel the FilteredTableModel to base this selection model on
+   * @param <R> the row type
    * @return a new {@link TableSelectionModel}
    */
   static <R> TableSelectionModel<R> create(FilteredTableModel<R, ?> tableModel) {

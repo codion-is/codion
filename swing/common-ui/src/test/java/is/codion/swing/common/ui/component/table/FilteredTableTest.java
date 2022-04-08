@@ -6,8 +6,8 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
-import is.codion.swing.common.model.component.table.AbstractTableSortModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.TableSortModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +40,7 @@ public class FilteredTableTest {
             new DefaultColumnFilterModel<>(0, String.class, '%');
 
     TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column),
-            new TestAbstractTableSortModel(), singletonList(filterModel)) {
+            TableSortModel.create(columnIdentifier -> String.class, List::get), singletonList(filterModel)) {
       @Override
       protected Collection<List<String>> refreshItems() {
         return asList(singletonList("darri"), singletonList("dac"), singletonList("dansinn"), singletonList("dlabo"));
@@ -96,7 +96,7 @@ public class FilteredTableTest {
 
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
-    private TestAbstractFilteredTableModel(List<TableColumn> columns, AbstractTableSortModel<List<String>, Integer> sortModel,
+    private TestAbstractFilteredTableModel(List<TableColumn> columns, TableSortModel<List<String>, Integer> sortModel,
                                            List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
       super(FilteredTableColumnModel.create(columns), sortModel, columnFilterModels);
     }
@@ -109,19 +109,6 @@ public class FilteredTableTest {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
       return getItemAt(rowIndex);
-    }
-  }
-
-  private static final class TestAbstractTableSortModel extends AbstractTableSortModel<List<String>, Integer> {
-
-    @Override
-    public Class<String> getColumnClass(Integer columnIdentifier) {
-      return String.class;
-    }
-
-    @Override
-    protected Object getColumnValue(List<String> row, Integer columnIdentifier) {
-      return row.get(columnIdentifier);
     }
   }
 }
