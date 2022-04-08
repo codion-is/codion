@@ -28,13 +28,7 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-/**
- * A TableColumnModel handling hidden columns.
- * Note that this column model does not support dynamically adding or removing columns,
- * {@link #addColumn(TableColumn)} and {@link #removeColumn(TableColumn)} both throw {@link UnsupportedOperationException}
- * @param <C> the type of column identifier
- */
-public final class SwingFilteredTableColumnModel<C> implements FilteredTableColumnModel<C> {
+final class SwingFilteredTableColumnModel<C> implements FilteredTableColumnModel<C> {
 
   private static final String COLUMN_IDENTIFIER = "columnIdentifier";
 
@@ -64,7 +58,7 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
    * Instantiates a new SwingFilteredTableColumnModel.
    * @param tableColumns the columns to base this model on
    */
-  public SwingFilteredTableColumnModel(List<TableColumn> tableColumns) {
+  SwingFilteredTableColumnModel(List<TableColumn> tableColumns) {
     if (requireNonNull(tableColumns, "columns").isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }

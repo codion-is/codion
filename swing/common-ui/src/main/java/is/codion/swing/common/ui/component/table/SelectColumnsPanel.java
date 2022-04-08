@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
@@ -43,11 +43,11 @@ final class SelectColumnsPanel<C> extends JPanel {
   private static final int COLUMNS_SELECTION_PANEL_HEIGHT = 250;
   private static final int COLUMN_SCROLL_BAR_UNIT_INCREMENT = 16;
 
-  private final SwingFilteredTableColumnModel<C> columnModel;
+  private final FilteredTableColumnModel<C> columnModel;
   private final Map<TableColumn, State> states;
   private final List<JCheckBox> checkBoxes;
 
-  SelectColumnsPanel(SwingFilteredTableColumnModel<C> columnModel) {
+  SelectColumnsPanel(FilteredTableColumnModel<C> columnModel) {
     super(new BorderLayout());
     this.columnModel = columnModel;
     this.states = createStateMap();

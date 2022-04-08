@@ -83,7 +83,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The TableColumnModel
    */
-  private final SwingFilteredTableColumnModel<C> columnModel;
+  private final FilteredTableColumnModel<C> columnModel;
 
   /**
    * The sort model
@@ -131,7 +131,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param sortModel the sort model to use
    * @throws NullPointerException in case {@code columnModel} or {@code sortModel} is null
    */
-  public AbstractFilteredTableModel(SwingFilteredTableColumnModel<C> columnModel, TableSortModel<R, C> sortModel) {
+  public AbstractFilteredTableModel(FilteredTableColumnModel<C> columnModel, TableSortModel<R, C> sortModel) {
     this(columnModel, sortModel, null);
   }
 
@@ -142,7 +142,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param columnFilterModels the filter models if any
    * @throws NullPointerException in case {@code columnModel} or {@code sortModel} is null
    */
-  public AbstractFilteredTableModel(SwingFilteredTableColumnModel<C> columnModel, TableSortModel<R, C> sortModel,
+  public AbstractFilteredTableModel(FilteredTableColumnModel<C> columnModel, TableSortModel<R, C> sortModel,
                                     Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     this.columnModel = requireNonNull(columnModel, "columnModel");
     this.sortModel = requireNonNull(sortModel, "sortModel");
@@ -454,7 +454,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final SwingFilteredTableColumnModel<C> getColumnModel() {
+  public final FilteredTableColumnModel<C> getColumnModel() {
     return columnModel;
   }
 

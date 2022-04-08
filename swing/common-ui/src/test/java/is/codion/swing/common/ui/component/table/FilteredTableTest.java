@@ -7,7 +7,7 @@ import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.component.table.AbstractTableSortModel;
-import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -98,7 +98,7 @@ public class FilteredTableTest {
 
     private TestAbstractFilteredTableModel(List<TableColumn> columns, AbstractTableSortModel<List<String>, Integer> sortModel,
                                            List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
-      super(new SwingFilteredTableColumnModel<>(columns), sortModel, columnFilterModels);
+      super(FilteredTableColumnModel.create(columns), sortModel, columnFilterModels);
     }
 
     @Override

@@ -30,7 +30,7 @@ import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
-import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.TableSortModel;
 
 import org.json.JSONObject;
@@ -218,7 +218,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, TableSortModel<Entity, Attribute<?>> sortModel,
                                EntityTableConditionModel tableConditionModel) {
-    super(new SwingFilteredTableColumnModel<>(createColumns(requireNonNull(editModel, "editModel")
+    super(FilteredTableColumnModel.create(createColumns(requireNonNull(editModel, "editModel")
                     .getConnectionProvider().getEntities().getDefinition(editModel.getEntityType()))),
             sortModel, requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels().values());
     if (!tableConditionModel.getEntityType().equals(editModel.getEntityType())) {
@@ -931,7 +931,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   private void applyColumnPreferences(JSONObject preferences) {
-    SwingFilteredTableColumnModel<Attribute<?>> columnModel = getColumnModel();
+    FilteredTableColumnModel<Attribute<?>> columnModel = getColumnModel();
     for (TableColumn column : Collections.list(columnModel.getColumns())) {
       Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
       if (columnModel.containsColumn(attribute)) {

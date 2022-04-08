@@ -7971,3 +7971,4 @@
   DefaultEntityTableCellRenderer, focused cell border darkened a bit
   EntityDefinition.Builder.readOnly(), smallDataset() and staticData(), boolean parameter added, for consistency
   FilteredTableColumnModel.getVisibleColumns() and getHiddenColumns() now return TableColumn instead of column identifiers, more consistent with getAllColumns()
+  SwingFilteredTableColumnModel no longer public, FilteredTableColumnModel.create() factory method added

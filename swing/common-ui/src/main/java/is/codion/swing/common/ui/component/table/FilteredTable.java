@@ -12,9 +12,9 @@ import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.RowColumn;
-import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.TableSortModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
@@ -808,7 +808,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     private void toggleColumnFilterPanel(MouseEvent event) {
-      SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
+      FilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
       TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
       toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
                       (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column)),

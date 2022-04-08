@@ -12,7 +12,7 @@ import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
 import is.codion.swing.common.model.component.table.AbstractTableSortModel;
-import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -256,7 +256,7 @@ public final class ClientUserMonitor {
   private final class UserHistoryTableModel extends AbstractFilteredTableModel<UserInfo, Integer> {
 
     private UserHistoryTableModel() {
-      super(new SwingFilteredTableColumnModel<>(createUserHistoryColumns()), new UserHistoryTableSortModel());
+      super(FilteredTableColumnModel.create(createUserHistoryColumns()), new UserHistoryTableSortModel());
       setMergeOnRefresh(true);
     }
 
