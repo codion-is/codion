@@ -13,6 +13,7 @@ import is.codion.common.state.State;
 
 import javax.swing.table.TableModel;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -159,14 +160,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   <T> Collection<T> getValues(C columnIdentifier);
 
   /**
-   * Returns the column value for the given row and columnIdentifier
-   * @param row the object representing a given row
-   * @param columnIdentifier the column identifier
-   * @return a value for the given row and column
-   */
-  Object getColumnValue(R row, C columnIdentifier);
-
-  /**
    * Returns the class of the column with the given identifier
    * @param columnIdentifier the column identifier
    * @return the Class representing the given column
@@ -304,6 +297,22 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
      * @return the Class representing the given column
      */
     Class<?> getColumnClass(C columnIdentifier);
+  }
+
+  /**
+   * A factory for {@link Comparator} instances for columns
+   * @param <C> the column identifier type
+   */
+  interface ColumnComparatorFactory<C> {
+
+    /**
+     * Creates a comparator used when sorting by the give column,
+     * the comparator receives the column values, but never null.
+     * @param columnIdentifier the column identifier
+     * @param columnClass the column class
+     * @return the comparator to use when sorting by the given column
+     */
+    Comparator<?> createComparator(C columnIdentifier, Class<?> columnClass);
   }
 
   /**

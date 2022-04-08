@@ -13,7 +13,6 @@ import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
-import is.codion.swing.common.model.component.table.FilteredTableSortModel.ColumnComparatorFactory;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.SwingUtilities;
@@ -190,9 +189,9 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     this.columnClassProvider = requireNonNull(columnClassProvider);
     this.columnValueProvider = requireNonNull(columnValueProvider);
     this.sortModel = columnComparatorFactory == null ?
-            FilteredTableSortModel.create(this) :
-            FilteredTableSortModel.create(this, columnComparatorFactory);
-    this.selectionModel = FilteredTableSelectionModel.create(this);
+            new DefaultFilteredTableSortModel<>(columnClassProvider, columnValueProvider) :
+            new DefaultFilteredTableSortModel<>(columnClassProvider, columnValueProvider, columnComparatorFactory);
+    this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     if (columnFilterModels != null) {
       for (ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
         this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
@@ -505,11 +504,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final Object getColumnValue(R row, C columnIdentifier) {
-    return columnValueProvider.getColumnValue(row, columnIdentifier);
-  }
-
-  @Override
   public final Class<?> getColumnClass(C columnIdentifier) {
     return columnClassProvider.getColumnClass(columnIdentifier);
   }
@@ -524,7 +518,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     C columnIdentifier = getColumnModel().getColumnIdentifier(columnIndex);
     R row = getItemAt(rowIndex);
 
-    return getColumnValue(row, columnIdentifier);
+    return columnValueProvider.getColumnValue(row, columnIdentifier);
   }
 
   @Override

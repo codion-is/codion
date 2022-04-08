@@ -5,6 +5,9 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnClassProvider;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnComparatorFactory;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import javax.swing.SortOrder;
 import java.util.Comparator;
@@ -23,7 +26,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 
   private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortOrder.UNSORTED, -1);
 
-  private final FilteredTableModel<R, C> tableModel;
+  private final ColumnClassProvider<C> columnClassProvider;
+  private final ColumnValueProvider<R, C> columnValueProvider;
   private final ColumnComparatorFactory<C> columnComparatorFactory;
 
   /**
@@ -42,12 +46,16 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   private final Map<C, SortingState> sortingStates = new HashMap<>();
   private final SortingStatesComparator sortingStatesComparator = new SortingStatesComparator();
 
-  DefaultFilteredTableSortModel(FilteredTableModel<R, C> tableModel) {
-    this(tableModel, new DefaultColumnComparatorFactory<>());
+  DefaultFilteredTableSortModel(ColumnClassProvider<C> columnClassProvider,
+                                ColumnValueProvider<R, C> columnValueProvider) {
+    this(columnClassProvider, columnValueProvider, new DefaultColumnComparatorFactory<>());
   }
 
-  DefaultFilteredTableSortModel(FilteredTableModel<R, C> tableModel, ColumnComparatorFactory<C> columnComparatorFactory) {
-    this.tableModel = requireNonNull(tableModel);
+  DefaultFilteredTableSortModel(ColumnClassProvider<C> columnClassProvider,
+                                ColumnValueProvider<R, C> columnValueProvider,
+                                ColumnComparatorFactory<C> columnComparatorFactory) {
+    this.columnClassProvider = requireNonNull(columnClassProvider);
+    this.columnValueProvider = requireNonNull(columnValueProvider);
     this.columnComparatorFactory = requireNonNull(columnComparatorFactory);
   }
 
@@ -100,11 +108,6 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   @Override
   public void addSortingChangedListener(EventDataListener<C> listener) {
     sortingChangedEvent.addDataListener(listener);
-  }
-
-  @Override
-  public Class<?> getColumnClass(C columnIdentifier) {
-    return tableModel.getColumnClass(columnIdentifier);
   }
 
   private void setSortOrder(C columnIdentifier, SortOrder sortOrder, boolean addColumnToSort) {
@@ -164,8 +167,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     }
 
     private int compareRows(R rowOne, R rowTwo, C columnIdentifier, SortOrder sortOrder) {
-      Object valueOne = tableModel.getColumnValue(rowOne, columnIdentifier);
-      Object valueTwo = tableModel.getColumnValue(rowTwo, columnIdentifier);
+      Object valueOne = columnValueProvider.getColumnValue(rowOne, columnIdentifier);
+      Object valueTwo = columnValueProvider.getColumnValue(rowTwo, columnIdentifier);
       int comparison;
       // Define null less than everything, except null.
       if (valueOne == null && valueTwo == null) {
@@ -180,7 +183,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
       else {
         comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(columnIdentifier,
                 k -> columnComparatorFactory.createComparator(columnIdentifier,
-                        tableModel.getColumnClass(columnIdentifier)))).compare(valueOne, valueTwo);
+                        columnClassProvider.getColumnClass(columnIdentifier)))).compare(valueOne, valueTwo);
       }
       if (comparison != 0) {
         return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;
