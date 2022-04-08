@@ -7,7 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.CancelException;
-import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
@@ -44,12 +44,12 @@ public final class DatabaseExplorerPanel extends JPanel {
    */
   DatabaseExplorerPanel(DatabaseExplorerModel model) {
     this.model = requireNonNull(model);
-    FilteredTable<Schema, Integer, AbstractFilteredTableModel<Schema, Integer>> schemaTable =
+    FilteredTable<Schema, Integer, FilteredTableModel<Schema, Integer>> schemaTable =
             new FilteredTable<>(model.getSchemaModel());
     JScrollPane schemaScroller = new JScrollPane(schemaTable);
 
     FilteredTable<DefinitionRow, Integer,
-            AbstractFilteredTableModel<DefinitionRow, Integer>> domainTable =
+            FilteredTableModel<DefinitionRow, Integer>> domainTable =
             new FilteredTable<>(model.getDefinitionModel());
     JScrollPane tableScroller = new JScrollPane(domainTable);
 

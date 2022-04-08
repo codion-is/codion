@@ -29,12 +29,9 @@ import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.model.component.table.TableSortModel;
-import is.codion.swing.common.model.component.table.TableSortModel.ColumnClassProvider;
 import is.codion.swing.common.model.component.table.TableSortModel.ColumnComparatorFactory;
-import is.codion.swing.common.model.component.table.TableSortModel.ColumnValueProvider;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -66,7 +63,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * A TableModel implementation for displaying and working with entities.
  */
-public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Attribute<?>>
+public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Attribute<?>>
         implements EntityTableModel<SwingEntityEditModel> {
 
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
@@ -143,38 +140,18 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
 
   /**
-   * Instantiates a new SwingEntityTableModel with default edit, sort and condition models.
+   * Instantiates a new SwingEntityTableModel.
    * @param entityType the entityType
-   * @param connectionProvider the db provider
+   * @param connectionProvider the connection provider
    */
   public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this(new SwingEntityEditModel(entityType, connectionProvider));
   }
 
   /**
-   * Instantiates a new DefaultEntityTableModel.
-   * @param editModel the edit model
-   */
-  public SwingEntityTableModel(SwingEntityEditModel editModel) {
-    this(requireNonNull(editModel, "editModel"), TableSortModel.create(new EntityColumnClassProvider(),
-            new EntityColumnValueProvider(), new EntityColumnComparatorFactory(editModel.getEntities())));
-  }
-
-  /**
-   * Instantiates a new DefaultEntityTableModel.
+   * Instantiates a new SwingEntityTableModel.
    * @param entityType the entityType
-   * @param connectionProvider the db provider
-   * @param sortModel the sort model
-   */
-  public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                               TableSortModel<Entity, Attribute<?>> sortModel) {
-    this(new SwingEntityEditModel(entityType, connectionProvider), sortModel);
-  }
-
-  /**
-   * Instantiates a new DefaultEntityTableModel.
-   * @param entityType the entityType
-   * @param connectionProvider the db provider
+   * @param connectionProvider the connection provider
    * @param tableConditionModel the table condition model
    */
   public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
@@ -183,50 +160,24 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
   }
 
   /**
-   * Instantiates a new DefaultEntityTableModel.
-   * @param entityType the entityType
-   * @param connectionProvider the db provider
-   * @param sortModel the sort model
-   * @param tableConditionModel the table condition model
-   */
-  public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                               TableSortModel<Entity, Attribute<?>> sortModel,
-                               EntityTableConditionModel tableConditionModel) {
-    this(new SwingEntityEditModel(entityType, connectionProvider), sortModel, tableConditionModel);
-  }
-
-  /**
-   * Instantiates a new DefaultEntityTableModel.
+   * Instantiates a new SwingEntityTableModel.
    * @param editModel the edit model
-   * @param sortModel the sort model
    */
-  public SwingEntityTableModel(SwingEntityEditModel editModel, TableSortModel<Entity, Attribute<?>> sortModel) {
-    this(editModel, sortModel, new DefaultEntityTableConditionModel(editModel.getEntityType(), editModel.getConnectionProvider(),
+  public SwingEntityTableModel(SwingEntityEditModel editModel) {
+    this(editModel, new DefaultEntityTableConditionModel(editModel.getEntityType(), editModel.getConnectionProvider(),
             new DefaultFilterModelFactory(), new SwingConditionModelFactory(editModel.getConnectionProvider())));
   }
 
   /**
-   * Instantiates a new DefaultEntityTableModel.
+   * Instantiates a new SwingEntityTableModel.
    * @param editModel the edit model
    * @param tableConditionModel the table condition model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
-    this(editModel, TableSortModel.create(new EntityColumnClassProvider(), new EntityColumnValueProvider(),
-            new EntityColumnComparatorFactory(editModel.getEntities())), tableConditionModel);
-  }
-
-  /**
-   * Instantiates a new DefaultEntityTableModel.
-   * @param editModel the edit model
-   * @param sortModel the sort model
-   * @param tableConditionModel the table condition model
-   * @throws NullPointerException in case editModel, sortModel or tableConditionModel is null
-   */
-  public SwingEntityTableModel(SwingEntityEditModel editModel, TableSortModel<Entity, Attribute<?>> sortModel,
-                               EntityTableConditionModel tableConditionModel) {
     super(FilteredTableColumnModel.create(createColumns(requireNonNull(editModel, "editModel")
                     .getConnectionProvider().getEntities().getDefinition(editModel.getEntityType()))),
-            sortModel, requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels().values());
+            new EntityColumnClassProvider(), new EntityColumnValueProvider(),
+            new EntityColumnComparatorFactory(editModel.getEntities()), requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels().values());
     if (!tableConditionModel.getEntityType().equals(editModel.getEntityType())) {
       throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.getEntityType()
               + ", tableModel: " + editModel.getEntityType());
@@ -395,20 +346,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, At
     Property<?> property = getEntityDefinition().getProperty(attribute);
 
     return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
-  }
-
-  /**
-   * Returns the value for the cell at <code>modelColumnIndex</code> and <code>rowIndex</code>.
-   * @param rowIndex the row whose value is to be queried
-   * @param modelColumnIndex the column whose value is to be queried
-   * @return the value Object at the specified cell
-   */
-  @Override
-  public final Object getValueAt(int rowIndex, int modelColumnIndex) {
-    Attribute<?> attribute = getColumnModel().getColumnIdentifier(modelColumnIndex);
-    Entity entity = getItemAt(rowIndex);
-
-    return getValue(entity, attribute);
   }
 
   /**

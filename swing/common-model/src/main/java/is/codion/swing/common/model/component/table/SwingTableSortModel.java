@@ -23,6 +23,9 @@ final class SwingTableSortModel<R, C> implements TableSortModel<R, C> {
 
   private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortOrder.UNSORTED, -1);
 
+  private final FilteredTableModel<R, C> tableModel;
+  private final ColumnComparatorFactory<C> columnComparatorFactory;
+
   /**
    * The comparators used to compare column values
    */
@@ -39,20 +42,12 @@ final class SwingTableSortModel<R, C> implements TableSortModel<R, C> {
   private final Map<C, SortingState> sortingStates = new HashMap<>();
   private final SortingStatesComparator sortingStatesComparator = new SortingStatesComparator();
 
-  private final ColumnClassProvider<C> columnClassProvider;
-  private final ColumnValueProvider<R, C> columnValueProvider;
-  private final ColumnComparatorFactory<C> columnComparatorFactory;
-
-  SwingTableSortModel(ColumnClassProvider<C> columnClassProvider,
-                      ColumnValueProvider<R, C> columnValueProvider) {
-    this(columnClassProvider, columnValueProvider, new DefaultColumnComparatorFactory<>());
+  SwingTableSortModel(FilteredTableModel<R, C> tableModel) {
+    this(tableModel, new DefaultColumnComparatorFactory<>());
   }
 
-  SwingTableSortModel(ColumnClassProvider<C> columnClassProvider,
-                      ColumnValueProvider<R, C> columnValueProvider,
-                      ColumnComparatorFactory<C> columnComparatorFactory) {
-    this.columnClassProvider = requireNonNull(columnClassProvider);
-    this.columnValueProvider = requireNonNull(columnValueProvider);
+  SwingTableSortModel(FilteredTableModel<R, C> tableModel, ColumnComparatorFactory<C> columnComparatorFactory) {
+    this.tableModel = requireNonNull(tableModel);
     this.columnComparatorFactory = requireNonNull(columnComparatorFactory);
   }
 
@@ -109,7 +104,7 @@ final class SwingTableSortModel<R, C> implements TableSortModel<R, C> {
 
   @Override
   public Class<?> getColumnClass(C columnIdentifier) {
-    return columnClassProvider.getColumnClass(columnIdentifier);
+    return tableModel.getColumnClass(columnIdentifier);
   }
 
   private void setSortOrder(C columnIdentifier, SortOrder sortOrder, boolean addColumnToSort) {
@@ -169,8 +164,8 @@ final class SwingTableSortModel<R, C> implements TableSortModel<R, C> {
     }
 
     private int compareRows(R rowOne, R rowTwo, C columnIdentifier, SortOrder sortOrder) {
-      Object valueOne = columnValueProvider.getColumnValue(rowOne, columnIdentifier);
-      Object valueTwo = columnValueProvider.getColumnValue(rowTwo, columnIdentifier);
+      Object valueOne = tableModel.getColumnValue(rowOne, columnIdentifier);
+      Object valueTwo = tableModel.getColumnValue(rowTwo, columnIdentifier);
       int comparison;
       // Define null less than everything, except null.
       if (valueOne == null && valueTwo == null) {
@@ -184,7 +179,8 @@ final class SwingTableSortModel<R, C> implements TableSortModel<R, C> {
       }
       else {
         comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(columnIdentifier,
-                k -> columnComparatorFactory.createComparator(columnIdentifier, columnClassProvider.getColumnClass(columnIdentifier)))).compare(valueOne, valueTwo);
+                k -> columnComparatorFactory.createComparator(columnIdentifier,
+                        tableModel.getColumnClass(columnIdentifier)))).compare(valueOne, valueTwo);
       }
       if (comparison != 0) {
         return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;

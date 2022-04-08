@@ -16,7 +16,6 @@ import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain;
-import is.codion.swing.common.model.component.table.TableSortModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -98,8 +97,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void nonMatchingConditionModelEntityType() {
     EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
             new DefaultFilterModelFactory(), new DefaultConditionModelFactory(getConnectionProvider()));
-    assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(new SwingEntityEditModel(TestDomain.T_EMP, getConnectionProvider()),
-            TableSortModel.create(columnIdentifier -> null, (row, columnIdentifier) -> null), conditionModel));
+    assertThrows(IllegalArgumentException.class, () ->
+            new SwingEntityTableModel(new SwingEntityEditModel(TestDomain.T_EMP, getConnectionProvider()), conditionModel));
   }
 
   @Test

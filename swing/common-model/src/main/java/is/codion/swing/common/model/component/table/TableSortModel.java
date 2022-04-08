@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * Handles the column sorting states for table models.
- * Instantiate with the {@link #create(ColumnClassProvider, ColumnValueProvider)} factory method.
+ * Instantiate with the {@link #create(FilteredTableModel)} factory method.
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifiers in the table model
  */
@@ -96,36 +96,6 @@ public interface TableSortModel<R, C> {
   }
 
   /**
-   * Provides the column value to sort by
-   * @param <R> the row type
-   * @param <C> the column identifier type
-   */
-  interface ColumnValueProvider<R, C> {
-
-    /**
-     * Returns a value the given row and columnIdentifier, used for sorting
-     * @param row the object representing a given row
-     * @param columnIdentifier the column identifier
-     * @return a value for the given row and column
-     */
-    Object getColumnValue(R row, C columnIdentifier);
-  }
-
-  /**
-   * Provides the type class for a column
-   * @param <C> the column identifier type
-   */
-  interface ColumnClassProvider<C> {
-
-    /**
-     * Returns the class of the column with the given identifier
-     * @param columnIdentifier the column identifier
-     * @return the Class representing the given column
-     */
-    Class<?> getColumnClass(C columnIdentifier);
-  }
-
-  /**
    * A factory for {@link Comparator} instances for columns
    * @param <C> the column identifier type
    */
@@ -143,29 +113,25 @@ public interface TableSortModel<R, C> {
 
   /**
    * A factory for {@link TableSortModel} instances.
-   * @param columnClassProvider the column class provider
-   * @param columnValueProvider the column value provider
+   * @param tableModel the table model
    * @param <R> the row type
    * @param <C> the column identifier type
    * @return a new {@link TableSortModel} instance
    */
-  static <R, C> TableSortModel<R, C> create(ColumnClassProvider<C> columnClassProvider,
-                                            ColumnValueProvider<R, C> columnValueProvider) {
-    return new SwingTableSortModel<>(columnClassProvider, columnValueProvider);
+  static <R, C> TableSortModel<R, C> create(FilteredTableModel<R, C> tableModel) {
+    return new SwingTableSortModel<>(tableModel);
   }
 
   /**
    * A factory for {@link TableSortModel} instances.
-   * @param columnClassProvider the column class provider
-   * @param columnValueProvider the column value provider
-   * @param columnComparatorFactory the column comparatory factory
+   * @param tableModel the table model
+   * @param columnComparatorFactory the column comparator factory
    * @param <R> the row type
    * @param <C> the column identifier type
    * @return a new {@link TableSortModel} instance
    */
-  static <R, C> TableSortModel<R, C> create(ColumnClassProvider<C> columnClassProvider,
-                                            ColumnValueProvider<R, C> columnValueProvider,
+  static <R, C> TableSortModel<R, C> create(FilteredTableModel<R, C> tableModel,
                                             ColumnComparatorFactory<C> columnComparatorFactory) {
-    return new SwingTableSortModel<>(columnClassProvider, columnValueProvider, columnComparatorFactory);
+    return new SwingTableSortModel<>(tableModel, columnComparatorFactory);
   }
 }

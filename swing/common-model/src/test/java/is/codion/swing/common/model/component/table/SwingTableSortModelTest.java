@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -23,7 +25,8 @@ public class SwingTableSortModelTest {
     secondColumn.setIdentifier(1);
     TableColumn thirdColumn = new TableColumn(2);
     thirdColumn.setIdentifier(2);
-    SwingTableSortModel<Row, Integer> model = new SwingTableSortModel<Row, Integer>(
+    FilteredTableModel<Row, Integer> tableModel = new DefaultFilteredTableModel<>(
+            FilteredTableColumnModel.create(Arrays.asList(firstColumn, secondColumn, thirdColumn)),
             columnIdentifier -> {
               if (columnIdentifier.equals(1)) {
                 return String.class;
@@ -42,6 +45,7 @@ public class SwingTableSortModelTest {
                   return null;
               }
             });
+    SwingTableSortModel<Row, Integer> model = new SwingTableSortModel<Row, Integer>(tableModel);
 
     Row firstRow = new Row(1, 2, null);
     Row secondRow = new Row(1, 2, 5);
@@ -93,8 +97,12 @@ public class SwingTableSortModelTest {
 
   @Test
   void nonComparableColumnClass() {
-    SwingTableSortModel<ArrayList, Integer> model = new SwingTableSortModel<ArrayList, Integer>(
+    TableColumn firstColumn = new TableColumn(0);
+    firstColumn.setIdentifier(0);
+    FilteredTableModel<ArrayList, Integer> tableModel = new DefaultFilteredTableModel<>(
+            FilteredTableColumnModel.create(Collections.singletonList(firstColumn)),
             columnIdentifier -> ArrayList.class, (row, columnIdentifier) -> row.toString());
+    SwingTableSortModel<ArrayList, Integer> model = new SwingTableSortModel<ArrayList, Integer>(tableModel);
     List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
     model.setSortOrder(0, SortOrder.DESCENDING);
     model.sort(collections);

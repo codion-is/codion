@@ -10,7 +10,7 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.framework.tools.metadata.MetaDataModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 
@@ -45,11 +45,11 @@ public final class DatabaseExplorerModel {
     }
   }
 
-  public AbstractFilteredTableModel<Schema, Integer> getSchemaModel() {
+  public FilteredTableModel<Schema, Integer> getSchemaModel() {
     return schemaTableModel;
   }
 
-  public AbstractFilteredTableModel<DefinitionRow, Integer> getDefinitionModel() {
+  public FilteredTableModel<DefinitionRow, Integer> getDefinitionModel() {
     return definitionTableModel;
   }
 

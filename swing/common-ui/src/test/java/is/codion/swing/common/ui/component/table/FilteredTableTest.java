@@ -5,9 +5,8 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.DefaultColumnFilterModel;
-import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.model.component.table.TableSortModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,8 +38,7 @@ public class FilteredTableTest {
     ColumnFilterModel<List<String>, Integer, String> filterModel =
             new DefaultColumnFilterModel<>(0, String.class, '%');
 
-    TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column),
-            TableSortModel.create(columnIdentifier -> String.class, List::get), singletonList(filterModel)) {
+    TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column), singletonList(filterModel)) {
       @Override
       protected Collection<List<String>> refreshItems() {
         return asList(singletonList("darri"), singletonList("dac"), singletonList("dansinn"), singletonList("dlabo"));
@@ -94,21 +92,16 @@ public class FilteredTableTest {
     filteredTable.findNext("dat");
   }
 
-  private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
+  private static class TestAbstractFilteredTableModel extends DefaultFilteredTableModel<List<String>, Integer> {
 
-    private TestAbstractFilteredTableModel(List<TableColumn> columns, TableSortModel<List<String>, Integer> sortModel,
+    private TestAbstractFilteredTableModel(List<TableColumn> columns,
                                            List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
-      super(FilteredTableColumnModel.create(columns), sortModel, columnFilterModels);
+      super(FilteredTableColumnModel.create(columns), columnIdentifier -> String.class, List::get, columnFilterModels);
     }
 
     @Override
     protected Collection<List<String>> refreshItems() {
       return ITEMS;
-    }
-
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-      return getItemAt(rowIndex);
     }
   }
 }

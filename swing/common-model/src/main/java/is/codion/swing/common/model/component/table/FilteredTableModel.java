@@ -9,9 +9,9 @@ import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
-import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
 
+import javax.swing.table.TableModel;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -22,7 +22,7 @@ import java.util.function.Predicate;
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  */
-public interface FilteredTableModel<R, C> extends FilteredModel<R> {
+public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
   /**
    * @param listener a listener to be notified each time a refresh has successfully finished
@@ -159,6 +159,21 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
   <T> Collection<T> getValues(C columnIdentifier);
 
   /**
+   * Returns the column value for the given row and columnIdentifier
+   * @param row the object representing a given row
+   * @param columnIdentifier the column identifier
+   * @return a value for the given row and column
+   */
+  Object getColumnValue(R row, C columnIdentifier);
+
+  /**
+   * Returns the class of the column with the given identifier
+   * @param columnIdentifier the column identifier
+   * @return the Class representing the given column
+   */
+  Class<?> getColumnClass(C columnIdentifier);
+
+  /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values
    * @param <T> the value type
    * @return the values (including nulls) of the column identified by {@code columnIdentifier} from the selected rows in the table model
@@ -241,7 +256,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
   /**
    * @return the selection model used by this table model
    */
-  SelectionModel<R> getSelectionModel();
+  TableSelectionModel<R> getSelectionModel();
 
   /**
    * @return the sorting model
@@ -260,6 +275,36 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R> {
    * Clears all items from this table model
    */
   void clear();
+
+  /**
+   * Provides the column value for a row and column
+   * @param <R> the row type
+   * @param <C> the column identifier type
+   */
+  interface ColumnValueProvider<R, C> {
+
+    /**
+     * Returns a value the given row and columnIdentifier, used for sorting
+     * @param row the object representing a given row
+     * @param columnIdentifier the column identifier
+     * @return a value for the given row and column
+     */
+    Object getColumnValue(R row, C columnIdentifier);
+  }
+
+  /**
+   * Provides the type class for a column
+   * @param <C> the column identifier type
+   */
+  interface ColumnClassProvider<C> {
+
+    /**
+     * Returns the class of the column with the given identifier
+     * @param columnIdentifier the column identifier
+     * @return the Class representing the given column
+     */
+    Class<?> getColumnClass(C columnIdentifier);
+  }
 
   /**
    * Specifies the from and to rows of a row removal operation.

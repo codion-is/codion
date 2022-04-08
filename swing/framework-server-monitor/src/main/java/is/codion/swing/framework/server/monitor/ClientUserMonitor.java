@@ -10,11 +10,10 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
-import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.model.component.table.TableSortModel;
-import is.codion.swing.common.model.component.table.TableSortModel.ColumnClassProvider;
-import is.codion.swing.common.model.component.table.TableSortModel.ColumnValueProvider;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnClassProvider;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -255,11 +254,11 @@ public final class ClientUserMonitor {
     return column;
   }
 
-  private final class UserHistoryTableModel extends AbstractFilteredTableModel<UserInfo, Integer> {
+  private final class UserHistoryTableModel extends DefaultFilteredTableModel<UserInfo, Integer> {
 
     private UserHistoryTableModel() {
-      super(FilteredTableColumnModel.create(createUserHistoryColumns()), TableSortModel.create(
-              new UserHistoryColumnClassProvider(), new UserHistoryColumnValueProvider()));
+      super(FilteredTableColumnModel.create(createUserHistoryColumns()),
+              new UserHistoryColumnClassProvider(), new UserHistoryColumnValueProvider());
       setMergeOnRefresh(true);
     }
 
@@ -289,21 +288,6 @@ public final class ClientUserMonitor {
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
-      }
-    }
-
-    @Override
-    public Object getValueAt(int row, int column) {
-      UserInfo userInfo = getItemAt(row);
-      switch (column) {
-        case USERNAME_COLUMN: return userInfo.getUser().getUsername();
-        case CLIENT_TYPE_COLUMN: return userInfo.getClientTypeId();
-        case CLIENT_VERSION_COLUMN: return userInfo.getClientVersion();
-        case FRAMEWORK_VERSION_COLUMN: return userInfo.getFrameworkVersion();
-        case CLIENT_HOST_COLUMN: return userInfo.getClientHost();
-        case LAST_SEEN_COLUMN: return userInfo.getLastSeen();
-        case CONNECTION_COUNT_COLUMN: return userInfo.getConnectionCount();
-        default: throw new IllegalArgumentException(Integer.toString(column));
       }
     }
   }
