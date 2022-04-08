@@ -15,35 +15,20 @@ import static java.util.Collections.singletonList;
 import static javax.swing.ListSelectionModel.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SwingTableSelectionModelTest {
+public class DefaultFilteredTableSelectionModelTest {
 
-  private final SwingTableSelectionModel<String> testModel;
+  private final FilteredTableSelectionModel<String> testModel;
 
-  public SwingTableSelectionModelTest() {
+  public DefaultFilteredTableSelectionModelTest() {
     List<String> data = asList("A", "B", "C");
     TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    AbstractTableSortModel<String, Integer> sortModel = new AbstractTableSortModel<String, Integer>() {
-      @Override
-      public Class<String> getColumnClass(Integer columnIdentifier) {
-        return String.class;
-      }
-
-      @Override
-      protected Object getColumnValue(String row, Integer columnIdentifier) {
-        return row;
-      }
-    };
-    AbstractFilteredTableModel<String, Integer> tableModel = new AbstractFilteredTableModel<String, Integer>(
-            new SwingFilteredTableColumnModel<>(singletonList(column)), sortModel) {
+    FilteredTableModel<String, Integer> tableModel = new DefaultFilteredTableModel<String, Integer>(
+            new DefaultFilteredTableColumnModel<>(singletonList(column)),
+            columnIdentifier -> String.class, (row, columnIdentifier) -> row) {
       @Override
       protected Collection<String> refreshItems() {
         return data;
-      }
-
-      @Override
-      public Object getValueAt(int rowIndex, int columnIndex) {
-        return data.get(rowIndex);
       }
 
       @Override

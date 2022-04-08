@@ -11,11 +11,10 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.RowColumn;
-import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
-import is.codion.swing.common.model.component.table.TableSortModel;
+import is.codion.swing.common.model.component.table.FilteredTableSortModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -66,13 +65,13 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A JTable implementation for {@link AbstractFilteredTableModel}.
+ * A JTable implementation for {@link FilteredTableModel}.
  * Note that for the table header to display you must add this table to a JScrollPane.
  * @param <R> the type representing rows
  * @param <C> the type used to identify columns
  * @param <T> the table model type
  */
-public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C>> extends JTable {
+public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> extends JTable {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName());
 
@@ -200,13 +199,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     if (this.tableModel != null) {
       throw new IllegalStateException("Table model has already been set");
     }
-    if (!(dataModel instanceof AbstractFilteredTableModel)) {
-      throw new IllegalArgumentException("FilteredTable model must be a AbstractFilteredTableModel instance");
+    if (!(dataModel instanceof FilteredTableModel)) {
+      throw new IllegalArgumentException("FilteredTable model must be a FilteredTableModel instance");
     }
-    List<R> selection = ((AbstractFilteredTableModel<R, C>) dataModel).getSelectionModel().getSelectedItems();
+    List<R> selection = ((FilteredTableModel<R, C>) dataModel).getSelectionModel().getSelectedItems();
     super.setModel(dataModel);
     if (!selection.isEmpty()) {
-      ((AbstractFilteredTableModel<R, C>) dataModel).getSelectionModel().setSelectedItems(selection);
+      ((FilteredTableModel<R, C>) dataModel).getSelectionModel().setSelectedItems(selection);
     }
   }
 
@@ -776,7 +775,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
           setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
         }
         C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
-        TableSortModel<R, C> sortModel = getModel().getSortModel();
+        FilteredTableSortModel<R, C> sortModel = getModel().getSortModel();
         SortOrder sortOrder = getSortOrder(sortModel.getSortingState(columnIdentifier).getSortOrder(), e.isShiftDown());
         if (e.isControlDown()) {
           sortModel.addSortOrder(columnIdentifier, sortOrder);
@@ -808,7 +807,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
 
     private void toggleColumnFilterPanel(MouseEvent event) {
-      SwingFilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
+      FilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
       TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
       toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
                       (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column)),

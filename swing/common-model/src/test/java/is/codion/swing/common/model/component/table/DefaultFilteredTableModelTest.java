@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Date: 25.7.2010
  * Time: 13:54:59
  */
-public final class AbstractFilteredTableModelTest {
+public final class DefaultFilteredTableModelTest {
 
   private static final List<String> A = singletonList("a");
   private static final List<String> B = singletonList("b");
@@ -47,39 +47,22 @@ public final class AbstractFilteredTableModelTest {
 
   private TestAbstractFilteredTableModel tableModel;
 
-  private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
+  private static class TestAbstractFilteredTableModel extends DefaultFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(Comparator<String> customComparator) {
-      super(new SwingFilteredTableColumnModel<>(createColumns()), new AbstractTableSortModel<List<String>, Integer>() {
-        @Override
-        public Class<?> getColumnClass(Integer columnIdentifier) {
-          return String.class;
-        }
+      super(new DefaultFilteredTableColumnModel<>(createColumns()),
+              columnIdentifier -> String.class, List::get, (columnIdentifier, columnClass) -> {
+                if (customComparator != null) {
+                  return customComparator;
+                }
 
-        @Override
-        protected Object getColumnValue(List<String> row, Integer columnIdentifier) {
-          return row.get(columnIdentifier);
-        }
-
-        @Override
-        protected Comparator<String> initializeColumnComparator(Integer columnIdentifier) {
-          if (customComparator != null) {
-            return customComparator;
-          }
-
-          return (Comparator<String>) super.initializeColumnComparator(columnIdentifier);
-        }
-      }, createFilterModels());
+                return (Comparator<String>) String::compareTo;
+              }, createFilterModels());
     }
 
     @Override
     protected Collection<List<String>> refreshItems() {
       return ITEMS;
-    }
-
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-      return getItemAt(rowIndex).get(columnIndex);
     }
 
     void addItemsAt(List<List<String>> items, int index) {
@@ -139,34 +122,15 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   void nullSortModel() {
-    assertThrows(NullPointerException.class, () -> new AbstractFilteredTableModel<String, Integer>(new SwingFilteredTableColumnModel<>(singletonList(new TableColumn())), null) {
-      @Override
-      public Object getValueAt(int rowIndex, int columnIndex) {
-        return null;
-      }
-    });
+    assertThrows(NullPointerException.class, () -> new DefaultFilteredTableModel<String, Integer>(
+            new DefaultFilteredTableColumnModel<>(singletonList(new TableColumn())), null, null));
   }
 
   @Test
   void noColumns() {
-    assertThrows(IllegalArgumentException.class, () -> new AbstractFilteredTableModel<String, Integer>(new SwingFilteredTableColumnModel<>(emptyList()),
-            new AbstractTableSortModel<String, Integer>() {
-              @Override
-              protected Object getColumnValue(String row, Integer columnIdentifier) {
-                return null;
-              }
-
-              @Override
-              public Class<?> getColumnClass(Integer columnIdentifier) {
-                return null;
-              }
-            }) {
-
-      @Override
-      public Object getValueAt(int rowIndex, int columnIndex) {
-        return null;
-      }
-    });
+    assertThrows(IllegalArgumentException.class, () -> new DefaultFilteredTableModel<String, Integer>(
+            new DefaultFilteredTableColumnModel<>(emptyList()),
+            columnIdentifier -> null, (row, columnIdentifier) -> null));
   }
 
   @Test
@@ -332,39 +296,24 @@ public final class AbstractFilteredTableModelTest {
     List<Row> items = asList(new Row(0, "a"), new Row(1, "b"),
             new Row(2, "c"), new Row(3, "d"), new Row(4, "e"));
 
-    AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(new SwingFilteredTableColumnModel<>(asList(columnId, columnValue)),
-            new AbstractTableSortModel<Row, Integer>() {
-              @Override
-              public Class<? extends Object> getColumnClass(Integer columnIdentifier) {
-                if (columnIdentifier == 0) {
-                  return Integer.class;
-                }
-
-                return String.class;
+    FilteredTableModel<Row, Integer> testModel = new DefaultFilteredTableModel<Row, Integer>(
+            new DefaultFilteredTableColumnModel<>(asList(columnId, columnValue)),
+            columnIdentifier -> {
+              if (columnIdentifier == 0) {
+                return Integer.class;
               }
 
-              @Override
-              protected Object getColumnValue(Row row, Integer columnIdentifier) {
-                if (columnIdentifier == 0) {
-                  return row.id;
-                }
+              return String.class;
+            }, (row, columnIdentifier) -> {
+      if (columnIdentifier == 0) {
+        return row.id;
+      }
 
-                return row.value;
-              }
-            }) {
+      return row.value;
+    }) {
       @Override
       protected Collection<Row> refreshItems() {
         return items;
-      }
-
-      @Override
-      public Object getValueAt(int rowIndex, int columnIndex) {
-        Row row = getItemAt(rowIndex);
-        if (columnIndex == 0) {
-          return row.id;
-        }
-
-        return row.value;
       }
     };
 
@@ -438,9 +387,9 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   void customSorting() {
-    AbstractFilteredTableModel<List<String>, Integer> tableModel = new TestAbstractFilteredTableModel(Comparator.reverseOrder());
+    FilteredTableModel<List<String>, Integer> tableModel = new TestAbstractFilteredTableModel(Comparator.reverseOrder());
     tableModel.refresh();
-    TableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
+    FilteredTableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
     sortModel.setSortOrder(0, SortOrder.ASCENDING);
     assertEquals(E, tableModel.getItemAt(0));
     sortModel.setSortOrder(0, SortOrder.DESCENDING);
@@ -454,7 +403,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addSortListener(listener);
 
     tableModel.refresh();
-    TableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
+    FilteredTableSortModel<List<String>, Integer> sortModel = tableModel.getSortModel();
     sortModel.setSortOrder(0, SortOrder.DESCENDING);
     assertEquals(SortOrder.DESCENDING, sortModel.getSortingState(0).getSortOrder());
     assertEquals(E, tableModel.getItemAt(0));
@@ -547,7 +496,7 @@ public final class AbstractFilteredTableModelTest {
     AtomicInteger events = new AtomicInteger();
     EventListener listener = events::incrementAndGet;
     EventDataListener dataListener = Event.dataListener(listener);
-    SwingTableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
+    FilteredTableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
     selectionModel.addSelectedIndexListener(dataListener);
     selectionModel.addSelectionChangedListener(listener);
     selectionModel.addSelectedItemListener(dataListener);
@@ -690,7 +639,7 @@ public final class AbstractFilteredTableModelTest {
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
     //test selection and filtering together
-    SwingTableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
+    FilteredTableSelectionModel<List<String>> selectionModel = tableModel.getSelectionModel();
     tableModel.getSelectionModel().addSelectedIndexes(singletonList(3));
     assertEquals(3, selectionModel.getMinSelectionIndex());
 
@@ -835,7 +784,7 @@ public final class AbstractFilteredTableModelTest {
   }
 
   private static boolean tableModelContainsAll(List<List<String>> rows, boolean includeFiltered,
-                                               AbstractFilteredTableModel<List<String>, Integer> model) {
+                                               FilteredTableModel<List<String>, Integer> model) {
     for (List<String> row : rows) {
       if (includeFiltered) {
         if (!model.containsItem(row)) {

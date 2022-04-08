@@ -6,15 +6,17 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.EventDataListener;
 
 import javax.swing.SortOrder;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * Handles the column sorting states for table models
+ * Handles the column sorting states for table models.
+ * Instantiate with the {@link #create(FilteredTableModel)} factory method.
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifiers in the table model
  */
-public interface TableSortModel<R, C> {
+public interface FilteredTableSortModel<R, C> {
 
   /**
    * Sorts the given list according to the sort configuration
@@ -91,5 +93,45 @@ public interface TableSortModel<R, C> {
      * @return the sorting priority, 0 for first, 1 for second etc.
      */
     int getPriority();
+  }
+
+  /**
+   * A factory for {@link Comparator} instances for columns
+   * @param <C> the column identifier type
+   */
+  interface ColumnComparatorFactory<C> {
+
+    /**
+     * Creates a comparator used when sorting by the give column,
+     * the comparator receives the column values, but never null.
+     * @param columnIdentifier the column identifier
+     * @param columnClass the column class
+     * @return the comparator to use when sorting by the given column
+     */
+    Comparator<?> createComparator(C columnIdentifier, Class<?> columnClass);
+  }
+
+  /**
+   * A factory for {@link FilteredTableSortModel} instances.
+   * @param tableModel the table model
+   * @param <R> the row type
+   * @param <C> the column identifier type
+   * @return a new {@link FilteredTableSortModel} instance
+   */
+  static <R, C> FilteredTableSortModel<R, C> create(FilteredTableModel<R, C> tableModel) {
+    return new DefaultFilteredTableSortModel<>(tableModel);
+  }
+
+  /**
+   * A factory for {@link FilteredTableSortModel} instances.
+   * @param tableModel the table model
+   * @param columnComparatorFactory the column comparator factory
+   * @param <R> the row type
+   * @param <C> the column identifier type
+   * @return a new {@link FilteredTableSortModel} instance
+   */
+  static <R, C> FilteredTableSortModel<R, C> create(FilteredTableModel<R, C> tableModel,
+                                                    ColumnComparatorFactory<C> columnComparatorFactory) {
+    return new DefaultFilteredTableSortModel<>(tableModel, columnComparatorFactory);
   }
 }

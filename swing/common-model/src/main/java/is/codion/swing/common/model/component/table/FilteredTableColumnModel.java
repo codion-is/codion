@@ -12,7 +12,10 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A TableColumnModel handling hidden columns
+ * A TableColumnModel handling hidden columns.
+ * Note that this column model does not support dynamically adding or removing columns,
+ * {@link #addColumn(TableColumn)} and {@link #removeColumn(TableColumn)} both throw {@link UnsupportedOperationException}
+ * Instantiate with the {@link #create(List)} factory method.
  * @param <C> the type of column identifier
  */
 public interface FilteredTableColumnModel<C> extends TableColumnModel {
@@ -23,14 +26,14 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   Collection<TableColumn> getAllColumns();
 
   /**
-   * @return an unmodifiable view of the currently visible column identifiers
+   * @return an unmodifiable view of the currently visible columns
    */
-  List<C> getVisibleColumns();
+  List<TableColumn> getVisibleColumns();
 
   /**
-   * @return an unmodifiable view of hidden table column identifiers
+   * @return an unmodifiable view of currently hidden columns, in no particular order
    */
-  Collection<C> getHiddenColumns();
+  Collection<TableColumn> getHiddenColumns();
 
   /**
    * Returns a {@link State} instance controlling whether this model is locked or not.
@@ -110,4 +113,14 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * @param listener the listener to remove
    */
   void removeColumnShownListener(EventDataListener<C> listener);
+
+  /**
+   * Creates a {@link FilteredTableColumnModel} based on the given columns.
+   * @param tableColumns the table columns to base the column model on
+   * @param <C> the column identifier type
+   * @return a new {@link  FilteredTableColumnModel}
+   */
+  static <C> FilteredTableColumnModel<C> create(List<TableColumn> tableColumns) {
+    return new DefaultFilteredTableColumnModel<>(tableColumns);
+  }
 }

@@ -13,6 +13,7 @@ import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.swing.common.model.component.table.FilteredTableSortModel.ColumnComparatorFactory;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.SwingUtilities;
@@ -52,7 +53,7 @@ import static java.util.stream.Collectors.toList;
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  */
-public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
+public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
 
   private static final String COLUMN_IDENTIFIER = "columnIdentifier";
 
@@ -64,6 +65,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Event<?> tableModelClearedEvent = Event.event();
   private final Event<Removal> rowsRemovedEvent = Event.event();
   private final State refreshingState = State.state();
+
+  private final ColumnClassProvider<C> columnClassProvider;
+  private final ColumnValueProvider<R, C> columnValueProvider;
 
   /**
    * Holds visible items
@@ -78,17 +82,17 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The selection model
    */
-  private final SwingTableSelectionModel<R> selectionModel;
+  private final FilteredTableSelectionModel<R> selectionModel;
 
   /**
    * The TableColumnModel
    */
-  private final SwingFilteredTableColumnModel<C> columnModel;
+  private final FilteredTableColumnModel<C> columnModel;
 
   /**
    * The sort model
    */
-  private final TableSortModel<R, C> sortModel;
+  private final FilteredTableSortModel<R, C> sortModel;
 
   /**
    * The ColumnFilterModels used for filtering
@@ -128,25 +132,67 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * Instantiates a new table model.
    * @param columnModel the table column model to base this table model on
-   * @param sortModel the sort model to use
-   * @throws NullPointerException in case {@code columnModel} or {@code sortModel} is null
+   * @param columnClassProvider the column class provider
+   * @param columnValueProvider the column value provider
+   * @throws NullPointerException in case {@code columnModel} is null
    */
-  public AbstractFilteredTableModel(SwingFilteredTableColumnModel<C> columnModel, TableSortModel<R, C> sortModel) {
-    this(columnModel, sortModel, null);
+  public DefaultFilteredTableModel(FilteredTableColumnModel<C> columnModel,
+                                   ColumnClassProvider<C> columnClassProvider,
+                                   ColumnValueProvider<R, C> columnValueProvider) {
+    this(columnModel, columnClassProvider, columnValueProvider, (ColumnComparatorFactory<C>) null);
   }
 
   /**
    * Instantiates a new table model.
    * @param columnModel the table column model to base this table model on
-   * @param sortModel the sort model to use
-   * @param columnFilterModels the filter models if any
-   * @throws NullPointerException in case {@code columnModel} or {@code sortModel} is null
+   * @param columnClassProvider the column class provider
+   * @param columnValueProvider the column value provider
+   * @param columnComparatorFactory the column comparator factory
+   * @throws NullPointerException in case {@code columnModel} is null
    */
-  public AbstractFilteredTableModel(SwingFilteredTableColumnModel<C> columnModel, TableSortModel<R, C> sortModel,
-                                    Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
+  public DefaultFilteredTableModel(FilteredTableColumnModel<C> columnModel,
+                                   ColumnClassProvider<C> columnClassProvider,
+                                   ColumnValueProvider<R, C> columnValueProvider,
+                                   ColumnComparatorFactory<C> columnComparatorFactory) {
+    this(columnModel, columnClassProvider, columnValueProvider, columnComparatorFactory, null);
+  }
+
+  /**
+   * Instantiates a new table model.
+   * @param columnModel the table column model to base this table model on
+   * @param columnClassProvider the column class provider
+   * @param columnValueProvider the column value provider
+   * @param columnFilterModels the filter models if any
+   * @throws NullPointerException in case {@code columnModel} is null
+   */
+  public DefaultFilteredTableModel(FilteredTableColumnModel<C> columnModel,
+                                   ColumnClassProvider<C> columnClassProvider,
+                                   ColumnValueProvider<R, C> columnValueProvider,
+                                   Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
+    this(columnModel, columnClassProvider, columnValueProvider, null, columnFilterModels);
+  }
+
+  /**
+   * Instantiates a new table model.
+   * @param columnModel the table column model to base this table model on
+   * @param columnClassProvider the column class provider
+   * @param columnValueProvider the column value provider
+   * @param columnComparatorFactory the column comparator factory
+   * @param columnFilterModels the filter models if any
+   * @throws NullPointerException in case {@code columnModel} is null
+   */
+  public DefaultFilteredTableModel(FilteredTableColumnModel<C> columnModel,
+                                   ColumnClassProvider<C> columnClassProvider,
+                                   ColumnValueProvider<R, C> columnValueProvider,
+                                   ColumnComparatorFactory<C> columnComparatorFactory,
+                                   Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     this.columnModel = requireNonNull(columnModel, "columnModel");
-    this.sortModel = requireNonNull(sortModel, "sortModel");
-    this.selectionModel = new SwingTableSelectionModel<>(this);
+    this.columnClassProvider = requireNonNull(columnClassProvider);
+    this.columnValueProvider = requireNonNull(columnValueProvider);
+    this.sortModel = columnComparatorFactory == null ?
+            FilteredTableSortModel.create(this) :
+            FilteredTableSortModel.create(this, columnComparatorFactory);
+    this.selectionModel = FilteredTableSelectionModel.create(this);
     if (columnFilterModels != null) {
       for (ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
         this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
@@ -274,12 +320,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final SwingTableSelectionModel<R> getSelectionModel() {
+  public final FilteredTableSelectionModel<R> getSelectionModel() {
     return selectionModel;
   }
 
   @Override
-  public final TableSortModel<R, C> getSortModel() {
+  public final FilteredTableSortModel<R, C> getSortModel() {
     return sortModel;
   }
 
@@ -454,13 +500,31 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final SwingFilteredTableColumnModel<C> getColumnModel() {
+  public final FilteredTableColumnModel<C> getColumnModel() {
     return columnModel;
   }
 
   @Override
+  public final Object getColumnValue(R row, C columnIdentifier) {
+    return columnValueProvider.getColumnValue(row, columnIdentifier);
+  }
+
+  @Override
+  public final Class<?> getColumnClass(C columnIdentifier) {
+    return columnClassProvider.getColumnClass(columnIdentifier);
+  }
+
+  @Override
   public final Class<?> getColumnClass(int columnIndex) {
-    return sortModel.getColumnClass(getColumnModel().getColumnIdentifier(columnIndex));
+    return getColumnClass(getColumnModel().getColumnIdentifier(columnIndex));
+  }
+
+  @Override
+  public final Object getValueAt(int rowIndex, int columnIndex) {
+    C columnIdentifier = getColumnModel().getColumnIdentifier(columnIndex);
+    R row = getItemAt(rowIndex);
+
+    return getColumnValue(row, columnIdentifier);
   }
 
   @Override
@@ -576,7 +640,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * If sorting is enabled this model is sorted after the items have been added.
    * @param index the index at which to add the items
    * @param items the items to add
-   * @see TableSortModel#isSortingEnabled()
+   * @see FilteredTableSortModel#isSortingEnabled()
    */
   protected final void addItemsAtSorted(int index, Collection<R> items) {
     if (addItemsAtInternal(index, items)) {

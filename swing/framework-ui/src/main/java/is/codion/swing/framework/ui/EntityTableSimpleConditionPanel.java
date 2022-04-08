@@ -4,7 +4,7 @@ import is.codion.common.Conjunction;
 import is.codion.common.event.EventListener;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityTableConditionModel;
-import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
@@ -37,7 +37,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
    * @param onSearchListener notified when this condition panel triggers a search
    */
   public EntityTableSimpleConditionPanel(EntityTableConditionModel tableConditionModel,
-                                         SwingFilteredTableColumnModel<?> columnModel,
+                                         FilteredTableColumnModel<?> columnModel,
                                          EventListener onSearchListener) {
     super(tableConditionModel, columnModel.getAllColumns());
     this.searchControl = Control.builder(this::performSimpleSearch)

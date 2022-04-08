@@ -10,9 +10,10 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
-import is.codion.swing.common.model.component.table.AbstractFilteredTableModel;
-import is.codion.swing.common.model.component.table.AbstractTableSortModel;
-import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnClassProvider;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -253,10 +254,11 @@ public final class ClientUserMonitor {
     return column;
   }
 
-  private final class UserHistoryTableModel extends AbstractFilteredTableModel<UserInfo, Integer> {
+  private final class UserHistoryTableModel extends DefaultFilteredTableModel<UserInfo, Integer> {
 
     private UserHistoryTableModel() {
-      super(new SwingFilteredTableColumnModel<>(createUserHistoryColumns()), new UserHistoryTableSortModel());
+      super(FilteredTableColumnModel.create(createUserHistoryColumns()),
+              new UserHistoryColumnClassProvider(), new UserHistoryColumnValueProvider());
       setMergeOnRefresh(true);
     }
 
@@ -288,19 +290,38 @@ public final class ClientUserMonitor {
         throw new RuntimeException(e);
       }
     }
+  }
+
+  private static final class UserHistoryColumnClassProvider implements ColumnClassProvider<Integer> {
 
     @Override
-    public Object getValueAt(int row, int column) {
-      UserInfo userInfo = getItemAt(row);
-      switch (column) {
-        case USERNAME_COLUMN: return userInfo.getUser().getUsername();
-        case CLIENT_TYPE_COLUMN: return userInfo.getClientTypeId();
-        case CLIENT_VERSION_COLUMN: return userInfo.getClientVersion();
-        case FRAMEWORK_VERSION_COLUMN: return userInfo.getFrameworkVersion();
-        case CLIENT_HOST_COLUMN: return userInfo.getClientHost();
-        case LAST_SEEN_COLUMN: return userInfo.getLastSeen();
-        case CONNECTION_COUNT_COLUMN: return userInfo.getConnectionCount();
-        default: throw new IllegalArgumentException(Integer.toString(column));
+    public Class<?> getColumnClass(Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case USERNAME_COLUMN: return String.class;
+        case CLIENT_TYPE_COLUMN: return String.class;
+        case CLIENT_VERSION_COLUMN: return Version.class;
+        case FRAMEWORK_VERSION_COLUMN: return Version.class;
+        case CLIENT_HOST_COLUMN: return String.class;
+        case LAST_SEEN_COLUMN: return LocalDateTime.class;
+        case CONNECTION_COUNT_COLUMN: return Integer.class;
+        default: throw new IllegalArgumentException(columnIdentifier.toString());
+      }
+    }
+  }
+
+  private static final class UserHistoryColumnValueProvider implements ColumnValueProvider<UserInfo, Integer> {
+
+    @Override
+    public Object getColumnValue(UserInfo row, Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case USERNAME_COLUMN: return row.getUser().getUsername();
+        case CLIENT_TYPE_COLUMN: return row.getClientTypeId();
+        case CLIENT_VERSION_COLUMN: return row.getClientVersion();
+        case FRAMEWORK_VERSION_COLUMN: return row.getFrameworkVersion();
+        case CLIENT_HOST_COLUMN: return row.getClientHost();
+        case LAST_SEEN_COLUMN: return row.getLastSeen();
+        case CONNECTION_COUNT_COLUMN: return row.getConnectionCount();
+        default: throw new IllegalArgumentException(columnIdentifier.toString());
       }
     }
   }
@@ -397,37 +418,6 @@ public final class ClientUserMonitor {
 
     public boolean isNewConnection(UUID clientId) {
       return !this.clientId.equals(clientId);
-    }
-  }
-
-  private static final class UserHistoryTableSortModel extends AbstractTableSortModel<UserInfo, Integer> {
-
-    @Override
-    public Class<?> getColumnClass(Integer columnIdentifier) {
-      switch (columnIdentifier) {
-        case USERNAME_COLUMN: return String.class;
-        case CLIENT_TYPE_COLUMN: return String.class;
-        case CLIENT_VERSION_COLUMN: return Version.class;
-        case FRAMEWORK_VERSION_COLUMN: return Version.class;
-        case CLIENT_HOST_COLUMN: return String.class;
-        case LAST_SEEN_COLUMN: return LocalDateTime.class;
-        case CONNECTION_COUNT_COLUMN: return Integer.class;
-        default: throw new IllegalArgumentException(columnIdentifier.toString());
-      }
-    }
-
-    @Override
-    protected Object getColumnValue(UserInfo row, Integer columnIdentifier) {
-      switch (columnIdentifier) {
-        case USERNAME_COLUMN: return row.getUser().getUsername();
-        case CLIENT_TYPE_COLUMN: return row.getClientTypeId();
-        case CLIENT_VERSION_COLUMN: return row.getClientVersion();
-        case FRAMEWORK_VERSION_COLUMN: return row.getFrameworkVersion();
-        case CLIENT_HOST_COLUMN: return row.getClientHost();
-        case LAST_SEEN_COLUMN: return row.getLastSeen();
-        case CONNECTION_COUNT_COLUMN: return row.getConnectionCount();
-        default: throw new IllegalArgumentException(columnIdentifier.toString());
-      }
     }
   }
 

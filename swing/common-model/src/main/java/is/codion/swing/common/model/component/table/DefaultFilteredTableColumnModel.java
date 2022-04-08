@@ -28,13 +28,7 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-/**
- * A TableColumnModel handling hidden columns.
- * Note that this column model does not support dynamically adding or removing columns,
- * {@link #addColumn(TableColumn)} and {@link #removeColumn(TableColumn)} both throw {@link UnsupportedOperationException}
- * @param <C> the type of column identifier
- */
-public final class SwingFilteredTableColumnModel<C> implements FilteredTableColumnModel<C> {
+final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnModel<C> {
 
   private static final String COLUMN_IDENTIFIER = "columnIdentifier";
 
@@ -61,10 +55,10 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
   private final State lockedState = State.state();
 
   /**
-   * Instantiates a new SwingFilteredTableColumnModel.
+   * Instantiates a new DefaultFilteredTableColumnModel.
    * @param tableColumns the columns to base this model on
    */
-  public SwingFilteredTableColumnModel(List<TableColumn> tableColumns) {
+  DefaultFilteredTableColumnModel(List<TableColumn> tableColumns) {
     if (requireNonNull(tableColumns, "columns").isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
@@ -123,15 +117,15 @@ public final class SwingFilteredTableColumnModel<C> implements FilteredTableColu
   }
 
   @Override
-  public List<C> getVisibleColumns() {
-    return unmodifiableList(Collections.list(tableColumnModel.getColumns()).stream()
-            .map(column -> (C) column.getIdentifier())
-            .collect(Collectors.toList()));
+  public List<TableColumn> getVisibleColumns() {
+    return unmodifiableList(Collections.list(tableColumnModel.getColumns()));
   }
 
   @Override
-  public Collection<C> getHiddenColumns() {
-    return unmodifiableCollection(new HashSet<>(hiddenColumns.keySet()));
+  public Collection<TableColumn> getHiddenColumns() {
+    return unmodifiableCollection(hiddenColumns.values().stream()
+            .map(hiddenColumn -> hiddenColumn.column)
+            .collect(Collectors.toList()));
   }
 
   @Override

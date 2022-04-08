@@ -8005,3 +8005,11 @@
   DefaultEntityTableCellRenderer bug fixed, boolean renderer did not implement alternate selection background color
   DefaultEntityTableCellRenderer, focused cell border darkened a bit
   EntityDefinition.Builder.readOnly(), smallDataset() and staticData(), boolean parameter added, for consistency
+  FilteredTableColumnModel.getVisibleColumns() and getHiddenColumns() now return TableColumn instead of column identifiers, more consistent with getAllColumns()
+  SwingFilteredTableColumnModel no longer public, FilteredTableColumnModel.create() factory method added
+  SwingTableSelectionModel no longer public, TableSelectionModel added along with create() factory method
+  AbstractTableSortModel no longer public nor abstract, renamed SwingTableSortModel, TableSortModel.create() factory method added
+  FilteredTableModel.getColumnValue() and getColumnClass() and ColumnValueProvider and ColumnClassProvider added, related refactoring
+  FilteredTableModel extends TableModel
+  AbstractFilteredTableModel no longer abstract, renamed DefaultFilteredTableModel
+  TableSelectionModel and TableSortModel and renamed FilteredTableSelectionModel and FilteredTableSortModel respectively

@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
@@ -47,7 +47,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
    * @param columnModel the column model
    * @param columnComponents the column components mapped to their respective column
    */
-  public TableColumnComponentPanel(SwingFilteredTableColumnModel<?> columnModel,
+  public TableColumnComponentPanel(FilteredTableColumnModel<?> columnModel,
                                    Map<TableColumn, T> columnComponents) {
     this.columnModel = requireNonNull(columnModel);
     this.columns = columnModel.getAllColumns();
