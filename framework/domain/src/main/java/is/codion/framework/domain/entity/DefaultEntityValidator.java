@@ -7,12 +7,10 @@ import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.AuditProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.SubqueryProperty;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -151,6 +149,13 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   }
 
   private static boolean validationRequired(Property<?> property) {
-    return !(property instanceof DerivedProperty || property instanceof SubqueryProperty || property instanceof AuditProperty);
+    if (property instanceof DerivedProperty) {
+      return false;
+    }
+    if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isReadOnly()) {
+      return false;
+    }
+
+    return true;
   }
 }

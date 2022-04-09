@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.SubqueryProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -235,18 +234,18 @@ final class SelectQueries {
     }
 
     private List<ColumnProperty<?>> getPropertiesToSelect(Collection<Attribute<?>> selectAttributes) {
-      Set<ColumnProperty<?>> attributesToSelect = new HashSet<>(definition.getPrimaryKeyProperties());
+      Set<ColumnProperty<?>> propertiesToSelect = new HashSet<>(definition.getPrimaryKeyProperties());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
           ((ForeignKey) attribute).getReferences().forEach(reference ->
-                  attributesToSelect.add(definition.getColumnProperty(reference.getAttribute())));
+                  propertiesToSelect.add(definition.getColumnProperty(reference.getAttribute())));
         }
         else {
-          attributesToSelect.add(definition.getColumnProperty(attribute));
+          propertiesToSelect.add(definition.getColumnProperty(attribute));
         }
       });
 
-      return new ArrayList<>(attributesToSelect);
+      return new ArrayList<>(propertiesToSelect);
     }
 
     private List<ColumnProperty<?>> getSelectableProperties() {
@@ -266,15 +265,10 @@ final class SelectQueries {
       for (int i = 0; i < columnProperties.size(); i++) {
         ColumnProperty<?> property = columnProperties.get(i);
         String columnName = property.getColumnName();
-        if (property instanceof SubqueryProperty) {
-          stringBuilder.append("(").append(((SubqueryProperty<?>) property).getSubquery()).append(") as ").append(columnName);
-        }
-        else {
-          String columnExpression = property.getColumnExpression();
-          stringBuilder.append(columnExpression);
-          if (!columnName.equals(columnExpression)) {
-            stringBuilder.append(" as ").append(columnName);
-          }
+        String columnExpression = property.getColumnExpression();
+        stringBuilder.append(columnExpression);
+        if (!columnName.equals(columnExpression)) {
+          stringBuilder.append(" as ").append(columnName);
         }
 
         if (i < columnProperties.size() - 1) {

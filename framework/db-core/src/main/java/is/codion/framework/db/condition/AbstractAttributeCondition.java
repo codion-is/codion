@@ -6,8 +6,6 @@ package is.codion.framework.db.condition;
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.SubqueryProperty;
 
 import static java.util.Objects.requireNonNull;
 
@@ -41,7 +39,7 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
 
   @Override
   public final String getConditionString(EntityDefinition definition) {
-    return getConditionString(getColumnExpression(definition));
+    return getConditionString(definition.getColumnProperty(attribute).getColumnExpression());
   }
 
   protected abstract String getConditionString(String columnExpression);
@@ -49,14 +47,5 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   @Override
   public final String toString() {
     return super.toString() + ": " + attribute;
-  }
-
-  private String getColumnExpression(EntityDefinition definition) {
-    ColumnProperty<T> property = definition.getColumnProperty(attribute);
-    if (property instanceof SubqueryProperty) {
-      return "(" + ((SubqueryProperty<?>) property).getSubquery() + ")";
-    }
-
-    return property.getColumnExpression();
   }
 }

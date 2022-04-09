@@ -152,71 +152,6 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
   }
 
-  private static <T> T getBoolean(ResultSet resultSet, int columnIndex) throws SQLException {
-    boolean value = resultSet.getBoolean(columnIndex);
-
-    return (T) (!value && resultSet.wasNull() ? null : value);
-  }
-
-  private static <T> T getInteger(ResultSet resultSet, int columnIndex) throws SQLException {
-    int value = resultSet.getInt(columnIndex);
-
-    return (T) (value == 0 && resultSet.wasNull() ? null : value);
-  }
-
-  private static <T> T getLong(ResultSet resultSet, int columnIndex) throws SQLException {
-    long value = resultSet.getLong(columnIndex);
-
-    return (T) (value == 0L && resultSet.wasNull() ? null : value);
-  }
-
-  private static <T> T getDouble(ResultSet resultSet, int columnIndex) throws SQLException {
-    double value = resultSet.getDouble(columnIndex);
-
-    return (T) (Double.compare(value, 0d) == 0 && resultSet.wasNull() ? null : value);
-  }
-
-  private static <T> T getBigDecimal(ResultSet resultSet, int columnIndex) throws SQLException {
-    return (T) resultSet.getBigDecimal(columnIndex);
-  }
-
-  private static <T> T getString(ResultSet resultSet, int columnIndex) throws SQLException {
-    return (T) resultSet.getString(columnIndex);
-  }
-
-  private static <T> T getDate(ResultSet resultSet, int columnIndex) throws SQLException {
-    return (T) resultSet.getObject(columnIndex, LocalDate.class);
-  }
-
-  private static <T> T getTimestamp(ResultSet resultSet, int columnIndex) throws SQLException {
-    return (T) resultSet.getObject(columnIndex, LocalDateTime.class);
-  }
-
-  private static <T> T getTimestampWithTimezone(ResultSet resultSet, int columnIndex) throws SQLException {
-    return (T) resultSet.getObject(columnIndex, OffsetDateTime.class);
-  }
-
-  private static <T> T getTime(ResultSet resultSet, int columnIndex) throws SQLException {
-    return (T) resultSet.getObject(columnIndex, LocalTime.class);
-  }
-
-  private static <T> T getCharacter(ResultSet resultSet, int columnIndex) throws SQLException {
-    String string = getString(resultSet, columnIndex);
-    if (nullOrEmpty(string)) {
-      return null;
-    }
-
-    return (T) Character.valueOf(string.charAt(0));
-  }
-
-  private static <T> T getBlob(ResultSet resultSet, int columnIndex) throws SQLException {
-    return (T) resultSet.getBytes(columnIndex);
-  }
-
-  private static <T> T getObject(ResultSet resultSet, int columnIndex, Class<T> typeClass) throws SQLException {
-    return resultSet.getObject(columnIndex, typeClass);
-  }
-
   static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {
 
     private final T trueValue;
@@ -327,7 +262,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public final B columnExpression(String columnExpression) {
+    public B columnExpression(String columnExpression) {
       this.columnExpression = requireNonNull(columnExpression, "columnExpression");
       return (B) this;
     }
@@ -444,38 +379,38 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     private static <T> ValueFetcher<T> initializeValueFetcher(int columnType, Class<T> typeClass) {
       switch (columnType) {
         case Types.INTEGER:
-          return DefaultColumnProperty::getInteger;
+          return (ValueFetcher<T>) new IntegerFetcher();
         case Types.BIGINT:
-          return DefaultColumnProperty::getLong;
+          return (ValueFetcher<T>) new LongFetcher();
         case Types.DOUBLE:
-          return DefaultColumnProperty::getDouble;
+          return (ValueFetcher<T>) new DoubleFetcher();
         case Types.DECIMAL:
-          return DefaultColumnProperty::getBigDecimal;
+          return (ValueFetcher<T>) new BigDecimalFetcher();
         case Types.DATE:
-          return DefaultColumnProperty::getDate;
+          return (ValueFetcher<T>) new LocalDateFetcher();
         case Types.TIMESTAMP:
-          return DefaultColumnProperty::getTimestamp;
+          return (ValueFetcher<T>) new LocalDateTimeFetcher();
         case Types.TIMESTAMP_WITH_TIMEZONE:
-          return DefaultColumnProperty::getTimestampWithTimezone;
+          return (ValueFetcher<T>) new OffsetDateTimeFetcher();
         case Types.TIME:
-          return DefaultColumnProperty::getTime;
+          return (ValueFetcher<T>) new LocalTimeFetcher();
         case Types.VARCHAR:
-          return DefaultColumnProperty::getString;
+          return (ValueFetcher<T>) new StringFetcher();
         case Types.BOOLEAN:
-          return DefaultColumnProperty::getBoolean;
+          return (ValueFetcher<T>) new BooleanFetcher();
         case Types.CHAR:
-          return DefaultColumnProperty::getCharacter;
+          return (ValueFetcher<T>) new CharacterFetcher();
         case Types.BLOB:
-          return DefaultColumnProperty::getBlob;
+          return (ValueFetcher<T>) new ByteArrayFetcher();
         case Types.OTHER:
-          return (resultSet, index) -> DefaultColumnProperty.getObject(resultSet, index, typeClass);
+          return (ValueFetcher<T>) new ObjectFetcher(typeClass);
         default:
           throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
                   ", attribute type class: " + typeClass.getName());
       }
     }
   }
-  
+
   abstract static class AbstractReadOnlyColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
           extends DefaultColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
 
@@ -499,4 +434,146 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
       throw new UnsupportedOperationException("Property is not updatable: " + attribute);
     }
   }
+
+  static final class DefaultSubqueryPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
+          extends AbstractReadOnlyColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
+
+    DefaultSubqueryPropertyBuilder(Attribute<T> attribute, String caption, String subquery) {
+      super(attribute, caption);
+      super.columnExpression("(" + subquery + ")");
+    }
+
+    @Override
+    public B columnExpression(String columnExpression) {
+      throw new UnsupportedOperationException("Column expression can not be set on a subquery property: " + attribute);
+    }
+
+    @Override
+    public Property<T> build() {
+      return new DefaultColumnProperty<>(this);
+    }
+  }
+
+    private static final class IntegerFetcher implements ValueFetcher<Integer> {
+
+      @Override
+      public Integer fetchValue(ResultSet resultSet, int index) throws SQLException {
+        int value = resultSet.getInt(index);
+
+        return value == 0 && resultSet.wasNull() ? null : value;
+      }
+    }
+
+    private static final class LongFetcher implements ValueFetcher<Long> {
+
+      @Override
+      public Long fetchValue(ResultSet resultSet, int index) throws SQLException {
+        long value = resultSet.getLong(index);
+
+        return value == 0L && resultSet.wasNull() ? null : value;
+      }
+    }
+
+    private static final class DoubleFetcher implements ValueFetcher<Double> {
+
+      @Override
+      public Double fetchValue(ResultSet resultSet, int index) throws SQLException {
+        double value = resultSet.getDouble(index);
+
+        return Double.compare(value, 0d) == 0 && resultSet.wasNull() ? null : value;
+      }
+    }
+
+    private static final class BigDecimalFetcher implements ValueFetcher<BigDecimal> {
+
+      @Override
+      public BigDecimal fetchValue(ResultSet resultSet, int index) throws SQLException {
+        return resultSet.getBigDecimal(index);
+      }
+    }
+
+    private static final class LocalDateFetcher implements ValueFetcher<LocalDate> {
+
+      @Override
+      public LocalDate fetchValue(ResultSet resultSet, int index) throws SQLException {
+        return resultSet.getObject(index, LocalDate.class);
+      }
+    }
+
+    private static final class LocalDateTimeFetcher implements ValueFetcher<LocalDateTime> {
+
+      @Override
+      public LocalDateTime fetchValue(ResultSet resultSet, int index) throws SQLException {
+        return resultSet.getObject(index, LocalDateTime.class);
+      }
+    }
+
+    private static final class OffsetDateTimeFetcher implements ValueFetcher<OffsetDateTime> {
+
+      @Override
+      public OffsetDateTime fetchValue(ResultSet resultSet, int index) throws SQLException {
+        return resultSet.getObject(index, OffsetDateTime.class);
+      }
+    }
+
+    private static final class LocalTimeFetcher implements ValueFetcher<LocalTime> {
+
+      @Override
+      public LocalTime fetchValue(ResultSet resultSet, int index) throws SQLException {
+        return resultSet.getObject(index, LocalTime.class);
+      }
+    }
+
+    private static final class StringFetcher implements ValueFetcher<String> {
+
+      @Override
+      public String fetchValue(ResultSet resultSet, int index) throws SQLException {
+        return resultSet.getString(index);
+      }
+    }
+
+    private static final class BooleanFetcher implements ValueFetcher<Boolean> {
+
+      @Override
+      public Boolean fetchValue(ResultSet resultSet, int index) throws SQLException {
+        boolean value = resultSet.getBoolean(index);
+
+        return !value && resultSet.wasNull() ? null : value;
+      }
+    }
+
+    private static final class CharacterFetcher implements ValueFetcher<Character> {
+
+      @Override
+      public Character fetchValue(ResultSet resultSet, int index) throws SQLException {
+        String string = resultSet.getString(index);
+        if (nullOrEmpty(string)) {
+          return null;
+        }
+
+        return Character.valueOf(string.charAt(0));
+      }
+    }
+
+    private static final class ByteArrayFetcher implements ValueFetcher<byte[]> {
+
+      @Override
+      public byte[] fetchValue(ResultSet resultSet, int index) throws SQLException {
+        return resultSet.getBytes(index);
+      }
+    }
+
+    private static final class ObjectFetcher implements ValueFetcher<Object> {
+
+      private final Class<?> typeClass;
+
+      private ObjectFetcher(Class<?> typeClass) {
+        this.typeClass = typeClass;
+      }
+
+      @Override
+      public Object fetchValue(ResultSet resultSet, int index) throws SQLException {
+        return resultSet.getObject(index, typeClass);
+      }
+    }
 }
