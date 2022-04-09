@@ -235,18 +235,18 @@ final class SelectQueries {
     }
 
     private List<ColumnProperty<?>> getPropertiesToSelect(Collection<Attribute<?>> selectAttributes) {
-      Set<ColumnProperty<?>> attributesToSelect = new HashSet<>(definition.getPrimaryKeyProperties());
+      Set<ColumnProperty<?>> propertiesToSelect = new HashSet<>(definition.getPrimaryKeyProperties());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
           ((ForeignKey) attribute).getReferences().forEach(reference ->
-                  attributesToSelect.add(definition.getColumnProperty(reference.getAttribute())));
+                  propertiesToSelect.add(definition.getColumnProperty(reference.getAttribute())));
         }
         else {
-          attributesToSelect.add(definition.getColumnProperty(attribute));
+          propertiesToSelect.add(definition.getColumnProperty(attribute));
         }
       });
 
-      return new ArrayList<>(attributesToSelect);
+      return new ArrayList<>(propertiesToSelect);
     }
 
     private List<ColumnProperty<?>> getSelectableProperties() {
