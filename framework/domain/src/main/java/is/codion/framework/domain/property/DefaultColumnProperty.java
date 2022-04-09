@@ -327,7 +327,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public final B columnExpression(String columnExpression) {
+    public B columnExpression(String columnExpression) {
       this.columnExpression = requireNonNull(columnExpression, "columnExpression");
       return (B) this;
     }
@@ -497,6 +497,25 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     @Override
     public final B updatable(boolean updatable) {
       throw new UnsupportedOperationException("Property is not updatable: " + attribute);
+    }
+  }
+
+  static final class DefaultSubqueryPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
+          extends AbstractReadOnlyColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
+
+    DefaultSubqueryPropertyBuilder(Attribute<T> attribute, String caption, String subquery) {
+      super(attribute, caption);
+      super.columnExpression("(" + subquery + ")");
+    }
+
+    @Override
+    public B columnExpression(String columnExpression) {
+      throw new UnsupportedOperationException("Column expression can not be set on a subquery property: " + attribute);
+    }
+
+    @Override
+    public Property<T> build() {
+      return new DefaultColumnProperty<>(this);
     }
   }
 }

@@ -10,11 +10,11 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.DefaultAuditProperty.DefaultAuditPropertyBuilder;
 import is.codion.framework.domain.property.DefaultBlobProperty.DefaultBlobPropertyBuilder;
 import is.codion.framework.domain.property.DefaultColumnProperty.DefaultColumnPropertyBuilder;
+import is.codion.framework.domain.property.DefaultColumnProperty.DefaultSubqueryPropertyBuilder;
 import is.codion.framework.domain.property.DefaultDenormalizedProperty.DefaultDenormalizedPropertyBuilder;
 import is.codion.framework.domain.property.DefaultDerivedProperty.DefaultDerivedPropertyBuilder;
 import is.codion.framework.domain.property.DefaultForeignKeyProperty.DefaultForeignKeyPropertyBuilder;
 import is.codion.framework.domain.property.DefaultItemProperty.DefaultItemPropertyBuilder;
-import is.codion.framework.domain.property.DefaultSubqueryProperty.DefaultSubqueryPropertyBuilder;
 import is.codion.framework.domain.property.DefaultTransientProperty.DefaultTransientPropertyBuilder;
 
 import java.text.Collator;

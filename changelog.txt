@@ -7984,3 +7984,4 @@
   FilteredTableColumnModel unused factory method removed
   EntityComponents.inputComponentSupported() and inputComponent() renamed supports() and component() respectively
   SelectQueries.getPropertiesToSelect(), minor optimization, removing stream usage
+  SubqueryProperty removed, column expression used instead
