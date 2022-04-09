@@ -23,7 +23,7 @@ public class DefaultFilteredTableSortModelTest {
     secondColumn.setIdentifier(1);
     TableColumn thirdColumn = new TableColumn(2);
     thirdColumn.setIdentifier(2);
-    DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<Row, Integer>(columnIdentifier -> {
+    DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<>(columnIdentifier -> {
       if (columnIdentifier.equals(1)) {
         return String.class;
       }
@@ -40,7 +40,7 @@ public class DefaultFilteredTableSortModelTest {
         default:
           return null;
       }
-    });
+    }, null);
 
     Row firstRow = new Row(1, 2, null);
     Row secondRow = new Row(1, 2, 5);
@@ -94,8 +94,8 @@ public class DefaultFilteredTableSortModelTest {
   void nonComparableColumnClass() {
     TableColumn firstColumn = new TableColumn(0);
     firstColumn.setIdentifier(0);
-    DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<ArrayList, Integer>(
-            columnIdentifier -> ArrayList.class, (row, columnIdentifier) -> row.toString());
+    DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<>(
+            columnIdentifier -> ArrayList.class, (row, columnIdentifier) -> row.toString(), null);
     List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
     model.setSortOrder(0, SortOrder.DESCENDING);
     model.sort(collections);

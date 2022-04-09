@@ -43,7 +43,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * A TableModel implementation that supports filtering, searching and sorting.
  * <pre>
- * AbstractFilteredTableModel tableModel = ...;
+ * DefaultFilteredTableModel tableModel = ...;
  * JTable table = new JTable(tableModel, tableModel.getColumnModel(), tableModel.getSelectionModel());
  * </pre><br>
  * User: Björn Darri<br>
@@ -185,9 +185,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
     this.columnClassProvider = requireNonNull(columnClassProvider);
     this.columnValueProvider = requireNonNull(columnValueProvider);
-    this.sortModel = columnComparatorFactory == null ?
-            new DefaultFilteredTableSortModel<>(columnClassProvider, columnValueProvider) :
-            new DefaultFilteredTableSortModel<>(columnClassProvider, columnValueProvider, columnComparatorFactory);
+    this.sortModel = new DefaultFilteredTableSortModel<>(columnClassProvider, columnValueProvider, columnComparatorFactory);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     if (columnFilterModels != null) {
       for (ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
@@ -688,7 +686,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @see #findPrevious(int, String)
    */
   protected String getSearchValueAt(int rowIndex, C columnIdentifier) {
-    Object value = getValueAt(rowIndex, columnModel.getTableColumn(columnIdentifier).getModelIndex());
+    Object value = columnValueProvider.getColumnValue(getItemAt(rowIndex), columnIdentifier);
 
     return value == null ? "" : value.toString();
   }
