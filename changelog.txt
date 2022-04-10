@@ -8021,3 +8021,9 @@
   SelectQueries.getPropertiesToSelect(), minor optimization, removing stream usage
   SubqueryProperty removed, column expression used instead
   DefaultColumnProperty, value fetching refactored
+  DefaultEntityTableCellRenderer, minor refactoring
+  DefaultEntityTableCellRenderer now uses the Table.alternateRowColor value, if specified
+  EntityTablePanel.AUTOMATICALLY_HIDE_REFRESH_TOOLBAR configuration value removed
+  EntityEditPanel.ALL_PANELS_ACTIVE configuration value removed, EntityPanel.USE_FOCUS_ACTIVATION moved to EntityEditPanel
+  EntityPanel.DISPLAY_PANELS_IN_FRAME configuration value renamed USE_FRAME_PANEL_DISPLAY
+  EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE configuration value renamed to CONDITION_PANEL_VISIBLE

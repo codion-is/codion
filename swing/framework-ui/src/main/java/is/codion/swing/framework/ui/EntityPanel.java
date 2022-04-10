@@ -88,15 +88,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
 
   /**
-   * Indicates whether entity panels should be activated when the panel receives focus<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   * @see is.codion.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE
-   */
-  public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useFocusActivation", true);
-
-  /**
    * Indicates whether keyboard navigation will be enabled<br>
    * Value type: Boolean<br>
    * Default value: true
@@ -145,12 +136,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.toolbarButtons", false);
 
   /**
-   * Specifies if detail and edit panels should be displayed in a frame instead of the default dialog<br>
+   * Specifies whether detail and edit panels should be displayed in a frame instead of the default dialog<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> DISPLAY_PANELS_IN_FRAME =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.displayPanelsInFrame", false);
+  public static final PropertyValue<Boolean> USE_FRAME_PANEL_DISPLAY =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useFramePanelDisplay", false);
 
   /**
    * The possible states of a detail or edit panel.
@@ -287,7 +278,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
 
   static {
-    if (USE_FOCUS_ACTIVATION.get()) {
+    if (EntityEditPanel.USE_FOCUS_ACTIVATION.get()) {
       KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", new FocusActivationListener());
     }
   }
@@ -1486,7 +1477,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private Window createEditWindow() {
-    if (DISPLAY_PANELS_IN_FRAME.get()) {
+    if (USE_FRAME_PANEL_DISPLAY.get()) {
       return Windows.frameBuilder(editControlPanel)
               .relativeTo(this)
               .title(caption)
@@ -1506,7 +1497,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private Window createDetailPanelWindow() {
-    if (DISPLAY_PANELS_IN_FRAME.get()) {
+    if (USE_FRAME_PANEL_DISPLAY.get()) {
       return Windows.frameBuilder(detailPanelTabbedPane)
               .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
