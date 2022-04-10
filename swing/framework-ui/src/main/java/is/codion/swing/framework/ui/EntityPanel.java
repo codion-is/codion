@@ -88,15 +88,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
 
   /**
-   * Indicates whether entity panels should be activated when the panel receives focus<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   * @see is.codion.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE
-   */
-  public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useFocusActivation", true);
-
-  /**
    * Indicates whether keyboard navigation will be enabled<br>
    * Value type: Boolean<br>
    * Default value: true
@@ -287,7 +278,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
 
   static {
-    if (USE_FOCUS_ACTIVATION.get()) {
+    if (EntityEditPanel.USE_FOCUS_ACTIVATION.get()) {
       KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", new FocusActivationListener());
     }
   }

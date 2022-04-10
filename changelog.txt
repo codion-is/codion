@@ -7989,3 +7989,4 @@
   DefaultEntityTableCellRenderer, minor refactoring
   DefaultEntityTableCellRenderer now uses the Table.alternateRowColor value, if specified
   EntityTablePanel.AUTOMATICALLY_HIDE_REFRESH_TOOLBAR configuration value removed
+  EntityEditPanel.ALL_PANELS_ACTIVE configuration value removed, EntityPanel.USE_FOCUS_ACTIVATION moved to EntityEditPanel

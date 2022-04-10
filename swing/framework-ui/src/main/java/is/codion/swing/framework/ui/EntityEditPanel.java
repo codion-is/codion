@@ -57,13 +57,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private static final ResourceBundle TABLE_PANEL_MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
 
   /**
-   * Indicates whether all entity panels should be enabled and receiving input by default<br>
+   * Specifies whether edit panels should be activated when the panel (or its parent EntityPanel) receives focus<br>
    * Value type: Boolean<br>
-   * Default value: false
-   * @see EntityPanel#USE_FOCUS_ACTIVATION
+   * Default value: true
    */
-  public static final PropertyValue<Boolean> ALL_PANELS_ACTIVE =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.allPanelsActive", false);
+  public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useFocusActivation", true);
 
   /**
    * Specifies whether edit panels should include a SAVE button (insert or update, depending on selection) or just an INSERT button.<br>
@@ -108,7 +107,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Indicates whether the panel is active and ready to receive input
    */
-  private final State activeState = State.state(ALL_PANELS_ACTIVE.get());
+  private final State activeState = State.state(!USE_FOCUS_ACTIVATION.get());
 
   /**
    * Indicates whether the UI should be cleared after insert has been performed
@@ -148,7 +147,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   public EntityEditPanel(SwingEntityEditModel editModel, ControlCode... controlCodes) {
     super(editModel);
-    if (!ALL_PANELS_ACTIVE.get()) {
+    if (USE_FOCUS_ACTIVATION.get()) {
       ACTIVE_STATE_GROUP.addState(activeState);
     }
     this.controlCodes = controlCodes == null ? emptySet() : new HashSet<>(Arrays.asList(controlCodes));
