@@ -139,12 +139,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.allowColumnReordering", true);
 
   /**
-   * Specifies whether the table condition panels should be visible or not by default<br>
+   * Specifies whether table condition panels should be visible or not by default<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> TABLE_CONDITION_PANEL_VISIBLE =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.tableConditionPanelVisible", false);
+  public static final PropertyValue<Boolean> CONDITION_PANEL_VISIBLE =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.conditionPanelVisible", false);
 
   /**
    * Specifies the default table column resize mode for tables in the application<br>

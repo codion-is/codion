@@ -52,7 +52,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private boolean refreshOnInit = true;
   private EntityPanel.PanelState detailPanelState = EntityPanel.PanelState.EMBEDDED;
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
-  private boolean tableConditionPanelVisible = EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.get();
+  private boolean tableConditionPanelVisible = EntityTablePanel.CONDITION_PANEL_VISIBLE.get();
 
   private Class<? extends EntityPanel> panelClass;
   private Class<? extends EntityTablePanel> tablePanelClass;
