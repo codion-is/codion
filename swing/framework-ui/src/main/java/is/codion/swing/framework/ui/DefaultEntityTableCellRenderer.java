@@ -41,18 +41,16 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   private final DateTimeFormatter dateTimeFormatter;
   private final boolean toolTipData;
   private final boolean displayConditionState;
-  private final Border border;
   private final Function<Object, Object> displayValueProvider;
 
-  private DefaultEntityTableCellRenderer(DefaultBuilder builder, Border border) {
-    this.settings = new UISettings(border);
+  private DefaultEntityTableCellRenderer(DefaultBuilder builder) {
+    this.settings = new UISettings(builder.leftPadding, builder.rightPadding);
     this.tableModel = builder.tableModel;
     this.property = builder.property;
     this.format = builder.format;
     this.dateTimeFormatter = builder.dateTimeFormatter;
     this.toolTipData = builder.toolTipData;
     this.displayConditionState = builder.displayConditionState;
-    this.border = border;
     this.displayValueProvider = builder.displayValueProvider == null ? new DefaultDisplayValueProvider() : builder.displayValueProvider;
     setHorizontalAlignment(builder.horizontalAlignment);
   }
@@ -76,7 +74,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     setForeground(getForeground(table, row, isSelected));
     setBackground(getBackground(table, row, isSelected));
-    setBorder(hasFocus ? settings.focusedCellBorder : border);
+    setBorder(hasFocus ? settings.focusedCellBorder : settings.defaultCellBorder);
     if (toolTipData) {
       setToolTipText(value == null ? "" : value.toString());
     }
@@ -125,7 +123,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       else if (value instanceof Temporal) {
         return dateTimeFormatter.format((Temporal) value);
       }
-      else if (format != null && value != null) {
+      else if (value != null && format != null) {
         return format.format(value);
       }
 
@@ -140,15 +138,13 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private final SwingEntityTableModel tableModel;
     private final Property<?> property;
     private final boolean displayConditionState;
-    private final Border border;
 
-    private BooleanRenderer(DefaultBuilder builder, Border border) {
+    private BooleanRenderer(DefaultBuilder builder) {
       super(new NullableToggleButtonModel());
-      this.settings = new UISettings(border);
+      this.settings = new UISettings(builder.leftPadding, builder.rightPadding);
       this.tableModel = requireNonNull(builder.tableModel, "tableModel");
       this.property = requireNonNull(builder.property, "property");
       this.displayConditionState = builder.displayConditionState;
-      this.border = border;
       setHorizontalAlignment(builder.horizontalAlignment);
       setBorderPainted(true);
     }
@@ -172,7 +168,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       getNullableModel().setState((Boolean) value);
       setForeground(getForeground(table, row, isSelected));
       setBackground(getBackground(table, row, isSelected));
-      setBorder(hasFocus ? settings.focusedCellBorder : border);
+      setBorder(hasFocus ? settings.focusedCellBorder : settings.defaultCellBorder);
 
       return this;
     }
@@ -198,7 +194,8 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private static final double DOUBLE_DARKENING_FACTOR = 0.8;
     private static final int FOCUSED_CELL_BORDER_THICKNESS = 1;
 
-    private final Border defaultCellBorder;
+    private final int leftPadding;
+    private final int rightPadding;
 
     private Color foregroundColor;
     private Color backgroundColor;
@@ -209,10 +206,12 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private Color alternateBackgroundColorDoubleSearch;
     private Color selectionBackground;
     private Color alternateSelectionBackground;
+    private Border defaultCellBorder;
     private Border focusedCellBorder;
 
-    private UISettings(Border defaultCellBorder) {
-      this.defaultCellBorder = defaultCellBorder;
+    private UISettings(int leftPadding, int rightPadding) {
+      this.leftPadding = leftPadding;
+      this.rightPadding = rightPadding;
       configure();
     }
 
@@ -226,6 +225,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       alternateBackgroundColorSearch = darker(alternateBackgroundColor, DARKENING_FACTOR);
       alternateBackgroundColorDoubleSearch = darker(alternateBackgroundColor, DOUBLE_DARKENING_FACTOR);
       alternateSelectionBackground = darker(selectionBackground, DARKENING_FACTOR);
+      defaultCellBorder = leftPadding > 0 || rightPadding > 0 ? createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
       focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
     }
 
@@ -348,12 +348,11 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
     @Override
     public EntityTableCellRenderer build() {
-      Border border = leftPadding > 0 || rightPadding > 0 ? createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
-        return new DefaultEntityTableCellRenderer.BooleanRenderer(this, border);
+        return new DefaultEntityTableCellRenderer.BooleanRenderer(this);
       }
 
-      return new DefaultEntityTableCellRenderer(this, border);
+      return new DefaultEntityTableCellRenderer(this);
     }
 
     private static int getDefaultHorizontalAlignment(Property<?> property) {
