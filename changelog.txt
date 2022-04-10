@@ -7988,3 +7988,4 @@
   DefaultColumnProperty, value fetching refactored
   DefaultEntityTableCellRenderer, minor refactoring
   DefaultEntityTableCellRenderer now uses the Table.alternateRowColor value, if specified
+  EntityTablePanel.AUTOMATICALLY_HIDE_REFRESH_TOOLBAR configuration value removed

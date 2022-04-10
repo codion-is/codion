@@ -171,14 +171,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
 
   /**
-   * Specifies whether the refresh button toolbar should be hidden automatically when the condition panel is not visible.<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> AUTOMATICALLY_HIDE_REFRESH_TOOLBAR =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.automaticallyHideRefreshToolbar", true);
-
-  /**
    * Specifies how column selection is presented to the user.<br>
    * Value type: {@link ColumnSelection}<br>
    * Default value: {@link ColumnSelection#DIALOG}
@@ -270,11 +262,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private final List<Controls> additionalPopupControls = new ArrayList<>();
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
   private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
-
-  /**
-   * specifies whether to automatically hide the refresh toolbar along with the condition panel
-   */
-  private boolean automaticallyHideRefreshToolbar = AUTOMATICALLY_HIDE_REFRESH_TOOLBAR.get();
 
   /**
    * specifies whether to include the south panel
@@ -458,21 +445,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final void setColumnSelection(ColumnSelection columnSelection) {
     checkIfInitialized();
     this.columnSelection = requireNonNull(columnSelection);
-  }
-
-  /**
-   * @return true if the refresh toolbar should be hidden unless the condition panel is visible
-   */
-  public final boolean isAutomaticallyHideRefreshToolbar() {
-    return automaticallyHideRefreshToolbar;
-  }
-
-  /**
-   * @param automaticallyHideRefreshToolbar true if the refresh toolbar should be hidden unless the condition panel is visible
-   */
-  public final void setAutomaticallyHideRefreshToolbar(boolean automaticallyHideRefreshToolbar) {
-    this.automaticallyHideRefreshToolbar = automaticallyHideRefreshToolbar;
-    this.refreshToolBar.setVisible(!automaticallyHideRefreshToolbar || isConditionPanelVisible());
   }
 
   /**
@@ -737,7 +709,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
     Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    ComponentValue<T, ? extends JComponent> componentValue = createUpdateSelectedComponentValue(propertyToUpdate.getAttribute(), initialValue);
+    ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(propertyToUpdate.getAttribute(), initialValue);
     boolean updatePerformed = false;
     while (!updatePerformed) {
       T newValue = componentValue.showDialog(this, propertyToUpdate.getCaption());
@@ -1072,7 +1044,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Initializes the default keyboard actions.
    * CTRL-T transfers focus to the table in case one is available,
    * CTR-S opens a select search condition panel dialog, in case one is available,
-   * CTR-I opens a select input field dialog and
    * CTR-F selects the table search field
    */
   protected void initializeKeyboardActions() {
@@ -1438,10 +1409,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     toolBar.getComponentAtIndex(0).setFocusable(false);
     toolBar.setFloatable(false);
     toolBar.setRollover(true);
-    if (automaticallyHideRefreshToolbar) {
-      //made visible when condition panel is visible
-      toolBar.setVisible(false);
-    }
+    //made visible when condition panel is visible
+    toolBar.setVisible(false);
 
     return toolBar;
   }
@@ -1528,9 +1497,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private void setConditionPanelVisibleInternal(boolean visible) {
     if (conditionScrollPane != null) {
       conditionScrollPane.setVisible(visible);
-      if (automaticallyHideRefreshToolbar) {
-        refreshToolBar.setVisible(visible);
-      }
+      refreshToolBar.setVisible(visible);
       revalidate();
     }
   }
