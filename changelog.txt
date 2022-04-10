@@ -7987,3 +7987,4 @@
   SubqueryProperty removed, column expression used instead
   DefaultColumnProperty, value fetching refactored
   DefaultEntityTableCellRenderer, minor refactoring
+  DefaultEntityTableCellRenderer now uses the Table.alternateRowColor value, if specified

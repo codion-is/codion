@@ -218,10 +218,13 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private void configure() {
       foregroundColor = UIManager.getColor("Table.foreground");
       backgroundColor = UIManager.getColor("Table.background");
+      alternateBackgroundColor = UIManager.getColor("Table.alternateRowColor");
+      if (alternateBackgroundColor == null) {
+        alternateBackgroundColor = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
+      }
       selectionBackground = UIManager.getColor("Table.selectionBackground");
       backgroundColorSearch = darker(backgroundColor, DARKENING_FACTOR);
       backgroundColorDoubleSearch = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
-      alternateBackgroundColor = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
       alternateBackgroundColorSearch = darker(alternateBackgroundColor, DARKENING_FACTOR);
       alternateBackgroundColorDoubleSearch = darker(alternateBackgroundColor, DOUBLE_DARKENING_FACTOR);
       alternateSelectionBackground = darker(selectionBackground, DARKENING_FACTOR);
