@@ -16,6 +16,10 @@
  * {@link is.codion.swing.framework.ui.EntityPanel#TOOLBAR_BUTTONS}<br>
  * {@link is.codion.swing.framework.ui.EntityTableCellRenderer#TABLE_CELL_LEFT_PADDING}<br>
  * {@link is.codion.swing.framework.ui.EntityTableCellRenderer#TABLE_CELL_RIGHT_PADDING}<br>
+ * {@link is.codion.swing.framework.ui.EntityTableCellRenderer#NUMERICAL_HORIZONTAL_ALIGNMENT}<br>
+ * {@link is.codion.swing.framework.ui.EntityTableCellRenderer#TEMPORAL_HORIZONTAL_ALIGNMENT}<br>
+ * {@link is.codion.swing.framework.ui.EntityTableCellRenderer#BOOLEAN_HORIZONTAL_ALIGNMENT}<br>
+ * {@link is.codion.swing.framework.ui.EntityTableCellRenderer#HORIZONTAL_ALIGNMENT}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#ALLOW_COLUMN_REORDERING}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#TABLE_CONDITION_PANEL_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#TABLE_AUTO_RESIZE_MODE}<br>
