@@ -35,10 +35,8 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
   public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(A attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
-      EntitySearchModel searchModel = new DefaultEntitySearchModel(foreignKey.getReferencedEntityType(), connectionProvider);
-      searchModel.getMultipleSelectionEnabledValue().set(true);
-
-      return (ColumnConditionModel<A, T>) new DefaultForeignKeyConditionModel(foreignKey, searchModel);
+      return (ColumnConditionModel<A, T>) new DefaultForeignKeyConditionModel(foreignKey,
+              new DefaultEntitySearchModel(foreignKey.getReferencedEntityType(), connectionProvider));
     }
 
     ColumnProperty<T> property = getDefinition(attribute.getEntityType()).getColumnProperty(attribute);

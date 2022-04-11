@@ -7993,3 +7993,4 @@
   EntityPanel.DISPLAY_PANELS_IN_FRAME configuration value renamed USE_FRAME_PANEL_DISPLAY
   EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE configuration value renamed to CONDITION_PANEL_VISIBLE
   EntityTablePanel.setRefreshToolbarAlwaysVisible() added along with a REFRESH_TOOLBAR_ALWAYS_VISIBLE configuration value
+  DefaultConditionModelFactory.createConditionModel(), no longer sets the multipleSelectionEnabled status in the entitySearchModel to true, since that's the default
