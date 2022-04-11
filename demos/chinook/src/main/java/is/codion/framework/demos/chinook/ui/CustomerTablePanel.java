@@ -28,6 +28,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 
   public CustomerTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
+    setRefreshToolbarAlwaysVisible(true);
   }
 
   @Override

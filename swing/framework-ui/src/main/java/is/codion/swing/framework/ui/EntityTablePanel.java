@@ -171,6 +171,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
 
   /**
+   * Specifies whether the refresh button toolbar should always be visible or hidden when the condition panel is not visible<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final PropertyValue<Boolean> REFRESH_TOOLBAR_ALWAYS_VISIBLE =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.refreshToolbarAlwaysVisible", false);
+
+  /**
    * Specifies how column selection is presented to the user.<br>
    * Value type: {@link ColumnSelection}<br>
    * Default value: {@link ColumnSelection#DIALOG}
@@ -262,6 +270,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private final List<Controls> additionalPopupControls = new ArrayList<>();
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
   private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
+
+  /**
+   * specifies whether the refresh toolbar should always be visible, instead of being hidding along with the condition panel
+   */
+  private boolean refreshToolbarAlwaysVisible = REFRESH_TOOLBAR_ALWAYS_VISIBLE.get();
 
   /**
    * specifies whether to include the south panel
@@ -445,6 +458,22 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final void setColumnSelection(ColumnSelection columnSelection) {
     checkIfInitialized();
     this.columnSelection = requireNonNull(columnSelection);
+  }
+
+  /**
+   * @return true if the refresh toolbar should always be visible
+   */
+  public final boolean isRefreshToolbarAlwaysVisible() {
+    return refreshToolbarAlwaysVisible;
+  }
+
+  /**
+   * @param refreshToolbarAlwaysVisible true if the refresh toolbar should always be visible,
+   * instead of being hidden when the condition panel is not visible
+   */
+  public final void setRefreshToolbarAlwaysVisible(boolean refreshToolbarAlwaysVisible) {
+    this.refreshToolbarAlwaysVisible = refreshToolbarAlwaysVisible;
+    this.refreshToolBar.setVisible(refreshToolbarAlwaysVisible || isConditionPanelVisible());
   }
 
   /**
@@ -1497,7 +1526,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private void setConditionPanelVisibleInternal(boolean visible) {
     if (conditionScrollPane != null) {
       conditionScrollPane.setVisible(visible);
-      refreshToolBar.setVisible(visible);
+      refreshToolBar.setVisible(refreshToolbarAlwaysVisible || visible);
       revalidate();
     }
   }
