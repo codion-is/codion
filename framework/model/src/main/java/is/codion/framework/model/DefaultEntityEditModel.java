@@ -85,7 +85,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds the {@link EntitySearchModel}s used by this {@link EntityEditModel}
    */
-  private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new ConcurrentHashMap<>();
+  private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
 
   /**
    * Holds the edit model values created via {@link #value(Attribute)}
@@ -613,7 +613,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final boolean containsSearchModel(ForeignKey foreignKey) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);
-    return entitySearchModels.containsKey(foreignKey);
+    synchronized (entitySearchModels) {
+      return entitySearchModels.containsKey(foreignKey);
+    }
   }
 
   @Override
@@ -634,7 +636,16 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final EntitySearchModel getForeignKeySearchModel(ForeignKey foreignKey) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);
-    return entitySearchModels.computeIfAbsent(foreignKey, k -> createForeignKeySearchModel(foreignKey));
+    synchronized (entitySearchModels) {
+      // can't use computeIfAbsent here, see comment in SwingEntityEditModel.getForeignKeyComboBoxModel()
+      EntitySearchModel entitySearchModel = entitySearchModels.get(foreignKey);
+      if (entitySearchModel == null) {
+        entitySearchModel = createForeignKeySearchModel(foreignKey);
+        entitySearchModels.put(foreignKey, entitySearchModel);
+      }
+
+      return entitySearchModel;
+    }
   }
 
   @Override
