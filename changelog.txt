@@ -7994,3 +7994,4 @@
   EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE configuration value renamed to CONDITION_PANEL_VISIBLE
   EntityTablePanel.setRefreshToolbarAlwaysVisible() added along with a REFRESH_TOOLBAR_ALWAYS_VISIBLE configuration value
   DefaultConditionModelFactory.createConditionModel(), no longer sets the multipleSelectionEnabled status in the entitySearchModel to true, since that's the default
+  SwingEntityEditModel, DefaultEntityEditModel, regression bug fixed (see v0.17.9 changelist comment), no longer use ConcurrentHashMap and computeIfAbsent, see code comment
