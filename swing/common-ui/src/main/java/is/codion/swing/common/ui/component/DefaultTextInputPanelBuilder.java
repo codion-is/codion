@@ -45,7 +45,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   public TextInputPanelBuilder lowerCase(boolean lowerCase) {
-    textFieldBuilder.lowerCase(lowerCase);;
+    textFieldBuilder.lowerCase(lowerCase);
     return this;
   }
 
