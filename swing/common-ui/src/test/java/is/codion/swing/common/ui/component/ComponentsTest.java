@@ -48,14 +48,22 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ComponentsTest {
+
+  @Test
+  void testDoubleLink() {
+    Value<Long> value = Value.value();
+    ComponentValue<Long, LongField> componentValue = Components.longField(value)
+            .buildComponentValue();
+    assertThrows(IllegalArgumentException.class, () -> componentValue.link(value));
+  }
 
   @Test
   void clear() {
@@ -342,7 +350,6 @@ public final class ComponentsTest {
             .linkedValue(value)
             .nullable(true)
             .buildComponentValue();
-    componentValue.link(value);
     JComboBox<Item<Integer>> comboBox = componentValue.getComponent();
     ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
@@ -366,7 +373,7 @@ public final class ComponentsTest {
     ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(boxModel)
             .completionMode(Completion.Mode.NONE)//otherwise, a non-existing element can be selected, last test fails
             .editable(true)
-            .orientation(ComponentOrientation.RIGHT_TO_LEFT)
+            .componentOrientation(ComponentOrientation.RIGHT_TO_LEFT)
             .maximumRowCount(5)
             .linkedValue(value)
             .mouseWheelScrollingWithWrapAround(true)
@@ -392,7 +399,7 @@ public final class ComponentsTest {
             .upperCase(true)
             .selectAllOnFocusGained(true)
             .action(Control.control(() -> {}))
-            .lookupDialog(Collections::emptyList)
+            .selectionProvider(component -> Optional.empty())
             .format(null)
             .horizontalAlignment(SwingConstants.CENTER)
             .linkedValue(value)
@@ -577,16 +584,6 @@ public final class ComponentsTest {
     textValue.set("three");
     assertEquals("three", componentValue.get());
     listBuilder.scrollPane().build();
-  }
-
-  @Test
-  void builder() {
-    JButton component = new JButton();
-    ComponentBuilder<Object, JButton, ?> builder = Components.component(component)
-            .clientProperty("Key", "Value");
-    assertThrows(UnsupportedOperationException.class, builder::buildComponentValue);
-    builder.initialValue(1);
-    assertEquals("Value", component.getClientProperty("Key"));
   }
 
   @Test

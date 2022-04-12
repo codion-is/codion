@@ -5,7 +5,6 @@ import is.codion.common.event.EventListener;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -82,7 +81,6 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   private JPanel initializeSimpleConditionPanel(EntityTableConditionModel conditionModel) {
     JButton simpleSearchButton = searchControl.createButton();
     JPanel panel = new JPanel(Layouts.borderLayout());
-    ComponentValues.textComponent(simpleSearchTextField).link(conditionModel.getSimpleConditionStringValue());
     panel.setBorder(BorderFactory.createTitledBorder(MESSAGES.getString("condition")));
     panel.add(simpleSearchTextField, BorderLayout.WEST);
     panel.add(simpleSearchButton, BorderLayout.EAST);

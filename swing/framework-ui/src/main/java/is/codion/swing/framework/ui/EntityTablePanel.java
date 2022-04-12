@@ -741,7 +741,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(propertyToUpdate.getAttribute(), initialValue);
     boolean updatePerformed = false;
     while (!updatePerformed) {
-      T newValue = componentValue.showDialog(this, propertyToUpdate.getCaption());
+      T newValue = Dialogs.showInputDialog(componentValue, this, propertyToUpdate.getCaption());
       Entity.put(propertyToUpdate.getAttribute(), newValue, selectedEntities);
       updatePerformed = update(selectedEntities);
     }

@@ -4,6 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -12,11 +13,9 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain;
-import is.codion.swing.common.ui.component.ComponentValues;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.JComboBox;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,8 +69,9 @@ public final class SwingEntityModelTest
     SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     SwingEntityEditModel employeeEditModel = employeeModel.getEditModel();
     SwingEntityTableModel employeeTableModel = employeeModel.getTableModel();
-    ComponentValues.comboBox(new JComboBox<>(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)))
-            .link(employeeEditModel.<Entity>value(TestDomain.EMP_MGR_FK));
+
+    SwingEntityComboBoxModel comboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK);
+    new EntityComboBoxModelValue(comboBoxModel).link(employeeEditModel.value(TestDomain.EMP_MGR_FK));
     employeeTableModel.refresh();
     for (Entity employee : employeeTableModel.getItems()) {
       employeeTableModel.getSelectionModel().setSelectedItem(employee);
@@ -179,6 +179,26 @@ public final class SwingEntityModelTest
   public static class EmpModel extends SwingEntityModel {
     public EmpModel(EntityConnectionProvider connectionProvider) {
       super(TestDomain.T_EMP, connectionProvider);
+    }
+  }
+
+  private static final class EntityComboBoxModelValue extends AbstractValue<Entity> {
+
+    private final SwingEntityComboBoxModel comboBoxModel;
+
+    public EntityComboBoxModelValue(SwingEntityComboBoxModel comboBoxModel) {
+      this.comboBoxModel = comboBoxModel;
+      comboBoxModel.addSelectionListener(selected -> notifyValueChange());
+    }
+
+    @Override
+    protected void setValue(Entity value) {
+      comboBoxModel.setSelectedItem(value);
+    }
+
+    @Override
+    public Entity get() {
+      return comboBoxModel.getSelectedValue();
     }
   }
 }

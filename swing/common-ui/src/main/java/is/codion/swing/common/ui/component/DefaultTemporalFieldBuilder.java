@@ -13,7 +13,7 @@ import java.time.temporal.Temporal;
 final class DefaultTemporalFieldBuilder<T extends Temporal, C extends TemporalField<T>>
         extends DefaultTextFieldBuilder<T, C, TemporalFieldBuilder<T, C>> implements TemporalFieldBuilder<T, C> {
 
-  private final TemporalField.Builder<T> builder;
+  private final TemporalField.Builder<T, ?> builder;
 
   DefaultTemporalFieldBuilder(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
     super(valueClass, linkedValue);

@@ -8030,3 +8030,11 @@
   EntityTablePanel.setRefreshToolbarAlwaysVisible() added along with a REFRESH_TOOLBAR_ALWAYS_VISIBLE configuration value
   DefaultConditionModelFactory.createConditionModel(), no longer sets the multipleSelectionEnabled status in the entitySearchModel to true, since that's the default
   SwingEntityEditModel, DefaultEntityEditModel, regression bug fixed (see v0.17.9 changelist comment), no longer use ConcurrentHashMap and computeIfAbsent, see code comment
+  TemporalField.Builder and TextInputPanel.Builder can now be extended, TemporalFieldBuilder and TextInputPanelBuilder refactored accordingly
+  Components.temporalField(), EntityComponents.temporalField() and EntityEditComponentPanel.createTemporalField() added
+  AbstractComponentBuilder.buildComponentValue() bug fixed, recursive call via build() caused the creation of two component values
+  ComponentBuilder.orientation renamed componentOrientation
+  ComponentValues removed, Components.fileInputPanel() and progressBar() added
+  swing-framework-model module test dependency on swing-common-ui removed
+  TextFieldBuilder.lookupDialog() replaced with selectionProvider(), eliminating a dependency from DefaultTextFieldBuilder to Dialogs
+  ComponentValue.showDialog() removed, Dialogs.showInputDialog() added, reducing interdependencies between dialog and component package

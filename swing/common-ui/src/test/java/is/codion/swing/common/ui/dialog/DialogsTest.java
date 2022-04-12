@@ -116,11 +116,6 @@ public final class DialogsTest {
   }
 
   @Test
-  void addLookupDialog() {
-    Dialogs.addLookupDialog(new JTextField(), () -> Collections.singletonList("hello"));
-  }
-
-  @Test
   void createBrowseAction() {
     Dialogs.createBrowseAction(new JTextField());
   }

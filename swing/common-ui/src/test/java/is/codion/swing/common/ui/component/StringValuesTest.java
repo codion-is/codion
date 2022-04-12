@@ -36,9 +36,8 @@ public class StringValuesTest {
         throw new IllegalArgumentException();
       }
     });
-    JTextField textField = new JTextField();
-    Value<String> textFieldValue = ComponentValues.textComponent(textField);
-    textFieldValue.link(textValue);
+    ComponentValue<String, JTextField> textFieldValue = Components.textField(textValue)
+            .buildComponentValue();
 
     assertEquals("start", textFieldValue.get());
 
@@ -57,10 +56,10 @@ public class StringValuesTest {
   @Test
   void nullInitialValue() throws Exception {
     stringValue = null;
-    JTextField textField = new JTextField();
     Value<String> stringPropertyValue = Value.propertyValue(this, "stringValue",
             String.class, stringValueChangedEvent);
-    ComponentValues.textComponent(textField).link(stringPropertyValue);
+    JTextField textField = Components.textField(stringPropertyValue)
+            .build();
     assertNull(this.stringValue);
     assertEquals("", textField.getText());
     setStringValue("hello");
@@ -70,19 +69,17 @@ public class StringValuesTest {
     textField.setText("");
     assertNull(this.stringValue);
 
-    JTextField textField2 = new JTextField();
     this.stringValue = "test";
-    ComponentValues.textComponent(textField2)
-            .link(Value.propertyValue(this, "stringValue", String.class, stringValueChangedEvent));
+    JTextField textField2 = Components.textField(Value.propertyValue(this, "stringValue", String.class, stringValueChangedEvent))
+            .build();
     assertEquals("test", textField2.getText());
   }
 
   @Test
   void nonNullInitialValue() throws Exception {
     stringValue = "name";
-    JTextField textField = new JTextField();
-    ComponentValues.textComponent(textField)
-            .link(Value.propertyValue(this, "stringValue", String.class, stringValueChangedEvent));
+    JTextField textField = Components.textField(Value.propertyValue(this, "stringValue", String.class, stringValueChangedEvent))
+            .build();
     assertEquals("name", textField.getText());
     textField.setText("darri");
     assertFalse(getStringValue().isEmpty());
@@ -128,9 +125,9 @@ public class StringValuesTest {
 
   @Test
   void textValue() {
-    JTextField textField = new JTextField();
-
-    ComponentValue<String, JTextField> value = ComponentValues.textComponent(textField);
+    ComponentValue<String, JTextField> value = Components.textField()
+            .buildComponentValue();
+    JTextField textField = value.getComponent();
 
     assertNull(value.get());
     textField.setText("hello there");
@@ -144,7 +141,8 @@ public class StringValuesTest {
 
   @Test
   void characterValue() {
-    ComponentValue<Character, JTextField> value = ComponentValues.characterTextField(new JTextField());
+    ComponentValue<Character, JTextField> value = Components.textField(Character.class)
+            .buildComponentValue();
     assertNull(value.get());
     value.getComponent().setText("2");
     assertEquals('2', value.get());

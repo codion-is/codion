@@ -11,15 +11,11 @@ import java.awt.Dimension;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String, TextInputPanel, TextInputPanelBuilder>
-        implements TextInputPanelBuilder {
+final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String, TextInputPanel, TextInputPanelBuilder> implements TextInputPanelBuilder {
 
-  private UpdateOn updateOn = UpdateOn.KEYSTROKE;
+  private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null);
+
   private boolean buttonFocusable;
-  private int columns = TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS.get();
-  private boolean upperCase = false;
-  private boolean lowerCase = false;
-  private boolean selectAllOnFocusGained;
   private Dimension textAreaSize;
   private int maximumLength;
   private String caption;
@@ -31,37 +27,31 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   public TextInputPanelBuilder updateOn(UpdateOn updateOn) {
-    this.updateOn = requireNonNull(updateOn);
+    textFieldBuilder.updateOn(updateOn);
     return this;
   }
 
   @Override
   public TextInputPanelBuilder columns(int columns) {
-    this.columns = columns;
+    textFieldBuilder.columns(columns);
     return this;
   }
 
   @Override
   public TextInputPanelBuilder upperCase(boolean upperCase) {
-    if (upperCase && lowerCase) {
-      throw new IllegalArgumentException("Field is already lowercase");
-    }
-    this.upperCase = upperCase;
+    textFieldBuilder.upperCase(upperCase);
     return this;
   }
 
   @Override
   public TextInputPanelBuilder lowerCase(boolean lowerCase) {
-    if (lowerCase && upperCase) {
-      throw new IllegalArgumentException("Field is already uppercase");
-    }
-    this.lowerCase = lowerCase;
+    textFieldBuilder.lowerCase(lowerCase);;
     return this;
   }
 
   @Override
   public TextInputPanelBuilder selectAllOnFocusGained(boolean selectAllOnFocusGained) {
-    this.selectAllOnFocusGained = selectAllOnFocusGained;
+    textFieldBuilder.selectAllOnFocusGained(selectAllOnFocusGained);
     return this;
   }
 
@@ -79,6 +69,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   public TextInputPanelBuilder maximumLength(int maximumLength) {
+    textFieldBuilder.maximumLength(maximumLength);
     this.maximumLength = maximumLength;
     return this;
   }
@@ -97,14 +88,6 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   protected TextInputPanel buildComponent() {
-    TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null)
-            .selectAllOnFocusGained(selectAllOnFocusGained)
-            .updateOn(updateOn)
-            .columns(columns)
-            .maximumLength(maximumLength)
-            .upperCase(upperCase)
-            .lowerCase(lowerCase);
-
     return TextInputPanel.builder(textFieldBuilder.build())
             .caption(caption)
             .maximumLength(maximumLength)

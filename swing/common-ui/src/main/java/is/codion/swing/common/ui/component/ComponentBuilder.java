@@ -180,7 +180,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @param orientation the component orientation
    * @return this builder instance
    */
-  B orientation(ComponentOrientation orientation);
+  B componentOrientation(ComponentOrientation orientation);
 
   /**
    * @param validator the validator to use

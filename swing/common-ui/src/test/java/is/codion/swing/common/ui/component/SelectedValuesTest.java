@@ -10,6 +10,7 @@ import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import java.util.List;
 
@@ -30,8 +31,9 @@ public class SelectedValuesTest {
         throw new IllegalArgumentException();
       }
     });
-    JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
-    ComponentValues.comboBox(box).link(originalValue);
+    ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}), originalValue)
+            .buildComponentValue();
+    JComboBox<String> box = componentValue.getComponent();
 
     assertEquals("b", box.getSelectedItem());
     box.setSelectedItem("d");
@@ -42,8 +44,11 @@ public class SelectedValuesTest {
 
   @Test
   void selectedItemValueLink() throws Exception {
-    JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
-    ComponentValues.comboBox(box).link(Value.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent));
+    ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}),
+                    Value.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent))
+            .buildComponentValue();
+    JComboBox<String> box = componentValue.getComponent();
+
     assertNull(selectedItem);
     setSelectedItem("s");
     assertEquals("s", box.getSelectedItem());
@@ -57,20 +62,23 @@ public class SelectedValuesTest {
             item("two"), item("three"), item("four"));
     ItemComboBoxModel<String> boxModel = ItemComboBoxModel.createModel(items);
     boxModel.setSelectedItem("two");
-    ComponentValue<String, JComboBox<Item<String>>> componentValue = ComponentValues.itemComboBox(new JComboBox<>(boxModel));
+    ComponentValue<String, JComboBox<Item<String>>> componentValue = Components.itemComboBox(boxModel)
+            .buildComponentValue();
     assertEquals(5, boxModel.getSize());
     assertEquals("two", componentValue.get());
 
     boxModel = ItemComboBoxModel.createModel(items);
-    componentValue = ComponentValues.itemComboBox(new JComboBox<>(boxModel));
+    componentValue = Components.itemComboBox(boxModel)
+            .buildComponentValue();
     assertEquals(5, boxModel.getSize());
     assertNull(componentValue.get());
   }
 
   @Test
   void selectedValue() {
-    JComboBox<String> box = new JComboBox<>(new String[] {null, "one", "two", "three"});
-    Value<String> value = ComponentValues.comboBox(box);
+    ComponentValue<String, JComboBox<String>> value = Components.comboBox(new DefaultComboBoxModel<>(new String[] {null, "one", "two", "three"}))
+            .buildComponentValue();
+    JComboBox<String> box = value.getComponent();
 
     assertNull(value.get());
     box.setSelectedIndex(1);

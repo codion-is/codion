@@ -5,10 +5,10 @@ package is.codion.swing.common.ui.component.textfield;
 
 import is.codion.common.Util;
 import is.codion.common.state.State;
+import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 
@@ -87,7 +87,7 @@ public final class SearchHighlighter {
    */
   public JTextField createSearchField() {
     JTextField searchField = new JTextField(12);
-    ComponentValues.textComponent(searchField).link(searchStringValue);
+    new SearchFieldValue(searchField).link(searchStringValue);
     //todo make this work somehow
     //TextFieldHint.create(searchField, "Search");
     searchField.setComponentPopupMenu(Controls.builder()
@@ -217,6 +217,26 @@ public final class SearchHighlighter {
         }
       }
     });
+  }
+
+  private static final class SearchFieldValue extends AbstractValue<String> {
+
+    private final JTextField searchField;
+
+    private SearchFieldValue(JTextField searchField) {
+      this.searchField = searchField;
+      this.searchField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+    }
+
+    @Override
+    public String get() {
+      return searchField.getText();
+    }
+
+    @Override
+    protected void setValue(String value) {
+      searchField.setText(value);
+    }
   }
 
   private static final class MatchPosition {

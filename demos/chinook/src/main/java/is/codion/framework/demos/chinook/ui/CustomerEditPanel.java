@@ -4,6 +4,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
@@ -41,7 +42,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
     createTextField(Customer.STATE)
             .columns(4)
             .upperCase(true)
-            .lookupDialog(new StateValueSupplier());
+            .selectionProvider(Dialogs.selectionProvider(new StateValueSupplier()));
     createTextField(Customer.COUNTRY)
             .columns(8);
     createTextField(Customer.PHONE);

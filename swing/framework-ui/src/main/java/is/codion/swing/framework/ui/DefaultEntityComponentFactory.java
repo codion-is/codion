@@ -16,7 +16,7 @@ import is.codion.swing.framework.ui.component.EntityComponents;
 import javax.swing.JComponent;
 import java.time.temporal.Temporal;
 
-import static is.codion.swing.common.ui.component.ComponentValues.fileInputPanel;
+import static is.codion.swing.common.ui.component.Components.fileInputPanel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -35,13 +35,15 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
     EntityComponents inputComponents = new EntityComponents(editModel.getEntityDefinition());
     if (attribute.isTemporal()) {
       ComponentValue<Temporal, TemporalInputPanel<Temporal>> componentValue =
-              inputComponents.temporalInputPanel((Attribute<Temporal>) attribute).buildComponentValue();
+              inputComponents.temporalInputPanel((Attribute<Temporal>) attribute)
+                      .buildComponentValue();
       componentValue.set((Temporal) initialValue);
 
       return (ComponentValue<T, C>) componentValue;
     }
     if (attribute.isByteArray()) {
-      return (ComponentValue<T, C>) fileInputPanel();
+      return (ComponentValue<T, C>) fileInputPanel()
+              .buildComponentValue();
     }
 
     return (ComponentValue<T, C>) inputComponents.component(attribute)

@@ -15,13 +15,14 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
+import static java.util.Objects.requireNonNull;
+
 public final class FileInputPanel extends JPanel {
 
-  private final JTextField filePathField = new JTextField(20);
+  private final JTextField filePathField;
 
-  public FileInputPanel() {
-    filePathField.setEditable(false);
-    filePathField.setFocusable(false);
+  public FileInputPanel(JTextField filePathField) {
+    this.filePathField = requireNonNull(filePathField);
     setLayout(Layouts.borderLayout());
     add(filePathField, BorderLayout.CENTER);
     JButton browseButton = new JButton(new AbstractAction("...") {
