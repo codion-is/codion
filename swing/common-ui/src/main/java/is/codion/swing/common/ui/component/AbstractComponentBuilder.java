@@ -386,15 +386,15 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (onBuild != null) {
       onBuild.accept(component);
     }
-    validators.forEach(validator -> buildComponentValue().addValidator(validator));
+    validators.forEach(validator -> getComponentValue(component).addValidator(validator));
     if (initialValue != null) {
       setInitialValue(component, initialValue);
     }
     if (linkedValue != null) {
-      buildComponentValue().link(linkedValue);
+      getComponentValue(component).link(linkedValue);
     }
     if (linkedValueObserver != null) {
-      buildComponentValue().link(linkedValueObserver);
+      getComponentValue(component).link(linkedValueObserver);
     }
 
     return component;
@@ -405,7 +405,11 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (componentValue != null) {
       return componentValue;
     }
-    componentValue = buildComponentValue(build());
+    build();//initializes the component value if required
+    if (componentValue == null) {
+      //try to intialize the component value if build() did not
+      componentValue = buildComponentValue(component);
+    }
 
     return componentValue;
   }
@@ -443,6 +447,14 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
    */
   protected void setTransferFocusOnEnter(C component) {
     TransferFocusOnEnter.enable(component);
+  }
+
+  private ComponentValue<T, C> getComponentValue(C component) {
+    if (componentValue == null) {
+      componentValue = buildComponentValue(component);
+    }
+
+    return componentValue;
   }
 
   private void setSizes(C component) {

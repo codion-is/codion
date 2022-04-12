@@ -58,6 +58,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class ComponentsTest {
 
   @Test
+  void testDoubleLink() {
+    Value<Long> value = Value.value();
+    ComponentValue<Long, LongField> componentValue = Components.longField(value)
+            .buildComponentValue();
+    assertThrows(IllegalArgumentException.class, () -> componentValue.link(value));
+  }
+
+  @Test
   void clear() {
     Font defaultFont = new JTextField().getFont();
 
@@ -342,7 +350,6 @@ public final class ComponentsTest {
             .linkedValue(value)
             .nullable(true)
             .buildComponentValue();
-    componentValue.link(value);
     JComboBox<Item<Integer>> comboBox = componentValue.getComponent();
     ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
     assertEquals(0, model.indexOf(null));

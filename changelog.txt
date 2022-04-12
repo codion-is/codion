@@ -7997,3 +7997,4 @@
   SwingEntityEditModel, DefaultEntityEditModel, regression bug fixed (see v0.17.9 changelist comment), no longer use ConcurrentHashMap and computeIfAbsent, see code comment
   TemporalField.Builder and TextInputPanel.Builder can now be extended, TemporalFieldBuilder and TextInputPanelBuilder refactored accordingly
   Components.temporalField(), EntityComponents.temporalField() and EntityEditComponentPanel.createTemporalField() added
+  AbstractComponentBuilder.buildComponentValue() bug fixed, recursive call via build() caused the creation of two component values
