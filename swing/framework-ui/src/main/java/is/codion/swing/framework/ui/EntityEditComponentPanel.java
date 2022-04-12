@@ -554,6 +554,16 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   /**
+   * Creates a builder for temporal fields.
+   * @param attribute the attribute for which to build a temporal field
+   * @return an offset date time field builder
+   */
+  protected final <T extends Temporal> TemporalFieldBuilder<T, TemporalField<T>> createTemporalField(Attribute<T> attribute) {
+    return setComponentBuilder(attribute, entityComponents.temporalField(attribute)
+            .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
+  }
+
+  /**
    * Creates a builder for integer fields.
    * @param attribute the attribute for which to build a text field
    * @return a integer field builder

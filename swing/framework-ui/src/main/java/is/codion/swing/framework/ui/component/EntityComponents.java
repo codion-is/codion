@@ -395,6 +395,18 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
+  public final <T extends Temporal> TemporalFieldBuilder<T, TemporalField<T>> temporalField(Attribute<T> attribute) {
+    Property<T> property = entityDefinition.getProperty(attribute);
+
+    return Components.temporalField(property.getAttribute().getTypeClass(), property.getDateTimePattern())
+            .toolTipText(property.getDescription());
+  }
+
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @return a builder
+   */
   public final IntegerFieldBuilder integerField(Attribute<Integer> attribute) {
     Property<Integer> property = entityDefinition.getProperty(attribute);
 
