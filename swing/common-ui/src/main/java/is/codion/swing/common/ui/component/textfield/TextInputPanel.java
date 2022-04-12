@@ -41,7 +41,7 @@ public final class TextInputPanel extends JPanel {
   private final Dimension textAreaSize;
   private final int maximumLength;
 
-  private TextInputPanel(DefaultBuilder builder) {
+  private TextInputPanel(DefaultBuilder<?> builder) {
     this.dialogTitle = builder.dialogTitle;
     this.textField = builder.textField;
     this.textAreaSize = builder.textAreaSize;

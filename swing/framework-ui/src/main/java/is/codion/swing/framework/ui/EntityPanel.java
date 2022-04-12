@@ -1184,48 +1184,53 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   protected final void initializeResizing() {
+    ResizeVerticallyAction resizeUpAction = new ResizeVerticallyAction(this, UP);
+    ResizeVerticallyAction resizeDownAction = new ResizeVerticallyAction(this, DOWN);
+    ResizeHorizontallyAction resizeRightAction = new ResizeHorizontallyAction(this, RIGHT);
+    ResizeHorizontallyAction resizeLeftAction = new ResizeHorizontallyAction(this, LEFT);
+
     KeyEvents.builder(VK_UP)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new ResizeVerticallyAction(this, UP))
+            .action(resizeUpAction)
             .enable(this);
     KeyEvents.builder(VK_DOWN)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new ResizeVerticallyAction(this, DOWN))
+            .action(resizeDownAction)
             .enable(this);
     KeyEvents.builder(VK_RIGHT)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .onKeyPressed()
-            .action(new ResizeHorizontallyAction(this, RIGHT))
+            .action(resizeRightAction)
             .enable(this);
     KeyEvents.builder(VK_LEFT)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .onKeyPressed()
-            .action(new ResizeHorizontallyAction(this, LEFT))
+            .action(resizeLeftAction)
             .enable(this);
     if (containsEditPanel()) {
       KeyEvents.builder(VK_UP)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new ResizeVerticallyAction(this, UP))
+              .action(resizeUpAction)
               .enable(editControlPanel);
       KeyEvents.builder(VK_DOWN)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new ResizeVerticallyAction(this, DOWN))
+              .action(resizeDownAction)
               .enable(editControlPanel);
       KeyEvents.builder(VK_RIGHT)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new ResizeHorizontallyAction(this, RIGHT))
+              .action(resizeRightAction)
               .enable(editControlPanel);
       KeyEvents.builder(VK_LEFT)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new ResizeHorizontallyAction(this, LEFT))
+              .action(resizeLeftAction)
               .enable(editControlPanel);
     }
   }

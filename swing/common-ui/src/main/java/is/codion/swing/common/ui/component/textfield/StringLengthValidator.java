@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 /**
  * A {@link Value.Validator} restricting the maximum length of a string value.
  */
-public final class StringLengthValidator implements Value.Validator<String> {
+final class StringLengthValidator implements Value.Validator<String> {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(StringLengthValidator.class.getName());
 
@@ -19,21 +19,21 @@ public final class StringLengthValidator implements Value.Validator<String> {
   /**
    * @param maximumLength the maximum length, -1 for no limit
    */
-  public StringLengthValidator(int maximumLength) {
+  StringLengthValidator(int maximumLength) {
     this.maximumLength = maximumLength;
   }
 
   /**
    * @return the maximum length
    */
-  public int getMaximumLength() {
+  int getMaximumLength() {
     return maximumLength;
   }
 
   /**
    * @param maximumLength the maximum length, -1 for no limit
    */
-  public void setMaximumLength(int maximumLength) {
+  void setMaximumLength(int maximumLength) {
     this.maximumLength = maximumLength < 0 ? -1 : maximumLength;
   }
 
