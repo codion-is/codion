@@ -63,7 +63,7 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
   }
 
   @Override
-  protected JPanel buildComponent() {
+  protected JPanel createComponent() {
     JPanel component = panel == null ? new JPanel() : panel;
     if (layout != null) {
       component.setLayout(layout);
@@ -81,7 +81,7 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
   }
 
   @Override
-  protected ComponentValue<Void, JPanel> buildComponentValue(JPanel component) {
+  protected ComponentValue<Void, JPanel> createComponentValue(JPanel component) {
     throw new UnsupportedOperationException("A ComponentValue can not be based on a JPanel");
   }
 

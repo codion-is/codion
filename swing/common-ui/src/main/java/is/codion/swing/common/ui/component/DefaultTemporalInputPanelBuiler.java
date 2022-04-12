@@ -69,7 +69,7 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   }
 
   @Override
-  protected TemporalInputPanel<T> buildComponent() {
+  protected TemporalInputPanel<T> createComponent() {
     TemporalInputPanel<T> inputPanel = new TemporalInputPanel<>(createTemporalField(), calendarProvider);
     inputPanel.getCalendarButton().ifPresent(button ->
             button.setFocusable(buttonFocusable));
@@ -78,7 +78,7 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   }
 
   @Override
-  protected ComponentValue<T, TemporalInputPanel<T>> buildComponentValue(TemporalInputPanel<T> component) {
+  protected ComponentValue<T, TemporalInputPanel<T>> createComponentValue(TemporalInputPanel<T> component) {
     return component.componentValue();
   }
 

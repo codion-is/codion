@@ -19,12 +19,12 @@ final class DefaultFileInputPanelBuilder extends AbstractComponentBuilder<byte[]
   }
 
   @Override
-  protected FileInputPanel buildComponent() {
+  protected FileInputPanel createComponent() {
     return new FileInputPanel(filePathField);
   }
 
   @Override
-  protected ComponentValue<byte[], FileInputPanel> buildComponentValue(FileInputPanel component) {
+  protected ComponentValue<byte[], FileInputPanel> createComponentValue(FileInputPanel component) {
     return new FileInputPanelValue(component);
   }
 

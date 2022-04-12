@@ -16,7 +16,7 @@ final class DefaultListSpinnerBuilder<T> extends AbstractSpinnerBuilder<T, ListS
   }
 
   @Override
-  protected ComponentValue<T, JSpinner> buildComponentValue(JSpinner component) {
+  protected ComponentValue<T, JSpinner> createComponentValue(JSpinner component) {
     return new SpinnerListValue<>(component);
   }
 }

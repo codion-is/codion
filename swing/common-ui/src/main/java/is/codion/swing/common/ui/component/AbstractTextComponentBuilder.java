@@ -69,7 +69,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
-  protected final C buildComponent() {
+  protected final C createComponent() {
     C textComponent = createTextComponent();
     textComponent.setEditable(editable);
     if (margin != null) {

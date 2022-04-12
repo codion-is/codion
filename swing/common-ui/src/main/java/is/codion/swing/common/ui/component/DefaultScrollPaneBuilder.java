@@ -76,7 +76,7 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
   }
 
   @Override
-  protected JScrollPane buildComponent() {
+  protected JScrollPane createComponent() {
     JScrollPane scrollPane = new JScrollPane(view, vsbPolicy, hsbPolicy);
     scrollPane.setWheelScrollingEnabled(wheelScrollingEnabled);
     if (verticalUnitIncrement > 0) {
@@ -99,7 +99,7 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
   }
 
   @Override
-  protected ComponentValue<Void, JScrollPane> buildComponentValue(JScrollPane component) {
+  protected ComponentValue<Void, JScrollPane> createComponentValue(JScrollPane component) {
     throw new UnsupportedOperationException("A ComponentValue can not be based on a JScrollPane");
   }
 

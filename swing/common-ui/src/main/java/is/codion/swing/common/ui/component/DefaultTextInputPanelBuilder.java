@@ -87,7 +87,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   }
 
   @Override
-  protected TextInputPanel buildComponent() {
+  protected TextInputPanel createComponent() {
     return TextInputPanel.builder(textFieldBuilder.build())
             .caption(caption)
             .maximumLength(maximumLength)
@@ -98,7 +98,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   }
 
   @Override
-  protected ComponentValue<String, TextInputPanel> buildComponentValue(TextInputPanel component) {
+  protected ComponentValue<String, TextInputPanel> createComponentValue(TextInputPanel component) {
     return component.componentValue();
   }
 

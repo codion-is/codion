@@ -50,7 +50,7 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
   }
 
   @Override
-  protected JList<T> buildComponent() {
+  protected JList<T> createComponent() {
     JList<T> list = new JList<>(listModel);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setVisibleRowCount(visibleRowCount);
@@ -62,7 +62,7 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
   }
 
   @Override
-  protected ComponentValue<T, JList<T>> buildComponentValue(JList<T> component) {
+  protected ComponentValue<T, JList<T>> createComponentValue(JList<T> component) {
     return new ListValue<>(component);
   }
 

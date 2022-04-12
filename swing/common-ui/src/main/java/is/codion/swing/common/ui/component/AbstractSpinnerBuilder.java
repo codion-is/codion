@@ -67,7 +67,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   }
 
   @Override
-  protected final JSpinner buildComponent() {
+  protected final JSpinner createComponent() {
     JSpinner spinner = createSpinner();
     JComponent editor = spinner.getEditor();
     if (editor instanceof JSpinner.DefaultEditor) {

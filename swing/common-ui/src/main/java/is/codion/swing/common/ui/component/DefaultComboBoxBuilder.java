@@ -121,7 +121,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   }
 
   @Override
-  protected final C buildComponent() {
+  protected final C createComponent() {
     C comboBox = createComboBox();
     if (renderer != null) {
       comboBox.setRenderer(renderer);
@@ -159,7 +159,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   }
 
   @Override
-  protected final ComponentValue<T, C> buildComponentValue(C component) {
+  protected final ComponentValue<T, C> createComponentValue(C component) {
     return new SelectedValue<>(component);
   }
 
