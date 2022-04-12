@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.component.SelectionProvider;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractAction;
@@ -13,8 +13,6 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -129,19 +127,16 @@ public final class Dialogs {
   }
 
   /**
-   * Adds a CTRL-SPACE action the given text field for displaying a lookup dialog showing the values provided
-   * by the given value provider
-   * @param textField the text field
-   * @param valueProvider provides the values for the lookup dialog
+   * Returns a {@link SelectionProvider} implmentation based on a selection dialog.
+   * @param valueSupplier supplies the values for the selection dialog
    * @param <T> the type of values being looked up
+   * @return a new {@link SelectionProvider} based on a selection dialog
    */
-  public static <T> void addLookupDialog(JTextField textField, Supplier<Collection<T>> valueProvider) {
-    requireNonNull(textField);
-    requireNonNull(valueProvider);
-    KeyEvents.builder(KeyEvent.VK_SPACE)
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
-            .action(new LookupAction<>(textField, valueProvider))
-            .enable(textField);
+  public static <T> SelectionProvider<T> selectionProvider(Supplier<Collection<T>> valueSupplier) {
+    requireNonNull(valueSupplier);
+    return dialogOwner -> selectionDialog(valueSupplier.get())
+      .owner(dialogOwner)
+      .selectSingle();
   }
 
   /**
@@ -175,26 +170,6 @@ public final class Dialogs {
     }
     catch (Exception e) {
       return null;
-    }
-  }
-
-  private static final class LookupAction<T> extends AbstractAction {
-
-    private final JTextField textField;
-    private final Supplier<Collection<T>> valueProvider;
-
-    private LookupAction(JTextField textField, Supplier<Collection<T>> valueProvider) {
-      super("Dialogs.LookupAction");
-      this.textField = textField;
-      this.valueProvider = valueProvider;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      selectionDialog(valueProvider.get())
-              .owner(textField)
-              .selectSingle()
-              .ifPresent(value -> textField.setText(value.toString()));
     }
   }
 }

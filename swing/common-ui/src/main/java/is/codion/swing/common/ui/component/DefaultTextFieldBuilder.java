@@ -5,19 +5,21 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.textfield.DocumentAdapter;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.textfield.SizedDocument;
 import is.codion.swing.common.ui.component.textfield.TextComponents;
 import is.codion.swing.common.ui.component.textfield.TextFieldHint;
-import is.codion.swing.common.ui.dialog.Dialogs;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.text.Format;
-import java.util.Collection;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -31,7 +33,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private Action action;
   private ActionListener actionListener;
   private boolean selectAllOnFocusGained;
-  private Supplier<Collection<T>> valueSupplier;
+  private SelectionProvider<T> selectionProvider;
   private Format format;
   private int horizontalAlignment = SwingConstants.LEADING;
   private String hintText;
@@ -76,8 +78,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
-  public final B lookupDialog(Supplier<Collection<T>> valueSupplier) {
-    this.valueSupplier = requireNonNull(valueSupplier);
+  public final B selectionProvider(SelectionProvider<T> selectionProvider) {
+    this.selectionProvider = requireNonNull(selectionProvider);
     return (B) this;
   }
 
@@ -122,8 +124,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     if (selectAllOnFocusGained) {
       TextComponents.selectAllOnFocusGained(textField);
     }
-    if (valueSupplier != null) {
-      Dialogs.addLookupDialog(textField, valueSupplier);
+    if (selectionProvider != null) {
+      addSelectionProvider(textField, selectionProvider);
     }
     if (hintText != null) {
       TextFieldHint.create(textField, hintText);
@@ -173,5 +175,30 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 
   protected final Format getFormat() {
     return format;
+  }
+
+  private void addSelectionProvider(C textField, SelectionProvider<T> selectionProvider) {
+    KeyEvents.builder(KeyEvent.VK_SPACE)
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .action(new SelectionAction<>(textField, selectionProvider))
+            .enable(textField);
+  }
+
+  private static final class SelectionAction<T> extends AbstractAction {
+
+    private final JTextField textField;
+    private final SelectionProvider<T> selectionProvider;
+
+    private SelectionAction(JTextField textField, SelectionProvider<T> selectionProvider) {
+      super("DefaultTextFieldBuilder.SelectionAction");
+      this.textField = textField;
+      this.selectionProvider = selectionProvider;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      selectionProvider.select(textField)
+              .ifPresent(value -> textField.setText(value.toString()));
+    }
   }
 }

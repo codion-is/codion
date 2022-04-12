@@ -48,8 +48,8 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
@@ -399,7 +399,7 @@ public final class ComponentsTest {
             .upperCase(true)
             .selectAllOnFocusGained(true)
             .action(Control.control(() -> {}))
-            .lookupDialog(Collections::emptyList)
+            .selectionProvider(component -> Optional.empty())
             .format(null)
             .horizontalAlignment(SwingConstants.CENTER)
             .linkedValue(value)

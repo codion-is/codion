@@ -10,9 +10,7 @@ import javax.swing.Action;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.text.Format;
-import java.util.Collection;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Builds a JTextField.
@@ -58,12 +56,11 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
   B selectAllOnFocusGained(boolean selectAllOnFocusGained);
 
   /**
-   * Adds a CTRL-SPACE action the given text field for displaying a lookup dialog showing the values provided
-   * by the given value provider
-   * @param valueSupplier provides the values for the lookup dialog
+   * Adds a CTRL-SPACE action the given text field allowing the user to select a value to display in the field
+   * @param selectionProvider the selection provider
    * @return this builder instance
    */
-  B lookupDialog(Supplier<Collection<T>> valueSupplier);
+  B selectionProvider(SelectionProvider<T> selectionProvider);
 
   /**
    * Associates the given format with the text field. Note that the format instance is
