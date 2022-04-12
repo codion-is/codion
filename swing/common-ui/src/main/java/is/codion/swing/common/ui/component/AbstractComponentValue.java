@@ -3,17 +3,10 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.model.CancelException;
-import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
-import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.layout.Layouts;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import java.awt.BorderLayout;
 import java.lang.reflect.InvocationTargetException;
 
 import static java.util.Objects.requireNonNull;
@@ -53,29 +46,6 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
   @Override
   public final C getComponent() {
     return component;
-  }
-
-  @Override
-  public final T showDialog(JComponent owner) {
-    return showDialog(owner, null);
-  }
-
-  @Override
-  public final T showDialog(JComponent owner, String title) {
-    State okPressed = State.state();
-    JPanel basePanel = new JPanel(Layouts.borderLayout());
-    basePanel.add(component, BorderLayout.CENTER);
-    basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-    Dialogs.okCancelDialog(basePanel)
-            .owner(owner)
-            .title(title)
-            .onOk(() -> okPressed.set(true))
-            .show();
-    if (okPressed.get()) {
-      return get();
-    }
-
-    throw new CancelException();
   }
 
   @Override

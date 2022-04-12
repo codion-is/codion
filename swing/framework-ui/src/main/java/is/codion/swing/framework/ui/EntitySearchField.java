@@ -363,9 +363,8 @@ public final class EntitySearchField extends JTextField {
     EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
     searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
 
-    return EntitySearchField.builder(searchModel)
-            .buildComponentValueMultiple()
-            .showDialog(dialogParent, dialogTitle);
+    return Dialogs.showInputDialog(EntitySearchField.builder(searchModel)
+            .buildComponentValueMultiple(), dialogParent, dialogTitle);
   }
 
   private static final class SearchFieldValue extends AbstractValue<String> {

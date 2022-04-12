@@ -12,6 +12,7 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.DefaultEntityComponentFactory;
@@ -48,9 +49,8 @@ public final class TrackTablePanel extends EntityTablePanel {
   }
 
   private BigDecimal getAmountFromUser() {
-    return Components.bigDecimalField()
-            .buildComponentValue()
-            .showDialog(this, BUNDLE.getString("amount"));
+    return Dialogs.showInputDialog(Components.bigDecimalField()
+            .buildComponentValue(), this, BUNDLE.getString("amount"));
   }
 
   private static final class MinutesSecondsComponentFactory
