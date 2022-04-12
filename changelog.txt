@@ -8000,3 +8000,4 @@
   AbstractComponentBuilder.buildComponentValue() bug fixed, recursive call via build() caused the creation of two component values
   ComponentBuilder.orientation renamed componentOrientation
   ComponentValues removed, Components.fileInputPanel() and progressBar() added
+  swing-framework-model module test dependency on swing-common-ui removed

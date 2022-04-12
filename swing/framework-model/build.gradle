@@ -14,7 +14,6 @@ dependencies {
 
     testImplementation project(':codion-framework-db-local')
     testImplementation project(':codion-framework-model-test')
-    testImplementation project(':codion-swing-common-ui')
 
     testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
