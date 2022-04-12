@@ -5,12 +5,11 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.component.textfield.TextInputPanel;
 
-import java.awt.Dimension;
-
 /**
  * Builds a TextInputPanel.
  */
-public interface TextInputPanelBuilder extends ComponentBuilder<String, TextInputPanel, TextInputPanelBuilder> {
+public interface TextInputPanelBuilder extends ComponentBuilder<String, TextInputPanel, TextInputPanelBuilder>,
+        TextInputPanel.Builder<TextInputPanelBuilder> {
 
   /**
    * @param updateOn specifies when the underlying value should be updated
@@ -42,34 +41,4 @@ public interface TextInputPanelBuilder extends ComponentBuilder<String, TextInpu
    * @return this builder instance
    */
   TextInputPanelBuilder selectAllOnFocusGained(boolean selectAllOnFocusGained);
-
-  /**
-   * @param buttonFocusable true if the dialog button should be focusable
-   * @return this builder instance
-   */
-  TextInputPanelBuilder buttonFocusable(boolean buttonFocusable);
-
-  /**
-   * @param textAreaSize the input text area size
-   * @return this builder instance
-   */
-  TextInputPanelBuilder textAreaSize(Dimension textAreaSize);
-
-  /**
-   * @param maximumLength the maximum text length
-   * @return this builder instance
-   */
-  TextInputPanelBuilder maximumLength(int maximumLength);
-
-  /**
-   * @param caption the caption
-   * @return this builder instance
-   */
-  TextInputPanelBuilder caption(String caption);
-
-  /**
-   * @param dialogTitle the title to display on the input dialog
-   * @return this builder instance
-   */
-  TextInputPanelBuilder dialogTitle(String dialogTitle);
 }

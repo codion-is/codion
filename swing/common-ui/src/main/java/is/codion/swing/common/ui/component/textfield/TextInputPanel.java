@@ -118,45 +118,45 @@ public final class TextInputPanel extends JPanel {
    * @param textField the text field
    * @return a new builder
    */
-  public static Builder builder(JTextField textField) {
-    return new DefaultBuilder(requireNonNull(textField));
+  public static <B extends Builder<B>> Builder<B> builder(JTextField textField) {
+    return new DefaultBuilder<>(requireNonNull(textField));
   }
 
   /**
    * A builder for {@link TextInputPanel}.
    */
-  public interface Builder {
+  public interface Builder<B extends Builder<B>> {
 
     /**
      * @param dialogTitle the input dialog title
      * @return this builder instance
      */
-    Builder dialogTitle(String dialogTitle);
+    B dialogTitle(String dialogTitle);
 
     /**
      * If specified a titled border with the given caption is added to the input field
      * @param caption the caption to display
      * @return this builder instance
      */
-    Builder caption(String caption);
+    B caption(String caption);
 
     /**
      * @param textAreaSize the input text area siz
      * @return this builder instance
      */
-    Builder textAreaSize(Dimension textAreaSize);
+    B textAreaSize(Dimension textAreaSize);
 
     /**
      * @param buttonFocusable true if the input button should be focusable
      * @return this builder instance
      */
-    Builder buttonFocusable(boolean buttonFocusable);
+    B buttonFocusable(boolean buttonFocusable);
 
     /**
      * @param maximumLength the maximum text length
      * @return this builder instance
      */
-    Builder maximumLength(int maximumLength);
+    B maximumLength(int maximumLength);
 
     /**
      * @return a new TextInputPanel
@@ -219,7 +219,7 @@ public final class TextInputPanel extends JPanel {
     textField.requestFocusInWindow();
   }
 
-  private static final class DefaultBuilder implements Builder {
+  private static final class DefaultBuilder<B extends Builder<B>> implements Builder<B> {
 
     private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
@@ -236,33 +236,33 @@ public final class TextInputPanel extends JPanel {
     }
 
     @Override
-    public Builder dialogTitle(String dialogTitle) {
+    public B dialogTitle(String dialogTitle) {
       this.dialogTitle = dialogTitle;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public Builder caption(String caption) {
+    public B caption(String caption) {
       this.caption = caption;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public Builder textAreaSize(Dimension textAreaSize) {
+    public B textAreaSize(Dimension textAreaSize) {
       this.textAreaSize = textAreaSize == null ? DEFAULT_TEXT_AREA_SIZE : textAreaSize;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public Builder buttonFocusable(boolean buttonFocusable) {
+    public B buttonFocusable(boolean buttonFocusable) {
       this.buttonFocusable = buttonFocusable;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public Builder maximumLength(int maximumLength) {
+    public B maximumLength(int maximumLength) {
       this.maximumLength = maximumLength;
-      return this;
+      return (B) this;
     }
 
     @Override

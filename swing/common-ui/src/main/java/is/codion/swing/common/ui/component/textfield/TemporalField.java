@@ -40,7 +40,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final DateTimeParser<T> dateTimeParser;
   private final Value<T> value = Value.value();
 
-  private TemporalField(DefaultBuilder<T> builder) {
+  private TemporalField(DefaultBuilder<T, ?> builder) {
     super(initializeFormatter(builder.dateTimePattern));
     this.temporalClass = builder.temporalClass;
     this.dateTimePattern = builder.dateTimePattern;
@@ -157,15 +157,16 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @param <T> the temporal type
    * @return a new builder
    */
-  public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, String dateTimePattern) {
+  public static <T extends Temporal, B extends Builder<T, B>> Builder<T, B> builder(Class<T> temporalClass, String dateTimePattern) {
     return new DefaultBuilder<>(temporalClass, dateTimePattern);
   }
 
   /**
    * A builder for {@link TemporalField}.
    * @param <T> the temporal type
+   * @param <B> the builder type
    */
-  public interface Builder<T extends Temporal> {
+  public interface Builder<T extends Temporal, B extends Builder<T, B>> {
 
     /**
      * Sets the {@link DateTimeFormatter} for this field, this formatter must
@@ -173,13 +174,13 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
      * @param dateTimeFormatter the date/time formatter
      * @return this builder instance
      */
-    Builder<T> dateTimeFormatter(DateTimeFormatter dateTimeFormatter);
+    B dateTimeFormatter(DateTimeFormatter dateTimeFormatter);
 
     /**
      * @param dateTimeParser the date/time parser
      * @return this builder instance
      */
-    Builder<T> dateTimeParser(DateTimeParser<T> dateTimeParser);
+    B dateTimeParser(DateTimeParser<T> dateTimeParser);
 
     /**
      * @param focusLostBehaviour the focus lost behaviour, JFormattedTextField.COMMIT by default
@@ -189,13 +190,13 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
      * @see JFormattedTextField#REVERT
      * @see JFormattedTextField#PERSIST
      */
-    Builder<T> focusLostBehaviour(int focusLostBehaviour);
+    B focusLostBehaviour(int focusLostBehaviour);
 
     /**
      * @param initialValue the initial value
      * @return this builder instance
      */
-    Builder<T> initialValue(T initialValue);
+    B initialValue(T initialValue);
 
     /**
      * @return a new {@link TemporalField} instance
@@ -203,7 +204,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     TemporalField<T> build();
   }
 
-  private static final class DefaultBuilder<T extends Temporal> implements Builder<T> {
+  private static final class DefaultBuilder<T extends Temporal, B extends Builder<T, B>> implements Builder<T, B> {
 
     private final Class<T> temporalClass;
     private final String dateTimePattern;
@@ -221,27 +222,27 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
 
     @Override
-    public Builder<T> dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+    public B dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
       this.dateTimeFormatter = requireNonNull(dateTimeFormatter);
-      return this;
+      return (B) this;
     }
 
     @Override
-    public Builder<T> dateTimeParser(DateTimeParser<T> dateTimeParser) {
+    public B dateTimeParser(DateTimeParser<T> dateTimeParser) {
       this.dateTimeParser = requireNonNull(dateTimeParser);
-      return this;
+      return (B) this;
     }
 
     @Override
-    public Builder<T> focusLostBehaviour(int focusLostBehaviour) {
+    public B focusLostBehaviour(int focusLostBehaviour) {
       this.focusLostBehaviour = focusLostBehaviour;
-      return this;
+      return (B) this;
     }
 
     @Override
-    public Builder<T> initialValue(T initialValue) {
+    public B initialValue(T initialValue) {
       this.initialValue = initialValue;
-      return this;
+      return (B) this;
     }
 
     @Override
