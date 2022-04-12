@@ -9,7 +9,7 @@ import javax.swing.JComponent;
 
 /**
  * A {@link Value} represented by an input component of some sort.<br>
- * {@link ComponentValues} is a factory for {@link ComponentValue} implementations.
+ * {@link Components} is a factory for {@link ComponentValue} implementations.
  * @param <T> the value type
  * @param <C> the component type
  */

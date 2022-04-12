@@ -12,9 +12,9 @@ import java.nio.file.Files;
 
 final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInputPanel> {
 
-  FileInputPanelValue() {
-    super(new FileInputPanel());
-    getComponent().getFilePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+  FileInputPanelValue(FileInputPanel fileInputPanel) {
+    super(fileInputPanel);
+    fileInputPanel.getFilePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
   }
 
   @Override

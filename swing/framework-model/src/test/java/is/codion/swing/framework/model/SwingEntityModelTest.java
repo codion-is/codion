@@ -12,11 +12,10 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain;
-import is.codion.swing.common.ui.component.ComponentValues;
+import is.codion.swing.common.ui.component.Components;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.JComboBox;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,8 +69,9 @@ public final class SwingEntityModelTest
     SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     SwingEntityEditModel employeeEditModel = employeeModel.getEditModel();
     SwingEntityTableModel employeeTableModel = employeeModel.getTableModel();
-    ComponentValues.comboBox(new JComboBox<>(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)))
-            .link(employeeEditModel.<Entity>value(TestDomain.EMP_MGR_FK));
+    Components.comboBox(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK),
+                    employeeEditModel.value(TestDomain.EMP_MGR_FK))
+            .build();
     employeeTableModel.refresh();
     for (Entity employee : employeeTableModel.getItems()) {
       employeeTableModel.getSelectionModel().setSelectedItem(employee);

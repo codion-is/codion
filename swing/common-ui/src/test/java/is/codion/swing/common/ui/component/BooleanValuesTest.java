@@ -13,7 +13,6 @@ import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.ButtonModel;
-import javax.swing.DefaultButtonModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JToggleButton;
@@ -36,9 +35,8 @@ public class BooleanValuesTest {
 
   @Test
   void booleanToggleButtonCheckBox() throws Exception {
-    JCheckBox checkBox = new JCheckBox();
-    ComponentValues.toggleButton(checkBox)
-            .link(Value.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent));
+    JCheckBox checkBox = Components.checkBox(Value.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent))
+            .build();
     assertFalse(checkBox.isSelected());
     setBooleanValue(true);
     assertTrue(checkBox.isSelected());
@@ -50,7 +48,8 @@ public class BooleanValuesTest {
   void booleanComboBox() {
     ItemComboBoxModel<Boolean> model = ItemComboBoxModel.createBooleanModel();
     model.setSelectedItem(false);
-    ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = ComponentValues.booleanComboBox(new JComboBox<>(model));
+    ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = Components.booleanComboBox(model)
+            .buildComponentValue();
     assertEquals(false, componentValue.get());
     componentValue.getComponent().getModel().setSelectedItem(true);
     assertEquals(true, componentValue.get());
@@ -62,10 +61,11 @@ public class BooleanValuesTest {
 
   @Test
   void booleanToggleButton() {
-    ButtonModel model = new DefaultButtonModel();
-    JToggleButton button = new JToggleButton();
-    button.setModel(model);
-    Value<Boolean> value = ComponentValues.toggleButton(button);
+    ComponentValue<Boolean, JToggleButton> value = Components.toggleButton()
+            .buildComponentValue();
+
+    JToggleButton button = value.getComponent();
+    ButtonModel model = button.getModel();
 
     assertFalse(value.get());
     model.setSelected(true);
@@ -79,9 +79,12 @@ public class BooleanValuesTest {
 
   @Test
   void booleanNullableToggleButton() {
-    NullableToggleButtonModel model = new NullableToggleButtonModel();
-    NullableCheckBox checkBox = new NullableCheckBox(model);
-    Value<Boolean> value = ComponentValues.toggleButton(checkBox);
+    Value<Boolean> nullableBooleanValue = Value.value();
+    ComponentValue<Boolean, JCheckBox> value = Components.checkBox(nullableBooleanValue)
+            .buildComponentValue();
+
+    NullableCheckBox checkBox = (NullableCheckBox) value.getComponent();
+    NullableToggleButtonModel model = checkBox.getNullableModel();
 
     assertNull(value.get());
     model.setSelected(true);

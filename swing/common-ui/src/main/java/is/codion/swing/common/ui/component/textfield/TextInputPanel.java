@@ -116,6 +116,7 @@ public final class TextInputPanel extends JPanel {
 
   /**
    * @param textField the text field
+   * @param <B> the builder type
    * @return a new builder
    */
   public static <B extends Builder<B>> Builder<B> builder(JTextField textField) {

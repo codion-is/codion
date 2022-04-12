@@ -771,14 +771,28 @@ public final class Components {
   }
 
   /**
-   * Returns a generic component builder, for configuring components. Configures and returns the given component on build.
-   * @param component the component to configure
-   * @param <T> the value type
-   * @param <C> the component type
-   * @param <B> the builder type
-   * @return a generic builder, returning the given component on build
+   * @param boundedRangeModel the model
+   * @return a progress bar builder
    */
-  public static <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> component(C component) {
-    return new DefaultComponentBuilder<>(requireNonNull(component, "component"));
+  public static ProgressBarBuilder progressBar(BoundedRangeModel boundedRangeModel) {
+    return new DefaultProgressBarBuilder(boundedRangeModel);
+  }
+
+  /**
+   * @return a FileInputPanel builder
+   */
+  public static FileInputPanelBuilder fileInputPanel() {
+    return fileInputPanel(textField()
+            .editable(false)
+            .focusable(false)
+            .build());
+  }
+
+  /**
+   * @param filePathField the file path field
+   * @return a FileInputPanel builder
+   */
+  public static FileInputPanelBuilder fileInputPanel(JTextField filePathField) {
+    return new DefaultFileInputPanelBuilder(filePathField);
   }
 }

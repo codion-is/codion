@@ -7998,3 +7998,5 @@
   TemporalField.Builder and TextInputPanel.Builder can now be extended, TemporalFieldBuilder and TextInputPanelBuilder refactored accordingly
   Components.temporalField(), EntityComponents.temporalField() and EntityEditComponentPanel.createTemporalField() added
   AbstractComponentBuilder.buildComponentValue() bug fixed, recursive call via build() caused the creation of two component values
+  ComponentBuilder.orientation renamed componentOrientation
+  ComponentValues removed, Components.fileInputPanel() and progressBar() added

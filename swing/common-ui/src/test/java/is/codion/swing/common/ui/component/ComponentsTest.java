@@ -373,7 +373,7 @@ public final class ComponentsTest {
     ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(boxModel)
             .completionMode(Completion.Mode.NONE)//otherwise, a non-existing element can be selected, last test fails
             .editable(true)
-            .orientation(ComponentOrientation.RIGHT_TO_LEFT)
+            .componentOrientation(ComponentOrientation.RIGHT_TO_LEFT)
             .maximumRowCount(5)
             .linkedValue(value)
             .mouseWheelScrollingWithWrapAround(true)
@@ -584,16 +584,6 @@ public final class ComponentsTest {
     textValue.set("three");
     assertEquals("three", componentValue.get());
     listBuilder.scrollPane().build();
-  }
-
-  @Test
-  void builder() {
-    JButton component = new JButton();
-    ComponentBuilder<Object, JButton, ?> builder = Components.component(component)
-            .clientProperty("Key", "Value");
-    assertThrows(UnsupportedOperationException.class, builder::buildComponentValue);
-    builder.initialValue(1);
-    assertEquals("Value", component.getClientProperty("Key"));
   }
 
   @Test

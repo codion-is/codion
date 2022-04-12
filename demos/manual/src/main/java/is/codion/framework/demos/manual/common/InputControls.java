@@ -9,7 +9,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
-import is.codion.swing.common.ui.component.ComponentValues;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.component.textfield.BigDecimalField;
@@ -348,14 +348,15 @@ public final class InputControls {
 
   static void customTextFieldHorizontalAlignment() {
     // tag::customTextFieldHorizontalAlignment[]
-    IntegerField horizontalAlignmentField = new IntegerField(5);
+    ComponentValue<Integer, IntegerField> fieldValue =
+            Components.integerField()
+                    .buildComponentValue();
+
+    IntegerField horizontalAlignmentField = fieldValue.getComponent();
 
     Value<Integer> horizontalAlignmentValue =
             Value.propertyValue(horizontalAlignmentField, "horizontalAlignment",
                     int.class, Utilities.propertyChangeObserver(horizontalAlignmentField, "horizontalAlignment"));
-
-    Value<Integer> fieldValue =
-            ComponentValues.integerField(horizontalAlignmentField, false);
 
     fieldValue.link(horizontalAlignmentValue);
 

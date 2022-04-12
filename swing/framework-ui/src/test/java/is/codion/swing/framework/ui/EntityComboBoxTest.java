@@ -9,7 +9,6 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.textfield.IntegerField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
@@ -38,7 +37,8 @@ public class EntityComboBoxTest {
     model.refresh();
     Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
     model.setSelectedItem(operations);
-    ComponentValue<Entity, EntityComboBox> value = ComponentValues.comboBox(new EntityComboBox(model));
+    ComponentValue<Entity, EntityComboBox> value = EntityComboBox.builder(model)
+            .buildComponentValue();
 
     assertNotNull(value.get());
 

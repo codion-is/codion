@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
+import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -15,6 +16,7 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.DefaultEntitySearchModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
+import is.codion.swing.common.model.component.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
@@ -25,7 +27,6 @@ import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.ComponentValues;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.table.FilteredTable;
@@ -253,7 +254,7 @@ public final class EntitySearchField extends JTextField {
   }
 
   private void linkToModel() {
-    ComponentValues.textComponent(this).link(model.getSearchStringValue());
+    new SearchFieldValue(this).link(model.getSearchStringValue());
     model.getSearchStringValue().addDataListener(searchString -> updateColors());
     model.addSelectedEntitiesListener(entities -> {
       setCaretPosition(0);
@@ -365,6 +366,26 @@ public final class EntitySearchField extends JTextField {
     return EntitySearchField.builder(searchModel)
             .buildComponentValueMultiple()
             .showDialog(dialogParent, dialogTitle);
+  }
+
+  private static final class SearchFieldValue extends AbstractValue<String> {
+
+    private final JTextField searchField;
+
+    private SearchFieldValue(JTextField searchField) {
+      this.searchField = searchField;
+      this.searchField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+    }
+
+    @Override
+    public String get() {
+      return searchField.getText();
+    }
+
+    @Override
+    protected void setValue(String value) {
+      searchField.setText(value);
+    }
   }
 
   private static final class SettingsPanel extends JPanel {

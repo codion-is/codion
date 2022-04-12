@@ -155,6 +155,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @param temporalClass the temporal class
    * @param dateTimePattern the date time pattern
    * @param <T> the temporal type
+   * @param <B> the builder type
    * @return a new builder
    */
   public static <T extends Temporal, B extends Builder<T, B>> Builder<T, B> builder(Class<T> temporalClass, String dateTimePattern) {

@@ -393,6 +393,7 @@ public class EntityComponents {
   /**
    * Creates a builder.
    * @param attribute the attribute
+   * @param <T> the temporal type
    * @return a builder
    */
   public final <T extends Temporal> TemporalFieldBuilder<T, TemporalField<T>> temporalField(Attribute<T> attribute) {

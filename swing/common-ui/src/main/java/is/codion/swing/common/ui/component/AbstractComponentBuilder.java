@@ -66,7 +66,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private Font font;
   private Color foreground;
   private Color background;
-  private ComponentOrientation orientation = ComponentOrientation.UNKNOWN;
+  private ComponentOrientation componentOrientation = ComponentOrientation.UNKNOWN;
   private StateObserver enabledState;
   private boolean enabled = true;
   private JPopupMenu popupMenu;
@@ -222,8 +222,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final B orientation(ComponentOrientation orientation) {
-    this.orientation = requireNonNull(orientation);
+  public final B componentOrientation(ComponentOrientation componentOrientation) {
+    this.componentOrientation = requireNonNull(componentOrientation);
     return (B) this;
   }
 
@@ -367,7 +367,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (background != null) {
       component.setBackground(background);
     }
-    component.setComponentOrientation(orientation);
+    component.setComponentOrientation(componentOrientation);
     clientProperties.forEach((key, value) -> component.putClientProperty(key, value));
     keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
     focusListeners.forEach(focusListener -> component.addFocusListener(focusListener));
