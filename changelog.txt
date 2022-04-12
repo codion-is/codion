@@ -8003,3 +8003,5 @@
   swing-framework-model module test dependency on swing-common-ui removed
   TextFieldBuilder.lookupDialog() replaced with selectionProvider(), eliminating a dependency from DefaultTextFieldBuilder to Dialogs
   ComponentValue.showDialog() removed, Dialogs.showInputDialog() added, reducing interdependencies between dialog and component package
+  StringLengthValidator no longer public
+  EntityPanel.initializeResizing() now reuses the actions
