@@ -1,16 +1,15 @@
 0.4.8 (following section imported from old changelog)
   EntityTableModel.getRowBackgroundColor() added, used in EntityTableCellRenderer
   Property.SubQueryProperty added
-  EntityDefinition.getSelectColumnString() handles Property.SubQueryProperty;
-    entitySelectColumnNames cache removed from EntityDefinition
+  EntityDefinition.getSelectColumnString() handles Property.SubQueryProperty
+  entitySelectColumnNames cache removed from EntityDefinition
   EntityDbConnection and FrameworkDbUtil changed accordingly
   Version info added to ant build files
   Confirm on exit option added, set FrameworkSettings.confirmExit to true
   Some rather crude i18n work in EntityPanel (Update/Insert), EntityTablePanel, EntityApplicationPanel and FrameworkUiUtil
   MessageFactory.getMessage() renamed to MessageFactory.get()
   Unused caption constants removed from EntityPanel
-  *EntityModel property change notification was problematic when Property.DenormalizedProperty was
-    processed, skipped it, since denormalized properties are functionally immutable
+  EntityModel property change notification was problematic when Property.DenormalizedProperty was processed, skipped it, since denormalized properties are functionally immutable
   Some code reordering in EntityDbConnection
   EntityDbConnection.getDependentEntities() now works for multi column references
   Embedded search panel now resizes appropriately when the first property search panel is a null panel
