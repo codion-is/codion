@@ -79,7 +79,7 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
   @Override
   protected ComponentValue<T, TemporalInputPanel<T>> createComponentValue(TemporalInputPanel<T> component) {
-    return component.componentValue();
+    return new TemporalInputPanelValue<>(component);
   }
 
   @Override
@@ -145,5 +145,23 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
         return LocalDate.class.equals(temporalClass) || LocalDateTime.class.equals(temporalClass);
       }
     };
+  }
+
+  private static final class TemporalInputPanelValue<T extends Temporal> extends AbstractComponentValue<T, TemporalInputPanel<T>> {
+
+    private TemporalInputPanelValue(TemporalInputPanel<T> inputPanel) {
+      super(inputPanel);
+      inputPanel.getInputField().addTemporalListener(temporal -> notifyValueChange());
+    }
+
+    @Override
+    protected T getComponentValue(TemporalInputPanel<T> component) {
+      return component.getTemporal();
+    }
+
+    @Override
+    protected void setComponentValue(TemporalInputPanel<T> component, T value) {
+      component.setTemporal(value);
+    }
   }
 }

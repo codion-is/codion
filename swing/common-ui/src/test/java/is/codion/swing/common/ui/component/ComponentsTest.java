@@ -46,6 +46,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
@@ -216,15 +217,23 @@ public final class ComponentsTest {
 
   @Test
   void temporalInputPanel() {
-    Value<LocalDate> value = Value.value(LocalDate.now());
+    LocalDate date = LocalDate.now();
+
+    Value<LocalDate> value = Value.value();
     ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
-            Components.temporalInputPanel(LocalDate.class, "dd-MM-yyyy")
+            Components.temporalInputPanel(LocalDate.class, "dd-MM-yyyy", value)
                     .columns(8)
                     .selectAllOnFocusGained(true)
                     .updateOn(UpdateOn.KEYSTROKE)
-                    .linkedValue(value)
                     .buildComponentValue();
-    assertEquals(componentValue.get(), value.get());
+    assertNull(componentValue.get());
+
+    componentValue.getComponent().getInputField().setTemporal(date);
+
+    assertEquals(value.get(), date);
+
+    componentValue.getComponent().getInputField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));
+    assertEquals(date, componentValue.get());
   }
 
   @Test
@@ -439,7 +448,7 @@ public final class ComponentsTest {
             .lowerCase(true)
             .selectAllOnFocusGained(true)
             .textAreaSize(new Dimension(100, 100))
-            .maximumLength(100)
+            .maximumLength(10)
             .caption("caption")
             .dialogTitle("title")
             .updateOn(UpdateOn.KEYSTROKE)
@@ -448,6 +457,20 @@ public final class ComponentsTest {
     TextInputPanel inputPanel = componentValue.getComponent();
     inputPanel.setText("hello");
     assertEquals("hello", value.get());
+
+    assertEquals(value.get(), componentValue.get());
+
+    inputPanel.setText("");
+
+    assertNull(componentValue.get());
+
+    componentValue.getComponent().setText("tester");
+    assertEquals("tester", componentValue.get());
+
+    componentValue.getComponent().setText("");
+    assertNull(componentValue.get());
+
+    assertThrows(IllegalArgumentException.class, () -> inputPanel.getTextField().setText("asdfasdfasdfasdfasdf"));
   }
 
   @Test
