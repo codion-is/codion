@@ -25,7 +25,7 @@ import java.awt.event.KeyEvent;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A panel that includes a JTextField in a BorderLayout.CENTER position and a button in BorderLayout.EAST
+ * A panel that includes a JTextField in a {@link BorderLayout#CENTER} position and a button in {@link BorderLayout#EAST}
  * which opens a JTextArea for editing long strings.
  * @see #builder(JTextField)
  */
