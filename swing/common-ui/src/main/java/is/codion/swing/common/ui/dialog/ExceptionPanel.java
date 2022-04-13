@@ -52,12 +52,12 @@ final class ExceptionPanel extends JPanel {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ExceptionPanel.class.getName());
 
   /**
-   * Specifies whether an ExceptionDialog should display system properties in the detail panel<br>
+   * Specifies whether an ExceptionPanel should display system properties in the detail panel<br>
    * Value type: Boolean<br>
    * Default value: true
    */
   public static final PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES =
-          Configuration.booleanValue("codion.swing.common.ui.ExceptionDialog.displaySystemProperties", true);
+          Configuration.booleanValue("is.codion.swing.common.ui.dialog.ExceptionPanel.displaySystemProperties", true);
 
   private static final int DESCRIPTION_LABEL_WIDTH = 250;
   private static final int MESSAGE_LABEL_WIDTH = 50;

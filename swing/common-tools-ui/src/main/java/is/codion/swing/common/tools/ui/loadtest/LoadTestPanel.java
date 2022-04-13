@@ -17,9 +17,9 @@ import is.codion.swing.common.ui.component.textfield.TextComponents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.LookAndFeelSelectionDialogBuilder;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
@@ -77,7 +77,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private final ItemRandomizerPanel<UsageScenario<T>> scenarioPanel;
 
   static {
-    LookAndFeelSelectionDialogBuilder.CHANGE_LOOK_AND_FEEL_DURING_SELECTION.set(true);
+    LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
     LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName(LoadTestPanel.class.getName()))

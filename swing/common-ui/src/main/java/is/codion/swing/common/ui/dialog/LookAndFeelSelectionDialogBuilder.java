@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.Configuration;
-import is.codion.common.properties.PropertyValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
@@ -15,14 +13,6 @@ import java.util.Optional;
  * Builds a dialog for selecting a look and feel.
  */
 public interface LookAndFeelSelectionDialogBuilder {
-
-  /**
-   * Specifies whether to change the Look and Feel dynamically when choosing<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  PropertyValue<Boolean> CHANGE_LOOK_AND_FEEL_DURING_SELECTION =
-          Configuration.booleanValue("codion.swing.lookAndFeel.changeDuringSelection", false);
 
   /**
    * @param dialogOwner the dialog owner

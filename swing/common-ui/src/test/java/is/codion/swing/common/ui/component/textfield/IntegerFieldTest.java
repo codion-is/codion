@@ -17,6 +17,7 @@ public class IntegerFieldTest {
   @Test
   void test() {
     IntegerField integerField = new IntegerField(5);
+    integerField.setGroupingUsed(false);
     integerField.setInteger(42);
     assertEquals("42", integerField.getText());
     integerField.setText("22");

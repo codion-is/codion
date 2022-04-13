@@ -40,8 +40,8 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
-import is.codion.swing.common.ui.dialog.LookAndFeelSelectionDialogBuilder;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
@@ -711,7 +711,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)
    * @see LookAndFeelProvider#getLookAndFeelProvider(String)
    * @see Dialogs#lookAndFeelSelectionDialog()
-   * @see LookAndFeelSelectionDialogBuilder#CHANGE_LOOK_AND_FEEL_DURING_SELECTION
+   * @see LookAndFeelSelectionPanel#CHANGE_DURING_SELECTION
    * @return a Control for selecting the application look and feel
    */
   protected final Control createSelectLookAndFeelControl() {
