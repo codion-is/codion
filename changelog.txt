@@ -8009,3 +8009,4 @@
   NumberField.DISABLE_GROUPING configuration parameter changed to GROUPING_USED
   LookAndFeelSelectionPanel added
   TableColumnComponentPanel.updateUI(), now updates basePanel and scrollBarFiller
+  LookAndFeelSelectionPanel now handles the case when a LookAndFeel can not be instantiated, such as the WindowsLookAndFeel, since it's not exported from its module

@@ -21,6 +21,7 @@ import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -53,6 +54,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
   private final ItemComboBoxModel<LookAndFeelProvider> comboBoxModel;
   private final LookAndFeelProvider originalLookAndFeel;
   private final Map<String, UIDefaults> lookAndFeelDefaults = new HashMap<>();
+  private final UIDefaults nullDefaults = new UIDefaults(0, 0.1f);
 
   /**
    * Instantiates a new LookAndFeelSelectionPanel
@@ -131,18 +133,18 @@ public final class LookAndFeelSelectionPanel extends JPanel {
   }
 
   private UIDefaults getDefaults(String className) {
-    return lookAndFeelDefaults.computeIfAbsent(className,
-            LookAndFeelSelectionPanel::initializeLookAndFeelDefaults);
+    return lookAndFeelDefaults.computeIfAbsent(className, this::initializeLookAndFeelDefaults);
   }
 
-  private static UIDefaults initializeLookAndFeelDefaults(String className) {
+  private UIDefaults initializeLookAndFeelDefaults(String className) {
     try {
       Class<LookAndFeel> clazz = (Class<LookAndFeel>) Class.forName(className);
 
-      return clazz.newInstance().getDefaults();
+      return clazz.getDeclaredConstructor().newInstance().getDefaults();
     }
     catch (Exception e) {
-      throw new RuntimeException(e);
+      System.err.println(e.getMessage());
+      return nullDefaults;
     }
   }
 
@@ -162,13 +164,21 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     private void setLookAndFeel(LookAndFeelProvider lookAndFeel, boolean selected) {
       textLabel.setOpaque(true);
       colorLabel.setOpaque(true);
-      UIDefaults defaults = getDefaults(lookAndFeel.getClassName());
-      textLabel.setFont(defaults.getFont("TextField.font"));
-      textLabel.setBackground(defaults.getColor(selected ? "Table.selectionBackground" : "TextField.background"));
-      textLabel.setForeground(defaults.getColor("TextField.foreground"));
-      colorLabel.setBackground(defaults.getColor("Button.background"));
-      colorLabel.setBorder(createLineBorder(defaults.getColor("Table.selectionBackground"), BORDER_THICKNESS));
       textLabel.setText(lookAndFeel.getClassName());
+      UIDefaults defaults = getDefaults(lookAndFeel.getClassName());
+      if (defaults == nullDefaults) {
+        textLabel.setBackground(selected ? Color.LIGHT_GRAY : Color.WHITE);
+        textLabel.setForeground(Color.BLACK);
+        colorLabel.setBackground(Color.WHITE);
+        colorLabel.setBorder(null);
+      }
+      else {
+        textLabel.setFont(defaults.getFont("TextField.font"));
+        textLabel.setBackground(defaults.getColor(selected ? "Table.selectionBackground" : "TextField.background"));
+        textLabel.setForeground(defaults.getColor("TextField.foreground"));
+        colorLabel.setBackground(defaults.getColor("Button.background"));
+        colorLabel.setBorder(createLineBorder(defaults.getColor("Table.selectionBackground"), BORDER_THICKNESS));
+      }
     }
   }
 
