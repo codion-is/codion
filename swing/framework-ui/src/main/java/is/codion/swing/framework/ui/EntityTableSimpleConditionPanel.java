@@ -10,7 +10,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
@@ -48,7 +47,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
             .build();
     this.onSearchListener = requireNonNull(onSearchListener);
     setLayout(Layouts.borderLayout());
-    add(initializeSimpleConditionPanel(tableConditionModel), BorderLayout.CENTER);
+    add(initializeSimpleConditionPanel(), BorderLayout.CENTER);
   }
 
   /**
@@ -78,14 +77,12 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
     performSimpleSearch();
   }
 
-  private JPanel initializeSimpleConditionPanel(EntityTableConditionModel conditionModel) {
-    JButton simpleSearchButton = searchControl.createButton();
-    JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.setBorder(BorderFactory.createTitledBorder(MESSAGES.getString("condition")));
-    panel.add(simpleSearchTextField, BorderLayout.WEST);
-    panel.add(simpleSearchButton, BorderLayout.EAST);
-
-    return panel;
+  private JPanel initializeSimpleConditionPanel() {
+    return Components.panel(Layouts.borderLayout())
+            .border(BorderFactory.createTitledBorder(MESSAGES.getString("condition")))
+            .add(simpleSearchTextField, BorderLayout.WEST)
+            .add(searchControl.createButton(), BorderLayout.EAST)
+            .build();
   }
 
   private void performSimpleSearch() {

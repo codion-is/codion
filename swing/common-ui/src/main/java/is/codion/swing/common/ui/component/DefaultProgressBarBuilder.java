@@ -32,7 +32,7 @@ final class DefaultProgressBarBuilder extends AbstractComponentBuilder<Integer, 
   }
 
   @Override
-  protected JProgressBar buildComponent() {
+  protected JProgressBar createComponent() {
     JProgressBar progressBar = new JProgressBar(boundedRangeModel);
     progressBar.setStringPainted(stringPainted);
     progressBar.setOrientation(orientation);
@@ -41,7 +41,7 @@ final class DefaultProgressBarBuilder extends AbstractComponentBuilder<Integer, 
   }
 
   @Override
-  protected ComponentValue<Integer, JProgressBar> buildComponentValue(JProgressBar component) {
+  protected ComponentValue<Integer, JProgressBar> createComponentValue(JProgressBar component) {
     return new IntegerProgressBarValue(component);
   }
 

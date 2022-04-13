@@ -47,7 +47,7 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
   }
 
   @Override
-  protected JTabbedPane buildComponent() {
+  protected JTabbedPane createComponent() {
     JTabbedPane tabbedPane = new JTabbedPane(tabPlacement);
     tabs.forEach(tabbedPane::addTab);
     mnemonicAt.forEach(tabbedPane::setMnemonicAt);
@@ -57,7 +57,7 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
   }
 
   @Override
-  protected ComponentValue<Void, JTabbedPane> buildComponentValue(JTabbedPane component) {
+  protected ComponentValue<Void, JTabbedPane> createComponentValue(JTabbedPane component) {
     throw new UnsupportedOperationException("A ComponentValue can not be based on a JTabbedPane");
   }
 

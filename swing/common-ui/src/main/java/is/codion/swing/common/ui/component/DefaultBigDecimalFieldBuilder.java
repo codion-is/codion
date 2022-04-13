@@ -49,7 +49,7 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   }
 
   @Override
-  protected ComponentValue<BigDecimal, BigDecimalField> buildComponentValue(BigDecimalField component) {
+  protected ComponentValue<BigDecimal, BigDecimalField> createComponentValue(BigDecimalField component) {
     return new BigDecimalFieldValue(component, true, updateOn);
   }
 }

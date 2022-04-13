@@ -61,7 +61,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
-  protected final C buildComponent() {
+  protected final C createComponent() {
     C button = createButton();
     if (action != null) {
       button.setAction(action);

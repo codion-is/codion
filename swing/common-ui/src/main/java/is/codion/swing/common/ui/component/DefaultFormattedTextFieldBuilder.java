@@ -56,7 +56,7 @@ final class DefaultFormattedTextFieldBuilder
   }
 
   @Override
-  protected JFormattedTextField buildComponent() {
+  protected JFormattedTextField createComponent() {
     try {
       JFormattedTextField textField = new JFormattedTextField(FieldFormatter.create(formatMask, valueContainsLiterals));
       textField.setFocusLostBehavior(focusLostBehaviour);
@@ -70,7 +70,7 @@ final class DefaultFormattedTextFieldBuilder
   }
 
   @Override
-  protected ComponentValue<String, JFormattedTextField> buildComponentValue(JFormattedTextField component) {
+  protected ComponentValue<String, JFormattedTextField> createComponentValue(JFormattedTextField component) {
     return new FormattedTextComponentValue<>(component, null, updateOn);
   }
 

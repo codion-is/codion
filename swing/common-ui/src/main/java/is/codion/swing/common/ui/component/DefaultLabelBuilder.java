@@ -71,7 +71,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
   }
 
   @Override
-  protected JLabel buildComponent() {
+  protected JLabel createComponent() {
     JLabel label = new JLabel(text, icon, horizontalAlignment);
     if (displayedMnemonic != 0) {
       label.setDisplayedMnemonic(displayedMnemonic);
@@ -87,7 +87,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
   }
 
   @Override
-  protected ComponentValue<T, JLabel> buildComponentValue(JLabel component) {
+  protected ComponentValue<T, JLabel> createComponentValue(JLabel component) {
     return new AbstractComponentValue<T, JLabel>(component) {
       @Override
       protected T getComponentValue(JLabel component) {

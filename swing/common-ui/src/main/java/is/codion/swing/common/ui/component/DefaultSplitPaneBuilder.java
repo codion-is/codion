@@ -71,7 +71,7 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
   }
 
   @Override
-  protected JSplitPane buildComponent() {
+  protected JSplitPane createComponent() {
     JSplitPane splitPane = new JSplitPane(orientation);
     splitPane.setLeftComponent(leftTopComponent);
     splitPane.setRightComponent(rightBottomComponent);
@@ -86,7 +86,7 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
   }
 
   @Override
-  protected ComponentValue<Void, JSplitPane> buildComponentValue(JSplitPane component) {
+  protected ComponentValue<Void, JSplitPane> createComponentValue(JSplitPane component) {
     throw new UnsupportedOperationException("A ComponentValue can not be based on a JSplitPane");
   }
 

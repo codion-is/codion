@@ -21,7 +21,7 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ButtonBuilde
   }
 
   @Override
-  protected final ComponentValue<Boolean, C> buildComponentValue(JToggleButton component) {
+  protected final ComponentValue<Boolean, C> createComponentValue(JToggleButton component) {
     if (component instanceof NullableCheckBox) {
       return (ComponentValue<Boolean, C>) new BooleanNullableCheckBoxValue((NullableCheckBox) component);
     }

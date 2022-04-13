@@ -8040,3 +8040,4 @@
   ComponentValue.showDialog() removed, Dialogs.showInputDialog() added, reducing interdependencies between dialog and component package
   StringLengthValidator no longer public
   EntityPanel.initializeResizing() now reuses the actions
+  AbstractComponentBuilder.buildComponent() and buildComponentValue() renamed createComponent() and createComponentValue() respectively

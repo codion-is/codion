@@ -770,7 +770,7 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    protected EntitySearchField buildComponent() {
+    protected EntitySearchField createComponent() {
       EntitySearchField searchField = new EntitySearchField(searchModel, searchHintEnabled);
       searchField.setColumns(columns);
       if (upperCase) {
@@ -788,7 +788,7 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    protected ComponentValue<Entity, EntitySearchField> buildComponentValue(EntitySearchField component) {
+    protected ComponentValue<Entity, EntitySearchField> createComponentValue(EntitySearchField component) {
       return new SearchFieldSingleValue(component);
     }
 

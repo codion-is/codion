@@ -338,7 +338,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (component != null) {
       return component;
     }
-    component = buildComponent();
+    component = createComponent();
     if (component.isFocusable() && !focusable) {
       component.setFocusable(false);
     }
@@ -408,7 +408,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     build();//initializes the component value if required
     if (componentValue == null) {
       //try to intialize the component value if build() did not
-      componentValue = buildComponentValue(component);
+      componentValue = createComponentValue(component);
     }
 
     return componentValue;
@@ -423,16 +423,17 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   /**
-   * Builds the component.
+   * Creates the component.
    * @return a new component instance
    */
-  protected abstract C buildComponent();
+  protected abstract C createComponent();
 
   /**
+   * Creates the component value
    * @param component the component
    * @return a component value based on the component
    */
-  protected abstract ComponentValue<T, C> buildComponentValue(C component);
+  protected abstract ComponentValue<T, C> createComponentValue(C component);
 
   /**
    * Sets the initial value in the component, only called for non-null values.
@@ -451,7 +452,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   private ComponentValue<T, C> getComponentValue(C component) {
     if (componentValue == null) {
-      componentValue = buildComponentValue(component);
+      componentValue = createComponentValue(component);
     }
 
     return componentValue;
