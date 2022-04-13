@@ -13,6 +13,7 @@ public class LongFieldTest {
   @Test
   void test() {
     LongField longField = new LongField(5);
+    longField.setGroupingUsed(false);
     longField.setLong(42L);
     assertEquals("42", longField.getText());
     longField.setText("22");
