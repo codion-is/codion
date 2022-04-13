@@ -8006,3 +8006,4 @@
   StringLengthValidator no longer public
   EntityPanel.initializeResizing() now reuses the actions
   AbstractComponentBuilder.buildComponent() and buildComponentValue() renamed createComponent() and createComponentValue() respectively
+  NumberField.DISABLE_GROUPING configuration parameter changed to GROUPING_USED

@@ -22,12 +22,12 @@ import java.text.DecimalFormat;
 public class NumberField<T extends Number> extends JTextField {
 
   /**
-   * Specifies whether NumberFields disable grouping by default.<br>
+   * Specifies whether NumberFields use grouping by default.<br>
    * Value type: Boolean<br>
-   * Default value: false.
+   * Default value: true.
    */
-  public static final PropertyValue<Boolean> DISABLE_GROUPING =
-          Configuration.booleanValue("codion.swing.common.ui.disableNumberFieldGrouping", false);
+  public static final PropertyValue<Boolean> GROUPING_USED =
+          Configuration.booleanValue("is.codion.swing.common.ui.component.textfield.NumberField.groupingUsed", true);
 
   private final Value<T> value = Value.value();
 
@@ -42,9 +42,7 @@ public class NumberField<T extends Number> extends JTextField {
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
     }
-    if (DISABLE_GROUPING.get()) {
-      document.getFormat().setGroupingUsed(false);
-    }
+    document.getFormat().setGroupingUsed(GROUPING_USED.get());
     document.addDocumentListener((DocumentAdapter) e -> value.set(document.getNumber()));
   }
 
