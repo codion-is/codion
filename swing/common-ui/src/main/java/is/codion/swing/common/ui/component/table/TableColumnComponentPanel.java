@@ -71,6 +71,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   @Override
   public void updateUI() {
     super.updateUI();
+    Utilities.updateUI(scrollBarFiller, basePanel);
     if (columnComponents != null) {
       Utilities.updateUI(columnComponents.values());
     }
