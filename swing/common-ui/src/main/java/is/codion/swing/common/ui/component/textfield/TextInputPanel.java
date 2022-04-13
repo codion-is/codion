@@ -3,11 +3,8 @@
  */
 package is.codion.swing.common.ui.component.textfield;
 
-import is.codion.swing.common.model.component.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
-import is.codion.swing.common.ui.component.AbstractComponentValue;
-import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;
@@ -104,14 +101,6 @@ public final class TextInputPanel extends JPanel {
       TransferFocusOnEnter.disable(textField);
       TransferFocusOnEnter.disable(button);
     }
-  }
-
-  /**
-   * Instantiates a new String based ComponentValue based on this input panel.
-   * @return a String based ComponentValue
-   */
-  public ComponentValue<String, TextInputPanel> componentValue() {
-    return new TextInputPanelValue(this);
   }
 
   /**
@@ -269,24 +258,6 @@ public final class TextInputPanel extends JPanel {
     @Override
     public TextInputPanel build() {
       return new TextInputPanel(this);
-    }
-  }
-
-  private static class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel> {
-
-    private TextInputPanelValue(TextInputPanel textInputPanel) {
-      super(textInputPanel);
-      textInputPanel.getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
-    }
-
-    @Override
-    protected String getComponentValue(TextInputPanel component) {
-      return component.getText();
-    }
-
-    @Override
-    protected void setComponentValue(TextInputPanel component, String value) {
-      component.setText(value);
     }
   }
 }

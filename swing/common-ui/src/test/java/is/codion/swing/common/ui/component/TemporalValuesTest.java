@@ -188,24 +188,6 @@ public class TemporalValuesTest {
     assertEquals(dateString, textField.getText());
   }
 
-  @Test
-  void temporalValue() {
-    LocalDate date = LocalDate.now();
-    TemporalField<LocalDate> localDateField = TemporalField.localDateField("dd-MM-yyyy");
-    localDateField.setTemporal(date);
-    ComponentValue<LocalDate, TemporalInputPanel<LocalDate>> componentValue =
-            new TemporalInputPanel<>(localDateField, new DefaultCalendarProvider()).componentValue();
-    assertEquals(date, componentValue.get());
-
-    localDateField.setTemporal(null);
-
-    componentValue = new TemporalInputPanel<>(localDateField, new DefaultCalendarProvider()).componentValue();
-    assertNull(componentValue.get());
-
-    componentValue.getComponent().getInputField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));
-    assertEquals(date, componentValue.get());
-  }
-
   private static final class DefaultCalendarProvider implements TemporalInputPanel.CalendarProvider {
 
     @Override

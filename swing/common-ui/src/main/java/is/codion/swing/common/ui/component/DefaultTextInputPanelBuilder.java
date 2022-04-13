@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.component.textfield.TextInputPanel;
 
 import javax.swing.JTextField;
@@ -99,7 +100,7 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
 
   @Override
   protected ComponentValue<String, TextInputPanel> createComponentValue(TextInputPanel component) {
-    return component.componentValue();
+    return new TextInputPanelValue(component);
   }
 
   @Override
@@ -110,5 +111,23 @@ final class DefaultTextInputPanelBuilder extends AbstractComponentBuilder<String
   @Override
   protected void setTransferFocusOnEnter(TextInputPanel component) {
     component.setTransferFocusOnEnter(true);
+  }
+
+  private static class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel> {
+
+    private TextInputPanelValue(TextInputPanel textInputPanel) {
+      super(textInputPanel);
+      textInputPanel.getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+    }
+
+    @Override
+    protected String getComponentValue(TextInputPanel component) {
+      return component.getText();
+    }
+
+    @Override
+    protected void setComponentValue(TextInputPanel component, String value) {
+      component.setText(value);
+    }
   }
 }

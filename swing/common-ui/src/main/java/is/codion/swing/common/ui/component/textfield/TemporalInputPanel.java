@@ -5,8 +5,6 @@ package is.codion.swing.common.ui.component.textfield;
 
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
-import is.codion.swing.common.ui.component.AbstractComponentValue;
-import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JButton;
@@ -130,14 +128,6 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   /**
-   * Instantiates a new {@link ComponentValue} based on this input panel.
-   * @return a component value bound to this input panel
-   */
-  public ComponentValue<T, TemporalInputPanel<T>> componentValue() {
-    return new TemporalInputPanelValue<>(this);
-  }
-
-  /**
    * Provides a calendar UI in a dialog for retrieving a date and/or time from the user.
    */
   public interface CalendarProvider {
@@ -175,24 +165,6 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     @Override
     public void focusGained(FocusEvent e) {
       inputField.requestFocusInWindow();
-    }
-  }
-
-  private static final class TemporalInputPanelValue<T extends Temporal> extends AbstractComponentValue<T, TemporalInputPanel<T>> {
-
-    private TemporalInputPanelValue(TemporalInputPanel<T> inputPanel) {
-      super(inputPanel);
-      inputPanel.getInputField().addTemporalListener(temporal -> notifyValueChange());
-    }
-
-    @Override
-    protected T getComponentValue(TemporalInputPanel<T> component) {
-      return component.getTemporal();
-    }
-
-    @Override
-    protected void setComponentValue(TemporalInputPanel<T> component, T value) {
-      component.setTemporal(value);
     }
   }
 }
