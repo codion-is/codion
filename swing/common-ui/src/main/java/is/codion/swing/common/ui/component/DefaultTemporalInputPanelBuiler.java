@@ -102,7 +102,7 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
       throw new IllegalStateException("Unsupported temporal type: " + valueClass);
     }
 
-    return (TemporalField<T>) new DefaultTemporalFieldBuilder<>(valueClass, dateTimePattern, null)
+    return new DefaultTemporalFieldBuilder<>(valueClass, dateTimePattern, null)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)

@@ -50,7 +50,6 @@ public final class LookAndFeelSelectionPanel extends JPanel {
   private static final int BORDER_THICKNESS = 5;
   private static final int COLOR_LABEL_WIDTH = 100;
 
-  private final boolean changeDuringSelection;
   private final ItemComboBoxModel<LookAndFeelProvider> comboBoxModel;
   private final LookAndFeelProvider originalLookAndFeel;
   private final Map<String, UIDefaults> lookAndFeelDefaults = new HashMap<>();
@@ -68,7 +67,6 @@ public final class LookAndFeelSelectionPanel extends JPanel {
    * @param changeDuringSelection if true the look and feel is changed when selected
    */
   public LookAndFeelSelectionPanel(boolean changeDuringSelection) {
-    this.changeDuringSelection = changeDuringSelection;
     this.comboBoxModel = ItemComboBoxModel.createModel(initializeAvailableLookAndFeels());
     getCurrentLookAndFeel().ifPresent(comboBoxModel::setSelectedItem);
     this.originalLookAndFeel = comboBoxModel.getSelectedValue().getValue();
@@ -117,13 +115,6 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     }
   }
 
-  private List<Item<LookAndFeelProvider>> initializeAvailableLookAndFeels() {
-    return LookAndFeelProvider.getLookAndFeelProviders().values().stream()
-            .sorted(Comparator.comparing(LookAndFeelProvider::getName))
-            .map(provider -> Item.item(provider, provider.getName()))
-            .collect(Collectors.toList());
-  }
-
   private Optional<Item<LookAndFeelProvider>> getCurrentLookAndFeel() {
     String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
 
@@ -132,20 +123,11 @@ public final class LookAndFeelSelectionPanel extends JPanel {
             .findFirst();
   }
 
-  private UIDefaults getDefaults(String className) {
-    return lookAndFeelDefaults.computeIfAbsent(className, this::initializeLookAndFeelDefaults);
-  }
-
-  private UIDefaults initializeLookAndFeelDefaults(String className) {
-    try {
-      Class<LookAndFeel> clazz = (Class<LookAndFeel>) Class.forName(className);
-
-      return clazz.getDeclaredConstructor().newInstance().getDefaults();
-    }
-    catch (Exception e) {
-      System.err.println(e.getMessage());
-      return nullDefaults;
-    }
+  private static List<Item<LookAndFeelProvider>> initializeAvailableLookAndFeels() {
+    return LookAndFeelProvider.getLookAndFeelProviders().values().stream()
+            .sorted(Comparator.comparing(LookAndFeelProvider::getName))
+            .map(provider -> Item.item(provider, provider.getName()))
+            .collect(Collectors.toList());
   }
 
   private final class LookAndFeelPanel extends JPanel {
@@ -178,6 +160,22 @@ public final class LookAndFeelSelectionPanel extends JPanel {
         textLabel.setForeground(defaults.getColor("TextField.foreground"));
         colorLabel.setBackground(defaults.getColor("Button.background"));
         colorLabel.setBorder(createLineBorder(defaults.getColor("Table.selectionBackground"), BORDER_THICKNESS));
+      }
+    }
+
+    private UIDefaults getDefaults(String className) {
+      return lookAndFeelDefaults.computeIfAbsent(className, this::initializeLookAndFeelDefaults);
+    }
+
+    private UIDefaults initializeLookAndFeelDefaults(String className) {
+      try {
+        Class<LookAndFeel> clazz = (Class<LookAndFeel>) Class.forName(className);
+
+        return clazz.getDeclaredConstructor().newInstance().getDefaults();
+      }
+      catch (Exception e) {
+        System.err.println(e.getMessage());
+        return nullDefaults;
       }
     }
   }
