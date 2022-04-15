@@ -5,27 +5,38 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.component.textfield.TemporalField;
 
-import java.time.format.DateTimeParseException;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.time.temporal.Temporal;
 
-final class TemporalFieldValue<T extends Temporal> extends FormattedTextComponentValue<T, TemporalField<T>> {
+final class TemporalFieldValue<T extends Temporal> extends AbstractComponentValue<T, TemporalField<T>> {
 
-  TemporalFieldValue(TemporalField<T> textComponent, UpdateOn updateOn) {
-    super(textComponent, null, updateOn);
-  }
-
-  @Override
-  protected String formatTextFromValue(T value) {
-    return getComponent().getDateTimeFormatter().format(value);
-  }
-
-  @Override
-  protected T parseValueFromText(String text) {
-    try {
-      return getComponent().getDateTimeParser().parse(text, getComponent().getDateTimeFormatter());
+  TemporalFieldValue(TemporalField<T> component, UpdateOn updateOn) {
+    super(component);
+    if (updateOn == UpdateOn.KEYSTROKE) {
+      component.addTemporalListener(value -> notifyValueChange());
     }
-    catch (DateTimeParseException e) {
-      return null;
+    else {
+      component.addFocusListener(new NotifyOnFocusLost());
+    }
+  }
+
+  @Override
+  protected T getComponentValue(TemporalField<T> component) {
+    return component.getTemporal();
+  }
+
+  @Override
+  protected void setComponentValue(TemporalField<T> component, T value) {
+    component.setTemporal(value);
+  }
+
+  private final class NotifyOnFocusLost extends FocusAdapter {
+    @Override
+    public void focusLost(FocusEvent e) {
+      if (!e.isTemporary()) {
+        notifyValueChange();
+      }
     }
   }
 }

@@ -8010,3 +8010,4 @@
   TableColumnComponentPanel.updateUI(), now updates basePanel and scrollBarFiller
   LookAndFeelSelectionPanel now handles the case when a LookAndFeel can not be instantiated, such as the WindowsLookAndFeel, since it's not exported from its module
   TemporalInputPanel, TextInputPanel.componentValue() removed
+  TemporalField, TemporalFieldValue and TemporalInputPanel refactored

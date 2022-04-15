@@ -228,7 +228,7 @@ public final class ComponentsTest {
                     .buildComponentValue();
     assertNull(componentValue.get());
 
-    componentValue.getComponent().getInputField().setTemporal(date);
+    componentValue.getComponent().setTemporal(date);
 
     assertEquals(value.get(), date);
 

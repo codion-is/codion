@@ -12,7 +12,7 @@ import java.text.ParseException;
 
 import static is.codion.common.Util.nullOrEmpty;
 
-class FormattedTextComponentValue<T, C extends JTextComponent> extends AbstractTextComponentValue<T, C> {
+final class FormattedTextComponentValue<T, C extends JTextComponent> extends AbstractTextComponentValue<T, C> {
 
   private final JFormattedTextField.AbstractFormatter formatter;
   private final Format format;
@@ -29,7 +29,7 @@ class FormattedTextComponentValue<T, C extends JTextComponent> extends AbstractT
   }
 
   @Override
-  protected final T getComponentValue(C component) {
+  protected T getComponentValue(C component) {
     String formattedText = getFormattedText(component);
     if (nullOrEmpty(formattedText)) {
       return null;
@@ -39,28 +39,17 @@ class FormattedTextComponentValue<T, C extends JTextComponent> extends AbstractT
   }
 
   @Override
-  protected final void setComponentValue(C component, T value) {
-    component.setText(value == null ? "" : formatTextFromValue(value));
+  protected void setComponentValue(C component, T value) {
+    component.setText(value == null ? "" : format.format(value));
   }
 
   /**
-   * Returns a String representation of the given value object, using the format
-   * Only called for non-null values.
-   * @param value the value to return as String
-   * @return a formatted String representation of the given value, an empty string if the value is null
-   */
-  protected String formatTextFromValue(T value) {
-    return format.format(value);
-  }
-
-  /**
-   * Returns a property value based on the given text, if the text can not
-   * be parsed into a valid value, null is returned.
-   * Only called for non-null values.
+   * Returns a value based on the given text, if the text can not be parsed into a valid value, null is returned.
+   * Only called for non-null text.
    * @param text the text from which to parse a value
    * @return a value from the given text, or null if the parsing did not yield a valid value
    */
-  protected T parseValueFromText(String text) {
+  private T parseValueFromText(String text) {
     try {
       return (T) format.parseObject(text);
     }
