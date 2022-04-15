@@ -94,13 +94,6 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   /**
-   * @return the format pattern
-   */
-  public String getDateTimePattern() {
-    return inputField.getDateTimePattern();
-  }
-
-  /**
    * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
    */
   public void setTransferFocusOnEnter(boolean transferFocusOnEnter) {

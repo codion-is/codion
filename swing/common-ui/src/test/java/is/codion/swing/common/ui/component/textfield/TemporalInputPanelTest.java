@@ -22,17 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TemporalInputPanelTest {
 
   @Test
-  void constructor() {
-    TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
-    field.setTemporal(LocalDate.now());
-    TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
-    assertEquals("dd.MM.yyyy", panel.getDateTimePattern());
-    assertNotNull(panel.getInputField());
-  }
-
-  @Test
   void setText() {
-    TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
+    TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class, "dd.MM.yyyy").build();
     TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     panel.getInputField().setText("01.03.2010");
     assertEquals(LocalDate.parse("01.03.2010", DateTimeFormatter.ofPattern("dd.MM.yyyy")), panel.getTemporal());
@@ -41,7 +32,7 @@ public class TemporalInputPanelTest {
   @Test
   void setDate() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
+    TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class, "dd.MM.yyyy").build();
     TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     panel.setTemporal(LocalDate.parse("03.04.2010", formatter));
     assertEquals("03.04.2010", panel.getInputField().getText());
@@ -51,7 +42,7 @@ public class TemporalInputPanelTest {
 
   @Test
   void getDate() {
-    TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
+    TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class, "dd.MM.yyyy").build();
     TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     assertFalse(panel.getOptional().isPresent());
     panel.getInputField().setText("03");
@@ -64,7 +55,7 @@ public class TemporalInputPanelTest {
 
   @Test
   void unsupportedType() {
-    TemporalField<LocalTime> field = TemporalField.localTimeField("hh:MM");
+    TemporalField<LocalTime> field = TemporalField.builder(LocalTime.class, "hh:MM").build();
     TemporalInputPanel<LocalTime> panel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     assertFalse(panel.getCalendarButton().isPresent());
   }
@@ -77,7 +68,7 @@ public class TemporalInputPanelTest {
   @Test
   void enabledState() throws InterruptedException {
     State enabledState = State.state();
-    TemporalField<LocalDate> field = TemporalField.localDateField("dd.MM.yyyy");
+    TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class, "dd.MM.yyyy").build();
     TemporalInputPanel<LocalDate> inputPanel = new TemporalInputPanel<>(field, new DefaultCalendarProvider());
     Utilities.linkToEnabledState(enabledState, inputPanel);
     assertFalse(field.isEnabled());

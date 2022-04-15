@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -22,6 +24,9 @@ import static java.util.Objects.requireNonNull;
 final class DefaultTemporalInputPanelBuiler<T extends Temporal>
         extends AbstractComponentBuilder<T, TemporalInputPanel<T>, TemporalInputPanelBuilder<T>>
         implements TemporalInputPanelBuilder<T> {
+
+  private static final List<Class<?>> SUPPORTED_TYPES =
+          Arrays.asList(LocalTime.class, LocalDate.class, LocalDateTime.class, OffsetDateTime.class);
 
   private final Class<T> valueClass;
   private final String dateTimePattern;
@@ -93,36 +98,15 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
   }
 
   private TemporalField<T> createTemporalField() {
-    if (valueClass.equals(LocalTime.class)) {
-      return (TemporalField<T>) new DefaultTemporalFieldBuilder<>(LocalTime.class, dateTimePattern, null)
-              .updateOn(updateOn)
-              .selectAllOnFocusGained(selectAllOnFocusGained)
-              .columns(columns)
-              .build();
-    }
-    else if (valueClass.equals(LocalDate.class)) {
-      return (TemporalField<T>) new DefaultTemporalFieldBuilder<>(LocalDate.class, dateTimePattern, null)
-              .updateOn(updateOn)
-              .selectAllOnFocusGained(selectAllOnFocusGained)
-              .columns(columns)
-              .build();
-    }
-    else if (valueClass.equals(LocalDateTime.class)) {
-      return (TemporalField<T>) new DefaultTemporalFieldBuilder<>(LocalDateTime.class, dateTimePattern, null)
-              .updateOn(updateOn)
-              .selectAllOnFocusGained(selectAllOnFocusGained)
-              .columns(columns)
-              .build();
-    }
-    else if (valueClass.equals(OffsetDateTime.class)) {
-      return (TemporalField<T>) new DefaultTemporalFieldBuilder<>(OffsetDateTime.class, dateTimePattern, null)
-              .updateOn(updateOn)
-              .selectAllOnFocusGained(selectAllOnFocusGained)
-              .columns(columns)
-              .build();
+    if (!SUPPORTED_TYPES.contains(valueClass)) {
+      throw new IllegalStateException("Unsupported temporal type: " + valueClass);
     }
 
-    throw new IllegalStateException("Unsopported temporal type: " + valueClass);
+    return (TemporalField<T>) new DefaultTemporalFieldBuilder<>(valueClass, dateTimePattern, null)
+              .updateOn(updateOn)
+              .selectAllOnFocusGained(selectAllOnFocusGained)
+              .columns(columns)
+              .build();
   }
 
   private static CalendarProvider calendarProvider() {

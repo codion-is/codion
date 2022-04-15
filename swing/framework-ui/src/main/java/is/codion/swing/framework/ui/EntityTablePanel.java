@@ -35,6 +35,7 @@ import is.codion.swing.common.ui.component.table.ColumnSummaryPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.TableColumnComponentPanel;
+import is.codion.swing.common.ui.component.textfield.TemporalField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -1511,7 +1512,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
               .enable(conditionPanel);
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
       if (conditionPanel instanceof EntityTableConditionPanel) {
-        addComboBoxRefreshOnEnterControl((EntityTableConditionPanel) conditionPanel, refreshControl);
+        addRefreshOnEnterControl((EntityTableConditionPanel) conditionPanel, refreshControl);
       }
       if (conditionPanel.hasAdvancedView()) {
         conditionPanel.addAdvancedListener(advanced -> {
@@ -1653,6 +1654,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (component instanceof JComboBox) {
       new RefreshOnEnterAction((JComboBox<?>) component, refreshControl);
     }
+    else if (component instanceof TemporalField) {
+      ((TemporalField<?>) component).addActionListener(refreshControl);
+    }
   }
 
   private static GridBagConstraints createSearchFieldConstraints() {
@@ -1664,7 +1668,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return constraints;
   }
 
-  private static void addComboBoxRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
+  private static void addRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
     tableConditionPanel.getTableColumns().forEach(column -> {
       ColumnConditionPanel<? extends Attribute<?>, ?> columnConditionPanel = tableConditionPanel.getConditionPanel((Attribute<?>) column.getIdentifier());
       if (columnConditionPanel != null) {
