@@ -537,16 +537,16 @@ public final class Components {
   /**
    * @return a builder for a component
    */
-  public static FormattedTextFieldBuilder formattedTextField() {
-    return new DefaultFormattedTextFieldBuilder(null);
+  public static MaskedTextFieldBuilder maskedTextField() {
+    return new DefaultMaskedTextFieldBuilder(null);
   }
 
   /**
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static FormattedTextFieldBuilder formattedTextField(Value<String> linkedValue) {
-    return new DefaultFormattedTextFieldBuilder(requireNonNull(linkedValue));
+  public static MaskedTextFieldBuilder maskedTextField(Value<String> linkedValue) {
+    return new DefaultMaskedTextFieldBuilder(requireNonNull(linkedValue));
   }
 
   /**

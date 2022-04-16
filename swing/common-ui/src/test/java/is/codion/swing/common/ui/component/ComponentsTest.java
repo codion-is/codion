@@ -476,11 +476,15 @@ public final class ComponentsTest {
   @Test
   void formattedTextField() {
     Value<String> value = Value.value();
-    ComponentValue<String, JFormattedTextField> componentValue = Components.formattedTextField()
-            .formatMask("##:##")
-            .valueContainsLiterals(true)
+    ComponentValue<String, JFormattedTextField> componentValue = Components.maskedTextField()
+            .mask("##:##")
+            .valueContainsLiteralCharacters(true)
             .columns(6)
-            .updateOn(UpdateOn.KEYSTROKE)
+            .commitsOnValidEdit(true)
+            .placeholderCharacter('_')
+            .placeholder("00:00")
+            .validCharacters("12345")
+            .invalidCharacters("6789")
             .focusLostBehaviour(JFormattedTextField.COMMIT)
             .linkedValue(value)
             .buildComponentValue();

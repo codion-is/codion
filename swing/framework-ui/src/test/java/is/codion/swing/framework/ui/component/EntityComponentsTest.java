@@ -240,13 +240,13 @@ public final class EntityComponentsTest {
   }
 
   @Test
-  void createFormattedTextField() {
+  void createMaskedTextField() {
     ComponentValue<String, JFormattedTextField> componentValue =
-            inputComponents.formattedTextField(TestDomain.DETAIL_STRING)
-                    .formatMask("##:##")
-                    .valueContainsLiterals(true)
+            inputComponents.maskedTextField(TestDomain.DETAIL_STRING)
+                    .mask("##:##")
+                    .valueContainsLiteralCharacters(true)
                     .columns(6)
-                    .updateOn(UpdateOn.KEYSTROKE)
+                    .commitsOnValidEdit(true)
                     .focusLostBehaviour(JFormattedTextField.COMMIT)
                     .linkedValue(editModel.value(TestDomain.DETAIL_STRING))
                     .buildComponentValue();

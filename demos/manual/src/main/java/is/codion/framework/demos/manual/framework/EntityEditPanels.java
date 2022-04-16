@@ -155,10 +155,10 @@ public final class EntityEditPanels {
               createTextField(Demo.TEXT)
                       .build();
 
-      JFormattedTextField formattedField =
-              createFormattedTextField(Demo.FORMATTED_TEXT)
-                      .formatMask("###:###")
-                      .valueContainsLiterals(true)
+      JFormattedTextField maskedField =
+              createMaskedTextField(Demo.FORMATTED_TEXT)
+                      .mask("###:###")
+                      .valueContainsLiteralCharacters(true)
                       .build();
 
       JTextArea textArea =

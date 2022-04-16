@@ -8013,3 +8013,6 @@
   TemporalField, TemporalFieldValue and TemporalInputPanel refactored
   FieldFormatter.stringToValue() overridden for interpreting the full mask with placeholders as a valid null value, so that actionListeners are called on Enter
   EntityTablePanel.addComboBoxRefreshOnEnterControl() renamed addRefreshOnEnterControl(), now handles TemporalFields as well, based on the above
+  FormattedTextFieldBuilder renamed MaskedTextFieldBuilder, a few properties added
+  FormattedTextFieldValue added, DefaultTextComponentValue no longer handles JFormattedTextField
+  Components.formattedTextField(), EntityComponents.formattedTextField() and EntityEditComponentPanel.createFormattedTextField() renamed maskedTextField() and createMaskedTextField()

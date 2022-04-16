@@ -19,11 +19,11 @@ import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.DoubleFieldBuilder;
-import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
 import is.codion.swing.common.ui.component.IntegerFieldBuilder;
 import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.LabelBuilder;
 import is.codion.swing.common.ui.component.LongFieldBuilder;
+import is.codion.swing.common.ui.component.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
@@ -470,10 +470,10 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final FormattedTextFieldBuilder formattedTextField(Attribute<String> attribute) {
+  public final MaskedTextFieldBuilder maskedTextField(Attribute<String> attribute) {
     Property<String> property = entityDefinition.getProperty(attribute);
 
-    return Components.formattedTextField()
+    return Components.maskedTextField()
             .toolTipText(property.getDescription());
   }
 }

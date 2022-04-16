@@ -17,11 +17,11 @@ import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.DoubleFieldBuilder;
-import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
 import is.codion.swing.common.ui.component.IntegerFieldBuilder;
 import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.LabelBuilder;
 import is.codion.swing.common.ui.component.LongFieldBuilder;
+import is.codion.swing.common.ui.component.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
@@ -613,8 +613,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a formatted text field
    * @return a formatted text field builder
    */
-  protected final FormattedTextFieldBuilder createFormattedTextField(Attribute<String> attribute) {
-    return setComponentBuilder(attribute, entityComponents.formattedTextField(attribute)
+  protected final MaskedTextFieldBuilder createMaskedTextField(Attribute<String> attribute) {
+    return setComponentBuilder(attribute, entityComponents.maskedTextField(attribute)
             .onBuild(textField -> addFormattedValidator(attribute, textField, getEditModel())));
   }
 
