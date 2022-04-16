@@ -6,7 +6,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ public final class DefaultEntityComponentFactoryTest {
     foreignKeyComponentFactory.createComponentValue(TestDomain.DETAIL_MASTER_FK, editModel, null);
     foreignKeyComponentFactory.createComponentValue(TestDomain.DETAIL_DETAIL_FK, editModel, null);
 
-    EntityComponentFactory<Integer, Attribute<Integer>, IntegerField> integerComponentFactory = new DefaultEntityComponentFactory<>();
+    EntityComponentFactory<Integer, Attribute<Integer>, NumberField<Integer>> integerComponentFactory = new DefaultEntityComponentFactory<>();
     integerComponentFactory.createComponentValue(TestDomain.DETAIL_INT, editModel, null);
     integerComponentFactory.createComponentValue(TestDomain.DETAIL_INT_DERIVED, editModel, null);
   }

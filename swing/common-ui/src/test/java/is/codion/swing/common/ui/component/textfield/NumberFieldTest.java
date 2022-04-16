@@ -8,84 +8,182 @@ import org.junit.jupiter.api.Test;
 import javax.swing.text.BadLocationException;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DoubleFieldTest {
+public final class NumberFieldTest {
+
+  @Test
+  void integerFieldTest() {
+    NumberField<Integer> integerField = NumberField.integerField();
+    integerField.setGroupingUsed(false);
+    integerField.setValue(42);
+    assertEquals("42", integerField.getText());
+    integerField.setText("22");
+    assertEquals(Integer.valueOf(22), integerField.getValue());
+
+    integerField.setValue(10000000);
+    assertEquals("10000000", integerField.getText());
+    integerField.setValue(100000000);
+    assertEquals("100000000", integerField.getText());
+
+    integerField.setValueRange(0, 10);
+    assertEquals(0, (int) integerField.getMinimumValue());
+    assertEquals(10, (int) integerField.getMaximumValue());
+
+    assertThrows(IllegalArgumentException.class, () -> integerField.setValue(100));
+    assertEquals("", integerField.getText());
+    integerField.setValue(9);
+    assertEquals("9", integerField.getText());
+    assertThrows(IllegalArgumentException.class, () -> integerField.setValue(-1));
+    assertEquals("", integerField.getText());
+    assertThrows(IllegalArgumentException.class, () -> integerField.setValue(-10));
+    assertEquals("", integerField.getText());
+
+    assertThrows(IllegalStateException.class, integerField::getMaximumFractionDigits);
+    assertThrows(IllegalStateException.class, () -> integerField.setMaximumFractionDigits(2));
+
+    integerField.setValueRange(0, Integer.MAX_VALUE);
+
+    DecimalFormat decimalFormat = (DecimalFormat) ((NumberDocument<Integer>) integerField.getDocument()).getFormat();
+    decimalFormat.setGroupingSize(3);
+    decimalFormat.setGroupingUsed(true);
+    integerField.setSeparators(',', '.');
+    integerField.setText("100.000.000");
+    assertEquals(100000000, (int) integerField.getValue());
+    integerField.setText("10.00.000");
+    assertEquals("1.000.000", integerField.getText());
+    assertEquals(1000000, (int) integerField.getValue());
+    integerField.setValue(123456789);
+    assertEquals("123.456.789", integerField.getText());
+    integerField.setText("987654321");
+    assertEquals(987654321, (int) integerField.getValue());
+
+    integerField.setValue(null);
+    integerField.addValueListener(value -> assertEquals(42, value));
+    integerField.setValue(42);
+  }
+
+  @Test
+  void skipGroupingSeparator() {
+    NumberField<Integer> integerField = NumberField.integerField();
+    integerField.setSeparators(',', '.');
+    integerField.setGroupingUsed(true);
+    KeyListener keyListener = integerField.getKeyListeners()[0];
+    integerField.setValue(123456);
+    assertEquals("123.456", integerField.getText());
+    integerField.setCaretPosition(3);
+    keyListener.keyReleased(new KeyEvent(integerField, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0,
+            KeyEvent.VK_DELETE, KeyEvent.CHAR_UNDEFINED));
+    assertEquals(4, integerField.getCaretPosition());
+    keyListener.keyReleased(new KeyEvent(integerField, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0,
+            KeyEvent.VK_BACK_SPACE, KeyEvent.CHAR_UNDEFINED));
+    assertEquals(3, integerField.getCaretPosition());
+  }
+
+  @Test
+  void longFieldTest() {
+    NumberField<Long> longField = NumberField.longField();
+    longField.setGroupingUsed(false);
+    longField.setValue(42L);
+    assertEquals("42", longField.getText());
+    longField.setText("22");
+    assertEquals(Long.valueOf(22), longField.getValue());
+
+    longField.setValue(10000000000000L);
+    assertEquals("10000000000000", longField.getText());
+    longField.setValue(1000000000000L);
+    assertEquals("1000000000000", longField.getText());
+
+    longField.setValueRange(0, 10);
+    assertEquals(0, (int) longField.getMinimumValue());
+    assertEquals(10, (int) longField.getMaximumValue());
+
+    longField.setText("");
+    assertThrows(IllegalArgumentException.class, () -> longField.setValue(100L));
+    assertEquals("", longField.getText());
+    longField.setValue(9L);
+    assertEquals("9", longField.getText());
+    longField.setText("");
+    assertThrows(IllegalArgumentException.class, () -> longField.setValue(-1L));
+    assertEquals("", longField.getText());
+  }
 
   @Test
   void testNoGrouping() {
-    DoubleField doubleField = new DoubleField();
+    NumberField<Double>doubleField = NumberField.doubleField();
     doubleField.setGroupingUsed(false);
     doubleField.setSeparators(',', '.');
     doubleField.setText(",");
     assertEquals("0,", doubleField.getText());
-    doubleField.setDouble(42.2);
+    doubleField.setValue(42.2);
     assertEquals("42,2", doubleField.getText());
     doubleField.setText("22,3");
-    assertEquals(Double.valueOf(22.3), doubleField.getDouble());
+    assertEquals(Double.valueOf(22.3), doubleField.getValue());
     doubleField.setText("22.5");//note this is a thousand separator
-    assertEquals(Double.valueOf(22.3), doubleField.getDouble());
+    assertEquals(Double.valueOf(22.3), doubleField.getValue());
     assertEquals("22,3", doubleField.getText());
     doubleField.setText("22.123.123,123");
     assertEquals("22,3", doubleField.getText());
-    assertEquals(Double.valueOf(22.3), doubleField.getDouble());
+    assertEquals(Double.valueOf(22.3), doubleField.getValue());
 
     doubleField.setSeparators('.', ',');
 
-    doubleField.setDouble(42.2);
+    doubleField.setValue(42.2);
     assertEquals("42.2", doubleField.getText());
     doubleField.setText("2,123,123.123");
     assertEquals("42.2", doubleField.getText());
-    assertEquals(Double.valueOf(42.2), doubleField.getDouble());
+    assertEquals(Double.valueOf(42.2), doubleField.getValue());
 
-    doubleField.setDouble(10000000d);
+    doubleField.setValue(10000000d);
     assertEquals("10000000", doubleField.getText());
-    doubleField.setDouble(100000000.4d);
+    doubleField.setValue(100000000.4d);
     assertEquals("100000000.4", doubleField.getText());
   }
 
   @Test
   void testGrouping() {
     DecimalFormat decimalFormat = new DecimalFormat();
-    DoubleField doubleField = new DoubleField(decimalFormat);
+    NumberField<Double>doubleField = NumberField.doubleField(decimalFormat);
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators(',', '.');
     assertEquals(0, doubleField.getCaretPosition());
     doubleField.setText(",");
     assertEquals("0,", doubleField.getText());
     assertEquals(2, doubleField.getCaretPosition());
-    doubleField.setDouble(42.2);
+    doubleField.setValue(42.2);
     assertEquals("42,2", doubleField.getText());
     assertEquals(4, doubleField.getCaretPosition());
     doubleField.setText("22,3");
-    assertEquals(Double.valueOf(22.3), doubleField.getDouble());
+    assertEquals(Double.valueOf(22.3), doubleField.getValue());
     doubleField.setText("22.3");//note this is a thousand separator
-    assertEquals(Double.valueOf(223), doubleField.getDouble());
+    assertEquals(Double.valueOf(223), doubleField.getValue());
     assertEquals("223", doubleField.getText());
     doubleField.setText("22.123.123,123");
     assertEquals("22.123.123,123", doubleField.getText());
-    assertEquals(Double.valueOf(22123123.123), doubleField.getDouble());
+    assertEquals(Double.valueOf(22123123.123), doubleField.getValue());
     doubleField.setText("22123123,123");
     assertEquals("22.123.123,123", doubleField.getText());
-    assertEquals(Double.valueOf(22123123.123), doubleField.getDouble());
+    assertEquals(Double.valueOf(22123123.123), doubleField.getValue());
 
     doubleField.setSeparators('.', ',');
 
-    doubleField.setDouble(42.2);
+    doubleField.setValue(42.2);
     assertEquals("42.2", doubleField.getText());
     doubleField.setText("22,123,123.123");
     assertEquals("22,123,123.123", doubleField.getText());
-    assertEquals(Double.valueOf(22123123.123), doubleField.getDouble());
+    assertEquals(Double.valueOf(22123123.123), doubleField.getValue());
     doubleField.setText("22123123.123");
     assertEquals("22,123,123.123", doubleField.getText());
-    assertEquals(Double.valueOf(22123123.123), doubleField.getDouble());
+    assertEquals(Double.valueOf(22123123.123), doubleField.getValue());
 
-    doubleField.setDouble(10000000d);
+    doubleField.setValue(10000000d);
     assertEquals("10,000,000", doubleField.getText());
-    doubleField.setDouble(100000000.4d);
+    doubleField.setValue(100000000.4d);
     assertEquals("100,000,000.4", doubleField.getText());
 
     doubleField.setText("2.2.2");
@@ -100,7 +198,7 @@ public class DoubleFieldTest {
 
   @Test
   void caretPosition() throws BadLocationException {
-    DoubleField doubleField = new DoubleField();
+    NumberField<Double>doubleField = NumberField.doubleField();
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators(',', '.');
     NumberDocument<Double> document = doubleField.getTypedDocument();
@@ -174,17 +272,17 @@ public class DoubleFieldTest {
 
   @Test
   void setSeparatorsSameCharacter() {
-    assertThrows(IllegalArgumentException.class, () -> new DoubleField().setSeparators('.', '.'));
+    assertThrows(IllegalArgumentException.class, () -> NumberField.doubleField().setSeparators('.', '.'));
   }
 
   @Test
   void maximumFractionDigits() throws BadLocationException {
-    DoubleField doubleField = new DoubleField();
+    NumberField<Double>doubleField = NumberField.doubleField();
     assertEquals(-1, doubleField.getMaximumFractionDigits());
     doubleField.setSeparators(',', '.');
     doubleField.setMaximumFractionDigits(2);
     assertEquals(2, doubleField.getMaximumFractionDigits());
-    doubleField.setDouble(5.1254);
+    doubleField.setValue(5.1254);
     assertEquals("5,12", doubleField.getText());
     doubleField.setText("5,123");
     assertEquals("5,12", doubleField.getText());
@@ -202,41 +300,41 @@ public class DoubleFieldTest {
 
   @Test
   void decimalSeparators() {
-    DoubleField doubleField = new DoubleField();
+    NumberField<Double>doubleField = NumberField.doubleField();
     doubleField.setGroupingUsed(false);
     doubleField.setSeparators('.', ',');
     doubleField.setText("1.5");
-    assertEquals(Double.valueOf(1.5), doubleField.getDouble());
+    assertEquals(Double.valueOf(1.5), doubleField.getValue());
     doubleField.setText("123.34.56");
-    assertEquals(Double.valueOf(1.5), doubleField.getDouble());
+    assertEquals(Double.valueOf(1.5), doubleField.getValue());
 
     doubleField.setText("1,5");
-    assertEquals(Double.valueOf(1.5), doubleField.getDouble());
+    assertEquals(Double.valueOf(1.5), doubleField.getValue());
     doubleField.setText("1,4.5");
-    assertEquals(Double.valueOf(1.5), doubleField.getDouble());
+    assertEquals(Double.valueOf(1.5), doubleField.getValue());
   }
 
   @Test
   void trailingDecimalSeparator() throws BadLocationException {
-    DoubleField doubleField = new DoubleField();
+    NumberField<Double>doubleField = NumberField.doubleField();
     doubleField.setSeparators('.', ',');
     NumberDocument<Double> document = doubleField.getTypedDocument();
     document.insertString(0, "1", null);
-    assertEquals(Double.valueOf(1), doubleField.getDouble());
+    assertEquals(Double.valueOf(1), doubleField.getValue());
     document.insertString(1, ".", null);
     assertEquals("1.", doubleField.getText());
-    assertEquals(Double.valueOf(1), doubleField.getDouble());
+    assertEquals(Double.valueOf(1), doubleField.getValue());
     document.insertString(2, "1", null);
     assertEquals("1.1", doubleField.getText());
-    assertEquals(Double.valueOf(1.1), doubleField.getDouble());
+    assertEquals(Double.valueOf(1.1), doubleField.getValue());
   }
 
   @Test
   void setSeparators() {
-    DoubleField doubleField = new DoubleField();
+    NumberField<Double>doubleField = NumberField.doubleField();
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators('.', ',');
-    doubleField.setNumber(12345678.9);
+    doubleField.setValue(12345678.9);
     assertEquals("12,345,678.9", doubleField.getText());
     doubleField.setSeparators(',', '.');
     assertEquals("12.345.678,9", doubleField.getText());
@@ -244,7 +342,7 @@ public class DoubleFieldTest {
 
   @Test
   void trailingDecimalZeros() throws BadLocationException {
-    DoubleField doubleField = new DoubleField();
+    NumberField<Double>doubleField = NumberField.doubleField();
     NumberDocument<Double> document = doubleField.getTypedDocument();
     doubleField.setSeparators('.', ',');
 

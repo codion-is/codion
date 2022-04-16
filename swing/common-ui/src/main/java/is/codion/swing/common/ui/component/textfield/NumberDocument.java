@@ -7,7 +7,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -40,39 +39,17 @@ class NumberDocument<T extends Number> extends PlainDocument {
     return ((NumberParser<T>) getDocumentFilter().getParser()).getFormat();
   }
 
-  protected final void setNumber(T number) {
-    setText(number == null ? "" : getFormat().format(number));
+  protected final void setValue(T value) {
+    setText(value == null ? "" : getFormat().format(value));
   }
 
-  protected final T getNumber() {
+  protected final T getValue() {
     try {
       return getDocumentFilter().getParser().parse(getText(0, getLength())).getValue();
     }
     catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  protected final Integer getInteger() {
-    Number number = getNumber();
-
-    return number == null ? null : number.intValue();
-  }
-
-  protected final Long getLong() {
-    Number number = getNumber();
-
-    return number == null ? null : number.longValue();
-  }
-
-  protected final Double getDouble() {
-    Number number = getNumber();
-
-    return number == null ? null : number.doubleValue();
-  }
-
-  protected final BigDecimal getBigDecimal() {
-    return (BigDecimal) getNumber();
   }
 
   protected final void setText(String text) {
@@ -98,9 +75,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
     DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
     symbols.setDecimalSeparator(decimalSeparator);
     symbols.setGroupingSeparator(groupingSeparator);
-    T number = getNumber();
+    T number = getValue();
     ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
-    setNumber(number);
+    setValue(number);
   }
 
   void setDecimalSeparator(char decimalSeparator) {

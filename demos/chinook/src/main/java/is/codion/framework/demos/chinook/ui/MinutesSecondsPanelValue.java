@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.swing.common.ui.component.AbstractComponentValue;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -31,25 +31,25 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
   @Override
   protected Integer getComponentValue(MinutesSecondsPanel component) {
-    return getMilliseconds(component.minutesField.getInteger(), component.secondsField.getInteger());
+    return getMilliseconds(component.minutesField.getValue(), component.secondsField.getValue());
   }
 
   @Override
   protected void setComponentValue(MinutesSecondsPanel component, Integer milliseconds) {
-    component.minutesField.setInteger(getMinutes(milliseconds));
-    component.secondsField.setInteger(getSeconds(milliseconds));
+    component.minutesField.setValue(getMinutes(milliseconds));
+    component.secondsField.setValue(getSeconds(milliseconds));
   }
 
   static final class MinutesSecondsPanel extends JPanel {
 
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(MinutesSecondsPanel.class.getName());
 
-    private final IntegerField minutesField = integerField()
+    private final NumberField<Integer> minutesField = integerField()
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
             .columns(2)
             .build();
-    private final IntegerField secondsField = integerField()
+    private final NumberField<Integer> secondsField = integerField()
             .range(0, 59)
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)

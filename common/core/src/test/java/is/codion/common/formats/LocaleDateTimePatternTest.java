@@ -12,11 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class LocaleDateTimePatternTest {
 
   @Test
-  void getDateMask() {
-    assertEquals("##-##-####", LocaleDateTimePattern.getMask("dd-MM-yyyy"));
-  }
-
-  @Test
   void locale() {
     LocaleDateTimePattern pattern = LocaleDateTimePattern.builder()
             .delimiterDash().yearFourDigits().hoursMinutes()

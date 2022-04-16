@@ -3,20 +3,19 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.textfield.BigDecimalField;
-
-import java.math.BigDecimal;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 /**
- * A builder {@link BigDecimalField}.
+ * A builder for a decimal based {@link NumberField}.
  */
-public interface BigDecimalFieldBuilder extends NumberFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder> {
+public interface DecimalFieldBuilder<T extends Number, B extends DecimalFieldBuilder<T, B>>
+        extends NumberFieldBuilder<T, B> {
 
-  /**
+    /**
    * @param maximumFractionDigits the maximum fraction digits
    * @return this builder instance
    */
-  BigDecimalFieldBuilder maximumFractionDigits(int maximumFractionDigits);
+  B maximumFractionDigits(int maximumFractionDigits);
 
   /**
    * Set the decimal separator for this field
@@ -24,5 +23,5 @@ public interface BigDecimalFieldBuilder extends NumberFieldBuilder<BigDecimal, B
    * @return this builder instance
    * @throws IllegalArgumentException in case the decimal separator is the same as the grouping separator
    */
-  BigDecimalFieldBuilder decimalSeparator(char decimalSeparator);
+  B decimalSeparator(char decimalSeparator);
 }

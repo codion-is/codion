@@ -12,18 +12,16 @@ import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.component.BigDecimalFieldBuilder;
 import is.codion.swing.common.ui.component.ButtonBuilder;
 import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.DoubleFieldBuilder;
-import is.codion.swing.common.ui.component.FormattedTextFieldBuilder;
-import is.codion.swing.common.ui.component.IntegerFieldBuilder;
+import is.codion.swing.common.ui.component.DecimalFieldBuilder;
 import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.LabelBuilder;
-import is.codion.swing.common.ui.component.LongFieldBuilder;
+import is.codion.swing.common.ui.component.MaskedTextFieldBuilder;
+import is.codion.swing.common.ui.component.NumberFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalFieldBuilder;
 import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.TextAreaBuilder;
@@ -405,13 +403,14 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
+   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final IntegerFieldBuilder integerField(Attribute<Integer> attribute) {
+  public final <B extends NumberFieldBuilder<Integer, B>> NumberFieldBuilder<Integer, B> integerField(Attribute<Integer> attribute) {
     Property<Integer> property = entityDefinition.getProperty(attribute);
 
-    return Components.integerField()
+    return (NumberFieldBuilder<Integer, B>) Components.integerField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -420,13 +419,14 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
+   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final LongFieldBuilder longField(Attribute<Long> attribute) {
+  public final <B extends NumberFieldBuilder<Long, B>> NumberFieldBuilder<Long, B> longField(Attribute<Long> attribute) {
     Property<Long> property = entityDefinition.getProperty(attribute);
 
-    return Components.longField()
+    return (NumberFieldBuilder<Long, B>) Components.longField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -435,13 +435,14 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
+   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final DoubleFieldBuilder doubleField(Attribute<Double> attribute) {
+  public final <B extends DecimalFieldBuilder<Double, B>> DecimalFieldBuilder<Double, B> doubleField(Attribute<Double> attribute) {
     Property<Double> property = entityDefinition.getProperty(attribute);
 
-    return Components.doubleField()
+    return (DecimalFieldBuilder<Double, B>) Components.doubleField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -451,13 +452,14 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
+   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final BigDecimalFieldBuilder bigDecimalField(Attribute<BigDecimal> attribute) {
+  public final <B extends DecimalFieldBuilder<BigDecimal, B>> DecimalFieldBuilder<BigDecimal, B> bigDecimalField(Attribute<BigDecimal> attribute) {
     Property<BigDecimal> property = entityDefinition.getProperty(attribute);
 
-    return Components.bigDecimalField()
+    return (DecimalFieldBuilder<BigDecimal, B>) Components.bigDecimalField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -470,10 +472,10 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final FormattedTextFieldBuilder formattedTextField(Attribute<String> attribute) {
+  public final MaskedTextFieldBuilder maskedTextField(Attribute<String> attribute) {
     Property<String> property = entityDefinition.getProperty(attribute);
 
-    return Components.formattedTextField()
+    return Components.maskedTextField()
             .toolTipText(property.getDescription());
   }
 }

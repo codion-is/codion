@@ -3,29 +3,29 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
-final class LongFieldValue extends AbstractTextComponentValue<Long, LongField> {
+final class LongFieldValue extends AbstractTextComponentValue<Long, NumberField<Long>> {
 
-  LongFieldValue(LongField longField, boolean nullable, UpdateOn updateOn) {
+  LongFieldValue(NumberField<Long> longField, boolean nullable, UpdateOn updateOn) {
     super(longField, nullable ? null : 0L, updateOn);
-    if (!isNullable() && longField.getLong() == null) {
-      longField.setLong(0L);
+    if (!isNullable() && longField.getValue() == null) {
+      longField.setValue(0L);
     }
   }
 
   @Override
-  protected Long getComponentValue(LongField component) {
-    Number number = component.getNumber();
-    if (number == null) {
+  protected Long getComponentValue(NumberField<Long> component) {
+    Number value = component.getValue();
+    if (value == null) {
       return isNullable() ? null : 0L;
     }
 
-    return number.longValue();
+    return value.longValue();
   }
 
   @Override
-  protected void setComponentValue(LongField component, Long value) {
-    component.setNumber(value);
+  protected void setComponentValue(NumberField<Long> component, Long value) {
+    component.setValue(value);
   }
 }

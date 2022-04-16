@@ -3,23 +3,23 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.textfield.BigDecimalField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import java.math.BigDecimal;
 
-final class BigDecimalFieldValue extends AbstractTextComponentValue<BigDecimal, BigDecimalField> {
+final class BigDecimalFieldValue extends AbstractTextComponentValue<BigDecimal, NumberField<BigDecimal>> {
 
-  BigDecimalFieldValue(BigDecimalField doubleField, boolean nullable, UpdateOn updateOn) {
+  BigDecimalFieldValue(NumberField<BigDecimal> doubleField, boolean nullable, UpdateOn updateOn) {
     super(doubleField, nullable ? null : BigDecimal.ZERO, updateOn);
   }
 
   @Override
-  protected BigDecimal getComponentValue(BigDecimalField component) {
-    return component.getNumber();
+  protected BigDecimal getComponentValue(NumberField<BigDecimal> component) {
+    return component.getValue();
   }
 
   @Override
-  protected void setComponentValue(BigDecimalField component, BigDecimal value) {
-    component.setNumber(value);
+  protected void setComponentValue(NumberField<BigDecimal> component, BigDecimal value) {
+    component.setValue(value);
   }
 }

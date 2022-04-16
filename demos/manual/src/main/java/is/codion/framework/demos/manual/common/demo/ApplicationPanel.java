@@ -102,9 +102,12 @@ public final class ApplicationPanel extends JPanel {
 
     label("Formatted String")
             .build(inputPanel::add);
-    formattedTextField(model.getFormattedStringValue())
-            .formatMask("(##) ##-##")
-            .valueContainsLiterals(true)
+    maskedTextField(model.getFormattedStringValue())
+            .mask("(##) ##-##")
+            .placeholderCharacter('_')
+            .placeholder("(00) 00-00")
+            .valueContainsLiteralCharacters(true)
+            .commitsOnValidEdit(true)
             .focusLostBehaviour(JFormattedTextField.COMMIT)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)

@@ -3,29 +3,29 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
-final class IntegerFieldValue extends AbstractTextComponentValue<Integer, IntegerField> {
+final class IntegerFieldValue extends AbstractTextComponentValue<Integer, NumberField<Integer>> {
 
-  IntegerFieldValue(IntegerField integerField, boolean nullable, UpdateOn updateOn) {
+  IntegerFieldValue(NumberField<Integer> integerField, boolean nullable, UpdateOn updateOn) {
     super(integerField, nullable ? null : 0, updateOn);
-    if (!isNullable() && integerField.getInteger() == null) {
-      integerField.setInteger(0);
+    if (!isNullable() && integerField.getValue() == null) {
+      integerField.setValue(0);
     }
   }
 
   @Override
-  protected Integer getComponentValue(IntegerField component) {
-    Number number = component.getNumber();
-    if (number == null) {
+  protected Integer getComponentValue(NumberField<Integer> component) {
+    Number value = component.getValue();
+    if (value == null) {
       return isNullable() ? null : 0;
     }
 
-    return number.intValue();
+    return value.intValue();
   }
 
   @Override
-  protected void setComponentValue(IntegerField component, Integer value) {
-    component.setNumber(value);
+  protected void setComponentValue(NumberField<Integer> component, Integer value) {
+    component.setValue(value);
   }
 }

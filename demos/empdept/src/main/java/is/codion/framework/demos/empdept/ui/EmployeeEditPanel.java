@@ -5,7 +5,7 @@ package is.codion.framework.demos.empdept.ui;
 
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -68,7 +68,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
   private JPanel initializeDepartmentPanel() {
     EntityComboBox departmentBox = createForeignKeyComboBox(Employee.DEPARTMENT_FK).build();
-    IntegerField departmentIdField = departmentBox.integerFieldSelector(Department.ID)
+    NumberField<Integer> departmentIdField = departmentBox.integerFieldSelector(Department.ID)
             .transferFocusOnEnter(true)
             .build();
 

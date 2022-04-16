@@ -9,7 +9,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import org.junit.jupiter.api.Test;
@@ -58,16 +58,16 @@ public class EntityComboBoxTest {
     Key jonesKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 3);
     comboBoxModel.setSelectedEntityByKey(jonesKey);
     EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
-    IntegerField empIdValue = comboBox.integerFieldSelector(TestDomain.EMP_ID).build();
-    assertEquals(3, empIdValue.getInteger());
+    NumberField<Integer> empIdValue = comboBox.integerFieldSelector(TestDomain.EMP_ID).build();
+    assertEquals(3, empIdValue.getValue());
     Key blakeKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 5);
     comboBoxModel.setSelectedEntityByKey(blakeKey);
-    assertEquals(5, empIdValue.getInteger());
+    assertEquals(5, empIdValue.getValue());
     comboBoxModel.setSelectedItem(null);
-    assertNull(empIdValue.getInteger());
-    empIdValue.setInteger(10);
+    assertNull(empIdValue.getValue());
+    empIdValue.setValue(10);
     assertEquals("ADAMS", comboBoxModel.getSelectedValue().get(TestDomain.EMP_NAME));
-    empIdValue.setInteger(null);
+    empIdValue.setValue(null);
     assertNull(comboBoxModel.getSelectedValue());
   }
 }

@@ -5,10 +5,7 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.event.Event;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.textfield.BigDecimalField;
-import is.codion.swing.common.ui.component.textfield.DoubleField;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
-import is.codion.swing.common.ui.component.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import org.junit.jupiter.api.Test;
 
@@ -97,11 +94,11 @@ public class NumericalValuesTest {  private Long longValue;
   void testLong() throws Exception {
     Value<Long> longPropertyValue = Value.propertyValue(this, "longValue",
             Long.class, longValueChangedEvent);
-    LongField longField = Components.longField(longPropertyValue)
+    NumberField<Long> longField = Components.longField(longPropertyValue)
             .build();
-    assertNull(longField.getLong());
+    assertNull(longField.getValue());
     setLongValue(2L);
-    assertEquals(2, longField.getLong().longValue());
+    assertEquals(2, longField.getValue().longValue());
     longField.setText("42");
     assertEquals(42, this.longValue.longValue());
     longField.setText("");
@@ -113,13 +110,13 @@ public class NumericalValuesTest {  private Long longValue;
     Value<Long> longPrimitivePropertyValue = Value.propertyValue(this, "longPrimitiveValue",
             long.class, longPrimitiveValueChangedEvent);
     assertFalse(longPrimitivePropertyValue.isNullable());
-    ComponentValue<Long, LongField> componentValue = Components.longField(longPrimitivePropertyValue)
+    ComponentValue<Long, NumberField<Long>> componentValue = Components.longField(longPrimitivePropertyValue)
             .buildComponentValue();
-    LongField longField = componentValue.getComponent();
-    assertEquals(0L, longField.getLong());
+    NumberField<Long> longField = componentValue.getComponent();
+    assertEquals(0L, longField.getValue());
     assertEquals(0, componentValue.get());
     setLongPrimitiveValue(2);
-    assertEquals(2, longField.getLong().longValue());
+    assertEquals(2, longField.getValue().longValue());
     longField.setText("42");
     assertEquals(42, longPrimitiveValue);
     longField.setText("");
@@ -130,11 +127,11 @@ public class NumericalValuesTest {  private Long longValue;
   void testInteger() throws Exception {
     Value<Integer> integerPropertyValue = Value.propertyValue(this, "integerValue",
             Integer.class, integerValueChangedEvent);
-    IntegerField integerField = Components.integerField(integerPropertyValue)
+    NumberField<Integer> integerField = Components.integerField(integerPropertyValue)
             .build();
-    assertNull(integerField.getInteger());
+    assertNull(integerField.getValue());
     setIntegerValue(2);
-    assertEquals(2, integerField.getInteger().intValue());
+    assertEquals(2, integerField.getValue().intValue());
     integerField.setText("42");
     assertEquals(42, this.integerValue.intValue());
     integerField.setText("");
@@ -144,13 +141,13 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   void testInt() throws Exception {
     Value<Integer> integerPropertyValue = Value.propertyValue(this, "intValue", int.class, intValueChangedEvent);
-    ComponentValue<Integer, IntegerField> componentValue = Components.integerField(integerPropertyValue)
+    ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField(integerPropertyValue)
             .buildComponentValue();
-    IntegerField integerField = componentValue.getComponent();
-    assertEquals(0, integerField.getInteger());
+    NumberField<Integer> integerField = componentValue.getComponent();
+    assertEquals(0, integerField.getValue());
     assertEquals(0, componentValue.get());
     setIntValue(2);
-    assertEquals(2, integerField.getInteger().intValue());
+    assertEquals(2, integerField.getValue().intValue());
     integerField.setText("42");
     assertEquals(42, intValue);
     integerField.setText("");
@@ -162,27 +159,29 @@ public class NumericalValuesTest {  private Long longValue;
     DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance();
     format.setMaximumFractionDigits(4);
 
-    BigDecimalField bigDecimalField = new BigDecimalField(format);
+    NumberField<BigDecimal> bigDecimalField = Components.bigDecimalField()
+            .format(format)
+            .build();
     bigDecimalField.setSeparators('.', ',');
 
-    bigDecimalField.setBigDecimal(BigDecimal.valueOf(3.14));
+    bigDecimalField.setValue(BigDecimal.valueOf(3.14));
     assertEquals("3.14", bigDecimalField.getText());
 
     bigDecimalField.setText("42.4242");
-    assertEquals(BigDecimal.valueOf(42.4242), bigDecimalField.getBigDecimal());
+    assertEquals(BigDecimal.valueOf(42.4242), bigDecimalField.getValue());
   }
 
   @Test
   void testDouble() throws Exception {
     Value<Double> doublePropertyValue = Value.propertyValue(this, "doubleValue",
             Double.class, doubleValueChangedEvent);
-    DoubleField doubleField = Components.doubleField(doublePropertyValue)
+    NumberField<Double> doubleField = Components.doubleField(doublePropertyValue)
             .decimalSeparator('.')
             .groupingSeparator(',')
             .build();
-    assertNull(doubleField.getDouble());
+    assertNull(doubleField.getValue());
     setDoubleValue(2.2);
-    assertEquals(Double.valueOf(2.2), doubleField.getDouble());
+    assertEquals(Double.valueOf(2.2), doubleField.getValue());
     doubleField.setText("42.2");
     assertEquals(Double.valueOf(42.2), this.doubleValue);
     doubleField.setText("");
@@ -193,16 +192,16 @@ public class NumericalValuesTest {  private Long longValue;
   void testDoublePrimitive() throws Exception {
     Value<Double> doublePrimitivePropertyValue = Value.propertyValue(this, "doublePrimitiveValue",
             double.class, doublePrimitiveValueValueChangedEvent);
-    ComponentValue<Double, DoubleField> componentValue = Components.doubleField()
+    ComponentValue<Double, NumberField<Double>> componentValue = Components.doubleField()
             .decimalSeparator('.')
             .groupingSeparator(',')
             .buildComponentValue();
-    DoubleField doubleField = componentValue.getComponent();
+    NumberField<Double> doubleField = componentValue.getComponent();
     componentValue.link(doublePrimitivePropertyValue);
-    assertEquals(0d, doubleField.getDouble());
+    assertEquals(0d, doubleField.getValue());
     assertEquals(0d, componentValue.get());
     setDoublePrimitiveValue(2.2);
-    assertEquals(Double.valueOf(2.2), doubleField.getDouble());
+    assertEquals(Double.valueOf(2.2), doubleField.getValue());
     doubleField.setText("42.2");
     assertEquals(42.2, this.doublePrimitiveValue);
     doubleField.setText("");
@@ -211,7 +210,7 @@ public class NumericalValuesTest {  private Long longValue;
 
   @Test
   void parseDouble() {
-    ComponentValue<Double, DoubleField> componentValue = Components.doubleField()
+    ComponentValue<Double, NumberField<Double>> componentValue = Components.doubleField()
             .buildComponentValue();
     assertNull(componentValue.get());
 
@@ -247,7 +246,7 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   void integerValueField() {
     final Integer value = 10;
-    ComponentValue<Integer, IntegerField> componentValue = Components.integerField()
+    ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField()
             .initialValue(value)
             .buildComponentValue();
     assertEquals(value, componentValue.get());
@@ -310,9 +309,9 @@ public class NumericalValuesTest {  private Long longValue;
 
   @Test
   void integerTextUiValue() {
-    ComponentValue<Integer, IntegerField> value = Components.integerField()
+    ComponentValue<Integer, NumberField<Integer>> value = Components.integerField()
             .buildComponentValue();
-    IntegerField integerField = value.getComponent();
+    NumberField<Integer> integerField = value.getComponent();
 
     assertNull(value.get());
     integerField.setText("122");
@@ -327,7 +326,7 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   void longValue() {
     final Long value = 10L;
-    ComponentValue<Long, LongField> componentValue = Components.longField()
+    ComponentValue<Long, NumberField<Long>> componentValue = Components.longField()
             .buildComponentValue();
     componentValue.set(value);
     assertEquals(value, componentValue.get());
@@ -342,9 +341,9 @@ public class NumericalValuesTest {  private Long longValue;
 
   @Test
   void longTextUiValue() {
-    ComponentValue<Long, LongField> value = Components.longField()
+    ComponentValue<Long, NumberField<Long>> value = Components.longField()
             .buildComponentValue();
-    LongField longField = value.getComponent();
+    NumberField<Long> longField = value.getComponent();
 
     assertNull(value.get());
     longField.setText("122");
@@ -358,12 +357,12 @@ public class NumericalValuesTest {  private Long longValue;
 
   @Test
   void bigDecimalTextUiValue() {
-    ComponentValue<BigDecimal, BigDecimalField> value = Components.bigDecimalField()
+    ComponentValue<BigDecimal, NumberField<BigDecimal>> value = Components.bigDecimalField()
             .decimalSeparator('.')
             .groupingSeparator(',')
             .buildComponentValue();
 
-    BigDecimalField bigDecimalField = value.getComponent();
+    NumberField<BigDecimal> bigDecimalField = value.getComponent();
 
     assertNull(value.get());
     bigDecimalField.setText("122.2");

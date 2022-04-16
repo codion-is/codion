@@ -4,31 +4,23 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import java.text.NumberFormat;
 
-final class DefaultIntegerFieldBuilder extends AbstractNumberFieldBuilder<Integer, IntegerField, IntegerFieldBuilder>
-        implements IntegerFieldBuilder {
+final class DefaultIntegerFieldBuilder<B extends NumberFieldBuilder<Integer, B>> extends AbstractNumberFieldBuilder<Integer, B> {
 
   DefaultIntegerFieldBuilder(Value<Integer> linkedValue) {
     super(Integer.class, linkedValue);
   }
 
   @Override
-  public IntegerFieldBuilder range(int from, int to) {
-    minimumValue((double) from);
-    maximumValue((double) to);
-    return this;
+  protected NumberField<Integer> createNumberField(NumberFormat format) {
+    return format == null ? NumberField.integerField() : NumberField.integerField(format);
   }
 
   @Override
-  protected IntegerField createNumberField(NumberFormat format) {
-    return format == null ? new IntegerField() : new IntegerField(format);
-  }
-
-  @Override
-  protected ComponentValue<Integer, IntegerField> createComponentValue(IntegerField component) {
+  protected ComponentValue<Integer, NumberField<Integer>> createComponentValue(NumberField<Integer> component) {
     return new IntegerFieldValue(component, true, updateOn);
   }
 }

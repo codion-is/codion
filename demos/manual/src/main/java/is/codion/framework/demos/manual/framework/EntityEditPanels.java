@@ -8,10 +8,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.component.textfield.BigDecimalField;
-import is.codion.swing.common.ui.component.textfield.DoubleField;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
-import is.codion.swing.common.ui.component.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.common.ui.component.textfield.TemporalField;
 import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.component.textfield.TextInputPanel;
@@ -115,32 +112,32 @@ public final class EntityEditPanels {
 
     private void numericalValue() {
       // tag::numericalValue[]
-      IntegerField integerField =
-              (IntegerField) createTextField(Demo.INTEGER)
+      NumberField<Integer> integerField =
+              (NumberField<Integer>) createTextField(Demo.INTEGER)
                       .build();
 
       integerField =
               createIntegerField(Demo.INTEGER)
                       .build();
 
-      LongField longField =
-              (LongField) createTextField(Demo.LONG)
+      NumberField<Long> longField =
+              (NumberField<Long>) createTextField(Demo.LONG)
                       .build();
 
       longField =
               createLongField(Demo.LONG)
                       .build();
 
-      DoubleField doubleField =
-              (DoubleField) createTextField(Demo.DOUBLE)
+      NumberField<Double> doubleField =
+              (NumberField<Double>) createTextField(Demo.DOUBLE)
                       .build();
 
       doubleField =
               createDoubleField(Demo.DOUBLE)
                       .build();
 
-      BigDecimalField bigDecimalField =
-              (BigDecimalField) createTextField(Demo.BIG_DECIMAL)
+      NumberField<BigDecimal> bigDecimalField =
+              (NumberField<BigDecimal>) createTextField(Demo.BIG_DECIMAL)
                       .build();
 
       bigDecimalField =
@@ -155,10 +152,10 @@ public final class EntityEditPanels {
               createTextField(Demo.TEXT)
                       .build();
 
-      JFormattedTextField formattedField =
-              createFormattedTextField(Demo.FORMATTED_TEXT)
-                      .formatMask("###:###")
-                      .valueContainsLiterals(true)
+      JFormattedTextField maskedField =
+              createMaskedTextField(Demo.FORMATTED_TEXT)
+                      .mask("###:###")
+                      .valueContainsLiteralCharacters(true)
                       .build();
 
       JTextArea textArea =

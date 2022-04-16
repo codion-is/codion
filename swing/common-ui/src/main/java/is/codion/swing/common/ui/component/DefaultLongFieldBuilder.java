@@ -4,30 +4,23 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import java.text.NumberFormat;
 
-class DefaultLongFieldBuilder extends AbstractNumberFieldBuilder<Long, LongField, LongFieldBuilder> implements LongFieldBuilder {
+final class DefaultLongFieldBuilder<B extends NumberFieldBuilder<Long, B>> extends AbstractNumberFieldBuilder<Long, B> {
 
   DefaultLongFieldBuilder(Value<Long> linkedValue) {
     super(Long.class, linkedValue);
   }
 
   @Override
-  public LongFieldBuilder range(long from, long to) {
-    minimumValue((double) from);
-    maximumValue((double) to);
-    return this;
+  protected NumberField<Long> createNumberField(NumberFormat format) {
+    return format == null ? NumberField.longField() : NumberField.longField(format);
   }
 
   @Override
-  protected LongField createNumberField(NumberFormat format) {
-    return format == null ? new LongField() : new LongField(format);
-  }
-
-  @Override
-  protected ComponentValue<Long, LongField> createComponentValue(LongField component) {
+  protected ComponentValue<Long, NumberField<Long>> createComponentValue(NumberField<Long> component) {
     return new LongFieldValue(component, true, updateOn);
   }
 }

@@ -8,22 +8,29 @@ import is.codion.swing.common.ui.component.textfield.NumberField;
 /**
  * Builds a NumberField descendant
  * @param <T> the value type
- * @param <C> the number field type
  * @param <B> the builder type
  */
-public interface NumberFieldBuilder<T extends Number, C extends NumberField<T>, B extends NumberFieldBuilder<T, C, B>> extends TextFieldBuilder<T, C, B> {
+public interface NumberFieldBuilder<T extends Number, B extends NumberFieldBuilder<T, B>>
+        extends TextFieldBuilder<T, NumberField<T>, B> {
 
   /**
-   * @param minimumValue the minimum numerical value, if applicable
+   * @param minimumValue the minimum value
+   * @param maximumValue the maximum value
    * @return this builder instance
    */
-  B minimumValue(Double minimumValue);
+  B range(Number minimumValue, Number maximumValue);
 
   /**
-   * @param maximumValue the maximum numerical value, if applicable
+   * @param minimumValue the minimum numerical value
    * @return this builder instance
    */
-  B maximumValue(Double maximumValue);
+  B minimumValue(Number minimumValue);
+
+  /**
+   * @param maximumValue the maximum numerical value
+   * @return this builder instance
+   */
+  B maximumValue(Number maximumValue);
 
   /**
    * @param groupingSeparator the grouping separator

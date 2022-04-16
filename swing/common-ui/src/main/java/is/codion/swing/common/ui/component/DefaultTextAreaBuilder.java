@@ -88,7 +88,7 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
 
   @Override
   protected ComponentValue<String, JTextArea> createComponentValue(JTextArea component) {
-    return new FormattedTextComponentValue<>(component, null, updateOn);
+    return new DefaultTextComponentValue<>(component, null, updateOn);
   }
 
   @Override

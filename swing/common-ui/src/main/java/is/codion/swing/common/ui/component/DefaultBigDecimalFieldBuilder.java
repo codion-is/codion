@@ -4,14 +4,14 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.textfield.BigDecimalField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder>
-        implements BigDecimalFieldBuilder {
+final class DefaultBigDecimalFieldBuilder <B extends DecimalFieldBuilder<BigDecimal, B>> extends AbstractNumberFieldBuilder<BigDecimal, B>
+        implements DecimalFieldBuilder<BigDecimal, B> {
 
   private int maximumFractionDigits = -1;
   private char decimalSeparator = 0;
@@ -21,23 +21,23 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   }
 
   @Override
-  public BigDecimalFieldBuilder maximumFractionDigits(int maximumFractionDigits) {
+  public B maximumFractionDigits(int maximumFractionDigits) {
     this.maximumFractionDigits = maximumFractionDigits;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public BigDecimalFieldBuilder decimalSeparator(char decimalSeparator) {
+  public B decimalSeparator(char decimalSeparator) {
     if (decimalSeparator == groupingSeparator) {
       throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
     }
     this.decimalSeparator = decimalSeparator;
-    return this;
+    return (B) this;
   }
 
   @Override
-  protected BigDecimalField createNumberField(NumberFormat format) {
-    BigDecimalField field = format == null ? new BigDecimalField() : new BigDecimalField((DecimalFormat) format);
+  protected NumberField<BigDecimal> createNumberField(NumberFormat format) {
+    NumberField<BigDecimal> field = format == null ? NumberField.bigDecimalField() : NumberField.bigDecimalField((DecimalFormat) format);
     if (decimalSeparator != 0) {
       field.setDecimalSeparator(decimalSeparator);
     }
@@ -49,7 +49,7 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   }
 
   @Override
-  protected ComponentValue<BigDecimal, BigDecimalField> createComponentValue(BigDecimalField component) {
+  protected ComponentValue<BigDecimal, NumberField<BigDecimal>> createComponentValue(NumberField<BigDecimal> component) {
     return new BigDecimalFieldValue(component, true, updateOn);
   }
 }

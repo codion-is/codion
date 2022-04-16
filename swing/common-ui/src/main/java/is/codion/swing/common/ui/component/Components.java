@@ -475,78 +475,86 @@ public final class Components {
   }
 
   /**
+   * @param <B> the builder type
    * @return a builder for a component
    */
-  public static IntegerFieldBuilder integerField() {
-    return new DefaultIntegerFieldBuilder(null);
+  public static <B extends NumberFieldBuilder<Integer, B>> NumberFieldBuilder<Integer, B> integerField() {
+    return new DefaultIntegerFieldBuilder<>(null);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <B extends NumberFieldBuilder<Integer, B>> NumberFieldBuilder<Integer, B> integerField(Value<Integer> linkedValue) {
+    return new DefaultIntegerFieldBuilder<>(requireNonNull(linkedValue));
+  }
+
+  /**
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends NumberFieldBuilder<Long, B>> NumberFieldBuilder<Long, B> longField() {
+    return new DefaultLongFieldBuilder<>(null);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <B extends NumberFieldBuilder<Long, B>> NumberFieldBuilder<Long, B> longField(Value<Long> linkedValue) {
+    return new DefaultLongFieldBuilder<>(requireNonNull(linkedValue));
+  }
+
+  /**
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends DecimalFieldBuilder<Double, B>> DecimalFieldBuilder<Double, B> doubleField() {
+    return new DefaultDoubleFieldBuilder<>(null);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <B extends DecimalFieldBuilder<Double, B>> DecimalFieldBuilder<Double, B> doubleField(Value<Double> linkedValue) {
+    return new DefaultDoubleFieldBuilder<>(requireNonNull(linkedValue));
+  }
+
+  /**
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends DecimalFieldBuilder<BigDecimal, B>> DecimalFieldBuilder<BigDecimal, B> bigDecimalField() {
+    return new DefaultBigDecimalFieldBuilder<>(null);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <B extends DecimalFieldBuilder<BigDecimal, B>> DecimalFieldBuilder<BigDecimal, B> bigDecimalField(Value<BigDecimal> linkedValue) {
+    return new DefaultBigDecimalFieldBuilder<>(requireNonNull(linkedValue));
+  }
+
+  /**
+   * @return a builder for a component
+   */
+  public static MaskedTextFieldBuilder maskedTextField() {
+    return new DefaultMaskedTextFieldBuilder(null);
   }
 
   /**
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static IntegerFieldBuilder integerField(Value<Integer> linkedValue) {
-    return new DefaultIntegerFieldBuilder(requireNonNull(linkedValue));
-  }
-
-  /**
-   * @return a builder for a component
-   */
-  public static LongFieldBuilder longField() {
-    return new DefaultLongFieldBuilder(null);
-  }
-
-  /**
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static LongFieldBuilder longField(Value<Long> linkedValue) {
-    return new DefaultLongFieldBuilder(requireNonNull(linkedValue));
-  }
-
-  /**
-   * @return a builder for a component
-   */
-  public static DoubleFieldBuilder doubleField() {
-    return new DefaultDoubleFieldBuilder(null);
-  }
-
-  /**
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static DoubleFieldBuilder doubleField(Value<Double> linkedValue) {
-    return new DefaultDoubleFieldBuilder(requireNonNull(linkedValue));
-  }
-
-  /**
-   * @return a builder for a component
-   */
-  public static BigDecimalFieldBuilder bigDecimalField() {
-    return new DefaultBigDecimalFieldBuilder(null);
-  }
-
-  /**
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static BigDecimalFieldBuilder bigDecimalField(Value<BigDecimal> linkedValue) {
-    return new DefaultBigDecimalFieldBuilder(requireNonNull(linkedValue));
-  }
-
-  /**
-   * @return a builder for a component
-   */
-  public static FormattedTextFieldBuilder formattedTextField() {
-    return new DefaultFormattedTextFieldBuilder(null);
-  }
-
-  /**
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static FormattedTextFieldBuilder formattedTextField(Value<String> linkedValue) {
-    return new DefaultFormattedTextFieldBuilder(requireNonNull(linkedValue));
+  public static MaskedTextFieldBuilder maskedTextField(Value<String> linkedValue) {
+    return new DefaultMaskedTextFieldBuilder(requireNonNull(linkedValue));
   }
 
   /**
