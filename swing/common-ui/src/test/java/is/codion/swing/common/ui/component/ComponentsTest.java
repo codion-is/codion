@@ -69,7 +69,7 @@ public final class ComponentsTest {
 
     Value<Integer> value = Value.value(42);
 
-    IntegerFieldBuilder builder = Components.integerField()
+    NumberFieldBuilder<Integer, ?> builder = Components.integerField()
             .range(0, 100)
             .font(defaultFont.deriveFont(Font.BOLD))
             .foreground(Color.WHITE)

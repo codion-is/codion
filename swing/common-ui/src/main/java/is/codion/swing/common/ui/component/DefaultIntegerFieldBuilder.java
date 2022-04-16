@@ -8,8 +8,7 @@ import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import java.text.NumberFormat;
 
-final class DefaultIntegerFieldBuilder extends AbstractNumberFieldBuilder<Integer, IntegerFieldBuilder>
-        implements IntegerFieldBuilder {
+final class DefaultIntegerFieldBuilder<B extends NumberFieldBuilder<Integer, B>> extends AbstractNumberFieldBuilder<Integer, B> {
 
   DefaultIntegerFieldBuilder(Value<Integer> linkedValue) {
     super(Integer.class, linkedValue);

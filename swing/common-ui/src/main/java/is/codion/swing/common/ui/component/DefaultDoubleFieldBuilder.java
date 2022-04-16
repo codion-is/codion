@@ -9,8 +9,8 @@ import is.codion.swing.common.ui.component.textfield.NumberField;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double, DoubleFieldBuilder>
-        implements DoubleFieldBuilder {
+final class DefaultDoubleFieldBuilder<B extends DecimalFieldBuilder<Double, B>> extends AbstractNumberFieldBuilder<Double, B>
+        implements DecimalFieldBuilder<Double, B> {
 
   private int maximumFractionDigits = -1;
   private char decimalSeparator = 0;
@@ -20,18 +20,18 @@ final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double,
   }
 
   @Override
-  public DoubleFieldBuilder maximumFractionDigits(int maximumFractionDigits) {
+  public B maximumFractionDigits(int maximumFractionDigits) {
     this.maximumFractionDigits = maximumFractionDigits;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public DoubleFieldBuilder decimalSeparator(char decimalSeparator) {
+  public B decimalSeparator(char decimalSeparator) {
     if (decimalSeparator == groupingSeparator) {
       throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
     }
     this.decimalSeparator = decimalSeparator;
-    return this;
+    return (B) this;
   }
 
   @Override

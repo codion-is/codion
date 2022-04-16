@@ -8,8 +8,7 @@ import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import java.text.NumberFormat;
 
-class DefaultLongFieldBuilder extends AbstractNumberFieldBuilder<Long, LongFieldBuilder>
-        implements LongFieldBuilder {
+final class DefaultLongFieldBuilder<B extends NumberFieldBuilder<Long, B>> extends AbstractNumberFieldBuilder<Long, B> {
 
   DefaultLongFieldBuilder(Value<Long> linkedValue) {
     super(Long.class, linkedValue);

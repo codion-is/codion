@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal, BigDecimalFieldBuilder>
-        implements BigDecimalFieldBuilder {
+final class DefaultBigDecimalFieldBuilder <B extends DecimalFieldBuilder<BigDecimal, B>> extends AbstractNumberFieldBuilder<BigDecimal, B>
+        implements DecimalFieldBuilder<BigDecimal, B> {
 
   private int maximumFractionDigits = -1;
   private char decimalSeparator = 0;
@@ -21,18 +21,18 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   }
 
   @Override
-  public BigDecimalFieldBuilder maximumFractionDigits(int maximumFractionDigits) {
+  public B maximumFractionDigits(int maximumFractionDigits) {
     this.maximumFractionDigits = maximumFractionDigits;
-    return this;
+    return (B) this;
   }
 
   @Override
-  public BigDecimalFieldBuilder decimalSeparator(char decimalSeparator) {
+  public B decimalSeparator(char decimalSeparator) {
     if (decimalSeparator == groupingSeparator) {
       throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
     }
     this.decimalSeparator = decimalSeparator;
-    return this;
+    return (B) this;
   }
 
   @Override
