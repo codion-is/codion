@@ -10,4 +10,4 @@ import java.math.BigDecimal;
 /**
  * A builder for a BigDecimal based {@link NumberField}.
  */
-public interface BigDecimalFieldBuilder extends DecimalFieldBuilder<BigDecimal, NumberField<BigDecimal>, BigDecimalFieldBuilder> {}
+public interface BigDecimalFieldBuilder extends DecimalFieldBuilder<BigDecimal, BigDecimalFieldBuilder> {}

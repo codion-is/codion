@@ -8,10 +8,10 @@ import is.codion.swing.common.ui.component.textfield.NumberField;
 /**
  * Builds a NumberField descendant
  * @param <T> the value type
- * @param <C> the number field type
  * @param <B> the builder type
  */
-public interface NumberFieldBuilder<T extends Number, C extends NumberField<T>, B extends NumberFieldBuilder<T, C, B>> extends TextFieldBuilder<T, C, B> {
+public interface NumberFieldBuilder<T extends Number, B extends NumberFieldBuilder<T, B>>
+        extends TextFieldBuilder<T, NumberField<T>, B> {
 
   /**
    * @param minimumValue the minimum value

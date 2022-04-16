@@ -9,7 +9,7 @@ import is.codion.swing.common.ui.component.textfield.NumberField;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double, NumberField<Double>, DoubleFieldBuilder>
+final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double, DoubleFieldBuilder>
         implements DoubleFieldBuilder {
 
   private int maximumFractionDigits = -1;

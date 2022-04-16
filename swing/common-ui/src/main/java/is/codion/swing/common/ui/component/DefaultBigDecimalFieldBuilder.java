@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal, NumberField<BigDecimal>, BigDecimalFieldBuilder>
+final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal, BigDecimalFieldBuilder>
         implements BigDecimalFieldBuilder {
 
   private int maximumFractionDigits = -1;

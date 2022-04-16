@@ -8020,3 +8020,4 @@
   FieldFormatter removed
   IntegerField, DoubleField, LongField and BigDecimal field removed, factory methods added to NumberField, related refactoring
   NumberField.getNumber(), setNumber() and setRange() renamed getValue(), setValue() and setValueRange() respectively
+  NumberFieldBuilder simplified, now that NumberField is final

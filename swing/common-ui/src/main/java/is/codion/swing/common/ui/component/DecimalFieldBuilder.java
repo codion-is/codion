@@ -8,8 +8,8 @@ import is.codion.swing.common.ui.component.textfield.NumberField;
 /**
  * A builder for a decimal based {@link NumberField}.
  */
-public interface DecimalFieldBuilder<T extends Number, C extends NumberField<T>, B extends DecimalFieldBuilder<T, C, B>>
-        extends NumberFieldBuilder<T, C, B> {
+public interface DecimalFieldBuilder<T extends Number, B extends DecimalFieldBuilder<T, B>>
+        extends NumberFieldBuilder<T, B> {
 
     /**
    * @param maximumFractionDigits the maximum fraction digits

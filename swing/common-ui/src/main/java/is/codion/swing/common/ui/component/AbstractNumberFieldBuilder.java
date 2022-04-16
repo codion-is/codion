@@ -8,8 +8,8 @@ import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import java.text.NumberFormat;
 
-abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberField<T>, B extends NumberFieldBuilder<T, C, B>>
-        extends DefaultTextFieldBuilder<T, C, B> implements NumberFieldBuilder<T, C, B> {
+abstract class AbstractNumberFieldBuilder<T extends Number, B extends NumberFieldBuilder<T, B>>
+        extends DefaultTextFieldBuilder<T, NumberField<T>, B> implements NumberFieldBuilder<T, B> {
 
   private Number maximumValue;
   private Number minimumValue;
@@ -52,9 +52,9 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
   }
 
   @Override
-  protected final C createTextField() {
+  protected final NumberField<T> createTextField() {
     NumberFormat format = cloneFormat((NumberFormat) getFormat());
-    C numberField = createNumberField(format);
+    NumberField<T> numberField = createNumberField(format);
     numberField.setMinimumValue(minimumValue);
     numberField.setMaximumValue(maximumValue);
     if (groupingSeparator != 0) {
@@ -67,10 +67,10 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
     return numberField;
   }
 
-  protected abstract C createNumberField(NumberFormat format);
+  protected abstract NumberField<T> createNumberField(NumberFormat format);
 
   @Override
-  protected final void setInitialValue(C component, T initialValue) {
+  protected final void setInitialValue(NumberField<T> component, T initialValue) {
     component.setValue(initialValue);
   }
 

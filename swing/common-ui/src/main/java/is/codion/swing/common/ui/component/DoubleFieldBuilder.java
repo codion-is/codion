@@ -8,4 +8,4 @@ import is.codion.swing.common.ui.component.textfield.NumberField;
 /**
  * A builder for a Double based {@link NumberField}.
  */
-public interface DoubleFieldBuilder extends DecimalFieldBuilder<Double, NumberField<Double>, DoubleFieldBuilder> {}
+public interface DoubleFieldBuilder extends DecimalFieldBuilder<Double, DoubleFieldBuilder> {}

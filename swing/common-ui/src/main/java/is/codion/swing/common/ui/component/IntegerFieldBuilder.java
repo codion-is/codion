@@ -8,4 +8,4 @@ import is.codion.swing.common.ui.component.textfield.NumberField;
 /**
  * A builder for a Integer based {@link NumberField}.
  */
-public interface IntegerFieldBuilder extends NumberFieldBuilder<Integer, NumberField<Integer>, IntegerFieldBuilder> {}
+public interface IntegerFieldBuilder extends NumberFieldBuilder<Integer, IntegerFieldBuilder> {}
