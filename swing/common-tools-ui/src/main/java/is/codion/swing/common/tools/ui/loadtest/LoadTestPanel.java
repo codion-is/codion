@@ -71,9 +71,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private static final double RESIZE_WEIGHT = 0.8;
 
   private final LoadTest<T> loadTestModel;
-
   private final JPanel scenarioBase = new JPanel(Layouts.gridLayout(0, 1));
-  private final JPanel pluginPanel;
   private final ItemRandomizerPanel<UsageScenario<T>> scenarioPanel;
 
   static {
@@ -89,18 +87,8 @@ public final class LoadTestPanel<T> extends JPanel {
    * @param loadTestModel the LoadTestModel to base this panel on
    */
   public LoadTestPanel(LoadTest<T> loadTestModel) {
-    this(loadTestModel, null);
-  }
-
-  /**
-   * Constructs a new LoadTestPanel.
-   * @param loadTestModel the LoadTestModel to base this panel on
-   * @param pluginPanel a panel to add as a plugin panel
-   */
-  public LoadTestPanel(LoadTest<T> loadTestModel, JPanel pluginPanel) {
     requireNonNull(loadTestModel, "loadTestModel");
     this.loadTestModel = loadTestModel;
-    this.pluginPanel = pluginPanel;
     this.scenarioPanel = initializeScenarioPanel();
     initializeUI();
   }
@@ -145,45 +133,25 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private void initializeUI() {
-    JPanel chartBase = initializeChartPanel();
-    JPanel activityPanel = initializeActivityPanel();
-    JPanel applicationPanel = initializeApplicationPanel();
-    JPanel userBase = initializeUserPanel();
-    JPanel chartControlPanel = initializeChartControlPanel();
-
-    JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout()
-            .rowsColumns(5, 1)
-            .fixColumnWidths(true)
-            .build());
-    controlPanel.add(applicationPanel);
-    controlPanel.add(activityPanel);
-    controlPanel.add(scenarioPanel);
-    controlPanel.add(userBase);
-    controlPanel.add(chartControlPanel);
-
-    JPanel controlBase = new JPanel(new BorderLayout());
-    controlBase.add(controlPanel, BorderLayout.NORTH);
-
-    setLayout(new BorderLayout());
-    add(controlBase, BorderLayout.WEST);
-    if (pluginPanel != null) {
-      JTabbedPane tabPanel = new JTabbedPane();
-      tabPanel.addTab("Load test", chartBase);
-      tabPanel.addTab("Plugins", pluginPanel);
-      add(tabPanel, BorderLayout.CENTER);
-    }
-    else {
-      add(chartBase, BorderLayout.CENTER);
-    }
+    setLayout(Layouts.borderLayout());
+    add(Components.panel(new BorderLayout())
+            .add(Components.panel(Layouts.flexibleGridLayout(5, 1))
+                    .add(initializeApplicationPanel())
+                    .add(initializeActivityPanel())
+                    .add(scenarioPanel)
+                    .add(initializeUserPanel())
+                    .add(initializeChartControlPanel())
+                    .build(), BorderLayout.NORTH)
+            .build(), BorderLayout.WEST);
+    add(initializeChartPanel(), BorderLayout.CENTER);
     add(initializeSouthPanel(), BorderLayout.SOUTH);
   }
 
   private static JPanel initializeSouthPanel() {
-    JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
-    southPanel.add(new JLabel("Memory usage:"));
-    southPanel.add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS));
-
-    return southPanel;
+    return Components.panel(Layouts.flowLayout(FlowLayout.TRAILING))
+            .add(new JLabel("Memory usage:"))
+            .add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS))
+            .build();
   }
 
   private ItemRandomizerPanel<UsageScenario<T>> initializeScenarioPanel() {
@@ -197,83 +165,72 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeUserPanel() {
     User user = loadTestModel.getUser();
     JTextField usernameField = Components.textField()
-            .columns(LARGE_TEXT_FIELD_COLUMNS)
             .initialValue(user.getUsername())
+            .columns(LARGE_TEXT_FIELD_COLUMNS)
             .build();
-    JPasswordField passwordField = new JPasswordField(String.valueOf(user.getPassword()));
-    passwordField.setColumns(LARGE_TEXT_FIELD_COLUMNS);
+    JPasswordField passwordField = Components.passwordField()
+            .initialValue(String.valueOf(user.getPassword()))
+            .columns(LARGE_TEXT_FIELD_COLUMNS)
+            .build();
     ActionListener userInfoListener = e -> loadTestModel.setUser(User.user(usernameField.getText(), passwordField.getPassword()));
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
-    JPanel userBase = new JPanel(Layouts.flexibleGridLayout()
-            .rowsColumns(2, 2)
-            .fixRowHeights(true)
-            .fixedRowHeight(TextComponents.getPreferredTextFieldHeight())
-            .build());
-    userBase.setBorder(BorderFactory.createTitledBorder("User"));
 
-    userBase.add(new JLabel("Username"));
-    userBase.add(usernameField);
-    userBase.add(new JLabel("Password"));
-    userBase.add(passwordField);
-
-    return userBase;
+    return Components.panel(Layouts.flexibleGridLayout(2, 2))
+            .border(BorderFactory.createTitledBorder("User"))
+            .add(new JLabel("Username"))
+            .add(usernameField)
+            .add(new JLabel("Password"))
+            .add(passwordField)
+            .build();
   }
 
   private JPanel initializeApplicationPanel() {
-    JPanel applicationCountPanel = new JPanel(Layouts.borderLayout());
-    applicationCountPanel.add(initializeApplicationCountButtonPanel(), BorderLayout.WEST);
-    applicationCountPanel.add(Components.integerField()
-            .horizontalAlignment(SwingConstants.CENTER)
-            .linkedValueObserver(loadTestModel.applicationCountObserver())
-            .build(), BorderLayout.CENTER);
-    applicationCountPanel.add(Components.integerSpinner(loadTestModel.getApplicationBatchSizeValue())
-            .editable(false)
-            .columns(SMALL_TEXT_FIELD_COLUMNS)
-            .toolTipText("Application batch size")
-            .build(), BorderLayout.EAST);
-
-    JPanel applicationPanel = new JPanel(Layouts.borderLayout());
-    applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
-    applicationPanel.add(applicationCountPanel, BorderLayout.NORTH);
-
-    return applicationPanel;
+    return Components.panel(Layouts.borderLayout())
+            .border(BorderFactory.createTitledBorder("Applications"))
+            .add(Components.panel(Layouts.borderLayout())
+                    .add(initializeApplicationCountButtonPanel(), BorderLayout.WEST)
+                    .add(Components.integerField()
+                            .editable(false)
+                            .horizontalAlignment(SwingConstants.CENTER)
+                            .linkedValueObserver(loadTestModel.applicationCountObserver())
+                            .build(), BorderLayout.CENTER)
+                    .add(Components.integerSpinner(loadTestModel.getApplicationBatchSizeValue())
+                            .editable(false)
+                            .columns(SMALL_TEXT_FIELD_COLUMNS)
+                            .toolTipText("Application batch size")
+                            .build(), BorderLayout.EAST)
+                    .build(), BorderLayout.NORTH)
+            .build();
   }
 
   private JPanel initializeApplicationCountButtonPanel() {
-    JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 0, 0));
-    buttonPanel.add(initializeAddRemoveApplicationButton(false));
-    buttonPanel.add(initializeAddRemoveApplicationButton(true));
-
-    return buttonPanel;
+    return Components.panel(new GridLayout(1, 2, 0, 0))
+            .add(initializeAddRemoveApplicationButton(false))
+            .add(initializeAddRemoveApplicationButton(true))
+            .build();
   }
 
   private JButton initializeAddRemoveApplicationButton(boolean add) {
-    JButton button = Control.builder(add ? loadTestModel::addApplicationBatch : loadTestModel::removeApplicationBatch)
-            .caption(add ? "+" : "-")
-            .description(add ? "Add application batch" : "Remove application batch")
-            .build()
-            .createButton();
-    button.setPreferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
-    button.setMargin(new Insets(0, 0, 0, 0));
-
-    return button;
+    return Components.button(Control.builder(add ? loadTestModel::addApplicationBatch : loadTestModel::removeApplicationBatch)
+                    .caption(add ? "+" : "-")
+                    .description(add ? "Add application batch" : "Remove application batch")
+                    .build())
+            .preferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE)
+            .margin(new Insets(0, 0, 0, 0))
+            .build();
   }
 
   private JPanel initializeChartControlPanel() {
-    JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout()
-            .rowsColumns(1, 2)
-            .fixRowHeights(true)
-            .build());
-    controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(Components.checkBox(loadTestModel.getCollectChartDataState())
-            .caption("Collect chart data")
-            .build());
-    controlPanel.add(new JButton(Control.builder(loadTestModel::resetChartData)
-            .caption("Reset")
-            .build()));
-
-    return controlPanel;
+    return Components.panel(Layouts.flexibleGridLayout(1, 2))
+            .border(BorderFactory.createTitledBorder("Charts"))
+            .add(Components.checkBox(loadTestModel.getCollectChartDataState())
+                    .caption("Collect chart data")
+                    .build())
+            .add(Control.builder(loadTestModel::resetChartData)
+                    .caption("Reset")
+                    .build().createButton())
+            .build();
   }
 
   private JPanel initializeChartPanel() {
@@ -344,11 +301,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeActivityPanel() {
-    return Components.panel(Layouts.flexibleGridLayout()
-                    .rowsColumns(4, 2)
-                    .fixRowHeights(true)
-                    .fixedRowHeight(TextComponents.getPreferredTextFieldHeight())
-                    .build())
+    return Components.panel(Layouts.flexibleGridLayout(4, 2))
             .add(new JLabel("Max. think time", SwingConstants.CENTER))
             .add(Components.integerSpinner(loadTestModel.getMaximumThinkTimeValue())
                     .stepSize(SPINNER_STEP_SIZE)

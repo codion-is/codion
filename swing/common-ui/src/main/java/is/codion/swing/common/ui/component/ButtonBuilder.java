@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 
 /**
@@ -40,6 +41,12 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
    * @return this builder instance
    */
   B icon(Icon icon);
+
+  /**
+   * @param insets the margin insets
+   * @return this builder instance
+   */
+  B margin(Insets insets);
 
   /**
    * @param action the button action

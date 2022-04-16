@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
@@ -26,14 +27,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.text.JTextComponent;
+import javax.swing.text.BadLocationException;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
@@ -53,17 +53,30 @@ final class LoginPanel extends JPanel {
   private static final String PASSWORD_CARD = "password";
   private static final String PROGRESS_CARD = "progress";
 
-  private final JTextField usernameField = new JTextField(DEFAULT_FIELD_COLUMNS);
-  private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
+  private final JTextField usernameField;
+  private final JPasswordField passwordField;
   private final Value<User> userValue = Value.value();
-  private final LoginDialogBuilder.LoginValidator loginValidator;
+  private final LoginValidator loginValidator;
   private final ImageIcon icon;
   private final Control okControl;
   private final Control cancelControl;
   private final State validatingState = State.state();
 
-  LoginPanel(User defaultUser, LoginDialogBuilder.LoginValidator loginValidator,
-             ImageIcon icon, JComponent southComponent) {
+  LoginPanel(User defaultUser, LoginValidator loginValidator, ImageIcon icon, JComponent southComponent) {
+    this.usernameField = Components.textField()
+            .initialValue(defaultUser == null ? "" : defaultUser.getUsername())
+            .columns(DEFAULT_FIELD_COLUMNS)
+            .selectAllOnFocusGained(true)
+            .enabledState(validatingState.getReversedObserver())
+            .build();
+    this.passwordField = Components.passwordField()
+            .initialValue(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()))
+            .columns(DEFAULT_FIELD_COLUMNS)
+            .selectAllOnFocusGained(true)
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_BACK_SPACE)
+                    .modifiers(InputEvent.CTRL_DOWN_MASK)
+                    .action(Control.actionControl(this::clearPasswordField)))
+            .build();
     this.icon = icon;
     this.okControl = Control.builder(this::onOkPressed)
             .caption(Messages.get(Messages.OK))
@@ -76,7 +89,7 @@ final class LoginPanel extends JPanel {
             .enabledState(validatingState.getReversedObserver())
             .build();
     this.loginValidator = requireNonNull(loginValidator);
-    initializeUI(defaultUser, southComponent);
+    initializeUI(southComponent);
   }
 
   User getUser() {
@@ -91,19 +104,7 @@ final class LoginPanel extends JPanel {
     return cancelControl;
   }
 
-  private void initializeUI(User defaultUser, JComponent southComponent) {
-    usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
-    usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
-    usernameField.addFocusListener(new SelectAllListener(usernameField));
-    Utilities.linkToEnabledState(validatingState.getReversedObserver(), usernameField);
-    passwordField.setText(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()));
-    passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
-    passwordField.addFocusListener(new SelectAllListener(passwordField));
-    KeyEvents.builder(KeyEvent.VK_BACK_SPACE)
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
-            .action(Control.control(() -> passwordField.getDocument().remove(0, passwordField.getCaretPosition())))
-            .enable(passwordField);
-
+  private void initializeUI(JComponent southComponent) {
     JProgressBar progressBar = new JProgressBar();
     progressBar.setPreferredSize(passwordField.getPreferredSize());
     progressBar.setIndeterminate(true);
@@ -115,10 +116,7 @@ final class LoginPanel extends JPanel {
     validatingState.addDataListener(validating ->
             passwordProgressLayout.show(passwordProgressPanel, validating ? PROGRESS_CARD : PASSWORD_CARD));
 
-    JPanel credentialsPanel = Components.panel(Layouts.flexibleGridLayout()
-                    .rowsColumns(2, 2)
-                    .fixRowHeights(true)
-                    .build())
+    JPanel credentialsPanel = Components.panel(Layouts.flexibleGridLayout(2, 2))
             .add(new JLabel(Messages.get(Messages.USERNAME), SwingConstants.RIGHT))
             .add(usernameField)
             .add(new JLabel(Messages.get(Messages.PASSWORD), SwingConstants.RIGHT))
@@ -181,22 +179,8 @@ final class LoginPanel extends JPanel {
     Windows.getParentDialog(this).ifPresent(JDialog::dispose);
   }
 
-  private static final class SelectAllListener extends FocusAdapter {
-
-    private final JTextComponent textComponent;
-
-    private SelectAllListener(JTextComponent textComponent) {
-      this.textComponent = textComponent;
-    }
-
-    @Override
-    public void focusGained(FocusEvent e) {
-      textComponent.selectAll();
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-      textComponent.select(0, 0);
-    }
+  private void clearPasswordField(ActionEvent actionEvent) throws BadLocationException {
+    JPasswordField passwordField = (JPasswordField) actionEvent.getSource();
+    passwordField.getDocument().remove(0, passwordField.getCaretPosition());
   }
 }
