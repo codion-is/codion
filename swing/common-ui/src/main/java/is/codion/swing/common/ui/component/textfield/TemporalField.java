@@ -211,6 +211,22 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
       return null;
     }
+
+    /**
+     * Parses the given date/time pattern and returns a mask string that can be used in JFormattedFields.
+     * This only works with plain numerical date formats.
+     * @param dateTimePattern the format pattern for which to create the mask
+     * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
+     */
+    private static String createMask(String dateTimePattern) {
+      requireNonNull(dateTimePattern, "dateTimePattern");
+      StringBuilder stringBuilder = new StringBuilder(dateTimePattern.length());
+      for (Character character : dateTimePattern.toCharArray()) {
+        stringBuilder.append(Character.isLetter(character) ? "#" : character);
+      }
+
+      return stringBuilder.toString();
+    }
   }
 
   private static MaskFormatter initializeFormatter(String mask) {
@@ -225,21 +241,5 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     catch (ParseException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * Parses the given date/time pattern and returns a mask string that can be used in JFormattedFields.
-   * This only works with plain numerical date formats.
-   * @param dateTimePattern the format pattern for which to create the mask
-   * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
-   */
-  private static String createMask(String dateTimePattern) {
-    requireNonNull(dateTimePattern, "dateTimePattern");
-    StringBuilder stringBuilder = new StringBuilder(dateTimePattern.length());
-    for (Character character : dateTimePattern.toCharArray()) {
-      stringBuilder.append(Character.isLetter(character) ? "#" : character);
-    }
-
-    return stringBuilder.toString();
   }
 }
