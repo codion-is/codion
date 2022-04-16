@@ -96,7 +96,7 @@ public final class EventStateValue {
             Components.integerField(value)
                     .build();
 
-    integerField.setNumber(3);//linked value is now 3
+    integerField.setValue(3);//linked value is now 3
     // end::value[]
   }
 

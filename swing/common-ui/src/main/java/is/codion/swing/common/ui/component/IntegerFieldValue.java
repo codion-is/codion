@@ -9,23 +9,23 @@ final class IntegerFieldValue extends AbstractTextComponentValue<Integer, Number
 
   IntegerFieldValue(NumberField<Integer> integerField, boolean nullable, UpdateOn updateOn) {
     super(integerField, nullable ? null : 0, updateOn);
-    if (!isNullable() && integerField.getNumber() == null) {
-      integerField.setNumber(0);
+    if (!isNullable() && integerField.getValue() == null) {
+      integerField.setValue(0);
     }
   }
 
   @Override
   protected Integer getComponentValue(NumberField<Integer> component) {
-    Number number = component.getNumber();
-    if (number == null) {
+    Number value = component.getValue();
+    if (value == null) {
       return isNullable() ? null : 0;
     }
 
-    return number.intValue();
+    return value.intValue();
   }
 
   @Override
   protected void setComponentValue(NumberField<Integer> component, Integer value) {
-    component.setNumber(value);
+    component.setValue(value);
   }
 }

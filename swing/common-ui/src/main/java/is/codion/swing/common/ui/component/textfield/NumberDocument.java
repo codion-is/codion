@@ -39,11 +39,11 @@ class NumberDocument<T extends Number> extends PlainDocument {
     return ((NumberParser<T>) getDocumentFilter().getParser()).getFormat();
   }
 
-  protected final void setNumber(T number) {
-    setText(number == null ? "" : getFormat().format(number));
+  protected final void setValue(T value) {
+    setText(value == null ? "" : getFormat().format(value));
   }
 
-  protected final T getNumber() {
+  protected final T getValue() {
     try {
       return getDocumentFilter().getParser().parse(getText(0, getLength())).getValue();
     }
@@ -75,9 +75,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
     DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
     symbols.setDecimalSeparator(decimalSeparator);
     symbols.setGroupingSeparator(groupingSeparator);
-    T number = getNumber();
+    T number = getValue();
     ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
-    setNumber(number);
+    setValue(number);
   }
 
   void setDecimalSeparator(char decimalSeparator) {

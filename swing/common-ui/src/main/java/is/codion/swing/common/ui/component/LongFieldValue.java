@@ -9,23 +9,23 @@ final class LongFieldValue extends AbstractTextComponentValue<Long, NumberField<
 
   LongFieldValue(NumberField<Long> longField, boolean nullable, UpdateOn updateOn) {
     super(longField, nullable ? null : 0L, updateOn);
-    if (!isNullable() && longField.getNumber() == null) {
-      longField.setNumber(0L);
+    if (!isNullable() && longField.getValue() == null) {
+      longField.setValue(0L);
     }
   }
 
   @Override
   protected Long getComponentValue(NumberField<Long> component) {
-    Number number = component.getNumber();
-    if (number == null) {
+    Number value = component.getValue();
+    if (value == null) {
       return isNullable() ? null : 0L;
     }
 
-    return number.longValue();
+    return value.longValue();
   }
 
   @Override
   protected void setComponentValue(NumberField<Long> component, Long value) {
-    component.setNumber(value);
+    component.setValue(value);
   }
 }

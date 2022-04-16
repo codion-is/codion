@@ -43,7 +43,7 @@ public final class NumberField<T extends Number> extends JTextField {
       addKeyListener(new GroupingSkipAdapter());
     }
     document.getFormat().setGroupingUsed(GROUPING_USED.get());
-    document.addDocumentListener((DocumentAdapter) e -> value.set(document.getNumber()));
+    document.addDocumentListener((DocumentAdapter) e -> value.set(document.getValue()));
   }
 
   @Override
@@ -63,27 +63,27 @@ public final class NumberField<T extends Number> extends JTextField {
   }
 
   /**
-   * @param number the number to display in this field
+   * @param value the value to display in this field
    */
-  public void setNumber(T number) {
-    getTypedDocument().setNumber(number);
+  public void setValue(T value) {
+    getTypedDocument().setValue(value);
   }
 
   /**
-   * @return the number being displayed in this field
+   * @return the value being displayed in this field
    */
-  public T getNumber() {
-    return getTypedDocument().getNumber();
+  public T getValue() {
+    return getTypedDocument().getValue();
   }
 
   /**
    * Sets the range of values this field should allow
-   * @param min the minimum value
-   * @param max the maximum value
+   * @param minimumValue the minimum value
+   * @param maximumValue the maximum value
    */
-  public void setRange(Number min, Number max) {
-    getTypedDocument().getDocumentFilter().setMinimumValue(min);
-    getTypedDocument().getDocumentFilter().setMaximumValue(max);
+  public void setValueRange(Number minimumValue, Number maximumValue) {
+    getTypedDocument().getDocumentFilter().setMinimumValue(minimumValue);
+    getTypedDocument().getDocumentFilter().setMaximumValue(maximumValue);
   }
 
   /**

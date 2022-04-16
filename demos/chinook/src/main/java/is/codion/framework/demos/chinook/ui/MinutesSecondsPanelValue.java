@@ -31,13 +31,13 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
   @Override
   protected Integer getComponentValue(MinutesSecondsPanel component) {
-    return getMilliseconds(component.minutesField.getNumber(), component.secondsField.getNumber());
+    return getMilliseconds(component.minutesField.getValue(), component.secondsField.getValue());
   }
 
   @Override
   protected void setComponentValue(MinutesSecondsPanel component, Integer milliseconds) {
-    component.minutesField.setNumber(getMinutes(milliseconds));
-    component.secondsField.setNumber(getSeconds(milliseconds));
+    component.minutesField.setValue(getMinutes(milliseconds));
+    component.secondsField.setValue(getSeconds(milliseconds));
   }
 
   static final class MinutesSecondsPanel extends JPanel {

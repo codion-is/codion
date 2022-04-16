@@ -9,23 +9,23 @@ final class DoubleFieldValue extends AbstractTextComponentValue<Double, NumberFi
 
   DoubleFieldValue(NumberField<Double> doubleField, boolean nullable, UpdateOn updateOn) {
     super(doubleField, nullable ? null : 0d, updateOn);
-    if (!isNullable() && doubleField.getNumber() == null) {
-      doubleField.setNumber(0d);
+    if (!isNullable() && doubleField.getValue() == null) {
+      doubleField.setValue(0d);
     }
   }
 
   @Override
   protected Double getComponentValue(NumberField<Double> component) {
-    Number number = component.getNumber();
-    if (number == null) {
+    Number value = component.getValue();
+    if (value == null) {
       return isNullable() ? null : 0d;
     }
 
-    return number.doubleValue();
+    return value.doubleValue();
   }
 
   @Override
   protected void setComponentValue(NumberField<Double> component, Double value) {
-    component.setNumber(value);
+    component.setValue(value);
   }
 }

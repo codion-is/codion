@@ -71,7 +71,7 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
 
   @Override
   protected final void setInitialValue(C component, T initialValue) {
-    component.setNumber(initialValue);
+    component.setValue(initialValue);
   }
 
   private static NumberFormat cloneFormat(NumberFormat format) {

@@ -15,11 +15,11 @@ final class BigDecimalFieldValue extends AbstractTextComponentValue<BigDecimal, 
 
   @Override
   protected BigDecimal getComponentValue(NumberField<BigDecimal> component) {
-    return component.getNumber();
+    return component.getValue();
   }
 
   @Override
   protected void setComponentValue(NumberField<BigDecimal> component, BigDecimal value) {
-    component.setNumber(value);
+    component.setValue(value);
   }
 }
