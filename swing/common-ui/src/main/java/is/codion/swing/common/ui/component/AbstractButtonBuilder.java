@@ -8,7 +8,10 @@ import is.codion.common.value.Value;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
+
+import static java.util.Objects.requireNonNull;
 
 abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>>
         extends AbstractComponentBuilder<T, C, B> implements ButtonBuilder<T, C, B> {
@@ -17,6 +20,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private int mnemonic;
   private boolean includeCaption = true;
   private Icon icon;
+  private Insets insets;
   private Action action;
   private ActionListener actionListener;
 
@@ -45,6 +49,12 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   @Override
   public final B icon(Icon icon) {
     this.icon = icon;
+    return (B) this;
+  }
+
+  @Override
+  public final B margin(Insets insets) {
+    this.insets = requireNonNull(insets);
     return (B) this;
   }
 
@@ -80,6 +90,9 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     }
     if (icon != null) {
       button.setIcon(icon);
+    }
+    if (insets != null) {
+      button.setMargin(insets);
     }
 
     return button;

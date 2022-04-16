@@ -8059,3 +8059,7 @@
   BigDecimaFieldBuilder, DoubleFieldBuilder, IntegerFieldBuilder and LongFieldBuilder removed
   NumberFieldBuilder.range() renamed valueRange()
   NumberField bug fixed, no longer sets grouping used, was overwriting the value in the format, NumberField.GROUPING_USED configuration value removed
+  PasswordFieldBuilder added along with Components.passwordField()
+  LoginPanel refactored
+  ButtonBuilder.margin() added
+  LoadTestPanel UI refactored

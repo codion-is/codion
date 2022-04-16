@@ -558,6 +558,21 @@ public final class Components {
   }
 
   /**
+   * @return a new JPasswordField
+   */
+  public static PasswordFieldBuilder passwordField() {
+    return new DefaultPasswordFieldBuilder(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a new JPasswordField
+   */
+  public static PasswordFieldBuilder passwordField(Value<String> linkedValue) {
+    return new DefaultPasswordFieldBuilder(requireNonNull(linkedValue));
+  }
+
+  /**
    * @return a builder for a Double based JSpinner
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner() {

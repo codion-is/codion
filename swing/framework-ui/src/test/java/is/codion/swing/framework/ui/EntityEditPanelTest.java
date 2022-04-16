@@ -8,7 +8,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import org.junit.jupiter.api.Test;
@@ -80,7 +80,7 @@ public final class EntityEditPanelTest {
     protected void initializeUI() {
       setInitialFocusAttribute(TestDomain.EMP_NAME);
 
-      setLayout(FlexibleGridLayout.builder().rowsColumns(3, 3).fixRowHeights(true).build());
+      setLayout(Layouts.flexibleGridLayout(3, 3));
 
       addInputPanel(TestDomain.EMP_NAME);
       addInputPanel(TestDomain.EMP_JOB);

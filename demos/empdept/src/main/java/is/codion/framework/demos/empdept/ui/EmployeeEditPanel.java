@@ -48,10 +48,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createLocalDateField(Employee.HIREDATE)
             .dateTimeFormatter(hiredateFormatter);
 
-    setLayout(flexibleGridLayout()
-            .rowsColumns(3, 3)
-            .fixRowHeights(true)
-            .build());
+    setLayout(flexibleGridLayout(3, 3));
 
     addInputPanel(Employee.NAME);
     addInputPanel(Employee.JOB);
