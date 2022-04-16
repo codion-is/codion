@@ -14,7 +14,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.DefaultComboBoxBuilder;
 import is.codion.swing.common.ui.component.TextFieldBuilder;
 import is.codion.swing.common.ui.component.combobox.Completion;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -86,12 +86,12 @@ public final class EntityComboBox extends JComboBox<Entity> {
   }
 
   /**
-   * Creates a {@link TextFieldBuilder} returning a {@link IntegerField} which value is bound to the selected value in this combo box
+   * Creates a {@link TextFieldBuilder} returning a {@link NumberField} which value is bound to the selected value in this combo box
    * @param attribute the attribute
    * @param <B> the builder type
-   * @return a {@link IntegerField} builder bound to the selected value
+   * @return a {@link NumberField} builder bound to the selected value
    */
-  public <B extends TextFieldBuilder<Integer, IntegerField, B>> TextFieldBuilder<Integer, IntegerField, B> integerFieldSelector(
+  public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerFieldSelector(
           Attribute<Integer> attribute) {
     requireNonNull(attribute);
     return (B) Components.integerField(getModel().selectorValue(attribute))
@@ -100,13 +100,13 @@ public final class EntityComboBox extends JComboBox<Entity> {
   }
 
   /**
-   * Creates a {@link TextFieldBuilder} returning a {@link IntegerField} which value is bound to the selected value in this combo box
+   * Creates a {@link TextFieldBuilder} returning a {@link NumberField} which value is bound to the selected value in this combo box
    * @param attribute the attribute
    * @param finder responsible for finding the item to select by value
    * @param <B> the builder type
-   * @return a {@link IntegerField} builder bound to the selected value
+   * @return a {@link NumberField} builder bound to the selected value
    */
-  public <B extends TextFieldBuilder<Integer, IntegerField, B>> TextFieldBuilder<Integer, IntegerField, B> integerFieldSelector(
+  public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerFieldSelector(
           Attribute<Integer> attribute, EntityComboBoxModel.Finder<Integer> finder) {
     requireNonNull(attribute);
     requireNonNull(finder);

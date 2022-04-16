@@ -4,13 +4,13 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.textfield.BigDecimalField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal, BigDecimalField, BigDecimalFieldBuilder>
+final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal, NumberField<BigDecimal>, BigDecimalFieldBuilder>
         implements BigDecimalFieldBuilder {
 
   private int maximumFractionDigits = -1;
@@ -36,8 +36,8 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   }
 
   @Override
-  protected BigDecimalField createNumberField(NumberFormat format) {
-    BigDecimalField field = format == null ? new BigDecimalField() : new BigDecimalField((DecimalFormat) format);
+  protected NumberField<BigDecimal> createNumberField(NumberFormat format) {
+    NumberField<BigDecimal> field = format == null ? NumberField.bigDecimalField() : NumberField.bigDecimalField((DecimalFormat) format);
     if (decimalSeparator != 0) {
       field.setDecimalSeparator(decimalSeparator);
     }
@@ -49,7 +49,7 @@ final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<Big
   }
 
   @Override
-  protected ComponentValue<BigDecimal, BigDecimalField> createComponentValue(BigDecimalField component) {
+  protected ComponentValue<BigDecimal, NumberField<BigDecimal>> createComponentValue(NumberField<BigDecimal> component) {
     return new BigDecimalFieldValue(component, true, updateOn);
   }
 }

@@ -10,7 +10,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -92,11 +92,11 @@ public final class EventStateValue {
 
     value.set(2);
 
-    IntegerField integerField =
+    NumberField<Integer> integerField =
             Components.integerField(value)
                     .build();
 
-    integerField.setInteger(3);//linked value is now 3
+    integerField.setNumber(3);//linked value is now 3
     // end::value[]
   }
 

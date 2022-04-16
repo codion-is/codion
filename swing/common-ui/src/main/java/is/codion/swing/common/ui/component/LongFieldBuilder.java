@@ -3,18 +3,9 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 /**
- * A builder {@link LongField}.
+ * A builder for a Long based {@link NumberField}.
  */
-public interface LongFieldBuilder extends NumberFieldBuilder<Long, LongField, LongFieldBuilder> {
-
-  /**
-   * Sets the allowed value range
-   * @param from the from value
-   * @param to the to value
-   * @return this builder instance
-   */
-  LongFieldBuilder range(long from, long to);
-}
+public interface LongFieldBuilder extends NumberFieldBuilder<Long, NumberField<Long>, LongFieldBuilder> {}

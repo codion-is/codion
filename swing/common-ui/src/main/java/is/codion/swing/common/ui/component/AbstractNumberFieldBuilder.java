@@ -11,8 +11,8 @@ import java.text.NumberFormat;
 abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberField<T>, B extends NumberFieldBuilder<T, C, B>>
         extends DefaultTextFieldBuilder<T, C, B> implements NumberFieldBuilder<T, C, B> {
 
-  private Double maximumValue;
-  private Double minimumValue;
+  private Number maximumValue;
+  private Number minimumValue;
   protected char groupingSeparator = 0;
   private boolean groupingUsed;
 
@@ -21,13 +21,20 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
   }
 
   @Override
-  public final B minimumValue(Double minimumValue) {
+  public final B range(Number minimumValue, Number maximumValue) {
+    minimumValue(minimumValue);
+    maximumValue(maximumValue);
+    return (B) this;
+  }
+
+  @Override
+  public final B minimumValue(Number minimumValue) {
     this.minimumValue = minimumValue;
     return (B) this;
   }
 
   @Override
-  public final B maximumValue(Double maximumValue) {
+  public final B maximumValue(Number maximumValue) {
     this.maximumValue = maximumValue;
     return (B) this;
   }
@@ -48,9 +55,8 @@ abstract class AbstractNumberFieldBuilder<T extends Number, C extends NumberFiel
   protected final C createTextField() {
     NumberFormat format = cloneFormat((NumberFormat) getFormat());
     C numberField = createNumberField(format);
-    if (minimumValue != null && maximumValue != null) {
-      numberField.setRange(Math.min(minimumValue, 0), maximumValue);
-    }
+    numberField.setMinimumValue(minimumValue);
+    numberField.setMaximumValue(maximumValue);
     if (groupingSeparator != 0) {
       numberField.setGroupingSeparator(groupingSeparator);
     }

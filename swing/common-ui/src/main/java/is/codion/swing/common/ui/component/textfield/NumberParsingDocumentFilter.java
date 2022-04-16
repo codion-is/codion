@@ -61,16 +61,19 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
     return parser;
   }
 
-  void setRange(double min, double max) {
-    rangeValidator.minimumValue = min;
-    rangeValidator.maximumValue = max;
+  void setMaximumValue(Number maximumValue) {
+    rangeValidator.maximumValue = maximumValue;
   }
 
-  double getMaximumValue() {
+  Number getMaximumValue() {
     return rangeValidator.maximumValue;
   }
 
-  double getMinimumValue() {
+  void setMinimumValue(Number minimumValue) {
+    rangeValidator.minimumValue = minimumValue;
+  }
+
+  Number getMinimumValue() {
     return rangeValidator.minimumValue;
   }
 
@@ -84,22 +87,26 @@ final class NumberParsingDocumentFilter<T extends Number> extends ValidationDocu
 
   private static final class NumberRangeValidator<T extends Number> implements Value.Validator<T> {
 
-    private double minimumValue = Double.NEGATIVE_INFINITY;
-    private double maximumValue = Double.POSITIVE_INFINITY;
+    private Number minimumValue;
+    private Number maximumValue;
 
     @Override
     public void validate(T value) {
-      if (!isWithinRange(value.doubleValue())) {
+      if (!isWithinRange(value)) {
         throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + " " + minimumValue + " - " + maximumValue);
       }
     }
 
-    /**
-     * @param value the value to check
-     * @return true if this value falls within the allowed range for this document
-     */
-    boolean isWithinRange(double value) {
-      return value >= minimumValue && value <= maximumValue;
+    boolean isWithinRange(T value) {
+      return value == null || (greaterThanMinimum(value) && lessThanMaximum(value));
+    }
+
+    private boolean greaterThanMinimum(T value) {
+      return minimumValue == null || value.doubleValue() >= minimumValue.doubleValue();
+    }
+
+    private boolean lessThanMaximum(T value) {
+      return maximumValue == null || value.doubleValue() <= maximumValue.doubleValue();
     }
   }
 }

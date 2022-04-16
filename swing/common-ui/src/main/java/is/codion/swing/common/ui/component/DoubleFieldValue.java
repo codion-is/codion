@@ -3,19 +3,19 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.textfield.DoubleField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
-final class DoubleFieldValue extends AbstractTextComponentValue<Double, DoubleField> {
+final class DoubleFieldValue extends AbstractTextComponentValue<Double, NumberField<Double>> {
 
-  DoubleFieldValue(DoubleField doubleField, boolean nullable, UpdateOn updateOn) {
+  DoubleFieldValue(NumberField<Double> doubleField, boolean nullable, UpdateOn updateOn) {
     super(doubleField, nullable ? null : 0d, updateOn);
-    if (!isNullable() && doubleField.getDouble() == null) {
-      doubleField.setDouble(0d);
+    if (!isNullable() && doubleField.getNumber() == null) {
+      doubleField.setNumber(0d);
     }
   }
 
   @Override
-  protected Double getComponentValue(DoubleField component) {
+  protected Double getComponentValue(NumberField<Double> component) {
     Number number = component.getNumber();
     if (number == null) {
       return isNullable() ? null : 0d;
@@ -25,7 +25,7 @@ final class DoubleFieldValue extends AbstractTextComponentValue<Double, DoubleFi
   }
 
   @Override
-  protected void setComponentValue(DoubleField component, Double value) {
+  protected void setComponentValue(NumberField<Double> component, Double value) {
     component.setNumber(value);
   }
 }

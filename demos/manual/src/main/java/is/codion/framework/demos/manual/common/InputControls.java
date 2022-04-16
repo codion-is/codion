@@ -12,10 +12,7 @@ import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.component.textfield.BigDecimalField;
-import is.codion.swing.common.ui.component.textfield.DoubleField;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
-import is.codion.swing.common.ui.component.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.common.ui.component.textfield.TemporalField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -194,7 +191,7 @@ public final class InputControls {
     // tag::integerField[]
     Value<Integer> integerValue = Value.value();
 
-    IntegerField integerField =
+    NumberField<Integer> integerField =
             Components.integerField(integerValue)
                     .range(0, 10_000)
                     .groupingUsed(false)
@@ -206,7 +203,7 @@ public final class InputControls {
     // tag::longField[]
     Value<Long> longValue = Value.value();
 
-    LongField longField =
+    NumberField<Long> longField =
             Components.longField(longValue)
                     .groupingUsed(true)
                     .build();
@@ -217,7 +214,7 @@ public final class InputControls {
     // tag::doubleField[]
     Value<Double> doubleValue = Value.value();
 
-    DoubleField doubleField =
+    NumberField<Double> doubleField =
             Components.doubleField(doubleValue)
                     .maximumFractionDigits(3)
                     .decimalSeparator('.')
@@ -229,7 +226,7 @@ public final class InputControls {
     // tag::bigDecimalField[]
     Value<BigDecimal> bigDecimalValue = Value.value();
 
-    BigDecimalField bigDecimalField =
+    NumberField<BigDecimal> bigDecimalField =
             Components.bigDecimalField(bigDecimalValue)
                     .maximumFractionDigits(2)
                     .groupingSeparator('.')
@@ -348,11 +345,11 @@ public final class InputControls {
 
   static void customTextFieldHorizontalAlignment() {
     // tag::customTextFieldHorizontalAlignment[]
-    ComponentValue<Integer, IntegerField> fieldValue =
+    ComponentValue<Integer, NumberField<Integer>> fieldValue =
             Components.integerField()
                     .buildComponentValue();
 
-    IntegerField horizontalAlignmentField = fieldValue.getComponent();
+    NumberField<Integer> horizontalAlignmentField = fieldValue.getComponent();
 
     Value<Integer> horizontalAlignmentValue =
             Value.propertyValue(horizontalAlignmentField, "horizontalAlignment",

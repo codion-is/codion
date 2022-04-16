@@ -4,12 +4,12 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.textfield.DoubleField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double, DoubleField, DoubleFieldBuilder>
+final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double, NumberField<Double>, DoubleFieldBuilder>
         implements DoubleFieldBuilder {
 
   private int maximumFractionDigits = -1;
@@ -35,15 +35,8 @@ final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double,
   }
 
   @Override
-  public DoubleFieldBuilder range(double from, double to) {
-    minimumValue(from);
-    maximumValue(to);
-    return this;
-  }
-
-  @Override
-  protected DoubleField createNumberField(NumberFormat format) {
-    DoubleField field = format == null ? new DoubleField() : new DoubleField((DecimalFormat) format);
+  protected NumberField<Double> createNumberField(NumberFormat format) {
+    NumberField<Double> field = format == null ? NumberField.doubleField() : NumberField.doubleField((DecimalFormat) format);
     if (decimalSeparator != 0) {
       field.setDecimalSeparator(decimalSeparator);
     }
@@ -55,7 +48,7 @@ final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double,
   }
 
   @Override
-  protected ComponentValue<Double, DoubleField> createComponentValue(DoubleField component) {
+  protected ComponentValue<Double, NumberField<Double>> createComponentValue(NumberField<Double> component) {
     return new DoubleFieldValue(component, true, updateOn);
   }
 }

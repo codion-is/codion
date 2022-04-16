@@ -12,8 +12,8 @@ import is.codion.common.user.User;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
 import is.codion.swing.common.ui.component.textfield.MemoryUsageField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -217,7 +217,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private void setUpdateInterval() {
-    IntegerField field = Components.integerField()
+    NumberField<Integer> field = Components.integerField()
             .initialValue(5)
             .columns(6)
             .minimumValue(1d)
@@ -230,7 +230,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     Dialogs.okCancelDialog(panel)
             .owner(this)
             .title("Update interval (s)")
-            .onOk(() -> getModel().setUpdateInterval(field.getInteger()))
+            .onOk(() -> getModel().setUpdateInterval(field.getNumber()))
             .show();
   }
 

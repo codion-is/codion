@@ -8,10 +8,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
-import is.codion.swing.common.ui.component.textfield.BigDecimalField;
-import is.codion.swing.common.ui.component.textfield.DoubleField;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
-import is.codion.swing.common.ui.component.textfield.LongField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.common.ui.component.textfield.TemporalField;
 import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.component.textfield.TextInputPanel;
@@ -61,7 +58,7 @@ public final class ComponentsTest {
   @Test
   void testDoubleLink() {
     Value<Long> value = Value.value();
-    ComponentValue<Long, LongField> componentValue = Components.longField(value)
+    ComponentValue<Long, NumberField<Long>> componentValue = Components.longField(value)
             .buildComponentValue();
     assertThrows(IllegalArgumentException.class, () -> componentValue.link(value));
   }
@@ -79,15 +76,15 @@ public final class ComponentsTest {
             .background(Color.BLACK)
             .linkedValue(value);
 
-    IntegerField component = builder.build();
-    ComponentValue<Integer, IntegerField> componentValue = builder.buildComponentValue();
+    NumberField<Integer> component = builder.build();
+    ComponentValue<Integer, NumberField<Integer>> componentValue = builder.buildComponentValue();
 
     assertSame(component, componentValue.getComponent());
 
     builder.clear();
 
-    IntegerField nextComponent = builder.build();
-    ComponentValue<Integer, IntegerField> nextComponentValue = builder.buildComponentValue();
+    NumberField<Integer> nextComponent = builder.build();
+    ComponentValue<Integer, NumberField<Integer>> nextComponentValue = builder.buildComponentValue();
 
     assertSame(nextComponent, nextComponentValue.getComponent());
 
@@ -96,15 +93,15 @@ public final class ComponentsTest {
 
     value.set(20);
 
-    assertEquals(20, component.getInteger());
-    assertEquals(20, nextComponent.getInteger());
+    assertEquals(20, component.getNumber());
+    assertEquals(20, nextComponent.getNumber());
     assertEquals(20, componentValue.get());
     assertEquals(20, nextComponentValue.get());
 
     nextComponentValue.set(25);
 
-    assertEquals(25, component.getInteger());
-    assertEquals(25, nextComponent.getInteger());
+    assertEquals(25, component.getNumber());
+    assertEquals(25, nextComponent.getNumber());
     assertEquals(25, componentValue.get());
     assertEquals(25, nextComponentValue.get());
 
@@ -118,7 +115,7 @@ public final class ComponentsTest {
   @Test
   void integerField() {
     Value<Integer> value = Value.value(42);
-    ComponentValue<Integer, IntegerField> componentValue = Components.integerField()
+    ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField()
             .range(0, 100)
             .font(Font.getFont("arial"))
             .minimumHeight(10)
@@ -133,7 +130,7 @@ public final class ComponentsTest {
   @Test
   void longField() {
     Value<Long> value = Value.value(42L);
-    ComponentValue<Long, LongField> componentValue = Components.longField()
+    ComponentValue<Long, NumberField<Long>> componentValue = Components.longField()
             .range(0, 100)
             .groupingSeparator('.')
             .maximumHeight(10)
@@ -146,7 +143,7 @@ public final class ComponentsTest {
   @Test
   void doubleField() {
     Value<Double> value = Value.value(42.2);
-    ComponentValue<Double, DoubleField> componentValue = Components.doubleField()
+    ComponentValue<Double, NumberField<Double>> componentValue = Components.doubleField()
             .range(0, 100)
             .maximumFractionDigits(2)
             .groupingSeparator('.')
@@ -161,7 +158,7 @@ public final class ComponentsTest {
   @Test
   void bigDecimalField() {
     Value<BigDecimal> value = Value.value(BigDecimal.valueOf(42.2));
-    ComponentValue<BigDecimal, BigDecimalField> componentValue = Components.bigDecimalField()
+    ComponentValue<BigDecimal, NumberField<BigDecimal>> componentValue = Components.bigDecimalField()
             .maximumFractionDigits(2)
             .groupingSeparator('.')
             .decimalSeparator(',')

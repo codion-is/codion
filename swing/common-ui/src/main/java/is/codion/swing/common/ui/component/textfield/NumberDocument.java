@@ -7,7 +7,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -51,28 +50,6 @@ class NumberDocument<T extends Number> extends PlainDocument {
     catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  protected final Integer getInteger() {
-    Number number = getNumber();
-
-    return number == null ? null : number.intValue();
-  }
-
-  protected final Long getLong() {
-    Number number = getNumber();
-
-    return number == null ? null : number.longValue();
-  }
-
-  protected final Double getDouble() {
-    Number number = getNumber();
-
-    return number == null ? null : number.doubleValue();
-  }
-
-  protected final BigDecimal getBigDecimal() {
-    return (BigDecimal) getNumber();
   }
 
   protected final void setText(String text) {

@@ -5,24 +5,29 @@ package is.codion.swing.common.ui.component.textfield;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.formats.Formats;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.textfield.DocumentAdapter;
 
 import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 /**
  * A text field for numbers.
+ * Use the available factory methods for instances.
  * @param <T> the Number type
  */
-public class NumberField<T extends Number> extends JTextField {
+public final class NumberField<T extends Number> extends JTextField {
 
   /**
-   * Specifies whether NumberFields use grouping by default.<br>
+   * Specifies whether NumberFields use number format grouping by default.<br>
    * Value type: Boolean<br>
    * Default value: true.
    */
@@ -31,13 +36,8 @@ public class NumberField<T extends Number> extends JTextField {
 
   private final Value<T> value = Value.value();
 
-  /**
-   * Instantiates a new NumberField
-   * @param document the document to use
-   * @param columns the number of columns
-   */
-  public NumberField(NumberDocument<T> document, int columns) {
-    super(document, null, columns);
+  private NumberField(NumberDocument<T> document) {
+    setDocument(document);
     document.setTextComponent(this);
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
@@ -46,25 +46,33 @@ public class NumberField<T extends Number> extends JTextField {
     document.addDocumentListener((DocumentAdapter) e -> value.set(document.getNumber()));
   }
 
+  @Override
+  public void setDocument(Document doc) {
+    if (getDocument() instanceof NumberDocument) {
+      throw new UnsupportedOperationException("NumberField document can not be set");
+    }
+    super.setDocument(doc);
+  }
+
   /**
    * Set whether grouping will be used in this field.
    * @param groupingUsed true if grouping should be used false otherwise
    */
-  public final void setGroupingUsed(boolean groupingUsed) {
+  public void setGroupingUsed(boolean groupingUsed) {
     getTypedDocument().getFormat().setGroupingUsed(groupingUsed);
   }
 
   /**
    * @param number the number to display in this field
    */
-  public final void setNumber(T number) {
+  public void setNumber(T number) {
     getTypedDocument().setNumber(number);
   }
 
   /**
    * @return the number being displayed in this field
    */
-  public final T getNumber() {
+  public T getNumber() {
     return getTypedDocument().getNumber();
   }
 
@@ -73,21 +81,36 @@ public class NumberField<T extends Number> extends JTextField {
    * @param min the minimum value
    * @param max the maximum value
    */
-  public final void setRange(double min, double max) {
-    getTypedDocument().getDocumentFilter().setRange(min, max);
+  public void setRange(Number min, Number max) {
+    getTypedDocument().getDocumentFilter().setMinimumValue(min);
+    getTypedDocument().getDocumentFilter().setMaximumValue(max);
+  }
+
+  /**
+   * @param minimumValue the minimum value
+   */
+  public void setMinimumValue(Number minimumValue) {
+    getTypedDocument().getDocumentFilter().setMinimumValue(minimumValue);
   }
 
   /**
    * @return the minimum value this field should accept
    */
-  public final double getMinimumValue() {
+  public Number getMinimumValue() {
     return getTypedDocument().getDocumentFilter().getMinimumValue();
+  }
+
+  /**
+   * @param maximumValue the maximum value
+   */
+  public void setMaximumValue(Number maximumValue) {
+    getTypedDocument().getDocumentFilter().setMaximumValue(maximumValue);
   }
 
   /**
    * @return the maximum value this field should accept
    */
-  public final double getMaximumValue() {
+  public Number getMaximumValue() {
     return getTypedDocument().getDocumentFilter().getMaximumValue();
   }
 
@@ -97,7 +120,7 @@ public class NumberField<T extends Number> extends JTextField {
    * @param groupingSeparator the grouping separator
    * @throws IllegalArgumentException in case both separators are the same character
    */
-  public final void setSeparators(char decimalSeparator, char groupingSeparator) {
+  public void setSeparators(char decimalSeparator, char groupingSeparator) {
     getTypedDocument().setSeparators(decimalSeparator, groupingSeparator);
   }
 
@@ -105,7 +128,7 @@ public class NumberField<T extends Number> extends JTextField {
    * Sets the decimal separator
    * @param decimalSeparator the separator
    */
-  public final void setDecimalSeparator(char decimalSeparator) {
+  public void setDecimalSeparator(char decimalSeparator) {
     getTypedDocument().setDecimalSeparator(decimalSeparator);
   }
 
@@ -113,8 +136,34 @@ public class NumberField<T extends Number> extends JTextField {
    * Sets the grouping separator
    * @param groupingSeparator the separator
    */
-  public final void setGroupingSeparator(char groupingSeparator) {
+  public void setGroupingSeparator(char groupingSeparator) {
     getTypedDocument().setGroupingSeparator(groupingSeparator);
+  }
+
+  /**
+   * @return the maximum number of fraction digits this field shows
+   * @throws IllegalStateException in case this NumberField is not based on a decimal type
+   */
+  public int getMaximumFractionDigits() {
+    NumberDocument<T> typedDocument = getTypedDocument();
+    if (!(typedDocument instanceof DecimalDocument)) {
+      throw new IllegalStateException("This is not a decimal based NumberField");
+    }
+
+    return ((DecimalDocument<BigDecimal>) typedDocument).getMaximumFractionDigits();
+  }
+
+  /**
+   * @param maximumFractionDigits the maximum number of fraction digits this field shows
+   * @throws IllegalStateException in case this NumberField is not based on a decimal type
+   */
+  public void setMaximumFractionDigits(int maximumFractionDigits) {
+    NumberDocument<T> typedDocument = getTypedDocument();
+    if (!(typedDocument instanceof DecimalDocument)) {
+      throw new IllegalStateException("This is not a decimal based NumberField");
+    }
+
+    ((DecimalDocument<Double>) getTypedDocument()).setMaximumFractionDigits(maximumFractionDigits);
   }
 
   /**
@@ -125,10 +174,76 @@ public class NumberField<T extends Number> extends JTextField {
   }
 
   /**
+   * @return Integer based {@link NumberField}
+   */
+  public static NumberField<Integer> integerField() {
+    return integerField(Formats.getNonGroupingIntegerFormat());
+  }
+
+  /**
+   * @param format the number format
+   * @return Integer based {@link NumberField}
+   */
+  public static NumberField<Integer> integerField(NumberFormat format) {
+    return new NumberField<>(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Integer.class))));
+  }
+
+  /**
+   * @return Double based {@link NumberField}
+   */
+  public static NumberField<Double> doubleField() {
+    DecimalFormat format = new DecimalFormat();
+    format.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
+
+    return doubleField(format);
+  }
+
+  /**
+   * @param format the number format
+   * @return Double based {@link NumberField}
+   */
+  public static NumberField<Double> doubleField(DecimalFormat format) {
+    return new NumberField<>(new DecimalDocument<>(format, false));
+  }
+
+  /**
+   * @return Long based {@link NumberField}
+   */
+  public static NumberField<Long> longField() {
+    return longField(Formats.getNonGroupingIntegerFormat());
+  }
+
+  /**
+   * @param format the number format
+   * @return Long based {@link NumberField}
+   */
+  public static NumberField<Long> longField(NumberFormat format) {
+    return new NumberField<>(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Long.class))));
+  }
+
+  /**
+   * @return BigDecimal based {@link NumberField}
+   */
+  public static NumberField<BigDecimal> bigDecimalField() {
+    DecimalFormat format = new DecimalFormat();
+    format.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
+
+    return bigDecimalField(format);
+  }
+
+  /**
+   * @param format the number format
+   * @return BigDecimal based {@link NumberField}
+   */
+  public static NumberField<BigDecimal> bigDecimalField(DecimalFormat format) {
+    return new NumberField<>(new DecimalDocument<>(format, true));
+  }
+
+  /**
    * Can't override getDocument() with type cast since it's called before setting the document with a class cast exception.
    * @return the typed document.
    */
-  protected final NumberDocument<T> getTypedDocument() {
+  NumberDocument<T> getTypedDocument() {
     return (NumberDocument<T>) super.getDocument();
   }
 

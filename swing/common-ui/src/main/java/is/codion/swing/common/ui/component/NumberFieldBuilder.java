@@ -14,16 +14,23 @@ import is.codion.swing.common.ui.component.textfield.NumberField;
 public interface NumberFieldBuilder<T extends Number, C extends NumberField<T>, B extends NumberFieldBuilder<T, C, B>> extends TextFieldBuilder<T, C, B> {
 
   /**
-   * @param minimumValue the minimum numerical value, if applicable
+   * @param minimumValue the minimum value
+   * @param maximumValue the maximum value
    * @return this builder instance
    */
-  B minimumValue(Double minimumValue);
+  B range(Number minimumValue, Number maximumValue);
 
   /**
-   * @param maximumValue the maximum numerical value, if applicable
+   * @param minimumValue the minimum numerical value
    * @return this builder instance
    */
-  B maximumValue(Double maximumValue);
+  B minimumValue(Number minimumValue);
+
+  /**
+   * @param maximumValue the maximum numerical value
+   * @return this builder instance
+   */
+  B maximumValue(Number maximumValue);
 
   /**
    * @param groupingSeparator the grouping separator

@@ -8,7 +8,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistP
 import is.codion.framework.demos.chinook.model.PlaylistTableModel;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -61,14 +61,14 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 
     @Override
     protected RandomPlaylistParameters getComponentValue(RandomPlaylistParametersPanel component) {
-      return new RandomPlaylistParameters(component.playlistNameField.getText(), component.noOfTracksField.getInteger());
+      return new RandomPlaylistParameters(component.playlistNameField.getText(), component.noOfTracksField.getNumber());
     }
 
     @Override
     protected void setComponentValue(RandomPlaylistParametersPanel component,
                                      RandomPlaylistParameters parameters) {
       component.playlistNameField.setText(parameters.getPlaylistName());
-      component.noOfTracksField.setInteger(parameters.getNoOfTracks());
+      component.noOfTracksField.setNumber(parameters.getNoOfTracks());
     }
   }
 
@@ -81,7 +81,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
             .selectAllOnFocusGained(true)
             .columns(10)
             .build();
-    private final IntegerField noOfTracksField = Components.integerField()
+    private final NumberField<Integer> noOfTracksField = Components.integerField()
             .range(1, 5000)
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)

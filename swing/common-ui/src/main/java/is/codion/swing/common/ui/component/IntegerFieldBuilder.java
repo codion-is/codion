@@ -3,18 +3,9 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.textfield.IntegerField;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 
 /**
- * A builder {@link IntegerField}.
+ * A builder for a Integer based {@link NumberField}.
  */
-public interface IntegerFieldBuilder extends NumberFieldBuilder<Integer, IntegerField, IntegerFieldBuilder> {
-
-  /**
-   * Sets the allowed value range
-   * @param from the from value
-   * @param to the to value
-   * @return this builder instance
-   */
-  IntegerFieldBuilder range(int from, int to);
-}
+public interface IntegerFieldBuilder extends NumberFieldBuilder<Integer, NumberField<Integer>, IntegerFieldBuilder> {}
