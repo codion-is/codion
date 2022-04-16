@@ -3,10 +3,8 @@
  */
 package is.codion.swing.common.ui.component.textfield;
 
-import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.formats.Formats;
-import is.codion.common.properties.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.textfield.DocumentAdapter;
 
@@ -26,14 +24,6 @@ import java.text.NumberFormat;
  */
 public final class NumberField<T extends Number> extends JTextField {
 
-  /**
-   * Specifies whether NumberFields use number format grouping by default.<br>
-   * Value type: Boolean<br>
-   * Default value: true.
-   */
-  public static final PropertyValue<Boolean> GROUPING_USED =
-          Configuration.booleanValue("is.codion.swing.common.ui.component.textfield.NumberField.groupingUsed", true);
-
   private final Value<T> value = Value.value();
 
   private NumberField(NumberDocument<T> document) {
@@ -42,7 +32,6 @@ public final class NumberField<T extends Number> extends JTextField {
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
     }
-    document.getFormat().setGroupingUsed(GROUPING_USED.get());
     document.addDocumentListener((DocumentAdapter) e -> value.set(document.getValue()));
   }
 
