@@ -8022,3 +8022,4 @@
   NumberField.getNumber(), setNumber() and setRange() renamed getValue(), setValue() and setValueRange() respectively
   NumberFieldBuilder simplified, now that NumberField is final
   BigDecimaFieldBuilder, DoubleFieldBuilder, IntegerFieldBuilder and LongFieldBuilder removed
+  NumberFieldBuilder.range() renamed valueRange()

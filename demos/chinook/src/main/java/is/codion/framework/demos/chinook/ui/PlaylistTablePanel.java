@@ -82,7 +82,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
             .columns(10)
             .build();
     private final NumberField<Integer> noOfTracksField = Components.integerField()
-            .range(1, 5000)
+            .valueRange(1, 5000)
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
             .columns(3)

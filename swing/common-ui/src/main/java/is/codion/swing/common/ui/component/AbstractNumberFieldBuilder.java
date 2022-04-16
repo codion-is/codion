@@ -21,7 +21,7 @@ abstract class AbstractNumberFieldBuilder<T extends Number, B extends NumberFiel
   }
 
   @Override
-  public final B range(Number minimumValue, Number maximumValue) {
+  public final B valueRange(Number minimumValue, Number maximumValue) {
     minimumValue(minimumValue);
     maximumValue(maximumValue);
     return (B) this;

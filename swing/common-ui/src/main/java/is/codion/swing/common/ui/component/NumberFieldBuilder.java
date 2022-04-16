@@ -18,7 +18,7 @@ public interface NumberFieldBuilder<T extends Number, B extends NumberFieldBuild
    * @param maximumValue the maximum value
    * @return this builder instance
    */
-  B range(Number minimumValue, Number maximumValue);
+  B valueRange(Number minimumValue, Number maximumValue);
 
   /**
    * @param minimumValue the minimum numerical value

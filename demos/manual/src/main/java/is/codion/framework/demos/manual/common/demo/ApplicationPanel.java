@@ -148,7 +148,7 @@ public final class ApplicationPanel extends JPanel {
     label("Integer")
             .build(inputPanel::add);
     integerField(model.getIntegerValue())
-            .range(0, 10_000)
+            .valueRange(0, 10_000)
             .groupingUsed(true)
             .groupingSeparator('.')
             .transferFocusOnEnter(true)
@@ -158,7 +158,7 @@ public final class ApplicationPanel extends JPanel {
     label("Double")
             .build(inputPanel::add);
     doubleField(model.getDoubleValue())
-            .range(0, 1_000_000)
+            .valueRange(0, 1_000_000)
             .groupingUsed(true)
             .maximumFractionDigits(2)
             .decimalSeparator(',')
