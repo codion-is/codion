@@ -6,8 +6,6 @@ package is.codion.common.formats;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Specifies a locale sensitive numerical date format pattern.
  * Note that the time part is 24 hour based and is not locale sensitive.
@@ -67,22 +65,6 @@ public interface LocaleDateTimePattern {
    * @return a new {@link DateTimeFormatter} instance based on this pattern
    */
   DateTimeFormatter getFormatter();
-
-  /**
-   * Parses the given date/time pattern and returns mask string that can be used in JFormattedFields.
-   * This only works with plain numerical date formats.
-   * @param dateTimePattern the format pattern for which to create the mask
-   * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
-   */
-  static String getMask(String dateTimePattern) {
-    requireNonNull(dateTimePattern, "dateTimePattern");
-    StringBuilder stringBuilder = new StringBuilder(dateTimePattern.length());
-    for (Character character : dateTimePattern.toCharArray()) {
-      stringBuilder.append(Character.isLetter(character) ? "#" : character);
-    }
-
-    return stringBuilder.toString();
-  }
 
   /**
    * @return a new Builder for a {@link LocaleDateTimePattern}.

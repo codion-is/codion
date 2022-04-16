@@ -482,15 +482,17 @@ public final class ComponentsTest {
             .columns(6)
             .commitsOnValidEdit(true)
             .placeholderCharacter('_')
-            .placeholder("00:00")
             .validCharacters("12345")
             .invalidCharacters("6789")
             .focusLostBehaviour(JFormattedTextField.COMMIT)
+            .emptyStringToNullValue(true)
             .linkedValue(value)
             .buildComponentValue();
     JFormattedTextField field = componentValue.getComponent();
     field.setText("1234");
     assertEquals("12:34", value.get());
+    field.setText("");
+    assertNull(value.get());
   }
 
   @Test

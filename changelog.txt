@@ -8016,3 +8016,5 @@
   FormattedTextFieldBuilder renamed MaskedTextFieldBuilder, a few properties added
   FormattedTextFieldValue added, DefaultTextComponentValue no longer handles JFormattedTextField
   Components.formattedTextField(), EntityComponents.formattedTextField() and EntityEditComponentPanel.createFormattedTextField() renamed maskedTextField() and createMaskedTextField()
+  MaskFormatterBuilder added along with DefaultMaskFormatterBuilder, DefaultMaskedTextFieldBuilder uses it internally, MaskFormatterBuilder.emptyStringToNullValue() allows for the actionListener on Enter functionality from above
+  FieldFormatter removed

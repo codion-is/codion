@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.component.textfield;
 
 import is.codion.common.DateTimeParser;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.textfield.DocumentAdapter;
 
@@ -37,7 +36,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final Value<T> value = Value.value();
 
   private TemporalField(DefaultBuilder<T, ?> builder) {
-    super(initializeFormatter(builder.dateTimePattern));
+    super(initializeFormatter(builder.mask));
     this.temporalClass = builder.temporalClass;
     this.formatter = builder.dateTimeFormatter;
     this.dateTimeParser = builder.dateTimeParser;
@@ -146,7 +145,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private static final class DefaultBuilder<T extends Temporal, B extends Builder<T, B>> implements Builder<T, B> {
 
     private final Class<T> temporalClass;
-    private final String dateTimePattern;
+    private final String mask;
 
     private DateTimeFormatter dateTimeFormatter;
     private DateTimeParser<T> dateTimeParser;
@@ -155,8 +154,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
     private DefaultBuilder(Class<T> temporalClass, String dateTimePattern) {
       this.temporalClass = requireNonNull(temporalClass);
-      this.dateTimePattern = requireNonNull(dateTimePattern);
       this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern);
+      this.mask = createMask(dateTimePattern);
       this.dateTimeParser = initializeDateTimeParser(temporalClass);
     }
 
@@ -214,12 +213,33 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
   }
 
-  private static MaskFormatter initializeFormatter(String dateTimePattern) {
+  private static MaskFormatter initializeFormatter(String mask) {
     try {
-      return FieldFormatter.create(LocaleDateTimePattern.getMask(dateTimePattern), true);
+      return MaskFormatterBuilder.builder()
+              .mask(mask)
+              .placeholderCharacter('_')
+              .valueContainsLiteralCharacters(true)
+              .commitsOnValidEdit(true)
+              .build();
     }
     catch (ParseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Parses the given date/time pattern and returns a mask string that can be used in JFormattedFields.
+   * This only works with plain numerical date formats.
+   * @param dateTimePattern the format pattern for which to create the mask
+   * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
+   */
+  private static String createMask(String dateTimePattern) {
+    requireNonNull(dateTimePattern, "dateTimePattern");
+    StringBuilder stringBuilder = new StringBuilder(dateTimePattern.length());
+    for (Character character : dateTimePattern.toCharArray()) {
+      stringBuilder.append(Character.isLetter(character) ? "#" : character);
+    }
+
+    return stringBuilder.toString();
   }
 }
