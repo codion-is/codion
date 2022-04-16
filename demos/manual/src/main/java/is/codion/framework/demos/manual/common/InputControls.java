@@ -193,7 +193,7 @@ public final class InputControls {
 
     NumberField<Integer> integerField =
             Components.integerField(integerValue)
-                    .range(0, 10_000)
+                    .valueRange(0, 10_000)
                     .groupingUsed(false)
                     .build();
     // end::integerField[]
