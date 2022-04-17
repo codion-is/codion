@@ -4,10 +4,18 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.textfield.TextComponents;
 
+import javax.swing.AbstractAction;
+import javax.swing.JPasswordField;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.Utilities;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import static java.util.Objects.requireNonNull;
 
@@ -21,6 +29,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   private boolean lowerCase;
   private int maximumLength = -1;
   private Insets margin;
+  private boolean controlDeleteWord = true;
 
   protected AbstractTextComponentBuilder(Value<T> linkedValue) {
     super(linkedValue);
@@ -69,6 +78,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
+  public final B controlDeleteWord(boolean controlDeleteWord) {
+    this.controlDeleteWord = controlDeleteWord;
+    return (B) this;
+  }
+
+  @Override
   protected final C createComponent() {
     C textComponent = createTextComponent();
     textComponent.setEditable(editable);
@@ -84,6 +99,14 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
     if (maximumLength > 0) {
       TextComponents.maximumLength(textComponent.getDocument(), maximumLength);
     }
+    if (controlDeleteWord) {
+      keyEvent(KeyEvents.builder(KeyEvent.VK_DELETE)
+              .modifiers(KeyEvent.CTRL_DOWN_MASK)
+              .action(new DeleteNextWordAction()));
+      keyEvent(KeyEvents.builder(KeyEvent.VK_BACK_SPACE)
+              .modifiers(KeyEvent.CTRL_DOWN_MASK)
+              .action(new DeletePreviousWordAction()));
+    }
 
     return textComponent;
   }
@@ -93,4 +116,42 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
    * @return a JTextComponent or subclass
    */
   protected abstract C createTextComponent();
+
+  private static final class DeletePreviousWordAction extends AbstractAction {
+
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {
+      JTextComponent textComponent = (JTextComponent) actionEvent.getSource();
+      Document document = textComponent.getDocument();
+      int caretPosition = textComponent.getCaretPosition();
+      try {
+        int removeFromPosition = textComponent instanceof JPasswordField ?
+                0 ://special handling for passwords, just remove everything before cursor
+                Utilities.getWordStart(textComponent, caretPosition);
+        document.remove(removeFromPosition, caretPosition - removeFromPosition);
+      }
+      catch (BadLocationException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private static final class DeleteNextWordAction extends AbstractAction {
+
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {
+      JTextComponent textComponent = (JTextComponent) actionEvent.getSource();
+      Document document = textComponent.getDocument();
+      int caretPosition = textComponent.getCaretPosition();
+      try {
+        int removeToPosition = textComponent instanceof JPasswordField ?
+                document.getLength() ://special handling for passwords, just remove everything after cursor
+                Utilities.getWordEnd(textComponent, caretPosition) - caretPosition;
+        document.remove(caretPosition, removeToPosition);
+      }
+      catch (BadLocationException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
 }
