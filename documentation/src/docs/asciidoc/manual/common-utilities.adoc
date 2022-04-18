@@ -18,12 +18,12 @@ Codion provides a few classes with miscellanous utility functions.
 
 {url-javadoc}/is/codion/swing/common/ui/component/Components.html[Components]
 
+{url-javadoc}/is/codion/swing/common/ui/component/text/TextComponents.html[TextComponents]
+
 {url-javadoc}/is/codion/swing/common/ui/dialog/Dialogs.html[Dialogs]
 
 {url-javadoc}/is/codion/swing/common/ui/KeyEvents.html[KeyEvents]
 
 {url-javadoc}/is/codion/swing/common/ui/layout/Layouts.html[Layouts]
-
-{url-javadoc}/is/codion/swing/common/ui/textfield/TextFields.html[TextFields]
 
 {url-javadoc}/is/codion/swing/common/ui/Windows.html[Windows]

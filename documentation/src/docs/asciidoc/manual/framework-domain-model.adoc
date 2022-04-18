@@ -142,6 +142,15 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=columnProperty]
 ----
 
+==== Subquery
+
+A ColumnProperty can be used to select a value from a subquery returning a single value. Note that in the example below *country.code* must be available when the query is run, that is, the entity must include that column as a property.
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=subqueryProperty]
+----
+
 === BlobProperty
 
 {url-javadoc}/is/codion/framework/domain/property/BlobProperty.html[BlobProperty] is a specific ColumnProperty for the Types.BLOB type which provides lazy loading for BLOB values. Using a standard ColumnProperty with a byte array type works fine, but for lazy loading you have to use BlobProperty.
@@ -243,15 +252,6 @@ customer.get(Customer.CITY, still returns "Syracuse"
 
 customer.put(Customer.ADDRESS_FK, address);//set the referenced value again
 customer.get(Customer.CITY);//now this returns "Canastota"
-----
-
-=== SubqueryProperty
-
-{url-javadoc}/is/codion/framework/domain/property/SubqueryProperty.html[SubqueryProperty] is used to represent a property which gets its value from a subquery returning a single value. Note that in the example below *country.code* must be available when the query is run, that is, the entity must include that column as a property.
-
-[source,java,indent=0]
-----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=subqueryProperty]
 ----
 
 === TransientProperty
