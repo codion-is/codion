@@ -9,13 +9,11 @@ import is.codion.swing.common.ui.component.PasswordFieldBuilder;
 import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
-import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -128,31 +126,7 @@ public final class TextComponents {
    * @param maximumLength the maximum string length
    */
   public static void maximumLength(Document document, int maximumLength) {
-    requireNonNull(document);
-    if (document instanceof SizedDocument) {
-      ((SizedDocument) document).setMaximumLength(maximumLength);
-    }
-    else if (document instanceof AbstractDocument) {
-      DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
-      if (documentFilter == null) {
-        CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
-        caseDocumentFilter.addValidator(new StringLengthValidator(maximumLength));
-        ((AbstractDocument) document).setDocumentFilter(caseDocumentFilter);
-      }
-      else if (documentFilter instanceof CaseDocumentFilter) {
-        CaseDocumentFilter caseDocumentFilter = (CaseDocumentFilter) documentFilter;
-        Optional<StringLengthValidator> lengthValidator = caseDocumentFilter.getValidators().stream()
-                .filter(StringLengthValidator.class::isInstance)
-                .map(StringLengthValidator.class::cast)
-                .findFirst();
-        if (lengthValidator.isPresent()) {
-          lengthValidator.get().setMaximumLength(maximumLength);
-        }
-        else {
-          caseDocumentFilter.addValidator(new StringLengthValidator(maximumLength));
-        }
-      }
-    }
+    new MaximumTextFieldLength(document, maximumLength);
   }
 
   /**
@@ -161,7 +135,7 @@ public final class TextComponents {
    * @param document the document
    */
   public static void upperCase(Document document) {
-    documentCase(document, CaseDocumentFilter.DocumentCase.UPPERCASE);
+    new TextFieldDocumentCase(document, CaseDocumentFilter.DocumentCase.UPPERCASE);
   }
 
   /**
@@ -170,7 +144,7 @@ public final class TextComponents {
    * @param document the document
    */
   public static void lowerCase(Document document) {
-    documentCase(document, CaseDocumentFilter.DocumentCase.LOWERCASE);
+    new TextFieldDocumentCase(document, CaseDocumentFilter.DocumentCase.LOWERCASE);
   }
 
   /**
@@ -182,7 +156,7 @@ public final class TextComponents {
    */
   public static <T extends JTextComponent> T selectAllOnFocusGained(T textComponent) {
     requireNonNull(textComponent, TEXT_COMPONENT);
-    textComponent.addFocusListener(new SelectAllListener(textComponent));
+    textComponent.addFocusListener(new SelectAllFocusListener(textComponent));
 
     return textComponent;
   }
@@ -197,7 +171,7 @@ public final class TextComponents {
   public static <T extends JTextComponent> T selectNoneOnFocusGained(T textComponent) {
     requireNonNull(textComponent, TEXT_COMPONENT);
     for (FocusListener listener : textComponent.getFocusListeners()) {
-      if (listener instanceof SelectAllListener) {
+      if (listener instanceof SelectAllFocusListener) {
         textComponent.removeFocusListener(listener);
       }
     }
@@ -259,48 +233,11 @@ public final class TextComponents {
     return getPreferredTextFieldSize().height;
   }
 
-  private static void documentCase(Document document, CaseDocumentFilter.DocumentCase documentCase) {
-    requireNonNull(document);
-    if (document instanceof SizedDocument) {
-      ((SizedDocument) document).getDocumentFilter().setDocumentCase(documentCase);
-    }
-    else if (document instanceof AbstractDocument) {
-      DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
-      if (documentFilter == null) {
-        CaseDocumentFilter caseDocumentFilter = CaseDocumentFilter.caseDocumentFilter();
-        caseDocumentFilter.setDocumentCase(documentCase);
-        ((AbstractDocument) document).setDocumentFilter(caseDocumentFilter);
-      }
-      else if (documentFilter instanceof CaseDocumentFilter) {
-        ((CaseDocumentFilter) documentFilter).setDocumentCase(documentCase);
-      }
-    }
-  }
-
   private static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(Class<T> valueClass, Value<T> linkedValue) {
     if (Number.class.isAssignableFrom(valueClass)) {
       return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) valueClass, (Value<Number>) linkedValue);
     }
 
     return new DefaultTextFieldBuilder<>(valueClass, linkedValue);
-  }
-
-  private static final class SelectAllListener extends FocusAdapter {
-
-    private final JTextComponent textComponent;
-
-    private SelectAllListener(JTextComponent textComponent) {
-      this.textComponent = textComponent;
-    }
-
-    @Override
-    public void focusGained(FocusEvent e) {
-      textComponent.selectAll();
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-      textComponent.select(0, 0);
-    }
   }
 }

@@ -8036,3 +8036,4 @@
   DefaultTextFieldBuilder.setInitialValue() now throws exception if value is not a String or Character
   TextInputPanel.Builder refactored
   TemporalInputPanel.Builder refactored
+  NumberField refactored

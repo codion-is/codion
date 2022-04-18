@@ -4,8 +4,11 @@
 package is.codion.swing.common.ui.component.textfield;
 
 import is.codion.common.event.EventDataListener;
+import is.codion.common.formats.Formats;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.textfield.DocumentAdapter;
+import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.textfield.NumberDocument.DecimalDocument;
 
 import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
@@ -14,6 +17,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import static java.util.Objects.requireNonNull;
 
@@ -299,6 +303,321 @@ public final class NumberField<T extends Number> extends JTextField {
         }
       }
       catch (BadLocationException ignored) {/*Not happening*/}
+    }
+  }
+
+  private abstract static class AbstractNumberFieldBuilder<T extends Number, B extends Builder<T, B>>
+          extends DefaultTextFieldBuilder<T, NumberField<T>, B> implements Builder<T, B> {
+
+    private Number maximumValue;
+    private Number minimumValue;
+    protected char groupingSeparator = 0;
+    private boolean groupingUsed;
+
+    protected AbstractNumberFieldBuilder(Class<T> type, Value<T> linkedValue) {
+      super(type, linkedValue);
+    }
+
+    @Override
+    public final B valueRange(Number minimumValue, Number maximumValue) {
+      minimumValue(minimumValue);
+      maximumValue(maximumValue);
+      return (B) this;
+    }
+
+    @Override
+    public final B minimumValue(Number minimumValue) {
+      this.minimumValue = minimumValue;
+      return (B) this;
+    }
+
+    @Override
+    public final B maximumValue(Number maximumValue) {
+      this.maximumValue = maximumValue;
+      return (B) this;
+    }
+
+    @Override
+    public final B groupingSeparator(char groupingSeparator) {
+      this.groupingSeparator = groupingSeparator;
+      return (B) this;
+    }
+
+    @Override
+    public final B groupingUsed(boolean groupingUsed) {
+      this.groupingUsed = groupingUsed;
+      return (B) this;
+    }
+
+    @Override
+    protected final NumberField<T> createTextField() {
+      NumberFormat format = cloneFormat((NumberFormat) getFormat());
+      NumberField<T> numberField = createNumberField(format);
+      numberField.setMinimumValue(minimumValue);
+      numberField.setMaximumValue(maximumValue);
+      if (groupingSeparator != 0) {
+        numberField.setGroupingSeparator(groupingSeparator);
+      }
+      if (format == null) {
+        numberField.setGroupingUsed(groupingUsed);
+      }
+
+      return numberField;
+    }
+
+    protected abstract NumberField<T> createNumberField(NumberFormat format);
+
+    @Override
+    protected final void setInitialValue(NumberField<T> component, T initialValue) {
+      component.setValue(initialValue);
+    }
+
+    private static NumberFormat cloneFormat(NumberFormat format) {
+      if (format == null) {
+        return null;
+      }
+      NumberFormat cloned = (NumberFormat) format.clone();
+      cloned.setGroupingUsed(format.isGroupingUsed());
+      cloned.setMaximumIntegerDigits(format.getMaximumIntegerDigits());
+      cloned.setMaximumFractionDigits(format.getMaximumFractionDigits());
+      cloned.setMinimumFractionDigits(format.getMinimumFractionDigits());
+      cloned.setRoundingMode(format.getRoundingMode());
+      cloned.setCurrency(format.getCurrency());
+      cloned.setParseIntegerOnly(format.isParseIntegerOnly());
+
+      return cloned;
+    }
+  }
+
+  private static final class DefaultBigDecimalFieldBuilder<B extends DecimalBuilder<BigDecimal, B>> extends AbstractNumberFieldBuilder<BigDecimal, B>
+          implements DecimalBuilder<BigDecimal, B> {
+
+    private int maximumFractionDigits = -1;
+    private char decimalSeparator = 0;
+
+    private DefaultBigDecimalFieldBuilder(Value<BigDecimal> linkedValue) {
+      super(BigDecimal.class, linkedValue);
+    }
+
+    @Override
+    public B maximumFractionDigits(int maximumFractionDigits) {
+      this.maximumFractionDigits = maximumFractionDigits;
+      return (B) this;
+    }
+
+    @Override
+    public B decimalSeparator(char decimalSeparator) {
+      if (decimalSeparator == groupingSeparator) {
+        throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
+      }
+      this.decimalSeparator = decimalSeparator;
+      return (B) this;
+    }
+
+    @Override
+    protected NumberField<BigDecimal> createNumberField(NumberFormat format) {
+      DecimalFormat decimalFormat = (DecimalFormat) format;
+      if (decimalFormat == null) {
+        decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
+      }
+      NumberField<BigDecimal> field = new NumberField<>(new DecimalDocument<>(decimalFormat, true));
+      if (decimalSeparator != 0) {
+        field.setDecimalSeparator(decimalSeparator);
+      }
+      if (maximumFractionDigits > 0) {
+        field.setMaximumFractionDigits(maximumFractionDigits);
+      }
+
+      return field;
+    }
+
+    @Override
+    protected ComponentValue<BigDecimal, NumberField<BigDecimal>> createComponentValue(NumberField<BigDecimal> component) {
+      return new BigDecimalFieldValue(component, true, updateOn);
+    }
+  }
+
+  private static final class DefaultDoubleFieldBuilder<B extends DecimalBuilder<Double, B>> extends AbstractNumberFieldBuilder<Double, B>
+          implements DecimalBuilder<Double, B> {
+
+    private int maximumFractionDigits = -1;
+    private char decimalSeparator = 0;
+
+    private DefaultDoubleFieldBuilder(Value<Double> linkedValue) {
+      super(Double.class, linkedValue);
+    }
+
+    @Override
+    public B maximumFractionDigits(int maximumFractionDigits) {
+      this.maximumFractionDigits = maximumFractionDigits;
+      return (B) this;
+    }
+
+    @Override
+    public B decimalSeparator(char decimalSeparator) {
+      if (decimalSeparator == groupingSeparator) {
+        throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
+      }
+      this.decimalSeparator = decimalSeparator;
+      return (B) this;
+    }
+
+    @Override
+    protected NumberField<Double> createNumberField(NumberFormat format) {
+      DecimalFormat decimalFormat = (DecimalFormat) format;
+      if (decimalFormat == null) {
+        decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
+      }
+      NumberField<Double> field = new NumberField<>(new DecimalDocument<>(decimalFormat, false));
+      if (decimalSeparator != 0) {
+        field.setDecimalSeparator(decimalSeparator);
+      }
+      if (maximumFractionDigits > 0) {
+        field.setMaximumFractionDigits(maximumFractionDigits);
+      }
+
+      return field;
+    }
+
+    @Override
+    protected ComponentValue<Double, NumberField<Double>> createComponentValue(NumberField<Double> component) {
+      return new DoubleFieldValue(component, true, updateOn);
+    }
+  }
+
+  private static final class DefaultIntegerFieldBuilder<B extends Builder<Integer, B>> extends AbstractNumberFieldBuilder<Integer, B> {
+
+    private DefaultIntegerFieldBuilder(Value<Integer> linkedValue) {
+      super(Integer.class, linkedValue);
+    }
+
+    @Override
+    protected NumberField<Integer> createNumberField(NumberFormat format) {
+      if (format == null) {
+        format = Formats.getNonGroupingIntegerFormat();
+      }
+
+      return new NumberField<>(new NumberDocument<>(format, Integer.class));
+    }
+
+    @Override
+    protected ComponentValue<Integer, NumberField<Integer>> createComponentValue(NumberField<Integer> component) {
+      return new IntegerFieldValue(component, true, updateOn);
+    }
+  }
+
+  private static final class DefaultLongFieldBuilder<B extends Builder<Long, B>> extends AbstractNumberFieldBuilder<Long, B> {
+
+    private DefaultLongFieldBuilder(Value<Long> linkedValue) {
+      super(Long.class, linkedValue);
+    }
+
+    @Override
+    protected NumberField<Long> createNumberField(NumberFormat format) {
+      if (format == null) {
+        format = Formats.getNonGroupingIntegerFormat();
+      }
+
+      return new NumberField<>(new NumberDocument<>(format, Long.class));
+    }
+
+    @Override
+    protected ComponentValue<Long, NumberField<Long>> createComponentValue(NumberField<Long> component) {
+      return new LongFieldValue(component, true, updateOn);
+    }
+  }
+
+  private static final class DoubleFieldValue extends AbstractTextComponentValue<Double, NumberField<Double>> {
+
+    private DoubleFieldValue(NumberField<Double> doubleField, boolean nullable, UpdateOn updateOn) {
+      super(doubleField, nullable ? null : 0d, updateOn);
+      if (!isNullable() && doubleField.getValue() == null) {
+        doubleField.setValue(0d);
+      }
+    }
+
+    @Override
+    protected Double getComponentValue(NumberField<Double> component) {
+      Number value = component.getValue();
+      if (value == null) {
+        return isNullable() ? null : 0d;
+      }
+
+      return value.doubleValue();
+    }
+
+    @Override
+    protected void setComponentValue(NumberField<Double> component, Double value) {
+      component.setValue(value);
+    }
+  }
+
+  private static final class IntegerFieldValue extends AbstractTextComponentValue<Integer, NumberField<Integer>> {
+
+    private IntegerFieldValue(NumberField<Integer> integerField, boolean nullable, UpdateOn updateOn) {
+      super(integerField, nullable ? null : 0, updateOn);
+      if (!isNullable() && integerField.getValue() == null) {
+        integerField.setValue(0);
+      }
+    }
+
+    @Override
+    protected Integer getComponentValue(NumberField<Integer> component) {
+      Number value = component.getValue();
+      if (value == null) {
+        return isNullable() ? null : 0;
+      }
+
+      return value.intValue();
+    }
+
+    @Override
+    protected void setComponentValue(NumberField<Integer> component, Integer value) {
+      component.setValue(value);
+    }
+  }
+
+  private static final class LongFieldValue extends AbstractTextComponentValue<Long, NumberField<Long>> {
+
+    private LongFieldValue(NumberField<Long> longField, boolean nullable, UpdateOn updateOn) {
+      super(longField, nullable ? null : 0L, updateOn);
+      if (!isNullable() && longField.getValue() == null) {
+        longField.setValue(0L);
+      }
+    }
+
+    @Override
+    protected Long getComponentValue(NumberField<Long> component) {
+      Number value = component.getValue();
+      if (value == null) {
+        return isNullable() ? null : 0L;
+      }
+
+      return value.longValue();
+    }
+
+    @Override
+    protected void setComponentValue(NumberField<Long> component, Long value) {
+      component.setValue(value);
+    }
+  }
+
+  private static final class BigDecimalFieldValue extends AbstractTextComponentValue<BigDecimal, NumberField<BigDecimal>> {
+
+    private BigDecimalFieldValue(NumberField<BigDecimal> doubleField, boolean nullable, UpdateOn updateOn) {
+      super(doubleField, nullable ? null : BigDecimal.ZERO, updateOn);
+    }
+
+    @Override
+    protected BigDecimal getComponentValue(NumberField<BigDecimal> component) {
+      return component.getValue();
+    }
+
+    @Override
+    protected void setComponentValue(NumberField<BigDecimal> component, BigDecimal value) {
+      component.setValue(value);
     }
   }
 }

@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component.textfield;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.textfield.CaseDocumentFilter.DocumentCase;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPasswordField;
@@ -91,13 +92,13 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
       textComponent.setMargin(margin);
     }
     if (upperCase) {
-      TextComponents.upperCase(textComponent.getDocument());
+      new TextFieldDocumentCase(textComponent.getDocument(), DocumentCase.UPPERCASE);
     }
     if (lowerCase) {
-      TextComponents.lowerCase(textComponent.getDocument());
+      new TextFieldDocumentCase(textComponent.getDocument(), DocumentCase.LOWERCASE);
     }
     if (maximumLength > 0) {
-      TextComponents.maximumLength(textComponent.getDocument(), maximumLength);
+      new MaximumTextFieldLength(textComponent.getDocument(), maximumLength);
     }
     if (controlDeleteWord) {
       keyEvent(KeyEvents.builder(KeyEvent.VK_DELETE)

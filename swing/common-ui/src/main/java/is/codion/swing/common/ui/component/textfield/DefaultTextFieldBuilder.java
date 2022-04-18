@@ -121,7 +121,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
       textField.addActionListener(actionListener);
     }
     if (selectAllOnFocusGained) {
-      TextComponents.selectAllOnFocusGained(textField);
+      textField.addFocusListener(new SelectAllFocusListener(textField));
     }
     if (selectionProvider != null) {
       addSelectionProvider(textField, selectionProvider);
