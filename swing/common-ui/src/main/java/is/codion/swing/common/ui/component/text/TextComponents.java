@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.PasswordFieldBuilder;
 
 import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;

@@ -9,6 +9,7 @@ import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.component.text.PasswordFieldBuilder;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalInputPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
