@@ -5,7 +5,7 @@ package is.codion.framework.demos.empdept.ui;
 
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
-import is.codion.swing.common.ui.component.textfield.NumberField;
+import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;

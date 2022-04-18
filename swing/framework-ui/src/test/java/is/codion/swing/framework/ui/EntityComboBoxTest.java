@@ -9,7 +9,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.textfield.NumberField;
+import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import org.junit.jupiter.api.Test;

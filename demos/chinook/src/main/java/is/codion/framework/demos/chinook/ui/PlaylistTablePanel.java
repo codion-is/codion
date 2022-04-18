@@ -8,7 +8,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistP
 import is.codion.framework.demos.chinook.model.PlaylistTableModel;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.textfield.NumberField;
+import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;

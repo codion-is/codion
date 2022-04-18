@@ -6,7 +6,7 @@ package is.codion.swing.framework.server.monitor.ui;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.textfield.TextComponents;
+import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
 

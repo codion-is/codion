@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.textfield.TextFieldBuilder;
+import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 
 import javax.swing.JPasswordField;
 

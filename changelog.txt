@@ -8037,3 +8037,4 @@
   TextInputPanel.Builder refactored
   TemporalInputPanel.Builder refactored
   NumberField refactored
+  Package is.codion.swing.common.ui.component.textfield renamed text

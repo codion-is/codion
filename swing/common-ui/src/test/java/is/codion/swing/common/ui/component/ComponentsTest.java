@@ -8,12 +8,12 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
-import is.codion.swing.common.ui.component.textfield.NumberField;
-import is.codion.swing.common.ui.component.textfield.TemporalField;
-import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
-import is.codion.swing.common.ui.component.textfield.TextAreaBuilder;
-import is.codion.swing.common.ui.component.textfield.TextInputPanel;
-import is.codion.swing.common.ui.component.textfield.UpdateOn;
+import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.component.text.TemporalField;
+import is.codion.swing.common.ui.component.text.TemporalInputPanel;
+import is.codion.swing.common.ui.component.text.TextAreaBuilder;
+import is.codion.swing.common.ui.component.text.TextInputPanel;
+import is.codion.swing.common.ui.component.text.UpdateOn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.icon.Logos;
 

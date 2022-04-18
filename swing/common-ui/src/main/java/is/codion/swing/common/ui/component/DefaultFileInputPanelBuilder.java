@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.textfield.FileInputPanel;
+import is.codion.swing.common.ui.component.text.FileInputPanel;
 
 import javax.swing.JTextField;
 
