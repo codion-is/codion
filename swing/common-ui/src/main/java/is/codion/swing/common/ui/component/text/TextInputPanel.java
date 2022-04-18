@@ -226,7 +226,7 @@ public final class TextInputPanel extends JPanel {
   }
 
   private void getInputFromUser() {
-    JTextArea textArea = TextComponents.textArea()
+    JTextArea textArea = TextAreaBuilder.builder()
             .document(new SizedDocument(maximumLength))
             .initialValue(textField.getText())
             .preferredSize(textAreaSize)

@@ -13,7 +13,6 @@ import is.codion.swing.common.ui.component.text.PasswordFieldBuilder;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalInputPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
-import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
 
@@ -305,7 +304,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static TextAreaBuilder textArea() {
-    return TextComponents.textArea();
+    return TextAreaBuilder.builder();
   }
 
   /**
@@ -313,7 +312,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static TextAreaBuilder textArea(Value<String> linkedValue) {
-    return TextComponents.textArea(linkedValue);
+    return TextAreaBuilder.builder(linkedValue);
   }
 
   /**
@@ -321,7 +320,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField() {
-    return TextComponents.textField();
+    return TextFieldBuilder.builder(String.class);
   }
 
   /**
@@ -330,7 +329,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField(Value<String> linkedValue) {
-    return TextComponents.textField(linkedValue);
+    return TextFieldBuilder.builder(String.class, linkedValue);
   }
 
   /**
@@ -341,7 +340,11 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass) {
-    return TextComponents.textField(valueClass);
+    if (Number.class.isAssignableFrom(valueClass)) {
+      return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) valueClass);
+    }
+
+    return TextFieldBuilder.builder(valueClass);
   }
 
   /**
@@ -354,7 +357,11 @@ public final class Components {
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass,
                                                                                                                    Value<T> linkedValue) {
-    return TextComponents.textField(valueClass, linkedValue);
+    if (Number.class.isAssignableFrom(valueClass)) {
+      return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) valueClass, (Value<Number>) requireNonNull(linkedValue));
+    }
+
+    return TextFieldBuilder.builder(valueClass, linkedValue);
   }
 
   /**
@@ -525,7 +532,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static MaskedTextFieldBuilder maskedTextField() {
-    return TextComponents.maskedTextField();
+    return MaskedTextFieldBuilder.builder();
   }
 
   /**
@@ -533,14 +540,14 @@ public final class Components {
    * @return a builder for a component
    */
   public static MaskedTextFieldBuilder maskedTextField(Value<String> linkedValue) {
-    return TextComponents.maskedTextField(linkedValue);
+    return MaskedTextFieldBuilder.builder(linkedValue);
   }
 
   /**
    * @return a new JPasswordField
    */
   public static PasswordFieldBuilder passwordField() {
-    return TextComponents.passwordField();
+    return PasswordFieldBuilder.builder();
   }
 
   /**
@@ -548,7 +555,7 @@ public final class Components {
    * @return a new JPasswordField
    */
   public static PasswordFieldBuilder passwordField(Value<String> linkedValue) {
-    return TextComponents.passwordField(linkedValue);
+    return PasswordFieldBuilder.builder(linkedValue);
   }
 
   /**
