@@ -29,10 +29,7 @@ public final class TextComponents {
 
   private static final String TEXT_COMPONENT = "textComponent";
 
-  /**
-   * A text field used by getPreferredTextFieldSize and getPreferredTextFieldHeight
-   */
-  private static JTextField textField;
+  private static Dimension preferredTextFieldSize;
 
   private TextComponents() {}
 
@@ -159,17 +156,17 @@ public final class TextComponents {
    * @return the preferred size of a JTextField
    */
   public static synchronized Dimension getPreferredTextFieldSize() {
-    if (textField == null) {
-      textField = new JTextField();
+    if (preferredTextFieldSize == null) {
+      preferredTextFieldSize = new JTextField().getPreferredSize();
     }
 
-    return textField.getPreferredSize();
+    return preferredTextFieldSize;
   }
 
   /**
    * @return the preferred height of a JTextField
    */
-  public static synchronized int getPreferredTextFieldHeight() {
+  public static int getPreferredTextFieldHeight() {
     return getPreferredTextFieldSize().height;
   }
 

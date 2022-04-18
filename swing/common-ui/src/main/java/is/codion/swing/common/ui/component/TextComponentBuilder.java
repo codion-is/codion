@@ -47,4 +47,10 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
    * @return this builder instance
    */
   B margin(Insets margin);
+
+  /**
+   * @param controlDeleteWord true if CTRL-DEL and CTRL-BACKSPACE should delete the next/previous word
+   * @return this builder instance
+   */
+  B controlDeleteWord(boolean controlDeleteWord);
 }

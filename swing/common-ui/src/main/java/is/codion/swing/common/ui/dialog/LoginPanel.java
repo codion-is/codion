@@ -8,7 +8,6 @@ import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
@@ -27,15 +26,11 @@ import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.text.BadLocationException;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 
 import static java.util.Objects.requireNonNull;
 
@@ -73,9 +68,6 @@ final class LoginPanel extends JPanel {
             .initialValue(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()))
             .columns(DEFAULT_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_BACK_SPACE)
-                    .modifiers(InputEvent.CTRL_DOWN_MASK)
-                    .action(Control.actionControl(this::clearPasswordField)))
             .build();
     this.icon = icon;
     this.okControl = Control.builder(this::onOkPressed)
@@ -177,10 +169,5 @@ final class LoginPanel extends JPanel {
 
   private void closeDialog() {
     Windows.getParentDialog(this).ifPresent(JDialog::dispose);
-  }
-
-  private void clearPasswordField(ActionEvent actionEvent) throws BadLocationException {
-    JPasswordField passwordField = (JPasswordField) actionEvent.getSource();
-    passwordField.getDocument().remove(0, passwordField.getCaretPosition());
   }
 }
