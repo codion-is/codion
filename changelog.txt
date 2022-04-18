@@ -8042,3 +8042,4 @@
   ExceptionPanel, DefaultOkCancelDialogBuilder no longer use Components, reducing cyclical dependencies
   Package is.codion.swing.common.model.component.textfield renamed text
   TextComponents, builder factory methods moved to their respective builder interfaces
+  ComboBoxBuilder and related classes moved to component.combobox package

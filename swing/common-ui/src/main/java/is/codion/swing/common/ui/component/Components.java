@@ -7,6 +7,8 @@ import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
+import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.PasswordFieldBuilder;
@@ -115,7 +117,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox() {
-    return booleanComboBox((Value<Boolean>) null);
+    return ItemComboBoxBuilder.builder(ItemComboBoxModel.createBooleanModel());
   }
 
   /**
@@ -123,7 +125,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox(Value<Boolean> linkedValue) {
-    return new DefaultItemComboBoxBuilder<>(ItemComboBoxModel.createBooleanModel(), requireNonNull(linkedValue));
+    return ItemComboBoxBuilder.builder(ItemComboBoxModel.createBooleanModel(), requireNonNull(linkedValue));
   }
 
   /**
@@ -131,7 +133,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox(ItemComboBoxModel<Boolean> comboBoxModel) {
-    return new DefaultItemComboBoxBuilder<>(comboBoxModel, null);
+    return ItemComboBoxBuilder.builder(comboBoxModel);
   }
 
   /**
@@ -141,7 +143,7 @@ public final class Components {
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox(ItemComboBoxModel<Boolean> comboBoxModel,
                                                              Value<Boolean> linkedValue) {
-    return new DefaultItemComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
+    return ItemComboBoxBuilder.builder(comboBoxModel, linkedValue);
   }
 
   /**
@@ -150,7 +152,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(ItemComboBoxModel<T> comboBoxModel) {
-    return new DefaultItemComboBoxBuilder<>(comboBoxModel, null);
+    return ItemComboBoxBuilder.builder(comboBoxModel);
   }
 
   /**
@@ -161,7 +163,7 @@ public final class Components {
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(ItemComboBoxModel<T> comboBoxModel,
                                                         Value<T> linkedValue) {
-    return new DefaultItemComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
+    return ItemComboBoxBuilder.builder(comboBoxModel, linkedValue);
   }
 
   /**
@@ -170,7 +172,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(List<Item<T>> values) {
-    return new DefaultItemComboBoxBuilder<>(values, null);
+    return ItemComboBoxBuilder.builder(values);
   }
 
   /**
@@ -180,7 +182,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(List<Item<T>> values, Value<T> linkedValue) {
-    return new DefaultItemComboBoxBuilder<>(values, requireNonNull(linkedValue));
+    return ItemComboBoxBuilder.builder(values, linkedValue);
   }
 
   /**
@@ -191,7 +193,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel) {
-    return new DefaultComboBoxBuilder<>(comboBoxModel, null);
+    return ComboBoxBuilder.builder(comboBoxModel);
   }
 
   /**
@@ -204,7 +206,7 @@ public final class Components {
    */
   public static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel,
                                                                                                                   Value<T> linkedValue) {
-    return new DefaultComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
+    return ComboBoxBuilder.builder(comboBoxModel, linkedValue);
   }
 
   /**

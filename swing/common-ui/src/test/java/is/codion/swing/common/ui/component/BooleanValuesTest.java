@@ -55,7 +55,7 @@ public class BooleanValuesTest {
     assertEquals(true, componentValue.get());
     componentValue.getComponent().getModel().setSelectedItem(null);
     assertNull(componentValue.get());
-    componentValue = new BooleanComboBoxValue(new JComboBox<>(ItemComboBoxModel.createBooleanModel()));
+    componentValue = Components.booleanComboBox().buildComponentValue();
     assertNull(componentValue.get());
   }
 
