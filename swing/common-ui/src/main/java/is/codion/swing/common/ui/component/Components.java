@@ -10,6 +10,9 @@ import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
+import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
+import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
+import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.PasswordFieldBuilder;
@@ -565,7 +568,7 @@ public final class Components {
    * @return a builder for a Double based JSpinner
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner() {
-    return new DefaultNumberSpinnerBuilder<>(new SpinnerNumberModel(), Double.class, null);
+    return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Double.class);
   }
 
   /**
@@ -573,7 +576,7 @@ public final class Components {
    * @return a builder for a Double based JSpinner
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner(Value<Double> linkedValue) {
-    return new DefaultNumberSpinnerBuilder<>(new SpinnerNumberModel(), Double.class, requireNonNull(linkedValue));
+    return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Double.class, linkedValue);
   }
 
   /**
@@ -581,7 +584,7 @@ public final class Components {
    * @return a builder for a Double based JSpinner
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner(SpinnerNumberModel spinnerNumberModel) {
-    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Double.class, null);
+    return NumberSpinnerBuilder.builder(spinnerNumberModel, Double.class);
   }
 
   /**
@@ -591,14 +594,14 @@ public final class Components {
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner(SpinnerNumberModel spinnerNumberModel,
                                                            Value<Double> linkedValue) {
-    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Double.class, requireNonNull(linkedValue));
+    return NumberSpinnerBuilder.builder(spinnerNumberModel, Double.class, linkedValue);
   }
 
   /**
    * @return a builder for a Integer based JSpinner
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner() {
-    return new DefaultNumberSpinnerBuilder<>(new SpinnerNumberModel(), Integer.class, null);
+    return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Integer.class);
   }
 
   /**
@@ -606,7 +609,7 @@ public final class Components {
    * @return a builder for a Integer based JSpinner
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner(Value<Integer> linkedValue) {
-    return new DefaultNumberSpinnerBuilder<>(new SpinnerNumberModel(), Integer.class, requireNonNull(linkedValue));
+    return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Integer.class, linkedValue);
   }
 
   /**
@@ -614,7 +617,7 @@ public final class Components {
    * @return a builder for a Integer based JSpinner
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner(SpinnerNumberModel spinnerNumberModel) {
-    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Integer.class, null);
+    return NumberSpinnerBuilder.builder(spinnerNumberModel, Integer.class);
   }
 
   /**
@@ -624,7 +627,7 @@ public final class Components {
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner(SpinnerNumberModel spinnerNumberModel,
                                                              Value<Integer> linkedValue) {
-    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Integer.class, requireNonNull(linkedValue));
+    return NumberSpinnerBuilder.builder(spinnerNumberModel, Integer.class, linkedValue);
   }
 
   /**
@@ -633,7 +636,7 @@ public final class Components {
    * @return a builder for a JSpinner
    */
   public static <T> ListSpinnerBuilder<T> listSpinner(SpinnerListModel spinnerModel) {
-    return new DefaultListSpinnerBuilder<>(spinnerModel, null);
+    return ListSpinnerBuilder.builder(spinnerModel);
   }
 
   /**
@@ -643,7 +646,7 @@ public final class Components {
    * @return a builder for a JSpinner
    */
   public static <T> ListSpinnerBuilder<T> listSpinner(SpinnerListModel spinnerModel, Value<T> linkedValue) {
-    return new DefaultListSpinnerBuilder<>(spinnerModel, requireNonNull(linkedValue));
+    return ListSpinnerBuilder.builder(spinnerModel, linkedValue);
   }
 
   /**
@@ -652,7 +655,7 @@ public final class Components {
    * @return a builder for a JSpinner
    */
   public static <T> ItemSpinnerBuilder<T> itemSpinner(SpinnerListModel spinnerModel) {
-    return new DefaultItemSpinnerBuilder<>(spinnerModel, null);
+    return ItemSpinnerBuilder.builder(spinnerModel);
   }
 
   /**
@@ -662,7 +665,7 @@ public final class Components {
    * @return a builder for a JSpinner
    */
   public static <T> ItemSpinnerBuilder<T> itemSpinner(SpinnerListModel spinnerModel, Value<T> linkedValue) {
-    return new DefaultItemSpinnerBuilder<>(spinnerModel, requireNonNull(linkedValue));
+    return ItemSpinnerBuilder.builder(spinnerModel, linkedValue);
   }
 
   /**
