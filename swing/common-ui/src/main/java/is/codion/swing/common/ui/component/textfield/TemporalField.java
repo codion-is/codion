@@ -7,6 +7,7 @@ import is.codion.common.DateTimeParser;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.textfield.DocumentAdapter;
+import is.codion.swing.common.ui.component.ComponentValue;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.text.MaskFormatter;
@@ -191,6 +192,16 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
       }
 
       return (C) new TemporalField<>(this);
+    }
+
+    @Override
+    protected ComponentValue<T, C> createComponentValue(C component) {
+      return (ComponentValue<T, C>) new TemporalFieldValue<>(component, updateOn);
+    }
+
+    @Override
+    protected void setInitialValue(C component, T initialValue) {
+      component.setTemporal(initialValue);
     }
 
     private static <T extends Temporal> DateTimeParser<T> initializeDateTimeParser(Class<T> typeClass) {

@@ -8032,3 +8032,5 @@
   TextComponentBuilder.controlDeleteWord() added, with special handling for JPasswordField, where it deletes everything before/after the cursor instead of the previous/next word
   AbstractTextComponentBuilder moved to textfield package
   NumberField.Builder refactored
+  TemporalField.DefaultBuilder bug fixed, did not override createComponentValue() and setInitialValue()
+  DefaultTextFieldBuilder.setInitialValue() now throws exception if value is not a String or Character
