@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.swing.common.model.component.textfield.DocumentAdapter;
+import is.codion.swing.common.model.component.text.DocumentAdapter;
 
 import javax.swing.JTextField;
 import javax.swing.UIManager;

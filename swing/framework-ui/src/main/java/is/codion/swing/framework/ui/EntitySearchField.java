@@ -16,7 +16,7 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.DefaultEntitySearchModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
-import is.codion.swing.common.model.component.textfield.DocumentAdapter;
+import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.TransferFocusOnEnter;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.model.component.textfield;
+package is.codion.swing.common.model.component.text;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;

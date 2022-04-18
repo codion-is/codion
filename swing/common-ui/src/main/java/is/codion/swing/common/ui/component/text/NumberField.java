@@ -6,7 +6,7 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.formats.Formats;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.textfield.DocumentAdapter;
+import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 

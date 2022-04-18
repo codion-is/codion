@@ -6,7 +6,7 @@ package is.codion.framework.demos.manual.common;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.textfield.DocumentAdapter;
+import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.ComponentValue;
