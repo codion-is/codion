@@ -8081,3 +8081,4 @@
   SliderBuilder and related classes moved to component.slider package
   SpinnerBuilder and related classes moved to component.spinner package
   PanelBuilder and related classes moved to component.panel package
+  ButtonBuilder and related classes moved to component.button package

@@ -7,6 +7,10 @@ import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.component.button.ButtonBuilder;
+import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
+import is.codion.swing.common.ui.component.button.RadioButtonBuilder;
+import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
@@ -59,7 +63,7 @@ public final class Components {
    * @return a builder for a JButton
    */
   public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button() {
-    return new DefaultButtonBuilder<>(null);
+    return ButtonBuilder.builder();
   }
 
   /**
@@ -68,14 +72,14 @@ public final class Components {
    * @return a builder for a JButton
    */
   public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button(Action action) {
-    return new DefaultButtonBuilder<>(requireNonNull(action));
+    return ButtonBuilder.builder(action);
   }
 
   /**
    * @return a builder for a component
    */
   public static CheckBoxBuilder checkBox() {
-    return new DefaultCheckBoxBuilder(null);
+    return CheckBoxBuilder.builder();
   }
 
   /**
@@ -83,14 +87,14 @@ public final class Components {
    * @return a builder for a component
    */
   public static CheckBoxBuilder checkBox(Value<Boolean> linkedValue) {
-    return new DefaultCheckBoxBuilder(requireNonNull(linkedValue));
+    return CheckBoxBuilder.builder(linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static RadioButtonBuilder radioButton() {
-    return new DefaultRadioButtonBuilder(null);
+    return RadioButtonBuilder.builder();
   }
 
   /**
@@ -98,15 +102,15 @@ public final class Components {
    * @return a builder for a component
    */
   public static RadioButtonBuilder radioButton(Value<Boolean> linkedValue) {
-    return new DefaultRadioButtonBuilder(requireNonNull(linkedValue));
+    return RadioButtonBuilder.builder(linkedValue);
   }
 
   /**
    * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton() {
-    return new DefaultToggleButtonBuilder<>(null);
+  public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton() {
+    return ToggleButtonBuilder.builder();
   }
 
   /**
@@ -114,8 +118,8 @@ public final class Components {
    * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(Value<Boolean> linkedValue) {
-    return new DefaultToggleButtonBuilder<>(requireNonNull(linkedValue));
+  public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(Value<Boolean> linkedValue) {
+    return ToggleButtonBuilder.builder(linkedValue);
   }
 
   /**

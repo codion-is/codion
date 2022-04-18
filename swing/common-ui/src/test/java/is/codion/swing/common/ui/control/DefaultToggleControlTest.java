@@ -6,7 +6,7 @@ package is.codion.swing.common.ui.control;
 import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.checkbox.NullableToggleButtonModel;
+import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 
 import org.junit.jupiter.api.Test;
 

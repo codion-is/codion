@@ -1,7 +1,10 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.button;
+
+import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.ComponentValue;
 
 import javax.swing.Action;
 import javax.swing.JButton;
