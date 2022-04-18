@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.i18n.Messages;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -122,23 +121,21 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
   @Override
   public JDialog build() {
-    JButton okButton = Components.button(okAction)
-            .caption(Messages.get(Messages.OK))
-            .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
-            .build();
-    JButton cancelButton = Components.button(cancelAction)
-            .caption(Messages.get(Messages.CANCEL))
-            .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
-            .build();
-    JPanel panel = Components.panel(new BorderLayout())
-            .add(component, BorderLayout.CENTER)
-            .add(Components.panel(Layouts.flowLayout(buttonPanelConstraints))
-                    .add(Components.panel(Layouts.gridLayout(1, 2))
-                            .addAll(okButton, cancelButton)
-                            .build())
-                    .border(buttonPanelBorder)
-                    .build(), BorderLayout.SOUTH)
-            .build();
+    JButton okButton = new JButton(okAction);
+    okButton.setText(Messages.get(Messages.OK));
+    okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    JButton cancelButton = new JButton(cancelAction);
+    cancelButton.setText(Messages.get(Messages.CANCEL));
+    cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
+    JPanel buttonPanel = new JPanel(Layouts.gridLayout(1, 2));
+    buttonPanel.add(okButton);
+    buttonPanel.add(cancelButton);
+    JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(buttonPanelConstraints));
+    buttonBasePanel.add(buttonPanel, BorderLayout.SOUTH);
+    buttonBasePanel.setBorder(buttonPanelBorder);
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.add(component, BorderLayout.CENTER);
+    panel.add(buttonBasePanel, BorderLayout.SOUTH);
 
     JDialog dialog = DefaultComponentDialogBuilder.createDialog(owner, title, icon, panel, size, locationRelativeTo, modal, resizable, onShown);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

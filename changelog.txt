@@ -8039,3 +8039,5 @@
   NumberField refactored
   Package is.codion.swing.common.ui.component.textfield renamed text
   PasswordFieldBuilder moved to text package
+  ExceptionPanel, DefaultOkCancelDialogBuilder no longer use Components, reducing cyclical dependencies
+  Package is.codion.swing.common.model.component.textfield renamed text
