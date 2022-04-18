@@ -9,6 +9,7 @@ import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
+import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
@@ -744,7 +745,7 @@ public final class Components {
    * @return a panel builder
    */
   public static PanelBuilder panel() {
-    return new DefaultPanelBuilder((LayoutManager) null);
+    return PanelBuilder.builder();
   }
 
   /**
@@ -752,7 +753,7 @@ public final class Components {
    * @return a panel builder
    */
   public static PanelBuilder panel(LayoutManager layout) {
-    return new DefaultPanelBuilder(requireNonNull(layout));
+    return PanelBuilder.builder(layout);
   }
 
   /**
@@ -760,7 +761,7 @@ public final class Components {
    * @return a panel builder
    */
   public static PanelBuilder panel(JPanel panel) {
-    return new DefaultPanelBuilder(panel);
+    return PanelBuilder.builder(panel);
   }
 
   /**
