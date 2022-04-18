@@ -7,13 +7,19 @@ import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
+import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
+import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.component.slider.SliderBuilder;
+import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
+import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
+import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.PasswordFieldBuilder;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalInputPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
-import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
 
@@ -116,7 +122,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox() {
-    return booleanComboBox((Value<Boolean>) null);
+    return ItemComboBoxBuilder.builder(ItemComboBoxModel.createBooleanModel());
   }
 
   /**
@@ -124,7 +130,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox(Value<Boolean> linkedValue) {
-    return new DefaultItemComboBoxBuilder<>(ItemComboBoxModel.createBooleanModel(), requireNonNull(linkedValue));
+    return ItemComboBoxBuilder.builder(ItemComboBoxModel.createBooleanModel(), requireNonNull(linkedValue));
   }
 
   /**
@@ -132,7 +138,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox(ItemComboBoxModel<Boolean> comboBoxModel) {
-    return new DefaultItemComboBoxBuilder<>(comboBoxModel, null);
+    return ItemComboBoxBuilder.builder(comboBoxModel);
   }
 
   /**
@@ -142,7 +148,7 @@ public final class Components {
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox(ItemComboBoxModel<Boolean> comboBoxModel,
                                                              Value<Boolean> linkedValue) {
-    return new DefaultItemComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
+    return ItemComboBoxBuilder.builder(comboBoxModel, linkedValue);
   }
 
   /**
@@ -151,7 +157,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(ItemComboBoxModel<T> comboBoxModel) {
-    return new DefaultItemComboBoxBuilder<>(comboBoxModel, null);
+    return ItemComboBoxBuilder.builder(comboBoxModel);
   }
 
   /**
@@ -162,7 +168,7 @@ public final class Components {
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(ItemComboBoxModel<T> comboBoxModel,
                                                         Value<T> linkedValue) {
-    return new DefaultItemComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
+    return ItemComboBoxBuilder.builder(comboBoxModel, linkedValue);
   }
 
   /**
@@ -171,7 +177,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(List<Item<T>> values) {
-    return new DefaultItemComboBoxBuilder<>(values, null);
+    return ItemComboBoxBuilder.builder(values);
   }
 
   /**
@@ -181,7 +187,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(List<Item<T>> values, Value<T> linkedValue) {
-    return new DefaultItemComboBoxBuilder<>(values, requireNonNull(linkedValue));
+    return ItemComboBoxBuilder.builder(values, linkedValue);
   }
 
   /**
@@ -192,7 +198,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel) {
-    return new DefaultComboBoxBuilder<>(comboBoxModel, null);
+    return ComboBoxBuilder.builder(comboBoxModel);
   }
 
   /**
@@ -205,7 +211,7 @@ public final class Components {
    */
   public static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel,
                                                                                                                   Value<T> linkedValue) {
-    return new DefaultComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
+    return ComboBoxBuilder.builder(comboBoxModel, linkedValue);
   }
 
   /**
@@ -305,7 +311,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static TextAreaBuilder textArea() {
-    return TextComponents.textArea();
+    return TextAreaBuilder.builder();
   }
 
   /**
@@ -313,7 +319,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static TextAreaBuilder textArea(Value<String> linkedValue) {
-    return TextComponents.textArea(linkedValue);
+    return TextAreaBuilder.builder(linkedValue);
   }
 
   /**
@@ -321,7 +327,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField() {
-    return TextComponents.textField();
+    return TextFieldBuilder.builder(String.class);
   }
 
   /**
@@ -330,7 +336,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField(Value<String> linkedValue) {
-    return TextComponents.textField(linkedValue);
+    return TextFieldBuilder.builder(String.class, linkedValue);
   }
 
   /**
@@ -341,7 +347,11 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass) {
-    return TextComponents.textField(valueClass);
+    if (Number.class.isAssignableFrom(valueClass)) {
+      return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) valueClass);
+    }
+
+    return TextFieldBuilder.builder(valueClass);
   }
 
   /**
@@ -354,7 +364,11 @@ public final class Components {
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass,
                                                                                                                    Value<T> linkedValue) {
-    return TextComponents.textField(valueClass, linkedValue);
+    if (Number.class.isAssignableFrom(valueClass)) {
+      return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) valueClass, (Value<Number>) requireNonNull(linkedValue));
+    }
+
+    return TextFieldBuilder.builder(valueClass, linkedValue);
   }
 
   /**
@@ -525,7 +539,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static MaskedTextFieldBuilder maskedTextField() {
-    return TextComponents.maskedTextField();
+    return MaskedTextFieldBuilder.builder();
   }
 
   /**
@@ -533,14 +547,14 @@ public final class Components {
    * @return a builder for a component
    */
   public static MaskedTextFieldBuilder maskedTextField(Value<String> linkedValue) {
-    return TextComponents.maskedTextField(linkedValue);
+    return MaskedTextFieldBuilder.builder(linkedValue);
   }
 
   /**
    * @return a new JPasswordField
    */
   public static PasswordFieldBuilder passwordField() {
-    return TextComponents.passwordField();
+    return PasswordFieldBuilder.builder();
   }
 
   /**
@@ -548,14 +562,14 @@ public final class Components {
    * @return a new JPasswordField
    */
   public static PasswordFieldBuilder passwordField(Value<String> linkedValue) {
-    return TextComponents.passwordField(linkedValue);
+    return PasswordFieldBuilder.builder(linkedValue);
   }
 
   /**
    * @return a builder for a Double based JSpinner
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner() {
-    return new DefaultNumberSpinnerBuilder<>(new SpinnerNumberModel(), Double.class, null);
+    return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Double.class);
   }
 
   /**
@@ -563,7 +577,7 @@ public final class Components {
    * @return a builder for a Double based JSpinner
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner(Value<Double> linkedValue) {
-    return new DefaultNumberSpinnerBuilder<>(new SpinnerNumberModel(), Double.class, requireNonNull(linkedValue));
+    return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Double.class, linkedValue);
   }
 
   /**
@@ -571,7 +585,7 @@ public final class Components {
    * @return a builder for a Double based JSpinner
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner(SpinnerNumberModel spinnerNumberModel) {
-    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Double.class, null);
+    return NumberSpinnerBuilder.builder(spinnerNumberModel, Double.class);
   }
 
   /**
@@ -581,14 +595,14 @@ public final class Components {
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner(SpinnerNumberModel spinnerNumberModel,
                                                            Value<Double> linkedValue) {
-    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Double.class, requireNonNull(linkedValue));
+    return NumberSpinnerBuilder.builder(spinnerNumberModel, Double.class, linkedValue);
   }
 
   /**
    * @return a builder for a Integer based JSpinner
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner() {
-    return new DefaultNumberSpinnerBuilder<>(new SpinnerNumberModel(), Integer.class, null);
+    return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Integer.class);
   }
 
   /**
@@ -596,7 +610,7 @@ public final class Components {
    * @return a builder for a Integer based JSpinner
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner(Value<Integer> linkedValue) {
-    return new DefaultNumberSpinnerBuilder<>(new SpinnerNumberModel(), Integer.class, requireNonNull(linkedValue));
+    return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Integer.class, linkedValue);
   }
 
   /**
@@ -604,7 +618,7 @@ public final class Components {
    * @return a builder for a Integer based JSpinner
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner(SpinnerNumberModel spinnerNumberModel) {
-    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Integer.class, null);
+    return NumberSpinnerBuilder.builder(spinnerNumberModel, Integer.class);
   }
 
   /**
@@ -614,7 +628,7 @@ public final class Components {
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner(SpinnerNumberModel spinnerNumberModel,
                                                              Value<Integer> linkedValue) {
-    return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, Integer.class, requireNonNull(linkedValue));
+    return NumberSpinnerBuilder.builder(spinnerNumberModel, Integer.class, linkedValue);
   }
 
   /**
@@ -623,7 +637,7 @@ public final class Components {
    * @return a builder for a JSpinner
    */
   public static <T> ListSpinnerBuilder<T> listSpinner(SpinnerListModel spinnerModel) {
-    return new DefaultListSpinnerBuilder<>(spinnerModel, null);
+    return ListSpinnerBuilder.builder(spinnerModel);
   }
 
   /**
@@ -633,7 +647,7 @@ public final class Components {
    * @return a builder for a JSpinner
    */
   public static <T> ListSpinnerBuilder<T> listSpinner(SpinnerListModel spinnerModel, Value<T> linkedValue) {
-    return new DefaultListSpinnerBuilder<>(spinnerModel, requireNonNull(linkedValue));
+    return ListSpinnerBuilder.builder(spinnerModel, linkedValue);
   }
 
   /**
@@ -642,7 +656,7 @@ public final class Components {
    * @return a builder for a JSpinner
    */
   public static <T> ItemSpinnerBuilder<T> itemSpinner(SpinnerListModel spinnerModel) {
-    return new DefaultItemSpinnerBuilder<>(spinnerModel, null);
+    return ItemSpinnerBuilder.builder(spinnerModel);
   }
 
   /**
@@ -652,7 +666,7 @@ public final class Components {
    * @return a builder for a JSpinner
    */
   public static <T> ItemSpinnerBuilder<T> itemSpinner(SpinnerListModel spinnerModel, Value<T> linkedValue) {
-    return new DefaultItemSpinnerBuilder<>(spinnerModel, requireNonNull(linkedValue));
+    return ItemSpinnerBuilder.builder(spinnerModel, linkedValue);
   }
 
   /**
@@ -660,7 +674,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static SliderBuilder slider(BoundedRangeModel boundedRangeModel) {
-    return new DefaultSliderBuilder(boundedRangeModel, null);
+    return SliderBuilder.builder(boundedRangeModel);
   }
 
   /**
@@ -669,7 +683,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static SliderBuilder slider(BoundedRangeModel boundedRangeModel, Value<Integer> linkedValue) {
-    return new DefaultSliderBuilder(boundedRangeModel, requireNonNull(linkedValue));
+    return SliderBuilder.builder(boundedRangeModel, linkedValue);
   }
 
   /**
@@ -731,7 +745,7 @@ public final class Components {
    * @return a panel builder
    */
   public static PanelBuilder panel() {
-    return new DefaultPanelBuilder((LayoutManager) null);
+    return PanelBuilder.builder();
   }
 
   /**
@@ -739,7 +753,7 @@ public final class Components {
    * @return a panel builder
    */
   public static PanelBuilder panel(LayoutManager layout) {
-    return new DefaultPanelBuilder(requireNonNull(layout));
+    return PanelBuilder.builder(layout);
   }
 
   /**
@@ -747,7 +761,7 @@ public final class Components {
    * @return a panel builder
    */
   public static PanelBuilder panel(JPanel panel) {
-    return new DefaultPanelBuilder(panel);
+    return PanelBuilder.builder(panel);
   }
 
   /**

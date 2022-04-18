@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.spinner;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
-import is.codion.swing.common.ui.component.spinner.SpinnerMouseWheelListener;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 
 import javax.swing.JComponent;
 import javax.swing.JSpinner;

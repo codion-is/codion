@@ -1,14 +1,18 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.combobox;
 
-import is.codion.swing.common.ui.component.combobox.Completion;
+import is.codion.common.value.Value;
+import is.codion.swing.common.ui.component.ComponentBuilder;
 
 import javax.swing.ComboBoxEditor;
+import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
 import java.awt.event.ItemListener;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a {@link JComboBox}.
@@ -85,4 +89,28 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
    * @return this builder instance
    */
   B itemListener(ItemListener itemListener);
+
+  /**
+   * @param <T> the value type
+   * @param <C> the component type
+   * @param <B> the builder type
+   * @param comboBoxModel the combo box model
+   * @return a builder for a component
+   */
+  static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> builder(ComboBoxModel<T> comboBoxModel) {
+    return new DefaultComboBoxBuilder<>(comboBoxModel, null);
+  }
+
+  /**
+   * @param comboBoxModel the combo box model
+   * @param linkedValue the value to link to the component
+   * @param <T> the value type
+   * @param <C> the component type
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> builder(ComboBoxModel<T> comboBoxModel,
+                                                                                                          Value<T> linkedValue) {
+    return new DefaultComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
+  }
 }

@@ -3,9 +3,12 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 
 import javax.swing.JFormattedTextField;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a formatted text field.
@@ -96,4 +99,19 @@ public interface MaskedTextFieldBuilder extends ComponentBuilder<String, JFormat
    * @see JFormattedTextField#PERSIST
    */
   MaskedTextFieldBuilder focusLostBehaviour(int focusLostBehaviour);
+
+  /**
+   * @return a builder for a component
+   */
+  static MaskedTextFieldBuilder builder() {
+    return new DefaultMaskedTextFieldBuilder(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  static MaskedTextFieldBuilder builder(Value<String> linkedValue) {
+    return new DefaultMaskedTextFieldBuilder(requireNonNull(linkedValue));
+  }
 }

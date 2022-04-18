@@ -1,10 +1,11 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.component.AbstractComponentValue;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;

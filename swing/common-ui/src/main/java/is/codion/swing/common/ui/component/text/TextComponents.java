@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.value.Value;
-
 import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
@@ -32,92 +30,6 @@ public final class TextComponents {
   private static Dimension preferredTextFieldSize;
 
   private TextComponents() {}
-
-  /**
-   * @return a builder for a component
-   */
-  public static TextAreaBuilder textArea() {
-    return new DefaultTextAreaBuilder(null);
-  }
-
-  /**
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static TextAreaBuilder textArea(Value<String> linkedValue) {
-    return new DefaultTextAreaBuilder(requireNonNull(linkedValue));
-  }
-
-  /**
-   * @param <B> the builder type
-   * @return a builder for a component
-   */
-  public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField() {
-    return new DefaultTextFieldBuilder<>(String.class, null);
-  }
-
-  /**
-   * @param linkedValue the value to link to the component
-   * @param <B> the builder type
-   * @return a builder for a component
-   */
-  public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField(Value<String> linkedValue) {
-    return new DefaultTextFieldBuilder<>(String.class, requireNonNull(linkedValue));
-  }
-
-  /**
-   * @param <T> the value type
-   * @param <C> the text field type
-   * @param <B> the builder type
-   * @param valueClass the value class
-   * @return a builder for a component
-   */
-  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass) {
-    return textFieldBuilder(requireNonNull(valueClass), null);
-  }
-
-  /**
-   * @param <T> the value type
-   * @param <C> the text field type
-   * @param <B> the builder type
-   * @param valueClass the value class
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass,
-                                                                                                                   Value<T> linkedValue) {
-    return textFieldBuilder(requireNonNull(valueClass), requireNonNull(linkedValue));
-  }
-
-  /**
-   * @return a builder for a component
-   */
-  public static MaskedTextFieldBuilder maskedTextField() {
-    return new DefaultMaskedTextFieldBuilder(null);
-  }
-
-  /**
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static MaskedTextFieldBuilder maskedTextField(Value<String> linkedValue) {
-    return new DefaultMaskedTextFieldBuilder(requireNonNull(linkedValue));
-  }
-
-  /**
-   * @return a new JPasswordField
-   */
-  public static PasswordFieldBuilder passwordField() {
-    return new DefaultPasswordFieldBuilder(null);
-  }
-
-  /**
-   * @param linkedValue the value to link to the component
-   * @return a new JPasswordField
-   */
-  public static PasswordFieldBuilder passwordField(Value<String> linkedValue) {
-    return new DefaultPasswordFieldBuilder(requireNonNull(linkedValue));
-  }
 
   /**
    * Sets the maximum length for the given document, supports {@link SizedDocument} and {@link AbstractDocument}
@@ -230,13 +142,5 @@ public final class TextComponents {
    */
   public static int getPreferredTextFieldHeight() {
     return getPreferredTextFieldSize().height;
-  }
-
-  private static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(Class<T> valueClass, Value<T> linkedValue) {
-    if (Number.class.isAssignableFrom(valueClass)) {
-      return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) valueClass, (Value<Number>) linkedValue);
-    }
-
-    return new DefaultTextFieldBuilder<>(valueClass, linkedValue);
   }
 }

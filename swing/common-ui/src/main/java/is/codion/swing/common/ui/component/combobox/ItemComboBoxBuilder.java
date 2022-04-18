@@ -1,13 +1,18 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.item.Item;
-import is.codion.swing.common.ui.component.combobox.Completion;
+import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.component.ComponentBuilder;
 
 import javax.swing.JComboBox;
 import java.util.Comparator;
+import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a item combo box.
@@ -65,4 +70,43 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
    * @return this builder instance
    */
   ItemComboBoxBuilder<T> popupWidth(int popupWidth);
+
+  /**
+   * @param comboBoxModel the combo box model
+   * @param <T> the value type
+   * @return a builder for a component
+   */
+  static <T> ItemComboBoxBuilder<T> builder(ItemComboBoxModel<T> comboBoxModel) {
+    return new DefaultItemComboBoxBuilder<>(comboBoxModel, null);
+  }
+
+  /**
+   * @param comboBoxModel the combo box model
+   * @param linkedValue the value to link to the component
+   * @param <T> the value type
+   * @return a builder for a component
+   */
+  static <T> ItemComboBoxBuilder<T> builder(ItemComboBoxModel<T> comboBoxModel,
+                                            Value<T> linkedValue) {
+    return new DefaultItemComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
+  }
+
+  /**
+   * @param values the values
+   * @param <T> the value type
+   * @return a builder for a component
+   */
+  static <T> ItemComboBoxBuilder<T> builder(List<Item<T>> values) {
+    return new DefaultItemComboBoxBuilder<>(values, null);
+  }
+
+  /**
+   * @param values the values
+   * @param linkedValue the value to link to the component
+   * @param <T> the value type
+   * @return a builder for a component
+   */
+  static <T> ItemComboBoxBuilder<T> builder(List<Item<T>> values, Value<T> linkedValue) {
+    return new DefaultItemComboBoxBuilder<>(values, requireNonNull(linkedValue));
+  }
 }

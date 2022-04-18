@@ -1,10 +1,11 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.slider;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.slider.SliderMouseWheelListener;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JSlider;

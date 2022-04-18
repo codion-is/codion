@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.item.Item;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.component.DefaultComboBoxBuilder.CopyEditorActionsListener;
-import is.codion.swing.common.ui.component.DefaultComboBoxBuilder.SteppedComboBoxUI;
-import is.codion.swing.common.ui.component.combobox.ComboBoxMouseWheelListener;
-import is.codion.swing.common.ui.component.combobox.Completion;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.combobox.DefaultComboBoxBuilder.CopyEditorActionsListener;
+import is.codion.swing.common.ui.component.combobox.DefaultComboBoxBuilder.SteppedComboBoxUI;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.JComboBox;
