@@ -12,7 +12,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
 import is.codion.swing.common.ui.component.text.UpdateOn;

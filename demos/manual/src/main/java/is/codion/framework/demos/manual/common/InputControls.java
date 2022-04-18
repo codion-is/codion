@@ -11,7 +11,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.control.Control;

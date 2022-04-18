@@ -1,11 +1,10 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.checkbox.NullableToggleButtonModel;
-import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
+import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;

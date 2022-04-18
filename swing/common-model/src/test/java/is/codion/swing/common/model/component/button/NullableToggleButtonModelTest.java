@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.model.component.checkbox;
+package is.codion.swing.common.model.component.button;
 
 import org.junit.jupiter.api.Test;
 

@@ -7,8 +7,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.swing.common.model.component.checkbox.NullableToggleButtonModel;
-import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
+import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
+import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JTable;

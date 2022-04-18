@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.component.ComponentValue;
 
 import javax.swing.JToggleButton;
 
-class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ButtonBuilder<Boolean, C, B>>
-        extends AbstractButtonBuilder<Boolean, C, B> implements ButtonBuilder<Boolean, C, B> {
+class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>>
+        extends AbstractButtonBuilder<Boolean, C, B> implements ToggleButtonBuilder<C, B> {
 
   DefaultToggleButtonBuilder(Value<Boolean> linkedValue) {
     super(linkedValue);

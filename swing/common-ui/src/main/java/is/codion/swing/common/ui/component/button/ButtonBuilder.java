@@ -1,13 +1,18 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.button;
+
+import is.codion.swing.common.ui.component.ComponentBuilder;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Builds buttons.
@@ -15,7 +20,7 @@ import java.awt.event.ActionListener;
  * @param <C> the button type
  * @param <B> the builder type
  */
-public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>> extends ComponentBuilder<T, C, B>{
+public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>> extends ComponentBuilder<T, C, B> {
 
   /**
    * @param caption the caption
@@ -59,4 +64,21 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
    * @return this builder instance
    */
   B actionListener(ActionListener actionListener);
+
+  /**
+   * @param <B> the builder type
+   * @return a builder for a JButton
+   */
+  static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder() {
+    return new DefaultButtonBuilder<>(null);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param action the button action
+   * @return a builder for a JButton
+   */
+  static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder(Action action) {
+    return new DefaultButtonBuilder<>(requireNonNull(action));
+  }
 }
