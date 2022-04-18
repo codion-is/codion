@@ -1,10 +1,11 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.textfield;
 
 import is.codion.common.Configuration;
 import is.codion.common.properties.PropertyValue;
+import is.codion.swing.common.ui.component.SelectionProvider;
 
 import javax.swing.Action;
 import javax.swing.JTextField;

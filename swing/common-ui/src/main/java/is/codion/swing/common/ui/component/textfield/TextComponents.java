@@ -3,6 +3,9 @@
  */
 package is.codion.swing.common.ui.component.textfield;
 
+import is.codion.common.value.Value;
+import is.codion.swing.common.ui.component.PasswordFieldBuilder;
+
 import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
@@ -12,6 +15,11 @@ import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.Temporal;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -32,6 +40,282 @@ public final class TextComponents {
   private static Dimension preferredTextFieldSize;
 
   private TextComponents() {}
+
+  /**
+   * @param <T> the value type
+   * @param valueClass the value class
+   * @param dateTimePattern the date time pattern
+   * @return a builder for a component
+   */
+  public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(Class<T> valueClass,
+                                                                                     String dateTimePattern) {
+    return new DefaultTemporalInputPanelBuiler<>(valueClass, dateTimePattern, null);
+  }
+
+  /**
+   * @param <T> the value type
+   * @param valueClass the value class
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(Class<T> valueClass,
+                                                                                     String dateTimePattern,
+                                                                                     Value<T> linkedValue) {
+    return new DefaultTemporalInputPanelBuiler<>(valueClass, dateTimePattern, requireNonNull(linkedValue));
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalTime> localTimeInputPanel(String dateTimePattern) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalTime.class, dateTimePattern, null);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalTime> localTimeInputPanel(String dateTimePattern,
+                                                                         Value<LocalTime> linkedValue) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalTime.class, dateTimePattern, requireNonNull(linkedValue));
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalDate> localDateInputPanel(String dateTimePattern) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalDate.class, dateTimePattern, null);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalDate> localDateInputPanel(String dateTimePattern,
+                                                                         Value<LocalDate> linkedValue) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalDate.class, dateTimePattern, linkedValue);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalDateTime.class, dateTimePattern, null);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanelBuilder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern,
+                                                                                 Value<LocalDateTime> linkedValue) {
+    return new DefaultTemporalInputPanelBuiler<>(LocalDateTime.class, dateTimePattern, requireNonNull(linkedValue));
+  }
+
+  /**
+   * @return a builder for a component
+   */
+  public static TextInputPanelBuilder textInputPanel() {
+    return new DefaultTextInputPanelBuilder(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static TextInputPanelBuilder textInputPanel(Value<String> linkedValue) {
+    return new DefaultTextInputPanelBuilder(requireNonNull(linkedValue));
+  }
+
+  /**
+   * @return a builder for a component
+   */
+  public static TextAreaBuilder textArea() {
+    return new DefaultTextAreaBuilder(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static TextAreaBuilder textArea(Value<String> linkedValue) {
+    return new DefaultTextAreaBuilder(requireNonNull(linkedValue));
+  }
+
+  /**
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField() {
+    return new DefaultTextFieldBuilder<>(String.class, null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField(Value<String> linkedValue) {
+    return new DefaultTextFieldBuilder<>(String.class, requireNonNull(linkedValue));
+  }
+
+  /**
+   * @param <T> the value type
+   * @param <C> the text field type
+   * @param <B> the builder type
+   * @param valueClass the value class
+   * @return a builder for a component
+   */
+  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass) {
+    requireNonNull(valueClass);
+    if (valueClass.equals(Integer.class)) {
+      return (B) integerField();
+    }
+    else if (valueClass.equals(Long.class)) {
+      return (B) longField();
+    }
+    else if (valueClass.equals(Double.class)) {
+      return (B) doubleField();
+    }
+    else if (valueClass.equals(BigDecimal.class)) {
+      return (B) bigDecimalField();
+    }
+
+    return new DefaultTextFieldBuilder<>(valueClass, null);
+  }
+
+  /**
+   * @param <T> the value type
+   * @param <C> the text field type
+   * @param <B> the builder type
+   * @param valueClass the value class
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass,
+                                                                                                                   Value<T> linkedValue) {
+    requireNonNull(valueClass);
+    requireNonNull(linkedValue);
+    if (valueClass.equals(Integer.class)) {
+      return (B) integerField((Value<Integer>) linkedValue);
+    }
+    else if (valueClass.equals(Long.class)) {
+      return (B) longField((Value<Long>) linkedValue);
+    }
+    else if (valueClass.equals(Double.class)) {
+      return (B) doubleField((Value<Double>) linkedValue);
+    }
+    else if (valueClass.equals(BigDecimal.class)) {
+      return (B) bigDecimalField((Value<BigDecimal>) linkedValue);
+    }
+
+    return new DefaultTextFieldBuilder<>(valueClass, linkedValue);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends NumberFieldBuilder<Integer, B>> NumberFieldBuilder<Integer, B> integerField() {
+    return new DefaultIntegerFieldBuilder<>(null);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <B extends NumberFieldBuilder<Integer, B>> NumberFieldBuilder<Integer, B> integerField(Value<Integer> linkedValue) {
+    return new DefaultIntegerFieldBuilder<>(requireNonNull(linkedValue));
+  }
+
+  /**
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends NumberFieldBuilder<Long, B>> NumberFieldBuilder<Long, B> longField() {
+    return new DefaultLongFieldBuilder<>(null);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <B extends NumberFieldBuilder<Long, B>> NumberFieldBuilder<Long, B> longField(Value<Long> linkedValue) {
+    return new DefaultLongFieldBuilder<>(requireNonNull(linkedValue));
+  }
+
+  /**
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends DecimalFieldBuilder<Double, B>> DecimalFieldBuilder<Double, B> doubleField() {
+    return new DefaultDoubleFieldBuilder<>(null);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <B extends DecimalFieldBuilder<Double, B>> DecimalFieldBuilder<Double, B> doubleField(Value<Double> linkedValue) {
+    return new DefaultDoubleFieldBuilder<>(requireNonNull(linkedValue));
+  }
+
+  /**
+   * @param <B> the builder type
+   * @return a builder for a component
+   */
+  public static <B extends DecimalFieldBuilder<BigDecimal, B>> DecimalFieldBuilder<BigDecimal, B> bigDecimalField() {
+    return new DefaultBigDecimalFieldBuilder<>(null);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static <B extends DecimalFieldBuilder<BigDecimal, B>> DecimalFieldBuilder<BigDecimal, B> bigDecimalField(Value<BigDecimal> linkedValue) {
+    return new DefaultBigDecimalFieldBuilder<>(requireNonNull(linkedValue));
+  }
+
+  /**
+   * @return a builder for a component
+   */
+  public static MaskedTextFieldBuilder maskedTextField() {
+    return new DefaultMaskedTextFieldBuilder(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  public static MaskedTextFieldBuilder maskedTextField(Value<String> linkedValue) {
+    return new DefaultMaskedTextFieldBuilder(requireNonNull(linkedValue));
+  }
+
+  /**
+   * @return a new JPasswordField
+   */
+  public static PasswordFieldBuilder passwordField() {
+    return new DefaultPasswordFieldBuilder(null);
+  }
+
+  /**
+   * @param linkedValue the value to link to the component
+   * @return a new JPasswordField
+   */
+  public static PasswordFieldBuilder passwordField(Value<String> linkedValue) {
+    return new DefaultPasswordFieldBuilder(requireNonNull(linkedValue));
+  }
 
   /**
    * Sets the maximum length for the given document, supports {@link SizedDocument} and {@link AbstractDocument}

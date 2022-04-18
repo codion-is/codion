@@ -17,17 +17,16 @@ import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.DecimalFieldBuilder;
 import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.LabelBuilder;
-import is.codion.swing.common.ui.component.MaskedTextFieldBuilder;
-import is.codion.swing.common.ui.component.NumberFieldBuilder;
-import is.codion.swing.common.ui.component.TemporalFieldBuilder;
-import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
-import is.codion.swing.common.ui.component.TextAreaBuilder;
-import is.codion.swing.common.ui.component.TextFieldBuilder;
-import is.codion.swing.common.ui.component.TextInputPanelBuilder;
+import is.codion.swing.common.ui.component.textfield.DecimalFieldBuilder;
+import is.codion.swing.common.ui.component.textfield.MaskedTextFieldBuilder;
+import is.codion.swing.common.ui.component.textfield.NumberFieldBuilder;
 import is.codion.swing.common.ui.component.textfield.TemporalField;
+import is.codion.swing.common.ui.component.textfield.TemporalInputPanelBuilder;
+import is.codion.swing.common.ui.component.textfield.TextAreaBuilder;
+import is.codion.swing.common.ui.component.textfield.TextFieldBuilder;
+import is.codion.swing.common.ui.component.textfield.TextInputPanelBuilder;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntitySearchField;
@@ -345,7 +344,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> localTimeField(Attribute<LocalTime> attribute) {
+  public final TemporalField.Builder<LocalTime, TemporalField<LocalTime>> localTimeField(Attribute<LocalTime> attribute) {
     Property<LocalTime> property = entityDefinition.getProperty(attribute);
 
     return Components.localTimeField(property.getDateTimePattern())
@@ -357,7 +356,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> localDateField(Attribute<LocalDate> attribute) {
+  public final TemporalField.Builder<LocalDate, TemporalField<LocalDate>> localDateField(Attribute<LocalDate> attribute) {
     Property<LocalDate> property = entityDefinition.getProperty(attribute);
 
     return Components.localDateField(property.getDateTimePattern())
@@ -369,7 +368,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(Attribute<LocalDateTime> attribute) {
+  public final TemporalField.Builder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(Attribute<LocalDateTime> attribute) {
     Property<LocalDateTime> property = entityDefinition.getProperty(attribute);
 
     return Components.localDateTimeField(property.getDateTimePattern())
@@ -381,7 +380,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
+  public final TemporalField.Builder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
     Property<OffsetDateTime> property = entityDefinition.getProperty(attribute);
 
     return Components.offsetDateTimeField(property.getDateTimePattern())
@@ -394,7 +393,7 @@ public class EntityComponents {
    * @param <T> the temporal type
    * @return a builder
    */
-  public final <T extends Temporal> TemporalFieldBuilder<T, TemporalField<T>> temporalField(Attribute<T> attribute) {
+  public final <T extends Temporal> TemporalField.Builder<T, TemporalField<T>> temporalField(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
 
     return Components.temporalField(property.getAttribute().getTypeClass(), property.getDateTimePattern())

@@ -7,7 +7,15 @@ import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.component.textfield.DecimalFieldBuilder;
+import is.codion.swing.common.ui.component.textfield.MaskedTextFieldBuilder;
+import is.codion.swing.common.ui.component.textfield.NumberFieldBuilder;
 import is.codion.swing.common.ui.component.textfield.TemporalField;
+import is.codion.swing.common.ui.component.textfield.TemporalInputPanelBuilder;
+import is.codion.swing.common.ui.component.textfield.TextAreaBuilder;
+import is.codion.swing.common.ui.component.textfield.TextComponents;
+import is.codion.swing.common.ui.component.textfield.TextFieldBuilder;
+import is.codion.swing.common.ui.component.textfield.TextInputPanelBuilder;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -208,7 +216,7 @@ public final class Components {
    */
   public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(Class<T> valueClass,
                                                                                      String dateTimePattern) {
-    return new DefaultTemporalInputPanelBuiler<>(valueClass, dateTimePattern, null);
+    return TextComponents.temporalInputPanel(valueClass, dateTimePattern);
   }
 
   /**
@@ -221,7 +229,7 @@ public final class Components {
   public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(Class<T> valueClass,
                                                                                      String dateTimePattern,
                                                                                      Value<T> linkedValue) {
-    return new DefaultTemporalInputPanelBuiler<>(valueClass, dateTimePattern, requireNonNull(linkedValue));
+    return TextComponents.temporalInputPanel(valueClass, dateTimePattern, linkedValue);
   }
 
   /**
@@ -229,7 +237,7 @@ public final class Components {
    * @return a builder for a temporal component
    */
   public static TemporalInputPanelBuilder<LocalTime> localTimeInputPanel(String dateTimePattern) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalTime.class, dateTimePattern, null);
+    return TextComponents.localTimeInputPanel(dateTimePattern);
   }
 
   /**
@@ -239,7 +247,7 @@ public final class Components {
    */
   public static TemporalInputPanelBuilder<LocalTime> localTimeInputPanel(String dateTimePattern,
                                                                          Value<LocalTime> linkedValue) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalTime.class, dateTimePattern, requireNonNull(linkedValue));
+    return TextComponents.localTimeInputPanel(dateTimePattern, linkedValue);
   }
 
   /**
@@ -247,7 +255,7 @@ public final class Components {
    * @return a builder for a temporal component
    */
   public static TemporalInputPanelBuilder<LocalDate> localDateInputPanel(String dateTimePattern) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalDate.class, dateTimePattern, null);
+    return TextComponents.localDateInputPanel(dateTimePattern);
   }
 
   /**
@@ -257,7 +265,7 @@ public final class Components {
    */
   public static TemporalInputPanelBuilder<LocalDate> localDateInputPanel(String dateTimePattern,
                                                                          Value<LocalDate> linkedValue) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalDate.class, dateTimePattern, linkedValue);
+    return TextComponents.localDateInputPanel(dateTimePattern, linkedValue);
   }
 
   /**
@@ -265,7 +273,7 @@ public final class Components {
    * @return a builder for a temporal component
    */
   public static TemporalInputPanelBuilder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalDateTime.class, dateTimePattern, null);
+    return TextComponents.localDateTimeInputPanel(dateTimePattern);
   }
 
   /**
@@ -275,14 +283,14 @@ public final class Components {
    */
   public static TemporalInputPanelBuilder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern,
                                                                                  Value<LocalDateTime> linkedValue) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalDateTime.class, dateTimePattern, requireNonNull(linkedValue));
+    return TextComponents.localDateTimeInputPanel(dateTimePattern, linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static TextInputPanelBuilder textInputPanel() {
-    return new DefaultTextInputPanelBuilder(null);
+    return TextComponents.textInputPanel();
   }
 
   /**
@@ -290,14 +298,14 @@ public final class Components {
    * @return a builder for a component
    */
   public static TextInputPanelBuilder textInputPanel(Value<String> linkedValue) {
-    return new DefaultTextInputPanelBuilder(requireNonNull(linkedValue));
+    return TextComponents.textInputPanel(linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static TextAreaBuilder textArea() {
-    return new DefaultTextAreaBuilder(null);
+    return TextComponents.textArea();
   }
 
   /**
@@ -305,7 +313,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static TextAreaBuilder textArea(Value<String> linkedValue) {
-    return new DefaultTextAreaBuilder(requireNonNull(linkedValue));
+    return TextComponents.textArea(linkedValue);
   }
 
   /**
@@ -313,7 +321,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField() {
-    return new DefaultTextFieldBuilder<>(String.class, null);
+    return TextComponents.textField();
   }
 
   /**
@@ -322,7 +330,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField(Value<String> linkedValue) {
-    return new DefaultTextFieldBuilder<>(String.class, requireNonNull(linkedValue));
+    return TextComponents.textField(linkedValue);
   }
 
   /**
@@ -333,21 +341,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass) {
-    requireNonNull(valueClass);
-    if (valueClass.equals(Integer.class)) {
-      return (B) integerField();
-    }
-    else if (valueClass.equals(Long.class)) {
-      return (B) longField();
-    }
-    else if (valueClass.equals(Double.class)) {
-      return (B) doubleField();
-    }
-    else if (valueClass.equals(BigDecimal.class)) {
-      return (B) bigDecimalField();
-    }
-
-    return new DefaultTextFieldBuilder<>(valueClass, null);
+    return TextComponents.textField(valueClass);
   }
 
   /**
@@ -360,30 +354,15 @@ public final class Components {
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass,
                                                                                                                    Value<T> linkedValue) {
-    requireNonNull(valueClass);
-    requireNonNull(linkedValue);
-    if (valueClass.equals(Integer.class)) {
-      return (B) integerField((Value<Integer>) linkedValue);
-    }
-    else if (valueClass.equals(Long.class)) {
-      return (B) longField((Value<Long>) linkedValue);
-    }
-    else if (valueClass.equals(Double.class)) {
-      return (B) doubleField((Value<Double>) linkedValue);
-    }
-    else if (valueClass.equals(BigDecimal.class)) {
-      return (B) bigDecimalField((Value<BigDecimal>) linkedValue);
-    }
-
-    return new DefaultTextFieldBuilder<>(valueClass, linkedValue);
+    return TextComponents.textField(valueClass, linkedValue);
   }
 
   /**
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> localTimeField(String dateTimePattern) {
-    return new DefaultTemporalFieldBuilder<>(LocalTime.class, dateTimePattern, null);
+  public static TemporalField.Builder<LocalTime, TemporalField<LocalTime>> localTimeField(String dateTimePattern) {
+    return TemporalField.builder(LocalTime.class, dateTimePattern, null);
   }
 
   /**
@@ -391,17 +370,17 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a temporal component
    */
-  public static TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> localTimeField(String dateTimePattern,
+  public static TemporalField.Builder<LocalTime, TemporalField<LocalTime>> localTimeField(String dateTimePattern,
                                                                                          Value<LocalTime> linkedValue) {
-    return new DefaultTemporalFieldBuilder<>(LocalTime.class, dateTimePattern, requireNonNull(linkedValue));
+    return TemporalField.builder(LocalTime.class, dateTimePattern, requireNonNull(linkedValue));
   }
 
   /**
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> localDateField(String dateTimePattern) {
-    return new DefaultTemporalFieldBuilder<>(LocalDate.class, dateTimePattern, null);
+  public static TemporalField.Builder<LocalDate, TemporalField<LocalDate>> localDateField(String dateTimePattern) {
+    return TemporalField.builder(LocalDate.class, dateTimePattern, null);
   }
 
   /**
@@ -409,17 +388,17 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a temporal component
    */
-  public static TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> localDateField(String dateTimePattern,
+  public static TemporalField.Builder<LocalDate, TemporalField<LocalDate>> localDateField(String dateTimePattern,
                                                                                          Value<LocalDate> linkedValue) {
-    return new DefaultTemporalFieldBuilder<>(LocalDate.class, dateTimePattern, requireNonNull(linkedValue));
+    return TemporalField.builder(LocalDate.class, dateTimePattern, requireNonNull(linkedValue));
   }
 
   /**
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(String dateTimePattern) {
-    return new DefaultTemporalFieldBuilder<>(LocalDateTime.class, dateTimePattern, null);
+  public static TemporalField.Builder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(String dateTimePattern) {
+    return TemporalField.builder(LocalDateTime.class, dateTimePattern, null);
   }
 
   /**
@@ -427,17 +406,17 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a temporal component
    */
-  public static TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(String dateTimePattern,
+  public static TemporalField.Builder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(String dateTimePattern,
                                                                                                      Value<LocalDateTime> linkedValue) {
-    return new DefaultTemporalFieldBuilder<>(LocalDateTime.class, dateTimePattern, requireNonNull(linkedValue));
+    return TemporalField.builder(LocalDateTime.class, dateTimePattern, requireNonNull(linkedValue));
   }
 
   /**
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(String dateTimePattern) {
-    return new DefaultTemporalFieldBuilder<>(OffsetDateTime.class, dateTimePattern, null);
+  public static TemporalField.Builder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(String dateTimePattern) {
+    return TemporalField.builder(OffsetDateTime.class, dateTimePattern, null);
   }
 
   /**
@@ -445,9 +424,9 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a temporal component
    */
-  public static TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(String dateTimePattern,
+  public static TemporalField.Builder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(String dateTimePattern,
                                                                                                         Value<OffsetDateTime> linkedValue) {
-    return new DefaultTemporalFieldBuilder<>(OffsetDateTime.class, dateTimePattern, requireNonNull(linkedValue));
+    return TemporalField.builder(OffsetDateTime.class, dateTimePattern, requireNonNull(linkedValue));
   }
 
   /**
@@ -456,9 +435,9 @@ public final class Components {
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static <T extends Temporal> TemporalFieldBuilder<T, TemporalField<T>> temporalField(Class<T> temporalClass,
+  public static <T extends Temporal> TemporalField.Builder<T, TemporalField<T>> temporalField(Class<T> temporalClass,
                                                                                              String dateTimePattern) {
-    return new DefaultTemporalFieldBuilder<>(temporalClass, dateTimePattern, null);
+    return TemporalField.builder(temporalClass, dateTimePattern, null);
   }
 
   /**
@@ -468,10 +447,10 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a temporal component
    */
-  public static <T extends Temporal> TemporalFieldBuilder<T, TemporalField<T>> temporalField(Class<T> temporalClass,
+  public static <T extends Temporal> TemporalField.Builder<T, TemporalField<T>> temporalField(Class<T> temporalClass,
                                                                                              String dateTimePattern,
                                                                                              Value<T> linkedValue) {
-    return new DefaultTemporalFieldBuilder<>(temporalClass, dateTimePattern, requireNonNull(linkedValue));
+    return TemporalField.builder(temporalClass, dateTimePattern, requireNonNull(linkedValue));
   }
 
   /**
@@ -479,7 +458,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends NumberFieldBuilder<Integer, B>> NumberFieldBuilder<Integer, B> integerField() {
-    return new DefaultIntegerFieldBuilder<>(null);
+    return TextComponents.integerField();
   }
 
   /**
@@ -488,7 +467,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends NumberFieldBuilder<Integer, B>> NumberFieldBuilder<Integer, B> integerField(Value<Integer> linkedValue) {
-    return new DefaultIntegerFieldBuilder<>(requireNonNull(linkedValue));
+    return TextComponents.integerField(linkedValue);
   }
 
   /**
@@ -496,7 +475,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends NumberFieldBuilder<Long, B>> NumberFieldBuilder<Long, B> longField() {
-    return new DefaultLongFieldBuilder<>(null);
+    return TextComponents.longField();
   }
 
   /**
@@ -505,7 +484,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends NumberFieldBuilder<Long, B>> NumberFieldBuilder<Long, B> longField(Value<Long> linkedValue) {
-    return new DefaultLongFieldBuilder<>(requireNonNull(linkedValue));
+    return TextComponents.longField(linkedValue);
   }
 
   /**
@@ -513,7 +492,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends DecimalFieldBuilder<Double, B>> DecimalFieldBuilder<Double, B> doubleField() {
-    return new DefaultDoubleFieldBuilder<>(null);
+    return TextComponents.doubleField();
   }
 
   /**
@@ -522,7 +501,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends DecimalFieldBuilder<Double, B>> DecimalFieldBuilder<Double, B> doubleField(Value<Double> linkedValue) {
-    return new DefaultDoubleFieldBuilder<>(requireNonNull(linkedValue));
+    return TextComponents.doubleField(linkedValue);
   }
 
   /**
@@ -530,7 +509,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends DecimalFieldBuilder<BigDecimal, B>> DecimalFieldBuilder<BigDecimal, B> bigDecimalField() {
-    return new DefaultBigDecimalFieldBuilder<>(null);
+    return TextComponents.bigDecimalField();
   }
 
   /**
@@ -539,14 +518,14 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends DecimalFieldBuilder<BigDecimal, B>> DecimalFieldBuilder<BigDecimal, B> bigDecimalField(Value<BigDecimal> linkedValue) {
-    return new DefaultBigDecimalFieldBuilder<>(requireNonNull(linkedValue));
+    return TextComponents.bigDecimalField(linkedValue);
   }
 
   /**
    * @return a builder for a component
    */
   public static MaskedTextFieldBuilder maskedTextField() {
-    return new DefaultMaskedTextFieldBuilder(null);
+    return TextComponents.maskedTextField();
   }
 
   /**
@@ -554,14 +533,14 @@ public final class Components {
    * @return a builder for a component
    */
   public static MaskedTextFieldBuilder maskedTextField(Value<String> linkedValue) {
-    return new DefaultMaskedTextFieldBuilder(requireNonNull(linkedValue));
+    return TextComponents.maskedTextField(linkedValue);
   }
 
   /**
    * @return a new JPasswordField
    */
   public static PasswordFieldBuilder passwordField() {
-    return new DefaultPasswordFieldBuilder(null);
+    return TextComponents.passwordField();
   }
 
   /**
@@ -569,7 +548,7 @@ public final class Components {
    * @return a new JPasswordField
    */
   public static PasswordFieldBuilder passwordField(Value<String> linkedValue) {
-    return new DefaultPasswordFieldBuilder(requireNonNull(linkedValue));
+    return TextComponents.passwordField(linkedValue);
   }
 
   /**

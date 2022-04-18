@@ -1,12 +1,13 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.textfield;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
-import is.codion.swing.common.ui.component.textfield.TemporalField;
-import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.component.textfield.TemporalInputPanel.CalendarProvider;
 
 import javax.swing.JComponent;
@@ -102,8 +103,8 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
       throw new IllegalStateException("Unsupported temporal type: " + valueClass);
     }
 
-    return new DefaultTemporalFieldBuilder<>(valueClass, dateTimePattern, null)
-              .updateOn(updateOn)
+    return TemporalField.builder(valueClass, dateTimePattern, null)
+            .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)
               .columns(columns)
               .build();

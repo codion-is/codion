@@ -1,9 +1,10 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.textfield;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.component.PasswordFieldBuilder;
 
 import javax.swing.JPasswordField;
 

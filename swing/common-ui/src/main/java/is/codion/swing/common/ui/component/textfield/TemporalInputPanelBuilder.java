@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.textfield;
 
-import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
+import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.textfield.TemporalInputPanel.CalendarProvider;
 
 import java.time.temporal.Temporal;

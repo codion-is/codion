@@ -1,9 +1,7 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
-
-import is.codion.swing.common.ui.component.textfield.NumberField;
+package is.codion.swing.common.ui.component.textfield;
 
 /**
  * A builder for a decimal based {@link NumberField}.
