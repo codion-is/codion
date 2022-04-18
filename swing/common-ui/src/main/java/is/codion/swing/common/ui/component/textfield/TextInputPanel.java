@@ -3,8 +3,14 @@
  */
 package is.codion.swing.common.ui.component.textfield;
 
+import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;
@@ -14,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.text.Document;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -38,9 +43,9 @@ public final class TextInputPanel extends JPanel {
   private final Dimension textAreaSize;
   private final int maximumLength;
 
-  private TextInputPanel(DefaultBuilder<?> builder) {
+  private TextInputPanel(DefaultBuilder builder, JTextField textField) {
     this.dialogTitle = builder.dialogTitle;
-    this.textField = builder.textField;
+    this.textField = textField;
     this.textAreaSize = builder.textAreaSize;
     this.button = createButton(builder.buttonFocusable, TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
     this.caption = builder.caption;
@@ -108,50 +113,85 @@ public final class TextInputPanel extends JPanel {
    * @param <B> the builder type
    * @return a new builder
    */
-  public static <B extends Builder<B>> Builder<B> builder(JTextField textField) {
-    return new DefaultBuilder<>(requireNonNull(textField));
+  public static Builder builder() {
+    return new DefaultBuilder(null);
+  }
+
+  /**
+   * @param textField the text field
+   * @param <B> the builder type
+   * @return a new builder
+   */
+  public static Builder builder(Value<String> linkedValue) {
+    return new DefaultBuilder(requireNonNull(linkedValue));
   }
 
   /**
    * A builder for {@link TextInputPanel}.
    */
-  public interface Builder<B extends Builder<B>> {
+  public interface Builder extends ComponentBuilder<String, TextInputPanel, Builder> {
+
+    /**
+     * @param updateOn specifies when the underlying value should be updated
+     * @return this builder instance
+     */
+    Builder updateOn(UpdateOn updateOn);
+
+    /**
+     * @param columns the number of colums in the text field
+     * @return this builder instance
+     */
+    Builder columns(int columns);
+
+    /**
+     * @param upperCase if true the text component convert all lower case input to upper case
+     * @return this builder instance
+     */
+    Builder upperCase(boolean upperCase);
+
+    /**
+     * @param lowerCase if true the text component convert all upper case input to lower case
+     * @return this builder instance
+     */
+    Builder lowerCase(boolean lowerCase);
+
+    /**
+     * Makes the text field select all when it gains focus
+     * @param selectAllOnFocusGained if true the component will select contents on focus gained
+     * @return this builder instance
+     */
+    Builder selectAllOnFocusGained(boolean selectAllOnFocusGained);
 
     /**
      * @param dialogTitle the input dialog title
      * @return this builder instance
      */
-    B dialogTitle(String dialogTitle);
+    Builder dialogTitle(String dialogTitle);
 
     /**
      * If specified a titled border with the given caption is added to the input field
      * @param caption the caption to display
      * @return this builder instance
      */
-    B caption(String caption);
+    Builder caption(String caption);
 
     /**
      * @param textAreaSize the input text area siz
      * @return this builder instance
      */
-    B textAreaSize(Dimension textAreaSize);
+    Builder textAreaSize(Dimension textAreaSize);
 
     /**
      * @param buttonFocusable true if the input button should be focusable
      * @return this builder instance
      */
-    B buttonFocusable(boolean buttonFocusable);
+    Builder buttonFocusable(boolean buttonFocusable);
 
     /**
      * @param maximumLength the maximum text length
      * @return this builder instance
      */
-    B maximumLength(int maximumLength);
-
-    /**
-     * @return a new TextInputPanel
-     */
-    TextInputPanel build();
+    Builder maximumLength(int maximumLength);
   }
 
   private void initializeUI() {
@@ -189,18 +229,16 @@ public final class TextInputPanel extends JPanel {
   }
 
   private void getInputFromUser() {
-    JTextArea textArea = new JTextArea(textField.getText()) {
-      @Override
-      protected Document createDefaultModel() {
-        return new SizedDocument(maximumLength);
-      }
-    };
-    textArea.setCaretPosition(textArea.getText().length());
-    textArea.setPreferredSize(textAreaSize);
-    textArea.setLineWrap(true);
-    textArea.setWrapStyleWord(true);
-    textArea.setEditable(textField.isEditable());
-    TransferFocusOnEnter.enable(textArea);
+    JTextArea textArea = TextComponents.textArea()
+            .document(new SizedDocument(maximumLength))
+            .initialValue(textField.getText())
+            .preferredSize(textAreaSize)
+            .lineWrap(true)
+            .wrapStyleWord(true)
+            .editable(textField.isEditable())
+            .transferFocusOnEnter(true)
+            .onBuild(TextComponents::moveCaretToEndOnFocusGained)
+            .build();
     Dialogs.okCancelDialog(new JScrollPane(textArea))
             .owner(textField)
             .title(dialogTitle == null ? caption : dialogTitle)
@@ -209,55 +247,119 @@ public final class TextInputPanel extends JPanel {
     textField.requestFocusInWindow();
   }
 
-  private static final class DefaultBuilder<B extends Builder<B>> implements Builder<B> {
+  private static final class DefaultBuilder extends AbstractComponentBuilder<String, TextInputPanel, Builder> implements Builder {
 
     private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
-    private final JTextField textField;
+    private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null);
 
-    private String dialogTitle;
-    private String caption;
-    private Dimension textAreaSize = DEFAULT_TEXT_AREA_SIZE;
     private boolean buttonFocusable;
-    private int maximumLength = -1;
+    private Dimension textAreaSize = DEFAULT_TEXT_AREA_SIZE;
+    private int maximumLength;
+    private String caption;
+    private String dialogTitle;
 
-    private DefaultBuilder(JTextField textField) {
-      this.textField = textField;
+    private DefaultBuilder(Value<String> linkedValue) {
+      super(linkedValue);
     }
 
     @Override
-    public B dialogTitle(String dialogTitle) {
-      this.dialogTitle = dialogTitle;
-      return (B) this;
+    public TextInputPanel.Builder updateOn(UpdateOn updateOn) {
+      textFieldBuilder.updateOn(updateOn);
+      return this;
     }
 
     @Override
-    public B caption(String caption) {
-      this.caption = caption;
-      return (B) this;
+    public TextInputPanel.Builder columns(int columns) {
+      textFieldBuilder.columns(columns);
+      return this;
     }
 
     @Override
-    public B textAreaSize(Dimension textAreaSize) {
-      this.textAreaSize = textAreaSize == null ? DEFAULT_TEXT_AREA_SIZE : textAreaSize;
-      return (B) this;
+    public TextInputPanel.Builder upperCase(boolean upperCase) {
+      textFieldBuilder.upperCase(upperCase);
+      return this;
     }
 
     @Override
-    public B buttonFocusable(boolean buttonFocusable) {
+    public TextInputPanel.Builder lowerCase(boolean lowerCase) {
+      textFieldBuilder.lowerCase(lowerCase);
+      return this;
+    }
+
+    @Override
+    public TextInputPanel.Builder selectAllOnFocusGained(boolean selectAllOnFocusGained) {
+      textFieldBuilder.selectAllOnFocusGained(selectAllOnFocusGained);
+      return this;
+    }
+
+    @Override
+    public TextInputPanel.Builder buttonFocusable(boolean buttonFocusable) {
       this.buttonFocusable = buttonFocusable;
-      return (B) this;
+      return this;
     }
 
     @Override
-    public B maximumLength(int maximumLength) {
+    public TextInputPanel.Builder textAreaSize(Dimension textAreaSize) {
+      this.textAreaSize = requireNonNull(textAreaSize);
+      return this;
+    }
+
+    @Override
+    public TextInputPanel.Builder maximumLength(int maximumLength) {
+      textFieldBuilder.maximumLength(maximumLength);
       this.maximumLength = maximumLength;
-      return (B) this;
+      return this;
     }
 
     @Override
-    public TextInputPanel build() {
-      return new TextInputPanel(this);
+    public TextInputPanel.Builder caption(String caption) {
+      this.caption = caption;
+      return this;
+    }
+
+    @Override
+    public TextInputPanel.Builder dialogTitle(String dialogTitle) {
+      this.dialogTitle = dialogTitle;
+      return this;
+    }
+
+    @Override
+    protected TextInputPanel createComponent() {
+      return new TextInputPanel(this, textFieldBuilder.build());
+    }
+
+    @Override
+    protected ComponentValue<String, TextInputPanel> createComponentValue(TextInputPanel component) {
+      return new TextInputPanelValue(component);
+    }
+
+    @Override
+    protected void setInitialValue(TextInputPanel component, String initialValue) {
+      component.setText(initialValue);
+    }
+
+    @Override
+    protected void setTransferFocusOnEnter(TextInputPanel component) {
+      component.setTransferFocusOnEnter(true);
+    }
+
+    private static class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel> {
+
+      private TextInputPanelValue(TextInputPanel textInputPanel) {
+        super(textInputPanel);
+        textInputPanel.getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+      }
+
+      @Override
+      protected String getComponentValue(TextInputPanel component) {
+        return component.getText();
+      }
+
+      @Override
+      protected void setComponentValue(TextInputPanel component, String value) {
+        component.setText(value);
+      }
     }
   }
 }

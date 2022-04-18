@@ -105,9 +105,9 @@ final class DefaultTemporalInputPanelBuiler<T extends Temporal>
 
     return TemporalField.builder(valueClass, dateTimePattern)
             .updateOn(updateOn)
-              .selectAllOnFocusGained(selectAllOnFocusGained)
-              .columns(columns)
-              .build();
+            .selectAllOnFocusGained(selectAllOnFocusGained)
+            .columns(columns)
+            .build();
   }
 
   private static CalendarProvider calendarProvider() {

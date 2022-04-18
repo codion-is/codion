@@ -24,7 +24,7 @@ import is.codion.swing.common.ui.component.textfield.TemporalField;
 import is.codion.swing.common.ui.component.textfield.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.textfield.TextAreaBuilder;
 import is.codion.swing.common.ui.component.textfield.TextFieldBuilder;
-import is.codion.swing.common.ui.component.textfield.TextInputPanelBuilder;
+import is.codion.swing.common.ui.component.textfield.TextInputPanel;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -478,7 +478,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a text input panel
    * @return a text input panel builder
    */
-  protected final TextInputPanelBuilder createTextInputPanel(Attribute<String> attribute) {
+  protected final TextInputPanel.Builder createTextInputPanel(Attribute<String> attribute) {
     return setComponentBuilder(attribute, entityComponents.textInputPanel(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(inputPanel -> addValidator(attribute, inputPanel.getTextField(), getEditModel())));

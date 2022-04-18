@@ -8,25 +8,21 @@ import is.codion.swing.common.ui.Utilities;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.JTextField;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TextInputPanelTest {
 
   @Test
   void test() {
-    JTextField textField = new JTextField();
-    TextInputPanel panel = TextInputPanel.builder(textField)
+    TextInputPanel panel = TextInputPanel.builder()
             .caption("caption")
             .dialogTitle("title")
             .build();
-    assertEquals(textField, panel.getTextField());
     assertNotNull(panel.getButton());
-    textField.setText("hello");
+    panel.getTextField().setText("hello");
     assertEquals("hello", panel.getText());
     panel.setText("just");
-    assertEquals("just", textField.getText());
+    assertEquals("just", panel.getTextField().getText());
   }
 
   @Test
@@ -36,8 +32,7 @@ public class TextInputPanelTest {
 
   @Test
   void setTextExceedMaxLength() {
-    JTextField textField = new JTextField();
-    TextInputPanel panel = TextInputPanel.builder(textField)
+    TextInputPanel panel = TextInputPanel.builder()
             .maximumLength(5)
             .dialogTitle("title")
             .build();
@@ -48,7 +43,7 @@ public class TextInputPanelTest {
   @Test
   void enabledState() throws InterruptedException {
     State enabledState = State.state();
-    TextInputPanel inputPanel = TextInputPanel.builder(new JTextField())
+    TextInputPanel inputPanel = TextInputPanel.builder()
             .build();
     Utilities.linkToEnabledState(enabledState, inputPanel);
     assertFalse(inputPanel.getTextField().isEnabled());

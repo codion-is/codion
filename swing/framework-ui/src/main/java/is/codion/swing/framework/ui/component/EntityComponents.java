@@ -25,7 +25,7 @@ import is.codion.swing.common.ui.component.textfield.TemporalField;
 import is.codion.swing.common.ui.component.textfield.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.textfield.TextAreaBuilder;
 import is.codion.swing.common.ui.component.textfield.TextFieldBuilder;
-import is.codion.swing.common.ui.component.textfield.TextInputPanelBuilder;
+import is.codion.swing.common.ui.component.textfield.TextInputPanel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntitySearchField;
@@ -278,7 +278,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TextInputPanelBuilder textInputPanel(Attribute<String> attribute) {
+  public final TextInputPanel.Builder textInputPanel(Attribute<String> attribute) {
     Property<String> property = entityDefinition.getProperty(attribute);
 
     return Components.textInputPanel()

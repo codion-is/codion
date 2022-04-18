@@ -121,21 +121,6 @@ public final class TextComponents {
   /**
    * @return a builder for a component
    */
-  public static TextInputPanelBuilder textInputPanel() {
-    return new DefaultTextInputPanelBuilder(null);
-  }
-
-  /**
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static TextInputPanelBuilder textInputPanel(Value<String> linkedValue) {
-    return new DefaultTextInputPanelBuilder(requireNonNull(linkedValue));
-  }
-
-  /**
-   * @return a builder for a component
-   */
   public static TextAreaBuilder textArea() {
     return new DefaultTextAreaBuilder(null);
   }
