@@ -11,7 +11,7 @@ module is.codion.swing.common.ui {
   exports is.codion.swing.common.ui.component.slider;
   exports is.codion.swing.common.ui.component.spinner;
   exports is.codion.swing.common.ui.component.table;
-  exports is.codion.swing.common.ui.component.textfield;
+  exports is.codion.swing.common.ui.component.text;
   exports is.codion.swing.common.ui.control;
   exports is.codion.swing.common.ui.dialog;
   exports is.codion.swing.common.ui.icon;
