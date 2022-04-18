@@ -35,7 +35,7 @@ import is.codion.swing.common.ui.component.table.ColumnSummaryPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.TableColumnComponentPanel;
-import is.codion.swing.common.ui.component.textfield.TemporalField;
+import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;

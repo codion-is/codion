@@ -3,9 +3,9 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.textfield.FileInputPanel;
+import is.codion.swing.common.ui.component.text.FileInputPanel;
 
 /**
- * Builds a {@link is.codion.swing.common.ui.component.textfield.FileInputPanel}
+ * Builds a {@link is.codion.swing.common.ui.component.text.FileInputPanel}
  */
 public interface FileInputPanelBuilder extends ComponentBuilder<byte[], FileInputPanel, FileInputPanelBuilder> {}

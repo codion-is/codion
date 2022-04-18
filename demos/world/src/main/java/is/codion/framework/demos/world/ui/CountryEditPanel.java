@@ -5,7 +5,7 @@ import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.CountryEditModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.textfield.NumberField;
+import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;

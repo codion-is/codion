@@ -29,7 +29,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
-import static is.codion.swing.common.ui.component.textfield.TextComponents.getPreferredTextFieldHeight;
+import static is.codion.swing.common.ui.component.text.TextComponents.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
 public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B>

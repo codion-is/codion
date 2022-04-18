@@ -17,17 +17,15 @@ import is.codion.swing.common.ui.component.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.DecimalFieldBuilder;
 import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.LabelBuilder;
-import is.codion.swing.common.ui.component.MaskedTextFieldBuilder;
-import is.codion.swing.common.ui.component.NumberFieldBuilder;
-import is.codion.swing.common.ui.component.TemporalFieldBuilder;
-import is.codion.swing.common.ui.component.TemporalInputPanelBuilder;
-import is.codion.swing.common.ui.component.TextAreaBuilder;
-import is.codion.swing.common.ui.component.TextFieldBuilder;
-import is.codion.swing.common.ui.component.TextInputPanelBuilder;
-import is.codion.swing.common.ui.component.textfield.TemporalField;
+import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
+import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.component.text.TemporalField;
+import is.codion.swing.common.ui.component.text.TemporalInputPanel;
+import is.codion.swing.common.ui.component.text.TextAreaBuilder;
+import is.codion.swing.common.ui.component.text.TextFieldBuilder;
+import is.codion.swing.common.ui.component.text.TextInputPanel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntitySearchField;
@@ -265,7 +263,7 @@ public class EntityComponents {
    * @param <T> the attribute type
    * @return a builder
    */
-  public final <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(Attribute<T> attribute) {
+  public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute) {
     if (!attribute.isTemporal()) {
       throw new IllegalArgumentException("Attribute " + attribute + " is not Temporal");
     }
@@ -280,7 +278,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TextInputPanelBuilder textInputPanel(Attribute<String> attribute) {
+  public final TextInputPanel.Builder textInputPanel(Attribute<String> attribute) {
     Property<String> property = entityDefinition.getProperty(attribute);
 
     return Components.textInputPanel()
@@ -345,7 +343,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<LocalTime, TemporalField<LocalTime>> localTimeField(Attribute<LocalTime> attribute) {
+  public final TemporalField.Builder<LocalTime, TemporalField<LocalTime>> localTimeField(Attribute<LocalTime> attribute) {
     Property<LocalTime> property = entityDefinition.getProperty(attribute);
 
     return Components.localTimeField(property.getDateTimePattern())
@@ -357,7 +355,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<LocalDate, TemporalField<LocalDate>> localDateField(Attribute<LocalDate> attribute) {
+  public final TemporalField.Builder<LocalDate, TemporalField<LocalDate>> localDateField(Attribute<LocalDate> attribute) {
     Property<LocalDate> property = entityDefinition.getProperty(attribute);
 
     return Components.localDateField(property.getDateTimePattern())
@@ -369,7 +367,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(Attribute<LocalDateTime> attribute) {
+  public final TemporalField.Builder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(Attribute<LocalDateTime> attribute) {
     Property<LocalDateTime> property = entityDefinition.getProperty(attribute);
 
     return Components.localDateTimeField(property.getDateTimePattern())
@@ -381,7 +379,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalFieldBuilder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
+  public final TemporalField.Builder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
     Property<OffsetDateTime> property = entityDefinition.getProperty(attribute);
 
     return Components.offsetDateTimeField(property.getDateTimePattern())
@@ -394,7 +392,7 @@ public class EntityComponents {
    * @param <T> the temporal type
    * @return a builder
    */
-  public final <T extends Temporal> TemporalFieldBuilder<T, TemporalField<T>> temporalField(Attribute<T> attribute) {
+  public final <T extends Temporal> TemporalField.Builder<T, TemporalField<T>> temporalField(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
 
     return Components.temporalField(property.getAttribute().getTypeClass(), property.getDateTimePattern())
@@ -407,10 +405,10 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends NumberFieldBuilder<Integer, B>> NumberFieldBuilder<Integer, B> integerField(Attribute<Integer> attribute) {
+  public final <B extends NumberField.Builder<Integer, B>> NumberField.Builder<Integer, B> integerField(Attribute<Integer> attribute) {
     Property<Integer> property = entityDefinition.getProperty(attribute);
 
-    return (NumberFieldBuilder<Integer, B>) Components.integerField()
+    return (NumberField.Builder<Integer, B>) Components.integerField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -423,10 +421,10 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends NumberFieldBuilder<Long, B>> NumberFieldBuilder<Long, B> longField(Attribute<Long> attribute) {
+  public final <B extends NumberField.Builder<Long, B>> NumberField.Builder<Long, B> longField(Attribute<Long> attribute) {
     Property<Long> property = entityDefinition.getProperty(attribute);
 
-    return (NumberFieldBuilder<Long, B>) Components.longField()
+    return (NumberField.Builder<Long, B>) Components.longField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -439,10 +437,10 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends DecimalFieldBuilder<Double, B>> DecimalFieldBuilder<Double, B> doubleField(Attribute<Double> attribute) {
+  public final <B extends NumberField.DecimalBuilder<Double, B>> NumberField.DecimalBuilder<Double, B> doubleField(Attribute<Double> attribute) {
     Property<Double> property = entityDefinition.getProperty(attribute);
 
-    return (DecimalFieldBuilder<Double, B>) Components.doubleField()
+    return (NumberField.DecimalBuilder<Double, B>) Components.doubleField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -456,10 +454,10 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends DecimalFieldBuilder<BigDecimal, B>> DecimalFieldBuilder<BigDecimal, B> bigDecimalField(Attribute<BigDecimal> attribute) {
+  public final <B extends NumberField.DecimalBuilder<BigDecimal, B>> NumberField.DecimalBuilder<BigDecimal, B> bigDecimalField(Attribute<BigDecimal> attribute) {
     Property<BigDecimal> property = entityDefinition.getProperty(attribute);
 
-    return (DecimalFieldBuilder<BigDecimal, B>) Components.bigDecimalField()
+    return (NumberField.DecimalBuilder<BigDecimal, B>) Components.bigDecimalField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())

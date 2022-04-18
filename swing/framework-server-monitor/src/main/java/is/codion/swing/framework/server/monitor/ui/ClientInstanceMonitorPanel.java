@@ -7,7 +7,7 @@ import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.textfield.SearchHighlighter;
+import is.codion.swing.common.ui.component.text.SearchHighlighter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;

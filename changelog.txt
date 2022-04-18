@@ -8065,3 +8065,12 @@
   LoadTestPanel UI refactored
   TextComponents no longer holds on to a JTextField instance for the preferredSize, just keeps the Dimension instance instead
   TextComponentBuilder.controlDeleteWord() added, with special handling for JPasswordField, where it deletes everything before/after the cursor instead of the previous/next word
+  AbstractTextComponentBuilder moved to textfield package
+  NumberField.Builder refactored
+  TemporalField.DefaultBuilder bug fixed, did not override createComponentValue() and setInitialValue()
+  DefaultTextFieldBuilder.setInitialValue() now throws exception if value is not a String or Character
+  TextInputPanel.Builder refactored
+  TemporalInputPanel.Builder refactored
+  NumberField refactored
+  Package is.codion.swing.common.ui.component.textfield renamed text
+  PasswordFieldBuilder moved to text package

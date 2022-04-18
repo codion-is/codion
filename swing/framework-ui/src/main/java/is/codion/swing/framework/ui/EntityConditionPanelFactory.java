@@ -15,7 +15,7 @@ import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.component.table.ConditionPanelFactory;
-import is.codion.swing.common.ui.component.textfield.TextComponents;
+import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 import is.codion.swing.framework.ui.component.EntityComponents;

@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static is.codion.swing.common.ui.component.textfield.TextComponents.getPreferredTextFieldHeight;
+import static is.codion.swing.common.ui.component.text.TextComponents.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>>

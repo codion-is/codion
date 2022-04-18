@@ -8,10 +8,12 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
-import is.codion.swing.common.ui.component.textfield.NumberField;
-import is.codion.swing.common.ui.component.textfield.TemporalField;
-import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
-import is.codion.swing.common.ui.component.textfield.TextInputPanel;
+import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.component.text.TemporalField;
+import is.codion.swing.common.ui.component.text.TemporalInputPanel;
+import is.codion.swing.common.ui.component.text.TextAreaBuilder;
+import is.codion.swing.common.ui.component.text.TextInputPanel;
+import is.codion.swing.common.ui.component.text.UpdateOn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.icon.Logos;
 
@@ -69,7 +71,7 @@ public final class ComponentsTest {
 
     Value<Integer> value = Value.value(42);
 
-    NumberFieldBuilder<Integer, ?> builder = Components.integerField()
+    NumberField.Builder<Integer, ?> builder = Components.integerField()
             .valueRange(0, 100)
             .font(defaultFont.deriveFont(Font.BOLD))
             .foreground(Color.WHITE)
