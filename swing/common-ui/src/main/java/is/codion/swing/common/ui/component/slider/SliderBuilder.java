@@ -1,9 +1,15 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.slider;
 
+import is.codion.common.value.Value;
+import is.codion.swing.common.ui.component.ComponentBuilder;
+
+import javax.swing.BoundedRangeModel;
 import javax.swing.JSlider;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A builder for JSpinner
@@ -71,4 +77,21 @@ public interface SliderBuilder extends ComponentBuilder<Integer, JSlider, Slider
    * @return this builder instance
    */
   SliderBuilder mouseWheelScrollingReversed(boolean mouseWheelScrollingReversed);
+
+  /**
+   * @param boundedRangeModel the slider model
+   * @return a builder for a component
+   */
+  static SliderBuilder builder(BoundedRangeModel boundedRangeModel) {
+    return new DefaultSliderBuilder(boundedRangeModel, null);
+  }
+
+  /**
+   * @param boundedRangeModel the slider model
+   * @param linkedValue the value to link to the component
+   * @return a builder for a component
+   */
+  static SliderBuilder builder(BoundedRangeModel boundedRangeModel, Value<Integer> linkedValue) {
+    return new DefaultSliderBuilder(boundedRangeModel, requireNonNull(linkedValue));
+  }
 }

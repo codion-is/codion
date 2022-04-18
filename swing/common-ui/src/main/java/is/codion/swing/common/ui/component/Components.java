@@ -9,6 +9,7 @@ import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
+import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.PasswordFieldBuilder;
@@ -669,7 +670,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static SliderBuilder slider(BoundedRangeModel boundedRangeModel) {
-    return new DefaultSliderBuilder(boundedRangeModel, null);
+    return SliderBuilder.builder(boundedRangeModel);
   }
 
   /**
@@ -678,7 +679,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static SliderBuilder slider(BoundedRangeModel boundedRangeModel, Value<Integer> linkedValue) {
-    return new DefaultSliderBuilder(boundedRangeModel, requireNonNull(linkedValue));
+    return SliderBuilder.builder(boundedRangeModel, linkedValue);
   }
 
   /**

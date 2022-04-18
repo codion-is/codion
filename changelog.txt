@@ -8043,3 +8043,4 @@
   Package is.codion.swing.common.model.component.textfield renamed text
   TextComponents, builder factory methods moved to their respective builder interfaces
   ComboBoxBuilder and related classes moved to component.combobox package
+  SliderBuilder and related classes moved to component.slider package
