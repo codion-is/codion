@@ -15,10 +15,6 @@ import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.Temporal;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -39,84 +35,6 @@ public final class TextComponents {
   private static Dimension preferredTextFieldSize;
 
   private TextComponents() {}
-
-  /**
-   * @param <T> the value type
-   * @param valueClass the value class
-   * @param dateTimePattern the date time pattern
-   * @return a builder for a component
-   */
-  public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(Class<T> valueClass,
-                                                                                     String dateTimePattern) {
-    return new DefaultTemporalInputPanelBuiler<>(valueClass, dateTimePattern, null);
-  }
-
-  /**
-   * @param <T> the value type
-   * @param valueClass the value class
-   * @param dateTimePattern the date time pattern
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(Class<T> valueClass,
-                                                                                     String dateTimePattern,
-                                                                                     Value<T> linkedValue) {
-    return new DefaultTemporalInputPanelBuiler<>(valueClass, dateTimePattern, requireNonNull(linkedValue));
-  }
-
-  /**
-   * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
-   */
-  public static TemporalInputPanelBuilder<LocalTime> localTimeInputPanel(String dateTimePattern) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalTime.class, dateTimePattern, null);
-  }
-
-  /**
-   * @param dateTimePattern the date time pattern
-   * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
-   */
-  public static TemporalInputPanelBuilder<LocalTime> localTimeInputPanel(String dateTimePattern,
-                                                                         Value<LocalTime> linkedValue) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalTime.class, dateTimePattern, requireNonNull(linkedValue));
-  }
-
-  /**
-   * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
-   */
-  public static TemporalInputPanelBuilder<LocalDate> localDateInputPanel(String dateTimePattern) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalDate.class, dateTimePattern, null);
-  }
-
-  /**
-   * @param dateTimePattern the date time pattern
-   * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
-   */
-  public static TemporalInputPanelBuilder<LocalDate> localDateInputPanel(String dateTimePattern,
-                                                                         Value<LocalDate> linkedValue) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalDate.class, dateTimePattern, linkedValue);
-  }
-
-  /**
-   * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
-   */
-  public static TemporalInputPanelBuilder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalDateTime.class, dateTimePattern, null);
-  }
-
-  /**
-   * @param dateTimePattern the date time pattern
-   * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
-   */
-  public static TemporalInputPanelBuilder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern,
-                                                                                 Value<LocalDateTime> linkedValue) {
-    return new DefaultTemporalInputPanelBuiler<>(LocalDateTime.class, dateTimePattern, requireNonNull(linkedValue));
-  }
 
   /**
    * @return a builder for a component

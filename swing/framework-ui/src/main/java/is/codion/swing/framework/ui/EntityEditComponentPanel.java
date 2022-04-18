@@ -21,7 +21,7 @@ import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.component.textfield.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.common.ui.component.textfield.TemporalField;
-import is.codion.swing.common.ui.component.textfield.TemporalInputPanelBuilder;
+import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.component.textfield.TextAreaBuilder;
 import is.codion.swing.common.ui.component.textfield.TextFieldBuilder;
 import is.codion.swing.common.ui.component.textfield.TextInputPanel;
@@ -490,7 +490,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <T> the temporal type
    * @return a text area builder
    */
-  protected final <T extends Temporal> TemporalInputPanelBuilder<T> createTemporalInputPanel(Attribute<T> attribute) {
+  protected final <T extends Temporal> TemporalInputPanel.Builder<T> createTemporalInputPanel(Attribute<T> attribute) {
     return setComponentBuilder(attribute, entityComponents.temporalInputPanel(attribute)
             .onBuild(inputPanel -> addFormattedValidator(attribute, inputPanel.getInputField(), getEditModel())));
   }

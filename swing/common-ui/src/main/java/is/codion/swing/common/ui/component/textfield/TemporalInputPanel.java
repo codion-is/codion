@@ -3,8 +3,14 @@
  */
 package is.codion.swing.common.ui.component.textfield;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JButton;
@@ -15,7 +21,13 @@ import java.awt.BorderLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -121,6 +133,35 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   /**
+   * @param <T> the value type
+   * @param valueClass the value class
+   * @param dateTimePattern the date time pattern
+   * @return a builder for a temporal component
+   */
+  public static <T extends Temporal> Builder<T> builder(Class<T> valueClass,
+                                                        String dateTimePattern) {
+    return new DefaultBuilder<>(valueClass, dateTimePattern, null);
+  }
+
+  /**
+   * @param <T> the value type
+   * @param valueClass the value class
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static <T extends Temporal> Builder<T> builder(Class<T> valueClass,
+                                                        String dateTimePattern,
+                                                        Value<T> linkedValue) {
+    return new DefaultBuilder<>(valueClass, dateTimePattern, requireNonNull(linkedValue));
+  }
+
+  private void displayCalendar() {
+    calendarProvider.getTemporal(inputField.getTemporalClass(), inputField, getTemporal())
+            .ifPresent(inputField::setTemporal);
+  }
+
+  /**
    * Provides a calendar UI in a dialog for retrieving a date and/or time from the user.
    */
   public interface CalendarProvider {
@@ -143,9 +184,41 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     <T extends Temporal> boolean supports(Class<T> temporalClass);
   }
 
-  private void displayCalendar() {
-    calendarProvider.getTemporal(inputField.getTemporalClass(), inputField, getTemporal())
-            .ifPresent(inputField::setTemporal);
+  /**
+   * Builds a TemporalInputPanel.
+   * @param <T> the temporal type
+   */
+  public interface Builder<T extends Temporal> extends ComponentBuilder<T, TemporalInputPanel<T>, Builder<T>> {
+
+    /**
+     * @param selectAllOnFocusGained if true the component will select contents on focus gained
+     * @return this builder instance
+     */
+    Builder<T> selectAllOnFocusGained(boolean selectAllOnFocusGained);
+
+    /**
+     * @param columns the number of colums in the temporal field
+     * @return this builder instance
+     */
+    Builder<T> columns(int columns);
+
+    /**
+     * @param updateOn specifies when the underlying value should be updated
+     * @return this builder instance
+     */
+    Builder<T> updateOn(UpdateOn updateOn);
+
+    /**
+     * @param calendarProvider the calendar provider to use for calendar input
+     * @return this builder instance
+     */
+    Builder<T> calendarProvider(CalendarProvider calendarProvider);
+
+    /**
+     * @param buttonFocusable true if the calendar button should be focusable
+     * @return this builder instance
+     */
+    Builder<T> buttonFocusable(boolean buttonFocusable);
   }
 
   private static final class InputFocusAdapter extends FocusAdapter {
@@ -158,6 +231,135 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     @Override
     public void focusGained(FocusEvent e) {
       inputField.requestFocusInWindow();
+    }
+  }
+
+  private static final class DefaultBuilder<T extends Temporal>
+          extends AbstractComponentBuilder<T, TemporalInputPanel<T>, Builder<T>>
+          implements Builder<T> {
+
+    private static final List<Class<?>> SUPPORTED_TYPES =
+            Arrays.asList(LocalTime.class, LocalDate.class, LocalDateTime.class, OffsetDateTime.class);
+
+    private final Class<T> valueClass;
+    private final String dateTimePattern;
+
+    private int columns;
+    private UpdateOn updateOn = UpdateOn.KEYSTROKE;
+    private boolean selectAllOnFocusGained;
+    private CalendarProvider calendarProvider = calendarProvider();
+    private boolean buttonFocusable;
+
+    private DefaultBuilder(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
+      super(linkedValue);
+      this.valueClass = requireNonNull(valueClass);
+      this.dateTimePattern = requireNonNull(dateTimePattern);
+    }
+
+    @Override
+    public Builder<T> selectAllOnFocusGained(boolean selectAllOnFocusGained) {
+      this.selectAllOnFocusGained = selectAllOnFocusGained;
+      return this;
+    }
+
+    @Override
+    public Builder<T> columns(int columns) {
+      this.columns = columns;
+      return this;
+    }
+
+    @Override
+    public Builder<T> updateOn(UpdateOn updateOn) {
+      this.updateOn = requireNonNull(updateOn);
+      return this;
+    }
+
+    @Override
+    public Builder<T> calendarProvider(CalendarProvider calendarProvider) {
+      this.calendarProvider = requireNonNull(calendarProvider);
+      return this;
+    }
+
+    @Override
+    public Builder<T> buttonFocusable(boolean buttonFocusable) {
+      this.buttonFocusable = buttonFocusable;
+      return this;
+    }
+
+    @Override
+    protected TemporalInputPanel<T> createComponent() {
+      TemporalInputPanel<T> inputPanel = new TemporalInputPanel<>(createTemporalField(), calendarProvider);
+      inputPanel.getCalendarButton().ifPresent(button ->
+              button.setFocusable(buttonFocusable));
+
+      return inputPanel;
+    }
+
+    @Override
+    protected ComponentValue<T, TemporalInputPanel<T>> createComponentValue(TemporalInputPanel<T> component) {
+      return new TemporalInputPanelValue<>(component);
+    }
+
+    @Override
+    protected void setTransferFocusOnEnter(TemporalInputPanel<T> component) {
+      component.setTransferFocusOnEnter(true);
+    }
+
+    @Override
+    protected void setInitialValue(TemporalInputPanel<T> component, T initialValue) {
+      component.setTemporal(initialValue);
+    }
+
+    private TemporalField<T> createTemporalField() {
+      if (!SUPPORTED_TYPES.contains(valueClass)) {
+        throw new IllegalStateException("Unsupported temporal type: " + valueClass);
+      }
+
+      return TemporalField.builder(valueClass, dateTimePattern)
+              .updateOn(updateOn)
+              .selectAllOnFocusGained(selectAllOnFocusGained)
+              .columns(columns)
+              .build();
+    }
+
+    private static CalendarProvider calendarProvider() {
+      return new CalendarProvider() {
+        @Override
+        public <T extends Temporal> Optional<T> getTemporal(Class<T> temporalClass, JComponent dialogOwner,
+                                                            T initialValue) {
+          if (LocalDate.class.equals(temporalClass)) {
+            return (Optional<T>) CalendarPanel.getLocalDate(dialogOwner, (LocalDate) initialValue);
+          }
+          if (LocalDateTime.class.equals(temporalClass)) {
+            return (Optional<T>) CalendarPanel.getLocalDateTime(dialogOwner, (LocalDateTime) initialValue);
+          }
+
+          throw new IllegalArgumentException("Unsupported temporal type: " + temporalClass);
+        }
+
+        @Override
+        public <T extends Temporal> boolean supports(Class<T> temporalClass) {
+          return LocalDate.class.equals(temporalClass) || LocalDateTime.class.equals(temporalClass);
+        }
+      };
+    }
+
+    private static final class TemporalInputPanelValue<T extends Temporal> extends AbstractComponentValue<T, TemporalInputPanel<T>> {
+
+      private TemporalInputPanelValue(TemporalInputPanel<T> inputPanel) {
+        super(inputPanel);
+        inputPanel.getInputField().addTemporalListener(temporal -> notifyValueChange());
+      }
+
+      @Override
+      protected T getComponentValue(TemporalInputPanel<T> component) {
+        return component.getTemporal();
+      }
+
+      @Override
+      protected void setComponentValue(TemporalInputPanel<T> component, T value) {
+        component.setTemporal(value);
+      }
     }
   }
 }

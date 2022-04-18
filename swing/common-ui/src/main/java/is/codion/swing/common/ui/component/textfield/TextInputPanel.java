@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A panel that includes a JTextField in a {@link BorderLayout#CENTER} position and a button in {@link BorderLayout#EAST}
  * which opens a JTextArea for editing long strings.
- * @see #builder(JTextField)
+ * @see #builder()
  */
 public final class TextInputPanel extends JPanel {
 
@@ -109,8 +109,6 @@ public final class TextInputPanel extends JPanel {
   }
 
   /**
-   * @param textField the text field
-   * @param <B> the builder type
    * @return a new builder
    */
   public static Builder builder() {
@@ -118,8 +116,7 @@ public final class TextInputPanel extends JPanel {
   }
 
   /**
-   * @param textField the text field
-   * @param <B> the builder type
+   * @param linkedValue the linked value
    * @return a new builder
    */
   public static Builder builder(Value<String> linkedValue) {

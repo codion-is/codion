@@ -10,7 +10,7 @@ import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.textfield.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.common.ui.component.textfield.TemporalField;
-import is.codion.swing.common.ui.component.textfield.TemporalInputPanelBuilder;
+import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.component.textfield.TextAreaBuilder;
 import is.codion.swing.common.ui.component.textfield.TextComponents;
 import is.codion.swing.common.ui.component.textfield.TextFieldBuilder;
@@ -213,9 +213,9 @@ public final class Components {
    * @param dateTimePattern the date time pattern
    * @return a builder for a component
    */
-  public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(Class<T> valueClass,
-                                                                                     String dateTimePattern) {
-    return TextComponents.temporalInputPanel(valueClass, dateTimePattern);
+  public static <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Class<T> valueClass,
+                                                                                      String dateTimePattern) {
+    return TemporalInputPanel.builder(valueClass, dateTimePattern);
   }
 
   /**
@@ -225,36 +225,18 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(Class<T> valueClass,
-                                                                                     String dateTimePattern,
-                                                                                     Value<T> linkedValue) {
-    return TextComponents.temporalInputPanel(valueClass, dateTimePattern, linkedValue);
+  public static <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Class<T> valueClass,
+                                                                                      String dateTimePattern,
+                                                                                      Value<T> linkedValue) {
+    return TemporalInputPanel.builder(valueClass, dateTimePattern, linkedValue);
   }
 
   /**
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static TemporalInputPanelBuilder<LocalTime> localTimeInputPanel(String dateTimePattern) {
-    return TextComponents.localTimeInputPanel(dateTimePattern);
-  }
-
-  /**
-   * @param dateTimePattern the date time pattern
-   * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
-   */
-  public static TemporalInputPanelBuilder<LocalTime> localTimeInputPanel(String dateTimePattern,
-                                                                         Value<LocalTime> linkedValue) {
-    return TextComponents.localTimeInputPanel(dateTimePattern, linkedValue);
-  }
-
-  /**
-   * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
-   */
-  public static TemporalInputPanelBuilder<LocalDate> localDateInputPanel(String dateTimePattern) {
-    return TextComponents.localDateInputPanel(dateTimePattern);
+  public static TemporalInputPanel.Builder<LocalTime> localTimeInputPanel(String dateTimePattern) {
+    return temporalInputPanel(LocalTime.class, dateTimePattern);
   }
 
   /**
@@ -262,17 +244,17 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a temporal component
    */
-  public static TemporalInputPanelBuilder<LocalDate> localDateInputPanel(String dateTimePattern,
-                                                                         Value<LocalDate> linkedValue) {
-    return TextComponents.localDateInputPanel(dateTimePattern, linkedValue);
+  public static TemporalInputPanel.Builder<LocalTime> localTimeInputPanel(String dateTimePattern,
+                                                                          Value<LocalTime> linkedValue) {
+    return temporalInputPanel(LocalTime.class, dateTimePattern, linkedValue);
   }
 
   /**
    * @param dateTimePattern the date time pattern
    * @return a builder for a temporal component
    */
-  public static TemporalInputPanelBuilder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern) {
-    return TextComponents.localDateTimeInputPanel(dateTimePattern);
+  public static TemporalInputPanel.Builder<LocalDate> localDateInputPanel(String dateTimePattern) {
+    return temporalInputPanel(LocalDate.class, dateTimePattern);
   }
 
   /**
@@ -280,9 +262,27 @@ public final class Components {
    * @param linkedValue the value to link to the component
    * @return a builder for a temporal component
    */
-  public static TemporalInputPanelBuilder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern,
-                                                                                 Value<LocalDateTime> linkedValue) {
-    return TextComponents.localDateTimeInputPanel(dateTimePattern, linkedValue);
+  public static TemporalInputPanel.Builder<LocalDate> localDateInputPanel(String dateTimePattern,
+                                                                          Value<LocalDate> linkedValue) {
+    return temporalInputPanel(LocalDate.class, dateTimePattern, linkedValue);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanel.Builder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern) {
+    return temporalInputPanel(LocalDateTime.class, dateTimePattern);
+  }
+
+  /**
+   * @param dateTimePattern the date time pattern
+   * @param linkedValue the value to link to the component
+   * @return a builder for a temporal component
+   */
+  public static TemporalInputPanel.Builder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern,
+                                                                                  Value<LocalDateTime> linkedValue) {
+    return temporalInputPanel(LocalDateTime.class, dateTimePattern, linkedValue);
   }
 
   /**

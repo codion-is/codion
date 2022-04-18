@@ -22,7 +22,7 @@ import is.codion.swing.common.ui.component.LabelBuilder;
 import is.codion.swing.common.ui.component.textfield.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.common.ui.component.textfield.TemporalField;
-import is.codion.swing.common.ui.component.textfield.TemporalInputPanelBuilder;
+import is.codion.swing.common.ui.component.textfield.TemporalInputPanel;
 import is.codion.swing.common.ui.component.textfield.TextAreaBuilder;
 import is.codion.swing.common.ui.component.textfield.TextFieldBuilder;
 import is.codion.swing.common.ui.component.textfield.TextInputPanel;
@@ -263,7 +263,7 @@ public class EntityComponents {
    * @param <T> the attribute type
    * @return a builder
    */
-  public final <T extends Temporal> TemporalInputPanelBuilder<T> temporalInputPanel(Attribute<T> attribute) {
+  public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute) {
     if (!attribute.isTemporal()) {
       throw new IllegalArgumentException("Attribute " + attribute + " is not Temporal");
     }
