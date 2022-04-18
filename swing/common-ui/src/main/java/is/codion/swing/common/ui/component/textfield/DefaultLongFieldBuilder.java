@@ -3,12 +3,13 @@
  */
 package is.codion.swing.common.ui.component.textfield;
 
+import is.codion.common.formats.Formats;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.ComponentValue;
 
 import java.text.NumberFormat;
 
-final class DefaultLongFieldBuilder<B extends NumberFieldBuilder<Long, B>> extends AbstractNumberFieldBuilder<Long, B> {
+final class DefaultLongFieldBuilder<B extends NumberField.Builder<Long, B>> extends AbstractNumberFieldBuilder<Long, B> {
 
   DefaultLongFieldBuilder(Value<Long> linkedValue) {
     super(Long.class, linkedValue);
@@ -16,7 +17,11 @@ final class DefaultLongFieldBuilder<B extends NumberFieldBuilder<Long, B>> exten
 
   @Override
   protected NumberField<Long> createNumberField(NumberFormat format) {
-    return format == null ? NumberField.longField() : NumberField.longField(format);
+    if (format == null) {
+      format = Formats.getNonGroupingIntegerFormat();
+    }
+
+    return new NumberField<>(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Long.class))));
   }
 
   @Override

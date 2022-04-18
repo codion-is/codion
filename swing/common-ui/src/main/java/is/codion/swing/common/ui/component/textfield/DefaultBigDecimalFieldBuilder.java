@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package is.codion.swing.common.ui.component.textfield;
 
 import is.codion.common.value.Value;
@@ -10,8 +7,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-final class DefaultBigDecimalFieldBuilder <B extends DecimalFieldBuilder<BigDecimal, B>> extends AbstractNumberFieldBuilder<BigDecimal, B>
-        implements DecimalFieldBuilder<BigDecimal, B> {
+final class DefaultBigDecimalFieldBuilder<B extends NumberField.DecimalBuilder<BigDecimal, B>> extends AbstractNumberFieldBuilder<BigDecimal, B>
+        implements NumberField.DecimalBuilder<BigDecimal, B> {
 
   private int maximumFractionDigits = -1;
   private char decimalSeparator = 0;
@@ -37,7 +34,12 @@ final class DefaultBigDecimalFieldBuilder <B extends DecimalFieldBuilder<BigDeci
 
   @Override
   protected NumberField<BigDecimal> createNumberField(NumberFormat format) {
-    NumberField<BigDecimal> field = format == null ? NumberField.bigDecimalField() : NumberField.bigDecimalField((DecimalFormat) format);
+    DecimalFormat decimalFormat = (DecimalFormat) format;
+    if (decimalFormat == null) {
+      decimalFormat = new DecimalFormat();
+      decimalFormat.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
+    }
+    NumberField<BigDecimal> field = new NumberField<>(new DecimalDocument<>(decimalFormat, true));
     if (decimalSeparator != 0) {
       field.setDecimalSeparator(decimalSeparator);
     }

@@ -9,8 +9,8 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-final class DefaultDoubleFieldBuilder<B extends DecimalFieldBuilder<Double, B>> extends AbstractNumberFieldBuilder<Double, B>
-        implements DecimalFieldBuilder<Double, B> {
+final class DefaultDoubleFieldBuilder<B extends NumberField.DecimalBuilder<Double, B>> extends AbstractNumberFieldBuilder<Double, B>
+        implements NumberField.DecimalBuilder<Double, B> {
 
   private int maximumFractionDigits = -1;
   private char decimalSeparator = 0;
@@ -36,7 +36,12 @@ final class DefaultDoubleFieldBuilder<B extends DecimalFieldBuilder<Double, B>> 
 
   @Override
   protected NumberField<Double> createNumberField(NumberFormat format) {
-    NumberField<Double> field = format == null ? NumberField.doubleField() : NumberField.doubleField((DecimalFormat) format);
+    DecimalFormat decimalFormat = (DecimalFormat) format;
+    if (decimalFormat == null) {
+      decimalFormat = new DecimalFormat();
+      decimalFormat.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
+    }
+    NumberField<Double> field = new NumberField<>(new DecimalDocument<>(decimalFormat, false));
     if (decimalSeparator != 0) {
       field.setDecimalSeparator(decimalSeparator);
     }

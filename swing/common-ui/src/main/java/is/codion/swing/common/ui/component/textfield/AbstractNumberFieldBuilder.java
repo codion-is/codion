@@ -7,8 +7,8 @@ import is.codion.common.value.Value;
 
 import java.text.NumberFormat;
 
-abstract class AbstractNumberFieldBuilder<T extends Number, B extends NumberFieldBuilder<T, B>>
-        extends DefaultTextFieldBuilder<T, NumberField<T>, B> implements NumberFieldBuilder<T, B> {
+abstract class AbstractNumberFieldBuilder<T extends Number, B extends NumberField.Builder<T, B>>
+        extends DefaultTextFieldBuilder<T, NumberField<T>, B> implements NumberField.Builder<T, B> {
 
   private Number maximumValue;
   private Number minimumValue;

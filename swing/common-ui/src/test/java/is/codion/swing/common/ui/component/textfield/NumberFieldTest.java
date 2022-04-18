@@ -19,7 +19,7 @@ public final class NumberFieldTest {
 
   @Test
   void integerFieldTest() {
-    NumberField<Integer> integerField = NumberField.integerField();
+    NumberField<Integer> integerField = NumberField.builder(Integer.class).build();
     integerField.setGroupingUsed(false);
     integerField.setValue(42);
     assertEquals("42", integerField.getText());
@@ -70,7 +70,7 @@ public final class NumberFieldTest {
 
   @Test
   void skipGroupingSeparator() {
-    NumberField<Integer> integerField = NumberField.integerField();
+    NumberField<Integer> integerField = NumberField.builder(Integer.class).build();
     integerField.setSeparators(',', '.');
     integerField.setGroupingUsed(true);
     KeyListener keyListener = integerField.getKeyListeners()[0];
@@ -87,7 +87,7 @@ public final class NumberFieldTest {
 
   @Test
   void longFieldTest() {
-    NumberField<Long> longField = NumberField.longField();
+    NumberField<Long> longField = NumberField.builder(Long.class).build();
     longField.setGroupingUsed(false);
     longField.setValue(42L);
     assertEquals("42", longField.getText());
@@ -115,7 +115,7 @@ public final class NumberFieldTest {
 
   @Test
   void testNoGrouping() {
-    NumberField<Double>doubleField = NumberField.doubleField();
+    NumberField<Double>doubleField = NumberField.builder(Double.class).build();
     doubleField.setGroupingUsed(false);
     doubleField.setSeparators(',', '.');
     doubleField.setText(",");
@@ -148,7 +148,9 @@ public final class NumberFieldTest {
   @Test
   void testGrouping() {
     DecimalFormat decimalFormat = new DecimalFormat();
-    NumberField<Double>doubleField = NumberField.doubleField(decimalFormat);
+    NumberField<Double>doubleField = NumberField.builder(Double.class)
+            .format(decimalFormat)
+            .build();
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators(',', '.');
     assertEquals(0, doubleField.getCaretPosition());
@@ -198,7 +200,7 @@ public final class NumberFieldTest {
 
   @Test
   void caretPosition() throws BadLocationException {
-    NumberField<Double>doubleField = NumberField.doubleField();
+    NumberField<Double>doubleField = NumberField.builder(Double.class).build();
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators(',', '.');
     NumberDocument<Double> document = doubleField.getTypedDocument();
@@ -272,12 +274,12 @@ public final class NumberFieldTest {
 
   @Test
   void setSeparatorsSameCharacter() {
-    assertThrows(IllegalArgumentException.class, () -> NumberField.doubleField().setSeparators('.', '.'));
+    assertThrows(IllegalArgumentException.class, () -> NumberField.builder(Double.class).build().setSeparators('.', '.'));
   }
 
   @Test
   void maximumFractionDigits() throws BadLocationException {
-    NumberField<Double>doubleField = NumberField.doubleField();
+    NumberField<Double>doubleField = NumberField.builder(Double.class).build();
     assertEquals(-1, doubleField.getMaximumFractionDigits());
     doubleField.setSeparators(',', '.');
     doubleField.setMaximumFractionDigits(2);
@@ -300,7 +302,7 @@ public final class NumberFieldTest {
 
   @Test
   void decimalSeparators() {
-    NumberField<Double>doubleField = NumberField.doubleField();
+    NumberField<Double>doubleField = NumberField.builder(Double.class).build();
     doubleField.setGroupingUsed(false);
     doubleField.setSeparators('.', ',');
     doubleField.setText("1.5");
@@ -316,7 +318,7 @@ public final class NumberFieldTest {
 
   @Test
   void trailingDecimalSeparator() throws BadLocationException {
-    NumberField<Double>doubleField = NumberField.doubleField();
+    NumberField<Double>doubleField = NumberField.builder(Double.class).build();
     doubleField.setSeparators('.', ',');
     NumberDocument<Double> document = doubleField.getTypedDocument();
     document.insertString(0, "1", null);
@@ -331,7 +333,7 @@ public final class NumberFieldTest {
 
   @Test
   void setSeparators() {
-    NumberField<Double>doubleField = NumberField.doubleField();
+    NumberField<Double>doubleField = NumberField.builder(Double.class).build();
     doubleField.setGroupingUsed(true);
     doubleField.setSeparators('.', ',');
     doubleField.setValue(12345678.9);
@@ -342,7 +344,7 @@ public final class NumberFieldTest {
 
   @Test
   void trailingDecimalZeros() throws BadLocationException {
-    NumberField<Double>doubleField = NumberField.doubleField();
+    NumberField<Double>doubleField = NumberField.builder(Double.class).build();
     NumberDocument<Double> document = doubleField.getTypedDocument();
     doubleField.setSeparators('.', ',');
 

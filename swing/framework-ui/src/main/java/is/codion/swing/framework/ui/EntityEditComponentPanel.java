@@ -18,9 +18,8 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.LabelBuilder;
 import is.codion.swing.common.ui.component.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.component.textfield.DecimalFieldBuilder;
 import is.codion.swing.common.ui.component.textfield.MaskedTextFieldBuilder;
-import is.codion.swing.common.ui.component.textfield.NumberFieldBuilder;
+import is.codion.swing.common.ui.component.textfield.NumberField;
 import is.codion.swing.common.ui.component.textfield.TemporalField;
 import is.codion.swing.common.ui.component.textfield.TemporalInputPanelBuilder;
 import is.codion.swing.common.ui.component.textfield.TextAreaBuilder;
@@ -567,8 +566,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a text field
    * @return a integer field builder
    */
-  protected final <B extends NumberFieldBuilder<Integer, B>> NumberFieldBuilder<Integer, B> createIntegerField(Attribute<Integer> attribute) {
-    return (NumberFieldBuilder<Integer, B>) setComponentBuilder(attribute, entityComponents.integerField(attribute)
+  protected final <B extends NumberField.Builder<Integer, B>> NumberField.Builder<Integer, B> createIntegerField(Attribute<Integer> attribute) {
+    return (NumberField.Builder<Integer, B>) setComponentBuilder(attribute, entityComponents.integerField(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(field -> addValidator(attribute, field, getEditModel())));
   }
@@ -579,8 +578,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a text field
    * @return a long field builder
    */
-  protected final <B extends NumberFieldBuilder<Long, B>> NumberFieldBuilder<Long, B> createLongField(Attribute<Long> attribute) {
-    return (NumberFieldBuilder<Long, B>) setComponentBuilder(attribute, entityComponents.longField(attribute)
+  protected final <B extends NumberField.Builder<Long, B>> NumberField.Builder<Long, B> createLongField(Attribute<Long> attribute) {
+    return (NumberField.Builder<Long, B>) setComponentBuilder(attribute, entityComponents.longField(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(field -> addValidator(attribute, field, getEditModel())));
   }
@@ -591,8 +590,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a text field
    * @return a double field builder
    */
-  protected final <B extends DecimalFieldBuilder<Double, B>> DecimalFieldBuilder<Double, B> createDoubleField(Attribute<Double> attribute) {
-    return (DecimalFieldBuilder<Double, B>) setComponentBuilder(attribute, entityComponents.doubleField(attribute)
+  protected final <B extends NumberField.DecimalBuilder<Double, B>> NumberField.DecimalBuilder<Double, B> createDoubleField(Attribute<Double> attribute) {
+    return (NumberField.DecimalBuilder<Double, B>) setComponentBuilder(attribute, entityComponents.doubleField(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(field -> addValidator(attribute, field, getEditModel())));
   }
@@ -603,8 +602,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a text field
    * @return a big decimal field builder
    */
-  protected final <B extends DecimalFieldBuilder<BigDecimal, B>> DecimalFieldBuilder<BigDecimal, B> createBigDecimalField(Attribute<BigDecimal> attribute) {
-    return (DecimalFieldBuilder<BigDecimal, B>) setComponentBuilder(attribute, entityComponents.bigDecimalField(attribute)
+  protected final <B extends NumberField.DecimalBuilder<BigDecimal, B>> NumberField.DecimalBuilder<BigDecimal, B> createBigDecimalField(Attribute<BigDecimal> attribute) {
+    return (NumberField.DecimalBuilder<BigDecimal, B>) setComponentBuilder(attribute, entityComponents.bigDecimalField(attribute)
             .columns(defaultTextFieldColumns)
             .onBuild(field -> addValidator(attribute, field, getEditModel())));
   }

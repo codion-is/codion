@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component.textfield;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.common.formats.Formats;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.textfield.DocumentAdapter;
 
@@ -15,7 +14,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A text field for numbers.
@@ -26,7 +26,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
   private final Value<T> value = Value.value();
 
-  private NumberField(NumberDocument<T> document) {
+  NumberField(NumberDocument<T> document) {
     setDocument(document);
     document.setTextComponent(this);
     if (document.getFormat() instanceof DecimalFormat) {
@@ -163,69 +163,38 @@ public final class NumberField<T extends Number> extends JTextField {
   }
 
   /**
-   * @return Integer based {@link NumberField}
+   * @param valueClass the value class
+   * @param <T> the value type
+   * @param <B> the builder type
+   * @return a builder for a component
    */
-  public static NumberField<Integer> integerField() {
-    return integerField(Formats.getNonGroupingIntegerFormat());
+  public static <T extends Number, B extends Builder<T, B>> Builder<T, B> builder(Class<T> valueClass) {
+    return builder(valueClass, null);
   }
 
   /**
-   * @param format the number format
-   * @return Integer based {@link NumberField}
+   * @param valueClass the value class
+   * @param linkedValue the value to link to the component
+   * @param <T> the value type
+   * @param <B> the builder type
+   * @return a builder for a component
    */
-  public static NumberField<Integer> integerField(NumberFormat format) {
-    return new NumberField<>(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Integer.class))));
-  }
+  public static <T extends Number, B extends Builder<T, B>> Builder<T, B> builder(Class<T> valueClass, Value<T> linkedValue) {
+    requireNonNull(valueClass);
+    if (valueClass.equals(Integer.class)) {
+      return (Builder<T, B>) new DefaultIntegerFieldBuilder<>((Value<Integer>) linkedValue);
+    }
+    if (valueClass.equals(Long.class)) {
+      return (Builder<T, B>) new DefaultLongFieldBuilder<>((Value<Long>) linkedValue);
+    }
+    if (valueClass.equals(Double.class)) {
+      return (Builder<T, B>) new DefaultDoubleFieldBuilder<>((Value<Double>) linkedValue);
+    }
+    if (valueClass.equals(BigDecimal.class)) {
+      return (Builder<T, B>) new DefaultBigDecimalFieldBuilder<>((Value<BigDecimal>) linkedValue);
+    }
 
-  /**
-   * @return Double based {@link NumberField}
-   */
-  public static NumberField<Double> doubleField() {
-    DecimalFormat format = new DecimalFormat();
-    format.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
-
-    return doubleField(format);
-  }
-
-  /**
-   * @param format the number format
-   * @return Double based {@link NumberField}
-   */
-  public static NumberField<Double> doubleField(DecimalFormat format) {
-    return new NumberField<>(new DecimalDocument<>(format, false));
-  }
-
-  /**
-   * @return Long based {@link NumberField}
-   */
-  public static NumberField<Long> longField() {
-    return longField(Formats.getNonGroupingIntegerFormat());
-  }
-
-  /**
-   * @param format the number format
-   * @return Long based {@link NumberField}
-   */
-  public static NumberField<Long> longField(NumberFormat format) {
-    return new NumberField<>(new NumberDocument<>(new NumberParsingDocumentFilter<>(new NumberParser<>(format, Long.class))));
-  }
-
-  /**
-   * @return BigDecimal based {@link NumberField}
-   */
-  public static NumberField<BigDecimal> bigDecimalField() {
-    DecimalFormat format = new DecimalFormat();
-    format.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
-
-    return bigDecimalField(format);
-  }
-
-  /**
-   * @param format the number format
-   * @return BigDecimal based {@link NumberField}
-   */
-  public static NumberField<BigDecimal> bigDecimalField(DecimalFormat format) {
-    return new NumberField<>(new DecimalDocument<>(format, true));
+    throw new IllegalArgumentException("Unsupported number type: " + valueClass);
   }
 
   /**
@@ -234,6 +203,66 @@ public final class NumberField<T extends Number> extends JTextField {
    */
   NumberDocument<T> getTypedDocument() {
     return (NumberDocument<T>) super.getDocument();
+  }
+
+  /**
+   * Builds a NumberField
+   * @param <T> the value type
+   * @param <B> the builder type
+   */
+  public interface Builder<T extends Number, B extends Builder<T, B>> extends TextFieldBuilder<T, NumberField<T>, B> {
+
+    /**
+     * @param minimumValue the minimum value
+     * @param maximumValue the maximum value
+     * @return this builder instance
+     */
+    B valueRange(Number minimumValue, Number maximumValue);
+
+    /**
+     * @param minimumValue the minimum numerical value
+     * @return this builder instance
+     */
+    B minimumValue(Number minimumValue);
+
+    /**
+     * @param maximumValue the maximum numerical value
+     * @return this builder instance
+     */
+    B maximumValue(Number maximumValue);
+
+    /**
+     * @param groupingSeparator the grouping separator
+     * @return this builder instance
+     */
+    B groupingSeparator(char groupingSeparator);
+
+    /**
+     * Note that this is overridden by {@link #format(java.text.Format)}.
+     * @param groupingUsed true if grouping should be used
+     * @return this builder instance
+     */
+    B groupingUsed(boolean groupingUsed);
+  }
+
+  /**
+   * A builder for a decimal based {@link NumberField}.
+   */
+  public interface DecimalBuilder<T extends Number, B extends DecimalBuilder<T, B>> extends Builder<T, B> {
+
+      /**
+     * @param maximumFractionDigits the maximum fraction digits
+     * @return this builder instance
+     */
+    B maximumFractionDigits(int maximumFractionDigits);
+
+    /**
+     * Set the decimal separator for this field
+     * @param decimalSeparator the decimal separator
+     * @return this builder instance
+     * @throws IllegalArgumentException in case the decimal separator is the same as the grouping separator
+     */
+    B decimalSeparator(char decimalSeparator);
   }
 
   private final class GroupingSkipAdapter extends KeyAdapter {

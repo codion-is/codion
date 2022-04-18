@@ -15,7 +15,6 @@ import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -174,21 +173,7 @@ public final class TextComponents {
    * @return a builder for a component
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass) {
-    requireNonNull(valueClass);
-    if (valueClass.equals(Integer.class)) {
-      return (B) integerField();
-    }
-    else if (valueClass.equals(Long.class)) {
-      return (B) longField();
-    }
-    else if (valueClass.equals(Double.class)) {
-      return (B) doubleField();
-    }
-    else if (valueClass.equals(BigDecimal.class)) {
-      return (B) bigDecimalField();
-    }
-
-    return new DefaultTextFieldBuilder<>(valueClass, null);
+    return textFieldBuilder(requireNonNull(valueClass), null);
   }
 
   /**
@@ -201,90 +186,7 @@ public final class TextComponents {
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass,
                                                                                                                    Value<T> linkedValue) {
-    requireNonNull(valueClass);
-    requireNonNull(linkedValue);
-    if (valueClass.equals(Integer.class)) {
-      return (B) integerField((Value<Integer>) linkedValue);
-    }
-    else if (valueClass.equals(Long.class)) {
-      return (B) longField((Value<Long>) linkedValue);
-    }
-    else if (valueClass.equals(Double.class)) {
-      return (B) doubleField((Value<Double>) linkedValue);
-    }
-    else if (valueClass.equals(BigDecimal.class)) {
-      return (B) bigDecimalField((Value<BigDecimal>) linkedValue);
-    }
-
-    return new DefaultTextFieldBuilder<>(valueClass, linkedValue);
-  }
-
-  /**
-   * @param <B> the builder type
-   * @return a builder for a component
-   */
-  public static <B extends NumberFieldBuilder<Integer, B>> NumberFieldBuilder<Integer, B> integerField() {
-    return new DefaultIntegerFieldBuilder<>(null);
-  }
-
-  /**
-   * @param <B> the builder type
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static <B extends NumberFieldBuilder<Integer, B>> NumberFieldBuilder<Integer, B> integerField(Value<Integer> linkedValue) {
-    return new DefaultIntegerFieldBuilder<>(requireNonNull(linkedValue));
-  }
-
-  /**
-   * @param <B> the builder type
-   * @return a builder for a component
-   */
-  public static <B extends NumberFieldBuilder<Long, B>> NumberFieldBuilder<Long, B> longField() {
-    return new DefaultLongFieldBuilder<>(null);
-  }
-
-  /**
-   * @param <B> the builder type
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static <B extends NumberFieldBuilder<Long, B>> NumberFieldBuilder<Long, B> longField(Value<Long> linkedValue) {
-    return new DefaultLongFieldBuilder<>(requireNonNull(linkedValue));
-  }
-
-  /**
-   * @param <B> the builder type
-   * @return a builder for a component
-   */
-  public static <B extends DecimalFieldBuilder<Double, B>> DecimalFieldBuilder<Double, B> doubleField() {
-    return new DefaultDoubleFieldBuilder<>(null);
-  }
-
-  /**
-   * @param <B> the builder type
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static <B extends DecimalFieldBuilder<Double, B>> DecimalFieldBuilder<Double, B> doubleField(Value<Double> linkedValue) {
-    return new DefaultDoubleFieldBuilder<>(requireNonNull(linkedValue));
-  }
-
-  /**
-   * @param <B> the builder type
-   * @return a builder for a component
-   */
-  public static <B extends DecimalFieldBuilder<BigDecimal, B>> DecimalFieldBuilder<BigDecimal, B> bigDecimalField() {
-    return new DefaultBigDecimalFieldBuilder<>(null);
-  }
-
-  /**
-   * @param <B> the builder type
-   * @param linkedValue the value to link to the component
-   * @return a builder for a component
-   */
-  public static <B extends DecimalFieldBuilder<BigDecimal, B>> DecimalFieldBuilder<BigDecimal, B> bigDecimalField(Value<BigDecimal> linkedValue) {
-    return new DefaultBigDecimalFieldBuilder<>(requireNonNull(linkedValue));
+    return textFieldBuilder(requireNonNull(valueClass), requireNonNull(linkedValue));
   }
 
   /**
@@ -470,6 +372,14 @@ public final class TextComponents {
         ((CaseDocumentFilter) documentFilter).setDocumentCase(documentCase);
       }
     }
+  }
+
+  private static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textFieldBuilder(Class<T> valueClass, Value<T> linkedValue) {
+    if (Number.class.isAssignableFrom(valueClass)) {
+      return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) valueClass, (Value<Number>) linkedValue);
+    }
+
+    return new DefaultTextFieldBuilder<>(valueClass, linkedValue);
   }
 
   private static final class SelectAllListener extends FocusAdapter {
