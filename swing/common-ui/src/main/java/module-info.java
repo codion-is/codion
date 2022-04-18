@@ -4,8 +4,8 @@ module is.codion.swing.common.ui {
 
   exports is.codion.swing.common.ui;
   exports is.codion.swing.common.ui.component;
+  exports is.codion.swing.common.ui.component.button;
   exports is.codion.swing.common.ui.component.calendar;
-  exports is.codion.swing.common.ui.component.checkbox;
   exports is.codion.swing.common.ui.component.combobox;
   exports is.codion.swing.common.ui.component.panel;
   exports is.codion.swing.common.ui.component.slider;
