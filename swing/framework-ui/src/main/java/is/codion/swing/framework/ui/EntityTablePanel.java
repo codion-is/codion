@@ -57,6 +57,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
@@ -272,6 +273,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
   private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
 
+  private JSplitPane southPanelSplitPane;
+
   private JToolBar southToolBar;
 
   /**
@@ -352,7 +355,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public void updateUI() {
     super.updateUI();
     Utilities.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane,
-            summaryScrollPane, summaryPanel, southPanel, refreshToolBar);
+            summaryScrollPane, summaryPanel, southPanel, refreshToolBar, southToolBar, southPanelSplitPane);
     if (tableScrollPane != null) {
       Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
               tableScrollPane.getHorizontalScrollBar(), tableScrollPane.getVerticalScrollBar());
@@ -1055,14 +1058,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
-    southPanel.add(Components.splitPane()
+    southPanelSplitPane = Components.splitPane()
             .continuousLayout(true)
             .resizeWeight(0.35)
             .leftComponent(Components.panel(new GridBagLayout())
                     .add(table.getSearchField(), createSearchFieldConstraints())
                     .build())
             .rightComponent(statusMessageLabel)
-            .build(), BorderLayout.CENTER);
+            .build();
+    southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
     southPanel.add(refreshToolBar, BorderLayout.WEST);
     southToolBar = initializeSouthToolBar();
     if (southToolBar != null) {
