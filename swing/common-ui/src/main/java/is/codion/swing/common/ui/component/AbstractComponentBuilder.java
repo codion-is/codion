@@ -60,6 +60,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private int minimumWidth;
   private int maximumHeight;
   private int maximumWidth;
+  private boolean opaque = false;
   private Border border;
   private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.get();
   private String toolTipText;
@@ -222,6 +223,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public final B opaque(boolean opaque) {
+    this.opaque = opaque;
+    return (B) this;
+  }
+
+  @Override
   public final B componentOrientation(ComponentOrientation componentOrientation) {
     this.componentOrientation = requireNonNull(componentOrientation);
     return (B) this;
@@ -366,6 +373,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     }
     if (background != null) {
       component.setBackground(background);
+    }
+    if (opaque) {
+      component.setOpaque(true);
     }
     component.setComponentOrientation(componentOrientation);
     clientProperties.forEach((key, value) -> component.putClientProperty(key, value));

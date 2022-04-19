@@ -14,6 +14,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.Utilities;
+import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -31,6 +32,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   private int maximumLength = -1;
   private Insets margin;
   private boolean controlDeleteWord = true;
+  private Color disabledTextColor;
 
   protected AbstractTextComponentBuilder(Value<T> linkedValue) {
     super(linkedValue);
@@ -85,6 +87,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
+  public final B disabledTextColor(Color disabledTextColor) {
+    this.disabledTextColor = requireNonNull(disabledTextColor);
+    return (B) this;
+  }
+
+  @Override
   protected final C createComponent() {
     C textComponent = createTextComponent();
     textComponent.setEditable(editable);
@@ -107,6 +115,9 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
       keyEvent(KeyEvents.builder(KeyEvent.VK_BACK_SPACE)
               .modifiers(KeyEvent.CTRL_DOWN_MASK)
               .action(new DeletePreviousWordAction()));
+    }
+    if (disabledTextColor != null) {
+      textComponent.setDisabledTextColor(disabledTextColor);
     }
 
     return textComponent;
