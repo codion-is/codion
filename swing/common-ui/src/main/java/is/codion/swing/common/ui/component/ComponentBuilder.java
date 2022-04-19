@@ -177,6 +177,12 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B background(Color background);
 
   /**
+   * @param opaque true if the component should be opaque
+   * @return this builder instance
+   */
+  B opaque(boolean opaque);
+
+  /**
    * @param orientation the component orientation
    * @return this builder instance
    */

@@ -8082,3 +8082,5 @@
   SpinnerBuilder and related classes moved to component.spinner package
   PanelBuilder and related classes moved to component.panel package
   ButtonBuilder and related classes moved to component.button package
+  TextComponentBuilder.disabledTextColor() added
+  ComponentBuilder.opaque() added

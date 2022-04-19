@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 
 import javax.swing.text.JTextComponent;
+import java.awt.Color;
 import java.awt.Insets;
 
 /**
@@ -55,4 +56,10 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
    * @return this builder instance
    */
   B controlDeleteWord(boolean controlDeleteWord);
+
+  /**
+   * @param disabledTextColor the color used to render disabled text
+   * @return this builder instance
+   */
+  B disabledTextColor(Color disabledTextColor);
 }
