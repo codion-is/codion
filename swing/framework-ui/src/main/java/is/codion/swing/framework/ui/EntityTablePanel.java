@@ -273,6 +273,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
   private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
 
+  private JPanel searchFieldPanel;
+
   private JSplitPane southPanelSplitPane;
 
   private JToolBar southToolBar;
@@ -355,7 +357,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public void updateUI() {
     super.updateUI();
     Utilities.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane,
-            summaryScrollPane, summaryPanel, southPanel, refreshToolBar, southToolBar, southPanelSplitPane);
+            summaryScrollPane, summaryPanel, southPanel, refreshToolBar, southToolBar, southPanelSplitPane, searchFieldPanel);
     if (tableScrollPane != null) {
       Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
               tableScrollPane.getHorizontalScrollBar(), tableScrollPane.getVerticalScrollBar());
@@ -1058,12 +1060,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
+    searchFieldPanel = Components.panel(new GridBagLayout())
+            .add(table.getSearchField(), createSearchFieldConstraints())
+            .build();
     southPanelSplitPane = Components.splitPane()
             .continuousLayout(true)
             .resizeWeight(0.35)
-            .leftComponent(Components.panel(new GridBagLayout())
-                    .add(table.getSearchField(), createSearchFieldConstraints())
-                    .build())
+            .leftComponent(searchFieldPanel)
             .rightComponent(statusMessageLabel)
             .build();
     southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
