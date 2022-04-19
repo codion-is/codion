@@ -6,8 +6,10 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.value.Value;
 
 import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
 
 import static java.util.Objects.requireNonNull;
 
@@ -15,10 +17,15 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
 
   private final ListModel<T> listModel;
 
+  private ListCellRenderer<T> cellRenderer;
+  private ListSelectionModel listSelectionModel;
+  private ListSelectionListener listSelectionListener;
+
   private int visibleRowCount;
   private int layoutOrientation = JList.VERTICAL;
   private int fixedCellHeight = -1;
   private int fixedCellWidth = -1;
+  private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 
   DefaultListBuilder(ListModel<T> listModel, Value<T> linkedValue) {
     super(linkedValue);
@@ -50,13 +57,46 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
   }
 
   @Override
+  public ListBuilder<T> cellRenderer(ListCellRenderer<T> cellRenderer) {
+    this.cellRenderer = requireNonNull(cellRenderer);
+    return this;
+  }
+
+  @Override
+  public ListBuilder<T> selectionMode(int selectionMode) {
+    this.selectionMode = selectionMode;
+    return this;
+  }
+
+  @Override
+  public ListBuilder<T> listSelectionModel(ListSelectionModel listSelectionModel) {
+    this.listSelectionModel = requireNonNull(listSelectionModel);
+    return this;
+  }
+
+  @Override
+  public ListBuilder<T> listSelectionListener(ListSelectionListener listSelectionListener) {
+    this.listSelectionListener = requireNonNull(listSelectionListener);
+    return this;
+  }
+
+  @Override
   protected JList<T> createComponent() {
     JList<T> list = new JList<>(listModel);
-    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    if (cellRenderer != null) {
+      list.setCellRenderer(cellRenderer);
+    }
+    if (listSelectionModel != null) {
+      list.setSelectionModel(listSelectionModel);
+    }
+    if (listSelectionListener != null) {
+      list.addListSelectionListener(listSelectionListener);
+    }
     list.setVisibleRowCount(visibleRowCount);
     list.setLayoutOrientation(layoutOrientation);
     list.setFixedCellHeight(fixedCellHeight);
     list.setFixedCellWidth(fixedCellWidth);
+    list.setSelectionMode(selectionMode);
 
     return list;
   }

@@ -8084,3 +8084,5 @@
   ButtonBuilder and related classes moved to component.button package
   TextComponentBuilder.disabledTextColor() added
   ComponentBuilder.opaque() added
+  ListBuilder.cellRenderer(), ListBuilder.selectionMode(), ListBuilder.listSelectionModel() and ListBuilder.listSelectionListener() added
+  FilteredTable, EntityTablePanel now set custom column header renderers via the table column instead of tableHeader.setDefaultRenderer(), which was causing problems with WindowsLookAndFeel

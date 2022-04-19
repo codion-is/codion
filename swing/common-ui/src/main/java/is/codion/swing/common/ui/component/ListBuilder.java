@@ -4,6 +4,9 @@
 package is.codion.swing.common.ui.component;
 
 import javax.swing.JList;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * Builds a single-selection JList.
@@ -34,4 +37,28 @@ public interface ListBuilder<T> extends ComponentBuilder<T, JList<T>, ListBuilde
    * @return this builder instance
    */
   ListBuilder<T> fixedCellWidth(int fixedCellWidth);
+
+  /**
+   * @param cellRenderer the cell renderer
+   * @return this builder instance
+   */
+  ListBuilder<T> cellRenderer(ListCellRenderer<T> cellRenderer);
+
+  /**
+   * @param selectionMode the list selection model
+   * @return this builder instance
+   */
+  ListBuilder<T> selectionMode(int selectionMode);
+
+  /**
+   * @param listSelectionModel the list selection model
+   * @return this builder instance
+   */
+  ListBuilder<T> listSelectionModel(ListSelectionModel listSelectionModel);
+
+  /**
+   * @param listSelectionListener the list selection listener
+   * @return this builder instance
+   */
+  ListBuilder<T> listSelectionListener(ListSelectionListener listSelectionListener);
 }
