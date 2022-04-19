@@ -602,7 +602,8 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     getTableHeader().setAutoscrolls(true);
     getTableHeader().addMouseMotionListener(new MouseColumnDragHandler());
     getTableHeader().addMouseListener(new MouseSortHandler());
-    getTableHeader().setDefaultRenderer(new SortableHeaderRenderer(getTableHeader().getDefaultRenderer()));
+    tableModel.getColumnModel().getAllColumns().forEach(tableColumn ->
+            tableColumn.setHeaderRenderer(new SortableHeaderRenderer(tableColumn.getHeaderRenderer())));
   }
 
   private void bindEvents() {
@@ -665,16 +666,18 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
 
   private final class SortableHeaderRenderer implements TableCellRenderer {
 
-    private final TableCellRenderer tableCellRenderer;
+    private final TableCellRenderer wrappedRenderer;
 
-    private SortableHeaderRenderer(TableCellRenderer tableCellRenderer) {
-      this.tableCellRenderer = tableCellRenderer;
+    private SortableHeaderRenderer(TableCellRenderer wrappedRenderer) {
+      this.wrappedRenderer = wrappedRenderer;
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                    boolean hasFocus, int row, int column) {
-      Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      Component component = wrappedRenderer == null ?
+              table.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) :
+              wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       Font defaultFont = component.getFont();
       if (component instanceof JLabel) {
         JLabel label = (JLabel) component;

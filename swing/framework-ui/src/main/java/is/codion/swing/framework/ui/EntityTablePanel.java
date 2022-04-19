@@ -1542,7 +1542,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private void initializeTable() {
     tableModel.getColumnModel().getAllColumns().forEach(this::configureColumn);
     JTableHeader header = table.getTableHeader();
-    header.setDefaultRenderer(new HeaderRenderer(header.getDefaultRenderer()));
     header.setFocusable(false);
     if (includePopupMenu) {
       addTablePopupMenu();
@@ -1554,6 +1553,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     column.setCellRenderer(initializeTableCellRenderer(property));
     column.setCellEditor(initializeTableCellEditor(property));
     column.setResizable(true);
+    column.setHeaderRenderer(new HeaderRenderer(column.getHeaderRenderer()));
   }
 
   private void addTablePopupMenu() {
@@ -1753,26 +1753,28 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final class HeaderRenderer implements TableCellRenderer {
 
-    private final TableCellRenderer defaultHeaderRenderer;
+    private final TableCellRenderer wrappedRenderer;
 
-    public HeaderRenderer(TableCellRenderer defaultHeaderRenderer) {
-      this.defaultHeaderRenderer = defaultHeaderRenderer;
+    private HeaderRenderer(TableCellRenderer wrappedRenderer) {
+      this.wrappedRenderer = wrappedRenderer;
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                    boolean hasFocus, int row, int column) {
-      JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      Component component = wrappedRenderer == null ?
+              table.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) :
+              wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
       Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
       boolean displayConditionState = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isDisplayConditionState()
               && tableModel.getTableConditionModel().isConditionEnabled(attribute);
-      Font defaultFont = label.getFont();
-      label.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
+      Font defaultFont = component.getFont();
+      component.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
-      return label;
+      return component;
     }
   }
 
