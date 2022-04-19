@@ -272,6 +272,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
   private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
 
+  private JToolBar southToolBar;
+
   /**
    * specifies whether the refresh toolbar should always be visible, instead of being hidding along with the condition panel
    */
@@ -1062,7 +1064,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .rightComponent(statusMessageLabel)
             .build(), BorderLayout.CENTER);
     southPanel.add(refreshToolBar, BorderLayout.WEST);
-    JToolBar southToolBar = initializeSouthToolBar();
+    southToolBar = initializeSouthToolBar();
     if (southToolBar != null) {
       southPanel.add(southToolBar, BorderLayout.EAST);
     }
