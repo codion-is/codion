@@ -8049,3 +8049,4 @@
   ButtonBuilder and related classes moved to component.button package
   TextComponentBuilder.disabledTextColor() added
   ComponentBuilder.opaque() added
+  ListBuilder.cellRenderer(), ListBuilder.selectionMode(), ListBuilder.listSelectionModel() and ListBuilder.listSelectionListener() added

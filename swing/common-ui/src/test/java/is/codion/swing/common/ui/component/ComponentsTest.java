@@ -34,6 +34,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import java.awt.Color;
@@ -602,6 +603,7 @@ public final class ComponentsTest {
     Value<String> textValue = Value.value("two");
     ListBuilder<String> listBuilder = Components.list(listModel)
             .visibleRowCount(4)
+            .selectionMode(ListSelectionModel.SINGLE_SELECTION)
             .layoutOrientation(JList.VERTICAL)
             .fixedCellHeight(10)
             .fixedCellWidth(10)

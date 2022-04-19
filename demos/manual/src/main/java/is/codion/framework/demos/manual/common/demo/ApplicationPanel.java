@@ -24,6 +24,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -238,6 +239,7 @@ public final class ApplicationPanel extends JPanel {
             .build(inputPanel::add);
     Components.list(createStringListModel(), model.getStringListValue())
             .visibleRowCount(4)
+            .selectionMode(ListSelectionModel.SINGLE_SELECTION)
             .layoutOrientation(JList.HORIZONTAL_WRAP)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
