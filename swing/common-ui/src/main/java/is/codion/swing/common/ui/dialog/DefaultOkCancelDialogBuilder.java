@@ -34,7 +34,6 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   private boolean modal = true;
   private boolean resizable = true;
   private Dimension size;
-  private JComponent locationRelativeTo;
   private Consumer<JDialog> onShown;
   private Action okAction;
   private Action cancelAction;
@@ -96,12 +95,6 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   @Override
   public OkCancelDialogBuilder cancelAction(Action cancelAction) {
     this.cancelAction = requireNonNull(cancelAction);
-    return this;
-  }
-
-  @Override
-  public OkCancelDialogBuilder locationRelativeTo(JComponent locationRelativeTo) {
-    this.locationRelativeTo = requireNonNull(locationRelativeTo);
     return this;
   }
 

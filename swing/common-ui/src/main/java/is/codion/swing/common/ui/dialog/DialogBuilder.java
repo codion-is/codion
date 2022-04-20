@@ -21,10 +21,17 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
 
   /**
    * Sets the dialog owner as the parent window of the given component.
+   * Also sets the {@link #locationRelativeTo(JComponent)} using the given component.
    * @param owner the dialog parent component
    * @return this builder instance
    */
   B owner(JComponent owner);
+
+  /**
+   * @param component the component for the relative location
+   * @return this builder instance
+   */
+  B locationRelativeTo(JComponent component);
 
   /**
    * @param title the dialog title

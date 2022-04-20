@@ -33,7 +33,6 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   private boolean modal = true;
   private boolean resizable = true;
   private Dimension size;
-  private JComponent locationRelativeTo;
   private Action enterAction;
   private Consumer<JDialog> onShown;
   private Consumer<WindowEvent> onOpened;
@@ -85,12 +84,6 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   @Override
   public ComponentDialogBuilder disposeOnEscape(boolean disposeOnEscape) {
     this.disposeOnEscape = disposeOnEscape;
-    return this;
-  }
-
-  @Override
-  public ComponentDialogBuilder locationRelativeTo(JComponent locationRelativeTo) {
-    this.locationRelativeTo = requireNonNull(locationRelativeTo);
     return this;
   }
 

@@ -8056,3 +8056,4 @@
   NumberField.builder(valueClass, linkedValue) now throws NullPointerException if linkedValue is null, calling methods no longer need to use requireNonNull()
   NumberField.IntegerFieldBuilder, LongFieldBuilder, DoubleFieldBuilder and BigDecimalFieldBuilder interfaces added, for convenience
   EntityTablePanel.createReadOnlyEntityTablePanel() bug fixed, edit model was not made readOnly
+  DialogBuilder.locationRelativeTo() added, AbstractDialogBuilder implements, owner(component) also sets the locationRelativeTo() using the component

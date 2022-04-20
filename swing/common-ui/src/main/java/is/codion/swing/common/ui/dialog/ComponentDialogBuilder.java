@@ -8,7 +8,6 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 
 import javax.swing.Action;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
@@ -65,12 +64,6 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
    * @return this DialogBuilder instance
    */
   ComponentDialogBuilder disposeOnEscape(boolean disposeOnEscape);
-
-  /**
-   * @param component the component for the relative location
-   * @return this builder instance
-   */
-  ComponentDialogBuilder locationRelativeTo(JComponent component);
 
   /**
    * @param onShown called each time the dialog is shown
