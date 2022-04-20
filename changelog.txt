@@ -8054,3 +8054,5 @@
   EntityPanel, EntityTablePanel, minor updateUI() fixes, continued
   EntityComboBox.integerFieldSelector() and textFieldSelector() renamed integerSelectorField() and stringSelectorField() respectively
   NumberField.builder(valueClass, linkedValue) now throws NullPointerException if linkedValue is null, calling methods no longer need to use requireNonNull()
+  NumberField.IntegerFieldBuilder, LongFieldBuilder, DoubleFieldBuilder and BigDecimalFieldBuilder interfaces added, for convenience
+  EntityTablePanel.createReadOnlyEntityTablePanel() bug fixed, edit model was not made readOnly
