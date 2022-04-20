@@ -369,7 +369,7 @@ public final class Components {
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass,
                                                                                                                    Value<T> linkedValue) {
     if (Number.class.isAssignableFrom(valueClass)) {
-      return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) valueClass, (Value<Number>) requireNonNull(linkedValue));
+      return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) valueClass, (Value<Number>) linkedValue);
     }
 
     return TextFieldBuilder.builder(valueClass, linkedValue);
@@ -485,7 +485,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends NumberField.Builder<Integer, B>> NumberField.Builder<Integer, B> integerField(Value<Integer> linkedValue) {
-    return NumberField.builder(Integer.class, requireNonNull(linkedValue));
+    return NumberField.builder(Integer.class, linkedValue);
   }
 
   /**
@@ -502,7 +502,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends NumberField.Builder<Long, B>> NumberField.Builder<Long, B> longField(Value<Long> linkedValue) {
-    return NumberField.builder(Long.class, requireNonNull(linkedValue));
+    return NumberField.builder(Long.class, linkedValue);
   }
 
   /**
@@ -519,7 +519,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends NumberField.DecimalBuilder<Double, B>> NumberField.DecimalBuilder<Double, B> doubleField(Value<Double> linkedValue) {
-    return (NumberField.DecimalBuilder<Double, B>) NumberField.builder(Double.class, requireNonNull(linkedValue));
+    return (NumberField.DecimalBuilder<Double, B>) NumberField.builder(Double.class, linkedValue);
   }
 
   /**
@@ -536,7 +536,7 @@ public final class Components {
    * @return a builder for a component
    */
   public static <B extends NumberField.DecimalBuilder<BigDecimal, B>> NumberField.DecimalBuilder<BigDecimal, B> bigDecimalField(Value<BigDecimal> linkedValue) {
-    return (NumberField.DecimalBuilder<BigDecimal, B>) NumberField.builder(BigDecimal.class, requireNonNull(linkedValue));
+    return (NumberField.DecimalBuilder<BigDecimal, B>) NumberField.builder(BigDecimal.class, linkedValue);
   }
 
   /**

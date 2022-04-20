@@ -43,6 +43,7 @@ import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.slf4j.Logger;
@@ -960,7 +961,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    SwingEntityTableModel tableModel = new SwingEntityTableModel(entities.iterator().next().getEntityType(), connectionProvider) {
+    SwingEntityEditModel editModel = new SwingEntityEditModel(entities.iterator().next().getEntityType(), connectionProvider);
+    editModel.setReadOnly(true);
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(editModel) {
       @Override
       protected Collection<Entity> refreshItems() {
         return entities;

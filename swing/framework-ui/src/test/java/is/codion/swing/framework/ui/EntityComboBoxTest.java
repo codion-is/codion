@@ -52,13 +52,13 @@ public class EntityComboBoxTest {
   }
 
   @Test
-  void integerValueSelector() {
+  void integerSelectorField() {
     SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     comboBoxModel.refresh();
     Key jonesKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 3);
     comboBoxModel.setSelectedEntityByKey(jonesKey);
     EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
-    NumberField<Integer> empIdValue = comboBox.integerFieldSelector(TestDomain.EMP_ID).build();
+    NumberField<Integer> empIdValue = comboBox.integerSelectorField(TestDomain.EMP_ID).build();
     assertEquals(3, empIdValue.getValue());
     Key blakeKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 5);
     comboBoxModel.setSelectedEntityByKey(blakeKey);

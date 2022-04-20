@@ -810,12 +810,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public void addConfirmSetEntityObserver(EventDataListener<State> listener) {
+  public final void addConfirmSetEntityObserver(EventDataListener<State> listener) {
     confirmSetEntityEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeConfirmSetEntityObserver(EventDataListener<State> listener) {
+  public final void removeConfirmSetEntityObserver(EventDataListener<State> listener) {
     confirmSetEntityEvent.removeDataListener(listener);
   }
 

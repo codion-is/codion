@@ -173,7 +173,7 @@ public final class NumberField<T extends Number> extends JTextField {
    * @return a builder for a component
    */
   public static <T extends Number, B extends Builder<T, B>> Builder<T, B> builder(Class<T> valueClass) {
-    return builder(valueClass, null);
+    return createBuilder(valueClass, null);
   }
 
   /**
@@ -184,6 +184,18 @@ public final class NumberField<T extends Number> extends JTextField {
    * @return a builder for a component
    */
   public static <T extends Number, B extends Builder<T, B>> Builder<T, B> builder(Class<T> valueClass, Value<T> linkedValue) {
+    return createBuilder(valueClass, requireNonNull(linkedValue));
+  }
+
+  /**
+   * Can't override getDocument() with type cast since it's called before setting the document with a class cast exception.
+   * @return the typed document.
+   */
+  NumberDocument<T> getTypedDocument() {
+    return (NumberDocument<T>) super.getDocument();
+  }
+
+  private static <T extends Number, B extends Builder<T, B>> Builder<T, B> createBuilder(Class<T> valueClass, Value<T> linkedValue) {
     requireNonNull(valueClass);
     if (valueClass.equals(Integer.class)) {
       return (Builder<T, B>) new DefaultIntegerFieldBuilder<>((Value<Integer>) linkedValue);
@@ -199,14 +211,6 @@ public final class NumberField<T extends Number> extends JTextField {
     }
 
     throw new IllegalArgumentException("Unsupported number type: " + valueClass);
-  }
-
-  /**
-   * Can't override getDocument() with type cast since it's called before setting the document with a class cast exception.
-   * @return the typed document.
-   */
-  NumberDocument<T> getTypedDocument() {
-    return (NumberDocument<T>) super.getDocument();
   }
 
   /**

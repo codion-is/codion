@@ -65,7 +65,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
   private JPanel initializeDepartmentPanel() {
     EntityComboBox departmentBox = createForeignKeyComboBox(Employee.DEPARTMENT_FK).build();
-    NumberField<Integer> departmentIdField = departmentBox.integerFieldSelector(Department.ID)
+    NumberField<Integer> departmentIdField = departmentBox.integerSelectorField(Department.ID)
             .transferFocusOnEnter(true)
             .build();
 

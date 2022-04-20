@@ -91,7 +91,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
    * @param <B> the builder type
    * @return a {@link NumberField} builder bound to the selected value
    */
-  public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerFieldSelector(
+  public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerSelectorField(
           Attribute<Integer> attribute) {
     requireNonNull(attribute);
     return (B) Components.integerField(getModel().selectorValue(attribute))
@@ -106,7 +106,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
    * @param <B> the builder type
    * @return a {@link NumberField} builder bound to the selected value
    */
-  public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerFieldSelector(
+  public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerSelectorField(
           Attribute<Integer> attribute, EntityComboBoxModel.Finder<Integer> finder) {
     requireNonNull(attribute);
     requireNonNull(finder);
@@ -121,7 +121,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
    * @param <B> the builder type
    * @return a {@link JTextField} builder bound to the selected value
    */
-  public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textFieldSelector(
+  public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringSelectorField(
           Attribute<String> attribute) {
     requireNonNull(attribute);
     return (B) Components.textField(getModel().selectorValue(attribute))
@@ -136,7 +136,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
    * @param <B> the builder type
    * @return a {@link JTextField} builder bound to the selected value
    */
-  public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textFieldSelector(
+  public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringSelectorField(
           Attribute<String> attribute,
           EntityComboBoxModel.Finder<String> finder) {
     requireNonNull(attribute);
