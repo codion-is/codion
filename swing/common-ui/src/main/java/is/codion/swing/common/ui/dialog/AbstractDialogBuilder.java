@@ -16,6 +16,7 @@ import java.awt.Window;
 public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements DialogBuilder<B> {
 
   protected Window owner;
+  protected JComponent locationRelativeTo;
   protected String title;
   protected ImageIcon icon;
 
@@ -31,6 +32,15 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
       throw new IllegalStateException("owner has alrady been set");
     }
     this.owner = owner == null ? null : Windows.getParentWindow(owner).orElse(null);
+    if (locationRelativeTo == null) {
+      locationRelativeTo = owner;
+    }
+    return (B) this;
+  }
+
+  @Override
+  public final B locationRelativeTo(JComponent locationRelativeTo) {
+    this.locationRelativeTo = locationRelativeTo;
     return (B) this;
   }
 

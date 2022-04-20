@@ -126,6 +126,13 @@ public final class Dialogs {
   }
 
   /**
+   * @return a new CalendarDialogBuilder
+   */
+  public static CalendarDialogBuilder calendarDialog() {
+    return new DefaultCalendarDialogBuilder();
+  }
+
+  /**
    * @return a builder for a dialog for selecting a look and feel
    */
   public static LookAndFeelSelectionDialogBuilder lookAndFeelSelectionDialog() {

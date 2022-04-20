@@ -6,17 +6,13 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.event.Event;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.text.TemporalField;
-import is.codion.swing.common.ui.component.text.TemporalInputPanel;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.JComponent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -186,19 +182,5 @@ public class TemporalValuesTest {
 
     value.set(LocalDateTime.parse(dateString, formatter));
     assertEquals(dateString, textField.getText());
-  }
-
-  private static final class DefaultCalendarProvider implements TemporalInputPanel.CalendarProvider {
-
-    @Override
-    public <T extends Temporal> Optional<T> getTemporal(Class<T> temporalClass, JComponent dialogOwner,
-                                                        T initialValue) {
-      return Optional.empty();
-    }
-
-    @Override
-    public <T extends Temporal> boolean supports(Class<T> temporalClass) {
-      return false;
-    }
   }
 }
