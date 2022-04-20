@@ -8059,3 +8059,4 @@
   DialogBuilder.locationRelativeTo() added, AbstractDialogBuilder implements, owner(component) also sets the locationRelativeTo() using the component
   CalendarDialogBuilder added along with Dialogs.calendarDialog()
   TemporalInputPanel.CalendarProvider removed
+  CalendarPanel.CalendarView enum removed

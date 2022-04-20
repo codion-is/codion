@@ -91,15 +91,15 @@ public final class CalendarPanel extends JPanel {
   private final JPanel dayGridPanel;
   private final List<JLabel> dayFillLabels;
   private final JLabel formattedDateLabel;
-  private final CalendarView calendarView;
+  private final boolean includeTime;
 
-  CalendarPanel(CalendarView calendarView) {
-    this.calendarView = calendarView;
+  CalendarPanel(boolean includeTime) {
+    this.includeTime = includeTime;
     LocalDateTime dateTime = LocalDateTime.now();
     yearValue = Value.value(dateTime.getYear(), dateTime.getYear());
     monthValue = Value.value(dateTime.getMonth(), dateTime.getMonth());
     dayValue = Value.value(dateTime.getDayOfMonth(), dateTime.getDayOfMonth());
-    if (calendarView.includesTime()) {
+    if (includeTime) {
       hourValue = Value.value(dateTime.getHour(), dateTime.getHour());
       minuteValue = Value.value(dateTime.getMinute(), dateTime.getMinute());
     }
@@ -145,7 +145,7 @@ public final class CalendarPanel extends JPanel {
     yearValue.set(dateTime.getYear());
     monthValue.set(dateTime.getMonth());
     dayValue.set(dateTime.getDayOfMonth());
-    if (calendarView.includesTime()) {
+    if (includeTime) {
       hourValue.set(dateTime.getHour());
       minuteValue.set(dateTime.getMinute());
     }
@@ -197,14 +197,14 @@ public final class CalendarPanel extends JPanel {
    * @return  a new {@link CalendarPanel} without time fields.
    */
   public static CalendarPanel dateCalendarPanel() {
-    return new CalendarPanel(CalendarView.DATE);
+    return new CalendarPanel(false);
   }
 
   /**
    * @return  a new {@link CalendarPanel} with time fields.
    */
   public static CalendarPanel dateTimeCalendarPanel() {
-    return new CalendarPanel(CalendarView.DATE_TIME);
+    return new CalendarPanel(true);
   }
 
   void previousMonth() {
@@ -357,7 +357,7 @@ public final class CalendarPanel extends JPanel {
     JPanel yearMonthHourMinutePanel = new JPanel(flexibleGridLayout(1, 0));
     yearMonthHourMinutePanel.add(monthSpinner);
     yearMonthHourMinutePanel.add(yearSpinner);
-    if (calendarView.includesTime()) {
+    if (includeTime) {
       yearMonthHourMinutePanel.add(new JLabel(" "));
       yearMonthHourMinutePanel.add(hourSpinner);
       yearMonthHourMinutePanel.add(new JLabel(":", SwingConstants.CENTER));
@@ -455,7 +455,7 @@ public final class CalendarPanel extends JPanel {
   }
 
   private void updateFormattedDate() {
-    formattedDateLabel.setText(dateFormatter.format(getDateTime()) + (calendarView.includesTime() ? " " + timeFormatter.format(getDateTime()) : ""));
+    formattedDateLabel.setText(dateFormatter.format(getDateTime()) + (includeTime ? " " + timeFormatter.format(getDateTime()) : ""));
   }
 
   private void addKeyEvents() {
@@ -497,7 +497,7 @@ public final class CalendarPanel extends JPanel {
     keyEvent.keyEvent(KeyEvent.VK_RIGHT)
             .action(control(this::nextDay))
             .enable(this);
-    if (calendarView.includesTime()) {
+    if (includeTime) {
       keyEvent.modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
               .keyEvent(KeyEvent.VK_LEFT)
               .action(control(this::previousHour))
@@ -615,22 +615,5 @@ public final class CalendarPanel extends JPanel {
     return Arrays.stream(Month.values())
             .map(month -> Item.item(month, month.getDisplayName(TextStyle.FULL, Locale.getDefault())))
             .collect(Collectors.toList());
-  }
-
-  private enum CalendarView {
-    DATE {
-      @Override
-      boolean includesTime() {
-        return false;
-      }
-    },
-    DATE_TIME {
-      @Override
-      boolean includesTime() {
-        return true;
-      }
-    };
-
-    abstract boolean includesTime();
   }
 }
