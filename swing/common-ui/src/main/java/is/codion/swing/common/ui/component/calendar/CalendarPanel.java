@@ -9,7 +9,6 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.BorderFactory;
 import javax.swing.FocusManager;
@@ -44,7 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -161,6 +159,13 @@ public final class CalendarPanel extends JPanel {
   }
 
   /**
+   * Requests input focus for the current day button
+   */
+  public void requestCurrentDayButtonFocus() {
+    dayButtons.get(dayValue.get()).requestFocusInWindow();
+  }
+
+  /**
    * @param listener a listener notified each time the date changes
    */
   public void addDateListener(EventDataListener<LocalDate> listener) {
@@ -200,72 +205,6 @@ public final class CalendarPanel extends JPanel {
    */
   public static CalendarPanel dateTimeCalendarPanel() {
     return new CalendarPanel(CalendarView.DATE_TIME);
-  }
-
-  /**
-   * Retrieves a LocalDate from the user.
-   * @param dialogOwner the dialog owner
-   * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
-   */
-  public static Optional<LocalDate> getLocalDate(JComponent dialogOwner) {
-    return getLocalDate(dialogOwner, null);
-  }
-
-  /**
-   * Retrieves a LocalDate from the user.
-   * @param dialogOwner the dialog owner
-   * @param startDate the starting date, if null the current date is used
-   * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
-   */
-  public static Optional<LocalDate> getLocalDate(JComponent dialogOwner,
-                                                 LocalDate startDate) {
-    CalendarPanel calendarPanel = dateCalendarPanel();
-    if (startDate != null) {
-      calendarPanel.setDate(startDate);
-    }
-    State okPressed = State.state();
-    Dialogs.okCancelDialog(calendarPanel)
-            .owner(dialogOwner)
-            .locationRelativeTo(dialogOwner)
-            .title(MESSAGES.getString("select_date"))
-            .onOk(() -> okPressed.set(true))
-            .onShown(dialog -> calendarPanel.requestCurrentDayButtonFocus())
-            .show();
-
-    return okPressed.get() ? Optional.of(calendarPanel.getDate()) : Optional.empty();
-  }
-
-  /**
-   * Retrieves a LocalDateTime from the user.
-   * @param dialogOwner the dialog owner
-   * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
-   */
-  public static Optional<LocalDateTime> getLocalDateTime(JComponent dialogOwner) {
-    return getLocalDateTime(dialogOwner, null);
-  }
-
-  /**
-   * Retrieves a LocalDateTime from the user.
-   * @param dialogOwner the dialog owner
-   * @param startDateTime the starting date, if null the current date is used
-   * @return a LocalDateTime from the user, {@link Optional#empty()} in case the user cancels
-   */
-  public static Optional<LocalDateTime> getLocalDateTime(JComponent dialogOwner,
-                                                         LocalDateTime startDateTime) {
-    CalendarPanel calendarPanel = dateTimeCalendarPanel();
-    if (startDateTime != null) {
-      calendarPanel.setDateTime(startDateTime);
-    }
-    State okPressed = State.state();
-    Dialogs.okCancelDialog(calendarPanel)
-            .owner(dialogOwner)
-            .locationRelativeTo(dialogOwner)
-            .title(MESSAGES.getString("select_date_time"))
-            .onShown(dialog -> calendarPanel.requestCurrentDayButtonFocus())
-            .onOk(() -> okPressed.set(true))
-            .show();
-
-    return okPressed.get() ? Optional.of(calendarPanel.getDateTime()) : Optional.empty();
   }
 
   void previousMonth() {
@@ -476,10 +415,6 @@ public final class CalendarPanel extends JPanel {
 
   private boolean dayPanelHasFocus() {
     return dayGridPanel.isAncestorOf(FocusManager.getCurrentManager().getFocusOwner());
-  }
-
-  private void requestCurrentDayButtonFocus() {
-    dayButtons.get(dayValue.get()).requestFocusInWindow();
   }
 
   private void setYearMonthDay(LocalDate localDate) {

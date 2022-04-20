@@ -10,8 +10,8 @@ import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -328,10 +328,16 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
         public <T extends Temporal> Optional<T> getTemporal(Class<T> temporalClass, JComponent dialogOwner,
                                                             T initialValue) {
           if (LocalDate.class.equals(temporalClass)) {
-            return (Optional<T>) CalendarPanel.getLocalDate(dialogOwner, (LocalDate) initialValue);
+            return (Optional<T>) Dialogs.calendarDialog()
+                    .owner(dialogOwner)
+                    .initialValue((LocalDate) initialValue)
+                    .selectDate();
           }
           if (LocalDateTime.class.equals(temporalClass)) {
-            return (Optional<T>) CalendarPanel.getLocalDateTime(dialogOwner, (LocalDateTime) initialValue);
+            return (Optional<T>) Dialogs.calendarDialog()
+                    .owner(dialogOwner)
+                    .initialValue((LocalDateTime) initialValue)
+                    .selectDateTime();
           }
 
           throw new IllegalArgumentException("Unsupported temporal type: " + temporalClass);
