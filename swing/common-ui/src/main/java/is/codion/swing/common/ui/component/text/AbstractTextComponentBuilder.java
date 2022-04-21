@@ -17,6 +17,8 @@ import javax.swing.text.Utilities;
 import java.awt.Color;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 
 import static java.util.Objects.requireNonNull;
@@ -33,6 +35,8 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   private Insets margin;
   private boolean controlDeleteWord = true;
   private Color disabledTextColor;
+  private boolean moveCaretToEndOnFocusGained;
+  private boolean moveCaretToStartOnFocusGained;
 
   protected AbstractTextComponentBuilder(Value<T> linkedValue) {
     super(linkedValue);
@@ -93,6 +97,24 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
+  public final B moveCaretToEndOnFocusGained(boolean moveCaretToEndOnFocusGained) {
+    if (moveCaretToStartOnFocusGained) {
+      throw new IllegalArgumentException("Caret is already set to move to start on focus gained");
+    }
+    this.moveCaretToEndOnFocusGained = moveCaretToEndOnFocusGained;
+    return (B) this;
+  }
+
+  @Override
+  public final B moveCaretToStartOnFocusGained(boolean moveCaretToStartOnFocusGained) {
+    if (moveCaretToEndOnFocusGained) {
+      throw new IllegalArgumentException("Caret is already set to move to end on focus gained");
+    }
+    this.moveCaretToStartOnFocusGained = moveCaretToStartOnFocusGained;
+    return (B) this;
+  }
+
+  @Override
   protected final C createComponent() {
     C textComponent = createTextComponent();
     textComponent.setEditable(editable);
@@ -118,6 +140,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
     }
     if (disabledTextColor != null) {
       textComponent.setDisabledTextColor(disabledTextColor);
+    }
+    if (moveCaretToStartOnFocusGained) {
+      textComponent.addFocusListener(new MoveCaretToStartListener(textComponent));
+    }
+    if (moveCaretToEndOnFocusGained) {
+      textComponent.addFocusListener(new MoveCaretToEndListener(textComponent));
     }
 
     return textComponent;
@@ -164,6 +192,34 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
       catch (BadLocationException e) {
         throw new RuntimeException(e);
       }
+    }
+  }
+
+  private static final class MoveCaretToStartListener extends FocusAdapter {
+
+    private final JTextComponent textComponent;
+
+    private MoveCaretToStartListener(JTextComponent textComponent) {
+      this.textComponent = textComponent;
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+      textComponent.setCaretPosition(0);
+    }
+  }
+
+  private static final class MoveCaretToEndListener extends FocusAdapter {
+
+    private final JTextComponent textComponent;
+
+    private MoveCaretToEndListener(JTextComponent textComponent) {
+      this.textComponent = textComponent;
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+      textComponent.setCaretPosition(textComponent.getText().length());
     }
   }
 }

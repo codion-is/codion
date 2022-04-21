@@ -8095,3 +8095,8 @@
   CalendarDialogBuilder added along with Dialogs.calendarDialog()
   TemporalInputPanel.CalendarProvider removed
   CalendarPanel.CalendarView enum removed
+  TextComponents.moveCaretToEndOnFocusGained() and moveCaretToStartOnFocusGained() removed
+  TextComponentBuilder.moveCaretToEndOnFocusGained() and moveCaretToStartOnFocusGained() added
+  TemporalField.Builder, B Builder type parameter removed
+  NumberField.DecimalBuilder merged with Builder, lots of complexity for minimal gain
+  NumberField.Builder implementations refactored

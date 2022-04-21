@@ -343,7 +343,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalField.Builder<LocalTime, TemporalField<LocalTime>> localTimeField(Attribute<LocalTime> attribute) {
+  public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute) {
     Property<LocalTime> property = entityDefinition.getProperty(attribute);
 
     return Components.localTimeField(property.getDateTimePattern())
@@ -355,7 +355,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalField.Builder<LocalDate, TemporalField<LocalDate>> localDateField(Attribute<LocalDate> attribute) {
+  public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute) {
     Property<LocalDate> property = entityDefinition.getProperty(attribute);
 
     return Components.localDateField(property.getDateTimePattern())
@@ -367,7 +367,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalField.Builder<LocalDateTime, TemporalField<LocalDateTime>> localDateTimeField(Attribute<LocalDateTime> attribute) {
+  public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute) {
     Property<LocalDateTime> property = entityDefinition.getProperty(attribute);
 
     return Components.localDateTimeField(property.getDateTimePattern())
@@ -379,7 +379,7 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a builder
    */
-  public final TemporalField.Builder<OffsetDateTime, TemporalField<OffsetDateTime>> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
+  public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
     Property<OffsetDateTime> property = entityDefinition.getProperty(attribute);
 
     return Components.offsetDateTimeField(property.getDateTimePattern())
@@ -392,7 +392,7 @@ public class EntityComponents {
    * @param <T> the temporal type
    * @return a builder
    */
-  public final <T extends Temporal> TemporalField.Builder<T, TemporalField<T>> temporalField(Attribute<T> attribute) {
+  public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
 
     return Components.temporalField(property.getAttribute().getTypeClass(), property.getDateTimePattern())
@@ -401,14 +401,13 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
-   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends NumberField.Builder<Integer, B>> NumberField.Builder<Integer, B> integerField(Attribute<Integer> attribute) {
+  public final NumberField.Builder<Integer> integerField(Attribute<Integer> attribute) {
     Property<Integer> property = entityDefinition.getProperty(attribute);
 
-    return (NumberField.Builder<Integer, B>) Components.integerField()
+    return Components.integerField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -417,14 +416,13 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
-   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends NumberField.Builder<Long, B>> NumberField.Builder<Long, B> longField(Attribute<Long> attribute) {
+  public final NumberField.Builder<Long> longField(Attribute<Long> attribute) {
     Property<Long> property = entityDefinition.getProperty(attribute);
 
-    return (NumberField.Builder<Long, B>) Components.longField()
+    return Components.longField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -433,14 +431,13 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
-   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends NumberField.DecimalBuilder<Double, B>> NumberField.DecimalBuilder<Double, B> doubleField(Attribute<Double> attribute) {
+  public final NumberField.Builder<Double> doubleField(Attribute<Double> attribute) {
     Property<Double> property = entityDefinition.getProperty(attribute);
 
-    return (NumberField.DecimalBuilder<Double, B>) Components.doubleField()
+    return Components.doubleField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -450,14 +447,13 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
-   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends NumberField.DecimalBuilder<BigDecimal, B>> NumberField.DecimalBuilder<BigDecimal, B> bigDecimalField(Attribute<BigDecimal> attribute) {
+  public final NumberField.Builder<BigDecimal> bigDecimalField(Attribute<BigDecimal> attribute) {
     Property<BigDecimal> property = entityDefinition.getProperty(attribute);
 
-    return (NumberField.DecimalBuilder<BigDecimal, B>) Components.bigDecimalField()
+    return Components.bigDecimalField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())

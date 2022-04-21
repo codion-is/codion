@@ -8,8 +8,6 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import java.awt.Dimension;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 import static java.util.Objects.requireNonNull;
@@ -86,42 +84,6 @@ public final class TextComponents {
         textComponent.removeFocusListener(listener);
       }
     }
-
-    return textComponent;
-  }
-
-  /**
-   * Sets the caret position to 0 in the given text component when it gains focus
-   * @param textComponent the text component
-   * @param <T> the component type
-   * @return the component
-   */
-  public static <T extends JTextComponent> T moveCaretToStartOnFocusGained(T textComponent) {
-    requireNonNull(textComponent, TEXT_COMPONENT);
-    textComponent.addFocusListener(new FocusAdapter() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        textComponent.setCaretPosition(0);
-      }
-    });
-
-    return textComponent;
-  }
-
-  /**
-   * Sets the caret position to the right of the last character in the given text component when it gains focus
-   * @param textComponent the text component
-   * @param <T> the component type
-   * @return the component
-   */
-  public static <T extends JTextComponent> T moveCaretToEndOnFocusGained(T textComponent) {
-    requireNonNull(textComponent, TEXT_COMPONENT);
-    textComponent.addFocusListener(new FocusAdapter() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        textComponent.setCaretPosition(textComponent.getText().length());
-      }
-    });
 
     return textComponent;
   }
