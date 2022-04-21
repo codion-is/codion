@@ -36,7 +36,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final DateTimeParser<T> dateTimeParser;
   private final Value<T> value = Value.value();
 
-  private TemporalField(DefaultBuilder<T, ?> builder) {
+  private TemporalField(DefaultBuilder<T> builder) {
     super(initializeFormatter(builder.mask));
     this.temporalClass = builder.temporalClass;
     this.formatter = builder.dateTimeFormatter;
@@ -93,10 +93,9 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @param temporalClass the temporal class
    * @param dateTimePattern the date time pattern
    * @param <T> the temporal type
-   * @param <C> the component type
    * @return a new builder
    */
-  public static <T extends Temporal, C extends TemporalField<T>> Builder<T, C> builder(Class<T> temporalClass, String dateTimePattern) {
+  public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, String dateTimePattern) {
     return new DefaultBuilder<>(temporalClass, dateTimePattern, null);
   }
 
@@ -108,20 +107,18 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @param dateTimePattern the date time pattern
    * @param linkedValue the value to link to the component
    * @param <T> the temporal type
-   * @param <C> the component type
    * @return a new builder
    */
-  public static <T extends Temporal, C extends TemporalField<T>> Builder<T, C> builder(Class<T> temporalClass, String dateTimePattern,
-                                                                                       Value<T> linkedValue) {
+  public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, String dateTimePattern,
+                                                        Value<T> linkedValue) {
     return new DefaultBuilder<>(temporalClass, dateTimePattern, requireNonNull(linkedValue));
   }
 
   /**
    * A builder for {@link TemporalField}.
    * @param <T> the temporal type
-   * @param <C> the component type
    */
-  public interface Builder<T extends Temporal, C extends TemporalField<T>> extends TextFieldBuilder<T, C, Builder<T, C>> {
+  public interface Builder<T extends Temporal> extends TextFieldBuilder<T, TemporalField<T>, Builder<T>> {
 
     /**
      * Sets the {@link DateTimeFormatter} for this field, this formatter must
@@ -129,13 +126,13 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
      * @param dateTimeFormatter the date/time formatter
      * @return this builder instance
      */
-    Builder<T, C> dateTimeFormatter(DateTimeFormatter dateTimeFormatter);
+    Builder<T> dateTimeFormatter(DateTimeFormatter dateTimeFormatter);
 
     /**
      * @param dateTimeParser the date/time parser
      * @return this builder instance
      */
-    Builder<T, C> dateTimeParser(DateTimeParser<T> dateTimeParser);
+    Builder<T> dateTimeParser(DateTimeParser<T> dateTimeParser);
 
     /**
      * @param focusLostBehaviour the focus lost behaviour, JFormattedTextField.COMMIT by default
@@ -145,11 +142,11 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
      * @see JFormattedTextField#REVERT
      * @see JFormattedTextField#PERSIST
      */
-    Builder<T, C> focusLostBehaviour(int focusLostBehaviour);
+    Builder<T> focusLostBehaviour(int focusLostBehaviour);
   }
 
-  private static final class DefaultBuilder<T extends Temporal, C extends TemporalField<T>>
-          extends DefaultTextFieldBuilder<T, C, Builder<T, C>> implements Builder<T, C> {
+  private static final class DefaultBuilder<T extends Temporal>
+          extends DefaultTextFieldBuilder<T, TemporalField<T>, Builder<T>> implements Builder<T> {
 
     private final Class<T> temporalClass;
     private final String mask;
@@ -168,39 +165,39 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
 
     @Override
-    public Builder<T, C> dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+    public Builder<T> dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
       this.dateTimeFormatter = requireNonNull(dateTimeFormatter);
       return this;
     }
 
     @Override
-    public Builder<T, C> dateTimeParser(DateTimeParser<T> dateTimeParser) {
+    public Builder<T> dateTimeParser(DateTimeParser<T> dateTimeParser) {
       this.dateTimeParser = requireNonNull(dateTimeParser);
       return this;
     }
 
     @Override
-    public Builder<T, C> focusLostBehaviour(int focusLostBehaviour) {
+    public Builder<T> focusLostBehaviour(int focusLostBehaviour) {
       this.focusLostBehaviour = focusLostBehaviour;
       return this;
     }
 
     @Override
-    protected C createTextField() {
+    protected TemporalField<T> createTextField() {
       if (dateTimeParser == null) {
         throw new IllegalStateException("dateTimeParser must be specified");
       }
 
-      return (C) new TemporalField<>(this);
+      return new TemporalField<>(this);
     }
 
     @Override
-    protected ComponentValue<T, C> createComponentValue(C component) {
-      return (ComponentValue<T, C>) new TemporalFieldValue<>(component, updateOn);
+    protected ComponentValue<T, TemporalField<T>> createComponentValue(TemporalField<T> component) {
+      return (ComponentValue<T, TemporalField<T>>) new TemporalFieldValue<>(component, updateOn);
     }
 
     @Override
-    protected void setInitialValue(C component, T initialValue) {
+    protected void setInitialValue(TemporalField<T> component, T initialValue) {
       component.setTemporal(initialValue);
     }
 

@@ -8062,3 +8062,4 @@
   CalendarPanel.CalendarView enum removed
   TextComponents.moveCaretToEndOnFocusGained() and moveCaretToStartOnFocusGained() removed
   TextComponentBuilder.moveCaretToEndOnFocusGained() and moveCaretToStartOnFocusGained() added
+  TemporalField.Builder, B Builder type parameter removed

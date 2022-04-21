@@ -514,7 +514,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a temporal field
    * @return a local time field builder
    */
-  protected final TemporalField.Builder<LocalTime, TemporalField<LocalTime>> createLocalTimeField(Attribute<LocalTime> attribute) {
+  protected final TemporalField.Builder<LocalTime> createLocalTimeField(Attribute<LocalTime> attribute) {
     return setComponentBuilder(attribute, entityComponents.localTimeField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
@@ -524,7 +524,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a temporal field
    * @return a local date field builder
    */
-  protected final TemporalField.Builder<LocalDate, TemporalField<LocalDate>> createLocalDateField(Attribute<LocalDate> attribute) {
+  protected final TemporalField.Builder<LocalDate> createLocalDateField(Attribute<LocalDate> attribute) {
     return setComponentBuilder(attribute, entityComponents.localDateField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
@@ -534,7 +534,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a temporal field
    * @return a local date time field builder
    */
-  protected final TemporalField.Builder<LocalDateTime, TemporalField<LocalDateTime>> createLocalDateTimeField(Attribute<LocalDateTime> attribute) {
+  protected final TemporalField.Builder<LocalDateTime> createLocalDateTimeField(Attribute<LocalDateTime> attribute) {
     return setComponentBuilder(attribute, entityComponents.localDateTimeField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
@@ -544,7 +544,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param attribute the attribute for which to build a temporal field
    * @return an offset date time field builder
    */
-  protected final TemporalField.Builder<OffsetDateTime, TemporalField<OffsetDateTime>> createOffsetDateTimeField(Attribute<OffsetDateTime> attribute) {
+  protected final TemporalField.Builder<OffsetDateTime> createOffsetDateTimeField(Attribute<OffsetDateTime> attribute) {
     return setComponentBuilder(attribute, entityComponents.offsetDateTimeField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
@@ -555,7 +555,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param <T> the temporal type
    * @return an offset date time field builder
    */
-  protected final <T extends Temporal> TemporalField.Builder<T, TemporalField<T>> createTemporalField(Attribute<T> attribute) {
+  protected final <T extends Temporal> TemporalField.Builder<T> createTemporalField(Attribute<T> attribute) {
     return setComponentBuilder(attribute, entityComponents.temporalField(attribute)
             .onBuild(field -> addFormattedValidator(attribute, field, getEditModel())));
   }
