@@ -8060,3 +8060,5 @@
   CalendarDialogBuilder added along with Dialogs.calendarDialog()
   TemporalInputPanel.CalendarProvider removed
   CalendarPanel.CalendarView enum removed
+  TextComponents.moveCaretToEndOnFocusGained() and moveCaretToStartOnFocusGained() removed
+  TextComponentBuilder.moveCaretToEndOnFocusGained() and moveCaretToStartOnFocusGained() added

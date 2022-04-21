@@ -234,7 +234,7 @@ public final class TextInputPanel extends JPanel {
             .wrapStyleWord(true)
             .editable(textField.isEditable())
             .transferFocusOnEnter(true)
-            .onBuild(TextComponents::moveCaretToEndOnFocusGained)
+            .moveCaretToEndOnFocusGained(true)
             .build();
     Dialogs.okCancelDialog(new JScrollPane(textArea))
             .owner(textField)

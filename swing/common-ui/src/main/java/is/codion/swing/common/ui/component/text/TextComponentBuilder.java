@@ -62,4 +62,16 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
    * @return this builder instance
    */
   B disabledTextColor(Color disabledTextColor);
+
+  /**
+   * @param moveCaretToEndOnFocusGained true if the caret should be moved to the end on focus gained
+   * @return this builder instance
+   */
+  B moveCaretToEndOnFocusGained(boolean moveCaretToEndOnFocusGained);
+
+  /**
+   * @param moveCaretToStartOnFocusGained true if the caret should be moved to the start on focus gained
+   * @return this builder instance
+   */
+  B moveCaretToStartOnFocusGained(boolean moveCaretToStartOnFocusGained);
 }
