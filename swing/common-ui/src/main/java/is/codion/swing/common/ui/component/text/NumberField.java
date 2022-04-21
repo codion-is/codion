@@ -306,10 +306,10 @@ public final class NumberField<T extends Number> extends JTextField {
 
     private Number maximumValue;
     private Number minimumValue;
-    protected char groupingSeparator = 0;
-    private boolean groupingUsed;
-    protected int maximumFractionDigits = -1;
-    protected char decimalSeparator = 0;
+    private char groupingSeparator = 0;
+    private Boolean groupingUsed;
+    private char decimalSeparator = 0;
+    private int maximumFractionDigits = -1;
 
     protected AbstractNumberFieldBuilder(Class<T> type, Value<T> linkedValue) {
       super(type, linkedValue);
@@ -363,15 +363,22 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected final NumberField<T> createTextField() {
-      NumberFormat format = cloneFormat((NumberFormat) getFormat());
-      NumberField<T> numberField = createNumberField(format);
+      NumberField<T> numberField = createNumberField(initializeFormat());
       numberField.setMinimumValue(minimumValue);
       numberField.setMaximumValue(maximumValue);
+      if (groupingUsed != null) {
+        numberField.setGroupingUsed(groupingUsed);
+      }
       if (groupingSeparator != 0) {
         numberField.setGroupingSeparator(groupingSeparator);
       }
-      if (format == null) {
-        numberField.setGroupingUsed(groupingUsed);
+      if (numberField.getDocument() instanceof DecimalDocument) {
+        if (maximumFractionDigits != -1) {
+          numberField.setMaximumFractionDigits(maximumFractionDigits);
+        }
+        if (decimalSeparator != 0) {
+          numberField.setDecimalSeparator(decimalSeparator);
+        }
       }
 
       return numberField;
@@ -379,25 +386,29 @@ public final class NumberField<T extends Number> extends JTextField {
 
     protected abstract NumberField<T> createNumberField(NumberFormat format);
 
+    protected abstract NumberFormat createFormat();
+
     @Override
     protected final void setInitialValue(NumberField<T> component, T initialValue) {
       component.setValue(initialValue);
     }
 
-    private static NumberFormat cloneFormat(NumberFormat format) {
-      if (format == null) {
-        return null;
-      }
-      NumberFormat cloned = (NumberFormat) format.clone();
-      cloned.setGroupingUsed(format.isGroupingUsed());
-      cloned.setMaximumIntegerDigits(format.getMaximumIntegerDigits());
-      cloned.setMaximumFractionDigits(format.getMaximumFractionDigits());
-      cloned.setMinimumFractionDigits(format.getMinimumFractionDigits());
-      cloned.setRoundingMode(format.getRoundingMode());
-      cloned.setCurrency(format.getCurrency());
-      cloned.setParseIntegerOnly(format.isParseIntegerOnly());
+    private NumberFormat initializeFormat() {
+      NumberFormat format = (NumberFormat) getFormat();
+      if (format != null) {
+        NumberFormat cloned = (NumberFormat) format.clone();
+        cloned.setGroupingUsed(format.isGroupingUsed());
+        cloned.setMaximumIntegerDigits(format.getMaximumIntegerDigits());
+        cloned.setMaximumFractionDigits(format.getMaximumFractionDigits());
+        cloned.setMinimumFractionDigits(format.getMinimumFractionDigits());
+        cloned.setRoundingMode(format.getRoundingMode());
+        cloned.setCurrency(format.getCurrency());
+        cloned.setParseIntegerOnly(format.isParseIntegerOnly());
 
-      return cloned;
+        return cloned;
+      }
+
+      return createFormat();
     }
   }
 
@@ -409,25 +420,20 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected NumberField<BigDecimal> createNumberField(NumberFormat format) {
-      DecimalFormat decimalFormat = (DecimalFormat) format;
-      if (decimalFormat == null) {
-        decimalFormat = new DecimalFormat();
-        decimalFormat.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
-      }
-      NumberField<BigDecimal> field = new NumberField<>(new DecimalDocument<>(decimalFormat, true));
-      if (decimalSeparator != 0) {
-        field.setDecimalSeparator(decimalSeparator);
-      }
-      if (maximumFractionDigits > 0) {
-        field.setMaximumFractionDigits(maximumFractionDigits);
-      }
-
-      return field;
+      return new NumberField<>(new DecimalDocument<>((DecimalFormat) format, true));
     }
 
     @Override
     protected ComponentValue<BigDecimal, NumberField<BigDecimal>> createComponentValue(NumberField<BigDecimal> component) {
       return new BigDecimalFieldValue(component, true, updateOn);
+    }
+
+    @Override
+    protected NumberFormat createFormat() {
+      DecimalFormat decimalFormat = new DecimalFormat();
+      decimalFormat.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
+
+      return decimalFormat;
     }
   }
 
@@ -439,25 +445,20 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected NumberField<Double> createNumberField(NumberFormat format) {
-      DecimalFormat decimalFormat = (DecimalFormat) format;
-      if (decimalFormat == null) {
-        decimalFormat = new DecimalFormat();
-        decimalFormat.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
-      }
-      NumberField<Double> field = new NumberField<>(new DecimalDocument<>(decimalFormat, false));
-      if (decimalSeparator != 0) {
-        field.setDecimalSeparator(decimalSeparator);
-      }
-      if (maximumFractionDigits > 0) {
-        field.setMaximumFractionDigits(maximumFractionDigits);
-      }
-
-      return field;
+      return new NumberField<>(new DecimalDocument<>((DecimalFormat) format, false));
     }
 
     @Override
     protected ComponentValue<Double, NumberField<Double>> createComponentValue(NumberField<Double> component) {
       return new DoubleFieldValue(component, true, updateOn);
+    }
+
+    @Override
+    protected NumberFormat createFormat() {
+      DecimalFormat decimalFormat = new DecimalFormat();
+      decimalFormat.setMaximumFractionDigits(DecimalDocument.MAXIMUM_FRACTION_DIGITS);
+
+      return decimalFormat;
     }
   }
 
@@ -469,16 +470,17 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected NumberField<Integer> createNumberField(NumberFormat format) {
-      if (format == null) {
-        format = Formats.getNonGroupingIntegerFormat();
-      }
-
       return new NumberField<>(new NumberDocument<>(format, Integer.class));
     }
 
     @Override
     protected ComponentValue<Integer, NumberField<Integer>> createComponentValue(NumberField<Integer> component) {
       return new IntegerFieldValue(component, true, updateOn);
+    }
+
+    @Override
+    protected NumberFormat createFormat() {
+      return Formats.getNonGroupingIntegerFormat();
     }
   }
 
@@ -490,16 +492,17 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected NumberField<Long> createNumberField(NumberFormat format) {
-      if (format == null) {
-        format = Formats.getNonGroupingIntegerFormat();
-      }
-
       return new NumberField<>(new NumberDocument<>(format, Long.class));
     }
 
     @Override
     protected ComponentValue<Long, NumberField<Long>> createComponentValue(NumberField<Long> component) {
       return new LongFieldValue(component, true, updateOn);
+    }
+
+    @Override
+    protected NumberFormat createFormat() {
+      return Formats.getNonGroupingIntegerFormat();
     }
   }
 
