@@ -472,71 +472,63 @@ public final class Components {
   }
 
   /**
-   * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends NumberField.Builder<Integer, B>> NumberField.Builder<Integer, B> integerField() {
+  public static NumberField.Builder<Integer> integerField() {
     return NumberField.builder(Integer.class);
   }
 
   /**
-   * @param <B> the builder type
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static <B extends NumberField.Builder<Integer, B>> NumberField.Builder<Integer, B> integerField(Value<Integer> linkedValue) {
+  public static NumberField.Builder<Integer> integerField(Value<Integer> linkedValue) {
     return NumberField.builder(Integer.class, linkedValue);
   }
 
   /**
-   * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends NumberField.Builder<Long, B>> NumberField.Builder<Long, B> longField() {
+  public static NumberField.Builder<Long> longField() {
     return NumberField.builder(Long.class);
   }
 
   /**
-   * @param <B> the builder type
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static <B extends NumberField.Builder<Long, B>> NumberField.Builder<Long, B> longField(Value<Long> linkedValue) {
+  public static NumberField.Builder<Long> longField(Value<Long> linkedValue) {
     return NumberField.builder(Long.class, linkedValue);
   }
 
   /**
-   * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends NumberField.DecimalBuilder<Double, B>> NumberField.DecimalBuilder<Double, B> doubleField() {
-    return (NumberField.DecimalBuilder<Double, B>) NumberField.builder(Double.class);
+  public static NumberField.Builder<Double> doubleField() {
+    return NumberField.builder(Double.class);
   }
 
   /**
-   * @param <B> the builder type
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static <B extends NumberField.DecimalBuilder<Double, B>> NumberField.DecimalBuilder<Double, B> doubleField(Value<Double> linkedValue) {
-    return (NumberField.DecimalBuilder<Double, B>) NumberField.builder(Double.class, linkedValue);
+  public static NumberField.Builder<Double> doubleField(Value<Double> linkedValue) {
+    return NumberField.builder(Double.class, linkedValue);
   }
 
   /**
-   * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <B extends NumberField.DecimalBuilder<BigDecimal, B>> NumberField.DecimalBuilder<BigDecimal, B> bigDecimalField() {
-    return (NumberField.DecimalBuilder<BigDecimal, B>) NumberField.builder(BigDecimal.class);
+  public static NumberField.Builder<BigDecimal> bigDecimalField() {
+    return NumberField.builder(BigDecimal.class);
   }
 
   /**
-   * @param <B> the builder type
    * @param linkedValue the value to link to the component
    * @return a builder for a component
    */
-  public static <B extends NumberField.DecimalBuilder<BigDecimal, B>> NumberField.DecimalBuilder<BigDecimal, B> bigDecimalField(Value<BigDecimal> linkedValue) {
-    return (NumberField.DecimalBuilder<BigDecimal, B>) NumberField.builder(BigDecimal.class, linkedValue);
+  public static NumberField.Builder<BigDecimal> bigDecimalField(Value<BigDecimal> linkedValue) {
+    return NumberField.builder(BigDecimal.class, linkedValue);
   }
 
   /**

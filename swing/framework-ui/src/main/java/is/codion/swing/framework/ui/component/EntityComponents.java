@@ -401,14 +401,13 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
-   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends NumberField.Builder<Integer, B>> NumberField.Builder<Integer, B> integerField(Attribute<Integer> attribute) {
+  public final NumberField.Builder<Integer> integerField(Attribute<Integer> attribute) {
     Property<Integer> property = entityDefinition.getProperty(attribute);
 
-    return (NumberField.Builder<Integer, B>) Components.integerField()
+    return Components.integerField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -417,14 +416,13 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
-   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends NumberField.Builder<Long, B>> NumberField.Builder<Long, B> longField(Attribute<Long> attribute) {
+  public final NumberField.Builder<Long> longField(Attribute<Long> attribute) {
     Property<Long> property = entityDefinition.getProperty(attribute);
 
-    return (NumberField.Builder<Long, B>) Components.longField()
+    return Components.longField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -433,14 +431,13 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
-   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends NumberField.DecimalBuilder<Double, B>> NumberField.DecimalBuilder<Double, B> doubleField(Attribute<Double> attribute) {
+  public final NumberField.Builder<Double> doubleField(Attribute<Double> attribute) {
     Property<Double> property = entityDefinition.getProperty(attribute);
 
-    return (NumberField.DecimalBuilder<Double, B>) Components.doubleField()
+    return Components.doubleField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())
@@ -450,14 +447,13 @@ public class EntityComponents {
 
   /**
    * Creates a builder.
-   * @param <B> the builder type
    * @param attribute the attribute
    * @return a builder
    */
-  public final <B extends NumberField.DecimalBuilder<BigDecimal, B>> NumberField.DecimalBuilder<BigDecimal, B> bigDecimalField(Attribute<BigDecimal> attribute) {
+  public final NumberField.Builder<BigDecimal> bigDecimalField(Attribute<BigDecimal> attribute) {
     Property<BigDecimal> property = entityDefinition.getProperty(attribute);
 
-    return (NumberField.DecimalBuilder<BigDecimal, B>) Components.bigDecimalField()
+    return Components.bigDecimalField()
             .format(property.getFormat())
             .minimumValue(property.getMinimumValue())
             .maximumValue(property.getMaximumValue())

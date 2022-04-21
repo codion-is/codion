@@ -72,7 +72,7 @@ public final class ComponentsTest {
 
     Value<Integer> value = Value.value(42);
 
-    NumberField.Builder<Integer, ?> builder = Components.integerField()
+    NumberField.Builder<Integer> builder = Components.integerField()
             .valueRange(0, 100)
             .font(defaultFont.deriveFont(Font.BOLD))
             .foreground(Color.WHITE)

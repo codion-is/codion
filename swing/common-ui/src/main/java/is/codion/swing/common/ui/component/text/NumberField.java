@@ -169,10 +169,9 @@ public final class NumberField<T extends Number> extends JTextField {
   /**
    * @param valueClass the value class
    * @param <T> the value type
-   * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <T extends Number, B extends Builder<T, B>> Builder<T, B> builder(Class<T> valueClass) {
+  public static <T extends Number> Builder<T> builder(Class<T> valueClass) {
     return createBuilder(valueClass, null);
   }
 
@@ -180,10 +179,9 @@ public final class NumberField<T extends Number> extends JTextField {
    * @param valueClass the value class
    * @param linkedValue the value to link to the component
    * @param <T> the value type
-   * @param <B> the builder type
    * @return a builder for a component
    */
-  public static <T extends Number, B extends Builder<T, B>> Builder<T, B> builder(Class<T> valueClass, Value<T> linkedValue) {
+  public static <T extends Number> Builder<T> builder(Class<T> valueClass, Value<T> linkedValue) {
     return createBuilder(valueClass, requireNonNull(linkedValue));
   }
 
@@ -195,19 +193,19 @@ public final class NumberField<T extends Number> extends JTextField {
     return (NumberDocument<T>) super.getDocument();
   }
 
-  private static <T extends Number, B extends Builder<T, B>> Builder<T, B> createBuilder(Class<T> valueClass, Value<T> linkedValue) {
+  private static <T extends Number> Builder<T> createBuilder(Class<T> valueClass, Value<T> linkedValue) {
     requireNonNull(valueClass);
     if (valueClass.equals(Integer.class)) {
-      return (Builder<T, B>) new DefaultIntegerFieldBuilder<>((Value<Integer>) linkedValue);
+      return (Builder<T>) new DefaultIntegerFieldBuilder((Value<Integer>) linkedValue);
     }
     if (valueClass.equals(Long.class)) {
-      return (Builder<T, B>) new DefaultLongFieldBuilder<>((Value<Long>) linkedValue);
+      return (Builder<T>) new DefaultLongFieldBuilder((Value<Long>) linkedValue);
     }
     if (valueClass.equals(Double.class)) {
-      return (Builder<T, B>) new DefaultDoubleFieldBuilder<>((Value<Double>) linkedValue);
+      return (Builder<T>) new DefaultDoubleFieldBuilder((Value<Double>) linkedValue);
     }
     if (valueClass.equals(BigDecimal.class)) {
-      return (Builder<T, B>) new DefaultBigDecimalFieldBuilder<>((Value<BigDecimal>) linkedValue);
+      return (Builder<T>) new DefaultBigDecimalFieldBuilder((Value<BigDecimal>) linkedValue);
     }
 
     throw new IllegalArgumentException("Unsupported number type: " + valueClass);
@@ -216,53 +214,46 @@ public final class NumberField<T extends Number> extends JTextField {
   /**
    * Builds a NumberField
    * @param <T> the value type
-   * @param <B> the builder type
    */
-  public interface Builder<T extends Number, B extends Builder<T, B>> extends TextFieldBuilder<T, NumberField<T>, B> {
+  public interface Builder<T extends Number> extends TextFieldBuilder<T, NumberField<T>, Builder<T>> {
 
     /**
      * @param minimumValue the minimum value
      * @param maximumValue the maximum value
      * @return this builder instance
      */
-    B valueRange(Number minimumValue, Number maximumValue);
+    Builder<T> valueRange(Number minimumValue, Number maximumValue);
 
     /**
      * @param minimumValue the minimum numerical value
      * @return this builder instance
      */
-    B minimumValue(Number minimumValue);
+    Builder<T> minimumValue(Number minimumValue);
 
     /**
      * @param maximumValue the maximum numerical value
      * @return this builder instance
      */
-    B maximumValue(Number maximumValue);
+    Builder<T> maximumValue(Number maximumValue);
 
     /**
      * @param groupingSeparator the grouping separator
      * @return this builder instance
      */
-    B groupingSeparator(char groupingSeparator);
+    Builder<T> groupingSeparator(char groupingSeparator);
 
     /**
      * Note that this is overridden by {@link #format(java.text.Format)}.
      * @param groupingUsed true if grouping should be used
      * @return this builder instance
      */
-    B groupingUsed(boolean groupingUsed);
-  }
+    Builder<T> groupingUsed(boolean groupingUsed);
 
-  /**
-   * A builder for a decimal based {@link NumberField}.
-   */
-  public interface DecimalBuilder<T extends Number, B extends DecimalBuilder<T, B>> extends Builder<T, B> {
-
-      /**
+    /**
      * @param maximumFractionDigits the maximum fraction digits
      * @return this builder instance
      */
-    B maximumFractionDigits(int maximumFractionDigits);
+    Builder<T> maximumFractionDigits(int maximumFractionDigits);
 
     /**
      * Set the decimal separator for this field
@@ -270,7 +261,7 @@ public final class NumberField<T extends Number> extends JTextField {
      * @return this builder instance
      * @throws IllegalArgumentException in case the decimal separator is the same as the grouping separator
      */
-    B decimalSeparator(char decimalSeparator);
+    Builder<T> decimalSeparator(char decimalSeparator);
   }
 
   private final class GroupingSkipAdapter extends KeyAdapter {
@@ -310,47 +301,64 @@ public final class NumberField<T extends Number> extends JTextField {
     }
   }
 
-  private abstract static class AbstractNumberFieldBuilder<T extends Number, B extends Builder<T, B>>
-          extends DefaultTextFieldBuilder<T, NumberField<T>, B> implements Builder<T, B> {
+  private abstract static class AbstractNumberFieldBuilder<T extends Number>
+          extends DefaultTextFieldBuilder<T, NumberField<T>, Builder<T>> implements Builder<T> {
 
     private Number maximumValue;
     private Number minimumValue;
     protected char groupingSeparator = 0;
     private boolean groupingUsed;
+    protected int maximumFractionDigits = -1;
+    protected char decimalSeparator = 0;
 
     protected AbstractNumberFieldBuilder(Class<T> type, Value<T> linkedValue) {
       super(type, linkedValue);
     }
 
     @Override
-    public final B valueRange(Number minimumValue, Number maximumValue) {
+    public final Builder<T> valueRange(Number minimumValue, Number maximumValue) {
       minimumValue(minimumValue);
       maximumValue(maximumValue);
-      return (B) this;
+      return this;
     }
 
     @Override
-    public final B minimumValue(Number minimumValue) {
+    public final Builder<T> minimumValue(Number minimumValue) {
       this.minimumValue = minimumValue;
-      return (B) this;
+      return this;
     }
 
     @Override
-    public final B maximumValue(Number maximumValue) {
+    public final Builder<T> maximumValue(Number maximumValue) {
       this.maximumValue = maximumValue;
-      return (B) this;
+      return this;
     }
 
     @Override
-    public final B groupingSeparator(char groupingSeparator) {
+    public final Builder<T> groupingSeparator(char groupingSeparator) {
       this.groupingSeparator = groupingSeparator;
-      return (B) this;
+      return this;
     }
 
     @Override
-    public final B groupingUsed(boolean groupingUsed) {
+    public final Builder<T> groupingUsed(boolean groupingUsed) {
       this.groupingUsed = groupingUsed;
-      return (B) this;
+      return this;
+    }
+
+    @Override
+    public final Builder<T> maximumFractionDigits(int maximumFractionDigits) {
+      this.maximumFractionDigits = maximumFractionDigits;
+      return this;
+    }
+
+    @Override
+    public final Builder<T> decimalSeparator(char decimalSeparator) {
+      if (decimalSeparator == groupingSeparator) {
+        throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
+      }
+      this.decimalSeparator = decimalSeparator;
+      return this;
     }
 
     @Override
@@ -393,29 +401,10 @@ public final class NumberField<T extends Number> extends JTextField {
     }
   }
 
-  private static final class DefaultBigDecimalFieldBuilder<B extends DecimalBuilder<BigDecimal, B>> extends AbstractNumberFieldBuilder<BigDecimal, B>
-          implements DecimalBuilder<BigDecimal, B> {
-
-    private int maximumFractionDigits = -1;
-    private char decimalSeparator = 0;
+  private static final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal> {
 
     private DefaultBigDecimalFieldBuilder(Value<BigDecimal> linkedValue) {
       super(BigDecimal.class, linkedValue);
-    }
-
-    @Override
-    public B maximumFractionDigits(int maximumFractionDigits) {
-      this.maximumFractionDigits = maximumFractionDigits;
-      return (B) this;
-    }
-
-    @Override
-    public B decimalSeparator(char decimalSeparator) {
-      if (decimalSeparator == groupingSeparator) {
-        throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
-      }
-      this.decimalSeparator = decimalSeparator;
-      return (B) this;
     }
 
     @Override
@@ -442,29 +431,10 @@ public final class NumberField<T extends Number> extends JTextField {
     }
   }
 
-  private static final class DefaultDoubleFieldBuilder<B extends DecimalBuilder<Double, B>> extends AbstractNumberFieldBuilder<Double, B>
-          implements DecimalBuilder<Double, B> {
-
-    private int maximumFractionDigits = -1;
-    private char decimalSeparator = 0;
+  private static final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double> {
 
     private DefaultDoubleFieldBuilder(Value<Double> linkedValue) {
       super(Double.class, linkedValue);
-    }
-
-    @Override
-    public B maximumFractionDigits(int maximumFractionDigits) {
-      this.maximumFractionDigits = maximumFractionDigits;
-      return (B) this;
-    }
-
-    @Override
-    public B decimalSeparator(char decimalSeparator) {
-      if (decimalSeparator == groupingSeparator) {
-        throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
-      }
-      this.decimalSeparator = decimalSeparator;
-      return (B) this;
     }
 
     @Override
@@ -491,7 +461,7 @@ public final class NumberField<T extends Number> extends JTextField {
     }
   }
 
-  private static final class DefaultIntegerFieldBuilder<B extends Builder<Integer, B>> extends AbstractNumberFieldBuilder<Integer, B> {
+  private static final class DefaultIntegerFieldBuilder extends AbstractNumberFieldBuilder<Integer> {
 
     private DefaultIntegerFieldBuilder(Value<Integer> linkedValue) {
       super(Integer.class, linkedValue);
@@ -512,7 +482,7 @@ public final class NumberField<T extends Number> extends JTextField {
     }
   }
 
-  private static final class DefaultLongFieldBuilder<B extends Builder<Long, B>> extends AbstractNumberFieldBuilder<Long, B> {
+  private static final class DefaultLongFieldBuilder extends AbstractNumberFieldBuilder<Long> {
 
     private DefaultLongFieldBuilder(Value<Long> linkedValue) {
       super(Long.class, linkedValue);
