@@ -37,8 +37,6 @@ dependencies {
     serverRuntime project(path: ':codion-demos-schemabrowser', configuration: 'domain')
     serverRuntime project(path: ':codion-demos-world', configuration: 'domain')
 
-    serverRuntime 'org.jxmapviewer:jxmapviewer2:2.6'
-
     serverRuntime project(':codion-dbms-h2database')
     serverRuntime "com.h2database:h2:${h2Version}"
 }
