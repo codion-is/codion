@@ -8065,3 +8065,4 @@
   TemporalField.Builder, B Builder type parameter removed
   NumberField.DecimalBuilder merged with Builder, lots of complexity for minimal gain
   NumberField.Builder implementations refactored
+  Db2Database dbms module added, quite preliminary, untested

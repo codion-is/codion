@@ -40,6 +40,7 @@ The most used and tested DBMS modules are:
 |===
 |DBMS|Artifact
 
+|Db2|is.codion.{codion-jdk}:codion-dbms-db2:{codion-version}
 |Derby|is.codion.{codion-jdk}:codion-dbms-derby:{codion-version}
 |H2 Database|is.codion.{codion-jdk}:codion-dbms-h2database:{codion-version}
 |HSQL|is.codion.{codion-jdk}:codion-dbms-hsql:{codion-version}
