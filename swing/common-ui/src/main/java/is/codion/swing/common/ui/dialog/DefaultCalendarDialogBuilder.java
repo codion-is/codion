@@ -47,8 +47,8 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
             .owner(owner)
             .locationRelativeTo(locationRelativeTo)
             .title(MESSAGES.getString("select_date"))
-            .onOk(() -> okPressed.set(true))
             .onShown(dialog -> calendarPanel.requestCurrentDayButtonFocus())
+            .onOk(() -> okPressed.set(true))
             .show();
 
     return okPressed.get() ? Optional.of(calendarPanel.getDate()) : Optional.empty();
