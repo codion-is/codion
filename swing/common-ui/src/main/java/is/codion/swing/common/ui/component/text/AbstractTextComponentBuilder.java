@@ -4,12 +4,14 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPasswordField;
+import javax.swing.event.DocumentEvent;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
@@ -20,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -37,6 +40,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   private Color disabledTextColor;
   private boolean moveCaretToEndOnFocusGained;
   private boolean moveCaretToStartOnFocusGained;
+  private Consumer<String> onTextChanged;
 
   protected AbstractTextComponentBuilder(Value<T> linkedValue) {
     super(linkedValue);
@@ -115,6 +119,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
+  public final B onTextChanged(Consumer<String> onTextChanged) {
+    this.onTextChanged = requireNonNull(onTextChanged);
+    return (B) this;
+  }
+
+  @Override
   protected final C createComponent() {
     C textComponent = createTextComponent();
     textComponent.setEditable(editable);
@@ -146,6 +156,9 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
     }
     if (moveCaretToEndOnFocusGained) {
       textComponent.addFocusListener(new MoveCaretToEndListener(textComponent));
+    }
+    if (onTextChanged != null) {
+      textComponent.getDocument().addDocumentListener(new OnTextChangedListener(onTextChanged, textComponent));
     }
 
     return textComponent;
@@ -220,6 +233,22 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
     @Override
     public void focusGained(FocusEvent e) {
       textComponent.setCaretPosition(textComponent.getText().length());
+    }
+  }
+
+  private static final class OnTextChangedListener implements DocumentAdapter {
+
+    private final Consumer<String> onTextChanged;
+    private final JTextComponent textComponent;
+
+    private OnTextChangedListener(Consumer<String> onTextChanged, JTextComponent textComponent) {
+      this.onTextChanged = onTextChanged;
+      this.textComponent = textComponent;
+    }
+
+    @Override
+    public void contentsChanged(DocumentEvent e) {
+      onTextChanged.accept(textComponent.getText());
     }
   }
 }

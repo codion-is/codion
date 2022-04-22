@@ -12,7 +12,6 @@ import javax.swing.Action;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.text.Format;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -85,12 +84,6 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
    * @return this builder instance
    */
   B hintText(String hintText);
-
-  /**
-   * @param onTextChanged called when the text field text changes
-   * @return this builder instance
-   */
-  B onTextChanged(Consumer<String> onTextChanged);
 
   /**
    * @param <T> the value type

@@ -8,6 +8,7 @@ import is.codion.swing.common.ui.component.ComponentBuilder;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 import java.awt.Insets;
+import java.util.function.Consumer;
 
 /**
  * A builder for text components.
@@ -74,4 +75,10 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
    * @return this builder instance
    */
   B moveCaretToStartOnFocusGained(boolean moveCaretToStartOnFocusGained);
+
+  /**
+   * @param onTextChanged called when the text changes
+   * @return this builder instance
+   */
+  B onTextChanged(Consumer<String> onTextChanged);
 }

@@ -8074,3 +8074,4 @@
   Windows.centerFrame() removed
   Db2 module renamed db2database, in order to avoid terminal digits in module name, package renamed accordingly
   DefaultOkCancelDialogBuilder and DefaultComponentDialogBuilder refactored in order to replace lambdas and anonymous classes with static classes, lambdas tend to keep a reference to the enclosing object instance, preventing garbage collection of the builder instances
+  TextFieldBuilder.onTextChanged() moved to TextComponentBuilder, AbstractTextComponentBuilder.OnTextChangedListener replaces anonymous class
