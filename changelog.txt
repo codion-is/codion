@@ -8072,3 +8072,4 @@
   DefaultLocalEntityConnection.optimisticLockingModified() long duration fixed, lock timeout now set to 10 ms, minor refactoring
   EntityApplicationPanel.prepareFrame() and Windows.FrameBuilder.build() bug fixed, now use setLocationRelativeTo(null) to center frame on the default screen
   Windows.centerFrame() removed
+  Db2 module renamed db2database, in order to avoid terminal digits in module name, package renamed accordingly

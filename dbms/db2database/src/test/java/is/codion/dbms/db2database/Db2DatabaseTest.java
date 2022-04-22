@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.dbms.db2;
+package is.codion.dbms.db2database;
 
 import org.junit.jupiter.api.Test;
 
