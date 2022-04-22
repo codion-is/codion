@@ -6,14 +6,14 @@ dependencies {
 
     testImplementation project(':codion-framework-db-local')
 
-    implementation('ro.nextreports:nextreports-engine:9.2') {
+    implementation("ro.nextreports:nextreports-engine:${nextReportsVersion}") {
         transitive = false
     }
 
-    testRuntimeOnly 'org.apache.commons:commons-jexl:2.1.1'
-    testRuntimeOnly 'com.thoughtworks.xstream:xstream:1.4.17'
-    testRuntimeOnly 'commons-logging:commons-logging:1.2'
-    testRuntimeOnly 'com.itextpdf:itextpdf:5.5.13.2'
+    testRuntimeOnly "org.apache.commons:commons-jexl:${jexlVersion}"
+    testRuntimeOnly "com.thoughtworks.xstream:xstream:${xstreamVersion}"
+    testRuntimeOnly "commons-logging:commons-logging:${commonsLoggingVersion}"
+    testRuntimeOnly "com.itextpdf:itextpdf:${itextpdfVersion}"
 
     testImplementation project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
