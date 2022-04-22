@@ -50,7 +50,8 @@ public final class Windows {
    * @param window the window to resize
    */
   public static void setSizeWithinScreenBounds(Window window) {
-    Dimension screenSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
+    Dimension screenSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+            .getDefaultConfiguration().getBounds().getSize();
     Dimension frameSize = window.getSize();
     if (frameSize.getHeight() > screenSize.getHeight() || frameSize.getWidth() > screenSize.getWidth()) {
       Dimension newFrameSize = new Dimension((int) Math.min(frameSize.getWidth(), screenSize.getWidth()),
@@ -125,17 +126,6 @@ public final class Windows {
     }
 
     return Utilities.getParentOfType(JDialog.class, component);
-  }
-
-  /**
-   * Centers the given window on the screen
-   * @param window the window to center on screen
-   */
-  public static void centerWindow(Window window) {
-    Dimension size = window.getSize();
-    Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
-    window.setLocation((int) (screen.getWidth() - size.getWidth()) / 2,
-            (int) (screen.getHeight() - size.getHeight()) / 2);
   }
 
   /**
@@ -371,7 +361,7 @@ public final class Windows {
         frame.setLocationRelativeTo(relativeTo);
       }
       else if (centerFrame) {
-        centerWindow(frame);
+        frame.setLocationRelativeTo(null);
       }
       frame.setExtendedState(extendedState);
       if (onClosing != null || onClosed != null || onOpened != null) {
