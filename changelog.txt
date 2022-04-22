@@ -8067,3 +8067,5 @@
   NumberField.Builder implementations refactored
   Db2Database dbms module added, quite preliminary, untested
   All 3d party versions now properties in gradle.properties
+  NextReportsTest now uses pdf output format, minor refactoring
+  itextpdf version downgraded to 5.1.3, change in 5.2.0 incompatible with NextReports

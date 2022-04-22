@@ -32,20 +32,17 @@ public class NextReportsTest {
 
   @Test
   void fillReport() throws ReportException, IOException, DatabaseException {
-    EntityConnectionProvider connectionProvider =
-            LocalEntityConnectionProvider.builder()
-                    .database(new H2DatabaseFactory()
-                            .createDatabase("jdbc:h2:mem:h2db",
-                                    Database.DATABASE_INIT_SCRIPTS.get()))
-                    .domainClassName(NextDomain.class.getName())
-                    .user(UNIT_TEST_USER)
-                    .build();
     Report.REPORT_PATH.set("src/test/reports/");
-    LocalEntityConnection connection = (LocalEntityConnection) connectionProvider.getConnection();
-    NextReportsResult result = NextReports.nextReport("test-report.report", ReportRunner.CSV_FORMAT)
-            .fillReport(connection.getDatabaseConnection().getConnection(), Collections.emptyMap());
     File file = null;
-    try {
+    Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", Database.DATABASE_INIT_SCRIPTS.get());
+    try (EntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
+            .database(database)
+            .domainClassName(NextDomain.class.getName())
+            .user(UNIT_TEST_USER)
+            .build()) {
+      LocalEntityConnection connection = (LocalEntityConnection) connectionProvider.getConnection();
+      NextReportsResult result = NextReports.nextReport("test-report.report", ReportRunner.PDF_FORMAT)
+              .fillReport(connection.getDatabaseConnection().getConnection(), Collections.emptyMap());
       String tmpDir = System.getProperty("java.io.tmpdir");
       String filename = "NextReportsWrapperTest" + System.currentTimeMillis();
       file = result.writeResultToFile(tmpDir, filename);
