@@ -3,6 +3,7 @@
  */
 package is.codion.framework.db.local;
 
+import is.codion.common.db.database.ConnectionProvider;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
@@ -30,6 +31,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -56,7 +59,7 @@ public class DefaultLocalEntityConnectionTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private DefaultLocalEntityConnection connection;
+  private LocalEntityConnection connection;
 
   private static final TestDomain DOMAIN = new TestDomain();
   private static final Entities ENTITIES = DOMAIN.getEntities();
@@ -623,8 +626,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectForUpdateModified() throws Exception {
-    DefaultLocalEntityConnection connection = initializeConnection();
-    DefaultLocalEntityConnection connection2 = initializeConnection();
+    LocalEntityConnection connection = initializeConnection();
+    LocalEntityConnection connection2 = initializeConnection();
     String originalLocation;
     try {
       SelectCondition condition = where(Department.DNAME).equalTo("SALES").toSelectCondition().forUpdate();
@@ -660,7 +663,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void optimisticLockingDeleted() throws Exception {
-    DefaultLocalEntityConnection connection = initializeConnection();
+    LocalEntityConnection connection = initializeConnection();
     EntityConnection connection2 = initializeConnection();
     connection.setOptimisticLockingEnabled(true);
     Entity allen;
@@ -696,8 +699,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void optimisticLockingModified() throws Exception {
-    DefaultLocalEntityConnection baseConnection = initializeConnection();
-    DefaultLocalEntityConnection optimisticConnection = initializeConnection();
+    LocalEntityConnection baseConnection = initializeConnection();
+    LocalEntityConnection optimisticConnection = initializeConnection(true);
     optimisticConnection.setOptimisticLockingEnabled(true);
     assertTrue(optimisticConnection.isOptimisticLockingEnabled());
     String oldLocation = null;
@@ -732,8 +735,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void optimisticLockingBlob() throws Exception {
-    DefaultLocalEntityConnection baseConnection = initializeConnection();
-    DefaultLocalEntityConnection optimisticConnection = initializeConnection();
+    LocalEntityConnection baseConnection = initializeConnection();
+    LocalEntityConnection optimisticConnection = initializeConnection();
     optimisticConnection.setOptimisticLockingEnabled(true);
     Entity updatedEmployee = null;
     try {
@@ -765,14 +768,15 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void dualIterator() throws Exception {
-    DefaultLocalEntityConnection connection = initializeConnection();
-    ResultIterator<Entity> deptIterator =
-            connection.iterator(condition(Department.TYPE));
-    while (deptIterator.hasNext()) {
-      ResultIterator<Entity> empIterator =
-              connection.iterator(where(Employee.DEPARTMENT_FK).equalTo(deptIterator.next()));
-      while (empIterator.hasNext()) {
-        empIterator.next();
+    try (LocalEntityConnection connection = initializeConnection()) {
+      ResultIterator<Entity> deptIterator =
+              connection.iterator(condition(Department.TYPE));
+      while (deptIterator.hasNext()) {
+        ResultIterator<Entity> empIterator =
+                connection.iterator(where(Employee.DEPARTMENT_FK).equalTo(deptIterator.next()));
+        while (empIterator.hasNext()) {
+          empIterator.next();
+        }
       }
     }
   }
@@ -961,7 +965,26 @@ public class DefaultLocalEntityConnectionTest {
     connection.select(condition(QueryFromWhereClause.TYPE).toSelectCondition().forUpdate());
   }
 
-  private static DefaultLocalEntityConnection initializeConnection() throws DatabaseException {
-    return new DefaultLocalEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), UNIT_TEST_USER);
+  private static LocalEntityConnection initializeConnection() throws DatabaseException {
+    return initializeConnection(false);
+  }
+
+  private static LocalEntityConnection initializeConnection(boolean setLockTimeout) throws DatabaseException {
+    Database database = DatabaseFactory.getDatabase();
+    if (setLockTimeout) {
+      database.setConnectionProvider(new ConnectionProvider() {
+        @Override
+        public Connection getConnection(User user, String jdbcUrl) throws SQLException {
+          Connection connection = ConnectionProvider.super.getConnection(user, jdbcUrl);
+          try (Statement statement = connection.createStatement()) {
+            statement.execute("SET LOCK_TIMEOUT 10");
+          }
+
+          return connection;
+        }
+      });
+    }
+
+    return new DefaultLocalEntityConnection(DOMAIN, database, UNIT_TEST_USER);
   }
 }
