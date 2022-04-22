@@ -9,8 +9,8 @@ dependencies {
     implementation project(':codion-framework-db-rmi')
     implementation project(':codion-plugin-jackson-json')
 
-    implementation 'javax.xml.bind:jaxb-api:2.3.0'
-    implementation 'javax.activation:javax.activation-api:1.2.0'
+    implementation "javax.xml.bind:jaxb-api:${jaxbApiVersion}"
+    implementation "javax.activation:javax.activation-api:${javaxActivationVersion}"
 
     implementation "org.glassfish.jersey.containers:jersey-container-jetty-servlet:${jerseyVersion}"
     implementation "org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}"

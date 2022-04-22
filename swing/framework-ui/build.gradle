@@ -11,7 +11,7 @@ dependencies {
 
     api project(':codion-swing-framework-model')
 
-    implementation 'org.kordamp.ikonli:ikonli-swing:12.3.0'
+    implementation "org.kordamp.ikonli:ikonli-swing:${ikonliSwingVersion}"
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
