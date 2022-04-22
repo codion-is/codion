@@ -1069,7 +1069,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       frame.pack();
       Windows.setSizeWithinScreenBounds(frame);
     }
-    Windows.centerWindow(frame);
+    frame.setLocationRelativeTo(null);
     if (maximizeFrame) {
       frame.setExtendedState(Frame.MAXIMIZED_BOTH);
     }
