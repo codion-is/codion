@@ -8073,3 +8073,4 @@
   EntityApplicationPanel.prepareFrame() and Windows.FrameBuilder.build() bug fixed, now use setLocationRelativeTo(null) to center frame on the default screen
   Windows.centerFrame() removed
   Db2 module renamed db2database, in order to avoid terminal digits in module name, package renamed accordingly
+  DefaultOkCancelDialogBuilder and DefaultComponentDialogBuilder refactored in order to replace lambdas and anonymous classes with static classes, lambdas tend to keep a reference to the enclosing object instance, preventing garbage collection of the builder instances
