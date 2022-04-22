@@ -79,12 +79,12 @@ image::modules/common/http/build/reports/dependency-graph/dependency-graph.svg[o
 Database specific implementation classes.
 
 [discrete]
-=== codion-dbms-db2
+=== codion-dbms-db2database
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/dbms/db2/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/dbms/db2database/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
