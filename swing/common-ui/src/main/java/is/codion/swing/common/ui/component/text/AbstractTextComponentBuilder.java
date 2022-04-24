@@ -4,23 +4,13 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
 
-import javax.swing.AbstractAction;
-import javax.swing.JPasswordField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.Utilities;
 import java.awt.Color;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.util.function.Consumer;
 
@@ -169,86 +159,4 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
    * @return a JTextComponent or subclass
    */
   protected abstract C createTextComponent();
-
-  private static final class DeletePreviousWordAction extends AbstractAction {
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-      JTextComponent textComponent = (JTextComponent) actionEvent.getSource();
-      Document document = textComponent.getDocument();
-      int caretPosition = textComponent.getCaretPosition();
-      try {
-        int removeFromPosition = textComponent instanceof JPasswordField ?
-                0 ://special handling for passwords, just remove everything before cursor
-                Utilities.getWordStart(textComponent, caretPosition);
-        document.remove(removeFromPosition, caretPosition - removeFromPosition);
-      }
-      catch (BadLocationException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
-
-  private static final class DeleteNextWordAction extends AbstractAction {
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-      JTextComponent textComponent = (JTextComponent) actionEvent.getSource();
-      Document document = textComponent.getDocument();
-      int caretPosition = textComponent.getCaretPosition();
-      try {
-        int removeToPosition = textComponent instanceof JPasswordField ?
-                document.getLength() ://special handling for passwords, just remove everything after cursor
-                Utilities.getWordEnd(textComponent, caretPosition) - caretPosition;
-        document.remove(caretPosition, removeToPosition);
-      }
-      catch (BadLocationException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
-
-  private static final class MoveCaretToStartListener extends FocusAdapter {
-
-    private final JTextComponent textComponent;
-
-    private MoveCaretToStartListener(JTextComponent textComponent) {
-      this.textComponent = textComponent;
-    }
-
-    @Override
-    public void focusGained(FocusEvent e) {
-      textComponent.setCaretPosition(0);
-    }
-  }
-
-  private static final class MoveCaretToEndListener extends FocusAdapter {
-
-    private final JTextComponent textComponent;
-
-    private MoveCaretToEndListener(JTextComponent textComponent) {
-      this.textComponent = textComponent;
-    }
-
-    @Override
-    public void focusGained(FocusEvent e) {
-      textComponent.setCaretPosition(textComponent.getText().length());
-    }
-  }
-
-  private static final class OnTextChangedListener implements DocumentAdapter {
-
-    private final Consumer<String> onTextChanged;
-    private final JTextComponent textComponent;
-
-    private OnTextChangedListener(Consumer<String> onTextChanged, JTextComponent textComponent) {
-      this.onTextChanged = onTextChanged;
-      this.textComponent = textComponent;
-    }
-
-    @Override
-    public void contentsChanged(DocumentEvent e) {
-      onTextChanged.accept(textComponent.getText());
-    }
-  }
 }

@@ -8083,3 +8083,4 @@
   TemporalField, lambda method references replaced with DateTimeParser classes
   DefaultMaskFormatter moved up to package level, DefaultMaskFormatterBuilder moved to DefaultMaskFormatter
   DefaultComboBoxBuilder.CopyEditorActionListener, MoveCaretListener and SteppedComboBoxUI moved up to package level, FocusableComboBox added
+  AbstractTextComponentBuilder.DeleteNextWordAction, DeletePreviousWordAction, MoveCaretToEndListener, MoveCaretToStartListener and OnTextChangedListener moved up to package level
