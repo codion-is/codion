@@ -8086,3 +8086,5 @@
   AbstractTextComponentBuilder.DeleteNextWordAction, DeletePreviousWordAction, MoveCaretToEndListener, MoveCaretToStartListener and OnTextChangedListener moved up to package level
   EntityComboBox, method reference lambda replace with ForceRefreshCommand
   LabelComponentValue added
+  DefaultItemProperty lambda method reference replaced with GetItemValue
+  DefaultTaskSchedulerBuilder, DaemonThreadFactory added and moved up to package level

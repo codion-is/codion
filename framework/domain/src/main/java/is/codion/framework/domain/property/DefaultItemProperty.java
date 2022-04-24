@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.Attribute;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -63,11 +64,19 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
 
     private static <T> void validateItems(List<Item<T>> items) {
       if (requireNonNull(items).size() != items.stream()
-              .map(Item::getValue)
+              .map(new GetItemValue<>())
               .collect(Collectors.toSet())
               .size()) {
         throw new IllegalArgumentException("Item list contains duplicate values: " + items);
       }
+    }
+  }
+
+  private static final class GetItemValue<T> implements Function<Item<T>, T> {
+
+    @Override
+    public T apply(Item<T> item) {
+      return item.getValue();
     }
   }
 }
