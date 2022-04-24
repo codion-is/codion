@@ -8078,3 +8078,6 @@
   ProgressWorker.DefaultBuilder, lambdas replaced with classes, preventing references to builder instance hanging around
   DefaultLoginDialogBuilder, lambda replaced with class
   ProgressWorker.WorkerPropertyChangeListener added to replace a lambda method reference
+  TextInputPanel, TextInputPanelValue moved outside builder class
+  TemporalInputPanel, TemporalInputPanelValue moved outside builder class
+  TemporalField, lambda method references replaced with DateTimeParser classes

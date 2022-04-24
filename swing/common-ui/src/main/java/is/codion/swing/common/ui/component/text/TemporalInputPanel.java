@@ -300,23 +300,23 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
               .columns(columns)
               .build();
     }
+  }
 
-    private static final class TemporalInputPanelValue<T extends Temporal> extends AbstractComponentValue<T, TemporalInputPanel<T>> {
+  private static final class TemporalInputPanelValue<T extends Temporal> extends AbstractComponentValue<T, TemporalInputPanel<T>> {
 
-      private TemporalInputPanelValue(TemporalInputPanel<T> inputPanel) {
-        super(inputPanel);
-        inputPanel.getInputField().addTemporalListener(temporal -> notifyValueChange());
-      }
+    private TemporalInputPanelValue(TemporalInputPanel<T> inputPanel) {
+      super(inputPanel);
+      inputPanel.getInputField().addTemporalListener(temporal -> notifyValueChange());
+    }
 
-      @Override
-      protected T getComponentValue(TemporalInputPanel<T> component) {
-        return component.getTemporal();
-      }
+    @Override
+    protected T getComponentValue(TemporalInputPanel<T> component) {
+      return component.getTemporal();
+    }
 
-      @Override
-      protected void setComponentValue(TemporalInputPanel<T> component, T value) {
-        component.setTemporal(value);
-      }
+    @Override
+    protected void setComponentValue(TemporalInputPanel<T> component, T value) {
+      component.setTemporal(value);
     }
   }
 }

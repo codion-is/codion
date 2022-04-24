@@ -340,23 +340,23 @@ public final class TextInputPanel extends JPanel {
     protected void setTransferFocusOnEnter(TextInputPanel component) {
       component.setTransferFocusOnEnter(true);
     }
+  }
 
-    private static class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel> {
+  private static class TextInputPanelValue extends AbstractComponentValue<String, TextInputPanel> {
 
-      private TextInputPanelValue(TextInputPanel textInputPanel) {
-        super(textInputPanel);
-        textInputPanel.getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
-      }
+    private TextInputPanelValue(TextInputPanel textInputPanel) {
+      super(textInputPanel);
+      textInputPanel.getTextField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+    }
 
-      @Override
-      protected String getComponentValue(TextInputPanel component) {
-        return component.getText();
-      }
+    @Override
+    protected String getComponentValue(TextInputPanel component) {
+      return component.getText();
+    }
 
-      @Override
-      protected void setComponentValue(TextInputPanel component, String value) {
-        component.setText(value);
-      }
+    @Override
+    protected void setComponentValue(TextInputPanel component, String value) {
+      component.setText(value);
     }
   }
 }
