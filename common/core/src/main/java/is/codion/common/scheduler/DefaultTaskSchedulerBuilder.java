@@ -15,12 +15,7 @@ final class DefaultTaskSchedulerBuilder implements TaskScheduler.Builder {
   private int interval;
   private int initialDelay;
   private TimeUnit timeUnit;
-  private ThreadFactory threadFactory = runnable -> {
-    Thread thread = new Thread(runnable);
-    thread.setDaemon(true);
-
-    return thread;
-  };
+  private ThreadFactory threadFactory = new DaemonThreadFactory();
 
   DefaultTaskSchedulerBuilder(Runnable task) {
     this.task = requireNonNull(task);

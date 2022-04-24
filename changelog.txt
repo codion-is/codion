@@ -8108,3 +8108,18 @@
   EntityApplicationPanel.prepareFrame() and Windows.FrameBuilder.build() bug fixed, now use setLocationRelativeTo(null) to center frame on the default screen
   Windows.centerFrame() removed
   Db2 module renamed db2database, in order to avoid terminal digits in module name, package renamed accordingly
+  DefaultOkCancelDialogBuilder and DefaultComponentDialogBuilder refactored in order to replace lambdas and anonymous classes with static classes, lambdas tend to keep a reference to the enclosing object instance, preventing garbage collection of the builder instances
+  TextFieldBuilder.onTextChanged() moved to TextComponentBuilder, AbstractTextComponentBuilder.OnTextChangedListener replaces anonymous class
+  ProgressWorker.DefaultBuilder, lambdas replaced with classes, preventing references to builder instance hanging around
+  DefaultLoginDialogBuilder, lambda replaced with class
+  ProgressWorker.WorkerPropertyChangeListener added to replace a lambda method reference
+  TextInputPanel, TextInputPanelValue moved outside builder class
+  TemporalInputPanel, TemporalInputPanelValue moved outside builder class
+  TemporalField, lambda method references replaced with DateTimeParser classes
+  DefaultMaskFormatter moved up to package level, DefaultMaskFormatterBuilder moved to DefaultMaskFormatter
+  DefaultComboBoxBuilder.CopyEditorActionListener, MoveCaretListener and SteppedComboBoxUI moved up to package level, FocusableComboBox added
+  AbstractTextComponentBuilder.DeleteNextWordAction, DeletePreviousWordAction, MoveCaretToEndListener, MoveCaretToStartListener and OnTextChangedListener moved up to package level
+  EntityComboBox, method reference lambda replace with ForceRefreshCommand
+  LabelComponentValue added
+  DefaultItemProperty lambda method reference replaced with GetItemValue
+  DefaultTaskSchedulerBuilder, DaemonThreadFactory added and moved up to package level

@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.SelectionProvider;
@@ -18,7 +17,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.text.Format;
-import java.util.function.Consumer;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -36,7 +34,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private Format format;
   private int horizontalAlignment = SwingConstants.LEADING;
   private String hintText;
-  private Consumer<String> onTextChanged;
 
   DefaultTextFieldBuilder(Class<T> valueClass, Value<T> linkedValue) {
     super(linkedValue);
@@ -104,12 +101,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   @Override
-  public final B onTextChanged(Consumer<String> onTextChanged) {
-    this.onTextChanged = requireNonNull(onTextChanged);
-    return (B) this;
-  }
-
-  @Override
   protected final C createTextComponent() {
     C textField = createTextField();
     textField.setColumns(columns);
@@ -128,10 +119,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     }
     if (hintText != null) {
       TextFieldHint.create(textField, hintText);
-    }
-    if (onTextChanged != null) {
-      textField.getDocument().addDocumentListener((DocumentAdapter) documentEvent ->
-              onTextChanged.accept(textField.getText()));
     }
 
     return textField;

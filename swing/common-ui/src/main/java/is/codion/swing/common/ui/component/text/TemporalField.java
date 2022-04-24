@@ -203,16 +203,16 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
     private static <T extends Temporal> DateTimeParser<T> initializeDateTimeParser(Class<T> typeClass) {
       if (typeClass.equals(LocalTime.class)) {
-        return (DateTimeParser<T>) (DateTimeParser<LocalTime>) LocalTime::parse;
+        return (DateTimeParser<T>) new LocalTimeParser();
       }
       else if (typeClass.equals(LocalDate.class)) {
-        return (DateTimeParser<T>) (DateTimeParser<LocalDate>) LocalDate::parse;
+        return (DateTimeParser<T>) new LocalDateParser();
       }
       else if (typeClass.equals(LocalDateTime.class)) {
-        return (DateTimeParser<T>) (DateTimeParser<LocalDateTime>) LocalDateTime::parse;
+        return (DateTimeParser<T>) new LocalDateTimeParser();
       }
       else if (typeClass.equals(OffsetDateTime.class)) {
-        return (DateTimeParser<T>) (DateTimeParser<OffsetDateTime>) OffsetDateTime::parse;
+        return (DateTimeParser<T>) new OffsetDateTimeParser();
       }
 
       return null;
@@ -246,6 +246,38 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     }
     catch (ParseException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private static final class LocalTimeParser implements DateTimeParser<LocalTime> {
+
+    @Override
+    public LocalTime parse(CharSequence text, DateTimeFormatter formatter) {
+      return LocalTime.parse(text, formatter);
+    }
+  }
+
+  private static final class LocalDateParser implements DateTimeParser<LocalDate> {
+
+    @Override
+    public LocalDate parse(CharSequence text, DateTimeFormatter formatter) {
+      return LocalDate.parse(text, formatter);
+    }
+  }
+
+  private static final class LocalDateTimeParser implements DateTimeParser<LocalDateTime> {
+
+    @Override
+    public LocalDateTime parse(CharSequence text, DateTimeFormatter formatter) {
+      return LocalDateTime.parse(text, formatter);
+    }
+  }
+
+  private static final class OffsetDateTimeParser implements DateTimeParser<OffsetDateTime> {
+
+    @Override
+    public OffsetDateTime parse(CharSequence text, DateTimeFormatter formatter) {
+      return OffsetDateTime.parse(text, formatter);
     }
   }
 }

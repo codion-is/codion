@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.KeyEvents;
@@ -23,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -123,25 +125,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
               .enable(dialog.getRootPane());
     }
 
-    Action disposeAction = new DisposeDialogAction(() -> dialog, confirmCloseListener);
-    dialog.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent e) {
-        disposeAction.actionPerformed(null);
-      }
-      @Override
-      public void windowClosed(WindowEvent e) {
-        if (onClosed != null) {
-          onClosed.accept(e);
-        }
-      }
-      @Override
-      public void windowOpened(WindowEvent e) {
-        if (onOpened != null) {
-          onOpened.accept(e);
-        }
-      }
-    });
+    Action disposeAction = new DisposeDialogAction(new DialogSupplier(dialog), confirmCloseListener);
+    dialog.addWindowListener(new DialogListener(disposeAction, onClosed, onOpened));
     if (closeEvent == null) {
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       if (disposeOnEscape) {
@@ -152,7 +137,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
       }
     }
     else {
-      closeEvent.addListener(() -> disposeAction.actionPerformed(null));
+      closeEvent.addListener(new CloseEventListener(disposeAction));
     }
 
     return dialog;
@@ -191,5 +176,65 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     }
 
     return dialog;
+  }
+
+  private static final class DialogSupplier implements Supplier<JDialog> {
+
+    private final JDialog dialog;
+
+    private DialogSupplier(JDialog dialog) {
+      this.dialog = dialog;
+    }
+
+    @Override
+    public JDialog get() {
+      return dialog;
+    }
+  }
+
+  private static final class DialogListener extends WindowAdapter {
+
+    private final Action disposeAction;
+    private final Consumer<WindowEvent> onClosed;
+    private final Consumer<WindowEvent> onOpened;
+
+    private DialogListener(Action disposeAction, Consumer<WindowEvent> onClosed, Consumer<WindowEvent> onOpened) {
+      this.disposeAction = disposeAction;
+      this.onClosed = onClosed;
+      this.onOpened = onOpened;
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+      disposeAction.actionPerformed(null);
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+      if (onClosed != null) {
+        onClosed.accept(e);
+      }
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+      if (onOpened != null) {
+        onOpened.accept(e);
+      }
+    }
+  }
+
+  private static final class CloseEventListener implements EventListener {
+
+    private final Action disposeAction;
+
+    private CloseEventListener(Action disposeAction) {
+      this.disposeAction = disposeAction;
+    }
+
+    @Override
+    public void onEvent() {
+      disposeAction.actionPerformed(null);
+    }
   }
 }

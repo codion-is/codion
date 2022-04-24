@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogBuilder> implements LoginDialogBuilder {
 
   private User defaultUser;
-  private LoginValidator validator = user -> {};
+  private LoginValidator validator = new NoLoginValidation();
   private JComponent southComponent;
 
   @Override
@@ -78,5 +78,11 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 
   private static boolean isWindows() {
     return System.getProperty("os.name").toLowerCase().contains("win");
+  }
+
+  private static final class NoLoginValidation implements LoginValidator {
+
+    @Override
+    public void validate(User user) throws Exception {}
   }
 }

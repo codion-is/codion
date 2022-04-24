@@ -42,8 +42,8 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
   DefaultOkCancelDialogBuilder(JComponent component) {
     this.component = requireNonNull(component);
-    this.okAction = Control.control(() -> Windows.getParentDialog(component).ifPresent(JDialog::dispose));
-    this.cancelAction = Control.control(() -> Windows.getParentDialog(component).ifPresent(JDialog::dispose));
+    this.okAction = Control.control(new DefaultOkCommand(component));
+    this.cancelAction = Control.control(new DefaultCancelCommand(component));
   }
 
   @Override
@@ -132,12 +132,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
     JDialog dialog = DefaultComponentDialogBuilder.createDialog(owner, title, icon, panel, size, locationRelativeTo, modal, resizable, onShown);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    dialog.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent e) {
-        cancelAction.actionPerformed(null);
-      }
-    });
+    dialog.addWindowListener(new CancelOnWindowClosingListener(cancelAction));
     dialog.getRootPane().setDefaultButton(okButton);
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
@@ -148,9 +143,65 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   }
 
   private Control performAndCloseControl(Runnable command) {
-    return Control.control(() -> {
+    return Control.control(new PerformAndCloseCommand(command, component));
+  }
+
+  private static final class CancelOnWindowClosingListener extends WindowAdapter {
+
+    private final Action cancelAction;
+
+    private CancelOnWindowClosingListener(Action cancelAction) {
+      this.cancelAction = cancelAction;
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+      cancelAction.actionPerformed(null);
+    }
+  }
+
+  private static final class PerformAndCloseCommand implements Control.Command {
+
+    private final Runnable command;
+    private final JComponent component;
+
+    private PerformAndCloseCommand(Runnable command, JComponent component) {
+      this.command = command;
+      this.component = component;
+    }
+
+    @Override
+    public void perform() throws Exception {
       command.run();
       Windows.getParentDialog(component).ifPresent(JDialog::dispose);
-    });
+    }
+  }
+
+  private static final class DefaultOkCommand implements Control.Command {
+
+    private final JComponent component;
+
+    private DefaultOkCommand(JComponent component) {
+      this.component = component;
+    }
+
+    @Override
+    public void perform() throws Exception {
+      Windows.getParentDialog(component).ifPresent(JDialog::dispose);
+    }
+  }
+
+  private static final class DefaultCancelCommand implements Control.Command {
+
+    private final JComponent component;
+
+    private DefaultCancelCommand(JComponent component) {
+      this.component = component;
+    }
+
+    @Override
+    public void perform() throws Exception {
+      Windows.getParentDialog(component).ifPresent(JDialog::dispose);
+    }
   }
 }

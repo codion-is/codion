@@ -5,6 +5,7 @@ package is.codion.swing.common.model.worker;
 
 import javax.swing.SwingWorker;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -51,7 +52,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     this.onPublish = builder.onPublish;
     this.onException = builder.onException;
     this.onInterrupted = builder.onInterrupted;
-    addPropertyChangeListener(this::onPropertyChangeEvent);
+    addPropertyChangeListener(new WorkerPropertyChangeListener(this));
   }
 
   /**
@@ -98,20 +99,30 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     }
   }
 
-  private void onPropertyChangeEvent(PropertyChangeEvent changeEvent) {
-    if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
-      Object newValue = changeEvent.getNewValue();
-      if (StateValue.STARTED.equals(newValue)) {
-        if (!isDone()) {
-          onStarted.run();
+  private static final class WorkerPropertyChangeListener implements PropertyChangeListener {
+
+    private final ProgressWorker<?, ?> progressWorker;
+
+    private WorkerPropertyChangeListener(ProgressWorker<?, ?> progressWorker) {
+      this.progressWorker = progressWorker;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent changeEvent) {
+      if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
+        Object newValue = changeEvent.getNewValue();
+        if (StateValue.STARTED.equals(newValue)) {
+          if (!progressWorker.isDone()) {
+            progressWorker.onStarted.run();
+          }
+        }
+        else if (StateValue.DONE.equals(newValue)) {
+          progressWorker.onDone.run();
         }
       }
-      else if (StateValue.DONE.equals(newValue)) {
-        onDone.run();
+      else if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
+        progressWorker.onProgress.accept((Integer) changeEvent.getNewValue());
       }
-    }
-    else if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
-      onProgress.accept((Integer) changeEvent.getNewValue());
     }
   }
 
@@ -239,13 +250,13 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     private final ProgressTask<T, V> task;
 
-    private Runnable onStarted = () -> {};
-    private Runnable onDone = () -> {};
-    private Consumer<T> onResult = result -> {};
-    private Consumer<Integer> onProgress = progress -> {};
-    private Consumer<List<V>> onPublish = chunks -> {};
-    private Consumer<Throwable> onException = DefaultBuilder::handleException;
-    private Runnable onInterrupted = () -> Thread.currentThread().interrupt();
+    private Runnable onStarted = new EmptyOnStarted();
+    private Runnable onDone = new EmptyOnDone();
+    private Consumer<T> onResult = new EmptyOnResult<>();
+    private Consumer<Integer> onProgress = new EmptyOnProgress();
+    private Consumer<List<V>> onPublish = new EmptyOnPublish<>();
+    private Consumer<Throwable> onException = new RethrowOnException();
+    private Runnable onInterrupted = new InterruptCurrentOnInterrupted();
 
     private DefaultBuilder(ProgressTask<T, V> task) {
       this.task = requireNonNull(task);
@@ -305,13 +316,55 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     public ProgressWorker<T, V> build() {
       return new ProgressWorker<>(this);
     }
+  }
 
-    private static void handleException(Throwable exception) {
+  private static final class EmptyOnStarted implements Runnable {
+
+    @Override
+    public void run() {}
+  }
+
+  private static final class EmptyOnDone implements Runnable {
+
+    @Override
+    public void run() {}
+  }
+
+  private static final class EmptyOnResult<T> implements Consumer<T> {
+
+    @Override
+    public void accept(T result) {}
+  }
+
+  private static final class EmptyOnProgress implements Consumer<Integer> {
+
+    @Override
+    public void accept(Integer progress) {}
+  }
+
+  private static final class EmptyOnPublish<V> implements Consumer<List<V>> {
+
+    @Override
+    public void accept(List<V> chunks) {}
+  }
+
+  private static final class RethrowOnException implements Consumer<Throwable> {
+
+    @Override
+    public void accept(Throwable exception) {
       if (exception instanceof RuntimeException) {
         throw (RuntimeException) exception;
       }
 
       throw new RuntimeException(exception);
+    }
+  }
+
+  private static final class InterruptCurrentOnInterrupted implements Runnable {
+
+    @Override
+    public void run() {
+      Thread.currentThread().interrupt();
     }
   }
 }

@@ -9,8 +9,6 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.combobox.DefaultComboBoxBuilder.CopyEditorActionsListener;
-import is.codion.swing.common.ui.component.combobox.DefaultComboBoxBuilder.SteppedComboBoxUI;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.JComboBox;
@@ -113,21 +111,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   @Override
   protected JComboBox<Item<T>> createComponent() {
     ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
-    JComboBox<Item<T>> comboBox = new JComboBox<Item<T>>(itemComboBoxModel) {
-      /**
-       * Overridden as a workaround for editable combo boxes as initial focus components on
-       * detail panels stealing the focus from the parent panel on initialization
-       */
-      @Override
-      public void requestFocus() {
-        if (isEditable()) {
-          getEditor().getEditorComponent().requestFocus();
-        }
-        else {
-          super.requestFocus();
-        }
-      }
-    };
+    JComboBox<Item<T>> comboBox = new FocusableComboBox<>(itemComboBoxModel);
     Completion.enable(comboBox, completionMode);
     if (mouseWheelScrolling) {
       comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.create(itemComboBoxModel));

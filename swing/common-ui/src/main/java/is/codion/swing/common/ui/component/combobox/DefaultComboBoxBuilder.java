@@ -3,31 +3,17 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
-import javax.swing.ActionMap;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
-import javax.swing.InputMap;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.ListCellRenderer;
-import javax.swing.plaf.basic.BasicComboPopup;
-import javax.swing.plaf.basic.ComboPopup;
-import javax.swing.plaf.metal.MetalComboBoxUI;
-import javax.swing.text.JTextComponent;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 
 import static is.codion.swing.common.ui.component.text.TextComponents.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
@@ -169,126 +155,6 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   }
 
   protected C createComboBox() {
-    return (C) new JComboBox<T>(comboBoxModel) {
-      /**
-       * Overridden as a workaround for editable combo boxes as initial focus components on
-       * detail panels stealing the focus from the parent panel on initialization
-       */
-      @Override
-      public void requestFocus() {
-        if (isEditable()) {
-          getEditor().getEditorComponent().requestFocus();
-        }
-        else {
-          super.requestFocus();
-        }
-      }
-    };
-  }
-
-  private static final class MoveCaretListener<T> implements EventDataListener<T> {
-
-    private final JComboBox<?> comboBox;
-
-    private MoveCaretListener(JComboBox<T> comboBox) {
-      this.comboBox = comboBox;
-    }
-
-    @Override
-    public void onEvent(Object selectedItem) {
-      Component editorComponent = comboBox.getEditor().getEditorComponent();
-      if (selectedItem != null && editorComponent instanceof JTextComponent) {
-        ((JTextComponent) editorComponent).setCaretPosition(0);
-      }
-    }
-  }
-
-  /**
-   * A JComboBox UI which automatically sets the popup width according to the largest value in the combo box.
-   * Slightly modified, automatic popup size according to getDisplaySize().
-   * @author Nobuo Tamemasa (originally)
-   */
-  static final class SteppedComboBoxUI extends MetalComboBoxUI {
-
-    private int popupWidth = 0;
-
-    SteppedComboBoxUI(JComboBox<?> comboBox, int popupWidth) {
-      requireNonNull(comboBox).setUI(this);
-      this.popupWidth = popupWidth;
-    }
-
-    @Override
-    protected ComboPopup createPopup() {
-      return new SteppedComboBoxPopup(comboBox, this);
-    }
-
-    private static final class SteppedComboBoxPopup extends BasicComboPopup {
-
-      private final SteppedComboBoxUI comboBoxUI;
-
-      private SteppedComboBoxPopup(JComboBox comboBox, SteppedComboBoxUI comboBoxUI) {
-        super(comboBox);
-        this.comboBoxUI = comboBoxUI;
-        getAccessibleContext().setAccessibleParent(comboBox);
-      }
-
-      @Override
-      public void setVisible(boolean visible) {
-        if (visible) {
-          Dimension popupSize = getPopupSize(comboBox);
-          popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
-          Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height, popupSize.width, popupSize.height);
-          scroller.setMaximumSize(popupBounds.getSize());
-          scroller.setPreferredSize(popupBounds.getSize());
-          scroller.setMinimumSize(popupBounds.getSize());
-          getList().invalidate();
-          int selectedIndex = comboBox.getSelectedIndex();
-          if (selectedIndex == -1) {
-            getList().clearSelection();
-          }
-          else {
-            getList().setSelectedIndex(selectedIndex);
-          }
-          getList().ensureIndexIsVisible(getList().getSelectedIndex());
-          setLightWeightPopupEnabled(comboBox.isLightWeightPopupEnabled());
-        }
-
-        super.setVisible(visible);
-      }
-
-      private Dimension getPopupSize(JComboBox<?> comboBox) {
-        Dimension displaySize = comboBoxUI.getDisplaySize();
-        Dimension size = comboBox.getSize();
-
-        return new Dimension(Math.max(size.width, comboBoxUI.popupWidth <= 0 ? displaySize.width : comboBoxUI.popupWidth), size.height);
-      }
-    }
-  }
-
-  static final class CopyEditorActionsListener implements PropertyChangeListener {
-
-    private JComponent previousEditor;
-
-    @Override
-    public void propertyChange(PropertyChangeEvent event) {
-      ComboBoxEditor oldEditor = (ComboBoxEditor) event.getOldValue();
-      if (oldEditor != null) {
-        previousEditor = (JComponent) oldEditor.getEditorComponent();
-      }
-      ComboBoxEditor newEditor = (ComboBoxEditor) event.getNewValue();
-      if (newEditor != null && previousEditor != null) {
-        copyActions(previousEditor, (JComponent) newEditor.getEditorComponent());
-        previousEditor = null;
-      }
-    }
-
-    private static void copyActions(JComponent previousComponent, JComponent newComponent) {
-      ActionMap previousActionMap = previousComponent.getActionMap();
-      ActionMap newActionMap = newComponent.getActionMap();
-      Arrays.stream(previousActionMap.allKeys()).forEach(key -> newActionMap.put(key, previousActionMap.get(key)));
-      InputMap previousInputMap = previousComponent.getInputMap();
-      InputMap newInputMap = newComponent.getInputMap();
-      Arrays.stream(previousInputMap.allKeys()).forEach(key -> newInputMap.put(key, previousInputMap.get(key)));
-    }
+    return (C) new FocusableComboBox<T>(comboBoxModel);
   }
 }

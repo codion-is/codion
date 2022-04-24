@@ -183,7 +183,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
     private DefaultBuilder(SwingEntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
       super(comboBoxModel, linkedValue);
-      popupMenuControl(Control.builder(comboBoxModel::forceRefresh)
+      popupMenuControl(Control.builder(new ForceRefreshCommand(comboBoxModel))
               .caption(FrameworkMessages.get(FrameworkMessages.REFRESH))
               .build());
     }
@@ -191,6 +191,20 @@ public final class EntityComboBox extends JComboBox<Entity> {
     @Override
     protected EntityComboBox createComboBox() {
       return new EntityComboBox((SwingEntityComboBoxModel) comboBoxModel);
+    }
+  }
+
+  private static final class ForceRefreshCommand implements Control.Command {
+
+    private final SwingEntityComboBoxModel comboBoxModel;
+
+    private ForceRefreshCommand(SwingEntityComboBoxModel comboBoxModel) {
+      this.comboBoxModel = comboBoxModel;
+    }
+
+    @Override
+    public void perform() throws Exception {
+      comboBoxModel.forceRefresh();
     }
   }
 }

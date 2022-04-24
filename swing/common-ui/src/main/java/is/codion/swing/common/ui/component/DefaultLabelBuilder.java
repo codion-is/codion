@@ -88,17 +88,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
 
   @Override
   protected ComponentValue<T, JLabel> createComponentValue(JLabel component) {
-    return new AbstractComponentValue<T, JLabel>(component) {
-      @Override
-      protected T getComponentValue(JLabel component) {
-        return null;
-      }
-
-      @Override
-      protected void setComponentValue(JLabel component, T value) {
-        component.setText(value == null ? "" : value.toString());
-      }
-    };
+    return new LabelComponentValue<>(component);
   }
 
   @Override
