@@ -91,6 +91,6 @@ public interface MaskFormatterBuilder {
    * @return a new {@link MaskFormatterBuilder} instance
    */
   static MaskFormatterBuilder builder() {
-    return new DefaultMaskFormatterBuilder();
+    return new DefaultMaskFormatter.DefaultMaskFormatterBuilder();
   }
 }

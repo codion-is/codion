@@ -8081,3 +8081,4 @@
   TextInputPanel, TextInputPanelValue moved outside builder class
   TemporalInputPanel, TemporalInputPanelValue moved outside builder class
   TemporalField, lambda method references replaced with DateTimeParser classes
+  DefaultMaskFormatter moved up to package level, DefaultMaskFormatterBuilder moved to DefaultMaskFormatter
