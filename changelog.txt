@@ -8088,3 +8088,4 @@
   LabelComponentValue added
   DefaultItemProperty lambda method reference replaced with GetItemValue
   DefaultTaskSchedulerBuilder, DaemonThreadFactory added and moved up to package level
+  AbstractComponentBuilder bug fixed, now initializes event listeners after ComponentValue is created, so that focus listeners, which may rely on the value, are added after any added during the value creation (such as for UpdateOn.FOCUS_LOST in a text field)

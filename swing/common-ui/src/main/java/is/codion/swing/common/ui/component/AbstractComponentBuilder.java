@@ -379,13 +379,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     }
     component.setComponentOrientation(componentOrientation);
     clientProperties.forEach((key, value) -> component.putClientProperty(key, value));
-    keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
-    focusListeners.forEach(focusListener -> component.addFocusListener(focusListener));
-    mouseListeners.forEach(mouseListener -> component.addMouseListener(mouseListener));
-    mouseMotionListeners.forEach(mouseMotionListener -> component.addMouseMotionListener(mouseMotionListener));
-    mouseWheelListeners.forEach(mouseWheelListener -> component.addMouseWheelListener(mouseWheelListener));
-    keyListeners.forEach(keyListener -> component.addKeyListener(keyListener));
-    componentListeners.forEach(componentListener -> component.addComponentListener(componentListener));
     if (onSetVisible != null) {
       new OnSetVisible<>(component, onSetVisible);
     }
@@ -406,6 +399,13 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (linkedValueObserver != null) {
       getComponentValue(component).link(linkedValueObserver);
     }
+    keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
+    focusListeners.forEach(focusListener -> component.addFocusListener(focusListener));
+    mouseListeners.forEach(mouseListener -> component.addMouseListener(mouseListener));
+    mouseMotionListeners.forEach(mouseMotionListener -> component.addMouseMotionListener(mouseMotionListener));
+    mouseWheelListeners.forEach(mouseWheelListener -> component.addMouseWheelListener(mouseWheelListener));
+    keyListeners.forEach(keyListener -> component.addKeyListener(keyListener));
+    componentListeners.forEach(componentListener -> component.addComponentListener(componentListener));
 
     return component;
   }
