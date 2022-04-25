@@ -143,6 +143,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   /**
    * A progress aware background task.
    * @param <T> the task result type
+   * @param <V> the intermediate result type
    */
   public interface ProgressTask<T, V> {
 
@@ -157,6 +158,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   /**
    * Reports progress for a ProgressWorker
+   * @param <V> the intermediate result type
    */
   public interface ProgressReporter<V> {
 
