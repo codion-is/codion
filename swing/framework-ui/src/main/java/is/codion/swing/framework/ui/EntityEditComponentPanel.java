@@ -55,6 +55,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static is.codion.swing.framework.ui.EntityComponentValidators.addFormattedValidator;
 import static is.codion.swing.framework.ui.EntityComponentValidators.addValidator;
@@ -760,7 +761,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     }
     componentBuilders.put(attribute, componentBuilder
             .transferFocusOnEnter(transferFocusOnEnter)
-            .linkedValue(getEditModel().value(attribute)));
+            .linkedValue(getEditModel().value(attribute))
+            .onBuild(new OnComponentBuilt<>(attribute)));
 
     return componentBuilder;
   }
@@ -775,8 +777,9 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   private JComponent getComponentInternal(Attribute<?> attribute) {
-    if (componentBuilders.containsKey(attribute)) {
-      components.putIfAbsent(attribute, componentBuilders.remove(attribute).build());
+    ComponentBuilder<?, ?, ?> componentBuilder = componentBuilders.get(attribute);
+    if (componentBuilder != null) {
+      componentBuilder.build();
     }
 
     return components.get(attribute);
@@ -808,6 +811,21 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
       if (comboBoxModel.isCleared()) {
         comboBoxModel.refresh();
       }
+    }
+  }
+
+  private final class OnComponentBuilt<C extends JComponent> implements Consumer<C> {
+
+    private final Attribute<?> attribute;
+
+    private OnComponentBuilt(Attribute<?> attribute) {
+      this.attribute = attribute;
+    }
+
+    @Override
+    public void accept(C component) {
+      componentBuilders.remove(attribute);
+      components.put(attribute, component);
     }
   }
 }
