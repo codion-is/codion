@@ -159,7 +159,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
         textLabel.setBackground(defaults.getColor(selected ? "Table.selectionBackground" : "TextField.background"));
         textLabel.setForeground(defaults.getColor("TextField.foreground"));
         colorLabel.setBackground(defaults.getColor("Button.background"));
-        colorLabel.setBorder(createLineBorder(defaults.getColor("Table.selectionBackground"), BORDER_THICKNESS));
+        colorLabel.setBorder(createLineBorder(defaults.getColor("ProgressBar.foreground"), BORDER_THICKNESS));
       }
     }
 
