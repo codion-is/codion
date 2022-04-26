@@ -302,7 +302,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   public void selectColumns() {
     SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.getColumnModel());
     Dialogs.okCancelDialog(selectColumnsPanel)
-            .owner(this)
+            .owner(getParent())
             .title(MESSAGES.getString(SELECT_COLUMNS))
             .onShown(dialog -> selectColumnsPanel.requestColumnPanelFocus())
             .onOk(selectColumnsPanel::applyChanges)

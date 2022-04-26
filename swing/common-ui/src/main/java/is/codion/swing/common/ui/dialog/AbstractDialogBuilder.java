@@ -6,7 +6,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.swing.common.ui.Windows;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
+import java.awt.Component;
 import java.awt.Window;
 
 /**
@@ -16,7 +16,7 @@ import java.awt.Window;
 public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements DialogBuilder<B> {
 
   protected Window owner;
-  protected JComponent locationRelativeTo;
+  protected Component locationRelativeTo;
   protected String title;
   protected ImageIcon icon;
 
@@ -27,7 +27,7 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
   }
 
   @Override
-  public final B owner(JComponent owner) {
+  public final B owner(Component owner) {
     if (this.owner != null) {
       throw new IllegalStateException("owner has alrady been set");
     }
@@ -39,7 +39,7 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
   }
 
   @Override
-  public final B locationRelativeTo(JComponent locationRelativeTo) {
+  public final B locationRelativeTo(Component locationRelativeTo) {
     this.locationRelativeTo = locationRelativeTo;
     return (B) this;
   }
