@@ -8092,3 +8092,4 @@
   EntityEditComponentPanel bug fixed, setComponentBuilder() now adds a onBuild() listener which removes the builder and adds the component, otherwise the builder may never get removed
   DialogBuilder.owner() and locationRelativeTo() parameter now Component instead of JComponent
   FilteredTable bug fixed, column selection dialog locationRelativeTo() now uses the table parent, instead of the table itself, to prevent scrolling from affecting the dialog location
+  DefaultFilteredTableSelectionModel, minor refactoring, multipleSelectionState changed to a state combination, based on selectionEmptyState and singleSelectionState, renamed multipleSelectionObserver
