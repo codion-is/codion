@@ -1082,7 +1082,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   protected JPanel initializeSouthPanel() {
     searchFieldPanel = Components.panel(new GridBagLayout())
-            .add(table.getSearchField(), createSearchFieldConstraints())
+            .add(table.getSearchField(), createHorizontalFillConstraints())
             .build();
     southPanelSplitPane = Components.splitPane()
             .continuousLayout(true)
@@ -1484,7 +1484,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .add(Components.label(tableModel.getStatusMessageObserver())
                     .horizontalAlignment(SwingConstants.CENTER)
                     .build(), status)
-            .add(initializeRefreshingProgressBar(), refreshing)
+            .add(initializeRefreshingProgressPanel(), refreshing)
             .onBuild(panel -> getTableModel().getRefreshingObserver().addDataListener(isRefreshing -> {
               if (showRefreshingProgressBar) {
                 refreshStatusLayout.show(panel, isRefreshing ? refreshing : status);
@@ -1493,13 +1493,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .build();
   }
 
-  private JProgressBar initializeRefreshingProgressBar() {
+  private JPanel initializeRefreshingProgressPanel() {
     JProgressBar progressBar = new JProgressBar();
     progressBar.setIndeterminate(true);
     progressBar.setString(MESSAGES.getString("refreshing"));
     progressBar.setStringPainted(true);
 
-    return progressBar;
+    return Components.panel(new GridBagLayout())
+            .add(progressBar, createHorizontalFillConstraints())
+            .build();
   }
 
   private JScrollPane initializeConditionScrollPane(JScrollPane tableScrollPane) {
@@ -1716,7 +1718,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
   }
 
-  private static GridBagConstraints createSearchFieldConstraints() {
+  private static GridBagConstraints createHorizontalFillConstraints() {
     GridBagConstraints constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.HORIZONTAL;
     constraints.weightx = 1.0;

@@ -8096,3 +8096,4 @@
   FilteredTable.scrollToSelectedItem behaviour improved, no longer scrolls if any of the selected rows are already visible, otherwise the view jumped to the topmost row when drag selecting downwards
   EntityTablePanel.showRefreshingProgressBar added
   LookAndFeelSelectionPanel now uses ProgressBar.foreground as the color label border color
+  EntityTablePanel, refreshing progress bar no longer fills the containing panel
