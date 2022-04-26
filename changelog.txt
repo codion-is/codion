@@ -8125,3 +8125,7 @@
   DefaultTaskSchedulerBuilder, DaemonThreadFactory added and moved up to package level
   AbstractComponentBuilder bug fixed, now initializes event listeners after ComponentValue is created, so that focus listeners, which may rely on the value, are added after any added during the value creation (such as for UpdateOn.FOCUS_LOST in a text field)
   EntityEditComponentPanel bug fixed, setComponentBuilder() now adds a onBuild() listener which removes the builder and adds the component, otherwise the builder may never get removed
+  DialogBuilder.owner() and locationRelativeTo() parameter now Component instead of JComponent
+  FilteredTable bug fixed, column selection dialog locationRelativeTo() now uses the table parent, instead of the table itself, to prevent scrolling from affecting the dialog location
+  DefaultFilteredTableSelectionModel, minor refactoring, multipleSelectionState changed to a state combination, based on selectionEmptyState and singleSelectionState, renamed multipleSelectionObserver
+  FilteredTable.scrollToSelectedItem behaviour improved, no longer scrolls if any of the selected rows are already visible, otherwise the view jumped to the topmost row when drag selecting downwards

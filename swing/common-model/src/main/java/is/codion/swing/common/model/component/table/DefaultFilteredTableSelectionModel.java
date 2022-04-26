@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.common.Conjunction;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
@@ -28,8 +29,9 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   private final Event<List<R>> selectedItemsChangedEvent = Event.event();
   private final State singleSelectionModeState = State.state(false);
   private final State selectionEmptyState = State.state(true);
-  private final State multipleSelectionState = State.state(false);
   private final State singleSelectionState = State.state(false);
+  private final StateObserver multipleSelectionObserver = State.combination(Conjunction.AND,
+          selectionEmptyState.getReversedObserver(), singleSelectionState.getReversedObserver());
 
   /**
    * Holds the topmost (minimum) selected index
@@ -274,7 +276,6 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
     if (!isAdjusting) {
       selectionEmptyState.set(isSelectionEmpty());
       singleSelectionState.set(getSelectionCount() == 1);
-      multipleSelectionState.set(!selectionEmptyState.get() && !singleSelectionState.get());
       int minSelIndex = getMinSelectionIndex();
       if (selectedIndex != minSelIndex) {
         selectedIndex = minSelIndex;
@@ -344,7 +345,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 
   @Override
   public StateObserver getMultipleSelectionObserver() {
-    return multipleSelectionState.getObserver();
+    return multipleSelectionObserver;
   }
 
   @Override

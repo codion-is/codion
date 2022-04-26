@@ -16,6 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
@@ -144,7 +145,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   }
 
   static JDialog createDialog(Window owner, String title, ImageIcon icon,
-                              JComponent component, Dimension size, JComponent locationRelativeTo,
+                              JComponent component, Dimension size, Component locationRelativeTo,
                               boolean modal, boolean resizable, Consumer<JDialog> onShown) {
     JDialog dialog = new JDialog(owner, title);
     if (icon != null) {

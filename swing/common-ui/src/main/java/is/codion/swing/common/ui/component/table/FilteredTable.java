@@ -254,8 +254,9 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   /**
-   * @param scrollToSelectedItem true if the JTable instance should scroll automatically
-   * to the coordinate of the record selected in the underlying table model
+   * Specifies whether this table should automatically scroll to the topmost selected row.
+   * Note that no scrolling is performed if any of the selected rows are already visible.
+   * @param scrollToSelectedItem true if this table should automatically scroll to selected rows
    */
   public void setScrollToSelectedItem(boolean scrollToSelectedItem) {
     this.scrollToSelectedItem = scrollToSelectedItem;
@@ -302,7 +303,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   public void selectColumns() {
     SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.getColumnModel());
     Dialogs.okCancelDialog(selectColumnsPanel)
-            .owner(this)
+            .owner(getParent())
             .title(MESSAGES.getString(SELECT_COLUMNS))
             .onShown(dialog -> selectColumnsPanel.requestColumnPanelFocus())
             .onOk(selectColumnsPanel::applyChanges)
@@ -546,6 +547,13 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     return new Rectangle(viewport.getExtentSize()).contains(cellRect);
   }
 
+  private boolean isRowVisible(JViewport viewport, int row) {
+    int topRow = rowAtPoint(viewport.getViewPosition());
+    int visibleRows = viewport.getExtentSize().height / getRowHeight();
+
+    return row >= topRow && row <= topRow + visibleRows;
+  }
+
   private void scrollToRowColumn(JViewport viewport, int row, int column, CenterOnScroll centerOnScroll) {
     Rectangle cellRectangle = getCellRect(row, column, true);
     Rectangle viewRectangle = viewport.getViewRect();
@@ -608,13 +616,20 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
 
   private void bindEvents() {
     addMouseListener(initializeTableMouseListener());
-    tableModel.getSelectionModel().addSelectedIndexListener(selected -> {
-      if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
-        scrollToCoordinate(selected, getSelectedColumn(), centerOnScroll);
+    tableModel.getSelectionModel().addSelectedIndexesListener(selectedRowIndexes -> {
+      if (scrollToSelectedItem && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
+        scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
       }
     });
     tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
     addKeyListener(new MoveResizeColumnKeyListener());
+  }
+
+  private boolean noRowVisible(List<Integer> rows) {
+    return Utilities.getParentOfType(JViewport.class, this)
+            .filter(viewport -> rows.stream()
+                    .noneMatch(row -> isRowVisible(viewport, row)))
+            .isPresent();
   }
 
   private void bindFilterIndicatorEvents(TableColumn column) {
