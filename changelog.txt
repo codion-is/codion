@@ -8094,3 +8094,4 @@
   FilteredTable bug fixed, column selection dialog locationRelativeTo() now uses the table parent, instead of the table itself, to prevent scrolling from affecting the dialog location
   DefaultFilteredTableSelectionModel, minor refactoring, multipleSelectionState changed to a state combination, based on selectionEmptyState and singleSelectionState, renamed multipleSelectionObserver
   FilteredTable.scrollToSelectedItem behaviour improved, no longer scrolls if any of the selected rows are already visible, otherwise the view jumped to the topmost row when drag selecting downwards
+  EntityTablePanel.showRefreshingProgressBar added
