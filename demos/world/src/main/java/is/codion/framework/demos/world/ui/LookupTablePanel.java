@@ -20,6 +20,7 @@ final class LookupTablePanel extends EntityTablePanel {
     super(lookupModel);
     getTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     setConditionPanelVisible(true);
+    setShowRefreshingProgressBar(true);
     setControl(ControlCode.CLEAR, Control.builder(this::clearTableAndConditions)
             .caption("Clear")
             .mnemonic('C')

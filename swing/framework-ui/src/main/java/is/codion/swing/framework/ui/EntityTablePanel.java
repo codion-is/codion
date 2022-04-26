@@ -53,10 +53,10 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -69,6 +69,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -266,9 +267,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private final JToolBar refreshToolBar;
 
   /**
-   * the label for showing the status of the table model, that is, the number of rows, number of selected rows etc.
+   * displays a status message or a refresh progress bar when refreshing
    */
-  private final JLabel statusMessageLabel;
+  private final JPanel statusPanel;
 
   private final List<Controls> additionalPopupControls = new ArrayList<>();
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
@@ -316,6 +317,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   private boolean includePopupMenu = true;
 
   /**
+   * specifies whether to display an indeterminate progress bar while the model is refreshing
+   */
+  private boolean showRefreshingProgressBar = false;
+
+  /**
    * True after {@code initializePanel()} has been called
    */
   private boolean panelInitialized = false;
@@ -349,15 +355,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     this.summaryScrollPane = initializeSummaryScrollPane(tableScrollPane);
     this.tablePanel = initializeTablePanel(tableScrollPane);
     this.refreshToolBar = initializeRefreshToolBar();
-    this.statusMessageLabel = Components.label(tableModel.getStatusMessageObserver())
-            .horizontalAlignment(SwingConstants.CENTER)
-            .build();
+    this.statusPanel = initializeStatusPanel();
   }
 
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(tablePanel, table, statusMessageLabel, conditionPanel, conditionScrollPane,
+    Utilities.updateUI(tablePanel, table, statusPanel, conditionPanel, conditionScrollPane,
             summaryScrollPane, summaryPanel, southPanel, refreshToolBar, southToolBar, southPanelSplitPane, searchFieldPanel);
     if (tableScrollPane != null) {
       Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
@@ -483,6 +487,20 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public final void setRefreshToolbarAlwaysVisible(boolean refreshToolbarAlwaysVisible) {
     this.refreshToolbarAlwaysVisible = refreshToolbarAlwaysVisible;
     this.refreshToolBar.setVisible(refreshToolbarAlwaysVisible || isConditionPanelVisible());
+  }
+
+  /**
+   * @return true if a progress bar is shown while the model is refreshing
+   */
+  public final boolean isShowRefreshingProgressBar() {
+    return showRefreshingProgressBar;
+  }
+
+  /**
+   * @param showRefreshingProgressBar true if an indeterminate progress bar should be shown while the model is refreshing
+   */
+  public final void setShowRefreshingProgressBar(boolean showRefreshingProgressBar) {
+    this.showRefreshingProgressBar = showRefreshingProgressBar;
   }
 
   /**
@@ -1070,7 +1088,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .continuousLayout(true)
             .resizeWeight(0.35)
             .leftComponent(searchFieldPanel)
-            .rightComponent(statusMessageLabel)
+            .rightComponent(statusPanel)
             .build();
     southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
     southPanel.add(refreshToolBar, BorderLayout.WEST);
@@ -1455,6 +1473,33 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     toolBar.setVisible(false);
 
     return toolBar;
+  }
+
+  private JPanel initializeStatusPanel() {
+    String status = "status";
+    String refreshing = "refreshing";
+    CardLayout refreshStatusLayout = new CardLayout();
+
+    return Components.panel(refreshStatusLayout)
+            .add(Components.label(tableModel.getStatusMessageObserver())
+                    .horizontalAlignment(SwingConstants.CENTER)
+                    .build(), status)
+            .add(initializeRefreshingProgressBar(), refreshing)
+            .onBuild(panel -> getTableModel().getRefreshingObserver().addDataListener(isRefreshing -> {
+              if (showRefreshingProgressBar) {
+                refreshStatusLayout.show(panel, isRefreshing ? refreshing : status);
+              }
+            }))
+            .build();
+  }
+
+  private JProgressBar initializeRefreshingProgressBar() {
+    JProgressBar progressBar = new JProgressBar();
+    progressBar.setIndeterminate(true);
+    progressBar.setString(MESSAGES.getString("refreshing"));
+    progressBar.setStringPainted(true);
+
+    return progressBar;
   }
 
   private JScrollPane initializeConditionScrollPane(JScrollPane tableScrollPane) {
