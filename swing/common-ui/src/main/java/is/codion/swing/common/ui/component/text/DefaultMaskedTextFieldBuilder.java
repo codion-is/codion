@@ -119,7 +119,7 @@ final class DefaultMaskedTextFieldBuilder
 
   @Override
   protected ComponentValue<String, JFormattedTextField> createComponentValue(JFormattedTextField component) {
-    return new FormattedTextFieldValue<>(component);
+    return new MaskedTextFieldValue<>(component);
   }
 
   @Override
