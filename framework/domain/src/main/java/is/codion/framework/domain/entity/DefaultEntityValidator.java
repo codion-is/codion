@@ -112,13 +112,15 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
     Property<T> property = entity.getDefinition().getProperty(attribute);
     Number value = entity.get(property.getAttribute());
-    if (value.doubleValue() < (property.getMinimumValue() == null ? Double.NEGATIVE_INFINITY : property.getMinimumValue())) {
+    Number minimumValue = property.getMinimumValue();
+    if (minimumValue != null && value.doubleValue() < minimumValue.doubleValue()) {
       throw new RangeValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
-              MESSAGES.getString("property_value_too_small") + " " + property.getMinimumValue());
+              MESSAGES.getString("property_value_too_small") + " " + minimumValue);
     }
-    if (value.doubleValue() > (property.getMaximumValue() == null ? Double.POSITIVE_INFINITY : property.getMaximumValue())) {
+    Number maximumValue = property.getMaximumValue();
+    if (maximumValue != null && value.doubleValue() > maximumValue.doubleValue()) {
       throw new RangeValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
-              MESSAGES.getString("property_value_too_large") + " " + property.getMaximumValue());
+              MESSAGES.getString("property_value_too_large") + " " + maximumValue);
     }
   }
 

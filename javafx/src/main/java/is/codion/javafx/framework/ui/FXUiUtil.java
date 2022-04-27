@@ -998,11 +998,16 @@ public final class FXUiUtil {
     }
 
     private static boolean isWithinRange(Property<?> property, Number value) {
-      double min = property.getMinimumValue() != null ? Math.min(property.getMinimumValue(), 0) : Double.NEGATIVE_INFINITY;
-      double max = property.getMaximumValue() == null ? Double.POSITIVE_INFINITY : property.getMaximumValue();
-      double doubleValue = value.doubleValue();
+      Number minimumValue = property.getMinimumValue();
+      if (minimumValue != null && value.doubleValue() < minimumValue.doubleValue()) {
+        return false;
+      }
+      Number maximumValue = property.getMaximumValue();
+      if (maximumValue != null && value.doubleValue() > maximumValue.doubleValue()) {
+        return false;
+      }
 
-      return doubleValue >= min && doubleValue <= max;
+      return true;
     }
   }
 }

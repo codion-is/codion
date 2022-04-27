@@ -230,7 +230,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     Dialogs.okCancelDialog(panel)
             .owner(this)
             .title("Update interval (s)")
-            .onOk(() -> getModel().setUpdateInterval(field.getValue()))
+            .onOk(() -> getModel().setUpdateInterval(field.getNumber()))
             .show();
   }
 

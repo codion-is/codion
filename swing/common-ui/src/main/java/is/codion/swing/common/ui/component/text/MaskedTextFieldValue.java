@@ -7,9 +7,9 @@ import is.codion.swing.common.ui.component.AbstractComponentValue;
 
 import javax.swing.JFormattedTextField;
 
-final class FormattedTextFieldValue<T> extends AbstractComponentValue<T, JFormattedTextField> {
+final class MaskedTextFieldValue<T> extends AbstractComponentValue<T, JFormattedTextField> {
 
-  FormattedTextFieldValue(JFormattedTextField component) {
+  MaskedTextFieldValue(JFormattedTextField component) {
     super(component);
     component.addPropertyChangeListener("value", event -> notifyValueChange());
   }

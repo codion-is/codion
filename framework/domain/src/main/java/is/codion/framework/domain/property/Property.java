@@ -174,13 +174,13 @@ public interface Property<T> {
    * @return the maximum allowed value for this property, null if none is defined,
    * only applicable to numerical properties
    */
-  Double getMaximumValue();
+  Number getMaximumValue();
 
   /**
    * @return the minimum allowed value for this property, null if none is defined,
    * only applicable to numerical properties
    */
-  Double getMinimumValue();
+  Number getMinimumValue();
 
   /**
    * @return the maximum number of fraction digits to use for this property value,
@@ -304,23 +304,26 @@ public interface Property<T> {
      * Only applicable to numerical properties
      * @param minimumValue the minimum allowed value for this property
      * @return this instance
+     * @throws IllegalStateException in case this is not a numerical property
      */
-    B minimumValue(double minimumValue);
+    B minimumValue(Number minimumValue);
 
     /**
      * Only applicable to numerical properties
      * @param maximumValue the maximum allowed value for this property
      * @return this instance
+     * @throws IllegalStateException in case this is not a numerical property
      */
-    B maximumValue(double maximumValue);
+    B maximumValue(Number maximumValue);
 
     /**
      * Only applicable to numerical properties
      * @param minimumValue the minimum allowed value for this property
      * @param maximumValue the maximum allowed value for this property
      * @return this instance
+     * @throws IllegalStateException in case this is not a numerical property
      */
-    B range(double minimumValue, double maximumValue);
+    B valueRange(Number minimumValue, Number maximumValue);
 
     /**
      * Sets the maximum fraction digits to show for this property, only applicable to properties based on decimal types.

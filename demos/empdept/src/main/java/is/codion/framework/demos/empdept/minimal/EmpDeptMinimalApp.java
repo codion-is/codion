@@ -115,7 +115,7 @@ public final class EmpDeptMinimalApp {
               columnProperty(Employee.SAL, "Salary")
                       .nullable(false)
                       .maximumFractionDigits(2)
-                      .range(1000, 10000),
+                      .valueRange(1000, 10000),
               columnProperty(Employee.COMM, "Commission")
                       .maximumFractionDigits(2),
               columnProperty(Employee.MGR),
