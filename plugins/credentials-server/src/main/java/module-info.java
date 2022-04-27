@@ -2,7 +2,7 @@
  * A CredentialsProvider implementation with a server component
  * @provides is.codion.common.credentials.CredentialsProvider
  */
-module is.codion.credentials.server {
+module is.codion.plugin.credentials.server {
   requires org.slf4j;
   requires transitive java.rmi;
   requires transitive is.codion.common.rmi;
