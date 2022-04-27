@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
  * based on the specified max length.
  * This Validator can be extended to provide further validation.
  * @see Property.Builder#nullable(boolean)
- * @see Property.Builder#range(double, double)
+ * @see Property.Builder#valueRange(Number, Number)
  * @see Property.Builder#maximumLength(int)
  */
 public class DefaultEntityValidator implements EntityValidator, Serializable {
