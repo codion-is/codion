@@ -1,4 +1,4 @@
-module is.codion.plugin.log4j.proxy {
+module is.codion.plugin.jul.proxy {
   requires java.logging;
   requires is.codion.common.core;
 
