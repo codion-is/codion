@@ -8104,3 +8104,4 @@
   Queries, update and delete queries now multiline like select queries
   DefaultLocalEntityConnection.writeBlob() now uses Queries.updateQuery()
   MaskedTextFieldBuilder, MaskFormatterBuilder.invalidStringToNullValue() added
+  FormattedFieldValue bug fixed, now uses setText("") on null value, otherwise the caret goes to the end on next focus gained

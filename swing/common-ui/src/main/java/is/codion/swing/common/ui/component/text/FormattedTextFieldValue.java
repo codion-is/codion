@@ -21,6 +21,13 @@ final class FormattedTextFieldValue<T> extends AbstractComponentValue<T, JFormat
 
   @Override
   protected void setComponentValue(JFormattedTextField component, T value) {
-    component.setValue(value);
+    if (value == null) {
+      // otherwise the caret goes all the way to the
+      // end the next time the field gains focus
+      component.setText("");
+    }
+    else {
+      component.setValue(value);
+    }
   }
 }
