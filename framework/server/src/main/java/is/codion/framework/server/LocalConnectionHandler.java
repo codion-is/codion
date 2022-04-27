@@ -362,7 +362,18 @@ final class LocalConnectionHandler implements InvocationHandler {
   /**
    * An implementation tailored for EntityConnections.
    */
-  private static final class EntityArgumentToString extends MethodLogger.ArgumentToString {
+  private static final class EntityArgumentToString extends MethodLogger.DefaultArgumentToString {
+
+    private static final String PREPARE_STATEMENT = "prepareStatement";
+
+    @Override
+    protected String toString(String methodName, Object object) {
+      if (PREPARE_STATEMENT.equals(methodName)) {
+        return (String) object;
+      }
+
+      return toString(object);
+    }
 
     @Override
     protected String toString(Object object) {

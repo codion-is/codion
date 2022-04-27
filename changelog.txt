@@ -8098,3 +8098,8 @@
   LookAndFeelSelectionPanel now uses ProgressBar.foreground as the color label border color
   EntityTablePanel, refreshing progress bar no longer fills the containing panel
   ClientInstanceMonitorPanel bug fixed, client Logging enabled check box was based on a nullable boolean value, replaced with a State
+  MethodLogger.ArgumentToString added, DefaultMethodLogger now prints multi-line arguments on a separate line
+  LocalConnectionHandler.EntityArgumentToString now with special handling for prepareStatement, query not quoted
+  ClientInstanceMonitorPanel, client log now uses Font.MONOSPACED font
+  Queries, update and delete queries now multiline like select queries
+  DefaultLocalEntityConnection.writeBlob() now uses Queries.updateQuery()
