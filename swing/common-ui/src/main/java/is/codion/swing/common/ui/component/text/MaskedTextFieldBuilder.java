@@ -79,10 +79,16 @@ public interface MaskedTextFieldBuilder extends ComponentBuilder<String, JFormat
   MaskedTextFieldBuilder overwriteMode(boolean overwriteMode);
 
   /**
-   * @param emptyStringToNullValue if true then an empty string is considered valid and translates to a null value
+   * @param emptyStringToNullValue if true then an empty string translates to a null value
    * @return this builder instance
    */
   MaskedTextFieldBuilder emptyStringToNullValue(boolean emptyStringToNullValue);
+
+  /**
+   * @param invalidStringToNullValue if true then an unparsable string translates to a null value
+   * @return this builder instance
+   */
+  MaskedTextFieldBuilder invalidStringToNullValue(boolean invalidStringToNullValue);
 
   /**
    * @param columns the number of colums in the text field

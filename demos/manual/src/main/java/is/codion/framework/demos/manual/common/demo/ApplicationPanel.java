@@ -51,15 +51,23 @@ public final class ApplicationPanel extends JPanel {
 
     setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-    JPanel settingsPanel = new JPanel();
+    JPanel settingsPanel = new JPanel(Layouts.borderLayout());
 
     State inputEnabledState = State.state(true);
 
     checkBox(inputEnabledState)
-            .caption("Enable input fields")
+            .caption("Enabled")
             .mnemonic('E')
             .transferFocusOnEnter(true)
-            .build(settingsPanel::add);
+            .build(checkBox -> settingsPanel.add(checkBox, BorderLayout.WEST));
+
+    button(Control.builder(model::clear)
+            .enabledState(inputEnabledState)
+            .build())
+            .caption("Clear")
+            .mnemonic('C')
+            .transferFocusOnEnter(true)
+            .build(button -> settingsPanel.add(button, BorderLayout.EAST));
 
     JPanel inputPanel = new JPanel(Layouts.flexibleGridLayout(0, 2));
 
@@ -107,6 +115,8 @@ public final class ApplicationPanel extends JPanel {
             .mask("(##) ##-##")
             .placeholderCharacter('_')
             .placeholder("(00) 00-00")
+            .emptyStringToNullValue(true)
+            .invalidStringToNullValue(true)
             .valueContainsLiteralCharacters(true)
             .commitsOnValidEdit(true)
             .focusLostBehaviour(JFormattedTextField.COMMIT)

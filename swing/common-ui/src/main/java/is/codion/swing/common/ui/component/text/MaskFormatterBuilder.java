@@ -75,11 +75,17 @@ public interface MaskFormatterBuilder {
   MaskFormatterBuilder overwriteMode(boolean overwriteMode);
 
   /**
-   * @param emptyStringToNullValue if true then an empty string is considered valid and translates to a null value
+   * @param emptyStringToNullValue if true then an empty string translates to a null value
    * @return this builder instance
    * @see javax.swing.JFormattedTextField.AbstractFormatter#stringToValue(String)
    */
   MaskFormatterBuilder emptyStringToNullValue(boolean emptyStringToNullValue);
+
+  /**
+   * @param invalidStringToNullValue if true then an unparsable string translates to a null value
+   * @return this builder instance
+   */
+  MaskFormatterBuilder invalidStringToNullValue(boolean invalidStringToNullValue);
 
   /**
    * @return a new {@link MaskFormatter} instance based on this builder

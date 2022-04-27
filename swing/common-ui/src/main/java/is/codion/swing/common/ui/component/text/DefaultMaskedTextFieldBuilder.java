@@ -84,6 +84,12 @@ final class DefaultMaskedTextFieldBuilder
   }
 
   @Override
+  public MaskedTextFieldBuilder invalidStringToNullValue(boolean invalidStringToNullValue) {
+    maskFormatterBuilder.invalidStringToNullValue(invalidStringToNullValue);
+    return this;
+  }
+
+  @Override
   public MaskedTextFieldBuilder columns(int columns) {
     this.columns = columns;
     return this;

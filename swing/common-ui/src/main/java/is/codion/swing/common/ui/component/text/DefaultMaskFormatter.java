@@ -13,10 +13,12 @@ import static java.util.Objects.requireNonNull;
 final class DefaultMaskFormatter extends MaskFormatter {
 
   private final boolean emptyStringToNullValue;
+  private final boolean invalidStringToNullValue;
 
   private DefaultMaskFormatter(DefaultMaskFormatterBuilder builder) throws ParseException {
     super(builder.mask);
     this.emptyStringToNullValue = builder.emptyStringToNullValue;
+    this.invalidStringToNullValue = builder.invalidStringToNullValue;
     setValueContainsLiteralCharacters(builder.valueContainsLiteralCharacters);
     setPlaceholder(builder.placeholder);
     setPlaceholderCharacter(builder.placeholderCharacter);
@@ -33,7 +35,16 @@ final class DefaultMaskFormatter extends MaskFormatter {
       return null;
     }
 
-    return super.stringToValue(value);
+    try {
+      return super.stringToValue(value);
+    }
+    catch (ParseException e) {
+      if (invalidStringToNullValue) {
+        return null;
+      }
+
+      throw e;
+    }
   }
 
   /**
@@ -72,6 +83,7 @@ final class DefaultMaskFormatter extends MaskFormatter {
     private String invalidCharacters;
     private boolean overwriteMode = true;
     private boolean emptyStringToNullValue = true;
+    private boolean invalidStringToNullValue = true;
 
     @Override
     public MaskFormatterBuilder mask(String mask) {
@@ -130,6 +142,12 @@ final class DefaultMaskFormatter extends MaskFormatter {
     @Override
     public MaskFormatterBuilder emptyStringToNullValue(boolean emptyStringToNullValue) {
       this.emptyStringToNullValue = emptyStringToNullValue;
+      return this;
+    }
+
+    @Override
+    public MaskFormatterBuilder invalidStringToNullValue(boolean invalidStringToNullValue) {
+      this.invalidStringToNullValue = invalidStringToNullValue;
       return this;
     }
 
