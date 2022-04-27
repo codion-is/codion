@@ -77,7 +77,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     creationDatePanel.add(creationDateField);
 
     JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    Components.checkBox(model.getLoggingEnabledValue())
+    Components.checkBox(model.getLoggingEnabledState())
             .caption("Logging enabled")
             .build(settingsPanel::add);
     Components.button(control(this::updateView))

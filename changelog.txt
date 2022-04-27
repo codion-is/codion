@@ -8097,3 +8097,4 @@
   EntityTablePanel.showRefreshingProgressBar added
   LookAndFeelSelectionPanel now uses ProgressBar.foreground as the color label border color
   EntityTablePanel, refreshing progress bar no longer fills the containing panel
+  ClientInstanceMonitorPanel bug fixed, client Logging enabled check box was based on a nullable boolean value, replaced with a State

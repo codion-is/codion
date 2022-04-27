@@ -6,10 +6,9 @@ package is.codion.swing.framework.server.monitor;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
-import is.codion.common.value.Value;
+import is.codion.common.state.State;
 import is.codion.framework.server.EntityServerAdmin;
 
-import javax.swing.ButtonModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
@@ -31,7 +30,7 @@ public final class ClientInstanceMonitor {
 
   private final RemoteClient remoteClient;
   private final EntityServerAdmin server;
-  private final Value<Boolean> loggingEnabledValue;
+  private final State loggingEnabledState;
   private final StyledDocument logDocument = new DefaultStyledDocument();
   private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
   private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
@@ -45,7 +44,7 @@ public final class ClientInstanceMonitor {
   public ClientInstanceMonitor(EntityServerAdmin server, RemoteClient remoteClient) throws RemoteException {
     this.remoteClient = remoteClient;
     this.server = server;
-    this.loggingEnabledValue = Value.value(server.isLoggingEnabled(remoteClient.getClientId()));
+    this.loggingEnabledState = State.state(server.isLoggingEnabled(remoteClient.getClientId()));
     bindEvents();
   }
 
@@ -57,10 +56,10 @@ public final class ClientInstanceMonitor {
   }
 
   /**
-   * @return the {@link ButtonModel} for controlling whether logging is enabled
+   * @return the {@link State} for controlling whether logging is enabled
    */
-  public Value<Boolean> getLoggingEnabledValue() {
-    return loggingEnabledValue;
+  public State getLoggingEnabledState() {
+    return loggingEnabledState;
   }
 
   /**
@@ -141,7 +140,7 @@ public final class ClientInstanceMonitor {
   }
 
   private void bindEvents() {
-    loggingEnabledValue.addDataListener(this::setLoggingEnabled);
+    loggingEnabledState.addDataListener(this::setLoggingEnabled);
   }
 
   private static void addChildEntries(DefaultMutableTreeNode entryNode, List<MethodLogger.Entry> childEntries) {
