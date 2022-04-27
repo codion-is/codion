@@ -36,7 +36,7 @@ public final class NumberField<T extends Number> extends JTextField {
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
     }
-    document.addDocumentListener((DocumentAdapter) e -> value.set(document.getValue()));
+    document.addDocumentListener((DocumentAdapter) e -> value.set(document.getNumber()));
   }
 
   @Override
@@ -56,17 +56,17 @@ public final class NumberField<T extends Number> extends JTextField {
   }
 
   /**
-   * @param value the value to display in this field
+   * @param number the number to display in this field
    */
-  public void setValue(T value) {
-    getTypedDocument().setValue(value);
+  public void setNumber(T number) {
+    getTypedDocument().setNumber(number);
   }
 
   /**
-   * @return the value being displayed in this field
+   * @return the number being displayed in this field
    */
-  public T getValue() {
-    return getTypedDocument().getValue();
+  public T getNumber() {
+    return getTypedDocument().getNumber();
   }
 
   /**
@@ -390,7 +390,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected final void setInitialValue(NumberField<T> component, T initialValue) {
-      component.setValue(initialValue);
+      component.setNumber(initialValue);
     }
 
     private NumberFormat initializeFormat() {
@@ -510,24 +510,24 @@ public final class NumberField<T extends Number> extends JTextField {
 
     private DoubleFieldValue(NumberField<Double> doubleField, boolean nullable, UpdateOn updateOn) {
       super(doubleField, nullable ? null : 0d, updateOn);
-      if (!isNullable() && doubleField.getValue() == null) {
-        doubleField.setValue(0d);
+      if (!isNullable() && doubleField.getNumber() == null) {
+        doubleField.setNumber(0d);
       }
     }
 
     @Override
     protected Double getComponentValue(NumberField<Double> component) {
-      Number value = component.getValue();
-      if (value == null) {
+      Number number = component.getNumber();
+      if (number == null) {
         return isNullable() ? null : 0d;
       }
 
-      return value.doubleValue();
+      return number.doubleValue();
     }
 
     @Override
     protected void setComponentValue(NumberField<Double> component, Double value) {
-      component.setValue(value);
+      component.setNumber(value);
     }
   }
 
@@ -535,24 +535,24 @@ public final class NumberField<T extends Number> extends JTextField {
 
     private IntegerFieldValue(NumberField<Integer> integerField, boolean nullable, UpdateOn updateOn) {
       super(integerField, nullable ? null : 0, updateOn);
-      if (!isNullable() && integerField.getValue() == null) {
-        integerField.setValue(0);
+      if (!isNullable() && integerField.getNumber() == null) {
+        integerField.setNumber(0);
       }
     }
 
     @Override
     protected Integer getComponentValue(NumberField<Integer> component) {
-      Number value = component.getValue();
-      if (value == null) {
+      Number number = component.getNumber();
+      if (number == null) {
         return isNullable() ? null : 0;
       }
 
-      return value.intValue();
+      return number.intValue();
     }
 
     @Override
     protected void setComponentValue(NumberField<Integer> component, Integer value) {
-      component.setValue(value);
+      component.setNumber(value);
     }
   }
 
@@ -560,24 +560,24 @@ public final class NumberField<T extends Number> extends JTextField {
 
     private LongFieldValue(NumberField<Long> longField, boolean nullable, UpdateOn updateOn) {
       super(longField, nullable ? null : 0L, updateOn);
-      if (!isNullable() && longField.getValue() == null) {
-        longField.setValue(0L);
+      if (!isNullable() && longField.getNumber() == null) {
+        longField.setNumber(0L);
       }
     }
 
     @Override
     protected Long getComponentValue(NumberField<Long> component) {
-      Number value = component.getValue();
-      if (value == null) {
+      Number number = component.getNumber();
+      if (number == null) {
         return isNullable() ? null : 0L;
       }
 
-      return value.longValue();
+      return number.longValue();
     }
 
     @Override
     protected void setComponentValue(NumberField<Long> component, Long value) {
-      component.setValue(value);
+      component.setNumber(value);
     }
   }
 
@@ -589,12 +589,12 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected BigDecimal getComponentValue(NumberField<BigDecimal> component) {
-      return component.getValue();
+      return component.getNumber();
     }
 
     @Override
     protected void setComponentValue(NumberField<BigDecimal> component, BigDecimal value) {
-      component.setValue(value);
+      component.setNumber(value);
     }
   }
 }

@@ -59,15 +59,15 @@ public class EntityComboBoxTest {
     comboBoxModel.setSelectedEntityByKey(jonesKey);
     EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
     NumberField<Integer> empIdValue = comboBox.integerSelectorField(TestDomain.EMP_ID).build();
-    assertEquals(3, empIdValue.getValue());
+    assertEquals(3, empIdValue.getNumber());
     Key blakeKey = comboBoxModel.getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 5);
     comboBoxModel.setSelectedEntityByKey(blakeKey);
-    assertEquals(5, empIdValue.getValue());
+    assertEquals(5, empIdValue.getNumber());
     comboBoxModel.setSelectedItem(null);
-    assertNull(empIdValue.getValue());
-    empIdValue.setValue(10);
+    assertNull(empIdValue.getNumber());
+    empIdValue.setNumber(10);
     assertEquals("ADAMS", comboBoxModel.getSelectedValue().get(TestDomain.EMP_NAME));
-    empIdValue.setValue(null);
+    empIdValue.setNumber(null);
     assertNull(comboBoxModel.getSelectedValue());
   }
 }

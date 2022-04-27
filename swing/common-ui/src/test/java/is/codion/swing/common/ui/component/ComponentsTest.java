@@ -96,15 +96,15 @@ public final class ComponentsTest {
 
     value.set(20);
 
-    assertEquals(20, component.getValue());
-    assertEquals(20, nextComponent.getValue());
+    assertEquals(20, component.getNumber());
+    assertEquals(20, nextComponent.getNumber());
     assertEquals(20, componentValue.get());
     assertEquals(20, nextComponentValue.get());
 
     nextComponentValue.set(25);
 
-    assertEquals(25, component.getValue());
-    assertEquals(25, nextComponent.getValue());
+    assertEquals(25, component.getNumber());
+    assertEquals(25, nextComponent.getNumber());
     assertEquals(25, componentValue.get());
     assertEquals(25, nextComponentValue.get());
 
@@ -155,7 +155,7 @@ public final class ComponentsTest {
             .maximumSize(new Dimension(10, 10))
             .linkedValue(value)
             .buildComponentValue();
-    assertEquals(componentValue.getComponent().getValue(), value.get());
+    assertEquals(componentValue.getComponent().getNumber(), value.get());
   }
 
   @Test
@@ -168,7 +168,7 @@ public final class ComponentsTest {
             .maximumSize(new Dimension(10, 10))
             .linkedValue(value)
             .buildComponentValue();
-    assertEquals(componentValue.getComponent().getValue(), value.get());
+    assertEquals(componentValue.getComponent().getNumber(), value.get());
   }
 
   @Test

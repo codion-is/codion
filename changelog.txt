@@ -8106,3 +8106,4 @@
   MaskedTextFieldBuilder, MaskFormatterBuilder.invalidStringToNullValue() added
   FormattedFieldValue bug fixed, now uses setText("") on null value, otherwise the caret goes to the end on next focus gained
   FormattedTextFieldValue renamed MaskedTextFieldValue
+  NumberDocument, NumberField.getValue() and setValue() renamed back to getNumber() and setNumber(), more consistent with TemporalField (which can't use getValue() and setValue() due to extending JFormattedField)
