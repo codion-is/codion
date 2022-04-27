@@ -8103,3 +8103,4 @@
   ClientInstanceMonitorPanel, client log now uses Font.MONOSPACED font
   Queries, update and delete queries now multiline like select queries
   DefaultLocalEntityConnection.writeBlob() now uses Queries.updateQuery()
+  MaskedTextFieldBuilder, MaskFormatterBuilder.invalidStringToNullValue() added
