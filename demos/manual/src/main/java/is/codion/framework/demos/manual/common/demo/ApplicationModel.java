@@ -5,6 +5,8 @@ import is.codion.common.value.ValueObserver;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static is.codion.common.value.Value.value;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
@@ -37,9 +39,33 @@ public final class ApplicationModel {
   private final Value<String> stringListValue = value();
   private final Value<String> messageValue = value();
 
+  private final Collection<Value<?>> values = new ArrayList<>();
+
   public ApplicationModel() {
     setDefaultUncaughtExceptionHandler(this::exceptionHandler);
-    bindEvents();
+    values.add(shortStringValue);
+    values.add(longStringValue);
+    values.add(textValue);
+    values.add(localDateValue);
+    values.add(localDateTimeValue);
+    values.add(formattedStringValue);
+    values.add(integerValue);
+    values.add(doubleValue);
+    values.add(booleanValue);
+    values.add(booleanSelectionValue);
+    values.add(integerItemValue);
+    values.add(stringSelectionValue);
+    values.add(integerSlideValue);
+    values.add(integerSpinValue);
+    values.add(integerSelectionValue);
+    values.add(itemSpinValue);
+    values.add(stringListValue);
+
+    values.forEach(value -> value.addDataListener(this::setMessage));
+  }
+
+  public void clear() {
+    values.forEach(value -> value.set(null));
   }
 
   public Value<String> getShortStringValue() {
@@ -112,26 +138,6 @@ public final class ApplicationModel {
 
   public ValueObserver<String> getMessageObserver() {
     return messageValue.getObserver();
-  }
-
-  private void bindEvents() {
-    shortStringValue.addDataListener(this::setMessage);
-    longStringValue.addDataListener(this::setMessage);
-    textValue.addDataListener(this::setMessage);
-    formattedStringValue.addDataListener(this::setMessage);
-    localDateValue.addDataListener(this::setMessage);
-    localDateTimeValue.addDataListener(this::setMessage);
-    integerValue.addDataListener(this::setMessage);
-    doubleValue.addDataListener(this::setMessage);
-    booleanValue.addDataListener(this::setMessage);
-    booleanSelectionValue.addDataListener(this::setMessage);
-    integerItemValue.addDataListener(this::setMessage);
-    stringSelectionValue.addDataListener(this::setMessage);
-    integerSlideValue.addDataListener(this::setMessage);
-    integerSpinValue.addDataListener(this::setMessage);
-    integerSelectionValue.addDataListener(this::setMessage);
-    itemSpinValue.addDataListener(this::setMessage);
-    stringListValue.addDataListener(this::setMessage);
   }
 
   private void exceptionHandler(Thread thread, Throwable exception) {
