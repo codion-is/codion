@@ -190,15 +190,15 @@ public final class EntityTestUtil {
   }
 
   private static int getRandomInteger(Property<?> property) {
-    int min = (int) (property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue());
-    int max = (int) (property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue());
+    int min = property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue().intValue();
+    int max = property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue().intValue();
 
     return RANDOM.nextInt((max - min) + 1) + min;
   }
 
   private static double getRandomDouble(Property<?> property) {
-    double min = property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue();
-    double max = property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue();
+    double min = property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue().doubleValue();
+    double max = property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue().doubleValue();
 
     return RANDOM.nextDouble() * (max - min) + min;
   }

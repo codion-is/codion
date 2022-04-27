@@ -284,10 +284,10 @@ public final class TestDomain extends DefaultDomain {
                     .searchProperty(true)
                     .beanProperty("job"),
             columnProperty(Employee.SALARY, Employee.SALARY.getName())
-                    .nullable(false).range(1000, 10000).maximumFractionDigits(2)
+                    .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2)
                     .beanProperty("salary"),
             columnProperty(Employee.COMMISSION, Employee.COMMISSION.getName())
-                    .range(100, 2000).maximumFractionDigits(2)
+                    .valueRange(100, 2000).maximumFractionDigits(2)
                     .beanProperty("commission"),
             columnProperty(Employee.MGR)
                     .beanProperty("mgr"),

@@ -88,13 +88,13 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
    * The maximum value for this property.
    * Only applicable to numerical properties
    */
-  private final Double maximumValue;
+  private final Number maximumValue;
 
   /**
    * The minimum value for this property.
    * Only applicable to numerical properties
    */
-  private final Double minimumValue;
+  private final Number minimumValue;
 
   /**
    * A string describing this property
@@ -210,12 +210,12 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final Double getMaximumValue() {
+  public final Number getMaximumValue() {
     return maximumValue;
   }
 
   @Override
-  public final Double getMinimumValue() {
+  public final Number getMinimumValue() {
     return minimumValue;
   }
 
@@ -414,8 +414,8 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     private int preferredColumnWidth;
     private boolean hidden;
     private int maximumLength;
-    private Double maximumValue;
-    private Double minimumValue;
+    private Number maximumValue;
+    private Number minimumValue;
     private String description;
     private Character mnemonic;
     private Format format;
@@ -510,21 +510,21 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B minimumValue(double minimumValue) {
-      return range(minimumValue, Double.MAX_VALUE);
+    public final B minimumValue(Number minimumValue) {
+      return valueRange(minimumValue, null);
     }
 
     @Override
-    public final B maximumValue(double maximumValue) {
-      return range(Double.MIN_VALUE, maximumValue);
+    public final B maximumValue(Number maximumValue) {
+      return valueRange(null, maximumValue);
     }
 
     @Override
-    public final B range(double minimumValue, double maximumValue) {
+    public final B valueRange(Number minimumValue, Number maximumValue) {
       if (!attribute.isNumerical()) {
-        throw new IllegalStateException("range is only applicable to numerical properties");
+        throw new IllegalStateException("valueRange is only applicable to numerical properties");
       }
-      if (maximumValue < minimumValue) {
+      if (maximumValue != null && minimumValue != null && maximumValue.doubleValue() < minimumValue.doubleValue()) {
         throw new IllegalArgumentException("minimum value must be smaller than maximum value: " + attribute);
       }
       this.minimumValue = minimumValue;

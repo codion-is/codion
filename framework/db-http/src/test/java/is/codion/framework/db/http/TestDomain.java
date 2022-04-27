@@ -96,9 +96,9 @@ public final class TestDomain extends DefaultDomain {
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
             columnProperty(EMP_SALARY, EMP_SALARY.getName())
-                    .nullable(false).range(1000, 10000).maximumFractionDigits(2),
+                    .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
-                    .range(100, 2000).maximumFractionDigits(2),
+                    .valueRange(100, 2000).maximumFractionDigits(2),
             columnProperty(EMP_MGR),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName()),
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())

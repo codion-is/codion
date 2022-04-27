@@ -132,7 +132,7 @@ public final class PropertiesTest {
 
   @Test
   void setRangeNonNumerical() {
-    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).range(5, 6));
+    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).valueRange(5, 6));
   }
 
   @Test
@@ -143,7 +143,7 @@ public final class PropertiesTest {
   @Test
   void minimumMaximumValue() {
     ColumnProperty.Builder<Double, ?> builder = columnProperty(ENTITY_TYPE.doubleAttribute("attribute"));
-    assertThrows(IllegalArgumentException.class, () -> builder.range(5, 4));
+    assertThrows(IllegalArgumentException.class, () -> builder.valueRange(5, 4));
   }
 
   @Test
