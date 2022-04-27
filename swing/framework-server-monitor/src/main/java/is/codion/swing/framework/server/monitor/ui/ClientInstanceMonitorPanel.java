@@ -26,6 +26,7 @@ import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
@@ -77,7 +78,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     creationDatePanel.add(creationDateField);
 
     JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    Components.checkBox(model.getLoggingEnabledValue())
+    Components.checkBox(model.getLoggingEnabledState())
             .caption("Logging enabled")
             .build(settingsPanel::add);
     Components.button(control(this::updateView))
@@ -115,6 +116,8 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
   private JTextArea createLogTextArea() {
     JTextArea textArea = new JTextArea(model.getLogDocument());
+    Font font = textArea.getFont();
+    textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
     textArea.setEditable(false);
     textArea.setLineWrap(false);
     textArea.setWrapStyleWord(true);

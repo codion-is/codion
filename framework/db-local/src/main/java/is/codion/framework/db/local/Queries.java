@@ -9,7 +9,8 @@ import java.util.List;
 
 final class Queries {
 
-  static final String WHERE_SPACE_PREFIX_POSTFIX = " where ";
+  private static final String WHERE_SPACE_POSTFIX = "where ";
+  private static final String NEWLINE = "\n";
 
   private Queries() {}
 
@@ -20,7 +21,7 @@ final class Queries {
    */
   static String insertQuery(String tableName, List<ColumnProperty<?>> insertProperties) {
     StringBuilder queryBuilder = new StringBuilder("insert ").append("into ").append(tableName).append("(");
-    StringBuilder columnValues = new StringBuilder(") values(");
+    StringBuilder columnValues = new StringBuilder(")").append(NEWLINE).append("values(");
     for (int i = 0; i < insertProperties.size(); i++) {
       queryBuilder.append(insertProperties.get(i).getColumnName());
       columnValues.append("?");
@@ -41,7 +42,7 @@ final class Queries {
    */
   static String updateQuery(String tableName, List<ColumnProperty<?>> updateProperties,
                             String conditionString) {
-    StringBuilder queryBuilder = new StringBuilder("update ").append(tableName).append(" set ");
+    StringBuilder queryBuilder = new StringBuilder("update ").append(tableName).append(NEWLINE).append("set ");
     for (int i = 0; i < updateProperties.size(); i++) {
       queryBuilder.append(updateProperties.get(i).getColumnName()).append(" = ?");
       if (i < updateProperties.size() - 1) {
@@ -49,7 +50,7 @@ final class Queries {
       }
     }
 
-    return queryBuilder.append(WHERE_SPACE_PREFIX_POSTFIX).append(conditionString).toString();
+    return queryBuilder.append(NEWLINE).append(WHERE_SPACE_POSTFIX).append(conditionString).toString();
   }
 
   /**
@@ -58,6 +59,6 @@ final class Queries {
    * @return a query for deleting the entities specified by the given condition
    */
   static String deleteQuery(String tableName, String conditionString) {
-    return "delete from " + tableName + (conditionString.isEmpty() ? "" : WHERE_SPACE_PREFIX_POSTFIX + conditionString);
+    return "delete from " + tableName + (conditionString.isEmpty() ? "" : NEWLINE + WHERE_SPACE_POSTFIX + conditionString);
   }
 }

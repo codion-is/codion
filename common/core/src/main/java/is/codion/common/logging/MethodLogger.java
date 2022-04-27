@@ -5,7 +5,6 @@ package is.codion.common.logging;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
@@ -13,7 +12,7 @@ import static java.util.stream.Collectors.joining;
 /**
  * A method call logger allowing logging of nested method calls.
  * @see #methodLogger(int)
- * @see #methodLogger(int, Function)
+ * @see #methodLogger(int, ArgumentToString)
  */
 public interface MethodLogger {
 
@@ -70,7 +69,7 @@ public interface MethodLogger {
    * @return a new MethodLogger instance
    */
   static MethodLogger methodLogger(int maxSize) {
-    return methodLogger(maxSize, new ArgumentToString());
+    return methodLogger(maxSize, new DefaultArgumentToString());
   }
 
   /**
@@ -79,7 +78,7 @@ public interface MethodLogger {
    * @param argumentStringProvider responsible for providing String representations of method arguments
    * @return a new MethodLogger instance
    */
-  static MethodLogger methodLogger(int maxSize, Function<Object, String> argumentStringProvider) {
+  static MethodLogger methodLogger(int maxSize, ArgumentToString argumentStringProvider) {
     return new DefaultMethodLogger(maxSize, argumentStringProvider);
   }
 
@@ -146,15 +145,38 @@ public interface MethodLogger {
   }
 
   /**
+   * Provides String representations of method arguments for log display.
+   */
+  interface ArgumentToString {
+
+    /**
+     * @param methodName the method name
+     * @param argument the argument
+     * @return a String representation of the argument
+     */
+    String argumentToString(String methodName, Object argument);
+  }
+
+  /**
    * Provides String representations of method arguments.
    */
-  class ArgumentToString implements Function<Object, String> {
+  class DefaultArgumentToString implements ArgumentToString {
 
     private static final String BRACKET_OPEN = "[";
     private static final String BRACKET_CLOSE = "]";
 
     @Override
-    public final String apply(Object object) {
+    public final String argumentToString(String methodName, Object object) {
+      return toString(methodName, object);
+    }
+
+    /**
+     * Returns a String representation of the given object.
+     * @param methodName the method name
+     * @param object the object
+     * @return a String representation of the given object
+     */
+    protected String toString(String methodName, Object object) {
       return toString(object);
     }
 

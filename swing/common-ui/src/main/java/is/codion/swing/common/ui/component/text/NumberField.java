@@ -23,14 +23,14 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A text field for numbers.
- * Use the available factory methods for instances.
+ * Use {@link #builder(Class)} or {@link #builder(Class, Value)} for {@link Builder} instances.
  * @param <T> the Number type
  */
 public final class NumberField<T extends Number> extends JTextField {
 
   private final Value<T> value = Value.value();
 
-  NumberField(NumberDocument<T> document) {
+  private NumberField(NumberDocument<T> document) {
     setDocument(document);
     document.setTextComponent(this);
     if (document.getFormat() instanceof DecimalFormat) {

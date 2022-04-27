@@ -731,8 +731,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     checkIfReadOnly(entityDefinition.getEntityType());
     ColumnProperty<byte[]> blobProperty = entityDefinition.getColumnProperty(blobAttribute);
     Condition condition = condition(primaryKey);
-    String updateQuery = "update " + entityDefinition.getTableName() + " set " + blobProperty.getColumnName() + " = ?" +
-            WHERE_SPACE_PREFIX_POSTFIX + condition.getConditionString(entityDefinition);
+    String updateQuery = updateQuery(entityDefinition.getTableName(), singletonList(blobProperty), condition.getConditionString(entityDefinition));
     List<Object> statementValues = new ArrayList<>();
     statementValues.add(null);//the blob value, binary stream set explicitly later
     statementValues.addAll(condition.getValues());

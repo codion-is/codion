@@ -18,7 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -30,14 +29,14 @@ final class DefaultMethodLogger implements MethodLogger {
 
   private final Deque<DefaultEntry> callStack = new LinkedList<>();
   private final LinkedList<Entry> entries = new LinkedList<>();
-  private final Function<Object, String> argumentStringProvider;
+  private final ArgumentToString argumentToString;
   private final int maxSize;
 
   private boolean enabled = false;
 
-  DefaultMethodLogger(int maxSize, Function<Object, String> argumentStringProvider) {
+  DefaultMethodLogger(int maxSize, ArgumentToString argumentToString) {
     this.maxSize = maxSize;
-    this.argumentStringProvider = requireNonNull(argumentStringProvider, "argumentStringProvider");
+    this.argumentToString = requireNonNull(argumentToString, "argumentStringProvider");
   }
 
   @Override
@@ -50,7 +49,7 @@ final class DefaultMethodLogger implements MethodLogger {
   @Override
   public synchronized void logAccess(String method, Object argument) {
     if (enabled) {
-      callStack.push(new DefaultEntry(method, argumentStringProvider.apply(argument)));
+      callStack.push(new DefaultEntry(method, argumentToString.argumentToString(method, argument)));
     }
   }
 
@@ -115,6 +114,8 @@ final class DefaultMethodLogger implements MethodLogger {
 
     private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     private static final NumberFormat MICROSECONDS_FORMAT = NumberFormat.getIntegerInstance();
+    private static final String NEWLINE = "\n";
+    private static final int INDENTATION_CHARACTERS = 11;
 
     private final LinkedList<Entry> childEntries = new LinkedList<>();
     private final String method;
@@ -191,7 +192,7 @@ final class DefaultMethodLogger implements MethodLogger {
 
     @Override
     public void append(StringBuilder builder) {
-      builder.append(this).append("\n");
+      builder.append(this).append(NEWLINE);
       appendLogEntries(builder, getChildEntries(), 1);
     }
 
@@ -202,23 +203,28 @@ final class DefaultMethodLogger implements MethodLogger {
 
     @Override
     public String toString(int indentation) {
-      String indentString = indentation > 0 ? Text.padString("", indentation, '\t', Text.Alignment.RIGHT) : "";
-      StringBuilder stringBuilder = new StringBuilder();
       LocalDateTime accessDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(accessTime), TimeZone.getDefault().toZoneId());
+      String indentString = indentation > 0 ? Text.padString("", indentation * INDENTATION_CHARACTERS, ' ', Text.Alignment.RIGHT) : "";
+      StringBuilder stringBuilder = new StringBuilder(indentString).append(TIMESTAMP_FORMATTER.format(accessDateTime)).append(" @ ");
+      int timestampLength = stringBuilder.length();
+      stringBuilder.append(method);
+      String padString = Text.padString("", timestampLength, ' ', Text.Alignment.RIGHT);
+      if (!nullOrEmpty(accessMessage)) {
+        if (isMultiLine(accessMessage)) {
+          stringBuilder.append(NEWLINE).append(padString).append(accessMessage.replace(NEWLINE, NEWLINE + padString));
+        }
+        else {
+          stringBuilder.append(" : ").append(accessMessage);
+        }
+      }
       if (isComplete()) {
-        stringBuilder.append(indentString).append(TIMESTAMP_FORMATTER.format(accessDateTime)).append(" @ ").append(method).append(
-                !nullOrEmpty(accessMessage) ? (": " + accessMessage) : "").append("\n");
         LocalDateTime exitDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(exitTime), TimeZone.getDefault().toZoneId());
-        stringBuilder.append(indentString).append(TIMESTAMP_FORMATTER.format(exitDateTime)).append(" > ")
+        stringBuilder.append(NEWLINE).append(indentString).append(TIMESTAMP_FORMATTER.format(exitDateTime)).append(" > ")
                 .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(getDuration()))).append(" μs")
                 .append(exitMessage == null ? "" : " (" + exitMessage + ")");
         if (stackTrace != null) {
-          stringBuilder.append("\n\n").append(indentString).append(stackTrace);
+          stringBuilder.append(NEWLINE).append(padString).append(stackTrace.replace(NEWLINE, NEWLINE + padString));
         }
-      }
-      else {
-        stringBuilder.append(indentString).append(TIMESTAMP_FORMATTER.format(accessDateTime)).append(" @ ").append(method).append(
-                !nullOrEmpty(accessMessage) ? (": " + accessMessage) : "");
       }
 
       return stringBuilder.toString();
@@ -272,7 +278,7 @@ final class DefaultMethodLogger implements MethodLogger {
      */
     private static void appendLogEntries(StringBuilder log, List<Entry> entries, int indentationLevel) {
       for (Entry entry : entries) {
-        log.append(entry.toString(indentationLevel)).append("\n");
+        log.append(entry.toString(indentationLevel)).append(NEWLINE);
         appendLogEntries(log, entry.getChildEntries(), indentationLevel + 1);
       }
     }
@@ -282,6 +288,10 @@ final class DefaultMethodLogger implements MethodLogger {
       exception.printStackTrace(new PrintWriter(sw));
 
       return sw.toString();
+    }
+
+    private static boolean isMultiLine(String accessMessage) {
+      return accessMessage.contains(NEWLINE);
     }
   }
 }
