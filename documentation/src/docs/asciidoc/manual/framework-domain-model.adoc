@@ -21,7 +21,7 @@ The domain model is then implemented by extending the {url-javadoc}{framework-do
 include::{dir-source}/is/codion/framework/demos/manual/store/minimal/Introduction.java[tags=storeImpl]
 ----
 
-The domain model provides a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html#getEntities--[getEntities()], which serves as a container for the domain entity definitions and as a factory for *Entity* and *Key* instances.
+The domain model provides a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html#getEntities{opar}{cpar}[getEntities()], which serves as a container for the domain entity definitions and as a factory for *Entity* and *Key* instances.
 
 [source,java,indent=0]
 ----
@@ -274,7 +274,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.jav
 
 == Domain
 
-Each entity type is defined by calling {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html#define-is.codion.framework.domain.entity.EntityType-is.codion.framework.domain.property.Property.Builder\...-[DefaultDomain.define]. The framework assumes the *entityType* name contains the table name, unless the *tableName* parameter is specified.
+Each entity type is defined by calling {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html#define{opar}is.codion.framework.domain.entity.EntityType{comma}is.codion.framework.domain.property.Property.Builder\...{cpar}[DefaultDomain.define]. The framework assumes the *entityType* name contains the table name, unless the *tableName* parameter is specified.
 
 [source,java,indent=0]
 ----
@@ -470,9 +470,9 @@ The unit tests are run within a single transaction which is rolled back after th
 
 The following methods all have default implementations which are based on randomly created property values, based on the constraints set in the domain model, override if the default ones are not working.
 
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeReferenceEntity-is.codion.framework.domain.entity.EntityType-java.util.Map-[initializeReferenceEntity] should return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeTestEntity-is.codion.framework.domain.entity.EntityType-java.util.Map-[initializeTestEntity] should return an entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
-* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#modifyEntity-is.codion.framework.domain.entity.Entity-java.util.Map-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeReferenceEntity{opar}is.codion.framework.domain.entity.EntityType{comma}java.util.Map{cpar}[initializeReferenceEntity] should return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeTestEntity{opar}is.codion.framework.domain.entity.EntityType{comma}java.util.Map{cpar}[initializeTestEntity] should return an entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#modifyEntity{opar}is.codion.framework.domain.entity.Entity{comma}java.util.Map{cpar}[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
 
 To run the full CRUD test for a domain entity you need to call the *test(EntityType entityType)* method with the entity type as parameter. You can either create a single *testDomain()* method and call the *test* method in turn for each entityType or create a *entityName* method for each domain entity, as we do in the example below.
 

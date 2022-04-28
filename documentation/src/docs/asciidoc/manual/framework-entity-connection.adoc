@@ -22,7 +22,7 @@ By default, when you select a row using {url-entity-connection}[EntityConnection
 
 This means that selecting tracks performs four queries (track + album, mediatype and genre), but that number of queries is the same whether you select one or a thousand tracks.
 
-The fetch depth can be configured on a foreign key basis when defining entities. A fetch depth of zero means that foreign key reference is not fetched, and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached. A negative fetch depth means no limit. This limiting of foreign key fetch depth can be turned off, meaning the full reference graph is always fetched, via the *codion.db.limitForeignKeyFetchDepth=false* system property or {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_FETCH_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.set(false)], or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setLimitFetchDepth-boolean-[connection.setLimitFetchDepth(false)].
+The fetch depth can be configured on a foreign key basis when defining entities. A fetch depth of zero means that foreign key reference is not fetched, and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached. A negative fetch depth means no limit. This limiting of foreign key fetch depth can be turned off, meaning the full reference graph is always fetched, via the *codion.db.limitForeignKeyFetchDepth=false* system property or {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_FETCH_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.set(false)], or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setLimitFetchDepth{opar}boolean{cpar}[connection.setLimitFetchDepth(false)].
 
 [source,java,indent=0]
 ----
@@ -55,21 +55,21 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting one or more rows.
 
-{url-entity-connection}#select-is.codion.framework.db.condition.Condition-[select(Condition condition)]
+{url-entity-connection}#select{opar}is.codion.framework.db.condition.Condition{cpar}[select(Condition condition)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectCondition]
 ----
 
-{url-entity-connection}#select-java.util.List-[select(List<Key> keys)]
+{url-entity-connection}#select{opar}java.util.List{cpar}[select(List<Key> keys)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKeys]
 ----
 
-{url-entity-connection}#select-is.codion.framework.domain.entity.Attribute-T-[select(Attribute<T> attribute, T value)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Attribute{comma}T{cpar}[select(Attribute<T> attribute, T value)]
 
 [source,java,indent=0]
 ----
@@ -80,21 +80,21 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting single rows.
 
-{url-entity-connection}#selectSingle-is.codion.framework.db.condition.Condition-[selectSingle(Condition condition)]
+{url-entity-connection}#selectSingle{opar}is.codion.framework.db.condition.Condition{cpar}[selectSingle(Condition condition)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleCondition]
 ----
 
-{url-entity-connection}#selectSingle-is.codion.framework.domain.entity.Key-[selectSingle(Key key)]
+{url-entity-connection}#selectSingle{opar}is.codion.framework.domain.entity.Key{cpar}[selectSingle(Key key)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleKeys]
 ----
 
-{url-entity-connection}#selectSingle-is.codion.framework.domain.entity.Attribute-T-[selectSingle(Attribute<T> attribute, T value)]
+{url-entity-connection}#selectSingle{opar}is.codion.framework.domain.entity.Attribute{comma}T{cpar}[selectSingle(Attribute<T> attribute, T value)]
 
 [source,java,indent=0]
 ----
@@ -105,7 +105,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting the values of a single column.
 
-{url-entity-connection}#select-is.codion.framework.domain.entity.Attribute-is.codion.framework.db.condition.Condition-[select(Attribute<T> attribute, Condition condition)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Attribute{comma}is.codion.framework.db.condition.Condition{cpar}[select(Attribute<T> attribute, Condition condition)]
 
 [source,java,indent=0]
 ----
@@ -116,7 +116,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 *LocalEntityConnection* provides a way to iterate over a result set, instead of loading it into memory.
 
-{url-local-entity-connection}#iterator-is.codion.framework.db.condition.Condition-[iterator(Condition condition)]
+{url-local-entity-connection}#iterator{opar}is.codion.framework.db.condition.Condition{cpar}[iterator(Condition condition)]
 
 [source,java,indent=0]
 ----
@@ -127,7 +127,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting entities that depend on a set of entities via foreign keys.
 
-{url-entity-connection}#selectDependencies-java.util.Collection-[selectDependencies(Collection<Entity> entities)]
+{url-entity-connection}#selectDependencies{opar}java.util.Collection{cpar}[selectDependencies(Collection<Entity> entities)]
 
 [source,java,indent=0]
 ----
@@ -138,7 +138,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting the row count given a condition.
 
-{url-entity-connection}#rowCount-is.codion.framework.db.condition.Condition-[rowCount(Condition condition)]
+{url-entity-connection}#rowCount{opar}is.codion.framework.db.condition.Condition{cpar}[rowCount(Condition condition)]
 
 [source,java,indent=0]
 ----
@@ -151,9 +151,9 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For inserting rows.
 
-** {url-entity-connection}#insert-is.codion.framework.domain.entity.Entity-[insert(Entity entity)]
+** {url-entity-connection}#insert{opar}is.codion.framework.domain.entity.Entity{cpar}[insert(Entity entity)]
 
-** {url-entity-connection}#insert-java.util.List-[insert(List<Entity> entities)]
+** {url-entity-connection}#insert{opar}java.util.List{cpar}[insert(List<Entity> entities)]
 
 [source,java,indent=0]
 ----
@@ -164,9 +164,9 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For updating one or more entity instances. These methods throw an exception if any of the entities is unmodified.
 
-** {url-entity-connection}#update-is.codion.framework.domain.entity.Entity-[update(Entity entity)]
+** {url-entity-connection}#update{opar}is.codion.framework.domain.entity.Entity{cpar}[update(Entity entity)]
 
-** {url-entity-connection}#update-java.util.List-[update(List<Entity> entities)]
+** {url-entity-connection}#update{opar}java.util.List{cpar}[update(List<Entity> entities)]
 
 [source,java,indent=0]
 ----
@@ -175,11 +175,11 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 ==== Optimistic locking
 
-The framework performs optimistic locking during updates of entity instances using the methods above, by selecting the entities being updated *for update* (when supported by the underlying database) and comparing all the original property values to the current row values, throwing an exception if any value differs or the row is missing. Optimistic locking can be turned off system-wide using the *codion.db.useOptimisticLocking=false* system property or {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#USE_OPTIMISTIC_LOCKING[LocalEntityConnection.USE_OPTIMISTIC_LOCKING.set(false)], or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setOptimisticLockingEnabled-boolean-[connection.setOptimisticLockingEnabled(false)].
+The framework performs optimistic locking during updates of entity instances using the methods above, by selecting the entities being updated *for update* (when supported by the underlying database) and comparing all the original property values to the current row values, throwing an exception if any value differs or the row is missing. Optimistic locking can be turned off system-wide using the *codion.db.useOptimisticLocking=false* system property or {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#USE_OPTIMISTIC_LOCKING[LocalEntityConnection.USE_OPTIMISTIC_LOCKING.set(false)], or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setOptimisticLockingEnabled{opar}boolean{cpar}[connection.setOptimisticLockingEnabled(false)].
 
 For updating by where condition.
 
-** {url-entity-connection}#update-is.codion.framework.db.condition.UpdateCondition-[update(UpdateCondition condition)]
+** {url-entity-connection}#update{opar}is.codion.framework.db.condition.UpdateCondition{cpar}[update(UpdateCondition condition)]
 
 [source,java,indent=0]
 ----
@@ -190,16 +190,16 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For deleting existing rows.
 
-** {url-entity-connection}#delete-is.codion.framework.db.condition.Condition-[delete(Condition condition)]
+** {url-entity-connection}#delete{opar}is.codion.framework.db.condition.Condition{cpar}[delete(Condition condition)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteCondition]
 ----
 
-** {url-entity-connection}#delete-is.codion.framework.domain.entity.Key-[delete(Key key)]
+** {url-entity-connection}#delete{opar}is.codion.framework.domain.entity.Key{cpar}[delete(Key key)]
 
-** {url-entity-connection}#delete-java.util.List-[delete(List<Key> keys)]
+** {url-entity-connection}#delete{opar}java.util.List{cpar}[delete(List<Key> keys)]
 
 [source,java,indent=0]
 ----
@@ -210,8 +210,8 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === executeFunction
 
-** {url-entity-connection}#executeFunction-is.codion.common.db.operation.FunctionType-[executeFunction(FunctionType functionType)]
-** {url-entity-connection}#executeFunction-is.codion.common.db.operation.FunctionType-T-[executeFunction(FunctionType functionType, T argument)]
+** {url-entity-connection}#executeFunction{opar}is.codion.common.db.operation.FunctionType{cpar}[executeFunction(FunctionType functionType)]
+** {url-entity-connection}#executeFunction{opar}is.codion.common.db.operation.FunctionType{comma}T{cpar}[executeFunction(FunctionType functionType, T argument)]
 
 [source,java,indent=0]
 ----
@@ -220,8 +220,8 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === executeProcedure
 
-** {url-entity-connection}#executeProcedure-is.codion.common.db.operation.ProcedureType-[executeProcedure(ProcedureType procedureType)]
-** {url-entity-connection}#executeProcedure-is.codion.common.db.operation.ProcedureType-T-[executeProcedure(ProcedureType procedureType, T argument)]
+** {url-entity-connection}#executeProcedure{opar}is.codion.common.db.operation.ProcedureType{cpar}[executeProcedure(ProcedureType procedureType)]
+** {url-entity-connection}#executeProcedure{opar}is.codion.common.db.operation.ProcedureType{comma}T{cpar}[executeProcedure(ProcedureType procedureType, T argument)]
 
 Executing procedures is the same as executing functions, except without a return value.
 
@@ -229,7 +229,7 @@ Executing procedures is the same as executing functions, except without a return
 
 === fillReport
 
-** {url-entity-connection}#fillReport-is.codion.common.db.report.ReportType-P-[fillReport(ReportType reportType, P reportParameters)]
+** {url-entity-connection}#fillReport{opar}is.codion.common.db.report.ReportType{comma}P{cpar}[fillReport(ReportType reportType, P reportParameters)]
 
 [source,java,indent=0]
 ----
