@@ -37,28 +37,28 @@ asciidoctor {
     attributes 'codion-version': documentationVersion, 'codion-jdk': project.targetJdk,
             revnumber: documentationVersion, sectnums: 4, sectanchors: true, prewrap: false,
             experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1',
-            'common-core': '',
-            'common-db': '',
-            'common-http': '',
-            'common-model': '',
-            'common-rmi': '',
-            'framework-db-core': '',
-            'framework-db-http': '',
-            'framework-db-local': '',
-            'framework-db-rmi': '',
-            'framework-domain': '',
-            'framework-domain-test': '',
-            'framework-model': '',
-            'framework-model-test': '',
-            'framework-server': '',
-            'framework-servlet': '',
-            'plugin-jackson-json': '',
-            'plugin-jasperreports': '',
-            'swing-common-model': '',
-            'swing-common-ui': '',
-            'swing-framework-model': '',
-            'swing-framework-tools': '',
-            'swing-framework-ui': ''
+            'common-core': '/is.codion.common.core',
+            'common-db': '/is.codion.common.db',
+            'common-http': '/is.codion.common.http',
+            'common-model': '/is.codion.common.model',
+            'common-rmi': '/is.codion.common.rmi',
+            'framework-db-core': '/is.codion.framework.db.core',
+            'framework-db-http': '/is.codion.framework.db.http',
+            'framework-db-local': '/is.codion.framework.db.local',
+            'framework-db-rmi': '/is.codion.framework.db.rmi',
+            'framework-domain': '/is.codion.framework.domain',
+            'framework-domain-test': '/is.codion.framework.domain.test',
+            'framework-model': '/is.codion.framework.model',
+            'framework-model-test': '/is.codion.framework.model.test',
+            'framework-server': '/is.codion.framework.server',
+            'framework-servlet': '/is.codion.framework.servlet',
+            'plugin-jackson-json': '/is.codion.plugin.jackson.json',
+            'plugin-jasperreports': '/is.codion.plugin.jasperreports',
+            'swing-common-model': '/is.codion.swing.common.model',
+            'swing-common-ui': '/is.codion.swing.common.ui',
+            'swing-framework-model': '/is.codion.swing.framework.model',
+            'swing-framework-tools': '/is.codion.swing.framework.tools',
+            'swing-framework-ui': '/is.codion.swing.framework.ui'
     asciidoctorj {
         version = '2.5.3'
         modules {
@@ -68,20 +68,48 @@ asciidoctor {
     }
 }
 
-task combinedJavadoc(type: Javadoc) {
+/**
+ * An absolute monstrosity of a workaround for combining javadocs for multiple modular sub-projects.
+ */
+task combinedJavadoc {
     group 'documentation'
-    title "Codion Framework API ${documentationVersion}"
-    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
-    options.addBooleanOption "-no-module-directories", true
-    destinationDir = file("${buildDir}/docs/javadoc")
-    modularity.inferModulePath = false
+    FileCollection classpath = getProject().files()
     frameworkModules.each { module ->
         module.tasks.withType(Javadoc).each { javadocTask ->
-            source += javadocTask.source
             classpath += javadocTask.classpath
         }
     }
-    exclude '**/module-info.java'//temporary fix for 'too many module declarations found' error
+    doLast {
+        def tempDir = "${buildDir}/tmp"
+        def tempSrcDir = "${tempDir}/combinedSource";
+        ant.delete(dir: tempSrcDir)
+        frameworkModules.each { module ->
+            ant.copy(todir: "${tempSrcDir}/" + module.properties.get("moduleName")) {
+                fileset(dir: "${module.projectDir}/src/main/java")
+            }
+        }
+        StandardJavadocDocletOptions options = new StandardJavadocDocletOptions();
+        options.destinationDirectory(file("${buildDir}/docs/javadoc"))
+        options.docTitle("Codion Framework API ${documentationVersion}")
+        options.links("https://docs.oracle.com/en/java/javase/11/docs/api/")
+        options.modulePath(new ArrayList(classpath.getFiles()))
+        options.addStringOption("-module-source-path", tempSrcDir)
+
+        List<String> sourceFileNames = new ArrayList();
+        def iterator = getProject().getObjects().fileCollection().from(tempSrcDir).asFileTree.iterator()
+        while (iterator.hasNext()) {
+            sourceFileNames.add(((File) iterator.next()).getAbsolutePath());
+        }
+        options.setSourceNames(sourceFileNames);
+
+        def optionsFile = new File(tempDir, "javadoc.options")
+        options.write(optionsFile)
+
+        exec {
+            executable = System.getProperty('java.home') + '/bin/javadoc'
+            args = ["@" + optionsFile.getAbsolutePath()]
+        }
+    }
 }
 
 task assembleDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
