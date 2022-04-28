@@ -9,9 +9,9 @@ Common classes used throughout the framework.
 [discrete]
 === codion-common-core
 
-* {url-javadoc}/is/codion/common/event/package-summary.html[is.codion.common.event]
-* {url-javadoc}/is/codion/common/state/package-summary.html[is.codion.common.state]
-* {url-javadoc}/is/codion/common/value/package-summary.html[is.codion.common.value]
+* {url-javadoc}{common-core}/is/codion/common/event/package-summary.html[is.codion.common.event]
+* {url-javadoc}{common-core}/is/codion/common/state/package-summary.html[is.codion.common.state]
+* {url-javadoc}{common-core}/is/codion/common/value/package-summary.html[is.codion.common.value]
 
 .Dependency graph
 [%collapsible]
@@ -24,8 +24,8 @@ image::modules/common/core/build/reports/dependency-graph/dependency-graph.svg[o
 
 JDBC related classes.
 
-* {url-javadoc}/is/codion/common/db/connection/package-summary.html[is.codion.common.db.connection]
-* {url-javadoc}/is/codion/common/db/database/package-summary.html[is.codion.common.db.database]
+* {url-javadoc}{common-db}/is/codion/common/db/connection/package-summary.html[is.codion.common.db.connection]
+* {url-javadoc}{common-db}/is/codion/common/db/database/package-summary.html[is.codion.common.db.database]
 
 .Dependency graph
 [%collapsible]
@@ -38,8 +38,8 @@ image::modules/common/db/build/reports/dependency-graph/dependency-graph.svg[opt
 
 General model classes shared between Swing and JavaFX UI components.
 
-* {url-javadoc}/is/codion/common/model/combobox/package-summary.html[is.codion.common.model.combobox]
-* {url-javadoc}/is/codion/common/model/table/package-summary.html[is.codion.common.model.table]
+* {url-javadoc}{common-model}/is/codion/common/model/combobox/package-summary.html[is.codion.common.model.combobox]
+* {url-javadoc}{common-model}/is/codion/common/model/table/package-summary.html[is.codion.common.model.table]
 
 .Dependency graph
 [%collapsible]
@@ -52,8 +52,8 @@ image::modules/common/model/build/reports/dependency-graph/dependency-graph.svg[
 
 RMI related classes.
 
-* {url-javadoc}/is/codion/common/rmi/client/package-summary.html[is.codion.common.rmi.client]
-* {url-javadoc}/is/codion/common/rmi/server/package-summary.html[is.codion.common.rmi.server]
+* {url-javadoc}{common-rmi}/is/codion/common/rmi/client/package-summary.html[is.codion.common.rmi.client]
+* {url-javadoc}{common-rmi}/is/codion/common/rmi/server/package-summary.html[is.codion.common.rmi.server]
 
 .Dependency graph
 [%collapsible]
@@ -66,7 +66,7 @@ image::modules/common/rmi/build/reports/dependency-graph/dependency-graph.svg[op
 
 HTTP related classes.
 
-* {url-javadoc}/is/codion/common/http/server/package-summary.html[is.codion.common.http.server]
+* {url-javadoc}{common-http}/is/codion/common/http/server/package-summary.html[is.codion.common.http.server]
 
 .Dependency graph
 [%collapsible]
@@ -177,9 +177,9 @@ The framework itself.
 
 Domain model related classes.
 
-* {url-javadoc}/is/codion/framework/domain/package-summary.html[is.codion.framework.domain]
-* {url-javadoc}/is/codion/framework/domain/entity/package-summary.html[is.codion.framework.domain.entity]
-* {url-javadoc}/is/codion/framework/domain/property/package-summary.html[is.codion.framework.domain.property]
+* {url-javadoc}{framework-domain}/is/codion/framework/domain/package-summary.html[is.codion.framework.domain]
+* {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/package-summary.html[is.codion.framework.domain.entity]
+* {url-javadoc}{framework-domain}/is/codion/framework/domain/property/package-summary.html[is.codion.framework.domain.property]
 
 .Dependency graph
 [%collapsible]
@@ -192,7 +192,7 @@ image::modules/framework/domain/build/reports/dependency-graph/dependency-graph.
 
 Domain model unit test related classes.
 
-* {url-javadoc}/is/codion/framework/domain/entity/test/package-summary.html[is.codion.framework.domain.entity.test]
+* {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/package-summary.html[is.codion.framework.domain.entity.test]
 
 .Dependency graph
 [%collapsible]
@@ -205,8 +205,8 @@ image::modules/framework/domain-test/build/reports/dependency-graph/dependency-g
 
 Core database connection related classes.
 
-* {url-javadoc}/is/codion/framework/db/package-summary.html[is.codion.framework.db]
-* {url-javadoc}/is/codion/framework/db/condition/package-summary.html[is.codion.framework.db.condition]
+* {url-javadoc}{framework-db-core}/is/codion/framework/db/package-summary.html[is.codion.framework.db]
+* {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/package-summary.html[is.codion.framework.db.condition]
 
 .Dependency graph
 [%collapsible]
@@ -219,7 +219,7 @@ image::modules/framework/db-core/build/reports/dependency-graph/dependency-graph
 
 Local JDBC connection related classes.
 
-* {url-javadoc}/is/codion/framework/db/local/package-summary.html[is.codion.framework.db.local]
+* {url-javadoc}{framework-db-local}/is/codion/framework/db/local/package-summary.html[is.codion.framework.db.local]
 
 .Dependency graph
 [%collapsible]
@@ -232,7 +232,7 @@ image::modules/framework/db-local/build/reports/dependency-graph/dependency-grap
 
 RMI connection related classes.
 
-* {url-javadoc}/is/codion/framework/db/rmi/package-summary.html[is.codion.framework.db.rmi]
+* {url-javadoc}{framework-db-rmi}/is/codion/framework/db/rmi/package-summary.html[is.codion.framework.db.rmi]
 
 .Dependency graph
 [%collapsible]
@@ -245,7 +245,7 @@ image::modules/framework/db-rmi/build/reports/dependency-graph/dependency-graph.
 
 HTTP connection related classes.
 
-* {url-javadoc}/is/codion/framework/db/http/package-summary.html[is.codion.framework.db.http]
+* {url-javadoc}{framework-db-http}/is/codion/framework/db/http/package-summary.html[is.codion.framework.db.http]
 
 .Dependency graph
 [%collapsible]
@@ -258,7 +258,7 @@ image::modules/framework/db-http/build/reports/dependency-graph/dependency-graph
 
 General application model classes shared between Swing and JavaFX UI components.
 
-* {url-javadoc}/is/codion/framework/model/package-summary.html[is.codion.framework.model]
+* {url-javadoc}{framework-model}/is/codion/framework/model/package-summary.html[is.codion.framework.model]
 
 .Dependency graph
 [%collapsible]
@@ -271,7 +271,7 @@ image::modules/framework/model/build/reports/dependency-graph/dependency-graph.s
 
 General application model unit test related classes.
 
-* {url-javadoc}/is/codion/framework/model/test/package-summary.html[is.codion.framework.model.test]
+* {url-javadoc}{framework-model-test}/is/codion/framework/model/test/package-summary.html[is.codion.framework.model.test]
 
 .Dependency graph
 [%collapsible]
@@ -284,7 +284,7 @@ image::modules/framework/model-test/build/reports/dependency-graph/dependency-gr
 
 Framework server classes.
 
-* {url-javadoc}/is/codion/framework/server/package-summary.html[is.codion.framework.server]
+* {url-javadoc}{framework-server}/is/codion/framework/server/package-summary.html[is.codion.framework.server]
 
 .Dependency graph
 [%collapsible]
@@ -297,7 +297,7 @@ image::modules/framework/server/build/reports/dependency-graph/dependency-graph.
 
 HTTP servlet server classes.
 
-* {url-javadoc}/is/codion/framework/servlet/package-summary.html[is.codion.framework.servlet]
+* {url-javadoc}{framework-servlet}/is/codion/framework/servlet/package-summary.html[is.codion.framework.servlet]
 
 .Dependency graph
 [%collapsible]
@@ -314,11 +314,11 @@ Swing client implementation.
 
 Common Swing model classes.
 
-* {url-javadoc}/is/codion/swing/common/model/component/checkbox/package-summary.html[is.codion.swing.common.model.component.checkbox]
-* {url-javadoc}/is/codion/swing/common/model/component/combobox/package-summary.html[is.codion.swing.common.model.component.combobox]
-* {url-javadoc}/is/codion/swing/common/model/component/table/package-summary.html[is.codion.swing.common.model.component.table]
-* {url-javadoc}/is/codion/swing/common/model/component/text/package-summary.html[is.codion.swing.common.model.component.text]
-* {url-javadoc}/is/codion/swing/common/model/worker/package-summary.html[is.codion.swing.common.model.worker]
+* {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/checkbox/package-summary.html[is.codion.swing.common.model.component.checkbox]
+* {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/combobox/package-summary.html[is.codion.swing.common.model.component.combobox]
+* {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/package-summary.html[is.codion.swing.common.model.component.table]
+* {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/text/package-summary.html[is.codion.swing.common.model.component.text]
+* {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/package-summary.html[is.codion.swing.common.model.worker]
 
 .Dependency graph
 [%collapsible]
@@ -331,20 +331,20 @@ image::modules/swing/common-model/build/reports/dependency-graph/dependency-grap
 
 Common Swing UI classes.
 
-* {url-javadoc}/is/codion/swing/common/ui/component/calendar/package-summary.html[is.codion.swing.common.ui.component.calendar]
-* {url-javadoc}/is/codion/swing/common/ui/component/checkbox/package-summary.html[is.codion.swing.common.ui.component.checkbox]
-* {url-javadoc}/is/codion/swing/common/ui/component/combobox/package-summary.html[is.codion.swing.common.ui.component.combobox]
-* {url-javadoc}/is/codion/swing/common/ui/component/panel/package-summary.html[is.codion.swing.common.ui.component.panel]
-* {url-javadoc}/is/codion/swing/common/ui/component/slider/package-summary.html[is.codion.swing.common.ui.component.slider]
-* {url-javadoc}/is/codion/swing/common/ui/component/spinner/package-summary.html[is.codion.swing.common.ui.component.spinner]
-* {url-javadoc}/is/codion/swing/common/ui/component/table/package-summary.html[is.codion.swing.common.ui.component.table]
-* {url-javadoc}/is/codion/swing/common/ui/component/text/package-summary.html[is.codion.swing.common.ui.component.text]
-* {url-javadoc}/is/codion/swing/common/ui/component/package-summary.html[is.codion.swing.common.ui.component]
-* {url-javadoc}/is/codion/swing/common/ui/control/package-summary.html[is.codion.swing.common.ui.control]
-* {url-javadoc}/is/codion/swing/common/ui/dialog/package-summary.html[is.codion.swing.common.ui.dialog]
-* {url-javadoc}/is/codion/swing/common/ui/icon/package-summary.html[is.codion.swing.common.ui.icon]
-* {url-javadoc}/is/codion/swing/common/ui/layout/package-summary.html[is.codion.swing.common.ui.layout]
-* {url-javadoc}/is/codion/swing/common/ui/package-summary.html[is.codion.swing.common.ui]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/calendar/package-summary.html[is.codion.swing.common.ui.component.calendar]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/checkbox/package-summary.html[is.codion.swing.common.ui.component.checkbox]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/combobox/package-summary.html[is.codion.swing.common.ui.component.combobox]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/panel/package-summary.html[is.codion.swing.common.ui.component.panel]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/slider/package-summary.html[is.codion.swing.common.ui.component.slider]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/spinner/package-summary.html[is.codion.swing.common.ui.component.spinner]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/package-summary.html[is.codion.swing.common.ui.component.table]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/text/package-summary.html[is.codion.swing.common.ui.component.text]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/package-summary.html[is.codion.swing.common.ui.component]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/control/package-summary.html[is.codion.swing.common.ui.control]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/dialog/package-summary.html[is.codion.swing.common.ui.dialog]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/icon/package-summary.html[is.codion.swing.common.ui.icon]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/layout/package-summary.html[is.codion.swing.common.ui.layout]
+* {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/package-summary.html[is.codion.swing.common.ui]
 
 .Dependency graph
 [%collapsible]

@@ -8145,3 +8145,4 @@
   Property.getMinimumValue() and getMaximumValue() now Number based
   jdt compiler downgraded, versions > 3.26.0 are built with Java > 8
   module is.codion.framework.model.tests renamed is.codion.framework.model.test, name now consistent with other test modules
+  Asciidoc documentation properties added for javadoc module names, since modular javadocs must be able to include the module name

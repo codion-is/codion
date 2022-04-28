@@ -2,9 +2,9 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-The {url-javadoc}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] contains the controls (text fields, combo boxes and such) for editing an entity instance.
+The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] contains the controls (text fields, combo boxes and such) for editing an entity instance.
 
-When extending an EntityEditPanel you must implement the *initializeUI()* method, which initializes the edit panel UI. The EntityEditPanel class exposes methods for creating input components and binding them with the underlying {url-javadoc}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] instance.
+When extending an EntityEditPanel you must implement the *initializeUI()* method, which initializes the edit panel UI. The EntityEditPanel class exposes methods for creating input components and binding them with the underlying {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] instance.
 
 [source,java,indent=0]
 ----
@@ -25,11 +25,9 @@ include::{dir-source}/is/codion/framework/demos/manual/store/ui/CustomerAddressE
 
 === Boolean
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createBooleanComboBox-is.codion.framework.domain.entity.Attribute-[createBooleanComboBox(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createBooleanComboBox-is.codion.framework.domain.entity.Attribute-[createBooleanComboBox(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createCheckBox-is.codion.framework.domain.entity.Attribute-[createCheckBox(attribute)]
-
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createNullableCheckBox-is.codion.framework.domain.entity.Attribute-[createNullableCheckBox(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createCheckBox-is.codion.framework.domain.entity.Attribute-[createCheckBox(attribute)]
 
 [source,java,indent=0]
 ----
@@ -38,11 +36,11 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Foreign key
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyComboBox-is.codion.framework.domain.entity.ForeignKey-[createForeignKeyComboBox(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyComboBox-is.codion.framework.domain.entity.ForeignKey-[createForeignKeyComboBox(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyField-is.codion.framework.domain.entity.ForeignKey-[createForeignKeyField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyField-is.codion.framework.domain.entity.ForeignKey-[createForeignKeyField(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeySearchField-is.codion.framework.domain.entity.ForeignKey-[createForeignKeySearchField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeySearchField-is.codion.framework.domain.entity.ForeignKey-[createForeignKeySearchField(attribute)]
 
 [source,java,indent=0]
 ----
@@ -51,9 +49,9 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Temporal
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTemporalInputPanel-is.codion.framework.domain.entity.Attribute-[createTemporalInputPanel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTemporalInputPanel-is.codion.framework.domain.entity.Attribute-[createTemporalInputPanel(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLocalDateField-is.codion.framework.domain.entity.Attribute-[createLocalDateField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLocalDateField-is.codion.framework.domain.entity.Attribute-[createLocalDateField(attribute)]
 
 [source,java,indent=0]
 ----
@@ -69,13 +67,13 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Text
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextField-is.codion.framework.domain.entity.Attribute-[createTextField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextField-is.codion.framework.domain.entity.Attribute-[createTextField(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createFormattedTextField-is.codion.framework.domain.entity.Attribute-[createFormattedTextField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createFormattedTextField-is.codion.framework.domain.entity.Attribute-[createFormattedTextField(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextArea-is.codion.framework.domain.entity.Attribute-[createTextArea(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextArea-is.codion.framework.domain.entity.Attribute-[createTextArea(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextInputPanel-is.codion.framework.domain.entity.Attribute-[createTextInputPanel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextInputPanel-is.codion.framework.domain.entity.Attribute-[createTextInputPanel(attribute)]
 
 [source,java,indent=0]
 ----
@@ -84,7 +82,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Selection
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createComboBox-is.codion.framework.domain.entity.Attribute-javax.swing.ComboBoxModel-[createComboBox(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createComboBox-is.codion.framework.domain.entity.Attribute-javax.swing.ComboBoxModel-[createComboBox(attribute)]
 
 [source,java,indent=0]
 ----
@@ -93,7 +91,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Items
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createItemComboBox-is.codion.framework.domain.entity.Attribute-[createItemComboBox(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createItemComboBox-is.codion.framework.domain.entity.Attribute-[createItemComboBox(attribute)]
 
 [source,java,indent=0]
 ----
@@ -102,9 +100,9 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 == Panels & labels
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLabel-is.codion.framework.domain.entity.Attribute-[createLabel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLabel-is.codion.framework.domain.entity.Attribute-[createLabel(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createInputPanel-is.codion.framework.domain.entity.Attribute-[createInputPanel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createInputPanel-is.codion.framework.domain.entity.Attribute-[createInputPanel(attribute)]
 
 [source,java,indent=0]
 ----
@@ -112,4 +110,4 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 ----
 
 == Custom actions
-The action mechanism used throughout the Codion framework is based on the {url-javadoc}/is/codion/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}/is/codion/swing/common/ui/control/Controls.html[Controls] class which represents a collection of controls.
+The action mechanism used throughout the Codion framework is based on the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/control/Controls.html[Controls] class which represents a collection of controls.

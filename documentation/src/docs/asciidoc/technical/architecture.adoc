@@ -9,12 +9,12 @@ The Codion framework is based on a three tiered architecture.
 
 == Database layer
 
-The {url-javadoc}/is/codion/framework/db/EntityConnection.html[EntityConnection] class defines the database layer. See <<{basedir}/manual/manual.adoc#_entityconnection, Manual:EntityConnection>>
+The {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html[EntityConnection] class defines the database layer. See <<{basedir}/manual/manual.adoc#_entityconnection, Manual:EntityConnection>>
 
 == Model layer
 
-The {url-javadoc}/is/codion/framework/model/EntityModel.html[EntityModel] class defines the model layer. See <<{basedir}/manual/manual.adoc#_entitymodel, Manual:EntityModel>>.
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] class defines the model layer. See <<{basedir}/manual/manual.adoc#_entitymodel, Manual:EntityModel>>.
 
 == UI layer
 
-The {url-javadoc}/is/codion/swing/framework/ui/EntityPanel.html[EntityPanel] class defines the UI layer. See <<{basedir}/manual/manual.adoc#_entitypanel, Manual:EntityPanel>>.
+The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityPanel.html[EntityPanel] class defines the UI layer. See <<{basedir}/manual/manual.adoc#_entitypanel, Manual:EntityPanel>>.

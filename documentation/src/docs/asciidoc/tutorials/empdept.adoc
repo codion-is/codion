@@ -30,7 +30,7 @@ include::{dir-source-sql}/create_schema.sql[]
 
 == Domain
 
-We start by creating a class named EmpDept in a package of our choosing, extending Domain and define the identity and attribute constants required for the department {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity], which is based on the SCOTT.DEPT table. The EntityType constant represents the entity type, the attributes represent the columns in the table. The entityType in this example contains the actual table name (scott.dept), but the table name can be specified via a __tableName__ parameter when the entity is defined. The attribute names are the actual column names from the table, but that is not required either.
+We start by creating a class named EmpDept in a package of our choosing, extending Domain and define the identity and attribute constants required for the department {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity], which is based on the SCOTT.DEPT table. The EntityType constant represents the entity type, the attributes represent the columns in the table. The entityType in this example contains the actual table name (scott.dept), but the table name can be specified via a __tableName__ parameter when the entity is defined. The attribute names are the actual column names from the table, but that is not required either.
 
 [source,java]
 ----
@@ -51,7 +51,7 @@ In this section we add a constructor, calling the two methods which define the d
 include::{dir-source}/is/codion/framework/demos/empdept/domain/EmpDept.java[tags=constructor]
 ----
 
-Next we add the method defining the department entity. *EntityDefinition.Builder* instances are provided by the {url-javadoc}/is/codion/framework/domain/Domain.html[Domain] class, via the *define* method which comes in two flavours, one which assumes the *entityType* contains the underlying table name and one which does not, and therefore requires an additional *tableName* parameter. We use the former below. For an overview of the *Property* class see <<{basedir}/manual/manual.adoc#_property, Manual#Property>>. The *EntityDefinition.Builder* class provides chained setters for configuring the entity, such as the primary key value source. Here we set the default order by, the so-called *stringFactory* which is responsible for providing *toString()* implementations for entities, the *smallDataset* attribute which hints that it is OK to automatically base ComboBoxes on the entity, and we also set the *caption*. In this case we simply have the department string provider return the department name.
+Next we add the method defining the department entity. *EntityDefinition.Builder* instances are provided by the {url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain] class, via the *define* method which comes in two flavours, one which assumes the *entityType* contains the underlying table name and one which does not, and therefore requires an additional *tableName* parameter. We use the former below. For an overview of the *Property* class see <<{basedir}/manual/manual.adoc#_property, Manual#Property>>. The *EntityDefinition.Builder* class provides chained setters for configuring the entity, such as the primary key value source. Here we set the default order by, the so-called *stringFactory* which is responsible for providing *toString()* implementations for entities, the *smallDataset* attribute which hints that it is OK to automatically base ComboBoxes on the entity, and we also set the *caption*. In this case we simply have the department string provider return the department name.
 
 [source,java]
 ----
@@ -67,9 +67,9 @@ include::{dir-source}/is/codion/framework/demos/empdept/domain/EmpDept.java[tags
 
 === Domain unit test
 
-To unit test the domain model we extend {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html[EntityTestUnit] and create a public test method for each entity we want tested and within that method call *test(entityType)*. The *EntityTestUnit* relies on information from the domain model to construct random entity instances and run insert, update, select and delete tests. The tests are run within their own transactions which are then rolled back. We can provide our own entity instances if we'd like by overriding *initializeTestEntity(entityType, foreignKeyEntities)* handling the cases we'd like and delegating the rest to the superclass implementation. The same can be done for entities that are referenced via foreign keys and are required in order to be able to insert records.
+To unit test the domain model we extend {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html[EntityTestUnit] and create a public test method for each entity we want tested and within that method call *test(entityType)*. The *EntityTestUnit* relies on information from the domain model to construct random entity instances and run insert, update, select and delete tests. The tests are run within their own transactions which are then rolled back. We can provide our own entity instances if we'd like by overriding *initializeTestEntity(entityType, foreignKeyEntities)* handling the cases we'd like and delegating the rest to the superclass implementation. The same can be done for entities that are referenced via foreign keys and are required in order to be able to insert records.
 
-NOTE: The {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html#TEST_USER[EntityTestUnit.TEST_USER] configuration value specifies the user credentials to use when running the tests, you can set it directly or via the *codion.test.user* system property.
+NOTE: The {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#TEST_USER[EntityTestUnit.TEST_USER] configuration value specifies the user credentials to use when running the tests, you can set it directly or via the *codion.test.user* system property.
 
 [source,java]
 ----
@@ -85,7 +85,7 @@ For further information on parameters required for running Codion applications s
 
 == Model
 
-In many cases we can use the default model implementations, but here we will customize the employee edit model by extending {url-javadoc}/is/codion/swing/framework/model/SwingEntityEditModel.html[SwingEntityEditModel].
+In many cases we can use the default model implementations, but here we will customize the employee edit model by extending {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/SwingEntityEditModel.html[SwingEntityEditModel].
 
 We must provide a constructor with a single *EntityConnectionProvider* parameter. We also call the *bindEvents* method we define later on.
 
@@ -98,7 +98,7 @@ At some point we are going to be editing the manager property of an employee whi
 
 NOTE: The foreign key attribute (EmpDept.EMPLOYEE_MGR_FK) is used when referring to the manager property, very rarely do we have to worry about the underlying reference attribute (EmpDept.EMPLOYEE_MGR).
 
-We start by calling the super class method which creates an unfiltered {url-javadoc}/is/codion/framework/model/EntityComboBoxModel.html[EntityComboBoxModel], then we configure the one for the manager foreign key so that it only displays employees with the job PRESIDENT or MANAGER.
+We start by calling the super class method which creates an unfiltered {url-javadoc}{framework-model}/is/codion/framework/model/EntityComboBoxModel.html[EntityComboBoxModel], then we configure the one for the manager foreign key so that it only displays employees with the job PRESIDENT or MANAGER.
 
 [source,java]
 ----
@@ -123,7 +123,7 @@ A class extending *EntityEditPanel* must provide a constructor taking a single *
 include::{dir-source}/is/codion/framework/demos/empdept/ui/DepartmentEditPanel.java[tags=constructor]
 ----
 
-We override the *intializeUI* method to construct the actual UI, used for editing the department entity. The {url-javadoc}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class provides methods for creating all the basic controls required, named *create...*, such as *createTextField(attribute)* or *createForeignKeyComboBox(foreignKey)*.
+We override the *intializeUI* method to construct the actual UI, used for editing the department entity. The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class provides methods for creating all the basic controls required, named *create...*, such as *createTextField(attribute)* or *createForeignKeyComboBox(foreignKey)*.
 
 [source,java]
 ----
@@ -170,7 +170,7 @@ include::{dir-source}/is/codion/framework/demos/empdept/ui/EmployeeEditPanel.jav
 [#_main_application_panel]
 === Main application panel
 
-We create a main application panel by extending {url-javadoc}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *initializeEntityPanels()* we create two *EntityPanels* using the *SwingEntityModels* from the application model and return the department panel, which will act as the root panel.
+We create a main application panel by extending {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *initializeEntityPanels()* we create two *EntityPanels* using the *SwingEntityModels* from the application model and return the department panel, which will act as the root panel.
 
 [source,java]
 ----
