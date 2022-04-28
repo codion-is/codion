@@ -36,9 +36,9 @@ NOTE: Typically, the *entityType* name contains the underlying table name, but y
 
 == Attributes
 
-Each column in a table is associated with a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Attribute.html[Attribute] constant, which has a name and denotes the value type. The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html[EntityType] class provides factory methods for constructing Attribute objects for that entity type.
+Each column in a table is associated with a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Attribute.html[Attribute] constant, which has a name and denotes the value type. The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html[EntityType] class provides factory methods for constructing Attribute instances for that entity type.
 
-NOTE: Typically, the *attribute* name is the underlying column name, but as with the *entityType* you can use whatever value you want and specify the column name via the *columnName()* method when instantiating the associated Property.
+NOTE: Typically, the *attribute* name is the underlying column name, but as with the *entityType* you can use whatever value you want and specify the column name via the *columnName()* method when defining the associated Property.
 
 === Supported data types
 
@@ -98,7 +98,7 @@ interface Child {
 }
 ----
 
-Constant definitions for the World demo (simplified).
+Domain constant definitions for the World demo (simplified).
 
 [source,java]
 ----
@@ -107,7 +107,7 @@ include::{dir-source}/is/codion/framework/demos/manual/world/domain/World.java[t
 
 == Properties
 
-Each column is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses. The {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is based on an Attribute or ForeignKey constant.
+Each column is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses. The {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is based on an Attribute or ForeignKey.
 
 === Property
 
@@ -117,9 +117,9 @@ Each column is represented by the {url-javadoc}{framework-domain}/is/codion/fram
 
 It is recommended that entities have a primary key defined, that is, one or more column properties representing a unique column combination.
 
-The only requirement is that the primary key properties represent a unique column combination for the underlying table, it does not have to correspond to an actual table primary key, although that is of course preferable. The framework does not enforce uniqueness for these properties, so a unique or primary key on the corresponding table columns is strongly recommended.
+The only requirement is that the primary key properties represent a unique column combination for the underlying table, it does not have to correspond to an actual table primary (or unique) key, although that is of course preferable.
 
-If no primary key properties are specified the entity is somewhat restricted, it can not be referenced via a foreign key and equals() does not work (since it is based on the primary key). You can still use the *Entity.valuesEqual()* method to check if all values are equal in two entities.
+If no primary key properties are specified, equals() will not work (since it is based on the primary key). You can still use the *Entity.valuesEqual()* method to check if all values are equal in two entities.
 
 [source,java,indent=0]
 ----
