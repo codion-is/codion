@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link ComponentValue} implementation.
+ * An abstract base implementation of {@link ComponentValue}.
  * @param <T> the value type
  * @param <C> the component type
  */
@@ -23,8 +23,9 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
   /**
    * Instantiates a new nullable {@link AbstractComponentValue}
    * @param component the component
+   * @throws NullPointerException in case component is null
    */
-  public AbstractComponentValue(C component) {
+  protected AbstractComponentValue(C component) {
     this(component, null);
   }
 
@@ -32,8 +33,9 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
    * Instantiates a new {@link AbstractComponentValue}
    * @param component the component
    * @param nullValue the value to use instead of null
+   * @throws NullPointerException in case component is null
    */
-  public AbstractComponentValue(C component, T nullValue) {
+  protected AbstractComponentValue(C component, T nullValue) {
     super(nullValue);
     this.component = requireNonNull(component, "component");
   }
