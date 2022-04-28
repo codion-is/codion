@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 /**
  * A wrapper class for setting and getting a value.
  * A factory class for {@link Value} instances.
- * @param <T> the type of the value
+ * @param <T> the type of the wrapped value
  */
 public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
 

@@ -28,7 +28,7 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
    * @param component the component
    * @param nullValue the value to use instead of null
    */
-  public AbstractTextComponentValue(C component, T nullValue) {
+  protected AbstractTextComponentValue(C component, T nullValue) {
     this(component, nullValue, UpdateOn.KEYSTROKE);
   }
 
@@ -37,8 +37,9 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
    * @param component the component
    * @param nullValue the value to use instead of null
    * @param updateOn the update on policy
+   * @throws NullPointerException in case component is null
    */
-  public AbstractTextComponentValue(C component, T nullValue, UpdateOn updateOn) {
+  protected AbstractTextComponentValue(C component, T nullValue, UpdateOn updateOn) {
     super(component, nullValue);
     DocumentFilter documentFilter = ((AbstractDocument) component.getDocument()).getDocumentFilter();
     if (documentFilter instanceof ValidationDocumentFilter) {
