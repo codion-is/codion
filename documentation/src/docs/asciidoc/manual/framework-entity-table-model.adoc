@@ -3,7 +3,7 @@
 :dir-tutorials: ../tutorials
 :url-javadoc: link:../api
 
-The {url-javadoc}/is/codion/framework/model/EntityTableModel.html[EntityTableModel] class provides a table representation of the underlying entities.
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel] class provides a table representation of the underlying entities.
 
 [source,java]
 ----

@@ -2,7 +2,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-The {url-javadoc}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] provides a table view of entities.
+The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] provides a table view of entities.
 
 [#_adding_a_print_action]
 == Adding a print action

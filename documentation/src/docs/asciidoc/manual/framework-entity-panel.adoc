@@ -3,7 +3,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-The {url-javadoc}/is/codion/swing/framework/ui/EntityPanel.html[EntityPanel] is the base UI class for working with entity instances. It usually consists of an {url-javadoc}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel], an {url-javadoc}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel], and a set of detail panels representing the entities having a master/detail relationship with the underlying entity.
+The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityPanel.html[EntityPanel] is the base UI class for working with entity instances. It usually consists of an {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel], an {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel], and a set of detail panels representing the entities having a master/detail relationship with the underlying entity.
 
 == Detail panels
 

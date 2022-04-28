@@ -36,7 +36,29 @@ asciidoctor {
     }
     attributes 'codion-version': documentationVersion, 'codion-jdk': project.targetJdk,
             revnumber: documentationVersion, sectnums: 4, sectanchors: true, prewrap: false,
-            experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1'
+            experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1',
+            'common-core': '',
+            'common-db': '',
+            'common-http': '',
+            'common-model': '',
+            'common-rmi': '',
+            'framework-db-core': '',
+            'framework-db-http': '',
+            'framework-db-local': '',
+            'framework-db-rmi': '',
+            'framework-domain': '',
+            'framework-domain-test': '',
+            'framework-model': '',
+            'framework-model-test': '',
+            'framework-server': '',
+            'framework-servlet': '',
+            'plugin-jackson-json': '',
+            'plugin-jasperreports': '',
+            'swing-common-model': '',
+            'swing-common-ui': '',
+            'swing-framework-model': '',
+            'swing-framework-tools': '',
+            'swing-framework-ui': ''
     asciidoctorj {
         version = '2.5.3'
         modules {

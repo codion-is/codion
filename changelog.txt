@@ -8109,3 +8109,4 @@
   NumberDocument, NumberField.getValue() and setValue() renamed back to getNumber() and setNumber(), more consistent with TemporalField (which can't use getValue() and setValue() due to extending JFormattedField)
   Property.getMinimumValue() and getMaximumValue() now Number based
   jdt compiler downgraded, versions > 3.26.0 are built with Java > 8
+  Asciidoc documentation properties added for javadoc module names, since modular javadocs must be able to include the module name

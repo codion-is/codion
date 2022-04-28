@@ -4,7 +4,7 @@
 :dir-tutorials: ../tutorials
 :url-javadoc: link:../api
 
-The {url-javadoc}/is/codion/framework/model/EntityModel.html[EntityModel] class links together and coordinates between a {url-javadoc}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] and a {url-javadoc}/is/codion/framework/model/EntityTableModel.html[EntityTableModel], where the *EntityEditModel* handles CRUD operations and the *EntityTableModel* provides a table representation of the underlying entities.
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] class links together and coordinates between a {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] and a {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel], where the *EntityEditModel* handles CRUD operations and the *EntityTableModel* provides a table representation of the underlying entities.
 
 [source,java]
 ----
@@ -23,7 +23,7 @@ include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerAddre
 
 == Edit model
 
-Each {url-javadoc}/is/codion/framework/model/EntityModel.html[EntityModel] contains a single {url-javadoc}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] instance. This edit model can be created automatically by the *EntityModel* or supplied via a constructor argument in case of a custom implementation.
+Each {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] contains a single {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] instance. This edit model can be created automatically by the *EntityModel* or supplied via a constructor argument in case of a custom implementation.
 
 [source,java]
 ----
@@ -32,7 +32,7 @@ include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerEditM
 
 == Table model
 
-Each {url-javadoc}/is/codion/framework/model/EntityModel.html[EntityModel] can contain a single {url-javadoc}/is/codion/framework/model/EntityTableModel.html[EntityTableModel] instance. This table model can be created automatically by the *EntityModel* or supplied via a constructor argument in case of a specialized implementation.
+Each {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] can contain a single {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel] instance. This table model can be created automatically by the *EntityModel* or supplied via a constructor argument in case of a specialized implementation.
 
 [source,java]
 ----

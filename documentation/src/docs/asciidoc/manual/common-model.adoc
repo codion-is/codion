@@ -6,15 +6,15 @@ The model layer in a Codion application contains the business logic, most of the
 
 == Common classes
 
-Three common classes used throughout the framework are the {url-javadoc}/is/codion/common/event/Event.html[Event], {url-javadoc}/is/codion/common/state/State.html[State] and {url-javadoc}/is/codion/common/value/Value.html[Value] classes, their respective observers {url-javadoc}/is/codion/common/event/EventObserver.html[EventObserver] and {url-javadoc}/is/codion/common/state/StateObserver.html[StateObserver] and listeners {url-javadoc}/is/codion/common/event/EventListener.html[EventListener] and {url-javadoc}/is/codion/common/event/EventDataListener.html[EventDataListener].
+Three common classes used throughout the framework are the {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event], {url-javadoc}{common-core}/is/codion/common/state/State.html[State] and {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] classes, their respective observers {url-javadoc}{common-core}/is/codion/common/event/EventObserver.html[EventObserver] and {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver] and listeners {url-javadoc}{common-core}/is/codion/common/event/EventListener.html[EventListener] and {url-javadoc}{common-core}/is/codion/common/event/EventDataListener.html[EventDataListener].
 
 === Event
 
-The {url-javadoc}/is/codion/common/event/Event.html[Event] class is a simple synchronous event implementation used throughout the framework. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *onEvent()* method, with or without a *data* parameter.
+The {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class is a simple synchronous event implementation used throughout the framework. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *onEvent()* method, with or without a *data* parameter.
 
-Events are instantiated via factory methods in the {url-javadoc}/is/codion/common/event/Event.html[Event] class.
+Events are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class.
 
-To listen to Events you use the {url-javadoc}/is/codion/common/event/EventListener.html[EventListener] or {url-javadoc}/is/codion/common/event/EventDataListener.html[EventDataListener] interfaces.
+To listen to Events you use the {url-javadoc}{common-core}/is/codion/common/event/EventListener.html[EventListener] or {url-javadoc}{common-core}/is/codion/common/event/EventDataListener.html[EventDataListener] interfaces.
 
 [source,java,indent=0]
 ----
@@ -23,9 +23,9 @@ include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.ja
 
 === State
 
-The {url-javadoc}/is/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}/is/codion/common/state/StateObserver.html[StateObserver].
+The {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver].
 
-States are instantiated via factory methods in the {url-javadoc}/is/codion/common/state/State.html[State] class.
+States are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class.
 
 [source,java,indent=0]
 ----
@@ -41,9 +41,9 @@ include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.ja
 
 === Value
 
-The {url-javadoc}/is/codion/common/value/Value.html[Value] interface is a value wrapper with a change listener.
+The {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] interface is a value wrapper with a change listener.
 
-Values are instantiated via factory methods in the {url-javadoc}/is/codion/common/value/Value.html[Value] class.
+Values are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] class.
 
 [source,java,indent=0]
 ----

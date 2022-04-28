@@ -6,24 +6,24 @@ Codion provides a few classes with miscellanous utility functions.
 
 == Model
 
-{url-javadoc}/is/codion/common/Memory.html[Memory]
+{url-javadoc}{common-core}/is/codion/common/Memory.html[Memory]
 
-{url-javadoc}/is/codion/common/Serializer.html[Serializer]
+{url-javadoc}{common-core}/is/codion/common/Serializer.html[Serializer]
 
-{url-javadoc}/is/codion/common/Text.html[Text]
+{url-javadoc}{common-core}/is/codion/common/Text.html[Text]
 
-{url-javadoc}/is/codion/common/Util.html[Util]
+{url-javadoc}{common-core}/is/codion/common/Util.html[Util]
 
 == UI
 
-{url-javadoc}/is/codion/swing/common/ui/component/Components.html[Components]
+{url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/Components.html[Components]
 
-{url-javadoc}/is/codion/swing/common/ui/component/text/TextComponents.html[TextComponents]
+{url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/text/TextComponents.html[TextComponents]
 
-{url-javadoc}/is/codion/swing/common/ui/dialog/Dialogs.html[Dialogs]
+{url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/dialog/Dialogs.html[Dialogs]
 
-{url-javadoc}/is/codion/swing/common/ui/KeyEvents.html[KeyEvents]
+{url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/KeyEvents.html[KeyEvents]
 
-{url-javadoc}/is/codion/swing/common/ui/layout/Layouts.html[Layouts]
+{url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/layout/Layouts.html[Layouts]
 
-{url-javadoc}/is/codion/swing/common/ui/Windows.html[Windows]
+{url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/Windows.html[Windows]
