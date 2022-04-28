@@ -18,8 +18,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['java.sql,is.codion.framework.db.local,is.codion.framework.model.tests']
-    testAddReads = ['is.codion.framework.model': 'java.sql,is.codion.framework.db.local,is.codion.framework.model.tests']
+    testAddModules = ['java.sql,is.codion.framework.db.local,is.codion.framework.model.test']
+    testAddReads = ['is.codion.framework.model': 'java.sql,is.codion.framework.db.local,is.codion.framework.model.test']
 }
 
 compileTestJava {

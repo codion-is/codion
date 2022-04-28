@@ -1,4 +1,4 @@
-module is.codion.framework.model.tests {
+module is.codion.framework.model.test {
   requires org.slf4j;
   requires org.junit.jupiter.api;
   requires is.codion.framework.db.local;
