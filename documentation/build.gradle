@@ -8,7 +8,21 @@ def documentationVersion = project.version.replace('-SNAPSHOT', '')
 
 def documentationDir = "${documentationVersion}/${project.targetJdk}"
 
+task copyModuleDependencyGraphs {
+    doLast {
+        frameworkModules.each {
+            def moduleDir = it.projectDir
+            def graphFilePath = "${moduleDir}/build/reports/dependency-graph/dependency-graph.svg"
+            graphFilePath = graphFilePath.replace(rootDir.toString(), '').substring(1)
+            ant.copy(todir: "${buildDir}/asciidoc/images/modules") {
+                fileset(dir: rootDir, includes: graphFilePath)
+            }
+        }
+    }
+}
+
 asciidoctor {
+    dependsOn copyModuleDependencyGraphs
     // since the sources included in the docs may have changed, there's definitely
     // a more gradle like way to do this, but it escapes me
     inputs.dir(new File("../demos/chinook/src"));
@@ -22,16 +36,6 @@ asciidoctor {
 
     outputDir = "${buildDir}/asciidoc"
 
-    doFirst {
-        frameworkModules.each {
-            def moduleDir = it.projectDir
-            def graphFilePath = "${moduleDir}/build/reports/dependency-graph/dependency-graph.svg"
-            graphFilePath = graphFilePath.replace(rootDir.toString(), '').substring(1)
-            ant.copy(todir: "${buildDir}/asciidoc/images/modules") {
-                fileset(dir: rootDir, includes: graphFilePath)
-            }
-        }
-    }
     baseDirFollowsSourceFile()
     sources {
         include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc', 'help/**/*.adoc'
