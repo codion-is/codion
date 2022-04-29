@@ -16,7 +16,7 @@ public interface DatabaseFactory {
 
   /**
    * @param driverClassName the driver class name
-   * @return true if this database provider is compatible with the given driver
+   * @return true if this database factory is compatible with the given driver
    */
   boolean isDriverCompatible(String driverClassName);
 
