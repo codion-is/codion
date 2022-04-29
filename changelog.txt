@@ -8112,3 +8112,5 @@
   Asciidoc documentation properties added for javadoc module names, since modular javadocs must be able to include the module name
   Asciidoc javadoc link syntax properties added, opar (open paranthesis), cpar (close paranthesis) and comma, since it changes in later java versions, from a hyphen denoting open paranthesis, close parenthesis and comma, to actual paranthesis and commas
   AbstractComponentValue, AbstractTextComponentValue, constructors now protected, minor javadoc improvements
+  JavaFX framework module moved to separate sub-folder
+  Minor documentation build directory layout improvements

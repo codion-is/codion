@@ -6,9 +6,23 @@ apply plugin: 'maven-publish'
 
 def documentationVersion = project.version.replace('-SNAPSHOT', '')
 
-def documentationDir = "doc/${documentationVersion}/${project.targetJdk}"
+def documentationDir = "${documentationVersion}/${project.targetJdk}"
+
+task copyModuleDependencyGraphs {
+    doLast {
+        frameworkModules.each {
+            def moduleDir = it.projectDir
+            def graphFilePath = "${moduleDir}/build/reports/dependency-graph/dependency-graph.svg"
+            graphFilePath = graphFilePath.replace(rootDir.toString(), '').substring(1)
+            ant.copy(todir: "${buildDir}/asciidoc/images/modules") {
+                fileset(dir: rootDir, includes: graphFilePath)
+            }
+        }
+    }
+}
 
 asciidoctor {
+    dependsOn copyModuleDependencyGraphs
     // since the sources included in the docs may have changed, there's definitely
     // a more gradle like way to do this, but it escapes me
     inputs.dir(new File("../demos/chinook/src"));
@@ -20,16 +34,8 @@ asciidoctor {
     // config files
     inputs.dir(new File("../framework/server/src/main"));
 
-    doFirst {
-        frameworkModules.each {
-            def moduleDir = it.projectDir
-            def graphFilePath = "${moduleDir}/build/reports/dependency-graph/dependency-graph.svg"
-            graphFilePath = graphFilePath.replace(rootDir.toString(), '').substring(1)
-            ant.copy(todir: "${buildDir}/docs/asciidoc/images/modules") {
-                fileset(dir: rootDir, includes: graphFilePath)
-            }
-        }
-    }
+    outputDir = "${buildDir}/asciidoc"
+
     baseDirFollowsSourceFile()
     sources {
         include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc', 'help/**/*.adoc'
@@ -75,7 +81,7 @@ task combinedJavadoc(type: Javadoc) {
     group 'documentation'
     title "Codion Framework API ${documentationVersion}"
     options.links 'https://docs.oracle.com/javase/8/docs/api/'
-    destinationDir = file("${buildDir}/docs/javadoc")
+    destinationDir = file("${buildDir}/javadoc")
     frameworkModules.each { module ->
         module.tasks.withType(Javadoc).each { javadocTask ->
             source += javadocTask.source
@@ -86,14 +92,14 @@ task combinedJavadoc(type: Javadoc) {
 
 task assembleDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
     group 'documentation'
-    def docFolder = "${buildDir}/docs/${documentationDir}"
+    def docFolder = "${buildDir}/${documentationDir}"
     doLast {
         ant.delete(dir: docFolder)
         ant.copy(todir: docFolder) {
-            fileset(dir: "${buildDir}/docs/asciidoc")
+            fileset(dir: "${buildDir}/asciidoc")
         }
         ant.copy(todir: docFolder + '/api') {
-            fileset(dir: "${buildDir}/docs/javadoc")
+            fileset(dir: "${buildDir}/javadoc")
         }
     }
 }
@@ -101,13 +107,13 @@ task assembleDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
 task copyToGitHubPages(type: Sync, dependsOn: assembleDocs) {
     group 'documentation'
     def ghPagesDocDir = "../../codion-pages/${documentationDir}"
-    from "${buildDir}/docs/${documentationDir}"
+    from "${buildDir}/${documentationDir}"
     into ghPagesDocDir
 }
 
 task documentationZip(type: Zip, dependsOn: assembleDocs) {
     group 'documentation'
-    from "${buildDir}/docs/${documentationDir}"
+    from "${buildDir}/${documentationDir}"
 }
 
 artifacts {
