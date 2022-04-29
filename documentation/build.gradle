@@ -78,42 +78,46 @@ asciidoctor {
  */
 task combinedJavadoc {
     group 'documentation'
+
+    def tempDir = "${buildDir}/tmp"
+    def combinedSrcDir = "${tempDir}/combinedSource";
+    def outputDirectory = "${buildDir}/javadoc"
+    def optionsFile = new File(tempDir, "javadoc.options")
+
+    outputs.dir(outputDirectory)
     FileCollection classpath = getProject().files()
     frameworkModules.each { module ->
+        inputs.files(module.sourceSets.main.java)
         module.tasks.withType(Javadoc).each { javadocTask ->
             classpath += javadocTask.classpath
         }
     }
     doLast {
-        def tempDir = "${buildDir}/tmp"
-        def tempSrcDir = "${tempDir}/combinedSource";
-        ant.delete(dir: tempSrcDir)
+        //combine the framework source, with each module in a separate directory, named after the module
         frameworkModules.each { module ->
-            ant.copy(todir: "${tempSrcDir}/" + module.properties.get("moduleName")) {
+            ant.copy(todir: "${combinedSrcDir}/${module.moduleName}") {
                 fileset(dir: "${module.projectDir}/src/main/java")
             }
         }
-        StandardJavadocDocletOptions options = new StandardJavadocDocletOptions();
-        options.destinationDirectory(file("${buildDir}/javadoc"))
+        def options = new StandardJavadocDocletOptions();
+        options.setSourceNames(getProject().getObjects().fileCollection().from(combinedSrcDir).asFileTree.stream()
+                .map(file -> file.getAbsolutePath())
+                .collect());
+        options.modulePath(new ArrayList(classpath.getFiles()))
+        options.addStringOption("-module-source-path", combinedSrcDir)
+        options.destinationDirectory(file(outputDirectory))
         options.docTitle("Codion Framework API ${documentationVersion}")
         options.links("https://docs.oracle.com/en/java/javase/11/docs/api/")
-        options.modulePath(new ArrayList(classpath.getFiles()))
-        options.addStringOption("-module-source-path", tempSrcDir)
+        options.noTimestamp(true)
 
-        List<String> sourceFileNames = new ArrayList();
-        def iterator = getProject().getObjects().fileCollection().from(tempSrcDir).asFileTree.iterator()
-        while (iterator.hasNext()) {
-            sourceFileNames.add(((File) iterator.next()).getAbsolutePath());
-        }
-        options.setSourceNames(sourceFileNames);
-
-        def optionsFile = new File(tempDir, "javadoc.options")
         options.write(optionsFile)
 
         exec {
             executable = System.getProperty('java.home') + '/bin/javadoc'
             args = ["@" + optionsFile.getAbsolutePath()]
         }
+
+        ant.delete(dir: combinedSrcDir)
     }
 }
 
