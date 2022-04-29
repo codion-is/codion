@@ -434,7 +434,7 @@ JavaFX client implementation (still quite experimental).
 .Dependency graph
 [%collapsible]
 ====
-image::modules/javafx/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/javafx/framework/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 == Plugins

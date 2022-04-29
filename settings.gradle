@@ -79,7 +79,7 @@ include 'codion-framework-servlet'
 project(':codion-framework-servlet').projectDir = file('framework/servlet')
 
 include 'codion-javafx-framework'
-project(':codion-javafx-framework').projectDir = file('javafx')
+project(':codion-javafx-framework').projectDir = file('javafx/framework')
 
 include 'codion-swing-common-model'
 project(':codion-swing-common-model').projectDir = file('swing/common-model')
