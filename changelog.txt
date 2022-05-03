@@ -8114,3 +8114,4 @@
   AbstractComponentValue, AbstractTextComponentValue, constructors now protected, minor javadoc improvements
   JavaFX framework module moved to separate sub-folder
   Minor documentation build directory layout improvements
+  EntitySearchField, minor refactoring

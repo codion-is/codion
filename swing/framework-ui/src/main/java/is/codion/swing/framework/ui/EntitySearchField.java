@@ -42,7 +42,6 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -408,40 +407,43 @@ public final class EntitySearchField extends JTextField {
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 
-      JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
-      generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
-      generalSettingsPanel.add(Components.checkBox(searchModel.getMultipleSelectionEnabledValue())
-              .caption(MESSAGES.getString("enable_multiple_search_values"))
-              .build());
+      JPanel generalSettingsPanel = Components.panel(Layouts.gridLayout(2, 1))
+              .border(BorderFactory.createTitledBorder(""))
+              .add(Components.checkBox(searchModel.getMultipleSelectionEnabledValue())
+                      .caption(MESSAGES.getString("enable_multiple_search_values"))
+                      .build())
+              .build();
 
-      JPanel valueSeparatorPanel = new JPanel(Layouts.borderLayout());
-      valueSeparatorPanel.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
-      valueSeparatorPanel.add(Components.textField(searchModel.getMultipleItemSeparatorValue())
-              .columns(1)
-              .maximumLength(1)
-              .build(), BorderLayout.WEST);
+      JPanel valueSeparatorPanel = Components.panel(Layouts.borderLayout())
+              .add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER)
+              .add(Components.textField(searchModel.getMultipleItemSeparatorValue())
+                      .columns(1)
+                      .maximumLength(1)
+                      .build(), BorderLayout.WEST)
+              .build();
 
       generalSettingsPanel.add(valueSeparatorPanel);
 
       setLayout(Layouts.borderLayout());
-      add(new JComboBox<>(propertyComboBoxModel), BorderLayout.NORTH);
+      add(Components.comboBox(propertyComboBoxModel).build(), BorderLayout.NORTH);
       add(propertyBasePanel, BorderLayout.CENTER);
       add(generalSettingsPanel, BorderLayout.SOUTH);
+      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+      setBorder(BorderFactory.createEmptyBorder(gap, gap, 0, gap));
     }
 
     private static JPanel initializePropertyPanel(EntitySearchModel.SearchSettings settings) {
-      JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
-      panel.add(Components.checkBox(settings.getCaseSensitiveValue())
-              .caption(MESSAGES.getString("case_sensitive"))
-              .build());
-      panel.add(Components.checkBox(settings.getWildcardPrefixValue())
-              .caption(MESSAGES.getString("prefix_wildcard"))
-              .build());
-      panel.add(Components.checkBox(settings.getWildcardPostfixValue())
-              .caption(MESSAGES.getString("postfix_wildcard"))
-              .build());
-
-      return panel;
+      return Components.panel(Layouts.gridLayout(3, 1))
+              .add(Components.checkBox(settings.getCaseSensitiveValue())
+                      .caption(MESSAGES.getString("case_sensitive"))
+                      .build())
+              .add(Components.checkBox(settings.getWildcardPrefixValue())
+                      .caption(MESSAGES.getString("prefix_wildcard"))
+                      .build())
+              .add(Components.checkBox(settings.getWildcardPostfixValue())
+                      .caption(MESSAGES.getString("postfix_wildcard"))
+                      .build())
+              .build();
     }
   }
 
