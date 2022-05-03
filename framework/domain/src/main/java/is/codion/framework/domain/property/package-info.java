@@ -9,7 +9,6 @@
  * {@link is.codion.framework.domain.property.Property#DATE_TIME_FORMAT}<br>
  * {@link is.codion.framework.domain.property.Property#DATE_FORMAT}<br>
  * {@link is.codion.framework.domain.property.Property#FOREIGN_KEY_FETCH_DEPTH}<br>
- * {@link is.codion.framework.domain.property.Property#DECIMAL_ROUNDING_MODE}<br>
- * {@link is.codion.framework.domain.property.Property#WILDCARD_CHARACTER}
+ * {@link is.codion.framework.domain.property.Property#DECIMAL_ROUNDING_MODE}
  */
 package is.codion.framework.domain.property;

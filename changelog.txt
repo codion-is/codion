@@ -8118,3 +8118,4 @@
   EntitySearchModel, Value<Boolean> replaced with State
   Value.valueSet() factory method moved to ValueSet
   Value.value(initialValue, nullValue) now throws NullPointerException in case nullValue is null
+  Property.WILDCARD_CHARACTER configuration value moved to Text

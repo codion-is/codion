@@ -45,6 +45,13 @@ public final class Text {
           Configuration.stringValue("codion.defaultCollatorLanguage", Locale.getDefault().getLanguage());
 
   /**
+   * Specifies the wildcard character used<br>
+   * Value type: Character<br>
+   * Default value: %
+   */
+  public static final PropertyValue<Character> WILDCARD_CHARACTER = Configuration.characterValue("codion.wildcardCharacter", '%');
+
+  /**
    * Left or right alignment
    */
   public enum Alignment {

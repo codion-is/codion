@@ -4,6 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Operator;
+import is.codion.common.Text;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -12,7 +13,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.Property;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,7 +45,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
     }
 
     return new DefaultColumnConditionModel<>(attribute, attribute.getTypeClass(), getOperators(attribute),
-            Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
+            Text.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
   }
 
   /**

@@ -4,6 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
+import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
@@ -17,7 +18,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Value<String> searchStringValue = Value.value("");
   private final Value<String> multipleItemSeparatorValue = Value.value(DEFAULT_SEPARATOR, DEFAULT_SEPARATOR);
   private final State multipleSelectionEnabledState = State.state(true);
-  private final Value<Character> wildcardValue = Value.value(Property.WILDCARD_CHARACTER.get(), Property.WILDCARD_CHARACTER.get());
+  private final Value<Character> wildcardValue = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
 
   private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
   private Supplier<Condition> additionalConditionSupplier;

@@ -96,13 +96,6 @@ public interface Property<T> {
   PropertyValue<Integer> FOREIGN_KEY_FETCH_DEPTH = Configuration.integerValue("codion.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
 
   /**
-   * Specifies the wildcard character used by the framework<br>
-   * Value type: Character<br>
-   * Default value: %
-   */
-  PropertyValue<Character> WILDCARD_CHARACTER = Configuration.characterValue("codion.wildcardCharacter", '%');
-
-  /**
    * Specifies whether String values should use a lexical comparator by default<br>
    * Value type: Boolean<br>
    * Default value: true

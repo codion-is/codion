@@ -3,6 +3,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.Text;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.framework.domain.entity.Attribute;
@@ -22,7 +23,7 @@ public class DefaultFilterModelFactory implements FilterModelFactory {
 
     DefaultColumnFilterModel<Entity, Attribute<?>, T> filterModel = new DefaultColumnFilterModel<>(
             property.getAttribute(), property.getAttribute().getTypeClass(),
-            Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
+            Text.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
     filterModel.setComparableFunction(row -> {
       if (row.isNull(property.getAttribute())) {
         return null;
