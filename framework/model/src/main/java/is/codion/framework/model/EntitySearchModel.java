@@ -4,6 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.event.EventDataListener;
+import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -151,9 +152,9 @@ public interface EntitySearchModel {
   Value<String> getMultipleItemSeparatorValue();
 
   /**
-   * @return the Value representing the multiple selection enabled setting
+   * @return the State representing the multiple selection enabled setting
    */
-  Value<Boolean> getMultipleSelectionEnabledValue();
+  State getMultipleSelectionEnabledState();
 
   /**
    * Attribute search settings
@@ -161,18 +162,18 @@ public interface EntitySearchModel {
   interface SearchSettings {
 
     /**
-     * @return a Value representing whether a wildcard is automatically prepended to the search string
+     * @return a State representing whether a wildcard is automatically prepended to the search string
      */
-    Value<Boolean> getWildcardPrefixValue();
+    State getWildcardPrefixState();
 
     /**
-     * @return a Value representing whether a wildcard is automatically appended to the search string
+     * @return a State representing whether a wildcard is automatically appended to the search string
      */
-    Value<Boolean> getWildcardPostfixValue();
+    State getWildcardPostfixState();
 
     /**
-     * @return a Value representing whether the search is case-sensitive
+     * @return a State representing whether the search is case-sensitive
      */
-    Value<Boolean> getCaseSensitiveValue();
+    State getCaseSensitiveState();
   }
 }

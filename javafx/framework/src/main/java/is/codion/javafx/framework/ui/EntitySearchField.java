@@ -104,7 +104,7 @@ public final class EntitySearchField extends TextField {
 
   private void selectEntities(List<Entity> queryResult) {
     FXUiUtil.SingleSelection singleSelection;
-    if (model.getMultipleSelectionEnabledValue().get()) {
+    if (model.getMultipleSelectionEnabledState().get()) {
       singleSelection = FXUiUtil.SingleSelection.NO;
     }
     else {

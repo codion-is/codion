@@ -360,7 +360,7 @@ public final class EntitySearchField extends JTextField {
   private static List<Entity> lookupEntities(EntityType entityType, EntityConnectionProvider connectionProvider,
                                              boolean singleSelection, JComponent dialogParent, String dialogTitle) {
     EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
-    searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
+    searchModel.getMultipleSelectionEnabledState().set(!singleSelection);
 
     return Dialogs.showInputDialog(EntitySearchField.builder(searchModel)
             .buildComponentValueMultiple(), dialogParent, dialogTitle);
@@ -409,7 +409,7 @@ public final class EntitySearchField extends JTextField {
 
       JPanel generalSettingsPanel = Components.panel(Layouts.gridLayout(2, 1))
               .border(BorderFactory.createTitledBorder(""))
-              .add(Components.checkBox(searchModel.getMultipleSelectionEnabledValue())
+              .add(Components.checkBox(searchModel.getMultipleSelectionEnabledState())
                       .caption(MESSAGES.getString("enable_multiple_search_values"))
                       .build())
               .build();
@@ -434,13 +434,13 @@ public final class EntitySearchField extends JTextField {
 
     private static JPanel initializePropertyPanel(EntitySearchModel.SearchSettings settings) {
       return Components.panel(Layouts.gridLayout(3, 1))
-              .add(Components.checkBox(settings.getCaseSensitiveValue())
+              .add(Components.checkBox(settings.getCaseSensitiveState())
                       .caption(MESSAGES.getString("case_sensitive"))
                       .build())
-              .add(Components.checkBox(settings.getWildcardPrefixValue())
+              .add(Components.checkBox(settings.getWildcardPrefixState())
                       .caption(MESSAGES.getString("prefix_wildcard"))
                       .build())
-              .add(Components.checkBox(settings.getWildcardPostfixValue())
+              .add(Components.checkBox(settings.getWildcardPostfixState())
                       .caption(MESSAGES.getString("postfix_wildcard"))
                       .build())
               .build();
@@ -491,7 +491,7 @@ public final class EntitySearchField extends JTextField {
       selectControl = Control.builder(createSelectCommand(searchModel))
               .caption(Messages.get(Messages.OK))
               .build();
-      list.setSelectionMode(searchModel.getMultipleSelectionEnabledValue().get() ?
+      list.setSelectionMode(searchModel.getMultipleSelectionEnabledState().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
@@ -580,7 +580,7 @@ public final class EntitySearchField extends JTextField {
       Collection<Attribute<String>> searchAttributes = searchModel.getSearchAttributes();
       tableModel.getColumnModel().setColumns(searchAttributes.toArray(new Attribute[0]));
       tableModel.getSortModel().setSortOrder(searchAttributes.iterator().next(), SortOrder.ASCENDING);
-      table.setSelectionMode(searchModel.getMultipleSelectionEnabledValue().get() ?
+      table.setSelectionMode(searchModel.getMultipleSelectionEnabledState().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       table.setDoubleClickAction(selectControl);
       scrollPane = new JScrollPane(table);

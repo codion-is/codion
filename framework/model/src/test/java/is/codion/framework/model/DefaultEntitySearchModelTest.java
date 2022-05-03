@@ -84,7 +84,7 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void setMultipleSelectionNotEnabled() {
-    searchModel.getMultipleSelectionEnabledValue().set(false);
+    searchModel.getMultipleSelectionEnabledState().set(false);
     List<Entity> entities = asList(ENTITIES.entity(TestDomain.T_EMP), ENTITIES.entity(TestDomain.T_EMP));
     assertThrows(IllegalArgumentException.class, () -> searchModel.setSelectedEntities(entities));
   }
@@ -106,7 +106,7 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void searchModel() throws Exception {
-    searchModel.getMultipleSelectionEnabledValue().set(true);
+    searchModel.getMultipleSelectionEnabledState().set(true);
     searchModel.getWildcardValue().set('%');
     searchModel.setSearchString("joh");
     assertFalse(searchModel.searchStringRepresentsSelected());
@@ -134,8 +134,8 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(false);
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPrefixState().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPrefixState().set(false);
     searchModel.setSearchString("jo,cl");
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
@@ -144,16 +144,16 @@ public final class DefaultEntitySearchModelTest {
     assertFalse(contains(result, "Andrew"));
 
     searchModel.setSearchString("Joh");
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(true);
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getCaseSensitiveState().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getCaseSensitiveState().set(true);
     result = searchModel.performQuery();
     assertEquals(1, result.size());
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(false);
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(false);
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(false);
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPrefixState().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPrefixState().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getCaseSensitiveState().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getCaseSensitiveState().set(false);
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertTrue(contains(result, "johnson"));
@@ -176,20 +176,20 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(searchModel.searchStringRepresentsSelected());
 
     searchModel.setSearchString("and; rew");
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(true);
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(true);
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPostfixValue().set(false);
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPostfixValue().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPrefixState().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPrefixState().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPostfixState().set(false);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPostfixState().set(false);
     result = searchModel.performQuery();
     assertEquals(1, result.size());
     assertFalse(contains(result, "Andy"));
     assertTrue(contains(result, "Andrew"));
 
     searchModel.setSearchString("Joh");
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(true);
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(true);
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPostfixValue().set(true);
-    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPostfixValue().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getCaseSensitiveState().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getCaseSensitiveState().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_NAME).getWildcardPostfixState().set(true);
+    searchModel.getAttributeSearchSettings().get(TestDomain.EMP_JOB).getWildcardPostfixState().set(true);
     searchModel.setAdditionalConditionSupplier(() ->
             Conditions.where(TestDomain.EMP_JOB).notEqualTo("MANAGER"));
     result = searchModel.performQuery();
@@ -199,7 +199,7 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void setAdditionalConditionProvider() {
-    searchModel.getMultipleSelectionEnabledValue().set(false);
+    searchModel.getMultipleSelectionEnabledState().set(false);
     searchModel.getWildcardValue().set('%');
     searchModel.setSearchString("johnson");
     List<Entity> result = searchModel.performQuery();
