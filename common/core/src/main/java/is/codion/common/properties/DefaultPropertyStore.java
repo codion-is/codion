@@ -6,12 +6,11 @@ package is.codion.common.properties;
 import is.codion.common.value.AbstractValue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -216,7 +215,7 @@ final class DefaultPropertyStore implements PropertyStore {
     if (!propertiesFile.exists() && !propertiesFile.createNewFile()) {
       throw new IOException("Unable to create properties file: " + propertiesFile);
     }
-    try (OutputStream output = new FileOutputStream(propertiesFile)) {
+    try (OutputStream output = Files.newOutputStream(propertiesFile.toPath())) {
       properties.store(output, null);
     }
   }
@@ -232,7 +231,7 @@ final class DefaultPropertyStore implements PropertyStore {
     if (!requireNonNull(propertiesFile).exists()) {
       throw new FileNotFoundException(propertiesFile.toString());
     }
-    try (InputStream input = new FileInputStream(propertiesFile)) {
+    try (InputStream input = Files.newInputStream(propertiesFile.toPath())) {
       return loadProperties(input);
     }
   }

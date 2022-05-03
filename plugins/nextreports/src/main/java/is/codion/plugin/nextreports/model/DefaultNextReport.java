@@ -13,10 +13,9 @@ import ro.nextreports.engine.querybuilder.sql.dialect.OracleDialect;
 import ro.nextreports.engine.util.ReportUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +42,7 @@ final class DefaultNextReport extends AbstractReport<ro.nextreports.engine.Repor
   public NextReportsResult fillReport(Connection connection, Map<String, Object> parameters) throws ReportException {
     requireNonNull(connection, "connection");
     File file = null;
-    try (OutputStream output = new FileOutputStream(file = File.createTempFile("NextReportsWrapper", null, null))) {
+    try (OutputStream output = Files.newOutputStream((file = File.createTempFile("NextReportsWrapper", null, null)).toPath())) {
       FluentReportRunner.report(loadReport())
               .connectTo(connection)
               .withQueryTimeout(60)
@@ -69,7 +68,7 @@ final class DefaultNextReport extends AbstractReport<ro.nextreports.engine.Repor
   @Override
   public ro.nextreports.engine.Report loadReport() throws ReportException {
     try {
-      return ReportUtil.loadReport(new FileInputStream(getFullReportPath()));
+      return ReportUtil.loadReport(Files.newInputStream(Paths.get(getFullReportPath())));
     }
     catch (Exception e) {
       throw new ReportException(e);

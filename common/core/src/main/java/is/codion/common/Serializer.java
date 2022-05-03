@@ -7,14 +7,15 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility class for serialization.
@@ -68,7 +69,7 @@ public final class Serializer {
    */
   public static <T> List<T> deserializeFromFile(File file) throws IOException, ClassNotFoundException {
     List<T> objects = new ArrayList<>();
-    try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
+    try (ObjectInputStream inputStream = new ObjectInputStream(Files.newInputStream(requireNonNull(file).toPath()))) {
       while (true) {
         objects.add((T) inputStream.readObject());
       }
@@ -86,7 +87,7 @@ public final class Serializer {
    * @throws IOException in case the file can not be written
    */
   public static <T> void serializeToFile(Collection<T> objects, File file) throws IOException {
-    try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
+    try (ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(requireNonNull(file).toPath()))) {
       for (T object : objects) {
         outputStream.writeObject(object);
       }

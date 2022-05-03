@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.X509TrustManager;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.security.KeyStore;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -93,7 +93,7 @@ public final class Clients {
     try {
       File file = File.createTempFile("combinedTrustStore", "tmp");
       file.deleteOnExit();
-      try (OutputStream outputStream = new FileOutputStream(file)) {
+      try (OutputStream outputStream = Files.newOutputStream(file.toPath())) {
         store.store(outputStream, password.toCharArray());
       }
       LOG.debug("Classpath trust store written to file: {} -> {}", JAVAX_NET_TRUSTSTORE, file);
