@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A wrapper class for setting and getting a value.
  * A factory class for {@link Value} instances.
@@ -114,7 +116,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @return a Value for the given type with the given initial value
    */
   static <T> Value<T> value(T initialValue) {
-    return value(initialValue, null);
+    return new DefaultValue<>(initialValue, null);
   }
 
   /**
@@ -123,9 +125,10 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @param nullValue the actual value to use when the value is set to null
    * @param <T> type to wrap
    * @return a Value for the given type with the given initial value
+   * @throws NullPointerException in case {@code nullValue} is null
    */
   static <T> Value<T> value(T initialValue, T nullValue) {
-    return new DefaultValue<>(initialValue, nullValue);
+    return new DefaultValue<>(initialValue, requireNonNull(nullValue));
   }
 
   /**
