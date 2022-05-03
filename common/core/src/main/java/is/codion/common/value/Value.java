@@ -7,7 +7,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -154,25 +153,6 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    */
   static <T> Value<T> value(Supplier<T> getter, Consumer<T> setter, T nullValue) {
     return new GetterSetterValue<>(getter, setter, nullValue);
-  }
-
-  /**
-   * Instantiates a new empty ValueSet
-   * @param <T> the value type
-   * @return a ValueSet
-   */
-  static <T> ValueSet<T> valueSet() {
-    return valueSet(Collections.emptySet());
-  }
-
-  /**
-   * Instantiates a new ValueSet
-   * @param initialValues the initial values, may not be null
-   * @param <T> the value type
-   * @return a ValueSet
-   */
-  static <T> ValueSet<T> valueSet(Set<T> initialValues) {
-    return new DefaultValueSet<>(initialValues);
   }
 
   /**

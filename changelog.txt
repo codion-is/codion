@@ -8116,3 +8116,4 @@
   Minor documentation build directory layout improvements
   EntitySearchField, minor refactoring
   EntitySearchModel, Value<Boolean> replaced with State
+  Value.valueSet() factory method moved to ValueSet

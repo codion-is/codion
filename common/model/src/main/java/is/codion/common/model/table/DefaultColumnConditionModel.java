@@ -29,7 +29,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C, T> {
 
-  private final ValueSet<T> equalValues = Value.valueSet();
+  private final ValueSet<T> equalValues = ValueSet.valueSet();
   private final Value<T> upperBoundValue = Value.value();
   private final Value<T> lowerBoundValue = Value.value();
   private final Value<Operator> operatorValue = Value.value(Operator.EQUAL);
