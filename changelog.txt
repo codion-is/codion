@@ -8125,3 +8125,4 @@
   FileTransferHandler.onImport(), component parameter added
   FileTransferHandler.onImport() renamed importFiles(), now returns boolean
   DialogBuilder.titleObserver() added for dynamic a dialog title
+  ButtonBuilder bug fixed, horizontalAligment not defaults to SwingConstants.CENTER, with CheckBoxBuilder and RadioButtonBuilder defaulting to SwingConstants.LEADING
