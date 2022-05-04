@@ -15,12 +15,6 @@ import static java.util.Objects.requireNonNull;
 public interface RadioButtonBuilder extends ToggleButtonBuilder<JRadioButton, RadioButtonBuilder> {
 
   /**
-   * @param horizontalAlignment the horizontal alignment
-   * @return this builder instance
-   */
-  RadioButtonBuilder horizontalAlignment(int horizontalAlignment);
-
-  /**
    * @return a builder for a component
    */
   static RadioButtonBuilder builder() {

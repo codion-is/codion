@@ -8120,3 +8120,4 @@
   Value.value(initialValue, nullValue) now throws NullPointerException in case nullValue is null
   Property.WILDCARD_CHARACTER configuration value moved to Text
   ComponentBuilder.transferHandler() and TextComponentBuilder.dragEnabled() added
+  RadioButtonBuilder.setHorizontalAlignment() moved to ButtonBuilder

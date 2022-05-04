@@ -44,6 +44,12 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   B includeCaption(boolean includeCaption);
 
   /**
+   * @param horizontalAlignment the horizontal alignment
+   * @return this builder instance
+   */
+  B horizontalAlignment(int horizontalAlignment);
+
+  /**
    * @param icon the icon
    * @return this builder instance
    * @see JButton#setIcon(Icon)

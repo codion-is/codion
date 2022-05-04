@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.SwingConstants;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 
@@ -20,6 +21,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private String caption;
   private int mnemonic;
   private boolean includeCaption = true;
+  private int horizontalAlignment = SwingConstants.LEADING;
   private Icon icon;
   private Insets insets;
   private Action action;
@@ -44,6 +46,12 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   @Override
   public final B includeCaption(boolean includeCaption) {
     this.includeCaption = includeCaption;
+    return (B) this;
+  }
+
+  @Override
+  public final B horizontalAlignment(int horizontalAlignment) {
+    this.horizontalAlignment = horizontalAlignment;
     return (B) this;
   }
 
@@ -86,6 +94,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     else if (caption != null) {
       button.setText(caption);
     }
+    button.setHorizontalAlignment(horizontalAlignment);
     if (mnemonic != 0) {
       button.setMnemonic(mnemonic);
     }
