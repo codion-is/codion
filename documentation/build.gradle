@@ -106,7 +106,7 @@ task assembleDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
 
 task copyToGitHubPages(type: Sync, dependsOn: assembleDocs) {
     group 'documentation'
-    def ghPagesDocDir = "../../codion-pages/${documentationDir}"
+    def ghPagesDocDir = "../../codion-pages/doc/${documentationDir}"
     from "${buildDir}/${documentationDir}"
     into ghPagesDocDir
 }
