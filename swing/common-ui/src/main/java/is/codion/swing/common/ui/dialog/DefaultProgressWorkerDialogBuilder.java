@@ -116,7 +116,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   public ProgressWorker<T, V> build() {
     ProgressDialog progressDialog = progressDialogBuilder
             .owner(owner)
-            .title(title)
+            .titleObserver(titleObserver)
             .icon(icon)
             .build();
 

@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
+import is.codion.common.value.Value;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -18,6 +19,10 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
   private User defaultUser;
   private LoginValidator validator = new NoLoginValidation();
   private JComponent southComponent;
+
+  DefaultLoginDialogBuilder() {
+    titleObserver(Value.value(Messages.get(Messages.LOGIN)));
+  }
 
   @Override
   public LoginDialogBuilder defaultUser(User defaultUser) {
@@ -41,13 +46,13 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
   public User show() {
     JFrame dummyFrame = null;
     if (owner == null && isWindows()) {
-      owner = dummyFrame = createDummyFrame(title, icon);
+      owner = dummyFrame = createDummyFrame(titleObserver == null ? null : titleObserver.get(), icon);
     }
     LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent);
     new DefaultOkCancelDialogBuilder(loginPanel)
             .owner(owner)
             .resizable(false)
-            .title(title == null ? Messages.get(Messages.LOGIN) : title)
+            .titleObserver(titleObserver)
             .icon(icon)
             .okAction(loginPanel.getOkControl())
             .cancelAction(loginPanel.getCancelControl())

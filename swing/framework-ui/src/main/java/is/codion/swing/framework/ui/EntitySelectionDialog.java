@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.KeyEvents;
@@ -60,9 +61,12 @@ public final class EntitySelectionDialog extends JDialog {
           .mnemonic(FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0))
           .build();
 
-  private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, String title,
+  private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, ValueObserver<String> titleObserver,
                                 ImageIcon icon, Dimension preferredSize, boolean singleSelection) {
-    super(owner, title);
+    super(owner, titleObserver == null ? null : titleObserver.get());
+    if (titleObserver != null) {
+      titleObserver.addDataListener(this::setTitle);
+    }
     if (icon != null) {
       setIconImage(icon.getImage());
     }
@@ -184,12 +188,12 @@ public final class EntitySelectionDialog extends JDialog {
 
     @Override
     public List<Entity> select() {
-      return new EntitySelectionDialog(tableModel, owner, title, icon, preferredSize, false).selectEntities();
+      return new EntitySelectionDialog(tableModel, owner, titleObserver, icon, preferredSize, false).selectEntities();
     }
 
     @Override
     public Optional<Entity> selectSingle() {
-      List<Entity> entities = new EntitySelectionDialog(tableModel, owner, title, icon, preferredSize, true).selectEntities();
+      List<Entity> entities = new EntitySelectionDialog(tableModel, owner, titleObserver, icon, preferredSize, true).selectEntities();
 
       return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
     }

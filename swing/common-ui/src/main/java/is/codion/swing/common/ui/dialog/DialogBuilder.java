@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.value.ValueObserver;
+
 import javax.swing.ImageIcon;
 import java.awt.Component;
 import java.awt.Window;
@@ -38,6 +40,12 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
    * @return this builder instance
    */
   B title(String title);
+
+  /**
+   * @param titleObserver a value observer for a dynamic dialog title
+   * @return this builder instance
+   */
+  B titleObserver(ValueObserver<String> titleObserver);
 
   /**
    * @param icon the dialog icon

@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.Windows;
 
 import javax.swing.ImageIcon;
@@ -17,7 +19,7 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 
   protected Window owner;
   protected Component locationRelativeTo;
-  protected String title;
+  protected ValueObserver<String> titleObserver;
   protected ImageIcon icon;
 
   @Override
@@ -46,7 +48,12 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 
   @Override
   public final B title(String title) {
-    this.title = title;
+    return titleObserver(Value.value(title));
+  }
+
+  @Override
+  public final B titleObserver(ValueObserver<String> titleObserver) {
+    this.titleObserver = titleObserver;
     return (B) this;
   }
 

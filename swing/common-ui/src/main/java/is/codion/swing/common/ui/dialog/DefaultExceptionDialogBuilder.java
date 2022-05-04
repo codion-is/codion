@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.value.Value;
 
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
@@ -14,6 +15,10 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
         implements ExceptionDialogBuilder {
 
   private String message;
+
+  DefaultExceptionDialogBuilder() {
+    titleObserver(Value.value(Messages.get(Messages.ERROR)));
+  }
 
   @Override
   public ExceptionDialogBuilder message(String message) {
@@ -44,7 +49,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
     ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message);
 
     JDialog dialog = new DefaultComponentDialogBuilder(exceptionPanel)
-            .title(title == null ? Messages.get(Messages.ERROR) : title)
+            .titleObserver(titleObserver)
             .owner(owner)
             .closeEvent(exceptionPanel.getCloseObserver())
             .build();
