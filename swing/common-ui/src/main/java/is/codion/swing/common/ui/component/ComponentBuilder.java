@@ -15,6 +15,7 @@ import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
+import javax.swing.TransferHandler;
 import javax.swing.border.Border;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -50,6 +51,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   /**
    * @param focusable false if the component should not be focusable
    * @return this builder instance
+   * @see JComponent#setFocusable(boolean)
    */
   B focusable(boolean focusable);
 
@@ -68,6 +70,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   /**
    * @param preferredSize the preferred component size
    * @return this builder instance
+   * @see JComponent#setPreferredSize(Dimension)
    */
   B preferredSize(Dimension preferredSize);
 
@@ -86,6 +89,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   /**
    * @param maximumSize the maximum component size
    * @return this builder instance
+   * @see JComponent#setMaximumSize(Dimension)
    */
   B maximumSize(Dimension maximumSize);
 
@@ -104,12 +108,14 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   /**
    * @param minimumSize the minimum component size
    * @return this builder instance
+   * @see JComponent#setMinimumSize(Dimension)
    */
   B minimumSize(Dimension minimumSize);
 
   /**
    * @param border the component border
    * @return this builder instance
+   * @see JComponent#setBorder(Border)
    */
   B border(Border border);
 
@@ -123,6 +129,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   /**
    * @param toolTipText the tool tip text
    * @return this builder instance
+   * @see JComponent#setToolTipText(String)
    */
   B toolTipText(String toolTipText);
 
@@ -131,6 +138,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * Overridden by {@link #enabledState(StateObserver)}.
    * @param enabled the enabled state
    * @return this builder instance
+   * @see JComponent#setEnabled(boolean)
    */
   B enabled(boolean enabled);
 
@@ -155,36 +163,42 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   /**
    * @param popupMenu the popup menu
    * @return this builder instance
+   * @see JComponent#setComponentPopupMenu(JPopupMenu)
    */
   B popupMenu(JPopupMenu popupMenu);
 
   /**
    * @param font the component font
    * @return this builder instance
+   * @see JComponent#setFont(Font)
    */
   B font(Font font);
 
   /**
    * @param foreground the foreground color
    * @return this builder instance
+   * @see JComponent#setForeground(Color)
    */
   B foreground(Color foreground);
 
   /**
    * @param background the background color
    * @return this builder instance
+   * @see JComponent#setBackground(Color)
    */
   B background(Color background);
 
   /**
    * @param opaque true if the component should be opaque
    * @return this builder instance
+   * @see JComponent#setOpaque(boolean)
    */
   B opaque(boolean opaque);
 
   /**
    * @param orientation the component orientation
    * @return this builder instance
+   * @see JComponent#setComponentOrientation(ComponentOrientation)
    */
   B componentOrientation(ComponentOrientation orientation);
 
@@ -215,38 +229,51 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   /**
    * @param focusListener the focus listener
    * @return this builder instance
+   * @see JComponent#addFocusListener(FocusListener)
    */
   B focusListener(FocusListener focusListener);
 
   /**
    * @param mouseListener the mouse listener
    * @return this builder instance
+   * @see JComponent#addMouseListener(MouseListener)
    */
   B mouseListener(MouseListener mouseListener);
 
   /**
    * @param mouseMotionListener the mouse motion listener
    * @return this builder instance
+   * @see JComponent#addMouseMotionListener(MouseMotionListener)
    */
   B mouseMotionListener(MouseMotionListener mouseMotionListener);
 
   /**
    * @param mouseWheelListener the mouse wheel listener
    * @return this builder instance
+   * @see JComponent#addMouseWheelListener(MouseWheelListener)
    */
   B mouseWheelListener(MouseWheelListener mouseWheelListener);
 
   /**
    * @param keyListener the key listener
    * @return this builder instance
+   * @see JComponent#addKeyListener(KeyListener)
    */
   B keyListener(KeyListener keyListener);
 
   /**
    * @param componentListener the component listener
    * @return this builder instance
+   * @see JComponent#addComponentListener(ComponentListener)
    */
   B componentListener(ComponentListener componentListener);
+
+  /**
+   * @param transferHandler the transfer handler
+   * @return this builder instance
+   * @see JComponent#setTransferHandler(TransferHandler)
+   */
+  B transferHandler(TransferHandler transferHandler);
 
   /**
    * @param onSetVisible called when the component is made visible for the first time

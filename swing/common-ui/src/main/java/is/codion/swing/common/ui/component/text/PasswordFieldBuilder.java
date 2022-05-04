@@ -17,6 +17,7 @@ public interface PasswordFieldBuilder extends TextFieldBuilder<String, JPassword
   /**
    * @param echoChar the echo char
    * @return this builder instance
+   * @see JPasswordField#setEchoChar(char)
    */
   PasswordFieldBuilder echoChar(char echoChar);
 

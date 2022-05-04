@@ -7,10 +7,11 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A wrapper class for setting and getting a value.
@@ -115,7 +116,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @return a Value for the given type with the given initial value
    */
   static <T> Value<T> value(T initialValue) {
-    return value(initialValue, null);
+    return new DefaultValue<>(initialValue, null);
   }
 
   /**
@@ -124,9 +125,10 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @param nullValue the actual value to use when the value is set to null
    * @param <T> type to wrap
    * @return a Value for the given type with the given initial value
+   * @throws NullPointerException in case {@code nullValue} is null
    */
   static <T> Value<T> value(T initialValue, T nullValue) {
-    return new DefaultValue<>(initialValue, nullValue);
+    return new DefaultValue<>(initialValue, requireNonNull(nullValue));
   }
 
   /**
@@ -154,25 +156,6 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    */
   static <T> Value<T> value(Supplier<T> getter, Consumer<T> setter, T nullValue) {
     return new GetterSetterValue<>(getter, setter, nullValue);
-  }
-
-  /**
-   * Instantiates a new empty ValueSet
-   * @param <T> the value type
-   * @return a ValueSet
-   */
-  static <T> ValueSet<T> valueSet() {
-    return valueSet(Collections.emptySet());
-  }
-
-  /**
-   * Instantiates a new ValueSet
-   * @param initialValues the initial values, may not be null
-   * @param <T> the value type
-   * @return a ValueSet
-   */
-  static <T> ValueSet<T> valueSet(Set<T> initialValues) {
-    return new DefaultValueSet<>(initialValues);
   }
 
   /**

@@ -242,7 +242,7 @@ public class ValueTest {
 
   @Test
   void valueSet() {
-    ValueSet<Integer> valueSet = Value.valueSet();
+    ValueSet<Integer> valueSet = ValueSet.valueSet();
     assertTrue(valueSet.isEmpty());
     assertFalse(valueSet.isNotEmpty());
 
@@ -258,7 +258,7 @@ public class ValueTest {
     initialValues.add(1);
     initialValues.add(2);
 
-    valueSet = Value.valueSet(initialValues);
+    valueSet = ValueSet.valueSet(initialValues);
     assertFalse(valueSet.isEmpty());
     assertTrue(valueSet.isNotEmpty());
     assertEquals(initialValues, valueSet.get());
@@ -312,7 +312,7 @@ public class ValueTest {
 
   @Test
   void valueSetEvents() {
-    ValueSet<Integer> valueSet = Value.valueSet();
+    ValueSet<Integer> valueSet = ValueSet.valueSet();
     Value<Integer> value = valueSet.value();
 
     AtomicInteger valueEventCounter = new AtomicInteger();

@@ -93,6 +93,7 @@ public interface MaskedTextFieldBuilder extends ComponentBuilder<String, JFormat
   /**
    * @param columns the number of colums in the text field
    * @return this builder instance
+   * @see javax.swing.JTextField#setColumns(int)
    */
   MaskedTextFieldBuilder columns(int columns);
 

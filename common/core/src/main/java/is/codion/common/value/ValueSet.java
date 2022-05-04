@@ -3,10 +3,12 @@
  */
 package is.codion.common.value;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
  * A Value holding a set of values, including a possible null value.
+ * A factory class for {@link ValueSet} instances.
  * @param <T> the value type
  */
 public interface ValueSet<T> extends Value<Set<T>> {
@@ -48,4 +50,23 @@ public interface ValueSet<T> extends Value<Set<T>> {
    * @return a single item value based on this value set
    */
   Value<T> value();
+
+  /**
+   * Instantiates a new empty ValueSet
+   * @param <T> the value type
+   * @return a ValueSet
+   */
+  static <T> ValueSet<T> valueSet() {
+    return valueSet(Collections.emptySet());
+  }
+
+  /**
+   * Instantiates a new ValueSet
+   * @param initialValues the initial values, may not be null
+   * @param <T> the value type
+   * @return a ValueSet
+   */
+  static <T> ValueSet<T> valueSet(Set<T> initialValues) {
+    return new DefaultValueSet<>(initialValues);
+  }
 }

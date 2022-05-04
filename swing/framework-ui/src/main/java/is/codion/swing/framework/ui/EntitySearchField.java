@@ -42,7 +42,6 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -361,7 +360,7 @@ public final class EntitySearchField extends JTextField {
   private static List<Entity> lookupEntities(EntityType entityType, EntityConnectionProvider connectionProvider,
                                              boolean singleSelection, JComponent dialogParent, String dialogTitle) {
     EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
-    searchModel.getMultipleSelectionEnabledValue().set(!singleSelection);
+    searchModel.getMultipleSelectionEnabledState().set(!singleSelection);
 
     return Dialogs.showInputDialog(EntitySearchField.builder(searchModel)
             .buildComponentValueMultiple(), dialogParent, dialogTitle);
@@ -408,40 +407,43 @@ public final class EntitySearchField extends JTextField {
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 
-      JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
-      generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
-      generalSettingsPanel.add(Components.checkBox(searchModel.getMultipleSelectionEnabledValue())
-              .caption(MESSAGES.getString("enable_multiple_search_values"))
-              .build());
+      JPanel generalSettingsPanel = Components.panel(Layouts.gridLayout(2, 1))
+              .border(BorderFactory.createTitledBorder(""))
+              .add(Components.checkBox(searchModel.getMultipleSelectionEnabledState())
+                      .caption(MESSAGES.getString("enable_multiple_search_values"))
+                      .build())
+              .build();
 
-      JPanel valueSeparatorPanel = new JPanel(Layouts.borderLayout());
-      valueSeparatorPanel.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
-      valueSeparatorPanel.add(Components.textField(searchModel.getMultipleItemSeparatorValue())
-              .columns(1)
-              .maximumLength(1)
-              .build(), BorderLayout.WEST);
+      JPanel valueSeparatorPanel = Components.panel(Layouts.borderLayout())
+              .add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER)
+              .add(Components.textField(searchModel.getMultipleItemSeparatorValue())
+                      .columns(1)
+                      .maximumLength(1)
+                      .build(), BorderLayout.WEST)
+              .build();
 
       generalSettingsPanel.add(valueSeparatorPanel);
 
       setLayout(Layouts.borderLayout());
-      add(new JComboBox<>(propertyComboBoxModel), BorderLayout.NORTH);
+      add(Components.comboBox(propertyComboBoxModel).build(), BorderLayout.NORTH);
       add(propertyBasePanel, BorderLayout.CENTER);
       add(generalSettingsPanel, BorderLayout.SOUTH);
+      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+      setBorder(BorderFactory.createEmptyBorder(gap, gap, 0, gap));
     }
 
     private static JPanel initializePropertyPanel(EntitySearchModel.SearchSettings settings) {
-      JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
-      panel.add(Components.checkBox(settings.getCaseSensitiveValue())
-              .caption(MESSAGES.getString("case_sensitive"))
-              .build());
-      panel.add(Components.checkBox(settings.getWildcardPrefixValue())
-              .caption(MESSAGES.getString("prefix_wildcard"))
-              .build());
-      panel.add(Components.checkBox(settings.getWildcardPostfixValue())
-              .caption(MESSAGES.getString("postfix_wildcard"))
-              .build());
-
-      return panel;
+      return Components.panel(Layouts.gridLayout(3, 1))
+              .add(Components.checkBox(settings.getCaseSensitiveState())
+                      .caption(MESSAGES.getString("case_sensitive"))
+                      .build())
+              .add(Components.checkBox(settings.getWildcardPrefixState())
+                      .caption(MESSAGES.getString("prefix_wildcard"))
+                      .build())
+              .add(Components.checkBox(settings.getWildcardPostfixState())
+                      .caption(MESSAGES.getString("postfix_wildcard"))
+                      .build())
+              .build();
     }
   }
 
@@ -489,7 +491,7 @@ public final class EntitySearchField extends JTextField {
       selectControl = Control.builder(createSelectCommand(searchModel))
               .caption(Messages.get(Messages.OK))
               .build();
-      list.setSelectionMode(searchModel.getMultipleSelectionEnabledValue().get() ?
+      list.setSelectionMode(searchModel.getMultipleSelectionEnabledState().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
@@ -578,7 +580,7 @@ public final class EntitySearchField extends JTextField {
       Collection<Attribute<String>> searchAttributes = searchModel.getSearchAttributes();
       tableModel.getColumnModel().setColumns(searchAttributes.toArray(new Attribute[0]));
       tableModel.getSortModel().setSortOrder(searchAttributes.iterator().next(), SortOrder.ASCENDING);
-      table.setSelectionMode(searchModel.getMultipleSelectionEnabledValue().get() ?
+      table.setSelectionMode(searchModel.getMultipleSelectionEnabledState().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       table.setDoubleClickAction(selectControl);
       scrollPane = new JScrollPane(table);

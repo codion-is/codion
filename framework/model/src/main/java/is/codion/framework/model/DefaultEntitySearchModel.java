@@ -4,6 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
+import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
@@ -17,7 +18,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -74,8 +74,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private final Value<String> searchStringValue = Value.value("");
   private final Value<String> multipleItemSeparatorValue = Value.value(DEFAULT_SEPARATOR, DEFAULT_SEPARATOR);
-  private final Value<Boolean> multipleSelectionEnabledValue = Value.value(true, false);
-  private final Value<Character> wildcardValue = Value.value(Property.WILDCARD_CHARACTER.get(), Property.WILDCARD_CHARACTER.get());
+  private final State multipleSelectionEnabledState = State.state(true);
+  private final Value<Character> wildcardValue = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
 
   private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
   private Supplier<Condition> additionalConditionSupplier;
@@ -154,7 +154,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
       return;
     }//no change
     if (entities != null) {
-      if (entities.size() > 1 && !multipleSelectionEnabledValue.get()) {
+      if (entities.size() > 1 && !multipleSelectionEnabledState.get()) {
         throw new IllegalArgumentException("This EntitySearchModel does not allow the selection of multiple entities");
       }
       entities.forEach(this::validateType);
@@ -248,8 +248,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Value<Boolean> getMultipleSelectionEnabledValue() {
-    return multipleSelectionEnabledValue;
+  public State getMultipleSelectionEnabledState() {
+    return multipleSelectionEnabledState;
   }
 
   @Override
@@ -272,14 +272,14 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
       throw new IllegalStateException("No search attributes provided for search model: " + entityType);
     }
     Collection<Condition> conditions = new ArrayList<>();
-    String[] searchTexts = multipleSelectionEnabledValue.get() ?
+    String[] searchTexts = multipleSelectionEnabledState.get() ?
             searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (Attribute<String> searchAttribute : searchAttributes) {
       SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
       for (String rawSearchText : searchTexts) {
         conditions.add(where(searchAttribute)
                 .equalTo(prepareSearchText(rawSearchText, searchSettings))
-                .caseSensitive(searchSettings.getCaseSensitiveValue().get()));
+                .caseSensitive(searchSettings.getCaseSensitiveState().get()));
       }
     }
     Condition.Combination conditionCombination = combination(Conjunction.OR, conditions);
@@ -290,8 +290,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private String prepareSearchText(String rawSearchText, SearchSettings searchSettings) {
-    boolean wildcardPrefix = searchSettings.getWildcardPrefixValue().get();
-    boolean wildcardPostfix = searchSettings.getWildcardPostfixValue().get();
+    boolean wildcardPrefix = searchSettings.getWildcardPrefixState().get();
+    boolean wildcardPostfix = searchSettings.getWildcardPostfixState().get();
 
     return rawSearchText.equals(String.valueOf(wildcardValue.get())) ? String.valueOf(wildcardValue.get()) :
             ((wildcardPrefix ? wildcardValue.get() : "") + rawSearchText.trim() + (wildcardPostfix ? wildcardValue.get() : ""));
@@ -333,23 +333,23 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private static final class DefaultSearchSettings implements SearchSettings {
 
-    private final Value<Boolean> wildcardPrefixValue = Value.value(true, false);
-    private final Value<Boolean> wildcardPostfixValue = Value.value(true, false);
-    private final Value<Boolean> caseSensitiveValue = Value.value(false, false);
+    private final State wildcardPrefixState = State.state(true);
+    private final State wildcardPostfixState = State.state(true);
+    private final State caseSensitiveState = State.state(false);
 
     @Override
-    public Value<Boolean> getWildcardPrefixValue() {
-      return wildcardPrefixValue;
+    public State getWildcardPrefixState() {
+      return wildcardPrefixState;
     }
 
     @Override
-    public Value<Boolean> getWildcardPostfixValue() {
-      return wildcardPostfixValue;
+    public State getWildcardPostfixState() {
+      return wildcardPostfixState;
     }
 
     @Override
-    public Value<Boolean> getCaseSensitiveValue() {
-      return caseSensitiveValue;
+    public State getCaseSensitiveState() {
+      return caseSensitiveState;
     }
   }
 

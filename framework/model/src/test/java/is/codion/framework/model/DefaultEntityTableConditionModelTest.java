@@ -5,6 +5,7 @@ package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
+import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
@@ -14,7 +15,6 @@ import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.test.TestDomain;
 
 import org.junit.jupiter.api.Test;
@@ -182,7 +182,7 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   void testSimpleSearchString() {
     final String value = "test";
-    Character wildcard = Property.WILDCARD_CHARACTER.get();
+    char wildcard = Text.WILDCARD_CHARACTER.get();
     conditionModel.getSimpleConditionStringValue().set(value);
     for (ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
       if (model.getTypeClass().equals(String.class)) {

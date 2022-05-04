@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
+import javax.swing.TransferHandler;
 import javax.swing.border.Border;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
@@ -75,6 +76,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private ValueObserver<T> linkedValueObserver;
   private T initialValue;
   private Consumer<C> onSetVisible;
+  private TransferHandler transferHandler;
 
   /**
    * When a linked value is set via the constructor, it is locked and cannot be changed.
@@ -289,6 +291,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
+  public final B transferHandler(TransferHandler transferHandler) {
+    this.transferHandler = requireNonNull(transferHandler);
+    return (B) this;
+  }
+
+  @Override
   public final B onSetVisible(Consumer<C> onSetVisible) {
     this.onSetVisible = onSetVisible;
     return (B) this;
@@ -384,6 +392,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     }
     if (transferFocusOnEnter) {
       setTransferFocusOnEnter(component);
+    }
+    if (transferHandler != null) {
+      component.setTransferHandler(transferHandler);
     }
     buildEvent.onEvent(component);
     if (onBuild != null) {
