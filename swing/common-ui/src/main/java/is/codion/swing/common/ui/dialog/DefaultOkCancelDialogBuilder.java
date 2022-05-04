@@ -130,7 +130,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     panel.add(component, BorderLayout.CENTER);
     panel.add(buttonBasePanel, BorderLayout.SOUTH);
 
-    JDialog dialog = DefaultComponentDialogBuilder.createDialog(owner, title, icon, panel, size, locationRelativeTo, modal, resizable, onShown);
+    JDialog dialog = DefaultComponentDialogBuilder.createDialog(owner, titleObserver, icon, panel, size, locationRelativeTo, modal, resizable, onShown);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.addWindowListener(new CancelOnWindowClosingListener(cancelAction));
     dialog.getRootPane().setDefaultButton(okButton);

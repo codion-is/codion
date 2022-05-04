@@ -64,13 +64,13 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 
   @Override
   public Optional<T> selectSingle() {
-    return selectValue(owner, values, title == null ? MESSAGES.getString("select_value") : title,
+    return selectValue(owner, values, titleObserver == null ? MESSAGES.getString("select_value") : titleObserver.get(),
             defaultSelection.isEmpty() ? null : defaultSelection.iterator().next());
   }
 
   @Override
   public Collection<T> select() {
-    return selectValues(owner, values, title == null ? MESSAGES.getString("select_values") : title, singleSelection, defaultSelection);
+    return selectValues(owner, values, titleObserver == null ? MESSAGES.getString("select_values") : titleObserver.get(), singleSelection, defaultSelection);
   }
 
   static <T> Optional<T> selectValue(Window dialogOwner, Collection<T> values, String dialogTitle,

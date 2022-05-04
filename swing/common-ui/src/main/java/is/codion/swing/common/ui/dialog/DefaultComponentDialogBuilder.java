@@ -7,6 +7,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -118,7 +119,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   @Override
   public JDialog build() {
-    JDialog dialog = createDialog(owner, title, icon, component, size, locationRelativeTo, modal, resizable, onShown);
+    JDialog dialog = createDialog(owner, titleObserver, icon, component, size, locationRelativeTo, modal, resizable, onShown);
     if (enterAction != null) {
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -144,10 +145,13 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     return dialog;
   }
 
-  static JDialog createDialog(Window owner, String title, ImageIcon icon,
+  static JDialog createDialog(Window owner, ValueObserver<String> titleObserver, ImageIcon icon,
                               JComponent component, Dimension size, Component locationRelativeTo,
                               boolean modal, boolean resizable, Consumer<JDialog> onShown) {
-    JDialog dialog = new JDialog(owner, title);
+    JDialog dialog = new JDialog(owner, titleObserver.get());
+    if (titleObserver != null) {
+      titleObserver.addDataListener(dialog::setTitle);
+    }
     if (icon != null) {
       dialog.setIconImage(icon.getImage());
     }

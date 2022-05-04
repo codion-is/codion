@@ -21,7 +21,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private String caption;
   private int mnemonic;
   private boolean includeCaption = true;
-  private int horizontalAlignment = SwingConstants.LEADING;
+  private int horizontalAlignment = SwingConstants.CENTER;
   private Icon icon;
   private Insets insets;
   private Action action;
