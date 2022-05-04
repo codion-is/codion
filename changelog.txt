@@ -8160,3 +8160,4 @@
   RadioButtonBuilder.setHorizontalAlignment() moved to ButtonBuilder
   FileTransferHandler now abstract, moved up to package level
   FileTransferHandler.onImport(), component parameter added
+  FileTransferHandler.onImport() renamed importFiles(), now returns boolean
