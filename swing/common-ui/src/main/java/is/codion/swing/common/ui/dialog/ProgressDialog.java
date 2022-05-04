@@ -28,9 +28,9 @@ public final class ProgressDialog extends JDialog {
 
   ProgressDialog(DefaultProgressDialogBuilder builder, Window dialogOwner) {
     super(dialogOwner, dialogOwner == null ? ModalityType.MODELESS : ModalityType.APPLICATION_MODAL);
-    if (builder.titleObserver != null) {
-      setTitle(builder.titleObserver.get());
-      builder.titleObserver.addDataListener(this::setTitle);
+    if (builder.titleProvider != null) {
+      setTitle(builder.titleProvider.get());
+      builder.titleProvider.addDataListener(this::setTitle);
     }
     if (builder.icon != null) {
       setIconImage(builder.icon.getImage());

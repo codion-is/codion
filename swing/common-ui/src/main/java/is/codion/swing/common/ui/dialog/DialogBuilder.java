@@ -42,10 +42,10 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
   B title(String title);
 
   /**
-   * @param titleObserver a value observer for a dynamic dialog title
+   * @param titleProvider a value observer for a dynamic dialog title
    * @return this builder instance
    */
-  B titleObserver(ValueObserver<String> titleObserver);
+  B titleProvider(ValueObserver<String> titleProvider);
 
   /**
    * @param icon the dialog icon

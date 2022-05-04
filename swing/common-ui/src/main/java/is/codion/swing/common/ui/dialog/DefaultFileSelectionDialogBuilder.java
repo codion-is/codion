@@ -56,36 +56,36 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 
   @Override
   public File selectFile() {
-    return selectFile(owner, startDirectory, titleObserver == null ? MESSAGES.getString("select_file") : titleObserver.get(), fileFilters);
+    return selectFile(owner, startDirectory, titleProvider == null ? MESSAGES.getString("select_file") : titleProvider.get(), fileFilters);
   }
 
   @Override
   public List<File> selectFiles() {
     return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.FILES, false,
-            titleObserver == null ? MESSAGES.getString("select_files") : titleObserver.get(), fileFilters);
+            titleProvider == null ? MESSAGES.getString("select_files") : titleProvider.get(), fileFilters);
   }
 
   @Override
   public File selectDirectory() {
-    return selectDirectory(owner, startDirectory, titleObserver == null ? MESSAGES.getString("select_directory") : titleObserver.get());
+    return selectDirectory(owner, startDirectory, titleProvider == null ? MESSAGES.getString("select_directory") : titleProvider.get());
   }
 
   @Override
   public List<File> selectDirectories() {
     return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.DIRECTORIES, false,
-            titleObserver == null ? MESSAGES.getString("select_directories") : titleObserver.get(), emptyList());
+            titleProvider == null ? MESSAGES.getString("select_directories") : titleProvider.get(), emptyList());
   }
 
   @Override
   public File selectFileOrDirectory() {
     return selectFileOrDirectory(owner, startDirectory, FilesOrDirectories.BOTH,
-            titleObserver == null ? MESSAGES.getString("select_file_or_directory") : titleObserver.get(), fileFilters);
+            titleProvider == null ? MESSAGES.getString("select_file_or_directory") : titleProvider.get(), fileFilters);
   }
 
   @Override
   public List<File> selectFilesOrDirectories() {
     return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.BOTH, false,
-            titleObserver == null ? MESSAGES.getString("select_files_or_directories") : titleObserver.get(), fileFilters);
+            titleProvider == null ? MESSAGES.getString("select_files_or_directories") : titleProvider.get(), fileFilters);
   }
 
   @Override

@@ -188,12 +188,12 @@ public final class EntitySelectionDialog extends JDialog {
 
     @Override
     public List<Entity> select() {
-      return new EntitySelectionDialog(tableModel, owner, titleObserver, icon, preferredSize, false).selectEntities();
+      return new EntitySelectionDialog(tableModel, owner, titleProvider, icon, preferredSize, false).selectEntities();
     }
 
     @Override
     public Optional<Entity> selectSingle() {
-      List<Entity> entities = new EntitySelectionDialog(tableModel, owner, titleObserver, icon, preferredSize, true).selectEntities();
+      List<Entity> entities = new EntitySelectionDialog(tableModel, owner, titleProvider, icon, preferredSize, true).selectEntities();
 
       return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
     }

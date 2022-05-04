@@ -17,7 +17,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
   private String message;
 
   DefaultExceptionDialogBuilder() {
-    titleObserver(Value.value(Messages.get(Messages.ERROR)));
+    titleProvider(Value.value(Messages.get(Messages.ERROR)));
   }
 
   @Override
@@ -49,7 +49,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
     ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message);
 
     JDialog dialog = new DefaultComponentDialogBuilder(exceptionPanel)
-            .titleObserver(titleObserver)
+            .titleProvider(titleProvider)
             .owner(owner)
             .closeEvent(exceptionPanel.getCloseObserver())
             .build();
