@@ -28,7 +28,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.TransferHandler;
 import java.awt.BorderLayout;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
@@ -101,6 +103,8 @@ public final class ApplicationPanel extends JPanel {
             .lineWrap(true)
             .wrapStyleWord(true)
             .transferFocusOnEnter(true)
+            .dragEnabled(true)
+            .transferHandler(new FilePathTransferHandler())
             .keyEvent(KeyEvents.builder(KeyEvent.VK_SPACE)
                     .modifiers(KeyEvent.CTRL_DOWN_MASK)
                     .action(Control.actionControl(actionEvent ->
@@ -283,6 +287,28 @@ public final class ApplicationPanel extends JPanel {
             throw new IllegalArgumentException("No swearing please");
           }
         });
+      }
+    }
+  }
+
+  private static class FilePathTransferHandler extends TransferHandler {
+
+    @Override
+    public boolean canImport(TransferSupport support) {
+      return Arrays.stream(support.getDataFlavors())
+              .anyMatch(DataFlavor::isFlavorJavaFileListType);
+    }
+
+    @Override
+    public boolean importData(TransferSupport support) {
+      try {
+        ((JTextArea) support.getComponent()).setText(support.getTransferable()
+                .getTransferData(DataFlavor.javaFileListFlavor).toString());
+
+        return true;
+      }
+      catch (Exception e) {
+        throw new RuntimeException(e);
       }
     }
   }

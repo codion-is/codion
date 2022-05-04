@@ -81,4 +81,11 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
    * @return this builder instance
    */
   B onTextChanged(Consumer<String> onTextChanged);
+
+  /**
+   * @param dragEnabled true if automatic drag handling should be enabled
+   * @return this builder instance
+   * @see JTextComponent#setDragEnabled(boolean)
+   */
+  B dragEnabled(boolean dragEnabled);
 }

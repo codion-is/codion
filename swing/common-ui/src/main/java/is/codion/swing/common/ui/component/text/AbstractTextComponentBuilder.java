@@ -31,6 +31,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   private boolean moveCaretToEndOnFocusGained;
   private boolean moveCaretToStartOnFocusGained;
   private Consumer<String> onTextChanged;
+  private boolean dragEnabled = false;
 
   protected AbstractTextComponentBuilder(Value<T> linkedValue) {
     super(linkedValue);
@@ -115,9 +116,16 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
+  public final B dragEnabled(boolean dragEnabled) {
+    this.dragEnabled = dragEnabled;
+    return (B) this;
+  }
+
+  @Override
   protected final C createComponent() {
     C textComponent = createTextComponent();
     textComponent.setEditable(editable);
+    textComponent.setDragEnabled(dragEnabled);
     if (margin != null) {
       textComponent.setMargin(margin);
     }

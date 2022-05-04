@@ -15,6 +15,7 @@ import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
+import javax.swing.TransferHandler;
 import javax.swing.border.Border;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -247,6 +248,13 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * @return this builder instance
    */
   B componentListener(ComponentListener componentListener);
+
+  /**
+   * @param transferHandler the transfer handler
+   * @return this builder instance
+   * @see JComponent#setTransferHandler(TransferHandler)
+   */
+  B transferHandler(TransferHandler transferHandler);
 
   /**
    * @param onSetVisible called when the component is made visible for the first time
