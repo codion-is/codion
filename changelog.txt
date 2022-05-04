@@ -8122,3 +8122,4 @@
   ComponentBuilder.transferHandler() and TextComponentBuilder.dragEnabled() added
   RadioButtonBuilder.setHorizontalAlignment() moved to ButtonBuilder
   FileTransferHandler now abstract, moved up to package level
+  FileTransferHandler.onImport(), component parameter added

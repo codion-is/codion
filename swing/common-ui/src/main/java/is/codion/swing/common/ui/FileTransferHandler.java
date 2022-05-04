@@ -5,6 +5,7 @@ package is.codion.swing.common.ui;
 
 import javax.swing.TransferHandler;
 import javax.swing.text.JTextComponent;
+import java.awt.Component;
 import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.net.URI;
@@ -33,7 +34,7 @@ public abstract class FileTransferHandler extends TransferHandler {
       return false;
     }
 
-    onImport(files);
+    onImport(transferSupport.getComponent(), files);
     return true;
   }
 
@@ -48,7 +49,7 @@ public abstract class FileTransferHandler extends TransferHandler {
     textComponent.setDragEnabled(true);
     textComponent.setTransferHandler(new FileTransferHandler() {
       @Override
-      protected void onImport(List<File> importedFiles) {
+      protected void onImport(Component component, List<File> importedFiles) {
         textComponent.setText(importedFiles.get(0).getAbsolutePath());
         textComponent.requestFocusInWindow();
       }
@@ -110,9 +111,10 @@ public abstract class FileTransferHandler extends TransferHandler {
 
   /**
    * Called after a successful import
+   * @param component the component
    * @param importedFiles the imported files
    */
-  protected abstract void onImport(List<File> importedFiles);
+  protected abstract void onImport(Component component, List<File> importedFiles);
 
   private static DataFlavor getNixFileDataFlavor() throws ClassNotFoundException {
     return new DataFlavor("text/uri-list;class=java.lang.String");
