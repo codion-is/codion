@@ -34,6 +34,7 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
   /**
    * @param columns the number of colums in the text component
    * @return this builder instance
+   * @see JTextField#setColumns(int)
    */
   B columns(int columns);
 
@@ -41,6 +42,7 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
    * Note that this disables {@link #transferFocusOnEnter(boolean)}.
    * @param action the action to associate with the text field
    * @return this builder instance
+   * @see JTextField#setAction(Action)
    */
   B action(Action action);
 
@@ -48,6 +50,7 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
    * Note that this disables {@link #transferFocusOnEnter(boolean)}.
    * @param actionListener the action listener
    * @return this builder instance
+   * @see JTextField#addActionListener(ActionListener)
    */
   B actionListener(ActionListener actionListener);
 
@@ -76,6 +79,7 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
   /**
    * @param horizontalAlignment the horizontal text alignment
    * @return this builder instance
+   * @see JTextField#setHorizontalAlignment(int)
    */
   B horizontalAlignment(int horizontalAlignment);
 

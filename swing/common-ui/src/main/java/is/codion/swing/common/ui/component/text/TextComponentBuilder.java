@@ -19,6 +19,7 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
   /**
    * @param editable false if the component should not be editable
    * @return this builder instance
+   * @see JTextComponent#setEditable(boolean)
    */
   B editable(boolean editable);
 
@@ -49,6 +50,7 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
   /**
    * @param margin the margin
    * @return this builder instance
+   * @see JTextComponent#setMargin(Insets)
    */
   B margin(Insets margin);
 
@@ -61,6 +63,7 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
   /**
    * @param disabledTextColor the color used to render disabled text
    * @return this builder instance
+   * @see JTextComponent#setDisabledTextColor(Color)
    */
   B disabledTextColor(Color disabledTextColor);
 

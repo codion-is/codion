@@ -18,6 +18,7 @@ public interface TextAreaBuilder extends TextComponentBuilder<String, JTextArea,
   /**
    * @param rows the number of rows in the text area
    * @return this builder instance
+   * @see JTextArea#setRows(int)
    */
   TextAreaBuilder rows(int rows);
 
@@ -25,36 +26,43 @@ public interface TextAreaBuilder extends TextComponentBuilder<String, JTextArea,
    * @param rows the rows
    * @param columns the columns
    * @return this builder instance
+   * @see JTextArea#setRows(int)
+   * @see JTextArea#setColumns(int)
    */
   TextAreaBuilder rowsColumns(int rows, int columns);
 
   /**
    * @param lineWrap true if line wrap should be used
    * @return this builder instance
+   * @see JTextArea#setLineWrap(boolean)
    */
   TextAreaBuilder lineWrap(boolean lineWrap);
 
   /**
    * @param wrapStyleWord true if wrap style word should be used
    * @return this builder instance
+   * @see JTextArea#setWrapStyleWord(boolean)
    */
   TextAreaBuilder wrapStyleWord(boolean wrapStyleWord);
 
   /**
    * @param autoscrolls true if autoscrolling should be enabled
    * @return this builder instance
+   * @see JTextArea#setAutoscrolls(boolean)
    */
   TextAreaBuilder autoscrolls(boolean autoscrolls);
 
   /**
    * @param tabSize the tab size
    * @return this builder instance
+   * @see JTextArea#setTabSize(int)
    */
   TextAreaBuilder tabSize(int tabSize);
 
   /**
    * @param document the document
    * @return this builder instance
+   * @see JTextArea#setDocument(Document)
    */
   TextAreaBuilder document(Document document);
 

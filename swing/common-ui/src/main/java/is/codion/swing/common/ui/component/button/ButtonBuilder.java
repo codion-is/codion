@@ -25,12 +25,14 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   /**
    * @param caption the caption
    * @return this builder instance
+   * @see JButton#setText(String)
    */
   B caption(String caption);
 
   /**
    * @param mnemonic the mnemonic
    * @return this builder instance
+   * @see JButton#setMnemonic(int)
    */
   B mnemonic(int mnemonic);
 
@@ -44,24 +46,28 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   /**
    * @param icon the icon
    * @return this builder instance
+   * @see JButton#setIcon(Icon)
    */
   B icon(Icon icon);
 
   /**
    * @param insets the margin insets
    * @return this builder instance
+   * @see JButton#setMargin(Insets)
    */
   B margin(Insets insets);
 
   /**
    * @param action the button action
    * @return this builder instance
+   * @see JButton#setAction(Action)
    */
   B action(Action action);
 
   /**
    * @param actionListener the action listener
    * @return this builder instance
+   * @see JButton#addActionListener(ActionListener)
    */
   B actionListener(ActionListener actionListener);
 
