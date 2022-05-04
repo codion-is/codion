@@ -8158,3 +8158,4 @@
   Property.WILDCARD_CHARACTER configuration value moved to Text
   ComponentBuilder.transferHandler() and TextComponentBuilder.dragEnabled() added
   RadioButtonBuilder.setHorizontalAlignment() moved to ButtonBuilder
+  FileTransferHandler now abstract, moved up to package level

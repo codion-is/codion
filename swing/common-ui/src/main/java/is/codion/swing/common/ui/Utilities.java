@@ -13,36 +13,26 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.TransferHandler;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
-import javax.swing.text.JTextComponent;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Optional;
-import java.util.StringTokenizer;
 
-import static java.util.Arrays.stream;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -274,72 +264,6 @@ public final class Utilities {
   }
 
   /**
-   * Makes the text component accept files during drag and drop operations and
-   * insert the absolute path of the dropped file (the first file in a list if more
-   * than one file is dropped)
-   * @param textComponent the text component
-   */
-  public static void addAcceptSingleFileDragAndDrop(JTextComponent textComponent) {
-    requireNonNull(textComponent, "textComponent");
-    textComponent.setDragEnabled(true);
-    textComponent.setTransferHandler(new FileTransferHandler(textComponent));
-  }
-
-  /**
-   * @param transferSupport a drag'n drop transfer support instance
-   * @return true if the given transfer support instance represents a file or a list of files
-   */
-  public static boolean isFileDataFlavor(TransferHandler.TransferSupport transferSupport) {
-    requireNonNull(transferSupport, "transferSupport");
-    try {
-      DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-
-      return stream(transferSupport.getDataFlavors())
-              .anyMatch(flavor -> flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor));
-    }
-    catch (ClassNotFoundException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * Returns the files described by the given transfer support object.
-   * An empty list is returned if no files are found.
-   * @param transferSupport the drag'n drop transfer support
-   * @return the files described by the given transfer support object
-   * @throws RuntimeException in case of an exception
-   */
-  public static List<File> getTransferFiles(TransferHandler.TransferSupport transferSupport) {
-    requireNonNull(transferSupport, "transferSupport");
-    try {
-      for (DataFlavor flavor : transferSupport.getDataFlavors()) {
-        if (flavor.isFlavorJavaFileListType()) {
-          List<File> files = (List<File>) transferSupport.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-
-          return files.isEmpty() ? emptyList() : files;
-        }
-      }
-      //the code below is for handling unix/linux
-      List<File> files = new ArrayList<>();
-      DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-      String data = (String) transferSupport.getTransferable().getTransferData(nixFileDataFlavor);
-      for (StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens(); ) {
-        String token = st.nextToken().trim();
-        if (token.startsWith("#") || token.isEmpty()) {// comment line, by RFC 2483
-          continue;
-        }
-
-        files.add(new File(new URI(token)));
-      }
-
-      return files;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
    * Searches the parent component hierarchy of the given component for
    * an ancestor of the given type
    * @param <T> the type of parent to find
@@ -349,31 +273,5 @@ public final class Utilities {
    */
   public static <T> Optional<T> getParentOfType(Class<T> clazz, Component component) {
     return Optional.ofNullable((T) SwingUtilities.getAncestorOfClass(clazz, component));
-  }
-
-  private static final class FileTransferHandler extends TransferHandler {
-
-    private final JTextComponent textComponent;
-
-    private FileTransferHandler(JTextComponent textComponent) {
-      this.textComponent = textComponent;
-    }
-
-    @Override
-    public boolean canImport(TransferSupport transferSupport) {
-      return isFileDataFlavor(transferSupport);
-    }
-
-    @Override
-    public boolean importData(TransferSupport transferSupport) {
-      List<File> files = getTransferFiles(transferSupport);
-      if (files.isEmpty()) {
-        return false;
-      }
-
-      textComponent.setText(files.get(0).getAbsolutePath());
-      textComponent.requestFocusInWindow();
-      return true;
-    }
   }
 }
