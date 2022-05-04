@@ -2,7 +2,6 @@ package is.codion.framework.demos.manual.world.domain;
 
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -14,7 +13,7 @@ public interface World {
 
   DomainType DOMAIN = DomainType.domainType("WorldImpl");
 
-  interface City extends Entity {
+  interface City {
     EntityType TYPE = DOMAIN.entityType("world.city");
 
     Attribute<Integer> ID = TYPE.integerAttribute("id");
@@ -52,7 +51,7 @@ public interface World {
     ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", CAPITAL, City.ID);
   }
 
-  interface CountryLanguage extends Entity {
+  interface CountryLanguage {
     EntityType TYPE = DOMAIN.entityType("world.countrylanguage");
 
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
@@ -64,7 +63,7 @@ public interface World {
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", COUNTRY_CODE, Country.CODE);
   }
 
-  interface Continent extends Entity {
+  interface Continent {
     EntityType TYPE = DOMAIN.entityType("continent");
 
     Attribute<String> NAME = TYPE.stringAttribute("continent");
