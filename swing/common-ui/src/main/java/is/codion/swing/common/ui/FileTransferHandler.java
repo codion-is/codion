@@ -34,8 +34,7 @@ public abstract class FileTransferHandler extends TransferHandler {
       return false;
     }
 
-    onImport(transferSupport.getComponent(), files);
-    return true;
+    return importFiles(transferSupport.getComponent(), files);
   }
 
   /**
@@ -49,9 +48,11 @@ public abstract class FileTransferHandler extends TransferHandler {
     textComponent.setDragEnabled(true);
     textComponent.setTransferHandler(new FileTransferHandler() {
       @Override
-      protected void onImport(Component component, List<File> importedFiles) {
-        textComponent.setText(importedFiles.get(0).getAbsolutePath());
+      protected boolean importFiles(Component component, List<File> files) {
+        textComponent.setText(files.get(0).getAbsolutePath());
         textComponent.requestFocusInWindow();
+
+        return true;
       }
     });
   }
@@ -112,9 +113,10 @@ public abstract class FileTransferHandler extends TransferHandler {
   /**
    * Called after a successful import
    * @param component the component
-   * @param importedFiles the imported files
+   * @param files the imported files, non-null and containing at least one item
+   * @return true if the files were inserted into the component, false otherwise
    */
-  protected abstract void onImport(Component component, List<File> importedFiles);
+  protected abstract boolean importFiles(Component component, List<File> files);
 
   private static DataFlavor getNixFileDataFlavor() throws ClassNotFoundException {
     return new DataFlavor("text/uri-list;class=java.lang.String");
