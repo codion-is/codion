@@ -21,7 +21,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
   private JComponent southComponent;
 
   DefaultLoginDialogBuilder() {
-    titleObserver(Value.value(Messages.get(Messages.LOGIN)));
+    titleProvider(Value.value(Messages.get(Messages.LOGIN)));
   }
 
   @Override
@@ -46,13 +46,13 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
   public User show() {
     JFrame dummyFrame = null;
     if (owner == null && isWindows()) {
-      owner = dummyFrame = createDummyFrame(titleObserver == null ? null : titleObserver.get(), icon);
+      owner = dummyFrame = createDummyFrame(titleProvider == null ? null : titleProvider.get(), icon);
     }
     LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent);
     new DefaultOkCancelDialogBuilder(loginPanel)
             .owner(owner)
             .resizable(false)
-            .titleObserver(titleObserver)
+            .titleProvider(titleProvider)
             .icon(icon)
             .okAction(loginPanel.getOkControl())
             .cancelAction(loginPanel.getCancelControl())

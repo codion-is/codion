@@ -119,7 +119,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   @Override
   public JDialog build() {
-    JDialog dialog = createDialog(owner, titleObserver, icon, component, size, locationRelativeTo, modal, resizable, onShown);
+    JDialog dialog = createDialog(owner, titleProvider, icon, component, size, locationRelativeTo, modal, resizable, onShown);
     if (enterAction != null) {
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -145,12 +145,12 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     return dialog;
   }
 
-  static JDialog createDialog(Window owner, ValueObserver<String> titleObserver, ImageIcon icon,
+  static JDialog createDialog(Window owner, ValueObserver<String> titleProvider, ImageIcon icon,
                               JComponent component, Dimension size, Component locationRelativeTo,
                               boolean modal, boolean resizable, Consumer<JDialog> onShown) {
-    JDialog dialog = new JDialog(owner, titleObserver.get());
-    if (titleObserver != null) {
-      titleObserver.addDataListener(dialog::setTitle);
+    JDialog dialog = new JDialog(owner, titleProvider.get());
+    if (titleProvider != null) {
+      titleProvider.addDataListener(dialog::setTitle);
     }
     if (icon != null) {
       dialog.setIconImage(icon.getImage());
