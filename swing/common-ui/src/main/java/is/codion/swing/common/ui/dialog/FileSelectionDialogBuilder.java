@@ -30,7 +30,7 @@ public interface FileSelectionDialogBuilder extends DialogBuilder<FileSelectionD
    * @param fileFilter the file filter to add, only applicable to file selection
    * @return this builder instance
    */
-  FileSelectionDialogBuilder addFileFilter(FileFilter fileFilter);
+  FileSelectionDialogBuilder fileFilter(FileFilter fileFilter);
 
   /**
    * @return the selected file

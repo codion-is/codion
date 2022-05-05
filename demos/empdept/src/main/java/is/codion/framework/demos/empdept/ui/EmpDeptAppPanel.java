@@ -57,8 +57,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   public void importJSON() throws Exception {
     File file = Dialogs.fileSelectionDialog()
             .owner(this)
-            .addFileFilter(new FileNameExtensionFilter("JSON files", "json"))
-            .addFileFilter(new FileNameExtensionFilter("Text files", "txt"))
+            .fileFilter(new FileNameExtensionFilter("JSON files", "json"))
+            .fileFilter(new FileNameExtensionFilter("Text files", "txt"))
             .selectFile();
 
     EntityTablePanel tablePanel = EntityTablePanel.createReadOnlyEntityTablePanel(
