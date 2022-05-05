@@ -136,7 +136,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
     if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretOnSelection) {
       ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
     }
-    if (LookAndFeelProvider.isSystemLookAndFeelEnabled()) {
+    if (LookAndFeelProvider.isSystemOrCrossPlatformLookAndFeelEnabled()) {
       new SteppedComboBoxUI(comboBox, popupWidth);
     }
     comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());

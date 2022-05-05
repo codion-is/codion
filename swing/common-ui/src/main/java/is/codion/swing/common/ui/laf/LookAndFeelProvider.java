@@ -160,10 +160,13 @@ public interface LookAndFeelProvider {
   }
 
   /**
-   * @return true if the system look and feel is enabled
+   * @return true if the system or cross-platform look and feel is enabled
    * @see #getSystemLookAndFeelClassName()
    */
-  static boolean isSystemLookAndFeelEnabled() {
-    return UIManager.getLookAndFeel().getClass().getName().equals(getSystemLookAndFeelClassName());
+  static boolean isSystemOrCrossPlatformLookAndFeelEnabled() {
+    String lookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
+
+    return lookAndFeelClassName.equals(getSystemLookAndFeelClassName()) ||
+            lookAndFeelClassName.equals(UIManager.getCrossPlatformLookAndFeelClassName());
   }
 }

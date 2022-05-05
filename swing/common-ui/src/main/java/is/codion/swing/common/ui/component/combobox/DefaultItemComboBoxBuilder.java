@@ -122,7 +122,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
-    if (LookAndFeelProvider.isSystemLookAndFeelEnabled()) {
+    if (LookAndFeelProvider.isSystemOrCrossPlatformLookAndFeelEnabled()) {
       new SteppedComboBoxUI(comboBox, popupWidth);
     }
     comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());
