@@ -8167,3 +8167,4 @@
   DefaultComponentDialogBuilder bug fixed, did not handle a null titleProvider
   FileSelectionDialogBuilder.addFileFilter() renamed fileFilter()
   NavigableImagePanel.Coordinates replaced with Point2D.Double
+  DefaultFileSelectionDialogBuilder bug fixed, did not update UI of cached file selection dialogs on look and feel change

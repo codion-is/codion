@@ -8,8 +8,11 @@ import is.codion.swing.common.ui.WaitCursor;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 import java.awt.Window;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +38,10 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   private final List<FileFilter> fileFilters = new ArrayList<>();
   private String startDirectory;
   private boolean confirmOverwrite = true;
+
+  static {
+    UIManager.addPropertyChangeListener(new LookAndFeelChangeListener());
+  }
 
   @Override
   public FileSelectionDialogBuilder startDirectory(String startDirectory) {
@@ -249,5 +256,21 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
     }
 
     return selectedFile;
+  }
+
+  private static final class LookAndFeelChangeListener implements PropertyChangeListener {
+    private static final String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+      if (LOOK_AND_FEEL_PROPERTY.equals(evt.getPropertyName())) {
+        if (fileChooserOpen != null) {
+          fileChooserOpen.updateUI();
+        }
+        if (fileChooserSave != null) {
+          fileChooserSave.updateUI();
+        }
+      }
+    }
   }
 }
