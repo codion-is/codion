@@ -148,8 +148,9 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   static JDialog createDialog(Window owner, ValueObserver<String> titleProvider, ImageIcon icon,
                               JComponent component, Dimension size, Component locationRelativeTo,
                               boolean modal, boolean resizable, Consumer<JDialog> onShown) {
-    JDialog dialog = new JDialog(owner, titleProvider.get());
+    JDialog dialog = new JDialog(owner);
     if (titleProvider != null) {
+      dialog.setTitle(titleProvider.get());
       titleProvider.addDataListener(dialog::setTitle);
     }
     if (icon != null) {

@@ -8127,3 +8127,5 @@
   DialogBuilder.titleObserver() added for dynamic a dialog title
   ButtonBuilder bug fixed, horizontalAligment not defaults to SwingConstants.CENTER, with CheckBoxBuilder and RadioButtonBuilder defaulting to SwingConstants.LEADING
   DialogBuilder.titleObserver() renamed titleProvider()
+  DefaultComponentDialogBuilder bug fixed, did not handle a null titleProvider
+  FileSelectionDialogBuilder.addFileFilter() renamed fileFilter()
