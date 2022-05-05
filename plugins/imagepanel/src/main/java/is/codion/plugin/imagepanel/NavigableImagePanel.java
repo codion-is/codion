@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -345,8 +346,8 @@ public class NavigableImagePanel extends JPanel {
    * Centers the image on the given image coordinates
    * @param imageCoordinates the image coordinates on which to center the image
    */
-  public final void centerImage(Coordinates imageCoordinates) {
-    centerImage(imageToPanelCoordinates(imageCoordinates).toPoint());
+  public final void centerImage(Point2D.Double imageCoordinates) {
+    centerImage(toPoint(imageToPanelCoordinates(imageCoordinates)));
   }
 
   /**
@@ -369,7 +370,7 @@ public class NavigableImagePanel extends JPanel {
    * @return true if the given point is within the image
    */
   public final boolean isWithinImage(Point p) {
-    Coordinates coordinates = panelToImageCoordinates(p);
+    Point2D.Double coordinates = panelToImageCoordinates(p);
     double width = getImageWidth();
     double height = getImageHeight();
 
@@ -442,8 +443,8 @@ public class NavigableImagePanel extends JPanel {
    * @param point the panel coordinates
    * @return the image coordinates
    */
-  public final Coordinates panelToImageCoordinates(Point point) {
-    return Coordinates.of((point.x - originX) / scale, (point.y - originY) / scale);
+  public final Point2D.Double panelToImageCoordinates(Point point) {
+    return new Point2D.Double((point.x - originX) / scale, (point.y - originY) / scale);
   }
 
   /**
@@ -451,8 +452,8 @@ public class NavigableImagePanel extends JPanel {
    * @param coordinates the image coordinates
    * @return the panel coordinates
    */
-  public final Coordinates imageToPanelCoordinates(Coordinates coordinates) {
-    return Coordinates.of((coordinates.x * scale) + originX, (coordinates.y * scale) + originY);
+  public final Point2D.Double imageToPanelCoordinates(Point2D.Double coordinates) {
+    return new Point2D.Double((coordinates.x * scale) + originX, (coordinates.y * scale) + originY);
   }
 
   /**
@@ -605,27 +606,27 @@ public class NavigableImagePanel extends JPanel {
    * @param zoomingCenter the zooming center
    */
   public final void setZoom(double newZoom, Point zoomingCenter) {
-    Coordinates imageP = panelToImageCoordinates(zoomingCenter);
+    Point2D.Double imageP = panelToImageCoordinates(zoomingCenter);
     if (imageP.x < 0.0) {
-      imageP = Coordinates.of(0.0, imageP.getY());
+      imageP = new Point2D.Double(0.0, imageP.getY());
     }
     if (imageP.y < 0.0) {
-      imageP = Coordinates.of(imageP.getX(), 0.0);
+      imageP = new Point2D.Double(imageP.getX(), 0.0);
     }
     if (imageP.x >= image.getWidth()) {
-      imageP = Coordinates.of(image.getWidth() - 1d, imageP.getY());
+      imageP = new Point2D.Double(image.getWidth() - 1d, imageP.getY());
     }
     if (imageP.y >= image.getHeight()) {
-      imageP = Coordinates.of(imageP.getX(), image.getHeight() - 1d);
+      imageP = new Point2D.Double(imageP.getX(), image.getHeight() - 1d);
     }
 
-    Coordinates correctedP = imageToPanelCoordinates(imageP);
+    Point2D.Double correctedP = imageToPanelCoordinates(imageP);
     double oldZoom = getZoom();
     scale = zoomToScale(newZoom);
-    Coordinates panelP = imageToPanelCoordinates(imageP);
+    Point2D.Double panelP = imageToPanelCoordinates(imageP);
 
-    originX += (correctedP.getIntX() - (int) panelP.x);
-    originY += (correctedP.getIntY() - (int) panelP.y);
+    originX += (Math.round(correctedP.getX()) - (int) panelP.x);
+    originY += (Math.round(correctedP.getY()) - (int) panelP.y);
 
     firePropertyChange(ZOOM_LEVEL_CHANGED_PROPERTY, Double.valueOf(oldZoom), Double.valueOf(getZoom()));
 
@@ -656,10 +657,10 @@ public class NavigableImagePanel extends JPanel {
    * The current mouse position is the zooming center.
    */
   private void zoomImage() {
-    Coordinates imageP = panelToImageCoordinates(mousePosition);
+    Point2D.Double imageP = panelToImageCoordinates(mousePosition);
     double oldZoom = getZoom();
     scale *= zoomFactor;
-    Coordinates panelP = imageToPanelCoordinates(imageP);
+    Point2D.Double panelP = imageToPanelCoordinates(imageP);
 
     originX += (mousePosition.x - (int) panelP.x);
     originY += (mousePosition.y - (int) panelP.y);
@@ -731,12 +732,12 @@ public class NavigableImagePanel extends JPanel {
    * @return the bounds of the image area currently displayed in the panel (in image coordinates).
    */
   private Rectangle getImageClipBounds() {
-    Coordinates startCoordinates = panelToImageCoordinates(new Point(0, 0));
-    Coordinates endCoordinates = panelToImageCoordinates(new Point(getWidth() - 1, getHeight() - 1));
-    int panelX1 = startCoordinates.getIntX();
-    int panelY1 = startCoordinates.getIntY();
-    int panelX2 = endCoordinates.getIntX();
-    int panelY2 = endCoordinates.getIntY();
+    Point2D.Double startCoordinates = panelToImageCoordinates(new Point(0, 0));
+    Point2D.Double endCoordinates = panelToImageCoordinates(new Point(getWidth() - 1, getHeight() - 1));
+    int panelX1 = (int) Math.round(startCoordinates.getX());
+    int panelY1 = (int) Math.round(startCoordinates.getY());
+    int panelX2 = (int) Math.round(endCoordinates.getX());
+    int panelY2 = (int) Math.round(endCoordinates.getY());
     //No intersection?
     if (panelX1 >= image.getWidth() || panelX2 < 0 || panelY1 >= image.getHeight() || panelY2 < 0) {
       return null;
@@ -835,72 +836,8 @@ public class NavigableImagePanel extends JPanel {
     return properties;
   }
 
-  /**
-   * This class is required for high precision image coordinates translation.
-   */
-  public static final class Coordinates {
-
-    private final double x;
-    private final double y;
-
-    /**
-     * @param x the x value
-     * @param y the y value
-     */
-    private Coordinates(double x, double y) {
-      this.x = x;
-      this.y = y;
-    }
-
-    /**
-     * @return the x value
-     */
-    public double getX() {
-      return x;
-    }
-
-    /**
-     * @return the y value
-     */
-    public double getY() {
-      return y;
-    }
-
-    /**
-     * @return the x value rounded to int
-     */
-    public int getIntX() {
-      return (int) Math.round(x);
-    }
-
-    /**
-     * @return the y value rounded to int
-     */
-    public int getIntY() {
-      return (int) Math.round(y);
-    }
-
-    /**
-     * @return this coordinate as a point based on rounded x and y values
-     */
-    public Point toPoint() {
-      return new Point(getIntX(), getIntY());
-    }
-
-    @Override
-    public String toString() {
-      return "[Coordinates: x=" + x + ",y=" + y + "]";
-    }
-
-    /**
-     * Instantiates a new Coordinates object
-     * @param x the x value
-     * @param y the y value
-     * @return a new Coordinate
-     */
-    public static Coordinates of(double x, double y) {
-      return new Coordinates(x, y);
-    }
+  private static Point toPoint(Point2D.Double doublePoint) {
+    return new Point((int) Math.round(doublePoint.x), (int) Math.round(doublePoint.y));
   }
 
   /**

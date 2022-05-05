@@ -8129,3 +8129,4 @@
   DialogBuilder.titleObserver() renamed titleProvider()
   DefaultComponentDialogBuilder bug fixed, did not handle a null titleProvider
   FileSelectionDialogBuilder.addFileFilter() renamed fileFilter()
+  NavigableImagePanel.Coordinates replaced with Point2D.Double
