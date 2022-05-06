@@ -8171,3 +8171,4 @@
   DefaultComboBoxBuilder, DefaultItemComboBoxBuilder bug fixed, did not set the SteppedComboBoxUI in case cross platform look and feel was enabled
   LookAndFeelProvider.isSystemLookAndFeelEnabled() is now isSystemOrCrossPlatformLookAndFeelEnabled()
   Servlet module dependencies upgraded, moving from javax to jakarta, jersey 3.0.4 and jetty 11
+  HttpServerConfiguration.Builder and HTTP_SERVER_CLASSPATH_KEYSTORE configuration value added

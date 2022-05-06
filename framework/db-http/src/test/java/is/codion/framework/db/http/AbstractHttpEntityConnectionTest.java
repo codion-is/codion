@@ -9,7 +9,6 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.http.server.HttpServerConfiguration;
-import is.codion.common.http.server.ServerHttps;
 import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
@@ -272,7 +271,7 @@ abstract class AbstractHttpEntityConnectionTest {
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
-    HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.TRUE);
+    HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(true);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "../../framework/server/src/main/config/all_permissions.policy");
@@ -296,7 +295,7 @@ abstract class AbstractHttpEntityConnectionTest {
     HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
-    HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.FALSE);
+    HttpServerConfiguration.HTTP_SERVER_SECURE.set(false);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(null);
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
     System.clearProperty("java.security.policy");

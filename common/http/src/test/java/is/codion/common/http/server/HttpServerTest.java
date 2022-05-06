@@ -18,16 +18,19 @@ public class HttpServerTest {
 
   static {
     System.setProperty("javax.net.ssl.trustStore", "../../framework/server/src/main/config/truststore.jks");
-	  System.setProperty("javax.net.ssl.trustStorePassword", "crappypass");
+    System.setProperty("javax.net.ssl.trustStorePassword", "crappypass");
   }
 
   private final HttpServerConfiguration configuration;
   private final HttpServer httpServer;
 
   public HttpServerTest() {
-    configuration = HttpServerConfiguration.configuration(FILE_SERVER_PORT_NUMBER, ServerHttps.TRUE);
-    configuration.setDocumentRoot(System.getProperty("user.dir"));
-    configuration.setKeystore("../../framework/server/src/main/config/keystore.jks", "crappypass");
+    configuration = HttpServerConfiguration.builder(FILE_SERVER_PORT_NUMBER)
+            .secure(true)
+            .documentRoot(System.getProperty("user.dir"))
+            .keystorePath("../../framework/server/src/main/config/keystore.jks")
+            .keystorePassword("crappypass")
+            .build();
     httpServer = new HttpServer(configuration);
   }
 
