@@ -8169,4 +8169,4 @@
   NavigableImagePanel.Coordinates replaced with Point2D.Double
   DefaultFileSelectionDialogBuilder bug fixed, did not update UI of cached file selection dialogs on look and feel change
   DefaultComboBoxBuilder, DefaultItemComboBoxBuilder bug fixed, did not set the SteppedComboBoxUI in case cross platform look and feel was enabled
-  LookAndFeelProvider.isSystemLookAndFeelEnabled() is not isSystemOrCrossPlatformLookAndFeelEnabled()
+  LookAndFeelProvider.isSystemLookAndFeelEnabled() is now isSystemOrCrossPlatformLookAndFeelEnabled()
