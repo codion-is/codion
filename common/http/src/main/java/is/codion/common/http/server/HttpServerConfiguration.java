@@ -20,15 +20,24 @@ public interface HttpServerConfiguration {
 
   /**
    * Specifies whether https should be used.<br>
-   * Value types: Https<br>
+   * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<ServerHttps> HTTP_SERVER_SECURE = Configuration.enumValue("codion.server.http.secure", ServerHttps.class, ServerHttps.TRUE);
+  PropertyValue<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("codion.server.http.secure", true);
+
+  /**
+   * The https keystore to use on the classpath, this will be resolved to a temporary file and set
+   * as the codion.server.http.keyStore system property on server start<br>
+   * Value type: String
+   * Default value: null
+   */
+  PropertyValue<String> HTTP_SERVER_CLASSPATH_KEYSTORE = Configuration.stringValue("codion.server.http.classpathKeyStore");
 
   /**
    * Specifies the keystore to use for securing http connections.<br>
    * Value type: String<br>
    * Default value: null
+   * @see #HTTP_SERVER_CLASSPATH_KEYSTORE
    */
   PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("codion.server.http.keyStore");
 
@@ -47,27 +56,23 @@ public interface HttpServerConfiguration {
   PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("codion.server.http.documentRoot");
 
   /**
-   * Instantiates a new HttpServerConfiguration.
-   * @param port the port on which to serve
-   * @param https yes if https should be used
-   * @return a default configuration
+   * @param port the server port
+   * @return a new builder instance
    */
-  static HttpServerConfiguration configuration(int port, ServerHttps https) {
-    return new DefaultHttpServerConfiguration(port, https);
+  static HttpServerConfiguration.Builder builder(int port) {
+    return new DefaultHttpServerConfiguration.DefaultBuilder(port);
   }
 
   /**
    * Parses configuration from system properties.
-   * @return a server configuration according to system properties
+   * @return a server configuration builder initialized according to system properties
    */
-  static HttpServerConfiguration fromSystemProperties() {
-    DefaultHttpServerConfiguration configuration = new DefaultHttpServerConfiguration(
-            HttpServerConfiguration.HTTP_SERVER_PORT.get(),
-            HttpServerConfiguration.HTTP_SERVER_SECURE.get());
-    configuration.setDocumentRoot(HttpServerConfiguration.DOCUMENT_ROOT.get());
-    configuration.setKeystore(HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.get(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.get());
-
-    return configuration;
+  static HttpServerConfiguration.Builder builderFromSystemProperties() {
+    return builder(HttpServerConfiguration.HTTP_SERVER_PORT.getOrThrow())
+            .secure(HttpServerConfiguration.HTTP_SERVER_SECURE.get())
+            .documentRoot(HttpServerConfiguration.DOCUMENT_ROOT.get())
+            .keystorePath(HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.get())
+            .keystorePassword(HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.get());
   }
 
   /**
@@ -96,13 +101,37 @@ public interface HttpServerConfiguration {
   String getKeystorePassword();
 
   /**
-   * @param documentRoot the document root
+   * Builds a {@link HttpServerConfiguration} instance
    */
-  void setDocumentRoot(String documentRoot);
+  interface Builder {
 
-  /**
-   * @param keystorePath the keystore path
-   * @param keystorePassword the keystore password
-   */
-  void setKeystore(String keystorePath, String keystorePassword);
+    /**
+     * @param secure true if https should be used
+     * @return this builder instance
+     */
+    Builder secure(boolean secure);
+
+    /**
+     * @param documentRoot the document root to serve files from
+     * @return this builder instance
+     */
+    Builder documentRoot(String documentRoot);
+
+    /**
+     * @param keystorePath the keystore path
+     * @return this builder instance
+     */
+    Builder keystorePath(String keystorePath);
+
+    /**
+     * @param keystorePassword the keystore password
+     * @return this builder instance
+     */
+    Builder keystorePassword(String keystorePassword);
+
+    /**
+     * @return a new {@link HttpServerConfiguration} instance
+     */
+    HttpServerConfiguration build();
+  }
 }

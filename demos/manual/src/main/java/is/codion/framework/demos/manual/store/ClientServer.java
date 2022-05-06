@@ -6,7 +6,6 @@ package is.codion.framework.demos.manual.store;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.http.server.HttpServerConfiguration;
-import is.codion.common.http.server.ServerHttps;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
@@ -73,7 +72,7 @@ public final class ClientServer {
                     "src/main/sql/create_schema.sql");
 
     HttpServerConfiguration.HTTP_SERVER_PORT.set(HTTP_PORT);
-    HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.FALSE);
+    HttpServerConfiguration.HTTP_SERVER_SECURE.set(false);
 
     EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
             .domainModelClassNames(singletonList(Store.class.getName()))

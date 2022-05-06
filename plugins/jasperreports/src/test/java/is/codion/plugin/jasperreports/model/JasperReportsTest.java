@@ -10,7 +10,6 @@ import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.http.server.HttpServer;
 import is.codion.common.http.server.HttpServerConfiguration;
-import is.codion.common.http.server.ServerHttps;
 import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -100,9 +99,10 @@ public class JasperReportsTest {
   void urlReport() throws Exception {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set("http://localhost:1234");
-    HttpServerConfiguration configuration = HttpServerConfiguration.configuration(1234, ServerHttps.FALSE);
-    configuration.setDocumentRoot(REPORT_PATH);
-    HttpServer server = new HttpServer(configuration);
+    HttpServer server = new HttpServer(HttpServerConfiguration.builder(1234)
+            .secure(false)
+            .documentRoot(REPORT_PATH)
+            .build());
     try {
       server.startServer();
       HashMap<String, Object> reportParameters = new HashMap<>();

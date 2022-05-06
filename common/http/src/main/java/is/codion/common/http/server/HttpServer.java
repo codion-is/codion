@@ -39,7 +39,7 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
    * Instantiates a new HttpServer, using system properties.
    */
   public HttpServer() {
-    this(HttpServerConfiguration.fromSystemProperties());
+    this(HttpServerConfiguration.builderFromSystemProperties().build());
   }
 
   /**

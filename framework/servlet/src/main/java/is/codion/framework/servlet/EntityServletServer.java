@@ -29,7 +29,7 @@ public final class EntityServletServer extends HttpServer implements AuxiliarySe
    * @see HttpServerConfiguration#HTTP_SERVER_SECURE
    */
   EntityServletServer(Server<RemoteEntityConnection, ? extends ServerAdmin> server) {
-    this(server, HttpServerConfiguration.fromSystemProperties());
+    this(server, HttpServerConfiguration.builderFromSystemProperties().build());
   }
 
   /**
