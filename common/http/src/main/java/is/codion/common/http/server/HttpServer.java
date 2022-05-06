@@ -126,7 +126,8 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
 
     requireNonNull(configuration.getKeystorePassword(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.toString());
 
-    SslContextFactory sslContextFactory = new SslContextFactory(configuration.getKeystorePath());
+    SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
+    sslContextFactory.setKeyStorePath(configuration.getKeystorePath());
     sslContextFactory.setKeyStorePassword(configuration.getKeystorePassword());
 
     ServerConnector httpsConnector = new ServerConnector(this,

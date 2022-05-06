@@ -4,11 +4,12 @@
  */
 module is.codion.framework.servlet {
   requires org.slf4j;
-  requires java.ws.rs;
-  requires javax.servlet.api;
+  requires jakarta.ws.rs;
+  requires jakarta.activation;
+  requires jakarta.annotation;
+  requires jakarta.inject;
   requires com.fasterxml.jackson.databind;
-  requires jersey.container.jetty.servlet;
-  requires jersey.container.servlet.core;
+  requires org.eclipse.jetty.servlet;
   requires is.codion.common.http;
   requires is.codion.framework.db.rmi;
   requires is.codion.plugin.jackson.json;
