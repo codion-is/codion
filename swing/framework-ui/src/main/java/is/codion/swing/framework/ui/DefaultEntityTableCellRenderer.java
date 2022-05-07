@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
@@ -97,20 +96,10 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
 
   /**
    * @param value the value to set
-   * @see SwingEntityTableModel#getValue(Entity, Attribute)
    */
   @Override
   protected void setValue(Object value) {
     super.setValue(displayValueProvider.apply(value));
-  }
-
-  private static String getItemCaption(Object value, ItemProperty<Object> itemProperty) {
-    if (!itemProperty.isValid(value)) {
-      //display empty string for invalid values
-      return "";
-    }
-
-    return itemProperty.getItem(value).getCaption();
   }
 
   private final class DefaultDisplayValueProvider implements Function<Object, Object> {

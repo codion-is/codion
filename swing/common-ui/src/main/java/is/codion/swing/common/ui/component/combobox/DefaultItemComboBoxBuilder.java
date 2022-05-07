@@ -12,6 +12,7 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.JComboBox;
+import javax.swing.ListCellRenderer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,6 +35,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   private boolean mouseWheelScrollingWithWrapAround = false;
   private int maximumRowCount = -1;
   private int popupWidth = 0;
+  private ListCellRenderer<Item<T>> renderer;
 
   DefaultItemComboBoxBuilder(List<Item<T>> items, Value<T> linkedValue) {
     super(linkedValue);
@@ -109,6 +111,12 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   }
 
   @Override
+  public ItemComboBoxBuilder<T> renderer(ListCellRenderer<Item<T>> renderer) {
+    this.renderer = requireNonNull(renderer);
+    return this;
+  }
+
+  @Override
   protected JComboBox<Item<T>> createComponent() {
     ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
     JComboBox<Item<T>> comboBox = new FocusableComboBox<>(itemComboBoxModel);
@@ -124,6 +132,9 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
     }
     if (LookAndFeelProvider.isSystemOrCrossPlatformLookAndFeelEnabled()) {
       new SteppedComboBoxUI(comboBox, popupWidth);
+    }
+    if (renderer != null) {
+      comboBox.setRenderer(renderer);
     }
     comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());
 
