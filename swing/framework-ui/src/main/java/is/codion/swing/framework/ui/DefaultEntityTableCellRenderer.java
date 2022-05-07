@@ -21,7 +21,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.text.Format;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Utilities.darker;
@@ -117,17 +116,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   private final class DefaultDisplayValueProvider implements Function<Object, Object> {
     @Override
     public Object apply(Object value) {
-      if (property instanceof ItemProperty) {
-        return getItemCaption(value, (ItemProperty<Object>) property);
-      }
-      else if (value instanceof Temporal) {
-        return dateTimeFormatter.format((Temporal) value);
-      }
-      else if (value != null && format != null) {
-        return format.format(value);
-      }
-
-      return value;
+      return ((Property<Object>) property).toString(value);
     }
   }
 

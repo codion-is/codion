@@ -8134,3 +8134,5 @@
   DefaultComboBoxBuilder, DefaultItemComboBoxBuilder bug fixed, did not set the SteppedComboBoxUI in case cross platform look and feel was enabled
   LookAndFeelProvider.isSystemLookAndFeelEnabled() is now isSystemOrCrossPlatformLookAndFeelEnabled()
   HttpServerConfiguration.Builder and HTTP_SERVER_CLASSPATH_KEYSTORE configuration value added
+  Property.formatValue(value) renamed toString(value), consistent with Entity.toString(property), DefaultItemProperty now handles displaying item captions
+  DefaultEntityTableCellRenderer.DefaultDisplayValueProvider now uses to Property.toString()

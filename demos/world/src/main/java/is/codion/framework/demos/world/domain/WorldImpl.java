@@ -1,5 +1,6 @@
 package is.codion.framework.demos.world.domain;
 
+import is.codion.common.item.Item;
 import is.codion.framework.demos.world.domain.api.World;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.query.SelectQuery;
@@ -7,6 +8,7 @@ import is.codion.framework.domain.property.ColumnProperty.ValueConverter;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
@@ -17,6 +19,11 @@ import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
 
 public final class WorldImpl extends DefaultDomain implements World {
+
+  private static final List<Item<String>> CONTINENT_ITEMS = asList(
+            item("Africa"), item("Antarctica"), item("Asia"),
+            item("Europe"), item("North America"), item("Oceania"),
+            item("South America"));
 
   public WorldImpl() {
     super(World.DOMAIN);
@@ -79,10 +86,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .nullable(false)
                     .maximumLength(52),
             // tag::item[]
-            itemProperty(Country.CONTINENT, "Continent", asList(
-                    item("Africa"), item("Antarctica"), item("Asia"),
-                    item("Europe"), item("North America"), item("Oceania"),
-                    item("South America")))
+            itemProperty(Country.CONTINENT, "Continent", CONTINENT_ITEMS)
                     .nullable(false),
             // end::item[]
             // tag::columnProperty[]
@@ -182,7 +186,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             columnProperty(Lookup.COUNTRY_CODE, "Country code")
                     .primaryKeyIndex(0),
             columnProperty(Lookup.COUNTRY_NAME, "Country name"),
-            columnProperty(Lookup.COUNTRY_CONTINENT, "Continent"),
+            itemProperty(Lookup.COUNTRY_CONTINENT, "Continent", CONTINENT_ITEMS),
             columnProperty(Lookup.COUNTRY_REGION, "Region"),
             columnProperty(Lookup.COUNTRY_SURFACEAREA, "Surface area")
                     .numberFormatGrouping(true),

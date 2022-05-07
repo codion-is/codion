@@ -324,7 +324,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final String formatValue(T value) {
+  public String toString(T value) {
     if (value == null) {
       return "";
     }

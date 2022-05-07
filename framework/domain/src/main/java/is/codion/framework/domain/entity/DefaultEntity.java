@@ -206,7 +206,7 @@ final class DefaultEntity implements Entity, Serializable {
       }
     }
 
-    return property.formatValue(get(property));
+    return property.toString(get(property));
   }
 
   @Override

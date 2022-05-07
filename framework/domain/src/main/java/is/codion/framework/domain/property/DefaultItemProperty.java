@@ -47,6 +47,16 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
     return item;
   }
 
+  @Override
+  public String toString(T value) {
+    if (!isValid(value)) {
+      //return an empty string for invalid values
+      return "";
+    }
+
+    return getItem(value).getCaption();
+  }
+
   static final class DefaultItemPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>> extends DefaultColumnPropertyBuilder<T, B> {
 
     private final List<Item<T>> items;
