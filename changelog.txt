@@ -8136,3 +8136,5 @@
   HttpServerConfiguration.Builder and HTTP_SERVER_CLASSPATH_KEYSTORE configuration value added
   Property.formatValue(value) renamed toString(value), consistent with Entity.toString(property), DefaultItemProperty now handles displaying item captions
   DefaultEntityTableCellRenderer.DefaultDisplayValueProvider now uses to Property.toString()
+  ItemComboBoxBuilder.renderer() added
+  EntityApplicationPanel.selectFontSize() refactored

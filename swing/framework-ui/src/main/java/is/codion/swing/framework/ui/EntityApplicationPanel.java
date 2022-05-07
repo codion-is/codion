@@ -32,6 +32,7 @@ import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -67,6 +68,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
+import javax.swing.ListCellRenderer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -363,24 +365,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
     ItemComboBoxModel<Integer> comboBoxModel = ItemComboBoxModel.createModel(values);
     Integer defaultFontSize = getDefaultFontSize();
-    comboBoxModel.setSelectedItem(defaultFontSize);
 
-    JComboBox<Item<Integer>> comboBox = new JComboBox<>(comboBoxModel);
-    comboBox.setRenderer(new DefaultListCellRenderer() {
-      @Override
-      public Component getListCellRendererComponent(JList list, Object value, int index,
-                                                    boolean isSelected, boolean cellHasFocus) {
-        Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        if (index >= 0) {
-          Font font = component.getFont();
-          int newSize = Math.round(font.getSize() * (values.get(index).getValue() / (float) defaultFontSize.doubleValue()));
-          component.setFont(new Font(font.getName(), font.getStyle(), newSize));
-        }
-
-        return component;
-      }
-    });
-    Dialogs.okCancelDialog(comboBox)
+    Dialogs.okCancelDialog(Components.panel(Layouts.borderLayout())
+                    .add(Components.itemComboBox(comboBoxModel)
+                            .initialValue(defaultFontSize)
+                            .renderer(new FontSizeCellRenderer(values, defaultFontSize))
+                            .build(), BorderLayout.CENTER)
+                    .border(BorderFactory.createEmptyBorder(10, 10, 0, 10))
+                    .build())
             .owner(this)
             .title(resourceBundle.getString("select_font_size"))
             .onOk(() -> {
@@ -1559,6 +1551,31 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     public void validate(User user) throws Exception {
       connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
       connectionProvider.getConnection();//throws exception if the server is not reachable
+    }
+  }
+
+  private static final class FontSizeCellRenderer implements ListCellRenderer<Item<Integer>> {
+
+    private final DefaultListCellRenderer defaultListCellRenderer = new DefaultListCellRenderer();
+    private final List<Item<Integer>> values;
+    private final Integer defaultFontSize;
+
+    private FontSizeCellRenderer(List<Item<Integer>> values, Integer defaultFontSize) {
+      this.values = values;
+      this.defaultFontSize = defaultFontSize;
+    }
+
+    @Override
+    public Component getListCellRendererComponent(JList<? extends Item<Integer>> list, Item<Integer> value, int index,
+                                                  boolean isSelected, boolean cellHasFocus) {
+      Component component = defaultListCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+      if (index >= 0) {
+        Font font = component.getFont();
+        int newSize = Math.round(font.getSize() * (values.get(index).getValue() / (float) defaultFontSize.doubleValue()));
+        component.setFont(new Font(font.getName(), font.getStyle(), newSize));
+      }
+
+      return component;
     }
   }
 }
