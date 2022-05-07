@@ -20,7 +20,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
 
   private static SwingEntityModel initializeArtistModel(EntityConnectionProvider connectionProvider) {
     SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
-    SwingEntityModel albumModel = new SwingEntityModel(new AlbumTableModel(connectionProvider));
+    SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
     SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
     trackModel.getEditModel().initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
 

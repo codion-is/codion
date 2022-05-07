@@ -86,7 +86,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .maximumLength(160)
                     .preferredColumnWidth(160),
             blobProperty(Album.COVER)
-                    .eagerlyLoaded(),
+                    .eagerlyLoaded()
+                    .format(new CoverFormatter()),
             derivedProperty(Album.COVERIMAGE,
                     new CoverArtImageProvider(), Album.COVER),
             subqueryProperty(Album.NUMBER_OF_TRACKS,
