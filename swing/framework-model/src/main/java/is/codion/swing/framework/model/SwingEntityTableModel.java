@@ -624,17 +624,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   /**
-   * Return the value to display in a table cell for the given attribute of the given entity.
-   * @param entity the entity
-   * @param attribute the attribute
-   * @return the value of the given attribute for the given entity for display
-   * @throws NullPointerException in case entity or attribute is null
-   */
-  protected Object getValue(Entity entity, Attribute<?> attribute) {
-    return requireNonNull(entity, "entity").get(attribute);
-  }
-
-  /**
    * Returns a {@link java.awt.Color} instance from the given Object.
    * {@link java.awt.Color} instances are returned as-is, but instances of
    * {@link java.lang.String} are assumed to be in HEX format (f.ex: #ffff00" or #00ff00)

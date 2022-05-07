@@ -8138,3 +8138,4 @@
   DefaultEntityTableCellRenderer.DefaultDisplayValueProvider now uses to Property.toString()
   ItemComboBoxBuilder.renderer() added
   EntityApplicationPanel.selectFontSize() refactored
+  SwingEntityTableModel.getValue() removed, unused
