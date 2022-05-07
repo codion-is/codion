@@ -138,14 +138,14 @@ public interface Property<T> {
   T prepareValue(T value);
 
   /**
-   * Returns a value formatted with this property's format. If no format is specified {@link Object#toString()} is used.
-   * Null values result in an empty string.
+   * Returns a string representation of the given value formatted with this property's format.
+   * If no format is available {@link Object#toString()} is used. By default, null values result in an empty string.
    * @param value the value to format.
    * @return the value formatted as a string
    * @see Property.Builder#format(Format)
    * @see Property.Builder#dateTimePattern(String)
    */
-  String formatValue(T value);
+  String toString(T value);
 
   /**
    * @return true if a default value has been set for this property

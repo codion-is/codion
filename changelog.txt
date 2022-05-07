@@ -8172,3 +8172,5 @@
   LookAndFeelProvider.isSystemLookAndFeelEnabled() is now isSystemOrCrossPlatformLookAndFeelEnabled()
   Servlet module dependencies upgraded, moving from javax to jakarta, jersey 3.0.4 and jetty 11
   HttpServerConfiguration.Builder and HTTP_SERVER_CLASSPATH_KEYSTORE configuration value added
+  Property.formatValue(value) renamed toString(value), consistent with Entity.toString(property), DefaultItemProperty now handles displaying item captions
+  DefaultEntityTableCellRenderer.DefaultDisplayValueProvider now uses to Property.toString()
