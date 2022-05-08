@@ -21,6 +21,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -342,6 +346,25 @@ public interface Chinook {
       }
 
       return builder.toString();
+    }
+  }
+
+  final class CoverFormatter extends Format {
+
+    private final NumberFormat kbFormat = NumberFormat.getIntegerInstance();
+
+    @Override
+    public StringBuffer format(Object value, StringBuffer toAppendTo, FieldPosition pos) {
+      if (value != null) {
+        toAppendTo.append(kbFormat.format(((byte[]) value).length / 1024) + " Kb");
+      }
+
+      return toAppendTo;
+    }
+
+    @Override
+    public Object parseObject(String source, ParsePosition pos) {
+      throw new UnsupportedOperationException();
     }
   }
 }
