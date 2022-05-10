@@ -65,16 +65,6 @@ application {
     mainModule = moduleName
 }
 
-test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-        addExports = testAddExports;
-    }
-    systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "is.codion.framework.demos.world.domain.WorldImpl"
-}
-
 task buildReports(dependsOn: 'compileJava') {
     group 'build'
     // otherwise this task fails in a clean project clone, since the codion jar files
@@ -99,6 +89,25 @@ task buildReports(dependsOn: 'compileJava') {
 classes.finalizedBy buildReports
 
 compileTestJava.dependsOn buildReports
+
+test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+        addExports = testAddExports;
+    }
+    dependsOn buildReports
+    systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
+    systemProperty "codion.client.domainClass", "is.codion.framework.demos.world.domain.WorldImpl"
+}
+
+domainJar {
+    dependsOn buildReports
+}
+
+jar {
+    dependsOn buildReports
+}
 
 task runClientLocal(type: ModularJavaExec) {
     group 'application'
