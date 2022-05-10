@@ -16,8 +16,9 @@ import java.util.function.Function;
 
 /**
  * Provides TableCellRenderer implementations for EntityTablePanels via {@link #builder(SwingEntityTableModel, Property)}.
+ * @param <T> the property type
  */
-public interface EntityTableCellRenderer extends TableCellRenderer {
+public interface EntityTableCellRenderer<T> extends TableCellRenderer {
 
   /**
    * The default left padding for table cells.<br>
@@ -98,58 +99,60 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
 
   /**
    * Instantiates a new {@link EntityTableCellRenderer.Builder} with defaults based on the given property.
+   * @param <T> the property type
    * @param tableModel the table model providing the data to render
    * @param property the property
    * @return a new {@link EntityTableCellRenderer.Builder} instance
    */
-  static Builder builder(SwingEntityTableModel tableModel, Property<?> property) {
-    return new DefaultEntityTableCellRenderer.DefaultBuilder(tableModel, property);
+  static <T> Builder<T> builder(SwingEntityTableModel tableModel, Property<T> property) {
+    return new DefaultEntityTableCellRenderer.DefaultBuilder<>(tableModel, property);
   }
 
   /**
    * Builds a {@link EntityTableCellRenderer}
+   * @param <T> the property type
    */
-  interface Builder {
+  interface Builder<T> {
 
     /**
      * @param horizontalAlignment the horizontal alignment
      * @return this builder instance
      */
-    Builder horizontalAlignment(int horizontalAlignment);
+    Builder<T> horizontalAlignment(int horizontalAlignment);
 
     /**
      * @param toolTipData true if the cell should display its contents in a tool tip
      * @return this builder instance
      */
-    Builder toolTipData(boolean toolTipData);
+    Builder<T> toolTipData(boolean toolTipData);
 
     /**
      * @param displayConditionState true if true then cells/columns involved in a condition have different background color
      * @return this builder instance
      */
-    Builder displayConditionState(boolean displayConditionState);
+    Builder<T> displayConditionState(boolean displayConditionState);
 
     /**
      * @param leftPadding the left cell padding
      * @return this builder instance
      */
-    Builder leftPadding(int leftPadding);
+    Builder<T> leftPadding(int leftPadding);
 
     /**
      * @param rightPadding the right cell padding
      * @return this builder instance
      */
-    Builder rightPadding(int rightPadding);
+    Builder<T> rightPadding(int rightPadding);
 
     /**
      * @param displayValueProvider provides the value to display in the cell, formatted or otherwise
      * @return this builder instance
      */
-    Builder displayValueProvider(Function<Object, Object> displayValueProvider);
+    Builder<T> displayValueProvider(Function<T, Object> displayValueProvider);
 
     /**
      * @return a new {@link EntityTableCellRenderer} instance based on this builder
      */
-    EntityTableCellRenderer build();
+    EntityTableCellRenderer<T> build();
   }
 }

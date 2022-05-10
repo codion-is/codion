@@ -29,7 +29,7 @@ public class DefauitEntityTableCellRendererTest {
   void test() {
     EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.getTableModel().refresh();
-    EntityTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.getTableModel(),
+    EntityTableCellRenderer<String> renderer = EntityTableCellRenderer.builder(tablePanel.getTableModel(),
             DOMAIN.getEntities().getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_NAME))
             .build();
     renderer.getTableCellRendererComponent(tablePanel.getTable(), null, false, false, 0, 0);

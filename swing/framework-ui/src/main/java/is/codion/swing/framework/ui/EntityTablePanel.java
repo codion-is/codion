@@ -1321,10 +1321,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Returns the TableCellRenderer used for the given property in this EntityTablePanel
+   * @param <T> the property type
    * @param property the property
    * @return the TableCellRenderer for the given property
    */
-  protected TableCellRenderer initializeTableCellRenderer(Property<?> property) {
+  protected <T> TableCellRenderer initializeTableCellRenderer(Property<T> property) {
     return EntityTableCellRenderer.builder(tableModel, property).build();
   }
 
@@ -1596,8 +1597,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
   }
 
-  private void configureColumn(TableColumn column) {
-    Property<?> property = tableModel.getEntityDefinition().getProperty((Attribute<?>) column.getIdentifier());
+  private <T> void configureColumn(TableColumn column) {
+    Property<T> property = tableModel.getEntityDefinition().getProperty((Attribute<T>) column.getIdentifier());
     column.setCellRenderer(initializeTableCellRenderer(property));
     column.setCellEditor(initializeTableCellEditor(property));
     column.setResizable(true);

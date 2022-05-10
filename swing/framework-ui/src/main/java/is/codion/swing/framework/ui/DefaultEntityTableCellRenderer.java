@@ -28,16 +28,16 @@ import static javax.swing.BorderFactory.*;
  * The default table cell renderer for a {@link EntityTablePanel}
  * @see EntityTableCellRenderer#builder(SwingEntityTableModel, Property)
  */
-final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTableCellRenderer {
+final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer implements EntityTableCellRenderer<T> {
 
   private final UISettings settings;
   private final SwingEntityTableModel tableModel;
-  private final Property<?> property;
+  private final Property<T> property;
   private final boolean toolTipData;
   private final boolean displayConditionState;
-  private final Function<Object, Object> displayValueProvider;
+  private final Function<T, Object> displayValueProvider;
 
-  private DefaultEntityTableCellRenderer(DefaultBuilder builder) {
+  private DefaultEntityTableCellRenderer(DefaultBuilder<T> builder) {
     this.settings = new UISettings(builder.leftPadding, builder.rightPadding);
     this.tableModel = builder.tableModel;
     this.property = builder.property;
@@ -93,25 +93,25 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
    */
   @Override
   protected void setValue(Object value) {
-    super.setValue(displayValueProvider.apply(value));
+    super.setValue(displayValueProvider.apply((T) value));
   }
 
-  private final class DefaultDisplayValueProvider implements Function<Object, Object> {
+  private final class DefaultDisplayValueProvider implements Function<T, Object> {
     @Override
-    public Object apply(Object value) {
-      return ((Property<Object>) property).toString(value);
+    public Object apply(T value) {
+      return property.toString(value);
     }
   }
 
   private static final class BooleanRenderer extends NullableCheckBox
-          implements TableCellRenderer, javax.swing.plaf.UIResource, EntityTableCellRenderer {
+          implements TableCellRenderer, javax.swing.plaf.UIResource, EntityTableCellRenderer<Boolean> {
 
     private final UISettings settings;
     private final SwingEntityTableModel tableModel;
     private final Property<?> property;
     private final boolean displayConditionState;
 
-    private BooleanRenderer(DefaultBuilder builder) {
+    private BooleanRenderer(DefaultBuilder<Boolean> builder) {
       super(new NullableToggleButtonModel());
       this.settings = new UISettings(builder.leftPadding, builder.rightPadding);
       this.tableModel = requireNonNull(builder.tableModel, "tableModel");
@@ -250,19 +250,19 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     }
   }
 
-  static final class DefaultBuilder implements Builder {
+  static final class DefaultBuilder<T> implements Builder<T> {
 
     private final SwingEntityTableModel tableModel;
-    private final Property<?> property;
+    private final Property<T> property;
 
     private int horizontalAlignment;
     private boolean toolTipData;
     private boolean displayConditionState = true;
     private int leftPadding = EntityTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
     private int rightPadding = EntityTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
-    private Function<Object, Object> displayValueProvider;
+    private Function<T, Object> displayValueProvider;
 
-    DefaultBuilder(SwingEntityTableModel tableModel, Property<?> property) {
+    DefaultBuilder(SwingEntityTableModel tableModel, Property<T> property) {
       this.tableModel = requireNonNull(tableModel);
       this.property = requireNonNull(property);
       this.tableModel.getEntityDefinition().getProperty(property.getAttribute());
@@ -270,48 +270,48 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     }
 
     @Override
-    public Builder horizontalAlignment(int horizontalAlignment) {
+    public Builder<T> horizontalAlignment(int horizontalAlignment) {
       this.horizontalAlignment = horizontalAlignment;
       return this;
     }
 
     @Override
-    public Builder toolTipData(boolean toolTipData) {
+    public Builder<T> toolTipData(boolean toolTipData) {
       this.toolTipData = toolTipData;
       return this;
     }
 
     @Override
-    public Builder displayConditionState(boolean displayConditionState) {
+    public Builder<T> displayConditionState(boolean displayConditionState) {
       this.displayConditionState = displayConditionState;
       return this;
     }
 
     @Override
-    public Builder leftPadding(int leftPadding) {
+    public Builder<T> leftPadding(int leftPadding) {
       this.leftPadding = leftPadding;
       return null;
     }
 
     @Override
-    public Builder rightPadding(int rightPadding) {
+    public Builder<T> rightPadding(int rightPadding) {
       this.rightPadding = rightPadding;
       return this;
     }
 
     @Override
-    public Builder displayValueProvider(Function<Object, Object> displayValueProvider) {
+    public Builder<T> displayValueProvider(Function<T, Object> displayValueProvider) {
       this.displayValueProvider = requireNonNull(displayValueProvider);
       return this;
     }
 
     @Override
-    public EntityTableCellRenderer build() {
+    public EntityTableCellRenderer<T> build() {
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
-        return new DefaultEntityTableCellRenderer.BooleanRenderer(this);
+        return (EntityTableCellRenderer<T>) new BooleanRenderer((DefaultBuilder<Boolean>) this);
       }
 
-      return new DefaultEntityTableCellRenderer(this);
+      return new DefaultEntityTableCellRenderer<>(this);
     }
 
     private static int getDefaultHorizontalAlignment(Property<?> property) {
