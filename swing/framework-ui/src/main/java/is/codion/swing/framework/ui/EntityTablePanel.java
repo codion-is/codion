@@ -1366,15 +1366,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected JToolBar initializeSouthToolBar() {
     Controls toolbarControls = getToolBarControls(additionalToolBarControls);
     if (toolbarControls != null) {
-      JToolBar southToolBar = toolbarControls.createHorizontalToolBar();
-      Arrays.stream(southToolBar.getComponents())
+      JToolBar toolBar = toolbarControls.createHorizontalToolBar();
+      Arrays.stream(toolBar.getComponents())
               .map(JComponent.class::cast)
               .forEach(component -> component.setToolTipText(null));
-      southToolBar.setFocusable(false);
-      southToolBar.setFloatable(false);
-      southToolBar.setRollover(true);
+      toolBar.setFocusable(false);
+      toolBar.setFloatable(false);
+      toolBar.setRollover(true);
 
-      return southToolBar;
+      return toolBar;
     }
 
     return null;
@@ -1490,17 +1490,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
                 refreshStatusLayout.show(panel, isRefreshing ? refreshing : status);
               }
             }))
-            .build();
-  }
-
-  private JPanel initializeRefreshingProgressPanel() {
-    JProgressBar progressBar = new JProgressBar();
-    progressBar.setIndeterminate(true);
-    progressBar.setString(MESSAGES.getString("refreshing"));
-    progressBar.setStringPainted(true);
-
-    return Components.panel(new GridBagLayout())
-            .add(progressBar, createHorizontalFillConstraints())
             .build();
   }
 
@@ -1707,6 +1696,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     else {
       WaitCursor.hide(EntityTablePanel.this);
     }
+  }
+
+  private static JPanel initializeRefreshingProgressPanel() {
+    JProgressBar progressBar = new JProgressBar();
+    progressBar.setIndeterminate(true);
+    progressBar.setString(MESSAGES.getString("refreshing"));
+    progressBar.setStringPainted(true);
+
+    return Components.panel(new GridBagLayout())
+            .add(progressBar, createHorizontalFillConstraints())
+            .build();
   }
 
   private static void enableRefreshOnEnterControl(JComponent component, Control refreshControl) {
