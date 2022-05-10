@@ -8139,3 +8139,4 @@
   ItemComboBoxBuilder.renderer() added
   EntityApplicationPanel.selectFontSize() refactored
   SwingEntityTableModel.getValue() removed, unused
+  EntityTableCellRenderer.format() and dateTimeFormatter() removed, displayValueProvider() handles those now

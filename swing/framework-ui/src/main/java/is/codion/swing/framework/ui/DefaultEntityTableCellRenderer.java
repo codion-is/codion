@@ -18,8 +18,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
-import java.text.Format;
-import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
 import static is.codion.swing.common.ui.Utilities.darker;
@@ -35,8 +33,6 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
   private final UISettings settings;
   private final SwingEntityTableModel tableModel;
   private final Property<?> property;
-  private final Format format;
-  private final DateTimeFormatter dateTimeFormatter;
   private final boolean toolTipData;
   private final boolean displayConditionState;
   private final Function<Object, Object> displayValueProvider;
@@ -45,8 +41,6 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     this.settings = new UISettings(builder.leftPadding, builder.rightPadding);
     this.tableModel = builder.tableModel;
     this.property = builder.property;
-    this.format = builder.format;
-    this.dateTimeFormatter = builder.dateTimeFormatter;
     this.toolTipData = builder.toolTipData;
     this.displayConditionState = builder.displayConditionState;
     this.displayValueProvider = builder.displayValueProvider == null ? new DefaultDisplayValueProvider() : builder.displayValueProvider;
@@ -261,8 +255,6 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
     private final SwingEntityTableModel tableModel;
     private final Property<?> property;
 
-    private Format format;
-    private DateTimeFormatter dateTimeFormatter;
     private int horizontalAlignment;
     private boolean toolTipData;
     private boolean displayConditionState = true;
@@ -274,21 +266,7 @@ final class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer impl
       this.tableModel = requireNonNull(tableModel);
       this.property = requireNonNull(property);
       this.tableModel.getEntityDefinition().getProperty(property.getAttribute());
-      this.format = property.getFormat();
-      this.dateTimeFormatter = property.getDateTimeFormatter();
       this.horizontalAlignment = getDefaultHorizontalAlignment(property);
-    }
-
-    @Override
-    public Builder format(Format format) {
-      this.format = requireNonNull(format);
-      return this;
-    }
-
-    @Override
-    public Builder dateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
-      this.dateTimeFormatter = requireNonNull(dateTimeFormatter);
-      return this;
     }
 
     @Override

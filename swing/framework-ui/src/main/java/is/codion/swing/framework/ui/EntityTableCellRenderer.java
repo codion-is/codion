@@ -12,8 +12,6 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
-import java.text.Format;
-import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
 /**
@@ -112,18 +110,6 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
    * Builds a {@link EntityTableCellRenderer}
    */
   interface Builder {
-
-    /**
-     * @param format overrides the format defined by the property
-     * @return this builder instance
-     */
-    Builder format(Format format);
-
-    /**
-     * @param dateTimeFormatter the date/time formatter
-     * @return this builder instance
-     */
-    Builder dateTimeFormatter(DateTimeFormatter dateTimeFormatter);
 
     /**
      * @param horizontalAlignment the horizontal alignment
