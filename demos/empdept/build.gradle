@@ -40,11 +40,6 @@ dependencies {
 ext.execMainClass = 'is.codion.framework.demos.empdept.ui.EmpDeptAppPanel'
 ext.execLoadTestMainClass = 'is.codion.framework.demos.empdept.testing.EmpDeptLoadTest'
 
-test {
-    systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "is.codion.framework.demos.empdept.domain.EmpDept"
-}
-
 task buildReports(dependsOn: 'compileJava') {
     group 'build'
     def jasperSourceDir = file('src/main/reports')
@@ -65,6 +60,20 @@ task buildReports(dependsOn: 'compileJava') {
 classes.finalizedBy buildReports
 
 compileTestJava.dependsOn buildReports
+
+test {
+    dependsOn buildReports
+    systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
+    systemProperty "codion.client.domainClass", "is.codion.framework.demos.empdept.domain.EmpDept"
+}
+
+domainJar {
+    dependsOn buildReports
+}
+
+jar {
+    dependsOn buildReports
+}
 
 startScripts {
     mainClass = execMainClass

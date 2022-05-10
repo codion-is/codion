@@ -41,3 +41,7 @@ task buildReports(dependsOn: 'compileJava') {
     }
 }
 compileJava.finalizedBy buildReports
+
+test {
+    dependsOn buildReports
+}
