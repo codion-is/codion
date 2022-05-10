@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 import java.awt.Insets;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.function.Consumer;
 
@@ -140,10 +141,10 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
     }
     if (controlDeleteWord) {
       keyEvent(KeyEvents.builder(KeyEvent.VK_DELETE)
-              .modifiers(KeyEvent.CTRL_DOWN_MASK)
+              .modifiers(InputEvent.CTRL_DOWN_MASK)
               .action(new DeleteNextWordAction()));
       keyEvent(KeyEvents.builder(KeyEvent.VK_BACK_SPACE)
-              .modifiers(KeyEvent.CTRL_DOWN_MASK)
+              .modifiers(InputEvent.CTRL_DOWN_MASK)
               .action(new DeletePreviousWordAction()));
     }
     if (disabledTextColor != null) {

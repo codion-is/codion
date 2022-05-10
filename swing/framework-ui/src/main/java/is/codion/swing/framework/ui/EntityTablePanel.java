@@ -1321,10 +1321,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Returns the TableCellRenderer used for the given property in this EntityTablePanel
+   * @param <T> the property type
    * @param property the property
    * @return the TableCellRenderer for the given property
    */
-  protected TableCellRenderer initializeTableCellRenderer(Property<?> property) {
+  protected <T> TableCellRenderer initializeTableCellRenderer(Property<T> property) {
     return EntityTableCellRenderer.builder(tableModel, property).build();
   }
 
@@ -1366,15 +1367,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected JToolBar initializeSouthToolBar() {
     Controls toolbarControls = getToolBarControls(additionalToolBarControls);
     if (toolbarControls != null) {
-      JToolBar southToolBar = toolbarControls.createHorizontalToolBar();
-      Arrays.stream(southToolBar.getComponents())
+      JToolBar toolBar = toolbarControls.createHorizontalToolBar();
+      Arrays.stream(toolBar.getComponents())
               .map(JComponent.class::cast)
               .forEach(component -> component.setToolTipText(null));
-      southToolBar.setFocusable(false);
-      southToolBar.setFloatable(false);
-      southToolBar.setRollover(true);
+      toolBar.setFocusable(false);
+      toolBar.setFloatable(false);
+      toolBar.setRollover(true);
 
-      return southToolBar;
+      return toolBar;
     }
 
     return null;
@@ -1493,17 +1494,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .build();
   }
 
-  private JPanel initializeRefreshingProgressPanel() {
-    JProgressBar progressBar = new JProgressBar();
-    progressBar.setIndeterminate(true);
-    progressBar.setString(MESSAGES.getString("refreshing"));
-    progressBar.setStringPainted(true);
-
-    return Components.panel(new GridBagLayout())
-            .add(progressBar, createHorizontalFillConstraints())
-            .build();
-  }
-
   private JScrollPane initializeConditionScrollPane(JScrollPane tableScrollPane) {
     return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
   }
@@ -1607,8 +1597,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
   }
 
-  private void configureColumn(TableColumn column) {
-    Property<?> property = tableModel.getEntityDefinition().getProperty((Attribute<?>) column.getIdentifier());
+  private <T> void configureColumn(TableColumn column) {
+    Property<T> property = tableModel.getEntityDefinition().getProperty((Attribute<T>) column.getIdentifier());
     column.setCellRenderer(initializeTableCellRenderer(property));
     column.setCellEditor(initializeTableCellEditor(property));
     column.setResizable(true);
@@ -1707,6 +1697,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     else {
       WaitCursor.hide(EntityTablePanel.this);
     }
+  }
+
+  private static JPanel initializeRefreshingProgressPanel() {
+    JProgressBar progressBar = new JProgressBar();
+    progressBar.setIndeterminate(true);
+    progressBar.setString(MESSAGES.getString("refreshing"));
+    progressBar.setStringPainted(true);
+
+    return Components.panel(new GridBagLayout())
+            .add(progressBar, createHorizontalFillConstraints())
+            .build();
   }
 
   private static void enableRefreshOnEnterControl(JComponent component, Control refreshControl) {
