@@ -699,6 +699,15 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   /**
+   * Creates a builder for a read-only, non-focusable foreign key text field.
+   * @param foreignKey the foreign key for which to build a text field
+   * @return a foreign key text field builder
+   */
+  protected final <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> createForeignKeyTextField(ForeignKey foreignKey) {
+    return setComponentBuilder(foreignKey, entityComponents.foreignKeyTextField(foreignKey));
+  }
+
+  /**
    * Creates a builder for a read-only foreign key label.
    * @param foreignKey the foreign key for which to build a label
    * @return a foreign key label builder
