@@ -125,24 +125,20 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   /**
-   * @return the {@link javax.swing.text.JTextComponent} built by this builder.
+   * @return the {@link javax.swing.text.JTextField} built by this builder.
    */
   protected C createTextField() {
-    if (!(valueClass.equals(String.class) || valueClass.equals(Character.class))) {
-      throw new IllegalArgumentException("DefaultTextFieldBuilder only supports String and Character");
-    }
-
     return (C) new JTextField(new SizedDocument(), "", 1);
   }
 
   @Override
   protected ComponentValue<T, C> createComponentValue(C component) {
     requireNonNull(component);
-    if (valueClass.equals(String.class)) {
-      return new DefaultTextComponentValue<>(component, format, updateOn);
+    if (valueClass.equals(Character.class)) {
+      return (ComponentValue<T, C>) new CharacterFieldValue(component, updateOn);
     }
 
-    return (ComponentValue<T, C>) new CharacterFieldValue(component, updateOn);
+    return new DefaultTextComponentValue<>(component, format, updateOn);
   }
 
   @Override
