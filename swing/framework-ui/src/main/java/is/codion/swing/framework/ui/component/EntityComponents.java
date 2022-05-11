@@ -36,6 +36,9 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import java.math.BigDecimal;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -209,6 +212,22 @@ public class EntityComponents {
 
     return EntitySearchField.builder(searchModel)
             .toolTipText(foreignKeyProperty.getDescription() == null ? searchModel.getDescription() : foreignKeyProperty.getDescription());
+  }
+
+  /**
+   * Creates a builder for a read-only, non-focusable foreign key text field.
+   * @param foreignKey the foreign key
+   * @param <B> the builder type
+   * @return a builder
+   */
+  public final <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> foreignKeyTextField(ForeignKey foreignKey) {
+    ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
+
+    return (TextFieldBuilder<Entity, JTextField, B>) Components.textField(Entity.class)
+            .toolTipText(foreignKeyProperty.getDescription())
+            .format(new EntityReadOnlyFormat())
+            .editable(false)
+            .focusable(false);
   }
 
   /**
@@ -471,5 +490,19 @@ public class EntityComponents {
 
     return Components.maskedTextField()
             .toolTipText(property.getDescription());
+  }
+
+  private static final class EntityReadOnlyFormat extends Format {
+
+    @Override
+    public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+      toAppendTo.append(obj == null ? "" : obj.toString());
+      return toAppendTo;
+    }
+
+    @Override
+    public Object parseObject(String source, ParsePosition pos) {
+      return null;
+    }
   }
 }

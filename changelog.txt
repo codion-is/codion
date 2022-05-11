@@ -8180,3 +8180,4 @@
   EntityTableCellRenderer.format() and dateTimeFormatter() removed, displayValueProvider() handles those now
   EntityTableCellRenderer, type parameter added
   EntityTablePanel.initializeTableCellRenderer() type parameter added, consistent with initializeTableCellEditor()
+  EntityComponents, EntityEditComponentPanel.createForeignKeyTextField() added

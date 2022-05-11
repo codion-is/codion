@@ -60,7 +60,7 @@ public final class Formats {
 
     @Override
     public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-      toAppendTo.append(obj.toString());
+      toAppendTo.append(obj == null ? "" : obj.toString());
       return toAppendTo;
     }
 
