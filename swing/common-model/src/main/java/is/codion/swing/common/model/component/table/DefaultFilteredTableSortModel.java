@@ -5,7 +5,6 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnClassProvider;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnComparatorFactory;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
@@ -26,7 +25,6 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 
   private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortOrder.UNSORTED, -1);
 
-  private final ColumnClassProvider<C> columnClassProvider;
   private final ColumnValueProvider<R, C> columnValueProvider;
   private final ColumnComparatorFactory<C> columnComparatorFactory;
 
@@ -46,10 +44,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   private final Map<C, SortingState> sortingStates = new HashMap<>();
   private final SortingStatesComparator sortingStatesComparator = new SortingStatesComparator();
 
-  DefaultFilteredTableSortModel(ColumnClassProvider<C> columnClassProvider,
-                                ColumnValueProvider<R, C> columnValueProvider,
+  DefaultFilteredTableSortModel(ColumnValueProvider<R, C> columnValueProvider,
                                 ColumnComparatorFactory<C> columnComparatorFactory) {
-    this.columnClassProvider = requireNonNull(columnClassProvider);
     this.columnValueProvider = requireNonNull(columnValueProvider);
     this.columnComparatorFactory = columnComparatorFactory == null ? new DefaultColumnComparatorFactory<>() : columnComparatorFactory;
   }
@@ -162,8 +158,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     }
 
     private int compareRows(R rowOne, R rowTwo, C columnIdentifier, SortOrder sortOrder) {
-      Object valueOne = columnValueProvider.getColumnValue(rowOne, columnIdentifier);
-      Object valueTwo = columnValueProvider.getColumnValue(rowTwo, columnIdentifier);
+      Object valueOne = columnValueProvider.getValue(rowOne, columnIdentifier);
+      Object valueTwo = columnValueProvider.getValue(rowTwo, columnIdentifier);
       int comparison;
       // Define null less than everything, except null.
       if (valueOne == null && valueTwo == null) {
@@ -178,7 +174,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
       else {
         comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(columnIdentifier,
                 k -> columnComparatorFactory.createComparator(columnIdentifier,
-                        columnClassProvider.getColumnClass(columnIdentifier)))).compare(valueOne, valueTwo);
+                        columnValueProvider.getColumnClass(columnIdentifier)))).compare(valueOne, valueTwo);
       }
       if (comparison != 0) {
         return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;

@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+
 import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
@@ -24,8 +26,17 @@ public class DefaultFilteredTableSelectionModelTest {
     TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     FilteredTableModel<String, Integer> tableModel = new DefaultFilteredTableModel<String, Integer>(
-            singletonList(column),
-            columnIdentifier -> String.class, (row, columnIdentifier) -> row) {
+            singletonList(column), new ColumnValueProvider<String, Integer>() {
+      @Override
+      public Object getValue(String row, Integer columnIdentifier) {
+        return row;
+      }
+
+      @Override
+      public Class<?> getColumnClass(Integer columnIdentifier) {
+        return String.class;
+      }
+    }) {
       @Override
       protected Collection<String> refreshItems() {
         return data;

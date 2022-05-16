@@ -9,7 +9,9 @@ import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.common.state.State;
-import is.codion.swing.common.model.component.table.FilteredTableModel.RowColumn;
+import is.codion.swing.common.model.component.table.DefaultFilteredTableSearchModel.DefaultRowColumn;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,7 +54,17 @@ public final class DefaultFilteredTableModelTest {
 
     private TestAbstractFilteredTableModel(Comparator<String> customComparator) {
       super(createColumns(),
-              columnIdentifier -> String.class, List::get, (columnIdentifier, columnClass) -> {
+              new ColumnValueProvider<List<String>, Integer>() {
+                @Override
+                public Object getValue(List<String> row, Integer columnIdentifier) {
+                  return row.get(columnIdentifier);
+                }
+
+                @Override
+                public Class<?> getColumnClass(Integer columnIdentifier) {
+                  return String.class;
+                }
+              }, (columnIdentifier, columnClass) -> {
                 if (customComparator != null) {
                   return customComparator;
                 }
@@ -123,13 +136,23 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void nullSortModel() {
     assertThrows(NullPointerException.class, () -> new DefaultFilteredTableModel<String, Integer>(
-            singletonList(new TableColumn()), null, null));
+            singletonList(new TableColumn()), null));
   }
 
   @Test
   void noColumns() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultFilteredTableModel<String, Integer>(
-            emptyList(), columnIdentifier -> null, (row, columnIdentifier) -> null));
+            emptyList(), new ColumnValueProvider<String, Integer>() {
+      @Override
+      public Object getValue(String row, Integer columnIdentifier) {
+        return null;
+      }
+
+      @Override
+      public Class<?> getColumnClass(Integer columnIdentifier) {
+        return null;
+      }
+    }));
   }
 
   @Test
@@ -270,7 +293,7 @@ public final class DefaultFilteredTableModelTest {
   }
 
   @Test
-  void find() {
+  void searchModel() {
     final class Row implements Comparable<Row> {
 
       private final int id;
@@ -292,24 +315,35 @@ public final class DefaultFilteredTableModelTest {
     TableColumn columnValue = new TableColumn(1);
     columnValue.setIdentifier(1);
 
-    List<Row> items = asList(new Row(0, "a"), new Row(1, "b"),
-            new Row(2, "c"), new Row(3, "d"), new Row(4, "e"));
+    List<Row> items = asList(
+            new Row(0, "a"),
+            new Row(1, "b"),
+            new Row(2, "c"),
+            new Row(3, "d"),
+            new Row(4, "e")
+    );
 
     FilteredTableModel<Row, Integer> testModel = new DefaultFilteredTableModel<Row, Integer>(
             asList(columnId, columnValue),
-            columnIdentifier -> {
-              if (columnIdentifier == 0) {
-                return Integer.class;
+            new ColumnValueProvider<Row, Integer>() {
+              @Override
+              public Object getValue(Row row, Integer columnIdentifier) {
+                if (columnIdentifier == 0) {
+                  return row.id;
+                }
+
+                return row.value;
               }
 
-              return String.class;
-            }, (row, columnIdentifier) -> {
-      if (columnIdentifier == 0) {
-        return row.id;
-      }
+              @Override
+              public Class<?> getColumnClass(Integer columnIdentifier) {
+                if (columnIdentifier == 0) {
+                  return Integer.class;
+                }
 
-      return row.value;
-    }) {
+                return String.class;
+              }
+            }) {
       @Override
       protected Collection<Row> refreshItems() {
         return items;
@@ -317,63 +351,101 @@ public final class DefaultFilteredTableModelTest {
     };
 
     testModel.refresh();
-    RowColumn coordinate = testModel.findNext(0, "b").orElse(null);
-    assertEquals(RowColumn.rowColumn(1, 1), coordinate);
-    coordinate = testModel.findNext(coordinate.getRow(), "e").orElse(null);
-    assertEquals(RowColumn.rowColumn(4, 1), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow(), "c").orElse(null);
-    assertEquals(RowColumn.rowColumn(2, 1), coordinate);
-    coordinate = testModel.findNext(0, "x").orElse(null);
-    assertNull(coordinate);
+    FilteredTableSearchModel searchModel = testModel.getSearchModel();
+    searchModel.getSearchStringValue().set("b");
+    RowColumn rowColumn = searchModel.nextResult().orElse(null);
+    assertEquals(new DefaultRowColumn(1, 1), rowColumn);
+    searchModel.getSearchStringValue().set("e");
+    rowColumn = searchModel.nextResult().orElse(null);
+    assertEquals(new DefaultRowColumn(4, 1), rowColumn);
+    searchModel.getSearchStringValue().set("c");
+    rowColumn = searchModel.previousResult().orElse(null);
+    assertEquals(new DefaultRowColumn(2, 1), rowColumn);
+    searchModel.getSearchStringValue().set("x");
+    rowColumn = searchModel.nextResult().orElse(null);
+    assertNull(rowColumn);
 
     testModel.getSortModel().setSortOrder(1, SortOrder.DESCENDING);
 
-    coordinate = testModel.findNext(0, "b").orElse(null);
-    assertEquals(RowColumn.rowColumn(3, 1), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow(), "e").orElse(null);
-    assertEquals(RowColumn.rowColumn(0, 1), coordinate);
+    searchModel.getSearchStringValue().set("b");
+    rowColumn = searchModel.nextResult().orElse(null);
+    assertEquals(new DefaultRowColumn(3, 1), rowColumn);
+    searchModel.getSearchStringValue().set("e");
+    rowColumn = searchModel.previousResult().orElse(null);
+    assertEquals(new DefaultRowColumn(0, 1), rowColumn);
 
-    testModel.getRegularExpressionSearchState().set(true);
-    coordinate = testModel.findNext(0, "(?i)B").orElse(null);
-    assertEquals(RowColumn.rowColumn(3, 1), coordinate);
+    searchModel.getRegularExpressionSearchState().set(true);
+    searchModel.getSearchStringValue().set("(?i)B");
+    rowColumn = searchModel.nextResult().orElse(null);
+    assertEquals(new DefaultRowColumn(3, 1), rowColumn);
 
-    Predicate<String> condition = item -> item.equals("b") || item.equals("e");
+    Predicate<String> predicate = item -> item.equals("b") || item.equals("e");
 
-    coordinate = testModel.findPrevious(4, condition).orElse(null);
-    assertEquals(RowColumn.rowColumn(3, 1), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow() - 1, condition).orElse(null);
-    assertEquals(RowColumn.rowColumn(0, 1), coordinate);
+    searchModel.getSearchPredicateValue().set(predicate);
+    rowColumn = searchModel.selectPreviousResult().orElse(null);
+    assertEquals(new DefaultRowColumn(3, 1), rowColumn);
+    rowColumn = searchModel.selectPreviousResult().orElse(null);
+    assertEquals(new DefaultRowColumn(0, 1), rowColumn);
+
+    assertEquals(Arrays.asList(
+            new DefaultRowColumn(0, 1),
+            new DefaultRowColumn(3, 1)
+    ), searchModel.getSearchResults());
 
     testModel.getSortModel().setSortOrder(1, SortOrder.ASCENDING);
     testModel.getColumnModel().moveColumn(1, 0);
 
     testModel.refresh();
-    coordinate = testModel.findNext(0, "b").orElse(null);
-    assertEquals(RowColumn.rowColumn(1, 0), coordinate);
-    coordinate = testModel.findNext(coordinate.getRow(), "e").orElse(null);
-    assertEquals(RowColumn.rowColumn(4, 0), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow(), "c").orElse(null);
-    assertEquals(RowColumn.rowColumn(2, 0), coordinate);
-    coordinate = testModel.findNext(0, "x").orElse(null);
-    assertNull(coordinate);
+    searchModel.getSearchStringValue().set("b");
+    rowColumn = searchModel.nextResult().orElse(null);
+    assertEquals(new DefaultRowColumn(1, 0), rowColumn);
+    searchModel.getSearchStringValue().set("e");
+    rowColumn = searchModel.nextResult().orElse(null);
+    assertEquals(new DefaultRowColumn(4, 0), rowColumn);
+    searchModel.getSearchStringValue().set("c");
+    rowColumn = searchModel.previousResult().orElse(null);
+    assertEquals(new DefaultRowColumn(2, 0), rowColumn);
+    searchModel.getSearchStringValue().set("x");
+    rowColumn = searchModel.nextResult().orElse(null);
+    assertNull(rowColumn);
 
     testModel.getSortModel().setSortOrder(0, SortOrder.DESCENDING);
 
-    coordinate = testModel.findNext(0, "b").orElse(null);
-    assertEquals(RowColumn.rowColumn(3, 0), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow(), "e").orElse(null);
-    assertEquals(RowColumn.rowColumn(0, 0), coordinate);
+    searchModel.getSearchStringValue().set("b");
+    rowColumn = searchModel.nextResult().orElse(null);
+    assertEquals(new DefaultRowColumn(3, 0), rowColumn);
+    searchModel.getSearchStringValue().set("e");
+    rowColumn = searchModel.previousResult().orElse(null);
+    assertEquals(new DefaultRowColumn(0, 0), rowColumn);
 
-    testModel.getRegularExpressionSearchState().set(true);
-    coordinate = testModel.findNext(0, "(?i)B").orElse(null);
-    assertEquals(RowColumn.rowColumn(3, 0), coordinate);
+    searchModel.getRegularExpressionSearchState().set(true);
+    searchModel.getSearchStringValue().set("(?i)B");
+    rowColumn = searchModel.nextResult().orElse(null);
+    assertEquals(new DefaultRowColumn(3, 0), rowColumn);
 
-    condition = item -> item.equals("b") || item.equals("e");
+    predicate = item -> item.equals("b") || item.equals("e");
 
-    coordinate = testModel.findPrevious(4, condition).orElse(null);
-    assertEquals(RowColumn.rowColumn(3, 0), coordinate);
-    coordinate = testModel.findPrevious(coordinate.getRow() - 1, condition).orElse(null);
-    assertEquals(RowColumn.rowColumn(0, 0), coordinate);
+    searchModel.getSearchPredicateValue().set(predicate);
+    rowColumn = searchModel.selectPreviousResult().orElse(null);
+    assertEquals(new DefaultRowColumn(3, 0), rowColumn);
+    rowColumn = searchModel.selectPreviousResult().orElse(null);
+    assertEquals(new DefaultRowColumn(0, 0), rowColumn);
+
+    assertEquals(2, testModel.getSelectionModel().getSelectionCount());
+
+    searchModel.selectPreviousResult();
+    searchModel.selectNextResult();
+    searchModel.selectNextResult();
+    searchModel.selectNextResult();
+
+    rowColumn = searchModel.selectPreviousResult().orElse(null);
+    rowColumn = searchModel.selectNextResult().orElse(null);
+    rowColumn = searchModel.selectNextResult().orElse(null);
+
+    assertEquals(Arrays.asList(
+            new DefaultRowColumn(0, 0),
+            new DefaultRowColumn(3, 0)
+    ), searchModel.getSearchResults());
   }
 
   @Test

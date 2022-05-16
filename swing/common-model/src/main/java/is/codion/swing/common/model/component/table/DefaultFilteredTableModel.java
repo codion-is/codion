@@ -22,7 +22,6 @@ import javax.swing.table.TableColumn;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -65,7 +63,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final Event<Removal> rowsRemovedEvent = Event.event();
   private final State refreshingState = State.state();
 
-  private final ColumnClassProvider<C> columnClassProvider;
   private final ColumnValueProvider<R, C> columnValueProvider;
 
   /**
@@ -94,6 +91,11 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final FilteredTableSortModel<R, C> sortModel;
 
   /**
+   * The search model
+   */
+  private final FilteredTableSearchModel searchModel;
+
+  /**
    * The ColumnFilterModels used for filtering
    */
   private final Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels = new HashMap<>();
@@ -102,16 +104,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * Maps PropertySummaryModels to their respective properties
    */
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
-
-  /**
-   * true if searching the table model should be done via regular expressions
-   */
-  private final State regularExpressionSearch = State.state();
-
-  /**
-   * true if searching the table model should be case-sensitive
-   */
-  private final State caseSensitiveSearch = State.state();
 
   /**
    * the include condition used by this model
@@ -131,61 +123,53 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   /**
    * Instantiates a new table model.
    * @param tableColumns the table columns to base this table model on
-   * @param columnClassProvider the column class provider
    * @param columnValueProvider the column value provider
    * @throws NullPointerException in case {@code columnModel} is null
    */
   public DefaultFilteredTableModel(List<TableColumn> tableColumns,
-                                   ColumnClassProvider<C> columnClassProvider,
                                    ColumnValueProvider<R, C> columnValueProvider) {
-    this(tableColumns, columnClassProvider, columnValueProvider, (ColumnComparatorFactory<C>) null);
+    this(tableColumns, columnValueProvider, (ColumnComparatorFactory<C>) null);
   }
 
   /**
    * Instantiates a new table model.
    * @param tableColumns the table columns to base this table model on
-   * @param columnClassProvider the column class provider
    * @param columnValueProvider the column value provider
    * @param columnComparatorFactory the column comparator factory
    */
   public DefaultFilteredTableModel(List<TableColumn> tableColumns,
-                                   ColumnClassProvider<C> columnClassProvider,
                                    ColumnValueProvider<R, C> columnValueProvider,
                                    ColumnComparatorFactory<C> columnComparatorFactory) {
-    this(tableColumns, columnClassProvider, columnValueProvider, columnComparatorFactory, null);
+    this(tableColumns, columnValueProvider, columnComparatorFactory, null);
   }
 
   /**
    * Instantiates a new table model.
    * @param tableColumns the table columns to base this table model on
-   * @param columnClassProvider the column class provider
    * @param columnValueProvider the column value provider
    * @param columnFilterModels the filter models if any
    */
   public DefaultFilteredTableModel(List<TableColumn> tableColumns,
-                                   ColumnClassProvider<C> columnClassProvider,
                                    ColumnValueProvider<R, C> columnValueProvider,
                                    Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
-    this(tableColumns, columnClassProvider, columnValueProvider, null, columnFilterModels);
+    this(tableColumns, columnValueProvider, null, columnFilterModels);
   }
 
   /**
    * Instantiates a new table model.
    * @param tableColumns the table columns to base this table model on
-   * @param columnClassProvider the column class provider
    * @param columnValueProvider the column value provider
    * @param columnComparatorFactory the column comparator factory
    * @param columnFilterModels the filter models if any
    */
   public DefaultFilteredTableModel(List<TableColumn> tableColumns,
-                                   ColumnClassProvider<C> columnClassProvider,
                                    ColumnValueProvider<R, C> columnValueProvider,
                                    ColumnComparatorFactory<C> columnComparatorFactory,
                                    Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
-    this.columnClassProvider = requireNonNull(columnClassProvider);
+    this.searchModel = new DefaultFilteredTableSearchModel<>(this);
     this.columnValueProvider = requireNonNull(columnValueProvider);
-    this.sortModel = new DefaultFilteredTableSortModel<>(columnClassProvider, columnValueProvider, columnComparatorFactory);
+    this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider, columnComparatorFactory);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     if (columnFilterModels != null) {
       for (ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
@@ -249,40 +233,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     return filteredItems.contains(item);
   }
 
-  @Override
-  public final Optional<RowColumn> findNext(int fromRowIndex, String searchText) {
-    return findNext(fromRowIndex, getSearchCondition(searchText));
-  }
-
-  @Override
-  public final Optional<RowColumn> findPrevious(int fromRowIndex, String searchText) {
-    return findPrevious(fromRowIndex, getSearchCondition(searchText));
-  }
-
-  @Override
-  public final Optional<RowColumn> findNext(int fromRowIndex, Predicate<String> condition) {
-    for (int row = fromRowIndex >= getVisibleItemCount() ? 0 : fromRowIndex; row < getVisibleItemCount(); row++) {
-      RowColumn coordinate = findColumnValue(row, condition);
-      if (coordinate != null) {
-        return Optional.of(coordinate);
-      }
-    }
-
-    return Optional.empty();
-  }
-
-  @Override
-  public final Optional<RowColumn> findPrevious(int fromRowIndex, Predicate<String> condition) {
-    for (int row = fromRowIndex < 0 ? getVisibleItemCount() - 1 : fromRowIndex; row >= 0; row--) {
-      RowColumn coordinate = findColumnValue(row, condition);
-      if (coordinate != null) {
-        return Optional.of(coordinate);
-      }
-    }
-
-    return Optional.empty();
-  }
-
   /**
    * {@inheritDoc}
    * @see #refreshItems()
@@ -324,6 +274,11 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
+  public final FilteredTableSearchModel getSearchModel() {
+    return searchModel;
+  }
+
+  @Override
   public final Optional<ColumnSummaryModel> getColumnSummaryModel(C columnIdentifier) {
     return Optional.ofNullable(columnSummaryModels.computeIfAbsent(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER), identifier ->
             createColumnValueProvider(columnIdentifier)
@@ -359,16 +314,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final State getRegularExpressionSearchState() {
-    return regularExpressionSearch;
-  }
-
-  @Override
-  public final State getCaseSensitiveSearchState() {
-    return caseSensitiveSearch;
-  }
-
-  @Override
   public final boolean isMergeOnRefresh() {
     return mergeOnRefresh;
   }
@@ -389,8 +334,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final R getItemAt(int index) {
-    return visibleItems.get(index);
+  public final R getItemAt(int rowIndex) {
+    return visibleItems.get(rowIndex);
   }
 
   @Override
@@ -500,7 +445,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final Class<?> getColumnClass(C columnIdentifier) {
-    return columnClassProvider.getColumnClass(columnIdentifier);
+    return columnValueProvider.getColumnClass(columnIdentifier);
   }
 
   @Override
@@ -510,10 +455,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final Object getValueAt(int rowIndex, int columnIndex) {
-    C columnIdentifier = getColumnModel().getColumnIdentifier(columnIndex);
-    R row = getItemAt(rowIndex);
+    return columnValueProvider.getValue(getItemAt(rowIndex), getColumnModel().getColumnIdentifier(columnIndex));
+  }
 
-    return columnValueProvider.getColumnValue(row, columnIdentifier);
+  @Override
+  public final String getStringAt(int rowIndex, C columnIdentifier) {
+    return columnValueProvider.getString(getItemAt(rowIndex), columnIdentifier);
   }
 
   @Override
@@ -677,33 +624,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     }
   }
 
-  /**
-   * Returns the value to use when searching through the table.
-   * @param rowIndex the row index
-   * @param columnIdentifier the column identifier
-   * @return the search value
-   * @see #findNext(int, String)
-   * @see #findPrevious(int, String)
-   */
-  protected String getSearchValueAt(int rowIndex, C columnIdentifier) {
-    Object value = columnValueProvider.getColumnValue(getItemAt(rowIndex), columnIdentifier);
-
-    return value == null ? "" : value.toString();
-  }
-
-  /**
-   * @param searchText the search text
-   * @return a Predicate based on the given search text
-   */
-  private Predicate<String> getSearchCondition(String searchText) {
-    requireNonNull(searchText, "searchText");
-    if (regularExpressionSearch.get()) {
-      return new RegexSearchCondition(searchText);
-    }
-
-    return new StringSearchCondition(searchText, caseSensitiveSearch.get());
-  }
-
   private void bindEventsInternal() {
     addTableModelListener(e -> tableDataChangedEvent.onEvent());
     for (ColumnConditionModel<C, ?> conditionModel : columnFilterModels.values()) {
@@ -719,19 +639,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   private List<Object> getColumnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
     return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
-  }
-
-  private RowColumn findColumnValue(int row, Predicate<String> condition) {
-    requireNonNull(condition, "condition");
-    Enumeration<TableColumn> columnsToSearch = columnModel.getColumns();
-    while (columnsToSearch.hasMoreElements()) {
-      C columnIdentifier = (C) columnsToSearch.nextElement().getIdentifier();
-      if (condition.test(getSearchValueAt(row, columnIdentifier))) {
-        return RowColumn.rowColumn(row, columnModel.getColumnIndex(columnIdentifier));
-      }
-    }
-
-    return null;
   }
 
   private boolean addItemInternal(R item) {
@@ -827,37 +734,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     clear();
     addItemsSorted(items);
     selectionModel.setSelectedItems(selectedItems);
-  }
-
-  private static final class RegexSearchCondition implements Predicate<String> {
-
-    private final Pattern pattern;
-
-    private RegexSearchCondition(String patternString) {
-      this.pattern = Pattern.compile(patternString);
-    }
-
-    @Override
-    public boolean test(String item) {
-      return item != null && pattern.matcher(item).find();
-    }
-  }
-
-  private static final class StringSearchCondition implements Predicate<String> {
-
-    private final String searchText;
-    private final boolean caseSensitiveSearch;
-
-    private StringSearchCondition(String searchText, boolean caseSensitiveSearch) {
-      this.searchText = searchText;
-      this.caseSensitiveSearch = caseSensitiveSearch;
-    }
-
-    @Override
-    public boolean test(String item) {
-      return !(item == null || searchText == null) && (caseSensitiveSearch ? item : item.toLowerCase())
-              .contains((caseSensitiveSearch ? searchText : searchText.toLowerCase()));
-    }
   }
 
   private static final class DefaultIncludeCondition<R, C> implements Predicate<R> {

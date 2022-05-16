@@ -24,8 +24,7 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
   private final SchemaTableModel schemaTableModel;
 
   DefinitionTableModel(SchemaTableModel schemaTableModel) {
-    super(createDefinitionColumns(),
-            new DefinitionColumnClassProvider(), new DefinitionColumnValueProvider(),
+    super(createDefinitionColumns(), new DefinitionColumnValueProvider(),
             asList(new DefaultColumnFilterModel<>(0, String.class, '%'),
                     new DefaultColumnFilterModel<>(1, String.class, '%')));
     this.schemaTableModel = schemaTableModel;
@@ -58,7 +57,7 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
     return asList(domainColumn, entityTypeColumn);
   }
 
-  private static final class DefinitionColumnClassProvider implements ColumnClassProvider<Integer> {
+  private static final class DefinitionColumnValueProvider implements ColumnValueProvider<DefinitionRow, Integer> {
 
     @Override
     public Class<?> getColumnClass(Integer columnIdentifier) {
@@ -70,12 +69,9 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
           throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
       }
     }
-  }
-
-  private static final class DefinitionColumnValueProvider implements ColumnValueProvider<DefinitionRow, Integer> {
 
     @Override
-    public Object getColumnValue(DefinitionRow row, Integer columnIdentifier) {
+    public Object getValue(DefinitionRow row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case DefinitionTableModel.DOMAIN:
           return row.domain.getDomainType().getName();

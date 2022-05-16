@@ -40,7 +40,11 @@ public class FilteredTableTest {
     TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column), singletonList(filterModel)) {
       @Override
       protected Collection<List<String>> refreshItems() {
-        return asList(singletonList("darri"), singletonList("dac"), singletonList("dansinn"), singletonList("dlabo"));
+        return asList(
+                singletonList("darri"),
+                singletonList("dac"),
+                singletonList("dansinn"),
+                singletonList("dlabo"));
       }
     };
     FilteredTable<List<String>, Integer, TestAbstractFilteredTableModel> filteredTable =
@@ -75,27 +79,23 @@ public class FilteredTableTest {
     assertTrue(tableModel.getSelectionModel().isSelectionEmpty());
 
     searchField.setText("");
-
-    filteredTable.findNext("da");
-    assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
-    filteredTable.findNext("da");
-    assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
-    filteredTable.findNext("da");
-    assertEquals(2, tableModel.getSelectionModel().getSelectedIndex());
-    filteredTable.findAndSelectPrevious("da");
-    assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
-    assertEquals(2, tableModel.getSelectionModel().getSelectionCount());
-    filteredTable.findAndSelectPrevious("da");
-    assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
-    assertEquals(3, tableModel.getSelectionModel().getSelectionCount());
-    filteredTable.findNext("dat");
   }
 
   private static class TestAbstractFilteredTableModel extends DefaultFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(List<TableColumn> columns,
                                            List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
-      super(columns, columnIdentifier -> String.class, List::get, columnFilterModels);
+      super(columns, new ColumnValueProvider<List<String>, Integer>() {
+        @Override
+        public Object getValue(List<String> row, Integer columnIdentifier) {
+          return row.get(columnIdentifier);
+        }
+
+        @Override
+        public Class<?> getColumnClass(Integer columnIdentifier) {
+          return String.class;
+        }
+      }, columnFilterModels);
     }
 
     @Override
