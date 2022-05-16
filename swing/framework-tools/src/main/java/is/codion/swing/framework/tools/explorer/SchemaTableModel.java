@@ -22,8 +22,7 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
   private final Collection<Schema> schemas;
 
   SchemaTableModel(Collection<Schema> schemas) {
-    super(createSchemaColumns(),
-            new SchemaColumnClassProvider(), new SchemaColumnValueProvider(),
+    super(createSchemaColumns(), new SchemaColumnValueProvider(),
             asList(new DefaultColumnFilterModel<>(0, String.class, '%'),
                     new DefaultColumnFilterModel<>(0, Boolean.class, '%')));
     this.schemas = schemas;
@@ -46,7 +45,7 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
     return asList(schemaColumn, populatedColumn);
   }
 
-  private static final class SchemaColumnClassProvider implements ColumnClassProvider<Integer> {
+  private static final class SchemaColumnValueProvider implements ColumnValueProvider<Schema, Integer> {
 
     @Override
     public Class<?> getColumnClass(Integer columnIdentifier) {
@@ -59,12 +58,9 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
           throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
       }
     }
-  }
-
-  private static final class SchemaColumnValueProvider implements ColumnValueProvider<Schema, Integer> {
 
     @Override
-    public Object getColumnValue(Schema row, Integer columnIdentifier) {
+    public Object getValue(Schema row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case SchemaTableModel.SCHEMA:
           return row.getName();

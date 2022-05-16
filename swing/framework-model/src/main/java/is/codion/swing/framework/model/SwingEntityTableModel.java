@@ -175,8 +175,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
     super(createColumns(requireNonNull(editModel, "editModel")
                     .getConnectionProvider().getEntities().getDefinition(editModel.getEntityType())),
-            new EntityColumnClassProvider(), new EntityColumnValueProvider(),
-            new EntityColumnComparatorFactory(editModel.getEntities()), requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels().values());
+            new EntityColumnValueProvider(), new EntityColumnComparatorFactory(editModel.getEntities()),
+            requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels().values());
     if (!tableConditionModel.getEntityType().equals(editModel.getEntityType())) {
       throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.getEntityType()
               + ", tableModel: " + editModel.getEntityType());
@@ -646,11 +646,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     throw new IllegalArgumentException("Unsupported Color representation: " + color);
   }
 
-  @Override
-  protected final String getSearchValueAt(int rowIndex, Attribute<?> columnIdentifier) {
-    return getItemAt(rowIndex).toString(columnIdentifier);
-  }
-
   /**
    * The order by clause to use when selecting the data for this model,
    * by default the order by clause defined for the underlying entity
@@ -896,16 +891,18 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {
 
     @Override
-    public Object getColumnValue(Entity entity, Attribute<?> attribute) {
-      return entity.get(attribute);
-    }
-  }
-
-  private static final class EntityColumnClassProvider implements ColumnClassProvider<Attribute<?>> {
-
-    @Override
     public Class<?> getColumnClass(Attribute<?> attribute) {
       return attribute.getTypeClass();
+    }
+
+    @Override
+    public Object getValue(Entity entity, Attribute<?> attribute) {
+      return entity.get(attribute);
+    }
+
+    @Override
+    public String getString(Entity entity, Attribute<?> attribute) {
+      return entity.toString(attribute);
     }
   }
 

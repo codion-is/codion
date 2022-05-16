@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.swing.common.model.component.table.FilteredTableModel.RowColumn;
+import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,10 +14,10 @@ public final class DefaultRowColumnTest {
 
   @Test
   void test() {
-    RowColumn rowColumn1 = RowColumn.rowColumn(1, 2);
+    RowColumn rowColumn1 = new DefaultFilteredTableSearchModel.DefaultRowColumn(1, 2);
     assertEquals(1, rowColumn1.getRow());
     assertEquals(2, rowColumn1.getColumn());
-    RowColumn rowColumn2 = RowColumn.rowColumn(3, 4);
+    RowColumn rowColumn2 = new DefaultFilteredTableSearchModel.DefaultRowColumn(3, 4);
     assertEquals(3, rowColumn2.getRow());
     assertEquals(4, rowColumn2.getColumn());
 
@@ -25,8 +25,8 @@ public final class DefaultRowColumnTest {
 
     assertNotEquals(rowColumn1, rowColumn2);
     assertEquals(rowColumn1, rowColumn1);
-    assertEquals(rowColumn1, RowColumn.rowColumn(1, 2));
-    assertNotEquals(rowColumn1, RowColumn.rowColumn(2, 1));
+    assertEquals(rowColumn1, new DefaultFilteredTableSearchModel.DefaultRowColumn(1, 2));
+    assertNotEquals(rowColumn1, new DefaultFilteredTableSearchModel.DefaultRowColumn(2, 1));
 
     assertEquals("row: 1, column: 2", rowColumn1.toString());
   }

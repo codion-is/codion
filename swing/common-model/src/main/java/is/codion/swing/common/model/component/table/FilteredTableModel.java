@@ -9,14 +9,12 @@ import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
-import is.codion.common.state.State;
 
 import javax.swing.table.TableModel;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 /**
  * Specifies a table model supporting selection as well as filtering
@@ -94,10 +92,18 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   int indexOf(R item);
 
   /**
-   * @param index the index
-   * @return the item at the given index in the table model
+   * @param rowIndex the row index
+   * @return the item at the given row index in the table model
    */
-  R getItemAt(int index);
+  R getItemAt(int rowIndex);
+
+  /**
+   * Returns a String representation of the value for the given row and column.
+   * @param rowIndex the row index
+   * @param columnIdentifier the column identifier
+   * @return the string value
+   */
+  String getStringAt(int rowIndex, C columnIdentifier);
 
   /**
    * Removes the given items from this table model
@@ -174,60 +180,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   <T> Collection<T> getSelectedValues(C columnIdentifier);
 
   /**
-   * Returns a RowColumn denoting the row and column index of the first value to fulfill
-   * the given search condition when searching towards a higher row index.
-   * @param fromRowIndex the row index to start searching at, if this is larger than the size of
-   * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
-   * @param searchText the text to search for
-   * @return the search result coordinate, an empty Optional if nothing was found
-   * @see #getRegularExpressionSearchState()
-   * @see #getCaseSensitiveSearchState()
-   */
-  Optional<RowColumn> findNext(int fromRowIndex, String searchText);
-
-  /**
-   * Returns a RowColumn denoting the row and column index of the first value to fulfill
-   * the given search condition when searching towards a lower row index.
-   * @param fromRowIndex the row index to start searching at, if this is larger than the size of
-   * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
-   * @param searchText the text to search for
-   * @return the search result coordinate, an empty Optional if nothing was found
-   * @see #getRegularExpressionSearchState()
-   * @see #getCaseSensitiveSearchState()
-   */
-  Optional<RowColumn> findPrevious(int fromRowIndex, String searchText);
-
-  /**
-   * Returns a RowColumn denoting the row and column index of the first value to fulfill
-   * the given search condition when searching towards a lower row index.
-   * @param fromRowIndex the row index to start searching at, if this is larger than the size of
-   * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
-   * @param condition the search condition
-   * @return the search result coordinate, an empty Optional if nothing was found
-   */
-  Optional<RowColumn> findNext(int fromRowIndex, Predicate<String> condition);
-
-  /**
-   * Returns a RowColumn denoting the row and column index of the first value to fulfill
-   * the given search condition when searching towards a higher row index.
-   * @param fromRowIndex the row index to start searching at, if this is larger than the size of
-   * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
-   * @param condition the search condition
-   * @return the search result coordinate, an empty Optional if nothing was found
-   */
-  Optional<RowColumn> findPrevious(int fromRowIndex, Predicate<String> condition);
-
-  /**
-   * @return the state controlling whether regular expressions should be used when searching this table model
-   */
-  State getRegularExpressionSearchState();
-
-  /**
-   * @return the state controlling whether searching this table model is case-sensitive
-   */
-  State getCaseSensitiveSearchState();
-
-  /**
    * @return true if merge on refresh is enabled
    */
   boolean isMergeOnRefresh();
@@ -257,6 +209,11 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   FilteredTableSortModel<R, C> getSortModel();
 
   /**
+   * @return the search model
+   */
+  FilteredTableSearchModel getSearchModel();
+
+  /**
    * Refreshes the items in this table model, respecting the selection, filtering as well as sorting states.
    * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
    * before it is repopulated, during which the selection is cleared as well. Using merge on insert
@@ -277,26 +234,31 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   interface ColumnValueProvider<R, C> {
 
     /**
-     * Returns a value the given row and columnIdentifier, used for sorting
-     * @param row the object representing a given row
-     * @param columnIdentifier the column identifier
-     * @return a value for the given row and column
-     */
-    Object getColumnValue(R row, C columnIdentifier);
-  }
-
-  /**
-   * Provides the type class for a column
-   * @param <C> the column identifier type
-   */
-  interface ColumnClassProvider<C> {
-
-    /**
      * Returns the class of the column with the given identifier
      * @param columnIdentifier the column identifier
      * @return the Class representing the given column
      */
     Class<?> getColumnClass(C columnIdentifier);
+
+    /**
+     * Returns a value for the given row and columnIdentifier
+     * @param row the object representing a given row
+     * @param columnIdentifier the column identifier
+     * @return a value for the given row and column
+     */
+    Object getValue(R row, C columnIdentifier);
+
+    /**
+     * Returns a String representation of the value for the given row and columnIdentifier
+     * @param row the row
+     * @param columnIdentifier the column identifier
+     * @return a String representation of the value for the given row and column
+     */
+    default String getString(R row, C columnIdentifier) {
+      Object columnValue = getValue(row, columnIdentifier);
+
+      return columnValue == null ? "" : columnValue.toString();
+    }
   }
 
   /**
@@ -329,31 +291,5 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
      * @return the to row index
      */
     int getToRow();
-  }
-
-  /**
-   * Holds a row/column coordinate
-   */
-  interface RowColumn {
-
-    /**
-     * @return the row
-     */
-    int getRow();
-
-    /**
-     * @return the column
-     */
-    int getColumn();
-
-    /**
-     * Factory method for {@link RowColumn} instances.
-     * @param row the row index
-     * @param column the column index
-     * @return the RowColumn
-     */
-    static RowColumn rowColumn(int row, int column) {
-      return new DefaultRowColumn(row, column);
-    }
   }
 }

@@ -7,6 +7,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
+import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -66,7 +67,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
     setForeground(getForeground(table, row, isSelected));
     setBackground(getBackground(table, row, isSelected));
-    setBorder(hasFocus ? settings.focusedCellBorder : settings.defaultCellBorder);
+    setBorder(hasFocus || isSearchResult(row, column, tableModel) ? settings.focusedCellBorder : settings.defaultCellBorder);
     if (toolTipData) {
       setToolTipText(value == null ? "" : value.toString());
     }
@@ -94,6 +95,12 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
   @Override
   protected void setValue(Object value) {
     super.setValue(displayValueProvider.apply((T) value));
+  }
+
+  private static boolean isSearchResult(int row, int column, SwingEntityTableModel tableModel) {
+    RowColumn searchResult = tableModel.getSearchModel().currentResult();
+
+    return searchResult.getRow() == row && searchResult.getColumn() == column;
   }
 
   private final class DefaultDisplayValueProvider implements Function<T, Object> {
@@ -140,7 +147,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
       getNullableModel().setState((Boolean) value);
       setForeground(getForeground(table, row, isSelected));
       setBackground(getBackground(table, row, isSelected));
-      setBorder(hasFocus ? settings.focusedCellBorder : settings.defaultCellBorder);
+      setBorder(hasFocus || isSearchResult(row, column, tableModel) ? settings.focusedCellBorder : settings.defaultCellBorder);
 
       return this;
     }

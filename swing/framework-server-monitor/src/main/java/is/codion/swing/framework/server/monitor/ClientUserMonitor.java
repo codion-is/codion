@@ -11,7 +11,6 @@ import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnClassProvider;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import org.slf4j.Logger;
@@ -256,8 +255,7 @@ public final class ClientUserMonitor {
   private final class UserHistoryTableModel extends DefaultFilteredTableModel<UserInfo, Integer> {
 
     private UserHistoryTableModel() {
-      super(createUserHistoryColumns(),
-              new UserHistoryColumnClassProvider(), new UserHistoryColumnValueProvider());
+      super(createUserHistoryColumns(), new UserHistoryColumnValueProvider());
       setMergeOnRefresh(true);
     }
 
@@ -291,7 +289,7 @@ public final class ClientUserMonitor {
     }
   }
 
-  private static final class UserHistoryColumnClassProvider implements ColumnClassProvider<Integer> {
+  private static final class UserHistoryColumnValueProvider implements ColumnValueProvider<UserInfo, Integer> {
 
     @Override
     public Class<?> getColumnClass(Integer columnIdentifier) {
@@ -306,12 +304,9 @@ public final class ClientUserMonitor {
         default: throw new IllegalArgumentException(columnIdentifier.toString());
       }
     }
-  }
-
-  private static final class UserHistoryColumnValueProvider implements ColumnValueProvider<UserInfo, Integer> {
 
     @Override
-    public Object getColumnValue(UserInfo row, Integer columnIdentifier) {
+    public Object getValue(UserInfo row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case USERNAME_COLUMN: return row.getUser().getUsername();
         case CLIENT_TYPE_COLUMN: return row.getClientTypeId();

@@ -10,10 +10,10 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.RowColumn;
+import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
+import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
 import is.codion.swing.common.model.component.table.FilteredTableSortModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.control.Control.control;
@@ -106,7 +107,6 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   private static final int SORT_ICON_SIZE = 5;
   private static final int COLUMN_RESIZE_AMOUNT = 10;
   private static final List<Integer> RESIZE_KEYS = asList(KeyEvent.VK_PLUS, KeyEvent.VK_ADD, KeyEvent.VK_MINUS, KeyEvent.VK_SUBTRACT);
-  private static final RowColumn NULL_COORDINATE = RowColumn.rowColumn(-1, -1);
 
   /**
    * The table model
@@ -152,11 +152,6 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * Specifies the scrolling behaviour when scrolling to the selected row/column
    */
   private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
-
-  /**
-   * The coordinate of the last search result
-   */
-  private RowColumn lastSearchResultCoordinate = NULL_COORDINATE;
 
   /**
    * Instantiates a new FilteredTable using the given model
@@ -404,40 +399,6 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   /**
-   * Performs a text search in the underlying table model, forward relative to the last search result coordinate.
-   * @param searchText the text to search for
-   */
-  public void findNext(String searchText) {
-    performSearch(false, lastSearchResultCoordinate.getRow() + 1, true, searchText);
-  }
-
-  /**
-   * Performs a text search in the underlying table model, backwards relative to the last search result coordinate.
-   * @param searchText the text to search for
-   */
-  public void findPrevious(String searchText) {
-    performSearch(false, lastSearchResultCoordinate.getRow() - 1, false, searchText);
-  }
-
-  /**
-   * Performs a text search in the underlying table model, forward relative to the last search result coordinate,
-   * adding the result to the current row selection.
-   * @param searchText the text to search for
-   */
-  public void findAndSelectNext(String searchText) {
-    performSearch(true, lastSearchResultCoordinate.getRow() + 1, true, searchText);
-  }
-
-  /**
-   * Performs a text search in the underlying table model, backwards relative to the last search result coordinate,
-   * adding the result to the current row selection.
-   * @param searchText the text to search for
-   */
-  public void findAndSelectPrevious(String searchText) {
-    performSearch(true, lastSearchResultCoordinate.getRow() - 1, false, searchText);
-  }
-
-  /**
    * A convenience method for setting the client property 'JTable.autoStartsEdit'.
    * @param autoStartsEdit the value
    */
@@ -464,77 +425,66 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * @return a search field
    */
   private JTextField initializeSearchField() {
-    Value<String> searchString = Value.value("", "");
-    Control findNext = control(() -> findNext(searchString.get()));
-    Control findAndSelectNext = control(() -> findAndSelectNext(searchString.get()));
-    Control findPrevious = control(() -> findPrevious(searchString.get()));
-    Control findAndSelectPrevious = control(() -> findAndSelectPrevious(searchString.get()));
-    Control cancel = control(this::requestFocusInWindow);
+    Control nextResult = control(() -> selectSearchResult(false, true));
+    Control selectNextResult = control(() -> selectSearchResult(true, true));
+    Control previousResult = control(() -> selectSearchResult(false, false));
+    Control selectPreviousResult = control(() -> selectSearchResult(true, false));
+    Control requestTableFocus = control(this::requestFocusInWindow);
 
     String hintText = Messages.get(Messages.SEARCH_FIELD_HINT);
-    return Components.textField(searchString)
+    return Components.textField(tableModel.getSearchModel().getSearchStringValue())
             .columns(SEARCH_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)
             .keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
-                    .action(findNext))
+                    .action(nextResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
                     .modifiers(InputEvent.SHIFT_DOWN_MASK)
-                    .action(findAndSelectNext))
+                    .action(selectNextResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
-                    .action(findNext))
+                    .action(nextResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
                     .modifiers(InputEvent.SHIFT_DOWN_MASK)
-                    .action(findAndSelectNext))
+                    .action(selectNextResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
-                    .action(findPrevious))
+                    .action(previousResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
                     .modifiers(InputEvent.SHIFT_DOWN_MASK)
-                    .action(findAndSelectPrevious))
+                    .action(selectPreviousResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
-                    .action(cancel))
+                    .action(requestTableFocus))
             .popupMenuControls(getSearchFieldPopupMenuControls())
             .hintText(hintText)
             .onTextChanged(searchText -> {
               if (!Objects.equals(searchText, hintText)) {
-                performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 :
-                        lastSearchResultCoordinate.getRow(), true, searchText);
+                tableModel.getSearchModel().nextResult();
               }
             })
             .build();
   }
 
-  private void performSearch(boolean addToSelection, int fromIndex, boolean forward, String searchText) {
-    if (!searchText.isEmpty()) {
-      RowColumn coordinate = (forward ?
-              tableModel.findNext(fromIndex, searchText) :
-              tableModel.findPrevious(fromIndex, searchText))
-              .orElse(null);
-      if (coordinate != null) {
-        lastSearchResultCoordinate = coordinate;
-        if (addToSelection) {
-          tableModel.getSelectionModel().addSelectedIndex(coordinate.getRow());
-        }
-        else {
-          tableModel.getSelectionModel().setSelectedIndex(coordinate.getRow());
-          setColumnSelectionInterval(coordinate.getColumn(), coordinate.getColumn());
-        }
-        scrollToCoordinate(coordinate.getRow(), coordinate.getColumn(), centerOnScroll);
+  private void selectSearchResult(boolean addToSelection, boolean next) {
+    getSearchResult(addToSelection, next).ifPresent(rowColumn -> {
+      if (!addToSelection) {
+        setColumnSelectionInterval(rowColumn.getColumn(), rowColumn.getColumn());
       }
-      else {
-        tableModel.getSelectionModel().clearSelection();
-        lastSearchResultCoordinate = NULL_COORDINATE;
-      }
+      scrollToCoordinate(rowColumn.getRow(), rowColumn.getColumn(), centerOnScroll);
+    });
+  }
+
+  private Optional<RowColumn> getSearchResult(boolean addToSelection, boolean next) {
+    FilteredTableSearchModel searchModel = tableModel.getSearchModel();
+    if (next) {
+      return addToSelection ? searchModel.selectNextResult() : searchModel.nextResult();
     }
-    else {
-      lastSearchResultCoordinate = NULL_COORDINATE;
-    }
+
+    return addToSelection ? searchModel.selectPreviousResult() : searchModel.previousResult();
   }
 
   private Controls getSearchFieldPopupMenuControls() {
     return Controls.builder()
-            .control(ToggleControl.builder(tableModel.getCaseSensitiveSearchState())
+            .control(ToggleControl.builder(tableModel.getSearchModel().getCaseSensitiveSearchState())
                     .caption(MESSAGES.getString("case_sensitive_search")))
-            .controls(ToggleControl.builder(tableModel.getRegularExpressionSearchState())
+            .controls(ToggleControl.builder(tableModel.getSearchModel().getRegularExpressionSearchState())
                     .caption(MESSAGES.getString("regular_expression_search")))
             .build();
   }
@@ -622,6 +572,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
       }
     });
     tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
+    tableModel.getSearchModel().addCurrentResultListener(rowColumn -> repaint());
     addKeyListener(new MoveResizeColumnKeyListener());
   }
 

@@ -8143,3 +8143,6 @@
   EntityTableCellRenderer, type parameter added
   EntityTablePanel.initializeTableCellRenderer() type parameter added, consistent with initializeTableCellEditor()
   EntityComponents, EntityEditComponentPanel.createForeignKeyTextField() added
+  FilteredTableModel.ColumnClassProvider merged with ColumnValueProvider
+  FilteredTableModel.getStringAt() along with ColumnValueProvider.getString() added, replaces DefaultFilteredTableModel.getSearchValueAt()
+  FilteredTableSearchModel added, FilteredTableModel, FilteredTable, search functionality improved and refactored

@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+
 import org.junit.jupiter.api.Test;
 
 import javax.swing.SortOrder;
@@ -23,22 +25,24 @@ public class DefaultFilteredTableSortModelTest {
     secondColumn.setIdentifier(1);
     TableColumn thirdColumn = new TableColumn(2);
     thirdColumn.setIdentifier(2);
-    DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<>(columnIdentifier -> {
-      if (columnIdentifier.equals(1)) {
-        return String.class;
+    DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<>(new ColumnValueProvider<Row, Integer>() {
+      @Override
+      public Object getValue(Row row, Integer columnIdentifier) {
+        switch (columnIdentifier) {
+          case 0:
+            return row.firstValue;
+          case 1:
+            return row.secondValue.toString();
+          case 2:
+            return row.thirdValue;
+          default:
+            return null;
+        }
       }
 
-      return Integer.class;
-    }, (row, columnIdentifier) -> {
-      switch (columnIdentifier) {
-        case 0:
-          return row.firstValue;
-        case 1:
-          return row.secondValue.toString();
-        case 2:
-          return row.thirdValue;
-        default:
-          return null;
+      @Override
+      public Class<?> getColumnClass(Integer columnIdentifier) {
+        return String.class;
       }
     }, null);
 
@@ -95,7 +99,17 @@ public class DefaultFilteredTableSortModelTest {
     TableColumn firstColumn = new TableColumn(0);
     firstColumn.setIdentifier(0);
     DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<>(
-            columnIdentifier -> ArrayList.class, (row, columnIdentifier) -> row.toString(), null);
+            new ColumnValueProvider<ArrayList, Integer>() {
+              @Override
+              public Object getValue(ArrayList row, Integer columnIdentifier) {
+                return row.toString();
+              }
+
+              @Override
+              public Class<?> getColumnClass(Integer columnIdentifier) {
+                return ArrayList.class;
+              }
+            }, null);
     List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
     model.setSortOrder(0, SortOrder.DESCENDING);
     model.sort(collections);
