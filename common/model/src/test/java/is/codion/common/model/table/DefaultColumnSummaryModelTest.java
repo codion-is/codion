@@ -4,6 +4,7 @@
 package is.codion.common.model.table;
 
 import is.codion.common.event.EventListener;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ public class DefaultColumnSummaryModelTest {
 
   private final Format numberFormat = NumberFormat.getInstance();
 
-  final ColumnSummaryModel testIntModel = new DefaultColumnSummaryModel<>(new ColumnSummaryModel.ColumnValueProvider<Integer>() {
+  final ColumnSummaryModel testIntModel = new DefaultColumnSummaryModel<>(new SummaryValueProvider<Integer>() {
     @Override
     public String format(Object value) {return numberFormat.format(value);}
     @Override
@@ -33,7 +34,7 @@ public class DefaultColumnSummaryModelTest {
     public void addValuesChangedListener(EventListener event) {}
   });
 
-  final ColumnSummaryModel testDoubleModel = new DefaultColumnSummaryModel<>(new ColumnSummaryModel.ColumnValueProvider<Double>() {
+  final ColumnSummaryModel testDoubleModel = new DefaultColumnSummaryModel<>(new SummaryValueProvider<Double>() {
     @Override
     public String format(Object value) {return numberFormat.format(value);}
     @Override

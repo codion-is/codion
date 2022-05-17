@@ -8,7 +8,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -590,9 +590,9 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  protected final <T extends Number> Optional<ColumnSummaryModel.ColumnValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
+  protected final <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
     if (attribute.isNumerical()) {
-      return Optional.of(new DefaultColumnValueProvider<>(attribute, this, getEntityDefinition().getProperty(attribute).getFormat()));
+      return Optional.of(new DefaultSummaryValueProvider<>(attribute, this, getEntityDefinition().getProperty(attribute).getFormat()));
     }
 
     return Optional.empty();

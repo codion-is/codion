@@ -10,6 +10,7 @@ import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -512,8 +513,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @param <T> the value type
    * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}, an empty Optional if not applicable
    */
-  protected <T extends Number> Optional<ColumnSummaryModel.ColumnValueProvider<T>> createColumnValueProvider(C columnIdentifier) {
-    return Optional.of(new DefaultColumnValueProvider<>(columnIdentifier, this, null));
+  protected <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(C columnIdentifier) {
+    return Optional.of(new DefaultSummaryValueProvider<>(columnIdentifier, this, null));
   }
 
   /**
@@ -746,9 +747,9 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   /**
-   * A default ColumnValueProvider implementation
+   * A default SummaryValueProvider implementation
    */
-  protected static final class DefaultColumnValueProvider<T extends Number, C> implements ColumnSummaryModel.ColumnValueProvider<T> {
+  protected static final class DefaultSummaryValueProvider<T extends Number, C> implements SummaryValueProvider<T> {
 
     private final C columnIdentifier;
     private final FilteredTableModel<?, C> tableModel;
@@ -759,10 +760,9 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
      * @param tableModel the table model
      * @param format the format to use for presenting the summary value
      */
-    public DefaultColumnValueProvider(C columnIdentifier, FilteredTableModel<?, C> tableModel,
-                                      Format format) {
-      this.columnIdentifier = columnIdentifier;
-      this.tableModel = tableModel;
+    public DefaultSummaryValueProvider(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
+      this.columnIdentifier = requireNonNull(columnIdentifier);
+      this.tableModel = requireNonNull(tableModel);
       this.format = format;
     }
 
