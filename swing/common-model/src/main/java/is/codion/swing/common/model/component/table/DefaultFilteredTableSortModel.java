@@ -5,7 +5,6 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnComparatorFactory;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import javax.swing.SortOrder;
@@ -20,13 +19,9 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortModel<R, C> {
 
-  private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
-  private static final Comparator<?> TO_STRING_COMPARATOR = new ToStringComparator();
-
   private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortOrder.UNSORTED, -1);
 
   private final ColumnValueProvider<R, C> columnValueProvider;
-  private final ColumnComparatorFactory<C> columnComparatorFactory;
 
   /**
    * The comparators used to compare column values
@@ -44,10 +39,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   private final Map<C, SortingState> sortingStates = new HashMap<>();
   private final SortingStatesComparator sortingStatesComparator = new SortingStatesComparator();
 
-  DefaultFilteredTableSortModel(ColumnValueProvider<R, C> columnValueProvider,
-                                ColumnComparatorFactory<C> columnComparatorFactory) {
+  DefaultFilteredTableSortModel(ColumnValueProvider<R, C> columnValueProvider) {
     this.columnValueProvider = requireNonNull(columnValueProvider);
-    this.columnComparatorFactory = columnComparatorFactory == null ? new DefaultColumnComparatorFactory<>() : columnComparatorFactory;
   }
 
   @Override
@@ -173,21 +166,13 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
       }
       else {
         comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(columnIdentifier,
-                k -> columnComparatorFactory.createComparator(columnIdentifier,
-                        columnValueProvider.getColumnClass(columnIdentifier)))).compare(valueOne, valueTwo);
+                k -> columnValueProvider.getComparator(columnIdentifier))).compare(valueOne, valueTwo);
       }
       if (comparison != 0) {
         return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;
       }
 
       return 0;
-    }
-  }
-
-  private static final class ToStringComparator implements Comparator<Object> {
-    @Override
-    public int compare(Object o1, Object o2) {
-      return o1.toString().compareTo(o2.toString());
     }
   }
 
@@ -216,18 +201,6 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     @Override
     public SortOrder getSortOrder() {
       return sortOrder;
-    }
-  }
-
-  private static final class DefaultColumnComparatorFactory<C> implements ColumnComparatorFactory<C> {
-
-    @Override
-    public Comparator<?> createComparator(C columnIdentifier, Class<?> columnClass) {
-      if (Comparable.class.isAssignableFrom(columnClass)) {
-        return COMPARABLE_COMPARATOR;
-      }
-
-      return TO_STRING_COMPARATOR;
     }
   }
 }

@@ -10,6 +10,7 @@ import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.DefaultColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -124,23 +125,10 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * Instantiates a new table model.
    * @param tableColumns the table columns to base this table model on
    * @param columnValueProvider the column value provider
-   * @throws NullPointerException in case {@code columnModel} is null
    */
   public DefaultFilteredTableModel(List<TableColumn> tableColumns,
                                    ColumnValueProvider<R, C> columnValueProvider) {
-    this(tableColumns, columnValueProvider, (ColumnComparatorFactory<C>) null);
-  }
-
-  /**
-   * Instantiates a new table model.
-   * @param tableColumns the table columns to base this table model on
-   * @param columnValueProvider the column value provider
-   * @param columnComparatorFactory the column comparator factory
-   */
-  public DefaultFilteredTableModel(List<TableColumn> tableColumns,
-                                   ColumnValueProvider<R, C> columnValueProvider,
-                                   ColumnComparatorFactory<C> columnComparatorFactory) {
-    this(tableColumns, columnValueProvider, columnComparatorFactory, null);
+    this(tableColumns, columnValueProvider, null);
   }
 
   /**
@@ -151,25 +139,11 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    */
   public DefaultFilteredTableModel(List<TableColumn> tableColumns,
                                    ColumnValueProvider<R, C> columnValueProvider,
-                                   Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
-    this(tableColumns, columnValueProvider, null, columnFilterModels);
-  }
-
-  /**
-   * Instantiates a new table model.
-   * @param tableColumns the table columns to base this table model on
-   * @param columnValueProvider the column value provider
-   * @param columnComparatorFactory the column comparator factory
-   * @param columnFilterModels the filter models if any
-   */
-  public DefaultFilteredTableModel(List<TableColumn> tableColumns,
-                                   ColumnValueProvider<R, C> columnValueProvider,
-                                   ColumnComparatorFactory<C> columnComparatorFactory,
                                    Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
     this.searchModel = new DefaultFilteredTableSearchModel<>(this);
     this.columnValueProvider = requireNonNull(columnValueProvider);
-    this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider, columnComparatorFactory);
+    this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     if (columnFilterModels != null) {
       for (ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
@@ -539,8 +513,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @param <T> the value type
    * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}, an empty Optional if not applicable
    */
-  protected <T extends Number> Optional<ColumnSummaryModel.ColumnValueProvider<T>> createColumnValueProvider(C columnIdentifier) {
-    return Optional.of(new DefaultColumnValueProvider<>(columnIdentifier, this, null));
+  protected <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(C columnIdentifier) {
+    return Optional.of(new DefaultSummaryValueProvider<>(columnIdentifier, this, null));
   }
 
   /**
@@ -773,9 +747,9 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   /**
-   * A default ColumnValueProvider implementation
+   * A default SummaryValueProvider implementation
    */
-  protected static final class DefaultColumnValueProvider<T extends Number, C> implements ColumnSummaryModel.ColumnValueProvider<T> {
+  protected static final class DefaultSummaryValueProvider<T extends Number, C> implements SummaryValueProvider<T> {
 
     private final C columnIdentifier;
     private final FilteredTableModel<?, C> tableModel;
@@ -786,10 +760,9 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
      * @param tableModel the table model
      * @param format the format to use for presenting the summary value
      */
-    public DefaultColumnValueProvider(C columnIdentifier, FilteredTableModel<?, C> tableModel,
-                                      Format format) {
-      this.columnIdentifier = columnIdentifier;
-      this.tableModel = tableModel;
+    public DefaultSummaryValueProvider(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
+      this.columnIdentifier = requireNonNull(columnIdentifier);
+      this.tableModel = requireNonNull(tableModel);
       this.format = format;
     }
 

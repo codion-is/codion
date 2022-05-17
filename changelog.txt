@@ -8184,3 +8184,5 @@
   FilteredTableModel.ColumnClassProvider merged with ColumnValueProvider
   FilteredTableModel.getStringAt() along with ColumnValueProvider.getString() added, replaces DefaultFilteredTableModel.getSearchValueAt()
   FilteredTableSearchModel added, FilteredTableModel, FilteredTable, search functionality improved and refactored
+  ColumnComparatorFactory merged with ColumnValueProvider, createComparator() renamed getComparator()
+  ColumnSummaryModel.ColumnValueProvider renamed SummaryValueProvider

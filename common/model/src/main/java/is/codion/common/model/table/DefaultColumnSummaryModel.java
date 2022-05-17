@@ -21,14 +21,14 @@ public final class DefaultColumnSummaryModel<T extends Number> implements Column
   private final Value<Summary> summaryValue = Value.value(ColumnSummary.NONE);
   private final Value<String> summaryTextValue = Value.value();
   private final State lockedState = State.state();
-  private final ColumnValueProvider<T> valueProvider;
+  private final SummaryValueProvider<T> valueProvider;
   private final List<Summary> summaries = asList(ColumnSummary.values());
 
   /**
    * Instantiates a new DefaultColumnSummaryModel
-   * @param valueProvider the property value provider
+   * @param valueProvider the value provider
    */
-  public DefaultColumnSummaryModel(ColumnValueProvider<T> valueProvider) {
+  public DefaultColumnSummaryModel(SummaryValueProvider<T> valueProvider) {
     this.valueProvider = requireNonNull(valueProvider);
     this.summaryValue.addValidator(summary -> {
       if (lockedState.get()) {

@@ -44,7 +44,7 @@ public class DefaultFilteredTableSortModelTest {
       public Class<?> getColumnClass(Integer columnIdentifier) {
         return String.class;
       }
-    }, null);
+    });
 
     Row firstRow = new Row(1, 2, null);
     Row secondRow = new Row(1, 2, 5);
@@ -109,7 +109,7 @@ public class DefaultFilteredTableSortModelTest {
               public Class<?> getColumnClass(Integer columnIdentifier) {
                 return ArrayList.class;
               }
-            }, null);
+            });
     List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
     model.setSortOrder(0, SortOrder.DESCENDING);
     model.sort(collections);

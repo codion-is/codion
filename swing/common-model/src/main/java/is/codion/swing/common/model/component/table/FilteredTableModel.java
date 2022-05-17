@@ -234,11 +234,35 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   interface ColumnValueProvider<R, C> {
 
     /**
+     * A Comparator for comparing {@link Comparable} instances.
+     */
+    Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
+
+    /**
+     * A Comparator for comparing Objects according to their toString() value.
+     */
+    Comparator<?> TO_STRING_COMPARATOR = Comparator.comparing(Object::toString);
+
+    /**
      * Returns the class of the column with the given identifier
      * @param columnIdentifier the column identifier
      * @return the Class representing the given column
      */
     Class<?> getColumnClass(C columnIdentifier);
+
+    /**
+     * Returns the comparator to use when sorting by the give column,
+     * the comparator receives the column values, but never null.
+     * @param columnIdentifier the column identifier
+     * @return the comparator to use when sorting by the given column
+     */
+    default Comparator<?> getComparator(C columnIdentifier) {
+      if (Comparable.class.isAssignableFrom(getColumnClass(columnIdentifier))) {
+        return COMPARABLE_COMPARATOR;
+      }
+
+      return TO_STRING_COMPARATOR;
+    }
 
     /**
      * Returns a value for the given row and columnIdentifier
@@ -259,22 +283,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
       return columnValue == null ? "" : columnValue.toString();
     }
-  }
-
-  /**
-   * A factory for {@link Comparator} instances for columns
-   * @param <C> the column identifier type
-   */
-  interface ColumnComparatorFactory<C> {
-
-    /**
-     * Creates a comparator used when sorting by the give column,
-     * the comparator receives the column values, but never null.
-     * @param columnIdentifier the column identifier
-     * @param columnClass the column class
-     * @return the comparator to use when sorting by the given column
-     */
-    Comparator<?> createComparator(C columnIdentifier, Class<?> columnClass);
   }
 
   /**
