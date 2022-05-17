@@ -124,23 +124,10 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * Instantiates a new table model.
    * @param tableColumns the table columns to base this table model on
    * @param columnValueProvider the column value provider
-   * @throws NullPointerException in case {@code columnModel} is null
    */
   public DefaultFilteredTableModel(List<TableColumn> tableColumns,
                                    ColumnValueProvider<R, C> columnValueProvider) {
-    this(tableColumns, columnValueProvider, (ColumnComparatorFactory<C>) null);
-  }
-
-  /**
-   * Instantiates a new table model.
-   * @param tableColumns the table columns to base this table model on
-   * @param columnValueProvider the column value provider
-   * @param columnComparatorFactory the column comparator factory
-   */
-  public DefaultFilteredTableModel(List<TableColumn> tableColumns,
-                                   ColumnValueProvider<R, C> columnValueProvider,
-                                   ColumnComparatorFactory<C> columnComparatorFactory) {
-    this(tableColumns, columnValueProvider, columnComparatorFactory, null);
+    this(tableColumns, columnValueProvider, null);
   }
 
   /**
@@ -151,25 +138,11 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    */
   public DefaultFilteredTableModel(List<TableColumn> tableColumns,
                                    ColumnValueProvider<R, C> columnValueProvider,
-                                   Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
-    this(tableColumns, columnValueProvider, null, columnFilterModels);
-  }
-
-  /**
-   * Instantiates a new table model.
-   * @param tableColumns the table columns to base this table model on
-   * @param columnValueProvider the column value provider
-   * @param columnComparatorFactory the column comparator factory
-   * @param columnFilterModels the filter models if any
-   */
-  public DefaultFilteredTableModel(List<TableColumn> tableColumns,
-                                   ColumnValueProvider<R, C> columnValueProvider,
-                                   ColumnComparatorFactory<C> columnComparatorFactory,
                                    Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
     this.searchModel = new DefaultFilteredTableSearchModel<>(this);
     this.columnValueProvider = requireNonNull(columnValueProvider);
-    this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider, columnComparatorFactory);
+    this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     if (columnFilterModels != null) {
       for (ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {

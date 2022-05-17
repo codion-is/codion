@@ -64,12 +64,15 @@ public final class DefaultFilteredTableModelTest {
                 public Class<?> getColumnClass(Integer columnIdentifier) {
                   return String.class;
                 }
-              }, (columnIdentifier, columnClass) -> {
-                if (customComparator != null) {
-                  return customComparator;
-                }
 
-                return (Comparator<String>) String::compareTo;
+                @Override
+                public Comparator<?> getComparator(Integer columnIdentifier) {
+                  if (customComparator != null) {
+                    return customComparator;
+                  }
+
+                  return (Comparator<String>) String::compareTo;
+                }
               }, createFilterModels());
     }
 

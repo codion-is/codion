@@ -173,9 +173,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @param tableConditionModel the table condition model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
-    super(createColumns(requireNonNull(editModel, "editModel")
-                    .getConnectionProvider().getEntities().getDefinition(editModel.getEntityType())),
-            new EntityColumnValueProvider(), new EntityColumnComparatorFactory(editModel.getEntities()),
+    super(createColumns(requireNonNull(editModel, "editModel").getEntities().getDefinition(editModel.getEntityType())),
+            new EntityColumnValueProvider(editModel.getEntities()),
             requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels().values());
     if (!tableConditionModel.getEntityType().equals(editModel.getEntityType())) {
       throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.getEntityType()
@@ -890,9 +889,24 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {
 
+    private final Entities entities;
+
+    private EntityColumnValueProvider(Entities entities) {
+      this.entities = entities;
+    }
+
     @Override
     public Class<?> getColumnClass(Attribute<?> attribute) {
       return attribute.getTypeClass();
+    }
+
+    @Override
+    public Comparator<?> getComparator(Attribute<?> attribute) {
+      if (attribute instanceof ForeignKey) {
+        return entities.getDefinition(((ForeignKey) attribute).getReferencedEntityType()).getComparator();
+      }
+
+      return entities.getDefinition(attribute.getEntityType()).getProperty(attribute).getComparator();
     }
 
     @Override
@@ -903,24 +917,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     @Override
     public String getString(Entity entity, Attribute<?> attribute) {
       return entity.toString(attribute);
-    }
-  }
-
-  private static final class EntityColumnComparatorFactory implements ColumnComparatorFactory<Attribute<?>> {
-
-    private final Entities entities;
-
-    private EntityColumnComparatorFactory(Entities entities) {
-      this.entities = entities;
-    }
-
-    @Override
-    public Comparator<?> createComparator(Attribute<?> attribute, Class<?> columnClass) {
-      if (attribute instanceof ForeignKey) {
-        return entities.getDefinition(((ForeignKey) attribute).getReferencedEntityType()).getComparator();
-      }
-
-      return entities.getDefinition(attribute.getEntityType()).getProperty(attribute).getComparator();
     }
   }
 }
