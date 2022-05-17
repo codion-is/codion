@@ -24,16 +24,6 @@ import java.util.Optional;
 public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
   /**
-   * A Comparator for comparing {@link Comparable} instances.
-   */
-  Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
-
-  /**
-   * A Comparator for comparing Objects according to their toString() value.
-   */
-  Comparator<?> TO_STRING_COMPARATOR = Comparator.comparing(Object::toString);
-
-  /**
    * @param listener a listener to be notified each time a refresh has successfully finished
    * @see #refresh()
    */
@@ -242,6 +232,16 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @param <C> the column identifier type
    */
   interface ColumnValueProvider<R, C> {
+
+    /**
+     * A Comparator for comparing {@link Comparable} instances.
+     */
+    Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
+
+    /**
+     * A Comparator for comparing Objects according to their toString() value.
+     */
+    Comparator<?> TO_STRING_COMPARATOR = Comparator.comparing(Object::toString);
 
     /**
      * Returns the class of the column with the given identifier
