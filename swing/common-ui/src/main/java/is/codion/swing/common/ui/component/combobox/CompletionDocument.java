@@ -6,10 +6,14 @@ import javax.swing.JComboBox;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.Normalizer;
 
 import static java.util.Objects.requireNonNull;
@@ -37,17 +41,8 @@ class CompletionDocument extends PlainDocument {
     this.normalize = normalize;
     this.model = comboBox.getModel();
     setEditorComponent((JTextComponent) comboBox.getEditor().getEditorComponent());
-    comboBox.addPropertyChangeListener("editor", event -> {
-      ComboBoxEditor editor = (ComboBoxEditor) event.getNewValue();
-      if (editor != null) {
-        setEditorComponent((JTextComponent) editor.getEditorComponent());
-      }
-    });
-    comboBox.addActionListener(e -> {
-      if (!selecting) {
-        highlightCompletedText(0);
-      }
-    });
+    comboBox.addPropertyChangeListener("editor", new EditorChangedListener());
+    comboBox.addActionListener(new HighlightCompletedOnActionPerformedListener());
     setTextAccordingToSelectedItem();
     highlightCompletedText(0);
   }
@@ -166,12 +161,7 @@ class CompletionDocument extends PlainDocument {
     }
     editorComponent.setDocument(this);
     editorComponent.addKeyListener(new MatchKeyAdapter());
-    editorComponent.addFocusListener(new FocusAdapter() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        highlightCompletedText(0);
-      }
-    });
+    editorComponent.addFocusListener(new HighlightCompletedOnFocusGainedListener());
   }
 
   private final class MatchKeyAdapter extends KeyAdapter {
@@ -192,6 +182,32 @@ class CompletionDocument extends PlainDocument {
         default:
           break;
       }
+    }
+  }
+
+  private final class EditorChangedListener implements PropertyChangeListener {
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+      ComboBoxEditor editor = (ComboBoxEditor) event.getNewValue();
+      if (editor != null) {
+        setEditorComponent((JTextComponent) editor.getEditorComponent());
+      }
+    }
+  }
+
+  private final class HighlightCompletedOnActionPerformedListener implements ActionListener {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (!selecting) {
+        highlightCompletedText(0);
+      }
+    }
+  }
+
+  private final class HighlightCompletedOnFocusGainedListener extends FocusAdapter {
+    @Override
+    public void focusGained(FocusEvent e) {
+      highlightCompletedText(0);
     }
   }
 }

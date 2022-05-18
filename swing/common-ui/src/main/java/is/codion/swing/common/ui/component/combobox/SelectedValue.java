@@ -10,6 +10,7 @@ import is.codion.swing.common.ui.component.AbstractComponentValue;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentValue<T, C> {
 
@@ -18,11 +19,7 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
     if (comboBox.getModel() instanceof ItemComboBoxModel) {
       throw new IllegalArgumentException("comboBox() does not support ItemComboBoxModel, use itemComboBox()");
     }
-    comboBox.addItemListener(e -> {
-      if (e.getStateChange() == ItemEvent.SELECTED) {
-        notifyValueChange();
-      }
-    });
+    comboBox.addItemListener(new NotifyOnItemSelectedListener());
   }
 
   @Override
@@ -38,5 +35,14 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
   @Override
   protected void setComponentValue(C component, T value) {
     component.getModel().setSelectedItem(value);
+  }
+
+  private final class NotifyOnItemSelectedListener implements ItemListener {
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+      if (e.getStateChange() == ItemEvent.SELECTED) {
+        notifyValueChange();
+      }
+    }
   }
 }

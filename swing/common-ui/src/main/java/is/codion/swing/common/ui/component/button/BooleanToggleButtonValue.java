@@ -6,12 +6,14 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 
 import javax.swing.JToggleButton;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 final class BooleanToggleButtonValue extends AbstractComponentValue<Boolean, JToggleButton> {
 
   BooleanToggleButtonValue(JToggleButton button) {
     super(button, false);
-    button.getModel().addItemListener(itemEvent -> notifyValueChange());
+    button.getModel().addItemListener(new NotifyOnItemEvent());
   }
 
   @Override
@@ -22,5 +24,12 @@ final class BooleanToggleButtonValue extends AbstractComponentValue<Boolean, JTo
   @Override
   protected void setComponentValue(JToggleButton component, Boolean value) {
      component.setSelected(value != null && value);
+  }
+
+  private final class NotifyOnItemEvent implements ItemListener {
+    @Override
+    public void itemStateChanged(ItemEvent itemEvent) {
+      notifyValueChange();
+    }
   }
 }

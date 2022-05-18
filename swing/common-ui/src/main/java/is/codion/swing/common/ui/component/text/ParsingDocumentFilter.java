@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
 
-  public static final Parser<String> STRING_PARSER = text -> parseResult(text, text);
+  public static final Parser<String> STRING_PARSER = new StringParser();
 
   private final Parser<T> parser;
 
@@ -79,5 +79,12 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
    */
   protected String transform(String string) {
     return string;
+  }
+
+  private static final class StringParser implements Parser<String> {
+    @Override
+    public ParseResult<String> parse(String text) {
+      return parseResult(text, text);
+    }
   }
 }

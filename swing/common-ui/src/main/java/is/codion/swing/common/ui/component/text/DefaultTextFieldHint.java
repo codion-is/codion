@@ -9,9 +9,12 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
+import javax.swing.event.DocumentEvent;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.lang.Math.pow;
@@ -35,9 +38,9 @@ final class DefaultTextFieldHint implements TextFieldHint {
     this.hintText = hintText;
     this.textField.addFocusListener(initializeFocusListener());
     this.textField.addAncestorListener(initializeAncestorListener());
-    this.textField.getDocument().addDocumentListener((DocumentAdapter) e -> updateColor());
+    this.textField.getDocument().addDocumentListener(new UpdateColorsListener());
     configureColors();
-    textField.addPropertyChangeListener("UI", event -> configureColors());
+    textField.addPropertyChangeListener("UI", new ConfigureColorsListener());
     updateHint();
   }
 
@@ -115,5 +118,19 @@ final class DefaultTextFieldHint implements TextFieldHint {
     int b = (int) sqrt((pow(background.getBlue(), 2) + pow(foreground.getBlue(), 2)) / 2);
 
     return new Color(r, g, b, foreground.getAlpha());
+  }
+
+  private final class UpdateColorsListener implements DocumentAdapter {
+    @Override
+    public void contentsChanged(DocumentEvent event) {
+      updateColor();
+    }
+  }
+
+  private final class ConfigureColorsListener implements PropertyChangeListener {
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+      configureColors();
+    }
   }
 }
