@@ -7,7 +7,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
-import static is.codion.swing.common.ui.component.text.Parser.parseResult;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -16,7 +15,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
 
-  public static final Parser<String> STRING_PARSER = new StringParser();
+  static final Parser<String> STRING_PARSER = new StringParser();
 
   private final Parser<T> parser;
 
@@ -84,7 +83,7 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
   private static final class StringParser implements Parser<String> {
     @Override
     public ParseResult<String> parse(String text) {
-      return parseResult(text, text);
+      return new DefaultParseResult<>(text, text, true);
     }
   }
 }

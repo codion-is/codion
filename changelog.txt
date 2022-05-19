@@ -8150,3 +8150,4 @@
   ColumnSummaryModel.ColumnValueProvider renamed SummaryValueProvider
   Some random lambdas replaced with named classes, for simpler memory debugging
   FilteredTableModel.Removal renamed RowsRemoved
+  Parser.parseResult() removed

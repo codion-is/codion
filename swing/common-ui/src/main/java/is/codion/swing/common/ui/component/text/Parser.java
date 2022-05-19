@@ -37,27 +37,4 @@ public interface Parser<T> {
      */
     boolean successful();
   }
-
-  /**
-   * Instantiates a new {@link ParseResult} instance.
-   * @param <T> the value type
-   * @param text the text being parsed
-   * @param value the parsed value
-   * @return a new parse result
-   */
-  static <T> ParseResult<T> parseResult(String text, T value) {
-    return parseResult(text, value, true);
-  }
-
-  /**
-   * Instantiates a new {@link ParseResult} instance.
-   * @param <T> the value type
-   * @param text the text being parsed
-   * @param value the parsed value
-   * @param successful true if the parsing was successful
-   * @return a new parse result
-   */
-  static <T> ParseResult<T> parseResult(String text, T value, boolean successful) {
-    return new DefaultParseResult<>(text, value, successful);
-  }
 }
