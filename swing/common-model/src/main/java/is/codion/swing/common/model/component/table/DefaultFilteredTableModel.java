@@ -61,7 +61,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final Event<?> refreshEvent = Event.event();
   private final Event<?> tableDataChangedEvent = Event.event();
   private final Event<?> tableModelClearedEvent = Event.event();
-  private final Event<Removal> rowsRemovedEvent = Event.event();
+  private final Event<RowsRemoved> rowsRemovedEvent = Event.event();
   private final State refreshingState = State.state();
 
   private final ColumnValueProvider<R, C> columnValueProvider;
@@ -403,12 +403,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void addRowsRemovedListener(EventDataListener<Removal> listener) {
+  public final void addRowsRemovedListener(EventDataListener<RowsRemoved> listener) {
     rowsRemovedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeRowsRemovedListener(EventDataListener<Removal> listener) {
+  public final void removeRowsRemovedListener(EventDataListener<RowsRemoved> listener) {
     rowsRemovedEvent.removeDataListener(listener);
   }
 
@@ -606,7 +606,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     sortModel.addSortingChangedListener(columnIdentifier -> sort());
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
-        rowsRemovedEvent.onEvent(new DefaultRemoval(e.getFirstRow(), e.getLastRow()));
+        rowsRemovedEvent.onEvent(new DefaultRowsRemoved(e.getFirstRow(), e.getLastRow()));
       }
     });
   }
@@ -725,12 +725,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     }
   }
 
-  private static final class DefaultRemoval implements Removal {
+  private static final class DefaultRowsRemoved implements RowsRemoved {
 
     private final int fromRow;
     private final int toRow;
 
-    private DefaultRemoval(int fromRow, int toRow) {
+    private DefaultRowsRemoved(int fromRow, int toRow) {
       this.fromRow = fromRow;
       this.toRow = toRow;
     }

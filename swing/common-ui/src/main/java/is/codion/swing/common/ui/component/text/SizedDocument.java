@@ -26,7 +26,7 @@ public final class SizedDocument extends PlainDocument {
    * @param maximumLength the maximum text length
    */
   public SizedDocument(int maximumLength) {
-    documentFilter = CaseDocumentFilter.caseDocumentFilter(CaseDocumentFilter.DocumentCase.NONE);
+    documentFilter = CaseDocumentFilter.caseDocumentFilter();
     stringLengthValidator = new StringLengthValidator(maximumLength);
     documentFilter.addValidator(stringLengthValidator);
     super.setDocumentFilter(documentFilter);

@@ -68,12 +68,12 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * Adds a listener that is notified each time rows are removed from this model.
    * @param listener the listener
    */
-  void addRowsRemovedListener(EventDataListener<Removal> listener);
+  void addRowsRemovedListener(EventDataListener<RowsRemoved> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRowsRemovedListener(EventDataListener<Removal> listener);
+  void removeRowsRemovedListener(EventDataListener<RowsRemoved> listener);
 
   /**
    * @return true if an impending selection change should be allowed
@@ -288,7 +288,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * Specifies the from and to rows of a row removal operation.
    */
-  interface Removal {
+  interface RowsRemoved {
 
     /**
      * @return the from row index
