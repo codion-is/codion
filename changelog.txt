@@ -8149,3 +8149,4 @@
   ColumnComparatorFactory merged with ColumnValueProvider, createComparator() renamed getComparator()
   ColumnSummaryModel.ColumnValueProvider renamed SummaryValueProvider
   Some random lambdas replaced with named classes, for simpler memory debugging
+  FilteredTableModel.Removal renamed RowsRemoved
