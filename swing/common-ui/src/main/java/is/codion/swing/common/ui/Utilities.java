@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui;
 
 import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.StateObserver;
 
@@ -95,8 +96,7 @@ public final class Utilities {
     for (JComponent component : components) {
       if (component != null) {
         component.setEnabled(enabledState.get());
-        enabledState.addListener(() -> SwingUtilities.invokeLater(() ->
-                component.setEnabled(enabledState.get())));
+        enabledState.addDataListener(new EnableComponentListener(component));
       }
     }
   }
@@ -273,5 +273,19 @@ public final class Utilities {
    */
   public static <T> Optional<T> getParentOfType(Class<T> clazz, Component component) {
     return Optional.ofNullable((T) SwingUtilities.getAncestorOfClass(clazz, component));
+  }
+
+  private static final class EnableComponentListener implements EventDataListener<Boolean> {
+
+    private final JComponent component;
+
+    private EnableComponentListener(JComponent component) {
+      this.component = component;
+    }
+
+    @Override
+    public void onEvent(Boolean enabled) {
+      SwingUtilities.invokeLater(() -> component.setEnabled(enabled));
+    }
   }
 }

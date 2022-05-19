@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.awt.event.KeyAdapter;
@@ -36,7 +37,7 @@ public final class NumberField<T extends Number> extends JTextField {
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
     }
-    document.addDocumentListener((DocumentAdapter) e -> value.set(document.getNumber()));
+    document.addDocumentListener(new SetNumberListener());
   }
 
   @Override
@@ -298,6 +299,13 @@ public final class NumberField<T extends Number> extends JTextField {
         }
       }
       catch (BadLocationException ignored) {/*Not happening*/}
+    }
+  }
+
+  private final class SetNumberListener implements DocumentAdapter {
+    @Override
+    public void contentsChanged(DocumentEvent e) {
+      value.set(getTypedDocument().getNumber());
     }
   }
 

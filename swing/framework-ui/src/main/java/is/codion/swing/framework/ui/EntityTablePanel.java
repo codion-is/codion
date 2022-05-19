@@ -1829,7 +1829,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       TableCellRenderer renderer = tableColumn.getCellRenderer();
       Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
       boolean displayConditionState = renderer instanceof EntityTableCellRenderer
-              && ((EntityTableCellRenderer) renderer).isDisplayConditionState()
+              && ((EntityTableCellRenderer<?>) renderer).isDisplayConditionState()
               && tableModel.getTableConditionModel().isConditionEnabled(attribute);
       Font defaultFont = component.getFont();
       component.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);

@@ -16,8 +16,8 @@ final class ValueLink<T> {
   private final Value<T> linkedValue;
   private final Value<T> originalValue;
 
-  private final EventListener updateLinkedValueListener = this::updateLinkedValue;
-  private final EventListener updateOriginalValueListener = this::updateOriginalValue;
+  private final EventListener updateLinkedValueListener = new UpdateLinkedValueListener();
+  private final EventListener updateOriginalValueListener = new UpdateOriginalValueListener();
 
   private final LinkedValidator<T> linkedValidator;
   private final LinkedValidator<T> originalValidator;
@@ -104,6 +104,20 @@ final class ValueLink<T> {
       throw new IllegalStateException("Cyclical value link detected");
     }
     linkedValues.forEach(value -> preventLinkCycle(value, originalValue));
+  }
+
+  private final class UpdateLinkedValueListener implements EventListener {
+    @Override
+    public void onEvent() {
+      updateLinkedValue();
+    }
+  }
+
+  private final class UpdateOriginalValueListener implements EventListener {
+    @Override
+    public void onEvent() {
+      updateOriginalValue();
+    }
   }
 
   private static final class LinkedValidator<T> implements Value.Validator<T> {
