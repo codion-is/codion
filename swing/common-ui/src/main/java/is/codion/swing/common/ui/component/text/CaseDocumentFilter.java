@@ -5,6 +5,8 @@ package is.codion.swing.common.ui.component.text;
 
 import java.util.Locale;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A DocumentFilter implementation with automatic conversion to upper or lower case.
  */
@@ -25,14 +27,16 @@ public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
    */
   private CaseDocumentFilter(DocumentCase documentCase) {
     super(STRING_PARSER);
-    this.documentCase = documentCase;
+    setDocumentCase(documentCase);
   }
 
   /**
    * @param documentCase the document case setting
+   * @return this CaseDocumentFilter instance
    */
-  public void setDocumentCase(DocumentCase documentCase) {
-    this.documentCase = documentCase == null ? DocumentCase.NONE : documentCase;
+  public CaseDocumentFilter setDocumentCase(DocumentCase documentCase) {
+    this.documentCase = requireNonNull(documentCase);
+    return this;
   }
 
   /**
@@ -48,15 +52,6 @@ public final class CaseDocumentFilter extends ParsingDocumentFilter<String> {
    */
   public static CaseDocumentFilter caseDocumentFilter() {
     return new CaseDocumentFilter(DocumentCase.NONE);
-  }
-
-  /**
-   * Creates a new CaseDocumentFilter instance, configured with the given document case
-   * @param documentCase the document case
-   * @return a new CaseDocumentFilter instance
-   */
-  public static CaseDocumentFilter caseDocumentFilter(DocumentCase documentCase) {
-    return new CaseDocumentFilter(documentCase);
   }
 
   @Override

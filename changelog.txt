@@ -8151,3 +8151,4 @@
   Some random lambdas replaced with named classes, for simpler memory debugging
   FilteredTableModel.Removal renamed RowsRemoved
   Parser.parseResult() removed
+  CaseDocumentFilter.setDocumentCase() no longer accepts null, minor refactoring
