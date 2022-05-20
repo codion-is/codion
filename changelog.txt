@@ -8153,3 +8153,5 @@
   Parser.parseResult() removed
   CaseDocumentFilter.setDocumentCase() no longer accepts null, minor refactoring
   DefaultEntityDefinition, minor refactoring
+  EntityTestUnit, foreignKeyEntities parameter now Map<ForeignKey, Entity> instead of Map<EntityType, Entity>
+  EntityTestUnit.initializeReferenceEntity() renamed initializeForeignKeyEntity(), parameter entityType replaced with foreignKey

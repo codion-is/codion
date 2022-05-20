@@ -7,7 +7,7 @@ import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.demos.empdept.ui.EmpDeptAppPanel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 
@@ -25,10 +25,9 @@ public final class InsertEmployee extends AbstractEntityUsageScenario<EmpDeptApp
     SwingEntityModel departmentModel = application.getEntityModel(Department.TYPE);
     selectRandomRow(departmentModel.getTableModel());
     SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
-    Map<EntityType, Entity> references = new HashMap<>();
-    references.put(Department.TYPE, departmentModel.getTableModel().getSelectionModel().getSelectedItem());
-    employeeModel.getEditModel().setEntity(createRandomEntity(application.getEntities(),
-            Employee.TYPE, references));
+    Map<ForeignKey, Entity> foreignKeyEntities = new HashMap<>();
+    foreignKeyEntities.put(Employee.DEPARTMENT_FK, departmentModel.getTableModel().getSelectionModel().getSelectedItem());
+    employeeModel.getEditModel().setEntity(createRandomEntity(application.getEntities(), Employee.TYPE, foreignKeyEntities));
     employeeModel.getEditModel().insert();
   }
 
