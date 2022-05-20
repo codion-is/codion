@@ -7,8 +7,10 @@ import javax.swing.BoundedRangeModel;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * A simple mouse wheel listener for JSlider, moving to the next or previous value on wheel spin.
+ * A mouse wheel listener for JSlider, moving to the next or previous value on wheel spin.
  * Up/away increases the value and down/towards decreases it unless reversed.
  * @see #create(BoundedRangeModel)
  * @see #createReversed(BoundedRangeModel)
@@ -24,7 +26,7 @@ public final class SliderMouseWheelListener implements MouseWheelListener {
    * @param reversed if true then up/away decreases the value and down/towards increases it.
    */
   private SliderMouseWheelListener(BoundedRangeModel boundedRangeModel, boolean reversed) {
-    this.boundedRangeModel = boundedRangeModel;
+    this.boundedRangeModel = requireNonNull(boundedRangeModel);
     this.reversed = reversed;
   }
 
