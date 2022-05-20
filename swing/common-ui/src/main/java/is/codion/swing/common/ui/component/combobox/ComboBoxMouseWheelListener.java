@@ -10,7 +10,7 @@ import java.awt.event.MouseWheelListener;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A simple mouse wheel listener for JComboBox, moving to the next or previous value on wheel spin.
+ * A mouse wheel listener for JComboBox, moving to the next or previous value on wheel spin.
  * @see #create(ComboBoxModel)
  * @see #createWithWrapAround(ComboBoxModel)
  */
@@ -36,7 +36,7 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
   }
 
   /**
-   * Instantiates a new mouse wheel listener for the given combo boxe model
+   * Instantiates a new mouse wheel listener for the given combo box model
    * @param comboBoxModel the combo box model
    * @param <T> the combo box value type
    * @return a new MouseWheelListener based on the given model
@@ -46,7 +46,7 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
   }
 
   /**
-   * Instantiates a new mouse wheel listener with wrap-around for the given combo boxe model
+   * Instantiates a new mouse wheel listener with wrap-around for the given combo box model
    * @param comboBoxModel the combo box model
    * @param <T> the combo box value type
    * @return a new MouseWheelListener based on the given model

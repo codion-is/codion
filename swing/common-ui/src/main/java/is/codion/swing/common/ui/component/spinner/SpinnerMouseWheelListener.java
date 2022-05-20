@@ -10,7 +10,7 @@ import java.awt.event.MouseWheelListener;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A simple mouse wheel listener for JSpinner, moving to the next or previous value on wheel spin.
+ * A mouse wheel listener for JSpinner, moving to the next or previous value on wheel spin.
  * Up/away increases the value and down/towards decreases it unless reversed.
  * @see #create(SpinnerModel)
  * @see #createReversed(SpinnerModel)
