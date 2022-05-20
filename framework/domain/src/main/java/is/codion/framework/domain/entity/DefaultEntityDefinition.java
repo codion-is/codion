@@ -731,12 +731,24 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     String beanPropertyCamelCase = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
     String methodName = method.getName();
-    Class<?> typeClass = getAttributeTypeClass(property.getAttribute());
+    Class<?> attributeTypeClass = getAttributeTypeClass(property.getAttribute());
     Class<?> methodReturnType = getMethodReturnType(method);
 
-    return (methodReturnType.equals(typeClass) || method.getReturnType().equals(Optional.class))
-            && (methodName.equals(beanProperty) || methodName.equals("get" + beanPropertyCamelCase) ||
-            (methodName.equals("is" + beanPropertyCamelCase) && Boolean.class.equals(typeClass)));
+    return returnsAttributeTypeOrOptional(methodReturnType, attributeTypeClass) &&
+            (isBeanOrPropertyGetter(methodName, beanProperty, beanPropertyCamelCase) ||
+                    isBooleanGetter(methodName, beanPropertyCamelCase, attributeTypeClass));
+  }
+
+  private static boolean returnsAttributeTypeOrOptional(Class<?> methodReturnType, Class<?> attributeTypeClass) {
+    return methodReturnType.equals(attributeTypeClass) || methodReturnType.equals(Optional.class);
+  }
+
+  private static boolean isBeanOrPropertyGetter(String methodName, String beanProperty, String beanPropertyCamelCase) {
+    return methodName.equals(beanProperty) || methodName.equals("get" + beanPropertyCamelCase);
+  }
+
+  private static boolean isBooleanGetter(String methodName, String beanPropertyCamelCase, Class<?> attributeTypeClass) {
+    return methodName.equals("is" + beanPropertyCamelCase) && Boolean.class.equals(attributeTypeClass);
   }
 
   private static Class<?> getMethodReturnType(Method method) {

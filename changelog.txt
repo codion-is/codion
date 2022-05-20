@@ -8152,3 +8152,4 @@
   FilteredTableModel.Removal renamed RowsRemoved
   Parser.parseResult() removed
   CaseDocumentFilter.setDocumentCase() no longer accepts null, minor refactoring
+  DefaultEntityDefinition, minor refactoring
