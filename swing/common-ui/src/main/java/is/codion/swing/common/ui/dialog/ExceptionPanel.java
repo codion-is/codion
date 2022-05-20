@@ -198,15 +198,15 @@ final class ExceptionPanel extends JPanel {
 
     JPanel westPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
     westPanel.add(detailsControl.createCheckBox());
-    JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-    centerPanel.add(copyButton);
-    centerPanel.add(printButton);
-    centerPanel.add(saveButton);
-    centerPanel.add(closeControl.createButton());
+    JPanel centerButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+    centerButtonPanel.add(copyButton);
+    centerButtonPanel.add(printButton);
+    centerButtonPanel.add(saveButton);
+    centerButtonPanel.add(closeControl.createButton());
     JPanel panel = new JPanel(new BorderLayout());
 
     panel.add(westPanel, BorderLayout.WEST);
-    panel.add(centerPanel, BorderLayout.CENTER);
+    panel.add(centerButtonPanel, BorderLayout.CENTER);
 
     return panel;
   }

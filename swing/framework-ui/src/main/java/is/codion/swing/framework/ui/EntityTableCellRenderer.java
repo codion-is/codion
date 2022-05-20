@@ -16,9 +16,8 @@ import java.util.function.Function;
 
 /**
  * Provides TableCellRenderer implementations for EntityTablePanels via {@link #builder(SwingEntityTableModel, Property)}.
- * @param <T> the property type
  */
-public interface EntityTableCellRenderer<T> extends TableCellRenderer {
+public interface EntityTableCellRenderer extends TableCellRenderer {
 
   /**
    * The default left padding for table cells.<br>
@@ -153,6 +152,6 @@ public interface EntityTableCellRenderer<T> extends TableCellRenderer {
     /**
      * @return a new {@link EntityTableCellRenderer} instance based on this builder
      */
-    EntityTableCellRenderer<T> build();
+    EntityTableCellRenderer build();
   }
 }
