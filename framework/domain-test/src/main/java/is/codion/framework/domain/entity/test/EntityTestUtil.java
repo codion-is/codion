@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -45,11 +46,11 @@ public final class EntityTestUtil {
   /**
    * @param entities the domain model entities
    * @param entityType the entityType
-   * @param referenceEntities entities referenced by the given entityType
+   * @param referenceEntities entities referenced by the given foreign key
    * @return an Entity instance containing randomized values, based on the property definitions
    */
   public static Entity createRandomEntity(Entities entities, EntityType entityType,
-                                          Map<EntityType, Entity> referenceEntities) {
+                                          Map<ForeignKey, Entity> referenceEntities) {
     return createEntity(entities, entityType, property -> createRandomValue(property, referenceEntities));
   }
 
@@ -76,7 +77,7 @@ public final class EntityTestUtil {
    * @param entity the entity to randomize
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
-  public static void randomize(Entities entities, Entity entity, Map<EntityType, Entity> foreignKeyEntities) {
+  public static void randomize(Entities entities, Entity entity, Map<ForeignKey, Entity> foreignKeyEntities) {
     requireNonNull(entities);
     requireNonNull(entity);
     populateEntity(entity,
@@ -91,10 +92,10 @@ public final class EntityTestUtil {
    * @param <T> the property type
    * @return a random value
    */
-  public static <T> T createRandomValue(Property<T> property, Map<EntityType, Entity> referenceEntities) {
+  public static <T> T createRandomValue(Property<T> property, Map<ForeignKey, Entity> referenceEntities) {
     requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
-      return (T) getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
+      return (T) getReferenceEntity(((ForeignKeyProperty) property).getAttribute(), referenceEntities);
     }
     if (property instanceof ItemProperty) {
       return getRandomItem((ItemProperty<T>) property);
@@ -178,8 +179,8 @@ public final class EntityTestUtil {
     return bytes;
   }
 
-  private static Object getReferenceEntity(ForeignKeyProperty property, Map<EntityType, Entity> referenceEntities) {
-    return referenceEntities == null ? null : referenceEntities.get(property.getReferencedEntityType());
+  private static Object getReferenceEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> referenceEntities) {
+    return referenceEntities == null ? null : referenceEntities.get(foreignKey);
   }
 
   private static <T> T getRandomItem(ItemProperty<T> property) {

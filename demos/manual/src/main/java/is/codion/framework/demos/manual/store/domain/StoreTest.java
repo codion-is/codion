@@ -9,6 +9,7 @@ import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -39,11 +40,11 @@ public class StoreTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(EntityType entityType,
-                                             Map<EntityType, Entity> foreignKeyEntities)
+  protected Entity initializeForeignKeyEntity(ForeignKey foreignKey,
+                                              Map<ForeignKey, Entity> foreignKeyEntities)
           throws DatabaseException {
     //see if the currently running test requires an ADDRESS entity
-    if (entityType.equals(Address.TYPE)) {
+    if (foreignKey.getReferencedEntityType().equals(Address.TYPE)) {
       return getEntities().builder(Address.TYPE)
               .with(Address.ID, 21L)
               .with(Address.STREET, "One Way")
@@ -51,12 +52,12 @@ public class StoreTest extends EntityTestUnit {
               .build();
     }
 
-    return super.initializeReferenceEntity(entityType, foreignKeyEntities);
+    return super.initializeForeignKeyEntity(foreignKey, foreignKeyEntities);
   }
 
   @Override
   protected Entity initializeTestEntity(EntityType entityType,
-                                        Map<EntityType, Entity> foreignKeyEntities) {
+                                        Map<ForeignKey, Entity> foreignKeyEntities) {
     if (entityType.equals(Address.TYPE)) {
       //Initialize an entity representing the table STORE.ADDRESS,
       //which can be used for the testing
@@ -87,7 +88,7 @@ public class StoreTest extends EntityTestUnit {
   }
 
   @Override
-  protected void modifyEntity(Entity testEntity, Map<EntityType, Entity> foreignKeyEntities) {
+  protected void modifyEntity(Entity testEntity, Map<ForeignKey, Entity> foreignKeyEntities) {
     if (testEntity.getEntityType().equals(Address.TYPE)) {
       testEntity.put(Address.STREET, "New Street");
       testEntity.put(Address.CITY, "New City");

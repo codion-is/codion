@@ -10,6 +10,7 @@ import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ public final class WorldImplTest extends EntityTestUnit {
 
   @Override
   protected Entity initializeTestEntity(EntityType entityType,
-                                        Map<EntityType, Entity> foreignKeyEntities) {
+                                        Map<ForeignKey, Entity> foreignKeyEntities) {
     Entity entity = super.initializeTestEntity(entityType, foreignKeyEntities);
     if (entityType.equals(Country.TYPE)) {
       entity.put(Country.CODE, "XYZ");
@@ -58,7 +59,7 @@ public final class WorldImplTest extends EntityTestUnit {
   }
 
   @Override
-  protected void modifyEntity(Entity testEntity, Map<EntityType, Entity> foreignKeyEntities) {
+  protected void modifyEntity(Entity testEntity, Map<ForeignKey, Entity> foreignKeyEntities) {
     super.modifyEntity(testEntity, foreignKeyEntities);
     if (testEntity.getEntityType().equals(Country.TYPE)) {
       testEntity.put(Country.CONTINENT, "Europe");
@@ -69,20 +70,20 @@ public final class WorldImplTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(EntityType entityType,
-                                             Map<EntityType, Entity> foreignKeyEntities)
+  protected Entity initializeForeignKeyEntity(ForeignKey foreignKey,
+                                              Map<ForeignKey, Entity> foreignKeyEntities)
           throws DatabaseException {
-    if (entityType.equals(Country.TYPE)) {
+    if (foreignKey.getReferencedEntityType().equals(Country.TYPE)) {
       return getEntities().builder(Country.TYPE)
               .with(Country.CODE, "ISL")
               .build();
     }
-    if (entityType.equals(City.TYPE)) {
+    if (foreignKey.getReferencedEntityType().equals(City.TYPE)) {
       return getEntities().builder(City.TYPE)
               .with(City.ID, 1449)
               .build();
     }
 
-    return super.initializeReferenceEntity(entityType, foreignKeyEntities);
+    return super.initializeForeignKeyEntity(foreignKey, foreignKeyEntities);
   }
 }
