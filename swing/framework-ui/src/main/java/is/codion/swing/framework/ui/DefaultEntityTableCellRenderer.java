@@ -29,7 +29,7 @@ import static javax.swing.BorderFactory.*;
  * The default table cell renderer for a {@link EntityTablePanel}
  * @see EntityTableCellRenderer#builder(SwingEntityTableModel, Property)
  */
-final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer implements EntityTableCellRenderer<T> {
+final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 
   private final UISettings settings;
   private final SwingEntityTableModel tableModel;
@@ -111,7 +111,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
   }
 
   private static final class BooleanRenderer extends NullableCheckBox
-          implements TableCellRenderer, javax.swing.plaf.UIResource, EntityTableCellRenderer<Boolean> {
+          implements TableCellRenderer, javax.swing.plaf.UIResource, EntityTableCellRenderer {
 
     private final UISettings settings;
     private final SwingEntityTableModel tableModel;
@@ -313,9 +313,9 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     }
 
     @Override
-    public EntityTableCellRenderer<T> build() {
+    public EntityTableCellRenderer build() {
       if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
-        return (EntityTableCellRenderer<T>) new BooleanRenderer((DefaultBuilder<Boolean>) this);
+        return new BooleanRenderer((DefaultBuilder<Boolean>) this);
       }
 
       return new DefaultEntityTableCellRenderer<>(this);

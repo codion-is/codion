@@ -59,42 +59,6 @@ final class ValueLink<T> {
     originalValue.removeValidator(linkedValidator);
   }
 
-  private void updateOriginalValue() {
-    if (!isUpdatingLinked) {
-      try {
-        isUpdatingOriginal = true;
-        try {
-          originalValue.set(linkedValue.get());
-        }
-        catch (IllegalArgumentException e) {
-          linkedValue.set(originalValue.get());
-          throw e;
-        }
-      }
-      finally {
-        isUpdatingOriginal = false;
-      }
-    }
-  }
-
-  private void updateLinkedValue() {
-    if (!isUpdatingOriginal) {
-      try {
-        isUpdatingLinked = true;
-        try {
-          linkedValue.set(originalValue.get());
-        }
-        catch (IllegalArgumentException e) {
-          originalValue.set(linkedValue.get());
-          throw e;
-        }
-      }
-      finally {
-        isUpdatingLinked = false;
-      }
-    }
-  }
-
   private static <T> void preventLinkCycle(Value<T> linkedValue, Value<T> originalValue) {
     if (originalValue == linkedValue) {
       throw new IllegalArgumentException("A Value can not be linked to itself");
@@ -107,16 +71,54 @@ final class ValueLink<T> {
   }
 
   private final class UpdateLinkedValueListener implements EventListener {
+
     @Override
     public void onEvent() {
       updateLinkedValue();
     }
+
+    private void updateLinkedValue() {
+      if (!isUpdatingOriginal) {
+        try {
+          isUpdatingLinked = true;
+          try {
+            linkedValue.set(originalValue.get());
+          }
+          catch (IllegalArgumentException e) {
+            originalValue.set(linkedValue.get());
+            throw e;
+          }
+        }
+        finally {
+          isUpdatingLinked = false;
+        }
+      }
+    }
   }
 
   private final class UpdateOriginalValueListener implements EventListener {
+
     @Override
     public void onEvent() {
       updateOriginalValue();
+    }
+
+    private void updateOriginalValue() {
+      if (!isUpdatingLinked) {
+        try {
+          isUpdatingOriginal = true;
+          try {
+            originalValue.set(linkedValue.get());
+          }
+          catch (IllegalArgumentException e) {
+            linkedValue.set(originalValue.get());
+            throw e;
+          }
+        }
+        finally {
+          isUpdatingOriginal = false;
+        }
+      }
     }
   }
 

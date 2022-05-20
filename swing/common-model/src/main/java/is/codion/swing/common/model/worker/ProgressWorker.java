@@ -257,7 +257,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     private Consumer<T> onResult = new EmptyOnResult<>();
     private Consumer<Integer> onProgress = new EmptyOnProgress();
     private Consumer<List<V>> onPublish = new EmptyOnPublish<>();
-    private Consumer<Throwable> onException = new RethrowOnException();
+    private Consumer<Throwable> onException = new RethrowOnThrowable();
     private Runnable onInterrupted = new InterruptCurrentOnInterrupted();
 
     private DefaultBuilder(ProgressTask<T, V> task) {
@@ -350,7 +350,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     public void accept(List<V> chunks) {}
   }
 
-  private static final class RethrowOnException implements Consumer<Throwable> {
+  private static final class RethrowOnThrowable implements Consumer<Throwable> {
 
     @Override
     public void accept(Throwable exception) {
