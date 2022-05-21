@@ -6,15 +6,15 @@ dependencies {
     api project(':codion-swing-common-tools')
     api project(':codion-swing-framework-model')
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    implementation (libs.slf4j.api)
 
     testImplementation project(':codion-common-rmi')
     testImplementation project(':codion-framework-server')
     testRuntimeOnly project(':codion-framework-db-rmi')
 
-    implementation "org.jfree:jfreechart:${jfreeChartVersion}"
+    implementation (libs.jfreechart)
 
     testRuntimeOnly project(':codion-plugin-hikari-pool')
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
+    testRuntimeOnly (libs.h2)
 }

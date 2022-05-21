@@ -1,6 +1,6 @@
 dependencies {
     api project(':codion-common-core')
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
-    implementation "io.github.hakky54:sslcontext-kickstart:${sslcontextKickstartVersion}"
+    implementation (libs.slf4j.api)
+    implementation (libs.sslcontext.kickstart)
 }

@@ -3,11 +3,11 @@ dependencies {
     api project(':codion-common-db')
     api project(':codion-common-model')
 
-    api "org.jfree:jfreechart:${jfreeChartVersion}"
+    api (libs.jfreechart)
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    implementation (libs.slf4j.api)
 
     testRuntimeOnly project(':codion-plugin-hikari-pool')
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
+    testRuntimeOnly (libs.h2)
 }

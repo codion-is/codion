@@ -1,6 +1,6 @@
 dependencies {
     api project(':codion-common-core')
 
-    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
-    implementation "ch.qos.logback:logback-core:${logbackVersion}"
+    implementation (libs.logback.classic)
+    implementation (libs.logback.core)
 }

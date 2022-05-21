@@ -23,18 +23,18 @@ dependencies {
 
     runtimeOnly project(':codion-plugin-logback-proxy')
 
-    implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
+    implementation((libs.jasperreports)) {
         transitive = false
     }
 
-    runtimeOnly "commons-logging:commons-logging:${commonsLoggingVersion}"
-    runtimeOnly "commons-digester:commons-digester:${commonsDigesterVersion}"
-    runtimeOnly "org.apache.commons:commons-collections4:${commonsCollectionsVersion}"
-    runtimeOnly "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
-    runtimeOnly "org.eclipse.jdt:ecj:${jdtCoreCompilerVersion}"
+    runtimeOnly (libs.commons.logging)
+    runtimeOnly (libs.commons.digester)
+    runtimeOnly (libs.commons.collections4)
+    runtimeOnly (libs.commons.beanutils)
+    runtimeOnly (libs.jdt.core.compiler)
 
     runtimeOnly project(':codion-dbms-h2database')
-    runtimeOnly "com.h2database:h2:${h2Version}"
+    runtimeOnly (libs.h2)
 }
 
 ext.execMainClass = 'is.codion.framework.demos.empdept.ui.EmpDeptAppPanel'

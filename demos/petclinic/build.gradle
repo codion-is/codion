@@ -13,7 +13,7 @@ dependencies {
     testImplementation project(':codion-swing-framework-ui-test')
 
     runtimeOnly project(':codion-dbms-h2database')
-    runtimeOnly "com.h2database:h2:${h2Version}"
+    runtimeOnly (libs.h2)
 }
 
 ext.execMainClass = 'is.codion.framework.demos.petclinic.ui.PetclinicAppPanel'

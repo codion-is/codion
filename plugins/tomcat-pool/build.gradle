@@ -2,9 +2,9 @@ dependencies {
     api project(':codion-common-core')
     api project(':codion-common-db')
 
-    implementation "org.apache.tomcat:tomcat-jdbc:${tomcatJdbcVersion}"
-    implementation "org.apache.tomcat:tomcat-juli:${tomcatJdbcVersion}"
+    implementation (libs.tomcat.jdbc)
+    implementation (libs.tomcat.juli)
 
     testImplementation project(':codion-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
+    testRuntimeOnly (libs.h2)
 }

@@ -1,5 +1,5 @@
 dependencies {
     api project(':codion-common-db')
     
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
+    testRuntimeOnly (libs.h2)
 }
