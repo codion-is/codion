@@ -5,10 +5,10 @@ dependencies {
     api project(':codion-framework-domain')
     api project(':codion-framework-db-core')
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    implementation (libs.slf4j.api)
 
     testImplementation project(':codion-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
+    testRuntimeOnly (libs.h2)
 }
 
 ext {

@@ -7,9 +7,9 @@ dependencies {
 
     implementation project(':codion-plugin-jackson-json')
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    implementation (libs.slf4j.api)
 
-    implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
+    implementation (libs.http.client)
 
     testImplementation project(':codion-common-rmi')
     testImplementation project(':codion-common-http')
@@ -18,7 +18,7 @@ dependencies {
 
     testRuntimeOnly project(':codion-plugin-hikari-pool')
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
+    testRuntimeOnly (libs.h2)
 }
 
 ext {

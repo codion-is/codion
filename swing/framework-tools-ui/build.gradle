@@ -13,7 +13,7 @@ dependencies {
     api project(':codion-swing-framework-tools')
 
     runtimeOnly project(':codion-dbms-h2database')
-    runtimeOnly "com.h2database:h2:${h2Version}"
+    runtimeOnly (libs.h2)
 
 //    runtimeOnly project(':codion-dbms-postgresql')
 //    runtimeOnly 'org.postgresql:postgresql:42.3.4'

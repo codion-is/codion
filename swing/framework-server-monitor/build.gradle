@@ -13,11 +13,11 @@ dependencies {
 
     implementation project(':codion-framework-server')
 
-    implementation "com.formdev:flatlaf-intellij-themes:${flatLafVersion}"
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    implementation (libs.flatlaf.intellij.themes)
+    implementation (libs.slf4j.api)
 
-    implementation "org.jfree:jcommon:${jcommonVersion}"
-    implementation "org.jfree:jfreechart:${jfreeChartVersion}"
+    implementation (libs.jcommon)
+    implementation (libs.jfreechart)
 
     runtimeOnly project(':codion-plugin-logback-proxy')
 
@@ -26,7 +26,7 @@ dependencies {
     testCompileOnly project(':codion-framework-db-local')//for modules
     testRuntimeOnly project(':codion-plugin-hikari-pool')
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
+    testRuntimeOnly (libs.h2)
 }
 
 mainClassName = "is.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel"

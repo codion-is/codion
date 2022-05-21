@@ -4,5 +4,5 @@ dependencies {
     
     api project(':codion-framework-domain')
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    implementation (libs.slf4j.api)
 }

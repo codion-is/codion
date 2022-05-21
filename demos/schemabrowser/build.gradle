@@ -18,10 +18,10 @@ dependencies {
     testImplementation project(':codion-framework-domain-test')
     testImplementation project(':codion-swing-framework-ui-test')
 
-    implementation "org.jfree:jfreechart:${jfreeChartVersion}"
+    implementation (libs.jfreechart)
 
     runtimeOnly project(':codion-dbms-h2database')
-    runtimeOnly "com.h2database:h2:${h2Version}"
+    runtimeOnly (libs.h2)
 }
 
 ext {

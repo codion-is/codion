@@ -1,8 +1,8 @@
 dependencies {
     api project(':codion-common-core')
 
-    implementation ("ch.qos.logback:logback-classic:${logbackVersion}") {
+    implementation (libs.logback.classic) {
         exclude group: 'javax.activation', module: 'activation'
     }
-    implementation "ch.qos.logback:logback-core:${logbackVersion}"
+    implementation (libs.logback.core)
 }

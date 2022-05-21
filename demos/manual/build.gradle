@@ -16,16 +16,16 @@ dependencies {
     implementation project(':codion-framework-servlet')
     implementation project(':codion-dbms-h2database')
 
-    implementation "com.formdev:flatlaf:${flatLafVersion}"
-    implementation "com.formdev:flatlaf-intellij-themes:${flatLafVersion}"
+    implementation (libs.flatlaf)
+    implementation (libs.flatlaf.intellij.themes)
 
-    implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
+    implementation((libs.jasperreports)) {
         transitive = false
     }
 
     runtimeOnly project(':codion-plugin-logback-proxy')
 
-    runtimeOnly "com.h2database:h2:${h2Version}"
+    runtimeOnly (libs.h2)
 }
 
 ext.execMainClass = "is.codion.framework.demos.manual.store.ui.StoreAppPanel"

@@ -18,11 +18,11 @@ dependencies {
     api project(':codion-framework-db-local')
     api project(':codion-framework-db-rmi')
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    implementation (libs.slf4j.api)
 
     testRuntimeOnly project(':codion-plugin-hikari-pool')
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
+    testRuntimeOnly (libs.h2)
 
     serverRuntime project(':codion-framework-server')
     serverRuntime project(':codion-framework-servlet')
@@ -40,7 +40,7 @@ dependencies {
     serverRuntime project(path: ':codion-demos-world', configuration: 'domain')
 
     serverRuntime project(':codion-dbms-h2database')
-    serverRuntime "com.h2database:h2:${h2Version}"
+    serverRuntime (libs.h2)
 }
 
 mainClassName = "is.codion.framework.server.EntityServer"

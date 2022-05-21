@@ -11,31 +11,12 @@ dependencies {
 
     api project(':codion-swing-framework-model')
 
-    implementation "org.kordamp.ikonli:ikonli-swing:${ikonliSwingVersion}"
+    implementation (libs.ikonli.swing)
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    implementation (libs.slf4j.api)
 
     testImplementation project(':codion-framework-db-local')
 
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
-}
-
-ext {
-    testAddModules = ['is.codion.framework.db.local']
-    testAddReads = ['is.codion.swing.framework.ui': 'is.codion.framework.db.local']
-}
-
-compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
-
-test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
+    testRuntimeOnly (libs.h2)
 }

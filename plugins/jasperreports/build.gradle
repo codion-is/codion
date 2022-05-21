@@ -5,22 +5,22 @@ dependencies {
     testImplementation project(':codion-common-http')
     testImplementation project(':codion-framework-db-local')
 
-    implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
+    implementation (libs.jasperreports) {
         transitive = false
     }
 
-    implementation "commons-logging:commons-logging:${commonsLoggingVersion}"
-    implementation ("commons-digester:commons-digester:${commonsDigesterVersion}") {
+    implementation (libs.commons.logging)
+    implementation (libs.commons.digester) {
         transitive = false
     }
-    implementation "org.apache.commons:commons-collections4:${commonsCollectionsVersion}"
-    implementation ("commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}") {
+    implementation (libs.commons.collections4)
+    implementation (libs.commons.beanutils) {
         transitive = false
     }
-    implementation "org.eclipse.jdt:ecj:${jdtCoreCompilerVersion}"
+    implementation (libs.jdt.core.compiler)
 
     testImplementation project(':codion-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
+    testRuntimeOnly (libs.h2)
 }
 
 ext {

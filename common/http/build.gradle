@@ -1,7 +1,7 @@
 dependencies {
     api project(':codion-common-core')
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    api (libs.jetty)
 
-    api "org.eclipse.jetty:jetty-server:${jettyVersion}"
+    implementation (libs.slf4j.api)
 }

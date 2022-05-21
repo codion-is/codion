@@ -2,5 +2,5 @@ dependencies {
     api project(':codion-framework-domain')
     api project(':codion-framework-db-core')
 
-    api "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
+    api (libs.jackson.databind)
 }

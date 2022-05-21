@@ -10,7 +10,7 @@ dependencies {
 
     testImplementation project(':codion-framework-server')
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
+    testRuntimeOnly (libs.h2)
 }
 
 ext {

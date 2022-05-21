@@ -9,22 +9,22 @@ dependencies {
     implementation project(':codion-framework-db-rmi')
     implementation project(':codion-plugin-jackson-json')
 
-    implementation "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
-    implementation "jakarta.activation:jakarta.activation-api:${jakartaActivationVersion}"
+    implementation (libs.jaxb.api)
+    implementation (libs.javax.activation)
 
-    implementation "org.glassfish.jersey.containers:jersey-container-servlet-core:${jerseyVersion}"
-    implementation "org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}"
+    implementation (libs.jersey.servlet)
+    implementation (libs.jersey.hk2)
 
-    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    implementation (libs.slf4j.api)
 
     testImplementation project(':codion-framework-db-local')
     testImplementation project(':codion-framework-server')
 
-    testImplementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
+    testImplementation (libs.http.client)
 
     testRuntimeOnly project(':codion-plugin-hikari-pool')
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
+    testRuntimeOnly (libs.h2)
 }
 
 ext {

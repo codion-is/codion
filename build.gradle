@@ -47,8 +47,8 @@ configure(project.frameworkModules) {
     targetCompatibility = JavaVersion.VERSION_11
 
     dependencies {
-        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-        testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"//testImplementation instead of testRuntimeOnly due to modules plugin issue
+        testImplementation (libs.junit.api)
+        testImplementation (libs.junit.engine)//testImplementation instead of testRuntimeOnly due to modules plugin issue
     }
 
     clean {
