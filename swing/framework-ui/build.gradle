@@ -20,3 +20,22 @@ dependencies {
     testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly (libs.h2)
 }
+
+ext {
+    testAddModules = ['is.codion.framework.db.local']
+    testAddReads = ['is.codion.swing.framework.ui': 'is.codion.framework.db.local']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
+test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}

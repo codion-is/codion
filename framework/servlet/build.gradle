@@ -9,7 +9,7 @@ dependencies {
     implementation project(':codion-framework-db-rmi')
     implementation project(':codion-plugin-jackson-json')
 
-    implementation (libs.jaxb.api)
+    implementation (libs.jetty.servlet)
     implementation (libs.javax.activation)
 
     implementation (libs.jersey.servlet)
