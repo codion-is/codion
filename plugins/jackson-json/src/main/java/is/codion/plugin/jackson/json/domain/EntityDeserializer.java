@@ -12,7 +12,6 @@ import is.codion.framework.domain.property.Property;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
@@ -25,8 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class EntityDeserializer extends StdDeserializer<Entity> {
 
   private static final long serialVersionUID = 1;
-
-  private static final Map<Class<?>, JavaType> MAPPER_TYPES = new ConcurrentHashMap<>();
 
   private final Entities entities;
   private final EntityObjectMapper entityObjectMapper;
