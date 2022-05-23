@@ -227,7 +227,8 @@ dependencyResolutionManagement {
 
             //plugins
             library('hikari', 'com.zaxxer', 'HikariCP').versionRef('hikari')
-            library('jackson.databind', 'com.fasterxml.jackson.core', 'jackson-databind').versionRef('jackson')
+            library('jackson-databind', 'com.fasterxml.jackson.core', 'jackson-databind').versionRef('jackson')
+            library('jackson-datatype-jsr310', 'com.fasterxml.jackson.datatype', 'jackson-datatype-jsr310').versionRef('jackson')
             library('log4j-api', 'org.apache.logging.log4j', 'log4j-api').versionRef('log4j')
             library('log4j-core', 'org.apache.logging.log4j', 'log4j-core').versionRef('log4j')
             library('tomcat-jdbc', 'org.apache.tomcat', 'tomcat-jdbc').versionRef('tomcat')

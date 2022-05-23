@@ -9,18 +9,16 @@ import is.codion.framework.domain.entity.Key;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -49,12 +47,10 @@ public final class EntityObjectMapper extends ObjectMapper {
     module.addDeserializer(Entity.class, entityDeserializer);
     module.addSerializer(Key.class, new EntityKeySerializer(this));
     module.addDeserializer(Key.class, new EntityKeyDeserializer(entities, this));
-    module.addSerializer(LocalTime.class, new LocalTimeSerializer());
-    module.addSerializer(LocalDate.class, new LocalDateSerializer());
-    module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
-    module.addSerializer(OffsetDateTime.class, new OffsetDateTimeSerializer());
-    module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
     registerModule(module);
+    registerModule(new JavaTimeModule());
+    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
   }
 
   /**

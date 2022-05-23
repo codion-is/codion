@@ -19,8 +19,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static is.codion.plugin.jackson.json.domain.EntityDeserializer.parseValue;
-
 final class EntityKeyDeserializer extends StdDeserializer<Key> {
 
   private static final long serialVersionUID = 1;
@@ -46,7 +44,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Key> {
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();
       ColumnProperty<Object> property = definition.getColumnProperty(definition.getAttribute(field.getKey()));
-      builder.with(property.getAttribute(), parseValue(entityObjectMapper, property.getAttribute(), field.getValue()));
+      builder.with(property.getAttribute(), entityObjectMapper.readValue(field.getValue().toString(), property.getAttribute().getTypeClass()));
     }
 
     return builder.build();

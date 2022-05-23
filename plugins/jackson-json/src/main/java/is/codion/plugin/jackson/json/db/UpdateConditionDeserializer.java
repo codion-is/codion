@@ -9,7 +9,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.plugin.jackson.json.domain.EntityDeserializer;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -51,7 +50,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();
       Attribute<Object> attribute = definition.getProperty(definition.getAttribute(field.getKey())).getAttribute();
-      updateCondition = updateCondition.set(attribute, EntityDeserializer.parseValue(entityObjectMapper, attribute, field.getValue()));
+      updateCondition = updateCondition.set(attribute, entityObjectMapper.readValue(field.getValue().toString(), attribute.getTypeClass()));
     }
 
     return updateCondition;
