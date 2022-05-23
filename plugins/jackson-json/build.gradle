@@ -3,4 +3,5 @@ dependencies {
     api project(':codion-framework-db-core')
 
     api (libs.jackson.databind)
+    api (libs.jackson.datatype.jsr310)
 }

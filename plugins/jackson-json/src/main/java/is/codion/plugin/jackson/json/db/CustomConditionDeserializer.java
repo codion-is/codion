@@ -7,9 +7,7 @@ import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.CustomCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.Property;
-import is.codion.plugin.jackson.json.domain.EntityDeserializer;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -44,15 +42,7 @@ final class CustomConditionDeserializer implements Serializable {
     int attributeIndex = 0;
     for (JsonNode valueNode : valuesNode) {
       Property<?> property = definition.getProperty(attributes.get(attributeIndex++));
-      if (valueNode.isNull()) {
-        values.add(null);
-      }
-      else if (valueNode.has("entityType")) {
-        values.add(entityObjectMapper.readValue(valueNode.toString(), Key.class));
-      }
-      else {
-        values.add(EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), valueNode));
-      }
+      values.add(entityObjectMapper.readValue(valueNode.toString(), property.getAttribute().getTypeClass()));
     }
 
     return Conditions.customCondition(definition.getEntityType().conditionType(conditionTypeName), attributes, values);

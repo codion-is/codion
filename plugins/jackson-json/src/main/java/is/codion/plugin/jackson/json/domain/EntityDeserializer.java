@@ -17,12 +17,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,54 +46,6 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
   }
 
-  public static Object parseValue(EntityObjectMapper mapper, Attribute<?> attribute, JsonNode jsonNode)
-          throws JsonProcessingException {
-    if (jsonNode.isNull()) {
-      return null;
-    }
-    if (attribute.isString()) {
-      return jsonNode.asText();
-    }
-    else if (attribute.isBoolean()) {
-      return jsonNode.asBoolean();
-    }
-    else if (attribute.isLocalTime()) {
-      return LocalTime.parse(jsonNode.asText());
-    }
-    else if (attribute.isLocalDate()) {
-      return LocalDate.parse(jsonNode.asText());
-    }
-    else if (attribute.isLocalDateTime()) {
-      return LocalDateTime.parse(jsonNode.asText());
-    }
-    else if (attribute.isOffsetDateTime()) {
-      return OffsetDateTime.parse(jsonNode.asText());
-    }
-    else if (attribute.isDouble()) {
-      return jsonNode.asDouble();
-    }
-    else if (attribute.isInteger()) {
-      return jsonNode.asInt();
-    }
-    else if (attribute.isLong()) {
-      return jsonNode.asLong();
-    }
-    else if (attribute.isBigDecimal()) {
-      return new BigDecimal(jsonNode.asText());
-    }
-    else if (attribute.isByteArray()) {
-      return Base64.getDecoder().decode(jsonNode.asText());
-    }
-    else if (attribute.isEntity()) {
-      return mapper.readValue(jsonNode.toString(), Entity.class);
-    }
-    else if (mapper.canDeserialize(MAPPER_TYPES.computeIfAbsent(attribute.getTypeClass(), mapper::constructType))) {
-      return mapper.readValue(jsonNode.toString(), attribute.getTypeClass());
-    }
-
-    return jsonNode.asText();
-  }
-
   private Map<Attribute<?>, Object> getValueMap(JsonNode node, EntityDefinition definition)
           throws JsonProcessingException {
     return getPropertyValueMap(definition, node.get("values"));
@@ -121,20 +67,9 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();
       Property<?> property = definition.getProperty(definition.getAttribute(field.getKey()));
-      valueMap.put(property.getAttribute(), parseValue(property.getAttribute(), field.getValue()));
+      valueMap.put(property.getAttribute(), entityObjectMapper.readValue(field.getValue().toString(), property.getAttribute().getTypeClass()));
     }
 
     return valueMap;
-  }
-
-  /**
-   * Fetches the value of the given attribute from the given JsonNode
-   * @param attribute the attribute
-   * @param jsonNode the node containing the value
-   * @return the value for the given attribute
-   * @throws JsonProcessingException in case of an error
-   */
-  private Object parseValue(Attribute<?> attribute, JsonNode jsonNode) throws JsonProcessingException {
-    return parseValue(entityObjectMapper, attribute, jsonNode);
   }
 }

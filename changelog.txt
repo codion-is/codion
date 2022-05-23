@@ -8156,3 +8156,4 @@
   EntityTestUnit, foreignKeyEntities parameter now Map<ForeignKey, Entity> instead of Map<EntityType, Entity>
   EntityTestUnit.initializeReferenceEntity() renamed initializeForeignKeyEntity(), parameter entityType replaced with foreignKey
   Gradle version catalog used
+  Jackson JSON module simplification, JavaTimeModule used, EntityDeserializer.parseValue() and custom serializers for java.time and BigDecimal removed
