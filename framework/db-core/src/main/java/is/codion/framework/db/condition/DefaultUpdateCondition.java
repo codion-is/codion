@@ -9,6 +9,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -71,5 +72,10 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
   @Override
   public boolean equals(Object object) {
     return this == object;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(condition, propertyValues);
   }
 }
