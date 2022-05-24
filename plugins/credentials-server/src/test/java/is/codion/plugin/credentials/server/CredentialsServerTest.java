@@ -23,6 +23,7 @@ public final class CredentialsServerTest {
     try {
       CredentialsProvider provider = CredentialsProvider.credentialsProvider();
 
+      CredentialsService.REGISTRY_PORT.set(12345);
       System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
       User scott = User.parse("scott:tiger");
       int serverPort = 1100;

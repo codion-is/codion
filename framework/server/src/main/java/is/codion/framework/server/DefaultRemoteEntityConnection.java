@@ -129,6 +129,20 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
+  public void setQueryCacheEnabled(boolean queryCacheEnabled) {
+    synchronized (connectionProxy) {
+      connectionProxy.setQueryCacheEnabled(queryCacheEnabled);
+    }
+  }
+
+  @Override
+  public boolean isQueryCacheEnabled() {
+    synchronized (connectionProxy) {
+      return connectionProxy.isQueryCacheEnabled();
+    }
+  }
+
+  @Override
   public void rollbackTransaction() {
     synchronized (connectionProxy) {
       connectionProxy.rollbackTransaction();

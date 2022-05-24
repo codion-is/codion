@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
@@ -63,6 +64,28 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
     this.caseSensitive = caseSensitive;
 
     return (AttributeCondition<String>) this;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof DefaultAttributeEqualCondition)) {
+      return false;
+    }
+    if (!super.equals(object)) {
+      return false;
+    }
+    DefaultAttributeEqualCondition<?> that = (DefaultAttributeEqualCondition<?>) object;
+    return negated == that.negated &&
+            caseSensitive == that.caseSensitive &&
+            values.equals(that.values);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), values, negated, caseSensitive);
   }
 
   @Override

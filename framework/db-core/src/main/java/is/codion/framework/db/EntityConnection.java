@@ -86,6 +86,21 @@ public interface EntityConnection extends AutoCloseable {
   void commitTransaction();
 
   /**
+   * Controls the enabled state of the query result cache.
+   * Queries are cached on a {@link is.codion.framework.db.condition.SelectCondition}
+   * basis, but never when selecting for update.
+   * The cache is cleared when disabled.
+   * @param queryCacheEnabled the result cache state
+   */
+  void setQueryCacheEnabled(boolean queryCacheEnabled);
+
+  /**
+   * @return true if the query cache is enabled
+   * @see #setQueryCacheEnabled(boolean)
+   */
+  boolean isQueryCacheEnabled();
+
+  /**
    * Executes the function with the given type with no arguments
    * @param functionType the function type
    * @param <C> the connection type

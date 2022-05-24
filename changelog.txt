@@ -8195,3 +8195,4 @@
   EntityTestUnit.initializeReferenceEntity() renamed initializeForeignKeyEntity(), parameter entityType replaced with foreignKey
   Gradle version catalog used
   Jackson JSON module simplification, JavaTimeModule used, EntityDeserializer.parseValue() and custom serializers for java.time and BigDecimal removed
+  EntityConnection.setQueryCacheEnabled() added, results cached per SelectCondition instance, Condition subclasses and OrderBy now implement equals() and hashCode()

@@ -239,7 +239,7 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(getPrimaryKeys(result));
     assertEquals(2, result.size());
     result = connection.select(Conditions.customCondition(Department.DEPARTMENT_CONDITION_TYPE,
-                    asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)));
+            asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)));
     assertEquals(2, result.size());
     result = connection.select(Conditions.customCondition(EmpnoDeptno.CONDITION));
     assertEquals(7, result.size());
@@ -912,7 +912,7 @@ public class DefaultLocalEntityConnectionTest {
     List<Entity> entities = connection.select(condition(NoPrimaryKey.TYPE));
     assertEquals(6, entities.size());
     entities = connection.select(where(NoPrimaryKey.COL_1).equalTo(2)
-                    .or(where(NoPrimaryKey.COL_3).equalTo("5")));
+            .or(where(NoPrimaryKey.COL_3).equalTo("5")));
     assertEquals(4, entities.size());
   }
 
@@ -963,6 +963,64 @@ public class DefaultLocalEntityConnectionTest {
     connection.select(condition(QueryFromClause.TYPE).toSelectCondition().forUpdate());
     connection.select(condition(QueryFromWhereClause.TYPE));
     connection.select(condition(QueryFromWhereClause.TYPE).toSelectCondition().forUpdate());
+  }
+
+  @Test
+  void queryCache() throws DatabaseException {
+    connection.setQueryCacheEnabled(true);
+    assertTrue(connection.isQueryCacheEnabled());
+
+    List<Entity> result = connection.select(where(Department.DEPTNO)
+            .greaterThanOrEqualTo(20)
+            .toSelectCondition());
+    List<Entity> result2 = connection.select(where(Department.DEPTNO)
+            .greaterThanOrEqualTo(20)
+            .toSelectCondition());
+    assertSame(result, result2);
+
+    result2 = connection.select(where(Department.DEPTNO)
+            .greaterThanOrEqualTo(20)
+            .toSelectCondition()
+            .orderBy(orderBy().descending(Department.DEPTNO)));
+    assertNotSame(result, result2);
+
+    result = connection.select(where(Department.DEPTNO)
+            .greaterThanOrEqualTo(20)
+            .toSelectCondition()
+            .orderBy(orderBy().descending(Department.DEPTNO)));
+    assertSame(result, result2);
+
+    result2 = connection.select(where(Department.DEPTNO)
+            .greaterThanOrEqualTo(20)
+            .toSelectCondition()
+            .orderBy(orderBy().ascending(Department.DEPTNO)));
+    assertNotSame(result, result2);
+
+    result = connection.select(where(Department.DEPTNO)
+            .greaterThanOrEqualTo(20)
+            .toSelectCondition()
+            .forUpdate());
+    result2 = connection.select(where(Department.DEPTNO)
+            .greaterThanOrEqualTo(20)
+            .toSelectCondition()
+            .forUpdate());
+    assertNotSame(result, result2);
+
+    result = connection.select(where(Department.DEPTNO)
+            .equalTo(20));
+    result2 = connection.select(Department.DEPTNO, 20);
+    assertSame(result, result2);
+
+    connection.setQueryCacheEnabled(false);
+    assertFalse(connection.isQueryCacheEnabled());
+
+    result = connection.select(where(Department.DEPTNO)
+            .greaterThanOrEqualTo(20)
+            .toSelectCondition());
+    result2 = connection.select(where(Department.DEPTNO)
+            .greaterThanOrEqualTo(20)
+            .toSelectCondition());
+    assertNotSame(result, result2);
   }
 
   private static LocalEntityConnection initializeConnection() throws DatabaseException {

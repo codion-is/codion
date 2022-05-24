@@ -119,7 +119,6 @@ public interface SelectCondition extends Condition {
   /**
    * Sets the attributes to include in the resulting Entities.
    * Note that primary key attribute values are always included.
-   * Note that primary key attribute values are always included.
    * @param attributes the attributes to include
    * @return a new SelectCondition instance with the given select attributes
    */

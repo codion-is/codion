@@ -57,4 +57,21 @@ abstract class AbstractCondition implements Condition, Serializable {
   public String toString() {
     return getClass().getSimpleName() + ": " + getEntityType();
   }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof AbstractCondition)) {
+      return false;
+    }
+    AbstractCondition that = (AbstractCondition) object;
+    return entityType.equals(that.entityType);
+  }
+
+  @Override
+  public int hashCode() {
+    return entityType.hashCode();
+  }
 }

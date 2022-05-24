@@ -67,4 +67,9 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
   public Map<Attribute<?>, Object> getAttributeValues() {
     return unmodifiableMap(propertyValues);
   }
+
+  @Override
+  public boolean equals(Object object) {
+    return this == object;
+  }
 }

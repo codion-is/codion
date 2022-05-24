@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -137,6 +138,25 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   @Override
   public String toString() {
     return getClass().getSimpleName() + ": " + getEntityType();
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof DefaultConditionCombination)) {
+      return false;
+    }
+    DefaultConditionCombination that = (DefaultConditionCombination) object;
+    return conjunction == that.conjunction &&
+            entityType.equals(that.entityType) &&
+            conditions.equals(that.conditions);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(conditions, conjunction, entityType);
   }
 
   private static List<Condition> combine(Condition condition, Condition... conditions) {
