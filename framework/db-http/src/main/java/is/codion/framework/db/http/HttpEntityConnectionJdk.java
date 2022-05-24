@@ -51,11 +51,12 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 /**
- * A Http based {@link EntityConnection} implementation based on EntityService
+ * A Http based {@link EntityConnection} implementation based on EntityService using the JDK HTTP client
  */
 final class HttpEntityConnectionJdk implements EntityConnection {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnectionJdk.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnection.class.getName(),
+          Locale.getDefault());
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnectionJdk.class);
 
@@ -93,7 +94,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   HttpEntityConnectionJdk(String domainName, String serverHostName, int serverPort,
                           boolean httpsEnabled, User user, String clientTypeId, UUID clientId) {
     this.user = Objects.requireNonNull(user, "user");
-    this.baseurl = (httpsEnabled ? HTTPS : HTTP) + Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
+    this.baseurl = (httpsEnabled ? HTTPS : HTTP) + Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/ser/";
     this.httpClient = createHttpClient();
     this.headers = new String[] {
             DOMAIN_TYPE_NAME, Objects.requireNonNull(domainName, DOMAIN_TYPE_NAME),
@@ -190,6 +191,35 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     }
     catch (RuntimeException e) {
       throw e;
+    }
+    catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public void setQueryCacheEnabled(boolean queryCacheEnabled) {
+    try {
+      synchronized (this.entities) {
+        handleResponse(execute(createRequest("setQueryCacheEnabled", queryCacheEnabled)));
+      }
+    }
+    catch (RuntimeException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public boolean isQueryCacheEnabled() {
+    try {
+      synchronized (this.entities) {
+        return handleResponse(execute(createRequest("isQueryCacheEnabled")));
+      }
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
