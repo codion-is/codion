@@ -199,7 +199,7 @@ dependencyResolutionManagement {
             version('commons.digester', '2.1')
             version('commons.collections4', '4.4')
             version('commons.beanutils', '1.9.4')
-            version('jdt.core.compiler', '3.26.0')
+            version('jdt.core.compiler', '3.29.0')
 
             library('slf4j-api', 'org.slf4j', 'slf4j-api').versionRef('slf4j.api')
             library('logback-core', 'ch.qos.logback', 'logback-core').versionRef('logback')
