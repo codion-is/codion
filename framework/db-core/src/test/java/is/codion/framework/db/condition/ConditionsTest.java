@@ -14,6 +14,7 @@ import is.codion.framework.domain.property.ColumnProperty;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import static is.codion.framework.db.condition.Conditions.where;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
@@ -417,10 +418,22 @@ public final class ConditionsTest {
     condition2 = Conditions.where(TestDomain.EMP_ID).lessThan(1);
     assertNotEquals(condition1, condition2);
 
+    condition1 = Conditions.where(TestDomain.EMP_ID).lessThanOrEqualTo(0);
+    condition2 = Conditions.where(TestDomain.EMP_ID).lessThanOrEqualTo(0);
+    assertEquals(condition1, condition2);
+    condition2 = Conditions.where(TestDomain.EMP_ID).lessThanOrEqualTo(1);
+    assertNotEquals(condition1, condition2);
+
     condition1 = Conditions.where(TestDomain.EMP_ID).greaterThan(0);
     condition2 = Conditions.where(TestDomain.EMP_ID).greaterThan(0);
     assertEquals(condition1, condition2);
     condition2 = Conditions.where(TestDomain.EMP_ID).greaterThan(1);
+    assertNotEquals(condition1, condition2);
+
+    condition1 = Conditions.where(TestDomain.EMP_ID).greaterThanOrEqualTo(0);
+    condition2 = Conditions.where(TestDomain.EMP_ID).greaterThanOrEqualTo(0);
+    assertEquals(condition1, condition2);
+    condition2 = Conditions.where(TestDomain.EMP_ID).greaterThanOrEqualTo(1);
     assertNotEquals(condition1, condition2);
 
     condition1 = Conditions.where(TestDomain.EMP_ID).between(0, 1);
@@ -429,11 +442,29 @@ public final class ConditionsTest {
     condition2 = Conditions.where(TestDomain.EMP_ID).between(1, 0);
     assertNotEquals(condition1, condition2);
 
+    condition1 = Conditions.where(TestDomain.EMP_ID).betweenExclusive(0, 1);
+    condition2 = Conditions.where(TestDomain.EMP_ID).betweenExclusive(0, 1);
+    assertEquals(condition1, condition2);
+    condition2 = Conditions.where(TestDomain.EMP_ID).betweenExclusive(1, 0);
+    assertNotEquals(condition1, condition2);
+
     condition1 = Conditions.where(TestDomain.EMP_ID).notBetween(0, 1);
     condition2 = Conditions.where(TestDomain.EMP_ID).notBetween(0, 1);
     assertEquals(condition1, condition2);
     condition2 = Conditions.where(TestDomain.EMP_ID).notBetween(1, 0);
     assertNotEquals(condition1, condition2);
+
+    condition1 = Conditions.where(TestDomain.EMP_ID).notBetweenExclusive(0, 1);
+    condition2 = Conditions.where(TestDomain.EMP_ID).notBetweenExclusive(0, 1);
+    assertEquals(condition1, condition2);
+    condition2 = Conditions.where(TestDomain.EMP_ID).notBetweenExclusive(1, 0);
+    assertNotEquals(condition1, condition2);
+
+    condition1 = Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID,
+            Collections.singletonList(TestDomain.DEPARTMENT_NAME), Collections.singletonList("Test"));
+    condition2 = Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID,
+            Collections.singletonList(TestDomain.DEPARTMENT_NAME), Collections.singletonList("Test"));
+    assertEquals(condition1, condition2);
 
     condition1 = Conditions.where(TestDomain.EMP_ID).equalTo(0)
             .or(Conditions.where(TestDomain.EMP_ID).equalTo(1));
