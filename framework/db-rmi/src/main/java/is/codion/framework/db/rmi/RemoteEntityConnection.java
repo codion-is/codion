@@ -93,6 +93,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   /**
    * @return true if the query cache is enabled
    * @see #setQueryCacheEnabled(boolean)
+   * @throws RemoteException in case of a remote exception
    */
   boolean isQueryCacheEnabled() throws RemoteException;
 
