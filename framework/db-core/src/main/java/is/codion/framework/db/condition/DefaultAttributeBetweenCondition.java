@@ -7,6 +7,7 @@ import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -40,5 +41,26 @@ final class DefaultAttributeBetweenCondition<T> extends AbstractAttributeConditi
     return getOperator() == Operator.BETWEEN ?
             "(" + columnExpression + " >= ? and " + columnExpression + " <= ?)" :
             "(" + columnExpression + " > ? and " + columnExpression + " < ?)";
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof DefaultAttributeBetweenCondition)) {
+      return false;
+    }
+    if (!super.equals(object)) {
+      return false;
+    }
+    DefaultAttributeBetweenCondition<?> that = (DefaultAttributeBetweenCondition<?>) object;
+    return Objects.equals(lowerBound, that.lowerBound) &&
+            Objects.equals(upperBound, that.upperBound);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), lowerBound, upperBound);
   }
 }

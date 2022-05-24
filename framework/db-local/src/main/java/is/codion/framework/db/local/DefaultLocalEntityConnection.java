@@ -92,10 +92,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<EntityType, List<ColumnProperty<?>>> updatablePropertiesCache = new HashMap<>();
   private final Map<EntityType, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
   private final Map<EntityType, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
+  private final Map<SelectCondition, List<Entity>> queryCache = new HashMap<>();
 
   private boolean optimisticLockingEnabled = LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get();
   private boolean limitForeignKeyFetchDepth = LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get();
   private int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
+  private boolean queryCacheEnabled = false;
 
   /**
    * Constructs a new LocalEntityConnection instance
@@ -195,6 +197,23 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public void commitTransaction() {
     synchronized (connection) {
       connection.commitTransaction();
+    }
+  }
+
+  @Override
+  public void setQueryCacheEnabled(boolean queryCacheEnabled) {
+    synchronized (connection) {
+      this.queryCacheEnabled = queryCacheEnabled;
+      if (!queryCacheEnabled) {
+        queryCache.clear();
+      }
+    }
+  }
+
+  @Override
+  public boolean isQueryCacheEnabled() {
+    synchronized (connection) {
+      return queryCacheEnabled;
     }
   }
 
@@ -306,7 +325,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          List<Entity> selected = doSelect(condition(Entity.getPrimaryKeys(entitiesToUpdate)).toSelectCondition());
+          List<Entity> selected = doSelect(condition(Entity.getPrimaryKeys(entitiesToUpdate)).toSelectCondition(), 0);//bypass caching
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -906,7 +925,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private List<Entity> doSelect(SelectCondition condition) throws SQLException {
-    return doSelect(condition, 0);
+    List<Entity> result = getCachedResult(condition);
+    if (result != null) {
+      LOG.debug("Returning cached result: " + condition.getEntityType());
+      return result;
+    }
+
+    return cacheResult(condition, doSelect(condition, 0));
   }
 
   private List<Entity> doSelect(SelectCondition condition, int currentForeignKeyFetchDepth) throws SQLException {
@@ -1261,6 +1286,23 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (domainEntities.getDefinition(entityType).isReadOnly()) {
       throw new DatabaseException("Entities of type: " + entityType + " are read only");
     }
+  }
+
+  private List<Entity> getCachedResult(SelectCondition condition) {
+    if (queryCacheEnabled && !condition.isForUpdate()) {
+      return queryCache.get(condition);
+    }
+
+    return null;
+  }
+
+  private List<Entity> cacheResult(SelectCondition condition, List<Entity> result) {
+    if (queryCacheEnabled && !condition.isForUpdate()) {
+      LOG.debug("Caching result: " + condition.getEntityType());
+      queryCache.put(condition, result);
+    }
+
+    return result;
   }
 
   private static void setParameterValues(PreparedStatement statement, List<ColumnProperty<?>> statementProperties,

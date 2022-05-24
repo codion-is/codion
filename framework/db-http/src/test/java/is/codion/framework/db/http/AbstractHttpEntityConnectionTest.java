@@ -245,6 +245,14 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
+  void queryCache() throws DatabaseException {
+    connection.setQueryCacheEnabled(true);
+    assertTrue(connection.isQueryCacheEnabled());
+    connection.setQueryCacheEnabled(false);
+    assertFalse(connection.isQueryCacheEnabled());
+  }
+
+  @Test
   void rollbackWithNoOpenTransaction() {
     assertThrows(IllegalStateException.class, connection::rollbackTransaction);
   }

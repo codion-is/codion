@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -193,5 +194,33 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
     selectCondition.queryTimeout = queryTimeout;
 
     return selectCondition;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof DefaultSelectCondition)) {
+      return false;
+    }
+    if (!super.equals(object)) {
+      return false;
+    }
+    DefaultSelectCondition that = (DefaultSelectCondition) object;
+    return forUpdate == that.forUpdate &&
+            limit == that.limit &&
+            offset == that.offset &&
+            condition.equals(that.condition) &&
+            Objects.equals(foreignKeyFetchDepths, that.foreignKeyFetchDepths) &&
+            selectAttributes.equals(that.selectAttributes) &&
+            Objects.equals(orderBy, that.orderBy) &&
+            Objects.equals(fetchDepth, that.fetchDepth);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), condition, foreignKeyFetchDepths,
+            selectAttributes, orderBy, fetchDepth, forUpdate, limit, offset);
   }
 }

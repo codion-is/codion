@@ -122,6 +122,33 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
+  public void setQueryCacheEnabled(boolean queryCacheEnabled) {
+    try {
+      synchronized (this.entities) {
+        onResponse(execute(createHttpPost("setQueryCacheEnabled", byteArrayEntity(queryCacheEnabled))));
+      }
+    }
+    catch (RuntimeException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      throw logAndWrap(e);
+    }
+  }
+
+  @Override
+  public boolean isQueryCacheEnabled() {
+    try {
+      synchronized (this.entities) {
+        return onResponse(execute(createHttpPost("isQueryCacheEnabled")));
+      }
+    }
+    catch (Exception e) {
+      throw logAndWrap(e);
+    }
+  }
+
+  @Override
   public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws DatabaseException {
     return executeFunction(functionType, null);
   }

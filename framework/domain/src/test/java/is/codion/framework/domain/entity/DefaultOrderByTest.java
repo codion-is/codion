@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class DefaultOrderByTest {
 
   @Test
-  void samePropertyTwice() {
+  void sameAttributeTwice() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultOrderBy().ascending(TestDomain.Department.LOCATION)
             .descending(TestDomain.Department.LOCATION));
   }

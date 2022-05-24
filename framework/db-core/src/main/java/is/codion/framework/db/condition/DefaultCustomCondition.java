@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityDefinition;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -46,5 +47,27 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
   @Override
   public String getConditionString(EntityDefinition definition) {
     return definition.getConditionProvider(conditionType).getConditionString(attributes, values);
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof DefaultCustomCondition)) {
+      return false;
+    }
+    if (!super.equals(object)) {
+      return false;
+    }
+    DefaultCustomCondition that = (DefaultCustomCondition) object;
+    return conditionType.equals(that.conditionType) &&
+            attributes.equals(that.attributes) &&
+            values.equals(that.values);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), conditionType, attributes, values);
   }
 }

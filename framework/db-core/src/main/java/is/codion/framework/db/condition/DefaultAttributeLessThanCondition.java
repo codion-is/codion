@@ -7,6 +7,7 @@ import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -30,6 +31,26 @@ final class DefaultAttributeLessThanCondition<T> extends AbstractAttributeCondit
   @Override
   public List<Attribute<?>> getAttributes() {
     return singletonList(getAttribute());
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof DefaultAttributeLessThanCondition)) {
+      return false;
+    }
+    if (!super.equals(object)) {
+      return false;
+    }
+    DefaultAttributeLessThanCondition<?> that = (DefaultAttributeLessThanCondition<?>) object;
+    return Objects.equals(value, that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), value);
   }
 
   @Override

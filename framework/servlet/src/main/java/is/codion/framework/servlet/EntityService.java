@@ -157,6 +157,39 @@ public final class EntityService extends AbstractEntityService {
     }
   }
 
+  @POST
+  @Path("setQueryCacheEnabled")
+  public Response setQueryCacheEnabled(@Context HttpServletRequest request, @Context HttpHeaders headers) {
+    try {
+      RemoteEntityConnection connection = authenticate(request, headers);
+      connection.setQueryCacheEnabled(deserialize(request));
+
+      return Response.ok().build();
+    }
+    catch (Exception e) {
+      return logAndGetExceptionResponse(e);
+    }
+  }
+
+  /**
+   * Checks if the query cache is enabled
+   * @param request the servlet request
+   * @param headers the headers
+   * @return a response
+   */
+  @POST
+  @Path("isQueryCacheEnabled")
+  public Response isQueryCacheEnabled(@Context HttpServletRequest request, @Context HttpHeaders headers) {
+    try {
+      RemoteEntityConnection connection = authenticate(request, headers);
+
+      return Response.ok(Serializer.serialize(connection.isQueryCacheEnabled())).build();
+    }
+    catch (Exception e) {
+      return logAndGetExceptionResponse(e);
+    }
+  }
+
   /**
    * Executes a procedure with the given parameters
    * @param request the servlet request

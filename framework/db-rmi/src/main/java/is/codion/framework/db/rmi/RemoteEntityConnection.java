@@ -83,6 +83,20 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   void commitTransaction() throws RemoteException;
 
   /**
+   * Controls the enabled state of the query result cache.
+   * The cache is cleared when disabled.
+   * @param queryCacheEnabled the result cache state
+   * @throws RemoteException in case of a remote exception
+   */
+  void setQueryCacheEnabled(boolean queryCacheEnabled) throws RemoteException;
+
+  /**
+   * @return true if the query cache is enabled
+   * @see #setQueryCacheEnabled(boolean)
+   */
+  boolean isQueryCacheEnabled() throws RemoteException;
+
+  /**
    * Executes the function with the given type with no arguments
    * @param functionType the function type
    * @param <C> the connection type
