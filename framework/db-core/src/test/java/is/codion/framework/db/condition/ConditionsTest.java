@@ -93,7 +93,7 @@ public final class ConditionsTest {
     EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
     assertEquals("(string = ? and int = ?)", combination1.getConditionString(detailDefinition));
     Condition.Combination combination2 = where(TestDomain.DETAIL_DOUBLE).equalTo(666.666)
-            .and(where(TestDomain.DETAIL_STRING).equalTo("valu%e2").caseSensitive(false));
+            .and(where(TestDomain.DETAIL_STRING).equalToIgnoreCase("valu%e2"));
     Condition.Combination combination3 = combination1.or(combination2);
     assertEquals("((string = ? and int = ?) or (double = ? and upper(string) like upper(?)))",
             combination3.getConditionString(detailDefinition));
@@ -396,8 +396,7 @@ public final class ConditionsTest {
     condition1 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke");
     condition2 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke");
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke")
-            .caseSensitive(false);
+    condition2 = Conditions.where(TestDomain.EMP_NAME).equalToIgnoreCase("Luke");
     assertNotEquals(condition1, condition2);
 
     condition1 = Conditions.where(TestDomain.EMP_ID).notEqualTo(0);
@@ -517,6 +516,38 @@ public final class ConditionsTest {
                     .selectAttributes(TestDomain.EMP_NAME),
             condition2.toSelectCondition()
                     .selectAttributes(TestDomain.EMP_ID));
+
+    condition1 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke");
+    condition2 = condition1;
+    assertEquals(condition1, condition2);
+
+    condition2 = Conditions.where(TestDomain.EMP_NAME).greaterThanOrEqualTo("Luke");
+    assertNotEquals(condition1, condition2);
+    assertNotEquals(condition2, condition1);
+
+    condition1 = Conditions.where(TestDomain.EMP_NAME).lessThanOrEqualTo("Luke");
+    condition2 = condition1;
+    assertEquals(condition1, condition2);
+
+    condition2 = Conditions.where(TestDomain.EMP_NAME).greaterThanOrEqualTo("Luke");
+    assertNotEquals(condition1, condition2);
+    assertNotEquals(condition2, condition1);
+
+    condition1 = Conditions.where(TestDomain.EMP_NAME).betweenExclusive("John", "Luke");
+    condition2 = condition1;
+    assertEquals(condition1, condition2);
+
+    condition2 = Conditions.where(TestDomain.EMP_NAME).greaterThanOrEqualTo("Luke");
+    assertNotEquals(condition1, condition2);
+    assertNotEquals(condition2, condition1);
+
+    condition1 = Conditions.where(TestDomain.EMP_NAME).notBetweenExclusive("John", "Luke");
+    condition2 = condition1;
+    assertEquals(condition1, condition2);
+
+    condition2 = Conditions.where(TestDomain.EMP_NAME).lessThanOrEqualTo("Luke");
+    assertNotEquals(condition1, condition2);
+    assertNotEquals(condition2, condition1);
   }
 
   private static void assertDepartmentKeyCondition(Condition condition, EntityDefinition departmentDefinition) {

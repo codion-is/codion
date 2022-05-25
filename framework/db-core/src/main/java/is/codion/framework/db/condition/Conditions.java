@@ -55,7 +55,7 @@ public final class Conditions {
       return compositeCondition(attributeMap(key.getAttributes()), EQUAL, valueMap(key));
     }
 
-    return new DefaultAttributeEqualCondition<>(key.getAttribute(), singletonList(key.get()));
+    return new MultiValueAttributeCondition<>(key.getAttribute(), singletonList(key.get()), EQUAL);
   }
 
   /**
@@ -75,7 +75,7 @@ public final class Conditions {
               .collect(toList()));
     }
 
-    return new DefaultAttributeEqualCondition<>((Attribute<?>) firstKey.getAttribute(), getValues(keys));
+    return new MultiValueAttributeCondition<>((Attribute<?>) firstKey.getAttribute(), getValues(keys), EQUAL);
   }
 
   /**

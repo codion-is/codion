@@ -12,6 +12,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
@@ -277,9 +278,13 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     for (Attribute<String> searchAttribute : searchAttributes) {
       SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
       for (String rawSearchText : searchTexts) {
-        conditions.add(where(searchAttribute)
-                .equalTo(prepareSearchText(rawSearchText, searchSettings))
-                .caseSensitive(searchSettings.getCaseSensitiveState().get()));
+        AttributeCondition.Builder<String> builder = where(searchAttribute);
+        if (searchSettings.getCaseSensitiveState().get()) {
+          conditions.add(builder.equalTo(prepareSearchText(rawSearchText, searchSettings)));
+        }
+        else {
+          conditions.add(builder.equalToIgnoreCase(prepareSearchText(rawSearchText, searchSettings)));
+        }
       }
     }
     Condition.Combination conditionCombination = combination(Conjunction.OR, conditions);

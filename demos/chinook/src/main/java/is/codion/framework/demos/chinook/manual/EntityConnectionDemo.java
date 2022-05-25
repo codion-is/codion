@@ -49,8 +49,7 @@ public final class EntityConnectionDemo {
 
     List<Entity> nonLiveAlbums = connection.select(
             where(Album.ARTIST_FK).equalTo(artists)
-                    .and(where(Album.TITLE).notEqualTo("%live%")
-                            .caseSensitive(false)));
+                    .and(where(Album.TITLE).notEqualToIgnoreCase("%live%")));
     // end::selectCondition[]
   }
 
@@ -140,8 +139,7 @@ public final class EntityConnectionDemo {
 
     Entity liveAlbum = connection.selectSingle(
             where(Album.ARTIST_FK).equalTo(ironMaiden)
-                    .and(where(Album.TITLE).equalTo("%live after%")
-                            .caseSensitive(false)));
+                    .and(where(Album.TITLE).equalToIgnoreCase("%live after%")));
     // end::selectSingleCondition[]
   }
 

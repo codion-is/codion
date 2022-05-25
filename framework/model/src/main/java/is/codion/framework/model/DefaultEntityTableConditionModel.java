@@ -195,7 +195,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
           conditions.add(getForeignKeyCondition((ForeignKeyConditionModel) conditionModel));
         }
         else {
-          conditions.add(getCondition(conditionModel));
+          conditions.add(getAttributeCondition(conditionModel));
         }
       }
     }
@@ -328,22 +328,24 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private static <T> AttributeCondition<T> getCondition(ColumnConditionModel<?, T> conditionModel) {
+  private static <T> AttributeCondition<T> getAttributeCondition(ColumnConditionModel<?, T> conditionModel) {
+    Attribute<T> attribute = (Attribute<T>) conditionModel.getColumnIdentifier();
     Collection<T> equalToValues = conditionModel.getEqualValues();
-    AttributeCondition.Builder<T> builder = Conditions.where((Attribute<T>) conditionModel.getColumnIdentifier());
+    boolean ignoreCase = !conditionModel.getCaseSensitiveState().get();
+    AttributeCondition.Builder<T> builder = Conditions.where(attribute);
     switch (conditionModel.getOperator()) {
       case EQUAL:
-        AttributeCondition<T> equalCondition = builder.equalTo(equalToValues);
-        if (equalCondition.getAttribute().isString()) {
-          equalCondition.caseSensitive(conditionModel.getCaseSensitiveState().get());
+        if (attribute.isString() && ignoreCase) {
+          return (AttributeCondition<T>) builder.equalToIgnoreCase((Collection<String>) equalToValues);
         }
-        return equalCondition;
+
+        return builder.equalTo(equalToValues);
       case NOT_EQUAL:
-        AttributeCondition<T> notEqualCondition = builder.notEqualTo(equalToValues);
-        if (notEqualCondition.getAttribute().isString()) {
-          notEqualCondition.caseSensitive(conditionModel.getCaseSensitiveState().get());
+        if (attribute.isString() && ignoreCase) {
+          return (AttributeCondition<T>) builder.notEqualToIgnoreCase((Collection<String>) equalToValues);
         }
-        return notEqualCondition;
+
+        return builder.equalTo(equalToValues);
       case LESS_THAN:
         return builder.lessThan(conditionModel.getUpperBound());
       case LESS_THAN_OR_EQUAL:
