@@ -94,8 +94,8 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(new JLabel("Reaper interval (s)", SwingConstants.RIGHT));
     actionBase.add(initializeMaintenanceIntervalComponent());
 
-    actionBase.add(new JLabel("Connection timeout (s)"));
-    actionBase.add(Components.integerSpinner(new SpinnerNumberModel(), model.getConnectionTimeoutValue())
+    actionBase.add(new JLabel("Idle connection timeout (s)"));
+    actionBase.add(Components.integerSpinner(new SpinnerNumberModel(), model.getIdleConnectionTimeoutValue())
             .columns(7)
             .build());
 

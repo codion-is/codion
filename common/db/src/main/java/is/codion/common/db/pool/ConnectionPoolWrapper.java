@@ -117,13 +117,13 @@ public interface ConnectionPoolWrapper {
    * @return the pooled connection timeout in milliseconds, that is, the time that needs
    * to pass before an idle connection can be harvested
    */
-  int getConnectionTimeout();
+  int getIdleConnectionTimeout();
 
   /**
-   * @param timeout the pooled connection timeout in milliseconds, that is, the time that needs
+   * @param idleConnectionTimeout the pooled connection timeout in milliseconds, that is, the time that needs
    * to pass before an idle connection can be harvested
    */
-  void setConnectionTimeout(int timeout);
+  void setIdleConnectionTimeout(int idleConnectionTimeout);
 
   /**
    * @return the minimum number of connections to keep in the pool

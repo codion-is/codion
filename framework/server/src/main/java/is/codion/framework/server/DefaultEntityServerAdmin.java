@@ -168,14 +168,14 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   }
 
   @Override
-  public int getPooledConnectionTimeout(String username) {
-    return server.getDatabase().getConnectionPool(username).getConnectionTimeout();
+  public int getPooledConnectionIdleTimeout(String username) {
+    return server.getDatabase().getConnectionPool(username).getIdleConnectionTimeout();
   }
 
   @Override
-  public void setPooledConnectionTimeout(String username, int timeout) {
-    LOG.info("setPooledConnectionTimeout({}, {})", username, timeout);
-    server.getDatabase().getConnectionPool(username).setConnectionTimeout(timeout);
+  public void setPooledConnectionIdleTimeout(String username, int pooledConnectionIdleTimeout) {
+    LOG.info("setPooledConnectionIdleTimeout({}, {})", username, pooledConnectionIdleTimeout);
+    server.getDatabase().getConnectionPool(username).setIdleConnectionTimeout(pooledConnectionIdleTimeout);
   }
 
   @Override
@@ -206,14 +206,14 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   }
 
   @Override
-  public int getConnectionTimeout() {
-    return server.getConnectionTimeout();
+  public int getIdleConnectionTimeout() {
+    return server.getIdleConnectionTimeout();
   }
 
   @Override
-  public void setConnectionTimeout(int timeout) {
-    LOG.info("setConnectionTimeout({})", timeout);
-    server.setConnectionTimeout(timeout);
+  public void setIdleConnectionTimeout(int idleConnectionTimeout) {
+    LOG.info("setIdleConnectionTimeout({})", idleConnectionTimeout);
+    server.setIdleConnectionTimeout(idleConnectionTimeout);
   }
 
   @Override

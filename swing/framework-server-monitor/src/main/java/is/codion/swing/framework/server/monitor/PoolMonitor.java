@@ -93,9 +93,9 @@ public final class PoolMonitor {
     }
 
     @Override
-    public int getConnectionTimeout() {
+    public int getIdleConnectionTimeout() {
       try {
-        return server.getPooledConnectionTimeout(user.getUsername());
+        return server.getPooledConnectionIdleTimeout(user.getUsername());
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -135,12 +135,12 @@ public final class PoolMonitor {
     }
 
     @Override
-    public void setConnectionTimeout(int timeout) {
-      if (timeout < 0) {
-        throw new IllegalArgumentException("Timeout must be a positive integer");
+    public void setIdleConnectionTimeout(int idleConnectionTimeout) {
+      if (idleConnectionTimeout < 0) {
+        throw new IllegalArgumentException("Idle connection timeout must be a positive integer");
       }
       try {
-        server.setPooledConnectionTimeout(user.getUsername(), timeout);
+        server.setPooledConnectionIdleTimeout(user.getUsername(), idleConnectionTimeout);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);

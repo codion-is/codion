@@ -18,7 +18,7 @@ import java.util.function.Supplier;
  */
 public interface ServerConfiguration {
 
-  int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120_000;
+  int DEFAULT_IDLE_CONNECTION_TIMEOUT = 120_000;
 
   int DEFAULT_CONNECTION_MAINTENANCE_INTERVAL = 30_000;
 
@@ -112,11 +112,11 @@ public interface ServerConfiguration {
   PropertyValue<Boolean> SERVER_CONNECTION_SSL_ENABLED = Configuration.booleanValue("codion.server.connection.sslEnabled", true);
 
   /**
-   * Specifies the default client connection inactivity timeout in milliseconds.
+   * Specifies the default idle client connection timeout in milliseconds.
    * Value type: Integer<br>
-   * Default value: 120000ms (2 minutes)
+   * Default value: 120.000ms (2 minutes)
    */
-  PropertyValue<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("codion.server.connectionTimeout", DEFAULT_SERVER_CONNECTION_TIMEOUT);
+  PropertyValue<Integer> IDLE_CONNECTION_TIMEOUT = Configuration.integerValue("codion.server.idleConnectionTimeout", DEFAULT_IDLE_CONNECTION_TIMEOUT);
 
   /**
    * A comma separated list of auxiliary server factories, providing servers to run alongside this Server<br>
