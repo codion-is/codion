@@ -592,12 +592,12 @@ public interface EntityEditModel {
   /**
    * Adds a listener notified each time the value associated with the given attribute is edited via
    * {@link #put(Attribute, Object)} or {@link #remove(Attribute)}, note that this event is only fired
-   * when the value actually changes.
+   * if the value actually changes.
    * @param attribute the attribute for which to monitor value edits
    * @param listener a listener notified each time the value of the given property is edited via this model
    * @param <T> the value type
    */
-  <T> void addValueEditListener(Attribute<T> attribute, EventDataListener<T> listener);
+  <T> void addEditListener(Attribute<T> attribute, EventDataListener<T> listener);
 
   /**
    * Removes the given listener.
@@ -605,7 +605,7 @@ public interface EntityEditModel {
    * @param listener the listener to remove
    * @param <T> the value type
    */
-  <T> void removeValueEditListener(Attribute<T> attribute, EventDataListener<T> listener);
+  <T> void removeEditListener(Attribute<T> attribute, EventDataListener<T> listener);
 
   /**
    * Adds a listener notified each time the value associated with the given attribute changes, either

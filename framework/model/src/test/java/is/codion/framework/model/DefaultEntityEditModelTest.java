@@ -95,8 +95,8 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   void listeners() {
-    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.addValueListener(TestDomain.DEPARTMENT_ID, valueChange -> {}));
-    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.addValueEditListener(TestDomain.DEPARTMENT_ID, valueChange -> {}));
+    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.addValueListener(TestDomain.DEPARTMENT_ID, value -> {}));
+    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.addEditListener(TestDomain.DEPARTMENT_ID, value -> {}));
   }
 
   @Test
@@ -552,8 +552,8 @@ public final class DefaultEntityEditModelTest {
     AtomicInteger derivedCounter = new AtomicInteger();
     AtomicInteger derivedEditCounter = new AtomicInteger();
 
-    editModel.addValueListener(TestDomain.DETAIL_INT_DERIVED, valueChange -> derivedCounter.incrementAndGet());
-    editModel.addValueEditListener(TestDomain.DETAIL_INT_DERIVED, valueChange -> derivedEditCounter.incrementAndGet());
+    editModel.addValueListener(TestDomain.DETAIL_INT_DERIVED, value -> derivedCounter.incrementAndGet());
+    editModel.addEditListener(TestDomain.DETAIL_INT_DERIVED, value -> derivedEditCounter.incrementAndGet());
 
     editModel.put(TestDomain.DETAIL_INT, 1);
     assertEquals(1, derivedCounter.get());
@@ -574,11 +574,11 @@ public final class DefaultEntityEditModelTest {
   @Test
   void foreignKeyProperties() throws DatabaseException {
     AtomicInteger deptNoChange = new AtomicInteger();
-    employeeEditModel.addValueListener(TestDomain.EMP_DEPARTMENT, valueChange -> deptNoChange.incrementAndGet());
+    employeeEditModel.addValueListener(TestDomain.EMP_DEPARTMENT, value -> deptNoChange.incrementAndGet());
     AtomicInteger deptChange = new AtomicInteger();
-    employeeEditModel.addValueListener(TestDomain.EMP_DEPARTMENT_FK, valueChange -> deptChange.incrementAndGet());
+    employeeEditModel.addValueListener(TestDomain.EMP_DEPARTMENT_FK, value -> deptChange.incrementAndGet());
     AtomicInteger deptEdit = new AtomicInteger();
-    employeeEditModel.addValueEditListener(TestDomain.EMP_DEPARTMENT_FK, valueChange -> deptEdit.incrementAndGet());
+    employeeEditModel.addEditListener(TestDomain.EMP_DEPARTMENT_FK, value -> deptEdit.incrementAndGet());
 
     Entity dept = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
     employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, dept);

@@ -696,15 +696,15 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> void removeValueEditListener(Attribute<T> attribute, EventDataListener<T> listener) {
+  public final <T> void removeEditListener(Attribute<T> attribute, EventDataListener<T> listener) {
     if (valueEditEvents.containsKey(attribute)) {
       ((Event<T>) valueEditEvents.get(attribute)).removeDataListener(listener);
     }
   }
 
   @Override
-  public final <T> void addValueEditListener(Attribute<T> attribute, EventDataListener<T> listener) {
-    getValueEditEvent(attribute).addDataListener(listener);
+  public final <T> void addEditListener(Attribute<T> attribute, EventDataListener<T> listener) {
+    getEditEvent(attribute).addDataListener(listener);
   }
 
   @Override
@@ -716,7 +716,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void addValueListener(Attribute<T> attribute, EventDataListener<T> listener) {
-    getValueChangeEvent(attribute).addDataListener(listener);
+    getValueEvent(attribute).addDataListener(listener);
   }
 
   @Override
@@ -999,12 +999,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return !Objects.equals(get(attribute), getDefaultValue(attribute));
   }
 
-  private <T> Event<T> getValueEditEvent(Attribute<T> attribute) {
+  private <T> Event<T> getEditEvent(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
     return (Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
-  private <T> Event<T> getValueChangeEvent(Attribute<T> attribute) {
+  private <T> Event<T> getValueEvent(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
     return (Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event());
   }
@@ -1086,7 +1086,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependentValues) {
     onValueChange(attribute, value);
-    getValueEditEvent(attribute).onEvent(value);
+    getEditEvent(attribute).onEvent(value);
     dependentValues.forEach((dependentAttribute, previousValue) -> {
       Object currentValue = get(dependentAttribute);
       if (!Objects.equals(previousValue, currentValue)) {
