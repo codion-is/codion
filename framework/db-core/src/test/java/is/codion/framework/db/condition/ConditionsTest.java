@@ -517,6 +517,38 @@ public final class ConditionsTest {
                     .selectAttributes(TestDomain.EMP_NAME),
             condition2.toSelectCondition()
                     .selectAttributes(TestDomain.EMP_ID));
+
+    condition1 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke");
+    condition2 = condition1;
+    assertEquals(condition1, condition2);
+
+    condition2 = Conditions.where(TestDomain.EMP_NAME).greaterThanOrEqualTo("Luke");
+    assertNotEquals(condition1, condition2);
+    assertNotEquals(condition2, condition1);
+
+    condition1 = Conditions.where(TestDomain.EMP_NAME).lessThanOrEqualTo("Luke");
+    condition2 = condition1;
+    assertEquals(condition1, condition2);
+
+    condition2 = Conditions.where(TestDomain.EMP_NAME).greaterThanOrEqualTo("Luke");
+    assertNotEquals(condition1, condition2);
+    assertNotEquals(condition2, condition1);
+
+    condition1 = Conditions.where(TestDomain.EMP_NAME).betweenExclusive("John", "Luke");
+    condition2 = condition1;
+    assertEquals(condition1, condition2);
+
+    condition2 = Conditions.where(TestDomain.EMP_NAME).greaterThanOrEqualTo("Luke");
+    assertNotEquals(condition1, condition2);
+    assertNotEquals(condition2, condition1);
+
+    condition1 = Conditions.where(TestDomain.EMP_NAME).notBetweenExclusive("John", "Luke");
+    condition2 = condition1;
+    assertEquals(condition1, condition2);
+
+    condition2 = Conditions.where(TestDomain.EMP_NAME).lessThanOrEqualTo("Luke");
+    assertNotEquals(condition1, condition2);
+    assertNotEquals(condition2, condition1);
   }
 
   private static void assertDepartmentKeyCondition(Condition condition, EntityDefinition departmentDefinition) {

@@ -92,7 +92,7 @@ public interface AttributeCondition<T> extends Condition {
     AttributeCondition<T> lessThan(T value);
 
     /**
-     * Returns a 'lessThanOrEquals' {@link AttributeCondition}.
+     * Returns a 'lessThanOrEqualTo' {@link AttributeCondition}.
      * @param value the value to use in the condition
      * @return a {@link AttributeCondition}
      */
@@ -106,7 +106,7 @@ public interface AttributeCondition<T> extends Condition {
     AttributeCondition<T> greaterThan(T value);
 
     /**
-     * Returns a 'greaterThanOrEquals' {@link AttributeCondition}.
+     * Returns a 'greaterThanOrEqualTo' {@link AttributeCondition}.
      * @param value the value to use in the condition
      * @return a {@link AttributeCondition}
      */
