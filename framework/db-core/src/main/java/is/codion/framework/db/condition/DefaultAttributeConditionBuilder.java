@@ -7,6 +7,7 @@ import is.codion.framework.domain.entity.Attribute;
 
 import java.util.Collection;
 
+import static is.codion.common.Operator.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -42,7 +43,7 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   public AttributeCondition<T> equalTo(Collection<? extends T> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    return new DefaultAttributeEqualCondition<>(attribute, values);
+    return new MultiValueAttributeCondition<>(attribute, values, EQUAL);
   }
 
   @Override
@@ -65,56 +66,56 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   public AttributeCondition<T> notEqualTo(Collection<? extends T> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    return new DefaultAttributeEqualCondition<>(attribute, values, true);
+    return new MultiValueAttributeCondition<>(attribute, values, NOT_EQUAL);
   }
 
   @Override
   public AttributeCondition<T> lessThan(T value) {
-    return new DefaultAttributeLessThanCondition<>(attribute, value, false);
+    return new SingleValueAttributeCondition<>(attribute, value, LESS_THAN);
   }
 
   @Override
   public AttributeCondition<T> lessThanOrEqualTo(T value) {
-    return new DefaultAttributeLessThanCondition<>(attribute, value, true);
+    return new SingleValueAttributeCondition<>(attribute, value, LESS_THAN_OR_EQUAL);
   }
 
   @Override
   public AttributeCondition<T> greaterThan(T value) {
-    return new DefaultAttributeGreaterThanCondition<>(attribute, value, false);
+    return new SingleValueAttributeCondition<>(attribute, value, GREATER_THAN);
   }
 
   @Override
   public AttributeCondition<T> greaterThanOrEqualTo(T value) {
-    return new DefaultAttributeGreaterThanCondition<>(attribute, value, true);
+    return new SingleValueAttributeCondition<>(attribute, value, GREATER_THAN_OR_EQUAL);
   }
 
   @Override
   public AttributeCondition<T> betweenExclusive(T lowerBound, T upperBound) {
-    return new DefaultAttributeBetweenCondition<>(attribute, lowerBound, upperBound, true);
+    return new DualValueAttributeCondition<>(attribute, lowerBound, upperBound, BETWEEN_EXCLUSIVE);
   }
 
   @Override
   public AttributeCondition<T> between(T lowerBound, T upperBound) {
-    return new DefaultAttributeBetweenCondition<>(attribute, lowerBound, upperBound, false);
+    return new DualValueAttributeCondition<>(attribute, lowerBound, upperBound, BETWEEN);
   }
 
   @Override
   public AttributeCondition<T> notBetweenExclusive(T lowerBound, T upperBound) {
-    return new DefaultAttributeNotBetweenCondition<>(attribute, lowerBound, upperBound, true);
+    return new DualValueAttributeCondition<>(attribute, lowerBound, upperBound, NOT_BETWEEN_EXCLUSIVE);
   }
 
   @Override
   public AttributeCondition<T> notBetween(T lowerBound, T upperBound) {
-    return new DefaultAttributeNotBetweenCondition<>(attribute, lowerBound, upperBound, false);
+    return new DualValueAttributeCondition<>(attribute, lowerBound, upperBound, NOT_BETWEEN);
   }
 
   @Override
   public AttributeCondition<T> isNull() {
-    return new DefaultAttributeEqualCondition<>(attribute, emptyList());
+    return new MultiValueAttributeCondition<>(attribute, emptyList(), EQUAL);
   }
 
   @Override
   public AttributeCondition<T> isNotNull() {
-    return new DefaultAttributeEqualCondition<>(attribute, emptyList(), true);
+    return new MultiValueAttributeCondition<>(attribute, emptyList(), NOT_EQUAL);
   }
 }

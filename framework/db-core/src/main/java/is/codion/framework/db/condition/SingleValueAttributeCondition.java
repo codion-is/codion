@@ -12,15 +12,15 @@ import java.util.Objects;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultAttributeGreaterThanCondition<T> extends AbstractAttributeCondition<T> {
+final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<T> {
 
   private static final long serialVersionUID = 1;
 
   private final T value;
 
-  DefaultAttributeGreaterThanCondition(Attribute<T> attribute, T value, boolean orEqual) {
-    super(attribute, orEqual ? Operator.GREATER_THAN_OR_EQUAL : Operator.GREATER_THAN);
-    this.value = requireNonNull(value, "A lower bound is required");
+  SingleValueAttributeCondition(Attribute<T> attribute, T value, Operator operator) {
+    super(attribute, operator);
+    this.value = requireNonNull(value, "A bound value is required");
   }
 
   @Override
@@ -38,13 +38,13 @@ final class DefaultAttributeGreaterThanCondition<T> extends AbstractAttributeCon
     if (this == object) {
       return true;
     }
-    if (!(object instanceof DefaultAttributeGreaterThanCondition)) {
+    if (!(object instanceof SingleValueAttributeCondition)) {
       return false;
     }
     if (!super.equals(object)) {
       return false;
     }
-    DefaultAttributeGreaterThanCondition<?> that = (DefaultAttributeGreaterThanCondition<?>) object;
+    SingleValueAttributeCondition<?> that = (SingleValueAttributeCondition<?>) object;
     return Objects.equals(value, that.value);
   }
 
@@ -55,6 +55,17 @@ final class DefaultAttributeGreaterThanCondition<T> extends AbstractAttributeCon
 
   @Override
   protected String getConditionString(String columnExpression) {
-    return columnExpression + (getOperator() == Operator.GREATER_THAN_OR_EQUAL ? " >= ?" : " > ?");
+    switch (getOperator()) {
+      case LESS_THAN:
+        return columnExpression + " < ?";
+      case LESS_THAN_OR_EQUAL:
+        return columnExpression + " <= ?";
+      case GREATER_THAN:
+        return columnExpression + " > ?";
+      case GREATER_THAN_OR_EQUAL:
+        return columnExpression + " >= ?";
+      default:
+        throw new IllegalStateException("Unsupported single value operator: " + getOperator());
+    }
   }
 }

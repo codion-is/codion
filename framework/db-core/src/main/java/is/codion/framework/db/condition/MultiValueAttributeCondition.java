@@ -16,7 +16,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition<T> {
+final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -25,20 +25,14 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
   private static final String NOT_IN_PREFIX = " not in (";
 
   private final List<T> values;
-  private final boolean negated;
 
   private boolean caseSensitive = true;
 
-  DefaultAttributeEqualCondition(Attribute<T> attribute, Collection<? extends T> conditionValues) {
-    this(attribute, conditionValues, false);
-  }
-
-  DefaultAttributeEqualCondition(Attribute<T> attribute, Collection<? extends T> conditionValues, boolean negated) {
-    super(attribute, negated ? Operator.NOT_EQUAL : Operator.EQUAL);
-    this.values = unmodifiableList(new ArrayList<>(conditionValues));
-    this.negated = negated;
-    for (int i = 0; i < values.size(); i++) {
-      requireNonNull(values.get(i), "Equal condition values may not be null");
+  MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator) {
+    super(attribute, operator);
+    this.values = unmodifiableList(new ArrayList<>(values));
+    for (int i = 0; i < this.values.size(); i++) {
+      requireNonNull(this.values.get(i), "Equal condition values may not be null");
     }
   }
 
@@ -71,25 +65,25 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
     if (this == object) {
       return true;
     }
-    if (!(object instanceof DefaultAttributeEqualCondition)) {
+    if (!(object instanceof MultiValueAttributeCondition)) {
       return false;
     }
     if (!super.equals(object)) {
       return false;
     }
-    DefaultAttributeEqualCondition<?> that = (DefaultAttributeEqualCondition<?>) object;
-    return negated == that.negated &&
-            caseSensitive == that.caseSensitive &&
+    MultiValueAttributeCondition<?> that = (MultiValueAttributeCondition<?>) object;
+    return caseSensitive == that.caseSensitive &&
             values.equals(that.values);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), values, negated, caseSensitive);
+    return Objects.hash(super.hashCode(), values, caseSensitive);
   }
 
   @Override
   protected String getConditionString(String columnExpression) {
+    boolean negated = getOperator() == Operator.NOT_EQUAL;
     String identifier = columnExpression;
     if (values.isEmpty()) {
       return identifier + (negated ? " is not null" : " is null");

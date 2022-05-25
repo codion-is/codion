@@ -3,6 +3,7 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.common.Operator;
 import is.codion.framework.db.TestDomain;
 import is.codion.framework.domain.entity.EntityDefinition;
 
@@ -14,7 +15,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class DefaultAttributeEqualConditionTest {
+public final class MultiValueAttributeConditionTest {
 
   private final TestDomain domain = new TestDomain();
 
@@ -24,14 +25,14 @@ public final class DefaultAttributeEqualConditionTest {
 
     List<Integer> ids = new ArrayList<>();
     IntStream.range(0, 95).forEach(ids::add);
-    DefaultAttributeEqualCondition<Integer> condition = new DefaultAttributeEqualCondition<>(TestDomain.EMP_ID, ids);
+    MultiValueAttributeCondition<Integer> condition = new MultiValueAttributeCondition<>(TestDomain.EMP_ID, ids, Operator.EQUAL);
     String conditionString = condition.getConditionString(definition);
     assertTrue(conditionString.startsWith("empno in (?"));
     assertTrue(conditionString.endsWith("?, ?)"));
 
     ids.clear();
     IntStream.range(0, 105).forEach(ids::add);
-    condition = new DefaultAttributeEqualCondition<>(TestDomain.EMP_ID, ids);
+    condition = new MultiValueAttributeCondition<>(TestDomain.EMP_ID, ids, Operator.EQUAL);
     conditionString = condition.getConditionString(definition);
     assertTrue(conditionString.startsWith("(empno in (?"));
     assertTrue(conditionString.endsWith("?, ?))"));

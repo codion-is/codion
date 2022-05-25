@@ -101,11 +101,9 @@ is.codion.framework.db.condition.DefaultCustomCondition
 is.codion.framework.db.condition.DefaultSelectCondition
 is.codion.framework.db.condition.DefaultUpdateCondition
 is.codion.framework.db.condition.AbstractAttributeCondition
-is.codion.framework.db.condition.DefaultAttributeEqualCondition
-is.codion.framework.db.condition.DefaultAttributeGreaterThanCondition
-is.codion.framework.db.condition.DefaultAttributeLessThanCondition
-is.codion.framework.db.condition.DefaultAttributeBetweenCondition
-is.codion.framework.db.condition.DefaultAttributeNotBetweenCondition
+is.codion.framework.db.condition.DualValueAttributeCondition
+is.codion.framework.db.condition.MultiValueAttributeCondition
+is.codion.framework.db.condition.SingleValueAttributeCondition
 is.codion.framework.db.condition.SelectAllCondition
 is.codion.framework.domain.DefaultDomainType
 is.codion.framework.domain.entity.DefaultConditionType
