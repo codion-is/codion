@@ -35,11 +35,6 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   }
 
   @Override
-  public AttributeCondition<String> caseSensitive(boolean caseSensitive) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public final String getConditionString(EntityDefinition definition) {
     return getConditionString(definition.getColumnProperty(attribute).getColumnExpression());
   }

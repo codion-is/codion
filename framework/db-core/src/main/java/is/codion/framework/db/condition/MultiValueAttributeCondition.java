@@ -25,11 +25,19 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
   private static final String NOT_IN_PREFIX = " not in (";
 
   private final List<T> values;
-
-  private boolean caseSensitive = true;
+  private final boolean caseSensitive;
 
   MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator) {
+    this(attribute, values, operator, true);
+  }
+
+  MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator,
+                               boolean caseSensitive) {
     super(attribute, operator);
+    if (!caseSensitive && !attribute.isString()) {
+      throw new IllegalStateException("Case sensitivity only applies to String based attributes: " + attribute);
+    }
+    this.caseSensitive = caseSensitive;
     this.values = unmodifiableList(new ArrayList<>(values));
     for (int i = 0; i < this.values.size(); i++) {
       requireNonNull(this.values.get(i), "Equal condition values may not be null");
@@ -48,16 +56,6 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
     }
 
     return Collections.nCopies(values.size(), getAttribute());
-  }
-
-  @Override
-  public AttributeCondition<String> caseSensitive(boolean caseSensitive) {
-    if (!getAttribute().isString()) {
-      throw new IllegalStateException("Attribute " + getAttribute() + " is not a String attribute");
-    }
-    this.caseSensitive = caseSensitive;
-
-    return (AttributeCondition<String>) this;
   }
 
   @Override
@@ -83,10 +81,10 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
 
   @Override
   protected String getConditionString(String columnExpression) {
-    boolean negated = getOperator() == Operator.NOT_EQUAL;
+    boolean notEqual = getOperator() == Operator.NOT_EQUAL;
     String identifier = columnExpression;
     if (values.isEmpty()) {
-      return identifier + (negated ? " is not null" : " is null");
+      return identifier + (notEqual ? " is not null" : " is null");
     }
     if (getAttribute().isString() && !caseSensitive) {
       identifier = "upper(" + identifier + ")";
@@ -94,13 +92,13 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
 
     String valuePlaceholder = getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
     if (values.size() > 1) {
-      return getInList(identifier, valuePlaceholder, values.size(), negated);
+      return getInList(identifier, valuePlaceholder, values.size(), notEqual);
     }
     if (getAttribute().isString() && containsWildcards((String) values.get(0))) {
-      return identifier + (negated ? " not like " : " like ") + valuePlaceholder;
+      return identifier + (notEqual ? " not like " : " like ") + valuePlaceholder;
     }
 
-    return identifier + (negated ? " <> " : " = ") + valuePlaceholder;
+    return identifier + (notEqual ? " <> " : " = ") + valuePlaceholder;
   }
 
   private static String getInList(String columnIdentifier, String valuePlaceholder, int valueCount, boolean negated) {

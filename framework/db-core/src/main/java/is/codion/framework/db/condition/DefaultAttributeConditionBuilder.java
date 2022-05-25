@@ -70,6 +70,52 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   }
 
   @Override
+  public AttributeCondition<String> equalToIgnoreCase(String value) {
+    if (value == null) {
+      return (AttributeCondition<String>) isNull();
+    }
+
+    return equalToIgnoreCase(singletonList(value));
+  }
+
+  @Override
+  public AttributeCondition<String> equalToIgnoreCase(String... values) {
+    requireNonNull(values, VALUES_PARAMETER);
+
+    return equalToIgnoreCase(asList(values));
+  }
+
+  @Override
+  public AttributeCondition<String> equalToIgnoreCase(Collection<String> values) {
+    requireNonNull(values, VALUES_PARAMETER);
+
+    return new MultiValueAttributeCondition<>((Attribute<String>) attribute, values, EQUAL, false);
+  }
+
+  @Override
+  public AttributeCondition<String> notEqualToIgnoreCase(String value) {
+    if (value == null) {
+      return (AttributeCondition<String>) isNotNull();
+    }
+
+    return notEqualToIgnoreCase(singletonList(value));
+  }
+
+  @Override
+  public AttributeCondition<String> notEqualToIgnoreCase(String... values) {
+    requireNonNull(values, VALUES_PARAMETER);
+
+    return notEqualToIgnoreCase(asList(values));
+  }
+
+  @Override
+  public AttributeCondition<String> notEqualToIgnoreCase(Collection<String> values) {
+    requireNonNull(values, VALUES_PARAMETER);
+
+    return new MultiValueAttributeCondition<>((Attribute<String>) attribute, values, NOT_EQUAL, false);
+  }
+
+  @Override
   public AttributeCondition<T> lessThan(T value) {
     return new SingleValueAttributeCondition<>(attribute, value, LESS_THAN);
   }
