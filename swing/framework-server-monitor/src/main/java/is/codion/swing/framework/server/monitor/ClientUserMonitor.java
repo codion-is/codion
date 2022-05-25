@@ -53,7 +53,7 @@ public final class ClientUserMonitor {
   private static final Comparator<User> USER_COMPARATOR = (u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername());
 
   private final EntityServerAdmin server;
-  private final Value<Integer> connectionTimeoutValue;
+  private final Value<Integer> idleConnectionTimeoutValue;
   private final DefaultListModel<ClientMonitor> clientTypeListModel = new DefaultListModel<>();
   private final DefaultListModel<ClientMonitor> userListModel = new DefaultListModel<>();
   private final UserHistoryTableModel userHistoryTableModel = new UserHistoryTableModel();
@@ -69,7 +69,7 @@ public final class ClientUserMonitor {
    */
   public ClientUserMonitor(EntityServerAdmin server, int updateRate) throws RemoteException {
     this.server = server;
-    this.connectionTimeoutValue = Value.value(this::getConnectionTimeout, this::setConnectionTimeout, 0);
+    this.idleConnectionTimeoutValue = Value.value(this::getIdleConnectionTimeout, this::setIdleConnectionTimeout, 0);
     this.updateScheduler = TaskScheduler.builder(this::refreshUserHistoryTableModel)
             .interval(updateRate)
             .timeUnit(TimeUnit.SECONDS)
@@ -164,10 +164,10 @@ public final class ClientUserMonitor {
   }
 
   /**
-   * @return a Value linked to the server connection timeout
+   * @return a Value linked to the idle connection timeout
    */
-  public Value<Integer> getConnectionTimeoutValue() {
-    return connectionTimeoutValue;
+  public Value<Integer> getIdleConnectionTimeoutValue() {
+    return idleConnectionTimeoutValue;
   }
 
   /**
@@ -191,9 +191,9 @@ public final class ClientUserMonitor {
     return users;
   }
 
-  private int getConnectionTimeout() {
+  private int getIdleConnectionTimeout() {
     try {
-      return server.getConnectionTimeout() / THOUSAND;
+      return server.getIdleConnectionTimeout() / THOUSAND;
     }
     catch (RemoteException e) {
       throw new RuntimeException(e);
@@ -201,15 +201,15 @@ public final class ClientUserMonitor {
   }
 
   /**
-   * Sets the server connection timeout
-   * @param timeout the timeout in seconds
+   * Sets the idle client connection timeout
+   * @param idleConnectionTimeout the timeout in seconds
    */
-  private void setConnectionTimeout(int timeout) {
-    if (timeout < 0) {
-      throw new IllegalArgumentException("Connection timeout must be a positive integer");
+  private void setIdleConnectionTimeout(int idleConnectionTimeout) {
+    if (idleConnectionTimeout < 0) {
+      throw new IllegalArgumentException("Idle connection timeout must be a positive integer");
     }
     try {
-      server.setConnectionTimeout(timeout * THOUSAND);
+      server.setIdleConnectionTimeout(idleConnectionTimeout * THOUSAND);
     }
     catch (RemoteException e) {
       throw new RuntimeException(e);

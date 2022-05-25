@@ -137,7 +137,7 @@ public class EntityLoadTestModelTest {
             .adminPort(3223)
             .adminUser(User.parse("scott:tiger"))
             .startupPoolUsers(Collections.singletonList(UNIT_TEST_USER))
-            .clientSpecificConnectionTimeouts(Collections.singletonMap("ClientTypeID", 10000))
+            .clientTypeIdleConnectionTimeouts(Collections.singletonMap("ClientTypeID", 10000))
             .domainModelClassNames(Collections.singletonList("is.codion.swing.framework.tools.loadtest.TestDomain"))
             .database(DatabaseFactory.getDatabase())
             .sslEnabled(false)

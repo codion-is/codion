@@ -99,7 +99,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   /**
    * @return the idle connection timeout
    */
-  int getConnectionTimeout();
+  int getIdleConnectionTimeout();
 
   /**
    * @return the connection pool provider classname
@@ -117,9 +117,9 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   Collection<User> getStartupPoolUsers();
 
   /**
-   * @return client specific connection timeouts, mapped to clientTypeId
+   * @return client type specific idle connection timeouts, mapped to clientTypeId
    */
-  Map<String, Integer> getClientSpecificConnectionTimeouts();
+  Map<String, Integer> getClientTypeIdleConnectionTimeouts();
 
   /**
    * A Builder for EntityServerConfiguration
@@ -151,10 +151,10 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     Builder clientLoggingEnabled(boolean clientLoggingEnabled);
 
     /**
-     * @param connectionTimeout the idle connection timeout
+     * @param idleConnectionTimeout the idle client connection timeout
      * @return this builder instance
      */
-    Builder connectionTimeout(int connectionTimeout);
+    Builder idleConnectionTimeout(int idleConnectionTimeout);
 
     /**
      * @param connectionPoolProvider the connection pool provider classname
@@ -175,10 +175,10 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     Builder startupPoolUsers(Collection<User> startupPoolUsers);
 
     /**
-     * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeId
+     * @param clientTypeIdleConnectionTimeouts client type specific idle connection timeouts, mapped to clientTypeId
      * @return this builder instance
      */
-    Builder clientSpecificConnectionTimeouts(Map<String, Integer> clientSpecificConnectionTimeouts);
+    Builder clientTypeIdleConnectionTimeouts(Map<String, Integer> clientTypeIdleConnectionTimeouts);
     
     /**
      * @return a new EntityServerConfiguration instance based on this builder
@@ -213,16 +213,16 @@ public interface EntityServerConfiguration extends ServerConfiguration {
                     .map(User::parse)
                     .collect(toList()))
             .clientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get())
-            .connectionTimeout(SERVER_CONNECTION_TIMEOUT.get());
-    Map<String, Integer> timeoutMap = new HashMap<>();
+            .idleConnectionTimeout(IDLE_CONNECTION_TIMEOUT.get());
+    Map<String, Integer> clientTypeIdleConnectionTimeoutMap = new HashMap<>();
     for (String clientTimeout : Text.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get())) {
       String[] split = clientTimeout.split(":");
       if (split.length < 2) {
         throw new IllegalArgumentException("Expecting a ':' delimiter");
       }
-      timeoutMap.put(split[0], Integer.parseInt(split[1]));
+      clientTypeIdleConnectionTimeoutMap.put(split[0], Integer.parseInt(split[1]));
     }
-    builder.clientSpecificConnectionTimeouts(timeoutMap);
+    builder.clientTypeIdleConnectionTimeouts(clientTypeIdleConnectionTimeoutMap);
     String adminUserString = SERVER_ADMIN_USER.get();
     User adminUser = nullOrEmpty(adminUserString) ? null : User.parse(adminUserString);
     if (adminUser == null) {

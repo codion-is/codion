@@ -122,8 +122,8 @@ public class EntityServerTest {
     RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
     assertTrue(remoteConnectionOne.isConnected());
     assertEquals(1, admin.getConnectionCount());
-    admin.setPooledConnectionTimeout(UNIT_TEST_USER.getUsername(), 60005);
-    assertEquals(60005, admin.getPooledConnectionTimeout(UNIT_TEST_USER.getUsername()));
+    admin.setPooledConnectionIdleTimeout(UNIT_TEST_USER.getUsername(), 60005);
+    assertEquals(60005, admin.getPooledConnectionIdleTimeout(UNIT_TEST_USER.getUsername()));
     admin.setMaximumPoolCheckOutTime(UNIT_TEST_USER.getUsername(), 2005);
     assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER.getUsername()));
 
@@ -295,13 +295,13 @@ public class EntityServerTest {
   @Test
   void coverAdmin() throws RemoteException {
     admin.getAllocatedMemory();
-    admin.setConnectionTimeout(30);
+    admin.setIdleConnectionTimeout(30);
     try {
-      admin.setConnectionTimeout(-1);
+      admin.setIdleConnectionTimeout(-1);
       fail();
     }
     catch (IllegalArgumentException ignored) {/*ignored*/}
-    assertEquals(30, admin.getConnectionTimeout());
+    assertEquals(30, admin.getIdleConnectionTimeout());
     admin.getDatabaseStatistics();
     admin.getDatabaseUrl();
     admin.getConnectionPoolUsernames();
@@ -333,7 +333,7 @@ public class EntityServerTest {
             .adminUser(User.parse("scott:tiger"))
             .database(DatabaseFactory.getDatabase())
             .startupPoolUsers(singletonList(UNIT_TEST_USER))
-            .clientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000))
+            .clientTypeIdleConnectionTimeouts(singletonMap("ClientTypeID", 10000))
             .domainModelClassNames(singletonList("is.codion.framework.server.TestDomain"))
             .clientLoggingEnabled(true)
             .sslEnabled(true)

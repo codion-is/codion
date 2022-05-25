@@ -73,13 +73,13 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    public int getConnectionTimeout() {
+    public int getIdleConnectionTimeout() {
       return getPool().getSuspectTimeout() * 1000;
     }
 
     @Override
-    public void setConnectionTimeout(int timeout) {
-      getPool().setSuspectTimeout(timeout / 1000);
+    public void setIdleConnectionTimeout(int idleConnectionTimeout) {
+      getPool().setSuspectTimeout(idleConnectionTimeout / 1000);
     }
 
     @Override

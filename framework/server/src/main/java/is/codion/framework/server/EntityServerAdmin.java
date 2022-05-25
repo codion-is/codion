@@ -74,19 +74,19 @@ public interface EntityServerAdmin extends ServerAdmin {
   void setLogLevel(Object level) throws RemoteException;
 
   /**
-   * Returns the connection timeout in ms
-   * @return the connection timeout in ms
+   * Returns the idle connection timeout in ms
+   * @return the idle connection timeout in ms
    * @throws RemoteException in case of a communication error
    */
-  int getConnectionTimeout() throws RemoteException;
+  int getIdleConnectionTimeout() throws RemoteException;
 
   /**
-   * Sets the connection timeout in ms
-   * @param timeout the timeout in ms
+   * Sets the idle connection timeout in ms
+   * @param idleConnectionTimeout the timeout in ms
    * @throws RemoteException in case of a communication error
    * @throws IllegalArgumentException in case timeout is less than zero
    */
-  void setConnectionTimeout(int timeout) throws RemoteException;
+  void setIdleConnectionTimeout(int idleConnectionTimeout) throws RemoteException;
 
   /**
    * @return a collection containing usernames backed by a connection pool
@@ -182,14 +182,14 @@ public interface EntityServerAdmin extends ServerAdmin {
    * @return the pooled connection timeout in ms
    * @throws RemoteException in case of an exception
    */
-  int getPooledConnectionTimeout(String username) throws RemoteException;
+  int getPooledConnectionIdleTimeout(String username) throws RemoteException;
 
   /**
    * @param username the username
-   * @param timeout the pooled connection timeout in ms
+   * @param pooledConnectionIdleTimeout the pooled connection timeout in ms
    * @throws RemoteException in case of an exception
    */
-  void setPooledConnectionTimeout(String username, int timeout) throws RemoteException;
+  void setPooledConnectionIdleTimeout(String username, int pooledConnectionIdleTimeout) throws RemoteException;
 
   /**
    * @param username the username

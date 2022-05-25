@@ -62,9 +62,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private final Map<DomainType, Domain> domainModels;
   private final Database database;
   private final boolean clientLoggingEnabled;
-  private final Map<String, Integer> clientTypeConnectionTimeouts = new HashMap<>();
+  private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
-  private int connectionTimeout;
+  private int idleConnectionTimeout;
 
   /**
    * Constructs a new EntityServer and binds it to a registry on the port found in the configuration.
@@ -82,8 +82,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       this.clientLoggingEnabled = configuration.getClientLoggingEnabled();
       this.domainModels = loadDomainModels(configuration.getDomainModelClassNames());
       setAdmin(initializeServerAdmin(configuration));
-      setConnectionTimeout(configuration.getConnectionTimeout());
-      setClientTypeConnectionTimeouts(configuration.getClientSpecificConnectionTimeouts());
+      setIdleConnectionTimeout(configuration.getIdleConnectionTimeout());
+      setClientTypeIdleConnectionTimeouts(configuration.getClientTypeIdleConnectionTimeouts());
       initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getStartupPoolUsers());
       setConnectionLimit(configuration.getConnectionLimit());
       bindToRegistry(configuration.getRegistryPort());
@@ -170,28 +170,28 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   /**
-   * @return the connection timeout
+   * @return the idle connection timeout in milliseconds
    */
-  final int getConnectionTimeout() {
-    return connectionTimeout;
+  final int getIdleConnectionTimeout() {
+    return idleConnectionTimeout;
   }
 
   /**
-   * @param timeout the new timeout value in milliseconds
+   * @param idleConnectionTimeout the new idle connection timeout value in milliseconds
    * @throws IllegalArgumentException in case timeout is less than zero
    */
-  final void setConnectionTimeout(int timeout) {
-    if (timeout < 0) {
-      throw new IllegalArgumentException("Connection timeout must be a positive integer");
+  final void setIdleConnectionTimeout(int idleConnectionTimeout) {
+    if (idleConnectionTimeout < 0) {
+      throw new IllegalArgumentException("Idle connection timeout must be a positive integer");
     }
-    this.connectionTimeout = timeout;
+    this.idleConnectionTimeout = idleConnectionTimeout;
   }
 
   /**
-   * @param clientTypeConnectionTimeouts the timeout values mapped to each clientTypeId
+   * @param clientTypeIdleConnectionTimeouts the idle connection timeout values mapped to each clientTypeId
    */
-  final void setClientTypeConnectionTimeouts(Map<String, Integer> clientTypeConnectionTimeouts) {
-    this.clientTypeConnectionTimeouts.putAll(clientTypeConnectionTimeouts);
+  final void setClientTypeIdleConnectionTimeouts(Map<String, Integer> clientTypeIdleConnectionTimeouts) {
+    this.clientTypeIdleConnectionTimeouts.putAll(clientTypeIdleConnectionTimeouts);
   }
 
   /**
@@ -323,9 +323,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   private boolean hasConnectionTimedOut(AbstractRemoteEntityConnection connection) {
-    Integer timeout = clientTypeConnectionTimeouts.get(connection.getRemoteClient().getClientTypeId());
+    Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.getRemoteClient().getClientTypeId());
     if (timeout == null) {
-      timeout = connectionTimeout;
+      timeout = idleConnectionTimeout;
     }
 
     return connection.hasBeenInactive(timeout);

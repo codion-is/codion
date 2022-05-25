@@ -29,11 +29,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   private User adminUser;
   private int connectionLimit;
   private boolean clientLoggingEnabled;
-  private int connectionTimeout;
+  private int idleConnectionTimeout;
   private String connectionPoolProvider;
   private final Collection<String> domainModelClassNames = new HashSet<>();
   private final Collection<User> startupPoolUsers = new HashSet<>();
-  private final Map<String, Integer> clientSpecificConnectionTimeouts = new HashMap<>();
+  private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
   DefaultEntityServerConfiguration(ServerConfiguration serverConfiguration) {
     this.serverConfiguration = requireNonNull(serverConfiguration);
@@ -115,8 +115,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public int getConnectionTimeout() {
-    return connectionTimeout;
+  public int getIdleConnectionTimeout() {
+    return idleConnectionTimeout;
   }
 
   @Override
@@ -135,8 +135,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public Map<String, Integer> getClientSpecificConnectionTimeouts() {
-    return clientSpecificConnectionTimeouts;
+  public Map<String, Integer> getClientTypeIdleConnectionTimeouts() {
+    return clientTypeIdleConnectionTimeouts;
   }
 
   static final class DefaultBuilder implements Builder {
@@ -147,11 +147,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     private User adminUser;
     private int connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
     private boolean clientLoggingEnabled = false;
-    private int connectionTimeout = ServerConfiguration.DEFAULT_SERVER_CONNECTION_TIMEOUT;
+    private int clientConnectionTimeout = ServerConfiguration.IDLE_CONNECTION_TIMEOUT.get();
     private String connectionPoolProvider;
     private final Collection<String> domainModelClassNames = new HashSet<>();
     private final Collection<User> startupPoolUsers = new HashSet<>();
-    private final Map<String, Integer> clientSpecificConnectionTimeouts = new HashMap<>();
+    private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
     DefaultBuilder(int serverPort, int registryPort) {
       serverConfigurationBuilder = ServerConfiguration.builder(serverPort, registryPort);
@@ -250,8 +250,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     }
 
     @Override
-    public Builder connectionTimeout(int connectionTimeout) {
-      this.connectionTimeout = connectionTimeout;
+    public Builder idleConnectionTimeout(int idleConnectionTimeout) {
+      this.clientConnectionTimeout = idleConnectionTimeout;
       return this;
     }
 
@@ -274,8 +274,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     }
 
     @Override
-    public Builder clientSpecificConnectionTimeouts(Map<String, Integer> clientSpecificConnectionTimeouts) {
-      this.clientSpecificConnectionTimeouts.putAll(requireNonNull(clientSpecificConnectionTimeouts));
+    public Builder clientTypeIdleConnectionTimeouts(Map<String, Integer> clientTypeIdleConnectionTimeouts) {
+      this.clientTypeIdleConnectionTimeouts.putAll(requireNonNull(clientTypeIdleConnectionTimeouts));
       return this;
     }
 
@@ -286,11 +286,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
       configuration.adminUser = adminUser;
       configuration.connectionLimit = connectionLimit;
       configuration.clientLoggingEnabled = clientLoggingEnabled;
-      configuration.connectionTimeout = connectionTimeout;
+      configuration.idleConnectionTimeout = clientConnectionTimeout;
       configuration.connectionPoolProvider = connectionPoolProvider;
       configuration.domainModelClassNames.addAll(domainModelClassNames);
       configuration.startupPoolUsers.addAll(startupPoolUsers);
-      configuration.clientSpecificConnectionTimeouts.putAll(clientSpecificConnectionTimeouts);
+      configuration.clientTypeIdleConnectionTimeouts.putAll(clientTypeIdleConnectionTimeouts);
       
       return configuration;
     }

@@ -8160,3 +8160,4 @@
   EntityConnection.setQueryCacheEnabled() added, results cached per SelectCondition instance, Condition subclasses and OrderBy now implement equals() and hashCode()
   AbstractAttributeCondition subclasses refactored
   AttributeCondition.caseSensitive() removed, ignoreCase versions of equalTo() added to AttributeCondition.Builder, MultiValueAttributeCondition now immutable
+  ServerConfiguration.SERVER_CONNECTION_TIMEOUT renamed IDLE_CONNECTION_TIMEOUT along with related methods and fields
