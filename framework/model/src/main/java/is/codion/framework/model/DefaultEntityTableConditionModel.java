@@ -195,7 +195,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
           conditions.add(getForeignKeyCondition((ForeignKeyConditionModel) conditionModel));
         }
         else {
-          conditions.add(getCondition(conditionModel));
+          conditions.add(getAttributeCondition(conditionModel));
         }
       }
     }
@@ -328,9 +328,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private static <T> AttributeCondition<T> getCondition(ColumnConditionModel<?, T> conditionModel) {
-    Collection<T> equalToValues = conditionModel.getEqualValues();
+  private static <T> AttributeCondition<T> getAttributeCondition(ColumnConditionModel<?, T> conditionModel) {
     Attribute<T> attribute = (Attribute<T>) conditionModel.getColumnIdentifier();
+    Collection<T> equalToValues = conditionModel.getEqualValues();
     boolean ignoreCase = !conditionModel.getCaseSensitiveState().get();
     AttributeCondition.Builder<T> builder = Conditions.where(attribute);
     switch (conditionModel.getOperator()) {
