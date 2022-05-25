@@ -20,10 +20,12 @@ import static java.util.Arrays.asList;
 
 public final class WorldImpl extends DefaultDomain implements World {
 
+  // tag::items[]
   private static final List<Item<String>> CONTINENT_ITEMS = asList(
             item("Africa"), item("Antarctica"), item("Asia"),
             item("Europe"), item("North America"), item("Oceania"),
             item("South America"));
+  // end::items[]
 
   public WorldImpl() {
     super(World.DOMAIN);
@@ -66,10 +68,14 @@ public final class WorldImpl extends DefaultDomain implements World {
             // tag::sequence[]
             .keyGenerator(sequence("world.city_seq"))
             // end::sequence[]
+            // tag::validator[]
             .validator(new CityValidator())
+            // end::validator[]
             .orderBy(orderBy().ascending(City.NAME))
             .stringFactory(stringFactory(City.NAME))
+            // tag::foreground[]
             .foregroundColorProvider(new CityColorProvider())
+            // end::foreground[]
             .caption("City");
   }
   // end::defineCity[]
