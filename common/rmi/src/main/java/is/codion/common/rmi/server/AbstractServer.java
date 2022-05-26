@@ -187,7 +187,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       ClientConnection<T> clientConnection = connections.get(connectionRequest.getClientId());
       if (clientConnection != null) {
         validateUserCredentials(connectionRequest.getUser(), clientConnection.getRemoteClient().getUser());
-        LOG.debug("Active connection exists {}", connectionRequest);
+        LOG.trace("Active connection exists {}", connectionRequest);
 
         return clientConnection.getConnection();
       }
@@ -196,7 +196,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
         LOG.debug("Maximum number of connections reached {}", connectionLimit);
         throw new ConnectionNotAvailableException();
       }
-      LOG.debug("No active connection found for client {}, establishing a new connection", connectionRequest);
+      LOG.trace("No active connection found for client {}, establishing a new connection", connectionRequest);
 
       return createConnection(connectionRequest).getConnection();
     }
@@ -232,7 +232,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
     shuttingDown = true;
     connectionMaintenanceScheduler.stop();
-    unexportSilently(registry);
+    if (registry != null) {
+      unexportSilently(registry);
+    }
     unexportSilently(this);
     if (admin != null) {
       unexportSilently(admin);
