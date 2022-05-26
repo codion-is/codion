@@ -8202,3 +8202,4 @@
   EntityEditModel.addValueEditListener() renamed addEditListener()
   AbstractServer, debug output for existing active connection changed to trace, null check before trying to unexport registry on shutdown
   ConnectionPoolMonitor, bug fixed, kept setting the idle connectio timeout each time statistics were updated
+  LocalEntityConnectionHandler bug fixed, now performs rollback on the initial pooled connection before returning it to the pool after successfully connecting, otherwise the commit state is dirty and the connection gets discarded when returned to the pool

@@ -3,6 +3,7 @@
  */
 package is.codion.framework.server;
 
+import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
@@ -24,6 +25,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
@@ -128,6 +130,7 @@ final class LocalConnectionHandler implements InvocationHandler {
       }
       else {
         poolEntityConnection = localEntityConnection(domain, database, connectionPool.getConnection(remoteClient.getDatabaseUser()));
+        rollbackSilently(poolEntityConnection.getDatabaseConnection());
         returnConnectionToPool();
       }
     }
@@ -310,6 +313,14 @@ final class LocalConnectionHandler implements InvocationHandler {
       LOG.info("Rollback open transaction on disconnect: {}", remoteClient);
       entityConnection.rollbackTransaction();
     }
+  }
+
+  private static void rollbackSilently(DatabaseConnection databaseConnection) {
+    try {
+      //otherwise the connection's commit state is dirty, so it gets discarded by the connection pool when we try to return it
+      databaseConnection.rollback();
+    }
+    catch (SQLException e) {/*Silently*/}
   }
 
   static final class RequestCounter {
