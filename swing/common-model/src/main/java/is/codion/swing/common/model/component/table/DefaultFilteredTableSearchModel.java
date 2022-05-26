@@ -159,10 +159,6 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
     }
   }
 
-  private void clearSearchString() {
-    searchStringValue.set(null);
-  }
-
   private void clearSearchResults() {
     searchResults.clear();
     searchResultIndex = -1;
@@ -172,10 +168,13 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
   private void bindEvents() {
     searchStringValue.addDataListener(searchString -> searchPredicateValue.set(createSearchPredicate(searchString)));
     searchPredicateValue.addListener(this::performSearch);
-    regularExpressionSearch.addListener(this::clearSearchString);
+    regularExpressionSearch.addListener(() -> searchStringValue.set(null));
     caseSensitiveSearch.addListener(this::performSearch);
     tableModel.getColumnModel().addColumnModelListener(new ClearSearchListener());
-    tableModel.addTableDataChangedListener(this::clearSearchString);
+    tableModel.addTableDataChangedListener(() -> {
+      clearSearchResults();
+      performSearch();
+    });
   }
 
   private Predicate<String> createSearchPredicate(String searchText) {
