@@ -28,6 +28,7 @@ import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.component.panel.Panels.createWestCenterPanel;
 import static is.codion.swing.common.ui.control.Control.control;
@@ -46,6 +47,12 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private final ConnectionPoolMonitor model;
 
   private final NumberFormat format = NumberFormat.getInstance();
+  private final DateTimeFormatter dateTimeFormatter = LocaleDateTimePattern.builder()
+          .delimiterDash()
+          .yearFourDigits()
+          .hoursMinutesSeconds()
+          .build()
+          .getFormatter();
   private final JFreeChart inPoolSnapshotChart = ChartFactory.createXYStepChart(null,
           null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final JFreeChart inPoolChart = ChartFactory.createXYStepChart(null,
@@ -82,10 +89,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     poolSizeField.setText(format.format(statistics.getSize()));
     createdField.setText(format.format(statistics.getCreated()));
     destroyedField.setText(format.format(statistics.getDestroyed()));
-    resetTimeField.setText(LocaleDateTimePattern.builder()
-            .delimiterDash().yearFourDigits().hoursMinutesSeconds()
-            .build().getFormatter()
-            .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
+    resetTimeField.setText(dateTimeFormatter.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
     requestedField.setText(format.format(statistics.getRequests()));
     double prc = statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
     failedField.setText(format.format(statistics.getFailedRequests()) + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));

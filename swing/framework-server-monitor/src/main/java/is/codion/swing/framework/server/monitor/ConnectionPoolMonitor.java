@@ -240,10 +240,6 @@ public final class ConnectionPoolMonitor {
     updateScheduler.stop();
   }
 
-  private void setPooledConnectionTimeout(int pooledConnectionTimeout) {
-    connectionPool.setIdleConnectionTimeout(pooledConnectionTimeout * THOUSAND);
-  }
-
   private void setPoolCleanupInterval(int poolCleanupInterval) {
     connectionPool.setCleanupInterval(poolCleanupInterval * THOUSAND);
   }
@@ -289,7 +285,7 @@ public final class ConnectionPoolMonitor {
       this.snapshotStatisticsCollection.addSeries(snapshotInUseSeries);
       this.snapshotStatisticsCollection.addSeries(snapshotWaitingSeries);
     }
-    pooledConnectionTimeoutValue.set(connectionPool.getIdleConnectionTimeout() / THOUSAND);
+    pooledConnectionTimeoutValue.set(connectionPool.getIdleConnectionTimeout());
     pooledCleanupIntervalValue.set(connectionPool.getCleanupInterval() / THOUSAND);
     minimumPoolSizeValue.set(connectionPool.getMinimumPoolSize());
     maximumPoolSizeValue.set(connectionPool.getMaximumPoolSize());
@@ -298,7 +294,6 @@ public final class ConnectionPoolMonitor {
   }
 
   private void bindEvents() {
-    pooledConnectionTimeoutValue.addDataListener(this::setPooledConnectionTimeout);
     pooledCleanupIntervalValue.addDataListener(this::setPoolCleanupInterval);
     minimumPoolSizeValue.addDataListener(this::setMinimumPoolSize);
     maximumPoolSizeValue.addDataListener(this::setMaximumPoolSize);
