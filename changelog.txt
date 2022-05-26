@@ -8201,3 +8201,4 @@
   ServerConfiguration.SERVER_CONNECTION_TIMEOUT renamed IDLE_CONNECTION_TIMEOUT along with related methods and fields
   EntityEditModel.addValueEditListener() renamed addEditListener()
   AbstractServer, debug output for existing active connection changed to trace, null check before trying to unexport registry on shutdown
+  ConnectionPoolMonitor, bug fixed, kept setting the idle connectio timeout each time statistics were updated

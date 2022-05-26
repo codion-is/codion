@@ -29,7 +29,9 @@
     </sift>
   </appender>
 
-  <root level="ERROR">
+  <logger name="org.eclipse.jetty" level="ERROR"/>
+
+  <root level="DEBUG">
     <appender-ref ref="SIFT" />
   </root>
 
