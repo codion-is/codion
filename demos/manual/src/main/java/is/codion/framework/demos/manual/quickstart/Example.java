@@ -65,19 +65,25 @@ public final class Example {
       define(Customer.TYPE,
               primaryKeyProperty(Customer.ID),
               columnProperty(Customer.FIRST_NAME, "First name")
-                      .nullable(false).maximumLength(40),
+                      .nullable(false)
+                      .maximumLength(40),
               columnProperty(Customer.LAST_NAME, "Last name")
-                      .nullable(false).maximumLength(40))
-              .keyGenerator(new KeyGenerator() {
-                @Override
-                public void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
-                                         DatabaseConnection connection) throws SQLException {
-                  entity.put(Customer.ID, randomUUID().toString());
-                }
-              })
+                      .nullable(false)
+                      .maximumLength(40))
+              .keyGenerator(new CustomerKeyGenerator())
               .stringFactory(stringFactory(Customer.LAST_NAME)
                       .text(", ").value(Customer.FIRST_NAME));
     }
+
+    private static final class CustomerKeyGenerator implements KeyGenerator {
+      @Override
+      public void beforeInsert(Entity entity,
+                               List<ColumnProperty<?>> primaryKeyProperties,
+                               DatabaseConnection connection) throws SQLException {
+        entity.put(Customer.ID, randomUUID().toString());
+      }
+    }
+
     // end::customer[]
     // tag::address[]
     public interface Address {
@@ -92,9 +98,11 @@ public final class Example {
       define(Address.TYPE,
               primaryKeyProperty(Address.ID),
               columnProperty(Address.STREET, "Street")
-                      .nullable(false).maximumLength(120),
+                      .nullable(false)
+                      .maximumLength(120),
               columnProperty(Address.CITY, "City")
-                      .nullable(false).maximumLength(50))
+                      .nullable(false)
+                      .maximumLength(50))
               .keyGenerator(automatic("store.address"))
               .stringFactory(stringFactory(Address.STREET)
                       .text(", ").value(Address.CITY));

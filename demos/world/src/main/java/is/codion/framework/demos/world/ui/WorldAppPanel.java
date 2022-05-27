@@ -61,7 +61,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   }
 
   @Override
-  protected String getDefaultSystemLookAndFeelName() {
+  protected String getDefaultLookAndFeelName() {
     return FlatDarkLaf.class.getName();
   }
 
