@@ -356,7 +356,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Display a dialog for selecting the application font size
+   * Display a dialog for selecting the application font size multiplier
    */
   public final void selectFontSize() {
     List<Item<Integer>> values = new ArrayList<>();
@@ -364,21 +364,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       values.add(Item.item(i, i + "%"));
     }
     ItemComboBoxModel<Integer> comboBoxModel = ItemComboBoxModel.createModel(values);
-    Integer defaultFontSize = getDefaultFontSize();
+    Integer fontSizeMultiplier = getFontSizeMultiplier();
 
     Dialogs.okCancelDialog(Components.panel(Layouts.borderLayout())
                     .add(Components.itemComboBox(comboBoxModel)
-                            .initialValue(defaultFontSize)
-                            .renderer(new FontSizeCellRenderer(values, defaultFontSize))
+                            .initialValue(fontSizeMultiplier)
+                            .renderer(new FontSizeCellRenderer(values, fontSizeMultiplier))
                             .build(), BorderLayout.CENTER)
                     .border(BorderFactory.createEmptyBorder(10, 10, 0, 10))
                     .build())
             .owner(this)
             .title(resourceBundle.getString("select_font_size"))
             .onOk(() -> {
-              Integer selectedFontSize = ((Item<Integer>) comboBoxModel.getSelectedItem()).getValue();
-              if (!selectedFontSize.equals(defaultFontSize)) {
-                UserPreferences.putUserPreference(applicationFontSizeProperty, selectedFontSize.toString());
+              Integer selectedFontSizeMultiplier = ((Item<Integer>) comboBoxModel.getSelectedItem()).getValue();
+              if (!selectedFontSizeMultiplier.equals(fontSizeMultiplier)) {
+                UserPreferences.putUserPreference(applicationFontSizeProperty, selectedFontSizeMultiplier.toString());
                 JOptionPane.showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
               }
             })
@@ -953,28 +953,32 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Returns the name of the default look and feel to use, this default implementation fetches
+   * Returns the name of the look and feel to use, this default implementation fetches
    * it from user preferences, if no preference is available the default system look and feel is used.
    * @return the look and feel name to use
-   * @see #getDefaultSystemLookAndFeelName()
+   * @see #getDefaultLookAndFeelName()
    */
-  protected String getDefaultLookAndFeelName() {
-    return UserPreferences.getUserPreference(applicationLookAndFeelProperty, getDefaultSystemLookAndFeelName());
+  protected String getLookAndFeelName() {
+    return UserPreferences.getUserPreference(applicationLookAndFeelProperty, getDefaultLookAndFeelName());
   }
 
   /**
    * @return the default look and feel to use for the system we're running on.
    * @see LookAndFeelProvider#getSystemLookAndFeelClassName()
    */
-  protected String getDefaultSystemLookAndFeelName() {
+  protected String getDefaultLookAndFeelName() {
     return LookAndFeelProvider.getSystemLookAndFeelClassName();
   }
 
   /**
-   * @return the default font size multiplier
+   * Returns the font size multiplier to use, from user preferences, in percentages, e.g:<br>
+   * 85 = decrease the default font size by 15%<br>
+   * 100 = use the default font size<br>
+   * 125 = increase the default font size by 25%<br>
+   * @return the font size multiplier to use
    * @see #selectFontSize()
    */
-  protected Integer getDefaultFontSize() {
+  protected int getFontSizeMultiplier() {
     return Integer.parseInt(UserPreferences.getUserPreference(applicationFontSizeProperty, "100"));
   }
 
@@ -1165,9 +1169,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                               boolean includeMainMenu, boolean displayProgressDialog) {
     LOG.debug("{} application starting", applicationName);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
-    Integer fontSize = getDefaultFontSize();
-    if (!Objects.equals(fontSize, 100)) {
+    LookAndFeelProvider.getLookAndFeelProvider(getLookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
+    int fontSize = getFontSizeMultiplier();
+    if (fontSize != 100) {
       Utilities.setFontSize(fontSize / 100f);
     }
 
