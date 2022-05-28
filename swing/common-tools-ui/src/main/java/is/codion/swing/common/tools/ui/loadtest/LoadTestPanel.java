@@ -52,8 +52,7 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.getDefaultLookAndFeelName;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -77,7 +76,7 @@ public final class LoadTestPanel<T> extends JPanel {
   static {
     LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
-            addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
+            addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName(LoadTestPanel.class.getName()))
             .ifPresent(LookAndFeelProvider::enable);
   }

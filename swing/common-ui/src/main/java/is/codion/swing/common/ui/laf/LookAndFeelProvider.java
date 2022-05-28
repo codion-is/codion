@@ -34,6 +34,7 @@ public interface LookAndFeelProvider {
 
   /**
    * Configures and enables this LookAndFeel.
+   * Calls {@link UIManager#setLookAndFeel(String)} by default, override to add any custom configuration.
    */
   default void enable() {
     try {
@@ -49,8 +50,8 @@ public interface LookAndFeelProvider {
    * @param classname the look and feel classname
    * @return a look and feel provider
    */
-  static LookAndFeelProvider create(String classname) {
-    return create(classname, () -> {
+  static LookAndFeelProvider lookAndFeelProvider(String classname) {
+    return lookAndFeelProvider(classname, () -> {
       try {
         UIManager.setLookAndFeel(classname);
       }
@@ -66,8 +67,8 @@ public interface LookAndFeelProvider {
    * @param enabler configures and enables this look and feel
    * @return a look and feel provider
    */
-  static LookAndFeelProvider create(String classname, Runnable enabler) {
-    return create(classname, classname, enabler);
+  static LookAndFeelProvider lookAndFeelProvider(String classname, Runnable enabler) {
+    return lookAndFeelProvider(classname, classname, enabler);
   }
 
   /**
@@ -76,8 +77,8 @@ public interface LookAndFeelProvider {
    * @param name a unique name
    * @return a look and feel provider
    */
-  static LookAndFeelProvider create(String classname, String name) {
-    return create(classname, name, () -> {
+  static LookAndFeelProvider lookAndFeelProvider(String classname, String name) {
+    return lookAndFeelProvider(classname, name, () -> {
       try {
         UIManager.setLookAndFeel(classname);
       }
@@ -94,7 +95,7 @@ public interface LookAndFeelProvider {
    * @param enabler configures and enables this look and feel
    * @return a look and feel provider
    */
-  static LookAndFeelProvider create(String classname, String name, Runnable enabler) {
+  static LookAndFeelProvider lookAndFeelProvider(String classname, String name, Runnable enabler) {
     return new DefaultLookAndFeelProvider(classname, name, enabler);
   }
 

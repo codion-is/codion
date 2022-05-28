@@ -17,7 +17,6 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -44,6 +43,7 @@ import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
@@ -153,7 +153,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
     LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
-            addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
+            addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
     FilteredModel.ASYNC_REFRESH.set(true);
     EntityEditModel.POST_EDIT_EVENTS.set(true);

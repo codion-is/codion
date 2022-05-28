@@ -7,6 +7,7 @@ import javax.swing.UIManager;
 import java.util.HashMap;
 import java.util.Map;
 
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
@@ -14,9 +15,9 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
   static final Map<String, LookAndFeelProvider> LOOK_AND_FEEL_PROVIDERS = new HashMap<>();
 
   static {
-    LookAndFeelProvider systemProvider = LookAndFeelProvider.create(LookAndFeelProvider.getSystemLookAndFeelClassName());
+    LookAndFeelProvider systemProvider = lookAndFeelProvider(LookAndFeelProvider.getSystemLookAndFeelClassName());
     LOOK_AND_FEEL_PROVIDERS.put(systemProvider.getName(), systemProvider);
-    LookAndFeelProvider crossPlatformProvider = LookAndFeelProvider.create(UIManager.getCrossPlatformLookAndFeelClassName());
+    LookAndFeelProvider crossPlatformProvider = lookAndFeelProvider(UIManager.getCrossPlatformLookAndFeelClassName());
     if (!LOOK_AND_FEEL_PROVIDERS.containsKey(crossPlatformProvider.getName())) {
       LOOK_AND_FEEL_PROVIDERS.put(crossPlatformProvider.getName(), crossPlatformProvider);
     }
