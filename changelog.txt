@@ -8205,3 +8205,4 @@
   LocalEntityConnectionHandler bug fixed, now performs rollback on the initial pooled connection before returning it to the pool after successfully connecting, otherwise the commit state is dirty and the connection gets discarded when returned to the pool
   DefaultFilteredTableSearchModel bug fixed, array index out of bounds when table model was cleared, now clears search result and performs search on table data changed
   EntityApplicationPanel.getDefaultLookAndFeelName() renamed getLookAndFeelName() and getDefaultSystemLookAndFeelName() renamed getDefaultLookAndFeelName(), getFontSize() renamed getFontSizeMultiplier()
+  LookAndFeelProvider.create() renamed lookAndFeelProvider() for consistency

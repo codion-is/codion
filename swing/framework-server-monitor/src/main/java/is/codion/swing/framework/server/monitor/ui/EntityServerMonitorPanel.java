@@ -46,8 +46,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.getDefaultLookAndFeelName;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.*;
 
 /**
  * A UI based on the EntityServerMonitor model
@@ -260,7 +259,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     Clients.resolveTrustStore();
     LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
-            addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
+            addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     SwingUtilities.invokeLater(() -> {
       try {
         LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName(EntityServerMonitorPanel.class.getName()))

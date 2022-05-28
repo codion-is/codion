@@ -10,7 +10,6 @@ import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.demos.world.model.CountryModel;
 import is.codion.framework.demos.world.model.WorldAppModel;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -30,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static java.util.Arrays.asList;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
@@ -68,7 +68,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   public static void main(String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
-            addLookAndFeelProvider(LookAndFeelProvider.create(themeInfo.getClassName())));
+            addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION.set(true);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
