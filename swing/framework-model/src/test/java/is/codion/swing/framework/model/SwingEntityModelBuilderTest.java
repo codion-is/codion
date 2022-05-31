@@ -48,8 +48,6 @@ public final class SwingEntityModelBuilderTest {
 
     departmentModelBuilder.detailModelBuilder(employeeModelBuilder);
 
-    assertEquals(DepartmentTableModel.class, departmentModelBuilder.getTableModelClass());
-
     SwingEntityModel departmentModel = departmentModelBuilder.buildModel(CONNECTION_PROVIDER);
     assertTrue(departmentModel.getEditModel() instanceof DepartmentEditModel);
     assertTrue(departmentModel.getTableModel() instanceof DepartmentTableModel);

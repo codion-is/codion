@@ -134,21 +134,6 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
     Builder detailModelBuilder(Builder detailModelBuilder);
 
     /**
-     * @return the model class
-     */
-    Class<? extends SwingEntityModel> getModelClass();
-
-    /**
-     * @return the edit model class
-     */
-    Class<? extends SwingEntityEditModel> getEditModelClass();
-
-    /**
-     * @return the table model class
-     */
-    Class<? extends SwingEntityTableModel> getTableModelClass();
-
-    /**
      * Builds a {@link SwingEntityModel} instance
      * @param connectionProvider the connection provider
      * @return a SwingEntityModel instance

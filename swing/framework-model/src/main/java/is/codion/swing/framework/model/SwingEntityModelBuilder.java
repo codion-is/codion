@@ -134,21 +134,6 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public Class<? extends SwingEntityModel> getModelClass() {
-    return modelClass == null ? SwingEntityModel.class : modelClass;
-  }
-
-  @Override
-  public Class<? extends SwingEntityEditModel> getEditModelClass() {
-    return editModelClass ==  null ? SwingEntityEditModel.class : editModelClass;
-  }
-
-  @Override
-  public Class<? extends SwingEntityTableModel> getTableModelClass() {
-    return tableModelClass == null ? SwingEntityTableModel.class : tableModelClass;
-  }
-
-  @Override
   public SwingEntityModel buildModel(EntityConnectionProvider connectionProvider) {
     requireNonNull(connectionProvider, CONNECTION_PROVIDER_PARAMETER);
     try {
@@ -259,6 +244,18 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 
   private SwingEntityModel buildDefaultModel(EntityConnectionProvider connectionProvider) {
     return new SwingEntityModel(buildTableModel(connectionProvider));
+  }
+
+  private Class<? extends SwingEntityModel> getModelClass() {
+    return modelClass == null ? SwingEntityModel.class : modelClass;
+  }
+
+  private Class<? extends SwingEntityEditModel> getEditModelClass() {
+    return editModelClass ==  null ? SwingEntityEditModel.class : editModelClass;
+  }
+
+  private Class<? extends SwingEntityTableModel> getTableModelClass() {
+    return tableModelClass == null ? SwingEntityTableModel.class : tableModelClass;
   }
 
   private static final class EmptyOnBuild<T> implements Consumer<T> {
