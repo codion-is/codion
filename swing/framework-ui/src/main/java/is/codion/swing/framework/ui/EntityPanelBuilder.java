@@ -82,16 +82,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder getModelBuilder() {
-    return modelBuilder;
-  }
-
-  @Override
-  public boolean containsModel() {
-    return model != null;
-  }
-
-  @Override
   public EntityPanelBuilder caption(String caption) {
     this.caption = caption;
     return this;

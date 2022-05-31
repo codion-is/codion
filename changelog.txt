@@ -8173,3 +8173,4 @@
   SwingEntityModel.Builder.modelInitializer() renamed onBuildModel(), consistent with component builders
   SwingEntityModel.Builder.ModelBuilder renamed ModelFactory
   SwingEntityModelBuilder.getModelClass(), getEditModelClass() and getTableModelClass() removed
+  EntityPanel.Builder.containsModel() and getModelBuilder() removed

@@ -1683,16 +1683,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     EntityType getEntityType();
 
     /**
-     * @return the SwingEntityModel.Builder this panel builder is based on
-     */
-    SwingEntityModel.Builder getModelBuilder();
-
-    /**
-     * @return true if this panel builder contains an instantiated model
-     */
-    boolean containsModel();
-
-    /**
      * @param caption the panel caption
      * @return this builder instance
      */
@@ -1775,9 +1765,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     /**
      * Creates an EntityPanel based on this builder,
-     * assuming the underlying model is available.
+     * assuming a EntityModel is available.
      * @return an EntityPanel based on this builder
-     * @see #containsModel()
      */
     EntityPanel buildPanel();
 
