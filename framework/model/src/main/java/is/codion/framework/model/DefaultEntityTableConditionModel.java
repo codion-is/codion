@@ -345,7 +345,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
           return (AttributeCondition<T>) builder.notEqualToIgnoreCase((Collection<String>) equalToValues);
         }
 
-        return builder.equalTo(equalToValues);
+        return builder.notEqualTo(equalToValues);
       case LESS_THAN:
         return builder.lessThan(conditionModel.getUpperBound());
       case LESS_THAN_OR_EQUAL:
