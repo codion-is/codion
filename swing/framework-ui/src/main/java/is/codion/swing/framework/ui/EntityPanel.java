@@ -31,7 +31,6 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -1664,11 +1663,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private final class EntityPanelComponentAdapter extends ComponentAdapter {
     @Override
     public void componentHidden(ComponentEvent e) {
-      SwingUtilities.invokeLater(() -> setFilterPanelsVisible(false));
+      setFilterPanelsVisible(false);
     }
     @Override
     public void componentShown(ComponentEvent e) {
-      SwingUtilities.invokeLater(() -> setFilterPanelsVisible(true));
+      setFilterPanelsVisible(true);
     }
   }
 

@@ -8174,3 +8174,4 @@
   SwingEntityModel.Builder.ModelBuilder renamed ModelFactory
   SwingEntityModelBuilder.getModelClass(), getEditModelClass() and getTableModelClass() removed
   EntityPanel.Builder.containsModel() and getModelBuilder() removed
+  EntityPanel, FilteredTable, removed a couple of unnecessary SwingUtilities.invokeLater() usages

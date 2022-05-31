@@ -31,7 +31,6 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -282,14 +281,13 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * @param filterPanelsVisible true if the active filter panels should be shown, false if they should be hidden
    */
   public void setFilterPanelsVisible(boolean filterPanelsVisible) {
-    columnFilterPanels.forEach((column, conditionPanel) -> SwingUtilities.invokeLater(() -> {
+    columnFilterPanels.forEach((column, conditionPanel) -> {
       if (filterPanelsVisible) {
         conditionPanel.showDialog(null);
       }
       else {
         conditionPanel.hideDialog();
-      }
-    }));
+      }});
   }
 
   /**
