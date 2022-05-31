@@ -31,7 +31,6 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -1664,11 +1663,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private final class EntityPanelComponentAdapter extends ComponentAdapter {
     @Override
     public void componentHidden(ComponentEvent e) {
-      SwingUtilities.invokeLater(() -> setFilterPanelsVisible(false));
+      setFilterPanelsVisible(false);
     }
     @Override
     public void componentShown(ComponentEvent e) {
-      SwingUtilities.invokeLater(() -> setFilterPanelsVisible(true));
+      setFilterPanelsVisible(true);
     }
   }
 
@@ -1683,18 +1682,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     EntityType getEntityType();
 
     /**
-     * @return the SwingEntityModel.Builder this panel builder is based on
-     */
-    SwingEntityModel.Builder getModelBuilder();
-
-    /**
-     * @return true if this panel builder contains an instantiated model
-     */
-    boolean containsModel();
-
-    /**
      * @param caption the panel caption
-     * @return this EntityPanel.Builder instance
+     * @return this builder instance
      */
     Builder caption(String caption);
 
@@ -1706,92 +1695,91 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     /**
      * Adds the given detail panel builder to this panel builder, if it hasn't been previously added
      * @param panelBuilder the detail panel provider
-     * @return this EntityPanel.Builder instance
+     * @return this builder instance
      */
     Builder detailPanelBuilder(EntityPanel.Builder panelBuilder);
 
     /**
      * @param refreshOnInit if true then the data model this panel is based on will be refreshed when
      * the panel is initialized
-     * @return this EntityPanel.Builder instance
+     * @return this builder instance
      */
     Builder refreshOnInit(boolean refreshOnInit);
 
     /**
      * @param tableConditionPanelVisible if true then the table condition panel is made visible when the panel is initialized
-     * @return this EntityPanel.Builder instance
+     * @return this builder instance
      */
     Builder tableConditionPanelVisible(boolean tableConditionPanelVisible);
 
     /**
      * @param detailPanelState the state of the detail panels when this panel is initialized
-     * @return this EntityPanel.Builder instance
+     * @return this builder instance
      */
     Builder detailPanelState(PanelState detailPanelState);
 
     /**
      * @param detailSplitPanelResizeWeight the split panel resize weight to use when initializing this panel
      * with its detail panels
-     * @return this EntityPanel.Builder instance
+     * @return this builder instance
      */
     Builder detailSplitPanelResizeWeight(double detailSplitPanelResizeWeight);
 
     /**
      * Note that setting the EntityPanel class overrides any table panel or edit panel classes that have been set.
      * @param panelClass the EntityPanel class to use when providing this panel
-     * @return this EntityPanel.Builder instance
+     * @return this builder instance
      */
     Builder panelClass(Class<? extends EntityPanel> panelClass);
 
     /**
      * @param editPanelClass the EntityEditPanel class to use when providing this panel
-     * @return this EntityPanel.Builder instance
+     * @return this builder instance
      */
     Builder editPanelClass(Class<? extends EntityEditPanel> editPanelClass);
 
     /**
      * @param tablePanelClass the EntityTablePanel class to use when providing this panel
-     * @return this EntityPanel.Builder instance
+     * @return this builder instance
      */
     Builder tablePanelClass(Class<? extends EntityTablePanel> tablePanelClass);
 
     /**
-     * @param panelInitializer initializes the panel post construction
-     * @return this EntityPanel.Builder instance
+     * @param onBuildPanel called after the entity panel has been built
+     * @return this builder instance
      */
-    Builder panelInitializer(Consumer<EntityPanel> panelInitializer);
+    Builder onBuildPanel(Consumer<EntityPanel> onBuildPanel);
 
     /**
-     * @param editPanelInitializer initializes the edit panel post construction
-     * @return this EntityPanel.Builder instance
+     * @param onBuildEditPanel called after the edit panel has been built
+     * @return this builder instance
      */
-    Builder editPanelInitializer(Consumer<EntityEditPanel> editPanelInitializer);
+    Builder onBuildEditPanel(Consumer<EntityEditPanel> onBuildEditPanel);
 
     /**
-     * @param tablePanelInitializer initializes the table panel post construction
-     * @return this EntityPanel.Builder instance
+     * @param onBuildTablePanel called after the table panel has been built
+     * @return this builder instance
      */
-    Builder tablePanelInitializer(Consumer<EntityTablePanel> tablePanelInitializer);
+    Builder onBuildTablePanel(Consumer<EntityTablePanel> onBuildTablePanel);
 
     /**
-     * Creates an EntityPanel based on this provider configuration,
-     * assuming the underlying model is available.
-     * @return an EntityPanel based on this provider configuration
-     * @see #containsModel()
+     * Creates an EntityPanel based on this builder,
+     * assuming a EntityModel is available.
+     * @return an EntityPanel based on this builder
      */
     EntityPanel buildPanel();
 
     /**
-     * Creates an EntityPanel based on this provider configuration
+     * Creates an EntityPanel based on this builder
      * @param connectionProvider the connection provider
-     * @return an EntityPanel based on this provider configuration
+     * @return an EntityPanel based on this builder
      */
     EntityPanel buildPanel(EntityConnectionProvider connectionProvider);
 
     /**
-     * Creates an EntityPanel based on this provider configuration
+     * Creates an EntityPanel based on this builder
      * @param model the EntityModel to base this panel on
-     * @return an EntityPanel based on this provider configuration
+     * @return an EntityPanel based on this builder
      */
     EntityPanel buildPanel(SwingEntityModel model);
 

@@ -8207,3 +8207,9 @@
   EntityApplicationPanel.getDefaultLookAndFeelName() renamed getLookAndFeelName() and getDefaultSystemLookAndFeelName() renamed getDefaultLookAndFeelName(), getFontSize() renamed getFontSizeMultiplier()
   LookAndFeelProvider.create() renamed lookAndFeelProvider() for consistency
   DefaultEntityTableConditionModel.getAttributeCondition() bug fixed, was returning equalTo() condition on NOT_EQUAL
+  EntityPanel.Builder.panelInitializer() renamed onBuildPanel(), consistent with component builders
+  SwingEntityModel.Builder.modelInitializer() renamed onBuildModel(), consistent with component builders
+  SwingEntityModel.Builder.ModelBuilder renamed ModelFactory
+  SwingEntityModelBuilder.getModelClass(), getEditModelClass() and getTableModelClass() removed
+  EntityPanel.Builder.containsModel() and getModelBuilder() removed
+  EntityPanel, FilteredTable, removed a couple of unnecessary SwingUtilities.invokeLater() usages

@@ -64,7 +64,7 @@ final class CountryEditPanel extends EntityEditPanel {
     //create a panel with a button for adding a new city
     JPanel capitalPanel = createEastButtonPanel(capitalComboBox, EntityPanel.builder(City.TYPE)
             .editPanelClass(CityEditPanel.class)
-            .editPanelInitializer(this::initializeCapitalEditPanel)
+            .onBuildEditPanel(this::initializeCapitalEditPanel)
             .createEditPanelAction(capitalComboBox));
     //add a field displaying the avarage city population for the selected country
     CountryEditModel editModel = (CountryEditModel) getEditModel();

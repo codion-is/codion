@@ -48,8 +48,6 @@ public final class SwingEntityModelBuilderTest {
 
     departmentModelBuilder.detailModelBuilder(employeeModelBuilder);
 
-    assertEquals(DepartmentTableModel.class, departmentModelBuilder.getTableModelClass());
-
     SwingEntityModel departmentModel = departmentModelBuilder.buildModel(CONNECTION_PROVIDER);
     assertTrue(departmentModel.getEditModel() instanceof DepartmentEditModel);
     assertTrue(departmentModel.getTableModel() instanceof DepartmentTableModel);
@@ -57,16 +55,16 @@ public final class SwingEntityModelBuilderTest {
   }
 
   @Test
-  void builders() {
+  void factories() {
     SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
-            .editModelBuilder(DepartmentEditModel::new)
-            .tableModelBuilder(DepartmentTableModel::new);
+            .editModelFactory(DepartmentEditModel::new)
+            .tableModelFactory(DepartmentTableModel::new);
     SwingEntityModel model = builder.buildModel(CONNECTION_PROVIDER);
     assertTrue(model.getEditModel() instanceof DepartmentEditModel);
     assertTrue(model.getTableModel() instanceof DepartmentTableModel);
 
     builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
-            .modelBuilder(DepartmentModel::new);
+            .modelFactory(DepartmentModel::new);
 
     model = builder.buildModel(CONNECTION_PROVIDER);
     assertTrue(model instanceof DepartmentModel);
@@ -92,37 +90,37 @@ public final class SwingEntityModelBuilderTest {
   }
 
   @Test
-  void initializers() {
-    State modelInitialized = State.state();
-    State editModelInitialized = State.state();
-    State tableModelInitialized = State.state();
+  void onBuild() {
+    State modelBuilt = State.state();
+    State editModelBuilt = State.state();
+    State tableModelBuilt = State.state();
 
     SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
             .tableModelClass(DepartmentTableModel.class)
-            .modelInitializer(swingEntityModel -> modelInitialized.set(true))
-            .editModelInitializer(swingEntityEditModel -> editModelInitialized.set(true))
-            .tableModelInitializer(swingEntityTableModel -> tableModelInitialized.set(true));
+            .onBuildModel(swingEntityModel -> modelBuilt.set(true))
+            .onBuildEditModel(swingEntityEditModel -> editModelBuilt.set(true))
+            .onBuildTableModel(swingEntityTableModel -> tableModelBuilt.set(true));
 
     builder.buildModel(CONNECTION_PROVIDER);
 
-    assertTrue(modelInitialized.get());
-    assertFalse(editModelInitialized.get());
-    assertTrue(tableModelInitialized.get());
+    assertTrue(modelBuilt.get());
+    assertFalse(editModelBuilt.get());
+    assertTrue(tableModelBuilt.get());
 
-    modelInitialized.set(false);
-    tableModelInitialized.set(false);
+    modelBuilt.set(false);
+    tableModelBuilt.set(false);
 
     builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
             .editModelClass(DepartmentEditModel.class)
-            .modelInitializer(swingEntityModel -> modelInitialized.set(true))
-            .editModelInitializer(swingEntityEditModel -> editModelInitialized.set(true))
-            .tableModelInitializer(swingEntityTableModel -> tableModelInitialized.set(true));
+            .onBuildModel(swingEntityModel -> modelBuilt.set(true))
+            .onBuildEditModel(swingEntityEditModel -> editModelBuilt.set(true))
+            .onBuildTableModel(swingEntityTableModel -> tableModelBuilt.set(true));
 
     builder.buildModel(CONNECTION_PROVIDER);
 
-    assertTrue(modelInitialized.get());
-    assertTrue(editModelInitialized.get());
-    assertTrue(tableModelInitialized.get());
+    assertTrue(modelBuilt.get());
+    assertTrue(editModelBuilt.get());
+    assertTrue(tableModelBuilt.get());
   }
 
   static final class DepartmentModel extends SwingEntityModel {
