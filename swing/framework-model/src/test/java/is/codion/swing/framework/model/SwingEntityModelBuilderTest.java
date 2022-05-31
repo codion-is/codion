@@ -57,16 +57,16 @@ public final class SwingEntityModelBuilderTest {
   }
 
   @Test
-  void builders() {
+  void factories() {
     SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
-            .editModelBuilder(DepartmentEditModel::new)
-            .tableModelBuilder(DepartmentTableModel::new);
+            .editModelFactory(DepartmentEditModel::new)
+            .tableModelFactory(DepartmentTableModel::new);
     SwingEntityModel model = builder.buildModel(CONNECTION_PROVIDER);
     assertTrue(model.getEditModel() instanceof DepartmentEditModel);
     assertTrue(model.getTableModel() instanceof DepartmentTableModel);
 
     builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
-            .modelBuilder(DepartmentModel::new);
+            .modelFactory(DepartmentModel::new);
 
     model = builder.buildModel(CONNECTION_PROVIDER);
     assertTrue(model instanceof DepartmentModel);

@@ -89,24 +89,24 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
 
     /**
      * Takes precedence over {@link #modelClass(Class)}.
-     * @param modelBuilder builds the model
+     * @param modelFactory creates the model
      * @return this builder instance
      */
-    Builder modelBuilder(ModelBuilder modelBuilder);
+    Builder modelFactory(ModelFactory<SwingEntityModel> modelFactory);
 
     /**
      * Takes precedence over {@link #editModelClass(Class)}.
-     * @param editModelBuilder builds the edit model
+     * @param editModelFactory creates the edit model
      * @return this builder instance
      */
-    Builder editModelBuilder(EditModelBuilder editModelBuilder);
+    Builder editModelFactory(ModelFactory<SwingEntityEditModel> editModelFactory);
 
     /**
      * Takes precedence over {@link #tableModelClass(Class)}.
-     * @param tableModelBuilder builds the table model
+     * @param tableModelFactory creates the table model
      * @return this builder instance
      */
-    Builder tableModelBuilder(TableModelBuilder tableModelBuilder);
+    Builder tableModelFactory(ModelFactory<SwingEntityTableModel> tableModelFactory);
 
     /**
      * @param onBuildModel called after the entity model has been built
@@ -170,42 +170,16 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
     SwingEntityTableModel buildTableModel(EntityConnectionProvider connectionProvider);
 
     /**
-     * Builds a SwingEntityModel instance.
+     * Creates a model instance.
      */
-    interface ModelBuilder {
+    interface ModelFactory<T> {
 
       /**
-       * @param connectionProvider the connection provider
-       * @return a new SwingEntityModel instance
+       * @param connectionProvider the connection provider to base the model on
+       * @return a new model instance
        * @throws Exception in case of an exception
        */
-      SwingEntityModel build(EntityConnectionProvider connectionProvider) throws Exception;
-    }
-
-    /**
-     * Builds a SwingEntityEditModel instance.
-     */
-    interface EditModelBuilder {
-
-      /**
-       * @param connectionProvider the connection provider
-       * @return a new SwingEntityEditModel instance
-       * @throws Exception in case of an exception
-       */
-      SwingEntityEditModel build(EntityConnectionProvider connectionProvider) throws Exception;
-    }
-
-    /**
-     * Builds a SwingEntityTableModel instance.
-     */
-    interface TableModelBuilder {
-
-      /**
-       * @param connectionProvider the connection provider
-       * @return a new SwingEntityTableModel instance
-       * @throws Exception in case of an exception
-       */
-      SwingEntityTableModel build(EntityConnectionProvider connectionProvider) throws Exception;
+      T create(EntityConnectionProvider connectionProvider) throws Exception;
     }
   }
 }

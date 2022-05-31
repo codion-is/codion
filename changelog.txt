@@ -8171,3 +8171,4 @@
   DefaultEntityTableConditionModel.getAttributeCondition() bug fixed, was returning equalTo() condition on NOT_EQUAL
   EntityPanel.Builder.panelInitializer() renamed onBuildPanel(), consistent with component builders
   SwingEntityModel.Builder.modelInitializer() renamed onBuildModel(), consistent with component builders
+  SwingEntityModel.Builder.ModelBuilder renamed ModelFactory
