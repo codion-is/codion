@@ -17,8 +17,8 @@ import static java.util.Objects.requireNonNull;
 public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
   /**
-   * Instantiates a new SwingEntityModel with default EntityEditModel and EntityTableModel implementations.
-   * @param entityType the type of the entity this DefaultEntityModel represents
+   * Instantiates a new SwingEntityModel with default SwingEntityEditModel and SwingEntityTableModel implementations.
+   * @param entityType the type of the entity to base this SwingEntityModel on
    * @param connectionProvider a EntityConnectionProvider
    */
   public SwingEntityModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
@@ -64,7 +64,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
     /**
      * Sets the model class
      * @param modelClass the model class
-     * @return this SwingEntityModel.Builder instance
+     * @return this builder instance
      * @throws IllegalStateException in case the edit or table model classes have already been set
      */
     Builder modelClass(Class<? extends SwingEntityModel> modelClass);
@@ -72,7 +72,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
     /**
      * Sets the edit model class
      * @param editModelClass the edit model class
-     * @return this SwingEntityModel.Builder instance
+     * @return this builder instance
      * @throws IllegalStateException in case the model class has already been set
      * @throws IllegalStateException in case the table model class has already been set
      */
@@ -81,7 +81,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
     /**
      * Sets the table model class
      * @param tableModelClass the table model class
-     * @return this SwingEntityModel.Builder instance
+     * @return this builder instance
      * @throws IllegalStateException in case the model class has already been set
      * @throws IllegalStateException in case the edit model class has already been set
      */
@@ -90,46 +90,46 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
     /**
      * Takes precedence over {@link #modelClass(Class)}.
      * @param modelBuilder builds the model
-     * @return this SwingEntityModel.Builder instance
+     * @return this builder instance
      */
     Builder modelBuilder(ModelBuilder modelBuilder);
 
     /**
      * Takes precedence over {@link #editModelClass(Class)}.
      * @param editModelBuilder builds the edit model
-     * @return this SwingEntityModel.Builder instance
+     * @return this builder instance
      */
     Builder editModelBuilder(EditModelBuilder editModelBuilder);
 
     /**
      * Takes precedence over {@link #tableModelClass(Class)}.
      * @param tableModelBuilder builds the table model
-     * @return this SwingEntityModel.Builder instance
+     * @return this builder instance
      */
     Builder tableModelBuilder(TableModelBuilder tableModelBuilder);
 
     /**
-     * @param modelInitializer initializes the model post construction
-     * @return this SwingEntityModel.Builder instance
+     * @param onBuildModel called after the entity model has been built
+     * @return this builder instance
      */
-    Builder modelInitializer(Consumer<SwingEntityModel> modelInitializer);
+    Builder onBuildModel(Consumer<SwingEntityModel> onBuildModel);
 
     /**
-     * @param editModelInitializer initializes the edit model post construction
-     * @return this SwingEntityModel.Builder instance
+     * @param onBuildEditModel called after the edit model has been built
+     * @return this builder instance
      */
-    Builder editModelInitializer(Consumer<SwingEntityEditModel> editModelInitializer);
+    Builder onBuildEditModel(Consumer<SwingEntityEditModel> onBuildEditModel);
 
     /**
-     * @param tableModelInitializer initializes the table model post construction
-     * @return this SwingEntityModel.Builder instance
+     * @param onBuildTableModel called after the table model has been built
+     * @return this builder instance
      */
-    Builder tableModelInitializer(Consumer<SwingEntityTableModel> tableModelInitializer);
+    Builder onBuildTableModel(Consumer<SwingEntityTableModel> onBuildTableModel);
 
     /**
      * Adds a detail model builder to this model builder
      * @param detailModelBuilder the detail model builder to add
-     * @return this SwingEntityModel.Builder instance
+     * @return this builder instance
      */
     Builder detailModelBuilder(Builder detailModelBuilder);
 

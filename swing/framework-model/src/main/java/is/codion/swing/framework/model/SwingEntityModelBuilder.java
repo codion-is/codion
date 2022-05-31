@@ -37,9 +37,9 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   private EditModelBuilder editModelBuilder;
   private TableModelBuilder tableModelBuilder;
 
-  private Consumer<SwingEntityModel> modelInitializer = model -> {};
-  private Consumer<SwingEntityEditModel> editModelInitializer = editModel ->  {};
-  private Consumer<SwingEntityTableModel> tableModelInitializer = tableModel -> {};
+  private Consumer<SwingEntityModel> onBuildModel = new EmptyOnBuild<>();
+  private Consumer<SwingEntityEditModel> onBuildEditModel = new EmptyOnBuild<>();
+  private Consumer<SwingEntityTableModel> onBuildTableModel = new EmptyOnBuild<>();
 
   /**
    * Instantiates a new SwingeEntityModel.Builder based on the given entityType
@@ -106,20 +106,20 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder modelInitializer(Consumer<SwingEntityModel> modelInitializer) {
-    this.modelInitializer = requireNonNull(modelInitializer);
+  public SwingEntityModel.Builder onBuildModel(Consumer<SwingEntityModel> onBuildModel) {
+    this.onBuildModel = requireNonNull(onBuildModel);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder editModelInitializer(Consumer<SwingEntityEditModel> editModelInitializer) {
-    this.editModelInitializer = requireNonNull(editModelInitializer);
+  public SwingEntityModel.Builder onBuildEditModel(Consumer<SwingEntityEditModel> onBuildEditModel) {
+    this.onBuildEditModel = requireNonNull(onBuildEditModel);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder tableModelInitializer(Consumer<SwingEntityTableModel> tableModelInitializer) {
-    this.tableModelInitializer = requireNonNull(tableModelInitializer);
+  public SwingEntityModel.Builder onBuildTableModel(Consumer<SwingEntityTableModel> onBuildTableModel) {
+    this.onBuildTableModel = requireNonNull(onBuildTableModel);
     return this;
   }
 
@@ -168,7 +168,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
       for (SwingEntityModel.Builder detailProvider : detailModelBuilders) {
         model.addDetailModel(detailProvider.buildModel(connectionProvider));
       }
-      modelInitializer.accept(model);
+      onBuildModel.accept(model);
 
       return model;
     }
@@ -197,7 +197,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
         LOG.debug("{} initializing a custom edit model: {}", this, getEditModelClass());
         editModel = getEditModelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
-      editModelInitializer.accept(editModel);
+      onBuildEditModel.accept(editModel);
 
       return editModel;
     }
@@ -226,7 +226,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
         LOG.debug("{} initializing a custom table model: {}", this, getTableModelClass());
         tableModel = getTableModelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
-      tableModelInitializer.accept(tableModel);
+      onBuildTableModel.accept(tableModel);
 
       return tableModel;
     }
@@ -259,5 +259,10 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
 
   private SwingEntityModel buildDefaultModel(EntityConnectionProvider connectionProvider) {
     return new SwingEntityModel(buildTableModel(connectionProvider));
+  }
+
+  private static final class EmptyOnBuild<T> implements Consumer<T> {
+    @Override
+    public void accept(T panel) {/*Do nothing*/}
   }
 }

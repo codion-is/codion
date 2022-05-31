@@ -58,9 +58,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private Class<? extends EntityTablePanel> tablePanelClass;
   private Class<? extends EntityEditPanel> editPanelClass;
 
-  private Consumer<EntityPanel> panelInitializer = panel -> {};
-  private Consumer<EntityEditPanel> editPanelInitializer = editPanel ->  {};
-  private Consumer<EntityTablePanel> tablePanelInitializer = tablePanel -> {};
+  private Consumer<EntityPanel> onBuildPanel = new EmptyOnBuild<>();
+  private Consumer<EntityEditPanel> onBuildEditPanel = new EmptyOnBuild<>();
+  private Consumer<EntityTablePanel> onBuildTablePanel = new EmptyOnBuild<>();
 
   private final List<EntityPanel.Builder> detailPanelBuilders = new ArrayList<>();
 
@@ -163,20 +163,20 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder panelInitializer(Consumer<EntityPanel> panelInitializer) {
-    this.panelInitializer = requireNonNull(panelInitializer);
+  public EntityPanel.Builder onBuildPanel(Consumer<EntityPanel> onBuildPanel) {
+    this.onBuildPanel = requireNonNull(onBuildPanel);
     return this;
   }
 
   @Override
-  public EntityPanelBuilder editPanelInitializer(Consumer<EntityEditPanel> editPanelInitializer) {
-    this.editPanelInitializer = requireNonNull(editPanelInitializer);
+  public EntityPanelBuilder onBuildEditPanel(Consumer<EntityEditPanel> onBuildEditPanel) {
+    this.onBuildEditPanel = requireNonNull(onBuildEditPanel);
     return this;
   }
 
   @Override
-  public EntityPanel.Builder tablePanelInitializer(Consumer<EntityTablePanel> tablePanelInitializer) {
-    this.tablePanelInitializer = requireNonNull(tablePanelInitializer);
+  public EntityPanel.Builder onBuildTablePanel(Consumer<EntityTablePanel> onBuildTablePanel) {
+    this.onBuildTablePanel = requireNonNull(onBuildTablePanel);
     return this;
   }
 
@@ -235,7 +235,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
           entityPanel.addDetailPanel(detailPanel);
         }
       }
-      panelInitializer.accept(entityPanel);
+      onBuildPanel.accept(entityPanel);
       if (refreshOnInit && model.containsTableModel()) {
         model.getTableModel().refresh();
       }
@@ -318,7 +318,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
     try {
       EntityEditPanel editPanel = findEditModelConstructor(editPanelClass).newInstance(editModel);
-      editPanelInitializer.accept(editPanel);
+      onBuildEditPanel.accept(editPanel);
 
       return editPanel;
     }
@@ -336,7 +336,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         throw new IllegalArgumentException("Entity type mismatch, tableModel: " + tableModel.getEntityType() + ", required: " + getEntityType());
       }
       EntityTablePanel tablePanel = findTableModelConstructor(getTablePanelClass()).newInstance(tableModel);
-      tablePanelInitializer.accept(tablePanel);
+      onBuildTablePanel.accept(tablePanel);
 
       return tablePanel;
     }
@@ -498,5 +498,10 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
               .action(this)
               .enable(component);
     }
+  }
+
+  private static final class EmptyOnBuild<T> implements Consumer<T> {
+    @Override
+    public void accept(T panel) {/*Do nothing*/}
   }
 }
