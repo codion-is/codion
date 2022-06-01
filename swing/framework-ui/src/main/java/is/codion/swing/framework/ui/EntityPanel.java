@@ -1726,6 +1726,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     Builder detailSplitPanelResizeWeight(double detailSplitPanelResizeWeight);
 
     /**
+     * @param preferredSize the preferred panel size
+     * @return this builder instance
+     */
+    Builder preferredSize(Dimension preferredSize);
+
+    /**
      * Note that setting the EntityPanel class overrides any table panel or edit panel classes that have been set.
      * @param panelClass the EntityPanel class to use when providing this panel
      * @return this builder instance

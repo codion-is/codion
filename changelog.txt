@@ -8213,3 +8213,5 @@
   SwingEntityModelBuilder.getModelClass(), getEditModelClass() and getTableModelClass() removed
   EntityPanel.Builder.containsModel() and getModelBuilder() removed
   EntityPanel, FilteredTable, removed a couple of unnecessary SwingUtilities.invokeLater() usages
+  EntityPanel.Builder.preferredSize() added
+  DefaultItemComboBoxBuilder.initializeItemComboBoxModel() bug fixed, now sets the initially selected null value correctly when the item list contains a null item, was using the nullItem created in case the item list did not contain a null item
