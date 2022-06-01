@@ -29,6 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
@@ -50,6 +51,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   private String caption;
   private boolean refreshOnInit = true;
+  private Dimension preferredSize;
   private EntityPanel.PanelState detailPanelState = EntityPanel.PanelState.EMBEDDED;
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
   private boolean tableConditionPanelVisible = EntityTablePanel.CONDITION_PANEL_VISIBLE.get();
@@ -122,6 +124,12 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   @Override
   public EntityPanel.Builder detailSplitPanelResizeWeight(double detailSplitPanelResizeWeight) {
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
+    return this;
+  }
+
+  @Override
+  public EntityPanel.Builder preferredSize(Dimension preferredSize) {
+    this.preferredSize = requireNonNull(preferredSize);
     return this;
   }
 
@@ -288,6 +296,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       }
       entityPanel.setCaption(caption == null ? entityModel.getConnectionProvider()
               .getEntities().getDefinition(entityModel.getEntityType()).getCaption() : caption);
+      if (preferredSize != null) {
+        entityPanel.setPreferredSize(preferredSize);
+      }
 
       return entityPanel;
     }
