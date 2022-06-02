@@ -17,6 +17,7 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.StringFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -140,8 +141,10 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .maximumLength(60))
             .keyGenerator(identity())
             .orderBy(orderBy().ascending(Employee.LASTNAME, Employee.FIRSTNAME))
-            .stringFactory(stringFactory(Employee.LASTNAME)
-                    .text(", ").value(Employee.FIRSTNAME));
+            .stringFactory(StringFactory.builder()
+                    .value(Employee.LASTNAME)
+                    .text(", ")
+                    .value(Employee.FIRSTNAME));
   }
 
   void customer() {
@@ -353,8 +356,10 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     PlaylistTrack.TRACK_FK, Track.ALBUM_FK)
                     .preferredColumnWidth(160))
             .keyGenerator(identity())
-            .stringFactory(stringFactory(PlaylistTrack.PLAYLIST_FK)
-                    .text(" - ").value(PlaylistTrack.TRACK_FK));
+            .stringFactory(StringFactory.builder()
+                    .value(PlaylistTrack.PLAYLIST_FK)
+                    .text(" - ")
+                    .value(PlaylistTrack.TRACK_FK));
   }
 
   private static final class UpdateTotalsFunction implements DatabaseFunction<EntityConnection, Collection<Long>, Collection<Entity>> {

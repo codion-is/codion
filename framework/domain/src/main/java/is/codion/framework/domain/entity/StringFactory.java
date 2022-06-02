@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.joining;
  * attribute3 -&#62; value3
  * fkAttribute -&#62; {Entity instance with a single mapping refAttribute -&#62; refValue}
  *
- * StringFactory.Builder builder = StringFactory.stringFactory();
+ * StringFactory.Builder builder = StringFactory.builder();
  *
  * builder.text("attribute1=")
  *        .value(attribute1)
@@ -45,16 +45,16 @@ public final class StringFactory {
   /**
    * @return a {@link Builder} instance for configuring a string factory {@link Function} for entities.
    */
-  public static Builder stringFactory() {
+  public static Builder builder() {
     return new DefaultStringFactoryBuilder();
   }
 
   /**
    * @param attribute the attribute which value to use for the string generation
-   * @return a {@link Builder} instance for configuring a string factory {@link Function} for entities.
+   * @return a new string factory function based on the given attribute.
    */
-  public static Builder stringFactory(Attribute<?> attribute) {
-    return new DefaultStringFactoryBuilder().value(attribute);
+  public static Function<Entity, String> stringFactory(Attribute<?> attribute) {
+    return new DefaultStringFactoryBuilder().value(attribute).build();
   }
 
   /**

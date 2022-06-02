@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
 import java.sql.SQLException;
@@ -80,7 +81,10 @@ public final class SchemaBrowser extends DefaultDomain {
                     .primaryKeyIndex(1))
             .orderBy(orderBy().ascending(Table.SCHEMA, Table.NAME))
             .readOnly(true)
-            .stringFactory(stringFactory(Table.SCHEMA_FK).text(".").value(Table.NAME))
+            .stringFactory(StringFactory.builder()
+                    .value(Table.SCHEMA_FK)
+                    .text(".")
+                    .value(Table.NAME))
             .caption("Tables");
     String tableQueryFrom = bundle.getString("t_table_query_from");
     if (!tableQueryFrom.isEmpty()) {
@@ -120,7 +124,10 @@ public final class SchemaBrowser extends DefaultDomain {
             columnProperty(Column.DATA_TYPE, "Data type"))
             .orderBy(orderBy().ascending(Column.SCHEMA, Column.TABLE_NAME, Column.NAME))
             .readOnly(true)
-            .stringFactory(stringFactory(Column.TABLE_FK).text(".").value(Column.NAME))
+            .stringFactory(StringFactory.builder()
+                    .value(Column.TABLE_FK)
+                    .text(".")
+                    .value(Column.NAME))
             .caption("Columns");
   }
 
@@ -150,7 +157,10 @@ public final class SchemaBrowser extends DefaultDomain {
             columnProperty(Constraint.CONSTRAINT_TYPE, "Type"))
             .orderBy(orderBy().ascending(Constraint.SCHEMA, Constraint.TABLE_NAME, Constraint.NAME))
             .readOnly(true)
-            .stringFactory(stringFactory(Constraint.TABLE_FK).text(".").value(Constraint.NAME))
+            .stringFactory(StringFactory.builder()
+                    .value(Constraint.TABLE_FK)
+                    .text(".")
+                    .value(Constraint.NAME))
             .caption("Constraints");
   }
 

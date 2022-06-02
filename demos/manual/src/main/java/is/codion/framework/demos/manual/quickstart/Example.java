@@ -19,6 +19,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
+import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -35,7 +36,6 @@ import java.util.List;
 import static is.codion.framework.demos.manual.quickstart.Example.Store.*;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.UUID.randomUUID;
 
@@ -71,8 +71,10 @@ public final class Example {
                       .nullable(false)
                       .maximumLength(40))
               .keyGenerator(new CustomerKeyGenerator())
-              .stringFactory(stringFactory(Customer.LAST_NAME)
-                      .text(", ").value(Customer.FIRST_NAME));
+              .stringFactory(StringFactory.builder()
+                      .value(Customer.LAST_NAME)
+                      .text(", ")
+                      .value(Customer.FIRST_NAME));
     }
 
     private static final class CustomerKeyGenerator implements KeyGenerator {
@@ -104,8 +106,10 @@ public final class Example {
                       .nullable(false)
                       .maximumLength(50))
               .keyGenerator(automatic("store.address"))
-              .stringFactory(stringFactory(Address.STREET)
-                      .text(", ").value(Address.CITY));
+              .stringFactory(StringFactory.builder()
+                      .value(Address.STREET)
+                      .text(", ")
+                      .value(Address.CITY));
     }
     // end::address[]
     // tag::customerAddress[]

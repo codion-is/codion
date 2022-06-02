@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -106,7 +107,7 @@ public final class EntitiesTutorial {
       // with the above properties
       define(Album.TYPE, albumId, albumTitle, albumArtistId, albumArtist)
               .keyGenerator(identity())
-              .stringFactory(stringFactory()
+              .stringFactory(StringFactory.builder()
                       .value(Album.ARTIST_FK)
                       .text(" - ")
                       .value(Album.TITLE))
