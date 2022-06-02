@@ -362,7 +362,7 @@ include::{dir-source}/is/codion/framework/demos/manual/store/domain/Store.java[t
 
 == StringFactory
 
-The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/StringFactory.html[StringFactory] class provides a builder for Function<Entity, String> which provides the *toString()* implementations for entities. This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
+The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/StringFactory.html[StringFactory] class provides a builder for a Function<Entity, String> instance, which is then used to provide the *toString()* implementations for entities. This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
 
 [source,java,indent=0]
 ----
