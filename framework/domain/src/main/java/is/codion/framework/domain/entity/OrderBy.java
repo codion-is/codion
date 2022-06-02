@@ -6,7 +6,10 @@ package is.codion.framework.domain.entity;
 import java.util.List;
 
 /**
- * Specifies an order by clause
+ * Specifies an order by clause.
+ * @see #ascending(Attribute[])
+ * @see #descending(Attribute[])
+ * @see #builder()
  */
 public interface OrderBy {
 
