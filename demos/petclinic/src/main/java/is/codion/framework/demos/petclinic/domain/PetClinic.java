@@ -12,6 +12,7 @@ import is.codion.framework.demos.petclinic.domain.api.Vet;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.entity.StringFactory;
 
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
@@ -44,8 +45,10 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false))
             .keyGenerator(identity())
             .caption("Vets")
-            .stringFactory(stringFactory(Vet.LAST_NAME)
-                    .text(", ").value(Vet.FIRST_NAME))
+            .stringFactory(StringFactory.builder()
+                    .value(Vet.LAST_NAME)
+                    .text(", ")
+                    .value(Vet.FIRST_NAME))
             .orderBy(orderBy().ascending(Vet.LAST_NAME, Vet.FIRST_NAME))
             .smallDataset(true);
   }
@@ -72,7 +75,9 @@ public final class PetClinic extends DefaultDomain {
             foreignKeyProperty(VetSpecialty.VET_FK, "Vet"),
             foreignKeyProperty(VetSpecialty.SPECIALTY_FK, "Specialty"))
             .caption("Vet specialties")
-            .stringFactory(stringFactory(VetSpecialty.VET_FK).text(" - ")
+            .stringFactory(StringFactory.builder()
+                    .value(VetSpecialty.VET_FK)
+                    .text(" - ")
                     .value(VetSpecialty.SPECIALTY_FK));
   }
 
@@ -109,7 +114,9 @@ public final class PetClinic extends DefaultDomain {
                     .maximumLength(20))
             .keyGenerator(identity())
             .caption("Owners")
-            .stringFactory(stringFactory(Owner.LAST_NAME).text(", ")
+            .stringFactory(StringFactory.builder()
+                    .value(Owner.LAST_NAME)
+                    .text(", ")
                     .value(Owner.FIRST_NAME))
             .orderBy(orderBy().ascending(Owner.LAST_NAME, Owner.FIRST_NAME));
   }

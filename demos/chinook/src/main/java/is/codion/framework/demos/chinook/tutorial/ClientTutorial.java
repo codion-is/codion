@@ -11,6 +11,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.StringFactory;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -84,8 +85,10 @@ public final class ClientTutorial {
               columnProperty(Album.TITLE, "Title")
                       .nullable(false).maximumLength(160))
               .keyGenerator(automatic("chinook.artist"))
-              .stringFactory(stringFactory(Album.ARTIST_FK)
-                      .text(" - ").value(Album.TITLE))
+              .stringFactory(StringFactory.builder()
+                      .value(Album.ARTIST_FK)
+                      .text(" - ")
+                      .value(Album.TITLE))
               .caption("Albums");
     }
   }

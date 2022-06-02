@@ -21,7 +21,7 @@ public class StringFactoryTest {
   private final Entities entities = domain.getEntities();
 
   @Test
-  void stringProvider() {
+  void builder() {
     Entity department = entities.builder(Department.TYPE)
             .with(Department.NO, -10)
             .with(Department.LOCATION, "Reykjavik")
@@ -37,10 +37,16 @@ public class StringFactoryTest {
 
     DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
 
-    Function<Entity, String> employeeToString = StringFactory.stringFactory(Employee.NAME)
-            .text(" (department: ").value(Employee.DEPARTMENT_FK).text(", location: ")
-            .foreignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION).text(", hiredate: ")
-            .formattedValue(Employee.HIREDATE, dateFormat.toFormat()).text(")").get();
+    Function<Entity, String> employeeToString = StringFactory.builder()
+            .value(Employee.NAME)
+            .text(" (department: ")
+            .value(Employee.DEPARTMENT_FK)
+            .text(", location: ")
+            .foreignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION)
+            .text(", hiredate: ")
+            .formattedValue(Employee.HIREDATE, dateFormat.toFormat())
+            .text(")")
+            .build();
 
     assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.apply(employee));
 
@@ -51,10 +57,16 @@ public class StringFactoryTest {
     employee.put(Employee.NAME, null);
     employee.put(Employee.HIREDATE, null);
 
-    employeeToString = StringFactory.stringFactory(Employee.NAME)
-            .text(" (department: ").value(Employee.DEPARTMENT_FK).text(", location: ")
-            .foreignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION).text(", hiredate: ")
-            .formattedValue(Employee.HIREDATE, dateFormat.toFormat()).text(")").get();
+    employeeToString = StringFactory.builder()
+            .value(Employee.NAME)
+            .text(" (department: ")
+            .value(Employee.DEPARTMENT_FK)
+            .text(", location: ")
+            .foreignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION)
+            .text(", hiredate: ")
+            .formattedValue(Employee.HIREDATE, dateFormat.toFormat())
+            .text(")")
+            .build();
 
     assertEquals(" (department: , location: , hiredate: )", employeeToString.apply(employee));
   }
