@@ -13,7 +13,8 @@ public final class DefaultOrderByTest {
 
   @Test
   void sameAttributeTwice() {
-    assertThrows(IllegalArgumentException.class, () -> new DefaultOrderBy().ascending(TestDomain.Department.LOCATION)
+    assertThrows(IllegalArgumentException.class, () -> new DefaultOrderBy.DefaultOrderByBuilder()
+            .ascending(TestDomain.Department.LOCATION)
             .descending(TestDomain.Department.LOCATION));
   }
 }

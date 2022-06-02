@@ -26,7 +26,6 @@ import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,7 +52,7 @@ public class DefaultEntityDefinitionTest {
                         .from("dual")
                         .groupBy("name")
                         .build())
-                .orderBy(orderBy().descending(name))
+                .orderBy(OrderBy.descending(name))
                 .readOnly(true)
                 .selectTableName("selectTableName")
                 .stringFactory(stringFactory)

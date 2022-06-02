@@ -369,7 +369,7 @@ public final class TestDomain extends DefaultDomain {
     define(Query.TYPE, "scott.emp",
             columnProperty(Query.EMPNO),
             columnProperty(Query.ENAME))
-            .orderBy(OrderBy.orderBy().descending(Query.ENAME))
+            .orderBy(OrderBy.descending(Query.ENAME))
             .selectTableName("scott.emp e")
             .selectQuery(SelectQuery.builder()
                     .columns("empno, ename")
@@ -388,7 +388,7 @@ public final class TestDomain extends DefaultDomain {
     define(QueryColumnsWhereClause.TYPE, "scott.emp e",
             columnProperty(QueryColumnsWhereClause.EMPNO),
             columnProperty(QueryColumnsWhereClause.ENAME))
-            .orderBy(OrderBy.orderBy().descending(QueryColumnsWhereClause.ENAME))
+            .orderBy(OrderBy.descending(QueryColumnsWhereClause.ENAME))
             .selectQuery(SelectQuery.builder()
                     .columns("e.empno, e.ename")
                     .where("e.deptno > 10")
@@ -406,7 +406,7 @@ public final class TestDomain extends DefaultDomain {
     define(QueryFromClause.TYPE,
             columnProperty(QueryFromClause.EMPNO),
             columnProperty(QueryFromClause.ENAME))
-            .orderBy(OrderBy.orderBy().descending(QueryFromClause.ENAME))
+            .orderBy(OrderBy.descending(QueryFromClause.ENAME))
             .selectQuery(SelectQuery.builder()
                     .from("scott.emp")
                     .orderBy("ename")
@@ -424,7 +424,7 @@ public final class TestDomain extends DefaultDomain {
     define(QueryFromWhereClause.TYPE,
             columnProperty(QueryFromWhereClause.EMPNO),
             columnProperty(QueryFromWhereClause.ENAME))
-            .orderBy(OrderBy.orderBy().descending(QueryFromWhereClause.ENAME))
+            .orderBy(OrderBy.descending(QueryFromWhereClause.ENAME))
             .selectQuery(SelectQuery.builder()
                     .from("scott.emp")
                     .where("deptno > 10")

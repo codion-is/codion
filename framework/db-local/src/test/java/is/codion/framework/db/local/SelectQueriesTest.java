@@ -54,8 +54,7 @@ public final class SelectQueriesTest {
             .equalTo("SCOTT")
             .toSelectCondition()
             .selectAttributes(QueryColumnsWhereClause.ENAME)
-            .orderBy(OrderBy.orderBy()
-                    .descending(QueryColumnsWhereClause.EMPNO));
+            .orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO));
     builder = queries.builder(testDomain.getEntities().getDefinition(QueryColumnsWhereClause.TYPE))
             .selectCondition(condition);
 

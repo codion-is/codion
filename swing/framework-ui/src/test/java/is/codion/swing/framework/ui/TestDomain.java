@@ -20,6 +20,7 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
+import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -109,7 +110,7 @@ public final class TestDomain extends DefaultDomain {
               return intValue * 10;
             }, DETAIL_INT))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
-            .orderByAscending(DETAIL_STRING)
+            .orderBy(ascending(DETAIL_STRING))
             .smallDataset(true)
             .stringFactory(DETAIL_STRING);
   }
@@ -128,7 +129,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
-            .orderByAscending(DEPARTMENT_NAME)
+            .orderBy(ascending(DEPARTMENT_NAME))
             .stringFactory(DEPARTMENT_NAME)
             .caption("Department");
   }
@@ -174,7 +175,7 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(100))
             .stringFactory(EMP_NAME)
             .keyGenerator(increment("scott.emp", "empno"))
-            .orderByAscending(EMP_DEPARTMENT, EMP_NAME)
+            .orderBy(ascending(EMP_DEPARTMENT, EMP_NAME))
             .caption("Employee")
             .backgroundColorProvider((entity, attribute) -> {
               if (attribute.equals(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {

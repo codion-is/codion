@@ -25,6 +25,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.OrderBy;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +50,6 @@ import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.condition.Conditions.where;
 import static is.codion.framework.db.local.TestDomain.*;
 import static is.codion.framework.domain.entity.Entity.getPrimaryKeys;
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -212,7 +212,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   void selectLimitOffset() throws Exception {
     SelectCondition condition = condition(Employee.TYPE).toSelectCondition()
-            .orderBy(orderBy().ascending(Employee.NAME)).limit(2);
+            .orderBy(OrderBy.ascending(Employee.NAME)).limit(2);
     List<Entity> result = connection.select(condition);
     assertEquals(2, result.size());
     condition  = condition.limit(3).offset(3);
@@ -981,19 +981,19 @@ public class DefaultLocalEntityConnectionTest {
     result2 = connection.select(where(Department.DEPTNO)
             .greaterThanOrEqualTo(20)
             .toSelectCondition()
-            .orderBy(orderBy().descending(Department.DEPTNO)));
+            .orderBy(OrderBy.descending(Department.DEPTNO)));
     assertNotSame(result, result2);
 
     result = connection.select(where(Department.DEPTNO)
             .greaterThanOrEqualTo(20)
             .toSelectCondition()
-            .orderBy(orderBy().descending(Department.DEPTNO)));
+            .orderBy(OrderBy.descending(Department.DEPTNO)));
     assertSame(result, result2);
 
     result2 = connection.select(where(Department.DEPTNO)
             .greaterThanOrEqualTo(20)
             .toSelectCondition()
-            .orderBy(orderBy().ascending(Department.DEPTNO)));
+            .orderBy(OrderBy.ascending(Department.DEPTNO)));
     assertNotSame(result, result2);
 
     result = connection.select(where(Department.DEPTNO)

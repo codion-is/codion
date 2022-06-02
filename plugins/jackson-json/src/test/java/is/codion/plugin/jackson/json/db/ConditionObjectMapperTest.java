@@ -93,7 +93,10 @@ public final class ConditionObjectMapperTest {
 
     SelectCondition selectCondition = Conditions.where(Employee.EMPNO).equalTo(1)
             .toSelectCondition()
-            .orderBy(OrderBy.orderBy().ascending(Employee.EMPNO).descending(Employee.NAME))
+            .orderBy(OrderBy.builder()
+                    .ascending(Employee.EMPNO)
+                    .descending(Employee.NAME)
+                    .build())
             .limit(2)
             .offset(1)
             .forUpdate()

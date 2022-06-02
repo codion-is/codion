@@ -15,18 +15,10 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final List<OrderByAttribute> orderByAttributes = new ArrayList<>(1);
+  private final List<OrderByAttribute> orderByAttributes;
 
-  @Override
-  public OrderBy ascending(Attribute<?>... attributes) {
-    add(true, requireNonNull(attributes));
-    return this;
-  }
-
-  @Override
-  public OrderBy descending(Attribute<?>... attributes) {
-    add(false, requireNonNull(attributes));
-    return this;
+  private DefaultOrderBy(DefaultOrderByBuilder builder) {
+    this.orderByAttributes = unmodifiableList(builder.orderByAttributes);
   }
 
   @Override
@@ -49,20 +41,6 @@ final class DefaultOrderBy implements OrderBy, Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(orderByAttributes);
-  }
-
-  private void add(boolean ascending, Attribute<?>... attributes) {
-    if (attributes.length == 0) {
-      throw new IllegalArgumentException("One or more attributes required for order by");
-    }
-    for (Attribute<?> attribute : attributes) {
-      for (OrderByAttribute orderByAttribute : orderByAttributes) {
-        if (requireNonNull(attribute).equals(orderByAttribute.getAttribute())) {
-          throw new IllegalArgumentException("Order by already contains attribute: " + attribute);
-        }
-      }
-      orderByAttributes.add(new DefaultOrderByAttribute(attribute, ascending));
-    }
   }
 
   private static final class DefaultOrderByAttribute implements OrderByAttribute, Serializable {
@@ -103,6 +81,42 @@ final class DefaultOrderBy implements OrderBy, Serializable {
     @Override
     public int hashCode() {
       return Objects.hash(attribute, ascending);
+    }
+  }
+
+  static final class DefaultOrderByBuilder implements Builder {
+
+    private final List<OrderByAttribute> orderByAttributes = new ArrayList<>(1);
+
+    @Override
+    public Builder ascending(Attribute<?>... attributes) {
+      add(true, requireNonNull(attributes));
+      return this;
+    }
+
+    @Override
+    public Builder descending(Attribute<?>... attributes) {
+      add(false, requireNonNull(attributes));
+      return this;
+    }
+
+    @Override
+    public OrderBy build() {
+      return new DefaultOrderBy(this);
+    }
+
+    private void add(boolean ascending, Attribute<?>... attributes) {
+      if (attributes.length == 0) {
+        throw new IllegalArgumentException("One or more attributes required for order by");
+      }
+      for (Attribute<?> attribute : attributes) {
+        for (OrderByAttribute orderByAttribute : orderByAttributes) {
+          if (requireNonNull(attribute).equals(orderByAttribute.getAttribute())) {
+            throw new IllegalArgumentException("Order by already contains attribute: " + attribute);
+          }
+        }
+        orderByAttributes.add(new DefaultOrderByAttribute(attribute, ascending));
+      }
     }
   }
 }

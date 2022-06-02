@@ -569,20 +569,20 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private OrderBy getOrderByFromSortModel() {
-    OrderBy orderBy = OrderBy.orderBy();
+    OrderBy.Builder builder = OrderBy.builder();
     columnSortOrder.stream()
             .map(EntityTableColumn.class::cast)
             .filter(column -> isColumnProperty(column.getAttribute()))
             .forEach(column -> {
               if (column.getSortType() == SortType.ASCENDING) {
-                orderBy.ascending(column.getAttribute());
+                builder.ascending(column.getAttribute());
               }
               else {
-                orderBy.descending(column.getAttribute());
+                builder.descending(column.getAttribute());
               }
             });
 
-    return orderBy;
+    return builder.build();
   }
 
   private boolean isColumnProperty(Attribute<?> attribute) {

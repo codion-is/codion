@@ -9,6 +9,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 import static is.codion.framework.db.condition.Conditions.where;
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -35,7 +35,7 @@ public final class ConditionsTest {
   @Test
   void selectCondition() {
     SelectCondition condition = where(TestDomain.DEPARTMENT_LOCATION).equalTo("New York")
-            .toSelectCondition().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
+            .toSelectCondition().orderBy(OrderBy.ascending(TestDomain.DEPARTMENT_NAME));
     assertEquals(-1, condition.getLimit());
 
     condition = Conditions.condition(TestDomain.T_DEPARTMENT).toSelectCondition().limit(10);
@@ -45,7 +45,7 @@ public final class ConditionsTest {
   @Test
   void customConditionTest() {
     SelectCondition condition = Conditions.customCondition(TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID)
-            .toSelectCondition().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
+            .toSelectCondition().orderBy(OrderBy.ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getAttributes().isEmpty());
   }
@@ -53,7 +53,10 @@ public final class ConditionsTest {
   @Test
   void selectConditionOrderBySameAttribute() {
     assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).toSelectCondition()
-            .orderBy(orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT)));
+            .orderBy(OrderBy.builder()
+                    .ascending(TestDomain.EMP_DEPARTMENT)
+                    .descending(TestDomain.EMP_DEPARTMENT)
+                    .build()));
   }
 
   @Test
@@ -295,7 +298,10 @@ public final class ConditionsTest {
   @Test
   void selectConditionOrderByDuplicate() {
     assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).toSelectCondition()
-            .orderBy(orderBy().ascending(TestDomain.EMP_NAME).descending(TestDomain.EMP_NAME)));
+            .orderBy(OrderBy.builder()
+                    .ascending(TestDomain.EMP_NAME)
+                    .descending(TestDomain.EMP_NAME)
+                    .build()));
   }
 
   @Test
@@ -487,11 +493,11 @@ public final class ConditionsTest {
     condition2 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke", "John");
     assertEquals(condition1.toSelectCondition(), condition2.toSelectCondition());
     assertEquals(condition1.toSelectCondition()
-                    .orderBy(orderBy().ascending(TestDomain.EMP_NAME)),
+                    .orderBy(OrderBy.ascending(TestDomain.EMP_NAME)),
             condition2.toSelectCondition()
-                    .orderBy(orderBy().ascending(TestDomain.EMP_NAME)));
+                    .orderBy(OrderBy.ascending(TestDomain.EMP_NAME)));
     assertNotEquals(condition1.toSelectCondition()
-            .orderBy(orderBy().ascending(TestDomain.EMP_NAME)),
+            .orderBy(OrderBy.ascending(TestDomain.EMP_NAME)),
             condition2.toSelectCondition());
 
     assertEquals(condition1.toSelectCondition()

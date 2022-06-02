@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
@@ -29,7 +30,6 @@ import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinoo
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.Entity.getPrimaryKeys;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -143,7 +143,7 @@ public final class EntitiesTutorial {
     SelectCondition artistsCondition = where(Artist.NAME).equalTo("An%").toSelectCondition();
 
     // and we set the order by clause
-    artistsCondition.orderBy(orderBy().ascending(Artist.NAME));
+    artistsCondition.orderBy(OrderBy.ascending(Artist.NAME));
 
     List<Entity> artistsStartingWithAn = connection.select(artistsCondition);
 
@@ -151,7 +151,10 @@ public final class EntitiesTutorial {
 
     // create a select condition
     SelectCondition albumsCondition = where(Album.ARTIST_FK).equalTo(artistsStartingWithAn).toSelectCondition();
-    albumsCondition.orderBy(orderBy().ascending(Album.ARTIST_ID).descending(Album.TITLE));
+    albumsCondition.orderBy(OrderBy.builder()
+            .ascending(Album.ARTIST_ID)
+            .descending(Album.TITLE)
+            .build());
 
     List<Entity> albumsByArtistsStartingWithAn = connection.select(albumsCondition);
 

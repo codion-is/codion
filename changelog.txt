@@ -8219,3 +8219,5 @@
   StringFactory.stringFactory() no longer returns a Builder, StringFactory.builder() added
   EntityDefinition.Builder.stringFactory(Attribute) added, StringFactory.stringFactory(Attribute) removed
   EntityDefinition.Builder.orderByAscending(Attribute...) added
+  OrderBy.Builder added along with OrderBy.ascending(Attribute...) and OrderBy.descending(Attribute...), DefaultOrderBy now immutable
+  EntityDefinition.Builder.orderByAscending(Attribute...) removed

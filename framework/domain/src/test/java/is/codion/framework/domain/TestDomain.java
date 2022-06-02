@@ -22,6 +22,7 @@ import java.util.Optional;
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.KeyGenerator.queried;
+import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -190,7 +191,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Detail.BYTES)
                     .updatable(false))
             .keyGenerator(queried("select id from dual"))
-            .orderByAscending(Detail.STRING)
+            .orderBy(ascending(Detail.STRING))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
             .smallDataset(true)
             .stringFactory(Detail.STRING);
@@ -229,7 +230,7 @@ public final class TestDomain extends DefaultDomain {
                     .beanProperty("active"),
             blobProperty(Department.DATA))
             .smallDataset(true)
-            .orderByAscending(Department.NAME)
+            .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
             .caption("Department");
   }
@@ -305,7 +306,7 @@ public final class TestDomain extends DefaultDomain {
             blobProperty(Employee.DATA, "Data")
                     .eagerlyLoaded())
             .keyGenerator(increment("scott.emp", "empno"))
-            .orderByAscending(Employee.DEPARTMENT, Employee.NAME)
+            .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(Employee.NAME)
             .caption("Employee");
   }
