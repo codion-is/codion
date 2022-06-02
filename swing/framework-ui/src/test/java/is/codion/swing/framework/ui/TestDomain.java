@@ -20,8 +20,6 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -49,7 +47,7 @@ public final class TestDomain extends DefaultDomain {
                     .searchProperty(true),
             columnProperty(MASTER_CODE))
             .comparator(Comparator.comparing(o -> o.get(MASTER_CODE)))
-            .stringFactory(stringFactory(MASTER_NAME));
+            .stringFactory(MASTER_NAME);
   }
 
   public static final EntityType T_DETAIL = DOMAIN.entityType("domain.detail_entity");
@@ -111,9 +109,9 @@ public final class TestDomain extends DefaultDomain {
               return intValue * 10;
             }, DETAIL_INT))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
-            .orderBy(orderBy().ascending(DETAIL_STRING))
+            .orderByAscending(DETAIL_STRING)
             .smallDataset(true)
-            .stringFactory(stringFactory(DETAIL_STRING));
+            .stringFactory(DETAIL_STRING);
   }
 
   public static final EntityType T_DEPARTMENT = DOMAIN.entityType("scott.dept");
@@ -130,8 +128,8 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
-            .orderBy(orderBy().ascending(DEPARTMENT_NAME))
-            .stringFactory(stringFactory(DEPARTMENT_NAME))
+            .orderByAscending(DEPARTMENT_NAME)
+            .stringFactory(DEPARTMENT_NAME)
             .caption("Department");
   }
 
@@ -174,9 +172,9 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION)
                     .preferredColumnWidth(100))
-            .stringFactory(stringFactory(EMP_NAME))
+            .stringFactory(EMP_NAME)
             .keyGenerator(increment("scott.emp", "empno"))
-            .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
+            .orderByAscending(EMP_DEPARTMENT, EMP_NAME)
             .caption("Employee")
             .backgroundColorProvider((entity, attribute) -> {
               if (attribute.equals(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {

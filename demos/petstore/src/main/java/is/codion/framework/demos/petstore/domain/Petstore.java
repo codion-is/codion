@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class Petstore extends DefaultDomain {
@@ -77,7 +76,7 @@ public final class Petstore extends DefaultDomain {
                     .nullable(false)
                     .maximumFractionDigits(2))
             .keyGenerator(increment("petstore.address", "addressid"))
-            .orderBy(orderBy().ascending(Address.CITY, Address.STREET_1, Address.STREET_2))
+            .orderByAscending(Address.CITY, Address.STREET_1, Address.STREET_2)
             .stringFactory(StringFactory.builder()
                     .value(Address.STREET_1).text(" ")
                     .value(Address.STREET_2).text(", ")
@@ -112,8 +111,8 @@ public final class Petstore extends DefaultDomain {
                     .columnName("imageurl")
                     .hidden(true))
             .keyGenerator(increment("petstore.category", "categoryid"))
-            .orderBy(orderBy().ascending(Category.NAME))
-            .stringFactory(stringFactory(Category.NAME))
+            .orderByAscending(Category.NAME)
+            .stringFactory(Category.NAME)
             .caption("Categories");
   }
 
@@ -150,7 +149,7 @@ public final class Petstore extends DefaultDomain {
                     .maximumLength(55)
                     .hidden(true))
             .keyGenerator(increment("petstore.product", "productid"))
-            .orderBy(orderBy().ascending(Product.NAME))
+            .orderByAscending(Product.NAME)
             .stringFactory(StringFactory.builder()
                     .value(Product.CATEGORY_FK)
                     .text(" - ")
@@ -254,7 +253,7 @@ public final class Petstore extends DefaultDomain {
                     .defaultValue(false)
                     .nullable(false))
             .keyGenerator(increment("petstore.item", "itemid"))
-            .orderBy(orderBy().ascending(Item.NAME))
+            .orderByAscending(Item.NAME)
             .stringFactory(StringFactory.builder()
                     .value(Item.PRODUCT_FK)
                     .text(" - ")
@@ -282,9 +281,9 @@ public final class Petstore extends DefaultDomain {
                     "select count(*) from petstore.tag_item where tagid = tag.tagid")
                     .columnName("refcount"))
             .keyGenerator(increment("petstore.tag", "tagid"))
-            .orderBy(orderBy().ascending(Tag.TAG))
+            .orderByAscending(Tag.TAG)
             .selectTableName("petstore.tag tag")
-            .stringFactory(stringFactory(Tag.TAG))
+            .stringFactory(Tag.TAG)
             .caption("Tags");
   }
 

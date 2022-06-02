@@ -519,6 +519,13 @@ public interface EntityDefinition {
     Builder keyGenerator(KeyGenerator keyGenerator);
 
     /**
+     * Sets the order by clause for this entity type as ascending order for the given attributes
+     * @param attributes the attributes to order by ascending
+     * @return this {@link Builder} instance
+     */
+    Builder orderByAscending(Attribute<?>... attributes);
+
+    /**
      * Sets the order by clause for this entity type.
      * @param orderBy the order by clause
      * @return this {@link Builder} instance
@@ -541,6 +548,13 @@ public interface EntityDefinition {
      * @return this {@link Builder} instance
      */
     Builder selectQuery(SelectQuery selectQuery);
+
+    /**
+     * Sets the string factory, based on the value of the given attribute
+     * @param attribute the attribute which value to use
+     * @return this {@link Builder} instance
+     */
+    Builder stringFactory(Attribute<?> attribute);
 
     /**
      * Sets the string factory builder, that is, the builder responsible for supplying the object creating toString() values for this entity type

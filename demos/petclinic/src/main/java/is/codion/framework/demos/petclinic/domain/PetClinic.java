@@ -16,7 +16,6 @@ import is.codion.framework.domain.entity.StringFactory;
 
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class PetClinic extends DefaultDomain {
@@ -49,7 +48,7 @@ public final class PetClinic extends DefaultDomain {
                     .value(Vet.LAST_NAME)
                     .text(", ")
                     .value(Vet.FIRST_NAME))
-            .orderBy(orderBy().ascending(Vet.LAST_NAME, Vet.FIRST_NAME))
+            .orderByAscending(Vet.LAST_NAME, Vet.FIRST_NAME)
             .smallDataset(true);
   }
 
@@ -62,7 +61,7 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false))
             .keyGenerator(identity())
             .caption("Specialties")
-            .stringFactory(stringFactory(Specialty.NAME))
+            .stringFactory(Specialty.NAME)
             .smallDataset(true);
   }
 
@@ -90,8 +89,8 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false))
             .keyGenerator(identity())
             .caption("Pet types")
-            .stringFactory(stringFactory(PetType.NAME))
-            .orderBy(orderBy().ascending(PetType.NAME))
+            .stringFactory(PetType.NAME)
+            .orderByAscending(PetType.NAME)
             .smallDataset(true);
   }
 
@@ -118,7 +117,7 @@ public final class PetClinic extends DefaultDomain {
                     .value(Owner.LAST_NAME)
                     .text(", ")
                     .value(Owner.FIRST_NAME))
-            .orderBy(orderBy().ascending(Owner.LAST_NAME, Owner.FIRST_NAME));
+            .orderByAscending(Owner.LAST_NAME, Owner.FIRST_NAME);
   }
 
   private void pet() {
@@ -138,8 +137,8 @@ public final class PetClinic extends DefaultDomain {
             foreignKeyProperty(Pet.OWNER_FK, "Owner"))
             .keyGenerator(identity())
             .caption("Pets")
-            .stringFactory(stringFactory(Pet.NAME))
-            .orderBy(orderBy().ascending(Pet.NAME));
+            .stringFactory(Pet.NAME)
+            .orderByAscending(Pet.NAME);
   }
 
   private void visit() {

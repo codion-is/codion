@@ -31,7 +31,6 @@ import java.util.Locale;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 /**
@@ -94,7 +93,7 @@ public final class EmpDeptMinimalApp {
                       .maximumLength(13))
               .keyGenerator(increment("scott.dept", "deptno"))
               .caption("Departments")
-              .stringFactory(stringFactory(Department.DNAME));
+              .stringFactory(Department.DNAME);
       /*
        * We then define the entity based on the SCOTT.EMP table,
        * note the foreign key properties, referencing the
@@ -124,7 +123,7 @@ public final class EmpDeptMinimalApp {
                       .nullable(false))
               .keyGenerator(increment("scott.emp", "empno"))
               .caption("Employees")
-              .stringFactory(stringFactory(Employee.ENAME));
+              .stringFactory(Employee.ENAME);
     }
   }
 

@@ -30,7 +30,6 @@ import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.swing.common.ui.Windows.getScreenSizeRatio;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
@@ -74,7 +73,7 @@ public final class ClientTutorial {
                       "select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid"))
               .keyGenerator(automatic("chinook.artist"))
-              .stringFactory(stringFactory(Artist.NAME))
+              .stringFactory(Artist.NAME)
               .caption("Artists");
 
       define(Album.TYPE,

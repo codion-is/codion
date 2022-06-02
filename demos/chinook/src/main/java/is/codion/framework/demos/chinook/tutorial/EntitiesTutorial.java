@@ -30,7 +30,6 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.Entity.getPrimaryKeys;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -85,7 +84,7 @@ public final class EntitiesTutorial {
       // with the above properties
       define(Artist.TYPE, artistId, artistName)
               .keyGenerator(identity())
-              .stringFactory(stringFactory(Artist.NAME))
+              .stringFactory(Artist.NAME)
               .smallDataset(true)
               .caption("Artist");
 

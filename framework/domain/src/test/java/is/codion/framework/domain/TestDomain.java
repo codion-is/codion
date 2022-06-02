@@ -22,8 +22,6 @@ import java.util.Optional;
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.KeyGenerator.queried;
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -96,7 +94,7 @@ public final class TestDomain extends DefaultDomain {
                     .beanProperty("name"),
             columnProperty(Master.CODE))
             .comparator(new MasterComparator())
-            .stringFactory(stringFactory(Master.NAME));
+            .stringFactory(Master.NAME);
   }
 
   private static final class MasterComparator implements Comparator<Entity>, Serializable {
@@ -192,10 +190,10 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Detail.BYTES)
                     .updatable(false))
             .keyGenerator(queried("select id from dual"))
-            .orderBy(orderBy().ascending(Detail.STRING))
+            .orderByAscending(Detail.STRING)
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
             .smallDataset(true)
-            .stringFactory(stringFactory(Detail.STRING));
+            .stringFactory(Detail.STRING);
   }
 
   public interface Department extends Entity {
@@ -231,8 +229,8 @@ public final class TestDomain extends DefaultDomain {
                     .beanProperty("active"),
             blobProperty(Department.DATA))
             .smallDataset(true)
-            .orderBy(orderBy().ascending(Department.NAME))
-            .stringFactory(stringFactory(Department.NAME))
+            .orderByAscending(Department.NAME)
+            .stringFactory(Department.NAME)
             .caption("Department");
   }
 
@@ -307,8 +305,8 @@ public final class TestDomain extends DefaultDomain {
             blobProperty(Employee.DATA, "Data")
                     .eagerlyLoaded())
             .keyGenerator(increment("scott.emp", "empno"))
-            .orderBy(orderBy().ascending(Employee.DEPARTMENT, Employee.NAME))
-            .stringFactory(stringFactory(Employee.NAME))
+            .orderByAscending(Employee.DEPARTMENT, Employee.NAME)
+            .stringFactory(Employee.NAME)
             .caption("Employee");
   }
 

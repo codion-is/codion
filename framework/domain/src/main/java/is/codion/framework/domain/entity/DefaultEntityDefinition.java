@@ -1144,6 +1144,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
+    public Builder orderByAscending(Attribute<?>... attributes) {
+      return orderBy(OrderBy.orderBy().ascending(attributes));
+    }
+
+    @Override
     public Builder orderBy(OrderBy orderBy) {
       requireNonNull(orderBy, "orderBy");
       if (definition.orderBy != null) {
@@ -1169,6 +1174,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     public Builder comparator(Comparator<Entity> comparator) {
       definition.comparator = requireNonNull(comparator, "comparator");
       return this;
+    }
+
+    @Override
+    public Builder stringFactory(Attribute<?> attribute) {
+      return stringFactory(StringFactory.builder()
+              .value(attribute)
+              .build());
     }
 
     @Override
