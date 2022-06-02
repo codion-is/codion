@@ -29,7 +29,6 @@ import java.util.List;
 import static is.codion.framework.db.condition.Conditions.where;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static java.util.stream.Collectors.toList;
@@ -70,7 +69,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                             "where album.artistid = artist.artistid"))
             .keyGenerator(identity())
             .orderBy(orderBy().ascending(Artist.NAME))
-            .stringFactory(stringFactory(Artist.NAME));
+            .stringFactory(Artist.NAME);
   }
 
   void album() {
@@ -97,7 +96,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                             "where track.albumid = album.albumid"))
             .keyGenerator(identity())
             .orderBy(orderBy().ascending(Album.ARTIST_ID, Album.TITLE))
-            .stringFactory(stringFactory(Album.TITLE));
+            .stringFactory(Album.TITLE);
   }
 
   void employee() {
@@ -198,7 +197,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .preferredColumnWidth(160))
             .keyGenerator(identity())
             .orderBy(orderBy().ascending(Genre.NAME))
-            .stringFactory(stringFactory(Genre.NAME))
+            .stringFactory(Genre.NAME)
             .smallDataset(true);
   }
 
@@ -210,7 +209,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .maximumLength(120)
                     .preferredColumnWidth(160))
             .keyGenerator(identity())
-            .stringFactory(stringFactory(MediaType.NAME))
+            .stringFactory(MediaType.NAME)
             .smallDataset(true);
   }
 
@@ -252,7 +251,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .maximumFractionDigits(2))
             .keyGenerator(identity())
             .orderBy(orderBy().ascending(Track.NAME))
-            .stringFactory(stringFactory(Track.NAME));
+            .stringFactory(Track.NAME);
 
     defineFunction(Track.RAISE_PRICE, new RaisePriceFunction());
   }
@@ -292,7 +291,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .keyGenerator(identity())
             // end::identity[]
             .orderBy(orderBy().ascending(Invoice.CUSTOMER_ID).descending(Invoice.DATE))
-            .stringFactory(stringFactory(Invoice.ID));
+            .stringFactory(Invoice.ID);
 
     defineFunction(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());
   }
@@ -332,7 +331,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .preferredColumnWidth(160))
             .keyGenerator(identity())
             .orderBy(orderBy().ascending(Playlist.NAME))
-            .stringFactory(stringFactory(Playlist.NAME));
+            .stringFactory(Playlist.NAME);
 
     defineFunction(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(getEntities()));
   }

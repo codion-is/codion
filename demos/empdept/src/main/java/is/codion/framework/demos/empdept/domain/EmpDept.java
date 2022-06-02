@@ -23,7 +23,6 @@ import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static java.util.Arrays.asList;
@@ -133,7 +132,7 @@ public final class EmpDept extends DefaultDomain {
                     .beanProperty("location"))
             .smallDataset(true)
             .orderBy(orderBy().ascending(Department.NAME))
-            .stringFactory(stringFactory(Department.NAME))
+            .stringFactory(Department.NAME)
             .caption("Departments");
   }
   // end::defineDepartment[]
@@ -179,7 +178,7 @@ public final class EmpDept extends DefaultDomain {
                     .preferredColumnWidth(100))
             .keyGenerator(increment("scott.emp", Employee.ID.getName()))
             .orderBy(orderBy().ascending(Employee.DEPARTMENT, Employee.NAME))
-            .stringFactory(stringFactory(Employee.NAME))
+            .stringFactory(Employee.NAME)
             .caption("Employee")
             .backgroundColorProvider((entity, attribute) -> {
               if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {

@@ -543,6 +543,13 @@ public interface EntityDefinition {
     Builder selectQuery(SelectQuery selectQuery);
 
     /**
+     * Sets the string factory, based on the value of the given attribute
+     * @param attribute the attribute which value to use
+     * @return this {@link Builder} instance
+     */
+    Builder stringFactory(Attribute<?> attribute);
+
+    /**
      * Sets the string factory builder, that is, the builder responsible for supplying the object creating toString() values for this entity type
      * @param builder the string factory function builder
      * @return this {@link Builder} instance

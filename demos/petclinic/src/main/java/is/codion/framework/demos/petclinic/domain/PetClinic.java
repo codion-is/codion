@@ -16,7 +16,6 @@ import is.codion.framework.domain.entity.StringFactory;
 
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class PetClinic extends DefaultDomain {
@@ -62,7 +61,7 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false))
             .keyGenerator(identity())
             .caption("Specialties")
-            .stringFactory(stringFactory(Specialty.NAME))
+            .stringFactory(Specialty.NAME)
             .smallDataset(true);
   }
 
@@ -90,7 +89,7 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false))
             .keyGenerator(identity())
             .caption("Pet types")
-            .stringFactory(stringFactory(PetType.NAME))
+            .stringFactory(PetType.NAME)
             .orderBy(orderBy().ascending(PetType.NAME))
             .smallDataset(true);
   }
@@ -138,7 +137,7 @@ public final class PetClinic extends DefaultDomain {
             foreignKeyProperty(Pet.OWNER_FK, "Owner"))
             .keyGenerator(identity())
             .caption("Pets")
-            .stringFactory(stringFactory(Pet.NAME))
+            .stringFactory(Pet.NAME)
             .orderBy(orderBy().ascending(Pet.NAME));
   }
 

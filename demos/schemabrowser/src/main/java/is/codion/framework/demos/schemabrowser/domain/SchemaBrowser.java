@@ -19,7 +19,6 @@ import java.util.ResourceBundle;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class SchemaBrowser extends DefaultDomain {
@@ -59,7 +58,7 @@ public final class SchemaBrowser extends DefaultDomain {
             primaryKeyProperty(Schema.NAME, "Name"))
             .orderBy(orderBy().ascending(Schema.NAME))
             .readOnly(true)
-            .stringFactory(stringFactory(Schema.NAME))
+            .stringFactory(Schema.NAME)
             .caption("Schemas");
   }
 

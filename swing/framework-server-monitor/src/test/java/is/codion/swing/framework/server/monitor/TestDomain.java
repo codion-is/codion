@@ -14,7 +14,6 @@ import java.time.LocalDate;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -44,7 +43,7 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(150).maximumLength(13),
             columnProperty(DEPARTMENT_LOGO))
             .smallDataset(true)
-            .stringFactory(stringFactory(DEPARTMENT_NAME))
+            .stringFactory(DEPARTMENT_NAME)
             .caption("Department");
   }
 
@@ -83,7 +82,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION).preferredColumnWidth(100))
-            .stringFactory(stringFactory(EMP_NAME))
+            .stringFactory(EMP_NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .conditionProvider(EMP_MGR_CONDITION_TYPE, (attributes, values) -> "mgr > ?")
             .caption("Employee");

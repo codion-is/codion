@@ -35,7 +35,6 @@ import java.util.UUID;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -108,7 +107,7 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(150).maximumLength(13)
                     .beanProperty("location"))
             .smallDataset(true)
-            .stringFactory(stringFactory(Department.DNAME))
+            .stringFactory(Department.DNAME)
             .conditionProvider(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {
               StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
@@ -170,7 +169,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Employee.DATA_LAZY),
             blobProperty(Employee.DATA)
                     .eagerlyLoaded())
-            .stringFactory(stringFactory(Employee.NAME))
+            .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .conditionProvider(Employee.NAME_IS_BLAKE_CONDITION_ID, (attributes, values) -> "ename = 'BLAKE'")
             .conditionProvider(Employee.MGR_GREATER_THAN_CONDITION_ID, (attributes, values) -> "mgr > ?")
@@ -190,7 +189,7 @@ public final class TestDomain extends DefaultDomain {
             primaryKeyProperty(DepartmentFk.DEPTNO, Department.DEPTNO.getName()),
             columnProperty(DepartmentFk.DNAME, DepartmentFk.DNAME.getName()),
             columnProperty(DepartmentFk.LOC, DepartmentFk.LOC.getName()))
-            .stringFactory(stringFactory(DepartmentFk.DNAME));
+            .stringFactory(DepartmentFk.DNAME);
   }
 
   public interface EmployeeFk {
@@ -229,7 +228,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EmployeeFk.HIREDATE, EmployeeFk.HIREDATE.getName())
                     .nullable(false),
             columnProperty(EmployeeFk.HIRETIME, EmployeeFk.HIRETIME.getName()))
-            .stringFactory(stringFactory(EmployeeFk.NAME))
+            .stringFactory(EmployeeFk.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .caption("Employee");
   }

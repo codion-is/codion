@@ -19,7 +19,6 @@ import java.time.OffsetDateTime;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -117,7 +116,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Employee.HIREDATE)
                     .nullable(false),
             denormalizedViewProperty(Employee.EMP_DEPARTMENT_LOCATION, Employee.DEPARTMENT_FK, Department.LOCATION).preferredColumnWidth(100))
-            .stringFactory(stringFactory(Employee.NAME))
+            .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .caption("Employee");
   }

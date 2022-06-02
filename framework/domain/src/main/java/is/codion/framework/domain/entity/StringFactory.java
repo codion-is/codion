@@ -50,14 +50,6 @@ public final class StringFactory {
   }
 
   /**
-   * @param attribute the attribute which value to use for the string generation
-   * @return a new string factory function based on the given attribute.
-   */
-  public static Function<Entity, String> stringFactory(Attribute<?> attribute) {
-    return new DefaultStringFactoryBuilder().value(attribute).build();
-  }
-
-  /**
    * A Builder for a string function, which provides toString() values for entities.
    */
   public interface Builder {

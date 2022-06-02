@@ -13,7 +13,6 @@ import java.util.List;
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
@@ -72,7 +71,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             .validator(new CityValidator())
             // end::validator[]
             .orderBy(orderBy().ascending(City.NAME))
-            .stringFactory(stringFactory(City.NAME))
+            .stringFactory(City.NAME)
             // tag::foreground[]
             .foregroundColorProvider(new CityColorProvider())
             // end::foreground[]
@@ -154,7 +153,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .nullable(false)
                     .maximumLength(2))
             .orderBy(orderBy().ascending(Country.NAME))
-            .stringFactory(stringFactory(Country.NAME))
+            .stringFactory(Country.NAME)
             .caption("Country");
   }
 

@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class Petstore extends DefaultDomain {
@@ -113,7 +112,7 @@ public final class Petstore extends DefaultDomain {
                     .hidden(true))
             .keyGenerator(increment("petstore.category", "categoryid"))
             .orderBy(orderBy().ascending(Category.NAME))
-            .stringFactory(stringFactory(Category.NAME))
+            .stringFactory(Category.NAME)
             .caption("Categories");
   }
 
@@ -284,7 +283,7 @@ public final class Petstore extends DefaultDomain {
             .keyGenerator(increment("petstore.tag", "tagid"))
             .orderBy(orderBy().ascending(Tag.TAG))
             .selectTableName("petstore.tag tag")
-            .stringFactory(stringFactory(Tag.TAG))
+            .stringFactory(Tag.TAG)
             .caption("Tags");
   }
 

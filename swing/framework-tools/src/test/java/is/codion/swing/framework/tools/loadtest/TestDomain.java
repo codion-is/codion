@@ -8,7 +8,6 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
-import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 
@@ -35,7 +34,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
-            .stringFactory(stringFactory(DEPARTMENT_NAME))
+            .stringFactory(DEPARTMENT_NAME)
             .caption("Department");
   }
 }
