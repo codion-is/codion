@@ -185,7 +185,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .orderBy(ascending(Customer.LASTNAME, Customer.FIRSTNAME))
             .stringFactory(new CustomerStringProvider());
 
-    defineReport(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
+    define(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
   }
 
   void genre() {
@@ -254,7 +254,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .orderBy(ascending(Track.NAME))
             .stringFactory(Track.NAME);
 
-    defineFunction(Track.RAISE_PRICE, new RaisePriceFunction());
+    define(Track.RAISE_PRICE, new RaisePriceFunction());
   }
 
   void invoice() {
@@ -297,7 +297,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .build())
             .stringFactory(Invoice.ID);
 
-    defineFunction(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());
+    define(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());
   }
 
   void invoiceLine() {
@@ -337,7 +337,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .orderBy(ascending(Playlist.NAME))
             .stringFactory(Playlist.NAME);
 
-    defineFunction(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(getEntities()));
+    define(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(getEntities()));
   }
 
   void playlistTrack() {

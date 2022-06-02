@@ -96,7 +96,7 @@ public final class TestDomain extends DefaultDomain {
   public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
 
   void operations() {
-    defineProcedure(PROCEDURE_ID, (connection, objects) -> {});
-    defineFunction(FUNCTION_ID, (connection, objects) -> emptyList());
+    define(PROCEDURE_ID, (connection, objects) -> {});
+    define(FUNCTION_ID, (connection, objects) -> emptyList());
   }
 }

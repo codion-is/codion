@@ -60,7 +60,7 @@ public final class TestDomain extends DefaultDomain {
     job();
     noPkEntity();
     Report.REPORT_PATH.set("path/to/reports");
-    defineReport(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path") {
+    define(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path") {
       @Override
       public String fillReport(Connection connection, Map<String, Object> parameters) throws ReportException {
         return "result";
@@ -284,8 +284,8 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void operations() {
-    defineProcedure(PROCEDURE_ID, (connection, arguments) -> {});
-    defineFunction(FUNCTION_ID, (connection, arguments) -> null);
+    define(PROCEDURE_ID, (connection, arguments) -> {});
+    define(FUNCTION_ID, (connection, arguments) -> null);
   }
 
   public interface Job {

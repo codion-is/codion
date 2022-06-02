@@ -25,9 +25,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default {@link Domain} implementation. Extend to define a domain model.
  * @see #define(EntityType, Property.Builder[])
- * @see #defineReport(ReportType, Report)
- * @see #defineProcedure(ProcedureType, DatabaseProcedure)
- * @see #defineFunction(FunctionType, DatabaseFunction)
+ * @see #define(ReportType, Report)
+ * @see #define(ProcedureType, DatabaseProcedure)
+ * @see #define(FunctionType, DatabaseFunction)
  */
 public abstract class DefaultDomain implements Domain {
 
@@ -135,33 +135,33 @@ public abstract class DefaultDomain implements Domain {
    * @throws RuntimeException in case loading the report failed
    * @throws IllegalArgumentException in case the report has already been added
    */
-  protected final <T, R, P> void defineReport(ReportType<T, R, P> reportType, Report<T, R, P> report) {
+  protected final <T, R, P> void define(ReportType<T, R, P> reportType, Report<T, R, P> report) {
     reports.addReport(reportType, report);
   }
 
   /**
    * Adds the given procedure to this domain
-   * @param type the procedure type to identify the procedure
+   * @param procedureType the procedure type to identify the procedure
    * @param procedure the procedure to add
    * @param <C> the connection type
    * @param <T> the argument type
    * @throws IllegalArgumentException in case a procedure has already been associated with the given type
    */
-  protected final <C, T> void defineProcedure(ProcedureType<C, T> type, DatabaseProcedure<C, T> procedure) {
-    procedures.addProcedure(type, procedure);
+  protected final <C, T> void define(ProcedureType<C, T> procedureType, DatabaseProcedure<C, T> procedure) {
+    procedures.addProcedure(procedureType, procedure);
   }
 
   /**
    * Adds the given function to this domain
-   * @param type the function type to identify the function
+   * @param functionType the function type to identify the function
    * @param function the function to add
    * @param <C> the connection type
    * @param <T> the argument type
    * @param <R> the result type
    * @throws IllegalArgumentException in case a function has already been associated with the given type
    */
-  protected final <C, T, R> void defineFunction(FunctionType<C, T, R> type, DatabaseFunction<C, T, R> function) {
-    functions.addFunction(type, function);
+  protected final <C, T, R> void define(FunctionType<C, T, R> functionType, DatabaseFunction<C, T, R> function) {
+    functions.addFunction(functionType, function);
   }
 
   /**
