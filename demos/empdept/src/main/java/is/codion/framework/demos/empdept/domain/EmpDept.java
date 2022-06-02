@@ -22,6 +22,7 @@ import java.util.List;
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
+import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static java.util.Arrays.asList;
@@ -130,7 +131,7 @@ public final class EmpDept extends DefaultDomain {
                     .maximumLength(13)
                     .beanProperty("location"))
             .smallDataset(true)
-            .orderByAscending(Department.NAME)
+            .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
             .caption("Departments");
   }
@@ -176,7 +177,7 @@ public final class EmpDept extends DefaultDomain {
                     Employee.DEPARTMENT_FK, Department.LOCATION)
                     .preferredColumnWidth(100))
             .keyGenerator(increment("scott.emp", Employee.ID.getName()))
-            .orderByAscending(Employee.DEPARTMENT, Employee.NAME)
+            .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(Employee.NAME)
             .caption("Employee")
             .backgroundColorProvider((entity, attribute) -> {

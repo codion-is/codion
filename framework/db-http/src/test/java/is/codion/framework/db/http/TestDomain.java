@@ -21,6 +21,7 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
+import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -63,7 +64,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
-            .orderByAscending(DEPARTMENT_NAME)
+            .orderBy(ascending(DEPARTMENT_NAME))
             .stringFactory(DEPARTMENT_NAME)
             .caption("Department");
   }
@@ -105,7 +106,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EMP_DATA, "Data"))
             .stringFactory(EMP_NAME)
             .keyGenerator(increment("scott.emp", "empno"))
-            .orderByAscending(EMP_DEPARTMENT, EMP_NAME)
+            .orderBy(ascending(EMP_DEPARTMENT, EMP_NAME))
             .caption("Employee");
   }
 
