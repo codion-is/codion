@@ -70,7 +70,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             // tag::validator[]
             .validator(new CityValidator())
             // end::validator[]
-            .orderBy(orderBy().ascending(City.NAME))
+            .orderByAscending(City.NAME)
             .stringFactory(City.NAME)
             // tag::foreground[]
             .foregroundColorProvider(new CityColorProvider())
@@ -152,7 +152,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             columnProperty(Country.CODE_2, "Code 2")
                     .nullable(false)
                     .maximumLength(2))
-            .orderBy(orderBy().ascending(Country.NAME))
+            .orderByAscending(Country.NAME)
             .stringFactory(Country.NAME)
             .caption("Country");
   }

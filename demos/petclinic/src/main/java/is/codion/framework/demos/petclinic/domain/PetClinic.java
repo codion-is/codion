@@ -48,7 +48,7 @@ public final class PetClinic extends DefaultDomain {
                     .value(Vet.LAST_NAME)
                     .text(", ")
                     .value(Vet.FIRST_NAME))
-            .orderBy(orderBy().ascending(Vet.LAST_NAME, Vet.FIRST_NAME))
+            .orderByAscending(Vet.LAST_NAME, Vet.FIRST_NAME)
             .smallDataset(true);
   }
 
@@ -90,7 +90,7 @@ public final class PetClinic extends DefaultDomain {
             .keyGenerator(identity())
             .caption("Pet types")
             .stringFactory(PetType.NAME)
-            .orderBy(orderBy().ascending(PetType.NAME))
+            .orderByAscending(PetType.NAME)
             .smallDataset(true);
   }
 
@@ -117,7 +117,7 @@ public final class PetClinic extends DefaultDomain {
                     .value(Owner.LAST_NAME)
                     .text(", ")
                     .value(Owner.FIRST_NAME))
-            .orderBy(orderBy().ascending(Owner.LAST_NAME, Owner.FIRST_NAME));
+            .orderByAscending(Owner.LAST_NAME, Owner.FIRST_NAME);
   }
 
   private void pet() {
@@ -138,7 +138,7 @@ public final class PetClinic extends DefaultDomain {
             .keyGenerator(identity())
             .caption("Pets")
             .stringFactory(Pet.NAME)
-            .orderBy(orderBy().ascending(Pet.NAME));
+            .orderByAscending(Pet.NAME);
   }
 
   private void visit() {

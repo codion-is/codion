@@ -519,6 +519,13 @@ public interface EntityDefinition {
     Builder keyGenerator(KeyGenerator keyGenerator);
 
     /**
+     * Sets the order by clause for this entity type as ascending order for the given attributes
+     * @param attributes the attributes to order by ascending
+     * @return this {@link Builder} instance
+     */
+    Builder orderByAscending(Attribute<?>... attributes);
+
+    /**
      * Sets the order by clause for this entity type.
      * @param orderBy the order by clause
      * @return this {@link Builder} instance

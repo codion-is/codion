@@ -18,7 +18,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class SchemaBrowser extends DefaultDomain {
@@ -56,7 +55,7 @@ public final class SchemaBrowser extends DefaultDomain {
   void schema() {
     define(Schema.TYPE, bundle.getString("t_schema"),
             primaryKeyProperty(Schema.NAME, "Name"))
-            .orderBy(orderBy().ascending(Schema.NAME))
+            .orderByAscending(Schema.NAME)
             .readOnly(true)
             .stringFactory(Schema.NAME)
             .caption("Schemas");
@@ -78,7 +77,7 @@ public final class SchemaBrowser extends DefaultDomain {
             foreignKeyProperty(Table.SCHEMA_FK, "Schema"),
             columnProperty(Table.NAME, "Name")
                     .primaryKeyIndex(1))
-            .orderBy(orderBy().ascending(Table.SCHEMA, Table.NAME))
+            .orderByAscending(Table.SCHEMA, Table.NAME)
             .readOnly(true)
             .stringFactory(StringFactory.builder()
                     .value(Table.SCHEMA_FK)
@@ -121,7 +120,7 @@ public final class SchemaBrowser extends DefaultDomain {
             primaryKeyProperty(Column.NAME, "Column name")
                     .primaryKeyIndex(2),
             columnProperty(Column.DATA_TYPE, "Data type"))
-            .orderBy(orderBy().ascending(Column.SCHEMA, Column.TABLE_NAME, Column.NAME))
+            .orderByAscending(Column.SCHEMA, Column.TABLE_NAME, Column.NAME)
             .readOnly(true)
             .stringFactory(StringFactory.builder()
                     .value(Column.TABLE_FK)
@@ -154,7 +153,7 @@ public final class SchemaBrowser extends DefaultDomain {
             primaryKeyProperty(Constraint.NAME, "Constraint name")
                     .primaryKeyIndex(2),
             columnProperty(Constraint.CONSTRAINT_TYPE, "Type"))
-            .orderBy(orderBy().ascending(Constraint.SCHEMA, Constraint.TABLE_NAME, Constraint.NAME))
+            .orderByAscending(Constraint.SCHEMA, Constraint.TABLE_NAME, Constraint.NAME)
             .readOnly(true)
             .stringFactory(StringFactory.builder()
                     .value(Constraint.TABLE_FK)
@@ -190,7 +189,7 @@ public final class SchemaBrowser extends DefaultDomain {
                     .fetchDepth(3),
             columnProperty(ConstraintColumn.COLUMN_NAME, "Column name"),
             columnProperty(ConstraintColumn.POSITION, "Position"))
-            .orderBy(orderBy().ascending(ConstraintColumn.SCHEMA, ConstraintColumn.TABLE_NAME, ConstraintColumn.CONSTRAINT_NAME))
+            .orderByAscending(ConstraintColumn.SCHEMA, ConstraintColumn.TABLE_NAME, ConstraintColumn.CONSTRAINT_NAME)
             .readOnly(true)
             .caption("Constraint columns");
   }

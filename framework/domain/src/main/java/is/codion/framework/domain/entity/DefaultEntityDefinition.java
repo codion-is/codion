@@ -1143,6 +1143,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
+    public Builder orderByAscending(Attribute<?>... attributes) {
+      return orderBy(OrderBy.orderBy().ascending(attributes));
+    }
+
+    @Override
     public Builder orderBy(OrderBy orderBy) {
       requireNonNull(orderBy, "orderBy");
       if (definition.orderBy != null) {
