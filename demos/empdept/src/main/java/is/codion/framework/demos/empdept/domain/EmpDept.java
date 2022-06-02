@@ -195,7 +195,7 @@ public final class EmpDept extends DefaultDomain {
               return null;
             });
 
-    defineReport(Employee.EMPLOYEE_REPORT, classPathReport(EmpDept.class, "empdept_employees.jasper"));
+    define(Employee.EMPLOYEE_REPORT, classPathReport(EmpDept.class, "empdept_employees.jasper"));
   }
 }
 // end::defineEmployee[]

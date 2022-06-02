@@ -53,15 +53,15 @@ public final class TestDomainExtended extends DefaultDomain {
   }
 
   void procedure() {
-    defineProcedure(PROC_TYPE, (connection, arguments) -> {});
+    define(PROC_TYPE, (connection, arguments) -> {});
   }
 
   void function() {
-    defineFunction(FUNC_TYPE, (connection, arguments) -> null);
+    define(FUNC_TYPE, (connection, arguments) -> null);
   }
 
   void report() {
-    defineReport(REP_TYPE, new Report<Object, Object, Object>() {
+    define(REP_TYPE, new Report<Object, Object, Object>() {
       @Override
       public Object fillReport(Connection connection, Object parameters) throws ReportException {
         return null;

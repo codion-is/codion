@@ -8183,3 +8183,4 @@
   EntityDefinition.Builder.orderByAscending(Attribute...) added
   OrderBy.Builder added along with OrderBy.ascending(Attribute...) and OrderBy.descending(Attribute...), DefaultOrderBy now immutable
   EntityDefinition.Builder.orderByAscending(Attribute...) removed
+  DefaultDomain.defineReport(), defineFunction() and defineProcedure() renamed define()
