@@ -91,19 +91,19 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
       return null;
     }
 
-    OrderBy orderBy = OrderBy.orderBy();
+    OrderBy.Builder builder = OrderBy.builder();
     for (JsonNode node : jsonNode) {
       String[] split = node.asText().split(":");
       String attributeName = split[0];
       if ("asc".equals(split[1])) {
-        orderBy = orderBy.ascending(definition.getAttribute(attributeName));
+        builder.ascending(definition.getAttribute(attributeName));
       }
       else {
-        orderBy = orderBy.descending(definition.getAttribute(attributeName));
+        builder.descending(definition.getAttribute(attributeName));
       }
     }
 
-    return orderBy;
+    return builder.build();
   }
 
   private static Attribute<?>[] deserializeSelectAttributes(EntityDefinition definition, JsonNode jsonNode) {

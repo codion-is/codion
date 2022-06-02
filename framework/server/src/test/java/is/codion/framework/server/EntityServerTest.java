@@ -24,6 +24,7 @@ import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.OrderBy;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +35,6 @@ import java.rmi.registry.LocateRegistry;
 import java.util.Collection;
 import java.util.UUID;
 
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.*;
@@ -169,7 +169,7 @@ public class EntityServerTest {
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
     SelectCondition selectCondition = Conditions.condition(TestDomain.T_EMP).toSelectCondition()
-            .orderBy(orderBy().ascending(TestDomain.EMP_NAME));
+            .orderBy(OrderBy.ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.select(selectCondition);
 
     admin.getDatabaseStatistics();

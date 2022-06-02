@@ -12,10 +12,10 @@ import is.codion.framework.demos.petclinic.domain.api.Vet;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
 
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class PetClinic extends DefaultDomain {
@@ -152,7 +152,10 @@ public final class PetClinic extends DefaultDomain {
             columnProperty(Visit.DESCRIPTION, "Description")
                     .maximumLength(255))
             .keyGenerator(identity())
-            .orderBy(orderBy().ascending(Visit.PET_ID).descending(Visit.DATE))
+            .orderBy(OrderBy.builder()
+                    .ascending(Visit.PET_ID)
+                    .descending(Visit.DATE)
+                    .build())
             .caption("Visits");
   }
 }

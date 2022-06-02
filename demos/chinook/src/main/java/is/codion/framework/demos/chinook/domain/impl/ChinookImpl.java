@@ -17,6 +17,7 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
 
 import java.sql.ResultSet;
@@ -28,7 +29,6 @@ import java.util.List;
 
 import static is.codion.framework.db.condition.Conditions.where;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static java.util.stream.Collectors.toList;
@@ -290,7 +290,10 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             // tag::identity[]
             .keyGenerator(identity())
             // end::identity[]
-            .orderBy(orderBy().ascending(Invoice.CUSTOMER_ID).descending(Invoice.DATE))
+            .orderBy(OrderBy.builder()
+                    .ascending(Invoice.CUSTOMER_ID)
+                    .descending(Invoice.DATE)
+                    .build())
             .stringFactory(Invoice.ID);
 
     defineFunction(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());

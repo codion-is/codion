@@ -3,6 +3,7 @@ package is.codion.framework.demos.world.domain;
 import is.codion.common.item.Item;
 import is.codion.framework.demos.world.domain.api.World;
 import is.codion.framework.domain.DefaultDomain;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty.ValueConverter;
 
@@ -12,7 +13,6 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
@@ -182,7 +182,10 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .nullable(false)
                     .maximumFractionDigits(1)
                     .valueRange(0, 100))
-            .orderBy(orderBy().ascending(CountryLanguage.LANGUAGE).descending(CountryLanguage.PERCENTAGE))
+            .orderBy(OrderBy.builder()
+                    .ascending(CountryLanguage.LANGUAGE)
+                    .descending(CountryLanguage.PERCENTAGE)
+                    .build())
             .caption("Language");
   }
 
@@ -217,7 +220,10 @@ public final class WorldImpl extends DefaultDomain implements World {
             .selectQuery(SelectQuery.builder()
                     .from("world.country join world.city on city.countrycode = country.code")
                     .build())
-            .orderBy(orderBy().ascending(Lookup.COUNTRY_NAME).descending(Lookup.CITY_POPULATION))
+            .orderBy(OrderBy.builder()
+                    .ascending(Lookup.COUNTRY_NAME)
+                    .descending(Lookup.CITY_POPULATION)
+                    .build())
             .readOnly(true)
             .caption("Lookup");
   }

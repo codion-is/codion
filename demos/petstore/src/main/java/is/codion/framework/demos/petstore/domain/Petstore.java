@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
-import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class Petstore extends DefaultDomain {
@@ -185,8 +185,7 @@ public final class Petstore extends DefaultDomain {
                     .maximumLength(24)
                     .nullable(false))
             .keyGenerator(increment("petstore.sellercontactinfo", "contactinfoid"))
-            .orderBy(orderBy()
-                    .ascending(SellerContactInfo.LAST_NAME, SellerContactInfo.FIRST_NAME))
+            .orderBy(ascending(SellerContactInfo.LAST_NAME, SellerContactInfo.FIRST_NAME))
             .stringFactory(StringFactory.builder()
                     .value(SellerContactInfo.LAST_NAME)
                     .text(", ")

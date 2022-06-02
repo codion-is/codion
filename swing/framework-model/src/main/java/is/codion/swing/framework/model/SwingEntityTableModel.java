@@ -798,19 +798,19 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   private OrderBy getOrderByFromSortModel() {
-    OrderBy orderBy = OrderBy.orderBy();
+    OrderBy.Builder builder = OrderBy.builder();
     getSortModel().getColumnSortOrder().entrySet().stream()
             .filter(entry -> isColumnProperty(entry.getKey()))
             .forEach(entry -> {
               if (entry.getValue() == SortOrder.ASCENDING) {
-                orderBy.ascending(entry.getKey());
+                builder.ascending(entry.getKey());
               }
               else {
-                orderBy.descending(entry.getKey());
+                builder.descending(entry.getKey());
               }
             });
 
-    return orderBy;
+    return builder.build();
   }
 
   private boolean isColumnProperty(Attribute<?> attribute) {
