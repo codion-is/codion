@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -20,17 +21,24 @@ import static java.util.stream.Collectors.joining;
  * attribute2 -&#62; value2
  * attribute3 -&#62; value3
  * fkAttribute -&#62; {Entity instance with a single mapping refAttribute -&#62; refValue}
+ *
+ * StringFactory.Builder builder = StringFactory.stringFactory();
+ *
+ * builder.text("attribute1=")
+ *        .value(attribute1)
+ *        .text(", attribute3='")
+ *        .value(attribute3)
+ *        .text("' foreign key value=")
+ *        .foreignKeyValue(fkAttribute, refAttribute);
+ *
+ * System.out.println(builder.build().apply(entity));
  * </pre>
- * StringFactory.Builder builder = StringFactory.stringFactory();<br>
- * <br>
- * builder.text("attribute1=").value(attribute1).text(", attribute3='").value(attribute3)<br>
- *         .text("' foreign key value=").foreignKeyValue(fkAttribute, refAttribute);<br>
- * <br>
- * System.out.println(builder.get().apply(entity));<br><br>
  * outputs the following String:<br><br>
  * {@code attribute1=value1, attribute3='value3' foreign key value=refValue}
  */
 public final class StringFactory {
+
+  private static final String ATTRIBUTE_PARAM = "attribute";
 
   private StringFactory() {}
 
@@ -38,7 +46,7 @@ public final class StringFactory {
    * @return a {@link Builder} instance for configuring a string factory {@link Function} for entities.
    */
   public static Builder stringFactory() {
-    return new DefaultStringFactoryBuilder(new DefaultStringFactory());
+    return new DefaultStringFactoryBuilder();
   }
 
   /**
@@ -46,7 +54,7 @@ public final class StringFactory {
    * @return a {@link Builder} instance for configuring a string factory {@link Function} for entities.
    */
   public static Builder stringFactory(Attribute<?> attribute) {
-    return new DefaultStringFactoryBuilder(new DefaultStringFactory(attribute));
+    return new DefaultStringFactoryBuilder().value(attribute);
   }
 
   /**
@@ -86,33 +94,25 @@ public final class StringFactory {
     Builder text(String text);
 
     /**
-     * @return the string factory function
+     * @return a new string factory function based on this builder
      */
-    Function<Entity, String> get();
+    Function<Entity, String> build();
   }
 
   private static final class DefaultStringFactory implements Function<Entity, String>, Serializable {
 
     private static final long serialVersionUID = 1;
 
-    private static final String ATTRIBUTE_PARAM = "attribute";
-
     /**
      * Holds the ValueProviders used when constructing the String representation
      */
-    private final List<Function<Entity, String>> valueProviders = new ArrayList<>();
+    private final List<Function<Entity, String>> valueProviders;
 
     /**
      * Instantiates a new {@link StringFactory} instance
      */
-    private DefaultStringFactory() {}
-
-    /**
-     * Instantiates a new {@link StringFactory} instance
-     * @param attribute the attribute which value should be used for a string representation
-     */
-    private DefaultStringFactory(Attribute<?> attribute) {
-      addValue(attribute);
+    private DefaultStringFactory(DefaultStringFactoryBuilder builder) {
+      this.valueProviders = unmodifiableList(builder.valueProviders);
     }
 
     /**
@@ -131,34 +131,6 @@ public final class StringFactory {
               .map(valueProvider -> valueProvider.apply(entity))
               .collect(joining());
     }
-
-    private DefaultStringFactory addValue(Attribute<?> attribute) {
-      requireNonNull(attribute, ATTRIBUTE_PARAM);
-      valueProviders.add(new StringValueProvider(attribute));
-      return this;
-    }
-
-    private DefaultStringFactory addFormattedValue(Attribute<?> attribute, Format format) {
-      requireNonNull(attribute, ATTRIBUTE_PARAM);
-      requireNonNull(format, "format");
-      valueProviders.add(new FormattedValueProvider(attribute, format));
-      return this;
-    }
-
-    private DefaultStringFactory addForeignKeyValue(ForeignKey foreignKey, Attribute<?> attribute) {
-      requireNonNull(foreignKey, "foreignKey");
-      requireNonNull(attribute, ATTRIBUTE_PARAM);
-      if (!attribute.getEntityType().equals(foreignKey.getReferencedEntityType())) {
-        throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + foreignKey.getEntityType());
-      }
-      valueProviders.add(new ForeignKeyValueProvider(foreignKey, attribute));
-      return this;
-    }
-
-    private DefaultStringFactory addText(String text) {
-      valueProviders.add(new StaticTextProvider(text));
-      return this;
-    }
   }
 
   private static final class FormattedValueProvider implements Function<Entity, String>, Serializable {
@@ -169,8 +141,8 @@ public final class StringFactory {
     private final Format format;
 
     private FormattedValueProvider(Attribute<?> attribute, Format format) {
-      this.attribute = attribute;
-      this.format = format;
+      this.attribute = requireNonNull(attribute, ATTRIBUTE_PARAM);
+      this.format = requireNonNull(format, "format");
     }
 
     @Override
@@ -191,8 +163,11 @@ public final class StringFactory {
     private final Attribute<?> attribute;
 
     private ForeignKeyValueProvider(ForeignKey foreignKey, Attribute<?> attribute) {
-      this.foreignKey = foreignKey;
-      this.attribute = attribute;
+      this.foreignKey = requireNonNull(foreignKey, "foreignKey");
+      this.attribute = requireNonNull(attribute, ATTRIBUTE_PARAM);
+      if (!attribute.getEntityType().equals(foreignKey.getReferencedEntityType())) {
+        throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + foreignKey.getEntityType());
+      }
     }
 
     @Override
@@ -212,7 +187,7 @@ public final class StringFactory {
     private final Attribute<?> attribute;
 
     private StringValueProvider(Attribute<?> attribute) {
-      this.attribute = attribute;
+      this.attribute = requireNonNull(attribute, ATTRIBUTE_PARAM);
     }
 
     @Override
@@ -228,7 +203,7 @@ public final class StringFactory {
     private final String text;
 
     private StaticTextProvider(String text) {
-      this.text = text;
+      this.text = requireNonNull(text, "text");
     }
 
     @Override
@@ -239,39 +214,35 @@ public final class StringFactory {
 
   private static final class DefaultStringFactoryBuilder implements Builder {
 
-    private final DefaultStringFactory stringFactory;
-
-    private DefaultStringFactoryBuilder(DefaultStringFactory stringFactory) {
-      this.stringFactory = requireNonNull(stringFactory);
-    }
+    private final List<Function<Entity, String>> valueProviders = new ArrayList<>();
 
     @Override
     public Builder value(Attribute<?> attribute) {
-      stringFactory.addValue(attribute);
+      valueProviders.add(new StringValueProvider(attribute));
       return this;
     }
 
     @Override
     public Builder formattedValue(Attribute<?> attribute, Format format) {
-      stringFactory.addFormattedValue(attribute, format);
+      valueProviders.add(new FormattedValueProvider(attribute, format));
       return this;
     }
 
     @Override
     public Builder foreignKeyValue(ForeignKey foreignKey, Attribute<?> attribute) {
-      stringFactory.addForeignKeyValue(foreignKey, attribute);
+      valueProviders.add(new ForeignKeyValueProvider(foreignKey, attribute));
       return this;
     }
 
     @Override
     public Builder text(String text) {
-      stringFactory.addText(text);
+      valueProviders.add(new StaticTextProvider(text));
       return this;
     }
 
     @Override
-    public Function<Entity, String> get() {
-      return stringFactory;
+    public Function<Entity, String> build() {
+      return new DefaultStringFactory(this);
     }
   }
 }

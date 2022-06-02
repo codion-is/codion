@@ -1172,7 +1172,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     @Override
     public Builder stringFactory(StringFactory.Builder builder) {
-      return stringFactory(requireNonNull(builder, "builder").get());
+      return stringFactory(requireNonNull(builder, "builder").build());
     }
 
     @Override

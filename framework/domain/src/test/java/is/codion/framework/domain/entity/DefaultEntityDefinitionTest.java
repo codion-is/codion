@@ -39,7 +39,7 @@ public class DefaultEntityDefinitionTest {
     EntityType entityType = DOMAIN_TYPE.entityType("test");
     Attribute<Integer> id = entityType.integerAttribute("id");
     Attribute<String> name = entityType.stringAttribute("name");
-    Function<Entity, String> stringFactory = StringFactory.stringFactory(name).get();
+    Function<Entity, String> stringFactory = StringFactory.stringFactory(name).build();
     Comparator<Entity> comparator = (o1, o2) -> 0;
     class TestDomain extends DefaultDomain {
       public TestDomain() {

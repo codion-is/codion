@@ -40,7 +40,8 @@ public class StringFactoryTest {
     Function<Entity, String> employeeToString = StringFactory.stringFactory(Employee.NAME)
             .text(" (department: ").value(Employee.DEPARTMENT_FK).text(", location: ")
             .foreignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION).text(", hiredate: ")
-            .formattedValue(Employee.HIREDATE, dateFormat.toFormat()).text(")").get();
+            .formattedValue(Employee.HIREDATE, dateFormat.toFormat()).text(")")
+            .build();
 
     assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.apply(employee));
 
@@ -54,7 +55,8 @@ public class StringFactoryTest {
     employeeToString = StringFactory.stringFactory(Employee.NAME)
             .text(" (department: ").value(Employee.DEPARTMENT_FK).text(", location: ")
             .foreignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION).text(", hiredate: ")
-            .formattedValue(Employee.HIREDATE, dateFormat.toFormat()).text(")").get();
+            .formattedValue(Employee.HIREDATE, dateFormat.toFormat()).text(")")
+            .build();
 
     assertEquals(" (department: , location: , hiredate: )", employeeToString.apply(employee));
   }
