@@ -15,6 +15,7 @@ import is.codion.framework.domain.entity.Key;
 
 import java.util.List;
 
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.property.Properties.*;
 
 class Introduction {
@@ -52,17 +53,17 @@ class Introduction {
     }
 
     void city() {
-      define(City.TYPE,
+      add(definition(
               primaryKeyProperty(City.ID),
-              columnProperty(City.NAME, "Name"));
+              columnProperty(City.NAME, "Name")));
     }
 
     void customer() {
-      define(Customer.TYPE,
+      add(definition(
               primaryKeyProperty(Customer.ID),
               columnProperty(Customer.NAME, "Name"),
               columnProperty(Customer.CITY_ID),
-              foreignKeyProperty(Customer.CITY_FK, "City"));
+              foreignKeyProperty(Customer.CITY_FK, "City")));
     }
   }
   // end::storeImpl[]

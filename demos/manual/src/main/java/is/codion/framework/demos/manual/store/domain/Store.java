@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.property.Properties.*;
 
@@ -76,7 +77,7 @@ public final class Store extends DefaultDomain {
 
   private void customer() {
     // tag::customer[]
-    define(Customer.TYPE,
+    add(definition(
             primaryKeyProperty(Customer.ID),
             columnProperty(Customer.FIRST_NAME, "First name")
                     .nullable(false)
@@ -92,13 +93,13 @@ public final class Store extends DefaultDomain {
             // tag::customerStringFactory[]
             .stringFactory(new CustomerToString())
             // end::customerStringFactory[]
-            .caption("Customer");
+            .caption("Customer"));
     // end::customer[]
   }
 
   private void address() {
     // tag::address[]
-    define(Address.TYPE,
+    add(definition(
             primaryKeyProperty(Address.ID),
             columnProperty(Address.STREET, "Street")
                     .nullable(false)
@@ -115,13 +116,13 @@ public final class Store extends DefaultDomain {
                     .value(Address.CITY))
             .keyGenerator(identity())
             .smallDataset(true)
-            .caption("Address");
+            .caption("Address"));
     // end::address[]
   }
 
   private void customerAddress() {
     // tag::customerAddress[]
-    define(CustomerAddress.TYPE,
+    add(definition(
             primaryKeyProperty(CustomerAddress.ID),
             columnProperty(CustomerAddress.CUSTOMER_ID)
                     .nullable(false),
@@ -130,7 +131,7 @@ public final class Store extends DefaultDomain {
                     .nullable(false),
             foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address"))
             .keyGenerator(identity())
-            .caption("Customer address");
+            .caption("Customer address"));
     // end::customerAddress[]
   }
 

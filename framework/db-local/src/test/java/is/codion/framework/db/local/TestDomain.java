@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -60,7 +61,7 @@ public final class TestDomain extends DefaultDomain {
     job();
     noPkEntity();
     Report.REPORT_PATH.set("path/to/reports");
-    define(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path") {
+    add(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path") {
       @Override
       public String fillReport(Connection connection, Map<String, Object> parameters) throws ReportException {
         return "result";
@@ -95,7 +96,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void department() {
-    define(Department.TYPE,
+    add(definition(
             primaryKeyProperty(Department.DEPTNO, Department.DEPTNO.getName())
                     .updatable(true)
                     .nullable(false)
@@ -117,7 +118,7 @@ public final class TestDomain extends DefaultDomain {
             })
             .conditionProvider(Department.DEPARTMENT_CONDITION_SALES_TYPE, (attributes, values) -> "dname = 'SALES'")
             .conditionProvider(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE, (attributes, values) -> "no_column is null")
-            .caption("Department");
+            .caption("Department"));
   }
 
   public interface Employee {
@@ -144,7 +145,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void employee() {
-    define(Employee.TYPE,
+    add(definition(
             primaryKeyProperty(Employee.ID, Employee.ID.getName()),
             columnProperty(Employee.NAME, Employee.NAME.getName())
                     .searchProperty(true).maximumLength(10).nullable(false),
@@ -173,7 +174,7 @@ public final class TestDomain extends DefaultDomain {
             .keyGenerator(increment("scott.emp", "empno"))
             .conditionProvider(Employee.NAME_IS_BLAKE_CONDITION_ID, (attributes, values) -> "ename = 'BLAKE'")
             .conditionProvider(Employee.MGR_GREATER_THAN_CONDITION_ID, (attributes, values) -> "mgr > ?")
-            .caption("Employee");
+            .caption("Employee"));
   }
 
   public interface DepartmentFk extends Entity {
@@ -185,11 +186,12 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void departmentFk() {
-    define(DepartmentFk.TYPE, "scott.dept",
+    add(definition(
             primaryKeyProperty(DepartmentFk.DEPTNO, Department.DEPTNO.getName()),
             columnProperty(DepartmentFk.DNAME, DepartmentFk.DNAME.getName()),
             columnProperty(DepartmentFk.LOC, DepartmentFk.LOC.getName()))
-            .stringFactory(DepartmentFk.DNAME);
+            .tableName("scott.dept")
+            .stringFactory(DepartmentFk.DNAME));
   }
 
   public interface EmployeeFk {
@@ -210,7 +212,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void employeeFk() {
-    define(EmployeeFk.TYPE, "scott.emp",
+    add(definition(
             primaryKeyProperty(EmployeeFk.ID, EmployeeFk.ID.getName()),
             columnProperty(EmployeeFk.NAME, EmployeeFk.NAME.getName())
                     .nullable(false),
@@ -228,9 +230,10 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EmployeeFk.HIREDATE, EmployeeFk.HIREDATE.getName())
                     .nullable(false),
             columnProperty(EmployeeFk.HIRETIME, EmployeeFk.HIRETIME.getName()))
+            .tableName("scott.emp")
             .stringFactory(EmployeeFk.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
-            .caption("Employee");
+            .caption("Employee"));
   }
 
   public interface UUIDTestDefault {
@@ -256,10 +259,10 @@ public final class TestDomain extends DefaultDomain {
         return true;
       }
     };
-    define(UUIDTestDefault.TYPE,
+    add(definition(
             primaryKeyProperty(UUIDTestDefault.ID, "Id"),
             columnProperty(UUIDTestDefault.DATA, "Data"))
-            .keyGenerator(uuidKeyGenerator);
+            .keyGenerator(uuidKeyGenerator));
   }
 
   public interface UUIDTestNoDefault {
@@ -277,15 +280,15 @@ public final class TestDomain extends DefaultDomain {
         entity.put(UUIDTestNoDefault.ID, UUID.randomUUID());
       }
     };
-    define(UUIDTestNoDefault.TYPE,
+    add(definition(
             primaryKeyProperty(UUIDTestNoDefault.ID, "Id"),
             columnProperty(UUIDTestNoDefault.DATA, "Data"))
-            .keyGenerator(uuidKeyGenerator);
+            .keyGenerator(uuidKeyGenerator));
   }
 
   private void operations() {
-    define(PROCEDURE_ID, (connection, arguments) -> {});
-    define(FUNCTION_ID, (connection, arguments) -> null);
+    add(PROCEDURE_ID, (connection, arguments) -> {});
+    add(FUNCTION_ID, (connection, arguments) -> null);
   }
 
   public interface Job {
@@ -299,7 +302,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void job() {
-    define(Job.TYPE, "scott.emp",
+    add(definition(
             columnProperty(Job.JOB)
                     .primaryKeyIndex(0)
                     .groupingColumn(true),
@@ -315,9 +318,10 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Job.MIN_COMMISSION)
                     .columnExpression("min(comm)")
                     .aggregateColumn(true))
+            .tableName("scott.emp")
             .selectQuery(SelectQuery.builder()
                     .having("job <> 'PRESIDENT'")
-                    .build());
+                    .build()));
   }
 
   public interface NoPrimaryKey {
@@ -330,11 +334,11 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void noPkEntity() {
-    define(NoPrimaryKey.TYPE,
+    add(definition(
             columnProperty(NoPrimaryKey.COL_1),
             columnProperty(NoPrimaryKey.COL_2),
             columnProperty(NoPrimaryKey.COL_3),
-            columnProperty(NoPrimaryKey.COL_4));
+            columnProperty(NoPrimaryKey.COL_4)));
   }
 
   public interface EmpnoDeptno {
@@ -347,7 +351,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void empnoDeptno() {
-    define(EmpnoDeptno.TYPE,
+    add(definition(
             columnProperty(EmpnoDeptno.DEPTNO),
             primaryKeyProperty(EmpnoDeptno.EMPNO))
             .selectQuery(SelectQuery.builder()
@@ -355,7 +359,7 @@ public final class TestDomain extends DefaultDomain {
                     .where("e.deptno = d.deptno")
                     .orderBy("e.deptno, e.ename")
                     .build())
-            .conditionProvider(EmpnoDeptno.CONDITION, (attributes, values) -> "d.deptno = 10");
+            .conditionProvider(EmpnoDeptno.CONDITION, (attributes, values) -> "d.deptno = 10"));
   }
 
   public interface Query {
@@ -366,15 +370,16 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void query() {
-    define(Query.TYPE, "scott.emp",
+    add(definition(
             columnProperty(Query.EMPNO),
             columnProperty(Query.ENAME))
+            .tableName("scott.emp")
             .orderBy(OrderBy.descending(Query.ENAME))
             .selectTableName("scott.emp e")
             .selectQuery(SelectQuery.builder()
                     .columns("empno, ename")
                     .orderBy("ename")
-                    .build());
+                    .build()));
   }
 
   public interface QueryColumnsWhereClause {
@@ -385,14 +390,15 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void queryColumnsWhereClause() {
-    define(QueryColumnsWhereClause.TYPE, "scott.emp e",
+    add(definition(
             columnProperty(QueryColumnsWhereClause.EMPNO),
             columnProperty(QueryColumnsWhereClause.ENAME))
+            .tableName("scott.emp e")
             .orderBy(OrderBy.descending(QueryColumnsWhereClause.ENAME))
             .selectQuery(SelectQuery.builder()
                     .columns("e.empno, e.ename")
                     .where("e.deptno > 10")
-                    .build());
+                    .build()));
   }
 
   public interface QueryFromClause {
@@ -403,14 +409,14 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void queryFromClause() {
-    define(QueryFromClause.TYPE,
+    add(definition(
             columnProperty(QueryFromClause.EMPNO),
             columnProperty(QueryFromClause.ENAME))
             .orderBy(OrderBy.descending(QueryFromClause.ENAME))
             .selectQuery(SelectQuery.builder()
                     .from("scott.emp")
                     .orderBy("ename")
-                    .build());
+                    .build()));
   }
 
   public interface QueryFromWhereClause {
@@ -421,7 +427,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void queryFromWhereClause() {
-    define(QueryFromWhereClause.TYPE,
+    add(definition(
             columnProperty(QueryFromWhereClause.EMPNO),
             columnProperty(QueryFromWhereClause.ENAME))
             .orderBy(OrderBy.descending(QueryFromWhereClause.ENAME))
@@ -429,6 +435,6 @@ public final class TestDomain extends DefaultDomain {
                     .from("scott.emp")
                     .where("deptno > 10")
                     .orderBy("deptno")
-                    .build());
+                    .build()));
   }
 }

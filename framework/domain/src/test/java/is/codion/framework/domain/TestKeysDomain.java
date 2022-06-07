@@ -4,6 +4,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class TestKeysDomain extends DefaultDomain {
@@ -23,35 +24,35 @@ public final class TestKeysDomain extends DefaultDomain {
   }
 
   public void testPrimaryKeyIndexes1() {
-    define(TestPrimaryKey.TYPE,
+    add(definition(
             columnProperty(TestPrimaryKey.ID1)
                     .primaryKeyIndex(0),
             columnProperty(TestPrimaryKey.ID2)
                     .primaryKeyIndex(1),
             columnProperty(TestPrimaryKey.ID3)
-                    .primaryKeyIndex(3));
+                    .primaryKeyIndex(3)));
   }
 
   public void testPrimaryKeyIndexes2() {
-    define(TestPrimaryKey.TYPE,
+    add(definition(
             columnProperty(TestPrimaryKey.ID1)
                     .primaryKeyIndex(1),
             columnProperty(TestPrimaryKey.ID2)
                     .primaryKeyIndex(1),
             columnProperty(TestPrimaryKey.ID3)
-                    .primaryKeyIndex(2));
+                    .primaryKeyIndex(2)));
   }
 
   public void testPrimaryKeyIndexes3() {
-    define(TestPrimaryKey.TYPE,
+    add(definition(
             columnProperty(TestPrimaryKey.ID1)
-                    .primaryKeyIndex(-1));
+                    .primaryKeyIndex(-1)));
   }
 
   public void testPrimaryKeyIndexes4() {
-    define(TestPrimaryKey.TYPE,
+    add(definition(
             columnProperty(TestPrimaryKey.ID1)
-                    .primaryKeyIndex(10));
+                    .primaryKeyIndex(10)));
   }
 
   public interface TestFkMaster {
@@ -73,17 +74,17 @@ public final class TestKeysDomain extends DefaultDomain {
   }
 
   public void testForeignKeys() {
-    define(TestFkMaster.TYPE,
+    add(definition(
             columnProperty(TestFkMaster.ID1)
                     .primaryKeyIndex(0)//,
             //here's what we're testing for, a missing fk reference property
 //            columnProperty(TestFKMaster.ID1)
 //                    .primaryKeyIndex(1)
-    );
-    define(TestFkDetail.TYPE,
+    ));
+    add(definition(
             primaryKeyProperty(TestFkDetail.ID),
             columnProperty(TestFkDetail.MASTER_ID1),
             columnProperty(TestFkDetail.MASTER_ID2),
-            foreignKeyProperty(TestFkDetail.MASTER_FK));
+            foreignKeyProperty(TestFkDetail.MASTER_FK)));
   }
 }

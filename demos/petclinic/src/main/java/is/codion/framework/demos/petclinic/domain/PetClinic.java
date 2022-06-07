@@ -15,6 +15,7 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
 
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
@@ -33,7 +34,7 @@ public final class PetClinic extends DefaultDomain {
   }
 
   private void vet() {
-    define(Vet.TYPE,
+    add(definition(
             primaryKeyProperty(Vet.ID),
             columnProperty(Vet.FIRST_NAME, "First name")
                     .searchProperty(true)
@@ -50,11 +51,11 @@ public final class PetClinic extends DefaultDomain {
                     .text(", ")
                     .value(Vet.FIRST_NAME))
             .orderBy(ascending(Vet.LAST_NAME, Vet.FIRST_NAME))
-            .smallDataset(true);
+            .smallDataset(true));
   }
 
   private void specialty() {
-    define(Specialty.TYPE,
+    add(definition(
             primaryKeyProperty(Specialty.ID),
             columnProperty(Specialty.NAME, "Name")
                     .searchProperty(true)
@@ -63,11 +64,11 @@ public final class PetClinic extends DefaultDomain {
             .keyGenerator(identity())
             .caption("Specialties")
             .stringFactory(Specialty.NAME)
-            .smallDataset(true);
+            .smallDataset(true));
   }
 
   private void vetSpecialty() {
-    define(VetSpecialty.TYPE,
+    add(definition(
             columnProperty(VetSpecialty.VET)
                     .primaryKeyIndex(0),
             columnProperty(VetSpecialty.SPECIALTY)
@@ -78,11 +79,11 @@ public final class PetClinic extends DefaultDomain {
             .stringFactory(StringFactory.builder()
                     .value(VetSpecialty.VET_FK)
                     .text(" - ")
-                    .value(VetSpecialty.SPECIALTY_FK));
+                    .value(VetSpecialty.SPECIALTY_FK)));
   }
 
   private void petType() {
-    define(PetType.TYPE,
+    add(definition(
             primaryKeyProperty(PetType.ID),
             columnProperty(PetType.NAME, "Name")
                     .searchProperty(true)
@@ -92,11 +93,11 @@ public final class PetClinic extends DefaultDomain {
             .caption("Pet types")
             .stringFactory(PetType.NAME)
             .orderBy(ascending(PetType.NAME))
-            .smallDataset(true);
+            .smallDataset(true));
   }
 
   private void owner() {
-    define(Owner.TYPE,
+    add(definition(
             primaryKeyProperty(Owner.ID),
             columnProperty(Owner.FIRST_NAME, "First name")
                     .searchProperty(true)
@@ -118,11 +119,11 @@ public final class PetClinic extends DefaultDomain {
                     .value(Owner.LAST_NAME)
                     .text(", ")
                     .value(Owner.FIRST_NAME))
-            .orderBy(ascending(Owner.LAST_NAME, Owner.FIRST_NAME));
+            .orderBy(ascending(Owner.LAST_NAME, Owner.FIRST_NAME)));
   }
 
   private void pet() {
-    define(Pet.TYPE,
+    add(definition(
             primaryKeyProperty(Pet.ID),
             columnProperty(Pet.NAME, "Name")
                     .searchProperty(true)
@@ -139,11 +140,11 @@ public final class PetClinic extends DefaultDomain {
             .keyGenerator(identity())
             .caption("Pets")
             .stringFactory(Pet.NAME)
-            .orderBy(ascending(Pet.NAME));
+            .orderBy(ascending(Pet.NAME)));
   }
 
   private void visit() {
-    define(Visit.TYPE,
+    add(definition(
             primaryKeyProperty(Visit.ID),
             columnProperty(Visit.PET_ID)
                     .nullable(false),
@@ -157,6 +158,6 @@ public final class PetClinic extends DefaultDomain {
                     .ascending(Visit.PET_ID)
                     .descending(Visit.DATE)
                     .build())
-            .caption("Visits");
+            .caption("Visits"));
   }
 }

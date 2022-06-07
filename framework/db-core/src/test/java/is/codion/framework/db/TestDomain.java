@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -38,8 +39,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Integer> SUPER_ID = T_SUPER.integerAttribute("id");
 
   void superEntity() {
-    define(T_SUPER,
-            primaryKeyProperty(SUPER_ID));
+    add(definition(primaryKeyProperty(SUPER_ID)));
   }
 
   public static final EntityType T_MASTER = DOMAIN.entityType("db.master_entity");
@@ -51,7 +51,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
 
   void master() {
-    define(T_MASTER,
+    add(definition(
             columnProperty(MASTER_ID_1).primaryKeyIndex(0),
             columnProperty(MASTER_ID_2).primaryKeyIndex(1),
             columnProperty(MASTER_SUPER_ID),
@@ -59,7 +59,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(MASTER_NAME),
             columnProperty(MASTER_CODE))
             .comparator(Comparator.comparing(o -> o.get(MASTER_CODE)))
-            .stringFactory(MASTER_NAME);
+            .stringFactory(MASTER_NAME));
   }
 
   public static final EntityType T_DETAIL = DOMAIN.entityType("db.detail_entity");
@@ -89,7 +89,7 @@ public final class TestDomain extends DefaultDomain {
           item(2, "2"), item(3, "3"));
 
   void detail() {
-    define(T_DETAIL,
+    add(definition(
             primaryKeyProperty(DETAIL_ID),
             columnProperty(DETAIL_INT, DETAIL_INT.getName()),
             columnProperty(DETAIL_DOUBLE, DETAIL_DOUBLE.getName()),
@@ -120,7 +120,7 @@ public final class TestDomain extends DefaultDomain {
             .selectTableName(DETAIL_SELECT_TABLE_NAME.getName())
             .orderBy(ascending(DETAIL_STRING))
             .smallDataset(true)
-            .stringFactory(DETAIL_STRING);
+            .stringFactory(DETAIL_STRING));
   }
 
   public static final EntityType T_DEPARTMENT = DOMAIN.entityType("db.scott.dept");
@@ -133,13 +133,14 @@ public final class TestDomain extends DefaultDomain {
   public static final ConditionType DEPARTMENT_NAME_NOT_NULL_CONDITION_ID = T_DEPARTMENT.conditionType("departmentNameNotNull");
 
   void department() {
-    define(T_DEPARTMENT, "scott.dept",
+    add(definition(
             primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
                     .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
                     .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
+            .tableName("scott.dept")
             .smallDataset(true)
             .orderBy(ascending(DEPARTMENT_NAME))
             .stringFactory(DEPARTMENT_NAME)
@@ -151,7 +152,7 @@ public final class TestDomain extends DefaultDomain {
               return builder.append(")").toString();
             })
             .conditionProvider(DEPARTMENT_NAME_NOT_NULL_CONDITION_ID, (attributes, values) -> "department name is not null")
-            .caption("Department");
+            .caption("Department"));
   }
 
   public static final EntityType T_EMP = DOMAIN.entityType("db.scott.emp");
@@ -168,7 +169,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
 
   void employee() {
-    define(T_EMP, "scott.emp",
+    add(definition(
             primaryKeyProperty(EMP_ID, EMP_ID.getName()).columnName("empno"),
             columnProperty(EMP_NAME, EMP_NAME.getName())
                     .searchProperty(true).columnName("ename").maximumLength(10).nullable(false),
@@ -188,8 +189,9 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION)
                     .preferredColumnWidth(100))
+            .tableName("scott.emp")
             .orderBy(ascending(EMP_DEPARTMENT, EMP_NAME))
             .stringFactory(EMP_NAME)
-            .caption("Employee");
+            .caption("Employee"));
   }
 }

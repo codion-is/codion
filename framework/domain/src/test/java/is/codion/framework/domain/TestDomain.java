@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.KeyGenerator.queried;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -53,10 +54,10 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Integer> COMPOSITE_MASTER_ID_3 = T_COMPOSITE_MASTER.integerAttribute("id3");
 
   void compositeMaster() {
-    define(T_COMPOSITE_MASTER,
+    add(definition(
             columnProperty(COMPOSITE_MASTER_ID).primaryKeyIndex(0).nullable(true),
             columnProperty(COMPOSITE_MASTER_ID_2).primaryKeyIndex(1),
-            columnProperty(COMPOSITE_MASTER_ID_3).primaryKeyIndex(2));
+            columnProperty(COMPOSITE_MASTER_ID_3).primaryKeyIndex(2)));
   }
 
   public static final EntityType T_COMPOSITE_DETAIL = DOMAIN.entityType("domain.composite_detail");
@@ -69,12 +70,12 @@ public final class TestDomain extends DefaultDomain {
           COMPOSITE_DETAIL_MASTER_ID_3, COMPOSITE_MASTER_ID_3);
 
   void compositeDetail() {
-    define(T_COMPOSITE_DETAIL,
+    add(definition(
             columnProperty(COMPOSITE_DETAIL_MASTER_ID).primaryKeyIndex(0),
             columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1),
             columnProperty(COMPOSITE_DETAIL_MASTER_ID_3).primaryKeyIndex(2),
             foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master")
-                    .readOnly(COMPOSITE_DETAIL_MASTER_ID_3));
+                    .readOnly(COMPOSITE_DETAIL_MASTER_ID_3)));
   }
 
   public interface Master extends Entity {
@@ -88,14 +89,14 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void master() {
-    define(Master.TYPE,
+    add(definition(
             primaryKeyProperty(Master.ID)
                     .beanProperty("id"),
             columnProperty(Master.NAME)
                     .beanProperty("name"),
             columnProperty(Master.CODE))
             .comparator(new MasterComparator())
-            .stringFactory(Master.NAME);
+            .stringFactory(Master.NAME));
   }
 
   private static final class MasterComparator implements Comparator<Entity>, Serializable {
@@ -150,7 +151,7 @@ public final class TestDomain extends DefaultDomain {
           item(2, "2"), item(3, "3"));
 
   void detail() {
-    define(Detail.TYPE,
+    add(definition(
             primaryKeyProperty(Detail.ID)
                     .beanProperty("id"),
             columnProperty(Detail.INT, Detail.INT.getName()),
@@ -194,7 +195,7 @@ public final class TestDomain extends DefaultDomain {
             .orderBy(ascending(Detail.STRING))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
             .smallDataset(true)
-            .stringFactory(Detail.STRING);
+            .stringFactory(Detail.STRING));
   }
 
   public interface Department extends Entity {
@@ -214,7 +215,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void department() {
-    define(Department.TYPE, "scott.dept",
+    add(definition(
             primaryKeyProperty(Department.NO, Department.NO.getName())
                     .updatable(true).nullable(false)
                     .beanProperty("deptNo"),
@@ -229,10 +230,11 @@ public final class TestDomain extends DefaultDomain {
                     .readOnly(true)
                     .beanProperty("active"),
             blobProperty(Department.DATA))
+            .tableName("scott.dept")
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
-            .caption("Department");
+            .caption("Department"));
   }
 
   public interface Employee extends Entity {
@@ -264,7 +266,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void employee() {
-    define(Employee.TYPE, "scott.emp",
+    add(definition(
             primaryKeyProperty(Employee.ID, Employee.ID.getName())
                     .columnName("empno")
                     .beanProperty("id"),
@@ -305,10 +307,11 @@ public final class TestDomain extends DefaultDomain {
             derivedProperty(Employee.DEPARTMENT_NAME, new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
             blobProperty(Employee.DATA, "Data")
                     .eagerlyLoaded())
+            .tableName("scott.emp")
             .keyGenerator(increment("scott.emp", "empno"))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(Employee.NAME)
-            .caption("Employee");
+            .caption("Employee"));
   }
 
   private static final class DepartmentNameProvider implements DerivedProperty.Provider<String>, Serializable {
@@ -334,10 +337,10 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void noPKEntity() {
-    define(NoPk.TYPE,
+    add(definition(
             columnProperty(NoPk.COL1),
             columnProperty(NoPk.COL2),
-            columnProperty(NoPk.COL3));
+            columnProperty(NoPk.COL3)));
   }
 
   public interface TransModifies {
@@ -348,9 +351,9 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void transientModifies() {
-    define(TransModifies.TYPE,
+    add(definition(
             Properties.primaryKeyProperty(TransModifies.ID),
-            Properties.transientProperty(TransModifies.TRANS));
+            Properties.transientProperty(TransModifies.TRANS)));
   }
 
   public interface TransModifiesNot {
@@ -361,9 +364,9 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void transientModifiesNot() {
-    define(TransModifiesNot.TYPE,
+    add(definition(
             Properties.primaryKeyProperty(TransModifiesNot.ID),
             Properties.transientProperty(TransModifiesNot.TRANS)
-                    .modifiesEntity(false));
+                    .modifiesEntity(false)));
   }
 }

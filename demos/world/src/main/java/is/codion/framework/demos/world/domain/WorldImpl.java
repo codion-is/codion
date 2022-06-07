@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
@@ -45,7 +46,7 @@ public final class WorldImpl extends DefaultDomain implements World {
 
   // tag::defineCity[]
   void city() {
-    define(City.TYPE,
+    add(definition(
             primaryKeyProperty(City.ID),
             columnProperty(City.NAME, "Name")
                     .searchProperty(true)
@@ -76,12 +77,12 @@ public final class WorldImpl extends DefaultDomain implements World {
             // tag::foreground[]
             .foregroundColorProvider(new CityColorProvider())
             // end::foreground[]
-            .caption("City");
+            .caption("City"));
   }
   // end::defineCity[]
 
   void country() {
-    define(Country.TYPE,
+    add(definition(
             // tag::primaryKey[]
             primaryKeyProperty(Country.CODE, "Code")
                     .updatable(true)
@@ -155,11 +156,11 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .maximumLength(2))
             .orderBy(ascending(Country.NAME))
             .stringFactory(Country.NAME)
-            .caption("Country");
+            .caption("Country"));
   }
 
   void countryLanguage() {
-    define(CountryLanguage.TYPE,
+    add(definition(
             // tag::compositePrimaryKey[]
             columnProperty(CountryLanguage.COUNTRY_CODE)
                     .primaryKeyIndex(0)
@@ -187,11 +188,11 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .ascending(CountryLanguage.LANGUAGE)
                     .descending(CountryLanguage.PERCENTAGE)
                     .build())
-            .caption("Language");
+            .caption("Language"));
   }
 
   void lookup() {
-    define(Lookup.TYPE,
+    add(definition(
             columnProperty(Lookup.COUNTRY_CODE, "Country code")
                     .primaryKeyIndex(0),
             columnProperty(Lookup.COUNTRY_NAME, "Country name"),
@@ -226,11 +227,11 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .descending(Lookup.CITY_POPULATION)
                     .build())
             .readOnly(true)
-            .caption("Lookup");
+            .caption("Lookup"));
   }
 
   void continent() {
-    define(Continent.TYPE, "world.country",
+    add(definition(
             columnProperty(Continent.NAME, "Continent")
                     .groupingColumn(true)
                     .beanProperty("name"),
@@ -258,8 +259,9 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .columnExpression("sum(gnp)")
                     .aggregateColumn(true)
                     .numberFormatGrouping(true))
+            .tableName("world.country")
             .readOnly(true)
-            .caption("Continent");
+            .caption("Continent"));
   }
 
   // tag::converter[]

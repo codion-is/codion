@@ -15,12 +15,13 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinoo
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.Entity.getPrimaryKeys;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -69,48 +71,52 @@ public final class EntitiesTutorial {
 
     public Chinook() {
       super(DOMAIN);
-      //Note that the below demo code is unusual since the property builders are
-      //exposed for illustration purposes, the builders are usually hidden behind
-      //a fluent call chain in the *define* methods parameter list.
+      // Note that the below demo code is unusual since the builders are exposed
+      // for illustration purposes, the builders are usually hidden within
+      // a fluent call chain.
 
       // create properties for the columns in the table 'chinook.artist'
       ColumnProperty.Builder<Long, ?> artistId = primaryKeyProperty(Artist.ID);
 
-      Property.Builder<String, ?> artistName = columnProperty(Artist.NAME, "Name");
+      ColumnProperty.Builder<String, ?> artistName = columnProperty(Artist.NAME, "Name")
+              .nullable(false)
+              .maximumLength(120);
 
-      artistName.nullable(false).maximumLength(120);
-
-      // define an entity based on the table 'chinook.artist',
-      // with the above properties
-      define(Artist.TYPE, artistId, artistName)
+      // define an entity based on the table 'chinook.artist', with the above properties
+      EntityDefinition artist = definition(artistId, artistName)
               .keyGenerator(identity())
               .stringFactory(Artist.NAME)
               .smallDataset(true)
-              .caption("Artist");
+              .caption("Artist")
+              .build();
+
+      // add the artist definition to this domain model
+      add(artist);
 
       // create properties for the columns in the table 'chinook.album'
-      Property.Builder<Long, ?> albumId = primaryKeyProperty(Album.ID);
+      ColumnProperty.Builder<Long, ?> albumId = primaryKeyProperty(Album.ID);
 
-      Property.Builder<String, ?> albumTitle = columnProperty(Album.TITLE, "Title");
+      ColumnProperty.Builder<String, ?> albumTitle = columnProperty(Album.TITLE, "Title")
+              .nullable(false)
+              .maximumLength(160);
 
-      albumTitle.nullable(false).maximumLength(160);
+      ColumnProperty.Builder<Long, ?> albumArtistId = columnProperty(Album.ARTIST_ID)
+              .nullable(false);
 
-      Property.Builder<Long, ?> albumArtistId = columnProperty(Album.ARTIST_ID);
+      ForeignKeyProperty.Builder albumArtist = foreignKeyProperty(Album.ARTIST_FK, "Artist");
 
-      albumId.nullable(false);
-
-      Property.Builder<Entity, ?> albumArtist =
-              foreignKeyProperty(Album.ARTIST_FK, "Artist");
-
-      // define an entity based on the table 'chinook.album',
-      // with the above properties
-      define(Album.TYPE, albumId, albumTitle, albumArtistId, albumArtist)
+      // define an entity based on the table 'chinook.album', with the above properties
+      EntityDefinition album = definition(albumId, albumTitle, albumArtistId, albumArtist)
               .keyGenerator(identity())
               .stringFactory(StringFactory.builder()
                       .value(Album.ARTIST_FK)
                       .text(" - ")
                       .value(Album.TITLE))
-              .caption("Album");
+              .caption("Album")
+              .build();
+
+      // add the album definition to this domain model
+      add(album);
     }
   }
 

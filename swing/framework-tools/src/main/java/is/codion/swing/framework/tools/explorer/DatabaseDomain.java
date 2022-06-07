@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.ForeignKey.reference;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.stream.Collectors.joining;
@@ -44,13 +45,13 @@ final class DatabaseDomain extends DefaultDomain {
               .map(ForeignKeyConstraint::getReferencedTable)
               .filter(referencedTable -> !referencedTable.equals(table))
               .forEach(this::defineEntity);
-      define(entityType, getPropertyBuilders(table, entityType, new ArrayList<>(table.getForeignKeys())));
+      define(getPropertyBuilders(table, entityType, new ArrayList<>(table.getForeignKeys())));
     }
   }
 
-  private void define(EntityType entityType, List<Property.Builder<?, ?>> propertyBuilders) {
+  private void define(List<Property.Builder<?, ?>> propertyBuilders) {
     if (!propertyBuilders.isEmpty()) {
-      define(entityType, entityType.getName(), propertyBuilders.toArray(new Property.Builder[0]));
+      add(definition(propertyBuilders.toArray(new Property.Builder[0])));
     }
   }
 
