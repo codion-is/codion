@@ -324,7 +324,7 @@ public interface Property<T> {
      * Note that values associated with this property are automatically rounded to {@code maximumFractionDigits} digits.
      * @param maximumFractionDigits the maximum fraction digits
      * @return this instance
-     * @throws IllegalStateException in case the underlying attribute is not a decimal type
+     * @throws IllegalStateException in case this is not a decimal property
      * @see #decimalRoundingMode(RoundingMode)
      */
     B maximumFractionDigits(int maximumFractionDigits);
@@ -333,7 +333,7 @@ public interface Property<T> {
      * Sets the rounding mode to use when working with decimals
      * @param decimalRoundingMode the rounding mode
      * @return this instance
-     * @throws IllegalStateException in case the underlying attribute is not a decimal
+     * @throws IllegalStateException in case this is not a decimal property
      * @see #maximumFractionDigits(int)
      */
     B decimalRoundingMode(RoundingMode decimalRoundingMode);
@@ -346,6 +346,7 @@ public interface Property<T> {
      * This setting is overridden during subsequent calls to {@link #format(Format)}
      * @param numberFormatGrouping if true then number grouping is used
      * @return this instance
+     * @throws IllegalStateException in case this is not a numerical property
      */
     B numberFormatGrouping(boolean numberFormatGrouping);
 
@@ -369,6 +370,7 @@ public interface Property<T> {
      * Sets the maximum length of this property value, this applies to String (varchar) based properties
      * @param maximumLength the maximum length
      * @return this instance
+     * @throws IllegalStateException in case this is not a String property
      */
     B maximumLength(int maximumLength);
 
@@ -397,8 +399,7 @@ public interface Property<T> {
      * @param format the format to use
      * @return this instance
      * @throws NullPointerException in case format is null
-     * @throws IllegalArgumentException in case the underlying attribute is numerical
-     * and the given format is not a NumberFormat.
+     * @throws IllegalArgumentException in case this is a numerical property and the given format is not a NumberFormat.
      * @throws IllegalStateException if the underlying attribute is temporal, in which case
      * {@link #dateTimePattern(String)} or {@link #localeDateTimePattern(LocaleDateTimePattern)} should be used.
      */
@@ -409,7 +410,7 @@ public interface Property<T> {
      * @param dateTimePattern the format pattern
      * @return this instance
      * @throws IllegalArgumentException in case the pattern is invalid
-     * @throws IllegalStateException in case the underlying attribute is not a date/time based one
+     * @throws IllegalStateException in case this is not a temporal property
      * @throws IllegalStateException in case {@link #localeDateTimePattern(LocaleDateTimePattern)} has been set
      */
     B dateTimePattern(String dateTimePattern);
@@ -418,7 +419,7 @@ public interface Property<T> {
      * Sets the locale aware date/time format pattern used when presenting and inputting values
      * @param localeDateTimePattern the format pattern
      * @return this instance
-     * @throws IllegalStateException in case the underlying attribute is not a date/time based one
+     * @throws IllegalStateException in case this is not a temporal property
      * @throws IllegalStateException in case {@link #dateTimePattern(String)} has been set
      */
     B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern);
