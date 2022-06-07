@@ -6,9 +6,14 @@ package is.codion.framework.demos.manual.store.minimal.domain;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringFactory;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Properties;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
@@ -80,5 +85,38 @@ public class Store extends DefaultDomain {
                     .text(", ")
                     .value(Address.CITY))
             .caption("Address"));
+  }
+
+  void addressExpanded() {
+    ColumnProperty.Builder<Long, ?> id =
+            Properties.primaryKeyProperty(Address.ID);
+
+    ColumnProperty.Builder<Long, ?> customerId =
+            Properties.columnProperty(Address.CUSTOMER_ID)
+                    .nullable(false);
+
+    ForeignKeyProperty.Builder customerFk =
+            Properties.foreignKeyProperty(Address.CUSTOMER_FK, "Customer");
+
+    ColumnProperty.Builder<String, ?> street =
+            Properties.columnProperty(Address.STREET, "Street")
+                    .nullable(false)
+                    .maximumLength(100);
+
+    ColumnProperty.Builder<String, ?> city =
+            Properties.columnProperty(Address.CITY, "City")
+                    .nullable(false)
+                    .maximumLength(50);
+
+    EntityDefinition.Builder address =
+            EntityDefinition.definition(id, customerId, customerFk, street, city)
+                    .keyGenerator(KeyGenerator.identity())
+                    .stringFactory(StringFactory.builder()
+                            .value(Address.STREET)
+                            .text(", ")
+                            .value(Address.CITY))
+                    .caption("Address");
+
+    add(address);
   }
 }
