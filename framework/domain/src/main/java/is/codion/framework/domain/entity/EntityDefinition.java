@@ -299,11 +299,6 @@ public interface EntityDefinition {
   List<ColumnProperty<?>> getColumnProperties(List<Attribute<?>> attributes);
 
   /**
-   * @return true if the primary key of the given type of entity consists of a single integer value
-   */
-  boolean hasSingleIntegerPrimaryKey();
-
-  /**
    * Retrieves the writable (non-read-only) column properties comprising this entity type
    * @param includePrimaryKeyProperties if true primary key properties are included, non-updatable primary key properties
    * are only included if {@code includeNonUpdatable} is true

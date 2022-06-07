@@ -525,27 +525,6 @@ public class DomainTest {
   }
 
   @Test
-  void hasSingleIntegerPrimaryKey() {
-    EntityType entityType = DOMAIN.entityType("hasSingleIntegerPrimaryKey");
-    domain.add(definition(
-            columnProperty(entityType.attribute("test", Integer.class))
-                    .primaryKeyIndex(0)));
-    assertTrue(entities.getDefinition(entityType).hasSingleIntegerPrimaryKey());
-    entityType = DOMAIN.entityType("hasSingleIntegerPrimaryKey2");
-    domain.add(definition(
-            columnProperty(entityType.attribute("test", Integer.class))
-                    .primaryKeyIndex(0),
-            columnProperty(entityType.attribute("test2", Integer.class))
-                    .primaryKeyIndex(1)));
-    assertFalse(entities.getDefinition(entityType).hasSingleIntegerPrimaryKey());
-    entityType = DOMAIN.entityType("hasSingleIntegerPrimaryKey3");
-    domain.add(definition(
-            columnProperty(entityType.attribute("test", String.class))
-                    .primaryKeyIndex(0)));
-    assertFalse(entities.getDefinition(entityType).hasSingleIntegerPrimaryKey());
-  }
-
-  @Test
   void validateTypeEntity() {
     Entity entity = entities.entity(Detail.TYPE);
     Entity entity1 = entities.entity(Detail.TYPE);

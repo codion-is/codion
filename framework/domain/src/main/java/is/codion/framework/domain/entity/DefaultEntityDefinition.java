@@ -416,11 +416,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public boolean hasSingleIntegerPrimaryKey() {
-    return entityProperties.primaryKeyProperties.size() == 1 && entityProperties.primaryKeyProperties.get(0).getAttribute().isInteger();
-  }
-
-  @Override
   public List<ColumnProperty<?>> getWritableColumnProperties(boolean includePrimaryKeyProperties,
                                                              boolean includeNonUpdatable) {
     return entityProperties.columnProperties.stream()
