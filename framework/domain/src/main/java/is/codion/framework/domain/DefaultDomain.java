@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.Property;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,10 +23,11 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link Domain} implementation. Extend to define a domain model.
- * @see #define(EntityType, Property.Builder[])
- * @see #define(ReportType, Report)
- * @see #define(ProcedureType, DatabaseProcedure)
- * @see #define(FunctionType, DatabaseFunction)
+ * @see #add(EntityDefinition)
+ * @see #add(EntityDefinition.Builder)
+ * @see #add(ReportType, Report)
+ * @see #add(ProcedureType, DatabaseProcedure)
+ * @see #add(FunctionType, DatabaseFunction)
  */
 public abstract class DefaultDomain implements Domain {
 
@@ -92,37 +92,28 @@ public abstract class DefaultDomain implements Domain {
   }
 
   /**
-   * Adds a new {@link EntityDefinition} to this domain model, using the {@code entityType} as table name.
-   * Returns the {@link EntityDefinition} instance for further configuration.
-   * @param entityType the id uniquely identifying the entity type
-   * @param propertyBuilders the {@link Property.Builder} objects to base this entity on. In case a select query is specified
-   * for this entity, the property order must match the select column order.
-   * @return a {@link EntityDefinition.Builder}
-   * @throws IllegalArgumentException in case the entityType has already been used to define an entity type or if
-   * no primary key property is specified
+   * Adds a new {@link EntityDefinition} to this domain model, by calling {@link EntityDefinition.Builder#build()}.
+   * Note that any subsequent changes in the builder are not reflected in the entity definition.
+   * @param definitionBuilder the builder which definition to add
+   * @throws IllegalArgumentException in case the entityType has already been used to define an entity
+   * @throws IllegalArgumentException in case no properties are specified
    */
-  protected final EntityDefinition.Builder define(EntityType entityType, Property.Builder<?, ?>... propertyBuilders) {
-    return define(entityType, entityType.getName(), propertyBuilders);
+  protected final void add(EntityDefinition.Builder definitionBuilder) {
+    add(requireNonNull(definitionBuilder, "definitionBuilder").build());
   }
 
   /**
    * Adds a new {@link EntityDefinition} to this domain model.
-   * Returns a {@link EntityDefinition.Builder} instance for further configuration.
-   * @param entityType the id uniquely identifying the entity type
-   * @param tableName the name of the underlying table
-   * @param propertyBuilders the {@link Property.Builder} objects to base the entity on. In case a select query is specified
-   * for this entity, the property order must match the select column order.
-   * @return a {@link EntityDefinition.Builder}
-   * @throws IllegalArgumentException in case the entityType has already been used to define an entity type
+   * @param definition the definition to add
+   * @throws IllegalArgumentException in case the entityType has already been used to define an entity
    * @throws IllegalArgumentException in case no properties are specified
    */
-  protected final EntityDefinition.Builder define(EntityType entityType, String tableName,
-                                                  Property.Builder<?, ?>... propertyBuilders) {
-    requireNonNull(entityType, "entityType");
-    if (!domainType.contains(entityType)) {
-      throw new IllegalArgumentException("Entity type '" + entityType + "' is not part of domain: " + domainType);
+  protected final void add(EntityDefinition definition) {
+    requireNonNull(definition, "definition");
+    if (!domainType.contains(definition.getEntityType())) {
+      throw new IllegalArgumentException("Entity type '" + definition.getEntityType() + "' is not part of domain: " + domainType);
     }
-    return entities.defineInternal(entityType, tableName, propertyBuilders);
+    entities.addEntityDefinition(definition);
   }
 
   /**
@@ -135,7 +126,7 @@ public abstract class DefaultDomain implements Domain {
    * @throws RuntimeException in case loading the report failed
    * @throws IllegalArgumentException in case the report has already been added
    */
-  protected final <T, R, P> void define(ReportType<T, R, P> reportType, Report<T, R, P> report) {
+  protected final <T, R, P> void add(ReportType<T, R, P> reportType, Report<T, R, P> report) {
     reports.addReport(reportType, report);
   }
 
@@ -147,7 +138,7 @@ public abstract class DefaultDomain implements Domain {
    * @param <T> the argument type
    * @throws IllegalArgumentException in case a procedure has already been associated with the given type
    */
-  protected final <C, T> void define(ProcedureType<C, T> procedureType, DatabaseProcedure<C, T> procedure) {
+  protected final <C, T> void add(ProcedureType<C, T> procedureType, DatabaseProcedure<C, T> procedure) {
     procedures.addProcedure(procedureType, procedure);
   }
 
@@ -160,7 +151,7 @@ public abstract class DefaultDomain implements Domain {
    * @param <R> the result type
    * @throws IllegalArgumentException in case a function has already been associated with the given type
    */
-  protected final <C, T, R> void define(FunctionType<C, T, R> functionType, DatabaseFunction<C, T, R> function) {
+  protected final <C, T, R> void add(FunctionType<C, T, R> functionType, DatabaseFunction<C, T, R> function) {
     functions.addFunction(functionType, function);
   }
 
@@ -198,7 +189,7 @@ public abstract class DefaultDomain implements Domain {
   protected final void addEntities(Domain domain) {
     requireNonNull(domain).getEntities().getDefinitions().forEach(definition -> {
       if (!entities.contains(definition.getEntityType())) {
-        entities.addDefinitionInternal(definition);
+        entities.addEntityDefinition(definition);
       }
     });
   }
@@ -247,13 +238,8 @@ public abstract class DefaultDomain implements Domain {
       super(domainType);
     }
 
-    private EntityDefinition.Builder defineInternal(EntityType entityType, String tableName,
-                                                    Property.Builder<?, ?>... propertyBuilders) {
-      return super.define(entityType, tableName, propertyBuilders);
-    }
-
-    private void addDefinitionInternal(EntityDefinition definition) {
-      super.addDefinition(definition);
+    private void addEntityDefinition(EntityDefinition definition) {
+      super.add(definition);
     }
 
     private void setStrictForeignKeysInternal(boolean strictForeignKeys) {

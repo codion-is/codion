@@ -8,6 +8,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 
@@ -26,7 +27,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
 
   void department() {
-    define(T_DEPARTMENT,
+    add(definition(
             primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
                     .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
@@ -35,6 +36,6 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
             .stringFactory(DEPARTMENT_NAME)
-            .caption("Department");
+            .caption("Department"));
   }
 }

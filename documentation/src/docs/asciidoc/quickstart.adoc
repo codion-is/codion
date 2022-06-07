@@ -121,9 +121,9 @@ include::{dir-source-sql}/create_schema.sql[]
 ----
 ====
 
-First we define an entity based on the table *store.customer*, using a *EntityType* constant to identify the entity type and to provide attributes for all of its properties.
+First we define a *EntityType* constant for the table and a typed *Attribute* constant for each column. We wrap these in an interface for a convenient namespace. We create a *Property.Builder* instance for each *Attribute*, which allow further configuration, such as specifying a caption and maximum length. These *Property.Builder* instances we supply as parameters to the *EntityDefinition.definition()* method, which returns a *EntityDefinition.Builder* instance, allowing further configuration of the entity. Finally, we add the definition builder to the domain model.
 
-NOTE: In this example the constants contain the actual table and column names, but these can be specified via parameters if that is preferred (see manual).
+NOTE: In this example the constants contain the actual table and column names, but these can be specified via the builder if that is preferred (see manual).
 
 [source,java,indent=0]
 ----

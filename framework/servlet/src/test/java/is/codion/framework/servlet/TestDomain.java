@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -39,7 +40,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
 
   void department() {
-    define(T_DEPARTMENT,
+    add(definition(
             primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
                     .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
@@ -48,7 +49,7 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
             .stringFactory(DEPARTMENT_NAME)
-            .caption("Department");
+            .caption("Department"));
   }
 
   public static final EntityType T_EMP = DOMAIN.entityType("scott.emp");
@@ -67,7 +68,7 @@ public final class TestDomain extends DefaultDomain {
   public static final ConditionType EMP_MGR_CONDITION_TYPE = T_EMP.conditionType("mgrConditionId");
 
   void employee() {
-    define(T_EMP,
+    add(definition(
             primaryKeyProperty(EMP_ID, EMP_ID.getName()),
             columnProperty(EMP_NAME, EMP_NAME.getName())
                     .searchProperty(true).maximumLength(10).nullable(false),
@@ -89,14 +90,14 @@ public final class TestDomain extends DefaultDomain {
             .stringFactory(EMP_NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .conditionProvider(EMP_MGR_CONDITION_TYPE, (attributes, values) -> "mgr > ?")
-            .caption("Employee");
+            .caption("Employee"));
   }
 
   public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = FunctionType.functionType("functionId");
   public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
 
   void operations() {
-    define(PROCEDURE_ID, (connection, objects) -> {});
-    define(FUNCTION_ID, (connection, objects) -> emptyList());
+    add(PROCEDURE_ID, (connection, objects) -> {});
+    add(FUNCTION_ID, (connection, objects) -> emptyList());
   }
 }

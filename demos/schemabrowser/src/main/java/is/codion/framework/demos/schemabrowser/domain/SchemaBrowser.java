@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
 
@@ -54,12 +55,12 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   void schema() {
-    define(Schema.TYPE, bundle.getString("t_schema"),
-            primaryKeyProperty(Schema.NAME, "Name"))
+    add(definition(primaryKeyProperty(Schema.NAME, "Name"))
+            .tableName(bundle.getString("t_schema"))
             .orderBy(ascending(Schema.NAME))
             .readOnly(true)
             .stringFactory(Schema.NAME)
-            .caption("Schemas");
+            .caption("Schemas"));
   }
 
   public interface Table {
@@ -72,12 +73,13 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   void table() {
-    EntityDefinition.Builder tableBuilder = define(Table.TYPE, bundle.getString("t_table"),
+    EntityDefinition.Builder tableBuilder = definition(
             columnProperty(Table.SCHEMA)
                     .primaryKeyIndex(0),
             foreignKeyProperty(Table.SCHEMA_FK, "Schema"),
             columnProperty(Table.NAME, "Name")
                     .primaryKeyIndex(1))
+            .tableName(bundle.getString("t_table"))
             .orderBy(ascending(Table.SCHEMA, Table.NAME))
             .readOnly(true)
             .stringFactory(StringFactory.builder()
@@ -95,6 +97,7 @@ public final class SchemaBrowser extends DefaultDomain {
               .where(tableQueryWhere)
               .build());
     }
+    add(tableBuilder);
   }
 
   public interface Column {
@@ -111,7 +114,7 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   void column() {
-    define(Column.TYPE, bundle.getString("t_column"),
+    add(definition(
             columnProperty(Column.SCHEMA)
                     .primaryKeyIndex(0),
             columnProperty(Column.TABLE_NAME)
@@ -121,13 +124,14 @@ public final class SchemaBrowser extends DefaultDomain {
             primaryKeyProperty(Column.NAME, "Column name")
                     .primaryKeyIndex(2),
             columnProperty(Column.DATA_TYPE, "Data type"))
+            .tableName(bundle.getString("t_column"))
             .orderBy(ascending(Column.SCHEMA, Column.TABLE_NAME, Column.NAME))
             .readOnly(true)
             .stringFactory(StringFactory.builder()
                     .value(Column.TABLE_FK)
                     .text(".")
                     .value(Column.NAME))
-            .caption("Columns");
+            .caption("Columns"));
   }
 
   public interface Constraint {
@@ -144,7 +148,7 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   void constraint() {
-    define(Constraint.TYPE, bundle.getString("t_constraint"),
+    add(definition(
             columnProperty(Constraint.SCHEMA)
                     .primaryKeyIndex(0),
             columnProperty(Constraint.TABLE_NAME)
@@ -154,13 +158,14 @@ public final class SchemaBrowser extends DefaultDomain {
             primaryKeyProperty(Constraint.NAME, "Constraint name")
                     .primaryKeyIndex(2),
             columnProperty(Constraint.CONSTRAINT_TYPE, "Type"))
+            .tableName(bundle.getString("t_constraint"))
             .orderBy(ascending(Constraint.SCHEMA, Constraint.TABLE_NAME, Constraint.NAME))
             .readOnly(true)
             .stringFactory(StringFactory.builder()
                     .value(Constraint.TABLE_FK)
                     .text(".")
                     .value(Constraint.NAME))
-            .caption("Constraints");
+            .caption("Constraints"));
   }
 
   public interface ConstraintColumn {
@@ -179,7 +184,7 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   void constraintColumn() {
-    define(ConstraintColumn.TYPE, bundle.getString("t_column_constraint"),
+    add(definition(
             columnProperty(ConstraintColumn.SCHEMA)
                     .primaryKeyIndex(0),
             columnProperty(ConstraintColumn.TABLE_NAME)
@@ -190,8 +195,9 @@ public final class SchemaBrowser extends DefaultDomain {
                     .fetchDepth(3),
             columnProperty(ConstraintColumn.COLUMN_NAME, "Column name"),
             columnProperty(ConstraintColumn.POSITION, "Position"))
+            .tableName(bundle.getString("t_column_constraint"))
             .orderBy(ascending(ConstraintColumn.SCHEMA, ConstraintColumn.TABLE_NAME, ConstraintColumn.CONSTRAINT_NAME))
             .readOnly(true)
-            .caption("Constraint columns");
+            .caption("Constraint columns"));
   }
 }

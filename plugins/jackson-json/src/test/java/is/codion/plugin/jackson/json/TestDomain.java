@@ -18,6 +18,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -47,7 +48,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void testEntity() {
-    define(TestEntity.TYPE,
+    add(definition(
             columnProperty(TestEntity.DECIMAL).primaryKeyIndex(0),
             columnProperty(TestEntity.DATE_TIME).primaryKeyIndex(1),
             columnProperty(TestEntity.OFFSET_DATE_TIME),
@@ -57,7 +58,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(TestEntity.BOOLEAN),
             columnProperty(TestEntity.TIME),
             columnProperty(TestEntity.ENTITY))
-            .conditionProvider(TestEntity.CONDITION_TYPE, (attributes, values) -> "1 = 2");
+            .conditionProvider(TestEntity.CONDITION_TYPE, (attributes, values) -> "1 = 2"));
   }
 
   public interface Department {
@@ -69,7 +70,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void department() {
-    define(Department.TYPE,
+    add(definition(
             primaryKeyProperty(Department.DEPTNO)
                     .updatable(true).nullable(false),
             columnProperty(Department.NAME)
@@ -78,7 +79,7 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(150).maximumLength(13),
             columnProperty(Department.LOGO))
             .smallDataset(true)
-            .caption("Department");
+            .caption("Department"));
   }
 
   public interface Employee {
@@ -97,7 +98,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void employee() {
-    define(Employee.TYPE,
+    add(definition(
             primaryKeyProperty(Employee.EMPNO),
             columnProperty(Employee.NAME)
                     .searchProperty(true).maximumLength(10).nullable(false),
@@ -118,6 +119,6 @@ public final class TestDomain extends DefaultDomain {
             denormalizedViewProperty(Employee.EMP_DEPARTMENT_LOCATION, Employee.DEPARTMENT_FK, Department.LOCATION).preferredColumnWidth(100))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
-            .caption("Employee");
+            .caption("Employee"));
   }
 }

@@ -29,6 +29,7 @@ import java.util.List;
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.swing.common.ui.Windows.getScreenSizeRatio;
@@ -65,7 +66,7 @@ public final class ClientTutorial {
 
     public Chinook() {
       super(DOMAIN);
-      define(Artist.TYPE,
+      add(definition(
               primaryKeyProperty(Artist.ID),
               columnProperty(Artist.NAME, "Name")
                       .searchProperty(true).nullable(false).maximumLength(120),
@@ -74,9 +75,9 @@ public final class ClientTutorial {
                               "where album.artistid = artist.artistid"))
               .keyGenerator(automatic("chinook.artist"))
               .stringFactory(Artist.NAME)
-              .caption("Artists");
+              .caption("Artists"));
 
-      define(Album.TYPE,
+      add(definition(
               primaryKeyProperty(Album.ID),
               columnProperty(Album.ARTIST_ID)
                       .nullable(false),
@@ -88,7 +89,7 @@ public final class ClientTutorial {
                       .value(Album.ARTIST_FK)
                       .text(" - ")
                       .value(Album.TITLE))
-              .caption("Albums");
+              .caption("Albums"));
     }
   }
 

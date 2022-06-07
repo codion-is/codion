@@ -14,11 +14,14 @@ import is.codion.framework.domain.property.TransientProperty;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies an entity definition.
@@ -296,11 +299,6 @@ public interface EntityDefinition {
   List<ColumnProperty<?>> getColumnProperties(List<Attribute<?>> attributes);
 
   /**
-   * @return true if the primary key of the given type of entity consists of a single integer value
-   */
-  boolean hasSingleIntegerPrimaryKey();
-
-  /**
    * Retrieves the writable (non-read-only) column properties comprising this entity type
    * @param includePrimaryKeyProperties if true primary key properties are included, non-updatable primary key properties
    * are only included if {@code includeNonUpdatable} is true
@@ -440,8 +438,15 @@ public interface EntityDefinition {
 
   /**
    * Builds a EntityDefinition
+   * @see #definition(Property.Builder[])
    */
   interface Builder {
+
+    /**
+     * @param tableName the table name
+     * @return this {@link Builder} instance
+     */
+    Builder tableName(String tableName);
 
     /**
      * @param validator the validator for this entity type
@@ -543,7 +548,12 @@ public interface EntityDefinition {
     Builder selectQuery(SelectQuery selectQuery);
 
     /**
-     * Sets the string factory, based on the value of the given attribute
+     * Sets the string factory, based on the value of the given attribute. Shortcut for:
+     * <pre>
+     * stringFactory(StringFactory.builder()
+     *           .value(attribute)
+     *           .build())
+     * </pre>
      * @param attribute the attribute which value to use
      * @return this {@link Builder} instance
      */
@@ -569,5 +579,30 @@ public interface EntityDefinition {
      * @return this {@link Builder} instance
      */
     Builder comparator(Comparator<Entity> comparator);
+
+    /**
+     * @return a new {@link EntityDefinition} instance based on this builder
+     */
+    EntityDefinition build();
+  }
+
+  /**
+   * Creates a {@link EntityDefinition.Builder} instance based on the given property builders.
+   * @param propertyBuilders builders for the properties comprising the entity
+   * @return a {@link EntityDefinition.Builder} instance
+   * @throws IllegalArgumentException in case {@code propertyBuilders} is empty
+   */
+  static EntityDefinition.Builder definition(Property.Builder<?, ?>... propertyBuilders) {
+    return definition(Arrays.asList(requireNonNull(propertyBuilders)));
+  }
+
+  /**
+   * Creates a {@link EntityDefinition.Builder} instance based on the given property builders.
+   * @param propertyBuilders builders for the properties comprising the entity
+   * @return a {@link EntityDefinition.Builder} instance
+   * @throws IllegalArgumentException in case {@code propertyBuilders} is empty
+   */
+  static EntityDefinition.Builder definition(List<Property.Builder<?, ?>> propertyBuilders) {
+    return new DefaultEntityDefinition.DefaultBuilder(requireNonNull(propertyBuilders));
   }
 }

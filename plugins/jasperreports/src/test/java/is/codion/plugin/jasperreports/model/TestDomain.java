@@ -12,6 +12,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 import java.time.LocalDate;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
@@ -34,7 +35,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
 
   void department() {
-    define(T_DEPARTMENT,
+    add(definition(
             primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
                     .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
@@ -43,7 +44,7 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
             .stringFactory(DEPARTMENT_NAME)
-            .caption("Department");
+            .caption("Department"));
   }
 
 
@@ -66,7 +67,7 @@ public final class TestDomain extends DefaultDomain {
           classPathReport(TestDomain.class, "/empdept_employees.jasper");
 
   void employee() {
-    define(T_EMP,
+    add(definition(
             primaryKeyProperty(EMP_ID, EMP_ID.getName()),
             columnProperty(EMP_NAME, EMP_NAME.getName())
                     .searchProperty(true).maximumLength(10).nullable(false),
@@ -87,6 +88,6 @@ public final class TestDomain extends DefaultDomain {
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION).preferredColumnWidth(100))
             .stringFactory(EMP_NAME)
             .keyGenerator(increment("scott.emp", "empno"))
-            .caption("Employee");
+            .caption("Employee"));
   }
 }

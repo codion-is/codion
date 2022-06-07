@@ -13,7 +13,7 @@ public interface Address {
 }
 
 void address() {
-  define(Address.TYPE,
+  add(definition(
           primaryKeyProperty(Address.ADDRESSID),
           columnProperty(Address.STREET1, "Street1")
                 .nullable(false)
@@ -35,5 +35,5 @@ void address() {
                 .nullable(false)
                 .maximumFractionDigits(2),
           blobProperty(Address.IMAGE, "Image")
-  );
+  ));
 }

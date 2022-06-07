@@ -35,6 +35,7 @@ import java.util.List;
 
 import static is.codion.framework.demos.manual.quickstart.Example.Store.*;
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.UUID.randomUUID;
@@ -62,7 +63,7 @@ public final class Example {
     }
 
     void customer() {
-      define(Customer.TYPE,
+      add(definition(
               primaryKeyProperty(Customer.ID),
               columnProperty(Customer.FIRST_NAME, "First name")
                       .nullable(false)
@@ -74,7 +75,7 @@ public final class Example {
               .stringFactory(StringFactory.builder()
                       .value(Customer.LAST_NAME)
                       .text(", ")
-                      .value(Customer.FIRST_NAME));
+                      .value(Customer.FIRST_NAME)));
     }
 
     private static final class CustomerKeyGenerator implements KeyGenerator {
@@ -97,7 +98,7 @@ public final class Example {
     }
 
     void address() {
-      define(Address.TYPE,
+      add(definition(
               primaryKeyProperty(Address.ID),
               columnProperty(Address.STREET, "Street")
                       .nullable(false)
@@ -109,7 +110,7 @@ public final class Example {
               .stringFactory(StringFactory.builder()
                       .value(Address.STREET)
                       .text(", ")
-                      .value(Address.CITY));
+                      .value(Address.CITY)));
     }
     // end::address[]
     // tag::customerAddress[]
@@ -125,7 +126,7 @@ public final class Example {
     }
 
     void customerAddress() {
-      define(CustomerAddress.TYPE,
+      add(definition(
               primaryKeyProperty(CustomerAddress.ID),
               columnProperty(CustomerAddress.CUSTOMER_ID)
                       .nullable(false),
@@ -134,7 +135,7 @@ public final class Example {
                       .nullable(false),
               foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address"))
               .keyGenerator(automatic("store.customer_address"))
-              .caption("Customer address");
+              .caption("Customer address"));
     }
     // end::customerAddress[]
   }

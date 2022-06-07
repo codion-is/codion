@@ -21,6 +21,7 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
@@ -70,9 +71,9 @@ public final class EmpDept extends DefaultDomain {
     Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
     Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
 
-    /**Foreign key (reference) attribute for the DEPTNO column in the table scott.emp*/
+    /**Foreign key attribute for the DEPTNO column in the table scott.emp*/
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
-    /**Foreign key (reference) attribute for the MGR column in the table scott.emp*/
+    /**Foreign key attribute for the MGR column in the table scott.emp*/
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
     /**Attribute for the denormalized department location property*/
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
@@ -80,9 +81,9 @@ public final class EmpDept extends DefaultDomain {
     JRReportType EMPLOYEE_REPORT = JasperReports.reportType("employee_report");
 
     List<Item<String>> JOB_VALUES = asList(
-                    item("ANALYST", "Analyst"), item("CLERK", "Clerk"),
-                    item("MANAGER", "Manager"), item("PRESIDENT", "President"),
-                    item("SALESMAN", "Salesman"));
+            item("ANALYST", "Analyst"), item("CLERK", "Clerk"),
+            item("MANAGER", "Manager"), item("PRESIDENT", "President"),
+            item("SALESMAN", "Salesman"));
 
     /** Bean getters and setters */
     Integer getId();
@@ -116,7 +117,7 @@ public final class EmpDept extends DefaultDomain {
   // tag::defineDepartment[]
   void department() {
     /*Defining the entity Department.TYPE*/
-    define(Department.TYPE,
+    add(definition(
             primaryKeyProperty(Department.ID, "Department no.")
                     .updatable(true)
                     .nullable(false)
@@ -133,14 +134,14 @@ public final class EmpDept extends DefaultDomain {
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
-            .caption("Departments");
+            .caption("Departments"));
   }
   // end::defineDepartment[]
 
   // tag::defineEmployee[]
   void employee() {
     /*Defining the entity Employee.TYPE*/
-    define(Employee.TYPE,
+    add(definition(
             primaryKeyProperty(Employee.ID, "Employee no.")
                     .beanProperty("id"),
             columnProperty(Employee.NAME, "Name")
@@ -193,9 +194,9 @@ public final class EmpDept extends DefaultDomain {
               }
 
               return null;
-            });
+            }));
 
-    define(Employee.EMPLOYEE_REPORT, classPathReport(EmpDept.class, "empdept_employees.jasper"));
+    add(Employee.EMPLOYEE_REPORT, classPathReport(EmpDept.class, "empdept_employees.jasper"));
   }
 }
 // end::defineEmployee[]

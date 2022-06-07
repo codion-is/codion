@@ -3,6 +3,7 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.property.Properties.*;
 
 class ForeignKeyDomain extends DefaultDomain {
@@ -24,10 +25,10 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   void species() {
-    define(Species.TYPE,
+    add(definition(
             primaryKeyProperty(Species.NO, "Number"),
             columnProperty(Species.NAME, "Name")
-                    .maximumLength(50));
+                    .maximumLength(50)));
   }
 
   public interface Maturity {
@@ -38,12 +39,12 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   void maturity() {
-    define(Maturity.TYPE,
+    add(definition(
             columnProperty(Maturity.NO)
                     .primaryKeyIndex(0),
             columnProperty(Maturity.SPECIES_NO)
                     .primaryKeyIndex(1),
-            foreignKeyProperty(Maturity.SPECIES_FK));
+            foreignKeyProperty(Maturity.SPECIES_FK)));
   }
 
   public interface OtolithCategory {
@@ -54,12 +55,12 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   void otolithCategory() {
-    define(OtolithCategory.TYPE,
+    add(definition(
             columnProperty(OtolithCategory.NO)
                     .primaryKeyIndex(0),
             columnProperty(OtolithCategory.SPECIES_NO)
                     .primaryKeyIndex(1),
-            foreignKeyProperty(OtolithCategory.SPECIES_FK));
+            foreignKeyProperty(OtolithCategory.SPECIES_FK)));
   }
 
   public interface Otolith {
@@ -78,7 +79,7 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   void otolith() {
-    define(Otolith.TYPE,
+    add(definition(
             columnProperty(Otolith.STATION_ID)
                     .primaryKeyIndex(0),
             columnProperty(Otolith.SPECIES_NO)
@@ -91,6 +92,6 @@ class ForeignKeyDomain extends DefaultDomain {
                     .readOnly(Otolith.SPECIES_NO),
             columnProperty(Otolith.OTOLITH_CATEGORY_NO),
             foreignKeyProperty(Otolith.OTOLITH_CATEGORY_FK)
-                    .readOnly(Otolith.SPECIES_NO));
+                    .readOnly(Otolith.SPECIES_NO)));
   }
 }

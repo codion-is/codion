@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.property.Properties.*;
 
@@ -83,7 +84,7 @@ public final class EmpDeptMinimalApp {
       /*
        * We then define the entity based on the SCOTT.DEPT table
        */
-      define(Department.TYPE,
+      add(definition(
               primaryKeyProperty(Department.DEPTNO),
               columnProperty(Department.DEPTNO, "Department name")
                       .searchProperty(true)
@@ -93,13 +94,13 @@ public final class EmpDeptMinimalApp {
                       .maximumLength(13))
               .keyGenerator(increment("scott.dept", "deptno"))
               .caption("Departments")
-              .stringFactory(Department.DNAME);
+              .stringFactory(Department.DNAME));
       /*
        * We then define the entity based on the SCOTT.EMP table,
        * note the foreign key properties, referencing the
        * department as well as the manager
        */
-      define(Employee.TYPE,
+      add(definition(
               primaryKeyProperty(Employee.EMPNO),
               columnProperty(Employee.ENAME, "Name")
                       .searchProperty(true)
@@ -123,7 +124,7 @@ public final class EmpDeptMinimalApp {
                       .nullable(false))
               .keyGenerator(increment("scott.emp", "empno"))
               .caption("Employees")
-              .stringFactory(Employee.ENAME);
+              .stringFactory(Employee.ENAME));
     }
   }
 

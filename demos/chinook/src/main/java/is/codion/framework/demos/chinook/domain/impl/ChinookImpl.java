@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static is.codion.framework.db.condition.Conditions.where;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
@@ -52,7 +53,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   }
 
   void artist() {
-    define(Artist.TYPE, "chinook.artist",
+    add(definition(
             primaryKeyProperty(Artist.ID),
             columnProperty(Artist.NAME)
                     .searchProperty(true)
@@ -68,13 +69,14 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                             "from chinook.track " +
                             "join chinook.album on track.albumid = album.albumid " +
                             "where album.artistid = artist.artistid"))
+            .tableName("chinook.artist")
             .keyGenerator(identity())
             .orderBy(ascending(Artist.NAME))
-            .stringFactory(Artist.NAME);
+            .stringFactory(Artist.NAME));
   }
 
   void album() {
-    define(Album.TYPE, "chinook.album",
+    add(definition(
             primaryKeyProperty(Album.ID),
             columnProperty(Album.ARTIST_ID)
                     .nullable(false),
@@ -95,13 +97,14 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     "select count(*) " +
                             "from chinook.track " +
                             "where track.albumid = album.albumid"))
+            .tableName("chinook.album")
             .keyGenerator(identity())
             .orderBy(ascending(Album.ARTIST_ID, Album.TITLE))
-            .stringFactory(Album.TITLE);
+            .stringFactory(Album.TITLE));
   }
 
   void employee() {
-    define(Employee.TYPE, "chinook.employee",
+    add(definition(
             primaryKeyProperty(Employee.ID),
             columnProperty(Employee.LASTNAME)
                     .searchProperty(true)
@@ -139,16 +142,17 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Employee.EMAIL)
                     .searchProperty(true)
                     .maximumLength(60))
+            .tableName("chinook.employee")
             .keyGenerator(identity())
             .orderBy(ascending(Employee.LASTNAME, Employee.FIRSTNAME))
             .stringFactory(StringFactory.builder()
                     .value(Employee.LASTNAME)
                     .text(", ")
-                    .value(Employee.FIRSTNAME));
+                    .value(Employee.FIRSTNAME)));
   }
 
   void customer() {
-    define(Customer.TYPE, "chinook.customer",
+    add(definition(
             primaryKeyProperty(Customer.ID),
             columnProperty(Customer.LASTNAME)
                     .searchProperty(true)
@@ -181,41 +185,44 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Customer.SUPPORTREP_ID),
             foreignKeyProperty(Customer.SUPPORTREP_FK)
                     .selectAttributes(Employee.FIRSTNAME, Employee.LASTNAME))
+            .tableName("chinook.customer")
             .keyGenerator(identity())
             .orderBy(ascending(Customer.LASTNAME, Customer.FIRSTNAME))
-            .stringFactory(new CustomerStringProvider());
+            .stringFactory(new CustomerStringProvider()));
 
-    define(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
+    add(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
   }
 
   void genre() {
-    define(Genre.TYPE, "chinook.genre",
+    add(definition(
             primaryKeyProperty(Genre.ID),
             columnProperty(Genre.NAME)
                     .searchProperty(true)
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160))
+            .tableName("chinook.genre")
             .keyGenerator(identity())
             .orderBy(ascending(Genre.NAME))
             .stringFactory(Genre.NAME)
-            .smallDataset(true);
+            .smallDataset(true));
   }
 
   void mediaType() {
-    define(MediaType.TYPE, "chinook.mediatype",
+    add(definition(
             primaryKeyProperty(MediaType.ID),
             columnProperty(MediaType.NAME)
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160))
+            .tableName("chinook.mediatype")
             .keyGenerator(identity())
             .stringFactory(MediaType.NAME)
-            .smallDataset(true);
+            .smallDataset(true));
   }
 
   void track() {
-    define(Track.TYPE, "chinook.track",
+    add(definition(
             primaryKeyProperty(Track.ID),
             denormalizedViewProperty(Track.ARTIST_DENORM,
                     Track.ALBUM_FK, Album.ARTIST_FK)
@@ -250,15 +257,16 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Track.UNITPRICE)
                     .nullable(false)
                     .maximumFractionDigits(2))
+            .tableName("chinook.track")
             .keyGenerator(identity())
             .orderBy(ascending(Track.NAME))
-            .stringFactory(Track.NAME);
+            .stringFactory(Track.NAME));
 
-    define(Track.RAISE_PRICE, new RaisePriceFunction());
+    add(Track.RAISE_PRICE, new RaisePriceFunction());
   }
 
   void invoice() {
-    define(Invoice.TYPE, "chinook.invoice",
+    add(definition(
             primaryKeyProperty(Invoice.ID),
             columnProperty(Invoice.CUSTOMER_ID)
                     .nullable(false),
@@ -288,6 +296,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                             "where invoiceid = invoice.invoiceid")
                     .maximumFractionDigits(2)
                     .hidden(true))
+            .tableName("chinook.invoice")
             // tag::identity[]
             .keyGenerator(identity())
             // end::identity[]
@@ -295,13 +304,13 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .ascending(Invoice.CUSTOMER_ID)
                     .descending(Invoice.DATE)
                     .build())
-            .stringFactory(Invoice.ID);
+            .stringFactory(Invoice.ID));
 
-    define(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());
+    add(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());
   }
 
   void invoiceLine() {
-    define(InvoiceLine.TYPE, "chinook.invoiceline",
+    add(definition(
             primaryKeyProperty(InvoiceLine.ID),
             columnProperty(InvoiceLine.INVOICE_ID)
                     .nullable(false),
@@ -322,26 +331,28 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .defaultValue(1),
             derivedProperty(InvoiceLine.TOTAL, new InvoiceLineTotalProvider(),
                     InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE))
-            .keyGenerator(identity());
+            .tableName("chinook.invoiceline")
+            .keyGenerator(identity()));
   }
 
   void playlist() {
-    define(Playlist.TYPE, "chinook.playlist",
+    add(definition(
             primaryKeyProperty(Playlist.ID),
             columnProperty(Playlist.NAME)
                     .searchProperty(true)
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160))
+            .tableName("chinook.playlist")
             .keyGenerator(identity())
             .orderBy(ascending(Playlist.NAME))
-            .stringFactory(Playlist.NAME);
+            .stringFactory(Playlist.NAME));
 
-    define(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(getEntities()));
+    add(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(getEntities()));
   }
 
   void playlistTrack() {
-    define(PlaylistTrack.TYPE, "chinook.playlisttrack",
+    add(definition(
             primaryKeyProperty(PlaylistTrack.ID),
             columnProperty(PlaylistTrack.PLAYLIST_ID)
                     .nullable(false),
@@ -358,11 +369,12 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             denormalizedViewProperty(PlaylistTrack.ALBUM_DENORM,
                     PlaylistTrack.TRACK_FK, Track.ALBUM_FK)
                     .preferredColumnWidth(160))
+            .tableName("chinook.playlisttrack")
             .keyGenerator(identity())
             .stringFactory(StringFactory.builder()
                     .value(PlaylistTrack.PLAYLIST_FK)
                     .text(" - ")
-                    .value(PlaylistTrack.TRACK_FK));
+                    .value(PlaylistTrack.TRACK_FK)));
   }
 
   private static final class UpdateTotalsFunction implements DatabaseFunction<EntityConnection, Collection<Long>, Collection<Entity>> {

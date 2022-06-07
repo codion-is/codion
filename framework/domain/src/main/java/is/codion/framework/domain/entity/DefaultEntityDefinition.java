@@ -84,12 +84,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * The caption to use for the entity type
    */
-  private String caption;
+  private final String caption;
 
   /**
    * The resource bundle key specifying the caption
    */
-  private String captionResourceKey;
+  private final String captionResourceKey;
 
   /**
    * The caption from the resource bundle, if any
@@ -99,54 +99,54 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * Holds the order by clause
    */
-  private OrderBy orderBy;
+  private final OrderBy orderBy;
 
   /**
    * If true then it should not be possible to insert, update or delete entities of this type
    */
-  private boolean readOnly;
+  private final boolean readOnly;
 
   /**
    * A somewhat subjective indicator, useful in deciding if all entities of this type
    * would fit in, say, a combo box
    */
-  private boolean smallDataset = false;
+  private final boolean smallDataset;
 
   /**
    * Another somewhat subjective indicator, indicating if the data in the underlying table can be regarded as static,
    * this is useful in deciding how often to refresh, say, a combo box based on the entity
    */
-  private boolean staticData = false;
+  private final boolean staticData;
 
   /**
    * True if a key generator has been set for this entity type
    */
-  private boolean keyGenerated;
+  private final boolean keyGenerated;
 
   /**
    * The {@link Function} to use when toString() is called for this entity type
    */
-  private Function<Entity, String> stringFactory = new DefaultStringProvider();
+  private final Function<Entity, String> stringFactory;
 
   /**
    * Provides the background color
    */
-  private ColorProvider backgroundColorProvider = new NullColorProvider();
+  private final ColorProvider backgroundColorProvider;
 
   /**
    * Provides the color
    */
-  private ColorProvider foregroundColorProvider = new NullColorProvider();
+  private final ColorProvider foregroundColorProvider;
 
   /**
    * The comparator
    */
-  private Comparator<Entity> comparator = Text.getSpaceAwareCollator();
+  private final Comparator<Entity> comparator;
 
   /**
    * The validator
    */
-  private EntityValidator validator = new DefaultEntityValidator();
+  private final EntityValidator validator;
 
   /**
    * The name of the underlying table
@@ -157,7 +157,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * The table (view, query) from which to select the entity
    * Used if it differs from the one used for inserts, updates and deletes
    */
-  private transient String selectTableName;
+  private final transient String selectTableName;
 
   /**
    * Holds the group by clause
@@ -167,17 +167,17 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * The primary key value generator
    */
-  private transient KeyGenerator keyGenerator = new KeyGenerator() {};
+  private final transient KeyGenerator keyGenerator;
 
   /**
    * Provides a custom sql query used when selecting entities of this type
    */
-  private transient SelectQuery selectQuery;
+  private final transient SelectQuery selectQuery;
 
   /**
    * The {@link ConditionProvider}s mapped to their respective conditionIds
    */
-  private transient Map<ConditionType, ConditionProvider> conditionProviders;
+  private final transient Map<ConditionType, ConditionProvider> conditionProviders;
 
   /**
    * Maps the definition of a referenced entity to its foreign key attribute.
@@ -194,22 +194,27 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    */
   private final boolean hasDenormalizedProperties;
 
-  /**
-   * Defines a new entity type with the entityType name serving as the initial entity caption.
-   */
-  DefaultEntityDefinition(String domainName, EntityType entityType, String tableName,
-                          List<Property.Builder<?, ?>> propertyBuilders) {
-    if (propertyBuilders.isEmpty()) {
-      throw new IllegalArgumentException("An entity must have one or more properties");
-    }
-    this.domainName = requireNonNull(domainName, "domainName");
-    this.entityType = requireNonNull(entityType, "entityType");
-    if (nullOrEmpty(tableName)) {
-      throw new IllegalArgumentException("Table name must be non-empty");
-    }
-    this.tableName = tableName;
-    this.captionResourceKey = entityType.getName();
-    this.entityProperties = new EntityProperties(entityType, propertyBuilders);
+  private DefaultEntityDefinition(DefaultBuilder builder) {
+    this.domainName = builder.properties.entityType.getDomainName();
+    this.entityType = builder.properties.entityType;
+    this.caption = builder.caption;
+    this.captionResourceKey = builder.captionResourceKey;
+    this.orderBy = builder.orderBy;
+    this.readOnly = builder.readOnly;
+    this.smallDataset = builder.smallDataset;
+    this.staticData = builder.staticData;
+    this.keyGenerator = builder.keyGenerator;
+    this.keyGenerated = builder.keyGenerated;
+    this.stringFactory = builder.stringFactory;
+    this.backgroundColorProvider = builder.backgroundColorProvider;
+    this.foregroundColorProvider = builder.foregroundColorProvider;
+    this.comparator = builder.comparator;
+    this.validator = builder.validator;
+    this.tableName = builder.tableName;
+    this.selectTableName = builder.selectTableName;
+    this.selectQuery = builder.selectQuery;
+    this.conditionProviders = builder.conditionProviders == null ? null : new HashMap<>(builder.conditionProviders);
+    this.entityProperties = builder.properties;
     this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
     this.groupByClause = initializeGroupByClause();
     resolveEntityClassMethods();
@@ -408,11 +413,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     return theProperties;
-  }
-
-  @Override
-  public boolean hasSingleIntegerPrimaryKey() {
-    return entityProperties.primaryKeyProperties.size() == 1 && entityProperties.primaryKeyProperties.get(0).getAttribute().isInteger();
   }
 
   @Override
@@ -804,7 +804,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private static final long serialVersionUID = 1;
 
     private final EntityType entityType;
-
     private final Map<String, Attribute<?>> attributeMap;
     private final Map<Attribute<?>, Property<?>> propertyMap;
     private final List<Property<?>> properties;
@@ -824,8 +823,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private final int serializationVersion;
 
-    private EntityProperties(EntityType entityType, List<Property.Builder<?, ?>> propertyBuilders) {
-      this.entityType = entityType;
+    private EntityProperties(List<Property.Builder<?, ?>> propertyBuilders) {
+      if (requireNonNull(propertyBuilders, "propertyBuilders").isEmpty()) {
+        throw new IllegalArgumentException("One of more properties must be specified for an entity");
+      }
+      this.entityType = propertyBuilders.get(0).getAttribute().getEntityType();
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.attributeMap = initializeAttributeMap(propertyMap);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
@@ -1080,94 +1082,119 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   static final class DefaultBuilder implements Builder {
 
-    private final DefaultEntityDefinition definition;
+    private final EntityProperties properties;
 
-    DefaultBuilder(DefaultEntityDefinition definition) {
-      this.definition = definition;
+    private String tableName;
+    private Map<ConditionType, ConditionProvider> conditionProviders;
+    private String caption;
+    private String captionResourceKey;
+    private boolean smallDataset;
+    private boolean staticData;
+    private boolean readOnly;
+    private KeyGenerator keyGenerator = new KeyGenerator() {};
+    private boolean keyGenerated;
+    private OrderBy orderBy;
+    private String selectTableName;
+    private SelectQuery selectQuery;
+    private Function<Entity, String> stringFactory = new DefaultStringFactory();
+    private ColorProvider backgroundColorProvider = new NullColorProvider();
+    private ColorProvider foregroundColorProvider = new NullColorProvider();
+    private Comparator<Entity> comparator = Text.getSpaceAwareCollator();
+    private EntityValidator validator = new DefaultEntityValidator();
+
+    DefaultBuilder(List<Property.Builder<?, ?>> propertyBuilders) {
+      this.properties = new EntityProperties(propertyBuilders);
+      this.tableName = properties.entityType.getName();
+      this.captionResourceKey = properties.entityType.getName();
+    }
+
+    @Override
+    public Builder tableName(String tableName) {
+      if (nullOrEmpty(tableName)) {
+        throw new IllegalArgumentException("Table name must be non-empty");
+      }
+      this.tableName = tableName;
+      return this;
     }
 
     @Override
     public Builder conditionProvider(ConditionType conditionType, ConditionProvider conditionProvider) {
       requireNonNull(conditionType, "conditionType");
       requireNonNull(conditionProvider, "conditionProvider");
-      if (definition.conditionProviders == null) {
-        definition.conditionProviders = new HashMap<>();
+      if (this.conditionProviders == null) {
+        this.conditionProviders = new HashMap<>();
       }
-      if (definition.conditionProviders.containsKey(conditionType)) {
+      if (this.conditionProviders.containsKey(conditionType)) {
         throw new IllegalStateException("ConditionProvider for condition type  " + conditionType + " has already been added");
       }
-      definition.conditionProviders.put(conditionType, conditionProvider);
+      this.conditionProviders.put(conditionType, conditionProvider);
       return this;
     }
 
     @Override
     public Builder caption(String caption) {
-      definition.caption = requireNonNull(caption, "caption");
+      this.caption = requireNonNull(caption, "caption");
       return this;
     }
 
     @Override
     public Builder captionResourceKey(String captionResourceKey) {
-      if (definition.caption != null) {
-        throw new IllegalStateException("Caption has already been set for entity: " + definition.entityType);
+      if (this.caption != null) {
+        throw new IllegalStateException("Caption has already been set for entity: " + properties.entityType);
       }
-      definition.captionResourceKey = requireNonNull(captionResourceKey, "captionResourceKey");
+      this.captionResourceKey = requireNonNull(captionResourceKey, "captionResourceKey");
       return this;
     }
 
     @Override
     public Builder smallDataset(boolean smallDataset) {
-      definition.smallDataset = smallDataset;
+      this.smallDataset = smallDataset;
       return this;
     }
 
     @Override
     public Builder staticData(boolean staticData) {
-      definition.staticData = staticData;
+      this.staticData = staticData;
       return this;
     }
 
     @Override
     public Builder readOnly(boolean readOnly) {
-      definition.readOnly = readOnly;
+      this.readOnly = readOnly;
       return this;
     }
 
     @Override
     public Builder keyGenerator(KeyGenerator keyGenerator) {
-      if (!definition.hasPrimaryKey()) {
-        throw new IllegalStateException("KeyGenerator can not be set for an entity without a primary key");
+      if (properties.primaryKeyProperties.isEmpty()) {
+        throw new IllegalStateException("KeyGenerator can not be set for an entity without a primary key: " + properties.entityType);
       }
-      definition.keyGenerator = requireNonNull(keyGenerator, "keyGenerator");
-      definition.keyGenerated = true;
+      this.keyGenerator = requireNonNull(keyGenerator, "keyGenerator");
+      this.keyGenerated = true;
       return this;
     }
 
     @Override
     public Builder orderBy(OrderBy orderBy) {
-      requireNonNull(orderBy, "orderBy");
-      if (definition.orderBy != null) {
-        throw new IllegalStateException("Order by has already been set: " + definition.orderBy);
-      }
-      definition.orderBy = orderBy;
+      this.orderBy = requireNonNull(orderBy, "orderBy");
       return this;
     }
 
     @Override
     public Builder selectTableName(String selectTableName) {
-      definition.selectTableName = requireNonNull(selectTableName, "selectTableName");
+      this.selectTableName = requireNonNull(selectTableName, "selectTableName");
       return this;
     }
 
     @Override
     public Builder selectQuery(SelectQuery selectQuery) {
-      definition.selectQuery = requireNonNull(selectQuery, "selectQuery");
+      this.selectQuery = requireNonNull(selectQuery, "selectQuery");
       return this;
     }
 
     @Override
     public Builder comparator(Comparator<Entity> comparator) {
-      definition.comparator = requireNonNull(comparator, "comparator");
+      this.comparator = requireNonNull(comparator, "comparator");
       return this;
     }
 
@@ -1185,26 +1212,31 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     @Override
     public Builder stringFactory(Function<Entity, String> stringFactory) {
-      definition.stringFactory = requireNonNull(stringFactory, "stringFactory");
+      this.stringFactory = requireNonNull(stringFactory, "stringFactory");
       return this;
     }
 
     @Override
     public Builder backgroundColorProvider(ColorProvider backgroundColorProvider) {
-      definition.backgroundColorProvider = requireNonNull(backgroundColorProvider, "backgroundColorProvider");
+      this.backgroundColorProvider = requireNonNull(backgroundColorProvider, "backgroundColorProvider");
       return this;
     }
 
     @Override
     public Builder foregroundColorProvider(ColorProvider foregroundColorProvider) {
-      definition.foregroundColorProvider = requireNonNull(foregroundColorProvider, "foregroundColorProvider");
+      this.foregroundColorProvider = requireNonNull(foregroundColorProvider, "foregroundColorProvider");
       return this;
     }
 
     @Override
     public Builder validator(EntityValidator validator) {
-      definition.validator = requireNonNull(validator, "validator");
+      this.validator = requireNonNull(validator, "validator");
       return this;
+    }
+
+    @Override
+    public EntityDefinition build() {
+      return new DefaultEntityDefinition(this);
     }
   }
 }

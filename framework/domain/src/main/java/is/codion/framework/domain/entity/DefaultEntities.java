@@ -4,7 +4,6 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.property.Property;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -137,17 +136,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
     this.strictForeignKeys = strictForeignKeys;
   }
 
-  protected final EntityDefinition.Builder define(EntityType entityType, String tableName,
-                                                  Property.Builder<?, ?>... propertyBuilders) {
-    DefaultEntityDefinition definition = new DefaultEntityDefinition(domainType.getName(),
-            entityType, tableName, Arrays.asList(requireNonNull(propertyBuilders, "propertyBuilders")));
-
-    addDefinition(definition);
-
-    return new DefaultEntityDefinition.DefaultBuilder(definition);
-  }
-
-  protected final void addDefinition(EntityDefinition definition) {
+  protected final void add(EntityDefinition definition) {
     if (entityDefinitions.containsKey(definition.getEntityType().getName())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
               definition.getEntityType() + ", for table: " + definition.getTableName());

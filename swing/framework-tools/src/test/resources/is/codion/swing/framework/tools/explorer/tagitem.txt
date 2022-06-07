@@ -9,12 +9,12 @@ public interface TagItem {
 }
 
 void tagItem() {
-  define(TagItem.TYPE,
+  add(definition(
           columnProperty(TagItem.TAGID)
                 .primaryKeyIndex(0),
           foreignKeyProperty(TagItem.TAGID_FK, "Tag"),
           columnProperty(TagItem.ITEMID)
                 .primaryKeyIndex(1),
           foreignKeyProperty(TagItem.ITEMID_FK, "Item")
-  );
+  ));
 }

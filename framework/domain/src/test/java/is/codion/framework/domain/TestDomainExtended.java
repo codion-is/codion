@@ -14,6 +14,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 
 import java.sql.Connection;
 
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.foreignKeyProperty;
 
@@ -45,23 +46,23 @@ public final class TestDomainExtended extends DefaultDomain {
   }
 
   void extended() {
-    define(T_EXTENDED,
+    add(definition(
             columnProperty(EXTENDED_ID).primaryKeyIndex(0),
             columnProperty(EXTENDED_NAME),
             columnProperty(EXTENDED_DEPT_ID),
-            foreignKeyProperty(EXTENDED_DEPT_FK));
+            foreignKeyProperty(EXTENDED_DEPT_FK)));
   }
 
   void procedure() {
-    define(PROC_TYPE, (connection, arguments) -> {});
+    add(PROC_TYPE, (connection, arguments) -> {});
   }
 
   void function() {
-    define(FUNC_TYPE, (connection, arguments) -> null);
+    add(FUNC_TYPE, (connection, arguments) -> null);
   }
 
   void report() {
-    define(REP_TYPE, new Report<Object, Object, Object>() {
+    add(REP_TYPE, new Report<Object, Object, Object>() {
       @Override
       public Object fillReport(Connection connection, Object parameters) throws ReportException {
         return null;
@@ -89,9 +90,9 @@ public final class TestDomainExtended extends DefaultDomain {
     }
 
     void extendedSecond() {
-      define(T_SECOND_EXTENDED,
+      add(definition(
               columnProperty(EXTENDED_ID).primaryKeyIndex(0),
-              columnProperty(EXTENDED_NAME));
+              columnProperty(EXTENDED_NAME)));
     }
   }
 
@@ -110,9 +111,9 @@ public final class TestDomainExtended extends DefaultDomain {
     }
 
     void extendedThird() {
-      define(T_THIRD_EXTENDED,
+      add(definition(
               columnProperty(EXTENDED_ID).primaryKeyIndex(0),
-              columnProperty(EXTENDED_NAME));
+              columnProperty(EXTENDED_NAME)));
     }
   }
 }

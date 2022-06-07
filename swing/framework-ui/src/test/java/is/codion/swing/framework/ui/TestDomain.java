@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
@@ -42,13 +43,13 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
 
   void master() {
-    define(T_MASTER,
+    add(definition(
             primaryKeyProperty(MASTER_ID),
             columnProperty(MASTER_NAME)
                     .searchProperty(true),
             columnProperty(MASTER_CODE))
             .comparator(Comparator.comparing(o -> o.get(MASTER_CODE)))
-            .stringFactory(MASTER_NAME);
+            .stringFactory(MASTER_NAME));
   }
 
   public static final EntityType T_DETAIL = DOMAIN.entityType("domain.detail_entity");
@@ -78,7 +79,7 @@ public final class TestDomain extends DefaultDomain {
           item(2, "2"), item(3, "3"));
 
   void detail() {
-    define(T_DETAIL,
+    add(definition(
             primaryKeyProperty(DETAIL_ID),
             columnProperty(DETAIL_INT, DETAIL_INT.getName()),
             columnProperty(DETAIL_DOUBLE, DETAIL_DOUBLE.getName()),
@@ -112,7 +113,7 @@ public final class TestDomain extends DefaultDomain {
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
             .orderBy(ascending(DETAIL_STRING))
             .smallDataset(true)
-            .stringFactory(DETAIL_STRING);
+            .stringFactory(DETAIL_STRING));
   }
 
   public static final EntityType T_DEPARTMENT = DOMAIN.entityType("scott.dept");
@@ -121,7 +122,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
 
   void department() {
-    define(T_DEPARTMENT,
+    add(definition(
             primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
                     .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
@@ -131,7 +132,7 @@ public final class TestDomain extends DefaultDomain {
             .smallDataset(true)
             .orderBy(ascending(DEPARTMENT_NAME))
             .stringFactory(DEPARTMENT_NAME)
-            .caption("Department");
+            .caption("Department"));
   }
 
   public static final EntityType T_EMP = DOMAIN.entityType("scott.emp");
@@ -153,7 +154,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Object CYAN = new Object();
 
   void employee() {
-    define(T_EMP,
+    add(definition(
             primaryKeyProperty(EMP_ID, EMP_ID.getName()),
             columnProperty(EMP_NAME, EMP_NAME.getName())
                     .searchProperty(true).maximumLength(10).nullable(false),
@@ -183,6 +184,6 @@ public final class TestDomain extends DefaultDomain {
               }
 
               return null;
-            });
+            }));
   }
 }

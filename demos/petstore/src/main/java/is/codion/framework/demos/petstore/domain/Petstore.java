@@ -13,6 +13,7 @@ import is.codion.framework.domain.entity.StringFactory;
 import java.math.BigDecimal;
 
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Properties.*;
@@ -46,7 +47,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   void address() {
-    define(Address.TYPE, "petstore.address",
+    add(definition(
             primaryKeyProperty(Address.ID)
                     .columnName("addressid"),
             columnProperty(Address.STREET_1, Address.STREET_1.getName())
@@ -75,6 +76,7 @@ public final class Petstore extends DefaultDomain {
                     .columnName("longitude")
                     .nullable(false)
                     .maximumFractionDigits(2))
+            .tableName("petstore.address")
             .keyGenerator(increment("petstore.address", "addressid"))
             .orderBy(ascending(Address.CITY, Address.STREET_1, Address.STREET_2))
             .stringFactory(StringFactory.builder()
@@ -83,7 +85,7 @@ public final class Petstore extends DefaultDomain {
                     .value(Address.CITY).text(" ")
                     .value(Address.ZIP).text(", ")
                     .value(Address.STATE))
-            .caption("Addresses");
+            .caption("Addresses"));
   }
 
   public interface Category {
@@ -96,7 +98,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   void category() {
-    define(Category.TYPE, "petstore.category",
+    add(definition(
             primaryKeyProperty(Category.ID)
                     .columnName("categoryid"),
             columnProperty(Category.NAME, Category.NAME.getName())
@@ -110,10 +112,11 @@ public final class Petstore extends DefaultDomain {
             columnProperty(Category.IMAGE_URL, Category.IMAGE_URL.getName())
                     .columnName("imageurl")
                     .hidden(true))
+            .tableName("petstore.category")
             .keyGenerator(increment("petstore.category", "categoryid"))
             .orderBy(ascending(Category.NAME))
             .stringFactory(Category.NAME)
-            .caption("Categories");
+            .caption("Categories"));
   }
 
   public interface Product {
@@ -129,7 +132,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   void product() {
-    define(Product.TYPE, "petstore.product",
+    add(definition(
             primaryKeyProperty(Product.ID)
                     .columnName("productid"),
             columnProperty(Product.CATEGORY_ID)
@@ -148,13 +151,14 @@ public final class Petstore extends DefaultDomain {
                     .columnName("imageurl")
                     .maximumLength(55)
                     .hidden(true))
+            .tableName("petstore.product")
             .keyGenerator(increment("petstore.product", "productid"))
             .orderBy(ascending(Product.NAME))
             .stringFactory(StringFactory.builder()
                     .value(Product.CATEGORY_FK)
                     .text(" - ")
                     .value(Product.NAME))
-            .caption("Products");
+            .caption("Products"));
   }
 
   public interface SellerContactInfo {
@@ -167,7 +171,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   void sellerContactInfo() {
-    define(SellerContactInfo.TYPE, "petstore.sellercontactinfo",
+    add(definition(
             primaryKeyProperty(SellerContactInfo.ID)
                     .columnName("contactinfoid"),
             columnProperty(SellerContactInfo.FIRST_NAME, SellerContactInfo.FIRST_NAME.getName())
@@ -184,13 +188,14 @@ public final class Petstore extends DefaultDomain {
                     .columnName("email")
                     .maximumLength(24)
                     .nullable(false))
+            .tableName("petstore.sellercontactinfo")
             .keyGenerator(increment("petstore.sellercontactinfo", "contactinfoid"))
             .orderBy(ascending(SellerContactInfo.LAST_NAME, SellerContactInfo.FIRST_NAME))
             .stringFactory(StringFactory.builder()
                     .value(SellerContactInfo.LAST_NAME)
                     .text(", ")
                     .value(SellerContactInfo.FIRST_NAME))
-            .caption("Seller info");
+            .caption("Seller info"));
   }
 
   public interface Item {
@@ -213,7 +218,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   void item() {
-    define(Item.TYPE, "petstore.item",
+    add(definition(
             primaryKeyProperty(Item.ID)
                     .columnName("itemid"),
             columnProperty(Item.PRODUCT_ID)
@@ -251,13 +256,14 @@ public final class Petstore extends DefaultDomain {
                     .columnName("disabled")
                     .defaultValue(false)
                     .nullable(false))
+            .tableName("petstore.item")
             .keyGenerator(increment("petstore.item", "itemid"))
             .orderBy(ascending(Item.NAME))
             .stringFactory(StringFactory.builder()
                     .value(Item.PRODUCT_FK)
                     .text(" - ")
                     .value(Item.NAME))
-            .caption("Items");
+            .caption("Items"));
   }
 
   public interface Tag {
@@ -269,7 +275,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   void tag() {
-    define(Tag.TYPE, "petstore.tag",
+    add(definition(
             primaryKeyProperty(Tag.ID)
                     .columnName("tagid"),
             columnProperty(Tag.TAG, Tag.TAG.getName())
@@ -279,11 +285,12 @@ public final class Petstore extends DefaultDomain {
             subqueryProperty(Tag.REFCOUNT, Tag.REFCOUNT.getName(),
                     "select count(*) from petstore.tag_item where tagid = tag.tagid")
                     .columnName("refcount"))
+            .tableName("petstore.tag")
             .keyGenerator(increment("petstore.tag", "tagid"))
             .orderBy(ascending(Tag.TAG))
             .selectTableName("petstore.tag tag")
             .stringFactory(Tag.TAG)
-            .caption("Tags");
+            .caption("Tags"));
   }
 
   public interface TagItem {
@@ -297,7 +304,7 @@ public final class Petstore extends DefaultDomain {
   }
 
   void tagItem() {
-    define(TagItem.TYPE, "petstore.tag_item",
+    add(definition(
             columnProperty(TagItem.ITEM_ID)
                     .primaryKeyIndex(0)
                     .columnName("itemid"),
@@ -307,10 +314,11 @@ public final class Petstore extends DefaultDomain {
                     .primaryKeyIndex(1)
                     .columnName("tagid"),
             foreignKeyProperty(TagItem.TAG_FK, TagItem.TAG_FK.getName()))
+            .tableName("petstore.tag_item")
             .stringFactory(StringFactory.builder()
                     .value(TagItem.ITEM_FK)
                     .text(" - ")
                     .value(TagItem.TAG_FK))
-            .caption("Item tags");
+            .caption("Item tags"));
   }
 }

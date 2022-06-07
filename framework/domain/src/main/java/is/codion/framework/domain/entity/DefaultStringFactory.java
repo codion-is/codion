@@ -9,7 +9,7 @@ import java.util.function.Function;
 /**
  * A ToString implementation using the entityType plus primary key value.
  */
-final class DefaultStringProvider implements Function<Entity, String>, Serializable {
+final class DefaultStringFactory implements Function<Entity, String>, Serializable {
 
   private static final long serialVersionUID = 1;
 
