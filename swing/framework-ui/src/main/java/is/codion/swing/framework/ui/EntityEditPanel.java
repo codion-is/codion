@@ -151,6 +151,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       ACTIVE_STATE_GROUP.addState(activeState);
     }
     this.controlCodes = controlCodes == null ? emptySet() : new HashSet<>(Arrays.asList(controlCodes));
+    editModel.setDefaultValues();
   }
 
   @Override
