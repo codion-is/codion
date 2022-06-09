@@ -453,7 +453,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
             .popupMenuControls(getSearchFieldPopupMenuControls())
             .hintText(hintText)
             .onTextChanged(searchText -> {
-              if (!Objects.equals(searchText, hintText)) {
+              if (!searchText.isEmpty() && !Objects.equals(searchText, hintText)) {
                 tableModel.getSearchModel().nextResult();
               }
             })

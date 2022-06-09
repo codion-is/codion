@@ -33,7 +33,7 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
     createTextField(InvoiceLine.QUANTITY)
             .selectAllOnFocusGained(true)
             .columns(2)
-            .action(getControl(ControlCode.SAVE));
+            .action(getControl(ControlCode.INSERT));
 
     setLayout(borderLayout());
     addInputPanel(InvoiceLine.TRACK_FK, BorderLayout.WEST);

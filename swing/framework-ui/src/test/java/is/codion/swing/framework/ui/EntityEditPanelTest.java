@@ -55,7 +55,7 @@ public final class EntityEditPanelTest {
     editPanel.setRequestFocusAfterInsert(true);
     assertTrue(editPanel.isRequestFocusAfterInsert());
 
-    assertNotNull(editPanel.getControl(EntityEditPanel.ControlCode.SAVE));
+    assertNotNull(editPanel.getControl(EntityEditPanel.ControlCode.INSERT));
     assertNotNull(editPanel.getControl(EntityEditPanel.ControlCode.UPDATE));
     assertNotNull(editPanel.getControl(EntityEditPanel.ControlCode.DELETE));
     assertNotNull(editPanel.getControl(EntityEditPanel.ControlCode.REFRESH));

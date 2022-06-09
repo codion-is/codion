@@ -5,7 +5,7 @@
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#SHOW_STARTUP_DIALOG}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#PERSIST_ENTITY_PANELS}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#TAB_PLACEMENT}<br>
- * {@link is.codion.swing.framework.ui.EntityEditPanel#USE_SAVE_CONTROL}<br>
+ * {@link is.codion.swing.framework.ui.EntityEditPanel#USE_SAVE_CAPTION}<br>
  * {@link is.codion.swing.framework.ui.EntityEditPanel#USE_FOCUS_ACTIVATION}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#USE_KEYBOARD_NAVIGATION}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#DISPOSE_EDIT_DIALOG_ON_ESCAPE}<br>
