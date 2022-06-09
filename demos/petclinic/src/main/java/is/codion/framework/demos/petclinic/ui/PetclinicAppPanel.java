@@ -20,7 +20,6 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
-import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
@@ -87,7 +86,6 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
   public static void main(String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
     EntityEditModel.POST_EDIT_EVENTS.set(true);
-    EntityEditPanel.USE_SAVE_CONTROL.set(false);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);

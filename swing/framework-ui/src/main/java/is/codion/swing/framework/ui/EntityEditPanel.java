@@ -33,11 +33,9 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -65,19 +63,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useFocusActivation", true);
 
   /**
-   * Specifies whether edit panels should include a SAVE button (insert or update, depending on selection) or just an INSERT button.<br>
-   * Note that the SAVE button is overridden if the edit model does not allow updates, then an INSERT button is added.<br>
+   * Specifies whether the add/insert button caption should be 'Save' (mnemonic S), instead of 'Add' (mnemonic A)<br>
    * Value type: Boolean<br>
-   * Default value: true
+   * Default value: false
    */
-  public static final PropertyValue<Boolean> USE_SAVE_CONTROL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useSaveControl", true);
+  public static final PropertyValue<Boolean> USE_SAVE_CAPTION =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useSaveCaption", false);
 
   /**
    * The standard controls available to the EditPanel
    */
   public enum ControlCode {
-    SAVE, INSERT, UPDATE, DELETE, REFRESH, CLEAR
+    INSERT, UPDATE, DELETE, REFRESH, CLEAR
   }
 
   /**
@@ -136,7 +133,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
   public EntityEditPanel(SwingEntityEditModel editModel) {
-    this(editModel, getDefaultControlCodes(editModel));
+    this(editModel, ControlCode.INSERT, ControlCode.UPDATE, ControlCode.DELETE, ControlCode.CLEAR, ControlCode.REFRESH);
   }
 
   /**
@@ -330,28 +327,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return a control for performing an insert on the active entity
    */
   public final Control createInsertControl() {
-    String mnemonic = FrameworkMessages.get(FrameworkMessages.ADD_MNEMONIC);
+    boolean useSaveCaption = USE_SAVE_CAPTION.get();
+    String mnemonic = FrameworkMessages.get(useSaveCaption ? FrameworkMessages.SAVE_MNEMONIC : FrameworkMessages.ADD_MNEMONIC);
+    String caption = FrameworkMessages.get(useSaveCaption ? FrameworkMessages.SAVE : FrameworkMessages.ADD);
     return Control.builder(this::insert)
-            .caption(FrameworkMessages.get(FrameworkMessages.ADD))
+            .caption(caption)
             .enabledState(State.and(activeState, getEditModel().getInsertEnabledObserver()))
             .description(FrameworkMessages.get(FrameworkMessages.ADD_TIP) + ALT_PREFIX + mnemonic + ")")
-            .mnemonic(mnemonic.charAt(0))
-            .smallIcon(frameworkIcons().add())
-            .build();
-  }
-
-  /**
-   * @return a control for performing a save on the active entity, that is, update if an entity
-   * is selected and modified or insert otherwise
-   */
-  public final Control createSaveControl() {
-    String mnemonic = FrameworkMessages.get(FrameworkMessages.SAVE_MNEMONIC);
-    StateObserver insertUpdateState = State.or(getEditModel().getInsertEnabledObserver(),
-            State.and(getEditModel().getUpdateEnabledObserver(), getEditModel().getModifiedObserver()));
-    return Control.builder(this::save)
-            .caption(FrameworkMessages.get(FrameworkMessages.SAVE))
-            .enabledState(State.and(activeState, insertUpdateState))
-            .description(FrameworkMessages.get(FrameworkMessages.SAVE_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
             .smallIcon(frameworkIcons().add())
             .build();
@@ -457,29 +439,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   public final boolean isPanelInitialized() {
     return panelInitialized;
-  }
-
-  /**
-   * Saves the active entity, that is, if no entity is selected it performs insert otherwise the user
-   * is asked whether to update the selected entity or insert a new one
-   */
-  public final void save() {
-    if (shouldInsertOnSave()) {
-      insert();
-    }
-    else {//possibly update
-      int choiceIdx = JOptionPane.showOptionDialog(this, FrameworkMessages.get(FrameworkMessages.UPDATE_OR_ADD),
-              FrameworkMessages.get(FrameworkMessages.UPDATE_OR_ADD_TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-              new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD),
-                      FrameworkMessages.get(FrameworkMessages.ADD_NEW), Messages.get(Messages.CANCEL)},
-              new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE)});
-      if (choiceIdx == 0) {//update
-        updateWithoutConfirmation();
-      }
-      else if (choiceIdx == 1) {//insert
-        insertWithoutConfirmation();
-      }
-    }
   }
 
   /**
@@ -706,9 +665,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   protected Controls initializeControlPanelControls() {
     Controls controlPanelControls = Controls.controls();
-    if (this.controls.containsKey(ControlCode.SAVE)) {
-      controlPanelControls.add(this.controls.get(ControlCode.SAVE));
-    }
     if (this.controls.containsKey(ControlCode.INSERT)) {
       controlPanelControls.add(this.controls.get(ControlCode.INSERT));
     }
@@ -764,9 +720,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private void setupEditControls() {
-    if (getEditModel().isInsertEnabled() && getEditModel().isUpdateEnabled() && controlCodes.contains(ControlCode.SAVE)) {
-      controls.putIfAbsent(ControlCode.SAVE, createSaveControl());
-    }
     if (getEditModel().isInsertEnabled() && controlCodes.contains(ControlCode.INSERT)) {
       controls.putIfAbsent(ControlCode.INSERT, createInsertControl());
     }
@@ -821,26 +774,5 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private void showEntityMenu() {
     new EntityPopupMenu(getEditModel().getEntityCopy(), getEditModel().getConnectionProvider().getConnection()).show(this, 0, 0);
-  }
-
-  private boolean shouldInsertOnSave() {
-    //no entity selected, selected entity is unmodified or update is not enabled, can only insert
-    return getEditModel().isEntityNew() || !getEditModel().isModified() || !getEditModel().isUpdateEnabled();
-  }
-
-  private static ControlCode[] getDefaultControlCodes(SwingEntityEditModel editModel) {
-    List<ControlCode> codes = new ArrayList<>();
-    if (USE_SAVE_CONTROL.get()) {
-      codes.add(editModel.isUpdateEnabled() ? ControlCode.SAVE : ControlCode.INSERT);
-    }
-    else {
-      codes.add(ControlCode.INSERT);
-    }
-    codes.add(ControlCode.UPDATE);
-    codes.add(ControlCode.DELETE);
-    codes.add(ControlCode.CLEAR);
-    codes.add(ControlCode.REFRESH);
-
-    return codes.toArray(new ControlCode[0]);
   }
 }
