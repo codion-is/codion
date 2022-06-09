@@ -8187,3 +8187,4 @@
   DefaultEntityDefinition.DefaultBuilder, major refactoring, EntityDefinition.definition() factory method added, DefaultDomain.define() renamed add(), entityType parameter removed, available via attributes
   EntityDefinition.hasSingleIntegerPrimaryKey() removed, unused
   EntityEditPanel, now calls editModel.setDefaultValues() on construction
+  FilteredTable bug fixed, an empty searchField no longer triggers a search on focus gained
