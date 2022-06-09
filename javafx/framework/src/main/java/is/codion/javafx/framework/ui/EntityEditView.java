@@ -4,7 +4,6 @@
 package is.codion.javafx.framework.ui;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -19,10 +18,7 @@ import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.javafx.framework.model.FXEntityEditModel;
 
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
@@ -38,7 +34,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * A View for editing entity instances
@@ -101,7 +96,7 @@ public abstract class EntityEditView extends BorderPane {
    * @return the button panel for this edit view
    */
   public final Node getButtonPanel() {
-    Button save = createSaveButton();
+    Button save = createInsertButton();
     save.maxWidthProperty().setValue(Double.MAX_VALUE);
     Button update = createUpdateButton();
     update.maxWidthProperty().setValue(Double.MAX_VALUE);
@@ -286,9 +281,9 @@ public abstract class EntityEditView extends BorderPane {
     setOnKeyReleased(this::onKeyReleased);
   }
 
-  private Button createSaveButton() {
-    Button button = new Button(FrameworkMessages.get(FrameworkMessages.SAVE));
-    button.setOnAction(event -> save());
+  private Button createInsertButton() {
+    Button button = new Button(FrameworkMessages.get(FrameworkMessages.ADD));
+    button.setOnAction(event -> insert());
 
     return button;
   }
@@ -327,36 +322,6 @@ public abstract class EntityEditView extends BorderPane {
     button.setOnAction(event -> editModel.refresh());
 
     return button;
-  }
-
-  private void save() {
-    if (editModel.isEntityNew() || !editModel.getModifiedObserver().get()) {
-      //no entity selected or selected entity is unmodified can only insert
-      insert();
-    }
-    else {//possibly update
-      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-      alert.setTitle(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_ADD_TITLE));
-      alert.setHeaderText(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_ADD));
-
-      ButtonType update = new ButtonType(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD));
-      ButtonType insert = new ButtonType(FrameworkMessages.get(FrameworkMessages.ADD_NEW));
-      ButtonType cancel = new ButtonType(Messages.get(Messages.CANCEL), ButtonBar.ButtonData.CANCEL_CLOSE);
-      alert.getButtonTypes().setAll(update, insert, cancel);
-      ((Button) alert.getDialogPane().lookupButton(update)).setDefaultButton(true);
-
-      Optional<ButtonType> result = alert.showAndWait();
-      if (!result.isPresent() || result.get().equals(cancel)) {
-        return;
-      }
-
-      if (result.get().equals(update)) {
-        update(false);
-      }
-      else {
-        insert();
-      }
-    }
   }
 
   private void insert() {
@@ -433,7 +398,7 @@ public abstract class EntityEditView extends BorderPane {
   private void onKeyReleased(KeyEvent event) {
     if (event.isAltDown()) {
       if (event.getCode().equals(INSERT_KEY_CODE)) {
-        save();
+        insert();
         event.consume();
       }
       else if (event.getCode().equals(UPDATE_KEY_CODE)) {
