@@ -26,7 +26,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 
   private final Class<T> valueClass;
 
-  private int columns;
+  private int columns = -1;
   private Action action;
   private ActionListener actionListener;
   private boolean selectAllOnFocusGained;
@@ -103,7 +103,9 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   @Override
   protected final C createTextComponent() {
     C textField = createTextField();
-    textField.setColumns(columns);
+    if (columns != -1) {
+      textField.setColumns(columns);
+    }
     textField.setHorizontalAlignment(horizontalAlignment);
     if (action != null) {
       textField.setAction(action);
