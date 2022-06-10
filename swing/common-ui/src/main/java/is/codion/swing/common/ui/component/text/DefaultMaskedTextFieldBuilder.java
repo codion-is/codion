@@ -16,7 +16,7 @@ final class DefaultMaskedTextFieldBuilder
 
   private final MaskFormatterBuilder maskFormatterBuilder = MaskFormatterBuilder.builder();
 
-  private int columns;
+  private int columns = -1;
   private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
   DefaultMaskedTextFieldBuilder(Value<String> linkedValue) {
@@ -106,7 +106,7 @@ final class DefaultMaskedTextFieldBuilder
     try {
       JFormattedTextField textField = new JFormattedTextField(maskFormatterBuilder.build());
       textField.setFocusLostBehavior(focusLostBehaviour);
-      if (columns > 0) {
+      if (columns != -1) {
         textField.setColumns(columns);
       }
 

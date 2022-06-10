@@ -20,7 +20,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   protected final SpinnerModel spinnerModel;
 
   private boolean editable = true;
-  private int columns = 0;
+  private int columns = -1;
   private boolean mouseWheelScrolling = true;
   private boolean mouseWheelScrollingReversed = false;
   private int horizontalAlignment = -1;
@@ -75,7 +75,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
       if (!editable) {
         editorField.setEditable(false);
       }
-      if (columns > 0) {
+      if (columns != -1) {
         editorField.setColumns(columns);
       }
       if (horizontalAlignment != -1) {
