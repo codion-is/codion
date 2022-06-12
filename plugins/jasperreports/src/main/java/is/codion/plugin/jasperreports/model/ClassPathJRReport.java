@@ -8,13 +8,15 @@ import is.codion.common.db.report.ReportException;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
+import static java.util.Objects.requireNonNull;
+
 final class ClassPathJRReport extends AbstractJRReport {
 
   private final Class<?> resourceClass;
 
   ClassPathJRReport(Class<?> resourceClass, String reportPath) {
     super(reportPath);
-    this.resourceClass = resourceClass;
+    this.resourceClass = requireNonNull(resourceClass);
   }
 
   @Override
