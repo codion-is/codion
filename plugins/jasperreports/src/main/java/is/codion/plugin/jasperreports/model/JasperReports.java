@@ -34,7 +34,7 @@ public final class JasperReports {
   /**
    * Instantiates a JRReport for a classpath based report.
    * @param resourceClass the class owning the report resource
-   * @param reportPath the report classpath
+   * @param reportPath the report path, relative to the resource class
    * @return a report wrapper
    */
   public static JRReport classPathReport(Class<?> resourceClass, String reportPath) {
