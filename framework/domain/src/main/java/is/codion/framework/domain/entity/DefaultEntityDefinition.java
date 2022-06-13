@@ -1206,11 +1206,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public Builder stringFactory(StringFactory.Builder builder) {
-      return stringFactory(requireNonNull(builder, "builder").build());
-    }
-
-    @Override
     public Builder stringFactory(Function<Entity, String> stringFactory) {
       this.stringFactory = requireNonNull(stringFactory, "stringFactory");
       return this;

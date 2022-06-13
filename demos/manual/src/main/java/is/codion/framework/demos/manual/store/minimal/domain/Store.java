@@ -65,7 +65,8 @@ public class Store extends DefaultDomain {
             .stringFactory(StringFactory.builder()
                     .value(Customer.LAST_NAME)
                     .text(", ")
-                    .value(Customer.FIRST_NAME))
+                    .value(Customer.FIRST_NAME)
+                    .build())
             .caption("Customer"));
 
     add(definition(
@@ -83,7 +84,8 @@ public class Store extends DefaultDomain {
             .stringFactory(StringFactory.builder()
                     .value(Address.STREET)
                     .text(", ")
-                    .value(Address.CITY))
+                    .value(Address.CITY)
+                    .build())
             .caption("Address"));
   }
 
@@ -114,7 +116,8 @@ public class Store extends DefaultDomain {
                     .stringFactory(StringFactory.builder()
                             .value(Address.STREET)
                             .text(", ")
-                            .value(Address.CITY))
+                            .value(Address.CITY)
+                            .build())
                     .caption("Address");
 
     add(address);

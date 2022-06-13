@@ -75,7 +75,8 @@ public final class Example {
               .stringFactory(StringFactory.builder()
                       .value(Customer.LAST_NAME)
                       .text(", ")
-                      .value(Customer.FIRST_NAME)));
+                      .value(Customer.FIRST_NAME)
+                      .build()));
     }
 
     private static final class CustomerKeyGenerator implements KeyGenerator {
@@ -110,7 +111,8 @@ public final class Example {
               .stringFactory(StringFactory.builder()
                       .value(Address.STREET)
                       .text(", ")
-                      .value(Address.CITY)));
+                      .value(Address.CITY)
+                      .build()));
     }
     // end::address[]
     // tag::customerAddress[]
