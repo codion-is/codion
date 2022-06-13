@@ -148,7 +148,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .stringFactory(StringFactory.builder()
                     .value(Employee.LASTNAME)
                     .text(", ")
-                    .value(Employee.FIRSTNAME)));
+                    .value(Employee.FIRSTNAME)
+                    .build()));
   }
 
   void customer() {
@@ -374,7 +375,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .stringFactory(StringFactory.builder()
                     .value(PlaylistTrack.PLAYLIST_FK)
                     .text(" - ")
-                    .value(PlaylistTrack.TRACK_FK)));
+                    .value(PlaylistTrack.TRACK_FK)
+                    .build()));
   }
 
   private static final class UpdateTotalsFunction implements DatabaseFunction<EntityConnection, Collection<Long>, Collection<Entity>> {

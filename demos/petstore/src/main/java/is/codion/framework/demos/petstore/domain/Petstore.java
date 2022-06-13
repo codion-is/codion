@@ -84,7 +84,8 @@ public final class Petstore extends DefaultDomain {
                     .value(Address.STREET_2).text(", ")
                     .value(Address.CITY).text(" ")
                     .value(Address.ZIP).text(", ")
-                    .value(Address.STATE))
+                    .value(Address.STATE)
+                    .build())
             .caption("Addresses"));
   }
 
@@ -157,7 +158,8 @@ public final class Petstore extends DefaultDomain {
             .stringFactory(StringFactory.builder()
                     .value(Product.CATEGORY_FK)
                     .text(" - ")
-                    .value(Product.NAME))
+                    .value(Product.NAME)
+                    .build())
             .caption("Products"));
   }
 
@@ -194,7 +196,8 @@ public final class Petstore extends DefaultDomain {
             .stringFactory(StringFactory.builder()
                     .value(SellerContactInfo.LAST_NAME)
                     .text(", ")
-                    .value(SellerContactInfo.FIRST_NAME))
+                    .value(SellerContactInfo.FIRST_NAME)
+                    .build())
             .caption("Seller info"));
   }
 
@@ -262,7 +265,8 @@ public final class Petstore extends DefaultDomain {
             .stringFactory(StringFactory.builder()
                     .value(Item.PRODUCT_FK)
                     .text(" - ")
-                    .value(Item.NAME))
+                    .value(Item.NAME)
+                    .build())
             .caption("Items"));
   }
 
@@ -318,7 +322,8 @@ public final class Petstore extends DefaultDomain {
             .stringFactory(StringFactory.builder()
                     .value(TagItem.ITEM_FK)
                     .text(" - ")
-                    .value(TagItem.TAG_FK))
+                    .value(TagItem.TAG_FK)
+                    .build())
             .caption("Item tags"));
   }
 }

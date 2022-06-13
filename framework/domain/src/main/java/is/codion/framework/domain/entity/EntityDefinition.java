@@ -560,13 +560,6 @@ public interface EntityDefinition {
     Builder stringFactory(Attribute<?> attribute);
 
     /**
-     * Sets the string factory builder, that is, the builder responsible for supplying the object creating toString() values for this entity type
-     * @param builder the string factory function builder
-     * @return this {@link Builder} instance
-     */
-    Builder stringFactory(StringFactory.Builder builder);
-
-    /**
      * Sets the string factory, that is, the object responsible for creating toString() values for this entity type
      * @param stringFactory the string factory function
      * @return this {@link Builder} instance

@@ -88,7 +88,8 @@ public final class ClientTutorial {
               .stringFactory(StringFactory.builder()
                       .value(Album.ARTIST_FK)
                       .text(" - ")
-                      .value(Album.TITLE))
+                      .value(Album.TITLE)
+                      .build())
               .caption("Albums"));
     }
   }

@@ -85,7 +85,8 @@ public final class SchemaBrowser extends DefaultDomain {
             .stringFactory(StringFactory.builder()
                     .value(Table.SCHEMA_FK)
                     .text(".")
-                    .value(Table.NAME))
+                    .value(Table.NAME)
+                    .build())
             .caption("Tables");
     String tableQueryFrom = bundle.getString("t_table_query_from");
     if (!tableQueryFrom.isEmpty()) {
@@ -130,7 +131,8 @@ public final class SchemaBrowser extends DefaultDomain {
             .stringFactory(StringFactory.builder()
                     .value(Column.TABLE_FK)
                     .text(".")
-                    .value(Column.NAME))
+                    .value(Column.NAME)
+                    .build())
             .caption("Columns"));
   }
 
@@ -164,7 +166,8 @@ public final class SchemaBrowser extends DefaultDomain {
             .stringFactory(StringFactory.builder()
                     .value(Constraint.TABLE_FK)
                     .text(".")
-                    .value(Constraint.NAME))
+                    .value(Constraint.NAME)
+                    .build())
             .caption("Constraints"));
   }
 
