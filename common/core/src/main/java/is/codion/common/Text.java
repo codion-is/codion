@@ -178,9 +178,10 @@ public final class Text {
     requireNonNull(lines, "lines");
     requireNonNull(columnDelimiter, "delimiter");
     StringBuilder contents = new StringBuilder();
-    contents.append(String.join(columnDelimiter, header)).append(Util.LINE_SEPARATOR)
+    contents.append(String.join(columnDelimiter, header))
+            .append(Separators.LINE_SEPARATOR)
             .append(lines.stream().map(line -> String.join(columnDelimiter, line))
-                    .collect(joining(Util.LINE_SEPARATOR)));
+                    .collect(joining(Separators.LINE_SEPARATOR)));
 
     return contents.toString();
   }
@@ -261,7 +262,7 @@ public final class Text {
         contents.append(line);
         line = input.readLine();
         if (line != null) {
-          contents.append(Util.LINE_SEPARATOR);
+          contents.append(Separators.LINE_SEPARATOR);
         }
       }
     }

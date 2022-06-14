@@ -3,8 +3,6 @@
  */
 package is.codion.common.properties;
 
-import is.codion.common.Util;
-
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -17,6 +15,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.common.Separators.LINE_SEPARATOR;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -29,11 +28,11 @@ public final class DefaultPropertyStoreTest {
     File configFile = File.createTempFile("PropertyStoreTest.test", "properties");
     configFile.deleteOnExit();
     StringBuilder configBuilder = new StringBuilder()
-            .append("stringlist.property=value1;value2;value3").append(Util.LINE_SEPARATOR)
-            .append("intlist.property=1;2;3").append(Util.LINE_SEPARATOR)
-            .append("int.property1=42").append(Util.LINE_SEPARATOR)
-            .append("int.property3=44").append(Util.LINE_SEPARATOR)
-            .append("double.property=3.14").append(Util.LINE_SEPARATOR)
+            .append("stringlist.property=value1;value2;value3").append(LINE_SEPARATOR)
+            .append("intlist.property=1;2;3").append(LINE_SEPARATOR)
+            .append("int.property1=42").append(LINE_SEPARATOR)
+            .append("int.property3=44").append(LINE_SEPARATOR)
+            .append("double.property=3.14").append(LINE_SEPARATOR)
             .append("boolean.property=true");
     Files.write(configFile.toPath(), singletonList(configBuilder.toString()));
     DefaultPropertyStore store = new DefaultPropertyStore(configFile);

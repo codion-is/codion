@@ -4,7 +4,7 @@
 package is.codion.framework.model.test;
 
 import is.codion.common.Operator;
-import is.codion.common.Util;
+import is.codion.common.Separators;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
@@ -296,7 +296,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     TableModel deptModel = createDepartmentTableModel();
     deptModel.setColumns(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION);
     deptModel.refresh();
-    String newline = Util.LINE_SEPARATOR;
+    String newline = Separators.LINE_SEPARATOR;
     String expected = "deptno\tdname\tloc" + newline +
             "10\tACCOUNTING\tNEW YORK" + newline +
             "40\tOPERATIONS\tBOSTON" + newline +

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static is.codion.common.Util.map;
+import static is.codion.common.Mapper.map;
 import static is.codion.framework.domain.entity.Entity.mapToType;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;

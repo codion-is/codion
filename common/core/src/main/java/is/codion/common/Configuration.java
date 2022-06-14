@@ -234,7 +234,8 @@ public final class Configuration {
 
   private static PropertyStore loadConfiguration() {
     boolean configurationFileRequired = System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
-    String configurationFilePath = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + Util.FILE_SEPARATOR + "codion.config");
+    String configurationFilePath = System.getProperty(CONFIGURATION_FILE,
+            System.getProperty("user.home") + Separators.FILE_SEPARATOR + "codion.config");
     if (configurationFilePath.toLowerCase().startsWith(CLASSPATH_PREFIX)) {
       return loadFromClasspath(configurationFilePath, configurationFileRequired);
     }
