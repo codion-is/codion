@@ -83,29 +83,4 @@ public class TextComponentsTest {
     TextComponents.selectNoneOnFocusGained(textField);
     assertEquals(focusListenerCount, textField.getFocusListeners().length);
   }
-
-  @Test
-  void enableNullTextField() {
-    assertThrows(NullPointerException.class, () -> TextFieldHint.create(null, "test"));
-  }
-
-  @Test
-  void enableNullHintString() {
-    assertThrows(IllegalArgumentException.class, () -> TextFieldHint.create(new JTextField(), null));
-  }
-
-  @Test
-  void enableEmptyHintString() {
-    assertThrows(IllegalArgumentException.class, () -> TextFieldHint.create(new JTextField(), ""));
-  }
-
-  @Test
-  void hint() {
-    JTextField textField = new JTextField();
-    TextFieldHint hint = TextFieldHint.create(textField, "search");
-    assertEquals("search", hint.getHintText());
-    assertEquals("search", textField.getText());
-    textField.setText("he");
-    assertEquals("he", textField.getText());
-  }
 }

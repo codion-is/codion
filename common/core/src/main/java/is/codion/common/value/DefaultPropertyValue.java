@@ -3,7 +3,7 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.Util;
+import is.codion.common.PrimitiveTypes;
 import is.codion.common.event.EventObserver;
 
 import java.lang.reflect.Method;
@@ -22,7 +22,7 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
 
   DefaultPropertyValue(Object valueOwner, String propertyName, Class<T> valueClass,
                        EventObserver<T> changeObserver) {
-    super(requireNonNull(valueClass).isPrimitive() ? Util.getPrimitiveDefaultValue(valueClass) : null);
+    super(requireNonNull(valueClass).isPrimitive() ? PrimitiveTypes.getDefaultValue(valueClass) : null);
     if (nullOrEmpty(propertyName)) {
       throw new IllegalArgumentException("propertyName is null or an empty string");
     }

@@ -10,7 +10,6 @@ import is.codion.framework.domain.entity.Key;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static is.codion.common.Util.map;
 import static is.codion.framework.domain.entity.Entity.mapToType;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * A central event hub for listening for entity inserts, updates and deletes.
@@ -149,29 +149,28 @@ public final class EntityEditEvents {
 
     private void notifyInserted(List<Entity> insertedEntities) {
       mapToType(insertedEntities).forEach((entityType, inserted) -> {
-        Listeners<List<Entity>> event = insertListeners.get(entityType);
-        if (event != null) {
-          event.onEvent(inserted);
+        Listeners<List<Entity>> listeners = insertListeners.get(entityType);
+        if (listeners != null) {
+          listeners.onEvent(inserted);
         }
       });
     }
 
     private void notifyUpdated(Map<Key, Entity> updatedEntities) {
       map(updatedEntities.entrySet(), entry -> entry.getKey().getEntityType()).forEach((entityType, updated) -> {
-        Map<Key, Entity> updateMap = new HashMap<>();
-        updated.forEach(entry -> updateMap.put(entry.getKey(), entry.getValue()));
-        Listeners<Map<Key, Entity>> event = updateListeners.get(entityType);
-        if (event != null) {
-          event.onEvent(updateMap);
+        Listeners<Map<Key, Entity>> listeners = updateListeners.get(entityType);
+        if (listeners != null) {
+          listeners.onEvent(updated.stream()
+                  .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
       });
     }
 
     private void notifyDeleted(List<Entity> deletedEntities) {
       mapToType(deletedEntities).forEach((entityType, entities) -> {
-        Listeners<List<Entity>> event = deleteListeners.get(entityType);
-        if (event != null) {
-          event.onEvent(entities);
+        Listeners<List<Entity>> listeners = deleteListeners.get(entityType);
+        if (listeners != null) {
+          listeners.onEvent(entities);
         }
       });
     }

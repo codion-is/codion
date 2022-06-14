@@ -6,8 +6,8 @@ package is.codion.swing.common.ui.component.text;
 import javax.swing.JTextField;
 
 /**
- * A hint text for text fields, that is, text that is shown
- * when the field contains no data, is empty and unfocused.
+ * A hint text for text fields, shown when the field is empty and unfocused.
+ * Note that the hint text is inserted into the text field document.
  * @see TextFieldHint#create(JTextField, String)
  */
 public interface TextFieldHint {
@@ -18,7 +18,7 @@ public interface TextFieldHint {
   String getHintText();
 
   /**
-   * @return true if the field does not have focus and is displayint the hint text
+   * @return true if the field does not have focus and is displaying the hint text
    */
   boolean isHintVisible();
 
