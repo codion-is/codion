@@ -8194,3 +8194,4 @@
   EntityEditEvents, minor refactoring
   DefaultTextFieldHint now prevents adding another hint to the same text field, DefaultTextFieldHintTest split from TextComponentsTest
   PrimitiveTypes split from Util
+  DefaultEntityDefinition.isSetter(), now excludes vararg methods

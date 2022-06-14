@@ -762,7 +762,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   private static boolean isSetter(Method method, Property<?> property) {
     String beanProperty = property.getBeanProperty();
-    if (beanProperty == null || method.getParameterCount() != 1) {
+    if (beanProperty == null || method.getParameterCount() != 1 || method.isVarArgs()) {
       return false;
     }
 
