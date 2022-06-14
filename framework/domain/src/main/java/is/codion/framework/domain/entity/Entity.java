@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static is.codion.common.Util.map;
+import static is.codion.common.Mapper.map;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 

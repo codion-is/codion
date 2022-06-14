@@ -8197,3 +8197,4 @@
   DefaultEntityDefinition.isSetter(), now excludes vararg methods
   Separators split from Util
   Rounder split from Util
+  Mapper split from Util
