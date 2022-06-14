@@ -15,6 +15,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.lang.Math.pow;
@@ -31,13 +32,16 @@ final class DefaultTextFieldHint implements TextFieldHint {
 
   DefaultTextFieldHint(JTextField textField, String hintText) {
     requireNonNull(textField, "textField");
+    if (Arrays.stream(textField.getFocusListeners()).anyMatch(HintFocusListener.class::isInstance)) {
+      throw new IllegalStateException("Hint text has already been enabled for text field: " + textField);
+    }
     if (nullOrEmpty(hintText)) {
-      throw new IllegalArgumentException("Hint text is null or empty");
+      throw new IllegalArgumentException("Hint text may not be null or empty");
     }
     this.textField = textField;
     this.hintText = hintText;
-    this.textField.addFocusListener(initializeFocusListener());
-    this.textField.addAncestorListener(initializeAncestorListener());
+    this.textField.addFocusListener(new HintFocusListener());
+    this.textField.addAncestorListener(new HintAncestorListener());
     this.textField.getDocument().addDocumentListener(new UpdateColorsListener());
     configureColors();
     textField.addPropertyChangeListener("UI", new ConfigureColorsListener());
@@ -69,35 +73,6 @@ final class DefaultTextFieldHint implements TextFieldHint {
     updateColor();
   }
 
-  private FocusListener initializeFocusListener() {
-    return new FocusListener() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        updateHint();
-      }
-
-      @Override
-      public void focusLost(FocusEvent e) {
-        updateHint();
-      }
-    };
-  }
-
-  private AncestorListener initializeAncestorListener() {
-    return new AncestorListener() {
-      @Override
-      public void ancestorAdded(AncestorEvent event) {
-        updateHint();
-      }
-
-      @Override
-      public void ancestorRemoved(AncestorEvent event) {}
-
-      @Override
-      public void ancestorMoved(AncestorEvent event) {}
-    };
-  }
-
   private void updateColor() {
     boolean hintForeground = !textField.hasFocus() && isHintVisible();
     textField.setForeground(hintForeground ? hintForegroundColor : foregroundColor);
@@ -118,6 +93,31 @@ final class DefaultTextFieldHint implements TextFieldHint {
     int b = (int) sqrt((pow(background.getBlue(), 2) + pow(foreground.getBlue(), 2)) / 2);
 
     return new Color(r, g, b, foreground.getAlpha());
+  }
+
+  private final class HintFocusListener implements FocusListener {
+    @Override
+    public void focusGained(FocusEvent e) {
+      updateHint();
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+      updateHint();
+    }
+  }
+
+  private final class HintAncestorListener implements AncestorListener {
+    @Override
+    public void ancestorAdded(AncestorEvent event) {
+      updateHint();
+    }
+
+    @Override
+    public void ancestorRemoved(AncestorEvent event) {}
+
+    @Override
+    public void ancestorMoved(AncestorEvent event) {}
   }
 
   private final class UpdateColorsListener implements DocumentAdapter {
