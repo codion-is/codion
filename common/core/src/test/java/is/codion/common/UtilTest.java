@@ -10,21 +10,10 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class UtilTest {
-
-  @Test
-  void roundDouble() {
-    final double d = 5.1234567;
-    assertEquals(Double.valueOf(5.1), Double.valueOf(Util.roundDouble(d, 1)));
-    assertEquals(Double.valueOf(5.12), Double.valueOf(Util.roundDouble(d, 2)));
-    assertEquals(Double.valueOf(5.123), Double.valueOf(Util.roundDouble(d, 3)));
-    assertEquals(Double.valueOf(5.1235), Double.valueOf(Util.roundDouble(d, 4)));
-    assertEquals(Double.valueOf(5.12346), Double.valueOf(Util.roundDouble(d, 5)));
-    assertEquals(Double.valueOf(5.123457), Double.valueOf(Util.roundDouble(d, 6)));
-    assertEquals(Double.valueOf(5.1234567), Double.valueOf(Util.roundDouble(d, 7)));
-  }
 
   @Test
   void notNull() throws Exception {

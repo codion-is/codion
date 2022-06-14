@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.common.Rounder;
 import is.codion.common.Text;
 import is.codion.common.Util;
 import is.codion.common.formats.Formats;
@@ -314,7 +315,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   @Override
   public final T prepareValue(T value) {
     if (value instanceof Double) {
-      return (T) Util.roundDouble((Double) value, getMaximumFractionDigits(), decimalRoundingMode);
+      return (T) Rounder.roundDouble((Double) value, getMaximumFractionDigits(), decimalRoundingMode);
     }
     if (value instanceof BigDecimal) {
       return (T) ((BigDecimal) value).setScale(getMaximumFractionDigits(), decimalRoundingMode).stripTrailingZeros();

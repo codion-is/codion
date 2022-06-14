@@ -3,7 +3,7 @@
  */
 package is.codion.javafx.framework.ui;
 
-import is.codion.common.Util;
+import is.codion.common.Rounder;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.model.CancelException;
@@ -990,7 +990,7 @@ public final class FXUiUtil {
         return false;
       }
       if (parsedValue instanceof Double && !Objects.equals(parsedValue,
-              Util.roundDouble((Double) parsedValue, property.getMaximumFractionDigits()))) {
+              Rounder.roundDouble((Double) parsedValue, property.getMaximumFractionDigits()))) {
         return false;
       }
 
