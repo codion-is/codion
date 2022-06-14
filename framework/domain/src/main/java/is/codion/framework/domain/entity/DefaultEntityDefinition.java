@@ -3,8 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.common.PrimitiveTypes;
 import is.codion.common.Text;
-import is.codion.common.Util;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -754,7 +754,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static Class<?> getMethodReturnType(Method method) {
     Class<?> returnType = method.getReturnType();
     if (returnType.isPrimitive()) {
-      return Util.getPrimitiveBoxedType(returnType);
+      return PrimitiveTypes.getBoxedType(returnType);
     }
 
     return returnType;
@@ -777,7 +777,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static Class<?> getSetterParameterType(Method method) {
     Class<?> parameterType = method.getParameterTypes()[0];
     if (parameterType.isPrimitive()) {
-      return Util.getPrimitiveBoxedType(parameterType);
+      return PrimitiveTypes.getBoxedType(parameterType);
     }
 
     return parameterType;

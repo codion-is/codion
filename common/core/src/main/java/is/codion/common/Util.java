@@ -8,7 +8,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,37 +35,6 @@ public final class Util {
    * The path separator for the current system, specified by the 'path.separator' system property
    */
   public static final String PATH_SEPARATOR = System.getProperty("path.separator");
-
-  private static final Map<Class<?>, Class<?>> PRIMITIVE_BOXED_TYPE_MAP;
-  private static final Map<Class<?>, Object> DEFAULT_PRIMITIVE_VALUES;
-
-  private static boolean defaultBoolean;
-  private static byte defaultByte;
-  private static short defaultShort;
-  private static int defaultInt;
-  private static long defaultLong;
-  private static float defaultFloat;
-  private static double defaultDouble;
-
-  static {
-    PRIMITIVE_BOXED_TYPE_MAP = new HashMap<>();
-    PRIMITIVE_BOXED_TYPE_MAP.put(Boolean.TYPE, Boolean.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Byte.TYPE, Byte.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Short.TYPE, Short.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Integer.TYPE, Integer.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Long.TYPE, Long.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Float.TYPE, Float.class);
-    PRIMITIVE_BOXED_TYPE_MAP.put(Double.TYPE, Double.class);
-
-    DEFAULT_PRIMITIVE_VALUES = new HashMap<>();
-    DEFAULT_PRIMITIVE_VALUES.put(Boolean.TYPE, defaultBoolean);
-    DEFAULT_PRIMITIVE_VALUES.put(Byte.TYPE, defaultByte);
-    DEFAULT_PRIMITIVE_VALUES.put(Short.TYPE, defaultShort);
-    DEFAULT_PRIMITIVE_VALUES.put(Integer.TYPE, defaultInt);
-    DEFAULT_PRIMITIVE_VALUES.put(Long.TYPE, defaultLong);
-    DEFAULT_PRIMITIVE_VALUES.put(Float.TYPE, defaultFloat);
-    DEFAULT_PRIMITIVE_VALUES.put(Double.TYPE, defaultDouble);
-  }
 
   private Util() {}
 
@@ -200,34 +168,5 @@ public final class Util {
     catch (NumberFormatException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * @param <T> the type
-   * @param primitiveType the primitive type
-   * @return the default value for the given typ
-   * @throws IllegalArgumentException in case primitiveType is not a primitive
-   */
-  public static <T> T getPrimitiveDefaultValue(Class<T> primitiveType) {
-    T defaultValue = (T) DEFAULT_PRIMITIVE_VALUES.get(requireNonNull(primitiveType));
-    if (defaultValue == null) {
-      throw new IllegalArgumentException("Not a primitive type: " + primitiveType);
-    }
-
-    return defaultValue;
-  }
-
-  /**
-   * @param <T> the type
-   * @param primitiveType the primitive type
-   * @return the boxed type
-   * @throws IllegalArgumentException in case primitiveType is not a primitive
-   */
-  public static <T> Class<T> getPrimitiveBoxedType(Class<T> primitiveType) {
-    if (!requireNonNull(primitiveType).isPrimitive()) {
-      throw new IllegalArgumentException("Not a primitive type: " + primitiveType);
-    }
-
-    return (Class<T>) PRIMITIVE_BOXED_TYPE_MAP.get(requireNonNull(primitiveType));
   }
 }
