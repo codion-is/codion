@@ -78,14 +78,14 @@ public final class TextTest {
 
   @Test
   void getDelimitedString() {
-    String result = "test\ttest2" + Util.LINE_SEPARATOR + "data1\tdata2" + Util.LINE_SEPARATOR + "data3\tdata4";
+    String result = "test\ttest2" + Separators.LINE_SEPARATOR + "data1\tdata2" + Separators.LINE_SEPARATOR + "data3\tdata4";
     assertEquals(result, Text.getDelimitedString(asList("test", "test2"),
             asList(asList("data1", "data2"), asList("data3", "data4")), "\t"));
   }
 
   @Test
   void getTextFileContents() throws IOException {
-    String contents = "here is" + Util.LINE_SEPARATOR + "some text";
+    String contents = "here is" + Separators.LINE_SEPARATOR + "some text";
     assertEquals(contents, Text.getTextFileContents("src/test/java/is/codion/common/TextUtilTest.txt", Charset.defaultCharset()));
   }
 

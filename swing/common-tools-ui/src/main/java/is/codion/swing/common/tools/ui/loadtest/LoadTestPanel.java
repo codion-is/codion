@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.tools.ui.loadtest;
 
-import is.codion.common.Util;
+import is.codion.common.Separators;
 import is.codion.common.user.User;
 import is.codion.swing.common.tools.loadtest.LoadTest;
 import is.codion.swing.common.tools.loadtest.LoadTestModel;
@@ -415,8 +415,8 @@ public final class LoadTestPanel<T> extends JPanel {
       List<Exception> exceptions = getScenario().getExceptions();
       for (Exception exception : exceptions) {
         getExceptionsTextArea().append(exception.getMessage());
-        getExceptionsTextArea().append(Util.LINE_SEPARATOR);
-        getExceptionsTextArea().append(Util.LINE_SEPARATOR);
+        getExceptionsTextArea().append(Separators.LINE_SEPARATOR);
+        getExceptionsTextArea().append(Separators.LINE_SEPARATOR);
       }
     }
   }

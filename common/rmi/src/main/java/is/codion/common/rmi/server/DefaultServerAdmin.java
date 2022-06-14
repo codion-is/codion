@@ -4,7 +4,7 @@
 package is.codion.common.rmi.server;
 
 import is.codion.common.Memory;
-import is.codion.common.Util;
+import is.codion.common.Separators;
 import is.codion.common.properties.PropertyStore;
 import is.codion.common.properties.PropertyStore.PropertyFormatter;
 import is.codion.common.rmi.client.ConnectionRequest;
@@ -353,7 +353,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
     @Override
     public String formatValue(String property, String value) {
       if (isClassOrModulePath(property) && !value.isEmpty()) {
-        return "\n" + String.join("\n", value.split(Util.PATH_SEPARATOR));
+        return "\n" + String.join("\n", value.split(Separators.PATH_SEPARATOR));
       }
 
       return value;

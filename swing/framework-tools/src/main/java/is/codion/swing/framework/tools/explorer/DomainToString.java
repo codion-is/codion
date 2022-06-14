@@ -4,7 +4,6 @@
 package is.codion.swing.framework.tools.explorer;
 
 import is.codion.common.Text;
-import is.codion.common.Util;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.BlobProperty;
@@ -15,6 +14,7 @@ import is.codion.framework.domain.property.Property;
 import java.util.ArrayList;
 import java.util.List;
 
+import static is.codion.common.Separators.LINE_SEPARATOR;
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.stream.Collectors.toList;
 
@@ -25,9 +25,9 @@ final class DomainToString {
   static String toString(EntityDefinition definition) {
     StringBuilder builder = new StringBuilder();
     String interfaceName = getInterfaceName(definition.getTableName(), true);
-    builder.append("public interface ").append(interfaceName).append(" {").append(Util.LINE_SEPARATOR);
+    builder.append("public interface ").append(interfaceName).append(" {").append(LINE_SEPARATOR);
     builder.append("  ").append("EntityType TYPE = ").append("DOMAIN.entityType(\"")
-            .append(definition.getTableName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+            .append(definition.getTableName().toLowerCase()).append("\");").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
     List<Property<?>> columnProperties = definition.getProperties().stream()
             .filter(ColumnProperty.class::isInstance)
             .collect(toList());
@@ -36,15 +36,15 @@ final class DomainToString {
             .filter(ForeignKeyProperty.class::isInstance)
             .collect(toList());
     if (!foreignKeyProperties.isEmpty()) {
-      builder.append(Util.LINE_SEPARATOR);
+      builder.append(LINE_SEPARATOR);
       foreignKeyProperties.forEach(property -> appendAttribute(builder, property));
     }
-    builder.append("}").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
-    builder.append("void ").append(getInterfaceName(definition.getTableName(), false)).append("() {").append(Util.LINE_SEPARATOR);
-    builder.append("  add(definition(").append(Util.LINE_SEPARATOR);
-    builder.append(String.join("," + Util.LINE_SEPARATOR, getPropertyStrings(definition.getProperties(), interfaceName, definition)));
-    builder.append(Util.LINE_SEPARATOR).append("  ));").append(Util.LINE_SEPARATOR);
-    builder.append("}").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+    builder.append("}").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+    builder.append("void ").append(getInterfaceName(definition.getTableName(), false)).append("() {").append(LINE_SEPARATOR);
+    builder.append("  add(definition(").append(LINE_SEPARATOR);
+    builder.append(String.join("," + LINE_SEPARATOR, getPropertyStrings(definition.getProperties(), interfaceName, definition)));
+    builder.append(LINE_SEPARATOR).append("  ));").append(LINE_SEPARATOR);
+    builder.append("}").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
     return builder.toString();
   }
@@ -55,7 +55,7 @@ final class DomainToString {
       String typeClassName = columnProperty.getAttribute().getTypeClass().getSimpleName();
       builder.append("  ").append("Attribute<").append(typeClassName).append("> ")
               .append(columnProperty.getColumnName().toUpperCase()).append(" = TYPE.").append(getAttributeTypePrefix(typeClassName))
-              .append("Attribute(\"").append(columnProperty.getColumnName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
+              .append("Attribute(\"").append(columnProperty.getColumnName().toLowerCase()).append("\");").append(LINE_SEPARATOR);
     }
     else if (property instanceof ForeignKeyProperty) {
       ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) property;
@@ -71,7 +71,7 @@ final class DomainToString {
       //todo wrap references if more than four
       builder.append("  ").append("ForeignKey ")
               .append(property.getAttribute().getName().toUpperCase()).append(" = TYPE.foreignKey(\"")
-              .append(property.getAttribute().getName().toLowerCase()).append("\", " + String.join("," + Util.LINE_SEPARATOR, references) + ");").append(Util.LINE_SEPARATOR);
+              .append(property.getAttribute().getName().toLowerCase()).append("\", " + String.join("," + LINE_SEPARATOR, references) + ");").append(LINE_SEPARATOR);
     }
   }
 
@@ -112,28 +112,28 @@ final class DomainToString {
       builder.append(")");
     }
     if (property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
-      builder.append(Util.LINE_SEPARATOR).append("                .eagerlyLoaded()");
+      builder.append(LINE_SEPARATOR).append("                .eagerlyLoaded()");
     }
     if (property.isPrimaryKeyColumn() && compositePrimaryKey) {
-      builder.append(Util.LINE_SEPARATOR).append("                .primaryKeyIndex(")
+      builder.append(LINE_SEPARATOR).append("                .primaryKeyIndex(")
               .append(property.getPrimaryKeyIndex()).append(")");
     }
     if (property.columnHasDefaultValue()) {
-      builder.append(Util.LINE_SEPARATOR).append("                .columnHasDefaultValue(true)");
+      builder.append(LINE_SEPARATOR).append("                .columnHasDefaultValue(true)");
     }
     if (!property.isNullable() && !property.isPrimaryKeyColumn()) {
-      builder.append(Util.LINE_SEPARATOR).append("                .nullable(false)");
+      builder.append(LINE_SEPARATOR).append("                .nullable(false)");
     }
     if (String.class.equals(property.getAttribute().getTypeClass())) {
-      builder.append(Util.LINE_SEPARATOR).append("                .maximumLength(")
+      builder.append(LINE_SEPARATOR).append("                .maximumLength(")
               .append(property.getMaximumLength()).append(")");
     }
     if (Double.class.equals(property.getAttribute().getTypeClass()) && property.getMaximumFractionDigits() >= 1) {
-      builder.append(Util.LINE_SEPARATOR).append("                .maximumFractionDigits(")
+      builder.append(LINE_SEPARATOR).append("                .maximumFractionDigits(")
               .append(property.getMaximumFractionDigits()).append(")");
     }
     if (!nullOrEmpty(property.getDescription())) {
-      builder.append(Util.LINE_SEPARATOR).append("                .description(")
+      builder.append(LINE_SEPARATOR).append("                .description(")
               .append("\"").append(property.getDescription()).append("\")");
     }
 
