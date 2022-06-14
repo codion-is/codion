@@ -8191,3 +8191,4 @@
   EntityEditPanel, Save control removed for simplicity, USE_SAVE_CAPTION configuration value added for specifying whether the button caption should be 'Save' instead of the default 'Add'
   DefaultMaskedTextFieldBuilder, DefaultTextFieldBuilder and AbstractSpinnerBuilder now only set the columns if specified
   EntityDefinition.Builder.stringFactory(StringFactory.Builder) removed
+  EntityEditEvents, minor refactoring
