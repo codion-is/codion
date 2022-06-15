@@ -26,12 +26,6 @@ public final class UtilTest {
   }
 
   @Test
-  void onClasspath() {
-    assertTrue(Util.onClasspath(UtilTest.class.getName()));
-    assertFalse(Util.onClasspath("no.class.Here"));
-  }
-
-  @Test
   void nullOrEmpty() {
     Map<Integer, String> map = new HashMap<>();
     map.put(1, "1");

@@ -3,7 +3,6 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
 import is.codion.common.rmi.client.ConnectionRequest;
@@ -56,7 +55,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-  private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = Util.onClasspath("sun.misc.ObjectInputFilter");
+  private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = onClasspath("sun.misc.ObjectInputFilter");
   private static final String CLIENT_ID = "clientId";
 
   private final Map<UUID, ClientConnection<T>> connections = new ConcurrentHashMap<>();
@@ -479,6 +478,16 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
     else {
       remoteClient.setClientHost(requestParameterHost);
+    }
+  }
+
+  private static boolean onClasspath(String className) {
+    try {
+      Class.forName(className);
+      return true;
+    }
+    catch (ClassNotFoundException e) {
+      return false;
     }
   }
 

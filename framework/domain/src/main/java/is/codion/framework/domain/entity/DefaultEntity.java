@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.PrimitiveTypes;
+import is.codion.common.Primitives;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -924,7 +924,7 @@ final class DefaultEntity implements Entity, Serializable {
         return Optional.ofNullable(value);
       }
       if (value == null && getterReturnType.isPrimitive()) {
-        return PrimitiveTypes.getDefaultValue(getterReturnType);
+        return Primitives.getDefaultValue(getterReturnType);
       }
 
       return value;
