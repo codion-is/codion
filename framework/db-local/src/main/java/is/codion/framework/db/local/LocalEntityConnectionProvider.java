@@ -49,7 +49,7 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider 
   /**
    * Builds a {@link LocalEntityConnectionProvider}.
    */
-  interface Builder extends EntityConnectionProvider.Builder<Builder, LocalEntityConnectionProvider> {
+  interface Builder extends EntityConnectionProvider.Builder<LocalEntityConnectionProvider, Builder> {
 
     /**
      * @param database the database instance to use

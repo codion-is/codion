@@ -38,7 +38,7 @@ public interface RemoteEntityConnectionProvider extends EntityConnectionProvider
   /**
    * Builds a {@link RemoteEntityConnectionProvider}.
    */
-  interface Builder extends EntityConnectionProvider.Builder<Builder, RemoteEntityConnectionProvider> {
+  interface Builder extends EntityConnectionProvider.Builder<RemoteEntityConnectionProvider, Builder> {
 
     /**
      * @param serverHostName the server host name

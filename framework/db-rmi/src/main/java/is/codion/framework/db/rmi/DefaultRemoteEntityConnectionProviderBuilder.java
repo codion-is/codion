@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
  * @see RemoteEntityConnectionProvider#builder()
  */
 public final class DefaultRemoteEntityConnectionProviderBuilder
-        extends AbstractBuilder<RemoteEntityConnectionProvider.Builder, RemoteEntityConnectionProvider>
+        extends AbstractBuilder<RemoteEntityConnectionProvider, RemoteEntityConnectionProvider.Builder>
         implements RemoteEntityConnectionProvider.Builder {
 
   String serverHostName = Clients.SERVER_HOST_NAME.get();

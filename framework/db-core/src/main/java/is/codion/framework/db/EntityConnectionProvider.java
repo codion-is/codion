@@ -152,10 +152,10 @@ public interface EntityConnectionProvider extends AutoCloseable {
 
   /**
    * Builds a {@link EntityConnectionProvider} instances
-   * @param <B> the builder type
    * @param <T> the connection provider type
+   * @param <B> the builder type
    */
-  interface Builder<B extends Builder<B, T>, T extends EntityConnectionProvider> {
+  interface Builder<T extends EntityConnectionProvider, B extends Builder<T, B>> {
 
     /**
      * Returns a String specifying the type of connection provided by this connection provider builder
@@ -165,31 +165,31 @@ public interface EntityConnectionProvider extends AutoCloseable {
 
     /**
      * @param user the user
-     * @return this EntityConnectionProviderBuilder instance
+     * @return this builder instance
      */
     B user(User user);
 
     /**
      * @param domainClassName the name of the class specifying the domain model for this connection provider
-     * @return this EntityConnectionProviderBuilder instance
+     * @return this builder instance
      */
     B domainClassName(String domainClassName);
 
     /**
      * @param clientId the UUID identifying this client connection
-     * @return this EntityConnectionProviderBuilder instance
+     * @return this builder instance
      */
     B clientId(UUID clientId);
 
     /**
      * @param clientTypeId a String identifying the client type for this connection provider
-     * @return this EntityConnectionProviderBuilder instance
+     * @return this builder instance
      */
     B clientTypeId(String clientTypeId);
 
     /**
      * @param clientVersion the client version
-     * @return this EntityConnectionProviderBuilder instance
+     * @return this builder instance
      */
     B clientVersion(Version clientVersion);
 
