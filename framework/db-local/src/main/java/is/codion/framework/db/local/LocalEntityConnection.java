@@ -26,11 +26,9 @@ import java.sql.Connection;
  * Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:file:/path/to/database");
  * User user = User.parse("scott:tiger");
  *
- * EntityConnection connection = LocalEntityConnections.localEntityConnection(domain, database, user);
- *
- * List&lt;Entity&gt; entities = connection.select(Conditions.condition(Domain.ENTITY_TYPE));
- *
- * connection.close();
+ * try (EntityConnection connection = LocalEntityConnection.localEntityConnection(domain, database, user)) {
+ *   List<Entity> customers = connection.select(Conditions.condition(Customer.TYPE));
+ * }
  * </pre>
  * A factory class for creating LocalEntityConnection instances.
  */
