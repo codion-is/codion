@@ -8203,3 +8203,4 @@
   EntityConnectionProvider.Builder, type parameters reordered, for consistency
   DefaultEntityTableConditionModel, rememberedCondition now a Condition instead of String, since we implemented equals() for Conditions for the query cache
   EntityPanel.Direction enum now public
+  ProgressWorker, minor refactoring, WorkerPropertyChangeListener no longer static
