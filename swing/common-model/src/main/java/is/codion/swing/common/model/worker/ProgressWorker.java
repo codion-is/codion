@@ -78,7 +78,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   @Override
   protected T doInBackground() throws Exception {
-    SwingUtilities.invokeAndWait(onStarted);
+    SwingUtilities.invokeLater(onStarted);
 
     return task.perform(new TaskProgressReporter());
   }
