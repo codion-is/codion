@@ -178,8 +178,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     onConnectEvent.onEvent(entityConnection);
   }
 
-  public abstract static class AbstractBuilder<B extends Builder<B, T>, T
-          extends EntityConnectionProvider> implements Builder<B, T> {
+  public abstract static class AbstractBuilder<T extends EntityConnectionProvider,
+          B extends Builder<T, B>> implements Builder<T, B> {
 
     private final String connectionType;
 

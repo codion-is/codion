@@ -94,7 +94,7 @@ public final class AbstractEntityConnectionProviderTest {
     }
   }
 
-  private static final class TestProviderBuilder extends AbstractBuilder<TestProviderBuilder, TestProvider> {
+  private static final class TestProviderBuilder extends AbstractBuilder<TestProvider, TestProviderBuilder> {
 
     private TestProviderBuilder() {
       super(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);

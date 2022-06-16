@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A utility class for working with primitives.
  */
-public final class PrimitiveTypes {
+public final class Primitives {
 
   private static final Map<Class<?>, Class<?>> PRIMITIVE_BOXED_TYPE_MAP;
   private static final Map<Class<?>, Object> DEFAULT_PRIMITIVE_VALUES;
@@ -44,7 +44,7 @@ public final class PrimitiveTypes {
     DEFAULT_PRIMITIVE_VALUES.put(Double.TYPE, defaultDouble);
   }
 
-  private PrimitiveTypes() {}
+  private Primitives() {}
 
   /**
    * @param <T> the type

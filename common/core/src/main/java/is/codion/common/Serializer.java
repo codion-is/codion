@@ -88,7 +88,7 @@ public final class Serializer {
    */
   public static <T> void serializeToFile(Collection<T> objects, File file) throws IOException {
     try (ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(requireNonNull(file).toPath()))) {
-      for (T object : objects) {
+      for (T object : requireNonNull(objects)) {
         outputStream.writeObject(object);
       }
     }

@@ -8236,3 +8236,10 @@
   Separators split from Util
   Rounder split from Util
   Mapper split from Util
+  PrimitiveTypes renamed Primitives
+  Util.onClassPath() removed
+  EntityConnectionProvider.Builder, type parameters reordered, for consistency
+  DefaultEntityTableConditionModel, rememberedCondition now a Condition instead of String, since we implemented equals() for Conditions for the query cache
+  EntityPanel.Direction enum now public
+  ProgressWorker, minor refactoring, WorkerPropertyChangeListener no longer static
+  DefaultValueSet.get() now returns a new HashSet instance, instead of just wrapping values in unmodifiableSet()

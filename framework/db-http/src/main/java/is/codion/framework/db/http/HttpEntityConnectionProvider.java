@@ -61,7 +61,7 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
   /**
    * Builds a {@link HttpEntityConnectionProvider} instance.
    */
-  interface Builder extends EntityConnectionProvider.Builder<Builder, HttpEntityConnectionProvider> {
+  interface Builder extends EntityConnectionProvider.Builder<HttpEntityConnectionProvider, Builder> {
 
     /**
      * @param serverHostName the server host name

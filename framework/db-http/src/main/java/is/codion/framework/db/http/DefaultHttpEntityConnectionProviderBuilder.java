@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  * @see HttpEntityConnectionProvider#builder()
  */
 public final class DefaultHttpEntityConnectionProviderBuilder
-        extends AbstractBuilder<HttpEntityConnectionProvider.Builder, HttpEntityConnectionProvider>
+        extends AbstractBuilder<HttpEntityConnectionProvider, HttpEntityConnectionProvider.Builder>
         implements HttpEntityConnectionProvider.Builder {
 
   String serverHostName = HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get();

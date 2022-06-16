@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  * @see LocalEntityConnectionProvider#builder()
  */
 public final class DefaultLocalEntityConnectionProviderBuilder
-        extends AbstractBuilder<LocalEntityConnectionProvider.Builder, LocalEntityConnectionProvider>
+        extends AbstractBuilder<LocalEntityConnectionProvider, LocalEntityConnectionProvider.Builder>
         implements LocalEntityConnectionProvider.Builder {
 
   Database database;

@@ -20,7 +20,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   @Override
   public Set<T> get() {
-    return unmodifiableSet(values);
+    return unmodifiableSet(new HashSet<>(values));
   }
 
   @Override

@@ -8,8 +8,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Misc. utilities.
  */
@@ -73,19 +71,5 @@ public final class Util {
     }
 
     return Arrays.stream(objects).noneMatch(Objects::isNull);
-  }
-
-  /**
-   * @param className the name of the class to search for
-   * @return true if the given class is found on the classpath
-   */
-  public static boolean onClasspath(String className) {
-    try {
-      Class.forName(requireNonNull(className, "className"));
-      return true;
-    }
-    catch (ClassNotFoundException e) {
-      return false;
-    }
   }
 }

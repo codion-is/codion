@@ -32,11 +32,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
 
 /**
  * A default EntityTableConditionModel implementation
@@ -51,7 +51,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private final Value<String> simpleConditionStringValue = Value.value();
   private Supplier<Condition> additionalConditionSupplier;
   private Conjunction conjunction = Conjunction.AND;
-  private String rememberedCondition = "";
+  private Condition rememberedCondition = null;
 
   /**
    * Instantiates a new DefaultEntityTableConditionModel
@@ -83,7 +83,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   @Override
   public void rememberCondition() {
-    rememberedCondition = getConditionsString();
+    rememberedCondition = getCondition();
     conditionChangedState.set(false);
   }
 
@@ -165,7 +165,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   @Override
   public <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values) {
-    String conditionsString = getConditionsString();
+    Condition condition = getCondition();
     ColumnConditionModel<Attribute<T>, T> conditionModel = (ColumnConditionModel<Attribute<T>, T>) conditionModels.get(attribute);
     if (conditionModel != null) {
       conditionModel.setOperator(Operator.EQUAL);
@@ -173,7 +173,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       conditionModel.setEqualValues(null);//because the equalValue could be a reference to the active entity which changes accordingly
       conditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed equalValue
     }
-    return !conditionsString.equals(getConditionsString());
+    return !condition.equals(getCondition());
   }
 
   @Override
@@ -250,7 +250,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private void bindEvents() {
     for (ColumnConditionModel<?, ?> conditionModel : conditionModels.values()) {
       conditionModel.addConditionChangedListener(() ->
-              conditionChangedState.set(!rememberedCondition.equals(getConditionsString())));
+              conditionChangedState.set(!Objects.equals(rememberedCondition, getCondition())));
     }
     simpleConditionStringValue.addDataListener(conditionString -> {
       clearConditions();
@@ -273,15 +273,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
               conditionModel.setOperator(Operator.EQUAL);
               conditionModel.setEnabled(true);
             });
-  }
-
-  /**
-   * @return a String representing the current state of the condition models
-   */
-  private String getConditionsString() {
-    return conditionModels.values().stream()
-            .map(DefaultEntityTableConditionModel::toString)
-            .collect(joining());
   }
 
   private void initializeFilterModels(EntityType entityType, FilterModelFactory filterModelProvider) {
@@ -365,35 +356,5 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
     }
-  }
-
-  private static String toString(ColumnConditionModel<?, ?> conditionModel) {
-    StringBuilder stringBuilder = new StringBuilder(((Attribute<?>) conditionModel.getColumnIdentifier()).getName());
-    if (conditionModel.isEnabled()) {
-      stringBuilder.append(conditionModel.getOperator());
-      stringBuilder.append(boundToString(conditionModel.getEqualValues()));
-      stringBuilder.append(boundToString(conditionModel.getUpperBound()));
-      stringBuilder.append(boundToString(conditionModel.getLowerBound()));
-      stringBuilder.append(conditionModel.getCaseSensitiveState().get());
-      stringBuilder.append(conditionModel.getAutomaticWildcardValue().get());
-    }
-    return stringBuilder.toString();
-  }
-
-  private static String boundToString(Object object) {
-    StringBuilder stringBuilder = new StringBuilder();
-    if (object instanceof Collection) {
-      for (Object obj : (Collection<Object>) object) {
-        stringBuilder.append(boundToString(obj));
-      }
-    }
-    else if (object instanceof Entity) {
-      stringBuilder.append(((Entity) object).getPrimaryKey());
-    }
-    else {
-      stringBuilder.append(object);
-    }
-
-    return stringBuilder.toString();
   }
 }

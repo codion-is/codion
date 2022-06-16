@@ -52,7 +52,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     this.onPublish = builder.onPublish;
     this.onException = builder.onException;
     this.onInterrupted = builder.onInterrupted;
-    addPropertyChangeListener(new WorkerPropertyChangeListener(this));
+    addPropertyChangeListener(new WorkerPropertyChangeListener());
   }
 
   /**
@@ -99,29 +99,23 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     }
   }
 
-  private static final class WorkerPropertyChangeListener implements PropertyChangeListener {
-
-    private final ProgressWorker<?, ?> progressWorker;
-
-    private WorkerPropertyChangeListener(ProgressWorker<?, ?> progressWorker) {
-      this.progressWorker = progressWorker;
-    }
+  private final class WorkerPropertyChangeListener implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
       if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
         Object newValue = changeEvent.getNewValue();
         if (StateValue.STARTED.equals(newValue)) {
-          if (!progressWorker.isDone()) {
-            progressWorker.onStarted.run();
+          if (!isDone()) {
+            onStarted.run();
           }
         }
         else if (StateValue.DONE.equals(newValue)) {
-          progressWorker.onDone.run();
+          onDone.run();
         }
       }
       else if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
-        progressWorker.onProgress.accept((Integer) changeEvent.getNewValue());
+        onProgress.accept((Integer) changeEvent.getNewValue());
       }
     }
   }
