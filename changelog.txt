@@ -8205,3 +8205,4 @@
   EntityPanel.Direction enum now public
   ProgressWorker, minor refactoring, WorkerPropertyChangeListener no longer static
   DefaultValueSet.get() now returns a new HashSet instance, instead of just wrapping values in unmodifiableSet()
+  ProgressWorker improved, no longer relying on state changes, onStarted is now called on EDT before task is started and is guaranteed to run, onDone now called in done()

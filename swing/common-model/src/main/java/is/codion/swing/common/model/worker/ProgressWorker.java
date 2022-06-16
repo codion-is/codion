@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.model.worker;
 
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -31,7 +32,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
-  private static final String STATE_PROPERTY = "state";
   private static final String PROGRESS_PROPERTY = "progress";
 
   private final ProgressTask<T, V> task;
@@ -78,6 +78,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   @Override
   protected T doInBackground() throws Exception {
+    SwingUtilities.invokeAndWait(onStarted);
+
     return task.perform(new TaskProgressReporter());
   }
 
@@ -88,6 +90,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   @Override
   protected void done() {
+    onDone.run();
     try {
       onResult.accept(get());
     }
@@ -103,18 +106,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
-      if (STATE_PROPERTY.equals(changeEvent.getPropertyName())) {
-        Object newValue = changeEvent.getNewValue();
-        if (StateValue.STARTED.equals(newValue)) {
-          if (!isDone()) {
-            onStarted.run();
-          }
-        }
-        else if (StateValue.DONE.equals(newValue)) {
-          onDone.run();
-        }
-      }
-      else if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
+      if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
         onProgress.accept((Integer) changeEvent.getNewValue());
       }
     }
@@ -175,9 +167,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   public interface Builder<T, V> {
 
     /**
-     * Note that this is <i><b>NOT</b></i> called if the task is already done running when the
-     * {@link javax.swing.SwingWorker.StateValue#STARTED} change event is processed.
-     * @param onStarted called on the EDT when the worker starts, if the task isn't done running already
+     * @param onStarted called on the EDT before background processing is started
      * @return this builder instance
      */
     Builder<T, V> onStarted(Runnable onStarted);
