@@ -152,7 +152,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * The navigation and resizing directions.
    */
-  enum Direction {
+  public enum Direction {
     UP, DOWN, RIGHT, LEFT
   }
 
