@@ -8204,3 +8204,4 @@
   DefaultEntityTableConditionModel, rememberedCondition now a Condition instead of String, since we implemented equals() for Conditions for the query cache
   EntityPanel.Direction enum now public
   ProgressWorker, minor refactoring, WorkerPropertyChangeListener no longer static
+  DefaultValueSet.get() now returns a new HashSet instance, instead of just wrapping values in unmodifiableSet()
