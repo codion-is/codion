@@ -27,7 +27,7 @@ import java.sql.Connection;
  * User user = User.parse("scott:tiger");
  *
  * try (EntityConnection connection = LocalEntityConnection.localEntityConnection(domain, database, user)) {
- *   List<Entity> customers = connection.select(Conditions.condition(Customer.TYPE));
+ *   List&lt;Entity&gt; customers = connection.select(Conditions.condition(Customer.TYPE));
  * }
  * </pre>
  * A factory class for creating LocalEntityConnection instances.
