@@ -8,6 +8,7 @@ import is.codion.common.version.Version;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,18 +22,15 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
   private final UUID clientId;
   private final String clientTypeId;
   private final Version clientVersion;
-  private final Version frameworkVersion;
+  private final Version frameworkVersion = Version.getVersion();
   private final Map<String, Object> parameters;
 
-  DefaultConnectionRequest(User user, UUID clientId, String clientTypeId,
-                           Version clientVersion, Version frameworkVersion,
-                           Map<String, Object> parameters) {
-    this.user = requireNonNull(user, "user");
-    this.clientId = requireNonNull(clientId, "clientId");
-    this.clientTypeId = requireNonNull(clientTypeId, "clientTypeId");
-    this.clientVersion = clientVersion;
-    this.frameworkVersion = frameworkVersion;
-    this.parameters = parameters;
+  private DefaultConnectionRequest(DefaultBuilder builder) {
+    this.user = requireNonNull(builder.user, "user");
+    this.clientId = requireNonNull(builder.clientId, "clientId");
+    this.clientTypeId = requireNonNull(builder.clientTypeId, "clientTypeId");
+    this.clientVersion = builder.clientVersion;
+    this.parameters = builder.parameters;
   }
 
   @Override
@@ -78,5 +76,54 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
   @Override
   public String toString() {
     return user.toString() + " [" + clientTypeId + "] - " + clientId.toString();
+  }
+
+  static final class DefaultBuilder implements Builder {
+
+    private User user;
+    private UUID clientId = UUID.randomUUID();
+    private String clientTypeId;
+    private Version clientVersion;
+    private Map<String, Object> parameters;
+
+    DefaultBuilder() {}
+
+    @Override
+    public Builder user(User user) {
+      this.user = requireNonNull(user);
+      return this;
+    }
+
+    @Override
+    public Builder clientId(UUID clientId) {
+      this.clientId = requireNonNull(clientId);
+      return this;
+    }
+
+    @Override
+    public Builder clientTypeId(String clientTypeId) {
+      this.clientTypeId = requireNonNull(clientTypeId);
+      return this;
+    }
+
+    @Override
+    public Builder clientVersion(Version clientVersion) {
+      this.clientVersion = clientVersion;
+      return this;
+    }
+
+    @Override
+    public Builder parameter(String key, Object value) {
+      if (parameters == null) {
+        parameters = new HashMap<>();
+      }
+      parameters.put(key, value);
+      return this;
+    }
+
+    @Override
+    public ConnectionRequest build() {
+      return new DefaultConnectionRequest(this);
+    }
   }
 }

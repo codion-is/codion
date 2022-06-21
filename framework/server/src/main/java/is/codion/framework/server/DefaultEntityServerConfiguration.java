@@ -32,7 +32,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   private int idleConnectionTimeout;
   private String connectionPoolProvider;
   private final Collection<String> domainModelClassNames = new HashSet<>();
-  private final Collection<User> startupPoolUsers = new HashSet<>();
+  private final Collection<User> connectionPoolUsers = new HashSet<>();
   private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
   DefaultEntityServerConfiguration(ServerConfiguration serverConfiguration) {
@@ -130,8 +130,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public Collection<User> getStartupPoolUsers() {
-    return startupPoolUsers;
+  public Collection<User> getConnectionPoolUsers() {
+    return connectionPoolUsers;
   }
 
   @Override
@@ -150,7 +150,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     private int clientConnectionTimeout = ServerConfiguration.IDLE_CONNECTION_TIMEOUT.get();
     private String connectionPoolProvider;
     private final Collection<String> domainModelClassNames = new HashSet<>();
-    private final Collection<User> startupPoolUsers = new HashSet<>();
+    private final Collection<User> connectionPoolUsers = new HashSet<>();
     private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
     DefaultBuilder(int serverPort, int registryPort) {
@@ -268,8 +268,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     }
 
     @Override
-    public Builder startupPoolUsers(Collection<User> startupPoolUsers) {
-      this.startupPoolUsers.addAll(requireNonNull(startupPoolUsers));
+    public Builder connectionPoolUsers(Collection<User> connectionPoolUsers) {
+      this.connectionPoolUsers.addAll(requireNonNull(connectionPoolUsers));
       return this;
     }
 
@@ -289,7 +289,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
       configuration.idleConnectionTimeout = clientConnectionTimeout;
       configuration.connectionPoolProvider = connectionPoolProvider;
       configuration.domainModelClassNames.addAll(domainModelClassNames);
-      configuration.startupPoolUsers.addAll(startupPoolUsers);
+      configuration.connectionPoolUsers.addAll(connectionPoolUsers);
       configuration.clientTypeIdleConnectionTimeouts.putAll(clientTypeIdleConnectionTimeouts);
       
       return configuration;

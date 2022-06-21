@@ -8208,3 +8208,6 @@
   ProgressWorker improved, no longer relying on state changes, onStarted is now called on EDT before task is started and is guaranteed to run, onDone now called in done()
   ProgressWorker bug fixed, no longer uses SwingUtilities.invokeAndWait() when running onStarted
   ProgressWorker bug fixed, back to calling onStarted on state change, specific handling added to guarantee that onDone is called only once, the taming of SwingWorker continues
+  ConnectionRequestBuilder moved to DefaultConnectionRequest, renamed DefaultBuilder, some refactoring
+  EntityServer, startupPoolUsers renamed connectionPoolUsers throughout
+  DefaultEntityServerAdminTest extracted from EntityServerTest, coverage improved quite a bit

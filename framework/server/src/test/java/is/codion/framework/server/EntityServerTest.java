@@ -292,33 +292,6 @@ public class EntityServerTest {
     assertThrows(IllegalArgumentException.class, () -> admin.getClientLog(UUID.randomUUID()));
   }
 
-  @Test
-  void coverAdmin() throws RemoteException {
-    admin.getAllocatedMemory();
-    admin.setIdleConnectionTimeout(30);
-    try {
-      admin.setIdleConnectionTimeout(-1);
-      fail();
-    }
-    catch (IllegalArgumentException ignored) {/*ignored*/}
-    assertEquals(30, admin.getIdleConnectionTimeout());
-    admin.getDatabaseStatistics();
-    admin.getDatabaseUrl();
-    admin.getConnectionPoolUsernames();
-    admin.setMaintenanceInterval(500);
-    admin.getEntityDefinitions();
-    assertEquals(500, admin.getMaintenanceInterval());
-    admin.getMaxMemory();
-    admin.getRequestsPerSecond();
-    admin.getThreadStatistics();
-    admin.getGcEvents(0);
-    admin.getServerInformation();
-    admin.getSystemProperties();
-    admin.getUsedMemory();
-    admin.getUsers();
-    admin.getServerStatistics(System.currentTimeMillis());
-  }
-
   private static EntityServerConfiguration configure() {
     Clients.SERVER_HOST_NAME.set("localhost");
     Clients.TRUSTSTORE.set("src/main/config/truststore.jks");
@@ -332,7 +305,7 @@ public class EntityServerTest {
             .adminPort(3223)
             .adminUser(User.parse("scott:tiger"))
             .database(DatabaseFactory.getDatabase())
-            .startupPoolUsers(singletonList(UNIT_TEST_USER))
+            .connectionPoolUsers(singletonList(UNIT_TEST_USER))
             .clientTypeIdleConnectionTimeouts(singletonMap("ClientTypeID", 10000))
             .domainModelClassNames(singletonList("is.codion.framework.server.TestDomain"))
             .clientLoggingEnabled(true)
