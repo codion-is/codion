@@ -8211,3 +8211,4 @@
   ConnectionRequestBuilder moved to DefaultConnectionRequest, renamed DefaultBuilder, some refactoring
   EntityServer, startupPoolUsers renamed connectionPoolUsers throughout
   DefaultEntityServerAdminTest extracted from EntityServerTest, coverage improved quite a bit
+  DefaultColumnProperty, removed incorrect type parameter from valueFetcher
