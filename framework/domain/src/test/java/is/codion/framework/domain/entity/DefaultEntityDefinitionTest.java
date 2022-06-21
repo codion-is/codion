@@ -153,7 +153,6 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void entityWithoutProperties() {
-    EntityType entityType = DOMAIN_TYPE.entityType("entityWithoutProperties");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
