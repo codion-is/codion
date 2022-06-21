@@ -218,7 +218,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
     @Override
     public final B clientTypeId(String clientTypeId) {
-      this.clientTypeId = clientTypeId;
+      this.clientTypeId = requireNonNull(clientTypeId);
       return (B) this;
     }
 

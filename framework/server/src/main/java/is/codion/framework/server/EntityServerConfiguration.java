@@ -68,7 +68,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * Specifies a comma separated list of username:password combinations for which to create connection pools on startup
    * Example: scott:tiger,john:foo,paul:bar
    */
-  PropertyValue<String> SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS = Configuration.stringValue("codion.server.pooling.startupPoolUsers");
+  PropertyValue<String> SERVER_CONNECTION_POOL_USERS = Configuration.stringValue("codion.server.connectionPoolUsers");
 
   /**
    * Specifies a comma separated list of domain model class names, these classes must be
@@ -114,7 +114,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   /**
    * @return the users for which to initialize connection pools on startup
    */
-  Collection<User> getStartupPoolUsers();
+  Collection<User> getConnectionPoolUsers();
 
   /**
    * @return client type specific idle connection timeouts, mapped to clientTypeId
@@ -169,10 +169,10 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     Builder domainModelClassNames(Collection<String> domainModelClassNames);
 
     /**
-     * @param startupPoolUsers the users for which to initialize connection pools on startup
+     * @param connectionPoolUsers the users for which to initialize connection pools on startup
      * @return this builder instance
      */
-    Builder startupPoolUsers(Collection<User> startupPoolUsers);
+    Builder connectionPoolUsers(Collection<User> connectionPoolUsers);
 
     /**
      * @param clientTypeIdleConnectionTimeouts client type specific idle connection timeouts, mapped to clientTypeId
@@ -209,7 +209,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
             .connectionLimit(SERVER_CONNECTION_LIMIT.get())
             .database(DatabaseFactory.getDatabase())
             .domainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()))
-            .startupPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get()).stream()
+            .connectionPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOL_USERS.get()).stream()
                     .map(User::parse)
                     .collect(toList()))
             .clientLoggingEnabled(SERVER_CLIENT_LOGGING_ENABLED.get())

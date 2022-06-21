@@ -16,6 +16,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Mapper {
 
+  private Mapper() {}
+
   /**
    * Maps the given values according to the keys provided by the given key provider,
    * keeping the iteration order of the given collection. Null keys are allowed.

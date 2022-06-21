@@ -6,11 +6,8 @@ package is.codion.common.rmi.client;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Encapsulates information about a client required by a server for establishing a connection
@@ -51,7 +48,7 @@ public interface ConnectionRequest {
    * @return a ConnectionRequest.Builder
    */
   static ConnectionRequest.Builder builder() {
-    return new ConnectionRequestBuilder();
+    return new DefaultConnectionRequest.DefaultBuilder();
   }
 
   /**
@@ -94,52 +91,5 @@ public interface ConnectionRequest {
      * @return a new ConnectionRequest instance
      */
     ConnectionRequest build();
-  }
-
-  final class ConnectionRequestBuilder implements Builder {
-
-    private User user;
-    private UUID clientId = UUID.randomUUID();
-    private String clientTypeId;
-    private Version clientVersion;
-    private Map<String, Object> parameters;
-
-    @Override
-    public Builder user(User user) {
-      this.user = requireNonNull(user);
-      return this;
-    }
-
-    @Override
-    public Builder clientId(UUID clientId) {
-      this.clientId = requireNonNull(clientId);
-      return this;
-    }
-
-    @Override
-    public Builder clientTypeId(String clientTypeId) {
-      this.clientTypeId = requireNonNull(clientTypeId);
-      return this;
-    }
-
-    @Override
-    public Builder clientVersion(Version clientVersion) {
-      this.clientVersion = clientVersion;
-      return this;
-    }
-
-    @Override
-    public Builder parameter(String key, Object value) {
-      if (parameters == null) {
-        parameters = new HashMap<>();
-      }
-      parameters.put(key, value);
-      return this;
-    }
-
-    @Override
-    public ConnectionRequest build() {
-      return new DefaultConnectionRequest(user, clientId, clientTypeId, clientVersion, Version.getVersion(), parameters);
-    }
   }
 }

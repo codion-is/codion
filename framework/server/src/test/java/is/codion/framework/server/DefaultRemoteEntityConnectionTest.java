@@ -37,21 +37,27 @@ public class DefaultRemoteEntityConnectionTest {
   @Test
   void wrongUsername() throws Exception {
     RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
-            .user(User.user("foo", "bar".toCharArray())).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
+            .user(User.user("foo", "bar".toCharArray()))
+            .clientTypeId("DefaultRemoteEntityConnectionTestClient")
+            .build());
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1234));
   }
 
   @Test
   void wrongPassword() throws Exception {
     RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
-            .user(User.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray())).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
+            .user(User.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()))
+            .clientTypeId("DefaultRemoteEntityConnectionTestClient")
+            .build());
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1235));
   }
 
   @Test
   void rollbackOnClose() throws Exception {
     RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
-            .user(UNIT_TEST_USER).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
+            .user(UNIT_TEST_USER)
+            .clientTypeId("DefaultRemoteEntityConnectionTestClient")
+            .build());
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1238);
     Condition condition = Conditions.condition(TestDomain.T_EMP);
     connection.beginTransaction();

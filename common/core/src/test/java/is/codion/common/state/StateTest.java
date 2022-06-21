@@ -5,6 +5,8 @@ package is.codion.common.state;
 
 import is.codion.common.Conjunction;
 import is.codion.common.event.EventListener;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 
 import org.junit.jupiter.api.Test;
 
@@ -73,7 +75,12 @@ public class StateTest {
   void test() {
     State state = State.state();
     assertFalse(state.get(), "State should be inactive when initialized");
-    state.set(true);
+    assertFalse(state.isNull());
+    assertTrue(state.isNotNull());
+    assertFalse(state.isNullable());
+    assertFalse(state.equalTo(true));
+    assertTrue(state.toOptional().isPresent());
+    state.onEvent(true);//calls set()
     assertTrue(state.get(), "State should be active after activation");
     assertEquals("true", state.toString());
     assertFalse(state.getReversedObserver().get(), "Reversed state should be inactive after activation");
@@ -195,7 +202,7 @@ public class StateTest {
     State two = State.state();
     State three = State.state();
 
-    StateObserver combinationAnd = State.and(one, two, three);
+    StateObserver combinationAnd = State.combination(Conjunction.AND, one, two, three);
     combinationAnd.addDataListener(newValue -> assertEquals(combinationAnd.get(), newValue));
     one.set(true);
     two.set(true);
@@ -204,7 +211,7 @@ public class StateTest {
     two.set(false);
     three.set(false);
 
-    StateObserver combinationOr = State.or(one, two, three);
+    StateObserver combinationOr = State.combination(Conjunction.OR, one, two, three);
     combinationOr.addDataListener(newValue -> assertEquals(combinationOr.get(), newValue));
     one.set(true);
     one.set(false);
@@ -240,5 +247,36 @@ public class StateTest {
     stateTwo.set(false);
     assertFalse(combination.get());
     assertEquals(3, stateChangeEvents.get());
+  }
+
+  @Test
+  void linking() {
+    State state = State.state();
+    Value<Boolean> value = Value.value(true);
+
+    value.link(state);
+    assertFalse(value.get());
+    state.set(true);
+    assertTrue(value.get());
+
+    value.unlink(state);
+    state.set(false);
+    assertTrue(value.get());
+
+    ValueObserver<Boolean> valueObserver = value.getObserver();
+    state.link(valueObserver);
+    assertTrue(state.get());
+    value.set(false);
+    assertFalse(valueObserver.get());
+
+    state.unlink(valueObserver);
+    value.set(true);
+    assertFalse(state.get());
+
+    state.link(value);
+    assertTrue(state.get());
+    state.unlink(value);
+    value.set(false);
+    assertTrue(state.get());
   }
 }

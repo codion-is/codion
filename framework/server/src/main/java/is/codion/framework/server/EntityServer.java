@@ -84,7 +84,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       setAdmin(initializeServerAdmin(configuration));
       setIdleConnectionTimeout(configuration.getIdleConnectionTimeout());
       setClientTypeIdleConnectionTimeouts(configuration.getClientTypeIdleConnectionTimeouts());
-      initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getStartupPoolUsers());
+      initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getConnectionPoolUsers());
       setConnectionLimit(configuration.getConnectionLimit());
       bindToRegistry(configuration.getRegistryPort());
     }
@@ -367,8 +367,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   private static void initializeConnectionPools(Database database, String connectionPoolFactoryClassName,
-                                                Collection<User> startupPoolUsers) throws DatabaseException {
-    if (!startupPoolUsers.isEmpty()) {
+                                                Collection<User> connectionPoolUsers) throws DatabaseException {
+    if (!connectionPoolUsers.isEmpty()) {
       ConnectionPoolFactory poolFactory;
       if (Util.nullOrEmpty(connectionPoolFactoryClassName)) {
         poolFactory = ConnectionPoolFactory.connectionPoolFactory();
@@ -376,7 +376,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       else {
         poolFactory = ConnectionPoolFactory.connectionPoolFactory(connectionPoolFactoryClassName);
       }
-      for (User user : startupPoolUsers) {
+      for (User user : connectionPoolUsers) {
         database.initializeConnectionPool(poolFactory, user);
       }
     }
