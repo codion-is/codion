@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.model.worker;
 
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -33,6 +32,7 @@ import static java.util.Objects.requireNonNull;
 public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   private static final String PROGRESS_PROPERTY = "progress";
+  private static final String STATE_PROPERTY = "state";
 
   private final ProgressTask<T, V> task;
   private final Runnable onStarted;
@@ -43,6 +43,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   private final Consumer<Throwable> onException;
   private final Runnable onInterrupted;
 
+  private boolean onDoneRun = false;
+
   private ProgressWorker(DefaultBuilder<T, V> builder) {
     this.task = builder.task;
     this.onStarted = builder.onStarted;
@@ -52,7 +54,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     this.onPublish = builder.onPublish;
     this.onException = builder.onException;
     this.onInterrupted = builder.onInterrupted;
-    addPropertyChangeListener(new WorkerPropertyChangeListener());
+    getPropertyChangeSupport().addPropertyChangeListener(PROGRESS_PROPERTY, new ProgressListener());
+    getPropertyChangeSupport().addPropertyChangeListener(STATE_PROPERTY, new StateListener());
   }
 
   /**
@@ -78,8 +81,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   @Override
   protected T doInBackground() throws Exception {
-    SwingUtilities.invokeLater(onStarted);
-
     return task.perform(new TaskProgressReporter());
   }
 
@@ -90,7 +91,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   @Override
   protected void done() {
-    onDone.run();
+    runOnDone();
     try {
       onResult.accept(get());
     }
@@ -102,13 +103,31 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     }
   }
 
-  private final class WorkerPropertyChangeListener implements PropertyChangeListener {
+  private void runOnDone() {
+    if (!onDoneRun) {
+      onDone.run();
+      onDoneRun = true;
+    }
+  }
+
+  private final class StateListener implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
-      if (PROGRESS_PROPERTY.equals(changeEvent.getPropertyName())) {
-        onProgress.accept((Integer) changeEvent.getNewValue());
+      if (changeEvent.getNewValue() == StateValue.STARTED) {
+        onStarted.run();
+        if (isDone()) {
+          runOnDone();
+        }
       }
+    }
+  }
+
+  private final class ProgressListener implements PropertyChangeListener {
+
+    @Override
+    public void propertyChange(PropertyChangeEvent changeEvent) {
+      onProgress.accept((Integer) changeEvent.getNewValue());
     }
   }
 
