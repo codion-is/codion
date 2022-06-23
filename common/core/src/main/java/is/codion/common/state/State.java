@@ -20,6 +20,8 @@ import java.util.function.Supplier;
  * observer.addDataListener(this::onStateChange);
  *
  * state.set(true);
+ * state.set(false);
+ * state.set(null); //translates to false
  * </pre>
  * A factory class for {@link State} objects.
  */

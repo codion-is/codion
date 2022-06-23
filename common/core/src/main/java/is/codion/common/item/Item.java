@@ -10,6 +10,9 @@ import java.io.Serializable;
  * Comparing Items is based on their caption.
  * Factory class for {@link Item} instances.
  * @param <T> the type of the value
+ * @see Item#item(Object)
+ * @see Item#item(Object, String)
+ * @see Item#itemI18n(Object, String, String)
  */
 public interface Item<T> extends Comparable<Item<T>>, Serializable {
 
