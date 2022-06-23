@@ -8216,3 +8216,4 @@
   Windows.frameBuilder() renamed frame(), for consistency
   DefaultTaskSchedulerBuilder moved to DefaultTaskScheduler, renamed DefaultBuilder
   DefaultStateObserver bug fixed, toOptional() ignored the reversed directive
+  ValueObserver, added default implementations for toOptional(), isNull(), isNotNull() and equalTo(), related refactoring

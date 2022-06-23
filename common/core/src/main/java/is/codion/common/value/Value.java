@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
 
   /**
-   * Sets the value, setting the same value again does not trigger a value change
+   * Sets the value
    * @param value the value
    */
   void set(T value);

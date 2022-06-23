@@ -9,7 +9,6 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -128,7 +127,7 @@ class DefaultState implements State {
 
   @Override
   public final boolean equalTo(Boolean value) {
-    return Objects.equals(get(), value);
+    return State.super.equalTo(value);
   }
 
   @Override
