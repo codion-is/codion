@@ -58,6 +58,7 @@ public class StateTest {
     assertNotEquals(reversed.get(), state.get());
     assertEquals(state.get(), reversedReversed.get());
     state.set(true);
+    assertFalse(reversed.toOptional().get());
     assertEquals(1, stateCounter.get());
     assertEquals(1, reversedStateCounter.get());
     assertEquals(1, reversedReversedStateCounter.get());

@@ -1482,7 +1482,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private Window createEditWindow() {
     if (USE_FRAME_PANEL_DISPLAY.get()) {
-      return Windows.frameBuilder(editControlPanel)
+      return Windows.frame(editControlPanel)
               .relativeTo(this)
               .title(caption)
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
@@ -1502,7 +1502,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private Window createDetailPanelWindow() {
     if (USE_FRAME_PANEL_DISPLAY.get()) {
-      return Windows.frameBuilder(detailPanelTabbedPane)
+      return Windows.frame(detailPanelTabbedPane)
               .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
               .onClosed(windowEvent -> {

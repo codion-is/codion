@@ -95,11 +95,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   @Override
   public final Optional<T> toOptional() {
-    if (isNullable()) {
-      return Optional.ofNullable(get());
-    }
-
-    return Optional.of(get());
+    return Value.super.toOptional();
   }
 
   @Override
@@ -109,17 +105,17 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   @Override
   public final boolean isNull() {
-    return get() == null;
+    return Value.super.isNull();
   }
 
   @Override
   public final boolean isNotNull() {
-    return !isNull();
+    return Value.super.isNotNull();
   }
 
   @Override
   public final boolean equalTo(T value) {
-    return Objects.equals(get(), value);
+    return Value.super.equalTo(value);
   }
 
   @Override

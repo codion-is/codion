@@ -5,6 +5,7 @@ package is.codion.common.value;
 
 import is.codion.common.event.EventObserver;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -17,17 +18,27 @@ public interface ValueObserver<T> extends EventObserver<T>, Supplier<T> {
   /**
    * @return an {@link Optional} wrapping this value.
    */
-  Optional<T> toOptional();
+  default Optional<T> toOptional() {
+    if (isNullable()) {
+      return Optional.ofNullable(get());
+    }
+
+    return Optional.of(get());
+  }
 
   /**
    * @return true if the underlying value is null.
    */
-  boolean isNull();
+  default boolean isNull() {
+    return get() == null;
+  }
 
   /**
    * @return true if the underlying value is not null.
    */
-  boolean isNotNull();
+  default boolean isNotNull() {
+    return !isNull();
+  }
 
   /**
    * If false then get() is guaranteed to never return null.
@@ -40,5 +51,7 @@ public interface ValueObserver<T> extends EventObserver<T>, Supplier<T> {
    * @param value the value
    * @return true if the underlying value is equal to the given one
    */
-  boolean equalTo(T value);
+  default boolean equalTo(T value) {
+    return Objects.equals(get(), value);
+  }
 }

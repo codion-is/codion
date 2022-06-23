@@ -104,7 +104,7 @@ public final class LoadTestPanel<T> extends JPanel {
    * @return the frame
    */
   public JFrame showFrame() {
-    return Windows.frameBuilder(this)
+    return Windows.frame(this)
             .icon(Logos.logoTransparent())
             .menuBar(initializeMainMenuControls().createMenuBar())
             .title("Codion - " + loadTestModel.getTitle())

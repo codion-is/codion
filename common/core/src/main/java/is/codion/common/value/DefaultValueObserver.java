@@ -6,7 +6,6 @@ package is.codion.common.value;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -26,11 +25,7 @@ final class DefaultValueObserver<T> implements ValueObserver<T> {
 
   @Override
   public Optional<T> toOptional() {
-    if (isNullable()) {
-      return Optional.ofNullable(get());
-    }
-
-    return Optional.of(get());
+    return value.toOptional();
   }
 
   @Override
@@ -50,7 +45,7 @@ final class DefaultValueObserver<T> implements ValueObserver<T> {
 
   @Override
   public boolean equalTo(T value) {
-    return Objects.equals(get(), value);
+    return this.value.equalTo(value);
   }
 
   @Override

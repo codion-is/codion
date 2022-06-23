@@ -73,7 +73,7 @@ public final class DatabaseExplorerPanel extends JPanel {
   }
 
   public void showFrame() {
-    Windows.frameBuilder(this)
+    Windows.frame(this)
             .title("Codion Database Explorer")
             .icon(Logos.logoTransparent())
             .defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)

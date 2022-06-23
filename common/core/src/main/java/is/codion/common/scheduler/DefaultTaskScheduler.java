@@ -25,19 +25,12 @@ final class DefaultTaskScheduler implements TaskScheduler {
   private ScheduledExecutorService executorService;
   private int interval;
 
-  DefaultTaskScheduler(Runnable task, int interval, int initialDelay, TimeUnit timeUnit,
-                       ThreadFactory threadFactory) {
-    if (interval <= 0) {
-      throw new IllegalArgumentException("Interval must be a positive integer");
-    }
-    if (initialDelay < 0) {
-      throw new IllegalArgumentException("Initial delay can not be negative");
-    }
-    this.task = requireNonNull(task, "task");
-    this.interval = interval;
-    this.initialDelay = initialDelay;
-    this.timeUnit = requireNonNull(timeUnit, "timeUnit");
-    this.threadFactory = requireNonNull(threadFactory, "threadFactory");
+  private DefaultTaskScheduler(DefaultBuilder builder) {
+    this.task = builder.task;
+    this.interval = builder.interval;
+    this.initialDelay = builder.initialDelay;
+    this.timeUnit = builder.timeUnit;
+    this.threadFactory = builder.threadFactory;
   }
 
   @Override
@@ -92,5 +85,69 @@ final class DefaultTaskScheduler implements TaskScheduler {
   @Override
   public void addIntervalListener(EventDataListener<Integer> listener) {
     intervalChangedEvent.addDataListener(listener);
+  }
+
+  static final class DefaultBuilder implements Builder {
+
+    private final Runnable task;
+
+    private int interval;
+    private int initialDelay;
+    private TimeUnit timeUnit;
+    private ThreadFactory threadFactory = new DaemonThreadFactory();
+
+    DefaultBuilder(Runnable task) {
+      this.task = requireNonNull(task);
+    }
+
+    @Override
+    public Builder interval(int interval) {
+      if (interval <= 0) {
+        throw new IllegalArgumentException("Interval must be a positive integer");
+      }
+      this.interval = interval;
+      return this;
+    }
+
+    @Override
+    public Builder initialDelay(int initialDelay) {
+      if (initialDelay < 0) {
+        throw new IllegalArgumentException("Initial delay can not be negative");
+      }
+      this.initialDelay = initialDelay;
+      return this;
+    }
+
+    @Override
+    public Builder timeUnit(TimeUnit timeUnit) {
+      this.timeUnit = requireNonNull(timeUnit);
+      return this;
+    }
+
+    @Override
+    public Builder threadFactory(ThreadFactory threadFactory) {
+      this.threadFactory = requireNonNull(threadFactory);
+      return this;
+    }
+
+    @Override
+    public TaskScheduler start() {
+      TaskScheduler taskScheduler = build();
+      taskScheduler.start();
+
+      return taskScheduler;
+    }
+
+    @Override
+    public TaskScheduler build() {
+      if (interval == 0) {
+        throw new IllegalStateException("An interval > 0 is required for building a TaskScheduler");
+      }
+      if (timeUnit == null) {
+        throw new IllegalStateException("A time unit is required for building a TaskScheduler");
+      }
+
+      return new DefaultTaskScheduler(this);
+    }
   }
 }
