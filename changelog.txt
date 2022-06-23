@@ -8214,3 +8214,4 @@
   DefaultColumnProperty, removed incorrect type parameter from valueFetcher
   DefaultOrderByTest, added equality test
   Windows.frameBuilder() renamed frame(), for consistency
+  DefaultTaskSchedulerBuilder moved to DefaultTaskScheduler, renamed DefaultBuilder

@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
  * ...
  * scheduler.stop();
  * </pre>
+ * @see TaskScheduler#builder(Runnable)
  */
 public interface TaskScheduler {
 
@@ -68,7 +69,7 @@ public interface TaskScheduler {
    * @return a new {@link TaskScheduler.Builder} instance.
    */
   static TaskScheduler.Builder builder(Runnable task) {
-    return new DefaultTaskSchedulerBuilder(task);
+    return new DefaultTaskScheduler.DefaultBuilder(task);
   }
 
   /**
