@@ -41,7 +41,7 @@ final class DefaultStateObserver implements StateObserver {
 
   @Override
   public Optional<Boolean> toOptional() {
-    return Optional.of(stateObserver.get());
+    return Optional.of(get());
   }
 
   @Override

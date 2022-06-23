@@ -8215,3 +8215,4 @@
   DefaultOrderByTest, added equality test
   Windows.frameBuilder() renamed frame(), for consistency
   DefaultTaskSchedulerBuilder moved to DefaultTaskScheduler, renamed DefaultBuilder
+  DefaultStateObserver bug fixed, toOptional() ignored the reversed directive
