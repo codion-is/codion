@@ -48,7 +48,7 @@ public final class ContinentModel extends SwingEntityModel {
       surfaceAreaDataset.setValue(continent.name(), continent.surfaceArea());
       gnpDataset.setValue(continent.name(), continent.gnp());
       lifeExpectancyDataset.addValue(continent.minLifeExpectancy(), "Lowest", continent.name());
-      lifeExpectancyDataset.addValue( continent.maxLifeExpectancy(), "Highest", continent.name());
+      lifeExpectancyDataset.addValue(continent.maxLifeExpectancy(), "Highest", continent.name());
     });
   }
 }
