@@ -8213,3 +8213,4 @@
   DefaultEntityServerAdminTest extracted from EntityServerTest, coverage improved quite a bit
   DefaultColumnProperty, removed incorrect type parameter from valueFetcher
   DefaultOrderByTest, added equality test
+  Windows.frameBuilder() renamed frame(), for consistency

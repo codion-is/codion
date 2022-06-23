@@ -132,7 +132,7 @@ public final class Windows {
    * @param component the component to display in the frame
    * @return a frame builder
    */
-  public static FrameBuilder frameBuilder(JComponent component) {
+  public static FrameBuilder frame(JComponent component) {
     return new DefaultFrameBuilder(component);
   }
 

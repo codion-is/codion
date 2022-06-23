@@ -861,7 +861,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         Windows.getParentWindow(entityPanel).ifPresent(Window::toFront);
       }
       else {
-        Windows.frameBuilder(entityPanel)
+        Windows.frame(entityPanel)
                 .relativeTo(this)
                 .title(panelBuilder.getCaption() == null ? applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
