@@ -511,7 +511,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * Creates a ColumnValueProvider for the given column
    * @param columnIdentifier the column identifier
    * @param <T> the value type
-   * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}, an empty Optional if not applicable
+   * @return a ColumnValueProvider for the column identified by the given identifier, an empty Optional if not applicable
    */
   protected <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(C columnIdentifier) {
     return Optional.of(new DefaultSummaryValueProvider<>(columnIdentifier, this, null));

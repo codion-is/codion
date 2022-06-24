@@ -33,7 +33,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   private final Event<?> afterRefreshEvent = Event.event();
 
   /**
-   * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityType}.
+   * Instantiates a new {@link FXEntityEditModel} based on the given entity type
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
@@ -42,7 +42,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
-   * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityType}.
+   * Instantiates a new {@link FXEntityEditModel} based on the given entity type
    * @param entityType the type of the entity to base this {@link FXEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use

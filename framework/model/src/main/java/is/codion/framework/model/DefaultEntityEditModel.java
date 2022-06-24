@@ -162,7 +162,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private boolean initializeForeignKeyToNull = INITIALIZE_FOREIGN_KEY_TO_NULL.get();
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by {@code entityType}.
+   * Instantiates a new {@link DefaultEntityEditModel} based on the given entity type.
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
@@ -171,7 +171,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the entityTypeentified by {@code entityType}.
+   * Instantiates a new {@link DefaultEntityEditModel} based on the given entity type.
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
