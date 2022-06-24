@@ -283,13 +283,19 @@ public class EntityComponents {
    * @return a builder
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute) {
-    if (!attribute.isTemporal()) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not Temporal");
-    }
-    Property<T> property = entityDefinition.getProperty(attribute);
+    return temporalInputPanel(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+  }
 
-    return Components.temporalInputPanel(attribute.getTypeClass(), property.getDateTimePattern())
-            .toolTipText(property.getDescription());
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param dateTimePattern the date time pattern
+   * @param <T> the attribute type
+   * @return a builder
+   */
+  public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
+    return Components.temporalInputPanel(attribute.getTypeClass(), dateTimePattern)
+            .toolTipText(entityDefinition.getProperty(attribute).getDescription());
   }
 
   /**
@@ -363,10 +369,18 @@ public class EntityComponents {
    * @return a builder
    */
   public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute) {
-    Property<LocalTime> property = entityDefinition.getProperty(attribute);
+    return localTimeField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+  }
 
-    return Components.localTimeField(property.getDateTimePattern())
-            .toolTipText(property.getDescription());
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param dateTimePattern the date time pattern
+   * @return a builder
+   */
+  public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute, String dateTimePattern) {
+    return Components.localTimeField(dateTimePattern)
+            .toolTipText(entityDefinition.getProperty(attribute).getDescription());
   }
 
   /**
@@ -375,10 +389,18 @@ public class EntityComponents {
    * @return a builder
    */
   public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute) {
-    Property<LocalDate> property = entityDefinition.getProperty(attribute);
+    return localDateField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+  }
 
-    return Components.localDateField(property.getDateTimePattern())
-            .toolTipText(property.getDescription());
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param dateTimePattern the date time pattern
+   * @return a builder
+   */
+  public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute, String dateTimePattern) {
+    return Components.localDateField(dateTimePattern)
+            .toolTipText(entityDefinition.getProperty(attribute).getDescription());
   }
 
   /**
@@ -387,10 +409,18 @@ public class EntityComponents {
    * @return a builder
    */
   public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute) {
-    Property<LocalDateTime> property = entityDefinition.getProperty(attribute);
+    return localDateTimeField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+  }
 
-    return Components.localDateTimeField(property.getDateTimePattern())
-            .toolTipText(property.getDescription());
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param dateTimePattern the date time pattern
+   * @return a builder
+   */
+  public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute, String dateTimePattern) {
+    return Components.localDateTimeField(dateTimePattern)
+            .toolTipText(entityDefinition.getProperty(attribute).getDescription());
   }
 
   /**
@@ -399,10 +429,18 @@ public class EntityComponents {
    * @return a builder
    */
   public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
-    Property<OffsetDateTime> property = entityDefinition.getProperty(attribute);
+    return offsetDateTimeField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+  }
 
-    return Components.offsetDateTimeField(property.getDateTimePattern())
-            .toolTipText(property.getDescription());
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param dateTimePattern the date time pattern
+   * @return a builder
+   */
+  public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute, String dateTimePattern) {
+    return Components.offsetDateTimeField(dateTimePattern)
+            .toolTipText(entityDefinition.getProperty(attribute).getDescription());
   }
 
   /**
@@ -412,9 +450,20 @@ public class EntityComponents {
    * @return a builder
    */
   public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute) {
+    return temporalField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+  }
+
+  /**
+   * Creates a builder.
+   * @param attribute the attribute
+   * @param dateTimePattern the date time pattern
+   * @param <T> the temporal type
+   * @return a builder
+   */
+  public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute, String dateTimePattern) {
     Property<T> property = entityDefinition.getProperty(attribute);
 
-    return Components.temporalField(property.getAttribute().getTypeClass(), property.getDateTimePattern())
+    return Components.temporalField(property.getAttribute().getTypeClass(), dateTimePattern)
             .toolTipText(property.getDescription());
   }
 
