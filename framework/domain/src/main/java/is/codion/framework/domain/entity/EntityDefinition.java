@@ -283,16 +283,14 @@ public interface EntityDefinition {
   <T> ColumnProperty<T> getPrimaryKeyProperty(Attribute<T> attribute);
 
   /**
-   * Returns the {@link Property}s identified by the attributes in {@code attributes}
-   * @param attributes the ids of the properties to retrieve
-   * @return a list containing the properties identified by {@code attributes}, found in
-   * the entity identified by {@code entityType}
+   * Returns the {@link Property}s based on the given attributes
+   * @param attributes the attributes which properties to retrieve
+   * @return a list containing the properties based on the given attributes
    */
   List<Property<?>> getProperties(Collection<Attribute<?>> attributes);
 
   /**
-   * Returns the {@link ColumnProperty}s identified
-   * by the attributes in {@code attributes}
+   * Returns the {@link ColumnProperty}s based on the given attributes
    * @param attributes the attributes which properties to retrieve
    * @return a list of column properties
    */

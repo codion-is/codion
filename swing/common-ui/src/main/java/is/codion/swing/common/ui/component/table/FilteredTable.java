@@ -316,7 +316,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   /**
-   * Scrolls horizontally so that the column identified by columnIdentifier becomes visible.
+   * Scrolls horizontally so that the column identified by the given identifier becomes visible.
    * Has no effect if this table is not contained in a scrollpanel.
    * @param columnIdentifier the column identifier
    */

@@ -49,7 +49,9 @@ public interface Property<T> {
    * Default value: HH:mm
    */
   PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", LocaleDateTimePattern.builder()
-                  .hoursMinutes().build().getTimePattern());
+          .hoursMinutes()
+          .build()
+          .getTimePattern());
 
   /**
    * The default date/time format pattern to use when showing date/time values in tables and when creating default date/time input fields<br>
@@ -57,7 +59,11 @@ public interface Property<T> {
    * Default value: dd-MM-yyyy HH:mm [month/day order is locale specific]
    */
   PropertyValue<String> DATE_TIME_FORMAT = Configuration.stringValue("codion.domain.dateTimeFormat", LocaleDateTimePattern.builder()
-                  .delimiterDash().yearFourDigits().hoursMinutes().build().getDateTimePattern());
+          .delimiterDash()
+          .yearFourDigits()
+          .hoursMinutes()
+          .build()
+          .getDateTimePattern());
 
   /**
    * The default date format pattern to use when showing date values in tables and when creating default date input fields<br>
@@ -65,7 +71,10 @@ public interface Property<T> {
    * Default value: dd-MM-yyyy [month/day order is locale specific]
    */
   PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", LocaleDateTimePattern.builder()
-                  .delimiterDash().yearFourDigits().build().getDatePattern());
+          .delimiterDash()
+          .yearFourDigits()
+          .build()
+          .getDatePattern());
 
   /**
    * Specifies whether number format grouping is used by default<br>

@@ -59,9 +59,9 @@ public class JasperReportsDataSource<T> implements JRDataSource {
   }
 
   /**
-   * Returns the table value of the property identified by {@code field.getName()}
+   * Returns value of the attribute with the name {@code field.getName()}
    * @param field the report field which value to retrieve
-   * @return the value of the property identified by {@code field.getName()}
+   * @return the value of the attribute with the name {@code field.getName()}
    * @throws net.sf.jasperreports.engine.JRException in case of an exception
    */
   @Override

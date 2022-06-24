@@ -18,22 +18,22 @@ import java.util.List;
 public interface SelectionModel<R> {
 
   /**
-   * @return a StateObserver indicating that the selection is empty
+   * @return a StateObserver indicating whether the selection is empty
    */
   StateObserver getSelectionEmptyObserver();
 
   /**
-   * @return a StateObserver indicating that one or more items are selected
+   * @return a StateObserver indicating whether one or more items are selected
    */
   StateObserver getSelectionNotEmptyObserver();
 
   /**
-   * @return a StateObserver indicating that multiple rows are selected
+   * @return a StateObserver indicating whether multiple rows are selected
    */
   StateObserver getMultipleSelectionObserver();
 
   /**
-   * @return a StateObserver indicating that a single row is selected
+   * @return a StateObserver indicating whether a single row is selected
    */
   StateObserver getSingleSelectionObserver();
 
