@@ -305,7 +305,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B initialValue(T initialValue);
 
   /**
-   * @return a ScrollPaneBuilder using this component as the view
+   * @return a {@link ScrollPaneBuilder} using this component as the view
    */
   ScrollPaneBuilder scrollPane();
 
@@ -316,13 +316,13 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B onBuild(Consumer<C> onBuild);
 
   /**
-   * Builds and returns the component, note that subsequent calls return the same component.
+   * Builds and returns the component, note that subsequent calls return the same component until {@link #clear()} has been called.
    * @return the component
    */
   C build();
 
   /**
-   * Builds and returns the component, note that subsequent calls return the same component.
+   * Builds and returns the component, note that subsequent calls return the same component until {@link #clear()} has been called.
    * @param onBuild called after the first call when the component is built, before any values are linked, not called on subsequent calls.
    * @return the component
    */
@@ -335,7 +335,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B clear();
 
   /**
-   * Builds and returns the component value, note that subsequent calls return the same component value.
+   * Builds and returns the component value, note that subsequent calls return the same component value until {@link #clear()} has been called.
    * @return the component value
    */
   ComponentValue<T, C> buildComponentValue();
