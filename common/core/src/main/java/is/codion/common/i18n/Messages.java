@@ -6,7 +6,7 @@ package is.codion.common.i18n;
 import java.util.ResourceBundle;
 
 /**
- * A class containing i18n message keys used in the common package.
+ * A class containing i18n keys for common messages.
  */
 public final class Messages {
 
