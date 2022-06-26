@@ -20,26 +20,13 @@ import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A base Value implementation handling everything except the value itself.
+ * An abstract Value implementation handling everything except the value itself.<br><br>
+ * The constructor parameter {@code notifyOnSet} specifies whether this Value instance should automatically call
+ * {@link #notifyValueChange()} when the value is changed via {@link AbstractValue#set(Object)}.
+ * Some implementations may want to do this manually.
  * @param <T> the value type
  */
 public abstract class AbstractValue<T> implements Value<T> {
-
-  /**
-   * Specifies whether a {@link AbstractValue} instance should automatically call
-   * {@link #notifyValueChange()} when the value is changed via {@link AbstractValue#set(Object)}.
-   * Some implementations may want to do this manually.
-   */
-  public enum NotifyOnSet {
-    /**
-     * Change event is fired on a call to {@link AbstractValue#set(Object)}.
-     */
-    YES,
-    /**
-     * Change event is not fired on a call to {@link AbstractValue#set(Object)}.
-     */
-    NO
-  }
 
   private final Event<T> changeEvent = Event.event();
   private final T nullValue;
@@ -55,19 +42,21 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   /**
+   * Instantiates an {@link AbstractValue} instance, which does not notify on set.
    * @param nullValue the value to use instead of null
    */
   protected AbstractValue(T nullValue) {
-    this(nullValue, NotifyOnSet.NO);
+    this(nullValue, false);
   }
 
   /**
+   * Instantiates an {@link AbstractValue} instance.
    * @param nullValue the value to use instead of null
-   * @param notifyOnSet specifies whether to notify on set
+   * @param notifyOnSet specifies whether to automatically call {@link #notifyValueChange()} when the value is changed via {@link #set(Object)}
    */
-  protected AbstractValue(T nullValue, NotifyOnSet notifyOnSet) {
+  protected AbstractValue(T nullValue, boolean notifyOnSet) {
     this.nullValue = nullValue;
-    this.notifyOnSet = notifyOnSet == NotifyOnSet.YES;
+    this.notifyOnSet = notifyOnSet;
   }
 
   @Override

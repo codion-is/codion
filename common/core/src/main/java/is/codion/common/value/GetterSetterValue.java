@@ -14,7 +14,7 @@ final class GetterSetterValue<T> extends AbstractValue<T> {
   private final Consumer<T> setter;
 
   GetterSetterValue(Supplier<T> getter, Consumer<T> setter, T nullValue) {
-    super(nullValue, NotifyOnSet.YES);
+    super(nullValue, true);
     this.getter = requireNonNull(getter);
     this.setter = requireNonNull(setter);
   }

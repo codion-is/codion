@@ -11,14 +11,14 @@ import is.codion.framework.domain.entity.Key;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static is.codion.common.Mapper.map;
 import static is.codion.framework.domain.entity.Entity.mapToType;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 
 /**
  * A central event hub for listening for entity inserts, updates and deletes.
@@ -147,32 +147,41 @@ public final class EntityEditEvents {
       getDeleteListeners(entityType).removeDataListener(listener);
     }
 
-    private void notifyInserted(List<Entity> insertedEntities) {
-      mapToType(insertedEntities).forEach((entityType, inserted) -> {
-        Listeners<List<Entity>> listeners = insertListeners.get(entityType);
-        if (listeners != null) {
-          listeners.onEvent(inserted);
-        }
-      });
+    private void notifyInserted(List<Entity> inserted) {
+      mapToType(inserted).forEach(this::notifyInserted);
     }
 
-    private void notifyUpdated(Map<Key, Entity> updatedEntities) {
-      map(updatedEntities.entrySet(), entry -> entry.getKey().getEntityType()).forEach((entityType, updated) -> {
-        Listeners<Map<Key, Entity>> listeners = updateListeners.get(entityType);
-        if (listeners != null) {
-          listeners.onEvent(updated.stream()
-                  .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
-        }
-      });
+    private void notifyInserted(EntityType entityType, List<Entity> inserted) {
+      Listeners<List<Entity>> listeners = insertListeners.get(entityType);
+      if (listeners != null) {
+        listeners.onEvent(inserted);
+      }
     }
 
-    private void notifyDeleted(List<Entity> deletedEntities) {
-      mapToType(deletedEntities).forEach((entityType, entities) -> {
-        Listeners<List<Entity>> listeners = deleteListeners.get(entityType);
-        if (listeners != null) {
-          listeners.onEvent(entities);
-        }
-      });
+    private void notifyUpdated(Map<Key, Entity> updated) {
+      updated.entrySet()
+              .stream()
+              .collect(groupingBy(entry -> entry.getKey().getEntityType(), LinkedHashMap::new, toList()))
+              .forEach(this::notifyUpdated);
+    }
+
+    private void notifyUpdated(EntityType entityType, List<Map.Entry<Key, Entity>> updated) {
+      Listeners<Map<Key, Entity>> listeners = updateListeners.get(entityType);
+      if (listeners != null) {
+        listeners.onEvent(updated.stream()
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
+      }
+    }
+
+    private void notifyDeleted(List<Entity> deleted) {
+      mapToType(deleted).forEach(this::notifyDeleted);
+    }
+
+    private void notifyDeleted(EntityType entityType, List<Entity> deleted) {
+      Listeners<List<Entity>> listeners = deleteListeners.get(entityType);
+      if (listeners != null) {
+        listeners.onEvent(deleted);
+      }
     }
 
     private Listeners<List<Entity>> getInsertListeners(EntityType entityType) {
