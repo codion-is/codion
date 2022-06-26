@@ -11,14 +11,14 @@ import is.codion.framework.domain.entity.Key;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static is.codion.common.Mapper.map;
 import static is.codion.framework.domain.entity.Entity.mapToType;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 
 /**
  * A central event hub for listening for entity inserts, updates and deletes.
@@ -157,13 +157,16 @@ public final class EntityEditEvents {
     }
 
     private void notifyUpdated(Map<Key, Entity> updatedEntities) {
-      map(updatedEntities.entrySet(), entry -> entry.getKey().getEntityType()).forEach((entityType, updated) -> {
-        Listeners<Map<Key, Entity>> listeners = updateListeners.get(entityType);
-        if (listeners != null) {
-          listeners.onEvent(updated.stream()
-                  .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
-        }
-      });
+      updatedEntities.entrySet()
+              .stream()
+              .collect(groupingBy(entry -> entry.getKey().getEntityType(), LinkedHashMap::new, toList()))
+              .forEach((entityType, updated) -> {
+                Listeners<Map<Key, Entity>> listeners = updateListeners.get(entityType);
+                if (listeners != null) {
+                  listeners.onEvent(updated.stream()
+                          .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                }
+              });
     }
 
     private void notifyDeleted(List<Entity> deletedEntities) {

@@ -17,7 +17,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static is.codion.common.Mapper.map;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
@@ -562,7 +561,8 @@ public interface Entity extends Comparable<Entity> {
    * @return a Map of entities mapped to attribute value
    */
   static <T> LinkedHashMap<T, List<Entity>> mapToValue(Attribute<T> attribute, Collection<Entity> entities) {
-    return map(entities, entity -> entity.get(attribute));
+    return requireNonNull(entities).stream()
+            .collect(groupingBy(entity -> entity.get(attribute), LinkedHashMap::new, toList()));
   }
 
   /**
@@ -572,7 +572,8 @@ public interface Entity extends Comparable<Entity> {
    * @return a Map of entities mapped to entityType
    */
   static LinkedHashMap<EntityType, List<Entity>> mapToType(Collection<? extends Entity> entities) {
-    return map(entities, Entity::getEntityType);
+    return requireNonNull(entities).stream()
+            .collect(groupingBy(Entity::getEntityType, LinkedHashMap::new, toList()));
   }
 
   /**
@@ -582,7 +583,8 @@ public interface Entity extends Comparable<Entity> {
    * @return a Map of entity keys mapped to entityType
    */
   static LinkedHashMap<EntityType, List<Key>> mapKeysToType(Collection<Key> keys) {
-    return map(keys, Key::getEntityType);
+    return requireNonNull(keys).stream()
+            .collect(groupingBy(Key::getEntityType, LinkedHashMap::new, toList()));
   }
 
   /**

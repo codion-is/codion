@@ -8220,3 +8220,4 @@
   EntityComponents, EntityEditComponentPanel, temporal field methods overloaded with dateTimePattern parameter
   DefaultState now final
   AbstractValue.NotifyOnSet removed, not quite necessary
+  Mapper removed, simple enough to implement with stream.collect()
