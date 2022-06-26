@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-class DefaultState implements State {
+final class DefaultState implements State {
 
   private final Value<Boolean> value;
 
@@ -50,7 +50,7 @@ class DefaultState implements State {
   }
 
   @Override
-  public final StateObserver getObserver() {
+  public StateObserver getObserver() {
     synchronized (this.value) {
       if (observer == null) {
         observer = new DefaultStateObserver(this, false);
@@ -61,97 +61,97 @@ class DefaultState implements State {
   }
 
   @Override
-  public final StateObserver getReversedObserver() {
+  public StateObserver getReversedObserver() {
     return getObserver().getReversedObserver();
   }
 
   @Override
-  public final void link(Value<Boolean> originalValue) {
+  public void link(Value<Boolean> originalValue) {
     this.value.link(originalValue);
   }
 
   @Override
-  public final void unlink(Value<Boolean> originalValue) {
+  public void unlink(Value<Boolean> originalValue) {
     this.value.unlink(originalValue);
   }
 
   @Override
-  public final void link(ValueObserver<Boolean> originalValueObserver) {
+  public void link(ValueObserver<Boolean> originalValueObserver) {
     this.value.link(originalValueObserver);
   }
 
   @Override
-  public final void unlink(ValueObserver<Boolean> originalValueObserver) {
+  public void unlink(ValueObserver<Boolean> originalValueObserver) {
     this.value.unlink(originalValueObserver);
   }
 
   @Override
-  public final Set<Value<Boolean>> getLinkedValues() {
+  public Set<Value<Boolean>> getLinkedValues() {
     return this.value.getLinkedValues();
   }
 
   @Override
-  public final void addValidator(Validator<Boolean> validator) {
+  public void addValidator(Validator<Boolean> validator) {
     this.value.addValidator(validator);
   }
 
   @Override
-  public final void removeValidator(Validator<Boolean> validator) {
+  public void removeValidator(Validator<Boolean> validator) {
     this.value.removeValidator(validator);
   }
 
   @Override
-  public final Collection<Validator<Boolean>> getValidators() {
+  public Collection<Validator<Boolean>> getValidators() {
     return this.value.getValidators();
   }
 
   @Override
-  public final Optional<Boolean> toOptional() {
+  public Optional<Boolean> toOptional() {
     return Optional.of(get());
   }
 
   @Override
-  public final boolean isNull() {
+  public boolean isNull() {
     return false;
   }
 
   @Override
-  public final boolean isNotNull() {
+  public boolean isNotNull() {
     return true;
   }
 
   @Override
-  public final boolean isNullable() {
+  public boolean isNullable() {
     return false;
   }
 
   @Override
-  public final boolean equalTo(Boolean value) {
+  public boolean equalTo(Boolean value) {
     return State.super.equalTo(value);
   }
 
   @Override
-  public final void onEvent(Boolean data) {
+  public void onEvent(Boolean data) {
     set(data);
   }
 
   @Override
-  public final void addListener(EventListener listener) {
+  public void addListener(EventListener listener) {
     getObserver().addListener(listener);
   }
 
   @Override
-  public final void removeListener(EventListener listener) {
+  public void removeListener(EventListener listener) {
     getObserver().removeListener(listener);
   }
 
   @Override
-  public final void addDataListener(EventDataListener<Boolean> listener) {
+  public void addDataListener(EventDataListener<Boolean> listener) {
     getObserver().addDataListener(listener);
   }
 
   @Override
-  public final void removeDataListener(EventDataListener<Boolean> listener) {
+  public void removeDataListener(EventDataListener<Boolean> listener) {
     getObserver().removeDataListener(listener);
   }
 
