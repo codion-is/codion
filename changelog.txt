@@ -8219,3 +8219,4 @@
   ValueObserver, added default implementations for toOptional(), isNull(), isNotNull() and equalTo(), related refactoring
   EntityComponents, EntityEditComponentPanel, temporal field methods overloaded with dateTimePattern parameter
   DefaultState now final
+  AbstractValue.NotifyOnSet removed, not quite necessary

@@ -14,7 +14,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   private final Set<T> values = new HashSet<>();
 
   DefaultValueSet(Set<T> initialValues) {
-    super(emptySet(), NotifyOnSet.YES);
+    super(emptySet(), true);
     values.addAll(requireNonNull(initialValues, "initialValues"));
   }
 
@@ -72,7 +72,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
     private final ValueSet<T> valueSet;
 
     private SingleValueSet(ValueSet<T> valueSet) {
-      super(null, NotifyOnSet.NO);
+      super(null, false);
       this.valueSet = valueSet;
       valueSet.addListener(this::notifyValueChange);
     }
