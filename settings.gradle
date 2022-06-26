@@ -175,7 +175,7 @@ dependencyResolutionManagement {
             //jfreechart
             version('jfreechart', '1.5.3')
             version('jcommon', '1.0.24')
-            version('jetty', '11.0.10')
+            version('jetty', '11.0.11')
             version('http.client', '4.5.13')
             version('javax.activation', '2.1.0')
             version('jersey', '3.0.4')
