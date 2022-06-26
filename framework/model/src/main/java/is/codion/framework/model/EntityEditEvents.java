@@ -147,35 +147,41 @@ public final class EntityEditEvents {
       getDeleteListeners(entityType).removeDataListener(listener);
     }
 
-    private void notifyInserted(List<Entity> insertedEntities) {
-      mapToType(insertedEntities).forEach((entityType, inserted) -> {
-        Listeners<List<Entity>> listeners = insertListeners.get(entityType);
-        if (listeners != null) {
-          listeners.onEvent(inserted);
-        }
-      });
+    private void notifyInserted(List<Entity> inserted) {
+      mapToType(inserted).forEach(this::notifyInserted);
     }
 
-    private void notifyUpdated(Map<Key, Entity> updatedEntities) {
-      updatedEntities.entrySet()
+    private void notifyInserted(EntityType entityType, List<Entity> inserted) {
+      Listeners<List<Entity>> listeners = insertListeners.get(entityType);
+      if (listeners != null) {
+        listeners.onEvent(inserted);
+      }
+    }
+
+    private void notifyUpdated(Map<Key, Entity> updated) {
+      updated.entrySet()
               .stream()
               .collect(groupingBy(entry -> entry.getKey().getEntityType(), LinkedHashMap::new, toList()))
-              .forEach((entityType, updated) -> {
-                Listeners<Map<Key, Entity>> listeners = updateListeners.get(entityType);
-                if (listeners != null) {
-                  listeners.onEvent(updated.stream()
-                          .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
-                }
-              });
+              .forEach(this::notifyUpdated);
     }
 
-    private void notifyDeleted(List<Entity> deletedEntities) {
-      mapToType(deletedEntities).forEach((entityType, entities) -> {
-        Listeners<List<Entity>> listeners = deleteListeners.get(entityType);
-        if (listeners != null) {
-          listeners.onEvent(entities);
-        }
-      });
+    private void notifyUpdated(EntityType entityType, List<Map.Entry<Key, Entity>> updated) {
+      Listeners<Map<Key, Entity>> listeners = updateListeners.get(entityType);
+      if (listeners != null) {
+        listeners.onEvent(updated.stream()
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
+      }
+    }
+
+    private void notifyDeleted(List<Entity> deleted) {
+      mapToType(deleted).forEach(this::notifyDeleted);
+    }
+
+    private void notifyDeleted(EntityType entityType, List<Entity> deleted) {
+      Listeners<List<Entity>> listeners = deleteListeners.get(entityType);
+      if (listeners != null) {
+        listeners.onEvent(deleted);
+      }
     }
 
     private Listeners<List<Entity>> getInsertListeners(EntityType entityType) {
