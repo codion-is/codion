@@ -306,7 +306,7 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(100),
             derivedProperty(Employee.DEPARTMENT_NAME, new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
             blobProperty(Employee.DATA, "Data")
-                    .eagerlyLoaded())
+                    .eagerlyLoaded(true))
             .tableName("scott.emp")
             .keyGenerator(increment("scott.emp", "empno"))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
