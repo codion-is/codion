@@ -73,21 +73,8 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Entity entity(Key key) {
-    return getDefinition(key.getEntityType()).entity(key);
-  }
-
-  @Override
   public final Entity.Builder builder(EntityType entityType) {
     return new DefaultEntityBuilder(getDefinition(entityType));
-  }
-
-  @Override
-  public final Entity.Builder builder(Key key) {
-    Entity.Builder builder = builder(requireNonNull(key).getEntityType());
-    key.getAttributes().forEach(attribute -> builder.with((Attribute<Object>) attribute, key.get(attribute)));
-
-    return builder;
   }
 
   @Override

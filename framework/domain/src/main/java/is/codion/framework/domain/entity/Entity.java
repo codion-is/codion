@@ -21,8 +21,13 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
 /**
- * Represents a row in a database table.
- * Helper class for working with Entity instances and related classes
+ * Represents a row in a table or query.
+ * Helper class for working with Entity instances and related classes.
+ * @see EntityDefinition#entity()
+ * @see Entities#entity(EntityType)
+ * @see Entities#builder(EntityType)
+ * @see Entity#builder(Key)
+ * @see Entity#copyBuilder()
  */
 public interface Entity extends Comparable<Entity> {
 
@@ -298,6 +303,9 @@ public interface Entity extends Comparable<Entity> {
    *     .with(Customer.LAST_NAME, "Doe")
    *     .build();
    * </pre>
+   * @see Entities#builder(EntityType)
+   * @see Entity#builder(Key)
+   * @see Entity#copyBuilder()
    */
   interface Builder {
 
@@ -311,6 +319,13 @@ public interface Entity extends Comparable<Entity> {
     <T> Builder with(Attribute<T> attribute, T value);
 
     /**
+     * Sets the default value for all attributes.
+     * @return this builder instance
+     * @see Property#getDefaultValue()
+     */
+    Builder withDefaultValues();
+
+    /**
      * Builds the entity instance
      * @return a new Entity instance
      */
@@ -318,7 +333,23 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Checks if the primary key of any of the given entities is modified
+   * @param key the key
+   * @return an Entity instance based on the given key
+   */
+  static Entity entity(Key key) {
+    return new DefaultEntity(key);
+  }
+
+  /**
+   * @param key the key
+   * @return a builder instance based on the given key
+   */
+  static Builder builder(Key key) {
+    return new DefaultEntityBuilder(key);
+  }
+
+  /**
+   * Checks if any of the primary keys of the given entities is modified
    * @param entities the entities to check
    * @return true if any of the given entities has a modified primary key
    */

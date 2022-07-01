@@ -246,8 +246,8 @@ public final class TestDomain extends DefaultDomain {
     Attribute<LocalDateTime> HIREDATE = TYPE.localDateTimeAttribute("hiredate");
     Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
     Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
-    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
-    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.NO);
+    Attribute<Integer> DEPARTMENT_NO = TYPE.integerAttribute("deptno");
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT_NO, Department.NO);
     ForeignKey MANAGER_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
     Attribute<String> DEPARTMENT_NAME = TYPE.stringAttribute("department_name");
@@ -274,7 +274,7 @@ public final class TestDomain extends DefaultDomain {
                     .searchProperty(true)
                     .columnName("ename").maximumLength(10).nullable(false)
                     .beanProperty("name"),
-            columnProperty(Employee.DEPARTMENT)
+            columnProperty(Employee.DEPARTMENT_NO)
                     .nullable(false)
                     .beanProperty("deptno"),
             foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName())
@@ -309,7 +309,7 @@ public final class TestDomain extends DefaultDomain {
                     .eagerlyLoaded(true))
             .tableName("scott.emp")
             .keyGenerator(increment("scott.emp", "empno"))
-            .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
+            .orderBy(ascending(Employee.DEPARTMENT_NO, Employee.NAME))
             .stringFactory(Employee.NAME)
             .caption("Employee"));
   }

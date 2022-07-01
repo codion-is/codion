@@ -560,12 +560,12 @@ public class DefaultEntityTest {
             .build();
     assertTrue(employee.isForeignKeyNull(Employee.DEPARTMENT_FK));
     assertNull(employee.get(Employee.DEPARTMENT_FK));
-    assertNull(employee.get(Employee.DEPARTMENT));
+    assertNull(employee.get(Employee.DEPARTMENT_NO));
 
     employee.put(Employee.DEPARTMENT_FK, department);
     assertFalse(employee.isForeignKeyNull(Employee.DEPARTMENT_FK));
     assertNotNull(employee.get(Employee.DEPARTMENT_FK));
-    assertNotNull(employee.get(Employee.DEPARTMENT));
+    assertNotNull(employee.get(Employee.DEPARTMENT_NO));
   }
 
   @Test
@@ -595,7 +595,7 @@ public class DefaultEntityTest {
             .with(Employee.DEPARTMENT_FK, department)
             .build();
     assertNotNull(employee.getForeignKey(Employee.DEPARTMENT_FK));
-    assertEquals(Integer.valueOf(-10), employee.get(Employee.DEPARTMENT));
+    assertEquals(Integer.valueOf(-10), employee.get(Employee.DEPARTMENT_NO));
 
     employee.remove(Employee.DEPARTMENT_FK);
     assertNull(employee.get(Employee.DEPARTMENT_FK));
@@ -603,9 +603,9 @@ public class DefaultEntityTest {
     assertNotNull(empDepartment);
     //non loaded entity, created from foreign key
     assertFalse(empDepartment.contains(Department.NAME));
-    assertNotNull(employee.get(Employee.DEPARTMENT));
+    assertNotNull(employee.get(Employee.DEPARTMENT_NO));
     assertFalse(employee.contains(Employee.DEPARTMENT_FK));
-    assertTrue(employee.contains(Employee.DEPARTMENT));
+    assertTrue(employee.contains(Employee.DEPARTMENT_NO));
   }
 
   @Test
@@ -664,8 +664,8 @@ public class DefaultEntityTest {
     Entity emp = ENTITIES.builder(Employee.TYPE)
             .with(Employee.DEPARTMENT_FK, dept)
             .build();
-    assertEquals(1, emp.get(Employee.DEPARTMENT));
-    emp.put(Employee.DEPARTMENT, 2);
+    assertEquals(1, emp.get(Employee.DEPARTMENT_NO));
+    emp.put(Employee.DEPARTMENT_NO, 2);
     assertNull(emp.get(Employee.DEPARTMENT_FK));
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     Entity empDept = emp.getForeignKey(Employee.DEPARTMENT_FK);
@@ -676,13 +676,13 @@ public class DefaultEntityTest {
             .with(Department.NAME, "Name2")
             .build();
     emp.put(Employee.DEPARTMENT_FK, dept2);
-    emp.put(Employee.DEPARTMENT, 3);
+    emp.put(Employee.DEPARTMENT_NO, 3);
     assertNotNull(emp.get(Employee.DEPARTMENT_FK));
-    emp.put(Employee.DEPARTMENT, 4);
+    emp.put(Employee.DEPARTMENT_NO, 4);
     assertNull(emp.get(Employee.DEPARTMENT_FK));
     emp.put(Employee.DEPARTMENT_FK, dept2);
     assertNotNull(emp.get(Employee.DEPARTMENT_FK));
-    emp.put(Employee.DEPARTMENT, null);
+    emp.put(Employee.DEPARTMENT_NO, null);
     assertNull(emp.get(Employee.DEPARTMENT_FK));
 
     Entity manager = ENTITIES.builder(Employee.TYPE)
@@ -730,10 +730,6 @@ public class DefaultEntityTest {
     Entity haddockMaturity10 = entities.builder(Maturity.TYPE)
             .with(Maturity.SPECIES_FK, haddock)
             .with(Maturity.NO, 10)
-            .build();
-    Entity haddockMaturity20 = entities.builder(Maturity.TYPE)
-            .with(Maturity.SPECIES_FK, haddock)
-            .with(Maturity.NO, 20)
             .build();
 
     Entity otolithCategoryCod100 = entities.builder(OtolithCategory.TYPE)

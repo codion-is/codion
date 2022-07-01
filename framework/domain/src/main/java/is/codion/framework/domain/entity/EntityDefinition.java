@@ -364,33 +364,27 @@ public interface EntityDefinition {
 
   /**
    * Creates a new {@link Entity} instance based on this definition
-   * @param key the key
+   * @param values the values
    * @return a new {@link Entity} instance
+   * @throws IllegalArgumentException in case any of the value attributes are not part of the entity.
    */
-  Entity entity(Key key);
+  Entity entity(Map<Attribute<?>, Object> values);
 
   /**
    * Creates a new {@link Entity} instance based on this definition
    * @param values the values
    * @param originalValues the original values
    * @return a new {@link Entity} instance
-   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
+   * @throws IllegalArgumentException in case any of the value attributes are not part of the entity.
    */
   Entity entity(Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues);
-
-  /**
-   * Creates a new {@link Entity} instance, with default values for all attributes.
-   * @return a default entity
-   * @see Property#getDefaultValue()
-   */
-  Entity entityWithDefaultValues();
 
   /**
    * Creates a new {@link Key} instance based on this definition, initialised with the given value
    * @param value the key value, assumes a single integer key
    * @return a new {@link Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityType or value is null
+   * @throws IllegalArgumentException in case the key is not Integer based
    */
   Key primaryKey(Integer value);
 
@@ -399,7 +393,7 @@ public interface EntityDefinition {
    * @param value the key value, assumes a single long key
    * @return a new {@link Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityType or value is null
+   * @throws IllegalArgumentException in case the key is not Long based
    */
   Key primaryKey(Long value);
 

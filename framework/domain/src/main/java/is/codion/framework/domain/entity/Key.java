@@ -17,6 +17,11 @@ public interface Key {
   EntityType getEntityType();
 
   /**
+   * @return the entity definition
+   */
+  EntityDefinition getDefinition();
+
+  /**
    * @return the attributes comprising this key
    */
   List<Attribute<?>> getAttributes();

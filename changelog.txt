@@ -8222,3 +8222,5 @@
   AbstractValue.NotifyOnSet removed, not quite necessary
   Mapper removed, simple enough to implement with stream.collect()
   BlobProperty.Builder.eagerlyLoaded() parameter added, for consistency
+  Key.getDefinition() added, related refactoring
+  Entity.Builder.withDefaultValues() added, Entity.Builder refactored

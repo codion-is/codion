@@ -307,7 +307,7 @@ public class EntityServletServerTest {
     Key key1 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 10);
     Key key2 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 20);
 
-    List<Entity> entitiesDep = Arrays.asList(ENTITIES.entity(key1), ENTITIES.entity(key2));
+    List<Entity> entitiesDep = Arrays.asList(Entity.entity(key1), Entity.entity(key2));
 
     uriBuilder.setPath("dependencies");
     httpPost = new HttpPost(uriBuilder.build());

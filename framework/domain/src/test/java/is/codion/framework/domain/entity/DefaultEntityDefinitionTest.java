@@ -90,7 +90,7 @@ public class DefaultEntityDefinitionTest {
     assertTrue(defaultSelectAttributes.contains(Employee.HIREDATE));
     assertTrue(defaultSelectAttributes.contains(Employee.SALARY));
     assertTrue(defaultSelectAttributes.contains(Employee.COMMISSION));
-    assertTrue(defaultSelectAttributes.contains(Employee.DEPARTMENT));
+    assertTrue(defaultSelectAttributes.contains(Employee.DEPARTMENT_NO));
     assertTrue(defaultSelectAttributes.contains(Employee.DEPARTMENT_FK));
     assertTrue(defaultSelectAttributes.contains(Employee.MANAGER_FK));
     assertTrue(defaultSelectAttributes.contains(Employee.DATA));
@@ -124,31 +124,6 @@ public class DefaultEntityDefinitionTest {
     assertFalse(defaultSelectAttributes.contains(Detail.INT_DERIVED));
     assertTrue(defaultSelectAttributes.contains(Detail.MASTER_CODE_DENORM));
     assertFalse(defaultSelectAttributes.contains(Detail.BYTES));
-  }
-
-  @Test
-  void entityWithDefaultValues() {
-    EntityType entityType = DOMAIN_TYPE.entityType("entityWithDefaultValues");
-    Attribute<Integer> id = entityType.integerAttribute("id");
-    Attribute<String> name = entityType.stringAttribute("name");
-    Attribute<Integer> value = entityType.integerAttribute("value");
-
-    class TestDomain extends DefaultDomain {
-      public TestDomain() {
-        super(DOMAIN_TYPE);
-        add(definition(
-                primaryKeyProperty(id),
-                columnProperty(name)
-                        .defaultValue("DefName"),
-                columnProperty(value)
-                        .defaultValue(42))
-                .tableName("tableName"));
-      }
-    }
-    Entity entity = new TestDomain().getEntities().getDefinition(entityType).entityWithDefaultValues();
-    assertTrue(entity.isNull(id));
-    assertEquals("DefName", entity.get(name));
-    assertEquals(42, entity.get(value));
   }
 
   @Test
