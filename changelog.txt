@@ -8224,3 +8224,4 @@
   BlobProperty.Builder.eagerlyLoaded() parameter added, for consistency
   Key.getDefinition() added, related refactoring
   Entity.Builder.withDefaultValues() added, Entity.Builder refactored
+  Entities.primaryKey(Integer) and primaryKey(Long) replaced with primaryKey(T), related refactoring

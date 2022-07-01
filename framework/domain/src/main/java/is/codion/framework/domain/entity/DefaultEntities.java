@@ -78,25 +78,15 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Key primaryKey(EntityType entityType, Integer value) {
+  public final <T> Key primaryKey(EntityType entityType, T value) {
     return getDefinition(entityType).primaryKey(value);
   }
 
   @Override
-  public final Key primaryKey(EntityType entityType, Long value) {
-    return getDefinition(entityType).primaryKey(value);
-  }
-
-  @Override
-  public final List<Key> primaryKeys(EntityType entityType, Integer... values) {
-    requireNonNull(values, "values");
-    return Arrays.stream(values).map(value -> primaryKey(entityType, value)).collect(toList());
-  }
-
-  @Override
-  public final List<Key> primaryKeys(EntityType entityType, Long... values) {
-    requireNonNull(values, "values");
-    return Arrays.stream(values).map(value -> primaryKey(entityType, value)).collect(toList());
+  public final <T> List<Key> primaryKeys(EntityType entityType, T... values) {
+    return Arrays.stream(requireNonNull(values, "values"))
+            .map(value -> primaryKey(entityType, value))
+            .collect(toList());
   }
 
   @Override

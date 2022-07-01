@@ -64,42 +64,26 @@ public interface Entities {
   /**
    * Creates a new {@link Key} instance with the given entityType, initialised with the given value
    * @param entityType the entityType
-   * @param value the key value, assumes a single integer key
-   * @return a new {@link Key} instance
-   * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityType or value is null
-   */
-  Key primaryKey(EntityType entityType, Integer value);
-
-  /**
-   * Creates a new {@link Key} instance with the given entityType, initialised with the given value
-   * @param entityType the entityType
    * @param value the key value, assumes a single long key
+   * @param <T> the key value type
    * @return a new {@link Key} instance
-   * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityType or value is null
+   * @throws IllegalStateException in case the given primary key is a composite key
+   * @throws IllegalArgumentException in case the value is not of the correct type
+   * @throws NullPointerException in case entityType is null
    */
-  Key primaryKey(EntityType entityType, Long value);
+  <T> Key primaryKey(EntityType entityType, T value);
 
   /**
    * Creates new {@link Key} instances with the given entityType, initialised with the given values
    * @param entityType the entityType
    * @param values the key values, assumes a single integer key
+   * @param <T> the key value type
    * @return new {@link Key} instances
-   * @throws IllegalArgumentException in case the given primary key is a composite key
+   * @throws IllegalStateException in case the given primary key is a composite key
+   * @throws IllegalArgumentException in case any of the values is not of the correct type
    * @throws NullPointerException in case entityType or values is null
    */
-  List<Key> primaryKeys(EntityType entityType, Integer... values);
-
-  /**
-   * Creates new {@link Key} instances with the given entityType, initialised with the given values
-   * @param entityType the entityType
-   * @param values the key values, assumes a single integer key
-   * @return new {@link Key} instances
-   * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityType or values is null
-   */
-  List<Key> primaryKeys(EntityType entityType, Long... values);
+  <T> List<Key> primaryKeys(EntityType entityType, T... values);
 
   /**
    * Creates a new {@link Key.Builder} instance for the given entity type.
