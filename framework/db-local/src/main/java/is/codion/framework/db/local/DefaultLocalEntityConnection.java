@@ -1017,20 +1017,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return !limitForeignKeyFetchDepth || conditionFetchDepthLimit == -1 || currentForeignKeyFetchDepth < conditionFetchDepthLimit;
   }
 
-  private Entity getReferencedEntity(Key referencedKey, Map<Key, Entity> entitiesMappedByKey) {
-    if (referencedKey == null) {
-      return null;
-    }
-    Entity referencedEntity = entitiesMappedByKey.get(referencedKey);
-    if (referencedEntity == null) {
-      //if the referenced entity is not found (it's been deleted or has been filtered out of an underlying view for example),
-      //we create an empty entity wrapping the key since that's the best we can do under the circumstances
-      referencedEntity = Entity.entity(referencedKey);
-    }
-
-    return referencedEntity;
-  }
-
   private ResultIterator<Entity> entityIterator(Condition condition) throws SQLException {
     SelectCondition selectCondition = requireNonNull(condition, CONDITION_PARAM_NAME).toSelectCondition();
     PreparedStatement statement = null;
@@ -1303,6 +1289,20 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     return result;
+  }
+
+  private static Entity getReferencedEntity(Key referencedKey, Map<Key, Entity> entitiesMappedByKey) {
+    if (referencedKey == null) {
+      return null;
+    }
+    Entity referencedEntity = entitiesMappedByKey.get(referencedKey);
+    if (referencedEntity == null) {
+      //if the referenced entity is not found (it's been deleted or has been filtered out of an underlying view for example),
+      //we create an empty entity wrapping the key since that's the best we can do under the circumstances
+      referencedEntity = Entity.entity(referencedKey);
+    }
+
+    return referencedEntity;
   }
 
   private static void setParameterValues(PreparedStatement statement, List<ColumnProperty<?>> statementProperties,
