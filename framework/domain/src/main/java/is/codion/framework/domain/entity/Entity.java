@@ -492,7 +492,7 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Returns the distinct non-null values of {@code attribute} from the given entities.
+   * Returns the distinct values of {@code attribute} from the given entities, including null.
    * @param <T> the value type
    * @param attribute the attribute for which to retrieve the values
    * @param entities the entities from which to retrieve the values
