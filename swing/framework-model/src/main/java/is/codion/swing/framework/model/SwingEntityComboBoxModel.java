@@ -454,8 +454,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
     @Override
     public void onEvent(Map<Key, Entity> updated) {
-      Entities domainEntities = getConnectionProvider().getEntities();
-      updated.forEach((key, entity) -> replaceItem(domainEntities.entity(key), entity));
+      updated.forEach((key, entity) -> replaceItem(Entity.entity(key), entity));
     }
   }
 

@@ -37,8 +37,8 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
     }
 
     @Override
-    public BlobProperty.Builder eagerlyLoaded() {
-      eagerlyLoaded = true;
+    public BlobProperty.Builder eagerlyLoaded(boolean eagerlyLoaded) {
+      this.eagerlyLoaded = eagerlyLoaded;
       return this;
     }
   }

@@ -364,44 +364,30 @@ public interface EntityDefinition {
 
   /**
    * Creates a new {@link Entity} instance based on this definition
-   * @param key the key
+   * @param values the values
    * @return a new {@link Entity} instance
+   * @throws IllegalArgumentException in case any of the value attributes are not part of the entity.
    */
-  Entity entity(Key key);
+  Entity entity(Map<Attribute<?>, Object> values);
 
   /**
    * Creates a new {@link Entity} instance based on this definition
    * @param values the values
    * @param originalValues the original values
    * @return a new {@link Entity} instance
-   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
+   * @throws IllegalArgumentException in case any of the value attributes are not part of the entity.
    */
   Entity entity(Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues);
 
   /**
-   * Creates a new {@link Entity} instance, with default values for all attributes.
-   * @return a default entity
-   * @see Property#getDefaultValue()
-   */
-  Entity entityWithDefaultValues();
-
-  /**
    * Creates a new {@link Key} instance based on this definition, initialised with the given value
-   * @param value the key value, assumes a single integer key
+   * @param value the key value, assuming a single value key
+   * @param <T> the key value type
    * @return a new {@link Key} instance
-   * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityType or value is null
+   * @throws IllegalStateException in case the given primary key is a composite key
+   * @throws IllegalArgumentException in case the value is not of the correct type
    */
-  Key primaryKey(Integer value);
-
-  /**
-   * Creates a new {@link Key} instance based on this definition, initialised with the given value
-   * @param value the key value, assumes a single long key
-   * @return a new {@link Key} instance
-   * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityType or value is null
-   */
-  Key primaryKey(Long value);
+  <T> Key primaryKey(T value);
 
   /**
    * Returns the Attribute for the getter this method represents in the {@link EntityType#getEntityClass()},

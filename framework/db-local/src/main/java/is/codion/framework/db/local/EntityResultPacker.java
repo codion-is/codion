@@ -41,7 +41,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     addTransientNullValues(values);
     addLazyLoadedBlobNullValues(values);
 
-    return definition.entity(values, null);
+    return definition.entity(values);
   }
 
   private void addResultSetValues(ResultSet resultSet, Map<Attribute<?>, Object> values) throws SQLException {

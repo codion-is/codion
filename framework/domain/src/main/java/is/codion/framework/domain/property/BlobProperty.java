@@ -20,8 +20,9 @@ public interface BlobProperty extends ColumnProperty<byte[]> {
 
     /**
      * Specifies that this value should be loaded eagerly when selected
+     * @param eagerlyLoaded true if this value should be eagerly loaded
      * @return this instance
      */
-    BlobProperty.Builder eagerlyLoaded();
+    BlobProperty.Builder eagerlyLoaded(boolean eagerlyLoaded);
   }
 }

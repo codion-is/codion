@@ -1025,7 +1025,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (referencedEntity == null) {
       //if the referenced entity is not found (it's been deleted or has been filtered out of an underlying view for example),
       //we create an empty entity wrapping the key since that's the best we can do under the circumstances
-      referencedEntity = domainEntities.entity(referencedKey);
+      referencedEntity = Entity.entity(referencedKey);
     }
 
     return referencedEntity;

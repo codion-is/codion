@@ -75,14 +75,10 @@ final class DefaultEntity implements Entity, Serializable {
 
   /**
    * Instantiates a new DefaultEntity
-   * @param definition the entity definition
    * @param key the key
    */
-  DefaultEntity(EntityDefinition definition, Key key) {
-    this(definition, createValueMap(requireNonNull(key, "key")), null);
-    if (!definition.getEntityType().equals(key.getEntityType())) {
-      throw new IllegalArgumentException("Invalid type: " + key.getEntityType() + ", expecting: " + definition.getEntityType());
-    }
+  DefaultEntity(Key key) {
+    this(requireNonNull(key, "key").getDefinition(), createValueMap(key), null);
     if (key.isPrimaryKey()) {
       this.primaryKey = key;
     }
@@ -175,7 +171,7 @@ final class DefaultEntity implements Entity, Serializable {
     if (value == null) {//possibly not loaded
       Key referencedKey = getReferencedKey(foreignKey);
       if (referencedKey != null) {
-        return new DefaultEntity(definition.getReferencedEntityDefinition(foreignKey), referencedKey);
+        return new DefaultEntity(referencedKey);
       }
     }
 

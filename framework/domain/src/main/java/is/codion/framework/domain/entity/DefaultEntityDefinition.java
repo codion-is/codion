@@ -589,12 +589,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public Entity entity() {
-    return entity(null, null);
+    return entity(null);
   }
 
   @Override
-  public Entity entity(Key key) {
-    return new DefaultEntity(this, key);
+  public Entity entity(Map<Attribute<?>, Object> values) {
+    return entity(values, null);
   }
 
   @Override
@@ -603,21 +603,17 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Entity entityWithDefaultValues() {
-    Map<Attribute<?>, Object> values = new HashMap<>();
-    getProperties().forEach(property -> values.put(property.getAttribute(), property.getDefaultValue()));
+  public <T> Key primaryKey(T value) {
+    if (!hasPrimaryKey()) {
+      throw new IllegalArgumentException("Entity '" + entityType + "' has no primary key");
+    }
+    if (getPrimaryKeyAttributes().size() > 1) {
+      throw new IllegalStateException(entityType + " has a composite primary key");
+    }
+    Attribute<T> attribute = (Attribute<T>) getPrimaryKeyAttributes().get(0);
+    attribute.validateType(value);
 
-    return entity(values, null);
-  }
-
-  @Override
-  public Key primaryKey(Integer value) {
-    return createPrimaryKey(value);
-  }
-
-  @Override
-  public Key primaryKey(Long value) {
-    return createPrimaryKey(value);
+    return new DefaultKey(this, attribute, value, true);
   }
 
   /**
@@ -653,19 +649,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     defaultMethodHandles = new ConcurrentHashMap<>();
-  }
-
-  private Key createPrimaryKey(Object value) {
-    if (!hasPrimaryKey()) {
-      throw new IllegalArgumentException("Entity '" + entityType + "' has no primary key defined");
-    }
-    if (getPrimaryKeyAttributes().size() > 1) {
-      throw new IllegalStateException(entityType + " has a composite primary key");
-    }
-    Attribute<Object> attribute = (Attribute<Object>) getPrimaryKeyAttributes().get(0);
-    attribute.validateType(value);
-
-    return new DefaultKey(this, attribute, value, true);
   }
 
   /**

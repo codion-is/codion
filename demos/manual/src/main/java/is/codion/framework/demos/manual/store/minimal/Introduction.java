@@ -85,7 +85,7 @@ class Introduction {
             .with(Customer.ID, 42)
             .build();
 
-    Entity customer = entities.builder(customerKey)
+    Entity customer = Entity.builder(customerKey)
             .with(Customer.NAME, "John")
             .with(Customer.CITY_FK, city)
             .build();

@@ -104,6 +104,11 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
+  public EntityDefinition getDefinition() {
+    return definition;
+  }
+
+  @Override
   public List<Attribute<?>> getAttributes() {
     return attributes;
   }
@@ -148,7 +153,7 @@ class DefaultKey implements Key, Serializable {
 
   @Override
   public Builder copyBuilder() {
-    return new DefaultKeyBuilder(this, definition);
+    return new DefaultKeyBuilder(this);
   }
 
   @Override

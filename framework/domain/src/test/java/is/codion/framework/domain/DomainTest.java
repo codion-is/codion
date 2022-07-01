@@ -306,7 +306,7 @@ public class DomainTest {
   void entity() {
     Key key = entities.primaryKey(Master.TYPE, 10L);
 
-    Entity master = entities.entity(key);
+    Entity master = Entity.entity(key);
     assertEquals(Master.TYPE, master.getEntityType());
     assertTrue(master.contains(Master.ID));
     assertEquals(10L, master.get(Master.ID));
@@ -433,7 +433,7 @@ public class DomainTest {
       assertTrue(e instanceof NullValidationException);
       assertEquals(Employee.DEPARTMENT_FK, e.getAttribute());
     }
-    emp.put(Employee.DEPARTMENT, 1);
+    emp.put(Employee.DEPARTMENT_NO, 1);
     try {
       validator.validate(emp);
     }
@@ -454,7 +454,7 @@ public class DomainTest {
   @Test
   void maxLengthValidation() {
     Entity emp = entities.builder(Employee.TYPE)
-            .with(Employee.DEPARTMENT, 1)
+            .with(Employee.DEPARTMENT_NO, 1)
             .with(Employee.NAME, "Name")
             .with(Employee.HIREDATE, LocalDateTime.now())
             .with(Employee.SALARY, 1200.0)
@@ -468,7 +468,7 @@ public class DomainTest {
   @Test
   void rangeValidation() {
     Entity emp = entities.builder(Employee.TYPE)
-            .with(Employee.DEPARTMENT, 1)
+            .with(Employee.DEPARTMENT_NO, 1)
             .with(Employee.NAME, "Name")
             .with(Employee.HIREDATE, LocalDateTime.now())
             .with(Employee.SALARY, 1200d)

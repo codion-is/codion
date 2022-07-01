@@ -149,7 +149,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                             "where countrylanguage.countrycode = country.code"),
             // tag::blobProperty[]
             blobProperty(Country.FLAG, "Flag")
-                    .eagerlyLoaded(),
+                    .eagerlyLoaded(true),
             // end::blobProperty[]
             columnProperty(Country.CODE_2, "Code 2")
                     .nullable(false)

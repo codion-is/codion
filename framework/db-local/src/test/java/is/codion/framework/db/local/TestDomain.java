@@ -169,7 +169,7 @@ public final class TestDomain extends DefaultDomain {
             denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOC.getName(), Employee.DEPARTMENT_FK, Department.LOC).preferredColumnWidth(100),
             columnProperty(Employee.DATA_LAZY),
             blobProperty(Employee.DATA)
-                    .eagerlyLoaded())
+                    .eagerlyLoaded(true))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .conditionProvider(Employee.NAME_IS_BLAKE_CONDITION_ID, (attributes, values) -> "ename = 'BLAKE'")
