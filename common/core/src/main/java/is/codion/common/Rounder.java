@@ -31,11 +31,6 @@ public final class Rounder {
    * @return the rounded value or null if the parameter value was null
    */
   public static Double roundDouble(Double d, int places, RoundingMode roundingMode) {
-    try {
-      return d == null ? null : new BigDecimal(Double.toString(d)).setScale(places, roundingMode).doubleValue();
-    }
-    catch (NumberFormatException e) {
-      throw new RuntimeException(e);
-    }
+    return d == null ? null : new BigDecimal(Double.toString(d)).setScale(places, roundingMode).doubleValue();
   }
 }

@@ -8226,3 +8226,4 @@
   Entity.Builder.withDefaultValues() added, Entity.Builder refactored
   Entities.primaryKey(Integer) and primaryKey(Long) replaced with primaryKey(T), related refactoring
   Attribute.isType() removed
+  Rounder.roundDouble() redundant catch clause removed
