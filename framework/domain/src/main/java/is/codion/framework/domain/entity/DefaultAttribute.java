@@ -60,11 +60,6 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public final boolean isType(Class<?> typeClass) {
-    return this.typeClass.equals(typeClass);
-  }
-
-  @Override
   public final boolean isNumerical() {
     return isInteger() || isDecimal() || isLong();
   }
@@ -165,5 +160,9 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   @Override
   public final String toString() {
     return entityType.getName() + "." + name;
+  }
+
+  private boolean isType(Class<?> typeClass) {
+    return this.typeClass.equals(typeClass);
   }
 }

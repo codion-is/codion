@@ -37,13 +37,6 @@ public interface Attribute<T> {
   T validateType(T value);
 
   /**
-   * @param typeClass the type class to check
-   * @return true if this attributes type class is the same as the one given
-   * @see #getTypeClass()
-   */
-  boolean isType(Class<?> typeClass);
-
-  /**
    * @return true if this attribute represents a numerical value.
    */
   boolean isNumerical();
