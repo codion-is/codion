@@ -12,7 +12,7 @@ buildscript {
 plugins {
     id "org.sonarqube" version "3.3"
     id "com.github.ben-manes.versions" version "0.42.0"
-    id "com.vanniktech.dependency.graph.generator" version "0.7.0"
+    id "com.vanniktech.dependency.graph.generator" version "0.8.0"
     id "com.github.hierynomus.license" version "0.16.1"
 }
 
@@ -132,7 +132,7 @@ configure(project.frameworkModules) {
             System.setProperty("sonar.sourceEncoding", "UTF-8")
             System.setProperty("sonar.exclusions", "**/*TestDomain.java")
             System.setProperty("sonar.coverage.exclusions",
-                    "**/is/codion/framework/model/tests/**," +
+                    "**/is/codion/framework/model/test/**," +
                             "**/is/codion/framework/domain/entity/test/**," +
                             "**/is/codion/swing/framework/ui/test/**")
         }

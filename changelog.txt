@@ -8263,3 +8263,4 @@
   Key.getDefinition() added, related refactoring
   Entity.Builder.withDefaultValues() added, Entity.Builder refactored
   Entities.primaryKey(Integer) and primaryKey(Long) replaced with primaryKey(T), related refactoring
+  Attribute.isType() removed

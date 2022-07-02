@@ -449,7 +449,7 @@ public interface Entity extends Comparable<Entity> {
   /**
    * Returns the non-null values associated with the given attribute from the given entities.
    * @param <T> the value type
-   * @param attribute the attribute for which to retrieve the values
+   * @param attribute the attribute which values to retrieve
    * @param entities the entities from which to retrieve the attribute value
    * @return the non-null values of the given attribute from the given entities.
    */
@@ -464,7 +464,7 @@ public interface Entity extends Comparable<Entity> {
   /**
    * Returns the values associated with the given attribute from the given entities.
    * @param <T> the value type
-   * @param attribute the attribute for which to retrieve the values
+   * @param attribute the attribute which values to retrieve
    * @param entities the entities from which to retrieve the attribute value
    * @return the values of the given attributes from the given entities, including null values.
    */
@@ -478,7 +478,7 @@ public interface Entity extends Comparable<Entity> {
   /**
    * Returns the distinct non-null values of {@code attribute} from the given entities.
    * @param <T> the value type
-   * @param attribute the attribute for which to retrieve the values
+   * @param attribute the attribute which values to retrieve
    * @param entities the entities from which to retrieve the values
    * @return the distinct non-null values of the given attribute from the given entities.
    */
@@ -492,9 +492,9 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Returns the distinct non-null values of {@code attribute} from the given entities.
+   * Returns the distinct values of {@code attribute} from the given entities, including null.
    * @param <T> the value type
-   * @param attribute the attribute for which to retrieve the values
+   * @param attribute the attribute which values to retrieve
    * @param entities the entities from which to retrieve the values
    * @return the distinct values of the given attribute from the given entities, may contain null.
    */

@@ -7,6 +7,7 @@
 [Ljava.util.Map$Entry;
 [Lis.codion.common.item.Item;
 com.sun.proxy.$Proxy*
+jdk.proxy3.$Proxy*
 javax.rmi.ssl.SslRMIClientSocketFactory
 java.*
 is.codion.*
