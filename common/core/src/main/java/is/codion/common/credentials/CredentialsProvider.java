@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 import java.util.UUID;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Provides user credentials based on an authentication token
  */
@@ -29,8 +31,11 @@ public interface CredentialsProvider {
       return null;
     }
 
-    return Arrays.stream(args).filter(CredentialsProvider::isAuthenticationToken).findFirst()
-            .map(CredentialsProvider::getAuthenticationToken).orElse(null);
+    return Arrays.stream(args)
+            .filter(CredentialsProvider::isAuthenticationToken)
+            .findFirst()
+            .map(CredentialsProvider::parseAuthenticationToken)
+            .orElse(null);
   }
 
   /**
@@ -61,14 +66,14 @@ public interface CredentialsProvider {
    * @return true if argument is an authentication token ('authenticationToken:123-123-123-123')
    */
   static boolean isAuthenticationToken(String argument) {
-    return argument.startsWith(AUTHENTICATION_TOKEN_PREFIX + AUTHENTICATION_TOKEN_DELIMITER);
+    return requireNonNull(argument).startsWith(AUTHENTICATION_TOKEN_PREFIX + AUTHENTICATION_TOKEN_DELIMITER);
   }
 
   /**
    * @param argument an argument containing an authenticationToken
    * @return the UUID parsed from the given argument
    */
-  static UUID getAuthenticationToken(String argument) {
-    return UUID.fromString(argument.split(AUTHENTICATION_TOKEN_DELIMITER)[1]);
+  static UUID parseAuthenticationToken(String argument) {
+    return UUID.fromString(requireNonNull(argument).split(AUTHENTICATION_TOKEN_DELIMITER)[1]);
   }
 }
