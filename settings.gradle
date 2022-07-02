@@ -186,11 +186,6 @@ dependencyResolutionManagement {
             version('jackson', '2.13.3')
             version('log4j', '2.17.2')
             version('tomcat', '10.0.6')
-            //nextreports
-            version('nextreports', '9.2')
-            version('jexl', '2.1.1')
-            version('xstream', '1.4.17')
-            version('itextpdf', '5.1.3')
             //jasperreports
             version('jasperreports', '6.19.1')
             version('commons.logging', '1.2')
@@ -231,12 +226,6 @@ dependencyResolutionManagement {
             library('log4j-core', 'org.apache.logging.log4j', 'log4j-core').versionRef('log4j')
             library('tomcat-jdbc', 'org.apache.tomcat', 'tomcat-jdbc').versionRef('tomcat')
             library('tomcat-juli', 'org.apache.tomcat', 'tomcat-juli').versionRef('tomcat')
-
-            //nextreports
-            library('nextreports-engine', 'ro.nextreports', 'nextreports-engine').versionRef('nextreports')
-            library('jexl', 'org.apache.commons', 'commons-jexl').versionRef('jexl')
-            library('xstream', 'com.thoughtworks.xstream', 'xstream').versionRef('xstream')
-            library('itextpdf', 'com.itextpdf', 'itextpdf').versionRef('itextpdf')
 
             //jasperreports
             library('jasperreports', 'net.sf.jasperreports', 'jasperreports').versionRef('jasperreports')
