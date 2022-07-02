@@ -52,5 +52,7 @@ public class ItemsTest {
     item = Item.itemI18n("value", ItemsTest.class.getName(), "item");
     Locale.setDefault(new Locale("en", "EN"));
     assertEquals("Item", item.getCaption());
+    //repeat for some coverage
+    assertEquals("Item", item.getCaption());
   }
 }

@@ -33,10 +33,10 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
   private final boolean fourDigitYear;
   private final String timeFormat;
 
-  private DefaultLocaleDateTimePattern(String delimiter, boolean fourDigitYear, String timeFormat) {
-    this.delimiter = requireNonNull(delimiter, "delimiter");
-    this.fourDigitYear = fourDigitYear;
-    this.timeFormat = timeFormat;
+  private DefaultLocaleDateTimePattern(DefaultBuilder builder) {
+    this.delimiter = requireNonNull(builder.delimiter, "delimiter");
+    this.fourDigitYear = builder.fourDigitYear;
+    this.timeFormat = builder.timeFormat;
   }
 
   @Override
@@ -176,7 +176,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
     @Override
     public LocaleDateTimePattern build() {
-      return new DefaultLocaleDateTimePattern(delimiter, fourDigitYear, timeFormat);
+      return new DefaultLocaleDateTimePattern(this);
     }
   }
 }
