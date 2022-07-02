@@ -8228,3 +8228,4 @@
   Attribute.isType() removed
   Rounder.roundDouble() redundant catch clause removed
   CredentialsProviderTest added
+  PropertyStore.getSystemProperties(), security manager removed, refactored, test added
