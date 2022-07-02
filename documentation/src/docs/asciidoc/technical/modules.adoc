@@ -499,15 +499,6 @@ image::modules/plugins/tomcat-pool/build/reports/dependency-graph/dependency-gra
 image::modules/plugins/jasperreports/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
-[discrete]
-==== codion-plugin-nextreports
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/plugins/nextreports/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
 === JSON
 
 [discrete]

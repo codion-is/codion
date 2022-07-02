@@ -135,9 +135,6 @@ project(':codion-plugin-log4j-proxy').projectDir = file('plugins/log4j-proxy')
 include 'codion-plugin-logback-proxy'
 project(':codion-plugin-logback-proxy').projectDir = file('plugins/logback-proxy')
 
-include 'codion-plugin-nextreports'
-project(':codion-plugin-nextreports').projectDir = file('plugins/nextreports')
-
 include 'codion-plugin-tomcat-pool'
 project(':codion-plugin-tomcat-pool').projectDir = file('plugins/tomcat-pool')
 
