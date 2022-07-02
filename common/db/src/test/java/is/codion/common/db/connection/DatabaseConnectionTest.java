@@ -6,6 +6,7 @@ package is.codion.common.db.connection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
@@ -51,5 +52,28 @@ public class DatabaseConnectionTest {
         Database.closeSilently(connection);
       }
     });
+  }
+
+  @Test
+  void test() {
+    try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
+      MethodLogger methodLogger = MethodLogger.methodLogger(20);
+      methodLogger.setEnabled(true);
+      connection.setMethodLogger(methodLogger);
+      assertSame(methodLogger, connection.getMethodLogger());
+      assertThrows(SQLException.class, () -> connection.selectInteger("select deptno from scott.dept where deptno > 1000"));
+      assertEquals(10, connection.selectInteger("select deptno from scott.dept order by deptno"));
+      connection.commit();
+      assertThrows(SQLException.class, () -> connection.selectLong("select deptno from scott.dept where deptno > 1000"));
+      assertEquals(10L, connection.selectLong("select deptno from scott.dept order by deptno"));
+      connection.rollback();
+      connection.toString();
+    }
+    catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    catch (DatabaseException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

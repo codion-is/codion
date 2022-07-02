@@ -3,6 +3,8 @@
  */
 package is.codion.common.properties;
 
+import is.codion.common.user.User;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -234,5 +236,20 @@ public final class DefaultPropertyStoreTest {
     propertyValue = store.stringValue("property2", "def");
     propertyValue.set(null);
     assertEquals("def", propertyValue.get());
+  }
+
+  @Test
+  void getSystemProperties() {
+    PropertyStore.PropertyFormatter formatter = (property, value) -> {
+      if (property.equals("codion.test.user")) {
+        return User.parse(value).getUsername();
+      }
+
+      return value;
+    };
+    String properties = PropertyStore.getSystemProperties();
+    assertTrue(properties.indexOf("codion.test.user: scott:tiger") >= 0);
+    properties = PropertyStore.getSystemProperties(formatter);
+    assertTrue(properties.indexOf("codion.test.user: scott") >= 0);
   }
 }

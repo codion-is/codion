@@ -7,9 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -325,27 +323,13 @@ public interface PropertyStore {
    */
   static String getSystemProperties(PropertyFormatter propertyFormatter) {
     requireNonNull(propertyFormatter);
-    try {
-      SecurityManager manager = System.getSecurityManager();
-      if (manager != null) {
-        manager.checkPropertiesAccess();
-      }
-    }
-    catch (SecurityException e) {
-      System.err.println(e.getMessage());
-      return "";
-    }
-    Properties props = System.getProperties();
-    Enumeration<?> propNames = props.propertyNames();
-    List<String> propertyNames = new ArrayList<>(props.size());
-    while (propNames.hasMoreElements()) {
-      propertyNames.add((String) propNames.nextElement());
-    }
+    Properties properties = System.getProperties();
 
-    Collections.sort(propertyNames);
-
-    return propertyNames.stream()
-            .map(key -> key + ": " + propertyFormatter.formatValue(key, props.getProperty(key)))
+    return Collections.list(properties.propertyNames()).stream()
+            .filter(String.class::isInstance)
+            .map(String.class::cast)
+            .sorted()
+            .map(property -> property + ": " + propertyFormatter.formatValue(property, properties.getProperty(property)))
             .collect(joining("\n"));
   }
 
