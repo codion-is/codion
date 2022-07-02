@@ -8229,3 +8229,4 @@
   Rounder.roundDouble() redundant catch clause removed
   CredentialsProviderTest added
   PropertyStore.getSystemProperties(), security manager removed, refactored, test added
+  NextReports plugin module removed, seems to be a dead product by now
