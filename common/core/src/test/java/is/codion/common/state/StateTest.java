@@ -280,4 +280,12 @@ public class StateTest {
     value.set(false);
     assertTrue(state.get());
   }
+
+  @Test
+  void getterSetterState() {
+    State state = State.state(() -> true, value -> {});
+    assertTrue(state.get());
+    state.set(false);
+    assertTrue(state.get());
+  }
 }
