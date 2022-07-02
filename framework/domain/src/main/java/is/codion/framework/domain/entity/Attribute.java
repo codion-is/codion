@@ -19,105 +19,107 @@ public interface Attribute<T> {
   String getName();
 
   /**
-   * @return the Class representing this attribute
+   * @return the Class representing the attribute value
    */
   Class<T> getTypeClass();
 
   /**
-   * @return the type of the entity this Attribute is associated with
+   * @return the entity type this Attribute is associated with
    */
   EntityType getEntityType();
 
   /**
    * @param value the value to validate
-   * @return the value
+   * @return the validated value
    * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
+   * @see #getTypeClass()
    */
   T validateType(T value);
 
   /**
    * @param typeClass the type class to check
    * @return true if this attributes type class is the same as the one given
+   * @see #getTypeClass()
    */
   boolean isType(Class<?> typeClass);
 
   /**
-   * @return true if this is a numerical attribute, that is, integer, decimal or long
+   * @return true if this attribute represents a numerical value.
    */
   boolean isNumerical();
 
   /**
-   * @return true if this is a Temporal based attribute
+   * @return true if this attribute represents a {@link java.time.temporal.Temporal} value.
    */
   boolean isTemporal();
 
   /**
-   * @return true if this is a date attribute
+   * @return true if this attribute represents a {@link java.time.LocalDate} value.
    */
   boolean isLocalDate();
 
   /**
-   * @return true if this is a timestamp attribute
+   * @return true if this attribute represents a {@link java.time.LocalDateTime} value.
    */
   boolean isLocalDateTime();
 
   /**
-   * @return true if this is a time attribute
+   * @return true if this attribute represents a {@link java.time.LocalTime} value.
    */
   boolean isLocalTime();
 
   /**
-   * @return true if this is an offset date time attribute
+   * @return true if this attribute represents a {@link java.time.OffsetDateTime} value.
    */
   boolean isOffsetDateTime();
 
   /**
-   * @return true if this is a character attribute
+   * @return true if this attribute represents a {@link Character} value.
    */
   boolean isCharacter();
 
   /**
-   * @return true if this is a string attribute
+   * @return true if this attribute represents a {@link String} value.
    */
   boolean isString();
 
   /**
-   * @return true if this is a long attribute
+   * @return true if this attribute represents a {@link Long} value.
    */
   boolean isLong();
 
   /**
-   * @return true if this is an integer attribute
+   * @return true if this attribute represents a {@link Integer} value.
    */
   boolean isInteger();
 
   /**
-   * @return true if this is a double attribute
+   * @return true if this attribute represents a {@link Double} value.
    */
   boolean isDouble();
 
   /**
-   * @return true if this is a BigDecimal attribute
+   * @return true if this attribute represents a {@link java.math.BigDecimal} value.
    */
   boolean isBigDecimal();
 
   /**
-   * @return true if this is a decimal attribute
+   * @return true if this attribute represents a decimal number value.
    */
   boolean isDecimal();
 
   /**
-   * @return true if this is a boolean attribute
+   * @return true if this attribute represents a {@link Boolean} value.
    */
   boolean isBoolean();
 
   /**
-   * @return true if this is a byte array attribute
+   * @return true if this attribute represents a byte array value.
    */
   boolean isByteArray();
 
   /**
-   * @return true if this is an Entity attribute
+   * @return true if this attribute represents a {@link Entity} value.
    */
   boolean isEntity();
 
