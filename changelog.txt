@@ -8230,3 +8230,4 @@
   CredentialsProviderTest added
   PropertyStore.getSystemProperties(), security manager removed, refactored, test added
   NextReports plugin module removed, seems to be a dead product by now
+  SwingEntityEditModel, FXEntityEditModel, refreshEvent along with add/removeRefreshListener() moved to DefaultEntityEditModel

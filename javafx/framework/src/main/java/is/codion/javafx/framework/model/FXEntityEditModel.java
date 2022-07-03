@@ -4,8 +4,6 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.event.Event;
-import is.codion.common.event.EventListener;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -30,7 +28,6 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   private final Map<ForeignKey, FXEntityListModel> foreignKeyListModels = new HashMap<>();
 
   private final State.Combination refreshingObserver = State.combination(Conjunction.OR);
-  private final Event<?> afterRefreshEvent = Event.event();
 
   /**
    * Instantiates a new {@link FXEntityEditModel} based on the given entity type
@@ -137,19 +134,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  public final void addRefreshListener(EventListener listener) {
-    afterRefreshEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeRefreshListener(EventListener listener) {
-    afterRefreshEvent.removeListener(listener);
-  }
-
-  @Override
   protected void refreshDataModels() {
     foreignKeyListModels.values().forEach(FXEntityListModel::refresh);
-    afterRefreshEvent.onEvent();
   }
 
   private void clearForeignKeyReferences(ForeignKey foreignKey, List<Entity> entities) {

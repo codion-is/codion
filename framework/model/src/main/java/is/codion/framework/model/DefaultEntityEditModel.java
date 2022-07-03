@@ -65,6 +65,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Event<State> confirmSetEntityEvent = Event.event();
   private final Event<Entity> entitySetEvent = Event.event();
   private final Event<Attribute<?>> valueChangeEvent = Event.event();
+  private final Event<?> refreshEvent = Event.event();
 
   private final State entityValidState = State.state();
   private final State entityNewState = State.state(true);
@@ -578,6 +579,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void refresh() {
     refreshDataModels();
+    refreshEvent.onEvent();
   }
 
   @Override
@@ -801,6 +803,16 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     confirmSetEntityEvent.removeDataListener(listener);
   }
 
+  @Override
+  public final void addRefreshListener(EventListener listener) {
+    refreshEvent.addListener(listener);
+  }
+
+  @Override
+  public final void removeRefreshListener(EventListener listener) {
+    refreshEvent.removeListener(listener);
+  }
+
   /**
    * @return the actual {@link Entity} instance being edited
    */
@@ -854,6 +866,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return Entity.getModified(entities);
   }
 
+  /**
+   * Refresh all data-models used by this edit model, combo box models and such.
+   */
   protected void refreshDataModels() {}
 
   /**
