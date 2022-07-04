@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Properties.columnProperty;
-import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
+import static is.codion.framework.domain.property.Properties.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityBuilderTest {
@@ -56,6 +55,7 @@ public final class DefaultEntityBuilderTest {
     Attribute<Integer> id = entityType.integerAttribute("id");
     Attribute<String> name = entityType.stringAttribute("name");
     Attribute<Integer> value = entityType.integerAttribute("value");
+    Attribute<Integer> derivedValue = entityType.integerAttribute("derivedValue");
 
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -65,15 +65,26 @@ public final class DefaultEntityBuilderTest {
                 columnProperty(name)
                         .defaultValue("DefName"),
                 columnProperty(value)
-                        .defaultValue(42))
+                        .defaultValue(42),
+                derivedProperty(derivedValue, sourceValues -> {
+                  Integer sourceValue = sourceValues.get(value);
+
+                  return sourceValue == null ? null : sourceValue + 1;
+                }, value))
                 .tableName("tableName"));
       }
     }
-    Entity entity = new TestDomain().getEntities().builder(entityType)
+    Entities entities = new TestDomain().getEntities();
+
+    assertThrows(IllegalArgumentException.class, () -> entities.builder(entityType)
+            .with(derivedValue, -42));
+
+    Entity entity = entities.builder(entityType)
             .withDefaultValues()
             .build();
     assertTrue(entity.isNull(id));
     assertEquals("DefName", entity.get(name));
     assertEquals(42, entity.get(value));
+    assertEquals(43, entity.get(derivedValue));
   }
 }
