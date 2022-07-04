@@ -8233,3 +8233,4 @@
   SwingEntityEditModel, FXEntityEditModel, refreshEvent along with add/removeRefreshListener() moved to DefaultEntityEditModel
   ProgressWorker, onCancelled added
   DefaultEntityBuilder bug fixed, withDefaultValues() now excludes DerivedProperty and with() throws exception in case of a DerivedProperty
+  NavigableImagePanel, now initializes parameters when a non-null image is set, otherwise panelToImagePoint() and imageToPanelPoint() fail, due to scale being 0.0, which then causes centerImage() to fail in turn
