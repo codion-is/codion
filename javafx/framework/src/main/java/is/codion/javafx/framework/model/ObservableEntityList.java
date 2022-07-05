@@ -143,16 +143,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     bindSelectionModelEvents();
   }
 
-  @Override
-  public final boolean isAsyncRefresh() {
-    throw new UnsupportedOperationException("Async refresh is not supported");
-  }
-
-  @Override
-  public final void setAsyncRefresh(boolean asyncRefresh) {
-    throw new UnsupportedOperationException("Async refresh is not supported");
-  }
-
   /**
    * @param listener notified when the selection changes in the underlying selection model
    */

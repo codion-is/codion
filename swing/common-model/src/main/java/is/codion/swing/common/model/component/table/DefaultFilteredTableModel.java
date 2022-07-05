@@ -6,7 +6,6 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
@@ -117,11 +116,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private boolean mergeOnRefresh = false;
 
   /**
-   * If true then refreshing is performed off the EDT using a {@link ProgressWorker}.
-   */
-  private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
-
-  /**
    * Instantiates a new table model.
    * @param tableColumns the table columns to base this table model on
    * @param columnValueProvider the column value provider
@@ -213,7 +207,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    */
   @Override
   public final void refresh() {
-    if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
+    if (SwingUtilities.isEventDispatchThread()) {
       refreshAsync();
     }
     else {
@@ -295,16 +289,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   @Override
   public final void setMergeOnRefresh(boolean mergeOnRefresh) {
     this.mergeOnRefresh = mergeOnRefresh;
-  }
-
-  @Override
-  public final boolean isAsyncRefresh() {
-    return asyncRefresh;
-  }
-
-  @Override
-  public final void setAsyncRefresh(boolean asyncRefresh) {
-    this.asyncRefresh = asyncRefresh;
   }
 
   @Override

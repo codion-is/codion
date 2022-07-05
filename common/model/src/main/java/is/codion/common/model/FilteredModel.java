@@ -3,10 +3,8 @@
  */
 package is.codion.common.model;
 
-import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.StateObserver;
 
 import java.util.List;
@@ -17,13 +15,6 @@ import java.util.function.Predicate;
  * @param <T> the type of data in the model.
  */
 public interface FilteredModel<T> {
-
-  /**
-   * Specifies whether data models should refresh data on the EDT or asynchronously.<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh", true);
 
   /**
    * @param listener a listener notified each time this model is filtered
@@ -106,19 +97,12 @@ public interface FilteredModel<T> {
   boolean isFiltered(T item);
 
   /**
-   * @return true if this table model refreshes data asynchronously
-   */
-  boolean isAsyncRefresh();
-
-  /**
-   * @param asyncRefresh if true then this table model refreshes data asynchronously off the EDT
-   */
-  void setAsyncRefresh(boolean asyncRefresh);
-
-  /**
    * Refreshes the data in this model.
    * Note that this method does not throw exceptions, use {@link #addRefreshFailedListener(EventDataListener)}
    * to listen for exceptions that happen during refresh.
+   * @see #getRefreshingObserver()
+   * @see #addRefreshListener(EventListener)
+   * @see #addRefreshFailedListener(EventDataListener)
    */
   void refresh();
 
@@ -126,6 +110,18 @@ public interface FilteredModel<T> {
    * @return an observer active while a refresh is in progress
    */
   StateObserver getRefreshingObserver();
+
+  /**
+   * @param listener a listener to be notified each time this model has been successfully refreshed
+   * @see #refresh()
+   */
+  void addRefreshListener(EventListener listener);
+
+  /**
+   * @param listener the listener to remove
+   * @see #refresh()
+   */
+  void removeRefreshListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has failed

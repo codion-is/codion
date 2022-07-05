@@ -7,7 +7,6 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.FilteredModel;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -55,7 +54,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private String nullString;
   private Predicate<T> includeCondition;
   private boolean filterSelectedItem = true;
-  private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
   /**
    * Due to a java.util.ConcurrentModificationException in OSX
@@ -93,7 +91,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final void refresh() {
-    if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
+    if (SwingUtilities.isEventDispatchThread()) {
       refreshAsync();
     }
     else {
@@ -104,16 +102,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   @Override
   public final StateObserver getRefreshingObserver() {
     return refreshingState.getObserver();
-  }
-
-  @Override
-  public final boolean isAsyncRefresh() {
-    return asyncRefresh;
-  }
-
-  @Override
-  public final void setAsyncRefresh(boolean asyncRefresh) {
-    this.asyncRefresh = asyncRefresh;
   }
 
   @Override

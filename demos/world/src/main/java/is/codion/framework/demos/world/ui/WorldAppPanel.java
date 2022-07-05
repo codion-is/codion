@@ -1,7 +1,6 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
@@ -71,7 +70,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION.set(true);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
-    FilteredModel.ASYNC_REFRESH.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);

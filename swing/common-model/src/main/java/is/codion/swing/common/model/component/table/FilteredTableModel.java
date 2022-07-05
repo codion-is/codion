@@ -24,17 +24,6 @@ import java.util.Optional;
 public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
   /**
-   * @param listener a listener to be notified each time a refresh has successfully finished
-   * @see #refresh()
-   */
-  void addRefreshListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeRefreshListener(EventListener listener);
-
-  /**
    * @param listener a listener to be notified each time the model has been sorted
    */
   void addSortListener(EventListener listener);
@@ -215,6 +204,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
   /**
    * Refreshes the items in this table model, respecting the selection, filtering as well as sorting states.
+   * If run on the Event Dispatch Thread the refresh happens asynchronously.
    * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
    * before it is repopulated, during which the selection is cleared as well. Using merge on insert
    * ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
