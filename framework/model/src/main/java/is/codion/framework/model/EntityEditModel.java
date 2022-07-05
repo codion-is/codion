@@ -717,6 +717,7 @@ public interface EntityEditModel {
 
   /**
    * @param listener a listener to be notified each time a refresh has been performed
+   * @see #refresh()
    */
   void addRefreshListener(EventListener listener);
 

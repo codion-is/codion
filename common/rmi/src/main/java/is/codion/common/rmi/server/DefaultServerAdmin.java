@@ -326,7 +326,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
     private final String gcName;
     private final long duration;
 
-    public DefaultGcEvent(long timestamp, String gcName, long duration) {
+    private DefaultGcEvent(long timestamp, String gcName, long duration) {
       this.timestamp = timestamp;
       this.gcName = gcName;
       this.duration = duration;

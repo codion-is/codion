@@ -78,7 +78,7 @@ public final class ServerMonitor {
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
 
   private final XYSeries connectionCountSeries = new XYSeries("Connection count");
-  private final XYSeries connectionLimitSeries = new XYSeries("Maximum connection count");
+  private final XYSeries connectionLimitSeries = new XYSeries("Connection limit");
   private final XYSeriesCollection connectionCountCollection = new XYSeriesCollection();
 
   private final Map<String, XYSeries> gcTypeSeries = new HashMap<>();

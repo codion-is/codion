@@ -3,7 +3,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.event.EventListener;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -68,10 +67,6 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     }
     @Override
     public void addRefreshingObserver(StateObserver refreshingObserver) {}
-    @Override
-    public void addRefreshListener(EventListener listener) {}
-    @Override
-    public void removeRefreshListener(EventListener listener) {}
   }
 
   public static final class TestEntityModel extends DefaultEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel> {

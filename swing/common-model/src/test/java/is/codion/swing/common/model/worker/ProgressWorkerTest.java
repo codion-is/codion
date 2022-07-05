@@ -45,8 +45,10 @@ public final class ProgressWorkerTest {
                 assertEquals(Integer.valueOf(i), stateChanges.get(i));
               }
             })
+            .onCancelled(() -> {})
             .onInterrupted(() -> {})
             .onException(throwable -> {})
-            .execute();
+            .execute()
+            .get();
   }
 }

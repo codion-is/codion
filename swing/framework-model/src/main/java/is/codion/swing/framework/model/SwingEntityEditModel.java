@@ -4,8 +4,6 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.event.Event;
-import is.codion.common.event.EventListener;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -34,7 +32,6 @@ import static java.util.Objects.requireNonNull;
 public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   private final State.Combination refreshingObserver = State.combination(Conjunction.OR);
-  private final Event<?> refreshEvent = Event.event();
 
   /**
    * Holds the ComboBoxModels used by this {@link EntityEditModel}
@@ -271,19 +268,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  public final void addRefreshListener(EventListener listener) {
-    refreshEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeRefreshListener(EventListener listener) {
-    refreshEvent.removeListener(listener);
-  }
-
-  @Override
   protected void refreshDataModels() {
     refreshComboBoxModels();
-    refreshEvent.onEvent();
   }
 
   @Override

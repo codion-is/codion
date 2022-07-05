@@ -7,6 +7,7 @@ import javax.swing.SwingWorker;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
@@ -21,6 +22,7 @@ import static java.util.Objects.requireNonNull;
  *   .onResult(this::handleResult)
  *   .onProgress(this::displayProgress)
  *   .onPublish(this::publishMessage)
+ *   .onCancelled(this::displayCancelledMessage)
  *   .onException(this::displayException)
  *   .execute();
  * </pre>
@@ -41,6 +43,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   private final Consumer<Integer> onProgress;
   private final Consumer<List<V>> onPublish;
   private final Consumer<Throwable> onException;
+  private final Runnable onCancelled;
   private final Runnable onInterrupted;
 
   private boolean onDoneRun = false;
@@ -53,6 +56,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     this.onProgress = builder.onProgress;
     this.onPublish = builder.onPublish;
     this.onException = builder.onException;
+    this.onCancelled = builder.onCancelled;
     this.onInterrupted = builder.onInterrupted;
     getPropertyChangeSupport().addPropertyChangeListener(PROGRESS_PROPERTY, new ProgressListener());
     getPropertyChangeSupport().addPropertyChangeListener(STATE_PROPERTY, new StateListener());
@@ -94,6 +98,9 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     runOnDone();
     try {
       onResult.accept(get());
+    }
+    catch (CancellationException e) {
+      onCancelled.run();
     }
     catch (InterruptedException e) {
       onInterrupted.run();
@@ -222,6 +229,12 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     Builder<T, V> onException(Consumer<Throwable> onException);
 
     /**
+     * @param onCancelled called on the EDT if the background task was cancelled
+     * @return this builder instance
+     */
+    Builder<T, V> onCancelled(Runnable onCancelled);
+
+    /**
      * @param onInterrupted called on the EDT if the background task was interrupted
      * @return this builder instance
      */
@@ -255,12 +268,13 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     private final ProgressTask<T, V> task;
 
-    private Runnable onStarted = new EmptyOnStarted();
-    private Runnable onDone = new EmptyOnDone();
-    private Consumer<T> onResult = new EmptyOnResult<>();
-    private Consumer<Integer> onProgress = new EmptyOnProgress();
-    private Consumer<List<V>> onPublish = new EmptyOnPublish<>();
+    private Runnable onStarted = new EmptyRunnable();
+    private Runnable onDone = new EmptyRunnable();
+    private Consumer<T> onResult = new EmptyConsumer<>();
+    private Consumer<Integer> onProgress = new EmptyConsumer<>();
+    private Consumer<List<V>> onPublish = new EmptyConsumer<>();
     private Consumer<Throwable> onException = new RethrowOnThrowable();
+    private Runnable onCancelled = new EmptyRunnable();
     private Runnable onInterrupted = new InterruptCurrentOnInterrupted();
 
     private DefaultBuilder(ProgressTask<T, V> task) {
@@ -304,6 +318,12 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     }
 
     @Override
+    public Builder<T, V> onCancelled(Runnable onCancelled) {
+      this.onCancelled = requireNonNull(onCancelled);
+      return this;
+    }
+
+    @Override
     public Builder<T, V> onInterrupted(Runnable onInterrupted) {
       this.onInterrupted = requireNonNull(onInterrupted);
       return this;
@@ -323,34 +343,16 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     }
   }
 
-  private static final class EmptyOnStarted implements Runnable {
+  private static final class EmptyRunnable implements Runnable {
 
     @Override
     public void run() {}
   }
 
-  private static final class EmptyOnDone implements Runnable {
-
-    @Override
-    public void run() {}
-  }
-
-  private static final class EmptyOnResult<T> implements Consumer<T> {
+  private static final class EmptyConsumer<T> implements Consumer<T> {
 
     @Override
     public void accept(T result) {}
-  }
-
-  private static final class EmptyOnProgress implements Consumer<Integer> {
-
-    @Override
-    public void accept(Integer progress) {}
-  }
-
-  private static final class EmptyOnPublish<V> implements Consumer<List<V>> {
-
-    @Override
-    public void accept(List<V> chunks) {}
   }
 
   private static final class RethrowOnThrowable implements Consumer<Throwable> {

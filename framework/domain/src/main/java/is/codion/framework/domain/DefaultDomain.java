@@ -251,13 +251,13 @@ public abstract class DefaultDomain implements Domain {
 
     private final Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> procedures = new HashMap<>();
 
-    private void addProcedure(ProcedureType<?, ?> type, DatabaseProcedure<?, ?> procedure) {
+    private void addProcedure(ProcedureType<?, ?> procedureType, DatabaseProcedure<?, ?> procedure) {
       requireNonNull(procedure, "procedure");
-      if (procedures.containsKey(type)) {
-        throw new IllegalArgumentException("Procedure already defined: " + type);
+      if (procedures.containsKey(procedureType)) {
+        throw new IllegalArgumentException("Procedure already defined: " + procedureType);
       }
 
-      procedures.put(type, procedure);
+      procedures.put(procedureType, procedure);
     }
 
     private <C, T> DatabaseProcedure<C, T> getProcedure(ProcedureType<C, T> procedureType) {
@@ -275,13 +275,13 @@ public abstract class DefaultDomain implements Domain {
 
     private final Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> functions = new HashMap<>();
 
-    private void addFunction(FunctionType<?, ?, ?> type, DatabaseFunction<?, ?, ?> function) {
+    private void addFunction(FunctionType<?, ?, ?> functionType, DatabaseFunction<?, ?, ?> function) {
       requireNonNull(function, "function");
-      if (functions.containsKey(type)) {
-        throw new IllegalArgumentException("Function already defined: " + type);
+      if (functions.containsKey(functionType)) {
+        throw new IllegalArgumentException("Function already defined: " + functionType);
       }
 
-      functions.put(type, function);
+      functions.put(functionType, function);
     }
 
     private <C, T, R> DatabaseFunction<C, T, R> getFunction(FunctionType<C, T, R> functionType) {

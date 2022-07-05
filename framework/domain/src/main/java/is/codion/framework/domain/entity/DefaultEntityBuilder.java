@@ -3,6 +3,9 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.property.DerivedProperty;
+import is.codion.framework.domain.property.Property;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,7 +36,10 @@ final class DefaultEntityBuilder implements Entity.Builder {
 
   @Override
   public <T> Entity.Builder with(Attribute<T> attribute, T value) {
-    definition.getProperty(attribute);
+    Property<T> property = definition.getProperty(attribute);
+    if (property instanceof DerivedProperty) {
+      throw new IllegalArgumentException("Can not set the value of a derived property");
+    }
     builderValues.put(attribute, value);
 
     return this;
@@ -41,8 +47,11 @@ final class DefaultEntityBuilder implements Entity.Builder {
 
   @Override
   public Entity.Builder withDefaultValues() {
-    definition.getProperties().forEach(property ->
-            builderValues.put(property.getAttribute(), property.getDefaultValue()));
+    definition.getProperties().forEach(property -> {
+      if (!(property instanceof DerivedProperty)) {
+        builderValues.put(property.getAttribute(), property.getDefaultValue());
+      }
+    });
 
     return this;
   }

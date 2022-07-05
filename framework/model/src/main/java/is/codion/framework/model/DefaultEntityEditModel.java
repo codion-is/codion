@@ -63,13 +63,18 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Event<List<Entity>> afterDeleteEvent = Event.event();
   private final Event<?> entitiesEditedEvent = Event.event();
   private final Event<State> confirmSetEntityEvent = Event.event();
+  private final Event<Entity> entitySetEvent = Event.event();
+  private final Event<Attribute<?>> valueChangeEvent = Event.event();
+  private final Event<?> refreshEvent = Event.event();
 
+  private final State entityValidState = State.state();
+  private final State entityNewState = State.state(true);
   private final State entityModifiedState = State.state();
   private final State primaryKeyNullState = State.state(true);
   private final State insertEnabledState = State.state(true);
   private final State updateEnabledState = State.state(true);
   private final State deleteEnabledState = State.state(true);
-  private final StateObserver readOnlyState = State.and(insertEnabledState.getReversedObserver(),
+  private final StateObserver readOnlyObserver = State.and(insertEnabledState.getReversedObserver(),
           updateEnabledState.getReversedObserver(), deleteEnabledState.getReversedObserver());
 
   /**
@@ -98,25 +103,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Map<Attribute<?>, Boolean> persistentValues = new HashMap<>();
 
   /**
-   * Fired when the active entity is set.
-   * @see #setEntity(Entity)
-   */
-  private final Event<Entity> entitySetEvent = Event.event();
-
-  /**
-   * An event notified each time a value changes
-   */
-  private final Event<Attribute<?>> valueChangeEvent = Event.event();
-
-  /**
    * The validator used by this edit model
    */
   private final EntityValidator validator;
-
-  /**
-   * A state indicating whether the entity being edited is in a valid state according the validator
-   */
-  private final State validState = State.state();
 
   /**
    * Holds events signaling value changes made via {@link #put(Attribute, Object)} or {@link #remove(Attribute)}
@@ -134,13 +123,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Map<Attribute<?>, Supplier<?>> defaultValueSuppliers = new ConcurrentHashMap<>();
 
   /**
-   * A state indicating whether the entity being edited is new
-   * @see #isEntityNew()
-   */
-  private final State entityNewState = State.state(true);
-
-  /**
-   * Provides whether the underlying entity is in a modified state
+   * Provides this model with a way to check if the underlying entity is in a modified state.
    */
   private Supplier<Boolean> modifiedSupplier;
 
@@ -217,7 +200,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean isReadOnly() {
-    return readOnlyState.get();
+    return readOnlyObserver.get();
   }
 
   @Override
@@ -434,12 +417,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver getValidObserver() {
-    return validState.getObserver();
+    return entityValidState.getObserver();
   }
 
   @Override
   public final boolean isValid() {
-    return validState.get();
+    return entityValidState.get();
   }
 
   @Override
@@ -548,7 +531,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       return emptyList();
     }
 
-    notifyBeforeUpdate(unmodifiableMap(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities))));
+    notifyBeforeUpdate(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities)));
     validate(modifiedEntities);
 
     List<Entity> updatedEntities = doUpdate(modifiedEntities);
@@ -557,7 +540,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       doSetEntity(updatedEntities.get(index));
     }
 
-    notifyAfterUpdate(unmodifiableMap(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(updatedEntities))));
+    notifyAfterUpdate(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(updatedEntities)));
 
     return updatedEntities;
   }
@@ -596,6 +579,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void refresh() {
     refreshDataModels();
+    refreshEvent.onEvent();
   }
 
   @Override
@@ -819,6 +803,16 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     confirmSetEntityEvent.removeDataListener(listener);
   }
 
+  @Override
+  public final void addRefreshListener(EventListener listener) {
+    refreshEvent.addListener(listener);
+  }
+
+  @Override
+  public final void removeRefreshListener(EventListener listener) {
+    refreshEvent.removeListener(listener);
+  }
+
   /**
    * @return the actual {@link Entity} instance being edited
    */
@@ -872,6 +866,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return Entity.getModified(entities);
   }
 
+  /**
+   * Refresh all data-models used by this edit model, combo box models and such.
+   */
   protected void refreshDataModels() {}
 
   /**
@@ -1106,7 +1103,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private void updateEntityStates() {
     entityModifiedState.set(isModified());
-    validState.set(validator.isValid(entity));
+    entityValidState.set(validator.isValid(entity));
     primaryKeyNullState.set(entity.getPrimaryKey().isNull());
     entityNewState.set(isEntityNew());
   }
@@ -1126,7 +1123,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       keyMap.put(entity.getOriginalPrimaryKey(), findAndRemove(entity.getPrimaryKey(), entitiesAfterUpdateCopy.listIterator()));
     }
 
-    return keyMap;
+    return unmodifiableMap(keyMap);
   }
 
   private static Entity findAndRemove(Key primaryKey, ListIterator<Entity> iterator) {

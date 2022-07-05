@@ -398,9 +398,9 @@ public class NavigableImagePanel extends JPanel {
   public final void setImage(BufferedImage image) {
     BufferedImage oldImage = this.image;
     this.image = image;
-    //Reset scale so that initializeParameters() is called in paintComponent()
-    //for the new image.
-    scale = 0.0;
+    if (image != null) {
+      initializeParams();
+    }
     firePropertyChange(IMAGE_CHANGED_PROPERTY, oldImage, image);
     repaint();
   }
