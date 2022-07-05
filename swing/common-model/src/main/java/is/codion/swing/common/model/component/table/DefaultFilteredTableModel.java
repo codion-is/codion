@@ -106,6 +106,11 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
 
   /**
+   * The worker used to refresh asynchronously
+   */
+  private volatile ProgressWorker<Collection<R>, ?> refreshWorker;
+
+  /**
    * the include condition used by this model
    */
   private Predicate<R> includeCondition;
@@ -632,7 +637,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private void refreshAsync() {
-    ProgressWorker.builder(this::refreshItems)
+    cancelCurrentRefresh();
+    refreshWorker = ProgressWorker.builder(this::refreshItems)
             .onStarted(this::onRefreshStarted)
             .onResult(this::onRefreshResult)
             .onException(this::onRefreshFailed)
@@ -654,11 +660,13 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private void onRefreshFailed(Throwable throwable) {
+    cleanupRefreshWorker();
     refreshingState.set(false);
     refreshFailedEvent.onEvent(throwable);
   }
 
   private void onRefreshResult(Collection<R> items) {
+    cleanupRefreshWorker();
     refreshingState.set(false);
     if (mergeOnRefresh && !items.isEmpty()) {
       merge(items);
@@ -667,6 +675,18 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
       clearAndAdd(items);
     }
     refreshEvent.onEvent();
+  }
+
+  private void cancelCurrentRefresh() {
+    if (refreshWorker != null) {
+      refreshWorker.cancel(true);
+    }
+  }
+
+  private void cleanupRefreshWorker() {
+    if (refreshWorker != null) {
+      refreshWorker = null;
+    }
   }
 
   private void merge(Collection<R> items) {

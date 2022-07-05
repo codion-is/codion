@@ -8240,3 +8240,4 @@
   ObservableEntityList, async refresh implemented using Task
   ObservableEntityList.getSelectionModelOptional() added
   FXForeignKeyConditionListModel uses the above when setting the selected items after a refresh
+  DefaultFilteredTableModel, now cancels current refresh if another is triggered
