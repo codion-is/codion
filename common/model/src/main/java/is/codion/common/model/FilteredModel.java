@@ -17,16 +17,6 @@ import java.util.function.Predicate;
 public interface FilteredModel<T> {
 
   /**
-   * @param listener a listener notified each time this model is filtered
-   */
-  void addFilterListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeFilterListener(EventListener listener);
-
-  /**
    * Filters this model according to the condition returned by {@link #getIncludeCondition()}.
    * If no include condition is specified this method does nothing.
    * This method does not interfere with the internal ordering of the visible items.
@@ -133,4 +123,14 @@ public interface FilteredModel<T> {
    * @param listener the listener to remove
    */
   void removeRefreshFailedListener(EventDataListener<Throwable> listener);
+
+  /**
+   * @param listener a listener notified each time this model is filtered
+   */
+  void addFilterListener(EventListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeFilterListener(EventListener listener);
 }

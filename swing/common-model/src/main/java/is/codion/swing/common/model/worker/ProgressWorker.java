@@ -266,16 +266,21 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
   private static final class DefaultBuilder<T, V> implements Builder<T, V> {
 
+    private static final Runnable EMPTY_RUNNABLE = new EmptyRunnable();
+    private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
+    private static final Consumer<Throwable> RETHROW_ON_THROWABLE = new RethrowOnThrowable();
+    private static final Runnable INTERRUPT_CURRENT_ON_INTERRUPTED = new InterruptCurrentOnInterrupted();
+
     private final ProgressTask<T, V> task;
 
-    private Runnable onStarted = new EmptyRunnable();
-    private Runnable onDone = new EmptyRunnable();
-    private Consumer<T> onResult = new EmptyConsumer<>();
-    private Consumer<Integer> onProgress = new EmptyConsumer<>();
-    private Consumer<List<V>> onPublish = new EmptyConsumer<>();
-    private Consumer<Throwable> onException = new RethrowOnThrowable();
-    private Runnable onCancelled = new EmptyRunnable();
-    private Runnable onInterrupted = new InterruptCurrentOnInterrupted();
+    private Runnable onStarted = EMPTY_RUNNABLE;
+    private Runnable onDone = EMPTY_RUNNABLE;
+    private Consumer<T> onResult = (Consumer<T>) EMPTY_CONSUMER;
+    private Consumer<Integer> onProgress = (Consumer<Integer>) EMPTY_CONSUMER;
+    private Consumer<List<V>> onPublish = (Consumer<List<V>>) EMPTY_CONSUMER;
+    private Consumer<Throwable> onException = RETHROW_ON_THROWABLE;
+    private Runnable onCancelled = EMPTY_RUNNABLE;
+    private Runnable onInterrupted = INTERRUPT_CURRENT_ON_INTERRUPTED;
 
     private DefaultBuilder(ProgressTask<T, V> task) {
       this.task = requireNonNull(task);
