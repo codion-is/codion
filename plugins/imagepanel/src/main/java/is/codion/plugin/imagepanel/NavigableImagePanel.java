@@ -321,16 +321,19 @@ public class NavigableImagePanel extends JPanel {
    * Called from paintComponent() when a new image is set.
    */
   private void initializeParams() {
-    double xScale = (double) getWidth() / image.getWidth();
-    double yScale = (double) getHeight() / image.getHeight();
-    initialScale = Math.min(xScale, yScale);
-    scale = initialScale;
-
+    initializeScale();
     //An image is initially centered
     centerImage();
     if (navigationImageEnabled) {
       createNavigationImage();
     }
+  }
+
+  private void initializeScale() {
+    double xScale = (double) getWidth() / image.getWidth();
+    double yScale = (double) getHeight() / image.getHeight();
+    initialScale = Math.min(xScale, yScale);
+    scale = initialScale;
   }
 
   /**
@@ -399,7 +402,7 @@ public class NavigableImagePanel extends JPanel {
     BufferedImage oldImage = this.image;
     this.image = image;
     if (image != null) {
-      initializeParams();
+      initializeScale();
     }
     firePropertyChange(IMAGE_CHANGED_PROPERTY, oldImage, image);
     repaint();
