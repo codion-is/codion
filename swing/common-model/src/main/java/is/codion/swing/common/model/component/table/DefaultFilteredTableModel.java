@@ -6,7 +6,6 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
@@ -107,6 +106,11 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
 
   /**
+   * The worker used to refresh asynchronously
+   */
+  private volatile ProgressWorker<Collection<R>, ?> refreshWorker;
+
+  /**
    * the include condition used by this model
    */
   private Predicate<R> includeCondition;
@@ -115,11 +119,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * true if refresh should merge, in order to not clear the selection during refresh
    */
   private boolean mergeOnRefresh = false;
-
-  /**
-   * If true then refreshing is performed off the EDT using a {@link ProgressWorker}.
-   */
-  private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
   /**
    * Instantiates a new table model.
@@ -213,7 +212,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    */
   @Override
   public final void refresh() {
-    if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
+    if (SwingUtilities.isEventDispatchThread()) {
       refreshAsync();
     }
     else {
@@ -295,16 +294,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   @Override
   public final void setMergeOnRefresh(boolean mergeOnRefresh) {
     this.mergeOnRefresh = mergeOnRefresh;
-  }
-
-  @Override
-  public final boolean isAsyncRefresh() {
-    return asyncRefresh;
-  }
-
-  @Override
-  public final void setAsyncRefresh(boolean asyncRefresh) {
-    this.asyncRefresh = asyncRefresh;
   }
 
   @Override
@@ -648,7 +637,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private void refreshAsync() {
-    ProgressWorker.builder(this::refreshItems)
+    cancelCurrentRefresh();
+    refreshWorker = ProgressWorker.builder(this::refreshItems)
             .onStarted(this::onRefreshStarted)
             .onResult(this::onRefreshResult)
             .onException(this::onRefreshFailed)
@@ -670,11 +660,13 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private void onRefreshFailed(Throwable throwable) {
+    cleanupRefreshWorker();
     refreshingState.set(false);
     refreshFailedEvent.onEvent(throwable);
   }
 
   private void onRefreshResult(Collection<R> items) {
+    cleanupRefreshWorker();
     refreshingState.set(false);
     if (mergeOnRefresh && !items.isEmpty()) {
       merge(items);
@@ -683,6 +675,18 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
       clearAndAdd(items);
     }
     refreshEvent.onEvent();
+  }
+
+  private void cancelCurrentRefresh() {
+    if (refreshWorker != null) {
+      refreshWorker.cancel(true);
+    }
+  }
+
+  private void cleanupRefreshWorker() {
+    if (refreshWorker != null) {
+      refreshWorker = null;
+    }
   }
 
   private void merge(Collection<R> items) {

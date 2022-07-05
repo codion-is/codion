@@ -65,14 +65,14 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
         setUpdatingModel(false);
       }
     });
-    listModel.addRefreshListener(() -> {
+    listModel.addRefreshListener(() -> listModel.getSelectionModelOptional().ifPresent(selectionModel -> {
       Collection<Entity> equalsValues = getEqualValues();
       if (!equalsValues.isEmpty()) {
-        listModel.getSelectionModel().setSelectedItem(equalsValues.iterator().next());
+        selectionModel.setSelectedItem(equalsValues.iterator().next());
       }
       else {
-        listModel.getSelectionModel().clearSelection();
+        selectionModel.clearSelection();
       }
-    });
+    }));
   }
 }
