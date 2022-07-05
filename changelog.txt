@@ -8237,3 +8237,6 @@
   NavigableImagePanel bug fixed, now only initializes scale when an image is set, otherwise createNavigationImage() may fail due to image with 0 size
   FilteredModel.ASYNC_REFRESH configuration parameter removed, along with setAsyncRefresh()
   FilteredTableModel, FilteredComboBoxModel.add/removeRefreshListener() moved to FilteredModel
+  ObservableEntityList, async refresh implemented using Task
+  ObservableEntityList.getSelectionModelOptional() added
+  FXForeignKeyConditionListModel uses the above when setting the selected items after a refresh

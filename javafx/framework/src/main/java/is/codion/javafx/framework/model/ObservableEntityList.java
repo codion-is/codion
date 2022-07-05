@@ -16,17 +16,20 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Task;
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.SelectionMode;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static is.codion.framework.db.condition.Conditions.condition;
@@ -96,15 +99,12 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
   @Override
   public final void refresh() {
-    List<Entity> selectedItems = getSelectedItems();
-    onRefreshStarted();
-    try {
-      onRefreshResult(performQuery());
+    if (Platform.isFxApplicationThread()) {
+      refreshAsync();
     }
-    catch (Exception e) {
-      onRefreshFailed(e);
+    else {
+      refreshSync();
     }
-    setSelectedItems(selectedItems);
   }
 
   @Override
@@ -164,6 +164,13 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   public final FXEntityListSelectionModel getSelectionModel() {
     checkIfSelectionModelHasBeenSet();
     return selectionModel;
+  }
+
+  /**
+   * @return the selection model, or an empty optional if the selection model has not been set
+   */
+  public final Optional<FXEntityListSelectionModel> getSelectionModelOptional() {
+    return Optional.ofNullable(selectionModel);
   }
 
   /**
@@ -332,6 +339,22 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     selectionModel.addSelectionChangedListener(selectionChangedEvent);
   }
 
+  private void refreshAsync() {
+    new Thread(new RefreshTask(getSelectedItems())).start();
+  }
+
+  private void refreshSync() {
+    List<Entity> selectedItems = getSelectedItems();
+    onRefreshStarted();
+    try {
+      onRefreshResult(performQuery());
+    }
+    catch (Exception e) {
+      onRefreshFailed(e);
+    }
+    setSelectedItems(selectedItems);
+  }
+
   private void onRefreshStarted() {
     refreshingState.set(true);
     refreshStartedEvent.onEvent();
@@ -365,6 +388,36 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   private void checkIfSelectionModelHasBeenSet() {
     if (!selectionModelHasBeenSet()) {
       throw new IllegalStateException(SELECTION_MODEL_HAS_NOT_BEEN_SET);
+    }
+  }
+
+  private final class RefreshTask extends Task<Collection<Entity>> {
+
+    private final List<Entity> selectedItems;
+
+    private RefreshTask(List<Entity> selectedItems) {
+      this.selectedItems = selectedItems;
+    }
+
+    @Override
+    protected Collection<Entity> call() throws Exception {
+      return performQuery();
+    }
+
+    @Override
+    protected void running() {
+      onRefreshStarted();
+    }
+
+    @Override
+    protected void failed() {
+      onRefreshFailed(getException());
+    }
+
+    @Override
+    protected void succeeded() {
+      onRefreshResult(getValue());
+      setSelectedItems(selectedItems);
     }
   }
 }
