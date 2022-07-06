@@ -159,7 +159,7 @@ public final class EntityTest {
             .with(Employee.DATA, modifiedBytes)
             .build();
 
-    List<Attribute<?>> modifiedAttributes = Entity.getModifiedColumnAttributes(definition, emp1, emp2);
+    Collection<Attribute<?>> modifiedAttributes = Entity.getModifiedColumnAttributes(definition, emp1, emp2);
     assertTrue(modifiedAttributes.contains(Employee.DATA));
 
     //lazy loaded blob

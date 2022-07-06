@@ -382,8 +382,7 @@ public interface Entity extends Comparable<Entity> {
    * @return the updatable column attributes which values differ from the ones in the comparison entity
    * @see BlobProperty#isEagerlyLoaded()
    */
-  static List<Attribute<?>> getModifiedColumnAttributes(EntityDefinition definition, Entity entity,
-                                                        Entity comparison) {
+  static Collection<Attribute<?>> getModifiedColumnAttributes(EntityDefinition definition, Entity entity, Entity comparison) {
     requireNonNull(definition);
     requireNonNull(entity);
     requireNonNull(comparison);
