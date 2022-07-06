@@ -217,7 +217,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws is.codion.common.db.exception.DeleteException in case the number of deleted rows does not match the number of keys
    * @throws RemoteException in case of a remote exception
    */
-  void delete(List<Key> entityKeys) throws RemoteException, DatabaseException;
+  void delete(Collection<Key> entityKeys) throws RemoteException, DatabaseException;
 
   /**
    * Deletes the entities specified by the given condition
@@ -299,7 +299,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> select(List<Key> keys) throws RemoteException, DatabaseException;
+  List<Entity> select(Collection<Key> keys) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities based on the given condition
