@@ -433,7 +433,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public void delete(List<Key> keys) throws DatabaseException {
+  public void delete(Collection<Key> keys) throws DatabaseException {
     if (requireNonNull(keys, "keys").isEmpty()) {
       return;
     }
@@ -499,7 +499,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public List<Entity> select(List<Key> keys) throws DatabaseException {
+  public List<Entity> select(Collection<Key> keys) throws DatabaseException {
     if (requireNonNull(keys, "keys").isEmpty()) {
       return emptyList();
     }

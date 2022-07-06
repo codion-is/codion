@@ -8243,3 +8243,4 @@
   DefaultFilteredTableModel, now cancels current refresh if another is triggered
   ProgressWorker, minor refactoring
   Entity.getModifiedColumnAttributes() now returns Collection
+  EntityConnection.delete(keys) and select(keys) parameter now Collection instead of List

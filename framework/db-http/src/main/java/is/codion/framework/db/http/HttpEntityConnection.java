@@ -254,7 +254,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public void delete(List<Key> keys) throws DatabaseException {
+  public void delete(Collection<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
       synchronized (this.entities) {
@@ -330,7 +330,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public List<Entity> select(List<Key> keys) throws DatabaseException {
+  public List<Entity> select(Collection<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
       synchronized (this.entities) {

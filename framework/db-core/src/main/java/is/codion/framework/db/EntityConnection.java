@@ -33,7 +33,7 @@ import java.util.Map;
  * operations specified by a single {@link Domain} model.
  * {@link #executeFunction(FunctionType)}  and {@link #executeProcedure(ProcedureType)}
  * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(List)},
- * {@link #update(Entity)}, {@link #update(List)}, {@link #delete(Key)} and {@link #delete(List)}
+ * {@link #update(Entity)}, {@link #update(List)}, {@link #delete(Key)} and {@link #delete(Collection)}
  * perform a commit unless they are run within a transaction.
  * A static helper class for mass data manipulation.
  * @see #beginTransaction()
@@ -210,7 +210,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.DeleteException in case the number of deleted rows does not match the number of keys
    */
-  void delete(List<Key> entityKeys) throws DatabaseException;
+  void delete(Collection<Key> entityKeys) throws DatabaseException;
 
   /**
    * Deletes the entities specified by the given condition.
@@ -285,7 +285,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return entities based on {@code keys}
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> select(List<Key> keys) throws DatabaseException;
+  List<Entity> select(Collection<Key> keys) throws DatabaseException;
 
   /**
    * Selects entities based on the given condition

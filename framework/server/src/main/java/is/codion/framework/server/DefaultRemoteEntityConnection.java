@@ -199,7 +199,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public void delete(List<Key> entityKeys) throws DatabaseException {
+  public void delete(Collection<Key> entityKeys) throws DatabaseException {
     synchronized (connectionProxy) {
       connectionProxy.delete(entityKeys);
     }
@@ -248,7 +248,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public List<Entity> select(List<Key> keys) throws DatabaseException {
+  public List<Entity> select(Collection<Key> keys) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(keys);
     }
