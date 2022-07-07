@@ -16,13 +16,13 @@ public final class Column {
   private final int columnSize;
   private final int decimalDigits;
   private final int nullable;
-  private final boolean hasDefaultValue;
+  private final String defaultValue;
   private final String comment;
   private final int primaryKeyIndex;
   private final boolean foreignKeyColumn;
 
   Column(String columnName, Class<?> columnTypeClass, int position, int columnSize,
-         int decimalDigits, int nullable, boolean hasDefaultValue, String comment,
+         int decimalDigits, int nullable, String defaultValue, String comment,
          int primaryKeyIndex, boolean foreignKeyColumn) {
     this.columnName = requireNonNull(columnName);
     this.columnTypeClass = requireNonNull(columnTypeClass);
@@ -30,7 +30,7 @@ public final class Column {
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
     this.nullable = nullable;
-    this.hasDefaultValue = hasDefaultValue;
+    this.defaultValue = defaultValue;
     this.comment = comment;
     this.primaryKeyIndex = primaryKeyIndex;
     this.foreignKeyColumn = foreignKeyColumn;
@@ -60,8 +60,8 @@ public final class Column {
     return columnTypeClass;
   }
 
-  public boolean hasDefaultValue() {
-    return hasDefaultValue;
+  public String defaultValue() {
+    return defaultValue;
   }
 
   public int getNullable() {

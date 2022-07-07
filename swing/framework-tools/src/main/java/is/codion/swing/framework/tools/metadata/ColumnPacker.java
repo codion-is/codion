@@ -35,10 +35,20 @@ final class ColumnPacker implements ResultPacker<Column> {
     if (typeClass != null) {
       String columnName = resultSet.getString("COLUMN_NAME");
 
-      return new Column(columnName, typeClass,
-              resultSet.getInt("ORDINAL_POSITION"), resultSet.getInt("COLUMN_SIZE"), decimalDigits,
-              resultSet.getInt("NULLABLE"), resultSet.getObject("COLUMN_DEF") != null,
-              resultSet.getString("REMARKS"), getPrimaryKeyColumnIndex(columnName), isForeignKeyColumn(columnName));
+      try {
+        return new Column(columnName, typeClass,
+                resultSet.getInt("ORDINAL_POSITION"),
+                resultSet.getInt("COLUMN_SIZE"), decimalDigits,
+                resultSet.getInt("NULLABLE"),
+                resultSet.getString("COLUMN_DEF"),
+                resultSet.getString("REMARKS"),
+                getPrimaryKeyColumnIndex(columnName),
+                isForeignKeyColumn(columnName));
+      }
+      catch (SQLException e) {
+        System.out.println("Exception fetching column: " + columnName + ", " + e.getMessage());
+        return null;
+      }
     }
 
     return null;

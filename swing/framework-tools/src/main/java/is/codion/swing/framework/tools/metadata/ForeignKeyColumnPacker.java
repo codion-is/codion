@@ -20,8 +20,12 @@ final class ForeignKeyColumnPacker implements ResultPacker<ForeignKeyColumn> {
     if (fktableSchem == null) {
       fktableSchem = resultSet.getString("FKTABLE_CAT");
     }
-    return new ForeignKeyColumn(pktableSchem, resultSet.getString("PKTABLE_NAME"),
-            resultSet.getString("PKCOLUMN_NAME"), resultSet.getString("FKTABLE_NAME"),
-            fktableSchem, resultSet.getString("FKCOLUMN_NAME"), resultSet.getInt("KEY_SEQ"));
+    return new ForeignKeyColumn(pktableSchem,
+            resultSet.getString("PKTABLE_NAME"),
+            resultSet.getString("PKCOLUMN_NAME"),
+            resultSet.getString("FKTABLE_NAME"),
+            fktableSchem,
+            resultSet.getString("FKCOLUMN_NAME"),
+            resultSet.getInt("KEY_SEQ"));
   }
 }
