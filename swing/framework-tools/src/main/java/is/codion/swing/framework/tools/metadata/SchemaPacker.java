@@ -18,6 +18,8 @@ final class SchemaPacker implements ResultPacker<Schema> {
 
   @Override
   public Schema fetch(ResultSet resultSet) throws SQLException {
-    return new Schema(resultSet.getString(fieldName));
+    String name = resultSet.getString(fieldName);
+
+    return name == null ? null : new Schema(name);
   }
 }

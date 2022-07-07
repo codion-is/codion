@@ -109,7 +109,7 @@ final class DatabaseDomain extends DefaultDomain {
     if (attribute.isDecimal() && column.getDecimalDigits() >= 1) {
       builder.maximumFractionDigits(column.getDecimalDigits());
     }
-    if (!column.isPrimaryKeyColumn() && column.hasDefaultValue()) {
+    if (!column.isPrimaryKeyColumn() && column.defaultValue() != null) {
       builder.columnHasDefaultValue(true);
     }
     if (!nullOrEmpty(column.getComment())) {

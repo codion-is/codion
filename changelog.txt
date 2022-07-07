@@ -8244,3 +8244,4 @@
   ProgressWorker, minor refactoring
   Entity.getModifiedColumnAttributes() now returns Collection
   EntityConnection.delete(keys) and select(keys) parameter now Collection instead of List
+  Metadata tool, db2 related minor improvements, Column.hasDefaultValue() replaced with defaultValue() (String), SchemaPacker skips schemas/catalogs without names
