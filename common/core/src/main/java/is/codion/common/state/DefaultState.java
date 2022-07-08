@@ -9,7 +9,6 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -106,11 +105,6 @@ final class DefaultState implements State {
   }
 
   @Override
-  public Optional<Boolean> toOptional() {
-    return Optional.of(get());
-  }
-
-  @Override
   public boolean isNull() {
     return false;
   }
@@ -123,11 +117,6 @@ final class DefaultState implements State {
   @Override
   public boolean isNullable() {
     return false;
-  }
-
-  @Override
-  public boolean equalTo(Boolean value) {
-    return State.super.equalTo(value);
   }
 
   @Override

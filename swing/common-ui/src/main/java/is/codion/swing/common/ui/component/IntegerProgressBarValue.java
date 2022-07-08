@@ -13,12 +13,12 @@ final class IntegerProgressBarValue extends AbstractComponentValue<Integer, JPro
   }
 
   @Override
-  protected Integer getComponentValue(JProgressBar component) {
-    return component.getValue();
+  protected Integer getComponentValue() {
+    return getComponent().getValue();
   }
 
   @Override
-  protected void setComponentValue(JProgressBar component, Integer value) {
-    component.setValue(value == null ? 0 : value);
+  protected void setComponentValue(Integer value) {
+    getComponent().setValue(value == null ? 0 : value);
   }
 }

@@ -313,7 +313,7 @@ public final class InputControls {
 
       public PersonPanelValue(PersonPanel component) {
         super(component);
-        //We must call notifyValueChange each time this value changes,
+        //We must call notifyValueChange() each time this value changes,
         //that is, when either the first or last name changes.
         component.firstNameField.getDocument()
                 .addDocumentListener((DocumentAdapter) e -> notifyValueChange());
@@ -322,14 +322,14 @@ public final class InputControls {
       }
 
       @Override
-      protected Person getComponentValue(PersonPanel component) {
-        return new Person(component.firstNameField.getText(), component.lastNameField.getText());
+      protected Person getComponentValue() {
+        return new Person(getComponent().firstNameField.getText(), getComponent().lastNameField.getText());
       }
 
       @Override
-      protected void setComponentValue(PersonPanel component, Person value) {
-        component.firstNameField.setText(value == null ? null : value.firstName);
-        component.lastNameField.setText(value == null ? null : value.lastName);
+      protected void setComponentValue(Person value) {
+        getComponent().firstNameField.setText(value == null ? null : value.firstName);
+        getComponent().lastNameField.setText(value == null ? null : value.lastName);
       }
     }
 

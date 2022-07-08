@@ -10,16 +10,18 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, ListBuilder<T>> implements ListBuilder<T> {
 
   private final ListModel<T> listModel;
+  private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();
 
   private ListCellRenderer<T> cellRenderer;
   private ListSelectionModel listSelectionModel;
-  private ListSelectionListener listSelectionListener;
 
   private int visibleRowCount;
   private int layoutOrientation = JList.VERTICAL;
@@ -76,7 +78,7 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
 
   @Override
   public ListBuilder<T> listSelectionListener(ListSelectionListener listSelectionListener) {
-    this.listSelectionListener = requireNonNull(listSelectionListener);
+    this.listSelectionListeners.add(requireNonNull(listSelectionListener));
     return this;
   }
 
@@ -89,9 +91,7 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
     if (listSelectionModel != null) {
       list.setSelectionModel(listSelectionModel);
     }
-    if (listSelectionListener != null) {
-      list.addListSelectionListener(listSelectionListener);
-    }
+    listSelectionListeners.forEach(list::addListSelectionListener);
     list.setVisibleRowCount(visibleRowCount);
     list.setLayoutOrientation(layoutOrientation);
     list.setFixedCellHeight(fixedCellHeight);

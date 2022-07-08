@@ -25,12 +25,12 @@ final class BooleanComboBoxValue extends AbstractComponentValue<Boolean, JComboB
   }
 
   @Override
-  protected Boolean getComponentValue(JComboBox<Item<Boolean>> component) {
-    return ((Item<Boolean>) component.getModel().getSelectedItem()).getValue();
+  protected Boolean getComponentValue() {
+    return ((Item<Boolean>) getComponent().getModel().getSelectedItem()).getValue();
   }
 
   @Override
-  protected void setComponentValue(JComboBox<Item<Boolean>> component, Boolean value) {
-    component.setSelectedItem(value);
+  protected void setComponentValue(Boolean value) {
+    getComponent().setSelectedItem(value);
   }
 }

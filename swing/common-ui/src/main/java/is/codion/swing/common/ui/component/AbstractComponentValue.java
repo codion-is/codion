@@ -42,7 +42,7 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
 
   @Override
   public final T get() {
-    return getComponentValue(component);
+    return getComponentValue();
   }
 
   @Override
@@ -53,11 +53,11 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
   @Override
   protected final void setValue(T value) {
     if (SwingUtilities.isEventDispatchThread()) {
-      setComponentValue(component, value);
+      setComponentValue(value);
     }
     else {
       try {
-        SwingUtilities.invokeAndWait(() -> setComponentValue(component, value));
+        SwingUtilities.invokeAndWait(() -> setComponentValue(value));
       }
       catch (InterruptedException ex) {
         Thread.currentThread().interrupt();
@@ -81,16 +81,16 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
   }
 
   /**
-   * Returns the value according to the component
-   * @param component the component
-   * @return the value from the given component
+   * Returns the value from the underlying component
+   * @return the value from the underlying component
+   * @see #getComponent()
    */
-  protected abstract T getComponentValue(C component);
+  protected abstract T getComponentValue();
 
   /**
-   * Sets the given value in the input component. Note that this method is called on the EDT.
-   * @param component the component
-   * @param value the value to display in the input component
+   * Sets the given value in the underlying component. Note that this method is called on the EDT.
+   * @param value the value to display in the underlying component
+   * @see #getComponent()
    */
-  protected abstract void setComponentValue(C component, T value);
+  protected abstract void setComponentValue(T value);
 }

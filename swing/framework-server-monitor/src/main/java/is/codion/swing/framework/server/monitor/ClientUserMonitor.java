@@ -419,7 +419,7 @@ public final class ClientUserMonitor {
 
     private final DateTimeFormatter formatter = LocaleDateTimePattern.builder()
             .delimiterDash().yearFourDigits().hoursMinutesSeconds()
-            .build().getFormatter();
+            .build().createFormatter();
 
     @Override
     protected void setValue(Object value) {

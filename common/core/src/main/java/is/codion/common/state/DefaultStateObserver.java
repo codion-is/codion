@@ -8,9 +8,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
 
-import java.util.Objects;
-import java.util.Optional;
-
 import static java.util.Objects.requireNonNull;
 
 final class DefaultStateObserver implements StateObserver {
@@ -40,11 +37,6 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
-  public Optional<Boolean> toOptional() {
-    return StateObserver.super.toOptional();
-  }
-
-  @Override
   public boolean isNull() {
     return false;
   }
@@ -57,11 +49,6 @@ final class DefaultStateObserver implements StateObserver {
   @Override
   public boolean isNullable() {
     return false;
-  }
-
-  @Override
-  public boolean equalTo(Boolean value) {
-    return Objects.equals(stateObserver.get(), value);
   }
 
   @Override

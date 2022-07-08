@@ -639,15 +639,15 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    protected Entity getComponentValue(EntitySearchField component) {
-      List<Entity> selectedEntities = component.getModel().getSelectedEntities();
+    protected Entity getComponentValue() {
+      List<Entity> selectedEntities = getComponent().getModel().getSelectedEntities();
 
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
     @Override
-    protected void setComponentValue(EntitySearchField component, Entity value) {
-      component.getModel().setSelectedEntity(value);
+    protected void setComponentValue(Entity value) {
+      getComponent().getModel().setSelectedEntity(value);
     }
   }
 
@@ -659,13 +659,13 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    protected List<Entity> getComponentValue(EntitySearchField component) {
-      return component.getModel().getSelectedEntities();
+    protected List<Entity> getComponentValue() {
+      return getComponent().getModel().getSelectedEntities();
     }
 
     @Override
-    protected void setComponentValue(EntitySearchField component, List<Entity> value) {
-      component.getModel().setSelectedEntities(value);
+    protected void setComponentValue(List<Entity> value) {
+      getComponent().getModel().setSelectedEntities(value);
     }
   }
 

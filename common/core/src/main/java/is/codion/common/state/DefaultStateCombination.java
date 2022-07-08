@@ -85,11 +85,6 @@ final class DefaultStateCombination implements State.Combination {
   }
 
   @Override
-  public Optional<Boolean> toOptional() {
-    return observer.toOptional();
-  }
-
-  @Override
   public boolean isNull() {
     return observer.isNull();
   }
@@ -102,11 +97,6 @@ final class DefaultStateCombination implements State.Combination {
   @Override
   public boolean isNullable() {
     return observer.isNullable();
-  }
-
-  @Override
-  public boolean equalTo(Boolean value) {
-    return observer.equalTo(value);
   }
 
   @Override

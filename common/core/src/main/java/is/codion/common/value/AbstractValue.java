@@ -13,7 +13,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Collections.unmodifiableSet;
@@ -83,28 +82,8 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final Optional<T> toOptional() {
-    return Value.super.toOptional();
-  }
-
-  @Override
   public final boolean isNullable() {
     return nullValue == null;
-  }
-
-  @Override
-  public final boolean isNull() {
-    return Value.super.isNull();
-  }
-
-  @Override
-  public final boolean isNotNull() {
-    return Value.super.isNotNull();
-  }
-
-  @Override
-  public final boolean equalTo(T value) {
-    return Value.super.equalTo(value);
   }
 
   @Override
