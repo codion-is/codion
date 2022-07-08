@@ -18,15 +18,15 @@ final class SelectedItemValue<T, C extends JComboBox<Item<T>>> extends AbstractC
   }
 
   @Override
-  protected T getComponentValue(C component) {
-    Item<T> selectedValue = (Item<T>) component.getModel().getSelectedItem();
+  protected T getComponentValue() {
+    Item<T> selectedValue = (Item<T>) getComponent().getModel().getSelectedItem();
 
     return selectedValue == null ? null : selectedValue.getValue();
   }
 
   @Override
-  protected void setComponentValue(C component, T value) {
-    component.getModel().setSelectedItem(value);
+  protected void setComponentValue(T value) {
+    getComponent().getModel().setSelectedItem(value);
   }
 
   private final class NotifyOnItemSelectedListener implements ItemListener {

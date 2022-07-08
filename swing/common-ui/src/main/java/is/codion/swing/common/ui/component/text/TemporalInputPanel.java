@@ -310,13 +310,13 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     }
 
     @Override
-    protected T getComponentValue(TemporalInputPanel<T> component) {
-      return component.getTemporal();
+    protected T getComponentValue() {
+      return getComponent().getTemporal();
     }
 
     @Override
-    protected void setComponentValue(TemporalInputPanel<T> component, T value) {
-      component.setTemporal(value);
+    protected void setComponentValue(T value) {
+      getComponent().setTemporal(value);
     }
   }
 }

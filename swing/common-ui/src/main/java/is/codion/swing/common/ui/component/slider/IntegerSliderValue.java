@@ -15,12 +15,12 @@ final class IntegerSliderValue extends AbstractComponentValue<Integer, JSlider> 
   }
 
   @Override
-  protected Integer getComponentValue(JSlider component) {
-    return component.getValue();
+  protected Integer getComponentValue() {
+    return getComponent().getValue();
   }
 
   @Override
-  protected void setComponentValue(JSlider component, Integer value) {
-    component.setValue(value == null ? 0 : value);
+  protected void setComponentValue(Integer value) {
+    getComponent().setValue(value == null ? 0 : value);
   }
 }

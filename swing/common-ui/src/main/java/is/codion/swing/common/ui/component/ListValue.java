@@ -13,12 +13,12 @@ final class ListValue<T> extends AbstractComponentValue<T, JList<T>> {
   }
 
   @Override
-  protected T getComponentValue(JList<T> component) {
-    return component.getSelectedValue();
+  protected T getComponentValue() {
+    return getComponent().getSelectedValue();
   }
 
   @Override
-  protected void setComponentValue(JList<T> component, T value) {
-    component.setSelectedValue(value, true);
+  protected void setComponentValue(T value) {
+    getComponent().setSelectedValue(value, true);
   }
 }

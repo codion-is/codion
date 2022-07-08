@@ -21,8 +21,8 @@ final class DefaultTextComponentValue<T, C extends JTextComponent> extends Abstr
   }
 
   @Override
-  protected T getComponentValue(C component) {
-    String text = component.getText();
+  protected T getComponentValue() {
+    String text = getComponent().getText();
     if (nullOrEmpty(text)) {
       return null;
     }
@@ -31,8 +31,8 @@ final class DefaultTextComponentValue<T, C extends JTextComponent> extends Abstr
   }
 
   @Override
-  protected void setComponentValue(C component, T value) {
-    component.setText(value == null ? "" : format.format(value));
+  protected void setComponentValue(T value) {
+    getComponent().setText(value == null ? "" : format.format(value));
   }
 
   /**

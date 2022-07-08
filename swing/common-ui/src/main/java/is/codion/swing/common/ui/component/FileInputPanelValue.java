@@ -18,8 +18,8 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
   }
 
   @Override
-  protected byte[] getComponentValue(FileInputPanel component) {
-    String filePath = component.getFilePathField().getText();
+  protected byte[] getComponentValue() {
+    String filePath = getComponent().getFilePathField().getText();
     if (filePath.isEmpty()) {
       return null;
     }
@@ -32,7 +32,7 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
   }
 
   @Override
-  protected void setComponentValue(FileInputPanel component, byte[] value) {
+  protected void setComponentValue(byte[] value) {
     throw new UnsupportedOperationException();
   }
 }

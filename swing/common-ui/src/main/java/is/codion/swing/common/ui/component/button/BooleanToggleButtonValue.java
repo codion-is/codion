@@ -17,13 +17,13 @@ final class BooleanToggleButtonValue extends AbstractComponentValue<Boolean, JTo
   }
 
   @Override
-  protected Boolean getComponentValue(JToggleButton component) {
-    return component.isSelected();
+  protected Boolean getComponentValue() {
+    return getComponent().isSelected();
   }
 
   @Override
-  protected void setComponentValue(JToggleButton component, Boolean value) {
-     component.setSelected(value != null && value);
+  protected void setComponentValue(Boolean value) {
+     getComponent().setSelected(value != null && value);
   }
 
   private final class NotifyOnItemEvent implements ItemListener {

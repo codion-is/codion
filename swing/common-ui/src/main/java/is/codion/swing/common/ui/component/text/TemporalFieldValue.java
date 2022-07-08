@@ -22,13 +22,13 @@ final class TemporalFieldValue<T extends Temporal> extends AbstractComponentValu
   }
 
   @Override
-  protected T getComponentValue(TemporalField<T> component) {
-    return component.getTemporal();
+  protected T getComponentValue() {
+    return getComponent().getTemporal();
   }
 
   @Override
-  protected void setComponentValue(TemporalField<T> component, T value) {
-    component.setTemporal(value);
+  protected void setComponentValue(T value) {
+    getComponent().setTemporal(value);
   }
 
   private final class NotifyOnFocusLost extends FocusAdapter {

@@ -15,19 +15,19 @@ final class MaskedTextFieldValue<T> extends AbstractComponentValue<T, JFormatted
   }
 
   @Override
-  protected T getComponentValue(JFormattedTextField component) {
-    return (T) component.getValue();
+  protected T getComponentValue() {
+    return (T) getComponent().getValue();
   }
 
   @Override
-  protected void setComponentValue(JFormattedTextField component, T value) {
+  protected void setComponentValue(T value) {
     if (value == null) {
       // otherwise the caret goes all the way to the
       // end the next time the field gains focus
-      component.setText("");
+      getComponent().setText("");
     }
     else {
-      component.setValue(value);
+      getComponent().setValue(value);
     }
   }
 }
