@@ -4,6 +4,8 @@
 package is.codion.common.rmi.server;
 
 import is.codion.common.rmi.client.ConnectionRequest;
+import is.codion.common.rmi.server.ServerAdmin.ServerStatistics;
+import is.codion.common.rmi.server.ServerAdmin.ThreadStatistics;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.rmi.server.exception.ServerException;
@@ -29,7 +31,7 @@ public class AbstractServerTest {
   @Test
   void testConnectionCount() throws RemoteException, ServerException {
     TestServer server = new TestServer();
-    final String clientTypeId = "clientTypeId";
+    String clientTypeId = "clientTypeId";
     ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
     ConnectionRequest connectionRequest2 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
     ConnectionRequest connectionRequest3 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
@@ -49,24 +51,26 @@ public class AbstractServerTest {
     assertEquals(1, server.getConnectionCount());
     server.disconnect(connectionRequest.getClientId());
     assertEquals(0, server.getConnectionCount());
+    server.shutdown();
   }
 
   @Test
   void testConnectionLimitReached() throws RemoteException, ServerException {
     TestServer server = new TestServer();
-    final String clientTypeId = "clientTypeId";
+    String clientTypeId = "clientTypeId";
     ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
     ConnectionRequest connectionRequest2 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
     server.setConnectionLimit(1);
     assertEquals(1, server.getConnectionLimit());
     server.connect(connectionRequest);
     assertThrows(ConnectionNotAvailableException.class, () -> server.connect(connectionRequest2));
+    server.shutdown();
   }
 
   @Test
   void testConnect() throws RemoteException, ServerException {
     TestServer server = new TestServer();
-    final String clientTypeId = "clientTypeId";
+    String clientTypeId = "clientTypeId";
     ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
     ServerTest connection = server.connect(connectionRequest);
     assertNotNull(connection);
@@ -77,12 +81,22 @@ public class AbstractServerTest {
     assertEquals(connection, connections.get(connectionRequest));
     assertEquals(connection, server.getConnection(connectionRequest.getClientId()));
     assertNotNull(server.getConnection(connectionRequest.getClientId()));
+    RemoteClient client = server.getClients(UNIT_TEST_USER).iterator().next();
+    client.getConnectionRequest();
+    client.getClientHost();
+    client.getClientVersion();
+    client.getFrameworkVersion();
+    client.getDatabaseUser();
+    client.toString();
     server.disconnect(connectionRequest.getClientId());
     assertThrows(IllegalArgumentException.class, () -> server.getConnection(connectionRequest.getClientId()));
     ServerTest connection3 = server.connect(connectionRequest);
     assertNotSame(connection, connection3);
     assertNotNull(server.getServerInformation());
+    server.getAdmin().disconnect(connection3.getRemoteClient().getClientId());
+    assertThrows(IllegalArgumentException.class, () -> server.getConnection(connection3.getRemoteClient().getClientId()));
     assertThrows(NullPointerException.class, () -> server.connect((ConnectionRequest) null));
+    server.shutdown();
   }
 
   @Test
@@ -91,7 +105,7 @@ public class AbstractServerTest {
     TestLoginProxy.LOGOUT_COUNTER.set(0);
     TestLoginProxy.CLOSE_COUNTER.set(0);
 
-    final String clientTypeId = "clientTypeId";
+    String clientTypeId = "clientTypeId";
     ServerConfiguration configuration = getConfiguration();
     TestServer server = new TestServer(configuration);
     ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
@@ -134,6 +148,8 @@ public class AbstractServerTest {
 
     //try to steal the connection using the same connectionId, but incorrect user credentials
     assertThrows(ServerAuthenticationException.class, () -> server.connect(connectionRequest2));
+
+    server.shutdown();
   }
 
   @Test
@@ -151,6 +167,56 @@ public class AbstractServerTest {
 
     //try to steal the connection using the same connectionId, but incorrect user credentials
     assertThrows(ServerAuthenticationException.class, () -> server.connect(connectionRequest2));
+
+    server.shutdown();
+  }
+
+  @Test
+  void admin() throws RemoteException {
+    TestServer server = new TestServer();
+    ServerAdmin admin = server.getAdmin();
+    admin.getClients();
+    admin.getClientTypes();
+    admin.getConnectionCount();
+    admin.setConnectionLimit(10);
+    admin.getConnectionLimit();
+    admin.getMaxMemory();
+    admin.getAllocatedMemory();
+    admin.getClients("test");
+    admin.getUsers();
+    admin.getClients(User.user("test"));
+    admin.getSystemProperties();
+    admin.getThreadStatistics();
+    admin.getGcEvents(System.currentTimeMillis());
+    admin.getRequestsPerSecond();
+    admin.getSystemCpuLoad();
+    admin.getProcessCpuLoad();
+    ServerInformation serverInformation = admin.getServerInformation();
+    serverInformation.getServerName();
+    serverInformation.getServerId();
+    serverInformation.getServerPort();
+    serverInformation.getServerVersion();
+    serverInformation.getLocale();
+    serverInformation.getTimeZone();
+    serverInformation.getStartTime();
+    ServerStatistics serverStatistics = admin.getServerStatistics(System.currentTimeMillis());
+    serverStatistics.getConnectionCount();
+    serverStatistics.getConnectionLimit();
+    serverStatistics.getUsedMemory();
+    ThreadStatistics threadStatistics = serverStatistics.getThreadStatistics();
+    threadStatistics.getThreadCount();
+    threadStatistics.getDaemonThreadCount();
+    threadStatistics.getThreadStateCount();
+    serverStatistics.getAllocatedMemory();
+    serverStatistics.getGcEvents();
+    serverStatistics.getConnectionCount();
+    serverStatistics.getMaximumMemory();
+    serverStatistics.getConnectionLimit();
+    serverStatistics.getProcessCpuLoad();
+    serverStatistics.getSystemCpuLoad();
+    serverStatistics.getRequestsPerSecond();
+    serverStatistics.getTimestamp();
+    admin.shutdown();
   }
 
   private static class ServerTestImpl implements ServerTest {
@@ -177,8 +243,11 @@ public class AbstractServerTest {
 
   private static final class TestServer extends AbstractServer<ServerTest, ServerAdmin> {
 
+    private static final ServerConfiguration CONFIGURATION = getConfiguration();
+
     private TestServer() throws RemoteException {
-      this(getConfiguration());
+      this(CONFIGURATION);
+      setAdmin(new DefaultServerAdmin(this, CONFIGURATION));
     }
 
     private TestServer(ServerConfiguration configuration) throws RemoteException {
@@ -193,7 +262,7 @@ public class AbstractServerTest {
 
     @Override
     public ServerAdmin getServerAdmin(User user) throws RemoteException, ServerAuthenticationException {
-      return null;
+      return getAdmin();
     }
 
     @Override

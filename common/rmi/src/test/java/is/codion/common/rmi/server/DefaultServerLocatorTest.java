@@ -33,7 +33,7 @@ public class DefaultServerLocatorTest {
   @Test
   void getServer() throws RemoteException, NotBoundException {
     //flaky test, inline setup and teardown
-    DefaultServerLocator serverLocator = new DefaultServerLocator();
+    Server.Locator serverLocator = Server.Locator.locator();
 
     Registry registry = serverLocator.initializeRegistry(Registry.REGISTRY_PORT);
     registry.rebind(SERVER_NAME, server);
