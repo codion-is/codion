@@ -64,7 +64,7 @@ public interface LocaleDateTimePattern {
   /**
    * @return a new {@link DateTimeFormatter} instance based on this pattern
    */
-  DateTimeFormatter getFormatter();
+  DateTimeFormatter createFormatter();
 
   /**
    * @return a new Builder for a {@link LocaleDateTimePattern}.

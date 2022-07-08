@@ -601,7 +601,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       }
       this.localeDateTimePattern = localeDateTimePattern;
       this.dateTimePattern = localeDateTimePattern.getDateTimePattern();
-      this.dateTimeFormatter = localeDateTimePattern.getFormatter();
+      this.dateTimeFormatter = localeDateTimePattern.createFormatter();
 
       return (B) this;
     }

@@ -65,7 +65,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
   }
 
   @Override
-  public DateTimeFormatter getFormatter() {
+  public DateTimeFormatter createFormatter() {
     return DateTimeFormatter.ofPattern(getDateTimePattern());
   }
 
