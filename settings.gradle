@@ -178,13 +178,13 @@ dependencyResolutionManagement {
             version('javax.activation', '1.2.0')
             version('jersey', '2.34')
             version('junit', '5.8.2')
-            version('sslcontext.kickstart', '7.4.4')
+            version('sslcontext.kickstart', '7.4.5')
             version('flatlaf', '2.3')
             version('ikonli.swing', '2.6.0')
             //plugins
             version('hikari', '4.0.3')
             version('jackson', '2.13.3')
-            version('log4j', '2.17.2')
+            version('log4j', '2.18.0')
             version('tomcat', '10.0.6')
             //jasperreports
             version('jasperreports', '6.19.1')
