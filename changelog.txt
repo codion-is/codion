@@ -8248,3 +8248,4 @@
   AbstractComponentValue.getComponentValue() and setComponentValue(), component parameter removed, available via getComponent()
   DefaultListBuilder now supports multiple list selection listeners
   LocaleDateTimePattern.getFormatter() renamed createFormatter()
+  ValueObserver, removed unnecessary overloads of default methods in subclasses
