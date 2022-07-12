@@ -169,9 +169,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     ColumnConditionModel<Attribute<T>, T> conditionModel = (ColumnConditionModel<Attribute<T>, T>) conditionModels.get(attribute);
     if (conditionModel != null) {
       conditionModel.setOperator(Operator.EQUAL);
-      conditionModel.setEnabled(!Util.nullOrEmpty(values));
       conditionModel.setEqualValues(null);//because the equalValue could be a reference to the active entity which changes accordingly
       conditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed equalValue
+      conditionModel.setEnabled(!Util.nullOrEmpty(values));
     }
     return !condition.equals(getCondition());
   }
@@ -202,9 +202,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     if (additionalConditionSupplier != null) {
       conditions.add(additionalConditionSupplier.get());
     }
-    Condition.Combination conditionCombination = Conditions.combination(conjunction, conditions);
 
-    return conditionCombination.getConditions().isEmpty() ? Conditions.condition(entityType) : conditionCombination;
+    return conditions.isEmpty() ? Conditions.condition(entityType) : Conditions.combination(conjunction, conditions);
   }
 
   @Override

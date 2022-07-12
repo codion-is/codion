@@ -8287,3 +8287,5 @@
   DefaultListBuilder now supports multiple list selection listeners
   LocaleDateTimePattern.getFormatter() renamed createFormatter()
   ValueObserver, removed unnecessary overloads of default methods in subclasses
+  DefaultEntityTableConditionModel.getCondition() bug fixed, no longer tries to create a condition combination if no conditions are enabled
+  DefaultEntityTableConditionModel.setEqualConditionValues() bug fixed, now enables the condition model last, after values have been set, otherwise the condition changed event triggers a call to getCondition(), which can then fail in case of composite primary keys
