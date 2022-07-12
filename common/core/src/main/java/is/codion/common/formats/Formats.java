@@ -4,20 +4,12 @@
 package is.codion.common.formats;
 
 import java.text.DecimalFormat;
-import java.text.FieldPosition;
-import java.text.Format;
 import java.text.NumberFormat;
-import java.text.ParsePosition;
 
 /**
  * A static utility class for formats.
  */
 public final class Formats {
-
-  /**
-   * A Format object performing no formatting
-   */
-  public static final Format NULL_FORMAT = new NullFormat();
 
   private Formats() {}
 
@@ -49,25 +41,5 @@ public final class Formats {
     format.setParseBigDecimal(true);
 
     return format;
-  }
-
-  /**
-   * A null format, which performs no formatting
-   */
-  private static final class NullFormat extends Format {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-      toAppendTo.append(obj == null ? "" : obj.toString());
-      return toAppendTo;
-    }
-
-    @Override
-    public Object parseObject(String source, ParsePosition pos) {
-      pos.setIndex(source.length());
-      return source;
-    }
   }
 }

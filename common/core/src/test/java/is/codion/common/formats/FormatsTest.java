@@ -9,14 +9,13 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class FormatsTest {
 
   @Test
   void test() throws ParseException {
-    assertEquals("test123", Formats.NULL_FORMAT.format("test123"));
-    assertEquals("test123", Formats.NULL_FORMAT.parseObject("test123"));
     NumberFormat format = Formats.getNonGroupingNumberFormat();
     assertFalse(format.isGroupingUsed());
     format = Formats.getNonGroupingIntegerFormat();
@@ -25,7 +24,5 @@ public final class FormatsTest {
     format = Formats.getBigDecimalNumberFormat();
     assertTrue(format instanceof DecimalFormat);
     assertTrue(((DecimalFormat) format).isParseBigDecimal());
-    assertEquals("test", Formats.NULL_FORMAT.format("test"));
-    assertEquals("", Formats.NULL_FORMAT.format(null));
   }
 }

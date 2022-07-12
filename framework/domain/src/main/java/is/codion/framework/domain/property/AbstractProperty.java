@@ -657,7 +657,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
         return numberFormat;
       }
 
-      return Formats.NULL_FORMAT;
+      return null;
     }
 
     private static NumberFormat getDefaultNumberFormat(Attribute<?> attribute) {
