@@ -113,7 +113,7 @@ import static java.util.Objects.requireNonNull;
  * |                                                    |
  * |                                                    |
  * |                                                    |
- * |                entityTable (JTable)                |
+ * |                entityTable (FilteredTable)         |
  * |                                                    |
  * |                                                    |
  * |                                                    |
@@ -1366,7 +1366,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   protected JToolBar initializeSouthToolBar() {
     Controls toolbarControls = getToolBarControls(additionalToolBarControls);
-    if (toolbarControls != null) {
+    if (toolbarControls != null && !toolbarControls.isEmpty()) {
       JToolBar toolBar = toolbarControls.createHorizontalToolBar();
       Arrays.stream(toolBar.getComponents())
               .map(JComponent.class::cast)
@@ -1730,7 +1730,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private static void addRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
     tableConditionPanel.getTableColumns().forEach(column -> {
-      ColumnConditionPanel<? extends Attribute<?>, ?> columnConditionPanel = tableConditionPanel.getConditionPanel((Attribute<?>) column.getIdentifier());
+      ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.getConditionPanel((Attribute<?>) column.getIdentifier());
       if (columnConditionPanel != null) {
         enableRefreshOnEnterControl(columnConditionPanel.getOperatorComboBox(), refreshControl);
         enableRefreshOnEnterControl(columnConditionPanel.getEqualField(), refreshControl);

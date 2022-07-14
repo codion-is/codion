@@ -13,7 +13,6 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -34,8 +33,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.math.BigDecimal;
@@ -92,7 +89,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private final Event<C> focusGainedEvent = Event.event();
   private final State advancedConditionState = State.state();
-  private final Value<Integer> operatorPopupWidthValue = Value.value(0, 0);
 
   private JDialog dialog;
 
@@ -433,7 +429,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       toggleAdvancedButton.addFocusListener(focusGainedListener);
     }
     toggleEnabledButton.addFocusListener(focusGainedListener);
-    addComponentListener(new OperatorBoxPopupWidthListener());
   }
 
   private void onOperatorChanged(Operator operator) {
@@ -505,7 +500,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     SwingFilteredComboBoxModel<Operator> operatorComboBoxModel = new SwingFilteredComboBoxModel<>();
     operatorComboBoxModel.setContents(operators);
     operatorComboBoxModel.setSelectedItem(operators.get(0));
-    return Components.comboBox(operatorComboBoxModel, conditionModel.getOperatorValue())
+    return comboBox(operatorComboBoxModel, conditionModel.getOperatorValue())
             .completionMode(Completion.Mode.NONE)
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
@@ -642,14 +637,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .control(ToggleControl.builder(automaticWildcardPrefixAndPostfixState)
                     .caption(AutomaticWildcard.PREFIX_AND_POSTFIX.getDescription()))
             .build();
-  }
-
-  private final class OperatorBoxPopupWidthListener extends ComponentAdapter {
-
-    @Override
-    public void componentResized(ComponentEvent e) {
-      operatorPopupWidthValue.set(getWidth() - 1);
-    }
   }
 
   private static final class OperatorComboBoxRenderer implements ListCellRenderer<Operator> {
