@@ -310,9 +310,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
     String itemToString = item.toString();
 
-    //item not found, select null value
-    return getVisibleItems().stream().filter(visibleItem -> visibleItem != null && itemToString.equals(visibleItem.toString()))
+    return getVisibleItems().stream()
+            .filter(visibleItem -> visibleItem != null && itemToString.equals(visibleItem.toString()))
             .findFirst()
+            //item not found, select null value
             .orElse(null);
   }
 

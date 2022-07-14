@@ -45,11 +45,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * want to add a custom {@link Predicate} to this model via {@link #setIncludeCondition(Predicate)}.
    * <pre>
    *   Predicate fkCondition = model.getForeignKeyIncludeCondition();
-   *   model.setIncludeCondition(new Predicate() {
-   *     public boolean test(Entity item) {
-   *       return fkCondition.test(item) &amp;&amp; ...;
-   *     }
-   *   });
+   *   model.setIncludeCondition(item -&gt; fkCondition.test(item) &amp;&amp; ...);
    * </pre>
    * @return the {@link Predicate} based on the foreign key filter entities
    * @see #setForeignKeyFilterEntities(ForeignKey, Collection)

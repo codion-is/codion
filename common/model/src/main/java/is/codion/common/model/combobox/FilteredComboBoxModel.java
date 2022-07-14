@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.function.Predicate;
 
 /**
- * A ComboBoxModel that allows filtering via Predicate objects.
+ * A ComboBoxModel that allows filtering via a Predicate.
  * @param <T> the type of the combo box model elements
  * @see #setIncludeCondition(Predicate)
  */
@@ -46,8 +46,11 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
   void setContents(Collection<T> contents);
 
   /**
-   * Adds the given item to this model, respecting the sorting order if specified
+   * Adds the given item to this model, respecting the sorting order if specified.
+   * If this model already contains the item, calling this method has no effect.
+   * Note that if the item does not satisfy the include condition, it will be filtered right away.
    * @param item the item to add
+   * @see #setIncludeCondition(Predicate)
    */
   void addItem(T item);
 
