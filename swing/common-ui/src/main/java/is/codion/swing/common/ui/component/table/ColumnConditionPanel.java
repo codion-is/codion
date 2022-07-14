@@ -13,7 +13,6 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -501,7 +500,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     SwingFilteredComboBoxModel<Operator> operatorComboBoxModel = new SwingFilteredComboBoxModel<>();
     operatorComboBoxModel.setContents(operators);
     operatorComboBoxModel.setSelectedItem(operators.get(0));
-    return Components.comboBox(operatorComboBoxModel, conditionModel.getOperatorValue())
+    return comboBox(operatorComboBoxModel, conditionModel.getOperatorValue())
             .completionMode(Completion.Mode.NONE)
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
