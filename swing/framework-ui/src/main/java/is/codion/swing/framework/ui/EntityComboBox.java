@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.model.combobox.FilteredComboBoxModel.Finder;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -101,16 +102,14 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
   /**
    * Creates a {@link TextFieldBuilder} returning a {@link NumberField} which value is bound to the selected value in this combo box
-   * @param attribute the attribute
    * @param finder responsible for finding the item to select by value
    * @param <B> the builder type
    * @return a {@link NumberField} builder bound to the selected value
    */
   public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerSelectorField(
-          Attribute<Integer> attribute, EntityComboBoxModel.Finder<Integer> finder) {
-    requireNonNull(attribute);
+          Finder<Entity, Integer> finder) {
     requireNonNull(finder);
-    return (B) Components.integerField(getModel().selectorValue(attribute, finder))
+    return (B) Components.integerField(getModel().selectorValue(finder))
             .columns(2)
             .selectAllOnFocusGained(true);
   }
@@ -131,17 +130,14 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
   /**
    * Creates a {@link TextFieldBuilder} returning a text field which value is bound to the selected value in this combo box
-   * @param attribute the attribute
    * @param finder responsible for finding the item to select by value
    * @param <B> the builder type
    * @return a {@link JTextField} builder bound to the selected value
    */
   public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringSelectorField(
-          Attribute<String> attribute,
-          EntityComboBoxModel.Finder<String> finder) {
-    requireNonNull(attribute);
+          Finder<Entity, String> finder) {
     requireNonNull(finder);
-    return (B) Components.textField(getModel().selectorValue(attribute, finder))
+    return (B) Components.textField(getModel().selectorValue(finder))
             .columns(2)
             .selectAllOnFocusGained(true);
   }

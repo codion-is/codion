@@ -7,7 +7,6 @@ import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
-import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
@@ -283,15 +282,11 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   public final <T> Value<T> selectorValue(Attribute<T> attribute) {
-    return selectorValue(attribute, (entities, theAttribute, value) -> entities.stream()
-            .filter(entity -> Objects.equals(value, entity.get(theAttribute)))
-            .findFirst()
-            .orElse(null));
-  }
+    if (!entities.getDefinition(getEntityType()).containsAttribute(attribute)) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + getEntityType());
+    }
 
-  @Override
-  public final <T> Value<T> selectorValue(Attribute<T> attribute, Finder<T> finder) {
-    return new SelectorValue<>(attribute, finder);
+    return selectorValue(new EntityFinder<>(attribute));
   }
 
   @Override
@@ -467,44 +462,22 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
   }
 
-  private final class SelectorValue<T> extends AbstractValue<T> {
+  private static final class EntityFinder<T> implements Finder<Entity, T> {
 
     private final Attribute<T> attribute;
-    private final EntityComboBoxModel.Finder<T> finder;
 
-    /**
-     * @param attribute the attribute
-     * @param finder the Finder instance responsible for finding the entity by value
-     */
-    private SelectorValue(Attribute<T> attribute, EntityComboBoxModel.Finder<T> finder) {
-      if (!entities.getDefinition(getEntityType()).containsAttribute(attribute)) {
-        throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + getEntityType());
-      }
+    private EntityFinder(Attribute<T> attribute) {
       this.attribute = attribute;
-      this.finder = requireNonNull(finder);
-      addSelectionListener(selected -> notifyValueChange());
     }
 
-    /**
-     * @return the value of the underlying attribute in the selected Entity, null if the selection is empty
-     */
     @Override
-    public T get() {
-      if (isSelectionEmpty()) {
-        return null;
-      }
-
-      return getSelectedValue().get(attribute);
+    public T getValue(Entity item) {
+      return item.get(attribute);
     }
 
-    /**
-     * Selects the first entity found in the underlying combo box model, which
-     * has the given value associated with the underlying attribute.
-     * @param value the value
-     */
     @Override
-    protected void setValue(T value) {
-      setSelectedItem(value == null ? null : finder.findByValue(getVisibleItems(), attribute, value));
+    public Predicate<Entity> getPredicate(T value) {
+      return entity -> Objects.equals(entity.get(attribute), value);
     }
   }
 }

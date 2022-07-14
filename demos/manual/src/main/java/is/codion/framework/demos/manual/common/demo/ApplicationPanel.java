@@ -2,6 +2,7 @@ package is.codion.framework.demos.manual.common.demo;
 
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.common.item.Item;
+import is.codion.common.model.combobox.FilteredComboBoxModel.Finder;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
@@ -9,6 +10,7 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
+import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
@@ -19,6 +21,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -34,9 +37,12 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
+import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Arrays.asList;
 
 /*
@@ -49,11 +55,11 @@ import static is.codion.swing.common.ui.component.Components.*;
 public final class ApplicationPanel extends JPanel {
 
   public ApplicationPanel(ApplicationModel model) {
-    super(Layouts.borderLayout());
+    super(borderLayout());
 
     setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-    JPanel settingsPanel = new JPanel(Layouts.borderLayout());
+    JPanel settingsPanel = new JPanel(borderLayout());
 
     State inputEnabledState = State.state(true);
 
@@ -185,12 +191,24 @@ public final class ApplicationPanel extends JPanel {
     label("Integer Item")
             .build(inputPanel::add);
     ItemComboBoxModel<Integer> integerItemComboBoxModel = createIntegerItemComboBoxModel();
-    itemComboBox(integerItemComboBoxModel, model.getIntegerItemValue())
+    Value<Integer> integerItemSelectorValue = integerItemComboBoxModel.selectorValue(new IntegerItemFinder());
+    NumberField<Integer> integerItemSelectorField = integerField(integerItemSelectorValue)
+            .columns(2)
+            .horizontalAlignment(SwingConstants.CENTER)
+            .selectAllOnFocusGained(true)
+            .transferFocusOnEnter(true)
+            .enabledState(inputEnabledState)
+            .build();
+    JComboBox<Item<Integer>> integerItemComboBox = itemComboBox(integerItemComboBoxModel, model.getIntegerItemValue())
             .completionMode(Completion.Mode.AUTOCOMPLETE)
             .popupMenuControl(createSelectRandomItemControl(integerItemComboBoxModel))
             .mouseWheelScrollingWithWrapAround(true)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
+            .build();
+    panel(borderLayout())
+            .add(integerItemSelectorField, BorderLayout.WEST)
+            .add(integerItemComboBox, BorderLayout.CENTER)
             .build(inputPanel::add);
 
     label("Integer Slide")
@@ -355,6 +373,19 @@ public final class ApplicationPanel extends JPanel {
             Item.item(4, "Four"), Item.item(5, "Five"), Item.item(6, "Six"),
             Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")
     ));
+  }
+
+  private static final class IntegerItemFinder implements Finder<Item<Integer>, Integer> {
+
+    @Override
+    public Integer getValue(Item<Integer> item) {
+      return item.getValue();
+    }
+
+    @Override
+    public Predicate<Item<Integer>> getPredicate(Integer value) {
+      return item -> Objects.equals(item.getValue(), value);
+    }
   }
 
   private static ComboBoxModel<Integer> createIntegerComboBoxModel() {

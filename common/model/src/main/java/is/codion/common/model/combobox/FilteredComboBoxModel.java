@@ -7,10 +7,13 @@ import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.properties.PropertyValue;
+import is.codion.common.value.Value;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.function.Predicate;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A ComboBoxModel that allows filtering via a Predicate.
@@ -158,6 +161,13 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
   Object getSelectedItem();
 
   /**
+   * @param finder responsible for finding the item to select
+   * @return a value linked to the selected item via the given finder instance
+   * @param <V> the value type
+   */
+  <V> Value<V> selectorValue(Finder<T, V> finder);
+
+  /**
    * Refreshes the items in this combo box model.
    * If run on the Event Dispatch Thread the refresh happens asynchronously.
    */
@@ -167,4 +177,41 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
    * Clears all items from this combo box model
    */
   void clear();
+
+  /**
+   * Responsible for finding an item of type {@link T} by a single value of type {@link V}.
+   * @param <T> the combo box model item type
+   * @param <V> the type of the value to search by
+   */
+  interface Finder<T, V> {
+
+    /**
+     * Returns the value from the given item to use when searching
+     * @param item the item, never null
+     * @return the value associated with the given item
+     */
+    V getValue(T item);
+
+    /**
+     * Returns the {@link Predicate} to use when searching for the given value
+     * @param value the value to search for, never null
+     * @return a {@link Predicate} based on the given value
+     */
+    Predicate<T> getPredicate(V value);
+
+    /**
+     * Returns the first item in the given collection containing the given {@code value}. Only called for non-null {@code value}s.
+     * @param items the items to search
+     * @param value the value to search for, never null
+     * @return the first item in the given list containing the given value, null if none is found.
+     */
+    default T findItem(Collection<T> items, V value) {
+      requireNonNull(value);
+
+      return requireNonNull(items).stream()
+              .filter(getPredicate(value))
+              .findFirst()
+              .orElse(null);
+    }
+  }
 }

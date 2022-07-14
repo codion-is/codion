@@ -10,6 +10,8 @@ import is.codion.common.event.EventListener;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.AbstractValue;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.ComboBoxModel;
@@ -355,6 +357,11 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
+  public final <V> Value<V> selectorValue(Finder<T, V> finder) {
+    return new SelectorValue<V>(finder);
+  }
+
+  @Override
   public final void addFilterListener(EventListener listener) {
     filterEvent.addListener(listener);
   }
@@ -512,6 +519,30 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
       else {
         return comparator.compare(o1, o2);
       }
+    }
+  }
+
+  private final class SelectorValue<V> extends AbstractValue<V> {
+
+    private final Finder<T, V> finder;
+
+    private SelectorValue(Finder<T, V> finder) {
+      this.finder = requireNonNull(finder);
+      addSelectionListener(selected -> notifyValueChange());
+    }
+
+    @Override
+    public V get() {
+      if (isSelectionEmpty()) {
+        return null;
+      }
+
+      return finder.getValue(getSelectedValue());
+    }
+
+    @Override
+    protected void setValue(V value) {
+      setSelectedItem(value == null ? null : finder.findItem(getVisibleItems(), value));
     }
   }
 }

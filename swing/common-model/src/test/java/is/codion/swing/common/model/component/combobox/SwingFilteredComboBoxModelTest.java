@@ -5,6 +5,8 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.model.combobox.FilteredComboBoxModel.Finder;
+import is.codion.common.value.Value;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -234,6 +237,32 @@ public class SwingFilteredComboBoxModelTest {
     testModel.setSelectedItem(NULL);
     assertEquals(NULL, testModel.getElementAt(0));
     assertEquals(ANNA, testModel.getElementAt(1));
+  }
+
+  @Test
+  void selectorValue() {
+    Value<Character> selectorValue = testModel.selectorValue(new Finder<String, Character>() {
+      @Override
+      public Character getValue(String item) {
+        return item.charAt(0);
+      }
+
+      @Override
+      public Predicate<String> getPredicate(Character value) {
+        return item -> item.charAt(0) == value.charValue();
+      }
+    });
+    assertNull(selectorValue.get());
+    testModel.setSelectedItem(ANNA);
+    assertEquals('a', selectorValue.get());
+    selectorValue.set('k');
+    assertEquals(KALLI, testModel.getSelectedItem());
+    selectorValue.set(null);
+    assertTrue(testModel.isNullValueSelected());
+    testModel.setSelectedItem(BJORN);
+    assertEquals('b', selectorValue.get());
+    testModel.setSelectedItem(null);
+    assertNull(selectorValue.get());
   }
 
   @Test
