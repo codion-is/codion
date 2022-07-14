@@ -19,6 +19,7 @@ import static java.util.Objects.requireNonNull;
  * A ComboBoxModel implementation based on the {@link Item} class.
  * @param <T> the type of value wrapped by this combo box models items
  * @see #createModel()
+ * @see #createSortedModel()
  * @see #createBooleanModel()
  */
 public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<T>> {
@@ -37,8 +38,9 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
   }
 
   /**
+   * Returns the index of the Item representing the given value, -1 if this model does not contain such an Item.
    * @param value the value
-   * @return the index of the given value, -1 if not found
+   * @return the index of the Item representing the given value, -1 if not found
    */
   public int indexOf(T value) {
     for (int i = 0; i < getSize(); i++) {
@@ -51,7 +53,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
   }
 
   /**
-   * @param <T> the Item type
+   * @param <T> the Item value type
    * @return a new combo box model
    */
   public static <T> ItemComboBoxModel<T> createModel() {
@@ -60,7 +62,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
 
   /**
    * @param items the items
-   * @param <T> the Item type
+   * @param <T> the Item value type
    * @return a new combo box model
    */
   public static <T> ItemComboBoxModel<T> createModel(List<Item<T>> items) {
@@ -68,7 +70,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
   }
 
   /**
-   * @param <T> the Item type
+   * @param <T> the Item value type
    * @return a new combo box model
    */
   public static <T> ItemComboBoxModel<T> createSortedModel() {
@@ -77,7 +79,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
 
   /**
    * @param items the items
-   * @param <T> the Item type
+   * @param <T> the Item value type
    * @return a new combo box model
    */
   public static <T> ItemComboBoxModel<T> createSortedModel(List<Item<T>> items) {
@@ -86,7 +88,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
 
   /**
    * @param sortComparator the sort comparator to use
-   * @param <T> the Item type
+   * @param <T> the Item value type
    * @return a new combo box model
    */
   public static <T> ItemComboBoxModel<T> createSortedModel(Comparator<Item<T>> sortComparator) {
@@ -96,7 +98,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
   /**
    * @param items the items
    * @param sortComparator the sort comparator to use
-   * @param <T> the Item type
+   * @param <T> the Item value type
    * @return a new combo box model
    */
   public static <T> ItemComboBoxModel<T> createSortedModel(List<Item<T>> items, Comparator<Item<T>> sortComparator) {
@@ -116,11 +118,11 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
 
   /**
    * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
-   * @param nullString the string representing a null value
+   * @param nullCaption the string representing a null value
    * @return a Boolean based ItemComboBoxModel
    */
-  public static ItemComboBoxModel<Boolean> createBooleanModel(String nullString) {
-    return createBooleanModel(nullString, Messages.get(Messages.YES), Messages.get(Messages.NO));
+  public static ItemComboBoxModel<Boolean> createBooleanModel(String nullCaption) {
+    return createBooleanModel(nullCaption, Messages.get(Messages.YES), Messages.get(Messages.NO));
   }
 
   /**

@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.formats.Formats;
-
 import javax.swing.text.JTextComponent;
 import java.text.Format;
 import java.text.ParseException;
@@ -17,7 +15,7 @@ final class DefaultTextComponentValue<T, C extends JTextComponent> extends Abstr
 
   DefaultTextComponentValue(C textComponent, Format format, UpdateOn updateOn) {
     super(textComponent, null, updateOn);
-    this.format = format == null ? Formats.NULL_FORMAT : format;
+    this.format = format;
   }
 
   @Override
@@ -32,7 +30,7 @@ final class DefaultTextComponentValue<T, C extends JTextComponent> extends Abstr
 
   @Override
   protected void setComponentValue(T value) {
-    getComponent().setText(value == null ? "" : format.format(value));
+    getComponent().setText(value == null ? "" : (format == null ? value.toString() : format.format(value)));
   }
 
   /**
@@ -43,7 +41,7 @@ final class DefaultTextComponentValue<T, C extends JTextComponent> extends Abstr
    */
   private T parseValueFromText(String text) {
     try {
-      return (T) format.parseObject(text);
+      return (T) (format == null ? text : format.parseObject(text));
     }
     catch (ParseException e) {
       return null;

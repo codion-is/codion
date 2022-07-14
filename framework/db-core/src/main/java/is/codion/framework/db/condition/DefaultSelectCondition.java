@@ -118,7 +118,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   @Override
   public Collection<Attribute<?>> getSelectAttributes() {
-    return selectAttributes == null ? emptyList() : selectAttributes;
+    return selectAttributes;
   }
 
   @Override
