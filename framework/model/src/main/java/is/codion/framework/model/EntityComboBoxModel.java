@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -45,11 +44,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * want to add a custom {@link Predicate} to this model via {@link #setIncludeCondition(Predicate)}.
    * <pre>
    *   Predicate fkCondition = model.getForeignKeyIncludeCondition();
-   *   model.setIncludeCondition(new Predicate() {
-   *     public boolean test(Entity item) {
-   *       return fkCondition.test(item) &amp;&amp; ...;
-   *     }
-   *   });
+   *   model.setIncludeCondition(item -&gt; fkCondition.test(item) &amp;&amp; ...);
    * </pre>
    * @return the {@link Predicate} based on the foreign key filter entities
    * @see #setForeignKeyFilterEntities(ForeignKey, Collection)
@@ -182,35 +177,9 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Creates a {@link Value} linked to the selected entity via the value of the given attribute.
-   * @param <T> the attribute type
+   * @param <V> the attribute type
    * @param attribute the attribute
    * @return a {@link Value} for selecting items by attribute value
    */
-  <T> Value<T> selectorValue(Attribute<T> attribute);
-
-  /**
-   * Creates a {@link Value} linked to the selected entity via the value of the given attribute.
-   * @param <T> the attribute type
-   * @param attribute the attribute
-   * @param finder responsible for finding the entity by value
-   * @return a {@link Value} for selecting items by attribute value
-   */
-  <T> Value<T> selectorValue(Attribute<T> attribute, Finder<T> finder);
-
-  /**
-   * Responsible for finding an Entity by the value of a given attribute.
-   * @param <T> the value type
-   */
-  interface Finder<T> {
-
-    /**
-     * Returns the first Entity in the given list with {@code value} associated with
-     * the given attribute. Only called for non-null {@code value}s.
-     * @param entities the entities to search
-     * @param attribute the attribute
-     * @param value the value to search for, never null
-     * @return the first Entity in the given list with the given value.
-     */
-    Entity findByValue(List<Entity> entities, Attribute<T> attribute, T value);
-  }
+  <V> Value<V> selectorValue(Attribute<V> attribute);
 }

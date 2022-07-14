@@ -108,7 +108,7 @@ public interface SelectCondition extends Condition {
   SelectCondition fetchDepth(ForeignKey foreignKey, int fetchDepth);
 
   /**
-   * Sets the attributes to include in the resulting Entities.
+   * Sets the attributes to include in the query result. An empty array means all attributes should be included.
    * Note that primary key attribute values are always included.
    * Note that these must be ColumnProperty attributes
    * @param attributes the attributes to include
@@ -117,7 +117,7 @@ public interface SelectCondition extends Condition {
   SelectCondition selectAttributes(Attribute<?>... attributes);
 
   /**
-   * Sets the attributes to include in the resulting Entities.
+   * Sets the attributes to include in the query result. An empty Collection means all attributes should be included.
    * Note that primary key attribute values are always included.
    * @param attributes the attributes to include
    * @return a new SelectCondition instance with the given select attributes

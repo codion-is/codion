@@ -221,7 +221,7 @@ public interface Property<T> {
   Character getMnemonic();
 
   /**
-   * Returns the Format used when presenting values for this property.
+   * Returns the Format used when presenting values for this property, null if none has been specified.
    * @return the Format object used to format the value of properties when being presented
    */
   Format getFormat();
