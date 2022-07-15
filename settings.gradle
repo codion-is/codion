@@ -178,7 +178,7 @@ dependencyResolutionManagement {
             version('jersey', '3.0.4')
             version('junit', '5.8.2')
             version('sslcontext.kickstart', '7.4.5')
-            version('flatlaf', '2.3')
+            version('flatlaf', '2.4')
             version('ikonli.swing', '12.3.1')
             //plugins
             version('hikari', '5.0.1')
@@ -186,7 +186,7 @@ dependencyResolutionManagement {
             version('log4j', '2.18.0')
             version('tomcat', '10.0.6')
             //jasperreports
-            version('jasperreports', '6.19.1')
+            version('jasperreports', '6.20.0')
             version('commons.logging', '1.2')
             version('commons.digester', '2.1')
             version('commons.collections4', '4.4')
