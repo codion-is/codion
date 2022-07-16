@@ -7,11 +7,12 @@ import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultConnectionRequest implements ConnectionRequest, Serializable {
@@ -30,7 +31,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
     this.clientId = requireNonNull(builder.clientId, "clientId");
     this.clientTypeId = requireNonNull(builder.clientTypeId, "clientTypeId");
     this.clientVersion = builder.clientVersion;
-    this.parameters = builder.parameters;
+    this.parameters = builder.parameters == null ? null : unmodifiableMap(builder.parameters);
   }
 
   @Override
@@ -60,7 +61,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 
   @Override
   public Map<String, Object> getParameters() {
-    return parameters == null ? Collections.emptyMap() : parameters;
+    return parameters == null ? emptyMap() : parameters;
   }
 
   @Override

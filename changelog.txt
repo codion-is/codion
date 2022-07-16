@@ -8254,3 +8254,4 @@
   AbstractProperty.format no longer initialized to Formats.NULL_FORMAT, just use null instead, Formats.NULL_FORMAT removed
   EntityComboBox.Finder moved to FilteredComboBoxModel, related refactoring
   EntityConnection.selectSingle(key) renamed select()
+  DefaultConnectionRequest.parameters now unmodifiable
