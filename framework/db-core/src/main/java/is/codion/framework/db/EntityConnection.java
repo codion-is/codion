@@ -260,14 +260,14 @@ public interface EntityConnection extends AutoCloseable {
   <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
-   * Selects a single entity by key
+   * Selects an entity by key
    * @param key the key of the entity to select
    * @return an entity having the key {@code key}
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  Entity selectSingle(Key key) throws DatabaseException;
+  Entity select(Key key) throws DatabaseException;
 
   /**
    * Selects a single entity based on the specified condition

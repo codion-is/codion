@@ -586,7 +586,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final void refreshEntity() {
     try {
       if (!isEntityNew()) {
-        setEntity(getConnectionProvider().getConnection().selectSingle(getEntity().getPrimaryKey()));
+        setEntity(getConnectionProvider().getConnection().select(getEntity().getPrimaryKey()));
       }
     }
     catch (DatabaseException e) {

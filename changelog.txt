@@ -8253,3 +8253,4 @@
   DefaultEntityTableConditionModel.setEqualConditionValues() bug fixed, now enables the condition model last, after values have been set, otherwise the condition changed event triggers a call to getCondition(), which can then fail in case of composite primary keys
   AbstractProperty.format no longer initialized to Formats.NULL_FORMAT, just use null instead, Formats.NULL_FORMAT removed
   EntityComboBox.Finder moved to FilteredComboBoxModel, related refactoring
+  EntityConnection.selectSingle(key) renamed select()

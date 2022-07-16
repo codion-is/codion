@@ -353,7 +353,7 @@ public final class DefaultEntityEditModelTest {
               .build();
 
       Entity department = connection
-              .selectSingle(connection.insert(tmpDept));
+              .select(connection.insert(tmpDept));
 
       employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, department);
 

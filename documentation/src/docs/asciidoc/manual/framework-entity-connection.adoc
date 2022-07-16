@@ -51,9 +51,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthConditionForeignKey]
 ----
 
-=== select
-
-For selecting one or more rows.
+=== Selecting entities
 
 {url-entity-connection}#select{opar}is.codion.framework.db.condition.Condition{cpar}[select(Condition condition)]
 
@@ -62,7 +60,14 @@ For selecting one or more rows.
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectCondition]
 ----
 
-{url-entity-connection}#select{opar}java.util.List{cpar}[select(List<Key> keys)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Key{cpar}[select(Key key)]
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKey]
+----
+
+{url-entity-connection}#select{opar}java.util.Collection{cpar}[select(Collection<Key> keys)]
 
 [source,java,indent=0]
 ----
@@ -76,22 +81,11 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectByValue]
 ----
 
-=== selectSingle
-
-For selecting single rows.
-
 {url-entity-connection}#selectSingle{opar}is.codion.framework.db.condition.Condition{cpar}[selectSingle(Condition condition)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleCondition]
-----
-
-{url-entity-connection}#selectSingle{opar}is.codion.framework.domain.entity.Key{cpar}[selectSingle(Key key)]
-
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleKeys]
 ----
 
 {url-entity-connection}#selectSingle{opar}is.codion.framework.domain.entity.Attribute{comma}T{cpar}[selectSingle(Attribute<T> attribute, T value)]
@@ -101,7 +95,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleValue]
 ----
 
-=== select
+=== Selecting values
 
 For selecting the values of a single column.
 

@@ -234,9 +234,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Entity selectSingle(Key key) throws DatabaseException {
+  public Entity select(Key key) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectSingle(key);
+      return connectionProxy.select(key);
     }
   }
 
