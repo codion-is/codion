@@ -191,7 +191,7 @@ public class EntityTestUnit {
   private static Entity testInsert(Entity testEntity, EntityConnection connection) throws DatabaseException {
     Key key = connection.insert(testEntity);
     try {
-      return connection.selectSingle(key);
+      return connection.select(key);
     }
     catch (RecordNotFoundException e) {
       fail("Inserted entity of type " + testEntity.getEntityType() + " not returned by select after insert");
@@ -210,7 +210,7 @@ public class EntityTestUnit {
   private static void testSelect(EntityType entityType, Entity testEntity,
                                  EntityConnection connection) throws DatabaseException {
     if (testEntity != null) {
-      assertEquals(testEntity, connection.selectSingle(testEntity.getPrimaryKey()),
+      assertEquals(testEntity, connection.select(testEntity.getPrimaryKey()),
               "Entity of type " + testEntity.getEntityType() + " failed equals comparison");
     }
     else {
@@ -266,7 +266,7 @@ public class EntityTestUnit {
     connection.delete(Entity.getPrimaryKeys(singletonList(testEntity)));
     boolean caught = false;
     try {
-      connection.selectSingle(testEntity.getPrimaryKey());
+      connection.select(testEntity.getPrimaryKey());
     }
     catch (RecordNotFoundException e) {
       caught = true;
@@ -290,7 +290,7 @@ public class EntityTestUnit {
         }
       }
 
-      return connection.selectSingle(connection.insert(entity));
+      return connection.select(connection.insert(entity));
     }
     catch (DatabaseException e) {
       LOG.error("EntityTestUnit.insertOrSelect()", e);

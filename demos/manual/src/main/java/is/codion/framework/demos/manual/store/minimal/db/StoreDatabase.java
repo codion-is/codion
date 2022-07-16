@@ -66,7 +66,7 @@ public class StoreDatabase {
 
     Key customerKey = connection.insert(customer);
     //select to get generated and default column values
-    customer = connection.selectSingle(customerKey);
+    customer = connection.select(customerKey);
 
     Entity address = entities.builder(Address.TYPE)
             .with(Address.CUSTOMER_FK, customer)

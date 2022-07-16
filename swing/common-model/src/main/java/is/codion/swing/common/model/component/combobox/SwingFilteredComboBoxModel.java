@@ -358,7 +358,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final <V> Value<V> selectorValue(Finder<T, V> finder) {
-    return new SelectorValue<V>(finder);
+    return new SelectorValue<>(finder);
   }
 
   @Override

@@ -418,7 +418,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
         connection.commitTransaction();
 
-        return connection.selectSingle(playlistKey);
+        return connection.select(playlistKey);
       }
       catch (DatabaseException e) {
         connection.rollbackTransaction();

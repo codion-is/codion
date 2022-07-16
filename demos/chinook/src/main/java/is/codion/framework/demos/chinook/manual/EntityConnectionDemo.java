@@ -143,14 +143,14 @@ public final class EntityConnectionDemo {
     // end::selectSingleCondition[]
   }
 
-  static void selectSingleKeys(EntityConnection connection) throws DatabaseException {
-    // tag::selectSingleKeys[]
+  static void selectKey(EntityConnection connection) throws DatabaseException {
+    // tag::selectKey[]
     Entities entities = connection.getEntities();
 
     Key key42 = entities.primaryKey(Artist.TYPE, 42L);
 
-    Entity artists = connection.selectSingle(key42);
-    // end::selectSingleKeys[]
+    Entity artists = connection.select(key42);
+    // end::selectKey[]
   }
 
   static void selectSingleValue(EntityConnection connection) throws DatabaseException {
@@ -376,7 +376,7 @@ public final class EntityConnectionDemo {
     selectByValue(connection);
     iterator(connection);
     selectSingleCondition(connection);
-    selectSingleKeys(connection);
+    selectKey(connection);
     selectSingleValue(connection);
     selectValues(connection);
     selectDependencies(connection);

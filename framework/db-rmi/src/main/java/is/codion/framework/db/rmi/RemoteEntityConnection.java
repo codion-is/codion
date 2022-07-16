@@ -271,7 +271,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   <T> Entity selectSingle(Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
 
   /**
-   * Selects a single entity by key
+   * Selects an entity by key
    * @param key the key of the entity to select
    * @return an entity having the key {@code key}
    * @throws DatabaseException in case of a db exception
@@ -279,7 +279,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  Entity selectSingle(Key key) throws RemoteException, DatabaseException;
+  Entity select(Key key) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity based on the specified condition

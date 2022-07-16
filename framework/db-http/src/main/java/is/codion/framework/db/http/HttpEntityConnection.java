@@ -312,7 +312,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public Entity selectSingle(Key key) throws DatabaseException {
+  public Entity select(Key key) throws DatabaseException {
     return selectSingle(condition(key));
   }
 
