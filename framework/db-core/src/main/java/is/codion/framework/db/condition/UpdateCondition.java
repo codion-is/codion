@@ -23,12 +23,12 @@ public interface UpdateCondition extends Condition {
    * @param attribute the attribute
    * @param value the new value
    * @param <T> the value type
-   * @return this {@link UpdateCondition} instance
+   * @return a new {@link UpdateCondition} instance with the given value to update
    */
   <T> UpdateCondition set(Attribute<T> attribute, T value);
 
   /**
-   * @return the new values mapped to their respective attributes
+   * @return an unmodifiable view of the new values mapped to their respective attributes
    */
   Map<Attribute<?>, Object> getAttributeValues();
 }
