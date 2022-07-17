@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  * @see HttpEntityConnectionProvider#builder()
  */
 final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnectionProvider
-        implements HttpEntityConnectionProvider{
+        implements HttpEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnectionProvider.class);
 

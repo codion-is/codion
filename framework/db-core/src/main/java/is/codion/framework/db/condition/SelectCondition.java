@@ -68,19 +68,19 @@ public interface SelectCondition extends Condition {
   /**
    * Sets the OrderBy for this condition
    * @param orderBy the OrderBy to use when applying this condition
-   * @return a new SelectCondition instance with the given order by
+   * @return a new {@link SelectCondition} instance with the given order by
    */
   SelectCondition orderBy(OrderBy orderBy);
 
   /**
    * @param limit the limit to use for this condition
-   * @return a new SelectCondition instance with the given limit
+   * @return a new {@link SelectCondition} instance with the given limit
    */
   SelectCondition limit(int limit);
 
   /**
    * @param offset the offset to use for this condition
-   * @return a new SelectCondition instance with the given offset
+   * @return a new {@link SelectCondition} instance with the given offset
    */
   SelectCondition offset(int offset);
 
@@ -88,14 +88,14 @@ public interface SelectCondition extends Condition {
    * Marks this condition as a select for update query, this means the resulting records
    * will be locked by the given connection until unlocked by running another (non - select for update)
    * query on the same connection or performing an update
-   * @return a new SelectCondition instance with for update enabled
+   * @return a new {@link SelectCondition} instance with for update enabled
    */
   SelectCondition forUpdate();
 
   /**
    * Limit the levels of foreign keys to fetch
    * @param fetchDepth the foreign key fetch depth limit
-   * @return a new SelectCondition instance with the given fetch depth
+   * @return a new {@link SelectCondition} instance with the given fetch depth
    */
   SelectCondition fetchDepth(int fetchDepth);
 
@@ -112,7 +112,7 @@ public interface SelectCondition extends Condition {
    * Note that primary key attribute values are always included.
    * Note that these must be ColumnProperty attributes
    * @param attributes the attributes to include
-   * @return a new SelectCondition instance with the given select attributes
+   * @return a new {@link SelectCondition} instance with the given select attributes
    */
   SelectCondition selectAttributes(Attribute<?>... attributes);
 
@@ -120,13 +120,13 @@ public interface SelectCondition extends Condition {
    * Sets the attributes to include in the query result. An empty Collection means all attributes should be included.
    * Note that primary key attribute values are always included.
    * @param attributes the attributes to include
-   * @return a new SelectCondition instance with the given select attributes
+   * @return a new {@link SelectCondition} instance with the given select attributes
    */
   SelectCondition selectAttributes(Collection<Attribute<?>> attributes);
 
   /**
    * @param queryTimeout the query timeout, 0 for no timeout
-   * @return a new SelectCondition instance with the given query timeout
+   * @return a new {@link SelectCondition} instance with the given query timeout
    */
   SelectCondition queryTimeout(int queryTimeout);
 }
