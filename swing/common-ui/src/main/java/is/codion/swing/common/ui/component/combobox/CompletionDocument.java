@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2008 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.swing.common.ui.component.combobox;
 
 import javax.swing.ComboBoxEditor;

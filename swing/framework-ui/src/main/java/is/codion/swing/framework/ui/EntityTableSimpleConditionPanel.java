@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2020 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Conjunction;

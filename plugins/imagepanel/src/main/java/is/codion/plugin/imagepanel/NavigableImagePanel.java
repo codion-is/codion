@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2009 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.plugin.imagepanel;
 
 import javax.imageio.ImageIO;
