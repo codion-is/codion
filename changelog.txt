@@ -8255,3 +8255,4 @@
   EntityComboBox.Finder moved to FilteredComboBoxModel, related refactoring
   EntityConnection.selectSingle(key) renamed select()
   DefaultConnectionRequest.parameters now unmodifiable
+  DefaultColumnProperty.TYPE_MAP added

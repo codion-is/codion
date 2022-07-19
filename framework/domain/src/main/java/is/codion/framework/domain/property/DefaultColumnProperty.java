@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -25,6 +27,21 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final long serialVersionUID = 1;
 
   private static final ValueConverter<Object, Object> DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
+  private static final Map<Class<?>, Integer> TYPE_MAP = new HashMap<>();
+
+  static {
+    TYPE_MAP.put(Long.class, Types.BIGINT);
+    TYPE_MAP.put(Integer.class, Types.INTEGER);
+    TYPE_MAP.put(Double.class, Types.DOUBLE);
+    TYPE_MAP.put(BigDecimal.class, Types.DECIMAL);
+    TYPE_MAP.put(LocalDate.class, Types.DATE);
+    TYPE_MAP.put(LocalTime.class, Types.TIME);
+    TYPE_MAP.put(LocalDateTime.class, Types.TIMESTAMP);
+    TYPE_MAP.put(OffsetDateTime.class, Types.TIMESTAMP_WITH_TIMEZONE);
+    TYPE_MAP.put(String.class, Types.VARCHAR);
+    TYPE_MAP.put(Boolean.class, Types.BOOLEAN);
+    TYPE_MAP.put(byte[].class, Types.BLOB);
+  }
 
   private final int columnType;
   private final int primaryKeyIndex;
@@ -338,42 +355,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
      * @return the corresponding sql type
      */
     private static int getSqlType(Class<?> clazz) {
-      requireNonNull(clazz, "clazz");
-      if (clazz.equals(Long.class)) {
-        return Types.BIGINT;
-      }
-      if (clazz.equals(Integer.class)) {
-        return Types.INTEGER;
-      }
-      if (clazz.equals(Double.class)) {
-        return Types.DOUBLE;
-      }
-      if (clazz.equals(BigDecimal.class)) {
-        return Types.DECIMAL;
-      }
-      if (clazz.equals(LocalDate.class)) {
-        return Types.DATE;
-      }
-      if (clazz.equals(LocalTime.class)) {
-        return Types.TIME;
-      }
-      if (clazz.equals(LocalDateTime.class)) {
-        return Types.TIMESTAMP;
-      }
-      if (clazz.equals(OffsetDateTime.class)) {
-        return Types.TIMESTAMP_WITH_TIMEZONE;
-      }
-      if (clazz.equals(String.class)) {
-        return Types.VARCHAR;
-      }
-      if (clazz.equals(Boolean.class)) {
-        return Types.BOOLEAN;
-      }
-      if (clazz.equals(byte[].class)) {
-        return Types.BLOB;
-      }
-
-      return Types.OTHER;
+      return TYPE_MAP.getOrDefault(requireNonNull(clazz, "clazz"), Types.OTHER);
     }
 
     private static <T> ValueFetcher<T> initializeValueFetcher(int columnType, Class<T> typeClass) {
