@@ -13,24 +13,12 @@ plugins {
     id "org.sonarqube" version "3.3"
     id "com.github.ben-manes.versions" version "0.42.0"
     id "com.vanniktech.dependency.graph.generator" version "0.8.0"
-    id "com.github.hierynomus.license" version "0.16.1"
+    id "com.diffplug.spotless" version "6.8.0"
 }
 
 ext {
     frameworkModules = subprojects.findAll {
         project -> !project.name.contains("demos") && !project.name.contains("documentation")
-    }
-}
-
-allprojects {
-//    apply plugin: "com.github.hierynomus.license"
-
-    license {
-        header rootProject.file('LICENSE')
-        excludes(["**/*.sql", "**/*.xml"])
-        ext {
-            year = LocalDate.now().getYear()
-        }
     }
 }
 
@@ -42,6 +30,7 @@ configure(project.frameworkModules) {
     apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'project-report'
     apply plugin: 'com.vanniktech.dependency.graph.generator'
+    apply plugin: 'com.diffplug.spotless'
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -77,6 +66,12 @@ configure(project.frameworkModules) {
 
     //https://github.com/java9-modularity/gradle-modules-plugin/issues/165
     modularity.disableEffectiveArgumentsAdjustment()
+
+    spotless {
+        java {
+            licenseHeader ('/*\n' + ' * Copyright (c) $YEAR, Björn Darri Sigurðsson. All Rights Reserved.\n' + ' */').yearSeparator(' - ')
+        }
+    }
 
     jar {
         manifest {

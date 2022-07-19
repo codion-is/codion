@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2022, Björn Darri Sigurösson. All Rights Reserved.
+ * Copyright (c) 2021 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package is.codion.common.rmi.server;
 

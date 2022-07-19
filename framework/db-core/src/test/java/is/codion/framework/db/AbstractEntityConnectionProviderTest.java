@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2018 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.framework.db;
 
 import is.codion.common.user.User;

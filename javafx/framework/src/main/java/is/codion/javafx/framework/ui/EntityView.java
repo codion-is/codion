@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2015 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package is.codion.javafx.framework.ui;
 

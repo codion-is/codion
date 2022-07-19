@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2021 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.common.value;
 
 import org.junit.jupiter.api.Test;
