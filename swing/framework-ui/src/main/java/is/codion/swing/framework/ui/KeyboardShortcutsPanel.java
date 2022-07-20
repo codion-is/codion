@@ -50,7 +50,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .build(this::add);
   }
 
-  private JPanel navigation() {
+  private static JPanel navigation() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("navigate_up_down")), new JLabel(CTRL + ALT + UP_DOWN))
             .addAll(new JLabel(MESSAGES.getString("navigate_left_right")), new JLabel(CTRL + ALT + LEFT_RIGHT))
@@ -58,7 +58,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .build();
   }
 
-  private JPanel resizing() {
+  private static JPanel resizing() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("resize_left_right")), new JLabel(SHIFT + ALT + LEFT_RIGHT))
             .addAll(new JLabel(MESSAGES.getString("toggle_edit_panel")), new JLabel(SHIFT + ALT + UP_DOWN))
@@ -66,7 +66,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .build();
   }
 
-  private JPanel focusTransferral() {
+  private static JPanel focusTransferral() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("transfer_focus_edit_panel")), new JLabel(CTRL + "E"))
             .addAll(new JLabel(MESSAGES.getString("transfer_focus_table")), new JLabel(CTRL + "T"))
@@ -77,7 +77,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .build();
   }
 
-  private JPanel editPanel() {
+  private static JPanel editPanel() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("transfer_focus_to_next_input_field")), new JLabel(ENTER))
             .addAll(new JLabel(MESSAGES.getString("transfer_focus_to_previous_input_field")), new JLabel(SHIFT + ENTER))
@@ -91,7 +91,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .build();
   }
 
-  private JPanel tablePanel() {
+  private static JPanel tablePanel() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("delete_selected")), new JLabel("Delete"))
             .addAll(new JLabel(MESSAGES.getString("copy_selected_rows")), new JLabel(CTRL + "C"))
@@ -104,14 +104,14 @@ final class KeyboardShortcutsPanel extends JPanel {
             .build();
   }
 
-  private JPanel conditionPanel() {
+  private static JPanel conditionPanel() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("refresh_table_data")), new JLabel(ENTER))
             .border(createTitledBorder(MESSAGES.getString("condition_panel")))
             .build();
   }
 
-  private JPanel searchField() {
+  private static JPanel searchField() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("find_next")), new JLabel(ENTER + OR + UP))
             .addAll(new JLabel(MESSAGES.getString("find_and_select_next")), new JLabel(SHIFT + ENTER + OR + UP))
@@ -122,14 +122,14 @@ final class KeyboardShortcutsPanel extends JPanel {
             .build();
   }
 
-  private JPanel dateTimeField() {
+  private static JPanel dateTimeField() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("display_calendar")), new JLabel(INSERT))
             .border(createTitledBorder(MESSAGES.getString("date_time_field")))
             .build();
   }
 
-  private JPanel calendar() {
+  private static JPanel calendar() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("previous_next_year")), new JLabel(CTRL + LEFT_RIGHT + OR + DOWN_UP))
             .addAll(new JLabel(MESSAGES.getString("previous_next_month")), new JLabel(SHIFT + LEFT_RIGHT + OR + DOWN_UP))
@@ -141,14 +141,14 @@ final class KeyboardShortcutsPanel extends JPanel {
             .build();
   }
 
-  private JPanel entityField() {
+  private static JPanel entityField() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("add_new_item")), new JLabel(INSERT))
             .border(createTitledBorder(MESSAGES.getString("entity_field")))
             .build();
   }
 
-  private JPanel textInput() {
+  private static JPanel textInput() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("display_input_dialog")), new JLabel(INSERT))
             .border(createTitledBorder(MESSAGES.getString("text_input_panel")))
