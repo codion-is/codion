@@ -8258,3 +8258,4 @@
   DefaultColumnProperty.TYPE_MAP added
   DefaultColumnProperty.VALUE_FETCHERS added, initializeValueFetcher() renamed getValueFetcher()
   ColumnPacker.translateTypeName() renamed getTypeClass()
+  Property.GROUPING_SEPARATOR and DECIMAL_SEPARATOR configuration values now Character based

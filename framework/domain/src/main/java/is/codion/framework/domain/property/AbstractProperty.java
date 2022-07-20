@@ -671,13 +671,12 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
 
     private static NumberFormat setSeparators(NumberFormat numberFormat) {
       if (numberFormat instanceof DecimalFormat) {
-        String defaultGroupingSeparator = GROUPING_SEPARATOR.get();
-        String defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
-        if (Util.notNull(defaultGroupingSeparator, defaultDecimalSeparator)
-                && defaultGroupingSeparator.length() == 1 && defaultDecimalSeparator.length() == 1) {
+        Character defaultGroupingSeparator = GROUPING_SEPARATOR.get();
+        Character defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
+        if (Util.notNull(defaultGroupingSeparator, defaultDecimalSeparator)) {
           DecimalFormatSymbols symbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
-          symbols.setDecimalSeparator(defaultDecimalSeparator.charAt(0));
-          symbols.setGroupingSeparator(defaultGroupingSeparator.charAt(0));
+          symbols.setDecimalSeparator(defaultDecimalSeparator);
+          symbols.setGroupingSeparator(defaultGroupingSeparator);
           ((DecimalFormat) numberFormat).setDecimalFormatSymbols(symbols);
         }
       }
