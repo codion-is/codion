@@ -8257,3 +8257,4 @@
   DefaultConnectionRequest.parameters now unmodifiable
   DefaultColumnProperty.TYPE_MAP added
   DefaultColumnProperty.VALUE_FETCHERS added, initializeValueFetcher() renamed getValueFetcher()
+  ColumnPacker.translateTypeName() renamed getTypeClass()
