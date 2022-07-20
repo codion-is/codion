@@ -286,7 +286,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .enabledState(State.and(activeState,
                     getEditModel().getDeleteEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver()))
-            .description(FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + ALT_PREFIX + mnemonic + ")")
+            .description(FrameworkMessages.get(FrameworkMessages.DELETE_CURRENT_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
             .smallIcon(frameworkIcons().delete())
             .build();
@@ -300,7 +300,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return Control.builder(this::clearAndRequestFocus)
             .caption(FrameworkMessages.get(FrameworkMessages.CLEAR))
             .enabledState(activeState)
-            .description(FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")")
+            .description(FrameworkMessages.get(FrameworkMessages.CLEAR_TIP) + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic.charAt(0))
             .smallIcon(frameworkIcons().clear())
             .build();

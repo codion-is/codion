@@ -24,13 +24,14 @@ public final class FrameworkMessages {
   public static final String SUPPORT_TABLES_MNEMONIC = "support_tables_mnemonic";
   public static final String CLEAR = "clear";
   public static final String CLEAR_MNEMONIC = "clear_mnemonic";
-  public static final String CLEAR_ALL_TIP = "clear_all_tip";
+  public static final String CLEAR_TIP = "clear_tip";
   public static final String UPDATE = "update";
   public static final String UPDATE_MNEMONIC = "update_mnemonic";
   public static final String UPDATE_TIP = "update_tip";
   public static final String DELETE = "delete";
   public static final String DELETE_MNEMONIC = "delete_mnemonic";
-  public static final String DELETE_TIP = "delete_tip";
+  public static final String DELETE_CURRENT_TIP = "delete_current_tip";
+  public static final String DELETE_SELECTED_TIP = "delete_selected_tip";
   public static final String UPDATE_SELECTED_TIP = "update_selected_tip";
   public static final String REFRESH = "refresh";
   public static final String REFRESH_MNEMONIC = "refresh_mnemonic";

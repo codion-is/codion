@@ -85,17 +85,17 @@ public interface Property<T> {
 
   /**
    * Specifies the default number grouping separator.<br>
-   * Value type: String (1 character)<br>
+   * Value type: Character<br>
    * Default value: The grouping separator for the default locale
    */
-  PropertyValue<String> GROUPING_SEPARATOR = Configuration.stringValue("codion.domain.groupingSeparator", String.valueOf(DecimalFormatSymbols.getInstance().getGroupingSeparator()));
+  PropertyValue<Character> GROUPING_SEPARATOR = Configuration.characterValue("codion.domain.groupingSeparator", DecimalFormatSymbols.getInstance().getGroupingSeparator());
 
   /**
    * Specifies the default number decimal separator.<br>
-   * Value type: String (1 character)<br>
+   * Value type: Character<br>
    * Default value: The decimal separator for the default locale
    */
-  PropertyValue<String> DECIMAL_SEPARATOR = Configuration.stringValue("codion.domain.decimalSeparator", String.valueOf(DecimalFormatSymbols.getInstance().getDecimalSeparator()));
+  PropertyValue<Character> DECIMAL_SEPARATOR = Configuration.characterValue("codion.domain.decimalSeparator", DecimalFormatSymbols.getInstance().getDecimalSeparator());
 
   /**
    * Specifies the default foreign key fetch depth<br>

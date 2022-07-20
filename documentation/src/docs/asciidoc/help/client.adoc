@@ -130,10 +130,10 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 |kbd:[Del]|Delete selected
 |kbd:[Ctrl + C]|Copy selected rows to clipboard
 |kbd:[Ctrl + Alt + C]|Copy selected cell to clipboard
-|kbd:[Ctrl + Alt + &#x2190;/&#x2192;]|Move selected column left/right
-|kbd:[Ctrl + &#x002B;/&#x2212;]|Increase/decrease selected column size
+|kbd:[Ctrl + Shift + &#x2190;/&#x2192;]|Move selected column
+|kbd:[Ctrl + &#x002B;/&#x2212;]|Resize selected column
 |kbd:[Ctrl + G]|Show popup menu
-|kbd:[F5]|Refresh when condition refresh button is visible and enabled
+|kbd:[F5]|Refresh, when condition panel is visible and button is enabled
 |===
 
 [cols="1,3"]
@@ -147,13 +147,11 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 |===
 2+|Table search field
 
-|kbd:[Enter]|Find next
-|kbd:[Shift + Enter]|Find and select next
-|kbd:[&#x2193;]|Find next
-|kbd:[Shift + &#x2193;]|Find and select next
+|kbd:[Enter or &#x2193;]|Find next
+|kbd:[Shift + Enter or &#x2193;]|Find and select next
 |kbd:[&#x2191;]|Find previous
 |kbd:[Shift + &#x2191;]|Find and select previous
-|kbd:[Esc]|Cancel and move focus to table
+|kbd:[Esc]|Move focus to table
 |===
 
 [cols="1,3"]
@@ -166,14 +164,14 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 
 [cols="1,3"]
 |===
-2+|Calendar panel
+2+|Calendar
 
 |kbd:[Ctrl + &#x2190;/&#x2192;] or kbd:[Ctrl + &#x2193;/&#x2191;]|Previous/next year
-|kbd:[Shift + &#x2190;/&#x2192;] or kbd:[Ctrl + &#x2193;/&#x2191;]|Previous/next month
+|kbd:[Shift + &#x2190;/&#x2192;] or kbd:[Shift + &#x2193;/&#x2191;]|Previous/next month
 |kbd:[Alt + &#x2190;/&#x2192;]|Previous/next day
 |kbd:[Alt + &#x2191;/&#x2193;]|Previous/next week
-|kbd:[Shift + Alt + &#x2190;/&#x2192;] or kbd:[Ctrl + &#x2193;/&#x2191;]|Previous/next hour
-|kbd:[Ctrl + Alt + &#x2190;/&#x2192;] or kbd:[Ctrl + &#x2193;/&#x2191;]|Previous/next minute
+|kbd:[Shift + Alt + &#x2190;/&#x2192;] or kbd:[Shift + Alt + &#x2193;/&#x2191;]|Previous/next hour
+|kbd:[Ctrl + Alt + &#x2190;/&#x2192;] or kbd:[Ctrl + Alt + &#x2193;/&#x2191;]|Previous/next minute
 |===
 
 [cols="1,3"]

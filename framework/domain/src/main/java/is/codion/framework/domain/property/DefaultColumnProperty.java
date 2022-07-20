@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -25,6 +27,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final long serialVersionUID = 1;
 
   private static final ValueConverter<Object, Object> DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
+  private static final Map<Class<?>, Integer> TYPE_MAP = createTypeMap();
+  private static final Map<Integer, ValueFetcher<?>> VALUE_FETCHERS = createValueFetchers();
 
   private final int columnType;
   private final int primaryKeyIndex;
@@ -200,6 +204,41 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
   }
 
+  private static Map<Class<?>, Integer> createTypeMap() {
+    Map<Class<?>, Integer> typeMap = new HashMap<>();
+    typeMap.put(Long.class, Types.BIGINT);
+    typeMap.put(Integer.class, Types.INTEGER);
+    typeMap.put(Double.class, Types.DOUBLE);
+    typeMap.put(BigDecimal.class, Types.DECIMAL);
+    typeMap.put(LocalDate.class, Types.DATE);
+    typeMap.put(LocalTime.class, Types.TIME);
+    typeMap.put(LocalDateTime.class, Types.TIMESTAMP);
+    typeMap.put(OffsetDateTime.class, Types.TIMESTAMP_WITH_TIMEZONE);
+    typeMap.put(String.class, Types.VARCHAR);
+    typeMap.put(Boolean.class, Types.BOOLEAN);
+    typeMap.put(byte[].class, Types.BLOB);
+
+    return typeMap;
+  }
+
+  private static Map<Integer, ValueFetcher<?>> createValueFetchers() {
+    Map<Integer, ValueFetcher<?>> valueFetchers = new HashMap<>();
+    valueFetchers.put(Types.INTEGER, new IntegerFetcher());
+    valueFetchers.put(Types.BIGINT, new LongFetcher());
+    valueFetchers.put(Types.DOUBLE, new DoubleFetcher());
+    valueFetchers.put(Types.DECIMAL, new BigDecimalFetcher());
+    valueFetchers.put(Types.DATE, new LocalDateFetcher());
+    valueFetchers.put(Types.TIMESTAMP, new LocalDateTimeFetcher());
+    valueFetchers.put(Types.TIMESTAMP_WITH_TIMEZONE, new OffsetDateTimeFetcher());
+    valueFetchers.put(Types.TIME, new LocalTimeFetcher());
+    valueFetchers.put(Types.VARCHAR, new StringFetcher());
+    valueFetchers.put(Types.BOOLEAN, new BooleanFetcher());
+    valueFetchers.put(Types.CHAR, new CharacterFetcher());
+    valueFetchers.put(Types.BLOB, new ByteArrayFetcher());
+
+    return valueFetchers;
+  }
+
   static class DefaultColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
           extends AbstractPropertyBuilder<T, B> implements ColumnProperty.Builder<T, B> {
 
@@ -226,7 +265,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
       this.updatable = true;
       this.searchProperty = false;
       this.columnName = attribute.getName();
-      this.valueFetcher = (ValueFetcher<Object>) initializeValueFetcher(this.columnType, attribute.getTypeClass());
+      this.valueFetcher = (ValueFetcher<Object>) getValueFetcher(this.columnType, attribute.getTypeClass());
       this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
       this.groupingColumn = false;
       this.aggregateColumn = false;
@@ -242,7 +281,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     public final <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter) {
       this.columnType = getSqlType(columnClass);
       this.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      this.valueFetcher = (ValueFetcher<Object>) initializeValueFetcher(this.columnType, attribute.getTypeClass());
+      this.valueFetcher = (ValueFetcher<Object>) getValueFetcher(this.columnType, attribute.getTypeClass());
       return (B) this;
     }
 
@@ -338,76 +377,19 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
      * @return the corresponding sql type
      */
     private static int getSqlType(Class<?> clazz) {
-      requireNonNull(clazz, "clazz");
-      if (clazz.equals(Long.class)) {
-        return Types.BIGINT;
-      }
-      if (clazz.equals(Integer.class)) {
-        return Types.INTEGER;
-      }
-      if (clazz.equals(Double.class)) {
-        return Types.DOUBLE;
-      }
-      if (clazz.equals(BigDecimal.class)) {
-        return Types.DECIMAL;
-      }
-      if (clazz.equals(LocalDate.class)) {
-        return Types.DATE;
-      }
-      if (clazz.equals(LocalTime.class)) {
-        return Types.TIME;
-      }
-      if (clazz.equals(LocalDateTime.class)) {
-        return Types.TIMESTAMP;
-      }
-      if (clazz.equals(OffsetDateTime.class)) {
-        return Types.TIMESTAMP_WITH_TIMEZONE;
-      }
-      if (clazz.equals(String.class)) {
-        return Types.VARCHAR;
-      }
-      if (clazz.equals(Boolean.class)) {
-        return Types.BOOLEAN;
-      }
-      if (clazz.equals(byte[].class)) {
-        return Types.BLOB;
-      }
-
-      return Types.OTHER;
+      return TYPE_MAP.getOrDefault(requireNonNull(clazz, "clazz"), Types.OTHER);
     }
 
-    private static <T> ValueFetcher<T> initializeValueFetcher(int columnType, Class<T> typeClass) {
-      switch (columnType) {
-        case Types.INTEGER:
-          return (ValueFetcher<T>) new IntegerFetcher();
-        case Types.BIGINT:
-          return (ValueFetcher<T>) new LongFetcher();
-        case Types.DOUBLE:
-          return (ValueFetcher<T>) new DoubleFetcher();
-        case Types.DECIMAL:
-          return (ValueFetcher<T>) new BigDecimalFetcher();
-        case Types.DATE:
-          return (ValueFetcher<T>) new LocalDateFetcher();
-        case Types.TIMESTAMP:
-          return (ValueFetcher<T>) new LocalDateTimeFetcher();
-        case Types.TIMESTAMP_WITH_TIMEZONE:
-          return (ValueFetcher<T>) new OffsetDateTimeFetcher();
-        case Types.TIME:
-          return (ValueFetcher<T>) new LocalTimeFetcher();
-        case Types.VARCHAR:
-          return (ValueFetcher<T>) new StringFetcher();
-        case Types.BOOLEAN:
-          return (ValueFetcher<T>) new BooleanFetcher();
-        case Types.CHAR:
-          return (ValueFetcher<T>) new CharacterFetcher();
-        case Types.BLOB:
-          return (ValueFetcher<T>) new ByteArrayFetcher();
-        case Types.OTHER:
-          return (ValueFetcher<T>) new ObjectFetcher(typeClass);
-        default:
-          throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
-                  ", attribute type class: " + typeClass.getName());
+    private static <T> ValueFetcher<T> getValueFetcher(int columnType, Class<T> typeClass) {
+      if (columnType == Types.OTHER) {
+        return (ValueFetcher<T>) new ObjectFetcher(typeClass);
       }
+      if (!VALUE_FETCHERS.containsKey(columnType)) {
+        throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
+                ", attribute type class: " + typeClass.getName());
+      }
+
+      return (ValueFetcher<T>) VALUE_FETCHERS.get(columnType);
     }
   }
 

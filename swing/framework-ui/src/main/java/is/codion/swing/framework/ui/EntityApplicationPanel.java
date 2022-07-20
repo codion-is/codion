@@ -117,6 +117,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String LOG_LEVEL = "log_level";
   private static final String LOG_LEVEL_DESC = "log_level_desc";
   private static final String HELP = "help";
+  private static final String KEYBOARD_SHORTCUTS = "keyboard_shortcuts";
   private static final String ABOUT = "about";
   private static final String ALWAYS_ON_TOP = "always_on_top";
   private static final String APPLICATION_VERSION = "application_version";
@@ -472,6 +473,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
+   * Displays a keyboard shortcut overview panel.
+   */
+  public final void displayKeyboardShortcuts() {
+    Dialogs.componentDialog(new KeyboardShortcutsPanel())
+            .owner(this)
+            .title(resourceBundle.getString(KEYBOARD_SHORTCUTS))
+            .show();
+  }
+
+  /**
    * Shows an about dialog
    * @see #getAboutPanel()
    */
@@ -640,6 +651,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .caption(resourceBundle.getString(HELP))
             .mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
             .control(createHelpControl())
+            .control(createViewKeyboardShortcutsControl())
             .separator()
             .control(createAboutControl())
             .build();
@@ -746,6 +758,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected final Control createHelpControl() {
     return Control.builder(this::displayHelp)
             .caption(resourceBundle.getString(HELP) + "...")
+            .build();
+  }
+
+  /**
+   * @return a Control for displaying the keyboard shortcuts overview
+   */
+  protected final Control createViewKeyboardShortcutsControl() {
+    return Control.builder(this::displayKeyboardShortcuts)
+            .caption(resourceBundle.getString(KEYBOARD_SHORTCUTS) + "...")
             .build();
   }
 

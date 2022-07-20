@@ -31,10 +31,9 @@ final class ColumnPacker implements ResultPacker<Column> {
     if (resultSet.wasNull()) {
       decimalDigits = -1;
     }
-    Class<?> typeClass = translateTypeName(dataType, decimalDigits);
+    Class<?> typeClass = getTypeClass(dataType, decimalDigits);
     if (typeClass != null) {
       String columnName = resultSet.getString("COLUMN_NAME");
-
       try {
         return new Column(columnName, typeClass,
                 resultSet.getInt("ORDINAL_POSITION"),
@@ -46,7 +45,7 @@ final class ColumnPacker implements ResultPacker<Column> {
                 isForeignKeyColumn(columnName));
       }
       catch (SQLException e) {
-        System.out.println("Exception fetching column: " + columnName + ", " + e.getMessage());
+        System.err.println("Exception fetching column: " + columnName + ", " + e.getMessage());
         return null;
       }
     }
@@ -67,7 +66,7 @@ final class ColumnPacker implements ResultPacker<Column> {
             .anyMatch(foreignKeyColumn -> foreignKeyColumn.getFkColumnName().equals(columnName));
   }
 
-  private static Class<?> translateTypeName(int sqlType, int decimalDigits) {
+  private static Class<?> getTypeClass(int sqlType, int decimalDigits) {
     switch (sqlType) {
       case Types.BIGINT:
         return Long.class;

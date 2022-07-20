@@ -28,6 +28,7 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -161,6 +162,7 @@ public class EntityTableView extends TableView<Entity> {
 
   private Button createRefreshButton() {
     Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
+    button.setTooltip(new Tooltip(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)));
     button.setOnAction(event -> listModel.refresh());
     FXUiUtil.link(button.disableProperty(),
             listModel.getTableConditionModel().getConditionChangedObserver().getReversedObserver());
