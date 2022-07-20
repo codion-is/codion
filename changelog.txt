@@ -8262,3 +8262,4 @@
   FrameworkMessages.DELETE_TIP split into DELETE_CURRENT_TIP and DELETE_SELECTED_TIP for the edit panel and table panel respectively
   FrameworkMessages.CLEAR_ALL_TIP renamed CLEAR_TIP
   EntityEditView, EntityTableView, tooltips added where applicable
+  EntityApplicationPanel, added keyboard shortcut item to Help menu, KeyboardShortcutsPanel added
