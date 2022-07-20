@@ -24,6 +24,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -283,6 +284,7 @@ public abstract class EntityEditView extends BorderPane {
 
   private Button createInsertButton() {
     Button button = new Button(FrameworkMessages.get(FrameworkMessages.ADD));
+    button.setTooltip(new Tooltip(FrameworkMessages.get(FrameworkMessages.ADD_TIP)));
     button.setOnAction(event -> insert());
 
     return button;
@@ -290,6 +292,7 @@ public abstract class EntityEditView extends BorderPane {
 
   private Button createUpdateButton() {
     Button button = new Button(FrameworkMessages.get(FrameworkMessages.UPDATE));
+    button.setTooltip(new Tooltip(FrameworkMessages.get(FrameworkMessages.UPDATE_TIP)));
     button.setOnAction(event -> update(true));
     StateObserver existingAndModifiedState = State.and(
             editModel.getEntityNewObserver().getReversedObserver(),
@@ -301,6 +304,7 @@ public abstract class EntityEditView extends BorderPane {
 
   private Button createDeleteButton() {
     Button button = new Button(FrameworkMessages.get(FrameworkMessages.DELETE));
+    button.setTooltip(new Tooltip(FrameworkMessages.get(FrameworkMessages.DELETE_CURRENT_TIP)));
     button.setOnAction(event -> delete());
     FXUiUtil.link(button.disableProperty(), editModel.getEntityNewObserver());
 
@@ -309,6 +313,7 @@ public abstract class EntityEditView extends BorderPane {
 
   private Button createClearButton() {
     Button button = new Button(FrameworkMessages.get(FrameworkMessages.CLEAR));
+    button.setTooltip(new Tooltip(FrameworkMessages.get(FrameworkMessages.CLEAR_TIP)));
     button.setOnAction(event -> {
       editModel.setDefaultValues();
       requestInitialFocus();
@@ -319,6 +324,7 @@ public abstract class EntityEditView extends BorderPane {
 
   private Button createRefreshButton() {
     Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
+    button.setTooltip(new Tooltip(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)));
     button.setOnAction(event -> editModel.refresh());
 
     return button;

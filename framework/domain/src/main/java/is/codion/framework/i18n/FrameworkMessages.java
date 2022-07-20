@@ -24,7 +24,7 @@ public final class FrameworkMessages {
   public static final String SUPPORT_TABLES_MNEMONIC = "support_tables_mnemonic";
   public static final String CLEAR = "clear";
   public static final String CLEAR_MNEMONIC = "clear_mnemonic";
-  public static final String CLEAR_ALL_TIP = "clear_all_tip";
+  public static final String CLEAR_TIP = "clear_tip";
   public static final String UPDATE = "update";
   public static final String UPDATE_MNEMONIC = "update_mnemonic";
   public static final String UPDATE_TIP = "update_tip";
