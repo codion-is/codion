@@ -8259,3 +8259,4 @@
   DefaultColumnProperty.VALUE_FETCHERS added, initializeValueFetcher() renamed getValueFetcher()
   ColumnPacker.translateTypeName() renamed getTypeClass()
   Property.GROUPING_SEPARATOR and DECIMAL_SEPARATOR configuration values now Character based
+  FrameworkMessages.DELETE_TIP split into DELETE_CURRENT_TIP and DELETE_SELECTED_TIP for the edit panel and table panel respectively

@@ -706,7 +706,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             .enabledState(State.and(
                     tableModel.getEditModel().getDeleteEnabledObserver(),
                     tableModel.getSelectionModel().getSelectionNotEmptyObserver()))
-            .description(FrameworkMessages.get(FrameworkMessages.DELETE_TIP))
+            .description(FrameworkMessages.get(FrameworkMessages.DELETE_SELECTED_TIP))
             .smallIcon(frameworkIcons().delete())
             .build();
   }
