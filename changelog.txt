@@ -8264,3 +8264,4 @@
   EntityEditView, EntityTableView, tooltips added where applicable
   EntityApplicationPanel, added keyboard shortcut item to Help menu, KeyboardShortcutsPanel added
   DefaultColumnProperty.createTypeMap(), java.util.Date, java.sql.Date, Time and Timestamp added to type map
+  Db2Database, error type codes added
