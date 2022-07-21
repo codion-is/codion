@@ -221,6 +221,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     typeMap.put(Time.class, Types.TIME);
     typeMap.put(Timestamp.class, Types.TIMESTAMP);
     typeMap.put(String.class, Types.VARCHAR);
+    typeMap.put(Character.class, Types.CHAR);
     typeMap.put(Boolean.class, Types.BOOLEAN);
     typeMap.put(byte[].class, Types.BLOB);
 
