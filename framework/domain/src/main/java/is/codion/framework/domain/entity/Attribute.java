@@ -87,6 +87,11 @@ public interface Attribute<T> {
   boolean isInteger();
 
   /**
+   * @return true if this attribute represents a {@link Short} value.
+   */
+  boolean isShort();
+
+  /**
    * @return true if this attribute represents a {@link Double} value.
    */
   boolean isDouble();

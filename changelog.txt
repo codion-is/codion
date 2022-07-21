@@ -8266,3 +8266,4 @@
   DefaultColumnProperty.createTypeMap(), java.util.Date, java.sql.Date, Time and Timestamp added to type map
   Db2Database, error type codes added
   DefaultColumnProperty.createTypeMap(), Character added to type map
+  EntityType.shortAttribute() added, Short support implemented

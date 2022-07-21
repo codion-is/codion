@@ -63,6 +63,13 @@ public interface EntityType {
   Attribute<Integer> integerAttribute(String name);
 
   /**
+   * Creates a new Short based attribute, associated with this EntityType.
+   * @param name the attribute name.
+   * @return a new Short based attribute.
+   */
+  Attribute<Short> shortAttribute(String name);
+
+  /**
    * Creates a new Double based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new Double based attribute.

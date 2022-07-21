@@ -210,6 +210,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     Map<Class<?>, Integer> typeMap = new HashMap<>();
     typeMap.put(Long.class, Types.BIGINT);
     typeMap.put(Integer.class, Types.INTEGER);
+    typeMap.put(Short.class, Types.SMALLINT);
     typeMap.put(Double.class, Types.DOUBLE);
     typeMap.put(BigDecimal.class, Types.DECIMAL);
     typeMap.put(LocalDate.class, Types.DATE);
@@ -230,6 +231,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
 
   private static Map<Integer, ValueFetcher<?>> createValueFetchers() {
     Map<Integer, ValueFetcher<?>> valueFetchers = new HashMap<>();
+    valueFetchers.put(Types.SMALLINT, new ShortFetcher());
     valueFetchers.put(Types.INTEGER, new IntegerFetcher());
     valueFetchers.put(Types.BIGINT, new LongFetcher());
     valueFetchers.put(Types.DOUBLE, new DoubleFetcher());
@@ -440,6 +442,16 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     @Override
     public Property<T> build() {
       return new DefaultColumnProperty<>(this);
+    }
+  }
+
+  private static final class ShortFetcher implements ValueFetcher<Short> {
+
+    @Override
+    public Short fetchValue(ResultSet resultSet, int index) throws SQLException {
+      short value = resultSet.getShort(index);
+
+      return value == 0 && resultSet.wasNull() ? null : value;
     }
   }
 
