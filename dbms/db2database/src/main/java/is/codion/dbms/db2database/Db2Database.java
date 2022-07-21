@@ -17,6 +17,10 @@ final class Db2Database extends AbstractDatabase {
   private static final int REFERENTIAL_INTEGRITY_INSERT_UPDATE = -530;
   private static final int REFERENTIAL_INTEGRITY_DELETE_1 = -532;
   private static final int REFERENTIAL_INTEGRITY_DELETE_2 = -536;
+  private static final int UNIQUE_CONSTRAINT = -803;
+  private static final int AUTHENTICATION_ERROR = -4214;
+  private static final int TIMEOUT_ERROR_1 = -911;
+  private static final int TIMEOUT_ERROR_2 = -913;
 
   private static final String JDBC_URL_PREFIX = "jdbc:db2:";
 
@@ -54,10 +58,6 @@ final class Db2Database extends AbstractDatabase {
     return createLimitOffsetClause(limit, offset);
   }
 
-  /**
-   * @param exception the exception
-   * @return true if this exception is a referential integrity error
-   */
   @Override
   public boolean isReferentialIntegrityException(SQLException exception) {
     int errorCode = exception.getErrorCode();
@@ -65,5 +65,23 @@ final class Db2Database extends AbstractDatabase {
     return errorCode == REFERENTIAL_INTEGRITY_INSERT_UPDATE ||
             errorCode == REFERENTIAL_INTEGRITY_DELETE_1 ||
             errorCode == REFERENTIAL_INTEGRITY_DELETE_2;
+  }
+
+  @Override
+  public boolean isUniqueConstraintException(SQLException exception) {
+    return exception.getErrorCode() == UNIQUE_CONSTRAINT;
+  }
+
+  @Override
+  public boolean isAuthenticationException(SQLException exception) {
+    return exception.getErrorCode() == AUTHENTICATION_ERROR;
+  }
+
+  @Override
+  public boolean isTimeoutException(SQLException exception) {
+    int errorCode = exception.getErrorCode();
+
+    return errorCode == TIMEOUT_ERROR_1 ||
+            errorCode == TIMEOUT_ERROR_2;
   }
 }

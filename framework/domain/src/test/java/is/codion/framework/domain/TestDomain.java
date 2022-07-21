@@ -112,6 +112,7 @@ public final class TestDomain extends DefaultDomain {
   public interface Detail extends Entity {
     EntityType TYPE = DOMAIN.entityType("domain.detail_entity", Detail.class);
     Attribute<Long> ID = TYPE.longAttribute("id");
+    Attribute<Short> SHORT = TYPE.shortAttribute("short");
     Attribute<Integer> INT = TYPE.integerAttribute("int");
     Attribute<Double> DOUBLE = TYPE.doubleAttribute("double");
     Attribute<String> STRING = TYPE.stringAttribute("string");
@@ -154,6 +155,7 @@ public final class TestDomain extends DefaultDomain {
     add(definition(
             primaryKeyProperty(Detail.ID)
                     .beanProperty("id"),
+            columnProperty(Detail.SHORT, Detail.SHORT.getName()),
             columnProperty(Detail.INT, Detail.INT.getName()),
             columnProperty(Detail.DOUBLE, Detail.DOUBLE.getName())
                     .columnHasDefaultValue(true)

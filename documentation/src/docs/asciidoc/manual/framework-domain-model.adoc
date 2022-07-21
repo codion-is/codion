@@ -48,6 +48,7 @@ The following data types are supported out of the box:
 |===
 |Java type|SQL type
 
+|Short|java.sql.Types.SMALLINT
 |Integer|java.sql.Types.INTEGER
 |Double|java.sql.Types.DOUBLE
 |Long|java.sql.Types.BIGINT

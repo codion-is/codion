@@ -72,8 +72,9 @@ final class ColumnPacker implements ResultPacker<Column> {
         return Long.class;
       case Types.INTEGER:
       case Types.ROWID:
-      case Types.SMALLINT:
         return Integer.class;
+      case Types.SMALLINT:
+        return Short.class;
       case Types.CHAR:
         return Character.class;
       case Types.DATE:

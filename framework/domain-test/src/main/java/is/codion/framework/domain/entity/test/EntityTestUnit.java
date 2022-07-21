@@ -155,7 +155,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities foreign key entities already created
    * @param connection the connection to use
    * @throws DatabaseException in case of an exception
-   * @see #initializeForeignKeyEntity(EntityType, Map)
+   * @see #initializeForeignKeyEntity(ForeignKey, Map)
    * @return the Entities to reference mapped to their respective foreign keys
    */
   private Map<ForeignKey, Entity> initializeForeignKeyEntities(EntityType entityType,

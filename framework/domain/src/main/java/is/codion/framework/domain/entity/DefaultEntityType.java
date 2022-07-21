@@ -82,6 +82,11 @@ final class DefaultEntityType implements EntityType, Serializable {
   }
 
   @Override
+  public Attribute<Short> shortAttribute(String name) {
+    return attribute(name, Short.class);
+  }
+
+  @Override
   public Attribute<Double> doubleAttribute(String name) {
     return attribute(name, Double.class);
   }

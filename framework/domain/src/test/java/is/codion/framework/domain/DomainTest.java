@@ -62,6 +62,7 @@ public class DomainTest {
 
     //assert types
     assertEquals(definition.getProperty(Detail.ID).getAttribute().getTypeClass(), Long.class);
+    assertEquals(definition.getProperty(Detail.SHORT).getAttribute().getTypeClass(), Short.class);
     assertEquals(definition.getProperty(Detail.INT).getAttribute().getTypeClass(), Integer.class);
     assertEquals(definition.getProperty(Detail.DOUBLE).getAttribute().getTypeClass(), Double.class);
     assertEquals(definition.getProperty(Detail.STRING).getAttribute().getTypeClass(), String.class);
@@ -75,6 +76,7 @@ public class DomainTest {
 
     //assert column names
     assertEquals(definition.getProperty(Detail.ID).getAttribute(), Detail.ID);
+    assertEquals(definition.getProperty(Detail.SHORT).getAttribute(), Detail.SHORT);
     assertEquals(definition.getProperty(Detail.INT).getAttribute(), Detail.INT);
     assertEquals(definition.getProperty(Detail.DOUBLE).getAttribute(), Detail.DOUBLE);
     assertEquals(definition.getProperty(Detail.STRING).getAttribute(), Detail.STRING);
@@ -87,6 +89,7 @@ public class DomainTest {
 
     //assert captions
     assertNotNull(definition.getProperty(Detail.ID).getCaption());
+    assertEquals(definition.getProperty(Detail.SHORT).getCaption(), Detail.SHORT.getName());
     assertEquals(definition.getProperty(Detail.INT).getCaption(), Detail.INT.getName());
     assertEquals(definition.getProperty(Detail.DOUBLE).getCaption(), Detail.DOUBLE.getName());
     assertEquals(definition.getProperty(Detail.STRING).getCaption(), "Detail string");
@@ -99,6 +102,7 @@ public class DomainTest {
 
     //assert hidden status
     assertTrue(definition.getProperty(Detail.ID).isHidden());
+    assertFalse(definition.getProperty(Detail.SHORT).isHidden());
     assertFalse(definition.getProperty(Detail.INT).isHidden());
     assertFalse(definition.getProperty(Detail.DOUBLE).isHidden());
     assertFalse(definition.getProperty(Detail.STRING).isHidden());
@@ -179,7 +183,7 @@ public class DomainTest {
   void getUpdatableProperties() {
     EntityDefinition definition = entities.getDefinition(Detail.TYPE);
     List<Property<?>> properties = definition.getUpdatableProperties();
-    assertEquals(10, properties.size());
+    assertEquals(11, properties.size());
     assertFalse(properties.contains(definition.getProperty(Detail.MASTER_NAME)));
     assertFalse(properties.contains(definition.getProperty(Detail.MASTER_CODE)));
     assertFalse(properties.contains(definition.getProperty(Detail.INT_DERIVED)));
