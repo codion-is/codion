@@ -24,11 +24,11 @@ final class KeyboardShortcutsPanel extends JPanel {
   private static final String SHIFT = "Shift + ";
   private static final String INSERT = "Insert";
   private static final String ENTER = "Enter";
-  private static final String LEFT_RIGHT = "←/→";
-  private static final String UP_DOWN = "↑/↓";
-  private static final String DOWN_UP = "↓/↑";
-  private static final String UP = "↑";
-  private static final String DOWN = "↓";
+  private static final String LEFT_RIGHT = "\u2190/\u2192";
+  private static final String UP_DOWN = "\u2191/\u2193";
+  private static final String DOWN_UP = "\u2193/\u2191";
+  private static final String UP = "\u2191";
+  private static final String DOWN = "\u2193";
   private static final String OR = " or ";
 
   KeyboardShortcutsPanel() {

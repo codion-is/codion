@@ -45,6 +45,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.component.EntityComponents;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1443,7 +1444,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private <T> ComponentValue<T, ? extends JComponent> createUpdateSelectedComponentValue(Attribute<T> attribute, T initialValue) {
     return ((EntityComponentFactory<T, Attribute<T>, ?>) updateSelectedComponentFactories.computeIfAbsent(attribute, a ->
-            new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.getEditModel(), initialValue);
+            new UpdateSelectedComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.getEditModel(), initialValue);
   }
 
   private <T> ComponentValue<T, ? extends JComponent> createCellEditorComponentValue(Attribute<T> attribute, T initialValue) {
@@ -1835,6 +1836,22 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       component.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
       return component;
+    }
+  }
+
+  private static final class UpdateSelectedComponentFactory<T, A extends Attribute<T>, C extends JComponent> extends DefaultEntityComponentFactory<T, A, C> {
+
+    @Override
+    public ComponentValue<T, C> createComponentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
+      requireNonNull(attribute, "attribute");
+      requireNonNull(editModel, "editModel");
+      if (attribute.isString()) {
+        return (ComponentValue<T, C>) new EntityComponents(editModel.getEntityDefinition())
+                .textInputPanel((Attribute<String>) attribute)
+                .buildComponentValue();
+      }
+
+      return super.createComponentValue(attribute, editModel, initialValue);
     }
   }
 
