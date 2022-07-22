@@ -8268,3 +8268,4 @@
   DefaultColumnProperty.createTypeMap(), Character added to type map
   EntityType.shortAttribute() added, Short support implemented
   KeyboardShortcutsPanel, arrow symbols replaced with unicode codes, otherwise build fails on Windows, preferred height set to 0.5 of screen height
+  EntityTablePanel, update selected for String attributes now displays a text input panel instead of a text field
