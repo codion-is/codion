@@ -476,7 +476,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Displays a keyboard shortcut overview panel.
    */
   public final void displayKeyboardShortcuts() {
-    Dialogs.componentDialog(new KeyboardShortcutsPanel())
+    KeyboardShortcutsPanel shortcutsPanel = new KeyboardShortcutsPanel();
+    shortcutsPanel.setPreferredSize(new Dimension(shortcutsPanel.getPreferredSize().width, Windows.getScreenSizeRatio(0.5).height));
+    Dialogs.componentDialog(shortcutsPanel)
             .owner(this)
             .title(resourceBundle.getString(KEYBOARD_SHORTCUTS))
             .show();
