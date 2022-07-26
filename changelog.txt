@@ -8307,3 +8307,6 @@
   EntityType.shortAttribute() added, Short support implemented
   KeyboardShortcutsPanel, arrow symbols replaced with unicode codes, otherwise build fails on Windows, preferred height set to 0.5 of screen height
   EntityTablePanel, update selected for String attributes now displays a text input panel instead of a text field
+  DefaultFilteredTableModel and SwingFilteredComboBoxModel.refresh() now throws exception if the refresh was run synchronously, otherwise exceptions during application startup are ignored
+  SwingEntityComboBoxModel bug fixed, forceRefresh() didn't work when run asynchronously, now forceRefresh is reset to false using refresh listeners
+  Entity.toString(Property) removed, DefaultEntity.toString(Attribute) improved a bit

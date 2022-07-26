@@ -88,8 +88,8 @@ public interface FilteredModel<T> {
 
   /**
    * Refreshes the data in this model.
-   * Note that this method does not throw exceptions, use {@link #addRefreshFailedListener(EventDataListener)}
-   * to listen for exceptions that happen during refresh.
+   * Note that this method only throws exceptions when run synchronously, as in, off the EDT.
+   * Use {@link #addRefreshFailedListener(EventDataListener)} to listen for exceptions that happen during asynchronous refresh.
    * @see #getRefreshingObserver()
    * @see #addRefreshListener(EventListener)
    * @see #addRefreshFailedListener(EventDataListener)
@@ -114,7 +114,7 @@ public interface FilteredModel<T> {
   void removeRefreshListener(EventListener listener);
 
   /**
-   * @param listener a listener to be notified each time a refresh has failed
+   * @param listener a listener to be notified each time an asynchronous refresh has failed
    * @see #refresh()
    */
   void addRefreshFailedListener(EventDataListener<Throwable> listener);

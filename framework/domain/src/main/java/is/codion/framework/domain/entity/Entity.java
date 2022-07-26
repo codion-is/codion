@@ -85,15 +85,6 @@ public interface Entity extends Comparable<Entity> {
   <T> String toString(Attribute<T> attribute);
 
   /**
-   * This method returns a String representation of the value associated with the given property,
-   * if the associated property has a format it is used.
-   * @param property the property for which to retrieve the value
-   * @param <T> the value type
-   * @return a String representation of the value associated with {@code property}
-   */
-  <T> String toString(Property<T> property);
-
-  /**
    * Reverts the value associated with the given attribute to its original value.
    * If the value has not been modified then calling this method has no effect.
    * @param attribute the attribute for which to revert the value
@@ -258,9 +249,9 @@ public interface Entity extends Comparable<Entity> {
   <T extends Entity> T castTo(Class<T> entityClass);
 
   /**
-   * Returns true if the entity referenced via the given foreign key attribute has been loaded
+   * Returns true if the given foreign key references a non-null entity and that entity instance has been loaded
    * @param foreignKey the attribute
-   * @return true if the reference entity has been loaded
+   * @return true if the referenced entity has been loaded
    */
   boolean isLoaded(ForeignKey foreignKey);
 
@@ -326,7 +317,7 @@ public interface Entity extends Comparable<Entity> {
     Builder withDefaultValues();
 
     /**
-     * Builds the entity instance
+     * Builds the Entity instance
      * @return a new Entity instance
      */
     Entity build();

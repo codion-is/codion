@@ -42,7 +42,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private final Event<?> refreshEvent = Event.event();
   private final Event<Throwable> refreshFailedEvent = Event.event();
   private final State refreshingState = State.state();
-
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();
 
@@ -456,7 +455,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     ProgressWorker.builder(this::refreshItems)
             .onStarted(this::onRefreshStarted)
             .onResult(this::onRefreshResult)
-            .onException(this::onRefreshFailed)
+            .onException(this::onRefreshFailedAsync)
             .execute();
   }
 
@@ -466,7 +465,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
       onRefreshResult(refreshItems());
     }
     catch (Exception e) {
-      onRefreshFailed(e);
+      onRefreshFailedSync(e);
     }
   }
 
@@ -474,9 +473,18 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     refreshingState.set(true);
   }
 
-  private void onRefreshFailed(Throwable throwable) {
+  private void onRefreshFailedAsync(Throwable throwable) {
     refreshingState.set(false);
     refreshFailedEvent.onEvent(throwable);
+  }
+
+  private void onRefreshFailedSync(Throwable throwable) {
+    refreshingState.set(false);
+    if (throwable instanceof RuntimeException) {
+      throw (RuntimeException) throwable;
+    }
+
+    throw new RuntimeException(throwable);
   }
 
   private void onRefreshResult(Collection<T> items) {

@@ -71,71 +71,31 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   private static final NumberFormat STATUS_MESSAGE_NUMBER_FORMAT = NumberFormat.getIntegerInstance();
 
-  /**
-   * The edit model to use when updating/deleting entities
-   */
   private final SwingEntityEditModel editModel;
-
-  /**
-   * The condition model
-   */
   private final EntityTableConditionModel tableConditionModel;
-
-  /**
-   * If true then querying should be disabled if no condition is specified
-   */
   private final State queryConditionRequiredState = State.state();
-
-  /**
-   * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
-   */
+  /** Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)} */
   private final ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
-
-  /**
-   * Contains the status message, number of rows, selected etc.
-   */
   private final Value<String> statusMessageValue = Value.value("", "");
-
-  /**
-   * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
-   */
+  /** the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched */
   private int limit = -1;
-
-  /**
-   * Specifies whether the values of hidden columns are included in the underlying query
-   */
+  /** Specifies whether the values of hidden columns are included in the underlying query */
   private boolean queryHiddenColumns = EntityTableModel.QUERY_HIDDEN_COLUMNS.get();
-
-  /**
-   * If true then items deleted via the edit model are removed from this table model
-   */
+  /** If true then items deleted via the edit model are removed from this table model */
   private boolean removeEntitiesOnDelete = true;
-
-  /**
-   * The action to perform when entities are inserted via the associated edit model
-   */
+  /** The action to perform when entities are inserted via the edit model */
   private InsertAction insertAction = InsertAction.ADD_TOP;
-
-  /**
-   * Indicates if multiple entities can be updated at a time
-   */
+  /** Specifies whether multiple entities can be updated at a time */
   private boolean batchUpdateEnabled = true;
-
-  /**
-   * Indicates if this table model should automatically refresh when foreign key condition values are set
-   */
+  /** Specifies whether this table model should automatically refresh when foreign key condition values are set */
   private boolean refreshOnForeignKeyConditionValuesSet = true;
-
   /**
-   * Is this table model editable.
+   * Specifies whether this table model is editable.
    * @see #isCellEditable(int, int)
    * @see #setValueAt(Object, int, int)
    */
   private boolean editable = false;
-
-  /**
-   * Specifies whether to use the current sort order as the query order by clause
-   */
+  /** Specifies whether to use the current sort order as the query order by clause */
   private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
 
   /**
