@@ -78,6 +78,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     this.orderBy = this.entities.getDefinition(entityType).getOrderBy();
     setStaticData(this.entities.getDefinition(entityType).isStaticData());
     setIncludeCondition(foreignKeyIncludeCondition);
+    addRefreshListener(() -> forceRefresh = false);
+    addRefreshFailedListener(throwable -> forceRefresh = false);
     addEditEventListeners();
   }
 
@@ -98,13 +100,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   public final void forceRefresh() {
-    try {
-      forceRefresh = true;
-      refresh();
-    }
-    finally {
-      forceRefresh = false;
-    }
+    forceRefresh = true;
+    refresh();
   }
 
   @Override
