@@ -170,6 +170,8 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
   /**
    * Refreshes the items in this combo box model.
    * If run on the Event Dispatch Thread the refresh happens asynchronously.
+   * @throws RuntimeException in case of an exception when running refresh synchronously, as in, not on the Event Dispatch Thread
+   * @see #addRefreshFailedListener(EventDataListener)
    */
   void refresh();
 

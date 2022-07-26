@@ -641,7 +641,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     refreshWorker = ProgressWorker.builder(this::refreshItems)
             .onStarted(this::onRefreshStarted)
             .onResult(this::onRefreshResult)
-            .onException(this::onRefreshFailed)
+            .onException(this::onRefreshFailedAsync)
             .execute();
   }
 
@@ -651,7 +651,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
       onRefreshResult(refreshItems());
     }
     catch (Exception e) {
-      onRefreshFailed(e);
+      onRefreshFailedSync(e);
     }
   }
 
@@ -659,10 +659,19 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     refreshingState.set(true);
   }
 
-  private void onRefreshFailed(Throwable throwable) {
+  private void onRefreshFailedAsync(Throwable throwable) {
     cleanupRefreshWorker();
     refreshingState.set(false);
     refreshFailedEvent.onEvent(throwable);
+  }
+
+  private void onRefreshFailedSync(Throwable throwable) {
+    refreshingState.set(false);
+    if (throwable instanceof RuntimeException) {
+      throw (RuntimeException) throwable;
+    }
+
+    throw new RuntimeException(throwable);
   }
 
   private void onRefreshResult(Collection<R> items) {
