@@ -350,7 +350,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
       onRefreshResult(performQuery());
     }
     catch (Exception e) {
-      onRefreshFailed(e);
+      onRefreshFailedSync(e);
     }
     setSelectedItems(selectedItems);
   }
@@ -360,9 +360,18 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     refreshStartedEvent.onEvent();
   }
 
-  private void onRefreshFailed(Throwable throwable) {
+  private void onRefreshFailedAsync(Throwable throwable) {
     refreshingState.set(false);
     refreshFailedEvent.onEvent(throwable);
+  }
+
+  private void onRefreshFailedSync(Throwable throwable) {
+    refreshingState.set(false);
+    if (throwable instanceof RuntimeException) {
+      throw (RuntimeException) throwable;
+    }
+
+    throw new RuntimeException(throwable);
   }
 
   private void onRefreshResult(Collection<Entity> items) {
@@ -411,7 +420,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
     @Override
     protected void failed() {
-      onRefreshFailed(getException());
+      onRefreshFailedAsync(getException());
     }
 
     @Override
