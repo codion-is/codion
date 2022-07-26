@@ -33,25 +33,11 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   private static final String COLUMN_IDENTIFIER = "columnIdentifier";
 
   private final DefaultTableColumnModel tableColumnModel = new DefaultTableColumnModel();
-
   private final Event<C> columnHiddenEvent = Event.event();
   private final Event<C> columnShownEvent = Event.event();
-
-  /**
-   * All columns in this column model, visible and hidden
-   */
   private final Map<C, TableColumn> columns = new LinkedHashMap<>();
-  /**
-   * All column identifiers mapped to their respective column model index
-   */
   private final Map<Integer, C> columnIdentifiers = new HashMap<>();
-  /**
-   * Contains columns that have been hidden
-   */
   private final Map<C, HiddenColumn> hiddenColumns = new LinkedHashMap<>();
-  /**
-   * A lock which prevents adding or removing columns from this column model
-   */
   private final State lockedState = State.state();
 
   /**

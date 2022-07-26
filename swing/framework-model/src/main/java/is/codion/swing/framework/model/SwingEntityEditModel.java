@@ -32,10 +32,6 @@ import static java.util.Objects.requireNonNull;
 public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   private final State.Combination refreshingObserver = State.combination(Conjunction.OR);
-
-  /**
-   * Holds the ComboBoxModels used by this {@link EntityEditModel}
-   */
   private final Map<Attribute<?>, FilteredComboBoxModel<?>> comboBoxModels = new HashMap<>();
 
   /**

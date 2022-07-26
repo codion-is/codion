@@ -26,7 +26,6 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   private static final String CONNECTION_PROVIDER_PARAMETER = "connectionProvider";
 
   private final EntityType entityType;
-
   private final List<SwingEntityModel.Builder> detailModelBuilders = new ArrayList<>();
 
   private Class<? extends SwingEntityModel> modelClass;

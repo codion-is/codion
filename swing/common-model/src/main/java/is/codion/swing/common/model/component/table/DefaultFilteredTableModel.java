@@ -62,62 +62,17 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final Event<?> tableModelClearedEvent = Event.event();
   private final Event<RowsRemoved> rowsRemovedEvent = Event.event();
   private final State refreshingState = State.state();
-
   private final ColumnValueProvider<R, C> columnValueProvider;
-
-  /**
-   * Holds visible items
-   */
   private final List<R> visibleItems = new ArrayList<>();
-
-  /**
-   * Holds items that are filtered
-   */
   private final List<R> filteredItems = new ArrayList<>();
-
-  /**
-   * The selection model
-   */
   private final FilteredTableSelectionModel<R> selectionModel;
-
-  /**
-   * The TableColumnModel
-   */
   private final FilteredTableColumnModel<C> columnModel;
-
-  /**
-   * The sort model
-   */
   private final FilteredTableSortModel<R, C> sortModel;
-
-  /**
-   * The search model
-   */
   private final FilteredTableSearchModel searchModel;
-
-  /**
-   * The ColumnFilterModels used for filtering
-   */
   private final Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels = new HashMap<>();
-
-  /**
-   * Maps PropertySummaryModels to their respective properties
-   */
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
-
-  /**
-   * The worker used to refresh asynchronously
-   */
   private volatile ProgressWorker<Collection<R>, ?> refreshWorker;
-
-  /**
-   * the include condition used by this model
-   */
   private Predicate<R> includeCondition;
-
-  /**
-   * true if refresh should merge, in order to not clear the selection during refresh
-   */
   private boolean mergeOnRefresh = false;
 
   /**
@@ -125,8 +80,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @param tableColumns the table columns to base this table model on
    * @param columnValueProvider the column value provider
    */
-  public DefaultFilteredTableModel(List<TableColumn> tableColumns,
-                                   ColumnValueProvider<R, C> columnValueProvider) {
+  public DefaultFilteredTableModel(List<TableColumn> tableColumns, ColumnValueProvider<R, C> columnValueProvider) {
     this(tableColumns, columnValueProvider, null);
   }
 
@@ -134,10 +88,9 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * Instantiates a new table model.
    * @param tableColumns the table columns to base this table model on
    * @param columnValueProvider the column value provider
-   * @param columnFilterModels the filter models if any
+   * @param columnFilterModels the filter models if any, may be null
    */
-  public DefaultFilteredTableModel(List<TableColumn> tableColumns,
-                                   ColumnValueProvider<R, C> columnValueProvider,
+  public DefaultFilteredTableModel(List<TableColumn> tableColumns, ColumnValueProvider<R, C> columnValueProvider,
                                    Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
     this.searchModel = new DefaultFilteredTableSearchModel<>(this);

@@ -42,7 +42,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private final Event<?> refreshEvent = Event.event();
   private final Event<Throwable> refreshFailedEvent = Event.event();
   private final State refreshingState = State.state();
-
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();
 

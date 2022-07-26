@@ -53,7 +53,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * @param foreignKey the foreign key
-   * @return the entity values currently used to filter the contents of this model
+   * @return the entities currently used to filter the contents of this model by foreign key, an empty collection for none
    */
   Collection<Entity> getForeignKeyFilterEntities(ForeignKey foreignKey);
 
@@ -61,7 +61,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * Filters this combo box model so that only entities referencing the given foreign key entities
    * via the given foreign key property are shown.
    * @param foreignKey the foreign key
-   * @param entities the entities
+   * @param entities the entities, null or empty for none
    */
   void setForeignKeyFilterEntities(ForeignKey foreignKey, Collection<Entity> entities);
 

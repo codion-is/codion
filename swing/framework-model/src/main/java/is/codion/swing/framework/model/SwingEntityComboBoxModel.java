@@ -36,8 +36,7 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.condition.Conditions.where;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -45,85 +44,36 @@ import static java.util.Objects.requireNonNull;
  */
 public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity> implements EntityComboBoxModel {
 
-  /**
-   * the id of the underlying entity
-   */
   private final EntityType entityType;
-
-  /**
-   * the EntityConnectionProvider instance used by this EntityComboBoxModel
-   */
   private final EntityConnectionProvider connectionProvider;
-
-  /**
-   * The attributes to include when selecting the entities for this combo box model,
-   * an empty list indicates all attributes
-   */
+  /** The attributes to include when selecting the entities for this combo box model, an empty list indicates all attributes */
   private final Collection<Attribute<?>> selectAttributes = new ArrayList<>(0);
-
-  /**
-   * The domain model entities
-   */
   private final Entities entities;
-
-  /**
-   * The order by clause
-   */
   private final OrderBy orderBy;
-
-  /**
-   * true if the data should only be fetched once, unless {@code forceRefresh()} is called
-   */
-  private boolean staticData = false;
-
-  /**
-   * used to indicate that a refresh is being forced, as in, overriding the staticData directive
-   */
-  private boolean forceRefresh = false;
-
-  /**
-   * the Condition supplier used when querying
-   */
-  private Supplier<Condition> selectConditionSupplier;
-
-  /**
-   * A map of entities used to filter the contents of this model by foreign key value.
-   * The key in the map is the attribute of the foreign key property.
-   */
+  /** A map of entities used to filter the contents of this model by foreign key value. */
   private final Map<ForeignKey, Set<Entity>> foreignKeyFilterEntities = new HashMap<>();
-
-  private boolean strictForeignKeyFiltering = true;
-
-  private boolean listenToEditEvents = true;
+  private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
   private final EventDataListener<List<Entity>> insertListener = new InsertListener();
   private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
   private final EventDataListener<List<Entity>> deleteListener = new DeleteListener();
 
-  private final Predicate<Entity> foreignKeyIncludeCondition = item -> {
-    for (Map.Entry<ForeignKey, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
-      Entity foreignKeyValue = item.getForeignKey(entry.getKey());
-      if (foreignKeyValue == null) {
-        return !strictForeignKeyFiltering;
-      }
-      if (!entry.getValue().contains(foreignKeyValue)) {
-        return false;
-      }
-    }
-
-    return true;
-  };
+  /** true if the data should only be fetched once, unless {@code forceRefresh()} is called */
+  private boolean staticData = false;
+  /** used to indicate that a refresh is being forced, as in, overriding the staticData directive */
+  private boolean forceRefresh = false;
+  private Supplier<Condition> selectConditionSupplier;
+  private boolean strictForeignKeyFiltering = true;
+  private boolean listenToEditEvents = true;
 
   /**
    * @param entityType the type of the entity this combo box model should represent
    * @param connectionProvider a EntityConnectionProvider instance
    */
   public SwingEntityComboBoxModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    requireNonNull(entityType, "entityType");
-    requireNonNull(connectionProvider, "connectionProvider");
-    this.entityType = entityType;
-    this.connectionProvider = connectionProvider;
+    this.entityType = requireNonNull(entityType, "entityType");
+    this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.entities = connectionProvider.getEntities();
     this.orderBy = this.entities.getDefinition(entityType).getOrderBy();
     setStaticData(this.entities.getDefinition(entityType).isStaticData());
@@ -196,12 +146,16 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   public final Optional<Entity> getEntity(Key primaryKey) {
-    return getItems().stream().filter(entity -> entity != null && entity.getPrimaryKey().equals(primaryKey)).findFirst();
+    requireNonNull(primaryKey);
+
+    return getItems().stream()
+            .filter(entity -> entity != null && entity.getPrimaryKey().equals(primaryKey))
+            .findFirst();
   }
 
   @Override
   public final void setSelectedEntityByKey(Key primaryKey) {
-    requireNonNull(primaryKey, "primaryKey");
+    requireNonNull(primaryKey);
     int indexOfKey = getIndexOfKey(primaryKey);
     if (indexOfKey >= 0) {
       setSelectedItem(getElementAt(indexOfKey));
@@ -231,6 +185,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   public final void setForeignKeyFilterEntities(ForeignKey foreignKey, Collection<Entity> entities) {
+    requireNonNull(foreignKey);
     if (Util.nullOrEmpty(entities)) {
       foreignKeyFilterEntities.remove(foreignKey);
     }
@@ -242,12 +197,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   public final Collection<Entity> getForeignKeyFilterEntities(ForeignKey foreignKey) {
-    Collection<Entity> filterEntities = new ArrayList<>();
+    requireNonNull(foreignKey);
     if (foreignKeyFilterEntities.containsKey(foreignKey)) {
-      filterEntities.addAll(foreignKeyFilterEntities.get(foreignKey));
+      return unmodifiableCollection(new ArrayList<>(foreignKeyFilterEntities.get(foreignKey)));
     }
 
-    return filterEntities;
+    return emptyList();
   }
 
   @Override
@@ -459,6 +414,24 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     @Override
     public void onEvent(List<Entity> deleted) {
       deleted.forEach(SwingEntityComboBoxModel.this::removeItem);
+    }
+  }
+
+  private final class ForeignKeyIncludeCondition implements Predicate<Entity> {
+
+    @Override
+    public boolean test(Entity item) {
+      for (Map.Entry<ForeignKey, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
+        Entity foreignKeyValue = item.getForeignKey(entry.getKey());
+        if (foreignKeyValue == null) {
+          return !strictForeignKeyFiltering;
+        }
+        if (!entry.getValue().contains(foreignKeyValue)) {
+          return false;
+        }
+      }
+
+      return true;
     }
   }
 

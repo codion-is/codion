@@ -22,20 +22,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortOrder.UNSORTED, -1);
 
   private final ColumnValueProvider<R, C> columnValueProvider;
-
-  /**
-   * The comparators used to compare column values
-   */
   private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
-
-  /**
-   * Fired when a column sorting state changes
-   */
   private final Event<C> sortingChangedEvent = Event.event();
-
-  /**
-   * holds the column sorting states
-   */
   private final Map<C, SortingState> sortingStates = new HashMap<>();
   private final SortingStatesComparator sortingStatesComparator = new SortingStatesComparator();
 
