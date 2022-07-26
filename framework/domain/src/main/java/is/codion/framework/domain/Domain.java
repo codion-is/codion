@@ -35,17 +35,17 @@ public interface Domain {
   Entities getEntities();
 
   /**
-   * @return the Domain reports
+   * @return an unmodifiable view of this domain's reports
    */
   Map<ReportType<?, ?, ?>, Report<?, ?, ?>> getReports();
 
   /**
-   * @return the Domain procedures
+   * @return an unmodifiable view of this domain's procedures
    */
   Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> getProcedures();
 
   /**
-   * @return the Domain functions
+   * @return an unmodifiable view of this domain's functions
    */
   Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> getFunctions();
 
@@ -82,7 +82,7 @@ public interface Domain {
   <C, T, R> DatabaseFunction<C, T, R> getFunction(FunctionType<C, T, R> functionType);
 
   /**
-   * Configures a database connection for this domain model, for example adding extensions or properties.
+   * Configures a database connection for applications using this domain model, for example adding extensions or properties.
    * @param connection the connection to configure
    * @throws DatabaseException in case of an exception
    */
