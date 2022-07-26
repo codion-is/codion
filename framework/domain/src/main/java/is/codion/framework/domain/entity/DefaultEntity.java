@@ -22,7 +22,6 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,16 +185,8 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public <T> String toString(Attribute<T> attribute) {
-    return toString(definition.getProperty(attribute));
-  }
-
-  @Override
-  public <T> String toString(Property<T> property) {
-    if (!getEntityType().equals(requireNonNull(property).getEntityType())) {
-      throw new IllegalArgumentException("Property " + property + " is not part of entity " + getEntityType());
-    }
-    Attribute<T> attribute = property.getAttribute();
-    if (attribute instanceof ForeignKey && !isLoaded(((ForeignKey) attribute))) {
+    Property<T> property = definition.getProperty(attribute);
+    if (attribute instanceof ForeignKey && values.get(attribute) == null) {
       Key referencedKey = getReferencedKey((ForeignKey) attribute);
       if (referencedKey != null) {
         return referencedKey.toString();
@@ -261,7 +252,7 @@ final class DefaultEntity implements Entity, Serializable {
   @Override
   public Map<Attribute<?>, Object> setAs(Entity entity) {
     if (entity == this) {
-      return Collections.emptyMap();
+      return emptyMap();
     }
     if (entity != null && !definition.getEntityType().equals(entity.getEntityType())) {
       throw new IllegalArgumentException("Entity of type: " + definition.getEntityType() + " expected, got: " + entity.getEntityType());
