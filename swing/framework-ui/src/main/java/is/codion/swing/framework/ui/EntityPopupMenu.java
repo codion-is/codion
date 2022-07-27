@@ -15,7 +15,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -41,7 +40,7 @@ import static java.util.stream.Collectors.joining;
  */
 final class EntityPopupMenu extends JPopupMenu {
 
-  private static final int MAXIMUM_VALUE_LENGTH = 1000;
+  private static final int MAXIMUM_VALUE_LENGTH = 42;
 
   /**
    * Note that this has a side effect, as it populates the full foreign key graph of the given entity, so use a copy.
@@ -50,6 +49,7 @@ final class EntityPopupMenu extends JPopupMenu {
    */
   EntityPopupMenu(Entity entity, EntityConnection connection) {
     requireNonNull(entity);
+    requireNonNull(connection);
     populateEntityMenu(this, entity, connection, new HashSet<>());
   }
 
@@ -70,16 +70,12 @@ final class EntityPopupMenu extends JPopupMenu {
   private static void populatePrimaryKeyMenu(JComponent rootMenu, Entity entity, List<ColumnProperty<?>> primaryKeyProperties) {
     Text.collate(primaryKeyProperties);
     for (ColumnProperty<?> property : primaryKeyProperties) {
-      boolean modified = entity.isModified(property.getAttribute());
-      String value = entity.toString(property.getAttribute());
-      StringBuilder builder = new StringBuilder("[PK] ")
-              .append(property.getAttribute()).append(": ").append(value);
-      if (modified) {
-        builder.append(getOriginalValue(entity, property));
-      }
-      JMenuItem menuItem = new JMenuItem(builder.toString());
-      menuItem.addActionListener(Control.control(() -> setClipboard(value)));
-      setInvalidModified(menuItem, true, modified);
+      JMenuItem menuItem = new JMenuItem(new StringBuilder("[PK] ")
+              .append(property.getAttribute())
+              .append(" [").append(property.getAttribute().getTypeClass().getSimpleName()).append("]: ")
+              .append(createValueString(entity, property)).toString());
+      menuItem.addActionListener(Control.control(() -> setClipboard(entity.toString(property.getAttribute()))));
+      setInvalidModified(menuItem, true, entity.isModified(property.getAttribute()));
       menuItem.setToolTipText(property.getAttribute().getName());
       rootMenu.add(menuItem);
     }
@@ -94,32 +90,21 @@ final class EntityPopupMenu extends JPopupMenu {
       EntityValidator validator = definition.getValidator();
       for (ForeignKeyProperty property : fkProperties) {
         ForeignKey foreignKey = property.getAttribute();
-        boolean fkValueNull = entity.isForeignKeyNull(foreignKey);
-        boolean valid = isValid(validator, entity, foreignKey);
-        boolean modified = entity.isModified(foreignKey);
-        String toolTipText = getForeignKeyAttributeNames(foreignKey);
-        if (!fkValueNull) {
-          Entity referencedEntity = selectEntity(entity.getReferencedKey(foreignKey), connection);
-          StringBuilder builder = new StringBuilder("[FK").append("] ")
-                  .append(property.getCaption()).append(": ").append(referencedEntity.toString());
-          if (modified) {
-            builder.append(getOriginalValue(entity, property));
-          }
-          JMenu foreignKeyMenu = new JMenu(builder.toString());
-          setInvalidModified(foreignKeyMenu, valid, modified);
-          foreignKeyMenu.setToolTipText(toolTipText);
-          populateEntityMenu(foreignKeyMenu, referencedEntity, connection, visitedEntities);
-          rootMenu.add(foreignKeyMenu);
+        StringBuilder captionBuilder = new StringBuilder("[FK] ").append(property.getCaption()).append(": ");
+        if (entity.isForeignKeyNull(foreignKey)) {
+          JMenuItem menuItem = new JMenuItem(captionBuilder.append(createValueString(entity, property)).toString());
+          setInvalidModified(menuItem, isValid(validator, entity, foreignKey), entity.isModified(foreignKey));
+          menuItem.setToolTipText(getForeignKeyAttributeNames(foreignKey));
+          rootMenu.add(menuItem);
         }
         else {
-          StringBuilder builder = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
-          if (modified) {
-            builder.append(getOriginalValue(entity, property));
-          }
-          JMenuItem menuItem = new JMenuItem(builder.toString());
-          setInvalidModified(menuItem, valid, modified);
-          menuItem.setToolTipText(toolTipText);
-          rootMenu.add(menuItem);
+          Entity referencedEntity = selectEntity(entity.getReferencedKey(foreignKey), connection);
+          entity.put(foreignKey, referencedEntity);
+          JMenu foreignKeyMenu = new JMenu(captionBuilder.append(createValueString(entity, property)).toString());
+          setInvalidModified(foreignKeyMenu, isValid(validator, entity, foreignKey), entity.isModified(foreignKey));
+          foreignKeyMenu.setToolTipText(getForeignKeyAttributeNames(foreignKey));
+          populateEntityMenu(foreignKeyMenu, referencedEntity, connection, visitedEntities);
+          rootMenu.add(foreignKeyMenu);
         }
       }
     }
@@ -127,72 +112,58 @@ final class EntityPopupMenu extends JPopupMenu {
 
   private static String getForeignKeyAttributeNames(ForeignKey foreignKey) {
     return foreignKey.getReferences().stream()
-            .map(reference -> reference.getAttribute().getName())
+            .map(reference -> reference.getAttribute().toString())
             .collect(joining(", "));
   }
 
   private static void populateValueMenu(JComponent rootMenu, Entity entity, List<Property<?>> properties) {
     Text.collate(properties);
-    final int maxValueLength = 20;
     EntityDefinition definition = entity.getDefinition();
     EntityValidator validator = definition.getValidator();
     for (Property<?> property : properties) {
-      boolean valid = isValid(validator, entity, property.getAttribute());
-      boolean modified = entity.isModified(property.getAttribute());
-      boolean isForeignKeyProperty = property instanceof ColumnProperty
-              && definition.isForeignKeyAttribute(property.getAttribute());
-      if (!isForeignKeyProperty && !(property instanceof ForeignKeyProperty)) {
-        String prefix = "[" + property.getAttribute().getTypeClass().getSimpleName().charAt(0)
-                + (property instanceof DerivedProperty ? "*" : "")
-                + (property instanceof DenormalizedProperty ? "+" : "") + "] ";
-        String value = entity.isNull(property.getAttribute()) ? "<null>" : entity.toString(property.getAttribute());
-        boolean longValue = value != null && value.length() > maxValueLength;
-        StringBuilder builder = new StringBuilder(prefix).append(property).append(": ");
-        if (longValue) {
-          builder.append(value, 0, maxValueLength).append("...");
-        }
-        else {
-          builder.append(value);
-        }
-        if (modified) {
-          builder.append(getOriginalValue(entity, property));
-        }
-        JMenuItem menuItem = new JMenuItem(builder.toString());
-        menuItem.addActionListener(Control.control(() -> setClipboard(value)));
-        setInvalidModified(menuItem, valid, modified);
-        StringBuilder toolTipBuilder = new StringBuilder();
-        if (property instanceof ColumnProperty) {
-          toolTipBuilder.append(property.getAttribute());
-        }
-        if (longValue) {
-          if (value.length() > MAXIMUM_VALUE_LENGTH) {
-            toolTipBuilder.append(value, 0, MAXIMUM_VALUE_LENGTH);
-          }
-          else {
-            toolTipBuilder.append(value);
-          }
-        }
-        menuItem.setToolTipText(toolTipBuilder.toString());
+      boolean isPrimaryKeyProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyColumn();
+      if (!isPrimaryKeyProperty && !(property instanceof ForeignKeyProperty)) {
+        JMenuItem menuItem = new JMenuItem(new StringBuilder(property.toString())
+                .append(" [").append(property.getAttribute().getTypeClass().getSimpleName())
+                .append(property instanceof DerivedProperty ? "*" : "").append("]: ")
+                .append(createValueString(entity, property)).toString());
+        menuItem.addActionListener(Control.control(() -> setClipboard(entity.toString(property.getAttribute()))));
+        setInvalidModified(menuItem, isValid(validator, entity, property.getAttribute()), entity.isModified(property.getAttribute()));
+        menuItem.setToolTipText(property.getAttribute().toString());
         rootMenu.add(menuItem);
       }
     }
   }
 
+  private static String createValueString(Entity entity, Property<?> property) {
+    StringBuilder builder = new StringBuilder();
+    if (entity.isModified(property.getAttribute())) {
+      builder.append(createValueString(entity.getOriginal(property.getAttribute()), (Property<Object>) property));
+      builder.append(" \u2192 ");
+    }
+    builder.append(createValueString(entity.get(property.getAttribute()), (Property<Object>) property));
+
+    return builder.toString();
+  }
+
+  private static String createValueString(Object value, Property<Object> property) {
+    String valueAsString = value == null ? "<null>" : property.toString(value);
+    if (valueAsString.length() > MAXIMUM_VALUE_LENGTH) {
+      valueAsString = valueAsString.substring(0, MAXIMUM_VALUE_LENGTH) + "...";
+    }
+
+    return valueAsString;
+  }
+
   private static void setInvalidModified(JMenuItem menuItem, boolean valid, boolean modified) {
     Font currentFont = menuItem.getFont();
     if (!valid) {
-      menuItem.setBackground(Color.RED);
+      menuItem.setForeground(Color.RED);
       menuItem.setFont(new Font(currentFont.getName(), Font.BOLD, currentFont.getSize()));
     }
     if (modified) {
       menuItem.setFont(new Font(currentFont.getName(), currentFont.getStyle() | Font.ITALIC, currentFont.getSize()));
     }
-  }
-
-  private static String getOriginalValue(Entity entity, Property<?> property) {
-    Object originalValue = entity.getOriginal(property.getAttribute());
-
-    return " | " + (originalValue == null ? "<null>" : originalValue.toString());
   }
 
   private static boolean isValid(EntityValidator validator, Entity entity, Attribute<?> attribute) {

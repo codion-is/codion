@@ -8273,3 +8273,4 @@
   SwingEntityComboBoxModel bug fixed, forceRefresh() didn't work when run asynchronously, now forceRefresh is reset to false using refresh listeners
   Entity.toString(Property) removed, DefaultEntity.toString(Attribute) improved a bit
   ObservableEntityList.refresh() now throws exception if the refresh was run synchronously
+  EntityPopupMenu refactored and improved a bit
