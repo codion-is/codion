@@ -369,7 +369,7 @@ public interface EntityConnection extends AutoCloseable {
 
   /**
    * Creates a new {@link CopyEntities} instance for copying entities from source to destination, with a default batch size of 100.
-   * Performs a commit after each {code batchSize} number of inserts, unless the connection has an open transaction.
+   * Performs a commit after each {code batchSize} number of inserts, unless the destination connection has an open transaction.
    * Call {@link CopyEntities#execute()} to perform the copy operation.
    * @param source the source connection
    * @param destination the destination connection
@@ -382,7 +382,7 @@ public interface EntityConnection extends AutoCloseable {
 
   /**
    * Creates a new {@link InsertEntities} instance the given entities, with a default batch size of 100.
-   * Performs a commit after each {@code batchSize} number of inserts, unless the connection has an open transaction.
+   * Performs a commit after each {@code batchSize} number of inserts, unless the destination connection has an open transaction.
    * Call {@link InsertEntities#execute()} to perform the insert operation.
    * @param connection the entity connection to use when inserting
    * @param entities the entities to insert
@@ -394,7 +394,7 @@ public interface EntityConnection extends AutoCloseable {
 
   /**
    * Copies a set of entities between a source and destination connection, performing a commit after each {@link #batchSize(int)} number of inserts,
-   * unless the connection has an open transaction.
+   * unless the destination connection has an open transaction.
    * @see #execute()
    */
   interface CopyEntities {
@@ -430,7 +430,7 @@ public interface EntityConnection extends AutoCloseable {
 
   /**
    * Inserts entities in batches, performing a commit after each {@link #batchSize(int)} number of inserts,
-   * unless the connection has an open transaction.
+   * unless the destination connection has an open transaction.
    * @see #execute()
    */
   interface InsertEntities {

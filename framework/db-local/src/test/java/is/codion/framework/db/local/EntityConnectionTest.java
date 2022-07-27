@@ -72,8 +72,15 @@ public class EntityConnectionTest {
     assertEquals(sourceConnection.rowCount(condition(Department.TYPE)),
             DESTINATION_CONNECTION.rowCount(condition(Department.TYPE)));
 
+    assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Employee.TYPE)
+            .batchSize(-10));
+
+    assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Employee.TYPE)
+            .condition(Department.TYPE, Conditions.condition(Department.TYPE)));
+
     EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Employee.TYPE)
             .batchSize(2)
+            .includePrimaryKeys(false)
             .condition(Employee.TYPE, Conditions.where(Employee.SALARY).greaterThan(1000d))
             .execute();
     assertEquals(13, DESTINATION_CONNECTION.rowCount(condition(Employee.TYPE)));
@@ -88,10 +95,14 @@ public class EntityConnectionTest {
 
     List<Entity> source = sourceConnection.select(condition(Department.TYPE));
 
+    assertThrows(IllegalArgumentException.class, () -> EntityConnection.insertEntities(DESTINATION_CONNECTION, source.iterator())
+            .batchSize(-10));
+
     EventDataListener<Integer> progressReporter = currentProgress -> {};
     EntityConnection.insertEntities(DESTINATION_CONNECTION, source.iterator())
             .batchSize(2)
             .progressReporter(progressReporter)
+            .onInsert(keys -> {})
             .execute();
     assertEquals(sourceConnection.rowCount(condition(Department.TYPE)),
             DESTINATION_CONNECTION.rowCount(condition(Department.TYPE)));

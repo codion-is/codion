@@ -8275,3 +8275,4 @@
   ObservableEntityList.refresh() now throws exception if the refresh was run synchronously
   EntityPopupMenu refactored and improved a bit
   LocalEntityConnection.localEntityConnection() parameter reordering, database first, javadoc fixes
+  DefaultCopyEntities bug fixed, now validates the condition entity type

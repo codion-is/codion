@@ -65,6 +65,9 @@ final class DefaultCopyEntities implements CopyEntities {
   public CopyEntities condition(EntityType entityType, Condition condition) {
     requireNonNull(entityType);
     requireNonNull(condition);
+    if (!entityTypes.contains(entityType)) {
+      throw new IllegalArgumentException("CopyEntities does not contain entityType: " + entityType);
+    }
     DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
     copyEntities.conditions.put(entityType, condition);
 
