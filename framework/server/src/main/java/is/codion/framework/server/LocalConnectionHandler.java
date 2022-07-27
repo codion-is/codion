@@ -125,11 +125,11 @@ final class LocalConnectionHandler implements InvocationHandler {
     this.userDescription = "Remote user: " + remoteClient.getUser().getUsername() + ", database user: " + remoteClient.getDatabaseUser().getUsername();
     try {
       if (connectionPool == null) {
-        localEntityConnection = localEntityConnection(domain, database, remoteClient.getDatabaseUser());
+        localEntityConnection = localEntityConnection(database, domain, remoteClient.getDatabaseUser());
         localEntityConnection.setMethodLogger(methodLogger);
       }
       else {
-        poolEntityConnection = localEntityConnection(domain, database, connectionPool.getConnection(remoteClient.getDatabaseUser()));
+        poolEntityConnection = localEntityConnection(database, domain, connectionPool.getConnection(remoteClient.getDatabaseUser()));
         rollbackSilently(poolEntityConnection.getDatabaseConnection());
         returnConnectionToPool();
       }
@@ -256,7 +256,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   private EntityConnection getLocalEntityConnection() throws DatabaseException {
     if (!localEntityConnection.isConnected()) {
       localEntityConnection.close();//just in case
-      localEntityConnection = localEntityConnection(domain, database, remoteClient.getDatabaseUser());
+      localEntityConnection = localEntityConnection(database, domain, remoteClient.getDatabaseUser());
       localEntityConnection.setMethodLogger(methodLogger);
     }
 

@@ -242,7 +242,7 @@ public final class Example {
 
     EntityConnection connection =
             LocalEntityConnection.localEntityConnection(
-                    domain, DatabaseFactory.getDatabase(), User.parse("scott:tiger"));
+                    DatabaseFactory.getDatabase(), domain, User.parse("scott:tiger"));
 
     //select customer where last name = Doe
     Entity johnDoe = connection.selectSingle(Customer.LAST_NAME, "Doe");
@@ -267,7 +267,7 @@ public final class Example {
 
     EntityConnection connection =
             LocalEntityConnection.localEntityConnection(
-                    domain, DatabaseFactory.getDatabase(), User.parse("scott:tiger"));
+                    DatabaseFactory.getDatabase(), domain, User.parse("scott:tiger"));
 
     Entities entities = domain.getEntities();
 

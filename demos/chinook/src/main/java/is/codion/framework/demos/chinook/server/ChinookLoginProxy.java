@@ -100,7 +100,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   }
 
   private EntityConnection getConnectionFromPool() throws DatabaseException {
-    return localEntityConnection(domain, database, connectionPool.getConnection(databaseUser));
+    return localEntityConnection(database, domain, connectionPool.getConnection(databaseUser));
   }
 
   private static final class Authentication extends DefaultDomain {

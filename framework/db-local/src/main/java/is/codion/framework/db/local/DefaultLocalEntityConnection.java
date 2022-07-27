@@ -101,13 +101,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /**
    * Constructs a new LocalEntityConnection instance
-   * @param domain the domain model
    * @param database the Database instance
+   * @param domain the domain model
    * @param user the user used for connecting to the database
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
-  DefaultLocalEntityConnection(Domain domain, Database database, User user) throws DatabaseException {
+  DefaultLocalEntityConnection(Database database, Domain domain, User user) throws DatabaseException {
     this.domain = requireNonNull(domain, "domain");
     this.domainEntities = domain.getEntities();
     this.connection = databaseConnection(database, user);
@@ -117,14 +117,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /**
    * Constructs a new LocalEntityConnection instance
-   * @param domain the domain model
    * @param database the Database instance
+   * @param domain the domain model
    * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
-   * @throws IllegalArgumentException in case the given connection is invalid or disconnected
-   * @throws DatabaseException in case a validation statement is required but could not be created
-   * @see Database#supportsIsValid()
    */
-  DefaultLocalEntityConnection(Domain domain, Database database, Connection connection) throws DatabaseException {
+  DefaultLocalEntityConnection(Database database, Domain domain, Connection connection) throws DatabaseException {
     this.domain = requireNonNull(domain, "domain");
     this.domainEntities = domain.getEntities();
     this.connection = databaseConnection(database, connection);

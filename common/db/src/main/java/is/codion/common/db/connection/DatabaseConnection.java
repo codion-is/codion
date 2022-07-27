@@ -134,8 +134,8 @@ public interface DatabaseConnection extends AutoCloseable {
    * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
    * @param connection the Connection object to base this DatabaseConnection on
-   * @throws DatabaseException in case there is a problem connecting to the database
    * @return a new DatabaseConnection instance
+   * @throws DatabaseException in case there is a problem with the connection
    */
   static DatabaseConnection databaseConnection(Database database, Connection connection) throws DatabaseException {
     return new DefaultDatabaseConnection(database, connection);

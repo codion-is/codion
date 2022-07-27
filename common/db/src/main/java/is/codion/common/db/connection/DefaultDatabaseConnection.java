@@ -56,7 +56,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
    * @param connection the Connection object to base this DefaultDatabaseConnection on
-   * @throws IllegalArgumentException in case the given connection is invalid
    * @throws DatabaseException in case of an exception while retrieving the username from the connection meta-data
    */
   DefaultDatabaseConnection(Database database, Connection connection) throws DatabaseException {

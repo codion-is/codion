@@ -65,7 +65,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
   protected LocalEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return localEntityConnection(getDomain(), getDatabase(), getUser())
+      return localEntityConnection(getDatabase(), getDomain(), getUser())
               .setDefaultQueryTimeout(defaultQueryTimeout);
     }
     catch (DatabaseException e) {
