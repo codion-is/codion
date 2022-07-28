@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Represents an application domain model, entities, reports and database operations.
  */
@@ -107,6 +109,7 @@ public interface Domain {
    * @see DomainType#getName()
    */
   static Optional<Domain> getInstanceByName(String name) {
+    requireNonNull(name);
     for (Domain domain : getDomains()) {
       if (domain.getDomainType().getName().equals(name)) {
         return Optional.of(domain);
@@ -122,6 +125,7 @@ public interface Domain {
    * @see DomainType#getName()
    */
   static Optional<Domain> getInstanceByClassName(String className) {
+    requireNonNull(className);
     for (Domain domain : getDomains()) {
       if (domain.getClass().getName().equals(className)) {
         return Optional.of(domain);

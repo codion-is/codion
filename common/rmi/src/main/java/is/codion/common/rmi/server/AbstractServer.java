@@ -204,10 +204,6 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   @Override
   public final void disconnect(UUID clientId) throws RemoteException {
-    if (clientId == null) {
-      return;
-    }
-
     ClientConnection<T> clientConnection = connections.remove(requireNonNull(clientId, CLIENT_ID));
     if (clientConnection != null) {
       disconnect(clientConnection.getConnection());

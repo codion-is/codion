@@ -278,9 +278,6 @@ final class SelectQueries {
     }
 
     private String getOrderByClause(OrderBy orderBy) {
-      if (orderBy == null) {
-        return null;
-      }
       List<OrderBy.OrderByAttribute> orderByAttributes = orderBy.getOrderByAttributes();
       if (orderByAttributes.isEmpty()) {
         throw new IllegalArgumentException("An order by clause must contain at least a single attribute");
