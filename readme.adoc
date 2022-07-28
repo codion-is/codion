@@ -20,7 +20,7 @@ Some highlights.
 
 == Motivation
 
-I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was fast becoming (to my astonishment) all the rage in the world of CRUD applications. I've been developing and using Codion professionally since 2004, always with the aim of eventually open sourcing it.
+I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was fast becoming all the rage in the world of CRUD applications. I've been developing and using Codion professionally since 2004, always with the aim of eventually open sourcing it.
 
 == License
 
@@ -46,7 +46,7 @@ Feel free to https://github.com/bjorndarri/codion/discussions[discuss] features,
 
 == Dependencies
 
-Codion uses a very limited set of third-party libraries, a simple Swing CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
+Codion uses a limited set of third-party libraries, a Swing CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
 
 * *https://www.json.org[org.json:json]* for persisting client preferences
 * *https://github.com/kordamp/ikonli[org.kordamp.ikonli:ikonli-swing]* for application icon handling
@@ -76,9 +76,9 @@ And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic
 
 Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[Object Relational Mapping] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities*, *attributes* and *properties*, eliminating most of the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
 
-Entities represent rows in a table (or query), an Attribute identifies a column and its type, allowing for type safe access to the associated value, whereas a Property encapsulates the metadata required for the framework to present and persist the underlying data.
+An Entity represents a row in a table (or query), an Attribute identifies a column and its type, allowing for type safe access to the associated value, whereas a Property encapsulates the metadata required for the framework to present and persist the value.
 
-In the following example we start by extending the *DefaultDomain* class. We define a *DomainType* constant identifying this domain model, use it to create *EntityType* constants for each entity and use those to create typed *Attribute* constants used to identify each *Property*. These constants are wrapped in an interface for a convenient namespace and are used whenever we need to refer to the entity type and its values. We then use the *entityTypes* and their respective *attributes* to define two entities, with a master/detail relationship, and add them to the domain model.
+In the following example we start by extending the *DefaultDomain* class. We define a *DomainType* constant identifying this domain model, use it to create *EntityType* constants for each entity and use those to create typed *Attribute* constants for each column. These constants are wrapped in an interface for a convenient namespace and are used whenever we need to refer to the entity type and its values. We then use the *entityTypes* and their respective *attributes* to define two entities, with a master/detail relationship, and add them to the domain model.
 
 [source,java]
 ----
@@ -158,7 +158,7 @@ public class Store extends DefaultDomain {
 }
 ----
 
-==== Entity definition expanded
+=== Entity definition expanded
 
 Here's one entity definition from above, pulled apart, with the ingredients visible.
 
@@ -167,45 +167,45 @@ Here's one entity definition from above, pulled apart, with the ingredients visi
 ====
 [source,java]
 ----
-void addressExpanded() {
-  ColumnProperty.Builder<Long, ?> id =
-          Properties.primaryKeyProperty(Address.ID);
+ColumnProperty.Builder<Long, ?> id =
+      Properties.primaryKeyProperty(Address.ID);
 
-  ColumnProperty.Builder<Long, ?> customerId =
-          Properties.columnProperty(Address.CUSTOMER_ID)
-                  .nullable(false);
+ColumnProperty.Builder<Long, ?> customerId =
+      Properties.columnProperty(Address.CUSTOMER_ID)
+              .nullable(false);
 
-  ForeignKeyProperty.Builder customerFk =
-          Properties.foreignKeyProperty(Address.CUSTOMER_FK, "Customer");
+ForeignKeyProperty.Builder customerFk =
+      Properties.foreignKeyProperty(Address.CUSTOMER_FK, "Customer");
 
-  ColumnProperty.Builder<String, ?> street =
-          Properties.columnProperty(Address.STREET, "Street")
-                  .nullable(false)
-                  .maximumLength(100);
+ColumnProperty.Builder<String, ?> street =
+      Properties.columnProperty(Address.STREET, "Street")
+              .nullable(false)
+              .maximumLength(100);
 
-  ColumnProperty.Builder<String, ?> city =
-          Properties.columnProperty(Address.CITY, "City")
-                  .nullable(false)
-                  .maximumLength(50);
+ColumnProperty.Builder<String, ?> city =
+      Properties.columnProperty(Address.CITY, "City")
+              .nullable(false)
+              .maximumLength(50);
 
-  EntityDefinition.Builder address =
-          EntityDefinition.definition(id, customerId, customerFk, street, city)
-                  .keyGenerator(KeyGenerator.identity())
-                  .stringFactory(StringFactory.builder()
-                          .value(Address.STREET)
-                          .text(", ")
-                          .value(Address.CITY)
-                          .build())
-                  .caption("Address");
+EntityDefinition.Builder address =
+      EntityDefinition.definition(id, customerId, customerFk, street, city)
+              .keyGenerator(KeyGenerator.identity())
+              .stringFactory(StringFactory.builder()
+                      .value(Address.STREET)
+                      .text(", ")
+                      .value(Address.CITY)
+                      .build())
+              .caption("Address");
 
-  add(address);
-}
+add(address);
 ----
 ====
 
 === Using entities
 
-An Entity instance maps Attributes to their respective values and behaves much like a Map. For persistance see <<Database access, Database access>>.
+An Entity instance maps Attributes to their respective values and keeps track of modifications, that is, values that have been modified since they were first set.
+
+For persistance see <<Database access, Database access>> below.
 
 [source,java]
 ----
@@ -225,6 +225,16 @@ Entity customer = entities.builder(Customer.TYPE)
 //retrieve values
 String lastName = customer.get(Customer.LAST_NAME);
 Boolean active = customer.get(Customer.IS_ACTIVE);
+
+//modify values
+customer.put(Customer.LAST_NAME, "Carter");
+
+System.out.println(customer.isModified()); //true
+System.out.println(customer.getOriginal(Customer.LAST_NAME)); //"Doe"
+
+customer.put(Customer.LAST_NAME, "Doe");
+
+System.out.println(customer.isModified()); //false
 ----
 
 == Domain model test
@@ -265,7 +275,7 @@ public class StoreTest extends EntityTestUnit {
 |is.codion.swing.framework.ui|is.codion.jdk11:codion-swing-framework-ui:{version}
 |===
 
-In the following example, we use the domain model from above and implement a *CustomerEditPanel* and *AddressEditPanel* by extending *EntityEditPanel*. These edit panels, as the name suggests, provide the UI for editing entity instances. In the *main* method we use these building blocks to assemble and display a client.
+In the following example, we use the domain model from above and implement a *CustomerEditPanel* and *AddressEditPanel* by extending *EntityEditPanel*. These edit panels, as their names suggest, provide the UI for editing entity instances. In the *main* method we use these building blocks to assemble and display a client.
 
 [source,java]
 ----
