@@ -8277,3 +8277,4 @@
   LocalEntityConnection.localEntityConnection() parameter reordering, database first, javadoc fixes
   DefaultCopyEntities bug fixed, now validates the condition entity type
   SelectCondition.getOrderBy(), getFetchDepth() and getFetchDepth(ForeignKey) now return Optional
+  DefaultLocalEntityConnectionProvider.initializeDomain() bug fixed, createDomainInstance() was called even when getInstanceByClassName() returned a non-null value, now done lazily

@@ -81,7 +81,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 
   private static Domain initializeDomain(String domainClassName) {
     return Domain.getInstanceByClassName(domainClassName)
-            .orElse(createDomainInstance(domainClassName));
+            .orElseGet(() -> createDomainInstance(domainClassName));
   }
 
   private static Domain createDomainInstance(String domainClassName) {
