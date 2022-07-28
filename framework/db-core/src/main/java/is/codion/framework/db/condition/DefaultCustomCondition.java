@@ -46,7 +46,7 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
 
   @Override
   public String getConditionString(EntityDefinition definition) {
-    return definition.getConditionProvider(conditionType).getConditionString(attributes, values);
+    return requireNonNull(definition).getConditionProvider(conditionType).getConditionString(attributes, values);
   }
 
   @Override

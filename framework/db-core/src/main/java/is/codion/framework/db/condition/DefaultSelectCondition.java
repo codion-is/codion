@@ -104,6 +104,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   @Override
   public Integer getFetchDepth(ForeignKey foreignKey) {
+    requireNonNull(foreignKey);
     if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKey)) {
       return foreignKeyFetchDepths.get(foreignKey);
     }
@@ -163,6 +164,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   @Override
   public SelectCondition fetchDepth(ForeignKey foreignKey, int fetchDepth) {
+    requireNonNull(foreignKey);
     DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
     if (selectCondition.foreignKeyFetchDepths == null) {
       selectCondition.foreignKeyFetchDepths = new HashMap<>();
