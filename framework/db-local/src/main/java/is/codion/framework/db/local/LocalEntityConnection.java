@@ -151,6 +151,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * @param domain the domain model
    * @param connection the connection object to base the entity connection on, it is assumed to be in a valid state
    * @return a new LocalEntityConnection instance, wrapping the given connection
+   * @throws DatabaseException in case there is a problem with the supplied connection
    */
   static LocalEntityConnection localEntityConnection(Database database, Domain domain,
                                                      Connection connection) throws DatabaseException {
