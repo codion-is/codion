@@ -13,8 +13,6 @@ import is.codion.framework.domain.Domain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 
 /**
@@ -65,7 +63,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
   protected LocalEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return localEntityConnection(getDomain(), getDatabase(), getUser())
+      return localEntityConnection(getDatabase(), getDomain(), getUser())
               .setDefaultQueryTimeout(defaultQueryTimeout);
     }
     catch (DatabaseException e) {
@@ -82,13 +80,12 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
   }
 
   private static Domain initializeDomain(String domainClassName) {
-    Optional<Domain> optionalDomain = Domain.getInstanceByClassName(domainClassName);
-    if (optionalDomain.isPresent()) {
-      return optionalDomain.get();
-    }
-    else {
-      LOG.debug("Domain of type " + domainClassName + " not found in services");
-    }
+    return Domain.getInstanceByClassName(domainClassName)
+            .orElse(createDomainInstance(domainClassName));
+  }
+
+  private static Domain createDomainInstance(String domainClassName) {
+    LOG.debug("Domain of type " + domainClassName + " not found in services");
     try {
       return (Domain) Class.forName(domainClassName).getConstructor().newInstance();
     }
@@ -97,5 +94,4 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
       throw new RuntimeException(e);
     }
   }
-
 }

@@ -26,7 +26,7 @@ import java.sql.Connection;
  * Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:file:/path/to/database");
  * User user = User.parse("scott:tiger");
  *
- * try (EntityConnection connection = LocalEntityConnection.localEntityConnection(domain, database, user)) {
+ * try (EntityConnection connection = LocalEntityConnection.localEntityConnection(database, domain, user)) {
  *   List&lt;Entity&gt; customers = connection.select(Conditions.condition(Customer.TYPE));
  * }
  * </pre>
@@ -133,30 +133,27 @@ public interface LocalEntityConnection extends EntityConnection {
 
   /**
    * Constructs a new LocalEntityConnection instance
-   * @param domain the domain model
    * @param database the Database instance
+   * @param domain the domain model
    * @param user the user used for connecting to the database
    * @return a new LocalEntityConnection instance
    * @throws DatabaseException in case there is a problem connecting to the database
    * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
-  static LocalEntityConnection localEntityConnection(Domain domain, Database database,
+  static LocalEntityConnection localEntityConnection(Database database, Domain domain,
                                                      User user) throws DatabaseException {
-    return new DefaultLocalEntityConnection(domain, database, user);
+    return new DefaultLocalEntityConnection(database, domain, user);
   }
 
   /**
    * Constructs a new LocalEntityConnection instance
-   * @param domain the domain model
    * @param database the Database instance
+   * @param domain the domain model
    * @param connection the connection object to base the entity connection on, it is assumed to be in a valid state
    * @return a new LocalEntityConnection instance, wrapping the given connection
-   * @throws IllegalArgumentException in case the given connection is invalid or disconnected
-   * @throws DatabaseException in case a validation statement is required but could not be created
-   * @see Database#supportsIsValid()
    */
-  static LocalEntityConnection localEntityConnection(Domain domain, Database database,
+  static LocalEntityConnection localEntityConnection(Database database, Domain domain,
                                                      Connection connection) throws DatabaseException {
-    return new DefaultLocalEntityConnection(domain, database, connection);
+    return new DefaultLocalEntityConnection(database, domain, connection);
   }
 }

@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.util.Objects;
 
 final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
 
@@ -37,12 +38,13 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeFieldName("condition");
     conditionSerializer.serialize(condition.getCondition(), generator);
     generator.writeFieldName("orderBy");
-    if (condition.getOrderBy() == null) {
+    OrderBy orderBy = condition.getOrderBy().orElse(null);
+    if (orderBy == null) {
       generator.writeNull();
     }
     else {
       generator.writeStartArray();
-      for (OrderBy.OrderByAttribute attribute : condition.getOrderBy().getOrderByAttributes()) {
+      for (OrderBy.OrderByAttribute attribute : orderBy.getOrderByAttributes()) {
         generator.writeString(attribute.getAttribute().getName() + ":" + (attribute.isAscending() ? "asc" : "desc"));
       }
       generator.writeEndArray();
@@ -51,12 +53,13 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeObjectField("offset", condition.getOffset());
     generator.writeObjectField("forUpdate", condition.isForUpdate());
     generator.writeObjectField("queryTimeout", condition.getQueryTimeout());
-    generator.writeObjectField("fetchDepth", condition.getFetchDepth());
+    Integer conditionFetchDepth = condition.getFetchDepth().orElse(null);
+    generator.writeObjectField("fetchDepth", conditionFetchDepth);
     generator.writeFieldName("fkFetchDepth");
     generator.writeStartObject();
     for (ForeignKey foreignKey : entities.getDefinition(condition.getEntityType()).getForeignKeys()) {
-      Integer fkFetchDepth = condition.getFetchDepth(foreignKey);
-      if (fkFetchDepth != condition.getFetchDepth()) {
+      Integer fkFetchDepth = condition.getFetchDepth(foreignKey).orElse(null);
+      if (!Objects.equals(fkFetchDepth, conditionFetchDepth)) {
         generator.writeObjectField(foreignKey.getName(), fkFetchDepth);
       }
     }

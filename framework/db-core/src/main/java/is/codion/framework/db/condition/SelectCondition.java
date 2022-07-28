@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * A class encapsulating select query parameters.
@@ -22,9 +23,9 @@ public interface SelectCondition extends Condition {
   Condition getCondition();
 
   /**
-   * @return the OrderBy for this condition, null if none is specified
+   * @return the OrderBy for this condition, an empty Optional if none is specified
    */
-  OrderBy getOrderBy();
+  Optional<OrderBy> getOrderBy();
 
   /**
    * @return the limit to use for the given condition, -1 for no limit
@@ -47,17 +48,17 @@ public interface SelectCondition extends Condition {
   int getQueryTimeout();
 
   /**
-   * @return the global fetch depth limit for this condition, null if none has been specified
+   * @return the global fetch depth limit for this condition, an empty Optional if none has been specified
    */
-  Integer getFetchDepth();
+  Optional<Integer> getFetchDepth();
 
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
-   * should be fetched, -1 no limit and null unspecified (use default).
+   * should be fetched, -1 no limit and an empty Optional if unspecified (use default).
    * @param foreignKey the foreign key
    * @return the number of levels of foreign key values to fetch
    */
-  Integer getFetchDepth(ForeignKey foreignKey);
+  Optional<Integer> getFetchDepth(ForeignKey foreignKey);
 
   /**
    * @return the attributes to include in the query result,

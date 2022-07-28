@@ -787,7 +787,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       Database db = DatabaseFactory.getDatabase();
       connection = db.createConnection(UNIT_TEST_USER);
-      EntityConnection conn = new DefaultLocalEntityConnection(DOMAIN, db, connection);
+      EntityConnection conn = new DefaultLocalEntityConnection(db, DOMAIN, connection);
       assertTrue(conn.isConnected());
     }
     finally {
@@ -808,7 +808,7 @@ public class DefaultLocalEntityConnectionTest {
         Database db = DatabaseFactory.getDatabase();
         connection = db.createConnection(UNIT_TEST_USER);
         connection.close();
-        new DefaultLocalEntityConnection(DOMAIN, db, connection);
+        new DefaultLocalEntityConnection(db, DOMAIN, connection);
       }
       finally {
         if (connection != null) {
@@ -1043,6 +1043,6 @@ public class DefaultLocalEntityConnectionTest {
       });
     }
 
-    return new DefaultLocalEntityConnection(DOMAIN, database, UNIT_TEST_USER);
+    return new DefaultLocalEntityConnection(database, DOMAIN, UNIT_TEST_USER);
   }
 }

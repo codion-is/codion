@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Objects.requireNonNull;
+
 final class DefaultClientLog implements ClientLog, Serializable {
 
   private static final long serialVersionUID = 1;
@@ -20,9 +22,9 @@ final class DefaultClientLog implements ClientLog, Serializable {
 
   DefaultClientLog(UUID clientId, LocalDateTime connectionCreationDate,
                    List<MethodLogger.Entry> entries) {
-    this.clientId = clientId;
-    this.connectionCreationDate = connectionCreationDate;
-    this.entries = entries;
+    this.clientId = requireNonNull(clientId);
+    this.connectionCreationDate = requireNonNull(connectionCreationDate);
+    this.entries = requireNonNull(entries);
   }
 
   @Override
@@ -41,9 +43,16 @@ final class DefaultClientLog implements ClientLog, Serializable {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    return this == obj || !((obj == null) || (obj.getClass() != this.getClass()))
-            && clientId.equals(((ClientLog) obj).getClientId());
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof DefaultClientLog)) {
+      return false;
+    }
+    DefaultClientLog that = (DefaultClientLog) object;
+
+    return clientId.equals(that.clientId);
   }
 
   @Override

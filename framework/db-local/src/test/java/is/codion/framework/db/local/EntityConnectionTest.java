@@ -47,7 +47,7 @@ public class EntityConnectionTest {
   public static void setUp() {
     try {
       Database destinationDatabase = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
-      DESTINATION_CONNECTION = localEntityConnection(DOMAIN, destinationDatabase, User.user("sa"));
+      DESTINATION_CONNECTION = localEntityConnection(destinationDatabase, DOMAIN, User.user("sa"));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
       DESTINATION_CONNECTION.delete(condition(Employee.TYPE));
       DESTINATION_CONNECTION.delete(condition(Department.TYPE));
@@ -72,8 +72,15 @@ public class EntityConnectionTest {
     assertEquals(sourceConnection.rowCount(condition(Department.TYPE)),
             DESTINATION_CONNECTION.rowCount(condition(Department.TYPE)));
 
+    assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Employee.TYPE)
+            .batchSize(-10));
+
+    assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Employee.TYPE)
+            .condition(Department.TYPE, Conditions.condition(Department.TYPE)));
+
     EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Employee.TYPE)
             .batchSize(2)
+            .includePrimaryKeys(false)
             .condition(Employee.TYPE, Conditions.where(Employee.SALARY).greaterThan(1000d))
             .execute();
     assertEquals(13, DESTINATION_CONNECTION.rowCount(condition(Employee.TYPE)));
@@ -88,10 +95,14 @@ public class EntityConnectionTest {
 
     List<Entity> source = sourceConnection.select(condition(Department.TYPE));
 
+    assertThrows(IllegalArgumentException.class, () -> EntityConnection.insertEntities(DESTINATION_CONNECTION, source.iterator())
+            .batchSize(-10));
+
     EventDataListener<Integer> progressReporter = currentProgress -> {};
     EntityConnection.insertEntities(DESTINATION_CONNECTION, source.iterator())
             .batchSize(2)
             .progressReporter(progressReporter)
+            .onInsert(keys -> {})
             .execute();
     assertEquals(sourceConnection.rowCount(condition(Department.TYPE)),
             DESTINATION_CONNECTION.rowCount(condition(Department.TYPE)));
