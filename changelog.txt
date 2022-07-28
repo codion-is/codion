@@ -8276,3 +8276,4 @@
   EntityPopupMenu refactored and improved a bit
   LocalEntityConnection.localEntityConnection() parameter reordering, database first, javadoc fixes
   DefaultCopyEntities bug fixed, now validates the condition entity type
+  SelectCondition.getOrderBy(), getFetchDepth() and getFetchDepth(ForeignKey) now return Optional

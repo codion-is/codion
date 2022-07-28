@@ -109,24 +109,25 @@ public final class ConditionObjectMapperTest {
     SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
 
     assertEquals(selectCondition.getCondition().getAttributes(), readCondition.getCondition().getAttributes());
-    assertEquals(selectCondition.getOrderBy().getOrderByAttributes(), readCondition.getOrderBy().getOrderByAttributes());
+    assertEquals(selectCondition.getOrderBy().get().getOrderByAttributes(), readCondition.getOrderBy().get().getOrderByAttributes());
     assertEquals(selectCondition.getLimit(), readCondition.getLimit());
     assertEquals(selectCondition.getOffset(), readCondition.getOffset());
-    assertEquals(selectCondition.getFetchDepth(), readCondition.getFetchDepth());
+    assertEquals(selectCondition.getFetchDepth().orElse(null), readCondition.getFetchDepth().orElse(null));
     for (ForeignKey foreignKey : entities.getDefinition(selectCondition.getEntityType()).getForeignKeys()) {
       assertEquals(selectCondition.getFetchDepth(foreignKey), readCondition.getFetchDepth(foreignKey));
     }
     assertEquals(selectCondition.getSelectAttributes(), readCondition.getSelectAttributes());
     assertTrue(readCondition.isForUpdate());
     assertEquals(42, readCondition.getQueryTimeout());
+    assertEquals(selectCondition, readCondition);
 
     selectCondition = Conditions.where(Employee.EMPNO).equalTo(1).toSelectCondition();
 
     jsonString = mapper.writeValueAsString(selectCondition);
     readCondition = mapper.readValue(jsonString, SelectCondition.class);
 
-    assertNull(readCondition.getOrderBy());
-    assertNull(readCondition.getFetchDepth());
+    assertFalse(readCondition.getOrderBy().isPresent());
+    assertFalse(readCondition.getFetchDepth().isPresent());
 
     Condition condition = Conditions.where(Employee.EMPNO).equalTo(2);
     jsonString = mapper.writeValueAsString(condition);

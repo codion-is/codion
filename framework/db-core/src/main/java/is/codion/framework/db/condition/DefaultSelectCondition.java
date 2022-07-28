@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -78,8 +79,8 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   }
 
   @Override
-  public OrderBy getOrderBy() {
-    return orderBy;
+  public Optional<OrderBy> getOrderBy() {
+    return Optional.ofNullable(orderBy);
   }
 
   @Override
@@ -98,18 +99,18 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   }
 
   @Override
-  public Integer getFetchDepth() {
-    return fetchDepth;
+  public Optional<Integer> getFetchDepth() {
+    return Optional.ofNullable(fetchDepth);
   }
 
   @Override
-  public Integer getFetchDepth(ForeignKey foreignKey) {
+  public Optional<Integer> getFetchDepth(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
     if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKey)) {
-      return foreignKeyFetchDepths.get(foreignKey);
+      return Optional.of(foreignKeyFetchDepths.get(foreignKey));
     }
 
-    return fetchDepth;
+    return getFetchDepth();
   }
 
   @Override
