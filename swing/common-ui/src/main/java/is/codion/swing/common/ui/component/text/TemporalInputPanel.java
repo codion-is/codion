@@ -128,6 +128,11 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     }
   }
 
+  @Override
+  public void setToolTipText(String text) {
+    inputField.setToolTipText(text);
+  }
+
   /**
    * @param <T> the value type
    * @param valueClass the value class

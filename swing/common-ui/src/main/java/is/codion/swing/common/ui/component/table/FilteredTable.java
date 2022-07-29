@@ -357,7 +357,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     return Control.builder(this::selectColumns)
             .caption(MESSAGES.getString(SELECT) + "...")
             .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
-            .description(MESSAGES.getString(SELECT))
+            .description(MESSAGES.getString(SELECT_COLUMNS))
             .build();
   }
 
@@ -368,7 +368,6 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     return Controls.builder()
             .caption(MESSAGES.getString(SELECT))
             .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
-            .description(MESSAGES.getString(SELECT))
             .controls(tableModel.getColumnModel().getAllColumns().stream()
                     .sorted(new ColumnComparator())
                     .map(this::createToggleColumnControl)
@@ -429,7 +428,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     Control selectPreviousResult = control(() -> selectSearchResult(true, false));
     Control requestTableFocus = control(this::requestFocusInWindow);
 
-    String hintText = Messages.get(Messages.SEARCH_FIELD_HINT);
+    String hintText = Messages.searchFieldHint();
     return Components.textField(tableModel.getSearchModel().getSearchStringValue())
             .columns(SEARCH_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)

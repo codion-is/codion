@@ -122,7 +122,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
    * @return a Boolean based ItemComboBoxModel
    */
   public static ItemComboBoxModel<Boolean> createBooleanModel(String nullCaption) {
-    return createBooleanModel(nullCaption, Messages.get(Messages.YES), Messages.get(Messages.NO));
+    return createBooleanModel(nullCaption, Messages.yes(), Messages.no());
   }
 
   /**

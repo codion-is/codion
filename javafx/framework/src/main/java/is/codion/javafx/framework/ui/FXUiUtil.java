@@ -812,11 +812,11 @@ public final class FXUiUtil {
    */
   public static User showLoginDialog(String applicationTitle, User defaultUser, ImageView icon) {
     Dialog<User> dialog = new Dialog<>();
-    dialog.setTitle(Messages.get(Messages.LOGIN));
+    dialog.setTitle(Messages.login());
     dialog.setHeaderText(applicationTitle);
     dialog.setGraphic(icon);
 
-    ButtonType loginButtonType = new ButtonType(Messages.get(Messages.OK), ButtonBar.ButtonData.OK_DONE);
+    ButtonType loginButtonType = new ButtonType(Messages.ok(), ButtonBar.ButtonData.OK_DONE);
     dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
     GridPane grid = new GridPane();
@@ -825,14 +825,14 @@ public final class FXUiUtil {
     grid.setPadding(new Insets(20, 150, 10, 10));
 
     TextField username = new TextField(defaultUser == null ? "" : defaultUser.getUsername());
-    username.setPromptText(Messages.get(Messages.USERNAME));
+    username.setPromptText(Messages.username());
     PasswordField password = new PasswordField();
     password.setText(defaultUser == null || defaultUser.getPassword() == null ? "" : String.valueOf(defaultUser.getPassword()));
-    password.setPromptText(Messages.get(Messages.PASSWORD));
+    password.setPromptText(Messages.password());
 
-    grid.add(new Label(Messages.get(Messages.USERNAME)), 0, 0);
+    grid.add(new Label(Messages.username()), 0, 0);
     grid.add(username, 1, 0);
-    grid.add(new Label(Messages.get(Messages.PASSWORD)), 0, 1);
+    grid.add(new Label(Messages.password()), 0, 1);
     grid.add(password, 1, 1);
 
     Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
@@ -872,7 +872,7 @@ public final class FXUiUtil {
    */
   public static void showExceptionDialog(Throwable exception) {
     Alert alert = new Alert(Alert.AlertType.ERROR);
-    alert.setTitle(Messages.get(Messages.ERROR));
+    alert.setTitle(Messages.error());
     alert.setHeaderText(exception.getClass().getSimpleName());
     alert.setContentText(exception.getMessage());
 

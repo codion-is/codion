@@ -94,6 +94,11 @@ public final class TextInputPanel extends JPanel {
     button.setEnabled(enabled);
   }
 
+  @Override
+  public void setToolTipText(String text) {
+    textField.setToolTipText(text);
+  }
+
   /**
    * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
    */

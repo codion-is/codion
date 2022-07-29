@@ -38,6 +38,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
   private TemporalField(DefaultBuilder<T> builder) {
     super(initializeFormatter(builder.mask));
+    setToolTipText(builder.dateTimePattern);
     this.temporalClass = builder.temporalClass;
     this.formatter = builder.dateTimeFormatter;
     this.dateTimeParser = builder.dateTimeParser;
@@ -149,6 +150,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
           extends DefaultTextFieldBuilder<T, TemporalField<T>, Builder<T>> implements Builder<T> {
 
     private final Class<T> temporalClass;
+    private final String dateTimePattern;
     private final String mask;
 
     private DateTimeFormatter dateTimeFormatter;
@@ -158,7 +160,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     private DefaultBuilder(Class<T> temporalClass, String dateTimePattern,
                            Value<T> linkedValue) {
       super(temporalClass, linkedValue);
-      this.temporalClass = requireNonNull(temporalClass);
+      this.temporalClass = temporalClass;
+      this.dateTimePattern = requireNonNull(dateTimePattern);
       this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern);
       this.mask = createMask(dateTimePattern);
       this.dateTimeParser = initializeDateTimeParser(temporalClass);

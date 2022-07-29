@@ -260,7 +260,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
     Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
             Dialogs.selectionDialog(properties)
                     .owner(this)
-                    .title(FrameworkMessages.get(FrameworkMessages.SELECT_INPUT_FIELD))
+                    .title(FrameworkMessages.selectInputField())
                     .selectSingle();
     optionalProperty.ifPresent(property -> requestComponentFocus(property.getAttribute()));
   }

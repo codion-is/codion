@@ -351,7 +351,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public final void viewDependencyTree() {
     Dialogs.componentDialog(initializeDependencyTree())
             .owner(this)
-            .title(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES))
+            .title(FrameworkMessages.viewDependencies())
             .modal(false)
             .show();
   }
@@ -481,6 +481,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     Dialogs.componentDialog(shortcutsPanel)
             .owner(this)
             .title(resourceBundle.getString(KEYBOARD_SHORTCUTS))
+            .modal(false)
             .show();
   }
 
@@ -601,8 +602,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls getFileControls() {
     return Controls.builder()
-            .caption(FrameworkMessages.get(FrameworkMessages.FILE))
-            .mnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0))
+            .caption(FrameworkMessages.file())
+            .mnemonic(FrameworkMessages.fileMnemonic())
             .control(createExitControl())
             .build();
   }
@@ -612,7 +613,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls getSettingsControls() {
     return Controls.builder()
-            .caption(FrameworkMessages.get(FrameworkMessages.SETTINGS))
+            .caption(FrameworkMessages.settings())
             .control(createLogLevelControl())
             .build();
   }
@@ -636,8 +637,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls getViewControls() {
     return Controls.builder()
-            .caption(FrameworkMessages.get(FrameworkMessages.VIEW))
-            .mnemonic(FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0))
+            .caption(FrameworkMessages.view())
+            .mnemonic(FrameworkMessages.viewMnemonic())
             .control(createSelectLookAndFeelControl())
             .control(createSelectFontSizeControl())
             .separator()
@@ -664,9 +665,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createExitControl() {
     return Control.builder(this::exit)
-            .caption(FrameworkMessages.get(FrameworkMessages.EXIT))
-            .description(FrameworkMessages.get(FrameworkMessages.EXIT_TIP))
-            .mnemonic(FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0))
+            .caption(FrameworkMessages.exit())
+            .description(FrameworkMessages.exitTip())
+            .mnemonic(FrameworkMessages.exitMnemonic())
             .build();
   }
 
@@ -690,7 +691,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createRefreshAllControl() {
     return Control.builder(applicationModel::refresh)
-            .caption(FrameworkMessages.get(FrameworkMessages.REFRESH_ALL))
+            .caption(FrameworkMessages.refreshAll())
             .build();
   }
 
@@ -708,7 +709,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createViewDependencyTree() {
     return Control.builder(this::viewDependencyTree)
-            .caption(FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES))
+            .caption(FrameworkMessages.viewDependencies())
             .build();
   }
 
@@ -849,8 +850,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return comparator.compare(thisCompare, thatCompare);
     });
     Controls.Builder controlsBuilder = Controls.builder()
-            .caption(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES))
-            .mnemonic(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
+            .caption(FrameworkMessages.supportTables())
+            .mnemonic(FrameworkMessages.supportTablesMnemonic());
     supportPanelBuilders.forEach(panelBuilder -> controlsBuilder.control(Control.builder(() -> displayEntityPanel(panelBuilder))
             .caption(panelBuilder.getCaption() == null ? entities.getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())));
 
@@ -1138,7 +1139,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case a login dialog is cancelled
    */
   protected User getLoginUser(User defaultUser, LoginValidator loginValidator) {
-    String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.get(Messages.LOGIN);
+    String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.login();
     User user = Dialogs.loginDialog()
             .defaultUser(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser)
             .validator(loginValidator)
@@ -1146,7 +1147,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .icon(getApplicationIcon())
             .show();
     if (nullOrEmpty(user.getUsername())) {
-      throw new IllegalArgumentException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
+      throw new IllegalArgumentException(FrameworkMessages.emptyUsername());
     }
 
     return user;
@@ -1350,11 +1351,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private boolean cancelExit() {
     boolean cancelForUnsavedData = getModel().isWarnAboutUnsavedData() && getModel().containsUnsavedData() &&
-            JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING),
-                    FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
+            JOptionPane.showConfirmDialog(this, FrameworkMessages.unsavedDataWarning(),
+                    FrameworkMessages.unsavedDataWarningTitle(),
                     JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
     boolean exitNotConfirmed = CONFIRM_EXIT.get() && JOptionPane.showConfirmDialog(this,
-            FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT), FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE),
+            FrameworkMessages.confirmExit(), FrameworkMessages.confirmExitTitle(),
             JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
 
     return cancelForUnsavedData || exitNotConfirmed;

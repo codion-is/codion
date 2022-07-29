@@ -180,7 +180,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
     private DefaultBuilder(SwingEntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
       super(comboBoxModel, linkedValue);
       popupMenuControl(Control.builder(new ForceRefreshCommand(comboBoxModel))
-              .caption(FrameworkMessages.get(FrameworkMessages.REFRESH))
+              .caption(FrameworkMessages.refresh())
               .build());
     }
 

@@ -81,12 +81,12 @@ final class KeyboardShortcutsPanel extends JPanel {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("transfer_focus_to_next_input_field")), new JLabel(ENTER))
             .addAll(new JLabel(MESSAGES.getString("transfer_focus_to_previous_input_field")), new JLabel(SHIFT + ENTER))
-            .addAll(new JLabel(MESSAGES.getString("save")), new JLabel(ALT + FrameworkMessages.get(FrameworkMessages.SAVE_MNEMONIC)))
-            .addAll(new JLabel(MESSAGES.getString("add")), new JLabel(ALT + FrameworkMessages.get(FrameworkMessages.ADD_MNEMONIC)))
-            .addAll(new JLabel(MESSAGES.getString("update")), new JLabel(ALT + FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC)))
-            .addAll(new JLabel(MESSAGES.getString("delete")), new JLabel(ALT + FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC)))
-            .addAll(new JLabel(MESSAGES.getString("clear")), new JLabel(ALT + FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC)))
-            .addAll(new JLabel(MESSAGES.getString("refresh")), new JLabel(ALT + FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC)))
+            .addAll(new JLabel(MESSAGES.getString("save")), new JLabel(ALT + FrameworkMessages.saveMnemonic()))
+            .addAll(new JLabel(MESSAGES.getString("add")), new JLabel(ALT + FrameworkMessages.addMnemonic()))
+            .addAll(new JLabel(MESSAGES.getString("update")), new JLabel(ALT + FrameworkMessages.updateMnemonic()))
+            .addAll(new JLabel(MESSAGES.getString("delete")), new JLabel(ALT + FrameworkMessages.deleteMnemonic()))
+            .addAll(new JLabel(MESSAGES.getString("clear")), new JLabel(ALT + FrameworkMessages.clearMnemonic()))
+            .addAll(new JLabel(MESSAGES.getString("refresh")), new JLabel(ALT + FrameworkMessages.refreshMnemonic()))
             .border(createTitledBorder(MESSAGES.getString("edit_panel")))
             .build();
   }

@@ -21,7 +21,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
   private JComponent southComponent;
 
   DefaultLoginDialogBuilder() {
-    titleProvider(Value.value(Messages.get(Messages.LOGIN)));
+    titleProvider(Value.value(Messages.login()));
   }
 
   @Override

@@ -42,7 +42,7 @@ public final class EntitySearchField extends TextField {
     this.model = model;
     linkToModel();
     setInvalidBackgroundColor(Color.DARKGRAY);
-    setPromptText(Messages.get(Messages.SEARCH_FIELD_HINT));
+    setPromptText(Messages.searchFieldHint());
     tooltipProperty().setValue(new Tooltip(model.getDescription()));
     setOnKeyPressed(new SearchKeyHandler());
     focusedProperty().addListener((observable, oldValue, newValue) -> onFocusChanged(newValue));
@@ -133,7 +133,7 @@ public final class EntitySearchField extends TextField {
 
   private static void showEmptyResultMessage() {
     Platform.runLater(new Alert(Alert.AlertType.INFORMATION,
-            FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION), ButtonType.OK)::showAndWait);
+            FrameworkMessages.noResultsFromCondition(), ButtonType.OK)::showAndWait);
   }
 
   private class SearchKeyHandler implements EventHandler<KeyEvent> {

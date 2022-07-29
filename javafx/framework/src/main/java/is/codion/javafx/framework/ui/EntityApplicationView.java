@@ -178,8 +178,8 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    */
   protected MenuBar createMainMenu() {
     MenuBar menuBar = new MenuBar();
-    Menu file = new Menu(FrameworkMessages.get(FrameworkMessages.FILE));
-    MenuItem exit = new MenuItem(FrameworkMessages.get(FrameworkMessages.EXIT));
+    Menu file = new Menu(FrameworkMessages.file());
+    MenuItem exit = new MenuItem(FrameworkMessages.exit());
     exit.setOnAction(event -> mainStage.close());
     file.getItems().add(exit);
     menuBar.getMenus().add(file);

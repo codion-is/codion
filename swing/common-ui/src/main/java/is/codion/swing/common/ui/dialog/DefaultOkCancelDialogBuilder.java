@@ -115,11 +115,11 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   @Override
   public JDialog build() {
     JButton okButton = new JButton(okAction);
-    okButton.setText(Messages.get(Messages.OK));
-    okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    okButton.setText(Messages.ok());
+    okButton.setMnemonic(Messages.okMnemonic());
     JButton cancelButton = new JButton(cancelAction);
-    cancelButton.setText(Messages.get(Messages.CANCEL));
-    cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
+    cancelButton.setText(Messages.cancel());
+    cancelButton.setMnemonic(Messages.cancelMnemonic());
     JPanel buttonPanel = new JPanel(Layouts.gridLayout(1, 2));
     buttonPanel.add(okButton);
     buttonPanel.add(cancelButton);
