@@ -429,7 +429,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     Control selectPreviousResult = control(() -> selectSearchResult(true, false));
     Control requestTableFocus = control(this::requestFocusInWindow);
 
-    String hintText = Messages.get(Messages.SEARCH_FIELD_HINT);
+    String hintText = Messages.searchFieldHint();
     return Components.textField(tableModel.getSearchModel().getSearchStringValue())
             .columns(SEARCH_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)

@@ -17,7 +17,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
   private String message;
 
   DefaultExceptionDialogBuilder() {
-    titleProvider(Value.value(Messages.get(Messages.ERROR)));
+    titleProvider(Value.value(Messages.error()));
   }
 
   @Override

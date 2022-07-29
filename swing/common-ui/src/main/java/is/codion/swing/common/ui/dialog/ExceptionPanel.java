@@ -96,7 +96,7 @@ final class ExceptionPanel extends JPanel {
     Sizes.setPreferredWidth(descriptionLabel, DESCRIPTION_LABEL_WIDTH);
     descriptionLabel.setIconTextGap(ICON_TEXT_GAP);
     printButton = Control.builder(detailsArea::print)
-            .caption(Messages.get(Messages.PRINT))
+            .caption(Messages.print())
             .description(MESSAGES.getString("print_error_report"))
             .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
             .build().createButton();
@@ -106,7 +106,7 @@ final class ExceptionPanel extends JPanel {
             .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
             .build().createButton();
     copyButton = Control.builder(() -> Utilities.setClipboard(detailsArea.getText()))
-            .caption(Messages.get(Messages.COPY))
+            .caption(Messages.copy())
             .description(MESSAGES.getString("copy_to_clipboard"))
             .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
             .build().createButton();
@@ -148,7 +148,7 @@ final class ExceptionPanel extends JPanel {
   }
 
   private JPanel createNorthPanel() {
-    JLabel label = new JLabel(Messages.get(Messages.ERROR) + ": ");
+    JLabel label = new JLabel(Messages.error() + ": ");
     label.setHorizontalAlignment(SwingConstants.LEFT);
     detailPanel.add(label);
     detailPanel.add(exceptionField);

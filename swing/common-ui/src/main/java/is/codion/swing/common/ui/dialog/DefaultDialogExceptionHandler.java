@@ -83,7 +83,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
       return MESSAGES.getString("file_not_found");
     }
 
-    return Messages.get(Messages.ERROR);
+    return Messages.error();
   }
 
   private static String trimMessage(Throwable e) {

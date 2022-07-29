@@ -201,7 +201,7 @@ public class EntityTableView extends TableView<Entity> {
     MenuItem copyTable = new MenuItem(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER));
     copyTable.setOnAction(event -> copyTable());
 
-    Menu copyMenu = new Menu(Messages.get(Messages.COPY));
+    Menu copyMenu = new Menu(Messages.copy());
     copyMenu.getItems().add(copyCell);
     copyMenu.getItems().add(copyTable);
 

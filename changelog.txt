@@ -8279,3 +8279,4 @@
   SelectCondition.getOrderBy(), getFetchDepth() and getFetchDepth(ForeignKey) now return Optional
   DefaultLocalEntityConnectionProvider.initializeDomain() bug fixed, createDomainInstance() was called even when getInstanceByClassName() returned a non-null value, now done lazily
   EntityApplicationPanel, keyboard shortcut dialog no longer modal
+  Messages constants and get() replaced with methods

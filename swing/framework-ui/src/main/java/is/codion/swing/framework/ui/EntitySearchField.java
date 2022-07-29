@@ -127,7 +127,7 @@ public final class EntitySearchField extends JTextField {
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterKeyListener());
     addKeyListener(new EscapeKeyListener());
-    this.searchHint = searchHintEnabled ? TextFieldHint.create(this, Messages.get(Messages.SEARCH_FIELD_HINT)) : null;
+    this.searchHint = searchHintEnabled ? TextFieldHint.create(this, Messages.searchFieldHint()) : null;
     configureColors();
     Utilities.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
     Utilities.linkToEnabledState(searchModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
@@ -335,7 +335,7 @@ public final class EntitySearchField extends JTextField {
   private void showEmptyResultMessage() {
     Event<?> closeEvent = Event.event();
     JButton okButton = Components.button(control(closeEvent::onEvent))
-            .caption(Messages.get(Messages.OK))
+            .caption(Messages.ok())
             .build();
     KeyEvents.builder(KeyEvent.VK_ENTER)
             .action(control(okButton::doClick))
@@ -489,7 +489,7 @@ public final class EntitySearchField extends JTextField {
     public ListSelectionProvider(EntitySearchModel searchModel) {
       requireNonNull(searchModel, SEARCH_MODEL);
       selectControl = Control.builder(createSelectCommand(searchModel))
-              .caption(Messages.get(Messages.OK))
+              .caption(Messages.ok())
               .build();
       list.setSelectionMode(searchModel.getMultipleSelectionEnabledState().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
@@ -563,7 +563,7 @@ public final class EntitySearchField extends JTextField {
       };
       table = new FilteredTable<>(tableModel);
       selectControl = Control.builder(createSelectCommand(searchModel, tableModel))
-              .caption(Messages.get(Messages.OK))
+              .caption(Messages.ok())
               .build();
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
       KeyEvents.builder(KeyEvent.VK_ENTER)

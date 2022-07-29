@@ -71,13 +71,13 @@ final class LoginPanel extends JPanel {
             .build();
     this.icon = icon;
     this.okControl = Control.builder(this::onOkPressed)
-            .caption(Messages.get(Messages.OK))
-            .mnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0))
+            .caption(Messages.ok())
+            .mnemonic(Messages.okMnemonic())
             .enabledState(validatingState.getReversedObserver())
             .build();
     this.cancelControl = Control.builder(this::closeDialog)
-            .caption(Messages.get(Messages.CANCEL))
-            .mnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0))
+            .caption(Messages.cancel())
+            .mnemonic(Messages.cancelMnemonic())
             .enabledState(validatingState.getReversedObserver())
             .build();
     this.loginValidator = requireNonNull(loginValidator);
@@ -109,9 +109,9 @@ final class LoginPanel extends JPanel {
             passwordProgressLayout.show(passwordProgressPanel, validating ? PROGRESS_CARD : PASSWORD_CARD));
 
     JPanel credentialsPanel = Components.panel(Layouts.flexibleGridLayout(2, 2))
-            .add(new JLabel(Messages.get(Messages.USERNAME), SwingConstants.RIGHT))
+            .add(new JLabel(Messages.username(), SwingConstants.RIGHT))
             .add(usernameField)
-            .add(new JLabel(Messages.get(Messages.PASSWORD), SwingConstants.RIGHT))
+            .add(new JLabel(Messages.password(), SwingConstants.RIGHT))
             .add(passwordProgressPanel)
             .build();
     JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());

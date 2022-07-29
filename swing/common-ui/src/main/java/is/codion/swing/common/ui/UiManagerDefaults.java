@@ -14,10 +14,10 @@ import java.awt.Insets;
 public final class UiManagerDefaults {
 
   static {
-    UIManager.put("OptionPane.yesButtonText", Messages.get(Messages.YES));
-    UIManager.put("OptionPane.noButtonText", Messages.get(Messages.NO));
-    UIManager.put("OptionPane.cancelButtonText", Messages.get(Messages.CANCEL));
-    UIManager.put("OptionPane.okButtonText", Messages.get(Messages.OK));
+    UIManager.put("OptionPane.yesButtonText", Messages.yes());
+    UIManager.put("OptionPane.noButtonText", Messages.no());
+    UIManager.put("OptionPane.cancelButtonText", Messages.cancel());
+    UIManager.put("OptionPane.okButtonText", Messages.ok());
     UIManager.put("OptionPane.inputDialogTitle", SwingMessages.get("OptionPane.inputDialogTitle"));
     UIManager.put("OptionPane.messageDialogTitle", SwingMessages.get("OptionPane.messageDialogTitle"));
 

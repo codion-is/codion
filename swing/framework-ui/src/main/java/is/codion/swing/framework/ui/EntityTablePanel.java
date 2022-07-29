@@ -1249,10 +1249,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   protected Controls createPrintControls() {
-    String printCaption = Messages.get(Messages.PRINT);
     Controls.Builder builder = Controls.builder()
-            .caption(printCaption)
-            .mnemonic(printCaption.charAt(0))
+            .caption(Messages.print())
+            .mnemonic(Messages.printMnemonic())
             .smallIcon(frameworkIcons().print());
     if (controls.containsKey(ControlCode.PRINT_TABLE)) {
       builder.control(controls.get(ControlCode.PRINT_TABLE));
@@ -1282,7 +1281,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   protected final Controls createCopyControls() {
     return Controls.builder()
-            .caption(Messages.get(Messages.COPY))
+            .caption(Messages.copy())
             .smallIcon(frameworkIcons().copy())
             .controls(createCopyCellControl(), createCopyTableWithHeaderControl())
             .build();
@@ -1681,7 +1680,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     catch (ValidationException e) {
       JOptionPane.showMessageDialog(this, e.getMessage(),
-              Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
+              Messages.error(), JOptionPane.ERROR_MESSAGE);
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
