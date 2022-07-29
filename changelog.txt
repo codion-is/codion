@@ -8321,3 +8321,4 @@
   FrameworkMessages constants and get() replaced with methods
   TemporalField, date pattern set as toolTipText
   TextInputPanel, TemporalInputPanel.setToolTipText() overridden, sets the tooltip text on the input field
+  DefaultUser.equals() now ignores username case

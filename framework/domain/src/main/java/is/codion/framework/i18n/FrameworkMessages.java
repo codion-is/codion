@@ -6,7 +6,7 @@ package is.codion.framework.i18n;
 import java.util.ResourceBundle;
 
 /**
- * A class containing i18n keys for messages used by the framework.
+ * A class containing shared i18n messages used by the framework.
  */
 public final class FrameworkMessages {
 
@@ -50,7 +50,7 @@ public final class FrameworkMessages {
   private static final String UNSAVED_DATA_WARNING_TITLE = "unsaved_data_warning_title";
   private static final String CONFIRM_UPDATE = "confirm_update";
   private static final String CONFIRM_DELETE_SELECTED = "confirm_delete_selected";
-  private static final String CONFIRM_DELETE_ENTITY = "confirm_delete_entity";
+  private static final String CONFIRM_DELETE = "confirm_delete";
   private static final String CONFIRM_INSERT = "confirm_insert";
   private static final String SHOW = "show";
   private static final String NO_RESULTS_FROM_CONDITION = "no_results_from_condition";
@@ -66,198 +66,345 @@ public final class FrameworkMessages {
 
   private FrameworkMessages() {}
 
+  /**
+   * @return file
+   */
   public static String file() {
     return get(FILE);
   }
 
+  /**
+   * @return file mnemonic
+   */
   public static char fileMnemonic() {
     return get(FILE_MNEMONIC).charAt(0);
   }
 
+  /**
+   * @return exit
+   */
   public static String exit() {
     return get(EXIT);
   }
 
+  /**
+   * @return exit mnemonic
+   */
   public static char exitMnemonic() {
     return get(EXIT_MNEMONIC).charAt(0);
   }
 
+  /**
+   * @return exit tip
+   */
   public static String exitTip() {
     return get(EXIT_TIP);
   }
 
+  /**
+   * @return view
+   */
   public static String view() {
     return get(VIEW);
   }
 
+  /**
+   * @return view mnemonic
+   */
   public static char viewMnemonic() {
     return get(VIEW_MNEMONIC).charAt(0);
   }
 
+  /**
+   * @return refresh all
+   */
   public static String refreshAll() {
     return get(REFRESH_ALL);
   }
 
+  /**
+   * @return support tables
+   */
   public static String supportTables() {
     return get(SUPPORT_TABLES);
   }
 
+  /**
+   * @return support table mnemonic
+   */
   public static char supportTablesMnemonic() {
     return get(SUPPORT_TABLES_MNEMONIC).charAt(0);
   }
 
+  /**
+   * @return clear
+   */
   public static String clear() {
     return get(CLEAR);
   }
 
+  /**
+   * @return clear mnemonic
+   */
   public static char clearMnemonic() {
     return get(CLEAR_MNEMONIC).charAt(0);
   }
 
+  /**
+   * @return clear tip
+   */
   public static String clearTip() {
     return get(CLEAR_TIP);
   }
 
+  /**
+   * @return update
+   */
   public static String update() {
     return get(UPDATE);
   }
 
+  /**
+   * @return update mnemonic
+   */
   public static char updateMnemonic() {
     return get(UPDATE_MNEMONIC).charAt(0);
   }
 
+  /**
+   * @return update tip
+   */
   public static String updateTip() {
     return get(UPDATE_TIP);
   }
 
+  /**
+   * @return update selected tip
+   */
   public static String updateSelectedTip() {
     return get(UPDATE_SELECTED_TIP);
   }
 
+  /**
+   * @return delete
+   */
   public static String delete() {
     return get(DELETE);
   }
 
+  /**
+   * @return delete mnemonic
+   */
   public static char deleteMnemonic() {
     return get(DELETE_MNEMONIC).charAt(0);
   }
 
+  /**
+   * @return delete current tip
+   */
   public static String deleteCurrentTip() {
     return get(DELETE_CURRENT_TIP);
   }
 
+  /**
+   * @return delete selected tip
+   */
   public static String deleteSelectedTip() {
     return get(DELETE_SELECTED_TIP);
   }
 
+  /**
+   * @return refresh
+   */
   public static String refresh() {
     return get(REFRESH);
   }
 
+  /**
+   * @return refresh mnemonic
+   */
   public static char refreshMnemonic() {
     return get(REFRESH_MNEMONIC).charAt(0);
   }
 
+  /**
+   * @return refresh tip
+   */
   public static String refreshTip() {
     return get(REFRESH_TIP);
   }
 
+  /**
+   * @return view dependencies
+   */
   public static String viewDependencies() {
     return get(VIEW_DEPENDENCIES);
   }
 
+  /**
+   * @return view dependencies tip
+   */
   public static String viewDependenciesTip() {
     return get(VIEW_DEPENDENCIES_TIP);
   }
 
+  /**
+   * @return add
+   */
   public static String add() {
     return get(ADD);
   }
 
+  /**
+   * @return add mnemonic
+   */
   public static char addMnemonic() {
     return get(ADD_MNEMONIC).charAt(0);
   }
 
+  /**
+   * @return add tip
+   */
   public static String addTip() {
     return get(ADD_TIP);
   }
 
+  /**
+   * @return save
+   */
   public static String save() {
     return get(SAVE);
   }
 
+  /**
+   * @return save mnemonic
+   */
   public static char saveMnemonic() {
     return get(SAVE_MNEMONIC).charAt(0);
   }
 
+  /**
+   * @return empty username
+   */
   public static String emptyUsername() {
     return get(EMPTY_USERNAME);
   }
 
+  /**
+   * @return confirm exit
+   */
   public static String confirmExit() {
     return get(CONFIRM_EXIT);
   }
 
+  /**
+   * @return confirm exit title
+   */
   public static String confirmExitTitle() {
     return get(CONFIRM_EXIT_TITLE);
   }
 
+  /**
+   * @return unsaved data warning
+   */
   public static String unsavedDataWarning() {
     return get(UNSAVED_DATA_WARNING);
   }
 
+  /**
+   * @return unsaved data warning title
+   */
   public static String unsavedDataWarningTitle() {
     return get(UNSAVED_DATA_WARNING_TITLE);
   }
 
+  /**
+   * @return confirm update
+   */
   public static String confirmUpdate() {
     return get(CONFIRM_UPDATE);
   }
 
+  /**
+   * @return confirm delete selected
+   */
   public static String confirmDeleteSelected() {
     return get(CONFIRM_DELETE_SELECTED);
   }
 
-  public static String confirmDeleteEntity() {
-    return get(CONFIRM_DELETE_ENTITY);
+  /**
+   * @return confirm delete
+   */
+  public static String confirmDelete() {
+    return get(CONFIRM_DELETE);
   }
 
+  /**
+   * @return confirm insert
+   */
   public static String confirmInsert() {
     return get(CONFIRM_INSERT);
   }
 
+  /**
+   * @return show
+   */
   public static String show() {
     return get(SHOW);
   }
 
+  /**
+   * @return no result from condition
+   */
   public static String noResultsFromCondition() {
     return get(NO_RESULTS_FROM_CONDITION);
   }
 
+  /**
+   * @return search
+   */
   public static String search() {
     return get(SEARCH);
   }
 
+  /**
+   * @return search mnemonic
+   */
   public static char searchMnemonic() {
     return get(SEARCH_MNEMONIC).charAt(0);
   }
 
+  /**
+   * @return advanced
+   */
   public static String advanced() {
     return get(ADVANCED);
   }
 
+  /**
+   * @return copy cell
+   */
   public static String copyCell() {
     return get(COPY_CELL);
   }
 
+  /**
+   * @return copy table with header
+   */
   public static String copyTableWithHeader() {
     return get(COPY_TABLE_WITH_HEADER);
   }
 
+  /**
+   * @return settings
+   */
   public static String settings() {
     return get(SETTINGS);
   }
 
+  /**
+   * @return select input field
+   */
   public static String selectInputField() {
     return get(SELECT_INPUT_FIELD);
   }
