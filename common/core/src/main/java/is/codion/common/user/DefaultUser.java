@@ -52,10 +52,12 @@ final class DefaultUser implements User, Serializable {
     return "User: " + username;
   }
 
-  /** User objects are equal if the usernames match */
+  /**
+   * User objects are equal if the usernames are equal, ignoring case
+   */
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof User && ((User) obj).getUsername().equals(username);
+    return this == obj || obj instanceof User && ((User) obj).getUsername().equalsIgnoreCase(username);
   }
 
   @Override

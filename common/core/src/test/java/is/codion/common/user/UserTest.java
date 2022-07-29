@@ -3,6 +3,8 @@
  */
 package is.codion.common.user;
 
+import is.codion.common.Serializer;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserTest {
 
   @Test
-  void test() {
+  void test() throws Exception {
     User user = User.parse("scott:tiger");
     assertEquals("scott", user.getUsername());
     assertEquals("tiger", String.valueOf(user.getPassword()));
@@ -30,6 +32,8 @@ public class UserTest {
     assertEquals("", String.valueOf(user.getPassword()));
     assertNotEquals(user, "scott");
     assertEquals(user, User.parse("scott:blabla"));
+    assertEquals(User.user("scott"), User.user("ScoTT"));
+    assertEquals(Serializer.deserialize(Serializer.serialize(User.user("scott", "test".toCharArray()))), User.user("Scott"));
   }
 
   @Test
