@@ -623,7 +623,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   protected String[] getConfirmationMessages(ConfirmType type) {
     switch (type) {
       case DELETE:
-        return new String[] {FrameworkMessages.confirmDeleteEntity(), FrameworkMessages.delete()};
+        return new String[] {FrameworkMessages.confirmDelete(), FrameworkMessages.delete()};
       case INSERT:
         return new String[] {FrameworkMessages.confirmInsert(), FrameworkMessages.add()};
       case UPDATE:

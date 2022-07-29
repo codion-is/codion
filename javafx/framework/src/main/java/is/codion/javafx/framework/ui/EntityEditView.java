@@ -366,7 +366,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private void delete() {
-    if (FXUiUtil.confirm(FrameworkMessages.confirmDeleteEntity())) {
+    if (FXUiUtil.confirm(FrameworkMessages.confirmDelete())) {
       try {
         editModel.delete();
       }
