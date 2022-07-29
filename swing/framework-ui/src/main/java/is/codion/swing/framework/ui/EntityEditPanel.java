@@ -266,12 +266,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return a control for refreshing the model data
    */
   public final Control createRefreshControl() {
-    String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Control.builder(getEditModel()::refresh)
-            .caption(FrameworkMessages.get(FrameworkMessages.REFRESH))
+            .caption(FrameworkMessages.refresh())
             .enabledState(State.and(activeState, getEditModel().getRefreshingObserver().getReversedObserver()))
-            .description(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX + mnemonic + ")")
-            .mnemonic(mnemonic.charAt(0))
+            .description(FrameworkMessages.refreshTip() + ALT_PREFIX + FrameworkMessages.refreshMnemonic() + ")")
+            .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(frameworkIcons().refresh())
             .build();
   }
@@ -280,14 +279,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return a control for deleting the active entity
    */
   public final Control createDeleteControl() {
-    String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return Control.builder(this::delete)
-            .caption(FrameworkMessages.get(FrameworkMessages.DELETE))
+            .caption(FrameworkMessages.delete())
             .enabledState(State.and(activeState,
                     getEditModel().getDeleteEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver()))
-            .description(FrameworkMessages.get(FrameworkMessages.DELETE_CURRENT_TIP) + ALT_PREFIX + mnemonic + ")")
-            .mnemonic(mnemonic.charAt(0))
+            .description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
+            .mnemonic(FrameworkMessages.deleteMnemonic())
             .smallIcon(frameworkIcons().delete())
             .build();
   }
@@ -296,12 +294,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return a control for clearing the UI controls
    */
   public final Control createClearControl() {
-    String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
     return Control.builder(this::clearAndRequestFocus)
-            .caption(FrameworkMessages.get(FrameworkMessages.CLEAR))
+            .caption(FrameworkMessages.clear())
             .enabledState(activeState)
-            .description(FrameworkMessages.get(FrameworkMessages.CLEAR_TIP) + ALT_PREFIX + mnemonic + ")")
-            .mnemonic(mnemonic.charAt(0))
+            .description(FrameworkMessages.clearTip() + ALT_PREFIX + FrameworkMessages.clearMnemonic() + ")")
+            .mnemonic(FrameworkMessages.clearMnemonic())
             .smallIcon(frameworkIcons().clear())
             .build();
   }
@@ -310,15 +307,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return a control for performing an update on the active entity
    */
   public final Control createUpdateControl() {
-    String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return Control.builder(this::update)
-            .caption(FrameworkMessages.get(FrameworkMessages.UPDATE))
+            .caption(FrameworkMessages.update())
             .enabledState(State.and(activeState,
                     getEditModel().getUpdateEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver(),
                     getEditModel().getModifiedObserver()))
-            .description(FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + ALT_PREFIX + mnemonic + ")")
-            .mnemonic(mnemonic.charAt(0))
+            .description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
+            .mnemonic(FrameworkMessages.updateMnemonic())
             .smallIcon(frameworkIcons().update())
             .build();
   }
@@ -328,13 +324,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   public final Control createInsertControl() {
     boolean useSaveCaption = USE_SAVE_CAPTION.get();
-    String mnemonic = FrameworkMessages.get(useSaveCaption ? FrameworkMessages.SAVE_MNEMONIC : FrameworkMessages.ADD_MNEMONIC);
-    String caption = FrameworkMessages.get(useSaveCaption ? FrameworkMessages.SAVE : FrameworkMessages.ADD);
+    char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.addMnemonic();
+    String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
     return Control.builder(this::insert)
             .caption(caption)
             .enabledState(State.and(activeState, getEditModel().getInsertEnabledObserver()))
-            .description(FrameworkMessages.get(FrameworkMessages.ADD_TIP) + ALT_PREFIX + mnemonic + ")")
-            .mnemonic(mnemonic.charAt(0))
+            .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
+            .mnemonic(mnemonic)
             .smallIcon(frameworkIcons().add())
             .build();
   }
@@ -627,14 +623,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   protected String[] getConfirmationMessages(ConfirmType type) {
     switch (type) {
       case DELETE:
-        return new String[] {FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_ENTITY),
-                FrameworkMessages.get(FrameworkMessages.DELETE)};
+        return new String[] {FrameworkMessages.confirmDeleteEntity(), FrameworkMessages.delete()};
       case INSERT:
-        return new String[] {FrameworkMessages.get(FrameworkMessages.CONFIRM_INSERT),
-                FrameworkMessages.get(FrameworkMessages.ADD)};
+        return new String[] {FrameworkMessages.confirmInsert(), FrameworkMessages.add()};
       case UPDATE:
-        return new String[] {FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE),
-                FrameworkMessages.get(FrameworkMessages.UPDATE)};
+        return new String[] {FrameworkMessages.confirmUpdate(), FrameworkMessages.update()};
       default:
         throw new IllegalArgumentException("Unknown confirmation type constant: " + type);
     }
@@ -757,7 +750,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     getEditModel().getRefreshingObserver().addDataListener(this::onRefreshingChanged);
     getEditModel().addConfirmSetEntityObserver(confirmationState -> {
       int result = JOptionPane.showConfirmDialog(Windows.getParentWindow(EntityEditPanel.this).orElse(null),
-              FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING), FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
+              FrameworkMessages.unsavedDataWarning(), FrameworkMessages.unsavedDataWarningTitle(),
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
       confirmationState.set(result == JOptionPane.YES_OPTION);
     });

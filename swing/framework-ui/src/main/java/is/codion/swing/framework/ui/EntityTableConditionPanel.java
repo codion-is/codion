@@ -97,7 +97,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
         Properties.sort(conditionProperties);
         Dialogs.selectionDialog(conditionProperties)
                 .owner(this)
-                .title(FrameworkMessages.get(FrameworkMessages.SELECT_INPUT_FIELD))
+                .title(FrameworkMessages.selectInputField())
                 .selectSingle()
                 .ifPresent(property -> getConditionPanel(property.getAttribute()).requestInputFocus());
       }
@@ -119,14 +119,14 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   @Override
   public Controls getControls() {
     Controls.Builder controls = Controls.builder()
-            .caption(FrameworkMessages.get(FrameworkMessages.SEARCH))
+            .caption(FrameworkMessages.search())
             .smallIcon(frameworkIcons().filter());
     if (hasAdvancedView()) {
       controls.control(ToggleControl.builder(getAdvancedState())
-              .caption(FrameworkMessages.get(FrameworkMessages.ADVANCED)));
+              .caption(FrameworkMessages.advanced()));
     }
     controls.control(Control.builder(getTableConditionModel()::clearConditions)
-            .caption(FrameworkMessages.get(FrameworkMessages.CLEAR)));
+            .caption(FrameworkMessages.clear()));
 
     return controls.build();
   }

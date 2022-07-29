@@ -41,11 +41,11 @@ import java.util.Map;
  */
 public abstract class EntityEditView extends BorderPane {
 
-  private static final KeyCode INSERT_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.ADD_MNEMONIC));
-  private static final KeyCode UPDATE_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC));
-  private static final KeyCode DELETE_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC));
-  private static final KeyCode CLEAR_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC));
-  private static final KeyCode REFRESH_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC));
+  private static final KeyCode INSERT_KEY_CODE = KeyCode.getKeyCode(String.valueOf(FrameworkMessages.addMnemonic()));
+  private static final KeyCode UPDATE_KEY_CODE = KeyCode.getKeyCode(String.valueOf(FrameworkMessages.updateMnemonic()));
+  private static final KeyCode DELETE_KEY_CODE = KeyCode.getKeyCode(String.valueOf(FrameworkMessages.deleteMnemonic()));
+  private static final KeyCode CLEAR_KEY_CODE = KeyCode.getKeyCode(String.valueOf(FrameworkMessages.clearMnemonic()));
+  private static final KeyCode REFRESH_KEY_CODE = KeyCode.getKeyCode(String.valueOf(FrameworkMessages.refreshMnemonic()));
 
   private final FXEntityEditModel editModel;
   private final Map<Attribute<?>, Control> controls = new HashMap<>();
@@ -283,16 +283,16 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private Button createInsertButton() {
-    Button button = new Button(FrameworkMessages.get(FrameworkMessages.ADD));
-    button.setTooltip(new Tooltip(FrameworkMessages.get(FrameworkMessages.ADD_TIP)));
+    Button button = new Button(FrameworkMessages.add());
+    button.setTooltip(new Tooltip(FrameworkMessages.addTip()));
     button.setOnAction(event -> insert());
 
     return button;
   }
 
   private Button createUpdateButton() {
-    Button button = new Button(FrameworkMessages.get(FrameworkMessages.UPDATE));
-    button.setTooltip(new Tooltip(FrameworkMessages.get(FrameworkMessages.UPDATE_TIP)));
+    Button button = new Button(FrameworkMessages.update());
+    button.setTooltip(new Tooltip(FrameworkMessages.updateTip()));
     button.setOnAction(event -> update(true));
     StateObserver existingAndModifiedState = State.and(
             editModel.getEntityNewObserver().getReversedObserver(),
@@ -303,8 +303,8 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private Button createDeleteButton() {
-    Button button = new Button(FrameworkMessages.get(FrameworkMessages.DELETE));
-    button.setTooltip(new Tooltip(FrameworkMessages.get(FrameworkMessages.DELETE_CURRENT_TIP)));
+    Button button = new Button(FrameworkMessages.delete());
+    button.setTooltip(new Tooltip(FrameworkMessages.deleteCurrentTip()));
     button.setOnAction(event -> delete());
     FXUiUtil.link(button.disableProperty(), editModel.getEntityNewObserver());
 
@@ -312,8 +312,8 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private Button createClearButton() {
-    Button button = new Button(FrameworkMessages.get(FrameworkMessages.CLEAR));
-    button.setTooltip(new Tooltip(FrameworkMessages.get(FrameworkMessages.CLEAR_TIP)));
+    Button button = new Button(FrameworkMessages.clear());
+    button.setTooltip(new Tooltip(FrameworkMessages.clearTip()));
     button.setOnAction(event -> {
       editModel.setDefaultValues();
       requestInitialFocus();
@@ -323,8 +323,8 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private Button createRefreshButton() {
-    Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
-    button.setTooltip(new Tooltip(FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)));
+    Button button = new Button(FrameworkMessages.refresh());
+    button.setTooltip(new Tooltip(FrameworkMessages.refreshTip()));
     button.setOnAction(event -> editModel.refresh());
 
     return button;
@@ -349,7 +349,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private void update(boolean confirm) {
-    if (!confirm || FXUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE))) {
+    if (!confirm || FXUiUtil.confirm(FrameworkMessages.confirmUpdate())) {
       try {
         validateData();
         editModel.update();
@@ -366,7 +366,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private void delete() {
-    if (FXUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_ENTITY))) {
+    if (FXUiUtil.confirm(FrameworkMessages.confirmDeleteEntity())) {
       try {
         editModel.delete();
       }

@@ -57,8 +57,8 @@ public final class EntitySelectionDialog extends JDialog {
           .mnemonic(Messages.cancelMnemonic())
           .build();
   private final Control searchControl = Control.builder(this::search)
-          .caption(FrameworkMessages.get(FrameworkMessages.SEARCH))
-          .mnemonic(FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0))
+          .caption(FrameworkMessages.search())
+          .mnemonic(FrameworkMessages.searchMnemonic())
           .build();
 
   private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, ValueObserver<String> titleObserver,
@@ -160,7 +160,7 @@ public final class EntitySelectionDialog extends JDialog {
     }
     else {
       JOptionPane.showMessageDialog(getParentWindow(entityTablePanel).orElse(null),
-              FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
+              FrameworkMessages.noResultsFromCondition());
     }
   }
 

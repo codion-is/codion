@@ -133,7 +133,7 @@ public final class EntitySearchField extends TextField {
 
   private static void showEmptyResultMessage() {
     Platform.runLater(new Alert(Alert.AlertType.INFORMATION,
-            FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION), ButtonType.OK)::showAndWait);
+            FrameworkMessages.noResultsFromCondition(), ButtonType.OK)::showAndWait);
   }
 
   private class SearchKeyHandler implements EventHandler<KeyEvent> {
