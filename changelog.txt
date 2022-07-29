@@ -8281,3 +8281,5 @@
   EntityApplicationPanel, keyboard shortcut dialog no longer modal
   Messages constants and get() replaced with methods
   FrameworkMessages constants and get() replaced with methods
+  TemporalField, date pattern set as toolTipText
+  TextInputPanel, TemporalInputPanel.setToolTipText() overridden, sets the tooltip text on the input field
