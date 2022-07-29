@@ -8285,3 +8285,4 @@
   TextInputPanel, TemporalInputPanel.setToolTipText() overridden, sets the tooltip text on the input field
   DefaultUser.equals() now ignores username case
   ComboBoxBuilder.renderer(DefaultListCellRenderer) added for convenience
+  DerivedProperty.SourceValues.getOptional() added
