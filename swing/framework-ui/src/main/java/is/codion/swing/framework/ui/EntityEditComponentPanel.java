@@ -795,7 +795,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @return a label builder for the given attribute
    */
   protected final <T> LabelBuilder<T> createLabel(Attribute<T> attribute) {
-    Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
+    Property<T> property = getEditModel().getEntities()
+            .getDefinition(requireNonNull(attribute).getEntityType()).getProperty(attribute);
     return (LabelBuilder<T>) Components.label(property.getCaption())
             .displayedMnemonic(property.getMnemonic() == null ? 0 : property.getMnemonic())
             .labelFor(getComponentInternal(attribute));
