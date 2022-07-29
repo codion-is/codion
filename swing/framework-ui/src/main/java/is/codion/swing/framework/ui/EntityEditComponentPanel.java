@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Properties;
@@ -52,10 +53,12 @@ import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static is.codion.swing.framework.ui.EntityComponentValidators.addFormattedValidator;
 import static is.codion.swing.framework.ui.EntityComponentValidators.addValidator;
@@ -168,6 +171,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * associated with an attribute
    */
   public final <T> Attribute<T> getAttribute(JComponent component) {
+    requireNonNull(component);
     return (Attribute<T>) components.entrySet().stream()
             .filter(entry -> entry.getValue() == component)
             .findFirst()
@@ -182,7 +186,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @return the component
    */
   public final JComponent setInitialFocusComponent(JComponent initialFocusComponent) {
-    this.initialFocusComponent = initialFocusComponent;
+    this.initialFocusComponent = requireNonNull(initialFocusComponent);
     return initialFocusComponent;
   }
 
@@ -194,8 +198,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @see #setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void setInitialFocusAttribute(Attribute<?> attribute) {
-    getEditModel().getEntityDefinition().getProperty(attribute);
-    this.initialFocusAttribute = attribute;
+    this.initialFocusAttribute = requireNonNull(attribute);
   }
 
   /**
@@ -205,7 +208,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @return the component
    */
   public final JComponent setAfterInsertFocusComponent(JComponent afterInsertFocusComponent) {
-    this.afterInsertFocusComponent = afterInsertFocusComponent;
+    this.afterInsertFocusComponent = requireNonNull(afterInsertFocusComponent);
     return afterInsertFocusComponent;
   }
 
@@ -217,8 +220,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @see #setAfterInsertFocusComponent(JComponent)
    */
   public final void setAfterInsertFocusAttribute(Attribute<?> attribute) {
-    getEditModel().getEntityDefinition().getProperty(attribute);
-    this.afterInsertFocusAttribute = attribute;
+    this.afterInsertFocusAttribute = requireNonNull(attribute);
   }
 
   /**
@@ -255,8 +257,11 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @see #requestComponentFocus(Attribute)
    */
   public void selectInputComponent() {
-    Collection<Property<?>> properties =
-            Properties.sort(getEditModel().getEntityDefinition().getProperties(getSelectComponentAttributes()));
+    Entities entities = getEditModel().getEntities();
+    List<Property<?>> properties = getSelectComponentAttributes().stream()
+            .map(attribute -> entities.getDefinition(attribute.getEntityType()).getProperty(attribute))
+            .collect(Collectors.toList());
+    Properties.sort(properties);
     Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
             Dialogs.selectionDialog(properties)
                     .owner(this)
@@ -287,8 +292,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @see #selectInputComponent()
    */
   public final void excludeComponentFromSelection(Attribute<?> attribute) {
-    getEditModel().getEntityDefinition().getProperty(attribute);//just validating that the attribute exists
-    excludeFromSelection.add(attribute);
+    excludeFromSelection.add(requireNonNull(attribute));
   }
 
   /**
@@ -332,9 +336,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * @param component the input component
    */
   protected final void setComponent(Attribute<?> attribute, JComponent component) {
-    getEditModel().getEntityDefinition().getProperty(attribute);
-    requireNonNull(component, "component");
-    components.put(attribute, component);
+    components.put(requireNonNull(attribute), requireNonNull(component));
   }
 
   /**
@@ -855,7 +857,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   private JComponent getComponentInternal(Attribute<?> attribute) {
-    ComponentBuilder<?, ?, ?> componentBuilder = componentBuilders.get(attribute);
+    ComponentBuilder<?, ?, ?> componentBuilder = componentBuilders.get(requireNonNull(attribute));
     if (componentBuilder != null) {
       componentBuilder.build();
     }
