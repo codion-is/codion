@@ -8,6 +8,7 @@ import is.codion.swing.common.ui.component.ComponentBuilder;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
 import java.awt.event.ItemListener;
@@ -33,6 +34,12 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
    * @return this builder instance
    */
   B completionMode(Completion.Mode completionMode);
+
+  /**
+   * @param renderer the renderer for the combo box
+   * @return this builder instance
+   */
+  B renderer(DefaultListCellRenderer renderer);
 
   /**
    * @param renderer the renderer for the combo box

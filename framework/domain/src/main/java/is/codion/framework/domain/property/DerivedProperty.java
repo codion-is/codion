@@ -7,6 +7,7 @@ import is.codion.framework.domain.entity.Attribute;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A property which value is derived from the values of one or more properties.
@@ -36,6 +37,16 @@ public interface DerivedProperty<T> extends TransientProperty<T> {
      * @return the value associated with attribute
      */
     <T> T get(Attribute<T> attribute);
+
+    /**
+     * Returns the source value associated with the given attribute.
+     * @param attribute the attribute which value to retrieve
+     * @param <T> the value type
+     * @return the value associated with attribute, an empty Optional in case of null
+     */
+    default <T> Optional<T> getOptional(Attribute<T> attribute) {
+      return Optional.ofNullable(get(attribute));
+    }
   }
 
   /**

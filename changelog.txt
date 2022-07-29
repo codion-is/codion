@@ -8322,3 +8322,6 @@
   TemporalField, date pattern set as toolTipText
   TextInputPanel, TemporalInputPanel.setToolTipText() overridden, sets the tooltip text on the input field
   DefaultUser.equals() now ignores username case
+  ComboBoxBuilder.renderer(DefaultListCellRenderer) added for convenience
+  DerivedProperty.SourceValues.getOptional() added
+  EntityEditComponentPanel.setInitialFocusAttribute(), setAfterInsertFocusAttribute(), excludeComponentFromSelection() and setComponent(), no longer restricted to attributes from the entity the panel is based on
