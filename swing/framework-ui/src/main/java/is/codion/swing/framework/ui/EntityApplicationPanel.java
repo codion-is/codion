@@ -481,6 +481,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     Dialogs.componentDialog(shortcutsPanel)
             .owner(this)
             .title(resourceBundle.getString(KEYBOARD_SHORTCUTS))
+            .modal(false)
             .show();
   }
 
