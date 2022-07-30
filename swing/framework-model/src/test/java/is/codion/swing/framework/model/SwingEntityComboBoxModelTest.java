@@ -94,7 +94,7 @@ public final class SwingEntityComboBoxModelTest {
   void foreignKeyFilterComboBoxModel() throws Exception {
     EntityConnectionProvider connectionProvider = comboBoxModel.getConnectionProvider();
     SwingEntityComboBoxModel empBox = new SwingEntityComboBoxModel(TestDomain.T_EMP, connectionProvider);
-    empBox.setNullString("-");
+    empBox.setIncludeNull("-");
     empBox.refresh();
     assertEquals(17, empBox.getSize());
     SwingEntityComboBoxModel deptBox = empBox.createForeignKeyFilterComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
@@ -115,7 +115,7 @@ public final class SwingEntityComboBoxModelTest {
   void foreignKeyConditionComboBoxModel() throws Exception {
     EntityConnectionProvider connectionProvider = comboBoxModel.getConnectionProvider();
     SwingEntityComboBoxModel empBox = new SwingEntityComboBoxModel(TestDomain.T_EMP, connectionProvider);
-    empBox.setNullString("-");
+    empBox.setIncludeNull("-");
     empBox.refresh();
     assertEquals(17, empBox.getSize());
     SwingEntityComboBoxModel deptBox = empBox.createForeignKeyConditionComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);

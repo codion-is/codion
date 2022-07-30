@@ -34,14 +34,13 @@ public class SwingConditionModelFactory extends DefaultConditionModelFactory {
   }
 
   /**
-   * Creates a combo box model based on the given foreign key, adding a null string (and thereby and null value)
-   * to the model if the foreign key is nullable.
+   * Creates a combo box model based on the given foreign key
    * @param foreignKey the foreign key
    * @return a combo box model based on the given foreign key
    */
   protected SwingEntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
     SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
-    comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
+    comboBoxModel.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 
     return comboBoxModel;
   }

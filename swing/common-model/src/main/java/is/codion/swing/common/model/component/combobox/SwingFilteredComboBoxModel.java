@@ -18,6 +18,9 @@ import javax.swing.ComboBoxModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -52,7 +55,9 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   private Comparator<T> sortComparator;
   private T selectedItem = null;
-  private String nullString;
+  private boolean includeNull;
+  private String nullCaption;
+  private T nullCaptionItem;
   private Predicate<T> includeCondition;
   private boolean filterSelectedItem = true;
 
@@ -62,31 +67,20 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
 
   /**
-   * Instantiates a new SwingFilteredComboBoxModel, without a nullValueString.
-   * The model contents are sorted automatically.
+   * Instantiates a new SwingFilteredComboBoxModel.
+   * The model contents are sorted automatically with a default collation based comparator.
    */
   public SwingFilteredComboBoxModel() {
-    this(null);
-  }
-
-  /**
-   * Instantiates a new SwingFilteredComboBoxModel, without a nullValueString.
-   * The model contents are sorted automatically with a default collation based comparator.
-   * @param nullString a String representing a null value, which is shown at the top of the item list
-   */
-  public SwingFilteredComboBoxModel(String nullString) {
-    this(nullString, new SortComparator<>(nullString));
+    this.sortComparator = new SortComparator<>();
   }
 
   /**
    * Instantiates a new SwingFilteredComboBoxModel with the given nullValueString.
-   * @param nullString a value representing a null value, which is shown at the top of the item list
    * @param sortComparator the Comparator used to sort the contents of this combo box model, if null then
    * the contents are not sorted
-   * @see #isNullValueSelected()
+   * @see #isNullSelected()
    */
-  public SwingFilteredComboBoxModel(String nullString, Comparator<T> sortComparator) {
-    this.nullString = nullString;
+  public SwingFilteredComboBoxModel(Comparator<T> sortComparator) {
     this.sortComparator = sortComparator;
   }
 
@@ -122,7 +116,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     visibleItems.clear();
     if (contents != null) {
       visibleItems.addAll(contents);
-      if (nullString != null) {
+      if (includeNull) {
         visibleItems.add(0, null);
       }
     }
@@ -162,7 +156,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     if (visibleItems.isEmpty()) {
       return emptyList();
     }
-    if (nullString == null) {
+    if (!includeNull) {
       return unmodifiableList(visibleItems);
     }
 
@@ -206,7 +200,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   @Override
   public final boolean isVisible(T item) {
     if (item == null) {
-      return nullString != null;
+      return includeNull;
     }
 
     return visibleItems.contains(item);
@@ -264,21 +258,36 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final String getNullString() {
-    return nullString;
-  }
-
-  @Override
-  public final void setNullString(String nullString) {
-    this.nullString = nullString;
-    if (selectedItem == null) {
-      setSelectedItem(null);
+  public final void setIncludeNull(boolean includeNull) {
+    this.includeNull = includeNull;
+    if (!includeNull) {
+      this.nullCaption = null;
+      this.nullCaptionItem = null;
     }
   }
 
   @Override
-  public final boolean isNullValueSelected() {
-    return selectedItem == null && nullString != null;
+  public final void setIncludeNull(String caption, Class<T> itemClass) {
+    requireNonNull(caption);
+    requireNonNull(itemClass);
+    this.includeNull = true;
+    this.nullCaption = caption;
+    if (itemClass.equals(String.class)) {
+      this.nullCaptionItem = (T) caption;
+    }
+    else {
+      this.nullCaptionItem = (T) Proxy.newProxyInstance(itemClass.getClassLoader(), new Class[] {itemClass}, new NullItemHandler());
+    }
+  }
+
+  @Override
+  public final boolean isIncludeNull() {
+    return includeNull;
+  }
+
+  @Override
+  public final boolean isNullSelected() {
+    return includeNull && selectedItem == null;
   }
 
   @Override
@@ -288,7 +297,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final T getSelectedValue() {
-    if (isNullValueSelected()) {
+    if (isNullSelected()) {
       return null;
     }
 
@@ -296,13 +305,13 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   /**
-   * @return the selected item, N.B. this can include the {@code nullValue}
-   * in case it has been set, {@link #getSelectedValue()} is usually what you want
+   * @return the selected item, N.B. this can include the {@code nullCaption} item
+   * in case it has been set via {@link #setIncludeNull(String, Class)}, {@link #getSelectedValue()} is usually what you want
    */
   @Override
-  public final Object getSelectedItem() {
-    if (selectedItem == null && nullString != null) {
-      return nullString;
+  public final T getSelectedItem() {
+    if (selectedItem == null && nullCaptionItem != null) {
+      return nullCaptionItem;
     }
 
     return selectedItem;
@@ -310,7 +319,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final void setSelectedItem(Object anItem) {
-    T toSelect = translateSelectionItem(Objects.equals(nullString, anItem) ? null : anItem);
+    T toSelect = translateSelectionItem(Objects.equals(nullCaptionItem, anItem) ? null : anItem);
     if (!Objects.equals(selectedItem, toSelect) && allowSelectionChange(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();
@@ -344,7 +353,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   public final T getElementAt(int index) {
     T element = visibleItems.get(index);
     if (element == null) {
-      return (T) nullString;//very hacky, buggy even?
+      return nullCaptionItem;
     }
 
     return element;
@@ -407,7 +416,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    */
   protected Collection<T> refreshItems() {
     List<T> contents = new ArrayList<>(visibleItems);
-    if (nullString != null) {
+    if (includeNull) {
       contents.remove(null);
     }
     contents.addAll(filteredItems);
@@ -495,12 +504,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   private static final class SortComparator<T> implements Comparator<T> {
 
-    private final String nullValue;
     private final Comparator<T> comparator = Text.getSpaceAwareCollator();
-
-    SortComparator(String nullValue) {
-      this.nullValue = nullValue;
-    }
 
     @Override
     public int compare(T o1, T o2) {
@@ -513,20 +517,30 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
       if (o2 == null) {
         return 1;
       }
-      if (nullValue != null) {
-        if (nullValue.equals(o1.toString())) {
-          return -1;
-        }
-        if (nullValue.equals(o2.toString())) {
-          return 1;
-        }
-      }
       if (o1 instanceof Comparable && o2 instanceof Comparable) {
         return ((Comparable<T>) o1).compareTo(o2);
       }
       else {
         return comparator.compare(o1, o2);
       }
+    }
+  }
+
+  private final class NullItemHandler implements InvocationHandler {
+
+    private static final String TO_STRING = "toString";
+    private static final String EQUALS = "equals";
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+      if (method.getParameterCount() == 0 && method.getName().equals(TO_STRING)) {
+        return nullCaption;
+      }
+      else if (method.getParameterCount() == 1 && method.getName().equals(EQUALS)) {
+        return false;
+      }
+
+      return null;
     }
   }
 

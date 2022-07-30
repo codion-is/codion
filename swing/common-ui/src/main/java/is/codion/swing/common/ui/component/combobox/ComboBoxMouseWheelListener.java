@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component.combobox;
 import javax.swing.ComboBoxModel;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
@@ -57,16 +58,13 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
 
   private Object getItemToSelect(boolean next) {
     Object currentSelection = comboBoxModel.getSelectedItem();
-    if (currentSelection == null) {
-      return next || wrapAround ? comboBoxModel.getElementAt(0) : null;
-    }
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
-      if (currentSelection == comboBoxModel.getElementAt(i)) {
+      if (Objects.equals(currentSelection, comboBoxModel.getElementAt(i))) {
         return comboBoxModel.getElementAt(next ? getNextIndex(i) : getPreviousIndex(i));
       }
     }
 
-    return currentSelection;
+    return comboBoxModel.getElementAt(next ? getNextIndex(0) : getPreviousIndex(0));
   }
 
   private int getNextIndex(int currentIndex) {

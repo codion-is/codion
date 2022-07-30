@@ -25,12 +25,11 @@ import static java.util.Objects.requireNonNull;
 public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<T>> {
 
   private ItemComboBoxModel(List<Item<T>> items) {
-    super(null);
     setContents(items);
   }
 
   private ItemComboBoxModel(Comparator<Item<T>> sortComparator, Collection<Item<T>> items) {
-    super(null, sortComparator);
+    super(sortComparator);
     setContents(items);
     if (containsItem(Item.item(null))) {
       setSelectedItem(null);

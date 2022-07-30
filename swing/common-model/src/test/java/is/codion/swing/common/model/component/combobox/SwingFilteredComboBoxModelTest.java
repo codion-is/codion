@@ -128,12 +128,12 @@ public class SwingFilteredComboBoxModelTest {
     assertEquals(BJORN, testModel.getSelectedItem());
     assertEquals(BJORN, testModel.getSelectedValue());
     assertFalse(testModel.isSelectionEmpty());
-    assertFalse(testModel.isNullValueSelected());
+    assertFalse(testModel.isNullSelected());
     testModel.setSelectedItem(null);
     assertTrue(testModel.isSelectionEmpty());
     assertEquals(4, selectionChangedCounter.get());
     assertEquals(NULL, testModel.getSelectedItem());
-    assertTrue(testModel.isNullValueSelected());
+    assertTrue(testModel.isNullSelected());
     assertTrue(testModel.isSelectionEmpty());
     assertNull(testModel.getSelectedValue());
     testModel.setSelectedItem(SIGGI);
@@ -229,10 +229,10 @@ public class SwingFilteredComboBoxModelTest {
     assertTrue(testModel.isVisible(null));
     testModel.refresh();
     assertEquals(5, testModel.getVisibleItems().size());
-    assertEquals(testModel.getNullString(), NULL);
+    assertEquals(testModel.getElementAt(0), NULL);
     testModel.setSelectedItem(null);
     assertEquals(testModel.getSelectedItem(), NULL);
-    assertTrue(testModel.isNullValueSelected());
+    assertTrue(testModel.isNullSelected());
     assertNull(testModel.getSelectedValue());
     testModel.setSelectedItem(NULL);
     assertEquals(NULL, testModel.getElementAt(0));
@@ -258,7 +258,7 @@ public class SwingFilteredComboBoxModelTest {
     selectorValue.set('k');
     assertEquals(KALLI, testModel.getSelectedItem());
     selectorValue.set(null);
-    assertTrue(testModel.isNullValueSelected());
+    assertTrue(testModel.isNullSelected());
     testModel.setSelectedItem(BJORN);
     assertEquals('b', selectorValue.get());
     testModel.setSelectedItem(null);
@@ -304,7 +304,7 @@ public class SwingFilteredComboBoxModelTest {
   @BeforeEach
   void setUp() throws Exception {
     testModel = new SwingFilteredComboBoxModel<>();
-    testModel.setNullString(NULL);
+    testModel.setIncludeNull(NULL, String.class);
     List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);
