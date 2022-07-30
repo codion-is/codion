@@ -23,12 +23,11 @@ import static java.util.Objects.requireNonNull;
 public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
 
   /**
-   * Specifies the value used by default to represent a null value in combo box models.
-   * Using the value null indicates that no null value item should be used.<br>
+   * Specifies the caption used by default to represent null in combo box models.
    * Value type: String<br>
    * Default value: -
    */
-  PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("is.codion.common.model.combobox.comboBoxNullValueItem", "-");
+  PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue("is.codion.common.model.combobox.nullCaption", "-");
 
   /**
    * @param listener a listener notified each time the selection changes

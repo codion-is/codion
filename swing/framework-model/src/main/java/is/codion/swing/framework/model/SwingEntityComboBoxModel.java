@@ -324,7 +324,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKey);
     SwingEntityComboBoxModel foreignKeyModel =
             new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), connectionProvider);
-    foreignKeyModel.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
+    foreignKeyModel.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
 

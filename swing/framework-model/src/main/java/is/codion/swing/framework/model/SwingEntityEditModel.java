@@ -177,7 +177,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * If the foreign key property has select attributes defined, those are set in the combo box model.
    * @param foreignKey the foreign key for which to create a {@link SwingEntityComboBoxModel}
    * @return a {@link SwingEntityComboBoxModel} for the given foreign key
-   * @see FilteredComboBoxModel#COMBO_BOX_NULL_VALUE_ITEM
+   * @see FilteredComboBoxModel#COMBO_BOX_NULL_CAPTION
    * @see Property#isNullable()
    * @see is.codion.framework.model.EntityComboBoxModel#setSelectAttributes(Collection)
    * @see ForeignKeyProperty#getSelectAttributes()
@@ -187,7 +187,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), getConnectionProvider());
     model.setSelectAttributes(foreignKeyProperty.getSelectAttributes());
     if (isNullable(foreignKey)) {
-      model.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
+      model.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     }
 
     return model;
@@ -206,7 +206,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     SwingPropertyComboBoxModel<T> model = new SwingPropertyComboBoxModel<>(getConnectionProvider(), attribute);
     if (isNullable(attribute)) {
       if (attribute.getTypeClass().isInterface()) {
-        model.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get(), attribute.getTypeClass());
+        model.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get(), attribute.getTypeClass());
       }
       else {
         model.setIncludeNull(true);
