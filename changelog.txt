@@ -8288,3 +8288,4 @@
   DerivedProperty.SourceValues.getOptional() added
   EntityEditComponentPanel.setInitialFocusAttribute(), setAfterInsertFocusAttribute(), excludeComponentFromSelection() and setComponent(), no longer restricted to attributes from the entity the panel is based on
   EntityEditComponentPanel.createLabel() no longer restricted to attributes from the entity the panel is based on
+  ComboBoxMouseWheelListener.getItemToSelect() bug fixed, now uses Objects.equals() instead of == operator
