@@ -115,6 +115,11 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
+  public final void setIncludeNull(String caption) {
+    super.setIncludeNull(caption, Entity.class);
+  }
+
+  @Override
   public final void setSelectAttributes(Collection<Attribute<?>> selectAttributes) {
     for (Attribute<?> attribute : requireNonNull(selectAttributes)) {
       if (!attribute.getEntityType().equals(entityType)) {
@@ -294,7 +299,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   private int getIndexOfKey(Key primaryKey) {
     int size = getSize();
-    int startIndex = getNullString() != null ? 1 : 0;
+    int startIndex = isIncludeNull() ? 1 : 0;
     for (int index = startIndex; index < size; index++) {
       Entity item = getElementAt(index);
       if (item != null && item.getPrimaryKey().equals(primaryKey)) {
@@ -319,7 +324,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKey);
     SwingEntityComboBoxModel foreignKeyModel =
             new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), connectionProvider);
-    foreignKeyModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
+    foreignKeyModel.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
 

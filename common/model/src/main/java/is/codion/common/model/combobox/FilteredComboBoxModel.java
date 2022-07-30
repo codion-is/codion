@@ -81,17 +81,15 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
   boolean isSelectionEmpty();
 
   /**
-   * Returns true if the value representing null is selected, false if no such value has been
-   * specified or if it is not selected.
-   * @return true if the value representing null is selected, false otherwise
-   * @see #setNullString(String)
+   * Returns true if this model contains null and it is selected.
+   * @return true if this model contains null and it is selected, false otherwise
+   * @see #isIncludeNull()
    */
-  boolean isNullValueSelected();
+  boolean isNullSelected();
 
   /**
-   * @return the selected item, null in case the value representing null is selected
-   * @see #setNullString(String)
-   * @see #isNullValueSelected()
+   * @return the selected value, null in case the value representing null is selected
+   * @see #isNullSelected()
    */
   T getSelectedValue();
 
@@ -109,15 +107,23 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
   Comparator<T> getSortComparator();
 
   /**
-   * Sets the value which should represent a null value, a refresh is required for it to show up
-   * @param nullString a value which is used to represent a null value
+   * @param includeNull if true then a null value is included as the first item
+   * @see #setIncludeNull(String, Class)
    */
-  void setNullString(String nullString);
+  void setIncludeNull(boolean includeNull);
 
   /**
-   * @return the value representing the null value, null if no such value has been specified
+   * Configures this model to include a null value and sets the String to use as its caption.
+   * Note that this is restricted to {@code itemClass} values that are interfaces, with String as the one exception.
+   * @param caption the null value caption
+   * @param itemClass the class representing the type contained in this combo box model
    */
-  String getNullString();
+  void setIncludeNull(String caption, Class<T> itemClass);
+
+  /**
+   * @return true if a null value is included
+   */
+  boolean isIncludeNull();
 
   /**
    * Specifies whether filtering can change the selected item, if true then
@@ -153,7 +159,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
    * @param index the index
    * @return the item at the given index
    */
-  Object getElementAt(int index);
+  T getElementAt(int index);
 
   /**
    * @return the selected item

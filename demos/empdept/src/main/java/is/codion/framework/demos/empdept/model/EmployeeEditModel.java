@@ -30,7 +30,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
     if (foreignKey.equals(Employee.MGR_FK)) {
       //Customize the null value so that it displays the chosen
       //text instead of the default '-' character
-      comboBoxModel.setNullString("None");
+      comboBoxModel.setIncludeNull("None");
       //we do not want filtering to remove a value that is selected
       //and thereby change the selection, see bindEvents() below
       comboBoxModel.setFilterSelectedItem(false);
