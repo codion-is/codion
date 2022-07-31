@@ -100,17 +100,17 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   private JComponent initialFocusComponent;
 
   /**
-   * The attribute for which component should receive the focus when the UI is prepared
+   * The attribute for which component should receive the focus when the UI is initialized
    */
   private Attribute<?> initialFocusAttribute;
 
   /**
-   * The component that should receive focus when the UI is prepared after insert
+   * The component that should receive focus when the UI is initialized after insert
    */
   private JComponent afterInsertFocusComponent;
 
   /**
-   * The attribute for which component should receive the focus when the UI is prepared after insert
+   * The attribute for which component should receive the focus when the UI is initialized after insert
    */
   private Attribute<?> afterInsertFocusAttribute;
 
@@ -153,7 +153,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   /**
    * @param attribute the attribute
    * @return the component associated with the given attribute
-   * @throws IllegalArgumentException in case no component or builder has been associated with the given attribute
+   * @throws IllegalArgumentException in case no component or component builder has been associated with the given attribute
    */
   public final JComponent getComponent(Attribute<?> attribute) {
     JComponent component = getComponentInternal(attribute);
@@ -229,8 +229,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * is not focusable, this panel receives the focus.
    * Note that if this panel is not visible then calling this method has no effect.
    * @see #isVisible()
-   * @see #setInitialFocusAttribute
-   * @see #setInitialFocusComponent(javax.swing.JComponent)
+   * @see #setInitialFocusAttribute(Attribute)
+   * @see #setInitialFocusComponent(JComponent)
    */
   public final void requestInitialFocus() {
     if (isVisible()) {
@@ -444,7 +444,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Creates a panel with a BorderLayout, with the {@code inputComponent} at BorderLayout.CENTER
+   * Creates a panel with a BorderLayout, with the {@code inputComponent} at {@link BorderLayout#CENTER}
    * and the {@code labelComponent} at a specified location.
    * @param labelComponent the label component
    * @param inputComponent a input component
@@ -803,7 +803,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * @return the component that should get the initial focus when the UI is cleared
+   * @return the component that should get the initial focus when the UI is initialized
    */
   protected JComponent getInitialFocusComponent() {
     if (initialFocusComponent != null) {
@@ -818,7 +818,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * @return the component that should get the focus when the UI is prepared after insert
+   * @return the component that should get the focus when the UI is initialized after insert
    */
   protected JComponent getAfterInsertFocusComponent() {
     if (afterInsertFocusComponent != null) {
