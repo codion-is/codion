@@ -42,7 +42,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Window;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -66,7 +65,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A base class for entity edit panels, providing components for editing entities.
  */
-public class EntityEditComponentPanel extends JPanel implements DialogExceptionHandler {
+public class EntityEditComponentPanel extends JPanel {
 
   /**
    * The edit model these edit components are associated with
@@ -297,15 +296,18 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   /**
    * Handles the given exception, simply displays the error message to the user by default.
    * @param exception the exception to handle
-   * @see #displayException(Throwable, Window)
+   * @see #displayException(Throwable)
    */
   public void onException(Throwable exception) {
-    displayException(exception, Windows.getParentWindow(this).orElse(null));
+    displayException(exception);
   }
 
-  @Override
-  public final void displayException(Throwable throwable, Window dialogParent) {
-    DialogExceptionHandler.getInstance().displayException(throwable, dialogParent);
+  /**
+   * Displays the exception in a dialog
+   * @param exception the exception to display
+   */
+  public final void displayException(Throwable exception) {
+    DialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this).orElse(null));
   }
 
   /**

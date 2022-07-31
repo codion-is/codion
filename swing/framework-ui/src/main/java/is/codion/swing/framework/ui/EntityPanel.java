@@ -664,7 +664,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * Displays the exception in a dialog
-   * @param exception the exception to handle
+   * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
     DialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this).orElse(null));

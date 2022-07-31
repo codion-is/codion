@@ -77,7 +77,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -127,7 +126,7 @@ import static java.util.Objects.requireNonNull;
  * Note that {@link #initializePanel()} must be called to initialize this panel before displaying it.
  * @see EntityTableModel
  */
-public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
+public class EntityTablePanel extends JPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanel.class);
 
@@ -864,15 +863,18 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * Handles the given exception, simply displays the error message to the user by default.
    * @param exception the exception to handle
-   * @see #displayException(Throwable, Window)
+   * @see #displayException(Throwable)
    */
   public void onException(Throwable exception) {
-    displayException(exception, getParentWindow(this).orElse(null));
+    displayException(exception);
   }
 
-  @Override
-  public final void displayException(Throwable throwable, Window dialogParent) {
-    DialogExceptionHandler.getInstance().displayException(throwable, dialogParent);
+  /**
+   * Displays the exception in a dialog
+   * @param exception the exception to display
+   */
+  public final void displayException(Throwable exception) {
+    DialogExceptionHandler.getInstance().displayException(exception, getParentWindow(this).orElse(null));
   }
 
   /**

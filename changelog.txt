@@ -8294,3 +8294,4 @@
   SwingEntityEditModel.getComboBoxModel() now returns SwingFilteredComboBoxModel instead of FilteredComboBoxModel, since FilteredComboBoxModel does not extend ComboBoxModel
   TemporalInputPanel, supported type validation moved from createTemporalField() to constructor
   DefaultDialogExceptionHandler no longer public, getInstance() moved to DialogExceptionHandler
+  EntityPanel, EntityEditPanel, EntityTablePanel and EntityApplicationPanel no longer implement DialogException handler

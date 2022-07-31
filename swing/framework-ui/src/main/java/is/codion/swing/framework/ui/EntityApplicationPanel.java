@@ -110,7 +110,7 @@ import static java.util.Objects.requireNonNull;
  * @param <M> the application model type
  */
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel>
-        extends JPanel implements DialogExceptionHandler, HierarchyPanel {
+        extends JPanel implements HierarchyPanel {
 
   private static final String CODION_CLIENT_VERSION = "codion.client.version";
   private static final String LOG_LEVEL = "log_level";
@@ -237,10 +237,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     setUncaughtExceptionHandler();
   }
 
-  @Override
-  public final void displayException(Throwable exception, Window dialogParent) {
+  /**
+   * Displays the exception in a dialog
+   * @param exception the exception to display
+   */
+  public final void displayException(Throwable exception) {
     LOG.error(exception.getMessage(), exception);
-    DialogExceptionHandler.getInstance().displayException(exception, dialogParent);
+    DialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this).orElse(null));
   }
 
   /**
@@ -1218,7 +1221,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
               .icon(getApplicationIcon())
               .westPanel(initializeStartupIconPanel(getApplicationIcon()))
               .onResult(model -> startApplication(model, frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted))
-              .onException(exception -> displayException(exception, null))
+              .onException(this::displayException)
               .execute();
     }
     else {
@@ -1236,7 +1239,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       LOG.info(frame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
     }
     catch (Exception exception) {
-      displayException(exception, null);
+      displayException(exception);
       throw new CancelException();
     }
   }
@@ -1297,7 +1300,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       if (focusOwner == null) {
         focusOwner = EntityApplicationPanel.this;
       }
-      displayException(exception, Windows.getParentWindow(focusOwner).orElse(null));
+      displayException(exception);
     });
   }
 
