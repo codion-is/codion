@@ -7,6 +7,7 @@ import java.awt.Window;
 
 /**
  * Handles an exception by displaying an error dialog.
+ * @see #getInstance()
  */
 public interface DialogExceptionHandler {
 
@@ -16,4 +17,13 @@ public interface DialogExceptionHandler {
    * @param dialogParent the Window to use as parent to the exception dialog
    */
   void displayException(Throwable exception, Window dialogParent);
+
+  /**
+   * Returns a default {@link DialogExceptionHandler} instance.
+   * Note that this instance ignores {@link is.codion.common.model.CancelException}s.
+   * @return a default {@link DialogExceptionHandler} instance
+   */
+  static DialogExceptionHandler getInstance() {
+    return DefaultDialogExceptionHandler.INSTANCE;
+  }
 }

@@ -37,7 +37,6 @@ import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
@@ -241,7 +240,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   @Override
   public final void displayException(Throwable exception, Window dialogParent) {
     LOG.error(exception.getMessage(), exception);
-    DefaultDialogExceptionHandler.getInstance().displayException(exception, dialogParent);
+    DialogExceptionHandler.getInstance().displayException(exception, dialogParent);
   }
 
   /**

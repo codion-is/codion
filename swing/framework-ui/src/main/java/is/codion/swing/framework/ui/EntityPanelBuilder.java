@@ -16,7 +16,7 @@ import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -488,7 +488,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
                 Messages.error(), JOptionPane.ERROR_MESSAGE);
       }
       catch (Exception e) {
-        DefaultDialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(component).orElse(null));
+        DialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(component).orElse(null));
       }
 
       return false;
