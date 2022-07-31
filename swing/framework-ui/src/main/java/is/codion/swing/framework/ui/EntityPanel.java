@@ -16,7 +16,6 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -667,7 +666,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
-    DialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this).orElse(null));
+    Dialogs.showExceptionDialog(exception, Windows.getParentWindow(this).orElse(null));
   }
 
   /**

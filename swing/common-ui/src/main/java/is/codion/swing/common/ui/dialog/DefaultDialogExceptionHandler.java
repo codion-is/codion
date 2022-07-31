@@ -19,18 +19,19 @@ import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultDialogExceptionHandler implements DialogExceptionHandler {
+final class DefaultDialogExceptionHandler {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultDialogExceptionHandler.class.getName());
 
   private static final int MAXIMUM_MESSAGE_LENGTH = 50;
   private static final List<Class<? extends Throwable>> WRAPPER_EXCEPTIONS = asList(
           RemoteException.class, RuntimeException.class, InvocationTargetException.class,
-          ExceptionInInitializerError.class, UndeclaredThrowableException.class);
-  static final DefaultDialogExceptionHandler INSTANCE = new DefaultDialogExceptionHandler();
+          ExceptionInInitializerError.class, UndeclaredThrowableException.class
+  );
 
-  @Override
-  public void displayException(Throwable exception, Window dialogParent) {
+  private DefaultDialogExceptionHandler() {}
+
+  static void displayException(Throwable exception, Window dialogParent) {
     requireNonNull(exception);
     Throwable rootCause = unwrapExceptions(exception, WRAPPER_EXCEPTIONS);
     if (rootCause instanceof CancelException) {

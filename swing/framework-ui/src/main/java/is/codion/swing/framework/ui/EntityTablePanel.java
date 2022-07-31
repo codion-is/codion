@@ -39,7 +39,6 @@ import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -874,7 +873,7 @@ public class EntityTablePanel extends JPanel {
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
-    DialogExceptionHandler.getInstance().displayException(exception, getParentWindow(this).orElse(null));
+    Dialogs.showExceptionDialog(exception, getParentWindow(this).orElse(null));
   }
 
   /**
@@ -962,7 +961,7 @@ public class EntityTablePanel extends JPanel {
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
     }
     catch (DatabaseException e) {
-      DialogExceptionHandler.getInstance().displayException(e, getParentWindow(dialogParent).orElse(null));
+      Dialogs.showExceptionDialog(e, getParentWindow(dialogParent).orElse(null));
     }
   }
 

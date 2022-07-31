@@ -33,7 +33,6 @@ import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldHint;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -305,7 +304,7 @@ public final class EntitySearchField extends JTextField {
             selectAll();
           }
           catch (Exception e) {
-            DialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(this).orElse(null));
+            Dialogs.showExceptionDialog(e, Windows.getParentWindow(this).orElse(null));
           }
         }
       }

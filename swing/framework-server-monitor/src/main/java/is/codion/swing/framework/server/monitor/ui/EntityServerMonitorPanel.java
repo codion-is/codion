@@ -17,7 +17,6 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
@@ -72,7 +71,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     this(new EntityServerMonitor(Clients.SERVER_HOST_NAME.get(),
             ServerConfiguration.REGISTRY_PORT.get(), getAdminUser()));
     Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-            DialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(EntityServerMonitorPanel.this).orElse(null)));
+            Dialogs.showExceptionDialog(e, Windows.getParentWindow(EntityServerMonitorPanel.this).orElse(null)));
   }
 
   /**

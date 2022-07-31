@@ -10,7 +10,6 @@ import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilteredTable;
-import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -113,7 +112,7 @@ public final class DatabaseExplorerPanel extends JPanel {
       System.exit(0);
     }
     catch (Exception e) {
-      DialogExceptionHandler.getInstance().displayException(e, null);
+      Dialogs.showExceptionDialog(e, null);
       System.exit(0);
     }
   }
