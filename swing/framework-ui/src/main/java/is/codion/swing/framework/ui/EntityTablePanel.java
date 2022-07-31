@@ -873,7 +873,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   @Override
   public final void displayException(Throwable throwable, Window dialogParent) {
-    requireNonNull(throwable);
     DefaultDialogExceptionHandler.getInstance().displayException(throwable, dialogParent);
   }
 
