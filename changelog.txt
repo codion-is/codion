@@ -8329,3 +8329,4 @@
   ComboBoxMouseWheelListener.getItemToSelect() bug fixed, now uses Objects.equals() instead of == operator
   SwingFilteredComboBoxModel, nullString functionality implemented with a Proxy, old implementation was broken and prevented setting a ListCellRenderer<T> due to a class cast exception
   FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM renamed COMBO_BOX_NULL_CAPTION
+  SwingEntityEditModel.getComboBoxModel() now returns SwingFilteredComboBoxModel instead of FilteredComboBoxModel, since FilteredComboBoxModel does not extend ComboBoxModel

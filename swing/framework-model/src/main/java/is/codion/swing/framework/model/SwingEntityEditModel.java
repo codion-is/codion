@@ -17,6 +17,7 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
+import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   private final State.Combination refreshingObserver = State.combination(Conjunction.OR);
-  private final Map<Attribute<?>, FilteredComboBoxModel<?>> comboBoxModels = new HashMap<>();
+  private final Map<Attribute<?>, SwingFilteredComboBoxModel<?>> comboBoxModels = new HashMap<>();
 
   /**
    * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
@@ -84,7 +85,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public final void refreshForeignKeyComboBoxModels() {
     synchronized (comboBoxModels) {
-      for (FilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
+      for (SwingFilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
         if (comboBoxModel instanceof SwingEntityComboBoxModel) {
           comboBoxModel.refresh();
         }
@@ -97,7 +98,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public final void refreshComboBoxModels() {
     synchronized (comboBoxModels) {
-      for (FilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
+      for (SwingFilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
         comboBoxModel.refresh();
       }
     }
@@ -108,7 +109,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public final void clearComboBoxModels() {
     synchronized (comboBoxModels) {
-      for (FilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
+      for (SwingFilteredComboBoxModel<?> comboBoxModel : comboBoxModels.values()) {
         comboBoxModel.clear();
       }
     }
@@ -126,34 +127,34 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
       // can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
       // box models, createForeignKeyComboBoxModel() may for example call this function
       // see javadoc: must not attempt to update any other mappings of this map
-      FilteredComboBoxModel<?> comboBoxModel = comboBoxModels.get(foreignKey);
+      SwingEntityComboBoxModel comboBoxModel = (SwingEntityComboBoxModel) comboBoxModels.get(foreignKey);
       if (comboBoxModel == null) {
         comboBoxModel = createAndInitializeForeignKeyComboBoxModel(foreignKey);
         comboBoxModels.put(foreignKey, comboBoxModel);
       }
 
-      return (SwingEntityComboBoxModel) comboBoxModel;
+      return comboBoxModel;
     }
   }
 
   /**
-   * Returns a {@link FilteredComboBoxModel} for the given attribute,
+   * Returns a {@link SwingFilteredComboBoxModel} for the given attribute,
    * @param attribute the attribute
    * @param <T> the value type
-   * @return a {@link FilteredComboBoxModel} for the given attribute
+   * @return a {@link SwingFilteredComboBoxModel} for the given attribute
    * @see #createComboBoxModel(Attribute)
    */
-  public final <T> FilteredComboBoxModel<T> getComboBoxModel(Attribute<T> attribute) {
+  public final <T> SwingFilteredComboBoxModel<T> getComboBoxModel(Attribute<T> attribute) {
     getEntityDefinition().getProperty(attribute);
     synchronized (comboBoxModels) {
       // can't use computeIfAbsent here, see getForeignKeyComboBoxModel() comment
-      FilteredComboBoxModel<?> comboBoxModel = comboBoxModels.get(attribute);
+      SwingFilteredComboBoxModel<T> comboBoxModel = (SwingFilteredComboBoxModel<T>) comboBoxModels.get(attribute);
       if (comboBoxModel == null) {
         comboBoxModel = createAndInitializeAttributeComboBoxModel(attribute);
         comboBoxModels.put(attribute, comboBoxModel);
       }
 
-      return (FilteredComboBoxModel<T>) comboBoxModel;
+      return comboBoxModel;
     }
   }
 
@@ -290,15 +291,15 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     });
   }
 
-  private FilteredComboBoxModel<?> createAndInitializeForeignKeyComboBoxModel(ForeignKey foreignKey) {
+  private SwingEntityComboBoxModel createAndInitializeForeignKeyComboBoxModel(ForeignKey foreignKey) {
     SwingEntityComboBoxModel comboBoxModel = createForeignKeyComboBoxModel(foreignKey);
     refreshingObserver.addState(comboBoxModel.getRefreshingObserver());
 
     return comboBoxModel;
   }
 
-  private <T> FilteredComboBoxModel<?> createAndInitializeAttributeComboBoxModel(Attribute<T> attribute) {
-    FilteredComboBoxModel<T> comboBoxModel = createComboBoxModel(attribute);
+  private <T> SwingFilteredComboBoxModel<T> createAndInitializeAttributeComboBoxModel(Attribute<T> attribute) {
+    SwingFilteredComboBoxModel<T> comboBoxModel = createComboBoxModel(attribute);
     refreshingObserver.addState(comboBoxModel.getRefreshingObserver());
 
     return comboBoxModel;
