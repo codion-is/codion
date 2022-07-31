@@ -242,7 +242,10 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
 
     private DefaultBuilder(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
       super(linkedValue);
-      this.valueClass = requireNonNull(valueClass);
+      if (!SUPPORTED_TYPES.contains(requireNonNull(valueClass))) {
+        throw new IllegalStateException("Unsupported temporal type: " + valueClass);
+      }
+      this.valueClass = valueClass;
       this.dateTimePattern = requireNonNull(dateTimePattern);
     }
 
@@ -295,10 +298,6 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     }
 
     private TemporalField<T> createTemporalField() {
-      if (!SUPPORTED_TYPES.contains(valueClass)) {
-        throw new IllegalStateException("Unsupported temporal type: " + valueClass);
-      }
-
       return TemporalField.builder(valueClass, dateTimePattern)
               .updateOn(updateOn)
               .selectAllOnFocusGained(selectAllOnFocusGained)

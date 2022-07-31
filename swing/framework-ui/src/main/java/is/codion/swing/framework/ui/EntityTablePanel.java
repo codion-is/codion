@@ -39,8 +39,6 @@ import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -78,7 +76,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -128,7 +125,7 @@ import static java.util.Objects.requireNonNull;
  * Note that {@link #initializePanel()} must be called to initialize this panel before displaying it.
  * @see EntityTableModel
  */
-public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
+public class EntityTablePanel extends JPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanel.class);
 
@@ -865,16 +862,18 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * Handles the given exception, simply displays the error message to the user by default.
    * @param exception the exception to handle
-   * @see #displayException(Throwable, Window)
+   * @see #displayException(Throwable)
    */
   public void onException(Throwable exception) {
-    displayException(exception, getParentWindow(this).orElse(null));
+    displayException(exception);
   }
 
-  @Override
-  public final void displayException(Throwable throwable, Window dialogParent) {
-    requireNonNull(throwable);
-    DefaultDialogExceptionHandler.getInstance().displayException(throwable, dialogParent);
+  /**
+   * Displays the exception in a dialog
+   * @param exception the exception to display
+   */
+  public final void displayException(Throwable exception) {
+    Dialogs.showExceptionDialog(exception, getParentWindow(this).orElse(null));
   }
 
   /**
@@ -962,7 +961,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
     }
     catch (DatabaseException e) {
-      DefaultDialogExceptionHandler.getInstance().displayException(e, getParentWindow(dialogParent).orElse(null));
+      Dialogs.showExceptionDialog(e, getParentWindow(dialogParent).orElse(null));
     }
   }
 

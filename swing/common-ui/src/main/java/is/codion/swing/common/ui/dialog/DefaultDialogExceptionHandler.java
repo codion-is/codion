@@ -12,34 +12,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
-/**
- * A default DialogExceptionHandler implementation
- */
-public final class DefaultDialogExceptionHandler implements DialogExceptionHandler {
+final class DefaultDialogExceptionHandler {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultDialogExceptionHandler.class.getName());
 
-  private static final DefaultDialogExceptionHandler INSTANCE = new DefaultDialogExceptionHandler();
   private static final int MAXIMUM_MESSAGE_LENGTH = 50;
+  private static final List<Class<? extends Throwable>> WRAPPER_EXCEPTIONS = asList(
+          RemoteException.class, RuntimeException.class, InvocationTargetException.class,
+          ExceptionInInitializerError.class, UndeclaredThrowableException.class
+  );
 
-  /**
-   * @return an ExceptionHandler singleton
-   */
-  public static DefaultDialogExceptionHandler getInstance() {
-    return INSTANCE;
-  }
+  private DefaultDialogExceptionHandler() {}
 
-  @Override
-  public void displayException(Throwable exception, Window dialogParent) {
+  static void displayException(Throwable exception, Window dialogParent) {
     requireNonNull(exception);
-    Throwable rootCause = unwrapExceptions(exception, asList(RemoteException.class, RuntimeException.class,
-            InvocationTargetException.class, ExceptionInInitializerError.class, UndeclaredThrowableException.class));
+    Throwable rootCause = unwrapExceptions(exception, WRAPPER_EXCEPTIONS);
     if (rootCause instanceof CancelException) {
       return;
     }

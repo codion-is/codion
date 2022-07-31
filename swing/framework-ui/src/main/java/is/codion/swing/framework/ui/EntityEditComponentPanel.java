@@ -26,8 +26,6 @@ import is.codion.swing.common.ui.component.text.TemporalInputPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
-import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -43,7 +41,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Window;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,7 +64,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A base class for entity edit panels, providing components for editing entities.
  */
-public class EntityEditComponentPanel extends JPanel implements DialogExceptionHandler {
+public class EntityEditComponentPanel extends JPanel {
 
   /**
    * The edit model these edit components are associated with
@@ -100,17 +97,17 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   private JComponent initialFocusComponent;
 
   /**
-   * The attribute for which component should receive the focus when the UI is prepared
+   * The attribute for which component should receive the focus when the UI is initialized
    */
   private Attribute<?> initialFocusAttribute;
 
   /**
-   * The component that should receive focus when the UI is prepared after insert
+   * The component that should receive focus when the UI is initialized after insert
    */
   private JComponent afterInsertFocusComponent;
 
   /**
-   * The attribute for which component should receive the focus when the UI is prepared after insert
+   * The attribute for which component should receive the focus when the UI is initialized after insert
    */
   private Attribute<?> afterInsertFocusAttribute;
 
@@ -153,7 +150,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   /**
    * @param attribute the attribute
    * @return the component associated with the given attribute
-   * @throws IllegalArgumentException in case no component or builder has been associated with the given attribute
+   * @throws IllegalArgumentException in case no component or component builder has been associated with the given attribute
    */
   public final JComponent getComponent(Attribute<?> attribute) {
     JComponent component = getComponentInternal(attribute);
@@ -229,8 +226,8 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
    * is not focusable, this panel receives the focus.
    * Note that if this panel is not visible then calling this method has no effect.
    * @see #isVisible()
-   * @see #setInitialFocusAttribute
-   * @see #setInitialFocusComponent(javax.swing.JComponent)
+   * @see #setInitialFocusAttribute(Attribute)
+   * @see #setInitialFocusComponent(JComponent)
    */
   public final void requestInitialFocus() {
     if (isVisible()) {
@@ -298,15 +295,18 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   /**
    * Handles the given exception, simply displays the error message to the user by default.
    * @param exception the exception to handle
-   * @see #displayException(Throwable, Window)
+   * @see #displayException(Throwable)
    */
   public void onException(Throwable exception) {
-    displayException(exception, Windows.getParentWindow(this).orElse(null));
+    displayException(exception);
   }
 
-  @Override
-  public final void displayException(Throwable throwable, Window dialogParent) {
-    DefaultDialogExceptionHandler.getInstance().displayException(throwable, dialogParent);
+  /**
+   * Displays the exception in a dialog
+   * @param exception the exception to display
+   */
+  public final void displayException(Throwable exception) {
+    Dialogs.showExceptionDialog(exception, Windows.getParentWindow(this).orElse(null));
   }
 
   /**
@@ -444,7 +444,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Creates a panel with a BorderLayout, with the {@code inputComponent} at BorderLayout.CENTER
+   * Creates a panel with a BorderLayout, with the {@code inputComponent} at {@link BorderLayout#CENTER}
    * and the {@code labelComponent} at a specified location.
    * @param labelComponent the label component
    * @param inputComponent a input component
@@ -803,7 +803,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * @return the component that should get the initial focus when the UI is cleared
+   * @return the component that should get the initial focus when the UI is initialized
    */
   protected JComponent getInitialFocusComponent() {
     if (initialFocusComponent != null) {
@@ -818,7 +818,7 @@ public class EntityEditComponentPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * @return the component that should get the focus when the UI is prepared after insert
+   * @return the component that should get the focus when the UI is initialized after insert
    */
   protected JComponent getAfterInsertFocusComponent() {
     if (afterInsertFocusComponent != null) {

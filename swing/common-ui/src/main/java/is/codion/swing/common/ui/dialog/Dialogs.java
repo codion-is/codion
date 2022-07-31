@@ -18,6 +18,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.Collection;
@@ -190,6 +191,15 @@ public final class Dialogs {
     return dialogOwner -> selectionDialog(valueSupplier.get())
             .owner(dialogOwner)
             .selectSingle();
+  }
+
+  /**
+   * Displays the given exception in a dialog
+   * @param exception the exception
+   * @param dialogParent the dialog parent window
+   */
+  public static void showExceptionDialog(Throwable exception, Window dialogParent) {
+    DefaultDialogExceptionHandler.displayException(exception, dialogParent);
   }
 
   /**

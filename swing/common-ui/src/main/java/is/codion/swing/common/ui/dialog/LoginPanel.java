@@ -164,7 +164,7 @@ final class LoginPanel extends JPanel {
   private void onValidationFailure(Throwable exception) {
     userValue.set(null);
     validatingState.set(false);
-    DefaultDialogExceptionHandler.getInstance().displayException(exception, Windows.getParentWindow(this).orElse(null));
+    Dialogs.showExceptionDialog(exception, Windows.getParentWindow(this).orElse(null));
   }
 
   private void closeDialog() {

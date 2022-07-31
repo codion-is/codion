@@ -49,7 +49,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A factory for {@link is.codion.swing.common.ui.component.ComponentBuilder} instances
- * based on properties for a given entity definition.
+ * based on attributes from a given entity definition.
  */
 public class EntityComponents {
 
@@ -145,9 +145,9 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a CheckBox builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a CheckBox builder
    */
   public final CheckBoxBuilder checkBox(Attribute<Boolean> attribute) {
     Property<Boolean> property = entityDefinition.getProperty(attribute);
@@ -160,10 +160,10 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a ToggleButton builder based on the given attribute.
    * @param attribute the attribute
    * @param <B> the builder type
-   * @return a builder
+   * @return a ToggleButton builder
    */
   public final <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(Attribute<Boolean> attribute) {
     Property<Boolean> property = entityDefinition.getProperty(attribute);
@@ -175,9 +175,9 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a boolean ComboBox builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a boolean ComboBox builder
    */
   public final ItemComboBoxBuilder<Boolean> booleanComboBox(Attribute<Boolean> attribute) {
     Property<Boolean> property = entityDefinition.getProperty(attribute);
@@ -187,11 +187,11 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a foreign key ComboBox builder based on the given foreign key.
    * @param foreignKey the foreign key
    * @param comboBoxModel the combo box model
    * @param <B> the builder type
-   * @return a builder
+   * @return a foreign key ComboBox builder
    */
   public final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> foreignKeyComboBox(ForeignKey foreignKey,
                                                                                                                                     SwingEntityComboBoxModel comboBoxModel) {
@@ -202,10 +202,10 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a foreign key search field builder based on the given foreign key.
    * @param foreignKey the foreign key
    * @param searchModel the search model
-   * @return a builder
+   * @return a foreign key search field builder
    */
   public final EntitySearchField.Builder foreignKeySearchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
@@ -215,10 +215,10 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder for a read-only, non-focusable foreign key text field.
+   * Creates foreign key text field builder for the given foreign key, read-only and non-focusable.
    * @param foreignKey the foreign key
    * @param <B> the builder type
-   * @return a builder
+   * @return a foreign key text field builder
    */
   public final <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> foreignKeyTextField(ForeignKey foreignKey) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
@@ -231,9 +231,9 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a foreign key label builder based on the given foreign key.
    * @param foreignKey the foreign key
-   * @return a builder
+   * @return a foreign key label builder
    */
   public final LabelBuilder<Entity> foreignKeyLabel(ForeignKey foreignKey) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
@@ -243,10 +243,12 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a ComboBox builder based on the given attribute.
+   * Note that the attribute must be associated with a {@link ItemProperty}.
    * @param attribute the attribute
    * @param <T> the attribute type
-   * @return a builder
+   * @return an item ComboBox builder
+   * @throws IllegalArgumentException in case the given attribute is not associated with a {@link ItemProperty}
    */
   public final <T> ItemComboBoxBuilder<T> itemComboBox(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
@@ -260,13 +262,13 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a ComboBox builder based on the given attribute.
    * @param attribute the attribute
    * @param comboBoxModel the combo box model
    * @param <T> the attribute type
    * @param <C> the component type
    * @param <B> the builder type
-   * @return a builder
+   * @return a ComboBox builder
    */
   public final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(Attribute<T> attribute,
                                                                                                                  ComboBoxModel<T> comboBoxModel) {
@@ -277,21 +279,21 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalInputPanel} builder based on the given attribute.
    * @param attribute the attribute
    * @param <T> the attribute type
-   * @return a builder
+   * @return a {@link TemporalInputPanel} builder
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute) {
     return temporalInputPanel(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalInputPanel} builder based on the given attribute.
    * @param attribute the attribute
    * @param dateTimePattern the date time pattern
    * @param <T> the attribute type
-   * @return a builder
+   * @return a {@link TemporalInputPanel} builder
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
     return Components.temporalInputPanel(attribute.getTypeClass(), dateTimePattern)
@@ -299,9 +301,9 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TextInputPanel} builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a {@link TextInputPanel} builder
    */
   public final TextInputPanel.Builder textInputPanel(Attribute<String> attribute) {
     Property<String> property = entityDefinition.getProperty(attribute);
@@ -313,9 +315,9 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a TextArea builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a TextArea builder
    */
   public final TextAreaBuilder textArea(Attribute<String> attribute) {
     Property<String> property = entityDefinition.getProperty(attribute);
@@ -329,12 +331,12 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a text field builder based on the given attribute.
    * @param attribute the attribute
    * @param <T> the attribute type
    * @param <C> the text field type
    * @param <B> the builder type
-   * @return a builder
+   * @return a text field builder
    */
   public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
@@ -364,19 +366,19 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalField} builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute) {
     return localTimeField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalField} builder based on the given attribute.
    * @param attribute the attribute
    * @param dateTimePattern the date time pattern
-   * @return a builder
+   * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute, String dateTimePattern) {
     return Components.localTimeField(dateTimePattern)
@@ -384,19 +386,19 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalField} builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute) {
     return localDateField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalField} builder based on the given attribute.
    * @param attribute the attribute
    * @param dateTimePattern the date time pattern
-   * @return a builder
+   * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute, String dateTimePattern) {
     return Components.localDateField(dateTimePattern)
@@ -404,19 +406,19 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalField} builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute) {
     return localDateTimeField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalField} builder based on the given attribute.
    * @param attribute the attribute
    * @param dateTimePattern the date time pattern
-   * @return a builder
+   * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute, String dateTimePattern) {
     return Components.localDateTimeField(dateTimePattern)
@@ -424,19 +426,19 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalField} builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
     return offsetDateTimeField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalField} builder based on the given attribute.
    * @param attribute the attribute
    * @param dateTimePattern the date time pattern
-   * @return a builder
+   * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute, String dateTimePattern) {
     return Components.offsetDateTimeField(dateTimePattern)
@@ -444,21 +446,21 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalField} builder based on the given attribute.
    * @param attribute the attribute
    * @param <T> the temporal type
-   * @return a builder
+   * @return a {@link TemporalField} builder
    */
   public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute) {
     return temporalField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
   }
 
   /**
-   * Creates a builder.
+   * Creates a {@link TemporalField} builder based on the given attribute.
    * @param attribute the attribute
    * @param dateTimePattern the date time pattern
    * @param <T> the temporal type
-   * @return a builder
+   * @return a {@link TemporalField} builder
    */
   public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute, String dateTimePattern) {
     Property<T> property = entityDefinition.getProperty(attribute);
@@ -468,9 +470,9 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates {@link NumberField} builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<Integer> integerField(Attribute<Integer> attribute) {
     Property<Integer> property = entityDefinition.getProperty(attribute);
@@ -483,9 +485,9 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates {@link NumberField} builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<Long> longField(Attribute<Long> attribute) {
     Property<Long> property = entityDefinition.getProperty(attribute);
@@ -498,9 +500,9 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates {@link NumberField} builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<Double> doubleField(Attribute<Double> attribute) {
     Property<Double> property = entityDefinition.getProperty(attribute);
@@ -514,9 +516,9 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates {@link NumberField} builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<BigDecimal> bigDecimalField(Attribute<BigDecimal> attribute) {
     Property<BigDecimal> property = entityDefinition.getProperty(attribute);
@@ -530,9 +532,9 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a builder.
+   * Creates masked text field builder based on the given attribute.
    * @param attribute the attribute
-   * @return a builder
+   * @return a masked text field builder
    */
   public final MaskedTextFieldBuilder maskedTextField(Attribute<String> attribute) {
     Property<String> property = entityDefinition.getProperty(attribute);
