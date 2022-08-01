@@ -54,11 +54,11 @@ public final class AbstractEntityConnectionProviderTest {
 
   private static final class TestProvider extends AbstractEntityConnectionProvider {
 
-  public TestProvider(AbstractBuilder<?, ?> builder) {
-    super(builder);
-  }
+    public TestProvider(AbstractBuilder<?, ?> builder) {
+      super(builder);
+    }
 
-  @Override
+    @Override
     protected EntityConnection connect() {
       return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(), new Class[] {EntityConnection.class}, new InvocationHandler() {
         private boolean connected = true;
