@@ -378,7 +378,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .owner(this)
             .title(resourceBundle.getString("select_font_size"))
             .onOk(() -> {
-              Integer selectedFontSizeMultiplier = ((Item<Integer>) comboBoxModel.getSelectedItem()).getValue();
+              Integer selectedFontSizeMultiplier = comboBoxModel.getSelectedItem().getValue();
               if (!selectedFontSizeMultiplier.equals(fontSizeMultiplier)) {
                 UserPreferences.putUserPreference(applicationFontSizeProperty, selectedFontSizeMultiplier.toString());
                 JOptionPane.showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));

@@ -872,7 +872,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .map(ForeignKey.class::cast)
               .collect(toMap(foreignKey -> foreignKey, foreignKey -> getForeignKeyColumnProperties(foreignKey, propertyMap)));
       foreignKeyColumnAttributes.addAll(foreignKeyColumnProperties.values().stream()
-              .flatMap(columnProperties -> columnProperties.stream().map(Property::getAttribute))
+              .flatMap(properties -> properties.stream().map(Property::getAttribute))
               .collect(toSet()));
       foreignKeyBuilders.forEach(foreignKeyBuilder -> setForeignKeyNullable(foreignKeyBuilder, foreignKeyColumnProperties));
     }
