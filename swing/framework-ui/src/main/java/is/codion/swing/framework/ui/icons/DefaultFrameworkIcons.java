@@ -144,19 +144,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
   @Override
   public ImageIcon logo(int size) {
-    return LOGOS.computeIfAbsent(size, k -> new FontImageIcon(FrameworkIkons.LOGO, size, ICON_COLOR.get()) {
-      @Override
-      protected ImageIcon createImageIcon() {
-        return new ImageIcon(new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconWidth(), BufferedImage.TYPE_INT_ARGB));
-      }
-
-      @Override
-      protected void paintIcon() {
-        int yOffset = (fontIcon.getIconHeight() - fontIcon.getIconWidth()) / 2;
-
-        fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, -yOffset);
-      }
-    }).imageIcon;
+    return LOGOS.computeIfAbsent(size, k -> new LogoImageIcon(size)).imageIcon;
   }
 
   private static class FontImageIcon {
@@ -189,6 +177,26 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
     private static FontImageIcon of(Ikon ikon, int size, Color color) {
       return new FontImageIcon(ikon, size, color);
+    }
+  }
+
+  private static final class LogoImageIcon extends FontImageIcon {
+
+    private LogoImageIcon(int size) {
+      super(FrameworkIkons.LOGO, size, ICON_COLOR.get());
+    }
+
+    @Override
+    protected ImageIcon createImageIcon() {
+      return new ImageIcon(new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconWidth(), BufferedImage.TYPE_INT_ARGB));
+    }
+
+    @Override
+    protected void paintIcon() {
+      //center on y-axis
+      int yOffset = (fontIcon.getIconHeight() - fontIcon.getIconWidth()) / 2;
+
+      fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, -yOffset);
     }
   }
 }
