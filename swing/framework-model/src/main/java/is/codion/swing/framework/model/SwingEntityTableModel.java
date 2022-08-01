@@ -857,7 +857,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
     @Override
     public Class<?> getColumnClass(Attribute<?> attribute) {
-      return attribute.getTypeClass();
+      return attribute.getValueClass();
     }
 
     @Override

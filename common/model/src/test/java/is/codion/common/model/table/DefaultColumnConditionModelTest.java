@@ -126,7 +126,7 @@ public class DefaultColumnConditionModelTest {
     model.getCaseSensitiveState().set(false);
     assertFalse(model.getCaseSensitiveState().get());
     assertEquals("test", model.getColumnIdentifier());
-    assertEquals(String.class, model.getTypeClass());
+    assertEquals(String.class, model.getColumnClass());
     assertEquals('%', model.getWildcardValue().get());
 
     model.getWildcardValue().set('#');

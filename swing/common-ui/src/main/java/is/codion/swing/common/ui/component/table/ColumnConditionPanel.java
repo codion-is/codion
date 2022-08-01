@@ -332,7 +332,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
     @Override
     public Optional<JComponent> createUpperBoundField() {
-      if (columnConditionModel.getTypeClass().equals(Boolean.class)) {
+      if (columnConditionModel.getColumnClass().equals(Boolean.class)) {
         return Optional.empty();//no lower bound field required for boolean values
       }
 
@@ -341,7 +341,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
     @Override
     public Optional<JComponent> createLowerBoundField() {
-      if (columnConditionModel.getTypeClass().equals(Boolean.class)) {
+      if (columnConditionModel.getColumnClass().equals(Boolean.class)) {
         return Optional.empty();//no lower bound field required for boolean values
       }
 
@@ -349,55 +349,55 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
 
     private JComponent createField(Value<?> value) {
-      Class<?> typeClass = columnConditionModel.getTypeClass();
-      if (typeClass.equals(Boolean.class)) {
+      Class<?> columnClass = columnConditionModel.getColumnClass();
+      if (columnClass.equals(Boolean.class)) {
         return checkBox((Value<Boolean>) value)
                 .nullable(true)
                 .horizontalAlignment(CENTER)
                 .build();
       }
-      if (typeClass.equals(Integer.class)) {
+      if (columnClass.equals(Integer.class)) {
         return integerField((Value<Integer>) value)
                 .format(columnConditionModel.getFormat())
                 .build();
       }
-      else if (typeClass.equals(Double.class)) {
+      else if (columnClass.equals(Double.class)) {
         return doubleField((Value<Double>) value)
                 .format(columnConditionModel.getFormat())
                 .build();
       }
-      else if (typeClass.equals(BigDecimal.class)) {
+      else if (columnClass.equals(BigDecimal.class)) {
         return bigDecimalField((Value<BigDecimal>) value)
                 .format(columnConditionModel.getFormat())
                 .build();
       }
-      else if (typeClass.equals(Long.class)) {
+      else if (columnClass.equals(Long.class)) {
         return longField((Value<Long>) value)
                 .format(columnConditionModel.getFormat())
                 .build();
       }
-      else if (typeClass.equals(LocalTime.class)) {
+      else if (columnClass.equals(LocalTime.class)) {
         return localTimeField(columnConditionModel.getDateTimePattern(), (Value<LocalTime>) value)
                 .build();
       }
-      else if (typeClass.equals(LocalDate.class)) {
+      else if (columnClass.equals(LocalDate.class)) {
         return localDateField(columnConditionModel.getDateTimePattern(), (Value<LocalDate>) value)
                 .build();
       }
-      else if (typeClass.equals(LocalDateTime.class)) {
+      else if (columnClass.equals(LocalDateTime.class)) {
         return localDateTimeField(columnConditionModel.getDateTimePattern(), (Value<LocalDateTime>) value)
                 .build();
       }
-      else if (typeClass.equals(OffsetDateTime.class)) {
+      else if (columnClass.equals(OffsetDateTime.class)) {
         return offsetDateTimeField(columnConditionModel.getDateTimePattern(), (Value<OffsetDateTime>) value)
                 .build();
       }
-      else if (typeClass.equals(String.class)) {
+      else if (columnClass.equals(String.class)) {
         return textField((Value<String>) value)
                 .build();
       }
 
-      throw new IllegalArgumentException("Unsupported type: " + typeClass);
+      throw new IllegalArgumentException("Unsupported type: " + columnClass);
     }
   }
 
@@ -576,7 +576,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void addStringConfigurationPopupMenu() {
-    if (conditionModel.getTypeClass().equals(String.class)) {
+    if (conditionModel.getColumnClass().equals(String.class)) {
       JPopupMenu popupMenu = Controls.builder()
               .control(ToggleControl.builder(conditionModel.getCaseSensitiveState())
                       .caption(MESSAGES.getString("case_sensitive"))

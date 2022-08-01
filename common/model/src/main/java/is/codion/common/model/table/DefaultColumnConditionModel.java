@@ -44,7 +44,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   private final State lockedState = State.state();
 
   private final C columnIdentifier;
-  private final Class<T> typeClass;
+  private final Class<T> columnClass;
   private final Format format;
   private final String dateTimePattern;
   private final List<Operator> operators;
@@ -54,40 +54,40 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   /**
    * Instantiates a DefaultColumnConditionModel.
    * @param columnIdentifier the column identifier
-   * @param typeClass the data type
+   * @param columnClass the column class
    * @param operators the conditional operators available to this condition model
    * @param wildcard the character to use as wildcard
    */
-  public DefaultColumnConditionModel(C columnIdentifier, Class<T> typeClass, List<Operator> operators,
+  public DefaultColumnConditionModel(C columnIdentifier, Class<T> columnClass, List<Operator> operators,
                                      char wildcard) {
-    this(columnIdentifier, typeClass, operators, wildcard, null, null);
+    this(columnIdentifier, columnClass, operators, wildcard, null, null);
   }
 
   /**
    * Instantiates a DefaultColumnConditionModel.
    * @param columnIdentifier the column identifier
-   * @param typeClass the data type
+   * @param columnClass the column class
    * @param operators the conditional operators available to this condition model
    * @param wildcard the character to use as wildcard
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    */
-  public DefaultColumnConditionModel(C columnIdentifier, Class<T> typeClass, List<Operator> operators,
+  public DefaultColumnConditionModel(C columnIdentifier, Class<T> columnClass, List<Operator> operators,
                                      char wildcard, Format format, String dateTimePattern) {
-    this(columnIdentifier, typeClass, operators, wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
+    this(columnIdentifier, columnClass, operators, wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
   }
 
   /**
    * Instantiates a DefaultColumnConditionModel.
    * @param columnIdentifier the column identifier
-   * @param typeClass the data type
+   * @param columnClass the column class
    * @param operators the conditional operators available to this condition model
    * @param wildcard the character to use as wildcard
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    * @param automaticWildcard the automatic wildcard type to use
    */
-  public DefaultColumnConditionModel(C columnIdentifier, Class<T> typeClass, List<Operator> operators,
+  public DefaultColumnConditionModel(C columnIdentifier, Class<T> columnClass, List<Operator> operators,
                                      char wildcard, Format format, String dateTimePattern,
                                      AutomaticWildcard automaticWildcard) {
     if (requireNonNull(operators, "operators").isEmpty()) {
@@ -95,7 +95,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     }
     this.columnIdentifier = requireNonNull(columnIdentifier, "columnIdentifier");
     this.operators = unmodifiableList(operators);
-    this.typeClass = typeClass;
+    this.columnClass = columnClass;
     this.wildcardValue.set(wildcard);
     this.format = format;
     this.dateTimePattern = dateTimePattern;
@@ -140,8 +140,8 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final Class<T> getTypeClass() {
-    return typeClass;
+  public final Class<T> getColumnClass() {
+    return columnClass;
   }
 
   @Override
@@ -353,7 +353,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   private T getBoundValue(Object bound) {
-    if (typeClass.equals(String.class)) {
+    if (columnClass.equals(String.class)) {
       if (bound == null || (bound instanceof String && ((String) bound).isEmpty())) {
         return null;
       }

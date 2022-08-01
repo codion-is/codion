@@ -44,7 +44,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
       return null;
     }
 
-    return new DefaultColumnConditionModel<>(attribute, attribute.getTypeClass(), getOperators(attribute),
+    return new DefaultColumnConditionModel<>(attribute, attribute.getValueClass(), getOperators(attribute),
             Text.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
   }
 

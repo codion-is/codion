@@ -42,11 +42,11 @@ public interface EntityType {
   /**
    * Creates a new {@link Attribute}, associated with this EntityType.
    * @param name the attribute name
-   * @param typeClass the class representing the attribute value type
+   * @param valueClass the class representing the attribute value type
    * @param <T> the attribute type
    * @return a new {@link Attribute}
    */
-  <T> Attribute<T> attribute(String name, Class<T> typeClass);
+  <T> Attribute<T> attribute(String name, Class<T> valueClass);
 
   /**
    * Creates a new Long based attribute, associated with this EntityType.

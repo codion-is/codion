@@ -688,7 +688,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       if (attribute.isString() && USE_LEXICAL_STRING_COMPARATOR.get()) {
         return (Comparator<T>) LEXICAL_COMPARATOR;
       }
-      if (Comparable.class.isAssignableFrom(attribute.getTypeClass())) {
+      if (Comparable.class.isAssignableFrom(attribute.getValueClass())) {
         return (Comparator<T>) COMPARABLE_COMPARATOR;
       }
 

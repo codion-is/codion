@@ -22,7 +22,7 @@ public class DefaultFilterModelFactory implements FilterModelFactory {
     }
 
     DefaultColumnFilterModel<Entity, Attribute<?>, T> filterModel = new DefaultColumnFilterModel<>(
-            property.getAttribute(), property.getAttribute().getTypeClass(),
+            property.getAttribute(), property.getAttribute().getValueClass(),
             Text.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
     filterModel.setComparableFunction(row -> {
       if (row.isNull(property.getAttribute())) {

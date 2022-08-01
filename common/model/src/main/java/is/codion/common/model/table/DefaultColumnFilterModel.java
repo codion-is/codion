@@ -28,24 +28,24 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
   /**
    * Instantiates a DefaultColumnFilterModel.
    * @param columnIdentifier the column identifier
-   * @param typeClass the data type
+   * @param columnClass the column class
    * @param wildcard the character to use as wildcard
    */
-  public DefaultColumnFilterModel(C columnIdentifier, Class<T> typeClass, char wildcard) {
-    this(columnIdentifier, typeClass, wildcard, null, null);
+  public DefaultColumnFilterModel(C columnIdentifier, Class<T> columnClass, char wildcard) {
+    this(columnIdentifier, columnClass, wildcard, null, null);
   }
 
   /**
    * Instantiates a DefaultColumnFilterModel.
    * @param columnIdentifier the column identifier
-   * @param typeClass the data type
+   * @param columnClass the column class
    * @param wildcard the character to use as wildcard
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimePattern the date/time format pattern to use in case of a date/time column
    */
-  public DefaultColumnFilterModel(C columnIdentifier, Class<T> typeClass, char wildcard,
+  public DefaultColumnFilterModel(C columnIdentifier, Class<T> columnClass, char wildcard,
                                   Format format, String dateTimePattern) {
-    super(columnIdentifier, typeClass, getOperators(typeClass), wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
+    super(columnIdentifier, columnClass, getOperators(columnClass), wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
   }
 
   @Override
@@ -272,8 +272,8 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
     return lowerCompareResult <= 0 || upperCompareResult >= 0;
   }
 
-  private static List<Operator> getOperators(Class<?> typeClass) {
-    if (typeClass.equals(Boolean.class)) {
+  private static List<Operator> getOperators(Class<?> columnClass) {
+    if (columnClass.equals(Boolean.class)) {
       return Collections.singletonList(Operator.EQUAL);
     }
 

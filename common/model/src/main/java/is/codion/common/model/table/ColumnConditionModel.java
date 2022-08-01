@@ -116,9 +116,9 @@ public interface ColumnConditionModel<C, T> {
   boolean isLocked();
 
   /**
-   * @return the data type this condition model is based on
+   * @return the column class this condition model is based on
    */
-  Class<T> getTypeClass();
+  Class<T> getColumnClass();
 
   /**
    * Sets the values used when the {@link Operator#EQUAL} is enabled.

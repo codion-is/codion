@@ -31,11 +31,11 @@ final class ColumnPacker implements ResultPacker<Column> {
     if (resultSet.wasNull()) {
       decimalDigits = -1;
     }
-    Class<?> typeClass = getTypeClass(dataType, decimalDigits);
-    if (typeClass != null) {
+    Class<?> columnClass = getColumnClass(dataType, decimalDigits);
+    if (columnClass != null) {
       String columnName = resultSet.getString("COLUMN_NAME");
       try {
-        return new Column(columnName, typeClass,
+        return new Column(columnName, columnClass,
                 resultSet.getInt("ORDINAL_POSITION"),
                 resultSet.getInt("COLUMN_SIZE"), decimalDigits,
                 resultSet.getInt("NULLABLE"),
@@ -66,7 +66,7 @@ final class ColumnPacker implements ResultPacker<Column> {
             .anyMatch(foreignKeyColumn -> foreignKeyColumn.getFkColumnName().equals(columnName));
   }
 
-  private static Class<?> getTypeClass(int sqlType, int decimalDigits) {
+  private static Class<?> getColumnClass(int sqlType, int decimalDigits) {
     switch (sqlType) {
       case Types.BIGINT:
         return Long.class;

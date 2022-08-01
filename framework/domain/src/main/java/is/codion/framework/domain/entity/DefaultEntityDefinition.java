@@ -714,24 +714,24 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     String beanPropertyCamelCase = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
     String methodName = method.getName();
-    Class<?> attributeTypeClass = getAttributeTypeClass(property.getAttribute());
+    Class<?> attributeValueClass = getAttributeValueClass(property.getAttribute());
     Class<?> methodReturnType = getMethodReturnType(method);
 
-    return returnsAttributeTypeOrOptional(methodReturnType, attributeTypeClass) &&
+    return returnsAttributeValueClassOrOptional(methodReturnType, attributeValueClass) &&
             (isBeanOrPropertyGetter(methodName, beanProperty, beanPropertyCamelCase) ||
-                    isBooleanGetter(methodName, beanPropertyCamelCase, attributeTypeClass));
+                    isBooleanGetter(methodName, beanPropertyCamelCase, attributeValueClass));
   }
 
-  private static boolean returnsAttributeTypeOrOptional(Class<?> methodReturnType, Class<?> attributeTypeClass) {
-    return methodReturnType.equals(attributeTypeClass) || methodReturnType.equals(Optional.class);
+  private static boolean returnsAttributeValueClassOrOptional(Class<?> methodReturnType, Class<?> attributeValueClass) {
+    return methodReturnType.equals(attributeValueClass) || methodReturnType.equals(Optional.class);
   }
 
   private static boolean isBeanOrPropertyGetter(String methodName, String beanProperty, String beanPropertyCamelCase) {
     return methodName.equals(beanProperty) || methodName.equals("get" + beanPropertyCamelCase);
   }
 
-  private static boolean isBooleanGetter(String methodName, String beanPropertyCamelCase, Class<?> attributeTypeClass) {
-    return methodName.equals("is" + beanPropertyCamelCase) && Boolean.class.equals(attributeTypeClass);
+  private static boolean isBooleanGetter(String methodName, String beanPropertyCamelCase, Class<?> attributeValueClass) {
+    return methodName.equals("is" + beanPropertyCamelCase) && Boolean.class.equals(attributeValueClass);
   }
 
   private static Class<?> getMethodReturnType(Method method) {
@@ -752,9 +752,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     String beanPropertyCamelCase = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
     String methodName = method.getName();
     Class<?> parameterType = getSetterParameterType(method);
-    Class<?> attributeTypeClass = getAttributeTypeClass(property.getAttribute());
+    Class<?> attributeValueClass = getAttributeValueClass(property.getAttribute());
 
-    return parameterType.equals(attributeTypeClass) && (methodName.equals(beanProperty) || methodName.equals("set" + beanPropertyCamelCase));
+    return parameterType.equals(attributeValueClass) && (methodName.equals(beanProperty) || methodName.equals("set" + beanPropertyCamelCase));
   }
 
   private static Class<?> getSetterParameterType(Method method) {
@@ -766,13 +766,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     return parameterType;
   }
 
-  private static Class<?> getAttributeTypeClass(Attribute<?> attribute) {
-    Class<?> typeClass = attribute.getTypeClass();
+  private static Class<?> getAttributeValueClass(Attribute<?> attribute) {
+    Class<?> valueClass = attribute.getValueClass();
     if (attribute instanceof ForeignKey) {
-      typeClass = ((ForeignKey) attribute).getReferencedEntityType().getEntityClass();
+      valueClass = ((ForeignKey) attribute).getReferencedEntityType().getEntityClass();
     }
 
-    return typeClass;
+    return valueClass;
   }
 
   private static boolean isWritable(ColumnProperty<?> property, boolean includePrimaryKeyProperties,
@@ -969,7 +969,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return propertyMap.values().stream()
               .filter(property -> !(property instanceof DerivedProperty))
               .map(Property::getAttribute)
-              .map(attribute -> attribute.getName() + attribute.getTypeClass().getName())
+              .map(attribute -> attribute.getName() + attribute.getValueClass().getName())
               .collect(Collectors.joining())
               .hashCode();
     }

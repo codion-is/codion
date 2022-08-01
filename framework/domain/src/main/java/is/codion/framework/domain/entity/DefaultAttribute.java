@@ -20,17 +20,17 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   private static final long serialVersionUID = 1;
 
   private final String name;
-  private final Class<T> typeClass;
+  private final Class<T> valueClass;
   private final int hashCode;
   private final EntityType entityType;
 
-  DefaultAttribute(String name, Class<T> typeClass, EntityType entityType) {
+  DefaultAttribute(String name, Class<T> valueClass, EntityType entityType) {
     if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
     }
     this.name = name;
     this.entityType = requireNonNull(entityType, "entityType");
-    this.typeClass = requireNonNull(typeClass, "typeClass");
+    this.valueClass = requireNonNull(valueClass, "valueClass");
     this.hashCode = Objects.hash(name, entityType);
   }
 
@@ -40,8 +40,8 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public final Class<T> getTypeClass() {
-    return typeClass;
+  public final Class<T> getValueClass() {
+    return valueClass;
   }
 
   @Override
@@ -51,8 +51,8 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   @Override
   public final T validateType(T value) {
-    if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
-      throw new IllegalArgumentException("Value of type " + typeClass +
+    if (value != null && valueClass != value.getClass() && !valueClass.isAssignableFrom(value.getClass())) {
+      throw new IllegalArgumentException("Value of type " + valueClass +
               " expected for property " + this + " in entity " + entityType + ", got: " + value.getClass());
     }
 
@@ -66,7 +66,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   @Override
   public final boolean isTemporal() {
-    return Temporal.class.isAssignableFrom(typeClass);
+    return Temporal.class.isAssignableFrom(valueClass);
   }
 
   @Override
@@ -167,7 +167,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
     return entityType.getName() + "." + name;
   }
 
-  private boolean isType(Class<?> typeClass) {
-    return this.typeClass.equals(typeClass);
+  private boolean isType(Class<?> valueClass) {
+    return this.valueClass.equals(valueClass);
   }
 }
