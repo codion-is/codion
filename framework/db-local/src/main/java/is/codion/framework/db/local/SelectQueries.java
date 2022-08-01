@@ -88,7 +88,7 @@ final class SelectQueries {
       if (groupBy == null) {
         groupBy(definition.getGroupByClause());
       }
-      condition.getOrderBy().ifPresent(orderBy -> orderBy(getOrderByClause(orderBy)));
+      condition.getOrderBy().ifPresent(this::setOrderBy);
       forUpdate(condition.isForUpdate());
       if (condition.getLimit() >= 0) {
         limit(condition.getLimit());
@@ -277,7 +277,11 @@ final class SelectQueries {
       return stringBuilder.toString();
     }
 
-    private String getOrderByClause(OrderBy orderBy) {
+    private void setOrderBy(OrderBy orderBy) {
+      orderBy(createOrderByClause(orderBy));
+    }
+
+    private String createOrderByClause(OrderBy orderBy) {
       List<OrderBy.OrderByAttribute> orderByAttributes = orderBy.getOrderByAttributes();
       if (orderByAttributes.isEmpty()) {
         throw new IllegalArgumentException("An order by clause must contain at least a single attribute");
