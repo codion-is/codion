@@ -164,7 +164,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
     @Override
     public Optional<JComponent> createUpperBoundField() {
-      if (conditionModel.getTypeClass().equals(Boolean.class)) {
+      if (conditionModel.getColumnClass().equals(Boolean.class)) {
         return Optional.empty();//no upper bound field required for booleans
       }
 
@@ -176,7 +176,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
     @Override
     public Optional<JComponent> createLowerBoundField() {
-      if (conditionModel.getTypeClass().equals(Boolean.class)) {
+      if (conditionModel.getColumnClass().equals(Boolean.class)) {
         return Optional.empty();//no lower bound field required for booleans
       }
 

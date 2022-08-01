@@ -134,7 +134,7 @@ public final class PropertyConditionView<T> extends BorderPane {
   }
 
   private Control createUpperBoundControl(Property<T> property) {
-    if (model.getTypeClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKey) {
+    if (model.getColumnClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKey) {
       //never required
       return null;
     }
@@ -145,7 +145,7 @@ public final class PropertyConditionView<T> extends BorderPane {
   }
 
   private Control createLowerBoundControl(Property<T> property) {
-    if (model.getTypeClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKey) {
+    if (model.getColumnClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKey) {
       //never required
       return null;
     }

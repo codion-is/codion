@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 public final class Column {
 
   private final String columnName;
-  private final Class<?> columnTypeClass;
+  private final Class<?> columnClass;
   private final int position;
   private final int columnSize;
   private final int decimalDigits;
@@ -21,11 +21,11 @@ public final class Column {
   private final int primaryKeyIndex;
   private final boolean foreignKeyColumn;
 
-  Column(String columnName, Class<?> columnTypeClass, int position, int columnSize,
+  Column(String columnName, Class<?> columnClass, int position, int columnSize,
          int decimalDigits, int nullable, String defaultValue, String comment,
          int primaryKeyIndex, boolean foreignKeyColumn) {
     this.columnName = requireNonNull(columnName);
-    this.columnTypeClass = requireNonNull(columnTypeClass);
+    this.columnClass = requireNonNull(columnClass);
     this.position = position;
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
@@ -56,8 +56,8 @@ public final class Column {
     return foreignKeyColumn;
   }
 
-  public Class<?> getColumnTypeClass() {
-    return columnTypeClass;
+  public Class<?> getColumnClass() {
+    return columnClass;
   }
 
   public String defaultValue() {

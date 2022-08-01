@@ -204,17 +204,17 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
       component.setTemporal(initialValue);
     }
 
-    private static <T extends Temporal> DateTimeParser<T> initializeDateTimeParser(Class<T> typeClass) {
-      if (typeClass.equals(LocalTime.class)) {
+    private static <T extends Temporal> DateTimeParser<T> initializeDateTimeParser(Class<T> valueClass) {
+      if (valueClass.equals(LocalTime.class)) {
         return (DateTimeParser<T>) new LocalTimeParser();
       }
-      else if (typeClass.equals(LocalDate.class)) {
+      else if (valueClass.equals(LocalDate.class)) {
         return (DateTimeParser<T>) new LocalDateParser();
       }
-      else if (typeClass.equals(LocalDateTime.class)) {
+      else if (valueClass.equals(LocalDateTime.class)) {
         return (DateTimeParser<T>) new LocalDateTimeParser();
       }
-      else if (typeClass.equals(OffsetDateTime.class)) {
+      else if (valueClass.equals(OffsetDateTime.class)) {
         return (DateTimeParser<T>) new OffsetDateTimeParser();
       }
 

@@ -52,9 +52,9 @@ final class DomainToString {
   private static void appendAttribute(StringBuilder builder, Property<?> property) {
     if (property instanceof ColumnProperty) {
       ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
-      String typeClassName = columnProperty.getAttribute().getTypeClass().getSimpleName();
-      builder.append("  ").append("Attribute<").append(typeClassName).append("> ")
-              .append(columnProperty.getColumnName().toUpperCase()).append(" = TYPE.").append(getAttributeTypePrefix(typeClassName))
+      String valueClassName = columnProperty.getAttribute().getValueClass().getSimpleName();
+      builder.append("  ").append("Attribute<").append(valueClassName).append("> ")
+              .append(columnProperty.getColumnName().toUpperCase()).append(" = TYPE.").append(getAttributeTypePrefix(valueClassName))
               .append("Attribute(\"").append(columnProperty.getColumnName().toLowerCase()).append("\");").append(LINE_SEPARATOR);
     }
     else if (property instanceof ForeignKeyProperty) {
@@ -124,11 +124,11 @@ final class DomainToString {
     if (!property.isNullable() && !property.isPrimaryKeyColumn()) {
       builder.append(LINE_SEPARATOR).append("                .nullable(false)");
     }
-    if (String.class.equals(property.getAttribute().getTypeClass())) {
+    if (String.class.equals(property.getAttribute().getValueClass())) {
       builder.append(LINE_SEPARATOR).append("                .maximumLength(")
               .append(property.getMaximumLength()).append(")");
     }
-    if (Double.class.equals(property.getAttribute().getTypeClass()) && property.getMaximumFractionDigits() >= 1) {
+    if (Double.class.equals(property.getAttribute().getValueClass()) && property.getMaximumFractionDigits() >= 1) {
       builder.append(LINE_SEPARATOR).append("                .maximumFractionDigits(")
               .append(property.getMaximumFractionDigits()).append(")");
     }
@@ -140,12 +140,12 @@ final class DomainToString {
     return builder.toString();
   }
 
-  private static String getAttributeTypePrefix(String typeClassName) {
-    if ("byte[]".equals(typeClassName)) {
+  private static String getAttributeTypePrefix(String valueClassName) {
+    if ("byte[]".equals(valueClassName)) {
       return "byteArray";
     }
 
-    return typeClassName.substring(0, 1).toLowerCase() + typeClassName.substring(1);
+    return valueClassName.substring(0, 1).toLowerCase() + valueClassName.substring(1);
   }
 
   private static String getPropertyType(Attribute<?> attribute, boolean primaryKeyProperty) {

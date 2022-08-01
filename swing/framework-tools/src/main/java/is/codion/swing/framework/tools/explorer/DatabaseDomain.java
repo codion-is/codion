@@ -120,7 +120,7 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private static <T> Attribute<T> getAttribute(EntityType entityType, Column column) {
-    return (Attribute<T>) entityType.attribute(column.getColumnName(), column.getColumnTypeClass());
+    return (Attribute<T>) entityType.attribute(column.getColumnName(), column.getColumnClass());
   }
 
   private static String getCaption(String name) {

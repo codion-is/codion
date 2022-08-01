@@ -967,6 +967,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     detailEntityPanels.forEach(EntityPanel::savePreferences);
   }
 
+  @Override
+  public final void setFocusCycleRoot(boolean focusCycleRoot) {
+    //override as final since it's called in constructor
+    super.setFocusCycleRoot(focusCycleRoot);
+  }
+
   /**
    * Instantiates a new EntityPanel.Builder
    * @param entityType the entity type to base this panel builder on

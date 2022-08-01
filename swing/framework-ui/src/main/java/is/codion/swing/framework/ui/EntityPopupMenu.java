@@ -72,7 +72,7 @@ final class EntityPopupMenu extends JPopupMenu {
     for (ColumnProperty<?> property : primaryKeyProperties) {
       JMenuItem menuItem = new JMenuItem(new StringBuilder("[PK] ")
               .append(property.getAttribute())
-              .append(" [").append(property.getAttribute().getTypeClass().getSimpleName()).append("]: ")
+              .append(" [").append(property.getAttribute().getValueClass().getSimpleName()).append("]: ")
               .append(createValueString(entity, property)).toString());
       menuItem.addActionListener(Control.control(() -> setClipboard(entity.toString(property.getAttribute()))));
       setInvalidModified(menuItem, true, entity.isModified(property.getAttribute()));
@@ -124,7 +124,7 @@ final class EntityPopupMenu extends JPopupMenu {
       boolean isPrimaryKeyProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyColumn();
       if (!isPrimaryKeyProperty && !(property instanceof ForeignKeyProperty)) {
         JMenuItem menuItem = new JMenuItem(new StringBuilder(property.toString())
-                .append(" [").append(property.getAttribute().getTypeClass().getSimpleName())
+                .append(" [").append(property.getAttribute().getValueClass().getSimpleName())
                 .append(property instanceof DerivedProperty ? "*" : "").append("]: ")
                 .append(createValueString(entity, property)).toString());
         menuItem.addActionListener(Control.control(() -> setClipboard(entity.toString(property.getAttribute()))));

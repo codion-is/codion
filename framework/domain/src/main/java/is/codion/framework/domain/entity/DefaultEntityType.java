@@ -67,8 +67,8 @@ final class DefaultEntityType implements EntityType, Serializable {
   }
 
   @Override
-  public <T> Attribute<T> attribute(String name, Class<T> typeClass) {
-    return Attribute.attribute(this, name, typeClass);
+  public <T> Attribute<T> attribute(String name, Class<T> valueClass) {
+    return Attribute.attribute(this, name, valueClass);
   }
 
   @Override

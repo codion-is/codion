@@ -8334,3 +8334,6 @@
   DefaultDialogExceptionHandler no longer public, getInstance() moved to DialogExceptionHandler
   EntityPanel, EntityEditPanel, EntityTablePanel and EntityApplicationPanel no longer implement DialogException handler
   DialogExceptionHandler removed, Dialogs.showExceptionDialog() added as replacement
+  Attribute.getTypeClass() renamed getValueClass()
+  ColumnConditionModel.getTypeClass() renamed getColumnClass()
+  Column.getColumnTypeClass() renamed getColumnClass()

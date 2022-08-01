@@ -8,7 +8,7 @@ import is.codion.framework.domain.property.Property;
 /**
  * Typed {@link Attribute} to base a {@link Property} on.
  * Note that attribute names are case-sensitive and Attributes are equal if their
- * names and entityTypes are equal, the typeClass does not factor into equality.
+ * names and entityTypes are equal, the valueClass does not factor into equality.
  * @param <T> the attribute type
  */
 public interface Attribute<T> {
@@ -21,7 +21,7 @@ public interface Attribute<T> {
   /**
    * @return the Class representing the attribute value
    */
-  Class<T> getTypeClass();
+  Class<T> getValueClass();
 
   /**
    * @return the entity type this Attribute is associated with
@@ -32,7 +32,7 @@ public interface Attribute<T> {
    * @param value the value to validate
    * @return the validated value
    * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
-   * @see #getTypeClass()
+   * @see #getValueClass()
    */
   T validateType(T value);
 
@@ -125,11 +125,11 @@ public interface Attribute<T> {
    * Creates a new {@link Attribute}, associated with the given entityType.
    * @param entityType the entityType owning this attribute
    * @param name the attribute name
-   * @param typeClass the class representing the attribute value type
+   * @param valueClass the class representing the attribute value type
    * @param <T> the attribute type
    * @return a new {@link Attribute}
    */
-  static <T> Attribute<T> attribute(EntityType entityType, String name, Class<T> typeClass) {
-    return new DefaultAttribute<>(name, typeClass, entityType);
+  static <T> Attribute<T> attribute(EntityType entityType, String name, Class<T> valueClass) {
+    return new DefaultAttribute<>(name, valueClass, entityType);
   }
 }

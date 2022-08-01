@@ -141,7 +141,7 @@ public class EntityComponents {
       return (ComponentBuilder<T, C, B>) bigDecimalField((Attribute<BigDecimal>) attribute);
     }
 
-    throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + attribute.getTypeClass() + ")");
+    throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + attribute.getValueClass() + ")");
   }
 
   /**
@@ -296,7 +296,7 @@ public class EntityComponents {
    * @return a {@link TemporalInputPanel} builder
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
-    return Components.temporalInputPanel(attribute.getTypeClass(), dateTimePattern)
+    return Components.temporalInputPanel(attribute.getValueClass(), dateTimePattern)
             .toolTipText(entityDefinition.getProperty(attribute).getDescription());
   }
 
@@ -341,25 +341,25 @@ public class EntityComponents {
   public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
 
-    Class<T> typeClass = attribute.getTypeClass();
-    if (typeClass.equals(LocalTime.class)) {
+    Class<T> valueClass = attribute.getValueClass();
+    if (valueClass.equals(LocalTime.class)) {
       return (TextFieldBuilder<T, C, B>) localTimeField((Attribute<LocalTime>) attribute)
               .toolTipText(property.getDescription());
     }
-    else if (typeClass.equals(LocalDate.class)) {
+    else if (valueClass.equals(LocalDate.class)) {
       return (TextFieldBuilder<T, C, B>) localDateField((Attribute<LocalDate>) attribute)
               .toolTipText(property.getDescription());
     }
-    else if (typeClass.equals(LocalDateTime.class)) {
+    else if (valueClass.equals(LocalDateTime.class)) {
       return (TextFieldBuilder<T, C, B>) localDateTimeField((Attribute<LocalDateTime>) attribute)
               .toolTipText(property.getDescription());
     }
-    else if (typeClass.equals(OffsetDateTime.class)) {
+    else if (valueClass.equals(OffsetDateTime.class)) {
       return (TextFieldBuilder<T, C, B>) offsetDateTimeField((Attribute<OffsetDateTime>) attribute)
               .toolTipText(property.getDescription());
     }
 
-    return (TextFieldBuilder<T, C, B>) Components.textField(typeClass)
+    return (TextFieldBuilder<T, C, B>) Components.textField(valueClass)
             .format(property.getFormat())
             .maximumLength(property.getMaximumLength())
             .toolTipText(property.getDescription());
@@ -465,7 +465,7 @@ public class EntityComponents {
   public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute, String dateTimePattern) {
     Property<T> property = entityDefinition.getProperty(attribute);
 
-    return Components.temporalField(property.getAttribute().getTypeClass(), dateTimePattern)
+    return Components.temporalField(property.getAttribute().getValueClass(), dateTimePattern)
             .toolTipText(property.getDescription());
   }
 

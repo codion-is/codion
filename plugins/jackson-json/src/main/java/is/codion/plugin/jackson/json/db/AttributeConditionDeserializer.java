@@ -33,7 +33,7 @@ final class AttributeConditionDeserializer implements Serializable {
     JsonNode valuesNode = conditionNode.get("values");
     List<T> values = new ArrayList<>();
     for (JsonNode valueNode : valuesNode) {
-      values.add(entityObjectMapper.readValue(valueNode.toString(), property.getAttribute().getTypeClass()));
+      values.add(entityObjectMapper.readValue(valueNode.toString(), property.getAttribute().getValueClass()));
     }
     AttributeCondition.Builder<T> builder = Conditions.where(property.getAttribute());
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {

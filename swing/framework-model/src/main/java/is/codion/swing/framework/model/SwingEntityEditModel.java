@@ -206,8 +206,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     requireNonNull(attribute, "attribute");
     SwingPropertyComboBoxModel<T> model = new SwingPropertyComboBoxModel<>(getConnectionProvider(), attribute);
     if (isNullable(attribute)) {
-      if (attribute.getTypeClass().isInterface()) {
-        model.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get(), attribute.getTypeClass());
+      if (attribute.getValueClass().isInterface()) {
+        model.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get(), attribute.getValueClass());
       }
       else {
         model.setIncludeNull(true);

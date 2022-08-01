@@ -360,11 +360,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     refreshStartedEvent.onEvent();
   }
 
-  private void onRefreshFailedAsync(Throwable throwable) {
-    refreshingState.set(false);
-    refreshFailedEvent.onEvent(throwable);
-  }
-
   private void onRefreshFailedSync(Throwable throwable) {
     refreshingState.set(false);
     if (throwable instanceof RuntimeException) {
@@ -420,7 +415,8 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
     @Override
     protected void failed() {
-      onRefreshFailedAsync(getException());
+      refreshingState.set(false);
+      refreshFailedEvent.onEvent(getException());
     }
 
     @Override

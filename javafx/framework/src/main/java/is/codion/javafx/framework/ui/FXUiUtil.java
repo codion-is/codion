@@ -310,7 +310,7 @@ public final class FXUiUtil {
       return (Value<T>) stringValue;
     }
 
-    throw new IllegalArgumentException("Unsupported property type: " + attribute.getTypeClass());
+    throw new IllegalArgumentException("Unsupported property type: " + attribute.getValueClass());
   }
 
   /**
@@ -374,7 +374,7 @@ public final class FXUiUtil {
       return createTextField(property);
     }
 
-    throw new IllegalArgumentException("Unsupported property type: " + attribute.getTypeClass());
+    throw new IllegalArgumentException("Unsupported type: " + attribute.getValueClass());
   }
 
   /**
