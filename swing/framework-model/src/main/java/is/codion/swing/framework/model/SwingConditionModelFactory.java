@@ -40,7 +40,7 @@ public class SwingConditionModelFactory extends DefaultConditionModelFactory {
    */
   protected SwingEntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
     SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
-    comboBoxModel.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+    comboBoxModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
 
     return comboBoxModel;
   }

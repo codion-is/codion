@@ -304,7 +304,8 @@ public class SwingFilteredComboBoxModelTest {
   @BeforeEach
   void setUp() throws Exception {
     testModel = new SwingFilteredComboBoxModel<>();
-    testModel.setIncludeNull(NULL, String.class);
+    testModel.setIncludeNull(true);
+    testModel.setNullItem(NULL);
     List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);

@@ -134,10 +134,12 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   void setStaticData(boolean staticData);
 
   /**
-   * Configures ths model to include a null value and sets the String to use as its caption.
-   * @param caption the null value caption
+   * Enables the null item and sets the null item caption.
+   * @param caption the null item caption
+   * @see #setIncludeNull(boolean)
+   * @see #setNullItem(Object)
    */
-  void setIncludeNull(String caption);
+  void setNullCaption(String caption);
 
   /**
    * Specifies the attributes to include when selecting the entities to populate this model with.

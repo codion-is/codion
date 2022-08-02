@@ -4,6 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.Conjunction;
+import is.codion.common.ProxyBuilder;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -188,7 +189,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), getConnectionProvider());
     model.setSelectAttributes(foreignKeyProperty.getSelectAttributes());
     if (isNullable(foreignKey)) {
-      model.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+      model.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     }
 
     return model;
@@ -206,11 +207,11 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     requireNonNull(attribute, "attribute");
     SwingPropertyComboBoxModel<T> model = new SwingPropertyComboBoxModel<>(getConnectionProvider(), attribute);
     if (isNullable(attribute)) {
+      model.setIncludeNull(true);
       if (attribute.getValueClass().isInterface()) {
-        model.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get(), attribute.getValueClass());
-      }
-      else {
-        model.setIncludeNull(true);
+        model.setNullItem(ProxyBuilder.builder(attribute.getValueClass())
+                .method("toString", parameters -> FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get())
+                .build());
       }
     }
     addEntitiesEditedListener(model::refresh);
