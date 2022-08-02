@@ -15,8 +15,8 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -749,7 +749,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .enable(this);
     getEditModel().getRefreshingObserver().addDataListener(this::onRefreshingChanged);
     getEditModel().addConfirmSetEntityObserver(confirmationState -> {
-      int result = JOptionPane.showConfirmDialog(Windows.getParentWindow(EntityEditPanel.this).orElse(null),
+      int result = JOptionPane.showConfirmDialog(Utilities.getParentWindow(EntityEditPanel.this).orElse(null),
               FrameworkMessages.unsavedDataWarning(), FrameworkMessages.unsavedDataWarningTitle(),
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
       confirmationState.set(result == JOptionPane.YES_OPTION);

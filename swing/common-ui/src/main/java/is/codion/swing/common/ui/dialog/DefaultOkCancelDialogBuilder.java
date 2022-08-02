@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -173,7 +173,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     @Override
     public void perform() throws Exception {
       command.run();
-      Windows.getParentDialog(component).ifPresent(JDialog::dispose);
+      Utilities.getParentDialog(component).ifPresent(JDialog::dispose);
     }
   }
 
@@ -187,7 +187,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
     @Override
     public void perform() throws Exception {
-      Windows.getParentDialog(component).ifPresent(JDialog::dispose);
+      Utilities.getParentDialog(component).ifPresent(JDialog::dispose);
     }
   }
 
@@ -201,7 +201,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
     @Override
     public void perform() throws Exception {
-      Windows.getParentDialog(component).ifPresent(JDialog::dispose);
+      Utilities.getParentDialog(component).ifPresent(JDialog::dispose);
     }
   }
 }

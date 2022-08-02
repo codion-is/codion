@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static is.codion.swing.common.ui.Windows.getParentWindow;
+import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;

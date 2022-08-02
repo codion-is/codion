@@ -666,7 +666,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
-    Dialogs.showExceptionDialog(exception, Windows.getParentWindow(this).orElse(null));
+    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this).orElse(null));
   }
 
   /**
@@ -1442,7 +1442,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Shows the detail panels in a window
    */
   private void showDetailWindow() {
-    Windows.getParentWindow(this).ifPresent(parent -> {
+    Utilities.getParentWindow(this).ifPresent(parent -> {
       Dimension parentSize = parent.getSize();
       Dimension size = getDetailWindowSize(parentSize);
       Point parentLocation = parent.getLocation();

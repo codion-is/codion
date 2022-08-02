@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.laf;
 
+import is.codion.swing.common.ui.Utilities;
+
 import javax.swing.UIManager;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +17,7 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
   static final Map<String, LookAndFeelProvider> LOOK_AND_FEEL_PROVIDERS = new HashMap<>();
 
   static {
-    LookAndFeelProvider systemProvider = lookAndFeelProvider(LookAndFeelProvider.getSystemLookAndFeelClassName());
+    LookAndFeelProvider systemProvider = lookAndFeelProvider(Utilities.getSystemLookAndFeelClassName());
     LOOK_AND_FEEL_PROVIDERS.put(systemProvider.getName(), systemProvider);
     LookAndFeelProvider crossPlatformProvider = lookAndFeelProvider(UIManager.getCrossPlatformLookAndFeelClassName());
     if (!LOOK_AND_FEEL_PROVIDERS.containsKey(crossPlatformProvider.getName())) {

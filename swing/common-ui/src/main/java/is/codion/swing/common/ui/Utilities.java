@@ -12,6 +12,8 @@ import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
@@ -23,6 +25,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.HierarchyEvent;
@@ -273,6 +276,74 @@ public final class Utilities {
    */
   public static <T> Optional<T> getParentOfType(Class<T> clazz, Component component) {
     return Optional.ofNullable((T) SwingUtilities.getAncestorOfClass(clazz, component));
+  }
+
+  /**
+   * Finds the first component of type {@link Window} in the parent hierarchy of {@code component}.
+   * Note that if {@code component} is of type {@link Window}, it is returned.
+   * @param component the component
+   * @return the parent Window of the given component, an empty Optional if none exists
+   */
+  public static Optional<Window> getParentWindow(Component component) {
+    if (component instanceof Window) {
+      return Optional.of((Window) component);
+    }
+
+    return getParentOfType(Window.class, component);
+  }
+
+  /**
+   * Finds the first component of type {@link JFrame} in the parent hierarchy of {@code component}.
+   * Note that if {@code component} is of type {@link JFrame}, it is returned.
+   * @param component the component
+   * @return the parent JFrame of the given component, an empty Optional if none exists
+   */
+  public static Optional<JFrame> getParentFrame(Component component) {
+    if (component instanceof JFrame) {
+      return Optional.of((JFrame) component);
+    }
+
+    return getParentOfType(JFrame.class, component);
+  }
+
+  /**
+   * Finds the first component of type {@link JDialog} in the parent hierarchy of {@code component}.
+   * Note that if {@code component} is of type {@link JDialog}, it is returned.
+   * @param component the component
+   * @return the parent JDialog of the given component, an empty Optional if none exists
+   */
+  public static Optional<JDialog> getParentDialog(Component component) {
+    if (component instanceof JDialog) {
+      return Optional.of((JDialog) component);
+    }
+
+    return getParentOfType(JDialog.class, component);
+  }
+
+  /**
+   * Note that GTKLookAndFeel is overridden with MetalLookAndFeel, since JTabbedPane
+   * does not respect the 'TabbedPane.contentBorderInsets' setting, making hierachical
+   * tabbed panes look bad
+   * @return the default look and feel for the platform we're running on
+   */
+  public static String getSystemLookAndFeelClassName() {
+    String systemLookAndFeel = UIManager.getSystemLookAndFeelClassName();
+    if (systemLookAndFeel.endsWith("GTKLookAndFeel")) {
+      systemLookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel";
+    }
+
+    return systemLookAndFeel;
+  }
+
+  /**
+   * @return true if the system or cross-platform look and feel is enabled
+   * @see #getSystemLookAndFeelClassName()
+   */
+  public static boolean isSystemOrCrossPlatformLookAndFeelEnabled() {
+    String lookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
+
+    return lookAndFeelClassName.equals(getSystemLookAndFeelClassName()) ||
+            lookAndFeelClassName.equals(UIManager.getCrossPlatformLookAndFeelClassName());
   }
 
   private static final class EnableComponentListener implements EventDataListener<Boolean> {

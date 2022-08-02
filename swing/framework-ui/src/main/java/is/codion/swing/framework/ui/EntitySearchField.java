@@ -22,7 +22,6 @@ import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.ComponentBuilder;
@@ -304,7 +303,7 @@ public final class EntitySearchField extends JTextField {
             selectAll();
           }
           catch (Exception e) {
-            Dialogs.showExceptionDialog(e, Windows.getParentWindow(this).orElse(null));
+            Dialogs.showExceptionDialog(e, Utilities.getParentWindow(this).orElse(null));
           }
         }
       }
@@ -532,7 +531,7 @@ public final class EntitySearchField extends JTextField {
     private Control.Command createSelectCommand(EntitySearchModel searchModel) {
       return () -> {
         searchModel.setSelectedEntities(list.getSelectedValuesList());
-        Windows.getParentDialog(list).ifPresent(JDialog::dispose);
+        Utilities.getParentDialog(list).ifPresent(JDialog::dispose);
       };
     }
   }
@@ -625,7 +624,7 @@ public final class EntitySearchField extends JTextField {
     private Control.Command createSelectCommand(EntitySearchModel searchModel, SwingEntityTableModel tableModel) {
       return () -> {
         searchModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
-        Windows.getParentDialog(table).ifPresent(JDialog::dispose);
+        Utilities.getParentDialog(table).ifPresent(JDialog::dispose);
       };
     }
   }

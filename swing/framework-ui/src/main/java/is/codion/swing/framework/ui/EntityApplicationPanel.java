@@ -242,7 +242,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final void displayException(Throwable exception) {
     LOG.error(exception.getMessage(), exception);
-    Dialogs.showExceptionDialog(exception, Windows.getParentWindow(this).orElse(null));
+    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this).orElse(null));
   }
 
   /**
@@ -274,7 +274,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the parent window of this panel, if one exists, an empty Optional otherwise
    */
   public final Optional<Window> getParentWindow() {
-    return Windows.getParentWindow(this);
+    return Utilities.getParentWindow(this);
   }
 
   /**
@@ -883,7 +883,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       EntityPanel entityPanel = getEntityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
-        Windows.getParentWindow(entityPanel).ifPresent(Window::toFront);
+        Utilities.getParentWindow(entityPanel).ifPresent(Window::toFront);
       }
       else {
         Windows.frame(entityPanel)
@@ -921,7 +921,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       EntityPanel entityPanel = getEntityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
-        Windows.getParentWindow(entityPanel).ifPresent(Window::toFront);
+        Utilities.getParentWindow(entityPanel).ifPresent(Window::toFront);
       }
       else {
         String dialogTitle = panelBuilder.getCaption() == null ?
@@ -989,10 +989,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * @return the default look and feel to use for the system we're running on.
-   * @see LookAndFeelProvider#getSystemLookAndFeelClassName()
+   * @see Utilities#getSystemLookAndFeelClassName()
    */
   protected String getDefaultLookAndFeelName() {
-    return LookAndFeelProvider.getSystemLookAndFeelClassName();
+    return Utilities.getSystemLookAndFeelClassName();
   }
 
   /**
@@ -1341,7 +1341,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void setParentWindowTitle(String title) {
-    Window parentWindow = Windows.getParentWindow(this).orElse(null);
+    Window parentWindow = Utilities.getParentWindow(this).orElse(null);
     if (parentWindow instanceof JFrame) {
       ((JFrame) parentWindow).setTitle(title);
     }

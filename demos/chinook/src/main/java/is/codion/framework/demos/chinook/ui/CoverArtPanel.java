@@ -7,7 +7,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
 import is.codion.swing.common.ui.FileTransferHandler;
-import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -114,7 +114,7 @@ final class CoverArtPanel extends JPanel {
   }
 
   private void embed() {
-    Windows.getParentDialog(basePanel)
+    Utilities.getParentDialog(basePanel)
             .ifPresent(JDialog::dispose);
     basePanel.setSize(EMBEDDED_SIZE);
     imagePanel.resetView();

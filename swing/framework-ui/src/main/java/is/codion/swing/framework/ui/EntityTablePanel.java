@@ -92,7 +92,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.swing.common.ui.Windows.getParentWindow;
+import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;

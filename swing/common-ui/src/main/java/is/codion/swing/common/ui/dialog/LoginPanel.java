@@ -10,7 +10,6 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
@@ -164,10 +163,10 @@ final class LoginPanel extends JPanel {
   private void onValidationFailure(Throwable exception) {
     userValue.set(null);
     validatingState.set(false);
-    Dialogs.showExceptionDialog(exception, Windows.getParentWindow(this).orElse(null));
+    DefaultDialogExceptionHandler.displayException(exception, Utilities.getParentWindow(this).orElse(null));
   }
 
   private void closeDialog() {
-    Windows.getParentDialog(this).ifPresent(JDialog::dispose);
+    Utilities.getParentDialog(this).ifPresent(JDialog::dispose);
   }
 }

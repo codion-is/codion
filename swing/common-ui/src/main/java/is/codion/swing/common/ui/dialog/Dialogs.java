@@ -168,7 +168,7 @@ public final class Dialogs {
     JPanel basePanel = new JPanel(Layouts.borderLayout());
     basePanel.add(componentValue.getComponent(), BorderLayout.CENTER);
     basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-    Dialogs.okCancelDialog(basePanel)
+    okCancelDialog(basePanel)
             .owner(dialogOwner)
             .title(title)
             .onOk(() -> okPressed.set(true))
