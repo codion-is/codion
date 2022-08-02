@@ -989,10 +989,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * @return the default look and feel to use for the system we're running on.
-   * @see LookAndFeelProvider#getSystemLookAndFeelClassName()
+   * @see Utilities#getSystemLookAndFeelClassName()
    */
   protected String getDefaultLookAndFeelName() {
-    return LookAndFeelProvider.getSystemLookAndFeelClassName();
+    return Utilities.getSystemLookAndFeelClassName();
   }
 
   /**

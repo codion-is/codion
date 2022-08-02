@@ -7,9 +7,9 @@ import is.codion.common.item.Item;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
@@ -130,7 +130,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
-    if (LookAndFeelProvider.isSystemOrCrossPlatformLookAndFeelEnabled()) {
+    if (Utilities.isSystemOrCrossPlatformLookAndFeelEnabled()) {
       new SteppedComboBoxUI(comboBox, popupWidth);
     }
     if (renderer != null) {

@@ -5,9 +5,9 @@ package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
@@ -143,7 +143,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
     if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretOnSelection) {
       ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
     }
-    if (LookAndFeelProvider.isSystemOrCrossPlatformLookAndFeelEnabled()) {
+    if (Utilities.isSystemOrCrossPlatformLookAndFeelEnabled()) {
       new SteppedComboBoxUI(comboBox, popupWidth);
     }
     comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());

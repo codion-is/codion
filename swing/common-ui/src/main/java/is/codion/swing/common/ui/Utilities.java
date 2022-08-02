@@ -320,6 +320,32 @@ public final class Utilities {
     return getParentOfType(JDialog.class, component);
   }
 
+  /**
+   * Note that GTKLookAndFeel is overridden with MetalLookAndFeel, since JTabbedPane
+   * does not respect the 'TabbedPane.contentBorderInsets' setting, making hierachical
+   * tabbed panes look bad
+   * @return the default look and feel for the platform we're running on
+   */
+  public static String getSystemLookAndFeelClassName() {
+    String systemLookAndFeel = UIManager.getSystemLookAndFeelClassName();
+    if (systemLookAndFeel.endsWith("GTKLookAndFeel")) {
+      systemLookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel";
+    }
+
+    return systemLookAndFeel;
+  }
+
+  /**
+   * @return true if the system or cross-platform look and feel is enabled
+   * @see #getSystemLookAndFeelClassName()
+   */
+  public static boolean isSystemOrCrossPlatformLookAndFeelEnabled() {
+    String lookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
+
+    return lookAndFeelClassName.equals(getSystemLookAndFeelClassName()) ||
+            lookAndFeelClassName.equals(UIManager.getCrossPlatformLookAndFeelClassName());
+  }
+
   private static final class EnableComponentListener implements EventDataListener<Boolean> {
 
     private final JComponent component;

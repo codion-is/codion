@@ -8302,3 +8302,4 @@
   SwingFilteredComboBoxModel.setNullItem(T item) added, replaces flaky nullCaption functionality
   ProxyBuilder added
   Windows.getParentWindow/Dialog/Frame() moved to Utilities, where getParentOfType() lives
+  LookAndFeelProvider.getSystemLookAndFeelClassName() and isSystemOrCrossPlatformLookAndFeelEnabled() moved to Utilities, reducing cyclical dependencies
