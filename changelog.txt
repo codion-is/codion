@@ -8301,3 +8301,4 @@
   Column.getColumnTypeClass() renamed getColumnClass()
   SwingFilteredComboBoxModel.setNullItem(T item) added, replaces flaky nullCaption functionality
   ProxyBuilder added
+  Windows.getParentWindow/Dialog/Frame() moved to Utilities, where getParentOfType() lives

@@ -11,7 +11,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.LabelBuilder;
@@ -306,7 +306,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
-    Dialogs.showExceptionDialog(exception, Windows.getParentWindow(this).orElse(null));
+    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this).orElse(null));
   }
 
   /**

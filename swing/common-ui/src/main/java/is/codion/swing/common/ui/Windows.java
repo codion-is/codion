@@ -7,12 +7,10 @@ import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
@@ -22,7 +20,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -84,48 +81,6 @@ public final class Windows {
     }
 
     window.setSize(ratioSize);
-  }
-
-  /**
-   * Finds the first component of type {@link Window} in the parent hierarchy of {@code component}.
-   * Note that if {@code component} is of type {@link Window}, it is returned.
-   * @param component the component
-   * @return the parent Window of the given component, an empty Optional if none exists
-   */
-  public static Optional<Window> getParentWindow(Component component) {
-    if (component instanceof Window) {
-      return Optional.of((Window) component);
-    }
-
-    return Utilities.getParentOfType(Window.class, component);
-  }
-
-  /**
-   * Finds the first component of type {@link JFrame} in the parent hierarchy of {@code component}.
-   * Note that if {@code component} is of type {@link JFrame}, it is returned.
-   * @param component the component
-   * @return the parent JFrame of the given component, an empty Optional if none exists
-   */
-  public static Optional<JFrame> getParentFrame(Component component) {
-    if (component instanceof JFrame) {
-      return Optional.of((JFrame) component);
-    }
-
-    return Utilities.getParentOfType(JFrame.class, component);
-  }
-
-  /**
-   * Finds the first component of type {@link JDialog} in the parent hierarchy of {@code component}.
-   * Note that if {@code component} is of type {@link JDialog}, it is returned.
-   * @param component the component
-   * @return the parent JDialog of the given component, an empty Optional if none exists
-   */
-  public static Optional<JDialog> getParentDialog(Component component) {
-    if (component instanceof JDialog) {
-      return Optional.of((JDialog) component);
-    }
-
-    return Utilities.getParentOfType(JDialog.class, component);
   }
 
   /**

@@ -10,6 +10,7 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.UiManagerDefaults;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.MemoryUsageField;
@@ -71,7 +72,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     this(new EntityServerMonitor(Clients.SERVER_HOST_NAME.get(),
             ServerConfiguration.REGISTRY_PORT.get(), getAdminUser()));
     Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-            Dialogs.showExceptionDialog(e, Windows.getParentWindow(EntityServerMonitorPanel.this).orElse(null)));
+            Dialogs.showExceptionDialog(e, Utilities.getParentWindow(EntityServerMonitorPanel.this).orElse(null)));
   }
 
   /**

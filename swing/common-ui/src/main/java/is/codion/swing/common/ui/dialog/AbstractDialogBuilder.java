@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.ImageIcon;
 import java.awt.Component;
@@ -33,7 +33,7 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
     if (this.owner != null) {
       throw new IllegalStateException("owner has alrady been set");
     }
-    this.owner = owner == null ? null : Windows.getParentWindow(owner).orElse(null);
+    this.owner = owner == null ? null : Utilities.getParentWindow(owner).orElse(null);
     if (locationRelativeTo == null) {
       locationRelativeTo = owner;
     }

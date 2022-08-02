@@ -12,7 +12,6 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -526,12 +525,12 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       return;
     }
 
-    JDialog dialogParent = Windows.getParentDialog(parent).orElse(null);
+    JDialog dialogParent = Utilities.getParentDialog(parent).orElse(null);
     if (dialogParent != null) {
       dialog = new JDialog(dialogParent, title, false);
     }
     else {
-      dialog = new JDialog(Windows.getParentFrame(parent).orElse(null), title, false);
+      dialog = new JDialog(Utilities.getParentFrame(parent).orElse(null), title, false);
     }
 
     dialog.getContentPane().add(this);
