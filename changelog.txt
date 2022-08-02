@@ -8337,3 +8337,5 @@
   Attribute.getTypeClass() renamed getValueClass()
   ColumnConditionModel.getTypeClass() renamed getColumnClass()
   Column.getColumnTypeClass() renamed getColumnClass()
+  SwingFilteredComboBoxModel.setNullItem(T item) added, replaces flaky nullCaption functionality
+  ProxyBuilder added

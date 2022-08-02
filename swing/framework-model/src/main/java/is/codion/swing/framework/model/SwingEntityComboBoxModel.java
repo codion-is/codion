@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.ProxyBuilder;
 import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
@@ -115,8 +116,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final void setIncludeNull(String caption) {
-    super.setIncludeNull(caption, Entity.class);
+  public final void setNullCaption(String caption) {
+    setIncludeNull(true);
+    setNullItem(ProxyBuilder.builder(Entity.class)
+            .delegate(entities.entity(entityType))
+            .method("toString", arguments -> caption)
+            .build());
   }
 
   @Override
@@ -324,7 +329,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKey);
     SwingEntityComboBoxModel foreignKeyModel =
             new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), connectionProvider);
-    foreignKeyModel.setIncludeNull(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
+    foreignKeyModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
 

@@ -3,15 +3,13 @@
  */
 package is.codion.framework.db;
 
+import is.codion.common.ProxyBuilder;
+import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.framework.db.AbstractEntityConnectionProvider.AbstractBuilder;
 import is.codion.framework.domain.entity.Entities;
 
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,31 +52,23 @@ public final class AbstractEntityConnectionProviderTest {
 
   private static final class TestProvider extends AbstractEntityConnectionProvider {
 
-  public TestProvider(AbstractBuilder<?, ?> builder) {
-    super(builder);
-  }
+    public TestProvider(AbstractBuilder<?, ?> builder) {
+      super(builder);
+    }
 
-  @Override
+    @Override
     protected EntityConnection connect() {
-      return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(), new Class[] {EntityConnection.class}, new InvocationHandler() {
-        private boolean connected = true;
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-          switch (method.getName()) {
-            case "equals":
-              return TestProvider.this == args[0];
-            case "getEntities":
-              return ENTITIES;
-            case "isConnected":
-              return connected;
-            case "close":
-              connected = false;
-              break;
-          }
+      State connected = State.state(true);
 
-          return null;
-        }
-      });
+      return ProxyBuilder.builder(EntityConnection.class)
+              .method("equals", Object.class, parameters -> TestProvider.this == parameters.arguments().get(0))
+              .method("getEntities", parameters -> ENTITIES)
+              .method("isConnected", parameters -> connected.get())
+              .method("close", parameters -> {
+                connected.set(false);
+                return null;
+              })
+              .build();
     }
 
     @Override

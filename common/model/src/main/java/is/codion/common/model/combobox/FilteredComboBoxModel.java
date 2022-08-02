@@ -107,22 +107,22 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
 
   /**
    * @param includeNull if true then a null value is included as the first item
-   * @see #setIncludeNull(String, Class)
+   * @see #setNullItem(Object)
    */
   void setIncludeNull(boolean includeNull);
-
-  /**
-   * Configures this model to include a null value and sets the String to use as its caption.
-   * Note that this is restricted to {@code itemClass} values that are interfaces, with String as the one exception.
-   * @param caption the null value caption
-   * @param itemClass the class representing the type contained in this combo box model
-   */
-  void setIncludeNull(String caption, Class<T> itemClass);
 
   /**
    * @return true if a null value is included
    */
   boolean isIncludeNull();
+
+  /**
+   * Sets the item that should represent the null value in this model.
+   * Note that {@link #setIncludeNull(boolean)} must be called as well to enable the null value.
+   * @param nullItem the item representing null
+   * @see #setIncludeNull(boolean)
+   */
+  void setNullItem(T nullItem);
 
   /**
    * Specifies whether filtering can change the selected item, if true then

@@ -18,9 +18,6 @@ import javax.swing.ComboBoxModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -56,8 +53,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private Comparator<T> sortComparator;
   private T selectedItem = null;
   private boolean includeNull;
-  private String nullCaption;
-  private T nullCaptionItem;
+  private T nullItem;
   private Predicate<T> includeCondition;
   private boolean filterSelectedItem = true;
 
@@ -260,29 +256,16 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   @Override
   public final void setIncludeNull(boolean includeNull) {
     this.includeNull = includeNull;
-    if (!includeNull) {
-      this.nullCaption = null;
-      this.nullCaptionItem = null;
-    }
-  }
-
-  @Override
-  public final void setIncludeNull(String caption, Class<T> itemClass) {
-    requireNonNull(caption);
-    requireNonNull(itemClass);
-    this.includeNull = true;
-    this.nullCaption = caption;
-    if (itemClass.equals(String.class)) {
-      this.nullCaptionItem = (T) caption;
-    }
-    else {
-      this.nullCaptionItem = (T) Proxy.newProxyInstance(itemClass.getClassLoader(), new Class[] {itemClass}, new NullItemHandler());
-    }
   }
 
   @Override
   public final boolean isIncludeNull() {
     return includeNull;
+  }
+
+  @Override
+  public final void setNullItem(T nullItem) {
+    this.nullItem = nullItem;
   }
 
   @Override
@@ -305,13 +288,13 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   /**
-   * @return the selected item, N.B. this can include the {@code nullCaption} item
-   * in case it has been set via {@link #setIncludeNull(String, Class)}, {@link #getSelectedValue()} is usually what you want
+   * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
+   * via {@link #setNullItem(Object)}, {@link #getSelectedValue()} is usually what you want
    */
   @Override
   public final T getSelectedItem() {
-    if (selectedItem == null && nullCaptionItem != null) {
-      return nullCaptionItem;
+    if (selectedItem == null && nullItem != null) {
+      return nullItem;
     }
 
     return selectedItem;
@@ -319,7 +302,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final void setSelectedItem(Object anItem) {
-    T toSelect = translateSelectionItem(Objects.equals(nullCaptionItem, anItem) ? null : anItem);
+    T toSelect = translateSelectionItem(Objects.equals(nullItem, anItem) ? null : anItem);
     if (!Objects.equals(selectedItem, toSelect) && allowSelectionChange(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();
@@ -353,7 +336,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   public final T getElementAt(int index) {
     T element = visibleItems.get(index);
     if (element == null) {
-      return nullCaptionItem;
+      return nullItem;
     }
 
     return element;
@@ -523,24 +506,6 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
       else {
         return comparator.compare(o1, o2);
       }
-    }
-  }
-
-  private final class NullItemHandler implements InvocationHandler {
-
-    private static final String TO_STRING = "toString";
-    private static final String EQUALS = "equals";
-
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-      if (method.getParameterCount() == 0 && method.getName().equals(TO_STRING)) {
-        return nullCaption;
-      }
-      else if (method.getParameterCount() == 1 && method.getName().equals(EQUALS)) {
-        return false;
-      }
-
-      return null;
     }
   }
 
