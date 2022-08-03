@@ -54,11 +54,13 @@ import java.awt.event.MouseMotionAdapter;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Arrays.asList;
@@ -131,6 +133,11 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * Fired each time the table is double-clicked
    */
   private final Event<MouseEvent> doubleClickedEvent = Event.event();
+
+  /**
+   * Holds column identifiers of columns for which sorting should be disabled
+   */
+  private final Set<C> columnSortingDisabled = new HashSet<>();
 
   /**
    * the action performed when the table is double-clicked
@@ -237,6 +244,28 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    */
   public void setSortingEnabled(boolean sortingEnabled) {
     this.sortingEnabled = sortingEnabled;
+  }
+
+  /**
+   * @param columnIdentifier the column identifier
+   * @param sortingEnabled true if sorting via the table header should be enabled for the given column
+   */
+  public void setSortingEnabled(C columnIdentifier, boolean sortingEnabled) {
+    requireNonNull(columnIdentifier);
+    if (sortingEnabled) {
+      columnSortingDisabled.remove(columnIdentifier);
+    }
+    else {
+      columnSortingDisabled.add(columnIdentifier);
+    }
+  }
+
+  /**
+   * @param columnIdentifier the column identifier
+   * @return true if sorting via the table header is enabled for the given column
+   */
+  public boolean isSortingEnabled(C columnIdentifier) {
+    return !columnSortingDisabled.contains(requireNonNull(columnIdentifier)) && sortingEnabled;
   }
 
   /**
@@ -741,13 +770,15 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
           setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
         }
         C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
-        FilteredTableSortModel<R, C> sortModel = getModel().getSortModel();
-        SortOrder sortOrder = getSortOrder(sortModel.getSortingState(columnIdentifier).getSortOrder(), e.isShiftDown());
-        if (e.isControlDown()) {
-          sortModel.addSortOrder(columnIdentifier, sortOrder);
-        }
-        else {
-          sortModel.setSortOrder(columnIdentifier, sortOrder);
+        if (isSortingEnabled(columnIdentifier)) {
+          FilteredTableSortModel<R, C> sortModel = getModel().getSortModel();
+          SortOrder sortOrder = getSortOrder(sortModel.getSortingState(columnIdentifier).getSortOrder(), e.isShiftDown());
+          if (e.isControlDown()) {
+            sortModel.addSortOrder(columnIdentifier, sortOrder);
+          }
+          else {
+            sortModel.setSortOrder(columnIdentifier, sortOrder);
+          }
         }
       }
     }
