@@ -35,7 +35,7 @@ class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEd
   public final Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
                                                      int row, int column) {
     if (component == null) {
-      component = initializeEditorComponent();
+      component = createEditorComponent();
     }
     cellValue.set((T) value);
 
@@ -56,7 +56,7 @@ class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEd
     return false;
   }
 
-  private JComponent initializeEditorComponent() {
+  private JComponent createEditorComponent() {
     ComponentValue<T, ? extends JComponent> componentValue = inputComponentSupplier.get();
     componentValue.link(cellValue);
     JComponent editorComponent = componentValue.getComponent();

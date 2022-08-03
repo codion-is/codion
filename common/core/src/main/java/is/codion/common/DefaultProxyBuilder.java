@@ -91,6 +91,8 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 
   private static final class DefaultHandler<T> implements InvocationHandler {
 
+    private static final String EQUALS = "equals";
+
     private final Map<MethodKey, ProxyMethod<T>> methodMap;
     private final T delegate;
 
@@ -116,7 +118,7 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
     }
 
     private static boolean isEqualsMethod(Method method) {
-      return method.getName().equals("equals") &&
+      return EQUALS.equals(method.getName()) &&
               method.getParameterCount() == 1 &&
               method.getParameterTypes()[0].equals(Object.class);
     }

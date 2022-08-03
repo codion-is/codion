@@ -219,7 +219,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   public EntityPanel buildPanel(SwingEntityModel model) {
     requireNonNull(model, "model");
     try {
-      EntityPanel entityPanel = initializePanel(model);
+      EntityPanel entityPanel = createPanel(model);
       if (entityPanel.getTablePanel() != null && tableConditionPanelVisible) {
         entityPanel.getTablePanel().setConditionPanelVisible(tableConditionPanelVisible);
       }
@@ -249,12 +249,12 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   @Override
   public EntityEditPanel buildEditPanel(EntityConnectionProvider connectionProvider) {
-    return initializeEditPanel(modelBuilder.buildEditModel(connectionProvider));
+    return createEditPanel(modelBuilder.buildEditModel(connectionProvider));
   }
 
   @Override
   public EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider) {
-    return initializeTablePanel(modelBuilder.buildTableModel(connectionProvider));
+    return createTablePanel(modelBuilder.buildTableModel(connectionProvider));
   }
 
   @Override
@@ -281,12 +281,12 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     return new InsertEntityAction(component, connectionProvider, insertListener);
   }
 
-  private EntityPanel initializePanel(SwingEntityModel entityModel) {
+  private EntityPanel createPanel(SwingEntityModel entityModel) {
     try {
       EntityPanel entityPanel;
       if (getPanelClass().equals(EntityPanel.class)) {
-        EntityTablePanel tablePanel = entityModel.containsTableModel() ? initializeTablePanel(entityModel.getTableModel()) : null;
-        EntityEditPanel editPanel = getEditPanelClass() == null ? null : initializeEditPanel(entityModel.getEditModel());
+        EntityTablePanel tablePanel = entityModel.containsTableModel() ? createTablePanel(entityModel.getTableModel()) : null;
+        EntityEditPanel editPanel = getEditPanelClass() == null ? null : createEditPanel(entityModel.getEditModel());
         entityPanel = getPanelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
                 .newInstance(entityModel, editPanel, tablePanel);
       }
@@ -309,7 +309,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
   }
 
-  private EntityEditPanel initializeEditPanel(SwingEntityEditModel editModel) {
+  private EntityEditPanel createEditPanel(SwingEntityEditModel editModel) {
     if (editPanelClass == null) {
       throw new IllegalArgumentException("No edit panel class has been specified for entity panel builder: " + entityType);
     }
@@ -330,7 +330,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
   }
 
-  private EntityTablePanel initializeTablePanel(SwingEntityTableModel tableModel) {
+  private EntityTablePanel createTablePanel(SwingEntityTableModel tableModel) {
     try {
       if (!tableModel.getEntityType().equals(entityType)) {
         throw new IllegalArgumentException("Entity type mismatch, tableModel: " + tableModel.getEntityType() + ", required: " + entityType);

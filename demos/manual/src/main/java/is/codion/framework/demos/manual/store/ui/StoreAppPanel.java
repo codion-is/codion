@@ -33,7 +33,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
   }
 
   @Override
-  protected List<EntityPanel> initializeEntityPanels(StoreAppModel applicationModel) {
+  protected List<EntityPanel> createEntityPanels(StoreAppModel applicationModel) {
     CustomerModel customerModel =
             (CustomerModel) applicationModel.getEntityModel(Customer.TYPE);
     //populate model with rows from database
@@ -53,19 +53,19 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     return Collections.singletonList(customerPanel);
   }
 
-  // tag::initializeSupportEntityPanelBuilders[]
+  // tag::createSupportEntityPanelBuilders[]
   @Override
-  protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(StoreAppModel applicationModel) {
+  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders(StoreAppModel applicationModel) {
     EntityPanel.Builder addressPanelBuilder =
             EntityPanel.builder(Address.TYPE)
                     .editPanelClass(AddressEditPanel.class);
 
     return Collections.singletonList(addressPanelBuilder);
   }
-  // end::initializeSupportEntityPanelBuilders[]
+  // end::createSupportEntityPanelBuilders[]
 
   @Override
-  protected StoreAppModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {
+  protected StoreAppModel createApplicationModel(EntityConnectionProvider connectionProvider) {
     return new StoreAppModel(connectionProvider);
   }
 

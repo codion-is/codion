@@ -73,7 +73,7 @@ public final class EntitySelectionDialog extends JDialog {
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.tableModel.getEditModel().setReadOnly(true);
-    this.entityTablePanel = initializeTablePanel(tableModel, preferredSize, singleSelection);
+    this.entityTablePanel = createTablePanel(tableModel, preferredSize, singleSelection);
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(cancelControl)
@@ -126,8 +126,8 @@ public final class EntitySelectionDialog extends JDialog {
     Optional<Entity> selectSingle();
   }
 
-  private EntityTablePanel initializeTablePanel(SwingEntityTableModel tableModel, Dimension preferredSize,
-                                                boolean singleSelection) {
+  private EntityTablePanel createTablePanel(SwingEntityTableModel tableModel, Dimension preferredSize,
+                                            boolean singleSelection) {
     EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
     tablePanel.initializePanel();
     tablePanel.getTable().addDoubleClickListener(mouseEvent -> {

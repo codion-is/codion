@@ -246,7 +246,7 @@ public final class EmpDeptMinimalApp {
     }
 
     @Override
-    protected List<EntityPanel> initializeEntityPanels(EmpDeptApplicationModel applicationModel) {
+    protected List<EntityPanel> createEntityPanels(EmpDeptApplicationModel applicationModel) {
       //now, let's assemble our application
       SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
       SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
@@ -261,7 +261,7 @@ public final class EmpDeptMinimalApp {
     }
 
     @Override
-    protected EmpDeptApplicationModel initializeApplicationModel(
+    protected EmpDeptApplicationModel createApplicationModel(
             EntityConnectionProvider connectionProvider) throws CancelException {
       return new EmpDeptApplicationModel(connectionProvider);
     }

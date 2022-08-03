@@ -45,7 +45,7 @@ public final class DefaultPropertyStoreTest {
     assertTrue(store.containsProperty("string.property"));
     assertEquals("value", stringValue.get());
     assertEquals("value", System.getProperty(stringValue.getPropertyName()));
-    assertSame(stringValue, store.getPropertyValue(stringValue.getPropertyName()).get());
+    assertSame(stringValue, store.getPropertyValue(stringValue.getPropertyName()).orElse(null));
     stringValue.set("another");
     stringValue.set(null);
     assertEquals("value", stringValue.get());

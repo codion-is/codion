@@ -365,33 +365,33 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Initializes a horizontally laid out control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
+   * Creates a horizontally laid out control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
    * @return the control panel, null if no controls are defined
-   * @see #initializeControlPanelControls()
+   * @see #createControlPanelControls()
    */
   public final JPanel createHorizontalControlPanel() {
     return createControlPanel(true);
   }
 
   /**
-   * Initializes a vertically laid out control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
+   * Creates a vertically laid out control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
    * @return the control panel, null if no controls are defined
-   * @see #initializeControlPanelControls()
+   * @see #createControlPanelControls()
    */
   public final JPanel createVerticalControlPanel() {
     return createControlPanel(false);
   }
 
   /**
-   * Initializes the control toolbar, that is, the toolbar containing buttons for editing entities (Insert, Update...)
+   * Creates the control toolbar, that is, the toolbar containing buttons for editing entities (Insert, Update...)
    * @param orientation the orientation
    * @return the control toolbar, null if no controls are defined
-   * @see #initializeControlPanelControls()
+   * @see #createControlPanelControls()
    * @see SwingConstants#VERTICAL
    * @see SwingConstants#HORIZONTAL
    */
   public final JToolBar createControlToolBar(int orientation) {
-    Controls controlPanelControls = initializeControlPanelControls();
+    Controls controlPanelControls = createControlPanelControls();
     if (controlPanelControls.isEmpty()) {
       return null;
     }
@@ -653,10 +653,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Initializes a Controls instance on which to base the control panel
+   * Creates a Controls instance on which to base the control panel
    * @return the Controls on which to base the control panel
    */
-  protected Controls initializeControlPanelControls() {
+  protected Controls createControlPanelControls() {
     Controls controlPanelControls = Controls.controls();
     if (this.controls.containsKey(ControlCode.INSERT)) {
       controlPanelControls.add(this.controls.get(ControlCode.INSERT));
@@ -725,7 +725,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private JPanel createControlPanel(boolean horizontal) {
-    Controls controlPanelControls = initializeControlPanelControls();
+    Controls controlPanelControls = createControlPanelControls();
     if (controlPanelControls.isEmpty()) {
       return null;
     }

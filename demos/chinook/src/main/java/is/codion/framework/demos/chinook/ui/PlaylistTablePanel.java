@@ -34,8 +34,8 @@ public final class PlaylistTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected Controls getPopupControls(List<Controls> additionalPopupControls) {
-    Controls popupControls = super.getPopupControls(additionalPopupControls);
+  protected Controls createPopupControls(List<Controls> additionalPopupControls) {
+    Controls popupControls = super.createPopupControls(additionalPopupControls);
     popupControls.addAt(0, Control.builder(this::createRandomPlaylist)
             .caption(BUNDLE.getString("create_random_playlist"))
             .build());

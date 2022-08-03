@@ -16,7 +16,7 @@ final class ContinentTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected Controls getPopupControls(List<Controls> additionalPopupControls) {
+  protected Controls createPopupControls(List<Controls> additionalPopupControls) {
     return Controls.builder()
             .control(createRefreshControl())
             .build();

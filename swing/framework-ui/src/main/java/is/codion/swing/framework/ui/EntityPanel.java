@@ -282,7 +282,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Initializes a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    */
   public EntityPanel(SwingEntityModel entityModel) {
@@ -290,7 +290,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
    */
@@ -299,7 +299,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    * @param tablePanel the table panel
    */
@@ -308,7 +308,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The Panel is not laid out and initialized until {@link #initializePanel()} is called.
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initializePanel()} is called.
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
    * @param tablePanel the table panel
@@ -1036,8 +1036,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       add(editControlTablePanel, BorderLayout.CENTER);
     }
     else {
-      horizontalSplitPane = initializeHorizontalSplitPane();
-      detailPanelTabbedPane = initializeDetailTabPane();
+      horizontalSplitPane = createHorizontalSplitPane();
+      detailPanelTabbedPane = createDetailTabPane();
       horizontalSplitPane.setLeftComponent(editControlTablePanel);
       horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
       add(horizontalSplitPane, BorderLayout.CENTER);
@@ -1311,20 +1311,20 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       tablePanel.addToolBarControls(toolbarControls);
     }
     if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {
-      tablePanel.addPopupControls(getDetailPanelControls(EMBEDDED));
+      tablePanel.addPopupControls(createDetailPanelControls(EMBEDDED));
     }
     if (tablePanel.getTable().getDoubleClickAction() == null) {
-      tablePanel.getTable().setDoubleClickAction(initializeTableDoubleClickAction());
+      tablePanel.getTable().setDoubleClickAction(createTableDoubleClickAction());
     }
     tablePanel.initializePanel();
     tablePanel.setMinimumSize(new Dimension(0, 0));
   }
 
   /**
-   * Initializes the horizontal split pane, used in the case of detail panel(s)
+   * Creates the horizontal split pane, used in the case of detail panel(s)
    * @return the horizontal split pane
    */
-  private JSplitPane initializeHorizontalSplitPane() {
+  private JSplitPane createHorizontalSplitPane() {
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
     splitPane.setBorder(BorderFactory.createEmptyBorder());
     splitPane.setOneTouchExpandable(true);
@@ -1335,10 +1335,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Initializes the JTabbedPane containing the detail panels, used in case of multiple detail panels
+   * Creates the JTabbedPane containing the detail panels, used in case of multiple detail panels
    * @return the JTabbedPane for holding detail panels
    */
-  private JTabbedPane initializeDetailTabPane() {
+  private JTabbedPane createDetailTabPane() {
     JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.setFocusable(false);
     for (EntityPanel detailPanel : detailEntityPanels) {
@@ -1363,12 +1363,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Initialize the Control to trigger when a double click is performed on the table, if a table is present.
+   * Creates the Control to trigger when a double click is performed on the table, if a table is present.
    * The default implementation shows the edit panel in a window if one is available and hidden, if that is
    * not the case and the detail panels are hidden those are shown in a window.
    * @return the Control to trigger when a double click is performed on the table
    */
-  private Control initializeTableDoubleClickAction() {
+  private Control createTableDoubleClickAction() {
     return Control.control(() -> {
       if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailTabPane)) {
         if (containsEditPanel() && getEditPanelState() == HIDDEN) {
@@ -1382,11 +1382,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Initializes Controls containing a control for setting the state to {@code status} on each detail panel.
+   * Creates Controls containing a control for setting the state to {@code status} on each detail panel.
    * @param status the status
    * @return Controls for controlling the state of the detail panels
    */
-  private Controls getDetailPanelControls(PanelState status) {
+  private Controls createDetailPanelControls(PanelState status) {
     if (detailEntityPanels.isEmpty()) {
       return null;
     }

@@ -121,7 +121,7 @@ public final class EntitySearchField extends JTextField {
     this.selectionProvider = new ListSelectionProvider(model);
     linkToModel();
     setToolTipText(searchModel.getDescription());
-    setComponentPopupMenu(initializePopupMenu());
+    setComponentPopupMenu(createPopupMenu());
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterKeyListener());
     addKeyListener(new EscapeKeyListener());
@@ -314,7 +314,7 @@ public final class EntitySearchField extends JTextField {
     }
   }
 
-  private JPopupMenu initializePopupMenu() {
+  private JPopupMenu createPopupMenu() {
     JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(Control.builder(() -> Dialogs.componentDialog(settingsPanel)
                     .owner(EntitySearchField.this)
@@ -397,7 +397,7 @@ public final class EntitySearchField extends JTextField {
       for (Map.Entry<Attribute<String>, EntitySearchModel.SearchSettings> entry :
               searchModel.getAttributeSearchSettings().entrySet()) {
         propertyComboBoxModel.addItem(Item.item(entry.getKey(), definition.getProperty(entry.getKey()).getCaption()));
-        propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getName());
+        propertyBasePanel.add(createPropertyPanel(entry.getValue()), entry.getKey().getName());
       }
       if (propertyComboBoxModel.getSize() > 0) {
         propertyComboBoxModel.addSelectionListener(selected ->
@@ -430,7 +430,7 @@ public final class EntitySearchField extends JTextField {
       setBorder(BorderFactory.createEmptyBorder(gap, gap, 0, gap));
     }
 
-    private static JPanel initializePropertyPanel(EntitySearchModel.SearchSettings settings) {
+    private static JPanel createPropertyPanel(EntitySearchModel.SearchSettings settings) {
       return Components.panel(Layouts.gridLayout(3, 1))
               .add(Components.checkBox(settings.getCaseSensitiveState())
                       .caption(MESSAGES.getString("case_sensitive"))

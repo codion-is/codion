@@ -50,7 +50,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
             .build();
     this.onSearchListener = requireNonNull(onSearchListener);
     setLayout(Layouts.borderLayout());
-    add(initializeSimpleConditionPanel(), BorderLayout.CENTER);
+    add(createSimpleConditionPanel(), BorderLayout.CENTER);
   }
 
   /**
@@ -80,7 +80,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
     performSimpleSearch();
   }
 
-  private JPanel initializeSimpleConditionPanel() {
+  private JPanel createSimpleConditionPanel() {
     return Components.panel(Layouts.borderLayout())
             .border(BorderFactory.createTitledBorder(MESSAGES.getString("condition")))
             .add(simpleSearchTextField, BorderLayout.WEST)

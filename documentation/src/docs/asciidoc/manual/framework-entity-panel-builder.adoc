@@ -6,5 +6,5 @@ Use the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityPan
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/ui/StoreAppPanel.java[tag=initializeSupportEntityPanelBuilders]
+include::{dir-source}/is/codion/framework/demos/manual/store/ui/StoreAppPanel.java[tag=createSupportEntityPanelBuilders]
 ----

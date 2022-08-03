@@ -109,7 +109,7 @@ public final class ConditionObjectMapperTest {
     SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
 
     assertEquals(selectCondition.getCondition().getAttributes(), readCondition.getCondition().getAttributes());
-    assertEquals(selectCondition.getOrderBy().get().getOrderByAttributes(), readCondition.getOrderBy().get().getOrderByAttributes());
+    assertEquals(selectCondition.getOrderBy().orElse(null).getOrderByAttributes(), readCondition.getOrderBy().get().getOrderByAttributes());
     assertEquals(selectCondition.getLimit(), readCondition.getLimit());
     assertEquals(selectCondition.getOffset(), readCondition.getOffset());
     assertEquals(selectCondition.getFetchDepth().orElse(null), readCondition.getFetchDepth().orElse(null));

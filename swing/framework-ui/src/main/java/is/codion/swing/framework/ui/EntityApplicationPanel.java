@@ -230,7 +230,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
-    this.logLevelStates = initializeLogLevelStates();
+    this.logLevelStates = createLogLevelStateMap();
     //initialize button captions, not in a static initializer since applications may set the locale in main()
     UiManagerDefaults.initialize();
     setUncaughtExceptionHandler();
@@ -339,7 +339,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Displays in a dialog a tree describing the application layout
    */
   public final void viewApplicationTree() {
-    Dialogs.componentDialog(initializeApplicationTree())
+    Dialogs.componentDialog(createApplicationTree())
             .owner(this)
             .title(resourceBundle.getString("view_application_tree"))
             .modal(false)
@@ -350,7 +350,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Shows a dialog containing a dependency tree view of all defined entities
    */
   public final void viewDependencyTree() {
-    Dialogs.componentDialog(initializeDependencyTree())
+    Dialogs.componentDialog(createDependencyTree())
             .owner(this)
             .title(FrameworkMessages.viewDependencies())
             .modal(false)
@@ -949,31 +949,31 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected void initializeUI() {
     setLayout(new BorderLayout());
-    applicationTabPane = initializeApplicationTabPane();
+    applicationTabPane = createApplicationTabPane();
     //base panel added for Look&Feel rendering
     JPanel basePanel = new JPanel(Layouts.borderLayout());
     basePanel.add(applicationTabPane, BorderLayout.CENTER);
     add(basePanel, BorderLayout.CENTER);
 
-    JPanel northPanel = initializeNorthPanel();
+    JPanel northPanel = createNorthPanel();
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
     }
 
-    JPanel southPanel = initializeSouthPanel();
+    JPanel southPanel = createSouthPanel();
     if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
     }
   }
 
   /**
-   * By default, this method returns the panels defined by the available {@link EntityPanel.Builder}s.
+   * Creates the {@link EntityPanel}s to include in this application panel.
    * @param applicationModel the application model responsible for providing EntityModels for the panels
    * @return a List containing the {@link EntityPanel}s to include in this application panel
    */
-  protected abstract List<EntityPanel> initializeEntityPanels(M applicationModel);
+  protected abstract List<EntityPanel> createEntityPanels(M applicationModel);
 
-  protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(M applicationModel) {
+  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders(M applicationModel) {
     return Collections.emptyList();
   }
 
@@ -1008,20 +1008,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Initializes a panel to display in the NORTH position of this application panel.
+   * Creates a panel to display in the NORTH position of this application panel.
    * override to provide a north panel.
    * @return a panel for the NORTH position
    */
-  protected JPanel initializeNorthPanel() {
+  protected JPanel createNorthPanel() {
     return null;
   }
 
   /**
-   * Initializes a panel to display in the SOUTH position of this application frame,
+   * Creates a panel to display in the SOUTH position of this application frame,
    * override to provide a south panel.
    * @return a panel for the SOUTH position
    */
-  protected JPanel initializeSouthPanel() {
+  protected JPanel createSouthPanel() {
     return null;
   }
 
@@ -1030,7 +1030,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param icon the icon
    * @return an initialized startup icon panel
    */
-  protected JPanel initializeStartupIconPanel(Icon icon) {
+  protected JPanel createStartupIconPanel(Icon icon) {
     JPanel panel = new JPanel(new BorderLayout());
     if (icon != null) {
       panel.add(new JLabel(icon), BorderLayout.CENTER);
@@ -1096,7 +1096,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
     frame.setTitle(getFrameTitle());
     if (mainMenu) {
-      frame.setJMenuBar(initializeMenuBar());
+      frame.setJMenuBar(createMenuBar());
     }
     frame.setAlwaysOnTop(alwaysOnTopState.get());
     if (displayFrame) {
@@ -1116,21 +1116,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Initializes the JMenuBar to use on the application Frame
+   * Creates the JMenuBar to use on the application Frame
    * @return by default a JMenuBar based on the main menu controls
    * @see #getMainMenuControls()
    */
-  protected JMenuBar initializeMenuBar() {
+  protected JMenuBar createMenuBar() {
     return getMainMenuControls().createMenuBar();
   }
 
   /**
-   * Initializes the application model
-   * @param connectionProvider the db provider
+   * Creates the application model
+   * @param connectionProvider the connection provider
    * @return an initialized application model
    * @throws CancelException in case the initialization is cancelled
    */
-  protected abstract M initializeApplicationModel(EntityConnectionProvider connectionProvider);
+  protected abstract M createApplicationModel(EntityConnectionProvider connectionProvider);
 
   /**
    * Returns the user, either via a login dialog or via override, called during startup if login is required
@@ -1215,16 +1215,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     setVersionProperty();
     long initializationStarted = System.currentTimeMillis();
     if (displayProgressDialog) {
-      Dialogs.progressWorkerDialog(() -> initializeApplicationModel(connectionProvider))
+      Dialogs.progressWorkerDialog(() -> createApplicationModel(connectionProvider))
               .title(applicationName)
               .icon(getApplicationIcon())
-              .westPanel(initializeStartupIconPanel(getApplicationIcon()))
+              .westPanel(createStartupIconPanel(getApplicationIcon()))
               .onResult(model -> startApplication(model, frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted))
               .onException(this::displayException)
               .execute();
     }
     else {
-      startApplication(initializeApplicationModel(connectionProvider), frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted);
+      startApplication(createApplicationModel(connectionProvider), frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted);
     }
   }
 
@@ -1268,7 +1268,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return connectionProvider;
   }
 
-  private JTabbedPane initializeApplicationTabPane() {
+  private JTabbedPane createApplicationTabPane() {
     JTabbedPane tabbedPane = new JTabbedPane(TAB_PLACEMENT.get());
     tabbedPane.setFocusable(false);
     tabbedPane.addChangeListener(e -> ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel());
@@ -1311,8 +1311,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void initializePanel() {
-    this.entityPanels.addAll(initializeEntityPanels(applicationModel));
-    this.supportPanelBuilders.addAll(initializeSupportEntityPanelBuilders(applicationModel));
+    this.entityPanels.addAll(createEntityPanels(applicationModel));
+    this.supportPanelBuilders.addAll(createSupportEntityPanelBuilders(applicationModel));
     initializeUI();
     bindEventsInternal();
     bindEvents();
@@ -1332,12 +1332,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return entityPanel;
   }
 
-  private JScrollPane initializeApplicationTree() {
-    return initializeTree(createApplicationTree(entityPanels));
+  private JScrollPane createApplicationTree() {
+    return createTree(createApplicationTree(entityPanels));
   }
 
-  private JScrollPane initializeDependencyTree() {
-    return initializeTree(getDependencyTreeModel(applicationModel.getEntities()));
+  private JScrollPane createDependencyTree() {
+    return createTree(getDependencyTreeModel(applicationModel.getEntities()));
   }
 
   private void setParentWindowTitle(String title) {
@@ -1391,7 +1391,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
-  private static Map<Object, State> initializeLogLevelStates() {
+  private static Map<Object, State> createLogLevelStateMap() {
     LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
     if (loggerProxy == LoggerProxy.NULL_PROXY) {
       return Collections.emptyMap();
@@ -1413,7 +1413,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return Collections.unmodifiableMap(levelStateMap);
   }
 
-  private static JScrollPane initializeTree(TreeModel treeModel) {
+  private static JScrollPane createTree(TreeModel treeModel) {
     JTree tree = new JTree(treeModel);
     tree.setShowsRootHandles(true);
     tree.setToggleClickCount(1);
@@ -1540,12 +1540,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     public void setParent(MutableTreeNode newParent) {
       super.setParent(newParent);
       removeAllChildren();
-      for (EntityDependencyTreeNode child : initializeChildren()) {
+      for (EntityDependencyTreeNode child : getChildren()) {
         add(child);
       }
     }
 
-    private List<EntityDependencyTreeNode> initializeChildren() {
+    private List<EntityDependencyTreeNode> getChildren() {
       List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (EntityDefinition definition : entities.getDefinitions()) {
         for (ForeignKeyProperty fkProperty : definition.getForeignKeyProperties()) {

@@ -56,11 +56,11 @@ public class EntityApplicationPanelTest {
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
     EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>("Test") {
       @Override
-      protected List<EntityPanel> initializeEntityPanels(SwingEntityApplicationModel applicationModel) {
+      protected List<EntityPanel> createEntityPanels(SwingEntityApplicationModel applicationModel) {
         return singletonList(new EntityPanel(applicationModel.getEntityModel(TestDomain.T_EMP)));
       }
       @Override
-      protected SwingEntityApplicationModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {
+      protected SwingEntityApplicationModel createApplicationModel(EntityConnectionProvider connectionProvider) {
         SwingEntityApplicationModel model = new SwingEntityApplicationModel(connectionProvider);
         model.addEntityModel(new SwingEntityModel(TestDomain.T_EMP, connectionProvider));
 

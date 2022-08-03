@@ -8343,3 +8343,5 @@
   LookAndFeelProvider.getSystemLookAndFeelClassName() and isSystemOrCrossPlatformLookAndFeelEnabled() moved to Utilities, reducing cyclical dependencies
   AbstractButtonBuilder.actionListener() and DefaultComboBoxBuilder.itemListener() now handle multiple listeners
   SwingMessages, FileChooser i18n messages added
+  FilteredTable.setSortingEnabled() added on a per-column basis
+  Framework UI, replaced initialize method name prefix with create, where new instances are being created

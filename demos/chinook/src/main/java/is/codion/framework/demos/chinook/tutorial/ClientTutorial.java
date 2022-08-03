@@ -136,7 +136,7 @@ public final class ClientTutorial {
     }
 
     @Override
-    protected SwingEntityApplicationModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {
+    protected SwingEntityApplicationModel createApplicationModel(EntityConnectionProvider connectionProvider) {
       SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
       SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
       artistModel.addDetailModel(albumModel);
@@ -149,7 +149,7 @@ public final class ClientTutorial {
     }
 
     @Override
-    protected List<EntityPanel> initializeEntityPanels(SwingEntityApplicationModel applicationModel) {
+    protected List<EntityPanel> createEntityPanels(SwingEntityApplicationModel applicationModel) {
       SwingEntityModel artistModel = applicationModel.getEntityModel(Artist.TYPE);
       SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
       EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
