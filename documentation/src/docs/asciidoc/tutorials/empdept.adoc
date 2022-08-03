@@ -170,11 +170,11 @@ include::{dir-source}/is/codion/framework/demos/empdept/ui/EmployeeEditPanel.jav
 [#_main_application_panel]
 === Main application panel
 
-We create a main application panel by extending {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *initializeEntityPanels()* we create two *EntityPanels* using the *SwingEntityModels* from the application model and return the department panel, which will act as the root panel.
+We create a main application panel by extending {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *createEntityPanels()* we create two *EntityPanels* using the *SwingEntityModels* from the application model and return the department panel, which will act as the root panel.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=initializeEntityPanels]
+include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=createEntityPanels]
 ----
 
 Next we add a method for importing a JSON text file, which we'll call via an action initialized in the next section.
@@ -191,11 +191,11 @@ We override *getToolsControls()* to add our import action to the Tools menu.
 include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=getToolsControls]
 ----
 
-We implement *initializeApplicationModel()* by returning an instance of the *EmpDeptApplicationModel* class, which we'll define later.
+We implement *createApplicationModel()* by returning an instance of the *EmpDeptApplicationModel* class, which we'll define later.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=initializeApplicationModel]
+include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=createApplicationModel]
 ----
 
 We create a *main()* method for configuring and running the application. See <<{basedir}/technical/client.adoc#_client_configuration, client configuration>> for what configuration is required for running the client.

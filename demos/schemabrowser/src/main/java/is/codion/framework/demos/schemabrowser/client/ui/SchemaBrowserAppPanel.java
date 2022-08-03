@@ -30,7 +30,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   }
 
   @Override
-  protected List<EntityPanel> initializeEntityPanels(SchemaBrowserApplicationModel applicationModel) {
+  protected List<EntityPanel> createEntityPanels(SchemaBrowserApplicationModel applicationModel) {
     SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
     SwingEntityModel tableModel = schemaModel.getDetailModel(Table.TYPE);
     SwingEntityModel columnModel = tableModel.getDetailModel(Column.TYPE);
@@ -56,7 +56,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   }
 
   @Override
-  protected SchemaBrowserApplicationModel initializeApplicationModel(EntityConnectionProvider connectionProvider) throws CancelException {
+  protected SchemaBrowserApplicationModel createApplicationModel(EntityConnectionProvider connectionProvider) throws CancelException {
     return new SchemaBrowserApplicationModel(connectionProvider);
   }
 

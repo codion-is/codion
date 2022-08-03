@@ -18,8 +18,8 @@ final class CityTablePanel extends ChartTablePanel {
   }
 
   @Override
-  protected Controls getPopupControls(List<Controls> additionalPopupControls) {
-    return super.getPopupControls(additionalPopupControls)
+  protected Controls createPopupControls(List<Controls> additionalPopupControls) {
+    return super.createPopupControls(additionalPopupControls)
             .addAt(0, createFetchLocationControl())
             .addSeparatorAt(1);
   }

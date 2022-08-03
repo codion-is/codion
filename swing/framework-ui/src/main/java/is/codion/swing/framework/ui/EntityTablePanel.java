@@ -344,15 +344,15 @@ public class EntityTablePanel extends JPanel {
    */
   public EntityTablePanel(SwingEntityTableModel tableModel, AbstractEntityTableConditionPanel conditionPanel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
-    this.table = initializeFilteredTable();
+    this.table = createTable();
     this.conditionPanel = conditionPanel;
     this.tableScrollPane = new JScrollPane(table);
-    this.conditionScrollPane = initializeConditionScrollPane(tableScrollPane);
-    this.summaryPanel = initializeSummaryPanel();
-    this.summaryScrollPane = initializeSummaryScrollPane(tableScrollPane);
-    this.tablePanel = initializeTablePanel(tableScrollPane);
-    this.refreshToolBar = initializeRefreshToolBar();
-    this.statusPanel = initializeStatusPanel();
+    this.conditionScrollPane = createConditionScrollPane(tableScrollPane);
+    this.summaryPanel = createSummaryPanel();
+    this.summaryScrollPane = createSummaryScrollPane(tableScrollPane);
+    this.tablePanel = createTablePanel(tableScrollPane);
+    this.refreshToolBar = createRefreshToolBar();
+    this.statusPanel = createStatusPanel();
   }
 
   @Override
@@ -877,8 +877,8 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Initializes the button used to toggle the condition panel state (hidden, visible and advanced)
-   * @return a condition panel toggle button
+   * Creates the Control used to toggle the condition panel state (hidden, visible and advanced)
+   * @return a condition panel toggle button or null if no condition panel is available
    */
   public final Control createToggleConditionPanelControl() {
     if (conditionPanel == null) {
@@ -892,7 +892,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Initializes the button used to toggle the summary panel state (hidden and visible)
+   * Creates the Control used to toggle the summary panel state (hidden and visible)
    * @return a summary panel toggle button
    */
   public final Control createToggleSummaryPanelControl() {
@@ -1024,7 +1024,7 @@ public class EntityTablePanel extends JPanel {
   public static EntityTablePanel createEntityTablePanel(SwingEntityTableModel tableModel) {
     EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
       @Override
-      protected Controls getPopupControls(List<Controls> additionalPopupControls) {
+      protected Controls createPopupControls(List<Controls> additionalPopupControls) {
         return additionalPopupControls.get(0);
       }
     };
@@ -1090,7 +1090,7 @@ public class EntityTablePanel extends JPanel {
             .build();
     southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
     southPanel.add(refreshToolBar, BorderLayout.WEST);
-    southToolBar = initializeSouthToolBar();
+    southToolBar = createSouthToolBar();
     if (southToolBar != null) {
       southPanel.add(southToolBar, BorderLayout.EAST);
     }
@@ -1170,13 +1170,13 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Constructs a Controls instance containing the controls to include in the table popup menu.
+   * Creates a Controls instance containing the controls to include in the table popup menu.
    * Returns null or an empty Controls instance to indicate that no popup menu should be included.
    * @param additionalPopupControls any additional controls to include in the popup menu
    * @return Controls on which to base the table popup menu, null or an empty Controls instance
    * if no popup menu should be included
    */
-  protected Controls getPopupControls(List<Controls> additionalPopupControls) {
+  protected Controls createPopupControls(List<Controls> additionalPopupControls) {
     requireNonNull(additionalPopupControls);
     Controls popupControls = Controls.controls();
     popupControls.add(controls.get(ControlCode.REFRESH));
@@ -1316,12 +1316,12 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Returns the TableCellRenderer used for the given property in this EntityTablePanel
+   * Creates a TableCellRenderer to use for the given property in this EntityTablePanel
    * @param <T> the property type
    * @param property the property
    * @return the TableCellRenderer for the given property
    */
-  protected <T> TableCellRenderer initializeTableCellRenderer(Property<T> property) {
+  protected <T> TableCellRenderer createTableCellRenderer(Property<T> property) {
     return EntityTableCellRenderer.builder(tableModel, property).build();
   }
 
@@ -1331,7 +1331,7 @@ public class EntityTablePanel extends JPanel {
    * @param property the property
    * @return a TableCellEditor for the given property
    */
-  protected <T> TableCellEditor initializeTableCellEditor(Property<T> property) {
+  protected <T> TableCellEditor createTableCellEditor(Property<T> property) {
     if (property instanceof ColumnProperty && !((ColumnProperty<T>) property).isUpdatable()) {
       return null;
     }
@@ -1357,10 +1357,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Initializes the south panel toolbar, by default based on {@link #getToolBarControls(List)}
-   * @return the toolbar to add to the south panel
+   * Creates the south panel toolbar, by default based on {@link #getToolBarControls(List)}
+   * @return the toolbar to add to the south panel, null if none should be included
    */
-  protected JToolBar initializeSouthToolBar() {
+  protected JToolBar createSouthToolBar() {
     Controls toolbarControls = getToolBarControls(additionalToolBarControls);
     if (toolbarControls != null && !toolbarControls.isEmpty()) {
       JToolBar toolBar = toolbarControls.createHorizontalToolBar();
@@ -1426,7 +1426,7 @@ public class EntityTablePanel extends JPanel {
     return !tableModel.isReadOnly() && tableModel.isDeleteEnabled();
   }
 
-  private FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> initializeFilteredTable() {
+  private FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> createTable() {
     FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> filteredTable =
             new FilteredTable<>(tableModel, new DefaultFilterPanelFactory(tableModel));
     filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
@@ -1450,7 +1450,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @return the refresh toolbar
    */
-  private JToolBar initializeRefreshToolBar() {
+  private JToolBar createRefreshToolBar() {
     Control refreshControl = Control.builder(tableModel::refresh)
             .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
             .smallIcon(frameworkIcons().refreshRequired())
@@ -1472,7 +1472,7 @@ public class EntityTablePanel extends JPanel {
     return toolBar;
   }
 
-  private JPanel initializeStatusPanel() {
+  private JPanel createStatusPanel() {
     String status = "status";
     String refreshing = "refreshing";
     CardLayout refreshStatusLayout = new CardLayout();
@@ -1481,7 +1481,7 @@ public class EntityTablePanel extends JPanel {
             .add(Components.label(tableModel.getStatusMessageObserver())
                     .horizontalAlignment(SwingConstants.CENTER)
                     .build(), status)
-            .add(initializeRefreshingProgressPanel(), refreshing)
+            .add(createRefreshingProgressPanel(), refreshing)
             .onBuild(panel -> getTableModel().getRefreshingObserver().addDataListener(isRefreshing -> {
               if (showRefreshingProgressBar) {
                 refreshStatusLayout.show(panel, isRefreshing ? refreshing : status);
@@ -1490,11 +1490,11 @@ public class EntityTablePanel extends JPanel {
             .build();
   }
 
-  private JScrollPane initializeConditionScrollPane(JScrollPane tableScrollPane) {
+  private JScrollPane createConditionScrollPane(JScrollPane tableScrollPane) {
     return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
   }
 
-  private TableColumnComponentPanel<JPanel> initializeSummaryPanel() {
+  private TableColumnComponentPanel<JPanel> createSummaryPanel() {
     Map<TableColumn, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
     if (columnSummaryPanels.isEmpty()) {
       return null;
@@ -1503,7 +1503,7 @@ public class EntityTablePanel extends JPanel {
     return new TableColumnComponentPanel<>(tableModel.getColumnModel(), columnSummaryPanels);
   }
 
-  private JScrollPane initializeSummaryScrollPane(JScrollPane tableScrollPane) {
+  private JScrollPane createSummaryScrollPane(JScrollPane tableScrollPane) {
     if (summaryPanel == null) {
       return null;
     }
@@ -1511,7 +1511,7 @@ public class EntityTablePanel extends JPanel {
     return createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
   }
 
-  private JPanel initializeTablePanel(JScrollPane tableScrollPane) {
+  private JPanel createTablePanel(JScrollPane tableScrollPane) {
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(tableScrollPane, BorderLayout.CENTER);
     if (conditionScrollPane != null) {
@@ -1595,14 +1595,14 @@ public class EntityTablePanel extends JPanel {
 
   private <T> void configureColumn(TableColumn column) {
     Property<T> property = tableModel.getEntityDefinition().getProperty((Attribute<T>) column.getIdentifier());
-    column.setCellRenderer(initializeTableCellRenderer(property));
-    column.setCellEditor(initializeTableCellEditor(property));
+    column.setCellRenderer(createTableCellRenderer(property));
+    column.setCellEditor(createTableCellEditor(property));
     column.setResizable(true);
     column.setHeaderRenderer(new HeaderRenderer(column.getHeaderRenderer()));
   }
 
   private void addTablePopupMenu() {
-    Controls popupControls = getPopupControls(additionalPopupControls);
+    Controls popupControls = createPopupControls(additionalPopupControls);
     if (popupControls == null || popupControls.isEmpty()) {
       return;
     }
@@ -1695,7 +1695,7 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private static JPanel initializeRefreshingProgressPanel() {
+  private static JPanel createRefreshingProgressPanel() {
     JProgressBar progressBar = new JProgressBar();
     progressBar.setIndeterminate(true);
     progressBar.setString(MESSAGES.getString("refreshing"));

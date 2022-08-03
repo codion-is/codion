@@ -29,7 +29,7 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 
-// tag::initializeEntityPanels[]
+// tag::createEntityPanels[]
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   public EmpDeptAppPanel() {
@@ -37,7 +37,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
 
   @Override
-  protected List<EntityPanel> initializeEntityPanels(EmpDeptApplicationModel applicationModel) {
+  protected List<EntityPanel> createEntityPanels(EmpDeptApplicationModel applicationModel) {
     SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
     SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
 
@@ -51,7 +51,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
     return Collections.singletonList(departmentPanel);
   }
-  // end::initializeEntityPanels[]
+  // end::createEntityPanels[]
 
   // tag::importJSON[]
   public void importJSON() throws Exception {
@@ -82,12 +82,12 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
   // end::getToolsControls[]
 
-  // tag::initializeApplicationModel[]
+  // tag::createApplicationModel[]
   @Override
-  protected EmpDeptApplicationModel initializeApplicationModel(EntityConnectionProvider connectionProvider) throws CancelException {
+  protected EmpDeptApplicationModel createApplicationModel(EntityConnectionProvider connectionProvider) throws CancelException {
     return new EmpDeptApplicationModel(connectionProvider);
   }
-  // end::initializeApplicationModel[]
+  // end::createApplicationModel[]
 
   // tag::main[]
   public static void main(String[] args) {

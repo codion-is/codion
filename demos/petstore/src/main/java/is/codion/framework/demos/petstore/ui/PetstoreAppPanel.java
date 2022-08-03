@@ -27,7 +27,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   }
 
   @Override
-  protected List<EntityPanel> initializeEntityPanels(PetstoreAppModel applicationModel) {
+  protected List<EntityPanel> createEntityPanels(PetstoreAppModel applicationModel) {
     /* CATEGORY
      *   PRODUCT
      *     ITEM
@@ -57,7 +57,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   }
 
   @Override
-  protected List<EntityPanel.Builder> initializeSupportEntityPanelBuilders(PetstoreAppModel applicationModel) {
+  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders(PetstoreAppModel applicationModel) {
     SwingEntityModel.Builder tagModelBuilder =
             SwingEntityModel.builder(Tag.TYPE)
                     .detailModelBuilder(SwingEntityModel.builder(TagItem.TYPE));
@@ -84,7 +84,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   }
 
   @Override
-  protected PetstoreAppModel initializeApplicationModel(EntityConnectionProvider connectionProvider)
+  protected PetstoreAppModel createApplicationModel(EntityConnectionProvider connectionProvider)
           throws CancelException {
     return new PetstoreAppModel(connectionProvider);
   }
