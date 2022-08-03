@@ -119,7 +119,8 @@ public class EntityTestUnit {
   }
 
   /**
-   * This method should return an Entity instance of type {@code entityType}
+   * This method returns the Entity instance on which to run the tests, by default this method creates an instance
+   * filled with random values.
    * @param entityType the entityType for which to initialize an entity instance for testing
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return the entity instance to use for testing the entity type
@@ -129,14 +130,14 @@ public class EntityTestUnit {
   }
 
   /**
-   * Initializes a new Entity referenced by the given foreign key, by default this method creates an Entity filled with random values.
+   * Initializes an Entity instance to reference via the given foreign key, by default this method creates an Entity
+   * filled with random values. Subclasses can override and provide a hard coded instance or select one from the database.
    * @param foreignKey the foreign key referencing the entity
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return an entity for the given foreign key
    * @throws DatabaseException in case of an exception
    */
-  protected Entity initializeForeignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities)
-          throws DatabaseException {
+  protected Entity initializeForeignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities) throws DatabaseException {
     return EntityTestUtil.createRandomEntity(getEntities(), foreignKey.getReferencedEntityType(), foreignKeyEntities);
   }
 
