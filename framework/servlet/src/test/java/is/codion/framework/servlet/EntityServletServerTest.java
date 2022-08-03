@@ -247,8 +247,10 @@ public class EntityServletServerTest {
     assertEquals(2, updated.size());
     assertTrue(updated.containsAll(entities));
 
-    assertEquals("newname", updated.stream().filter(entity -> entity.get(TestDomain.DEPARTMENT_ID).equals(-10)).findFirst().get().get(TestDomain.DEPARTMENT_NAME));
-    assertEquals("newloc", updated.stream().filter(entity -> entity.get(TestDomain.DEPARTMENT_ID).equals(-20)).findFirst().get().get(TestDomain.DEPARTMENT_LOCATION));
+    assertEquals("newname", updated.stream().filter(entity -> entity.get(TestDomain.DEPARTMENT_ID).equals(-10))
+            .findFirst().orElse(null).get(TestDomain.DEPARTMENT_NAME));
+    assertEquals("newloc", updated.stream().filter(entity -> entity.get(TestDomain.DEPARTMENT_ID).equals(-20))
+            .findFirst().orElse(null).get(TestDomain.DEPARTMENT_LOCATION));
     response.close();
 
     //update condition

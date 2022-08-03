@@ -749,24 +749,24 @@ public class DomainTest {
             .build();
 
     Detail detailTyped = detail.castTo(Detail.class);
-    assertEquals(detailTyped.getId().get(), 1L);
-    assertEquals(detailTyped.getDouble().get(), 1.2);
-    assertEquals(detailTyped.getMaster().get(), master);
+    assertEquals(detailTyped.getId().orElse(null), 1L);
+    assertEquals(detailTyped.getDouble().orElse(null), 1.2);
+    assertEquals(detailTyped.getMaster().orElse(null), master);
     assertEquals(detailTyped.master(), master);
 
     detailTyped.setId(2L);
     detailTyped.setDouble(2.1);
     detailTyped.setMaster(master1);
 
-    assertEquals(detailTyped.getId().get(), detail.get(Detail.ID));
-    assertEquals(detailTyped.getDouble().get(), detail.get(Detail.DOUBLE));
-    assertSame(detailTyped.getMaster().get(), detail.get(Detail.MASTER_FK));
+    assertEquals(detailTyped.getId().orElse(null), detail.get(Detail.ID));
+    assertEquals(detailTyped.getDouble().orElse(null), detail.get(Detail.DOUBLE));
+    assertSame(detailTyped.getMaster().orElse(null), detail.get(Detail.MASTER_FK));
 
     detailTyped.setAll(3L, 3.2, mastersTyped.get(2));
 
-    assertEquals(detailTyped.getId().get(), 3L);
-    assertEquals(detailTyped.getDouble().get(), 3.2);
-    assertSame(detailTyped.getMaster().get(), mastersTyped.get(2));
+    assertEquals(detailTyped.getId().orElse(null), 3L);
+    assertEquals(detailTyped.getDouble().orElse(null), 3.2);
+    assertSame(detailTyped.getMaster().orElse(null), mastersTyped.get(2));
 
     Entity compositeMaster = entities.builder(TestDomain.T_COMPOSITE_MASTER)
             .with(TestDomain.COMPOSITE_MASTER_ID, 1)
