@@ -8303,3 +8303,4 @@
   ProxyBuilder added
   Windows.getParentWindow/Dialog/Frame() moved to Utilities, where getParentOfType() lives
   LookAndFeelProvider.getSystemLookAndFeelClassName() and isSystemOrCrossPlatformLookAndFeelEnabled() moved to Utilities, reducing cyclical dependencies
+  AbstractButtonBuilder.actionListener() and DefaultComboBoxBuilder.itemListener() now handle multiple listeners

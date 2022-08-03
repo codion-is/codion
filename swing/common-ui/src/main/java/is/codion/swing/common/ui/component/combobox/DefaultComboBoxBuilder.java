@@ -15,6 +15,8 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import static is.codion.swing.common.ui.component.text.TextComponents.getPreferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
@@ -23,6 +25,8 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
         implements ComboBoxBuilder<T, C, B> {
 
   protected final ComboBoxModel<T> comboBoxModel;
+
+  private final List<ItemListener> itemListeners = new ArrayList<>();
 
   private boolean editable = false;
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
@@ -33,7 +37,6 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   private int maximumRowCount = -1;
   private boolean moveCaretOnSelection = true;
   private int popupWidth = 0;
-  private ItemListener itemListener;
 
   protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
     super(linkedValue);
@@ -109,7 +112,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 
   @Override
   public final B itemListener(ItemListener itemListener) {
-    this.itemListener = requireNonNull(itemListener);
+    this.itemListeners.add(requireNonNull(itemListener));
     return (B) this;
   }
 
@@ -137,9 +140,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
-    if (itemListener != null) {
-      comboBox.addItemListener(itemListener);
-    }
+    itemListeners.forEach(comboBox::addItemListener);
     if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretOnSelection) {
       ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
     }
