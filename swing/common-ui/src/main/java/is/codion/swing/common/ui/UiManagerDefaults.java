@@ -63,6 +63,7 @@ public final class UiManagerDefaults {
     UIManager.put("FileChooser.fileNameLabelText", SwingMessages.get("FileChooser.fileNameLabelText"));
     UIManager.put("FileChooser.filesOfTypeLabelMnemonic", SwingMessages.get("FileChooser.filesOfTypeLabelMnemonic"));
     UIManager.put("FileChooser.filesOfTypeLabelText", SwingMessages.get("FileChooser.filesOfTypeLabelText"));
+    UIManager.put("FileChooser.lookInLabelText", SwingMessages.get("FileChooser.lookInLabelText"));
     UIManager.put("FileChooser.lookInLabelMnemonic", SwingMessages.get("FileChooser.lookInLabelMnemonic"));
     UIManager.put("FileChooser.newFolderButtonText", SwingMessages.get("FileChooser.newFolderButtonText"));
     UIManager.put("FileChooser.newFolderExistsErrorText", SwingMessages.get("FileChooser.newFolderExistsErrorText"));
@@ -70,6 +71,11 @@ public final class UiManagerDefaults {
     UIManager.put("FileChooser.newFolderTitleText", SwingMessages.get("FileChooser.newFolderTitleText"));
     UIManager.put("FileChooser.saveTitleText", SwingMessages.get("FileChooser.saveTitleText"));
     UIManager.put("FileChooser.openTitleText", SwingMessages.get("FileChooser.openTitleText"));
+    UIManager.put("FileChooser.upFolderToolTipText", SwingMessages.get("FileChooser.upFolderToolTipText"));
+    UIManager.put("FileChooser.homeFolderToolTipText", SwingMessages.get("FileChooser.homeFolderToolTipText"));
+    UIManager.put("FileChooser.newFolderToolTipText", SwingMessages.get("FileChooser.newFolderToolTipText"));
+    UIManager.put("FileChooser.listViewButtonToolTipText", SwingMessages.get("FileChooser.listViewButtonToolTipText"));
+    UIManager.put("FileChooser.detailsViewButtonToolTipText", SwingMessages.get("FileChooser.detailsViewButtonToolTipText"));
 
     //otherwise, a hierarchy of tabbed panes looks crappy
     UIManager.put("TabbedPane.contentBorderInsets", new Insets(2, 0, 0, 0));
