@@ -12,11 +12,15 @@ import javax.swing.Icon;
 import javax.swing.SwingConstants;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>>
         extends AbstractComponentBuilder<T, C, B> implements ButtonBuilder<T, C, B> {
+
+  private final List<ActionListener> actionListeners = new ArrayList<>();
 
   private String caption;
   private int mnemonic;
@@ -25,7 +29,6 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private Icon icon;
   private Insets insets;
   private Action action;
-  private ActionListener actionListener;
 
   protected AbstractButtonBuilder(Value<T> linkedValue) {
     super(linkedValue);
@@ -75,7 +78,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 
   @Override
   public final B actionListener(ActionListener actionListener) {
-    this.actionListener = actionListener;
+    this.actionListeners.add(requireNonNull(actionListener));
     return (B) this;
   }
 
@@ -85,9 +88,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     if (action != null) {
       button.setAction(action);
     }
-    if (actionListener != null) {
-      button.addActionListener(actionListener);
-    }
+    actionListeners.forEach(button::addActionListener);
     if (!includeCaption) {
       button.setText(null);
     }
