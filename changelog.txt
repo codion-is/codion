@@ -8309,3 +8309,5 @@
   Framework UI, replaced initialize method name prefix with create, where new instances are being created
   SwingFilteredComboBoxModel.setIncludeNull() bug fixed, now adds/removes null from visibleItems, otherwise it wouldn't appear until refreshed
   SwingFilteredComboBoxModel.addItem() and removeItem() no longer accept null
+  EntityApplicationPanel, get method prefix replaced with create, for consistency, where applicable
+  EntityTablePanel.getToolBarControls() renamed createToolBarControls()

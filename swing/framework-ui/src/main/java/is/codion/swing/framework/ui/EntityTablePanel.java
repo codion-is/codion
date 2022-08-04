@@ -1141,7 +1141,7 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  protected Controls getToolBarControls(List<Controls> additionalToolBarControls) {
+  protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {
     requireNonNull(additionalToolBarControls);
     Controls toolbarControls = Controls.controls();
     if (controls.containsKey(ControlCode.TOGGLE_SUMMARY_PANEL)) {
@@ -1357,11 +1357,11 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Creates the south panel toolbar, by default based on {@link #getToolBarControls(List)}
+   * Creates the south panel toolbar, by default based on {@link #createToolBarControls(List)}
    * @return the toolbar to add to the south panel, null if none should be included
    */
   protected JToolBar createSouthToolBar() {
-    Controls toolbarControls = getToolBarControls(additionalToolBarControls);
+    Controls toolbarControls = createToolBarControls(additionalToolBarControls);
     if (toolbarControls != null && !toolbarControls.isEmpty()) {
       JToolBar toolBar = toolbarControls.createHorizontalToolBar();
       Arrays.stream(toolBar.getComponents())
