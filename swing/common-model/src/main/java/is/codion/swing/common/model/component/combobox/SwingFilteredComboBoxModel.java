@@ -256,6 +256,12 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   @Override
   public final void setIncludeNull(boolean includeNull) {
     this.includeNull = includeNull;
+    if (includeNull) {
+      visibleItems.add(0, null);
+    }
+    else {
+      visibleItems.remove(null);
+    }
   }
 
   @Override
