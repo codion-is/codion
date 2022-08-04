@@ -8314,3 +8314,4 @@
   EntityEditPanel.create***Control() now private
   EntityTablePanel.create***Control() now private
   EntityPanel.create***Control() now private
+  EntityTablePanel.ControlCode.CONFIGURE_COLUMNS added

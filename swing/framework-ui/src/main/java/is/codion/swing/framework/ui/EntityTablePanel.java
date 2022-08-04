@@ -210,7 +210,8 @@ public class EntityTablePanel extends JPanel {
     COPY_TABLE_DATA,
     REQUEST_TABLE_FOCUS,
     REQUEST_SEARCH_FIELD_FOCUS,
-    SELECT_CONDITION_PANEL
+    SELECT_CONDITION_PANEL,
+    CONFIGURE_COLUMNS
   }
 
   /**
@@ -1313,6 +1314,7 @@ public class EntityTablePanel extends JPanel {
     controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(getTable()::requestFocus));
     controls.put(ControlCode.REQUEST_SEARCH_FIELD_FOCUS, Control.control(getTable().getSearchField()::requestFocus));
     controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
+    controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
   }
 
   private Control createToggleConditionPanelControl() {
