@@ -877,63 +877,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Creates the Control used to toggle the condition panel state (hidden, visible and advanced)
-   * @return a condition panel toggle button or null if no condition panel is available
-   */
-  public final Control createToggleConditionPanelControl() {
-    if (conditionPanel == null) {
-      return null;
-    }
-
-    return Control.builder(this::toggleConditionPanel)
-            .smallIcon(frameworkIcons().filter())
-            .description(MESSAGES.getString("show_condition_panel"))
-            .build();
-  }
-
-  /**
-   * Creates the Control used to toggle the summary panel state (hidden and visible)
-   * @return a summary panel toggle button
-   */
-  public final Control createToggleSummaryPanelControl() {
-    return ToggleControl.builder(summaryPanelVisibleState)
-            .smallIcon(frameworkIcons().summary())
-            .description(MESSAGES.getString("toggle_summary_tip"))
-            .build();
-  }
-
-  /**
-   * @return a control for clearing the table selection
-   */
-  public final Control createClearSelectionControl() {
-    return Control.builder(tableModel.getSelectionModel()::clearSelection)
-            .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
-            .smallIcon(frameworkIcons().clearSelection())
-            .description(MESSAGES.getString("clear_selection_tip"))
-            .build();
-  }
-
-  /**
-   * @return a control for moving the table selection down one index
-   */
-  public final Control createMoveSelectionDownControl() {
-    return Control.builder(tableModel.getSelectionModel()::moveSelectionDown)
-            .smallIcon(frameworkIcons().down())
-            .description(MESSAGES.getString("selection_down_tip"))
-            .build();
-  }
-
-  /**
-   * @return a control for moving the table selection up one index
-   */
-  public final Control createMoveSelectionUpControl() {
-    return Control.builder(tableModel.getSelectionModel()::moveSelectionUp)
-            .smallIcon(frameworkIcons().up())
-            .description(MESSAGES.getString("selection_up_tip"))
-            .build();
-  }
-
-  /**
    * Shows a dialog containing the entities depending on the given entities.
    * @param entities the entities for which to display dependencies
    * @param connectionProvider the connection provider
@@ -1257,46 +1200,6 @@ public class EntityTablePanel extends JPanel {
     return builder.build();
   }
 
-  protected final Controls createColumnControls() {
-    Controls.Builder builder = Controls.builder()
-            .caption(MESSAGES.getString("columns"));
-    if (controls.containsKey(ControlCode.SELECT_COLUMNS)) {
-      builder.control(controls.get(ControlCode.SELECT_COLUMNS));
-    }
-    if (controls.containsKey(ControlCode.RESET_COLUMNS)) {
-      builder.control(controls.get(ControlCode.RESET_COLUMNS));
-    }
-
-    return builder.build();
-  }
-
-  protected final Control createConditionPanelControl() {
-    return ToggleControl.builder(conditionPanelVisibleState)
-            .caption(FrameworkMessages.show())
-            .build();
-  }
-
-  protected final Controls createCopyControls() {
-    return Controls.builder()
-            .caption(Messages.copy())
-            .smallIcon(frameworkIcons().copy())
-            .controls(createCopyCellControl(), createCopyTableWithHeaderControl())
-            .build();
-  }
-
-  protected final Control createCopyCellControl() {
-    return Control.builder(table::copySelectedCell)
-            .caption(FrameworkMessages.copyCell())
-            .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
-            .build();
-  }
-
-  protected final Control createCopyTableWithHeaderControl() {
-    return Control.builder(this::copyTableAsDelimitedString)
-            .caption(FrameworkMessages.copyTableWithHeader())
-            .build();
-  }
-
   /**
    * Called before delete is performed, if true is returned the delete action is performed otherwise it is canceled
    * @return true if the delete action should be performed
@@ -1410,6 +1313,86 @@ public class EntityTablePanel extends JPanel {
     controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(getTable()::requestFocus));
     controls.put(ControlCode.REQUEST_SEARCH_FIELD_FOCUS, Control.control(getTable().getSearchField()::requestFocus));
     controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
+  }
+
+  private Control createToggleConditionPanelControl() {
+    if (conditionPanel == null) {
+      return null;
+    }
+
+    return Control.builder(this::toggleConditionPanel)
+            .smallIcon(frameworkIcons().filter())
+            .description(MESSAGES.getString("show_condition_panel"))
+            .build();
+  }
+
+  private Control createToggleSummaryPanelControl() {
+    return ToggleControl.builder(summaryPanelVisibleState)
+            .smallIcon(frameworkIcons().summary())
+            .description(MESSAGES.getString("toggle_summary_tip"))
+            .build();
+  }
+
+  private Control createClearSelectionControl() {
+    return Control.builder(tableModel.getSelectionModel()::clearSelection)
+            .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
+            .smallIcon(frameworkIcons().clearSelection())
+            .description(MESSAGES.getString("clear_selection_tip"))
+            .build();
+  }
+
+  private Control createMoveSelectionDownControl() {
+    return Control.builder(tableModel.getSelectionModel()::moveSelectionDown)
+            .smallIcon(frameworkIcons().down())
+            .description(MESSAGES.getString("selection_down_tip"))
+            .build();
+  }
+
+  private Control createMoveSelectionUpControl() {
+    return Control.builder(tableModel.getSelectionModel()::moveSelectionUp)
+            .smallIcon(frameworkIcons().up())
+            .description(MESSAGES.getString("selection_up_tip"))
+            .build();
+  }
+
+  private Controls createColumnControls() {
+    Controls.Builder builder = Controls.builder()
+            .caption(MESSAGES.getString("columns"));
+    if (controls.containsKey(ControlCode.SELECT_COLUMNS)) {
+      builder.control(controls.get(ControlCode.SELECT_COLUMNS));
+    }
+    if (controls.containsKey(ControlCode.RESET_COLUMNS)) {
+      builder.control(controls.get(ControlCode.RESET_COLUMNS));
+    }
+
+    return builder.build();
+  }
+
+  private Control createConditionPanelControl() {
+    return ToggleControl.builder(conditionPanelVisibleState)
+            .caption(FrameworkMessages.show())
+            .build();
+  }
+
+  private Controls createCopyControls() {
+    return Controls.builder()
+            .caption(Messages.copy())
+            .smallIcon(frameworkIcons().copy())
+            .controls(createCopyCellControl(), createCopyTableWithHeaderControl())
+            .build();
+  }
+
+  private Control createCopyCellControl() {
+    return Control.builder(table::copySelectedCell)
+            .caption(FrameworkMessages.copyCell())
+            .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
+            .build();
+  }
+
+  private Control createCopyTableWithHeaderControl() {
+    return Control.builder(this::copyTableAsDelimitedString)
+            .caption(FrameworkMessages.copyTableWithHeader())
+            .build();
   }
 
   private void copyTableAsDelimitedString() {

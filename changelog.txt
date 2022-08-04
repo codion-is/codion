@@ -8312,3 +8312,4 @@
   EntityApplicationPanel, get method prefix replaced with create, for consistency, where applicable
   EntityTablePanel.getToolBarControls() renamed createToolBarControls()
   EntityEditPanel.create***Control() now private
+  EntityTablePanel.create***Control() now private
