@@ -263,79 +263,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * @return a control for refreshing the model data
-   */
-  public final Control createRefreshControl() {
-    return Control.builder(getEditModel()::refresh)
-            .caption(FrameworkMessages.refresh())
-            .enabledState(State.and(activeState, getEditModel().getRefreshingObserver().getReversedObserver()))
-            .description(FrameworkMessages.refreshTip() + ALT_PREFIX + FrameworkMessages.refreshMnemonic() + ")")
-            .mnemonic(FrameworkMessages.refreshMnemonic())
-            .smallIcon(frameworkIcons().refresh())
-            .build();
-  }
-
-  /**
-   * @return a control for deleting the active entity
-   */
-  public final Control createDeleteControl() {
-    return Control.builder(this::delete)
-            .caption(FrameworkMessages.delete())
-            .enabledState(State.and(activeState,
-                    getEditModel().getDeleteEnabledObserver(),
-                    getEditModel().getEntityNewObserver().getReversedObserver()))
-            .description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
-            .mnemonic(FrameworkMessages.deleteMnemonic())
-            .smallIcon(frameworkIcons().delete())
-            .build();
-  }
-
-  /**
-   * @return a control for clearing the UI controls
-   */
-  public final Control createClearControl() {
-    return Control.builder(this::clearAndRequestFocus)
-            .caption(FrameworkMessages.clear())
-            .enabledState(activeState)
-            .description(FrameworkMessages.clearTip() + ALT_PREFIX + FrameworkMessages.clearMnemonic() + ")")
-            .mnemonic(FrameworkMessages.clearMnemonic())
-            .smallIcon(frameworkIcons().clear())
-            .build();
-  }
-
-  /**
-   * @return a control for performing an update on the active entity
-   */
-  public final Control createUpdateControl() {
-    return Control.builder(this::update)
-            .caption(FrameworkMessages.update())
-            .enabledState(State.and(activeState,
-                    getEditModel().getUpdateEnabledObserver(),
-                    getEditModel().getEntityNewObserver().getReversedObserver(),
-                    getEditModel().getModifiedObserver()))
-            .description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
-            .mnemonic(FrameworkMessages.updateMnemonic())
-            .smallIcon(frameworkIcons().update())
-            .build();
-  }
-
-  /**
-   * @return a control for performing an insert on the active entity
-   */
-  public final Control createInsertControl() {
-    boolean useSaveCaption = USE_SAVE_CAPTION.get();
-    char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.addMnemonic();
-    String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
-    return Control.builder(this::insert)
-            .caption(caption)
-            .enabledState(State.and(activeState, getEditModel().getInsertEnabledObserver()))
-            .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
-            .mnemonic(mnemonic)
-            .smallIcon(frameworkIcons().add())
-            .build();
-  }
-
-  /**
    * Handles the given exception. If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DEPENDENCIES},
    * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
@@ -722,6 +649,64 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (getEditModel().isDeleteEnabled() && controlCodes.contains(ControlCode.DELETE)) {
       controls.putIfAbsent(ControlCode.DELETE, createDeleteControl());
     }
+  }
+
+  private Control createRefreshControl() {
+    return Control.builder(getEditModel()::refresh)
+            .caption(FrameworkMessages.refresh())
+            .enabledState(State.and(activeState, getEditModel().getRefreshingObserver().getReversedObserver()))
+            .description(FrameworkMessages.refreshTip() + ALT_PREFIX + FrameworkMessages.refreshMnemonic() + ")")
+            .mnemonic(FrameworkMessages.refreshMnemonic())
+            .smallIcon(frameworkIcons().refresh())
+            .build();
+  }
+
+  private Control createDeleteControl() {
+    return Control.builder(this::delete)
+            .caption(FrameworkMessages.delete())
+            .enabledState(State.and(activeState,
+                    getEditModel().getDeleteEnabledObserver(),
+                    getEditModel().getEntityNewObserver().getReversedObserver()))
+            .description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
+            .mnemonic(FrameworkMessages.deleteMnemonic())
+            .smallIcon(frameworkIcons().delete())
+            .build();
+  }
+
+  private Control createClearControl() {
+    return Control.builder(this::clearAndRequestFocus)
+            .caption(FrameworkMessages.clear())
+            .enabledState(activeState)
+            .description(FrameworkMessages.clearTip() + ALT_PREFIX + FrameworkMessages.clearMnemonic() + ")")
+            .mnemonic(FrameworkMessages.clearMnemonic())
+            .smallIcon(frameworkIcons().clear())
+            .build();
+  }
+
+  private Control createUpdateControl() {
+    return Control.builder(this::update)
+            .caption(FrameworkMessages.update())
+            .enabledState(State.and(activeState,
+                    getEditModel().getUpdateEnabledObserver(),
+                    getEditModel().getEntityNewObserver().getReversedObserver(),
+                    getEditModel().getModifiedObserver()))
+            .description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
+            .mnemonic(FrameworkMessages.updateMnemonic())
+            .smallIcon(frameworkIcons().update())
+            .build();
+  }
+
+  private Control createInsertControl() {
+    boolean useSaveCaption = USE_SAVE_CAPTION.get();
+    char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.addMnemonic();
+    String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
+    return Control.builder(this::insert)
+            .caption(caption)
+            .enabledState(State.and(activeState, getEditModel().getInsertEnabledObserver()))
+            .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
+            .mnemonic(mnemonic)
+            .smallIcon(frameworkIcons().add())
+            .build();
   }
 
   private JPanel createControlPanel(boolean horizontal) {

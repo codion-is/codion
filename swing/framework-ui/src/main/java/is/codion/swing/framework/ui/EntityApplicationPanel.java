@@ -488,10 +488,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Shows an about dialog
-   * @see #getAboutPanel()
+   * @see #createAboutPanel()
    */
   public final void displayAbout() {
-    Dialogs.componentDialog(getAboutPanel())
+    Dialogs.componentDialog(createAboutPanel())
             .owner(this)
             .title(resourceBundle.getString(ABOUT))
             .resizable(false)
@@ -530,7 +530,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param entities the entities
    * @return a tree model showing the dependencies between entities via foreign keys
    */
-  public static TreeModel getDependencyTreeModel(Entities entities) {
+  public static TreeModel createDependencyTreeModel(Entities entities) {
     requireNonNull(entities);
     DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
     for (EntityDefinition definition : entities.getDefinitions()) {
@@ -560,37 +560,37 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * @return the controls on which to base the main menu
-   * @see #getFileControls()
-   * @see #getSettingsControls()
-   * @see #getViewControls()
-   * @see #getToolsControls()
-   * @see #getHelpControls()
+   * @see #createFileControls()
+   * @see #createSettingsControls()
+   * @see #createViewControls()
+   * @see #createToolsControls()
+   * @see #createHelpControls()
    */
-  protected Controls getMainMenuControls() {
+  protected Controls createMainMenuControls() {
     Controls menuControls = Controls.controls();
-    Controls fileControls = getFileControls();
+    Controls fileControls = createFileControls();
     if (fileControls != null && !fileControls.isEmpty()) {
       menuControls.add(fileControls);
     }
-    Controls viewControls = getViewControls();
+    Controls viewControls = createViewControls();
     if (viewControls != null && !viewControls.isEmpty()) {
       menuControls.add(viewControls);
     }
-    Controls toolsControls = getToolsControls();
+    Controls toolsControls = createToolsControls();
     if (toolsControls != null && !toolsControls.isEmpty()) {
       menuControls.add(toolsControls);
     }
-    Controls supportTableControls = getSupportTableControls();
+    Controls supportTableControls = createSupportTableControls();
     if (supportTableControls != null && !supportTableControls.isEmpty()) {
       menuControls.add(supportTableControls);
     }
-    List<Controls> additionalMenus = getAdditionalMenuControls();
+    List<Controls> additionalMenus = createAdditionalMenuControls();
     if (additionalMenus != null) {
       for (Controls set : additionalMenus) {
         menuControls.add(set);
       }
     }
-    Controls helpControls = getHelpControls();
+    Controls helpControls = createHelpControls();
     if (helpControls != null && !helpControls.isEmpty()) {
       menuControls.add(helpControls);
     }
@@ -601,7 +601,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the Controls specifying the items in the 'File' menu
    */
-  protected Controls getFileControls() {
+  protected Controls createFileControls() {
     return Controls.builder()
             .caption(FrameworkMessages.file())
             .mnemonic(FrameworkMessages.fileMnemonic())
@@ -612,7 +612,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the Controls specifying the items in the 'Settings' menu
    */
-  protected Controls getSettingsControls() {
+  protected Controls createSettingsControls() {
     return Controls.builder()
             .caption(FrameworkMessages.settings())
             .control(createLogLevelControl())
@@ -622,7 +622,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the Controls specifying the items in the 'Tools' menu
    */
-  protected Controls getToolsControls() {
+  protected Controls createToolsControls() {
     Controls.Builder toolsControlsBuilder = Controls.builder()
             .caption(resourceBundle.getString("tools"))
             .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0));
@@ -636,7 +636,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the Controls specifying the items in the 'View' menu
    */
-  protected Controls getViewControls() {
+  protected Controls createViewControls() {
     return Controls.builder()
             .caption(FrameworkMessages.view())
             .mnemonic(FrameworkMessages.viewMnemonic())
@@ -650,7 +650,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the Controls specifying the items in the 'Help' menu
    */
-  protected Controls getHelpControls() {
+  protected Controls createHelpControls() {
     return Controls.builder()
             .caption(resourceBundle.getString(HELP))
             .mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
@@ -777,7 +777,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the panel shown when Help -&#62; About is selected
    */
-  protected JPanel getAboutPanel() {
+  protected JPanel createAboutPanel() {
     JPanel panel = new JPanel(Layouts.borderLayout());
     String versionString = Version.getVersionAndMetadataString();
     panel.add(new JLabel(FrameworkIcons.frameworkIcons().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST);
@@ -830,14 +830,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return a List of Controls instances which should be added to the main menu bar
    */
-  protected List<Controls> getAdditionalMenuControls() {
+  protected List<Controls> createAdditionalMenuControls() {
     return new ArrayList<>(0);
   }
 
   /**
    * @return the Controls on which to base the Support Tables menu
    */
-  protected Controls getSupportTableControls() {
+  protected Controls createSupportTableControls() {
     if (supportPanelBuilders.isEmpty()) {
       return null;
     }
@@ -1118,10 +1118,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Creates the JMenuBar to use on the application Frame
    * @return by default a JMenuBar based on the main menu controls
-   * @see #getMainMenuControls()
+   * @see #createMainMenuControls()
    */
   protected JMenuBar createMenuBar() {
-    return getMainMenuControls().createMenuBar();
+    return createMainMenuControls().createMenuBar();
   }
 
   /**
@@ -1337,7 +1337,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private JScrollPane createDependencyTree() {
-    return createTree(getDependencyTreeModel(applicationModel.getEntities()));
+    return createTree(createDependencyTreeModel(applicationModel.getEntities()));
   }
 
   private void setParentWindowTitle(String title) {

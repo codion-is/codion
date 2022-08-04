@@ -346,4 +346,16 @@ public final class SwingEntityComboBoxModelTest {
     Key nobodyPK = ENTITIES.primaryKey(TestDomain.T_EMP, -1);
     assertFalse(comboBoxModel.getEntity(nobodyPK).isPresent());
   }
+
+  @Test
+  void nullCaption() {
+    comboBoxModel.refresh();
+    assertFalse(comboBoxModel.containsItem(null));
+    comboBoxModel.setNullCaption("-");
+    assertTrue(comboBoxModel.containsItem(null));
+    assertEquals("-", comboBoxModel.getSelectedItem().toString());
+    assertNull(comboBoxModel.getSelectedValue());
+    comboBoxModel.setIncludeNull(false);
+    assertFalse(comboBoxModel.containsItem(null));
+  }
 }

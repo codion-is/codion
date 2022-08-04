@@ -209,6 +209,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final void addItem(T item) {
+    requireNonNull(item);
     if (includeCondition == null || includeCondition.test(item)) {
       if (!visibleItems.contains(item)) {
         visibleItems.add(item);
@@ -222,6 +223,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final void removeItem(T item) {
+    requireNonNull(item);
     visibleItems.remove(item);
     filteredItems.remove(item);
     fireContentsChanged();
@@ -256,6 +258,12 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   @Override
   public final void setIncludeNull(boolean includeNull) {
     this.includeNull = includeNull;
+    if (includeNull) {
+      visibleItems.add(0, null);
+    }
+    else {
+      visibleItems.remove(null);
+    }
   }
 
   @Override

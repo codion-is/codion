@@ -184,11 +184,11 @@ Next we add a method for importing a JSON text file, which we'll call via an act
 include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=importJSON]
 ----
 
-We override *getToolsControls()* to add our import action to the Tools menu.
+We override *createToolsControls()* to add our import action to the Tools menu.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=getToolsControls]
+include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=createToolsControls]
 ----
 
 We implement *createApplicationModel()* by returning an instance of the *EmpDeptApplicationModel* class, which we'll define later.

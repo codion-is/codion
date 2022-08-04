@@ -240,6 +240,22 @@ public class SwingFilteredComboBoxModelTest {
   }
 
   @Test
+  void nullItem() {
+    SwingFilteredComboBoxModel<String> model = new SwingFilteredComboBoxModel<>();
+    assertFalse(model.containsItem(null));
+    model.setIncludeNull(true);
+    assertTrue(model.containsItem(null));
+    model.setIncludeNull(false);
+    assertFalse(model.containsItem(null));
+    model.setIncludeNull(true);
+    model.setNullItem("-");
+    assertTrue(model.containsItem(null));
+    assertEquals("-", model.getSelectedItem());
+    model.setSelectedItem("-");
+    assertTrue(model.isNullSelected());
+  }
+
+  @Test
   void selectorValue() {
     Value<Character> selectorValue = testModel.selectorValue(new Finder<String, Character>() {
       @Override
