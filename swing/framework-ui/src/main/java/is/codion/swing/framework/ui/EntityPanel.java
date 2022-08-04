@@ -642,26 +642,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * @return a control for toggling the edit panel
-   */
-  public final Control getToggleEditPanelControl() {
-    return Control.builder(this::toggleEditPanelState)
-            .smallIcon(frameworkIcons().editPanel())
-            .description(MESSAGES.getString("toggle_edit"))
-            .build();
-  }
-
-  /**
-   * @return a control for toggling the detail panel
-   */
-  public final Control getToggleDetailPanelControl() {
-    return Control.builder(this::toggleDetailPanelState)
-            .smallIcon(frameworkIcons().detail())
-            .description(MESSAGES.getString("toggle_detail"))
-            .build();
-  }
-
-  /**
    * Displays the exception in a dialog
    * @param exception the exception to display
    */
@@ -1302,10 +1282,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private void initializeTablePanel() {
     Controls toolbarControls = Controls.controls();
     if (showToggleEditPanelControl && editPanel != null) {
-      toolbarControls.add(getToggleEditPanelControl());
+      toolbarControls.add(createToggleEditPanelControl());
     }
     if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {
-      toolbarControls.add(getToggleDetailPanelControl());
+      toolbarControls.add(createToggleDetailPanelControl());
     }
     if (!toolbarControls.isEmpty()) {
       tablePanel.addToolBarControls(toolbarControls);
@@ -1379,6 +1359,26 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         }
       }
     });
+  }
+
+  /**
+   * @return a control for toggling the edit panel
+   */
+  private Control createToggleEditPanelControl() {
+    return Control.builder(this::toggleEditPanelState)
+            .smallIcon(frameworkIcons().editPanel())
+            .description(MESSAGES.getString("toggle_edit"))
+            .build();
+  }
+
+  /**
+   * @return a control for toggling the detail panel
+   */
+  private Control createToggleDetailPanelControl() {
+    return Control.builder(this::toggleDetailPanelState)
+            .smallIcon(frameworkIcons().detail())
+            .description(MESSAGES.getString("toggle_detail"))
+            .build();
   }
 
   /**
