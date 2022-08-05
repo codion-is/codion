@@ -74,8 +74,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final State insertEnabledState = State.state(true);
   private final State updateEnabledState = State.state(true);
   private final State deleteEnabledState = State.state(true);
-  private final StateObserver readOnlyObserver = State.and(insertEnabledState.getReversedObserver(),
-          updateEnabledState.getReversedObserver(), deleteEnabledState.getReversedObserver());
+  private final StateObserver readOnlyObserver = State.and(insertEnabledState.reversedObserver(),
+          updateEnabledState.reversedObserver(), deleteEnabledState.reversedObserver());
 
   /**
    * The Entity being edited by this model
@@ -245,7 +245,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver getInsertEnabledObserver() {
-    return insertEnabledState.getObserver();
+    return insertEnabledState.observer();
   }
 
   @Override
@@ -260,7 +260,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver getUpdateEnabledObserver() {
-    return updateEnabledState.getObserver();
+    return updateEnabledState.observer();
   }
 
   @Override
@@ -275,17 +275,17 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver getDeleteEnabledObserver() {
-    return deleteEnabledState.getObserver();
+    return deleteEnabledState.observer();
   }
 
   @Override
   public final StateObserver getEntityNewObserver() {
-    return entityNewState.getObserver();
+    return entityNewState.observer();
   }
 
   @Override
   public final StateObserver getPrimaryKeyNullObserver() {
-    return primaryKeyNullState.getObserver();
+    return primaryKeyNullState.observer();
   }
 
   @Override
@@ -335,7 +335,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public StateObserver getModifiedObserver() {
-    return entityModifiedState.getObserver();
+    return entityModifiedState.observer();
   }
 
   @Override
@@ -417,7 +417,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver getValidObserver() {
-    return entityValidState.getObserver();
+    return entityValidState.observer();
   }
 
   @Override

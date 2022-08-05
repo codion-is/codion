@@ -516,7 +516,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @return an Observer for the table model status message, that is, the number of rows, number of selected rows etc
    */
   public final ValueObserver<String> getStatusMessageObserver() {
-    return statusMessageValue.getObserver();
+    return statusMessageValue.observer();
   }
 
   /**

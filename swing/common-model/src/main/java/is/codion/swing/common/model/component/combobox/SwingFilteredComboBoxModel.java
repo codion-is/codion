@@ -92,7 +92,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final StateObserver getRefreshingObserver() {
-    return refreshingState.getObserver();
+    return refreshingState.observer();
   }
 
   @Override

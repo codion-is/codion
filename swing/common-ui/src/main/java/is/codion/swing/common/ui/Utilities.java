@@ -117,7 +117,7 @@ public final class Utilities {
     Event<T> event = Event.event();
     component.addPropertyChangeListener(property, changeEvent -> event.onEvent((T) changeEvent.getNewValue()));
 
-    return event.getObserver();
+    return event.observer();
   }
 
   /**

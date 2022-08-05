@@ -372,7 +372,7 @@ public final class CalendarPanel extends JPanel {
     return Components.button(control(this::selectToday))
             .caption(MESSAGES.getString("today"))
             .mnemonic(MESSAGES.getString("today_mnemonic").charAt(0))
-            .enabledState(todaySelectedState.getReversedObserver())
+            .enabledState(todaySelectedState.reversedObserver())
             .build();
   }
 

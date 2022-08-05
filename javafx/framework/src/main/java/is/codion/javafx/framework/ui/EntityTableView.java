@@ -165,7 +165,7 @@ public class EntityTableView extends TableView<Entity> {
     button.setTooltip(new Tooltip(FrameworkMessages.refreshTip()));
     button.setOnAction(event -> listModel.refresh());
     FXUiUtil.link(button.disableProperty(),
-            listModel.getTableConditionModel().getConditionChangedObserver().getReversedObserver());
+            listModel.getTableConditionModel().getConditionChangedObserver().reversedObserver());
 
     return button;
   }

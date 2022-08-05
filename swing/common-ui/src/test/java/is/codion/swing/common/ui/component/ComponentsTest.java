@@ -641,7 +641,7 @@ public final class ComponentsTest {
             .validator(validator)
             .build());
     assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)
-            .linkedValueObserver(stringValue.getObserver())
+            .linkedValueObserver(stringValue.observer())
             .validator(validator)
             .build());
   }

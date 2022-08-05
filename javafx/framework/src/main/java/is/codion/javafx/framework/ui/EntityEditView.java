@@ -295,9 +295,9 @@ public abstract class EntityEditView extends BorderPane {
     button.setTooltip(new Tooltip(FrameworkMessages.updateTip()));
     button.setOnAction(event -> update(true));
     StateObserver existingAndModifiedState = State.and(
-            editModel.getEntityNewObserver().getReversedObserver(),
+            editModel.getEntityNewObserver().reversedObserver(),
             editModel.getModifiedObserver());
-    FXUiUtil.link(button.disableProperty(), existingAndModifiedState.getReversedObserver());
+    FXUiUtil.link(button.disableProperty(), existingAndModifiedState.reversedObserver());
 
     return button;
   }

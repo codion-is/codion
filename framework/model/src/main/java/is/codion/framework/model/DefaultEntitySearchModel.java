@@ -260,7 +260,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public StateObserver getSearchStringRepresentsSelectedObserver() {
-    return searchStringRepresentsSelectedState.getObserver();
+    return searchStringRepresentsSelectedState.observer();
   }
 
   /**

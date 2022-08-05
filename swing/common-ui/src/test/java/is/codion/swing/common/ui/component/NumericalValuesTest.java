@@ -109,7 +109,7 @@ public class NumericalValuesTest {  private Long longValue;
   void testLongPrimitive() throws Exception {
     Value<Long> longPrimitivePropertyValue = Value.propertyValue(this, "longPrimitiveValue",
             long.class, longPrimitiveValueChangedEvent);
-    assertFalse(longPrimitivePropertyValue.isNullable());
+    assertFalse(longPrimitivePropertyValue.nullable());
     ComponentValue<Long, NumberField<Long>> componentValue = Components.longField(longPrimitivePropertyValue)
             .buildComponentValue();
     NumberField<Long> longField = componentValue.getComponent();

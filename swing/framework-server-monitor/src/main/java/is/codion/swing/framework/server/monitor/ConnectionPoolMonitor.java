@@ -223,7 +223,7 @@ public final class ConnectionPoolMonitor {
    * @return EventObserver notified when statistics have been updated
    */
   public EventObserver<?> getStatisticsObserver() {
-    return statisticsUpdatedEvent.getObserver();
+    return statisticsUpdatedEvent.observer();
   }
 
   /**

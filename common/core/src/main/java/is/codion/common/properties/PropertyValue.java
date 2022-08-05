@@ -14,7 +14,7 @@ public interface PropertyValue<T> extends Value<T> {
   /**
    * @return the name of the property this value represents
    */
-  String getPropertyName();
+  String propertyName();
 
   /**
    * Returns the underlying value, if the value is null then a {@link IllegalStateException} is thrown.

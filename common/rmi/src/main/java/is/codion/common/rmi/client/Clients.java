@@ -72,7 +72,7 @@ public final class Clients {
   public static void resolveTrustStore() {
     String trustStorePath = TRUSTSTORE.get();
     if (nullOrEmpty(trustStorePath)) {
-      LOG.debug("No client truststore specified via {}", TRUSTSTORE.getPropertyName());
+      LOG.debug("No client truststore specified via {}", TRUSTSTORE.propertyName());
       return;
     }
     String password = TRUSTSTORE_PASSWORD.getOrThrow();

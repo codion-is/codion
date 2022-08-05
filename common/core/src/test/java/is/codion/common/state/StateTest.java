@@ -23,7 +23,7 @@ public class StateTest {
     EventListener stateChangeListener = stateChangeCounter::incrementAndGet;
     state.addListener(stateChangeListener);
     //this has no effect, coverage whoring
-    state.getObserver().addListener(stateChangeListener);
+    state.observer().addListener(stateChangeListener);
 
     state.set(true);
     assertEquals(1, stateChangeCounter.get());
@@ -34,7 +34,7 @@ public class StateTest {
     state.set(false);
     state.removeListener(stateChangeListener);
     //this has no effect, coverage whoring
-    state.getObserver().removeListener(stateChangeListener);
+    state.observer().removeListener(stateChangeListener);
 
     state.set(false);
     state.set(true);
@@ -50,8 +50,8 @@ public class StateTest {
     AtomicInteger reversedReversedStateCounter = new AtomicInteger();
     EventListener reversedReversedListener = reversedReversedStateCounter::incrementAndGet;
     State state = State.state();
-    StateObserver reversed = state.getReversedObserver();
-    StateObserver reversedReversed = reversed.getReversedObserver();
+    StateObserver reversed = state.reversedObserver();
+    StateObserver reversedReversed = reversed.reversedObserver();
     state.addListener(listener);
     reversed.addListener(reversedListener);
     reversedReversed.addListener(reversedReversedListener);
@@ -78,18 +78,18 @@ public class StateTest {
     assertFalse(state.get(), "State should be inactive when initialized");
     assertFalse(state.isNull());
     assertTrue(state.isNotNull());
-    assertFalse(state.isNullable());
+    assertFalse(state.nullable());
     assertFalse(state.equalTo(true));
     assertTrue(state.toOptional().isPresent());
     state.onEvent(true);//calls set()
     assertTrue(state.get(), "State should be active after activation");
     assertEquals("true", state.toString());
-    assertFalse(state.getReversedObserver().get(), "Reversed state should be inactive after activation");
+    assertFalse(state.reversedObserver().get(), "Reversed state should be inactive after activation");
     state.set(true);
     state.set(false);
     assertFalse(state.get(), "State should be inactive after deactivation");
     assertEquals("false", state.toString());
-    assertTrue(state.getReversedObserver().get(), "Reversed state should be active after deactivation");
+    assertTrue(state.reversedObserver().get(), "Reversed state should be active after deactivation");
   }
 
   @Test
@@ -124,13 +124,13 @@ public class StateTest {
     orState.addState(stateThree);
 
     State.Combination andState = State.and(stateOne, stateTwo, stateThree);
-    assertEquals(Conjunction.AND, andState.getConjunction());
+    assertEquals(Conjunction.AND, andState.conjunction());
     assertEquals("Combination and false, false, false, false", andState.toString());
 
     assertFalse(orState.get(), "Or state should be inactive");
     assertFalse(andState.get(), "And state should be inactive");
-    assertTrue(orState.getReversedObserver().get(), "Reversed Or state should be active");
-    assertTrue(andState.getReversedObserver().get(), "Reversed And state should be active");
+    assertTrue(orState.reversedObserver().get(), "Reversed Or state should be active");
+    assertTrue(andState.reversedObserver().get(), "Reversed And state should be active");
 
     stateOne.set(true);
 
@@ -201,7 +201,7 @@ public class StateTest {
 
     assertFalse(orState.isNull());
     assertTrue(orState.isNotNull());
-    assertFalse(orState.isNullable());
+    assertFalse(orState.nullable());
   }
 
   @Test
@@ -271,7 +271,7 @@ public class StateTest {
     state.set(false);
     assertTrue(value.get());
 
-    ValueObserver<Boolean> valueObserver = value.getObserver();
+    ValueObserver<Boolean> valueObserver = value.observer();
     state.link(valueObserver);
     assertTrue(state.get());
     value.set(false);

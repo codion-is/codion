@@ -518,7 +518,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     private DoubleFieldValue(NumberField<Double> doubleField, boolean nullable, UpdateOn updateOn) {
       super(doubleField, nullable ? null : 0d, updateOn);
-      if (!isNullable() && doubleField.getNumber() == null) {
+      if (!nullable() && doubleField.getNumber() == null) {
         doubleField.setNumber(0d);
       }
     }
@@ -527,7 +527,7 @@ public final class NumberField<T extends Number> extends JTextField {
     protected Double getComponentValue() {
       Number number = getComponent().getNumber();
       if (number == null) {
-        return isNullable() ? null : 0d;
+        return nullable() ? null : 0d;
       }
 
       return number.doubleValue();
@@ -543,7 +543,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     private IntegerFieldValue(NumberField<Integer> integerField, boolean nullable, UpdateOn updateOn) {
       super(integerField, nullable ? null : 0, updateOn);
-      if (!isNullable() && integerField.getNumber() == null) {
+      if (!nullable() && integerField.getNumber() == null) {
         integerField.setNumber(0);
       }
     }
@@ -552,7 +552,7 @@ public final class NumberField<T extends Number> extends JTextField {
     protected Integer getComponentValue() {
       Number number = getComponent().getNumber();
       if (number == null) {
-        return isNullable() ? null : 0;
+        return nullable() ? null : 0;
       }
 
       return number.intValue();
@@ -568,7 +568,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     private LongFieldValue(NumberField<Long> longField, boolean nullable, UpdateOn updateOn) {
       super(longField, nullable ? null : 0L, updateOn);
-      if (!isNullable() && longField.getNumber() == null) {
+      if (!nullable() && longField.getNumber() == null) {
         longField.setNumber(0L);
       }
     }
@@ -577,7 +577,7 @@ public final class NumberField<T extends Number> extends JTextField {
     protected Long getComponentValue() {
       Number number = getComponent().getNumber();
       if (number == null) {
-        return isNullable() ? null : 0L;
+        return nullable() ? null : 0L;
       }
 
       return number.longValue();

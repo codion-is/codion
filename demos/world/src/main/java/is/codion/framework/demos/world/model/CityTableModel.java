@@ -56,7 +56,7 @@ public final class CityTableModel extends SwingEntityTableModel {
   }
 
   public StateObserver getCitiesWithoutLocationSelectedObserver() {
-    return citiesWithoutLocationSelectedState.getObserver();
+    return citiesWithoutLocationSelectedState.observer();
   }
 
   public void fetchLocationForSelected(ProgressReporter<String> progressReporter,

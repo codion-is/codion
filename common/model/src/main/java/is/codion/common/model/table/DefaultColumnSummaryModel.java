@@ -56,7 +56,7 @@ public final class DefaultColumnSummaryModel<T extends Number> implements Column
 
   @Override
   public ValueObserver<String> getSummaryTextObserver() {
-    return summaryTextValue.getObserver();
+    return summaryTextValue.observer();
   }
 
   private void updateSummary() {

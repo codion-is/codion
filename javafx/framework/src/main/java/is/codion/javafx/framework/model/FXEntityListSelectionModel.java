@@ -73,22 +73,22 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
 
   @Override
   public StateObserver getSelectionEmptyObserver() {
-    return selectionEmptyState.getObserver();
+    return selectionEmptyState.observer();
   }
 
   @Override
   public StateObserver getSelectionNotEmptyObserver() {
-    return selectionEmptyState.getReversedObserver();
+    return selectionEmptyState.reversedObserver();
   }
 
   @Override
   public StateObserver getMultipleSelectionObserver() {
-    return multipleSelectionState.getObserver();
+    return multipleSelectionState.observer();
   }
 
   @Override
   public StateObserver getSingleSelectionObserver() {
-    return singleSelectionState.getObserver();
+    return singleSelectionState.observer();
   }
 
   @Override

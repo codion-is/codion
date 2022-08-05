@@ -60,7 +60,7 @@ public class DefaultPropertyValueTest {
     Bean bean = new Bean();
     DefaultPropertyValue<Integer> value = new DefaultPropertyValue<>(bean, "intValue", Integer.TYPE, Event.event());
     value.addDataListener(System.out::println);
-    assertFalse(value.isNullable());
+    assertFalse(value.nullable());
     assertEquals(0, value.get());//default primitive value
     value.set(2);
     value.set(null);

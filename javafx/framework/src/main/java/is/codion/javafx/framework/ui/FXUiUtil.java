@@ -738,7 +738,7 @@ public final class FXUiUtil {
   public static CheckBox createCheckBox(StateObserver enabledState) {
     CheckBox checkBox = new CheckBox();
     if (enabledState != null) {
-      link(checkBox.disableProperty(), enabledState.getReversedObserver());
+      link(checkBox.disableProperty(), enabledState.reversedObserver());
     }
 
     return checkBox;
@@ -776,7 +776,7 @@ public final class FXUiUtil {
     TextField textField = new TextField();
     textField.textProperty().addListener(new ValidationChangeListener(property, textField.textProperty()));
     if (enabledState != null) {
-      link(textField.disableProperty(), enabledState.getReversedObserver());
+      link(textField.disableProperty(), enabledState.reversedObserver());
     }
 
     return textField;
@@ -796,7 +796,7 @@ public final class FXUiUtil {
   public static DatePicker createDatePicker(StateObserver enabledState) {
     DatePicker picker = new DatePicker();
     if (enabledState != null) {
-      link(picker.disableProperty(), enabledState.getReversedObserver());
+      link(picker.disableProperty(), enabledState.reversedObserver());
     }
 
     return picker;

@@ -76,7 +76,7 @@ public class ValueTest {
     value.set(1);
     value.addValidator(validator);
     value.addValidator(validator);
-    assertEquals(1, value.getValidators().size());
+    assertEquals(1, value.validators().size());
     value.set(null);
     assertEquals(0, value.get());
     assertThrows(IllegalArgumentException.class, () -> value.set(11));
@@ -89,11 +89,11 @@ public class ValueTest {
   void value() {
     AtomicInteger eventCounter = new AtomicInteger();
     Value<Integer> intValue = Value.value(42, -1);
-    assertFalse(intValue.isNullable());
+    assertFalse(intValue.nullable());
     assertTrue(intValue.toOptional().isPresent());
     assertTrue(intValue.equalTo(42));
-    ValueObserver<Integer> valueObserver = intValue.getObserver();
-    assertFalse(valueObserver.isNullable());
+    ValueObserver<Integer> valueObserver = intValue.observer();
+    assertFalse(valueObserver.nullable());
     assertTrue(valueObserver.toOptional().isPresent());
     assertTrue(valueObserver.equalTo(42));
     EventListener eventListener = eventCounter::incrementAndGet;
@@ -127,7 +127,7 @@ public class ValueTest {
     assertEquals(-1, valueObserver.get());
 
     Value<String> stringValue = Value.value(null, "null");
-    assertFalse(stringValue.isNullable());
+    assertFalse(stringValue.nullable());
     assertEquals("null", stringValue.get());
     stringValue.set("test");
     assertEquals("test", stringValue.get());
@@ -145,7 +145,7 @@ public class ValueTest {
   @Test
   void linkValues() {
     AtomicInteger modelValueEventCounter = new AtomicInteger();
-    Value<Integer> modelValue = Value.propertyValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
+    Value<Integer> modelValue = Value.propertyValue(this, "integerValue", Integer.class, integerValueChange.observer());
     Value<Integer> uiValue = Value.value();
     uiValue.link(modelValue);
 
@@ -189,10 +189,10 @@ public class ValueTest {
   @Test
   void linkValuesReadOnly() {
     AtomicInteger modelValueEventCounter = new AtomicInteger();
-    Value<Integer> modelValue = Value.propertyValue(this, "intValue", int.class, integerValueChange.getObserver());
+    Value<Integer> modelValue = Value.propertyValue(this, "intValue", int.class, integerValueChange.observer());
     Value<Integer> uiValue = Value.value();
-    assertFalse(modelValue.isNullable());
-    uiValue.link(modelValue.getObserver());
+    assertFalse(modelValue.nullable());
+    uiValue.link(modelValue.observer());
     modelValue.addListener(modelValueEventCounter::incrementAndGet);
     AtomicInteger uiValueEventCounter = new AtomicInteger();
     uiValue.addListener(uiValueEventCounter::incrementAndGet);
@@ -223,27 +223,27 @@ public class ValueTest {
 
   @Test
   void propertyValueNoGetter() {
-    assertThrows(IllegalArgumentException.class, () -> Value.propertyValue(this, "nonexistent", Integer.class, integerValueChange.getObserver()));
+    assertThrows(IllegalArgumentException.class, () -> Value.propertyValue(this, "nonexistent", Integer.class, integerValueChange.observer()));
   }
 
   @Test
   void propertyValueNoOwner() {
-    assertThrows(NullPointerException.class, () -> Value.propertyValue(null, "integerValue", Integer.class, integerValueChange.getObserver()));
+    assertThrows(NullPointerException.class, () -> Value.propertyValue(null, "integerValue", Integer.class, integerValueChange.observer()));
   }
 
   @Test
   void propertyValueNoPropertyName() {
-    assertThrows(IllegalArgumentException.class, () -> Value.propertyValue(this, null, Integer.class, integerValueChange.getObserver()));
+    assertThrows(IllegalArgumentException.class, () -> Value.propertyValue(this, null, Integer.class, integerValueChange.observer()));
   }
 
   @Test
   void propertyValueNoValueClass() {
-    assertThrows(NullPointerException.class, () -> Value.propertyValue(this, "integerValue", null, integerValueChange.getObserver()));
+    assertThrows(NullPointerException.class, () -> Value.propertyValue(this, "integerValue", null, integerValueChange.observer()));
   }
 
   @Test
   void setReadOnlyPropertyValue() {
-    Value<Integer> modelValue = Value.propertyValue(this, "intValue", Integer.class, integerValueChange.getObserver());
+    Value<Integer> modelValue = Value.propertyValue(this, "intValue", Integer.class, integerValueChange.observer());
     assertThrows(IllegalStateException.class, () -> modelValue.set(43));
   }
 
@@ -253,7 +253,7 @@ public class ValueTest {
     assertTrue(valueSet.isEmpty());
     assertFalse(valueSet.isNotEmpty());
 
-    assertFalse(valueSet.isNullable());
+    assertFalse(valueSet.nullable());
     assertTrue(valueSet.toOptional().isPresent());
 
     assertTrue(valueSet.add(1));
@@ -433,7 +433,7 @@ public class ValueTest {
 
     assertThrows(IllegalArgumentException.class, () -> value.unlink(originalValue));
 
-    ValueObserver<Integer> originalValueObserver = originalValue.getObserver();
+    ValueObserver<Integer> originalValueObserver = originalValue.observer();
 
     assertThrows(IllegalArgumentException.class, () -> value.link(originalValueObserver));
 

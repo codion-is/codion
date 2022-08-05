@@ -137,7 +137,7 @@ public final class ApplicationModel {
   }
 
   public ValueObserver<String> getMessageObserver() {
-    return messageValue.getObserver();
+    return messageValue.observer();
   }
 
   private void exceptionHandler(Thread thread, Throwable exception) {

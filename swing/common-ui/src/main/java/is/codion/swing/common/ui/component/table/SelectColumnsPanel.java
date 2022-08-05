@@ -98,7 +98,7 @@ final class SelectColumnsPanel<C> extends JPanel {
             .build();
     JCheckBox selectNoneButton = Components.checkBox()
             .linkedValueObserver(State.and(states.values().stream()
-                    .map(StateObserver::getReversedObserver)
+                    .map(StateObserver::reversedObserver)
                     .collect(Collectors.toList())))
             .caption(MESSAGES.getString("select_none"))
             .mnemonic(MESSAGES.getString("select_none_mnemonic").charAt(0))

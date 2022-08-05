@@ -220,7 +220,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     private static synchronized void resolveClasspathKeyStore() {
       String keystore = CLASSPATH_KEYSTORE.get();
       if (nullOrEmpty(keystore)) {
-        LOG.debug("No classpath key store specified via {}", CLASSPATH_KEYSTORE.getPropertyName());
+        LOG.debug("No classpath key store specified via {}", CLASSPATH_KEYSTORE.propertyName());
         return;
       }
       if (KEYSTORE.isNotNull()) {
@@ -238,7 +238,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
         KEYSTORE.set(file.getPath());
         LOG.debug("Classpath key store {} written to file {} and set as {}",
-                CLASSPATH_KEYSTORE.getPropertyName(), file, JAVAX_NET_KEYSTORE);
+                CLASSPATH_KEYSTORE.propertyName(), file, JAVAX_NET_KEYSTORE);
       }
       catch (IOException e) {
         throw new RuntimeException(e);

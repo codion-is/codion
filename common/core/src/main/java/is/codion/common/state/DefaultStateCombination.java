@@ -48,7 +48,7 @@ final class DefaultStateCombination implements State.Combination {
   }
 
   @Override
-  public Conjunction getConjunction() {
+  public Conjunction conjunction() {
     return conjunction;
   }
 
@@ -95,13 +95,13 @@ final class DefaultStateCombination implements State.Combination {
   }
 
   @Override
-  public boolean isNullable() {
-    return observer.isNullable();
+  public boolean nullable() {
+    return observer.nullable();
   }
 
   @Override
-  public StateObserver getReversedObserver() {
-    return observer.getReversedObserver();
+  public StateObserver reversedObserver() {
+    return observer.reversedObserver();
   }
 
   @Override

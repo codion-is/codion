@@ -80,7 +80,7 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
   }
 
   @Override
-  protected EventObserver<T> getChangeObserver() {
+  protected EventObserver<T> changeObserver() {
     return changeObserver;
   }
 
