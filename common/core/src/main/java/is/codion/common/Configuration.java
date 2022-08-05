@@ -39,9 +39,9 @@ public final class Configuration {
    */
   public static final String CONFIGURATION_FILE_REQUIRED = "codion.configurationFileRequired";
 
-  private static final PropertyStore STORE;
-
   private static final String CLASSPATH_PREFIX = "classpath:";
+
+  private static final PropertyStore STORE;
 
   static {
     STORE = loadConfiguration();
@@ -131,7 +131,7 @@ public final class Configuration {
    * @return a configuration value builder
    */
   public static PropertyValue<Character> characterValue(String key) {
-    return characterValue(key);
+    return STORE.characterValue(key);
   }
 
   /**
