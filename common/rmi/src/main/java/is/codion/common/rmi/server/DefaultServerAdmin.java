@@ -47,8 +47,8 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   private final transient PropertyFormatter propertyFormatter = new SystemPropertyFormatter();
 
   public DefaultServerAdmin(AbstractServer<?, ? extends ServerAdmin> server, ServerConfiguration configuration) throws RemoteException {
-    super(requireNonNull(configuration, "configuration").getServerAdminPort(),
-            configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
+    super(requireNonNull(configuration, "configuration").serverAdminPort(),
+            configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
     this.server = requireNonNull(server, "server");
     initializeGarbageCollectionListener();
   }

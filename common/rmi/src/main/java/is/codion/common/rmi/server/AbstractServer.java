@@ -79,20 +79,20 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @throws RemoteException in case of an exception
    */
   public AbstractServer(ServerConfiguration configuration) throws RemoteException {
-    super(requireNonNull(configuration, "configuration").getServerPort(),
-            configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
+    super(requireNonNull(configuration, "configuration").serverPort(),
+            configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
     Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     try {
       this.configuration = configuration;
-      this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
-              configuration.getServerPort(), ZonedDateTime.now());
+      this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.serverName(),
+              configuration.serverPort(), ZonedDateTime.now());
       this.connectionMaintenanceScheduler = TaskScheduler.builder(new MaintenanceTask())
-              .interval(configuration.getConnectionMaintenanceInterval())
-              .initialDelay(configuration.getConnectionMaintenanceInterval())
+              .interval(configuration.connectionMaintenanceInterval())
+              .initialDelay(configuration.connectionMaintenanceInterval())
               .timeUnit(TimeUnit.MILLISECONDS)
               .start();
       configureSerializationWhitelist(configuration);
-      startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());
+      startAuxiliaryServers(configuration.auxiliaryServerFactoryClassNames());
       loadLoginProxies();
     }
     catch (Throwable exception) {
@@ -345,7 +345,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   protected final Registry getRegistry() throws RemoteException {
     if (registry == null) {
-      this.registry = LocateRegistry.createRegistry(configuration.getRegistryPort());
+      this.registry = LocateRegistry.createRegistry(configuration.registryPort());
     }
 
     return this.registry;
@@ -415,11 +415,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   private static void configureSerializationWhitelist(ServerConfiguration configuration) {
     if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
-      if (configuration.isSerializationFilterDryRun()) {
-        SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
+      if (configuration.serializationFilterDryRun()) {
+        SerializationWhitelist.configureDryRun(configuration.serializationFilterWhitelist());
       }
       else {
-        SerializationWhitelist.configure(configuration.getSerializationFilterWhitelist());
+        SerializationWhitelist.configure(configuration.serializationFilterWhitelist());
       }
     }
   }

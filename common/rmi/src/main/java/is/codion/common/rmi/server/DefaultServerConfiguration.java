@@ -50,7 +50,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public String getServerName() {
+  public String serverName() {
     if (serverName == null) {
       serverName = serverNameProvider.get();
     }
@@ -59,52 +59,52 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public int getServerPort() {
+  public int serverPort() {
     return serverPort;
   }
 
   @Override
-  public int getRegistryPort() {
+  public int registryPort() {
     return registryPort;
   }
 
   @Override
-  public int getServerAdminPort() {
+  public int serverAdminPort() {
     return serverAdminPort;
   }
 
   @Override
-  public Collection<String> getAuxiliaryServerFactoryClassNames() {
+  public Collection<String> auxiliaryServerFactoryClassNames() {
     return auxiliaryServerFactoryClassNames;
   }
 
   @Override
-  public boolean isSslEnabled() {
+  public boolean sslEnabled() {
     return sslEnabled;
   }
 
   @Override
-  public RMIClientSocketFactory getRmiClientSocketFactory() {
+  public RMIClientSocketFactory rmiClientSocketFactory() {
     return rmiClientSocketFactory;
   }
 
   @Override
-  public RMIServerSocketFactory getRmiServerSocketFactory() {
+  public RMIServerSocketFactory rmiServerSocketFactory() {
     return rmiServerSocketFactory;
   }
 
   @Override
-  public String getSerializationFilterWhitelist() {
+  public String serializationFilterWhitelist() {
     return serializationFilterWhitelist;
   }
 
   @Override
-  public boolean isSerializationFilterDryRun() {
+  public boolean serializationFilterDryRun() {
     return serializationFilterDryRun;
   }
 
   @Override
-  public int getConnectionMaintenanceInterval() {
+  public int connectionMaintenanceInterval() {
     return connectionMaintenanceIntervalMs;
   }
 

@@ -38,7 +38,7 @@ public class EntityServerMonitorTest {
   public static synchronized void setUp() throws Exception {
     EntityServer.startServer(CONFIGURATION);
     server = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(),
-            CONFIGURATION.getRegistryPort()).lookup(CONFIGURATION.getServerName());
+            CONFIGURATION.registryPort()).lookup(CONFIGURATION.serverName());
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
@@ -53,13 +53,13 @@ public class EntityServerMonitorTest {
     String clientTypeId = EntityServerMonitorTest.class.getName();
     RemoteEntityConnectionProvider connectionProvider =
             RemoteEntityConnectionProvider.builder()
-                    .serverHostName("localhost").serverPort(CONFIGURATION.getServerPort()).registryPort(CONFIGURATION.getRegistryPort())
+                    .serverHostName("localhost").serverPort(CONFIGURATION.serverPort()).registryPort(CONFIGURATION.registryPort())
                     .domainClassName("TestDomain")
                     .clientTypeId(clientTypeId)
                     .user(UNIT_TEST_USER)
                     .build();
     connectionProvider.getConnection();
-    EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.getRegistryPort(), CONFIGURATION.getAdminUser());
+    EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.registryPort(), CONFIGURATION.adminUser());
     model.refresh();
     HostMonitor hostMonitor = model.getHostMonitors().iterator().next();
     assertEquals("localhost", hostMonitor.getHostName());

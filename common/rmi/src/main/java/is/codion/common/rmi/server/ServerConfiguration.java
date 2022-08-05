@@ -149,57 +149,57 @@ public interface ServerConfiguration {
    * @return the server name
    * @see Builder#serverNameProvider(Supplier)
    */
-  String getServerName();
+  String serverName();
 
   /**
    * @return the server port
    */
-  int getServerPort();
+  int serverPort();
 
   /**
    * @return the registry port to use
    */
-  int getRegistryPort();
+  int registryPort();
 
   /**
    * @return the port on which to make the server admin interface accessible
    */
-  int getServerAdminPort();
+  int serverAdminPort();
 
   /**
    * @return the class names of auxiliary server factories, providing the servers to run alongside this server
    */
-  Collection<String> getAuxiliaryServerFactoryClassNames();
+  Collection<String> auxiliaryServerFactoryClassNames();
 
   /**
    * @return true if ssl is enabled
    */
-  boolean isSslEnabled();
+  boolean sslEnabled();
 
   /**
    * @return the rmi client socket factory to use, null for default
    */
-  RMIClientSocketFactory getRmiClientSocketFactory();
+  RMIClientSocketFactory rmiClientSocketFactory();
 
   /**
    * @return the rmi server socket factory to use, null for default
    */
-  RMIServerSocketFactory getRmiServerSocketFactory();
+  RMIServerSocketFactory rmiServerSocketFactory();
 
   /**
    * @return the serialization whitelist to use, if any
    */
-  String getSerializationFilterWhitelist();
+  String serializationFilterWhitelist();
 
   /**
    * @return true if a serialization filter dry run should be active
    */
-  boolean isSerializationFilterDryRun();
+  boolean serializationFilterDryRun();
 
   /**
    * @return the interval between server connection maintenance runs, in milliseconds.
    */
-  int getConnectionMaintenanceInterval();
+  int connectionMaintenanceInterval();
 
   /**
    * A Builder for ServerConfiguration

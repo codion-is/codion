@@ -35,27 +35,27 @@ final class DefaultHttpServerConfiguration implements HttpServerConfiguration {
   }
 
   @Override
-  public int getServerPort() {
+  public int serverPort() {
     return serverPort;
   }
 
   @Override
-  public boolean isSecure() {
+  public boolean secure() {
     return secure;
   }
 
   @Override
-  public String getDocumentRoot() {
+  public String documentRoot() {
     return documentRoot;
   }
 
   @Override
-  public String getKeystorePath() {
+  public String keystorePath() {
     return keystorePath;
   }
 
   @Override
-  public String getKeystorePassword() {
+  public String keystorePassword() {
     return keystorePassword;
   }
 
