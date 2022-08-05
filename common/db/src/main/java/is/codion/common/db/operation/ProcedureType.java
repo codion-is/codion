@@ -14,7 +14,7 @@ public interface ProcedureType<C, T> {
   /**
    * @return the procedure name
    */
-  String getName();
+  String name();
 
   /**
    * Executes the given procedure.

@@ -17,7 +17,7 @@ public interface ReportType<T, R, P> {
   /**
    * @return the report name
    */
-  String getName();
+  String name();
 
   /**
    * Fills the given report.

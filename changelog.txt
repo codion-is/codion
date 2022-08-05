@@ -8327,3 +8327,4 @@
   Item, get prefix removed from accessors
   ForeignKey.referencedEntityType() renamed referencedType()
   Event, State, State.Combination, Value, PropertyValue, get prefix removed from accessors
+  FunctionType, ProcedureType and ReportType, get prefix removed from accessors

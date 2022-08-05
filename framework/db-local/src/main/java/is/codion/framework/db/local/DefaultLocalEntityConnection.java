@@ -678,7 +678,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(functionType.getName(), argument instanceof List ? (List<?>) argument : singletonList(argument), e), e);
+      LOG.error(createLogMessage(functionType.name(), argument instanceof List ? (List<?>) argument : singletonList(argument), e), e);
       throw e;
     }
     finally {
@@ -703,7 +703,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(procedureType.getName(), argument instanceof List ? (List<?>) argument : singletonList(argument), e), e);
+      LOG.error(createLogMessage(procedureType.name(), argument instanceof List ? (List<?>) argument : singletonList(argument), e), e);
       throw e;
     }
     finally {
