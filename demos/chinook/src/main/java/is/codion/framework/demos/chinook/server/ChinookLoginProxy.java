@@ -69,7 +69,7 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   @Override
   public RemoteClient login(RemoteClient remoteClient) throws LoginException {
-    authenticateUser(remoteClient.getUser());
+    authenticateUser(remoteClient.user());
 
     //Create a new RemoteClient based on the one received
     //but with the actual database user

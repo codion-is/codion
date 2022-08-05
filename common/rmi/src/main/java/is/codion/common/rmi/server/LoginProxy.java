@@ -26,7 +26,7 @@ public interface LoginProxy {
    * @param remoteClient the client
    * @return a new client with the same clientId but not necessarily the same user or databaseUser
    * @throws LoginException in case the login fails
-   * @see RemoteClient#getDatabaseUser()
+   * @see RemoteClient#databaseUser()
    */
   RemoteClient login(RemoteClient remoteClient) throws LoginException;
 

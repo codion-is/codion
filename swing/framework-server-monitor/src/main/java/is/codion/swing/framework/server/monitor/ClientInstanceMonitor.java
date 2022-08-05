@@ -44,7 +44,7 @@ public final class ClientInstanceMonitor {
   public ClientInstanceMonitor(EntityServerAdmin server, RemoteClient remoteClient) throws RemoteException {
     this.remoteClient = remoteClient;
     this.server = server;
-    this.loggingEnabledState = State.state(server.isLoggingEnabled(remoteClient.getClientId()));
+    this.loggingEnabledState = State.state(server.isLoggingEnabled(remoteClient.clientId()));
     bindEvents();
   }
 
@@ -67,7 +67,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public LocalDateTime getCreationDate() throws RemoteException {
-    ClientLog log = server.getClientLog(remoteClient.getClientId());
+    ClientLog log = server.getClientLog(remoteClient.clientId());
 
     return log == null ? null : log.getConnectionCreationDate();
   }
@@ -77,7 +77,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public void disconnect() throws RemoteException {
-    server.disconnect(remoteClient.getClientId());
+    server.disconnect(remoteClient.clientId());
   }
 
   /**
@@ -85,7 +85,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshLog() throws RemoteException {
-    ClientLog log = server.getClientLog(remoteClient.getClientId());
+    ClientLog log = server.getClientLog(remoteClient.clientId());
     try {
       logDocument.remove(0, logDocument.getLength());
       logRootNode.removeAllChildren();
@@ -132,7 +132,7 @@ public final class ClientInstanceMonitor {
    */
   private void setLoggingEnabled(boolean status) {
     try {
-      server.setLoggingEnabled(remoteClient.getClientId(), status);
+      server.setLoggingEnabled(remoteClient.clientId(), status);
     }
     catch (RemoteException e) {
       throw new RuntimeException(e);

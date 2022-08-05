@@ -33,43 +33,43 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
   }
 
   @Override
-  public ConnectionRequest getConnectionRequest() {
+  public ConnectionRequest connectionRequest() {
     return connectionRequest;
   }
 
   @Override
-  public User getUser() {
-    return connectionRequest.getUser();
+  public User user() {
+    return connectionRequest.user();
   }
 
   @Override
-  public User getDatabaseUser() {
+  public User databaseUser() {
     return databaseUser;
   }
 
   @Override
-  public UUID getClientId() {
-    return connectionRequest.getClientId();
+  public UUID clientId() {
+    return connectionRequest.clientId();
   }
 
   @Override
-  public String getClientTypeId() {
-    return connectionRequest.getClientTypeId();
+  public String clientTypeId() {
+    return connectionRequest.clientTypeId();
   }
 
   @Override
-  public Version getClientVersion() {
-    return connectionRequest.getClientVersion();
+  public Version clientVersion() {
+    return connectionRequest.clientVersion();
   }
 
   @Override
-  public Version getFrameworkVersion() {
-    return connectionRequest.getFrameworkVersion();
+  public Version frameworkVersion() {
+    return connectionRequest.frameworkVersion();
   }
 
   @Override
-  public Map<String, Object> getParameters() {
-    return connectionRequest.getParameters();
+  public Map<String, Object> parameters() {
+    return connectionRequest.parameters();
   }
 
   @Override
@@ -97,18 +97,18 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof RemoteClient && connectionRequest.equals(((RemoteClient) obj).getConnectionRequest());
+    return this == obj || obj instanceof RemoteClient && connectionRequest.equals(((RemoteClient) obj).connectionRequest());
   }
 
   @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder(connectionRequest.getUser().toString());
-    if (databaseUser != null && !connectionRequest.getUser().equals(databaseUser)) {
+    StringBuilder builder = new StringBuilder(connectionRequest.user().toString());
+    if (databaseUser != null && !connectionRequest.user().equals(databaseUser)) {
       builder.append(" (databaseUser: ").append(databaseUser).append(")");
     }
-    builder.append("@").append(clientHost == null ? "unknown" : clientHost).append(" [").append(connectionRequest.getClientTypeId())
-            .append(connectionRequest.getClientVersion() != null ? "-" + connectionRequest.getClientVersion() : "")
-            .append("] - ").append(connectionRequest.getClientId().toString());
+    builder.append("@").append(clientHost == null ? "unknown" : clientHost).append(" [").append(connectionRequest.clientTypeId())
+            .append(connectionRequest.clientVersion() != null ? "-" + connectionRequest.clientVersion() : "")
+            .append("] - ").append(connectionRequest.clientId().toString());
 
     return builder.toString();
   }

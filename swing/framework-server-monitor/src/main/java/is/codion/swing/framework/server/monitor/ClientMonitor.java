@@ -18,7 +18,8 @@ import java.util.List;
  */
 public final class ClientMonitor {
 
-  private static final Comparator<RemoteClient> CLIENT_INFO_COMPARATOR = (c1, c2) -> c1.getUser().getUsername().compareToIgnoreCase(c2.getUser().getUsername());
+  private static final Comparator<RemoteClient> CLIENT_INFO_COMPARATOR = (c1, c2) ->
+          c1.user().getUsername().compareToIgnoreCase(c2.user().getUsername());
   private final EntityServerAdmin server;
   private final String clientTypeId;
   private final User user;

@@ -108,7 +108,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   @Override
   public final Collection<String> getClientTypes() {
     return getClients().stream()
-            .map(ConnectionRequest::getClientTypeId)
+            .map(ConnectionRequest::clientTypeId)
             .collect(toSet());
   }
 

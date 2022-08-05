@@ -17,32 +17,32 @@ public interface ConnectionRequest {
   /**
    * @return the user
    */
-  User getUser();
+  User user();
 
   /**
    * @return the client id
    */
-  UUID getClientId();
+  UUID clientId();
 
   /**
    * @return the client type id
    */
-  String getClientTypeId();
+  String clientTypeId();
 
   /**
    * @return the client version
    */
-  Version getClientVersion();
+  Version clientVersion();
 
   /**
    * @return the version of Codion the client is using
    */
-  Version getFrameworkVersion();
+  Version frameworkVersion();
 
   /**
    * @return misc. parameters, an empty map if none are specified
    */
-  Map<String, Object> getParameters();
+  Map<String, Object> parameters();
 
   /**
    * @return a ConnectionRequest.Builder

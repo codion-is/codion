@@ -14,12 +14,12 @@ public interface RemoteClient extends ConnectionRequest {
   /**
    * @return the initial connection request this client is based on
    */
-  ConnectionRequest getConnectionRequest();
+  ConnectionRequest connectionRequest();
 
   /**
    * @return the user used when connecting to the underlying database
    */
-  User getDatabaseUser();
+  User databaseUser();
 
   /**
    * @return the client hostname
@@ -45,7 +45,7 @@ public interface RemoteClient extends ConnectionRequest {
    * @return a new RemoteClient instance
    */
   static RemoteClient remoteClient(ConnectionRequest connectionRequest) {
-    return remoteClient(connectionRequest, connectionRequest.getUser());
+    return remoteClient(connectionRequest, connectionRequest.user());
   }
 
   /**

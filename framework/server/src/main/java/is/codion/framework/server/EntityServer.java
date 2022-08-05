@@ -212,7 +212,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
         boolean timedOut = hasConnectionTimedOut(connection);
         if (!connected || timedOut) {
           LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
-          disconnect(client.getRemoteClient().getClientId());
+          disconnect(client.getRemoteClient().clientId());
         }
       }
     }
@@ -223,7 +223,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     //using the remoteClient from the connection since it contains the correct database user
     return getConnections().values().stream()
             .map(AbstractRemoteEntityConnection::getRemoteClient)
-            .filter(remoteClient -> remoteClient.getClientTypeId().equals(clientTypeId))
+            .filter(remoteClient -> remoteClient.clientTypeId().equals(clientTypeId))
             .collect(toList());
   }
 
@@ -274,22 +274,22 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   final void disconnectClients(boolean timedOutOnly) throws RemoteException {
     List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
     for (RemoteClient client : clients) {
-      AbstractRemoteEntityConnection connection = getConnection(client.getClientId());
+      AbstractRemoteEntityConnection connection = getConnection(client.clientId());
       if (timedOutOnly) {
         boolean active = connection.isActive();
         if (!active && hasConnectionTimedOut(connection)) {
-          disconnect(client.getClientId());
+          disconnect(client.clientId());
         }
       }
       else {
-        disconnect(client.getClientId());
+        disconnect(client.clientId());
       }
     }
   }
 
   private void disconnectQuietly(AbstractRemoteEntityConnection connection) {
     try {
-      disconnect(connection.getRemoteClient().getClientId());
+      disconnect(connection.getRemoteClient().clientId());
     }
     catch (RemoteException ex) {
       LOG.error(ex.getMessage(), ex);
@@ -323,7 +323,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   private boolean hasConnectionTimedOut(AbstractRemoteEntityConnection connection) {
-    Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.getRemoteClient().getClientTypeId());
+    Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.getRemoteClient().clientTypeId());
     if (timeout == null) {
       timeout = idleConnectionTimeout;
     }
@@ -332,7 +332,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   private Domain getClientDomainModel(RemoteClient remoteClient) {
-    String domainTypeName = (String) remoteClient.getParameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
+    String domainTypeName = (String) remoteClient.parameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
     if (domainTypeName == null) {
       throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
     }

@@ -30,9 +30,9 @@ public final class TestLoginProxy implements LoginProxy {
 
   @Override
   public RemoteClient login(RemoteClient remoteClient) throws ServerAuthenticationException {
-    authenticateUser(remoteClient.getUser());
+    authenticateUser(remoteClient.user());
 
-    RemoteClient authenticatedClient = RemoteClient.remoteClient(remoteClient.getConnectionRequest(), databaseUser);
+    RemoteClient authenticatedClient = RemoteClient.remoteClient(remoteClient.connectionRequest(), databaseUser);
     authenticatedClient.setClientHost(remoteClient.getClientHost());
 
     return authenticatedClient;

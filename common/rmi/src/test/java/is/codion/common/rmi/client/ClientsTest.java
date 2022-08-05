@@ -18,13 +18,17 @@ public final class ClientsTest {
   void connectionRequest() {
     User user = User.parse("scott:tiger");
     UUID uuid = UUID.randomUUID();
-    ConnectionRequest request = ConnectionRequest.builder().user(user).clientId(uuid).clientTypeId("test").build();
-    assertEquals(user, request.getUser());
-    assertEquals(uuid, request.getClientId());
-    assertNull(request.getClientVersion());
-    assertEquals(Version.getVersion(), request.getFrameworkVersion());
+    ConnectionRequest request = ConnectionRequest.builder()
+            .user(user)
+            .clientId(uuid)
+            .clientTypeId("test")
+            .build();
+    assertEquals(user, request.user());
+    assertEquals(uuid, request.clientId());
+    assertNull(request.clientVersion());
+    assertEquals(Version.getVersion(), request.frameworkVersion());
     assertEquals(uuid.hashCode(), request.hashCode());
-    assertEquals("test", request.getClientTypeId());
+    assertEquals("test", request.clientTypeId());
     assertTrue(request.toString().contains(user.getUsername()));
   }
 }
