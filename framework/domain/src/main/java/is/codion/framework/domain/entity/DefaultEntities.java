@@ -135,7 +135,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   private void validateForeignKeyProperties(EntityDefinition definition) {
     EntityType entityType = definition.getEntityType();
     for (ForeignKey foreignKey : definition.getForeignKeys()) {
-      EntityType referencedType = foreignKey.referencedEntityType();
+      EntityType referencedType = foreignKey.referencedType();
       EntityDefinition referencedEntity = referencedType.equals(entityType) ?
               definition : entityDefinitions.get(referencedType.name());
       if (referencedEntity == null && strictForeignKeys) {
@@ -158,7 +158,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   private void populateForeignDefinitions() {
     for (DefaultEntityDefinition definition : entityDefinitions.values()) {
       for (ForeignKey foreignKey : definition.getForeignKeys()) {
-        EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.referencedEntityType().name());
+        EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.referencedType().name());
         if (referencedDefinition != null && !definition.hasReferencedEntityDefinition(foreignKey)) {
           definition.setReferencedEntityDefinition(foreignKey, referencedDefinition);
         }

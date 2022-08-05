@@ -453,7 +453,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   public List<ForeignKey> getForeignKeys(EntityType referencedEntityType) {
     requireNonNull(referencedEntityType, "referencedEntityType");
     return getForeignKeys().stream()
-            .filter(foreignKey -> foreignKey.referencedEntityType().equals(referencedEntityType))
+            .filter(foreignKey -> foreignKey.referencedType().equals(referencedEntityType))
             .collect(toList());
   }
 
@@ -769,7 +769,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static Class<?> getAttributeValueClass(Attribute<?> attribute) {
     Class<?> valueClass = attribute.valueClass();
     if (attribute instanceof ForeignKey) {
-      valueClass = ((ForeignKey) attribute).referencedEntityType().entityClass();
+      valueClass = ((ForeignKey) attribute).referencedType().entityClass();
     }
 
     return valueClass;

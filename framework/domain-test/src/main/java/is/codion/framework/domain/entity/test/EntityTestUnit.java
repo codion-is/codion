@@ -138,7 +138,7 @@ public class EntityTestUnit {
    * @throws DatabaseException in case of an exception
    */
   protected Entity initializeForeignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities) throws DatabaseException {
-    return EntityTestUtil.createRandomEntity(getEntities(), foreignKey.referencedEntityType(), foreignKeyEntities);
+    return EntityTestUtil.createRandomEntity(getEntities(), foreignKey.referencedType(), foreignKeyEntities);
   }
 
   /**
@@ -164,9 +164,9 @@ public class EntityTestUnit {
                                                                EntityConnection connection) throws DatabaseException {
     List<ForeignKey> foreignKeys = new ArrayList<>(getEntities().getDefinition(entityType).getForeignKeys());
     //we have to start with non-self-referential ones
-    foreignKeys.sort((fk1, fk2) -> !fk1.referencedEntityType().equals(entityType) ? -1 : 1);
+    foreignKeys.sort((fk1, fk2) -> !fk1.referencedType().equals(entityType) ? -1 : 1);
     for (ForeignKey foreignKey : foreignKeys) {
-      EntityType referencedEntityType = foreignKey.referencedEntityType();
+      EntityType referencedEntityType = foreignKey.referencedType();
       if (!foreignKeyEntities.containsKey(foreignKey)) {
         if (!Objects.equals(entityType, referencedEntityType)) {
           foreignKeyEntities.put(foreignKey, null);//short circuit recursion, value replaced below

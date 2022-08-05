@@ -864,7 +864,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     @Override
     public Comparator<?> getComparator(Attribute<?> attribute) {
       if (attribute instanceof ForeignKey) {
-        return entities.getDefinition(((ForeignKey) attribute).referencedEntityType()).getComparator();
+        return entities.getDefinition(((ForeignKey) attribute).referencedType()).getComparator();
       }
 
       return entities.getDefinition(attribute.entityType()).getProperty(attribute).comparator();

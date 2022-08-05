@@ -157,7 +157,7 @@ public final class StringFactory {
     private ForeignKeyValueProvider(ForeignKey foreignKey, Attribute<?> attribute) {
       this.foreignKey = requireNonNull(foreignKey, "foreignKey");
       this.attribute = requireNonNull(attribute, ATTRIBUTE_PARAM);
-      if (!attribute.entityType().equals(foreignKey.referencedEntityType())) {
+      if (!attribute.entityType().equals(foreignKey.referencedType())) {
         throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + foreignKey.entityType());
       }
     }

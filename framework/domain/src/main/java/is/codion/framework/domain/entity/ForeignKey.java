@@ -10,7 +10,7 @@ public interface ForeignKey extends Attribute<Entity> {
   /**
    * @return the entity type referenced by this foreign key
    */
-  EntityType referencedEntityType();
+  EntityType referencedType();
 
   /**
    * @return the {@link Reference}s that comprise this key

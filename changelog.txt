@@ -8325,3 +8325,4 @@
   Condition and subclasses, get prefix removed from accessors, getConditionString() renamed toString()
   DomainType, EntityType, Attribute, Property and subclasses, SelectQuery, ConditionType, OrderBy, ForeignKey, ForeignKey.Reference, get prefix removed from accessors
   Item, get prefix removed from accessors
+  ForeignKey.referencedEntityType() renamed referencedType()

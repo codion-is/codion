@@ -22,7 +22,7 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
   }
 
   @Override
-  public EntityType referencedEntityType() {
+  public EntityType referencedType() {
     return references.get(0).referencedAttribute().entityType();
   }
 

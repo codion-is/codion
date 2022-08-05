@@ -83,7 +83,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
 
     DefaultForeignKeyPropertyBuilder(ForeignKey foreignKey, String caption) {
       super(foreignKey, caption);
-      this.referencedEntityType = foreignKey.referencedEntityType();
+      this.referencedEntityType = foreignKey.referencedType();
       this.fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
       this.softReference = false;
     }

@@ -66,7 +66,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   public FXEntityListModel createForeignKeyListModel(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
-    FXEntityListModel entityListModel = new FXEntityListModel(foreignKey.referencedEntityType(), getConnectionProvider());
+    FXEntityListModel entityListModel = new FXEntityListModel(foreignKey.referencedType(), getConnectionProvider());
     refreshingObserver.addState(entityListModel.getRefreshingObserver());
 
     return entityListModel;

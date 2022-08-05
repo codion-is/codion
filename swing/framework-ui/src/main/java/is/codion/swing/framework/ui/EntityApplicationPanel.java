@@ -1457,7 +1457,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
     return entities.getDefinition(entityType).getForeignKeys().stream()
-            .allMatch(foreignKey -> foreignKey.referencedEntityType().equals(entityType));
+            .allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
   }
 
   /**

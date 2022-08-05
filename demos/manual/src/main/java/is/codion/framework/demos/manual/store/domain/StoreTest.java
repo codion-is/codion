@@ -44,7 +44,7 @@ public class StoreTest extends EntityTestUnit {
                                               Map<ForeignKey, Entity> foreignKeyEntities)
           throws DatabaseException {
     //see if the currently running test requires an ADDRESS entity
-    if (foreignKey.referencedEntityType().equals(Address.TYPE)) {
+    if (foreignKey.referencedType().equals(Address.TYPE)) {
       return getEntities().builder(Address.TYPE)
               .with(Address.ID, 21L)
               .with(Address.STREET, "One Way")
