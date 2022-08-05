@@ -19,22 +19,22 @@ public interface FilteredTableSearchModel {
   /**
    * @return the state controlling whether regular expressions should be used when searching
    */
-  State getRegularExpressionSearchState();
+  State regularExpressionSearchState();
 
   /**
    * @return the state controlling whether searching is case-sensitive
    */
-  State getCaseSensitiveSearchState();
+  State caseSensitiveSearchState();
 
   /**
    * @return the Value for the search string
    */
-  Value<String> getSearchStringValue();
+  Value<String> searchStringValue();
 
   /**
    * @return the value for the search predicate
    */
-  Value<Predicate<String>> getSearchPredicateValue();
+  Value<Predicate<String>> searchPredicateValue();
 
   /**
    * Finds the next value and selects the row, if none is found the selection is cleared
@@ -63,7 +63,7 @@ public interface FilteredTableSearchModel {
   /**
    * @return an unmodifiable view of all row/column search results
    */
-  List<RowColumn> getSearchResults();
+  List<RowColumn> searchResults();
 
   /**
    * @return the selected search result row/column if available, otherwise one with row: -1 and column: -1
@@ -85,11 +85,11 @@ public interface FilteredTableSearchModel {
     /**
      * @return the row
      */
-    int getRow();
+    int row();
 
     /**
      * @return the column
      */
-    int getColumn();
+    int column();
   }
 }

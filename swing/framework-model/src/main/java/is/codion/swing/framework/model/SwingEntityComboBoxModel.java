@@ -90,12 +90,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final EntityConnectionProvider getConnectionProvider() {
+  public final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
   }
 
   @Override
-  public final EntityType getEntityType() {
+  public final EntityType entityType() {
     return entityType;
   }
 
@@ -155,7 +155,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   public final Optional<Entity> getEntity(Key primaryKey) {
     requireNonNull(primaryKey);
 
-    return getItems().stream()
+    return items().stream()
             .filter(entity -> entity != null && entity.getPrimaryKey().equals(primaryKey))
             .findFirst();
   }
@@ -170,7 +170,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     else {
       int filteredIndexOfKey = getFilteredIndexOfKey(primaryKey);
       if (filteredIndexOfKey >= 0) {
-        setSelectedItem(getFilteredItems().get(filteredIndexOfKey));
+        setSelectedItem(filteredItems().get(filteredIndexOfKey));
       }
     }
   }
@@ -186,7 +186,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final Predicate<Entity> getForeignKeyIncludeCondition() {
+  public final Predicate<Entity> foreignKeyIncludeCondition() {
     return foreignKeyIncludeCondition;
   }
 
@@ -244,8 +244,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   public final <T> Value<T> selectorValue(Attribute<T> attribute) {
-    if (!entities.getDefinition(getEntityType()).containsAttribute(attribute)) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + getEntityType());
+    if (!entities.getDefinition(entityType()).containsAttribute(attribute)) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
     }
 
     return selectorValue(new EntityFinder<>(attribute));
@@ -267,7 +267,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
     String itemToString = item.toString();
 
-    return getVisibleItems().stream()
+    return visibleItems().stream()
             .filter(visibleItem -> visibleItem != null && itemToString.equals(visibleItem.toString()))
             .findFirst()
             //item not found, select null value
@@ -316,7 +316,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   private int getFilteredIndexOfKey(Key primaryKey) {
-    List<Entity> filteredItems = getFilteredItems();
+    List<Entity> filteredItems = filteredItems();
     for (int index = 0; index < filteredItems.size(); index++) {
       Entity item = filteredItems.get(index);
       if (item.getPrimaryKey().equals(primaryKey)) {
@@ -341,8 +341,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private void linkForeignKeyComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel,
                                            boolean filter) {
     ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKey);
-    if (!foreignKeyProperty.referencedEntityType().equals(foreignKeyModel.getEntityType())) {
-      throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.getEntityType()
+    if (!foreignKeyProperty.referencedEntityType().equals(foreignKeyModel.entityType())) {
+      throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.entityType()
               + ", should be: " + foreignKeyProperty.referencedEntityType());
     }
     //if foreign key filter entities have been set previously, initialize with one of those
@@ -386,7 +386,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     };
     foreignKeyModel.addSelectionListener(listener);
     //initialize
-    listener.onEvent(getSelectedValue());
+    listener.onEvent(selectedValue());
   }
 
   private void addEditEventListeners() {
@@ -457,7 +457,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
 
     @Override
-    public Predicate<Entity> getPredicate(T value) {
+    public Predicate<Entity> createPredicate(T value) {
       return entity -> Objects.equals(entity.get(attribute), value);
     }
   }

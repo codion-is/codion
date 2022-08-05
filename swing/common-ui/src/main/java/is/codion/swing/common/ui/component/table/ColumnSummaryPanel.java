@@ -35,7 +35,7 @@ public final class ColumnSummaryPanel extends JPanel {
   private static JTextField initializeSummaryField(ColumnSummaryModel model) {
     JPopupMenu menu = createPopupMenu(model);
     return Components.textField()
-            .linkedValueObserver(model.getSummaryTextObserver())
+            .linkedValueObserver(model.summaryTextObserver())
             .horizontalAlignment(SwingConstants.RIGHT)
             .editable(false)
             .focusable(false)
@@ -43,7 +43,7 @@ public final class ColumnSummaryPanel extends JPanel {
             .mouseListener(new MouseAdapter() {
               @Override
               public void mouseReleased(MouseEvent e) {
-                if (!model.getLockedState().get()) {
+                if (!model.lockedState().get()) {
                   menu.show(e.getComponent(), e.getX(), e.getY() - menu.getPreferredSize().height);
                 }
               }
@@ -54,12 +54,12 @@ public final class ColumnSummaryPanel extends JPanel {
   private static JPopupMenu createPopupMenu(ColumnSummaryModel model) {
     JPopupMenu popupMenu = new JPopupMenu();
     ButtonGroup group = new ButtonGroup();
-    for (ColumnSummaryModel.Summary summary : model.getAvailableSummaries()) {
-      JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder(() -> model.getSummaryValue().set(summary))
+    for (ColumnSummaryModel.Summary summary : model.availableSummaries()) {
+      JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder(() -> model.summaryValue().set(summary))
               .caption(summary.toString())
               .build());
-      model.getSummaryValue().addDataListener(newSummary -> item.setSelected(newSummary.equals(summary)));
-      item.setSelected(model.getSummaryValue().equals(summary));
+      model.summaryValue().addDataListener(newSummary -> item.setSelected(newSummary.equals(summary)));
+      item.setSelected(model.summaryValue().equals(summary));
       group.add(item);
       popupMenu.add(item);
     }

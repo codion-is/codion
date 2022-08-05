@@ -73,7 +73,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   EntityPanelBuilder(SwingEntityModel model) {
     this.model = requireNonNull(model, "model");
-    this.entityType = model.getEntityType();
+    this.entityType = model.entityType();
     this.modelBuilder = null;
   }
 
@@ -234,7 +234,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       }
       onBuildPanel.accept(entityPanel);
       if (refreshOnInit && model.containsTableModel()) {
-        model.getTableModel().refresh();
+        model.tableModel().refresh();
       }
 
       return entityPanel;
@@ -285,16 +285,16 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     try {
       EntityPanel entityPanel;
       if (getPanelClass().equals(EntityPanel.class)) {
-        EntityTablePanel tablePanel = entityModel.containsTableModel() ? createTablePanel(entityModel.getTableModel()) : null;
-        EntityEditPanel editPanel = getEditPanelClass() == null ? null : createEditPanel(entityModel.getEditModel());
+        EntityTablePanel tablePanel = entityModel.containsTableModel() ? createTablePanel(entityModel.tableModel()) : null;
+        EntityEditPanel editPanel = getEditPanelClass() == null ? null : createEditPanel(entityModel.editModel());
         entityPanel = getPanelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
                 .newInstance(entityModel, editPanel, tablePanel);
       }
       else {
         entityPanel = findModelConstructor(getPanelClass()).newInstance(entityModel);
       }
-      entityPanel.setCaption(caption == null ? entityModel.getConnectionProvider()
-              .entities().getDefinition(entityModel.getEntityType()).getCaption() : caption);
+      entityPanel.setCaption(caption == null ? entityModel.connectionProvider()
+              .entities().getDefinition(entityModel.entityType()).getCaption() : caption);
       if (preferredSize != null) {
         entityPanel.setPreferredSize(preferredSize);
       }
@@ -313,8 +313,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     if (editPanelClass == null) {
       throw new IllegalArgumentException("No edit panel class has been specified for entity panel builder: " + entityType);
     }
-    if (!editModel.getEntityType().equals(entityType)) {
-      throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.getEntityType() + ", required: " + entityType);
+    if (!editModel.entityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.entityType() + ", required: " + entityType);
     }
     try {
       EntityEditPanel editPanel = findEditModelConstructor(editPanelClass).newInstance(editModel);
@@ -332,8 +332,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   private EntityTablePanel createTablePanel(SwingEntityTableModel tableModel) {
     try {
-      if (!tableModel.getEntityType().equals(entityType)) {
-        throw new IllegalArgumentException("Entity type mismatch, tableModel: " + tableModel.getEntityType() + ", required: " + entityType);
+      if (!tableModel.entityType().equals(entityType)) {
+        throw new IllegalArgumentException("Entity type mismatch, tableModel: " + tableModel.entityType() + ", required: " + entityType);
       }
       EntityTablePanel tablePanel = findTableModelConstructor(getTablePanelClass()).newInstance(tableModel);
       onBuildTablePanel.accept(tablePanel);
@@ -406,7 +406,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     private final List<Entity> insertedEntities = new ArrayList<>();
 
     private InsertEntityAction(EntityComboBox comboBox) {
-      this(requireNonNull(comboBox, "comboBox"), comboBox.getModel().getConnectionProvider(), inserted -> {
+      this(requireNonNull(comboBox, "comboBox"), comboBox.getModel().connectionProvider(), inserted -> {
         EntityComboBoxModel comboBoxModel = comboBox.getModel();
         Entity item = inserted.get(0);
         comboBoxModel.addItem(item);

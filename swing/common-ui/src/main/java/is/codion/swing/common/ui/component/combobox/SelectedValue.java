@@ -26,7 +26,7 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
   protected T getComponentValue() {
     ComboBoxModel<T> comboBoxModel = getComponent().getModel();
     if (comboBoxModel instanceof FilteredComboBoxModel) {
-      return ((FilteredComboBoxModel<T>) comboBoxModel).getSelectedValue();
+      return ((FilteredComboBoxModel<T>) comboBoxModel).selectedValue();
     }
 
     return (T) comboBoxModel.getSelectedItem();

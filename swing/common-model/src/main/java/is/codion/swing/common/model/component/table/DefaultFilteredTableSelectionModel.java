@@ -46,7 +46,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   DefaultFilteredTableSelectionModel(FilteredTableModel<R, ?> tableModel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.tableModel.addRowsRemovedListener(removal ->
-            DefaultFilteredTableSelectionModel.super.removeIndexInterval(removal.getFromRow(), removal.getToRow()));
+            DefaultFilteredTableSelectionModel.super.removeIndexInterval(removal.fromRow(), removal.toRow()));
     bindEvents();
   }
 
@@ -60,7 +60,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   }
 
   @Override
-  public State getSingleSelectionModeState() {
+  public State singleSelectionModeState() {
     return singleSelectionModeState;
   }
 
@@ -91,7 +91,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   }
 
   @Override
-  public int getSelectionCount() {
+  public int selectionCount() {
     if (isSelectionEmpty()) {
       return 0;
     }
@@ -275,7 +275,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
     super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
     if (!isAdjusting) {
       selectionEmptyState.set(isSelectionEmpty());
-      singleSelectionState.set(getSelectionCount() == 1);
+      singleSelectionState.set(selectionCount() == 1);
       int minSelIndex = getMinSelectionIndex();
       if (selectedIndex != minSelIndex) {
         selectedIndex = minSelIndex;
@@ -344,22 +344,22 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   }
 
   @Override
-  public StateObserver getMultipleSelectionObserver() {
+  public StateObserver multipleSelectionObserver() {
     return multipleSelectionObserver;
   }
 
   @Override
-  public StateObserver getSingleSelectionObserver() {
+  public StateObserver singleSelectionObserver() {
     return singleSelectionState.observer();
   }
 
   @Override
-  public StateObserver getSelectionEmptyObserver() {
+  public StateObserver selectionEmptyObserver() {
     return selectionEmptyState.observer();
   }
 
   @Override
-  public StateObserver getSelectionNotEmptyObserver() {
+  public StateObserver selectionNotEmptyObserver() {
     return selectionEmptyState.reversedObserver();
   }
 

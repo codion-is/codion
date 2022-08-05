@@ -124,7 +124,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @return the FilteredTableColumnModel used by this TableModel
    */
-  FilteredTableColumnModel<C> getColumnModel();
+  FilteredTableColumnModel<C> columnModel();
 
   /**
    * Returns the {@link ColumnSummaryModel} associated with {@code columnIdentifier}
@@ -136,7 +136,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @return the column filter models, mapped to their respective column identifier
    */
-  Map<C, ColumnFilterModel<R, C, ?>> getColumnFilterModels();
+  Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels();
 
   /**
    * Returns the {@link ColumnConditionModel} for the column with the given identifier.
@@ -181,7 +181,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * Sorts the visible contents according to the {@link FilteredTableSortModel}, keeping the selected items.
    * Calling this method with the sort model disabled has no effect.
-   * @see #getSortModel()
+   * @see #sortModel()
    * @see #addSortListener(EventListener)
    * @see FilteredTableSortModel#isSortingEnabled
    */
@@ -190,17 +190,17 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @return the selection model used by this table model
    */
-  FilteredTableSelectionModel<R> getSelectionModel();
+  FilteredTableSelectionModel<R> selectionModel();
 
   /**
    * @return the sorting model
    */
-  FilteredTableSortModel<R, C> getSortModel();
+  FilteredTableSortModel<R, C> sortModel();
 
   /**
    * @return the search model
    */
-  FilteredTableSearchModel getSearchModel();
+  FilteredTableSearchModel searchModel();
 
   /**
    * Refreshes the items in this table model, respecting the selection, filtering as well as sorting states.
@@ -285,11 +285,11 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
     /**
      * @return the from row index
      */
-    int getFromRow();
+    int fromRow();
 
     /**
      * @return the to row index
      */
-    int getToRow();
+    int toRow();
   }
 }

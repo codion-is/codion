@@ -127,7 +127,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected EntityEditComponentPanel(SwingEntityEditModel editModel) {
     this.editModel = requireNonNull(editModel, "editModel");
-    this.entityComponents = new EntityComponents(editModel.getEntityDefinition());
+    this.entityComponents = new EntityComponents(editModel.entityDefinition());
   }
 
   /**
@@ -254,7 +254,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @see #requestComponentFocus(Attribute)
    */
   public void selectInputComponent() {
-    Entities entities = getEditModel().getEntities();
+    Entities entities = getEditModel().entities();
     List<Property<?>> properties = getSelectComponentAttributes().stream()
             .map(attribute -> entities.getDefinition(attribute.entityType()).getProperty(attribute))
             .collect(Collectors.toList());
@@ -795,7 +795,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a label builder for the given attribute
    */
   protected final <T> LabelBuilder<T> createLabel(Attribute<T> attribute) {
-    Property<T> property = getEditModel().getEntities()
+    Property<T> property = getEditModel().entities()
             .getDefinition(requireNonNull(attribute).entityType()).getProperty(attribute);
     return (LabelBuilder<T>) Components.label(property.caption())
             .displayedMnemonic(property.mnemonic() == null ? 0 : property.mnemonic())

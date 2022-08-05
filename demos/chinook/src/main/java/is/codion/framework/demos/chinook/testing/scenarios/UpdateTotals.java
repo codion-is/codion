@@ -24,13 +24,13 @@ public final class UpdateTotals extends AbstractEntityUsageScenario<ChinookAppli
   @Override
   protected void perform(ChinookApplicationModel application) throws Exception {
     SwingEntityModel customerModel = application.getEntityModel(Customer.TYPE);
-    customerModel.getTableModel().refresh();
-    selectRandomRows(customerModel.getTableModel(), random.nextInt(6) + 2);
+    customerModel.tableModel().refresh();
+    selectRandomRows(customerModel.tableModel(), random.nextInt(6) + 2);
     SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
-    selectRandomRows(invoiceModel.getTableModel(), random.nextInt(6) + 2);
+    selectRandomRows(invoiceModel.tableModel(), random.nextInt(6) + 2);
     SwingEntityTableModel invoiceLineTableModel =
-            invoiceModel.getDetailModel(InvoiceLine.TYPE).getTableModel();
-    List<Entity> invoiceLines = invoiceLineTableModel.getItems();
+            invoiceModel.getDetailModel(InvoiceLine.TYPE).tableModel();
+    List<Entity> invoiceLines = invoiceLineTableModel.items();
     Entity.put(InvoiceLine.QUANTITY, random.nextInt(4) + 1, invoiceLines);
 
     invoiceLineTableModel.update(invoiceLines);

@@ -47,7 +47,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
     SwingEntityModel lookupModel = applicationModel.getEntityModel(Lookup.TYPE);
     EntityPanel lookupPanel = new EntityPanel(lookupModel,
-            new LookupTablePanel(lookupModel.getTableModel()));
+            new LookupTablePanel(lookupModel.tableModel()));
 
     return asList(countryPanel, continentPanel, lookupPanel);
   }

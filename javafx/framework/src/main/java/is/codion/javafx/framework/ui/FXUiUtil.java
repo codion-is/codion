@@ -701,7 +701,7 @@ public final class FXUiUtil {
   public static ComboBox<Entity> createForeignKeyComboBox(ForeignKey foreignKey, FXEntityEditModel editModel) {
     FXEntityListModel listModel = requireNonNull(editModel).getForeignKeyListModel(requireNonNull(foreignKey));
     listModel.refresh();
-    ComboBox<Entity> box = new ComboBox<>(listModel.getSortedList());
+    ComboBox<Entity> box = new ComboBox<>(listModel.sortedList());
     listModel.setSelectionModel(box.getSelectionModel());
     PropertyValues.selectedValue(box.getSelectionModel()).link(editModel.value(foreignKey));
 
@@ -927,7 +927,7 @@ public final class FXUiUtil {
     ObservableEntityList entityList = new ObservableEntityList(property.referencedEntityType(), connectionProvider);
     entityList.refresh();
 
-    return entityList.getSortedList();
+    return entityList.sortedList();
   }
 
   private static final class ValidationChangeListener implements ChangeListener<String> {

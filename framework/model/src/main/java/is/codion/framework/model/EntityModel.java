@@ -43,27 +43,27 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * @return the type of the entity this entity model is based on
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the connection provider used by this entity model
    */
-  EntityConnectionProvider getConnectionProvider();
+  EntityConnectionProvider connectionProvider();
 
   /**
    * @return the underlying domain entities
    */
-  Entities getEntities();
+  Entities entities();
 
   /**
    * @return the {@link EntityEditModel} instance used by this {@link EntityModel}
    */
-  E getEditModel();
+  E editModel();
 
   /**
    * @return the {@link EntityTableModel}, null if none is specified
    */
-  T getTableModel();
+  T tableModel();
 
   /**
    * @return true if this {@link EntityModel} contains a {@link EntityTableModel}
@@ -73,7 +73,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * @return an unmodifiable collection containing the detail models that are currently linked to this model
    */
-  Collection<M> getLinkedDetailModels();
+  Collection<M> linkedDetailModels();
 
   /**
    * Adds the given model to the currently linked detail models. Linked models are updated and filtered according
@@ -124,7 +124,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Adds the given detail model to this model, sets this model as the master model of the
    * given detail models via {@link #setMasterModel(EntityModel)}, a side effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
-   * any data, via {@link EntityTableModel#getQueryConditionRequiredState()}
+   * any data, via {@link EntityTableModel#queryConditionRequiredState()}
    * @param detailModels the detail models to add
    */
   void addDetailModels(M... detailModels);
@@ -133,7 +133,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Adds the given detail model to this model, sets this model as the master model of the
    * given detail model via {@link #setMasterModel(EntityModel)}, a side effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
-   * any data, via {@link EntityTableModel#getQueryConditionRequiredState()}
+   * any data, via {@link EntityTableModel#queryConditionRequiredState()}
    * @param detailModel the detail model
    * @return the detail model just added
    */
@@ -177,7 +177,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * @return an unmodifiable collection containing the detail models this model contains
    */
-  Collection<M> getDetailModels();
+  Collection<M> detailModels();
 
   /**
    * Indicates that the given detail model is based on the foreign key attribute, this becomes

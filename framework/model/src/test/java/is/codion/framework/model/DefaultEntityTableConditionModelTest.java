@@ -39,11 +39,11 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   void test() {
-    assertEquals(TestDomain.T_EMP, conditionModel.getEntityType());
+    assertEquals(TestDomain.T_EMP, conditionModel.entityType());
     conditionModel.setConjunction(Conjunction.OR);
     assertEquals(Conjunction.OR, conditionModel.getConjunction());
-    assertEquals(7, conditionModel.getFilterModels().size());
-    assertEquals(10, conditionModel.getConditionModels().size());
+    assertEquals(7, conditionModel.filterModels().size());
+    assertEquals(10, conditionModel.conditionModels().size());
 
     assertFalse(conditionModel.isFilterEnabled(TestDomain.EMP_DEPARTMENT_FK));
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
@@ -63,7 +63,7 @@ public class DefaultEntityTableConditionModelTest {
     ColumnConditionModel<? extends Attribute<Entity>, Entity> masterModel =
             model.getConditionModel(TestDomain.DETAIL_MASTER_FK);
     assertThrows(IllegalStateException.class, () ->
-            ((DefaultForeignKeyConditionModel) masterModel).getEntitySearchModel().performQuery());
+            ((DefaultForeignKeyConditionModel) masterModel).entitySearchModel().performQuery());
   }
 
   @Test
@@ -183,16 +183,16 @@ public class DefaultEntityTableConditionModelTest {
   void testSimpleSearchString() {
     final String value = "test";
     char wildcard = Text.WILDCARD_CHARACTER.get();
-    conditionModel.getSimpleConditionStringValue().set(value);
-    for (ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
-      if (model.getColumnClass().equals(String.class)) {
+    conditionModel.simpleConditionStringValue().set(value);
+    for (ColumnConditionModel<?, ?> model : conditionModel.conditionModels().values()) {
+      if (model.columnClass().equals(String.class)) {
         assertEquals(wildcard + value + wildcard, model.getEqualValue());
         assertTrue(model.isEnabled());
       }
     }
-    conditionModel.getSimpleConditionStringValue().set(null);
-    for (ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
-      if (model.getColumnClass().equals(String.class)) {
+    conditionModel.simpleConditionStringValue().set(null);
+    for (ColumnConditionModel<?, ?> model : conditionModel.conditionModels().values()) {
+      if (model.columnClass().equals(String.class)) {
         assertNull(model.getUpperBound());
         assertFalse(model.isEnabled());
       }

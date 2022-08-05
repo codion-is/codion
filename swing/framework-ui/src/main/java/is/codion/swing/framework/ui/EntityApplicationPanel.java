@@ -258,7 +258,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final EntityPanel getEntityPanel(EntityType entityType) {
     return entityPanels.stream()
-            .filter(entityPanel -> entityPanel.getModel().getEntityType().equals(entityType))
+            .filter(entityPanel -> entityPanel.getModel().entityType().equals(entityType))
             .findFirst()
             .orElse(null);
   }
@@ -455,7 +455,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       LOG.debug("Exception while saving preferences", e);
     }
     try {
-      applicationModel.getConnectionProvider().close();
+      applicationModel.connectionProvider().close();
     }
     catch (Exception e) {
       LOG.debug("Exception while disconnecting from database", e);
@@ -843,7 +843,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     Comparator<String> comparator = Text.getSpaceAwareCollator();
-    Entities entities = applicationModel.getEntities();
+    Entities entities = applicationModel.entities();
     supportPanelBuilders.sort((ep1, ep2) -> {
       String thisCompare = ep1.getCaption() == null ? entities.getDefinition(ep1.getEntityType()).getCaption() : ep1.getCaption();
       String thatCompare = ep2.getCaption() == null ? entities.getDefinition(ep2.getEntityType()).getCaption() : ep2.getCaption();
@@ -888,7 +888,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       else {
         Windows.frame(entityPanel)
                 .relativeTo(this)
-                .title(panelBuilder.getCaption() == null ? applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
+                .title(panelBuilder.getCaption() == null ? applicationModel.entities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {
                   entityPanel.getModel().savePreferences();
@@ -925,7 +925,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
       else {
         String dialogTitle = panelBuilder.getCaption() == null ?
-                applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() :
+                applicationModel.entities().getDefinition(panelBuilder.getEntityType()).getCaption() :
                 panelBuilder.getCaption();
         Dialogs.componentDialog(entityPanel)
                 .owner(getParentWindow().orElse(null))
@@ -1054,7 +1054,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (builder.length() > 0) {
       builder.append(" - ");
     }
-    builder.append(getUserInfo(getModel().getConnectionProvider()));
+    builder.append(getUserInfo(getModel().connectionProvider()));
 
     return builder.toString();
   }
@@ -1304,7 +1304,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void bindEventsInternal() {
-    applicationModel.getConnectionValidObserver().addDataListener(connectionValid -> SwingUtilities.invokeLater(() ->
+    applicationModel.connectionValidObserver().addDataListener(connectionValid -> SwingUtilities.invokeLater(() ->
             setParentWindowTitle(connectionValid ? getFrameTitle() : (getFrameTitle() + " - " + resourceBundle.getString("not_connected")))));
     alwaysOnTopState.addDataListener(alwaysOnTop ->
             getParentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)));
@@ -1323,7 +1323,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return persistentEntityPanels.get(panelBuilder);
     }
 
-    EntityPanel entityPanel = panelBuilder.buildPanel(applicationModel.getConnectionProvider());
+    EntityPanel entityPanel = panelBuilder.buildPanel(applicationModel.connectionProvider());
     entityPanel.initializePanel();
     if (PERSIST_ENTITY_PANELS.get()) {
       persistentEntityPanels.put(panelBuilder, entityPanel);
@@ -1337,7 +1337,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private JScrollPane createDependencyTree() {
-    return createTree(createDependencyTreeModel(applicationModel.getEntities()));
+    return createTree(createDependencyTreeModel(applicationModel.entities()));
   }
 
   private void setParentWindowTitle(String title) {

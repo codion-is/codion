@@ -54,7 +54,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createDepartmentTableModel() {
-    FXEntityListModel deptModel = new FXEntityListModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
+    FXEntityListModel deptModel = new FXEntityListModel(TestDomain.T_DEPARTMENT, testModel.connectionProvider());
     EntityTableView tableView = new EntityTableView(deptModel);
     tableView.getSortOrder().add(deptModel.getTableColumn(TestDomain.DEPARTMENT_NAME));
 
@@ -63,7 +63,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createEmployeeTableModel() {
-    FXEntityListModel empModel = new FXEntityListModel(TestDomain.T_EMP, testModel.getConnectionProvider());
+    FXEntityListModel empModel = new FXEntityListModel(TestDomain.T_EMP, testModel.connectionProvider());
     new EntityTableView(empModel);
 
     return empModel;

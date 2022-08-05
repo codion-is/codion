@@ -41,27 +41,27 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
   }
 
   @Override
-  public State getRegularExpressionSearchState() {
+  public State regularExpressionSearchState() {
     return regularExpressionSearch;
   }
 
   @Override
-  public State getCaseSensitiveSearchState() {
+  public State caseSensitiveSearchState() {
     return caseSensitiveSearch;
   }
 
   @Override
-  public Value<String> getSearchStringValue() {
+  public Value<String> searchStringValue() {
     return searchStringValue;
   }
 
   @Override
-  public Value<Predicate<String>> getSearchPredicateValue() {
+  public Value<Predicate<String>> searchPredicateValue() {
     return searchPredicateValue;
   }
 
   @Override
-  public List<RowColumn> getSearchResults() {
+  public List<RowColumn> searchResults() {
     return unmodifiableList(new ArrayList<>(searchResults));
   }
 
@@ -119,10 +119,10 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 
   private Optional<RowColumn> selectResult(boolean addToSelection) {
     if (addToSelection) {
-      tableModel.getSelectionModel().addSelectedIndex(searchResultValue.get().getRow());
+      tableModel.selectionModel().addSelectedIndex(searchResultValue.get().row());
     }
     else {
-      tableModel.getSelectionModel().setSelectedIndex(searchResultValue.get().getRow());
+      tableModel.selectionModel().setSelectedIndex(searchResultValue.get().row());
     }
 
     return searchResultValue.toOptional();
@@ -130,7 +130,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
 
   private Optional<RowColumn> emptyResult(boolean addToSelection) {
     if (!addToSelection) {
-      tableModel.getSelectionModel().clearSelection();
+      tableModel.selectionModel().clearSelection();
     }
 
     return Optional.empty();
@@ -152,7 +152,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
     Predicate<String> predicate = searchPredicateValue.get();
     for (int row = 0; row < tableModel.getRowCount(); row++) {
       for (int column = 0; column < tableModel.getColumnCount(); column++) {
-        if (predicate.test(tableModel.getStringAt(row, (C) tableModel.getColumnModel().getColumn(column).getIdentifier()))) {
+        if (predicate.test(tableModel.getStringAt(row, (C) tableModel.columnModel().getColumn(column).getIdentifier()))) {
           searchResults.add(new DefaultRowColumn(row, column));
         }
       }
@@ -170,7 +170,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
     searchPredicateValue.addListener(this::performSearch);
     regularExpressionSearch.addListener(() -> searchStringValue.set(null));
     caseSensitiveSearch.addListener(this::performSearch);
-    tableModel.getColumnModel().addColumnModelListener(new ClearSearchListener());
+    tableModel.columnModel().addColumnModelListener(new ClearSearchListener());
     tableModel.addTableDataChangedListener(() -> {
       clearSearchResults();
       performSearch();
@@ -242,12 +242,12 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
     }
 
     @Override
-    public int getRow() {
+    public int row() {
       return row;
     }
 
     @Override
-    public int getColumn() {
+    public int column() {
       return column;
     }
 
@@ -258,8 +258,8 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
       }
 
       return obj instanceof DefaultFilteredTableSearchModel.DefaultRowColumn &&
-              ((DefaultRowColumn) obj).getRow() == getRow() &&
-              ((DefaultRowColumn) obj).getColumn() == getColumn();
+              ((DefaultRowColumn) obj).row() == row() &&
+              ((DefaultRowColumn) obj).column() == column();
     }
 
     @Override

@@ -28,7 +28,7 @@ public class SearchValueLinkTest {
           .build();
 
   private final EntityEditModel model = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
-  private final EntityComponents inputComponents = new EntityComponents(model.getEntityDefinition());
+  private final EntityComponents inputComponents = new EntityComponents(model.entityDefinition());
 
   @Test
   void test() throws Exception {
@@ -38,11 +38,11 @@ public class SearchValueLinkTest {
     componentValue.link(model.value(TestDomain.EMP_DEPARTMENT_FK));
     EntitySearchModel searchModel = componentValue.getComponent().getModel();
     assertEquals(0, searchModel.getSelectedEntities().size());
-    Entity department = model.getConnectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity department = model.connectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     model.put(TestDomain.EMP_DEPARTMENT_FK, department);
     assertEquals(searchModel.getSelectedEntities().size(), 1);
     assertEquals(searchModel.getSelectedEntities().iterator().next(), department);
-    department = model.getConnectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+    department = model.connectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
     searchModel.setSelectedEntity(department);
     assertEquals(model.get(TestDomain.EMP_DEPARTMENT_FK), department);
   }

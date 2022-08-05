@@ -21,7 +21,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 final class ContinentPanel extends EntityPanel {
 
   ContinentPanel(SwingEntityModel continentModel) {
-    super(continentModel, new ContinentTablePanel(continentModel.getTableModel()));
+    super(continentModel, new ContinentTablePanel(continentModel.tableModel()));
   }
 
   @Override

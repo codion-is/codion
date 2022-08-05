@@ -66,12 +66,12 @@ public interface EntityEditModel {
   /**
    * @return the type of the entity this edit model is based on
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the connection provider used by this edit model
    */
-  EntityConnectionProvider getConnectionProvider();
+  EntityConnectionProvider connectionProvider();
 
   /**
    * Populates this edit model with default values.
@@ -99,7 +99,7 @@ public interface EntityEditModel {
    * @return a deep copy of the active entity
    * @see is.codion.framework.domain.entity.Entity#copy()
    */
-  Entity getEntityCopy();
+  Entity entityCopy();
 
   /**
    * Returns true if the active entity is new or false if it represents a row already persisted.
@@ -190,12 +190,12 @@ public interface EntityEditModel {
   /**
    * @return the underlying domain entities
    */
-  Entities getEntities();
+  Entities entities();
 
   /**
    * @return the definition of the underlying entity
    */
-  EntityDefinition getEntityDefinition();
+  EntityDefinition entityDefinition();
 
   /**
    * @return true if this model is read only, that is if the insert, update and delete operations are not enabled
@@ -478,13 +478,13 @@ public interface EntityEditModel {
   /**
    * @return the validator
    */
-  EntityValidator getValidator();
+  EntityValidator validator();
 
   /**
    * Validates the value associated with the given attribute, using the underlying validator.
    * @param attribute the attribute the value is associated with
    * @throws ValidationException if the given value is not valid for the given attribute
-   * @see #getValidator()
+   * @see #validator()
    */
   void validate(Attribute<?> attribute) throws ValidationException;
 
@@ -500,7 +500,7 @@ public interface EntityEditModel {
    * their respective validators are used.
    * @param entities the entities to validate
    * @throws ValidationException on finding the first invalid entity
-   * @see #getValidator()
+   * @see #validator()
    * @see EntityDefinition#getValidator()
    */
   void validate(Collection<Entity> entities) throws ValidationException;
@@ -512,7 +512,7 @@ public interface EntityEditModel {
    * @param entity the entity to validate
    * @throws ValidationException in case the entity is invalid
    * @throws NullPointerException in case the entity is null
-   * @see #getValidator()
+   * @see #validator()
    */
   void validate(Entity entity) throws ValidationException;
 
@@ -533,7 +533,7 @@ public interface EntityEditModel {
 
   /**
    * @return a StateObserver indicating the valid status of the underlying Entity.
-   * @see #getValidator()
+   * @see #validator()
    * @see #isValid()
    */
   StateObserver getValidObserver();

@@ -44,13 +44,13 @@ public class DefaultFilteredTableSelectionModelTest {
 
       @Override
       public boolean allowSelectionChange() {
-        String selected = getSelectionModel().getSelectedItem();
+        String selected = selectionModel().getSelectedItem();
         return !"C".equals(selected);
       }
     };
     tableModel.refresh();
 
-    testModel = tableModel.getSelectionModel();
+    testModel = tableModel.selectionModel();
   }
 
   @Test
@@ -69,26 +69,26 @@ public class DefaultFilteredTableSelectionModelTest {
 
   @Test
   void selectionMode() {
-    assertFalse(testModel.getSingleSelectionModeState().get());
+    assertFalse(testModel.singleSelectionModeState().get());
     testModel.setSelectionMode(SINGLE_SELECTION);
-    assertTrue(testModel.getSingleSelectionModeState().get());
+    assertTrue(testModel.singleSelectionModeState().get());
     testModel.setSelectionMode(SINGLE_INTERVAL_SELECTION);
-    assertFalse(testModel.getSingleSelectionModeState().get());
+    assertFalse(testModel.singleSelectionModeState().get());
     testModel.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
-    assertFalse(testModel.getSingleSelectionModeState().get());
+    assertFalse(testModel.singleSelectionModeState().get());
     testModel.setSelectionMode(SINGLE_SELECTION);
-    assertTrue(testModel.getSingleSelectionModeState().get());
-    testModel.getSingleSelectionModeState().set(false);
+    assertTrue(testModel.singleSelectionModeState().get());
+    testModel.singleSelectionModeState().set(false);
     assertEquals(MULTIPLE_INTERVAL_SELECTION, testModel.getSelectionMode());
     testModel.setSelectionMode(SINGLE_SELECTION);
-    assertTrue(testModel.getSingleSelectionModeState().get());
+    assertTrue(testModel.singleSelectionModeState().get());
     assertEquals(SINGLE_SELECTION, testModel.getSelectionMode());
   }
 
   @Test
   void events() {
     AtomicInteger emptyCounter = new AtomicInteger();
-    testModel.getSelectionEmptyObserver().addListener(emptyCounter::incrementAndGet);
+    testModel.selectionEmptyObserver().addListener(emptyCounter::incrementAndGet);
     testModel.setSelectedIndex(0);
     assertEquals(1, emptyCounter.get());
     testModel.addSelectedIndex(1);

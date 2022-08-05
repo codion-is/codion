@@ -62,32 +62,32 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   /**
    * @return the underlying {@link javafx.scene.control.SelectionModel} instance
    */
-  public javafx.scene.control.SelectionModel<Entity> getSelectionModel() {
+  public javafx.scene.control.SelectionModel<Entity> selectionModel() {
     return selectionModel;
   }
 
   @Override
-  public State getSingleSelectionModeState() {
+  public State singleSelectionModeState() {
     return singleSelectionModeState;
   }
 
   @Override
-  public StateObserver getSelectionEmptyObserver() {
+  public StateObserver selectionEmptyObserver() {
     return selectionEmptyState.observer();
   }
 
   @Override
-  public StateObserver getSelectionNotEmptyObserver() {
+  public StateObserver selectionNotEmptyObserver() {
     return selectionEmptyState.reversedObserver();
   }
 
   @Override
-  public StateObserver getMultipleSelectionObserver() {
+  public StateObserver multipleSelectionObserver() {
     return multipleSelectionState.observer();
   }
 
   @Override
-  public StateObserver getSingleSelectionObserver() {
+  public StateObserver singleSelectionObserver() {
     return singleSelectionState.observer();
   }
 
@@ -247,7 +247,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public int getSelectionCount() {
+  public int selectionCount() {
     if (selectionModel instanceof MultipleSelectionModel) {
       return ((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices().size();
     }

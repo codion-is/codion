@@ -33,7 +33,7 @@ public class DefaultFilteredTableColumnModelTest {
     testModel.setColumnVisible(0, false);
     assertFalse(testModel.isColumnVisible(0));
     assertEquals(1, hidden.size());
-    assertEquals(1, testModel.getHiddenColumns().size());
+    assertEquals(1, testModel.hiddenColumns().size());
     testModel.setColumnVisible(0, true);
     assertTrue(testModel.isColumnVisible(0));
     assertEquals(1, shown.size());
@@ -125,17 +125,17 @@ public class DefaultFilteredTableColumnModelTest {
     FilteredTableColumnModel<Integer> columnModel =
             new DefaultFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
 
-    columnModel.getLockedState().set(true);
+    columnModel.lockedState().set(true);
     assertThrows(IllegalStateException.class, () -> columnModel.setColumnVisible(0, false));
-    columnModel.getLockedState().set(false);
+    columnModel.lockedState().set(false);
     columnModel.setColumnVisible(0, false);
-    columnModel.getLockedState().set(true);
+    columnModel.lockedState().set(true);
     assertThrows(IllegalStateException.class, () -> columnModel.setColumnVisible(0, true));
     assertThrows(IllegalStateException.class, () -> columnModel.setColumns(0));
 
-    columnModel.getLockedState().set(false);
+    columnModel.lockedState().set(false);
     columnModel.setColumns(3, 2, 1);
-    columnModel.getLockedState().set(true);
+    columnModel.lockedState().set(true);
     assertThrows(IllegalStateException.class, () -> columnModel.setColumns(1, 0, 2));
   }
 

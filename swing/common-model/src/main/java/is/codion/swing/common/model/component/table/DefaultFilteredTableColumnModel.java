@@ -57,12 +57,12 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public Collection<TableColumn> getAllColumns() {
+  public Collection<TableColumn> columns() {
     return unmodifiableCollection(columns.values());
   }
 
   @Override
-  public State getLockedState() {
+  public State lockedState() {
     return lockedState;
   }
 
@@ -95,7 +95,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
       showColumn(identifier);
       moveColumn(getColumnIndex(identifier), columnIndex++);
     }
-    for (TableColumn column : getAllColumns()) {
+    for (TableColumn column : columns()) {
       if (!columnIdentifiers.contains(column.getIdentifier())) {
         hideColumn((C) column.getIdentifier());
       }
@@ -103,12 +103,12 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public List<TableColumn> getVisibleColumns() {
+  public List<TableColumn> visibleColumns() {
     return unmodifiableList(Collections.list(tableColumnModel.getColumns()));
   }
 
   @Override
-  public Collection<TableColumn> getHiddenColumns() {
+  public Collection<TableColumn> hiddenColumns() {
     return unmodifiableCollection(hiddenColumns.values().stream()
             .map(hiddenColumn -> hiddenColumn.column)
             .collect(Collectors.toList()));

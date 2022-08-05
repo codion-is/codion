@@ -19,12 +19,12 @@ public final class EmpDeptFXModel extends FXEntityApplicationModel {
 
   private void setupEntityModels() {
     FXEntityModel departmentModel = new FXEntityModel(
-            new FXEntityListModel(Department.TYPE, getConnectionProvider()));
+            new FXEntityListModel(Department.TYPE, connectionProvider()));
     FXEntityModel employeeModel = new FXEntityModel(
-            new FXEntityListModel(Employee.TYPE, getConnectionProvider()));
+            new FXEntityListModel(Employee.TYPE, connectionProvider()));
     departmentModel.addDetailModel(employeeModel);
 
-    departmentModel.getTableModel().refresh();
+    departmentModel.tableModel().refresh();
 
     addEntityModel(departmentModel);
   }

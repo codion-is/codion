@@ -37,7 +37,7 @@ public final class EntityApplicationViewTest {
         FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
         FXEntityModel model = new FXEntityModel(listModel);
 
-        addEntityView(new EntityView(model, new EntityEditViewTest.EmpEditView(listModel.getEditModel()), new EntityTableView(listModel)));
+        addEntityView(new EntityView(model, new EntityEditViewTest.EmpEditView(listModel.editModel()), new EntityTableView(listModel)));
       }
 
       @Override

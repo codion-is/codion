@@ -78,28 +78,28 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the type of the entity this table model is based on
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the connection provider used by this table model
    */
-  EntityConnectionProvider getConnectionProvider();
+  EntityConnectionProvider connectionProvider();
 
   /**
    * @return the underlying domain entities
    */
-  Entities getEntities();
+  Entities entities();
 
   /**
    * @return the definition of the underlying entity
    */
-  EntityDefinition getEntityDefinition();
+  EntityDefinition entityDefinition();
 
   /**
    * Returns the {@link EntityEditModel} associated with this table model
    * @return the edit model associated with this table model
    */
-  E getEditModel();
+  E editModel();
 
   /**
    * Sets {@code foreignKeyValues} as the search condition values for the given foreign key
@@ -167,7 +167,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
    */
-  EntityTableConditionModel getTableConditionModel();
+  EntityTableConditionModel tableConditionModel();
 
   /**
    * @return true if this table model is editable
@@ -288,7 +288,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * with a large underlying dataset.
    * @return a State specifying whether this table model requires a query condition
    */
-  State getQueryConditionRequiredState();
+  State queryConditionRequiredState();
 
   /**
    * @return true if entities that are deleted via the associated edit model
@@ -329,7 +329,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Returns an Iterator which iterates through the selected entities
    * @return the iterator used when generating reports
    */
-  Iterator<Entity> getSelectedEntitiesIterator();
+  Iterator<Entity> selectedEntitiesIterator();
 
   /**
    * @param primaryKey the primary key to search by
@@ -362,7 +362,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * Refreshes the items in this table model, according to the underlying condition
-   * @see #getTableConditionModel()
+   * @see #tableConditionModel()
    */
   void refresh();
 
@@ -379,7 +379,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the {@link SelectionModel}
    */
-  SelectionModel<Entity> getSelectionModel();
+  SelectionModel<Entity> selectionModel();
 
   /**
    * @param listener notified when the selection changes in the underlying selection model

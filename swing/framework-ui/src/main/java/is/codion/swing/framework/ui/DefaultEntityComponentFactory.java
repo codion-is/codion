@@ -32,7 +32,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
       return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue);
     }
 
-    EntityComponents inputComponents = new EntityComponents(editModel.getEntityDefinition());
+    EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
     if (attribute.isTemporal()) {
       ComponentValue<Temporal, TemporalInputPanel<Temporal>> componentValue =
               inputComponents.temporalInputPanel((Attribute<Temporal>) attribute)
@@ -53,8 +53,8 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
 
   private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel,
                                                               Entity initialValue) {
-    EntityComponents inputComponents = new EntityComponents(editModel.getEntityDefinition());
-    if (editModel.getConnectionProvider().entities().getDefinition(foreignKey.referencedType()).isSmallDataset()) {
+    EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
+    if (editModel.connectionProvider().entities().getDefinition(foreignKey.referencedType()).isSmallDataset()) {
       SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
       comboBoxModel.setSelectedItem(initialValue);
 

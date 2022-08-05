@@ -21,9 +21,9 @@ public final class PetclinicAppModel extends SwingEntityApplicationModel {
   private void setupEntityModels(EntityConnectionProvider connectionProvider) {
     SwingEntityModel ownersModel = new SwingEntityModel(Owner.TYPE, connectionProvider);
     SwingEntityModel petsModel = new SwingEntityModel(Pet.TYPE, connectionProvider);
-    petsModel.getEditModel().initializeComboBoxModels(Pet.OWNER_FK, Pet.PET_TYPE_FK);
+    petsModel.editModel().initializeComboBoxModels(Pet.OWNER_FK, Pet.PET_TYPE_FK);
     SwingEntityModel visitModel = new SwingEntityModel(Visit.TYPE, connectionProvider);
-    visitModel.getEditModel().initializeComboBoxModels(Visit.PET_FK);
+    visitModel.editModel().initializeComboBoxModels(Visit.PET_FK);
 
     ownersModel.addDetailModel(petsModel);
     petsModel.addDetailModel(visitModel);
@@ -33,8 +33,8 @@ public final class PetclinicAppModel extends SwingEntityApplicationModel {
 
     vetsModel.addDetailModel(vetSpecialtiesModel);
 
-    ownersModel.getTableModel().refresh();
-    vetsModel.getTableModel().refresh();
+    ownersModel.tableModel().refresh();
+    vetsModel.tableModel().refresh();
 
     addEntityModels(ownersModel, vetsModel);
   }

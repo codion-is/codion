@@ -22,31 +22,31 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   /**
    * @return an unmodifiable view of all columns in this model, both hidden and visible, in no particular order
    */
-  Collection<TableColumn> getAllColumns();
+  Collection<TableColumn> columns();
 
   /**
    * @return an unmodifiable view of the currently visible columns
    */
-  List<TableColumn> getVisibleColumns();
+  List<TableColumn> visibleColumns();
 
   /**
    * @return an unmodifiable view of currently hidden columns, in no particular order
    */
-  Collection<TableColumn> getHiddenColumns();
+  Collection<TableColumn> hiddenColumns();
 
   /**
    * Returns a {@link State} instance controlling whether this model is locked or not.
    * A locked column model does not allow adding or removing of columns, but columns can be reordered.
    * @return a {@link State} controlling whether this model is locked or not
    */
-  State getLockedState();
+  State lockedState();
 
   /**
    * @param columnIdentifier the columnd identifier
    * @param visible true if the column should be visible, false if it should be hidden
    * @return true if the column visibility changed
    * @throws IllegalStateException in case this model is locked
-   * @see #getLockedState()
+   * @see #lockedState()
    */
   boolean setColumnVisible(C columnIdentifier, boolean visible);
 

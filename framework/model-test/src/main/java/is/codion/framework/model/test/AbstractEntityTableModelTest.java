@@ -59,26 +59,26 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
-    List<Key> keys = tableModel.getEntities().primaryKeys(TestDomain.T_EMP, 1, 2);
+    List<Key> keys = tableModel.entities().primaryKeys(TestDomain.T_EMP, 1, 2);
     Key pk1 = keys.get(0);
     Key pk2 = keys.get(1);
 
     tableModel.setSelectedByKey(singletonList(pk1));
-    Entity selectedPK1 = tableModel.getSelectionModel().getSelectedItem();
+    Entity selectedPK1 = tableModel.selectionModel().getSelectedItem();
     assertEquals(pk1, selectedPK1.getPrimaryKey());
-    assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
+    assertEquals(1, tableModel.selectionModel().selectionCount());
 
     tableModel.setSelectedByKey(singletonList(pk2));
-    Entity selectedPK2 = tableModel.getSelectionModel().getSelectedItem();
+    Entity selectedPK2 = tableModel.selectionModel().getSelectedItem();
     assertEquals(pk2, selectedPK2.getPrimaryKey());
-    assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
+    assertEquals(1, tableModel.selectionModel().selectionCount());
 
     tableModel.setSelectedByKey(keys);
-    List<Entity> selectedItems = tableModel.getSelectionModel().getSelectedItems();
+    List<Entity> selectedItems = tableModel.selectionModel().getSelectedItems();
     for (Entity selected : selectedItems) {
       assertTrue(keys.contains(selected.getPrimaryKey()));
     }
-    assertEquals(2, tableModel.getSelectionModel().getSelectionCount());
+    assertEquals(2, tableModel.selectionModel().selectionCount());
   }
 
   @Test
@@ -86,11 +86,11 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
-    tableModel.getSelectionModel().setSelectedIndexes(asList(0, 3, 5));
-    Iterator<Entity> iterator = tableModel.getSelectedEntitiesIterator();
-    assertEquals(tableModel.getItems().get(0), iterator.next());
-    assertEquals(tableModel.getItems().get(3), iterator.next());
-    assertEquals(tableModel.getItems().get(5), iterator.next());
+    tableModel.selectionModel().setSelectedIndexes(asList(0, 3, 5));
+    Iterator<Entity> iterator = tableModel.selectedEntitiesIterator();
+    assertEquals(tableModel.items().get(0), iterator.next());
+    assertEquals(tableModel.items().get(3), iterator.next());
+    assertEquals(tableModel.items().get(5), iterator.next());
   }
 
   @Test
@@ -98,7 +98,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     TableModel deptModel = createDepartmentTableModel();
     deptModel.refresh();
 
-    Entities entities = deptModel.getEntities();
+    Entities entities = deptModel.entities();
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_BOTTOM);
     Entity dept = entities.builder(TestDomain.T_DEPARTMENT)
             .with(TestDomain.DEPARTMENT_ID, -10)
@@ -106,9 +106,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
             .with(TestDomain.DEPARTMENT_NAME, "HELLO")
             .build();
     int count = deptModel.getRowCount();
-    deptModel.getEditModel().insert(singletonList(dept));
+    deptModel.editModel().insert(singletonList(dept));
     assertEquals(count + 1, deptModel.getRowCount());
-    assertEquals(dept, deptModel.getItems().get(deptModel.getRowCount() - 1));
+    assertEquals(dept, deptModel.items().get(deptModel.getRowCount() - 1));
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_TOP_SORTED);
     Entity dept2 = entities.builder(TestDomain.T_DEPARTMENT)
@@ -116,9 +116,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
             .with(TestDomain.DEPARTMENT_LOCATION, "Nowhere2")
             .with(TestDomain.DEPARTMENT_NAME, "NONAME")
             .build();
-    deptModel.getEditModel().insert(singletonList(dept2));
+    deptModel.editModel().insert(singletonList(dept2));
     assertEquals(count + 2, deptModel.getRowCount());
-    assertEquals(dept2, deptModel.getItems().get(2));
+    assertEquals(dept2, deptModel.items().get(2));
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.DO_NOTHING);
     Entity dept3 = entities.builder(TestDomain.T_DEPARTMENT)
@@ -126,13 +126,13 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
             .with(TestDomain.DEPARTMENT_LOCATION, "Nowhere3")
             .with(TestDomain.DEPARTMENT_NAME, "NONAME2")
             .build();
-    deptModel.getEditModel().insert(singletonList(dept3));
+    deptModel.editModel().insert(singletonList(dept3));
     assertEquals(count + 2, deptModel.getRowCount());
 
     deptModel.refresh();
     assertEquals(count + 3, deptModel.getRowCount());
 
-    deptModel.getEditModel().delete(asList(dept, dept2, dept3));
+    deptModel.editModel().delete(asList(dept, dept2, dept3));
   }
 
   @Test
@@ -140,28 +140,28 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
-    Entities entities = tableModel.getEntities();
+    Entities entities = tableModel.entities();
     Key pk1 = entities.primaryKey(TestDomain.T_EMP, 1);
     Key pk2 = entities.primaryKey(TestDomain.T_EMP, 2);
-    tableModel.getConnectionProvider().connection().beginTransaction();
+    tableModel.connectionProvider().connection().beginTransaction();
     try {
       tableModel.setSelectedByKey(singletonList(pk1));
-      tableModel.getSelectionModel().setSelectedIndex(0);
-      Entity selected = tableModel.getSelectionModel().getSelectedItem();
+      tableModel.selectionModel().setSelectedIndex(0);
+      Entity selected = tableModel.selectionModel().getSelectedItem();
       tableModel.setRemoveEntitiesOnDelete(true);
       assertTrue(tableModel.isRemoveEntitiesOnDelete());
       tableModel.deleteSelected();
       assertFalse(tableModel.containsItem(selected));
 
       tableModel.setSelectedByKey(singletonList(pk2));
-      selected = tableModel.getSelectionModel().getSelectedItem();
+      selected = tableModel.selectionModel().getSelectedItem();
       tableModel.setRemoveEntitiesOnDelete(false);
       assertFalse(tableModel.isRemoveEntitiesOnDelete());
       tableModel.deleteSelected();
       assertTrue(tableModel.containsItem(selected));
     }
     finally {
-      tableModel.getConnectionProvider().connection().rollbackTransaction();
+      tableModel.connectionProvider().connection().rollbackTransaction();
     }
   }
 
@@ -170,7 +170,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
-    Entities entities = tableModel.getEntities();
+    Entities entities = tableModel.entities();
     Key pk1 = entities.primaryKey(TestDomain.T_EMP, 1);
     assertNotNull(tableModel.getEntityByKey(pk1));
 
@@ -182,7 +182,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   public void isUpdateEnabled() {
     TableModel tableModel = createDetailTableModel();
     assertTrue(tableModel.isUpdateEnabled());
-    tableModel.getEditModel().setUpdateEnabled(false);
+    tableModel.editModel().setUpdateEnabled(false);
     assertFalse(tableModel.isUpdateEnabled());
   }
 
@@ -190,31 +190,31 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   public void isDeleteEnabled() {
     TableModel tableModel = createDetailTableModel();
     assertTrue(tableModel.isDeleteEnabled());
-    tableModel.getEditModel().setDeleteEnabled(false);
+    tableModel.editModel().setDeleteEnabled(false);
     assertFalse(tableModel.isDeleteEnabled());
   }
 
   @Test
   public void getEntityType() {
-    assertEquals(TestDomain.T_DETAIL, testModel.getEntityType());
+    assertEquals(TestDomain.T_DETAIL, testModel.entityType());
   }
 
   @Test
   public void deleteNotEnabled() {
-    testModel.getEditModel().setDeleteEnabled(false);
+    testModel.editModel().setDeleteEnabled(false);
     assertFalse(testModel.isDeleteEnabled());
     testModel.refresh();
-    testModel.getSelectionModel().setSelectedIndexes(singletonList(0));
+    testModel.selectionModel().setSelectedIndexes(singletonList(0));
     assertThrows(IllegalStateException.class, testModel::deleteSelected);
   }
 
   @Test
   public void updateNotEnabled() {
-    testModel.getEditModel().setUpdateEnabled(false);
+    testModel.editModel().setUpdateEnabled(false);
     assertFalse(testModel.isUpdateEnabled());
     testModel.refresh();
-    testModel.getSelectionModel().setSelectedIndexes(singletonList(0));
-    Entity entity = testModel.getSelectionModel().getSelectedItem();
+    testModel.selectionModel().setSelectedIndexes(singletonList(0));
+    Entity entity = testModel.selectionModel().getSelectedItem();
     entity.put(TestDomain.DETAIL_STRING, "hello");
     assertThrows(IllegalStateException.class, () -> testModel.update(singletonList(entity)));
   }
@@ -224,22 +224,22 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     testModel.setBatchUpdateEnabled(false);
     assertFalse(testModel.isBatchUpdateEnabled());
     testModel.refresh();
-    testModel.getSelectionModel().setSelectedIndexes(asList(0, 1));
-    List<Entity> entities = testModel.getSelectionModel().getSelectedItems();
+    testModel.selectionModel().setSelectedIndexes(asList(0, 1));
+    List<Entity> entities = testModel.selectionModel().getSelectedItems();
     Entity.put(TestDomain.DETAIL_STRING, "hello", entities);
     assertThrows(IllegalStateException.class, () -> testModel.update(entities));
   }
 
   @Test
   public void testTheRest() {
-    assertNotNull(testModel.getConnectionProvider());
-    testModel.getQueryConditionRequiredState().set(false);
-    assertFalse(testModel.getQueryConditionRequiredState().get());
-    testModel.getQueryConditionRequiredState().set(true);
-    assertTrue(testModel.getQueryConditionRequiredState().get());
+    assertNotNull(testModel.connectionProvider());
+    testModel.queryConditionRequiredState().set(false);
+    assertFalse(testModel.queryConditionRequiredState().get());
+    testModel.queryConditionRequiredState().set(true);
+    assertTrue(testModel.queryConditionRequiredState().get());
     testModel.setLimit(10);
     assertEquals(10, testModel.getLimit());
-    assertNotNull(testModel.getEditModel());
+    assertNotNull(testModel.editModel());
     assertFalse(testModel.isReadOnly());
     testModel.refresh();
   }
@@ -247,7 +247,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void getEntitiesByKey() {
     testModel.refresh();
-    Entities entities = testModel.getEntities();
+    Entities entities = testModel.entities();
     Entity tmpEnt = entities.builder(TestDomain.T_DETAIL)
             .with(TestDomain.DETAIL_ID, 3L)
             .build();
@@ -274,7 +274,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
     assertEquals(6, tableModel.getRowCount());
     ColumnConditionModel<?, Double> commissionConditionModel =
-            tableModel.getTableConditionModel().getConditionModel(TestDomain.EMP_COMMISSION);
+            tableModel.tableConditionModel().getConditionModel(TestDomain.EMP_COMMISSION);
     commissionConditionModel.setOperator(Operator.EQUAL);
     commissionConditionModel.setEnabled(true);
     tableModel.refresh();

@@ -40,26 +40,26 @@ public final class DefaultColumnSummaryModel<T extends Number> implements Column
   }
 
   @Override
-  public State getLockedState() {
+  public State lockedState() {
     return lockedState;
   }
 
   @Override
-  public Value<Summary> getSummaryValue() {
+  public Value<Summary> summaryValue() {
     return summaryValue;
   }
 
   @Override
-  public List<Summary> getAvailableSummaries() {
+  public List<Summary> availableSummaries() {
     return summaries;
   }
 
   @Override
-  public ValueObserver<String> getSummaryTextObserver() {
+  public ValueObserver<String> summaryTextObserver() {
     return summaryTextValue.observer();
   }
 
   private void updateSummary() {
-    summaryTextValue.set(getSummaryValue().get().getSummary(valueProvider));
+    summaryTextValue.set(summaryValue().get().getSummary(valueProvider));
   }
 }

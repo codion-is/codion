@@ -43,7 +43,7 @@ public class TableColumnComponentPanelTest {
                 return null;
               }
             });
-    FilteredTableColumnModel<Integer> columnModel = tableModel.getColumnModel();
+    FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     Map<TableColumn, JPanel> columnComponents = createColumnComponents(columnModel);
     columnComponents.put(new TableColumn(3), new JPanel());
     assertThrows(IllegalArgumentException.class, () -> new TableColumnComponentPanel<>(columnModel, columnComponents));
@@ -63,7 +63,7 @@ public class TableColumnComponentPanelTest {
                 return null;
               }
             });
-    FilteredTableColumnModel<Integer> columnModel = tableModel.getColumnModel();
+    FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     columnModel.setColumnVisible(1, false);
 
     TableColumnComponentPanel<JPanel> panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
@@ -92,7 +92,7 @@ public class TableColumnComponentPanelTest {
                 return null;
               }
             });
-    FilteredTableColumnModel<Integer> columnModel = tableModel.getColumnModel();
+    FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     TableColumnComponentPanel<JPanel> panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
     column0.setWidth(100);
     assertEquals(100, panel.getColumnComponents().get(column0).getPreferredSize().width);
@@ -104,7 +104,7 @@ public class TableColumnComponentPanelTest {
 
   private static Map<TableColumn, JPanel> createColumnComponents(FilteredTableColumnModel<?> columnModel) {
     Map<TableColumn, JPanel> columnComponents = new HashMap<>();
-    columnModel.getAllColumns().forEach(column -> columnComponents.put(column, new JPanel()));
+    columnModel.columns().forEach(column -> columnComponents.put(column, new JPanel()));
 
     return columnComponents;
   }

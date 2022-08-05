@@ -44,7 +44,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   }
 
   @Override
-  public final EntitySearchModel getEntitySearchModel() {
+  public final EntitySearchModel entitySearchModel() {
     return entitySearchModel;
   }
 

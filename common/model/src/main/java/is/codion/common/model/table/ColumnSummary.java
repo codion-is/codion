@@ -32,7 +32,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider) {
-      Collection<T> values = valueProvider.getValues();
+      Collection<T> values = valueProvider.values();
       if (!values.isEmpty()) {
         return addSubsetIndicator(valueProvider.format(values.stream()
                 .filter(Objects::nonNull)
@@ -49,7 +49,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider) {
-      Collection<T> values = valueProvider.getValues();
+      Collection<T> values = valueProvider.values();
       if (!values.isEmpty()) {
         OptionalDouble average = values.stream()
                 .mapToDouble(value -> value == null ? 0d : value.doubleValue())
@@ -69,7 +69,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider) {
-      Collection<T> values = valueProvider.getValues();
+      Collection<T> values = valueProvider.values();
       if (!values.isEmpty()) {
         OptionalDouble min = values.stream()
                 .filter(Objects::nonNull)
@@ -90,7 +90,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider) {
-      Collection<T> values = valueProvider.getValues();
+      Collection<T> values = valueProvider.values();
       if (!values.isEmpty()) {
         OptionalDouble max = values.stream()
                 .filter(Objects::nonNull)
@@ -111,7 +111,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider) {
-      Collection<T> values = valueProvider.getValues();
+      Collection<T> values = valueProvider.values();
       if (!values.isEmpty()) {
         OptionalDouble min = values.stream()
                 .filter(Objects::nonNull)

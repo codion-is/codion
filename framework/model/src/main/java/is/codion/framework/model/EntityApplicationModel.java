@@ -53,12 +53,12 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
   /**
    * @return the current user
    */
-  User getUser();
+  User user();
 
   /**
    * @return the EntityConnectionProvider instance being used by this EntityApplicationModel
    */
-  EntityConnectionProvider getConnectionProvider();
+  EntityConnectionProvider connectionProvider();
 
   /**
    * Returns a StateObserver which is active while the underlying application connection provider is connected.
@@ -66,12 +66,12 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * @return a StateObserver indicating the validity of the underlying connection provider
    * @see #SCHEDULE_CONNECTION_VALIDATION
    */
-  StateObserver getConnectionValidObserver();
+  StateObserver connectionValidObserver();
 
   /**
    * @return the underlying domain entities
    */
-  Entities getEntities();
+  Entities entities();
 
   /**
    * Adds the given entity models to this model.
@@ -131,7 +131,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * @return an unmodifiable List containing the EntityModel instances contained
    * in this EntityApplicationModel
    */
-  List<M> getEntityModels();
+  List<M> entityModels();
 
   /**
    * @param <T> the model type

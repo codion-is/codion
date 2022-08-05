@@ -117,8 +117,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     this.equalField = boundFieldFactory.createEqualField();
     this.upperBoundField = boundFieldFactory.createUpperBoundField().orElse(null);
     this.lowerBoundField = boundFieldFactory.createLowerBoundField().orElse(null);
-    this.operatorCombo = initializeOperatorComboBox(conditionModel.getOperators());
-    this.toggleEnabledButton = radioButton(conditionModel.getEnabledState())
+    this.operatorCombo = initializeOperatorComboBox(conditionModel.operators());
+    this.toggleEnabledButton = radioButton(conditionModel.enabledState())
             .horizontalAlignment(CENTER)
             .build();
     this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? toggleButton(advancedConditionState)
@@ -326,29 +326,29 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
 
     public JComponent createEqualField() {
-      return createField(columnConditionModel.getEqualValueSet().value());
+      return createField(columnConditionModel.equalValueSet().value());
     }
 
     @Override
     public Optional<JComponent> createUpperBoundField() {
-      if (columnConditionModel.getColumnClass().equals(Boolean.class)) {
+      if (columnConditionModel.columnClass().equals(Boolean.class)) {
         return Optional.empty();//no lower bound field required for boolean values
       }
 
-      return Optional.of(createField(columnConditionModel.getUpperBoundValue()));
+      return Optional.of(createField(columnConditionModel.upperBoundValue()));
     }
 
     @Override
     public Optional<JComponent> createLowerBoundField() {
-      if (columnConditionModel.getColumnClass().equals(Boolean.class)) {
+      if (columnConditionModel.columnClass().equals(Boolean.class)) {
         return Optional.empty();//no lower bound field required for boolean values
       }
 
-      return Optional.of(createField(columnConditionModel.getLowerBoundValue()));
+      return Optional.of(createField(columnConditionModel.lowerBoundValue()));
     }
 
     private JComponent createField(Value<?> value) {
-      Class<?> columnClass = columnConditionModel.getColumnClass();
+      Class<?> columnClass = columnConditionModel.columnClass();
       if (columnClass.equals(Boolean.class)) {
         return checkBox((Value<Boolean>) value)
                 .nullable(true)
@@ -357,38 +357,38 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       }
       if (columnClass.equals(Integer.class)) {
         return integerField((Value<Integer>) value)
-                .format(columnConditionModel.getFormat())
+                .format(columnConditionModel.format())
                 .build();
       }
       else if (columnClass.equals(Double.class)) {
         return doubleField((Value<Double>) value)
-                .format(columnConditionModel.getFormat())
+                .format(columnConditionModel.format())
                 .build();
       }
       else if (columnClass.equals(BigDecimal.class)) {
         return bigDecimalField((Value<BigDecimal>) value)
-                .format(columnConditionModel.getFormat())
+                .format(columnConditionModel.format())
                 .build();
       }
       else if (columnClass.equals(Long.class)) {
         return longField((Value<Long>) value)
-                .format(columnConditionModel.getFormat())
+                .format(columnConditionModel.format())
                 .build();
       }
       else if (columnClass.equals(LocalTime.class)) {
-        return localTimeField(columnConditionModel.getDateTimePattern(), (Value<LocalTime>) value)
+        return localTimeField(columnConditionModel.dateTimePattern(), (Value<LocalTime>) value)
                 .build();
       }
       else if (columnClass.equals(LocalDate.class)) {
-        return localDateField(columnConditionModel.getDateTimePattern(), (Value<LocalDate>) value)
+        return localDateField(columnConditionModel.dateTimePattern(), (Value<LocalDate>) value)
                 .build();
       }
       else if (columnClass.equals(LocalDateTime.class)) {
-        return localDateTimeField(columnConditionModel.getDateTimePattern(), (Value<LocalDateTime>) value)
+        return localDateTimeField(columnConditionModel.dateTimePattern(), (Value<LocalDateTime>) value)
                 .build();
       }
       else if (columnClass.equals(OffsetDateTime.class)) {
-        return offsetDateTimeField(columnConditionModel.getDateTimePattern(), (Value<OffsetDateTime>) value)
+        return offsetDateTimeField(columnConditionModel.dateTimePattern(), (Value<OffsetDateTime>) value)
                 .build();
       }
       else if (columnClass.equals(String.class)) {
@@ -405,12 +405,12 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    */
   private void bindEvents() {
     advancedConditionState.addDataListener(this::onAdvancedChange);
-    conditionModel.getOperatorValue().addDataListener(this::onOperatorChanged);
+    conditionModel.operatorValue().addDataListener(this::onOperatorChanged);
     FocusAdapter focusGainedListener = new FocusAdapter() {
       @Override
       public void focusGained(FocusEvent e) {
         if (!e.isTemporary()) {
-          focusGainedEvent.onEvent(conditionModel.getColumnIdentifier());
+          focusGainedEvent.onEvent(conditionModel.columnIdentifier());
         }
       }
     };
@@ -499,19 +499,19 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     SwingFilteredComboBoxModel<Operator> operatorComboBoxModel = new SwingFilteredComboBoxModel<>();
     operatorComboBoxModel.setContents(operators);
     operatorComboBoxModel.setSelectedItem(operators.get(0));
-    return comboBox(operatorComboBoxModel, conditionModel.getOperatorValue())
+    return comboBox(operatorComboBoxModel, conditionModel.operatorValue())
             .completionMode(Completion.Mode.NONE)
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
             .maximumRowCount(operators.size())
-            .toolTipText(operatorComboBoxModel.getSelectedValue().getDescription())
+            .toolTipText(operatorComboBoxModel.selectedValue().getDescription())
             .onBuild(comboBox -> operatorComboBoxModel.addSelectionListener(selectedOperator ->
                     comboBox.setToolTipText(selectedOperator.getDescription())))
             .build();
   }
 
   private void initializeUI() {
-    Utilities.linkToEnabledState(conditionModel.getLockedObserver().reversedObserver(),
+    Utilities.linkToEnabledState(conditionModel.lockedObserver().reversedObserver(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
     setLayout(new BorderLayout());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
@@ -575,9 +575,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void addStringConfigurationPopupMenu() {
-    if (conditionModel.getColumnClass().equals(String.class)) {
+    if (conditionModel.columnClass().equals(String.class)) {
       JPopupMenu popupMenu = Controls.builder()
-              .control(ToggleControl.builder(conditionModel.getCaseSensitiveState())
+              .control(ToggleControl.builder(conditionModel.caseSensitiveState())
                       .caption(MESSAGES.getString("case_sensitive"))
                       .build())
               .controls(createAutomaticWildcardControls())
@@ -594,7 +594,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private Controls createAutomaticWildcardControls() {
-    Value<AutomaticWildcard> automaticWildcardValue = conditionModel.getAutomaticWildcardValue();
+    Value<AutomaticWildcard> automaticWildcardValue = conditionModel.automaticWildcardValue();
     AutomaticWildcard automaticWildcard = automaticWildcardValue.get();
 
     State automaticWildcardNoneState = State.state(automaticWildcard.equals(AutomaticWildcard.NONE));
@@ -628,13 +628,13 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     return Controls.builder()
             .caption(MESSAGES.getString("automatic_wildcard"))
             .control(ToggleControl.builder(automaticWildcardNoneState)
-                    .caption(AutomaticWildcard.NONE.getDescription()))
+                    .caption(AutomaticWildcard.NONE.description()))
             .control(ToggleControl.builder(automaticWildcardPostfixState)
-                    .caption(AutomaticWildcard.POSTFIX.getDescription()))
+                    .caption(AutomaticWildcard.POSTFIX.description()))
             .control(ToggleControl.builder(automaticWildcardPrefixState)
-                    .caption(AutomaticWildcard.PREFIX.getDescription()))
+                    .caption(AutomaticWildcard.PREFIX.description()))
             .control(ToggleControl.builder(automaticWildcardPrefixAndPostfixState)
-                    .caption(AutomaticWildcard.PREFIX_AND_POSTFIX.getDescription()))
+                    .caption(AutomaticWildcard.PREFIX_AND_POSTFIX.description()))
             .build();
   }
 

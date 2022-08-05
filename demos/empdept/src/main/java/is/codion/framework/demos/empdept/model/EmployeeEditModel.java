@@ -56,7 +56,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       //selected employee to prevent an employee from being made her own manager
       getForeignKeyComboBoxModel(Employee.MGR_FK).setIncludeCondition(manager ->
               Objects.equals(manager.getForeignKey(Employee.DEPARTMENT_FK), department)
-                      && !Objects.equals(manager, getEntity()));
+                      && !Objects.equals(manager, entity()));
     });
   }
 }

@@ -42,11 +42,11 @@ public final class DatabaseExplorerModelTest {
   void setUp() throws Exception {
     model = new DatabaseExplorerModel(DatabaseFactory.getDatabase(), UNIT_TEST_USER);
     model.getSchemaModel().refresh();
-    model.getSchemaModel().getSortModel().setSortOrder(0, SortOrder.ASCENDING);
-    model.getSchemaModel().getSelectionModel().setSelectedIndex(2);
+    model.getSchemaModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
+    model.getSchemaModel().selectionModel().setSelectedIndex(2);
     model.populateSelected(schema -> {});
-    model.getDefinitionModel().getSortModel().setSortOrder(0, SortOrder.ASCENDING);
-    model.getDefinitionModel().getSortModel().addSortOrder(1, SortOrder.ASCENDING);
+    model.getDefinitionModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
+    model.getDefinitionModel().sortModel().addSortOrder(1, SortOrder.ASCENDING);
   }
 
   @AfterEach
@@ -56,21 +56,21 @@ public final class DatabaseExplorerModelTest {
 
   @Test
   void address() {
-    model.getDefinitionModel().getSelectionModel().setSelectedIndex(0);
+    model.getDefinitionModel().selectionModel().setSelectedIndex(0);
     String addressDef = model.getDomainSourceObserver().get().trim();
     assertEquals(ADDRESS_DEF, addressDef);
   }
 
   @Test
   void product() {
-    model.getDefinitionModel().getSelectionModel().setSelectedIndex(3);
+    model.getDefinitionModel().selectionModel().setSelectedIndex(3);
     String productDef = model.getDomainSourceObserver().get().trim();
     assertEquals(PRODUCT_DEF, productDef);
   }
 
   @Test
   void tagItem() throws Exception {
-    model.getDefinitionModel().getSelectionModel().setSelectedIndex(6);
+    model.getDefinitionModel().selectionModel().setSelectedIndex(6);
     String tagItemDef = model.getDomainSourceObserver().get().trim();
     assertEquals(TAG_ITEM_DEF, tagItemDef);
   }

@@ -273,7 +273,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     requireNonNull(exception);
     requireNonNull(entity);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
-      EntityTablePanel.showDependenciesDialog(singletonList(entity), getEditModel().getConnectionProvider(),
+      EntityTablePanel.showDependenciesDialog(singletonList(entity), getEditModel().connectionProvider(),
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }
     else {
@@ -444,7 +444,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      onReferentialIntegrityException(e, getEditModel().getEntityCopy());
+      onReferentialIntegrityException(e, getEditModel().entityCopy());
     }
     catch (Exception ex) {
       LOG.error(ex.getMessage(), ex);
@@ -751,6 +751,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private void showEntityMenu() {
-    new EntityPopupMenu(getEditModel().getEntityCopy(), getEditModel().getConnectionProvider().connection()).show(this, 0, 0);
+    new EntityPopupMenu(getEditModel().entityCopy(), getEditModel().connectionProvider().connection()).show(this, 0, 0);
   }
 }

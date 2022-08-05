@@ -15,9 +15,9 @@ public final class LogoutLogin extends AbstractEntityUsageScenario<ChinookApplic
   @Override
   protected void perform(ChinookApplicationModel application) throws Exception {
     try {
-      application.getConnectionProvider().close();
+      application.connectionProvider().close();
       Thread.sleep(random.nextInt(1500));
-      application.getConnectionProvider().connection();
+      application.connectionProvider().connection();
     }
     catch (InterruptedException ignored) {/*ignored*/}
   }

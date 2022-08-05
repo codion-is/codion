@@ -28,7 +28,7 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
     ChinookFXAppModel model = getModel();
 
     FXEntityModel artistModel = model.getEntityModel(Artist.TYPE);
-    EntityView artists = new EntityView(artistModel, new ArtistEditVew(artistModel.getEditModel()));
+    EntityView artists = new EntityView(artistModel, new ArtistEditVew(artistModel.editModel()));
     FXEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
     EntityView albums = new EntityView(albumModel);
     FXEntityModel trackModel = albumModel.getDetailModel(Track.TYPE);

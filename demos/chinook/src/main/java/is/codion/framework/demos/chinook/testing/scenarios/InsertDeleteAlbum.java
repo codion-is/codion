@@ -21,17 +21,17 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
   @Override
   protected void perform(ChinookApplicationModel application) throws Exception {
     SwingEntityModel artistModel = application.getEntityModel(Artist.TYPE);
-    artistModel.getTableModel().refresh();
-    selectRandomRow(artistModel.getTableModel());
-    Entity artist = artistModel.getTableModel().getSelectionModel().getSelectedItem();
+    artistModel.tableModel().refresh();
+    selectRandomRow(artistModel.tableModel());
+    Entity artist = artistModel.tableModel().selectionModel().getSelectedItem();
     SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
-    SwingEntityEditModel albumEditModel = albumModel.getEditModel();
-    albumEditModel.setEntity(application.getEntities().builder(Album.TYPE)
+    SwingEntityEditModel albumEditModel = albumModel.editModel();
+    albumEditModel.setEntity(application.entities().builder(Album.TYPE)
             .with(Album.ARTIST_FK, artist)
             .with(Album.TITLE, "Title")
             .build());
     Entity insertedAlbum = albumEditModel.insert();
-    SwingEntityEditModel trackEditModel = albumModel.getDetailModel(Track.TYPE).getEditModel();
+    SwingEntityEditModel trackEditModel = albumModel.getDetailModel(Track.TYPE).editModel();
     SwingEntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(Track.GENRE_FK);
     selectRandomItem(genreComboBoxModel);
     SwingEntityComboBoxModel mediaTypeComboBoxModel =
@@ -44,13 +44,13 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
       trackEditModel.put(Track.COMPOSER, "Composer");
       trackEditModel.put(Track.MILLISECONDS, 1000000);
       trackEditModel.put(Track.UNITPRICE, BigDecimal.valueOf(2));
-      trackEditModel.put(Track.GENRE_FK, genreComboBoxModel.getSelectedValue());
-      trackEditModel.put(Track.MEDIATYPE_FK, mediaTypeComboBoxModel.getSelectedValue());
+      trackEditModel.put(Track.GENRE_FK, genreComboBoxModel.selectedValue());
+      trackEditModel.put(Track.MEDIATYPE_FK, mediaTypeComboBoxModel.selectedValue());
       trackEditModel.insert();
     }
 
-    SwingEntityTableModel trackTableModel = albumModel.getDetailModel(Track.TYPE).getTableModel();
-    trackTableModel.getSelectionModel().selectAll();
+    SwingEntityTableModel trackTableModel = albumModel.getDetailModel(Track.TYPE).tableModel();
+    trackTableModel.selectionModel().selectAll();
     trackTableModel.deleteSelected();
     albumEditModel.delete();
   }

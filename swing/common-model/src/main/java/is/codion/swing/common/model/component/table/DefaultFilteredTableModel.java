@@ -99,7 +99,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     if (columnFilterModels != null) {
       for (ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
-        this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
+        this.columnFilterModels.put(columnFilterModel.columnIdentifier(), columnFilterModel);
       }
     }
     this.includeCondition = new DefaultIncludeCondition<>(columnFilterModels);
@@ -107,7 +107,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final List<R> getItems() {
+  public final List<R> items() {
     List<R> items = new ArrayList<>(visibleItems);
     items.addAll(filteredItems);
 
@@ -115,22 +115,22 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final List<R> getVisibleItems() {
+  public final List<R> visibleItems() {
     return unmodifiableList(visibleItems);
   }
 
   @Override
-  public final List<R> getFilteredItems() {
+  public final List<R> filteredItems() {
     return unmodifiableList(filteredItems);
   }
 
   @Override
-  public final int getVisibleItemCount() {
+  public final int visibleItemCount() {
     return getRowCount();
   }
 
   @Override
-  public final int getFilteredItemCount() {
+  public final int filteredItemCount() {
     return filteredItems.size();
   }
 
@@ -174,7 +174,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final StateObserver getRefreshingObserver() {
+  public final StateObserver refreshingObserver() {
     return refreshingState.observer();
   }
 
@@ -190,17 +190,17 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final FilteredTableSelectionModel<R> getSelectionModel() {
+  public final FilteredTableSelectionModel<R> selectionModel() {
     return selectionModel;
   }
 
   @Override
-  public final FilteredTableSortModel<R, C> getSortModel() {
+  public final FilteredTableSortModel<R, C> sortModel() {
     return sortModel;
   }
 
   @Override
-  public final FilteredTableSearchModel getSearchModel() {
+  public final FilteredTableSearchModel searchModel() {
     return searchModel;
   }
 
@@ -213,7 +213,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final Map<C, ColumnFilterModel<R, C, ?>> getColumnFilterModels() {
+  public final Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels() {
     return unmodifiableMap(columnFilterModels);
   }
 
@@ -229,13 +229,13 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final <T> Collection<T> getValues(C columnIdentifier) {
-    return (Collection<T>) getColumnValues(IntStream.range(0, getVisibleItemCount()).boxed(),
+    return (Collection<T>) getColumnValues(IntStream.range(0, visibleItemCount()).boxed(),
             columnModel.getTableColumn(columnIdentifier).getModelIndex());
   }
 
   @Override
   public final <T> Collection<T> getSelectedValues(C columnIdentifier) {
-    return (Collection<T>) getColumnValues(getSelectionModel().getSelectedIndexes().stream(),
+    return (Collection<T>) getColumnValues(selectionModel().getSelectedIndexes().stream(),
             columnModel.getTableColumn(columnIdentifier).getModelIndex());
   }
 
@@ -355,7 +355,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final FilteredTableColumnModel<C> getColumnModel() {
+  public final FilteredTableColumnModel<C> columnModel() {
     return columnModel;
   }
 
@@ -366,12 +366,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final Class<?> getColumnClass(int columnIndex) {
-    return getColumnClass(getColumnModel().getColumnIdentifier(columnIndex));
+    return getColumnClass(columnModel().getColumnIdentifier(columnIndex));
   }
 
   @Override
   public final Object getValueAt(int rowIndex, int columnIndex) {
-    return columnValueProvider.getValue(getItemAt(rowIndex), getColumnModel().getColumnIdentifier(columnIndex));
+    return columnValueProvider.getValue(getItemAt(rowIndex), columnModel().getColumnIdentifier(columnIndex));
   }
 
   @Override
@@ -446,7 +446,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @return the items this table model should contain, an empty Collection in case of no items.
    */
   protected Collection<R> refreshItems() {
-    return getItems();
+    return items();
   }
 
   /**
@@ -653,7 +653,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   private void merge(Collection<R> items) {
     Set<R> itemSet = new HashSet<>(items);
-    getItems().forEach(item -> {
+    items().forEach(item -> {
       if (!itemSet.contains(item)) {
         removeItem(item);
       }
@@ -702,12 +702,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     }
 
     @Override
-    public int getFromRow() {
+    public int fromRow() {
       return fromRow;
     }
 
     @Override
-    public int getToRow() {
+    public int toRow() {
       return toRow;
     }
   }
@@ -740,17 +740,17 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     @Override
     public void addValuesChangedListener(EventListener listener) {
       tableModel.addTableDataChangedListener(listener);
-      tableModel.getSelectionModel().addSelectionChangedListener(listener);
+      tableModel.selectionModel().addSelectionChangedListener(listener);
     }
 
     @Override
-    public Collection<T> getValues() {
+    public Collection<T> values() {
       return isValueSubset() ? tableModel.getSelectedValues(columnIdentifier) : tableModel.getValues(columnIdentifier);
     }
 
     @Override
     public boolean isValueSubset() {
-      return tableModel.getSelectionModel().isSelectionNotEmpty();
+      return tableModel.selectionModel().isSelectionNotEmpty();
     }
   }
 }

@@ -57,7 +57,7 @@ public interface FilteredTableSortModel<R, C> {
    * Returns the current column sort order, in order of priority
    * @return the current column sort orderk, in order of priority
    */
-  LinkedHashMap<C, SortOrder> getColumnSortOrder();
+  LinkedHashMap<C, SortOrder> columnSortOrder();
 
   /**
    * Clears the sorting states from this sort model. Note that only one sorting change event
@@ -78,11 +78,11 @@ public interface FilteredTableSortModel<R, C> {
     /**
      * @return the sorting order currently associated with the column
      */
-    SortOrder getSortOrder();
+    SortOrder sortOrder();
 
     /**
      * @return the sorting priority, 0 for first, 1 for second etc.
      */
-    int getPriority();
+    int priority();
   }
 }

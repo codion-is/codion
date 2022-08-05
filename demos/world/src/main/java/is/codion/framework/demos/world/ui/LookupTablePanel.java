@@ -51,6 +51,6 @@ final class LookupTablePanel extends EntityTablePanel {
 
   private void clearTableAndConditions() {
     getTableModel().clear();
-    getTableModel().getTableConditionModel().clearConditions();
+    getTableModel().tableConditionModel().clearConditions();
   }
 }

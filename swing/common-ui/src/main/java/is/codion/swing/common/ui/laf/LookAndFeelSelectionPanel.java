@@ -69,7 +69,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
   public LookAndFeelSelectionPanel(boolean changeDuringSelection) {
     this.comboBoxModel = ItemComboBoxModel.createModel(initializeAvailableLookAndFeels());
     getCurrentLookAndFeel().ifPresent(comboBoxModel::setSelectedItem);
-    this.originalLookAndFeel = comboBoxModel.getSelectedValue().value();
+    this.originalLookAndFeel = comboBoxModel.selectedValue().value();
     if (changeDuringSelection) {
       comboBoxModel.addSelectionListener(lookAndFeelProvider ->
               LookAndFeelProvider.enableLookAndFeel(lookAndFeelProvider.value()));
@@ -91,7 +91,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
    * @return the currently selected look and feel
    */
   public LookAndFeelProvider getSelectedLookAndFeel() {
-    return comboBoxModel.getSelectedValue().value();
+    return comboBoxModel.selectedValue().value();
   }
 
   /**
@@ -118,7 +118,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
   private Optional<Item<LookAndFeelProvider>> getCurrentLookAndFeel() {
     String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
 
-    return comboBoxModel.getItems().stream()
+    return comboBoxModel.items().stream()
             .filter(item -> item.value().getClassName().equals(currentLookAndFeelClassName))
             .findFirst();
   }

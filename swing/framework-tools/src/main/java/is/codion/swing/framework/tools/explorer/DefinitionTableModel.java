@@ -33,7 +33,7 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
   @Override
   protected Collection<DefinitionRow> refreshItems() {
     Collection<DefinitionRow> items = new ArrayList<>();
-    schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema -> items.addAll(createDomainDefinitions(schema)));
+    schemaTableModel.selectionModel().getSelectedItems().forEach(schema -> items.addAll(createDomainDefinitions(schema)));
 
     return items;
   }

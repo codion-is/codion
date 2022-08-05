@@ -68,12 +68,12 @@ final class SelectColumnsPanel<C> extends JPanel {
   }
 
   void applyChanges() {
-    columnModel.getVisibleColumns().forEach(tableColumn -> {
+    columnModel.visibleColumns().forEach(tableColumn -> {
       if (!states.get(tableColumn).get()) {
         columnModel.setColumnVisible((C) tableColumn.getIdentifier(), false);
       }
     });
-    new ArrayList<>(columnModel.getHiddenColumns()).forEach(tableColumn -> {
+    new ArrayList<>(columnModel.hiddenColumns()).forEach(tableColumn -> {
       if (states.get(tableColumn).get()) {
         columnModel.setColumnVisible((C) tableColumn.getIdentifier(), true);
       }
@@ -82,7 +82,7 @@ final class SelectColumnsPanel<C> extends JPanel {
 
   private Map<TableColumn, State> createStateMap() {
     Map<TableColumn, State> stateMap = new LinkedHashMap<>();
-    columnModel.getAllColumns().stream()
+    columnModel.columns().stream()
             .sorted(new FilteredTable.ColumnComparator())
             .forEach(column -> stateMap.put(column,
                     State.state(columnModel.isColumnVisible((C) column.getIdentifier()))));

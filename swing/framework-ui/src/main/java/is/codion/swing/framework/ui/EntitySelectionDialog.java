@@ -72,7 +72,7 @@ public final class EntitySelectionDialog extends JDialog {
     }
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     this.tableModel = requireNonNull(tableModel, "tableModel");
-    this.tableModel.getEditModel().setReadOnly(true);
+    this.tableModel.editModel().setReadOnly(true);
     this.entityTablePanel = createTablePanel(tableModel, preferredSize, singleSelection);
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -131,7 +131,7 @@ public final class EntitySelectionDialog extends JDialog {
     EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
     tablePanel.initializePanel();
     tablePanel.getTable().addDoubleClickListener(mouseEvent -> {
-      if (!tableModel.getSelectionModel().isSelectionEmpty()) {
+      if (!tableModel.selectionModel().isSelectionEmpty()) {
         okControl.actionPerformed(null);
       }
     });
@@ -148,14 +148,14 @@ public final class EntitySelectionDialog extends JDialog {
   }
 
   private void ok() {
-    selectedEntities.addAll(tableModel.getSelectionModel().getSelectedItems());
+    selectedEntities.addAll(tableModel.selectionModel().getSelectedItems());
     dispose();
   }
 
   private void search() {
     tableModel.refresh();
     if (tableModel.getRowCount() > 0) {
-      tableModel.getSelectionModel().setSelectedIndexes(singletonList(0));
+      tableModel.selectionModel().setSelectedIndexes(singletonList(0));
       entityTablePanel.getTable().requestFocusInWindow();
     }
     else {

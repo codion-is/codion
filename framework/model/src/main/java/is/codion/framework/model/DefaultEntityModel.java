@@ -90,7 +90,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   public DefaultEntityModel(E editModel) {
     requireNonNull(editModel, "editModel");
-    this.connectionProvider = editModel.getConnectionProvider();
+    this.connectionProvider = editModel.connectionProvider();
     this.editModel = editModel;
     this.tableModel = null;
     bindEventsInternal();
@@ -102,8 +102,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   public DefaultEntityModel(T tableModel) {
     requireNonNull(tableModel, "tableModel");
-    this.connectionProvider = tableModel.getConnectionProvider();
-    this.editModel = tableModel.getEditModel();
+    this.connectionProvider = tableModel.connectionProvider();
+    this.editModel = tableModel.editModel();
     this.tableModel = tableModel;
     bindEventsInternal();
   }
@@ -114,21 +114,21 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + getEntityType();
+    return getClass().getSimpleName() + ": " + entityType();
   }
 
   @Override
-  public final EntityType getEntityType() {
-    return editModel.getEntityType();
+  public final EntityType entityType() {
+    return editModel.entityType();
   }
 
   @Override
-  public final EntityConnectionProvider getConnectionProvider() {
+  public final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
   }
 
   @Override
-  public final Entities getEntities() {
+  public final Entities entities() {
     return connectionProvider.entities();
   }
 
@@ -147,12 +147,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final E getEditModel() {
+  public final E editModel() {
     return editModel;
   }
 
   @Override
-  public final T getTableModel() {
+  public final T tableModel() {
     return tableModel;
   }
 
@@ -182,7 +182,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     this.detailModels.add(detailModel);
     detailModel.setMasterModel((M) this);
     if (detailModel.containsTableModel()) {
-      detailModel.getTableModel().getQueryConditionRequiredState().set(true);
+      detailModel.tableModel().queryConditionRequiredState().set(true);
     }
 
     return detailModel;
@@ -199,7 +199,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   public final boolean containsDetailModel(EntityType entityType) {
     requireNonNull(entityType, "entityType");
     return detailModels.stream()
-            .anyMatch(detailModel -> detailModel.getEntityType().equals(entityType));
+            .anyMatch(detailModel -> detailModel.entityType().equals(entityType));
   }
 
   @Override
@@ -208,7 +208,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final Collection<M> getDetailModels() {
+  public final Collection<M> detailModels() {
     return unmodifiableCollection(detailModels);
   }
 
@@ -233,7 +233,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final Collection<M> getLinkedDetailModels() {
+  public final Collection<M> linkedDetailModels() {
     return unmodifiableCollection(linkedDetailModels);
   }
 
@@ -253,7 +253,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   public final M getDetailModel(EntityType entityType) {
     requireNonNull(entityType, "entityType");
     for (M detailModel : detailModels) {
-      if (detailModel.getEntityType().equals(entityType)) {
+      if (detailModel.entityType().equals(entityType)) {
         return detailModel;
       }
     }
@@ -301,7 +301,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   public final void initialize(EntityType foreignKeyEntityType, List<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyEntityType);
     requireNonNull(foreignKeyValues);
-    List<ForeignKey> foreignKeys = editModel.getEntityDefinition().getForeignKeys(foreignKeyEntityType);
+    List<ForeignKey> foreignKeys = editModel.entityDefinition().getForeignKeys(foreignKeyEntityType);
     if (!foreignKeys.isEmpty()) {
       initialize(foreignKeys.get(0), foreignKeyValues);
     }
@@ -320,9 +320,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public void savePreferences() {
     if (containsTableModel()) {
-      getTableModel().savePreferences();
+      tableModel().savePreferences();
     }
-    getDetailModels().forEach(EntityModel::savePreferences);
+    detailModels().forEach(EntityModel::savePreferences);
   }
 
   @Override
@@ -387,7 +387,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       detailModel.initialize(detailModelForeignKeys.get(detailModel), activeEntities);
     }
     else {
-      detailModel.initialize(getEntityType(), activeEntities);
+      detailModel.initialize(entityType(), activeEntities);
     }
   }
 
@@ -403,7 +403,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (containsTableModel() && searchOnMasterInsert) {
       ForeignKey foreignKey = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKey == null) {
-        foreignKey = editModel.getEntityDefinition().getForeignKeys(masterModel.getEntityType()).get(0);
+        foreignKey = editModel.entityDefinition().getForeignKeys(masterModel.entityType()).get(0);
       }
       tableModel.setForeignKeyConditionValues(foreignKey, insertedEntities);
     }
@@ -416,7 +416,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   protected final void onMasterUpdate(Map<Key, Entity> updatedEntities) {
     editModel.replaceForeignKeyValues(updatedEntities.values());
     if (containsTableModel()) {
-      tableModel.replaceForeignKeyValues(masterModel.getEntityType(), updatedEntities.values());
+      tableModel.replaceForeignKeyValues(masterModel.entityType(), updatedEntities.values());
     }
   }
 
@@ -425,14 +425,14 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private List<Entity> getActiveEntities() {
-    if (tableModel != null && tableModel.getSelectionModel().isSelectionNotEmpty()) {
-      return tableModel.getSelectionModel().getSelectedItems();
+    if (tableModel != null && tableModel.selectionModel().isSelectionNotEmpty()) {
+      return tableModel.selectionModel().getSelectedItems();
     }
     else if (editModel.isEntityNew()) {
       return emptyList();
     }
 
-    return singletonList(editModel.getEntityCopy());
+    return singletonList(editModel.entityCopy());
   }
 
   private void bindEventsInternal() {
@@ -443,7 +443,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
     if (containsTableModel()) {
-      getTableModel().addSelectionChangedListener(initializer);
+      tableModel().addSelectionChangedListener(initializer);
     }
     else {
       editModel.addEntitySetListener(entity -> initializeDetailModels());

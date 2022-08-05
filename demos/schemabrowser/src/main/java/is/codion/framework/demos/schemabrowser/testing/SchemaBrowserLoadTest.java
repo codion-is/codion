@@ -32,11 +32,11 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
           = new AbstractEntityUsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel>() {
     @Override
     protected void perform(SchemaBrowserAppPanel.SchemaBrowserApplicationModel application) {
-      SwingEntityModel schemaModel = application.getEntityModels().iterator().next();
-      schemaModel.getTableModel().refresh();
-      selectRandomRow(schemaModel.getTableModel());
-      selectRandomRow(schemaModel.getDetailModels().iterator().next().getTableModel());
-      selectRandomRow(schemaModel.getDetailModels().iterator().next().getDetailModels().iterator().next().getTableModel());
+      SwingEntityModel schemaModel = application.entityModels().iterator().next();
+      schemaModel.tableModel().refresh();
+      selectRandomRow(schemaModel.tableModel());
+      selectRandomRow(schemaModel.detailModels().iterator().next().tableModel());
+      selectRandomRow(schemaModel.detailModels().iterator().next().detailModels().iterator().next().tableModel());
     }
   };
 

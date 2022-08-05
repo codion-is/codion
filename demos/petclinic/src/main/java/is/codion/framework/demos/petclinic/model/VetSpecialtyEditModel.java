@@ -23,14 +23,14 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 
   @Override
   public boolean isEntityNew() {
-    return getEntity().getOriginalPrimaryKey().isNull();
+    return entity().getOriginalPrimaryKey().isNull();
   }
 
   @Override
   public void validate(Entity entity) throws ValidationException {
     super.validate(entity);
     try {
-      int rowCount = getConnectionProvider().connection().rowCount(
+      int rowCount = connectionProvider().connection().rowCount(
               where(VetSpecialty.SPECIALTY).equalTo(entity.get(VetSpecialty.SPECIALTY))
                       .and(where(VetSpecialty.VET).equalTo(entity.get(VetSpecialty.VET))));
       if (rowCount > 0) {

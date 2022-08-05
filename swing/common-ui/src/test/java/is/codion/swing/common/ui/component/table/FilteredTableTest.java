@@ -56,27 +56,27 @@ public class FilteredTableTest {
     JTextField searchField = filteredTable.getSearchField();
 
     searchField.setText("d");
-    assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
+    assertEquals(0, tableModel.selectionModel().getSelectedIndex());
     searchField.setText("da");
-    assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
+    assertEquals(0, tableModel.selectionModel().getSelectedIndex());
     searchField.setText("dac");
-    assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
+    assertEquals(1, tableModel.selectionModel().getSelectedIndex());
     searchField.setText("dar");
-    assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
+    assertEquals(0, tableModel.selectionModel().getSelectedIndex());
     searchField.setText("dan");
-    assertEquals(2, tableModel.getSelectionModel().getSelectedIndex());
+    assertEquals(2, tableModel.selectionModel().getSelectedIndex());
     searchField.setText("dl");
-    assertEquals(3, tableModel.getSelectionModel().getSelectedIndex());
+    assertEquals(3, tableModel.selectionModel().getSelectedIndex());
     searchField.setText("darri");
-    assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
+    assertEquals(0, tableModel.selectionModel().getSelectedIndex());
     searchField.setText("dac");
-    assertEquals(1, tableModel.getSelectionModel().getSelectedIndex());
+    assertEquals(1, tableModel.selectionModel().getSelectedIndex());
     searchField.setText("dl");
-    assertEquals(3, tableModel.getSelectionModel().getSelectedIndex());
+    assertEquals(3, tableModel.selectionModel().getSelectedIndex());
     searchField.setText("dans");
-    assertEquals(2, tableModel.getSelectionModel().getSelectedIndex());
+    assertEquals(2, tableModel.selectionModel().getSelectedIndex());
     searchField.setText("dansu");
-    assertTrue(tableModel.getSelectionModel().isSelectionEmpty());
+    assertTrue(tableModel.selectionModel().isSelectionEmpty());
 
     searchField.setText("");
   }

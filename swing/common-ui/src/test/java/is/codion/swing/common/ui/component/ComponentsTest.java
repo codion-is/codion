@@ -339,12 +339,12 @@ public final class ComponentsTest {
                     .buildComponentValue();
     ItemComboBoxModel<Boolean> boxModel =
             (ItemComboBoxModel<Boolean>) componentValue.getComponent().getModel();
-    assertTrue(boxModel.getSelectedValue().value());
+    assertTrue(boxModel.selectedValue().value());
     boxModel.setSelectedItem(null);
     assertNull(value.get());
 
     value.set(false);
-    assertFalse(boxModel.getSelectedValue().value());
+    assertFalse(boxModel.selectedValue().value());
   }
 
   @Test

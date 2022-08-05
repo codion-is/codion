@@ -42,11 +42,11 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
 
     EntityPanel employeePanelBuilder = new EntityPanel(employeeModel,
-            new EmployeeEditPanel(employeeModel.getEditModel()));;
+            new EmployeeEditPanel(employeeModel.editModel()));;
 
     EntityPanel departmentPanel = new EntityPanel(departmentModel,
-            new DepartmentEditPanel(departmentModel.getEditModel()),
-            new DepartmentTablePanel(departmentModel.getTableModel()));
+            new DepartmentEditPanel(departmentModel.editModel()),
+            new DepartmentTablePanel(departmentModel.tableModel()));
     departmentPanel.addDetailPanel(employeePanelBuilder);
 
     return Collections.singletonList(departmentPanel);
@@ -62,8 +62,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
             .selectFile();
 
     EntityTablePanel tablePanel = EntityTablePanel.createReadOnlyEntityTablePanel(
-            EntityObjectMapper.createEntityObjectMapper(getModel().getEntities()).deserializeEntities(
-                    Text.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider());
+            EntityObjectMapper.createEntityObjectMapper(getModel().entities()).deserializeEntities(
+                    Text.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().connectionProvider());
 
     Dialogs.componentDialog(tablePanel)
             .owner(this)
@@ -108,7 +108,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
       super(connectionProvider);
       SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
       departmentModel.addDetailModel(new SwingEntityModel(new EmployeeEditModel(connectionProvider)));
-      departmentModel.getTableModel().refresh();
+      departmentModel.tableModel().refresh();
       addEntityModel(departmentModel);
     }
   }

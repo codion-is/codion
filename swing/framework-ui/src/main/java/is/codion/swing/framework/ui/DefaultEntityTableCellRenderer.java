@@ -98,9 +98,9 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
   }
 
   private static boolean isSearchResult(int row, int column, SwingEntityTableModel tableModel) {
-    RowColumn searchResult = tableModel.getSearchModel().currentResult();
+    RowColumn searchResult = tableModel.searchModel().currentResult();
 
-    return searchResult.getRow() == row && searchResult.getColumn() == column;
+    return searchResult.row() == row && searchResult.column() == column;
   }
 
   private final class DefaultDisplayValueProvider implements Function<T, Object> {
@@ -213,8 +213,8 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
 
     private Color getBackgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute,
                                      int row, boolean indicateCondition) {
-      boolean conditionEnabled = tableModel.getTableConditionModel().isConditionEnabled(attribute);
-      boolean filterEnabled = tableModel.getTableConditionModel().isFilterEnabled(attribute);
+      boolean conditionEnabled = tableModel.tableConditionModel().isConditionEnabled(attribute);
+      boolean filterEnabled = tableModel.tableConditionModel().isFilterEnabled(attribute);
       boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
       Color cellColor = tableModel.getBackgroundColor(row, attribute);
       if (showCondition) {
@@ -272,7 +272,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     DefaultBuilder(SwingEntityTableModel tableModel, Property<T> property) {
       this.tableModel = requireNonNull(tableModel);
       this.property = requireNonNull(property);
-      this.tableModel.getEntityDefinition().getProperty(property.attribute());
+      this.tableModel.entityDefinition().getProperty(property.attribute());
       this.horizontalAlignment = getDefaultHorizontalAlignment(property);
     }
 

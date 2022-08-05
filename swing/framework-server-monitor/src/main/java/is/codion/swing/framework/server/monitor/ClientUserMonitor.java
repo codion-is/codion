@@ -262,7 +262,7 @@ public final class ClientUserMonitor {
     @Override
     protected Collection<UserInfo> refreshItems() {
       try {
-        List<UserInfo> items = new ArrayList<>(getItems());
+        List<UserInfo> items = new ArrayList<>(items());
         for (RemoteClient remoteClient : server.getClients()) {
           UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientTypeId(),
                   remoteClient.getClientHost(), LocalDateTime.now(), remoteClient.clientId(), remoteClient.clientVersion(),

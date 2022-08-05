@@ -36,7 +36,7 @@ public final class SwingEntityTreeModelTest {
 
     tableModel.setSelectedByKey(Collections.singletonList(connectionProvider.entities().primaryKey(TestDomain.T_EMP, 3)));//Jones
 
-    SwingEntityTreeModel.EntityTreeNode node = (SwingEntityTreeModel.EntityTreeNode) treeModel.getTreeSelectionModel().getSelectionPath().getLastPathComponent();
+    SwingEntityTreeModel.EntityTreeNode node = (SwingEntityTreeModel.EntityTreeNode) treeModel.treeSelectionModel().getSelectionPath().getLastPathComponent();
     assertEquals("JONES", node.getEntity().get(TestDomain.EMP_NAME));
   }
 }

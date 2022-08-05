@@ -46,7 +46,7 @@ public class SwingFilteredComboBoxModelTest {
   @Test
   void testRefreshClear() {
     testModel.refresh();
-    assertEquals(5, testModel.getVisibleItems().size());
+    assertEquals(5, testModel.visibleItems().size());
     testModel.clear();
     assertEquals(0, testModel.getSize());
     assertTrue(testModel.isCleared());
@@ -126,7 +126,7 @@ public class SwingFilteredComboBoxModelTest {
     testModel.setSelectedItem(BJORN);
     assertEquals(3, selectionChangedCounter.get());
     assertEquals(BJORN, testModel.getSelectedItem());
-    assertEquals(BJORN, testModel.getSelectedValue());
+    assertEquals(BJORN, testModel.selectedValue());
     assertFalse(testModel.isSelectionEmpty());
     assertFalse(testModel.isNullSelected());
     testModel.setSelectedItem(null);
@@ -135,7 +135,7 @@ public class SwingFilteredComboBoxModelTest {
     assertEquals(NULL, testModel.getSelectedItem());
     assertTrue(testModel.isNullSelected());
     assertTrue(testModel.isSelectionEmpty());
-    assertNull(testModel.getSelectedValue());
+    assertNull(testModel.selectedValue());
     testModel.setSelectedItem(SIGGI);
     testModel.clear();
     assertEquals(6, selectionChangedCounter.get());
@@ -147,7 +147,7 @@ public class SwingFilteredComboBoxModelTest {
     testModel.setSelectedItem(BJORN);
     testModel.setIncludeCondition(item -> !item.equals(BJORN));
     assertEquals(NULL, testModel.getSelectedItem());
-    assertNull(testModel.getSelectedValue());
+    assertNull(testModel.selectedValue());
 
     testModel.setIncludeCondition(null);
     testModel.setFilterSelectedItem(false);
@@ -155,7 +155,7 @@ public class SwingFilteredComboBoxModelTest {
     testModel.setSelectedItem(BJORN);
     testModel.setIncludeCondition(item -> !item.equals(BJORN));
     assertNotNull(testModel.getSelectedItem());
-    assertEquals(BJORN, testModel.getSelectedValue());
+    assertEquals(BJORN, testModel.selectedValue());
   }
 
   @Test
@@ -179,14 +179,14 @@ public class SwingFilteredComboBoxModelTest {
     assertEquals(2, testModel.getSize());
     assertTrue(testModel.isVisible(ANNA));
 
-    assertEquals(4, testModel.getFilteredItems().size());
-    assertEquals(1, testModel.getVisibleItems().size());
-    assertEquals(4, testModel.getFilteredItemCount());
-    assertEquals(2, testModel.getVisibleItemCount());
-    assertEquals(5, testModel.getItems().size());
+    assertEquals(4, testModel.filteredItems().size());
+    assertEquals(1, testModel.visibleItems().size());
+    assertEquals(4, testModel.filteredItemCount());
+    assertEquals(2, testModel.visibleItemCount());
+    assertEquals(5, testModel.items().size());
 
     testModel.addItem(BJORN);//already contained
-    assertEquals(4, testModel.getFilteredItemCount());
+    assertEquals(4, testModel.filteredItemCount());
 
     assertFalse(testModel.isVisible(BJORN));
     assertTrue(testModel.containsItem(BJORN));
@@ -228,12 +228,12 @@ public class SwingFilteredComboBoxModelTest {
   void setNullValueString() throws Exception {
     assertTrue(testModel.isVisible(null));
     testModel.refresh();
-    assertEquals(5, testModel.getVisibleItems().size());
+    assertEquals(5, testModel.visibleItems().size());
     assertEquals(testModel.getElementAt(0), NULL);
     testModel.setSelectedItem(null);
     assertEquals(testModel.getSelectedItem(), NULL);
     assertTrue(testModel.isNullSelected());
-    assertNull(testModel.getSelectedValue());
+    assertNull(testModel.selectedValue());
     testModel.setSelectedItem(NULL);
     assertEquals(NULL, testModel.getElementAt(0));
     assertEquals(ANNA, testModel.getElementAt(1));
@@ -264,7 +264,7 @@ public class SwingFilteredComboBoxModelTest {
       }
 
       @Override
-      public Predicate<String> getPredicate(Character value) {
+      public Predicate<String> createPredicate(Character value) {
         return item -> item.charAt(0) == value.charValue();
       }
     });
@@ -309,12 +309,12 @@ public class SwingFilteredComboBoxModelTest {
     SwingFilteredComboBoxModel<Data> model = new SwingFilteredComboBoxModel<>();
     model.setContents(contents);
     model.setSelectedItem(contents.get(1));
-    assertEquals("2", model.getSelectedValue().data);
+    assertEquals("2", model.selectedValue().data);
 
     contents = asList(new Data(1, "1"), new Data(2, "22"), new Data(3, "3"));
 
     model.setContents(contents);
-    assertEquals("22", model.getSelectedValue().data);
+    assertEquals("22", model.selectedValue().data);
   }
 
   @BeforeEach

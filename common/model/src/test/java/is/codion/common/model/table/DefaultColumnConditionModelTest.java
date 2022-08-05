@@ -61,16 +61,16 @@ public class DefaultColumnConditionModelTest {
     assertEquals(1, lowerBoundCounter.get());
     assertEquals("hello", model.getLowerBound());
 
-    model.getAutomaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
+    model.automaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     assertEquals("%hello%", model.getUpperBound());
     assertEquals("%hello%", model.getLowerBound());
-    model.getAutomaticWildcardValue().set(AutomaticWildcard.NONE);
+    model.automaticWildcardValue().set(AutomaticWildcard.NONE);
 
     model.setEqualValue("test");
     assertEquals(1, equalToCounter.get());
     assertEquals("test", model.getEqualValue());
 
-    model.getAutomaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
+    model.automaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     assertEquals("%test%", model.getEqualValues().iterator().next());
 
     model.clearCondition();
@@ -86,10 +86,10 @@ public class DefaultColumnConditionModelTest {
   @Test
   void testMisc() {
     ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, '%');
-    assertEquals("test", model.getColumnIdentifier());
+    assertEquals("test", model.columnIdentifier());
 
     model.setOperator(Operator.EQUAL);
-    model.getAutomaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
+    model.automaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     model.setEqualValue("upper");
     assertEquals("%upper%", model.getEqualValue());
   }
@@ -114,7 +114,7 @@ public class DefaultColumnConditionModelTest {
 
     assertThrows(IllegalArgumentException.class, () -> model.setOperator(Operator.BETWEEN));
 
-    assertThrows(IllegalArgumentException.class, () -> model.getOperatorValue().set(Operator.BETWEEN));
+    assertThrows(IllegalArgumentException.class, () -> model.operatorValue().set(Operator.BETWEEN));
   }
 
   @Test
@@ -123,17 +123,17 @@ public class DefaultColumnConditionModelTest {
     assertTrue(model.isAutoEnable());
     model.setEqualValue("test");
     assertTrue(model.isEnabled());
-    model.getCaseSensitiveState().set(false);
-    assertFalse(model.getCaseSensitiveState().get());
-    assertEquals("test", model.getColumnIdentifier());
-    assertEquals(String.class, model.getColumnClass());
-    assertEquals('%', model.getWildcardValue().get());
+    model.caseSensitiveState().set(false);
+    assertFalse(model.caseSensitiveState().get());
+    assertEquals("test", model.columnIdentifier());
+    assertEquals(String.class, model.columnClass());
+    assertEquals('%', model.wildcardValue().get());
 
-    model.getWildcardValue().set('#');
-    assertEquals('#', model.getWildcardValue().get());
+    model.wildcardValue().set('#');
+    assertEquals('#', model.wildcardValue().get());
 
-    model.getAutomaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
-    assertEquals(AutomaticWildcard.PREFIX_AND_POSTFIX, model.getAutomaticWildcardValue().get());
+    model.automaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
+    assertEquals(AutomaticWildcard.PREFIX_AND_POSTFIX, model.automaticWildcardValue().get());
 
     model.addEnabledListener(enabledListener);
     model.setEnabled(false);
@@ -145,7 +145,7 @@ public class DefaultColumnConditionModelTest {
 
     model.setLocked(true);
     assertTrue(model.isLocked());
-    assertTrue(model.getLockedObserver().get());
+    assertTrue(model.lockedObserver().get());
   }
 
   @Test
@@ -188,7 +188,7 @@ public class DefaultColumnConditionModelTest {
     DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, '%');
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setOperator(Operator.NOT_EQUAL));
-    assertThrows(IllegalStateException.class, () -> model.getOperatorValue().set(Operator.NOT_EQUAL));
+    assertThrows(IllegalStateException.class, () -> model.operatorValue().set(Operator.NOT_EQUAL));
   }
 
   @Test

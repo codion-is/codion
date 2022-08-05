@@ -50,7 +50,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
     schemaPanel.setDetailSplitPanelResizeWeight(0.3);
 
-    schemaModel.getTableModel().refresh();
+    schemaModel.tableModel().refresh();
 
     return Collections.singletonList(schemaPanel);
   }

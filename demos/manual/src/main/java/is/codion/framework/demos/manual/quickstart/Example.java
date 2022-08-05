@@ -169,7 +169,7 @@ public final class Example {
     SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 
     EntityPanel customerPanel = new EntityPanel(customerModel,
-            new CustomerEditPanel(customerModel.getEditModel()));
+            new CustomerEditPanel(customerModel.editModel()));
     // end::customerPanel[]
 
     // tag::detailPanel[]
@@ -194,7 +194,7 @@ public final class Example {
     customerModel.addDetailModel(customerAddressModel);
 
     EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
-            new CustomerAddressEditPanel(customerAddressModel.getEditModel()));
+            new CustomerAddressEditPanel(customerAddressModel.editModel()));
 
     customerPanel.addDetailPanel(customerAddressPanel);
 
@@ -202,7 +202,7 @@ public final class Example {
     customerPanel.initializePanel();
 
     //populate the model with data from the database
-    customerModel.getTableModel().refresh();
+    customerModel.tableModel().refresh();
 
     Dialogs.componentDialog(customerPanel)
             .title("Customers")

@@ -117,7 +117,7 @@ final class CountryEditPanel extends EntityEditPanel {
 
   private void initializeCapitalEditPanel(EntityEditPanel capitalEditPanel) {
     //set the country to the one selected in the CountryEditPanel
-    Entity country = getEditModel().getEntityCopy();
+    Entity country = getEditModel().entityCopy();
     if (country.getPrimaryKey().isNotNull()) {
       //if a country is selected, then we don't allow it to be changed
       capitalEditPanel.getEditModel().put(City.COUNTRY_FK, country);

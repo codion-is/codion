@@ -23,9 +23,9 @@ public final class TrackTableModel extends SwingEntityTableModel {
   }
 
   public void raisePriceOfSelected(BigDecimal increase) throws DatabaseException {
-    if (getSelectionModel().isSelectionNotEmpty()) {
-      Collection<Long> trackIds = Entity.get(Track.ID, getSelectionModel().getSelectedItems());
-      List<Entity> result = getConnectionProvider().connection()
+    if (selectionModel().isSelectionNotEmpty()) {
+      Collection<Long> trackIds = Entity.get(Track.ID, selectionModel().getSelectedItems());
+      List<Entity> result = connectionProvider().connection()
               .executeFunction(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, increase));
       replaceEntities(result);
     }

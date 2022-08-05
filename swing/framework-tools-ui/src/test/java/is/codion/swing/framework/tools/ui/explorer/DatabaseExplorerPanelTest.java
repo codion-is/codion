@@ -21,8 +21,8 @@ public class DatabaseExplorerPanelTest {
     new DatabaseExplorerPanel(model);
     model.getSchemaModel().refresh();
     model.getSchemaModel().sort();
-    model.getSchemaModel().getSelectionModel().setSelectedIndex(2);
+    model.getSchemaModel().selectionModel().setSelectedIndex(2);
     model.populateSelected(schema -> {});
-    model.getDefinitionModel().getSelectionModel().setSelectedIndex(0);
+    model.getDefinitionModel().selectionModel().setSelectedIndex(0);
   }
 }

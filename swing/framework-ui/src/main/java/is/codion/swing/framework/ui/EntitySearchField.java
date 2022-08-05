@@ -576,8 +576,8 @@ public final class EntitySearchField extends JTextField {
               .action(Control.control(() -> table.getSearchField().requestFocusInWindow()))
               .enable(table);
       Collection<Attribute<String>> searchAttributes = searchModel.searchAttributes();
-      tableModel.getColumnModel().setColumns(searchAttributes.toArray(new Attribute[0]));
-      tableModel.getSortModel().setSortOrder(searchAttributes.iterator().next(), SortOrder.ASCENDING);
+      tableModel.columnModel().setColumns(searchAttributes.toArray(new Attribute[0]));
+      tableModel.sortModel().setSortOrder(searchAttributes.iterator().next(), SortOrder.ASCENDING);
       table.setSelectionMode(searchModel.multipleSelectionEnabledState().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       table.setDoubleClickAction(selectControl);
@@ -623,7 +623,7 @@ public final class EntitySearchField extends JTextField {
 
     private Control.Command createSelectCommand(EntitySearchModel searchModel, SwingEntityTableModel tableModel) {
       return () -> {
-        searchModel.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
+        searchModel.setSelectedEntities(tableModel.selectionModel().getSelectedItems());
         Utilities.getParentDialog(table).ifPresent(JDialog::dispose);
       };
     }

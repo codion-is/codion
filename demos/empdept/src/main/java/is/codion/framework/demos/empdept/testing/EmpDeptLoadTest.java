@@ -46,7 +46,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppPanel.E
     SwingEntityModel model = applicationModel.getEntityModel(Department.TYPE);
     model.addLinkedDetailModel(model.getDetailModel(Employee.TYPE));
     try {
-      model.getTableModel().refresh();
+      model.tableModel().refresh();
     }
     catch (Exception ignored) {/*ignored*/}
 

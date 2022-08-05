@@ -102,20 +102,20 @@ public final class PropertyConditionView<T> extends BorderPane {
 
   private ComboBox<Item<Operator>> createOperatorComboBox() {
     ComboBox<Item<Operator>> comboBox = new ComboBox<>(
-            FXCollections.observableArrayList(getOperators(model.getColumnIdentifier())));
+            FXCollections.observableArrayList(getOperators(model.columnIdentifier())));
     comboBox.getSelectionModel().select(item(model.getOperator()));
     comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> model.setOperator(newValue.value()));
     comboBox.maxWidthProperty().set(Double.MAX_VALUE);
     comboBox.minWidthProperty().set(0);
-    FXUiUtil.link(comboBox.disableProperty(), model.getLockedObserver());
+    FXUiUtil.link(comboBox.disableProperty(), model.lockedObserver());
 
     return comboBox;
   }
 
   private CheckBox createEnabledBox() {
     CheckBox box = new CheckBox();
-    FXUiUtil.createBooleanValue(box).link(model.getEnabledState());
-    FXUiUtil.link(box.disableProperty(), model.getLockedObserver());
+    FXUiUtil.createBooleanValue(box).link(model.enabledState());
+    FXUiUtil.link(box.disableProperty(), model.lockedObserver());
 
     return box;
   }
@@ -123,7 +123,7 @@ public final class PropertyConditionView<T> extends BorderPane {
   private Control createEqualsValueControl(Property<T> property) {
     Control control = createControl(property);
     if (!(control instanceof EntitySearchField)) {
-      ValueSet<T> valueSet = model.getEqualValueSet();
+      ValueSet<T> valueSet = model.equalValueSet();
       Value<T> value = Value.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
 
@@ -134,23 +134,23 @@ public final class PropertyConditionView<T> extends BorderPane {
   }
 
   private Control createUpperBoundControl(Property<T> property) {
-    if (model.getColumnClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKey) {
+    if (model.columnClass().equals(Boolean.class) || model.columnIdentifier() instanceof ForeignKey) {
       //never required
       return null;
     }
     Control control = createControl(property);
-    FXUiUtil.createValue(property, control, null).link(model.getUpperBoundValue());
+    FXUiUtil.createValue(property, control, null).link(model.upperBoundValue());
 
     return control;
   }
 
   private Control createLowerBoundControl(Property<T> property) {
-    if (model.getColumnClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKey) {
+    if (model.columnClass().equals(Boolean.class) || model.columnIdentifier() instanceof ForeignKey) {
       //never required
       return null;
     }
     Control control = createControl(property);
-    FXUiUtil.createValue(property, control, null).link(model.getLowerBoundValue());
+    FXUiUtil.createValue(property, control, null).link(model.lowerBoundValue());
 
     return control;
   }
@@ -159,11 +159,11 @@ public final class PropertyConditionView<T> extends BorderPane {
     Control control;
     if (model instanceof FXForeignKeyConditionListModel) {
       FXForeignKeyConditionListModel listModel = (FXForeignKeyConditionListModel) model;
-      control = new ComboBox<>(listModel.getListModel().getSortedList());
+      control = new ComboBox<>(listModel.getListModel().sortedList());
       listModel.getListModel().setSelectionModel(((ComboBox<Entity>) control).getSelectionModel());
     }
     else if (model instanceof DefaultForeignKeyConditionModel) {
-      control = new EntitySearchField(((DefaultForeignKeyConditionModel) model).getEntitySearchModel());
+      control = new EntitySearchField(((DefaultForeignKeyConditionModel) model).entitySearchModel());
     }
     else {
       control = FXUiUtil.createControl(property, null);
@@ -178,7 +178,7 @@ public final class PropertyConditionView<T> extends BorderPane {
     }
     control.minWidthProperty().setValue(0);
     control.maxWidthProperty().setValue(Double.MAX_VALUE);
-    FXUiUtil.link(control.disableProperty(), model.getLockedObserver());
+    FXUiUtil.link(control.disableProperty(), model.lockedObserver());
 
     return control;
   }

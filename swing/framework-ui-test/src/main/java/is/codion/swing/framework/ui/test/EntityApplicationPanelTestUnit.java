@@ -35,7 +35,7 @@ public class EntityApplicationPanelTestUnit {
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
     EntityApplicationPanel.SHOW_STARTUP_DIALOG.set(false);
     EntityApplicationPanel<?> panel = createApplicationPanel();
-    panel.addApplicationStartedListener(frame -> panel.getModel().getConnectionProvider().close());
+    panel.addApplicationStartedListener(frame -> panel.getModel().connectionProvider().close());
     panel.starter().silentLoginUser(user).displayFrame(false).displayProgressDialog(false).start();
   }
 

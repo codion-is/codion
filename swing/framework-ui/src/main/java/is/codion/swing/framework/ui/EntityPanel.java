@@ -286,7 +286,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param entityModel the EntityModel
    */
   public EntityPanel(SwingEntityModel entityModel) {
-    this(entityModel, null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
+    this(entityModel, null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
   }
 
   /**
@@ -295,7 +295,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel) {
-    this(entityModel, editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
+    this(entityModel, editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
   }
 
   /**
@@ -317,7 +317,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     requireNonNull(entityModel, ENTITY_MODEL_PARAM);
     setFocusCycleRoot(true);
     this.entityModel = entityModel;
-    this.caption = entityModel.getEditModel().getEntityDefinition().getCaption();
+    this.caption = entityModel.editModel().entityDefinition().getCaption();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
   }
@@ -342,14 +342,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the EntityEditModel
    */
   public final SwingEntityEditModel getEditModel() {
-    return entityModel.getEditModel();
+    return entityModel.editModel();
   }
 
   /**
    * @return the EntityTableModel, null if none is available
    */
   public final SwingEntityTableModel getTableModel() {
-    return entityModel.getTableModel();
+    return entityModel.tableModel();
   }
 
   /**
@@ -494,7 +494,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the currently visible/linked detail EntityPanel, if any
    */
   public final Collection<EntityPanel> getLinkedDetailPanels() {
-    Collection<SwingEntityModel> linkedDetailModels = entityModel.getLinkedDetailModels();
+    Collection<SwingEntityModel> linkedDetailModels = entityModel.linkedDetailModels();
 
     return detailEntityPanels.stream()
             .filter(detailPanel -> linkedDetailModels.contains(detailPanel.entityModel))
@@ -509,7 +509,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   public final EntityPanel getDetailPanel(EntityType entityType) {
     for (EntityPanel detailPanel : detailEntityPanels) {
-      if (detailPanel.entityModel.getEntityType().equals(entityType)) {
+      if (detailPanel.entityModel.entityType().equals(entityType)) {
         return detailPanel;
       }
     }
@@ -532,7 +532,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   public final boolean containsDetailPanel(EntityType entityType) {
     return detailEntityPanels.stream()
-            .anyMatch(detailPanel -> detailPanel.entityModel.getEntityType().equals(entityType));
+            .anyMatch(detailPanel -> detailPanel.entityModel.entityType().equals(entityType));
   }
 
   @Override
@@ -589,7 +589,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final void setSelectedChildPanel(HierarchyPanel childPanel) {
     if (detailPanelTabbedPane != null) {
       detailPanelTabbedPane.setSelectedComponent((JComponent) childPanel);
-      for (SwingEntityModel linkedModel : new ArrayList<>(entityModel.getLinkedDetailModels())) {
+      for (SwingEntityModel linkedModel : new ArrayList<>(entityModel.linkedDetailModels())) {
         entityModel.removeLinkedDetailModel(linkedModel);
       }
       entityModel.addLinkedDetailModel(getTabbedDetailPanel().getModel());

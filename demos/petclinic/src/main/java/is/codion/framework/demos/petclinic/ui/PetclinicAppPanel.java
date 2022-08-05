@@ -47,11 +47,11 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     SwingEntityModel visitsModel = petsModel.getDetailModel(Visit.TYPE);
 
     EntityPanel ownersPanel = new EntityPanel(ownersModel,
-            new OwnerEditPanel(ownersModel.getEditModel()));
+            new OwnerEditPanel(ownersModel.editModel()));
     EntityPanel petsPanel = new EntityPanel(petsModel,
-            new PetEditPanel(petsModel.getEditModel()));
+            new PetEditPanel(petsModel.editModel()));
     EntityPanel visitsPanel = new EntityPanel(visitsModel,
-            new VisitEditPanel(visitsModel.getEditModel()));
+            new VisitEditPanel(visitsModel.editModel()));
 
     ownersPanel.addDetailPanel(petsPanel);
     petsPanel.addDetailPanel(visitsPanel);
@@ -60,9 +60,9 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     SwingEntityModel vetSpecialtiesModel = vetsModel.getDetailModel(VetSpecialty.TYPE);
 
     EntityPanel vetsPanel = new EntityPanel(vetsModel,
-            new VetEditPanel(vetsModel.getEditModel()));
+            new VetEditPanel(vetsModel.editModel()));
     EntityPanel vetSpecialtiesPanel = new EntityPanel(vetSpecialtiesModel,
-            new VetSpecialtyEditPanel(vetSpecialtiesModel.getEditModel()));
+            new VetSpecialtyEditPanel(vetSpecialtiesModel.editModel()));
 
     vetsPanel.addDetailPanel(vetSpecialtiesPanel);
 

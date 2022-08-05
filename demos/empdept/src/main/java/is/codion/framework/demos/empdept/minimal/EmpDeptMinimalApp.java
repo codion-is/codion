@@ -252,9 +252,9 @@ public final class EmpDeptMinimalApp {
       SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
 
       EntityPanel employeePanel = new EntityPanel(employeeModel,
-              new EmployeeEditPanel(employeeModel.getEditModel()));
+              new EmployeeEditPanel(employeeModel.editModel()));
       EntityPanel departmentPanel = new EntityPanel(departmentModel,
-              new DepartmentEditPanel(departmentModel.getEditModel()));
+              new DepartmentEditPanel(departmentModel.editModel()));
       departmentPanel.addDetailPanel(employeePanel);
 
       return Collections.singletonList(departmentPanel);

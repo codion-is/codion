@@ -30,12 +30,12 @@ public interface EntityTableConditionModel {
   /**
    * @return the type of the entity this table condition model is based on
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the underlying entity definition
    */
-  EntityDefinition getEntityDefinition();
+  EntityDefinition entityDefinition();
 
   /**
    * Sets the search condition values of the condition model associated with {@code attribute}.
@@ -57,7 +57,7 @@ public interface EntityTableConditionModel {
   /**
    * @return the current condition based on the state of the underlying condition models
    */
-  Condition getCondition();
+  Condition condition();
 
   /**
    * @return supplies any additional search condition, not based on any individual property condition
@@ -87,7 +87,7 @@ public interface EntityTableConditionModel {
    * A data model using this condition model should call this method each time the
    * model is refreshed according to the condition provided by this condition model.
    * @see #hasConditionChanged()
-   * @see #getConditionChangedObserver
+   * @see #conditionChangedObserver
    */
   void rememberCondition();
 
@@ -114,7 +114,7 @@ public interface EntityTableConditionModel {
   /**
    * @return a Map containing the {@link ColumnConditionModel}s available in this table condition model, mapped to their respective attributes
    */
-  Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> getConditionModels();
+  Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> conditionModels();
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given attribute.
@@ -135,7 +135,7 @@ public interface EntityTableConditionModel {
   /**
    * @return a Map containing the filter models available in this table condition model, mapped to their respective attributes
    */
-  Map<Attribute<?>, ColumnFilterModel<Entity, Attribute<?>, ?>> getFilterModels();
+  Map<Attribute<?>, ColumnFilterModel<Entity, Attribute<?>, ?>> filterModels();
 
   /**
    * The filter model associated with {@code attribute}
@@ -172,17 +172,17 @@ public interface EntityTableConditionModel {
   /**
    * Note that modifying this value may (and probably will) change the automatic prefix and case sensetivity settings of
    * the underlying {@link ColumnConditionModel}s
-   * @see ColumnConditionModel#getCaseSensitiveState()
-   * @see ColumnConditionModel#getAutomaticWildcardValue()
+   * @see ColumnConditionModel#caseSensitiveState()
+   * @see ColumnConditionModel#automaticWildcardValue()
    * @return the value used when performing a simple search.
    */
-  Value<String> getSimpleConditionStringValue();
+  Value<String> simpleConditionStringValue();
 
   /**
    * @return a StateObserver indicating if the search condition has changed since it was last remembered
    * @see #rememberCondition()
    */
-  StateObserver getConditionChangedObserver();
+  StateObserver conditionChangedObserver();
 
   /**
    * @param listener a listener notified each time the search condition changes

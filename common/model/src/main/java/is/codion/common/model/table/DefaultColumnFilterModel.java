@@ -98,7 +98,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
       return comparable == null;
     }
 
-    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(getWildcardValue().get()))) {
+    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcardValue().get()))) {
       return includeExactWildcard((String) comparable);
     }
 
@@ -114,7 +114,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
       return comparable != null;
     }
 
-    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(getWildcardValue().get()))) {
+    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcardValue().get()))) {
       return !includeExactWildcard((String) comparable);
     }
 
@@ -126,17 +126,17 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
     if (equalsValue == null) {
       equalsValue = "";
     }
-    if (equalsValue.equals(String.valueOf(getWildcardValue().get()))) {
+    if (equalsValue.equals(String.valueOf(wildcardValue().get()))) {
       return true;
     }
 
     String realValue = value;
-    if (!getCaseSensitiveState().get()) {
+    if (!caseSensitiveState().get()) {
       equalsValue = equalsValue.toUpperCase(Locale.getDefault());
       realValue = realValue.toUpperCase(Locale.getDefault());
     }
 
-    if (!equalsValue.contains(String.valueOf(getWildcardValue().get()))) {
+    if (!equalsValue.contains(String.valueOf(wildcardValue().get()))) {
       return realValue.compareTo(equalsValue) == 0;
     }
 
@@ -145,7 +145,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
 
   private String prepareForRegex(String string) {
     //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replace(String.valueOf(getWildcardValue().get()), ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
+    return string.replace(String.valueOf(wildcardValue().get()), ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
   }
 
   private boolean includeLessThan(Comparable<T> comparable) {

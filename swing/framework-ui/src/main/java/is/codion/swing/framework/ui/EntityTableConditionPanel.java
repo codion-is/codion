@@ -60,7 +60,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   public EntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
                                    FilteredTableColumnModel<Attribute<?>> columnModel,
                                    ConditionPanelFactory conditionPanelFactory) {
-    super(tableConditionModel, requireNonNull(columnModel).getAllColumns());
+    super(tableConditionModel, requireNonNull(columnModel).columns());
     requireNonNull(conditionPanelFactory);
     this.conditionPanel = new TableColumnComponentPanel<>(columnModel, createConditionPanels(columnModel, conditionPanelFactory));
     this.columnModel = columnModel;
@@ -155,15 +155,15 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
 
   private List<Property<?>> getConditionPanelProperties() {
     return conditionPanel.getColumnComponents().values().stream()
-            .filter(panel -> columnModel.isColumnVisible(panel.getModel().getColumnIdentifier()))
-            .map(panel -> getTableConditionModel().getEntityDefinition().getProperty(panel.getModel().getColumnIdentifier()))
+            .filter(panel -> columnModel.isColumnVisible(panel.getModel().columnIdentifier()))
+            .map(panel -> getTableConditionModel().entityDefinition().getProperty(panel.getModel().columnIdentifier()))
             .collect(toList());
   }
 
   private static Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(
           FilteredTableColumnModel<Attribute<?>> columnModel, ConditionPanelFactory conditionPanelFactory) {
     Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new HashMap<>();
-    columnModel.getAllColumns().forEach(column -> {
+    columnModel.columns().forEach(column -> {
       ColumnConditionPanel<Attribute<?>, Object> conditionPanel = (ColumnConditionPanel<Attribute<?>, Object>) conditionPanelFactory.createConditionPanel(column);
       if (conditionPanel != null) {
         conditionPanels.put(column, conditionPanel);

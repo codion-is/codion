@@ -56,15 +56,15 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityTableModel createDepartmentTableModel() {
-    SwingEntityTableModel deptModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
-    deptModel.getSortModel().setSortOrder(TestDomain.DEPARTMENT_NAME, SortOrder.ASCENDING);
+    SwingEntityTableModel deptModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, testModel.connectionProvider());
+    deptModel.sortModel().setSortOrder(TestDomain.DEPARTMENT_NAME, SortOrder.ASCENDING);
 
     return deptModel;
   }
 
   @Override
   protected SwingEntityTableModel createEmployeeTableModel() {
-    return new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
+    return new SwingEntityTableModel(TestDomain.T_EMP, testModel.connectionProvider());
   }
 
   @Override
@@ -110,24 +110,24 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void testFiltering() {
     testModel.refresh();
     ColumnConditionModel<Attribute<String>, String> filterModel =
-            testModel.getTableConditionModel().getFilterModel(TestDomain.DETAIL_STRING);
+            testModel.tableConditionModel().getFilterModel(TestDomain.DETAIL_STRING);
     filterModel.setEqualValue("a");
     testModel.filterContents();
-    assertEquals(4, testModel.getFilteredItems().size());
+    assertEquals(4, testModel.filteredItems().size());
   }
 
   @Test
   void getColumnIndex() {
-    assertEquals(0, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_INT));
-    assertEquals(1, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_DOUBLE));
-    assertEquals(2, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_STRING));
-    assertEquals(3, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_DATE));
-    assertEquals(4, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_TIMESTAMP));
-    assertEquals(5, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_BOOLEAN));
-    assertEquals(6, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_BOOLEAN_NULLABLE));
-    assertEquals(7, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_MASTER_FK));
-    assertEquals(8, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_MASTER_NAME));
-    assertEquals(9, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_MASTER_CODE));
+    assertEquals(0, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_INT));
+    assertEquals(1, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_DOUBLE));
+    assertEquals(2, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_STRING));
+    assertEquals(3, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_DATE));
+    assertEquals(4, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_TIMESTAMP));
+    assertEquals(5, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_BOOLEAN));
+    assertEquals(6, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_BOOLEAN_NULLABLE));
+    assertEquals(7, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_MASTER_FK));
+    assertEquals(8, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_MASTER_NAME));
+    assertEquals(9, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_MASTER_CODE));
   }
 
   @Test
@@ -149,7 +149,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void isEditable() {
     testModel.setEditable(true);
     assertTrue(testModel.isCellEditable(0, 0));
-    assertFalse(testModel.isCellEditable(0, testModel.getColumnModel().getColumnIndex(TestDomain.DETAIL_INT_DERIVED)));
+    assertFalse(testModel.isCellEditable(0, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_INT_DERIVED)));
     testModel.setEditable(false);
   }
 
@@ -167,7 +167,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void columnModel() {
-    TableColumn column = testModel.getColumnModel().getTableColumn(TestDomain.DETAIL_STRING);
+    TableColumn column = testModel.columnModel().getTableColumn(TestDomain.DETAIL_STRING);
     assertEquals(TestDomain.DETAIL_STRING, column.getIdentifier());
   }
 
@@ -187,7 +187,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void backgroundColor() {
     SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
     ColumnConditionModel<Attribute<String>, String> nameConditionModel =
-            employeeTableModel.getTableConditionModel().getConditionModel(TestDomain.EMP_NAME);
+            employeeTableModel.tableConditionModel().getConditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setEqualValue("BLAKE");
     employeeTableModel.refresh();
     assertEquals(Color.GREEN, employeeTableModel.getBackgroundColor(0, TestDomain.EMP_JOB));
@@ -195,10 +195,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void indexOf() {
-    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.connectionProvider());
     tableModel.refresh();
-    tableModel.getSortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
-    assertEquals(SortOrder.ASCENDING, tableModel.getSortModel().getSortingState(TestDomain.EMP_NAME).getSortOrder());
+    tableModel.sortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
+    assertEquals(SortOrder.ASCENDING, tableModel.sortModel().getSortingState(TestDomain.EMP_NAME).sortOrder());
 
     Key pk1 = getConnectionProvider().entities().primaryKey(TestDomain.T_EMP, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
@@ -212,24 +212,24 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     testModel.clearPreferences();
 
     SwingEntityTableModel tableModel = createTestTableModel();
-    assertTrue(tableModel.getColumnModel().isColumnVisible(TestDomain.DETAIL_STRING));
+    assertTrue(tableModel.columnModel().isColumnVisible(TestDomain.DETAIL_STRING));
 
-    tableModel.getColumnModel().setColumnVisible(TestDomain.DETAIL_STRING, false);
-    tableModel.getColumnModel().moveColumn(1, 0);//double to 0, int to 1
-    TableColumn column = tableModel.getColumnModel().getColumn(3);
+    tableModel.columnModel().setColumnVisible(TestDomain.DETAIL_STRING, false);
+    tableModel.columnModel().moveColumn(1, 0);//double to 0, int to 1
+    TableColumn column = tableModel.columnModel().getColumn(3);
     column.setWidth(150);//timestamp
-    column = tableModel.getColumnModel().getColumn(5);
+    column = tableModel.columnModel().getColumn(5);
     column.setWidth(170);//entity_ref
 
     tableModel.savePreferences();
 
     SwingEntityTableModel model = createTestTableModel();
-    assertFalse(model.getColumnModel().isColumnVisible(TestDomain.DETAIL_STRING));
-    assertEquals(0, model.getColumnModel().getColumnIndex(TestDomain.DETAIL_DOUBLE));
-    assertEquals(1, model.getColumnModel().getColumnIndex(TestDomain.DETAIL_INT));
-    column = model.getColumnModel().getColumn(3);
+    assertFalse(model.columnModel().isColumnVisible(TestDomain.DETAIL_STRING));
+    assertEquals(0, model.columnModel().getColumnIndex(TestDomain.DETAIL_DOUBLE));
+    assertEquals(1, model.columnModel().getColumnIndex(TestDomain.DETAIL_INT));
+    column = model.columnModel().getColumn(3);
     assertEquals(150, column.getPreferredWidth());
-    column = model.getColumnModel().getColumn(5);
+    column = model.columnModel().getColumn(5);
     assertEquals(170, column.getPreferredWidth());
 
     model.clearPreferences();
@@ -247,7 +247,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
     assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).getAttribute());
 
-    tableModel.getSortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
+    tableModel.sortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
     orderBy = tableModel.getOrderBy();
     //still default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
@@ -262,8 +262,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
     assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(0).getAttribute());
 
-    tableModel.getSortModel().setSortOrder(TestDomain.EMP_HIREDATE, SortOrder.DESCENDING);
-    tableModel.getSortModel().addSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
+    tableModel.sortModel().setSortOrder(TestDomain.EMP_HIREDATE, SortOrder.DESCENDING);
+    tableModel.sortModel().addSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
 
     orderBy = tableModel.getOrderBy();
     assertEquals(2, orderBy.orderByAttributes().size());
@@ -272,7 +272,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
     assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).getAttribute());
 
-    tableModel.getSortModel().clear();
+    tableModel.sortModel().clear();
     orderBy = tableModel.getOrderBy();
     //back to default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());

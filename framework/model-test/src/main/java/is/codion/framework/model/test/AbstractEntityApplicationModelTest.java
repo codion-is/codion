@@ -47,17 +47,17 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     Model deptModel = createDepartmentModel();
     model.addEntityModel(deptModel);
     assertNotNull(model.getEntityModel(TestDomain.T_DEPARTMENT));
-    assertEquals(1, model.getEntityModels().size());
+    assertEquals(1, model.entityModels().size());
     model.clear();
-    assertEquals(UNIT_TEST_USER, model.getUser());
+    assertEquals(UNIT_TEST_USER, model.user());
 
     assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(TestDomain.T_EMP));
     if (!deptModel.containsTableModel()) {
       return;
     }
-    deptModel.getDetailModel(TestDomain.T_EMP).getTableModel().getQueryConditionRequiredState().set(false);
+    deptModel.getDetailModel(TestDomain.T_EMP).tableModel().queryConditionRequiredState().set(false);
     model.refresh();
-    assertTrue(deptModel.getTableModel().getRowCount() > 0);
+    assertTrue(deptModel.tableModel().getRowCount() > 0);
   }
 
   @Test
@@ -119,21 +119,21 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
     model.refresh();
 
-    deptModel.getTableModel().getSelectionModel().setSelectedIndex(0);
-    empModel.getTableModel().getSelectionModel().setSelectedIndex(0);
+    deptModel.tableModel().selectionModel().setSelectedIndex(0);
+    empModel.tableModel().selectionModel().setSelectedIndex(0);
 
-    String name = empModel.getEditModel().get(TestDomain.EMP_NAME);
-    empModel.getEditModel().put(TestDomain.EMP_NAME, "Darri");
+    String name = empModel.editModel().get(TestDomain.EMP_NAME);
+    empModel.editModel().put(TestDomain.EMP_NAME, "Darri");
     assertTrue(model.containsUnsavedData());
 
-    empModel.getEditModel().put(TestDomain.EMP_NAME, name);
+    empModel.editModel().put(TestDomain.EMP_NAME, name);
     assertFalse(model.containsUnsavedData());
 
-    name = deptModel.getEditModel().get(TestDomain.DEPARTMENT_NAME);
-    deptModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, "Darri");
+    name = deptModel.editModel().get(TestDomain.DEPARTMENT_NAME);
+    deptModel.editModel().put(TestDomain.DEPARTMENT_NAME, "Darri");
     assertTrue(model.containsUnsavedData());
 
-    deptModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, name);
+    deptModel.editModel().put(TestDomain.DEPARTMENT_NAME, name);
     assertFalse(model.containsUnsavedData());
   }
 

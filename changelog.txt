@@ -8331,3 +8331,4 @@
   Entities, EntityConnection, EntityConnectionProvider, LocalEntityConnection, LocalEntityConnectionProvider, get prefix removed from accessors, Entities.getDefinitions() renamed entityDefinitions()
   ServerInformation, RemoteEntityConnectionProvider, get prefix removed from accessors
   EntitySearchModel, get prefix removed from accessors
+  common.model, framework.model, swing.common.model, swing.framework.model, javafx.model, get prefix removed from accessors

@@ -173,7 +173,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * @param conditionPanelFactory the column condition panel factory
    */
   public FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory) {
-    super(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(), tableModel.getSelectionModel());
+    super(requireNonNull(tableModel, "tableModel"), tableModel.columnModel(), tableModel.selectionModel());
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
     this.searchField = initializeSearchField();
@@ -203,10 +203,10 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     if (!(dataModel instanceof FilteredTableModel)) {
       throw new IllegalArgumentException("FilteredTable model must be a FilteredTableModel instance");
     }
-    List<R> selection = ((FilteredTableModel<R, C>) dataModel).getSelectionModel().getSelectedItems();
+    List<R> selection = ((FilteredTableModel<R, C>) dataModel).selectionModel().getSelectedItems();
     super.setModel(dataModel);
     if (!selection.isEmpty()) {
-      ((FilteredTableModel<R, C>) dataModel).getSelectionModel().setSelectedItems(selection);
+      ((FilteredTableModel<R, C>) dataModel).selectionModel().setSelectedItems(selection);
     }
   }
 
@@ -302,7 +302,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
 
   @Override
   public void setSelectionMode(int selectionMode) {
-    tableModel.getSelectionModel().setSelectionMode(selectionMode);
+    tableModel.selectionModel().setSelectionMode(selectionMode);
   }
 
   /**
@@ -323,7 +323,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * Shows a dialog for selecting which columns to show/hide
    */
   public void selectColumns() {
-    SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.getColumnModel());
+    SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.columnModel());
     Dialogs.okCancelDialog(selectColumnsPanel)
             .owner(getParent())
             .title(MESSAGES.getString(SELECT_COLUMNS))
@@ -352,7 +352,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   public void scrollToColumn(C columnIdentifier) {
     Utilities.getParentOfType(JViewport.class, this).ifPresent(viewport ->
             scrollToRowColumn(viewport, rowAtPoint(viewport.getViewPosition()),
-                    getModel().getColumnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER));
+                    getModel().columnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER));
   }
 
   /**
@@ -385,7 +385,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   public Control createSelectColumnsControl() {
     return Control.builder(this::selectColumns)
             .caption(MESSAGES.getString(SELECT) + "...")
-            .enabledState(tableModel.getColumnModel().getLockedState().reversedObserver())
+            .enabledState(tableModel.columnModel().lockedState().reversedObserver())
             .description(MESSAGES.getString(SELECT_COLUMNS))
             .build();
   }
@@ -396,8 +396,8 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   public Controls createToggleColumnsControls() {
     return Controls.builder()
             .caption(MESSAGES.getString(SELECT))
-            .enabledState(tableModel.getColumnModel().getLockedState().reversedObserver())
-            .controls(tableModel.getColumnModel().getAllColumns().stream()
+            .enabledState(tableModel.columnModel().lockedState().reversedObserver())
+            .controls(tableModel.columnModel().columns().stream()
                     .sorted(new ColumnComparator())
                     .map(this::createToggleColumnControl)
                     .toArray(ToggleControl[]::new))
@@ -408,9 +408,9 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * @return a Control for resetting the columns to their original location and visibility
    */
   public Control createResetColumnsControl() {
-    return Control.builder(getModel().getColumnModel()::resetColumns)
+    return Control.builder(getModel().columnModel()::resetColumns)
             .caption(MESSAGES.getString(RESET))
-            .enabledState(tableModel.getColumnModel().getLockedState().reversedObserver())
+            .enabledState(tableModel.columnModel().lockedState().reversedObserver())
             .description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
             .build();
   }
@@ -419,7 +419,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * @return a ToggleControl for toggling the table selection mode (single or multiple)
    */
   public ToggleControl createSingleSelectionModeControl() {
-    return ToggleControl.builder(tableModel.getSelectionModel().getSingleSelectionModeState())
+    return ToggleControl.builder(tableModel.selectionModel().singleSelectionModeState())
             .caption(MESSAGES.getString(SINGLE_SELECTION_MODE))
             .build();
   }
@@ -458,7 +458,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     Control requestTableFocus = control(this::requestFocusInWindow);
 
     String hintText = Messages.searchFieldHint();
-    return Components.textField(tableModel.getSearchModel().getSearchStringValue())
+    return Components.textField(tableModel.searchModel().searchStringValue())
             .columns(SEARCH_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)
             .keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
@@ -482,7 +482,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
             .hintText(hintText)
             .onTextChanged(searchText -> {
               if (!searchText.isEmpty() && !Objects.equals(searchText, hintText)) {
-                tableModel.getSearchModel().nextResult();
+                tableModel.searchModel().nextResult();
               }
             })
             .build();
@@ -491,14 +491,14 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   private void selectSearchResult(boolean addToSelection, boolean next) {
     getSearchResult(addToSelection, next).ifPresent(rowColumn -> {
       if (!addToSelection) {
-        setColumnSelectionInterval(rowColumn.getColumn(), rowColumn.getColumn());
+        setColumnSelectionInterval(rowColumn.column(), rowColumn.column());
       }
-      scrollToCoordinate(rowColumn.getRow(), rowColumn.getColumn(), centerOnScroll);
+      scrollToCoordinate(rowColumn.row(), rowColumn.column(), centerOnScroll);
     });
   }
 
   private Optional<RowColumn> getSearchResult(boolean addToSelection, boolean next) {
-    FilteredTableSearchModel searchModel = tableModel.getSearchModel();
+    FilteredTableSearchModel searchModel = tableModel.searchModel();
     if (next) {
       return addToSelection ? searchModel.selectNextResult() : searchModel.nextResult();
     }
@@ -508,9 +508,9 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
 
   private Controls getSearchFieldPopupMenuControls() {
     return Controls.builder()
-            .control(ToggleControl.builder(tableModel.getSearchModel().getCaseSensitiveSearchState())
+            .control(ToggleControl.builder(tableModel.searchModel().caseSensitiveSearchState())
                     .caption(MESSAGES.getString("case_sensitive_search")))
-            .controls(ToggleControl.builder(tableModel.getSearchModel().getRegularExpressionSearchState())
+            .controls(ToggleControl.builder(tableModel.searchModel().regularExpressionSearchState())
                     .caption(MESSAGES.getString("regular_expression_search")))
             .build();
   }
@@ -571,8 +571,8 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
 
   private ToggleControl createToggleColumnControl(TableColumn column) {
     C identifier = (C) column.getIdentifier();
-    State visibleState = State.state(tableModel.getColumnModel().isColumnVisible(identifier));
-    visibleState.addDataListener(visible -> tableModel.getColumnModel().setColumnVisible(identifier, visible));
+    State visibleState = State.state(tableModel.columnModel().isColumnVisible(identifier));
+    visibleState.addDataListener(visible -> tableModel.columnModel().setColumnVisible(identifier, visible));
 
     return ToggleControl.builder(visibleState)
             .caption(column.getHeaderValue().toString())
@@ -586,19 +586,19 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     getTableHeader().setAutoscrolls(true);
     getTableHeader().addMouseMotionListener(new MouseColumnDragHandler());
     getTableHeader().addMouseListener(new MouseSortHandler());
-    tableModel.getColumnModel().getAllColumns().forEach(tableColumn ->
+    tableModel.columnModel().columns().forEach(tableColumn ->
             tableColumn.setHeaderRenderer(new SortableHeaderRenderer(tableColumn.getHeaderRenderer())));
   }
 
   private void bindEvents() {
     addMouseListener(initializeTableMouseListener());
-    tableModel.getSelectionModel().addSelectedIndexesListener(selectedRowIndexes -> {
+    tableModel.selectionModel().addSelectedIndexesListener(selectedRowIndexes -> {
       if (scrollToSelectedItem && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
         scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
       }
     });
-    tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
-    tableModel.getSearchModel().addCurrentResultListener(rowColumn -> repaint());
+    tableModel.columnModel().columns().forEach(this::bindFilterIndicatorEvents);
+    tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
     addKeyListener(new MoveResizeColumnKeyListener());
   }
 
@@ -610,7 +610,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   private void bindFilterIndicatorEvents(TableColumn column) {
-    ColumnFilterModel<R, C, Object> model = (ColumnFilterModel<R, C, Object>) getModel().getColumnFilterModels().get(column.getIdentifier());
+    ColumnFilterModel<R, C, Object> model = (ColumnFilterModel<R, C, Object>) getModel().columnFilterModels().get(column.getIdentifier());
     if (model != null) {
       model.addEnabledListener(() -> getTableHeader().repaint());
     }
@@ -647,7 +647,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
 
     @Override
     public <T> ColumnConditionPanel<C, T> createConditionPanel(TableColumn column) {
-      ColumnFilterModel<?, C, Object> filterModel = (ColumnFilterModel<?, C, Object>) tableModel.getColumnFilterModels().get(column.getIdentifier());
+      ColumnFilterModel<?, C, Object> filterModel = (ColumnFilterModel<?, C, Object>) tableModel.columnFilterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
       }
@@ -674,7 +674,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
       if (component instanceof JLabel) {
         JLabel label = (JLabel) component;
         TableColumn tableColumn = table.getColumnModel().getColumn(column);
-        ColumnFilterModel<R, C, ?> filterModel = tableModel.getColumnFilterModels().get(tableColumn.getIdentifier());
+        ColumnFilterModel<R, C, ?> filterModel = tableModel.columnFilterModels().get(tableColumn.getIdentifier());
         label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
         label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
@@ -684,13 +684,13 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     }
 
     private Icon getHeaderRendererIcon(C columnIdentifier, int iconSizePixels) {
-      SortOrder sortOrder = tableModel.getSortModel().getSortingState(columnIdentifier).getSortOrder();
+      SortOrder sortOrder = tableModel.sortModel().getSortingState(columnIdentifier).sortOrder();
       if (sortOrder == SortOrder.UNSORTED) {
         return null;
       }
 
       return new Arrow(sortOrder == SortOrder.DESCENDING, iconSizePixels,
-              tableModel.getSortModel().getSortingState(columnIdentifier).getPriority());
+              tableModel.sortModel().getSortingState(columnIdentifier).priority());
     }
   }
 
@@ -771,8 +771,8 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
         }
         C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
         if (isSortingEnabled(columnIdentifier)) {
-          FilteredTableSortModel<R, C> sortModel = getModel().getSortModel();
-          SortOrder newSortOrder = getNewSortOrder(sortModel.getSortingState(columnIdentifier).getSortOrder(), e.isShiftDown());
+          FilteredTableSortModel<R, C> sortModel = getModel().sortModel();
+          SortOrder newSortOrder = getNewSortOrder(sortModel.getSortingState(columnIdentifier).sortOrder(), e.isShiftDown());
           if (e.isControlDown()) {
             sortModel.addSortOrder(columnIdentifier, newSortOrder);
           }
@@ -806,7 +806,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     }
 
     private void toggleColumnFilterPanel(MouseEvent event) {
-      FilteredTableColumnModel<C> columnModel = getModel().getColumnModel();
+      FilteredTableColumnModel<C> columnModel = getModel().columnModel();
       TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
       toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
                       (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column)),

@@ -62,19 +62,19 @@ public final class DatabaseExplorerModel {
   }
 
   private void bindEvents() {
-    schemaTableModel.getSelectionModel().addSelectionChangedListener(definitionTableModel::refresh);
-    definitionTableModel.getSelectionModel().addSelectionChangedListener(this::updateCodeValue);
+    schemaTableModel.selectionModel().addSelectionChangedListener(definitionTableModel::refresh);
+    definitionTableModel.selectionModel().addSelectionChangedListener(this::updateCodeValue);
   }
 
   public void populateSelected(EventDataListener<String> schemaNotifier) {
-    schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema ->
+    schemaTableModel.selectionModel().getSelectedItems().forEach(schema ->
             metaDataModel.populateSchema(schema.getName(), schemaNotifier));
     definitionTableModel.refresh();
   }
 
   private void updateCodeValue() {
     StringBuilder builder = new StringBuilder();
-    definitionTableModel.getSelectionModel().getSelectedItems().forEach(definitionRow ->
+    definitionTableModel.selectionModel().getSelectedItems().forEach(definitionRow ->
             builder.append(DomainToString.toString(definitionRow.definition)));
     domainSourceValue.set(builder.toString());
   }

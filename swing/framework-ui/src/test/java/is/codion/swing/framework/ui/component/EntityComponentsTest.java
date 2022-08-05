@@ -43,7 +43,7 @@ public final class EntityComponentsTest {
           .build();
 
   private final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
-  private final EntityComponents inputComponents = new EntityComponents(editModel.getEntityDefinition());
+  private final EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
 
   @Test
   void createCheckBox() {
@@ -119,12 +119,12 @@ public final class EntityComponentsTest {
                     .linkedValue(editModel.value(TestDomain.DETAIL_BOOLEAN))
                     .buildComponentValue();
     ItemComboBoxModel<Boolean> boxModel = (ItemComboBoxModel<Boolean>) componentValue.getComponent().getModel();
-    assertTrue(boxModel.getSelectedValue().value());
+    assertTrue(boxModel.selectedValue().value());
     boxModel.setSelectedItem(null);
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN));
 
     editModel.put(TestDomain.DETAIL_BOOLEAN, false);
-    assertFalse(boxModel.getSelectedValue().value());
+    assertFalse(boxModel.selectedValue().value());
   }
 
   @Test
@@ -156,7 +156,7 @@ public final class EntityComponentsTest {
     ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) componentValue.getComponent().getModel();
 
     //null item should be first, regardless of sorting
-    assertEquals(0, model.getItems().indexOf(Item.item(null)));
+    assertEquals(0, model.items().indexOf(Item.item(null)));
   }
 
   @Test
@@ -262,7 +262,7 @@ public final class EntityComponentsTest {
                     .linkedValue(editModel.value(TestDomain.DETAIL_MASTER_FK))
                     .buildComponentValue();
     JLabel field = componentValue.getComponent();
-    Entity entity = editModel.getEntities().builder(TestDomain.T_MASTER).with(TestDomain.MASTER_NAME, "name").build();
+    Entity entity = editModel.entities().builder(TestDomain.T_MASTER).with(TestDomain.MASTER_NAME, "name").build();
     editModel.put(TestDomain.DETAIL_MASTER_FK, entity);
     assertEquals("name", field.getText());
   }
