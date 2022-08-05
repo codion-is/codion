@@ -20,12 +20,12 @@ public interface RemoteEntityConnectionProvider extends EntityConnectionProvider
   /**
    * @return the name of the host of the server providing the connection
    */
-  String getServerHostName();
+  String serverHostName();
 
   /**
    * @return the info on the server last connected to
    */
-  ServerInformation getServerInformation();
+  ServerInformation serverInformation();
 
   /**
    * Instantiates a new builder instance.

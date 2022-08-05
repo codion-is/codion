@@ -62,20 +62,22 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   @Override
   public String description() {
-    return serverInformation.getServerName() + "@" + serverHostName;
+    return serverInformation.serverName() + "@" + serverHostName;
   }
 
   /**
    * @return the name of the host of the server providing the connection
    */
-  public String getServerHostName() {
+  @Override
+  public String serverHostName() {
     return serverHostName;
   }
 
   /**
    * @return the info on the server last connected to
    */
-  public ServerInformation getServerInformation() {
+  @Override
+  public ServerInformation serverInformation() {
     return serverInformation;
   }
 
@@ -125,13 +127,13 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
       }//just to check the connection
     }
     catch (RemoteException e) {
-      LOG.info("{} was unreachable, {} - {} reconnecting...", serverInformation.getServerName(), user(), clientId());
+      LOG.info("{} was unreachable, {} - {} reconnecting...", serverInformation.serverName(), user(), clientId());
       unreachable = true;
     }
     if (server == null || unreachable) {
       //if server is not reachable, try to reconnect once and return
       connectToServer();
-      LOG.info("ClientID: {}, {} connected to server: {}", user(), clientId(), serverInformation.getServerName());
+      LOG.info("ClientID: {}, {} connected to server: {}", user(), clientId(), serverInformation.serverName());
     }
 
     return this.server;

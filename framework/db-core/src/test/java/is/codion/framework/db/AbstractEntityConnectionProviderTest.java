@@ -62,7 +62,7 @@ public final class AbstractEntityConnectionProviderTest {
 
       return ProxyBuilder.builder(EntityConnection.class)
               .method("equals", Object.class, parameters -> TestProvider.this == parameters.arguments().get(0))
-              .method("getEntities", parameters -> ENTITIES)
+              .method("entities", parameters -> ENTITIES)
               .method("isConnected", parameters -> connected.get())
               .method("close", parameters -> {
                 connected.set(false);

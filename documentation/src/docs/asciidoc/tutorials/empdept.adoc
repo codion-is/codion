@@ -58,7 +58,7 @@ Next we add the method defining the department entity. *EntityDefinition.Builder
 include::{dir-source}/is/codion/framework/demos/empdept/domain/EmpDept.java[tags=defineDepartment]
 ----
 
-Next we define the employee entity. Here we set the *keyGenerator* to *KeyGenerator.increment("scott.emp", Employee.ID.getName())* which, as the name suggests, simply increments the maximum column value by one (__N.B. this is a very simplistic implementation which is absolutely not transaction safe__). Here we also introduce the <<{basedir}/manual/manual.adoc#_foreignkeyproperty, ForeignKeyProperty>>, the *orderBy*, as well as a *ColorProvider* which is responsible for providing a custom color for an entity instance.
+Next we define the employee entity. Here we set the *keyGenerator* to *KeyGenerator.increment("scott.emp", Employee.ID.name())* which, as the name suggests, simply increments the maximum column value by one (__N.B. this is a very simplistic implementation which is absolutely not transaction safe__). Here we also introduce the <<{basedir}/manual/manual.adoc#_foreignkeyproperty, ForeignKeyProperty>>, the *orderBy*, as well as a *ColorProvider* which is responsible for providing a custom color for an entity instance.
 
 [source,java]
 ----

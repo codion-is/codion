@@ -316,8 +316,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param registryPort the registry port
    */
   private void bindToRegistry(int registryPort) throws RemoteException {
-    getRegistry().rebind(getServerInformation().getServerName(), this);
-    String connectInfo = getServerInformation().getServerName() + " bound to registry on port: " + registryPort;
+    getRegistry().rebind(getServerInformation().serverName(), this);
+    String connectInfo = getServerInformation().serverName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
   }

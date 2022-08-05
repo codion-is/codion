@@ -74,7 +74,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   /**
    * @return the user this connection is using
    */
-  public final User getUser() {
+  public final User user() {
     return connectionHandler.getRemoteClient().user();
   }
 

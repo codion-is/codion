@@ -112,7 +112,7 @@ public final class ServerMonitor {
     this.serverInformation = serverInformation;
     this.registryPort = registryPort;
     this.serverAdminUser = serverAdminUser;
-    this.server = connectServer(serverInformation.getServerName());
+    this.server = connectServer(serverInformation.serverName());
     this.connectionLimitValue = Value.value(this::getConnectionLimit, this::setConnectionLimit, -1);
     this.logLevelValue = Value.value(this.server.getLogLevel());
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
@@ -245,18 +245,18 @@ public final class ServerMonitor {
     StringBuilder contents = new StringBuilder();
     String startDate = LocaleDateTimePattern.builder()
             .delimiterDash().yearFourDigits().hoursMinutesSeconds()
-            .build().createFormatter().format(serverInformation.getStartTime());
+            .build().createFormatter().format(serverInformation.startTime());
     contents.append("Server info:").append("\n");
-    contents.append(serverInformation.getServerName()).append(" (").append(startDate).append(")").append(
-            " port: ").append(serverInformation.getServerPort()).append("\n").append("\n");
+    contents.append(serverInformation.serverName()).append(" (").append(startDate).append(")").append(
+            " port: ").append(serverInformation.serverPort()).append("\n").append("\n");
     contents.append("Server version:").append("\n");
-    contents.append(serverInformation.getServerVersion()).append("\n");
+    contents.append(serverInformation.serverVersion()).append("\n");
     contents.append("Database URL:").append("\n");
     contents.append(server.getDatabaseUrl()).append("\n").append("\n");
     contents.append("Server locale: ").append("\n");
-    contents.append(serverInformation.getLocale()).append("\n");
+    contents.append(serverInformation.locale()).append("\n");
     contents.append("Server time zone: ").append("\n");
-    contents.append(serverInformation.getTimeZone()).append("\n");
+    contents.append(serverInformation.timeZone()).append("\n");
     contents.append("System properties:").append("\n");
     contents.append(server.getSystemProperties());
 

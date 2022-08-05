@@ -103,15 +103,15 @@ final class DefaultServerLocator implements Server.Locator {
   private static <T extends Remote, A extends ServerAdmin> Server<T, A> getIfReachable(Server<T, A> server,
                                                                                        int requestedServerPort) throws RemoteException {
     ServerInformation serverInformation = server.getServerInformation();
-    if (requestedServerPort != -1 && serverInformation.getServerPort() != requestedServerPort) {
+    if (requestedServerPort != -1 && serverInformation.serverPort() != requestedServerPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
-              serverInformation.getServerName(), serverInformation.getServerPort(), requestedServerPort);
+              serverInformation.serverName(), serverInformation.serverPort(), requestedServerPort);
       return null;
     }
     if (server.connectionsAvailable()) {
       return server;
     }
-    LOG.error("No connections available in server \"{}\"", serverInformation.getServerName());
+    LOG.error("No connections available in server \"{}\"", serverInformation.serverName());
 
     return null;
   }

@@ -4,9 +4,9 @@
 
 In most cases *EntityConnections* are retrieved from a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnectionProvider.html[EntityConnectionProvider], which is responsible for establishing a connection to the underlying database. The *EntityConnectionProvider* class is central to the framework and is a common constructor parameter in classes requiring database access.
 
-The *EntityConnectionProvider* manages a single connection, that is, the one returned by *getConnection()*. If a connection becomes invalid, i.e. due to a network outage or a server restart the *EntityConnectionProvider* is responsible for reconnecting and returning a new valid connection. If the *EntityConnectionProvider* is unable to connect to the underlying database or server *getConnection()* throws an exception.
+The *EntityConnectionProvider* manages a single connection, that is, the one returned by *connection()*. If a connection becomes invalid, i.e. due to a network outage or a server restart the *EntityConnectionProvider* is responsible for reconnecting and returning a new valid connection. If the *EntityConnectionProvider* is unable to connect to the underlying database or server *connection()* throws an exception.
 
-A reference to the *EntityConnection* instance returned by *getConnection()* should only be kept for a short time, i.e. as a method field or parameter, and should not be cached or kept as a class field since it can become invalid and thereby unusable. Always use *getConnection()* to be sure you have a healthy *EntityConnection*.
+A reference to the *EntityConnection* instance returned by *connection()* should only be kept for a short time, i.e. as a method field or parameter, and should not be cached or kept as a class field since it can become invalid and thereby unusable. Always use *connection()* to be sure you have a healthy *EntityConnection*.
 
 == LocalEntityConnectionProvider
 

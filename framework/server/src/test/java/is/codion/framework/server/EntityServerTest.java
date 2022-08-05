@@ -265,7 +265,7 @@ public class EntityServerTest {
     provider.close();
 
     //not available until a connection has been requested
-    assertEquals(Clients.SERVER_HOST_NAME.get(), provider.getServerHostName());
+    assertEquals(Clients.SERVER_HOST_NAME.get(), provider.serverHostName());
 
     EntityConnection db2 = provider.connection();
     assertNotNull(db2);

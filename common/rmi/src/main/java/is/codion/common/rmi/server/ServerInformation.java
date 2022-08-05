@@ -17,35 +17,35 @@ public interface ServerInformation {
   /**
    * @return the server name
    */
-  String getServerName();
+  String serverName();
 
   /**
    * @return a unique identifier for this server
    */
-  UUID getServerId();
+  UUID serverId();
 
   /**
    * @return the server framework Version
    */
-  Version getServerVersion();
+  Version serverVersion();
 
   /**
    * @return the server port
    */
-  int getServerPort();
+  int serverPort();
 
   /**
    * @return the time of server startup
    */
-  ZonedDateTime getStartTime();
+  ZonedDateTime startTime();
 
   /**
    * @return the server locale
    */
-  Locale getLocale();
+  Locale locale();
 
   /**
    * @return the server time zone
    */
-  ZoneId getTimeZone();
+  ZoneId timeZone();
 }

@@ -76,7 +76,7 @@ public final class HostMonitorPanel extends JPanel {
 
   private void addServerTab(ServerMonitor serverMonitor) throws RemoteException {
     ServerMonitorPanel serverMonitorPanel = new ServerMonitorPanel(serverMonitor);
-    serverPane.addTab(serverMonitor.getServerInformation().getServerName(), serverMonitorPanel);
+    serverPane.addTab(serverMonitor.getServerInformation().serverName(), serverMonitorPanel);
   }
 
   private void removeServerTab(ServerMonitorPanel panel) {
