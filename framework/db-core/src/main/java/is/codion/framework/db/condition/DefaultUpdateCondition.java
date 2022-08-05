@@ -22,33 +22,33 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
   private final Map<Attribute<?>, Object> propertyValues;
 
   private DefaultUpdateCondition(DefaultUpdateCondition.DefaultBuilder builder) {
-    super(builder.condition.getEntityType());
+    super(builder.condition.entityType());
     this.condition = builder.condition;
     this.propertyValues = builder.propertyValues;
   }
 
   @Override
-  public Condition getCondition() {
+  public Condition condition() {
     return condition;
   }
 
   @Override
-  public List<?> getValues() {
-    return condition.getValues();
+  public List<?> values() {
+    return condition.values();
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
-    return condition.getAttributes();
+  public List<Attribute<?>> attributes() {
+    return condition.attributes();
   }
 
   @Override
-  public String getConditionString(EntityDefinition definition) {
-    return condition.getConditionString(definition);
+  public String toString(EntityDefinition definition) {
+    return condition.toString(definition);
   }
 
   @Override
-  public Map<Attribute<?>, Object> getAttributeValues() {
+  public Map<Attribute<?>, Object> attributeValues() {
     return unmodifiableMap(propertyValues);
   }
 

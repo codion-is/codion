@@ -25,18 +25,18 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   }
 
   @Override
-  public final Attribute<T> getAttribute() {
+  public final Attribute<T> attribute() {
     return attribute;
   }
 
   @Override
-  public final Operator getOperator() {
+  public final Operator operator() {
     return operator;
   }
 
   @Override
-  public final String getConditionString(EntityDefinition definition) {
-    return getConditionString(requireNonNull(definition).getColumnProperty(attribute).getColumnExpression());
+  public final String toString(EntityDefinition definition) {
+    return toString(requireNonNull(definition).getColumnProperty(attribute).getColumnExpression());
   }
 
   @Override
@@ -65,5 +65,5 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
     return Objects.hash(super.hashCode(), attribute, operator);
   }
 
-  protected abstract String getConditionString(String columnExpression);
+  protected abstract String toString(String columnExpression);
 }

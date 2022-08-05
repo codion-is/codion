@@ -88,12 +88,12 @@ final class SelectQueries {
       if (groupBy == null) {
         groupBy(definition.getGroupByClause());
       }
-      condition.getOrderBy().ifPresent(this::setOrderBy);
-      forUpdate(condition.isForUpdate());
-      if (condition.getLimit() >= 0) {
-        limit(condition.getLimit());
-        if (condition.getOffset() >= 0) {
-          offset(condition.getOffset());
+      condition.orderBy().ifPresent(this::setOrderBy);
+      forUpdate(condition.forUpdate());
+      if (condition.limit() >= 0) {
+        limit(condition.limit());
+        if (condition.offset() >= 0) {
+          offset(condition.offset());
         }
       }
 
@@ -136,7 +136,7 @@ final class SelectQueries {
     }
 
     Builder where(Condition condition) {
-      String conditionString = condition.getConditionString(definition);
+      String conditionString = condition.toString(definition);
       if (!conditionString.isEmpty()) {
         where(conditionString);
       }
@@ -216,7 +216,7 @@ final class SelectQueries {
     }
 
     private void setColumns(SelectCondition condition) {
-      Collection<Attribute<?>> selectAttributes = condition.getSelectAttributes();
+      Collection<Attribute<?>> selectAttributes = condition.selectAttributes();
       if (selectAttributes.isEmpty()) {
         this.selectedProperties = getSelectableProperties();
         columns(getAllColumnsClause());

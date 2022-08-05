@@ -30,22 +30,22 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
   }
 
   @Override
-  public ConditionType getConditionType() {
+  public ConditionType conditionType() {
     return conditionType;
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
+  public List<Attribute<?>> attributes() {
     return attributes;
   }
 
   @Override
-  public List<?> getValues() {
+  public List<?> values() {
     return values;
   }
 
   @Override
-  public String getConditionString(EntityDefinition definition) {
+  public String toString(EntityDefinition definition) {
     return requireNonNull(definition).getConditionProvider(conditionType).getConditionString(attributes, values);
   }
 

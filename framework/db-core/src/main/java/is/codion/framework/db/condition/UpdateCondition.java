@@ -16,12 +16,12 @@ public interface UpdateCondition extends Condition {
   /**
    * @return the underlying condition
    */
-  Condition getCondition();
+  Condition condition();
 
   /**
    * @return an unmodifiable view of the new values mapped to their respective attributes
    */
-  Map<Attribute<?>, Object> getAttributeValues();
+  Map<Attribute<?>, Object> attributeValues();
 
   /**
    * Returns a {@link UpdateCondition.Builder} instance based on the given condition

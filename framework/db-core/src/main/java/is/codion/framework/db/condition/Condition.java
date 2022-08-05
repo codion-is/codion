@@ -20,20 +20,20 @@ public interface Condition {
   /**
    * @return the entity type
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return a list of the values this condition is based on, in the order they appear
    * in the condition clause. An empty list is returned in case no values are specified.
    */
-  List<?> getValues();
+  List<?> values();
 
   /**
    * @return a list of the attributes this condition is based on, in the same
    * order as their respective values appear in the condition clause.
    * An empty list is returned in case no values are specified.
    */
-  List<Attribute<?>> getAttributes();
+  List<Attribute<?>> attributes();
 
   /**
    * Returns a new Combination instance, combining this condition with the given one, AND'ing together.
@@ -54,7 +54,7 @@ public interface Condition {
    * @param definition the entity definition
    * @return a condition string
    */
-  String getConditionString(EntityDefinition definition);
+  String toString(EntityDefinition definition);
 
   /**
    * @return a {@link SelectCondition.Builder} instance based on this condition

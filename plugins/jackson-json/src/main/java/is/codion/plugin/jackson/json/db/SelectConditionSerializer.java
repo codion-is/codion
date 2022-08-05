@@ -34,11 +34,11 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
   public void serialize(SelectCondition condition, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("entityType", condition.getEntityType().getName());
+    generator.writeStringField("entityType", condition.entityType().getName());
     generator.writeFieldName("condition");
-    conditionSerializer.serialize(condition.getCondition(), generator);
+    conditionSerializer.serialize(condition.condition(), generator);
     generator.writeFieldName("orderBy");
-    OrderBy orderBy = condition.getOrderBy().orElse(null);
+    OrderBy orderBy = condition.orderBy().orElse(null);
     if (orderBy == null) {
       generator.writeNull();
     }
@@ -49,16 +49,16 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
       }
       generator.writeEndArray();
     }
-    generator.writeObjectField("limit", condition.getLimit());
-    generator.writeObjectField("offset", condition.getOffset());
-    generator.writeObjectField("forUpdate", condition.isForUpdate());
-    generator.writeObjectField("queryTimeout", condition.getQueryTimeout());
-    Integer conditionFetchDepth = condition.getFetchDepth().orElse(null);
+    generator.writeObjectField("limit", condition.limit());
+    generator.writeObjectField("offset", condition.offset());
+    generator.writeObjectField("forUpdate", condition.forUpdate());
+    generator.writeObjectField("queryTimeout", condition.queryTimeout());
+    Integer conditionFetchDepth = condition.fetchDepth().orElse(null);
     generator.writeObjectField("fetchDepth", conditionFetchDepth);
     generator.writeFieldName("fkFetchDepth");
     generator.writeStartObject();
-    for (ForeignKey foreignKey : entities.getDefinition(condition.getEntityType()).getForeignKeys()) {
-      Integer fkFetchDepth = condition.getFetchDepth(foreignKey).orElse(null);
+    for (ForeignKey foreignKey : entities.getDefinition(condition.entityType()).getForeignKeys()) {
+      Integer fkFetchDepth = condition.fetchDepth(foreignKey).orElse(null);
       if (!Objects.equals(fkFetchDepth, conditionFetchDepth)) {
         generator.writeObjectField(foreignKey.getName(), fkFetchDepth);
       }
@@ -66,7 +66,7 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeEndObject();
     generator.writeFieldName("selectAttributes");
     generator.writeStartArray();
-    for (Attribute<?> attribute : condition.getSelectAttributes()) {
+    for (Attribute<?> attribute : condition.selectAttributes()) {
       generator.writeString(attribute.getName());
     }
     generator.writeEndArray();

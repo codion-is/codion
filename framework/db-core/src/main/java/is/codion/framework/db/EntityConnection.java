@@ -187,7 +187,7 @@ public interface EntityConnection extends AutoCloseable {
 
   /**
    * Performs an update based on the given condition, updating the attributes found
-   * in the {@link UpdateCondition#getAttributeValues()} map, with the associated values.
+   * in the {@link UpdateCondition#attributeValues()} map, with the associated values.
    * @param condition the condition
    * @return the number of affected rows
    * @throws DatabaseException in case of a dabase exception

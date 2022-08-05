@@ -20,37 +20,37 @@ public interface SelectCondition extends Condition {
   /**
    * @return the underlying condition
    */
-  Condition getCondition();
+  Condition condition();
 
   /**
    * @return the OrderBy for this condition, an empty Optional if none is specified
    */
-  Optional<OrderBy> getOrderBy();
+  Optional<OrderBy> orderBy();
 
   /**
    * @return the limit to use for the given condition, -1 for no limit
    */
-  int getLimit();
+  int limit();
 
   /**
    * @return the offset to use for the given condition, -1 for no offset
    */
-  int getOffset();
+  int offset();
 
   /**
    * @return true if this select should lock the result for update
    */
-  boolean isForUpdate();
+  boolean forUpdate();
 
   /**
    * @return the query timeout
    */
-  int getQueryTimeout();
+  int queryTimeout();
 
   /**
    * @return the global fetch depth limit for this condition, an empty Optional if none has been specified
    */
-  Optional<Integer> getFetchDepth();
+  Optional<Integer> fetchDepth();
 
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
@@ -58,13 +58,13 @@ public interface SelectCondition extends Condition {
    * @param foreignKey the foreign key
    * @return the number of levels of foreign key values to fetch
    */
-  Optional<Integer> getFetchDepth(ForeignKey foreignKey);
+  Optional<Integer> fetchDepth(ForeignKey foreignKey);
 
   /**
    * @return the attributes to include in the query result,
    * an empty Collection if all should be included
    */
-  Collection<Attribute<?>> getSelectAttributes();
+  Collection<Attribute<?>> selectAttributes();
 
   /**
    * Returns a {@link SelectCondition.Builder} instance based on the given condition

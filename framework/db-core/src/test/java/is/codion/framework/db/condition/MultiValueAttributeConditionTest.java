@@ -26,14 +26,14 @@ public final class MultiValueAttributeConditionTest {
     List<Integer> ids = new ArrayList<>();
     IntStream.range(0, 95).forEach(ids::add);
     MultiValueAttributeCondition<Integer> condition = new MultiValueAttributeCondition<>(TestDomain.EMP_ID, ids, Operator.EQUAL);
-    String conditionString = condition.getConditionString(definition);
+    String conditionString = condition.toString(definition);
     assertTrue(conditionString.startsWith("empno in (?"));
     assertTrue(conditionString.endsWith("?, ?)"));
 
     ids.clear();
     IntStream.range(0, 105).forEach(ids::add);
     condition = new MultiValueAttributeCondition<>(TestDomain.EMP_ID, ids, Operator.EQUAL);
-    conditionString = condition.getConditionString(definition);
+    conditionString = condition.toString(definition);
     assertTrue(conditionString.startsWith("(empno in (?"));
     assertTrue(conditionString.endsWith("?, ?))"));
   }

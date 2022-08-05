@@ -21,7 +21,7 @@ abstract class AbstractCondition implements Condition, Serializable {
   }
 
   @Override
-  public final EntityType getEntityType() {
+  public final EntityType entityType() {
     return entityType;
   }
 
@@ -47,7 +47,7 @@ abstract class AbstractCondition implements Condition, Serializable {
 
   @Override
   public String toString() {
-    return getClass().getSimpleName() + ": " + getEntityType();
+    return getClass().getSimpleName() + ": " + entityType;
   }
 
   @Override

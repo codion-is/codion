@@ -36,7 +36,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   private final int queryTimeout;
 
   private DefaultSelectCondition(DefaultBuilder builder) {
-    super(builder.condition.getEntityType());
+    super(builder.condition.entityType());
     this.condition = builder.condition;
     this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths;
     this.selectAttributes = builder.selectAttributes;
@@ -49,67 +49,67 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   }
 
   @Override
-  public List<?> getValues() {
-    return condition.getValues();
+  public List<?> values() {
+    return condition.values();
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
-    return condition.getAttributes();
+  public List<Attribute<?>> attributes() {
+    return condition.attributes();
   }
 
   @Override
-  public String getConditionString(EntityDefinition definition) {
-    return condition.getConditionString(definition);
+  public String toString(EntityDefinition definition) {
+    return condition.toString(definition);
   }
 
   @Override
-  public Condition getCondition() {
+  public Condition condition() {
     return condition;
   }
 
   @Override
-  public Optional<OrderBy> getOrderBy() {
+  public Optional<OrderBy> orderBy() {
     return Optional.ofNullable(orderBy);
   }
 
   @Override
-  public int getLimit() {
+  public int limit() {
     return limit;
   }
 
   @Override
-  public int getOffset() {
+  public int offset() {
     return offset;
   }
 
   @Override
-  public boolean isForUpdate() {
+  public boolean forUpdate() {
     return forUpdate;
   }
 
   @Override
-  public Optional<Integer> getFetchDepth() {
+  public Optional<Integer> fetchDepth() {
     return Optional.ofNullable(fetchDepth);
   }
 
   @Override
-  public Optional<Integer> getFetchDepth(ForeignKey foreignKey) {
+  public Optional<Integer> fetchDepth(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
     if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKey)) {
       return Optional.of(foreignKeyFetchDepths.get(foreignKey));
     }
 
-    return getFetchDepth();
+    return fetchDepth();
   }
 
   @Override
-  public int getQueryTimeout() {
+  public int queryTimeout() {
     return queryTimeout;
   }
 
   @Override
-  public Collection<Attribute<?>> getSelectAttributes() {
+  public Collection<Attribute<?>> selectAttributes() {
     return selectAttributes;
   }
 
