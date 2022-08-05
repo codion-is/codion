@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultKeyTest {
 
-  private static final Entities ENTITIES = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().entities();
 
   @Test
   void compositeKeyNull() {

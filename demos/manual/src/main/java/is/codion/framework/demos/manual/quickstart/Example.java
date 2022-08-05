@@ -269,7 +269,7 @@ public final class Example {
             LocalEntityConnection.localEntityConnection(
                     DatabaseFactory.getDatabase(), domain, User.parse("scott:tiger"));
 
-    Entities entities = domain.getEntities();
+    Entities entities = domain.entities();
 
     Entity customer = entities.builder(Customer.TYPE)
             .with(Customer.FIRST_NAME, "John")

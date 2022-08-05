@@ -63,7 +63,7 @@ final class ValueLink<T> {
     if (originalValue == linkedValue) {
       throw new IllegalArgumentException("A Value can not be linked to itself");
     }
-    Set<Value<T>> linkedValues = originalValue.getLinkedValues();
+    Set<Value<T>> linkedValues = originalValue.linkedValues();
     if (linkedValues.contains(linkedValue)) {
       throw new IllegalStateException("Cyclical value link detected");
     }
@@ -134,7 +134,7 @@ final class ValueLink<T> {
 
     @Override
     public void validate(T value) throws IllegalArgumentException {
-      linkedValue.getValidators().stream()
+      linkedValue.validators().stream()
               .filter(validator -> validator != excluded)
               .forEach(validator -> validator.validate(value));
     }

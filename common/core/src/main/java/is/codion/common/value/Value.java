@@ -30,7 +30,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * Returns a ValueObserver notified each time this value changes.
    * @return a ValueObserver for this value
    */
-  ValueObserver<T> getObserver();
+  ValueObserver<T> observer();
 
   /**
    * Creates a bidirectional link between this and the given original value,
@@ -65,7 +65,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
   /**
    * @return an unmodifiable set containing the values that have been linked to this value
    */
-  Set<Value<T>> getLinkedValues();
+  Set<Value<T>> linkedValues();
 
   /**
    * Adds a validator to this {@link Value}.
@@ -84,7 +84,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
   /**
    * @return the validators
    */
-  Collection<Validator<T>> getValidators();
+  Collection<Validator<T>> validators();
 
   /**
    * A Validator for {@link Value}s.

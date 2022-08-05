@@ -24,7 +24,7 @@ final class SequenceKeyGenerator extends AbstractQueriedKeyGenerator {
   public void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
                            DatabaseConnection connection) throws SQLException {
     ColumnProperty<?> primaryKeyProperty = primaryKeyProperties.get(0);
-    if (entity.isNull(primaryKeyProperty.getAttribute())) {
+    if (entity.isNull(primaryKeyProperty.attribute())) {
       selectAndPut(entity, primaryKeyProperty, connection);
     }
   }

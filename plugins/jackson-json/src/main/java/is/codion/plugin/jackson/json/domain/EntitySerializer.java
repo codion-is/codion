@@ -37,7 +37,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
   public void serialize(Entity entity, JsonGenerator generator, SerializerProvider provider) throws IOException {
     requireNonNull(entity, "entity");
     generator.writeStartObject();
-    generator.writeStringField("entityType", entity.getEntityType().getName());
+    generator.writeStringField("entityType", entity.getEntityType().name());
     generator.writeFieldName("values");
     writeValues(entity, generator, entity.entrySet());
     if (entity.isModified()) {
@@ -61,7 +61,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
     for (Map.Entry<Attribute<?>, Object> entry : entrySet) {
       Property<?> property = definition.getProperty(entry.getKey());
       if (include(property, entity)) {
-        generator.writeFieldName(property.getAttribute().getName());
+        generator.writeFieldName(property.attribute().name());
         mapper.writeValue(generator, entry.getValue());
       }
     }
@@ -72,7 +72,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
     if (!includeForeignKeyValues && property instanceof ForeignKeyProperty) {
       return false;
     }
-    if (!includeNullValues && entity.isNull(property.getAttribute())) {
+    if (!includeNullValues && entity.isNull(property.attribute())) {
       return false;
     }
 

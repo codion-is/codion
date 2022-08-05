@@ -78,27 +78,27 @@ public interface HttpServerConfiguration {
   /**
    * @return the server port
    */
-  int getServerPort();
+  int serverPort();
 
   /**
    * @return true if https is used
    */
-  boolean isSecure();
+  boolean secure();
 
   /**
    * @return the document root
    */
-  String getDocumentRoot();
+  String documentRoot();
 
   /**
    * @return the keystore path
    */
-  String getKeystorePath();
+  String keystorePath();
 
   /**
    * @return the keystore password
    */
-  String getKeystorePassword();
+  String keystorePassword();
 
   /**
    * Builds a {@link HttpServerConfiguration} instance

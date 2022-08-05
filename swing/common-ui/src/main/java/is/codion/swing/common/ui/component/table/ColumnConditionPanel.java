@@ -511,7 +511,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void initializeUI() {
-    Utilities.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
+    Utilities.linkToEnabledState(conditionModel.getLockedObserver().reversedObserver(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
     setLayout(new BorderLayout());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);

@@ -28,11 +28,11 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(definition(
-            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
+            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.name())
                     .updatable(true).nullable(false),
-            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
+            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.name())
                     .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
-            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
+            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.name())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
             .stringFactory(DEPARTMENT_NAME)

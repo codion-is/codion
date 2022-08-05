@@ -119,12 +119,12 @@ public final class EntityComponentsTest {
                     .linkedValue(editModel.value(TestDomain.DETAIL_BOOLEAN))
                     .buildComponentValue();
     ItemComboBoxModel<Boolean> boxModel = (ItemComboBoxModel<Boolean>) componentValue.getComponent().getModel();
-    assertTrue(boxModel.getSelectedValue().getValue());
+    assertTrue(boxModel.getSelectedValue().value());
     boxModel.setSelectedItem(null);
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN));
 
     editModel.put(TestDomain.DETAIL_BOOLEAN, false);
-    assertFalse(boxModel.getSelectedValue().getValue());
+    assertFalse(boxModel.getSelectedValue().value());
   }
 
   @Test
@@ -301,7 +301,7 @@ public final class EntityComponentsTest {
   void inputComponent() {
     EntityDefinition definition = CONNECTION_PROVIDER.getEntities().getDefinition(TestDomain.T_DETAIL);
     definition.getColumnProperties()
-            .forEach(property -> inputComponents.component(property.getAttribute()).build());
+            .forEach(property -> inputComponents.component(property.attribute()).build());
 
     assertThrows(IllegalArgumentException.class, () -> inputComponents.component(TestDomain.DETAIL_MASTER_FK));
   }

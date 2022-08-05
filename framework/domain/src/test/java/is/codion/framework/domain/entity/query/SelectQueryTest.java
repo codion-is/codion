@@ -35,33 +35,33 @@ public class SelectQueryTest {
             .columns("1")
             .from("dual")
             .build();
-    assertEquals("1", selectQuery.getColumns());
-    assertEquals("dual", selectQuery.getFrom());
-    assertNull(selectQuery.getWhere());
+    assertEquals("1", selectQuery.columns());
+    assertEquals("dual", selectQuery.from());
+    assertNull(selectQuery.where());
 
     selectQuery = SelectQuery.builder()
             .columns("1")
             .from("dual")
             .where("1 = 1")
             .build();
-    assertEquals("1", selectQuery.getColumns());
-    assertEquals("dual", selectQuery.getFrom());
-    assertEquals("1 = 1", selectQuery.getWhere());
-    assertNotNull(selectQuery.getWhere());
+    assertEquals("1", selectQuery.columns());
+    assertEquals("dual", selectQuery.from());
+    assertEquals("1 = 1", selectQuery.where());
+    assertNotNull(selectQuery.where());
 
     selectQuery = SelectQuery.builder()
             .from("dual")
             .build();
-    assertEquals("dual", selectQuery.getFrom());
-    assertNull(selectQuery.getWhere());
+    assertEquals("dual", selectQuery.from());
+    assertNull(selectQuery.where());
 
     selectQuery = SelectQuery.builder()
             .from("dual")
             .where("1 = 1")
             .build();
-    assertEquals("dual", selectQuery.getFrom());
-    assertEquals("1 = 1", selectQuery.getWhere());
-    assertNotNull(selectQuery.getWhere());
+    assertEquals("dual", selectQuery.from());
+    assertEquals("1 = 1", selectQuery.where());
+    assertNotNull(selectQuery.where());
 
     assertThrows(NullPointerException.class, () -> SelectQuery.builder().from(null).build());
     assertThrows(IllegalArgumentException.class, () -> SelectQuery.builder().from("dual").where("where 1 = 1"));

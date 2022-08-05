@@ -8,7 +8,7 @@ package is.codion.common.event;
  * <pre>
  * Event&lt;Boolean&gt; event = Event.event();
  *
- * EventObserver&lt;Boolean&gt; observer = event.getObserver();
+ * EventObserver&lt;Boolean&gt; observer = event.observer();
  *
  * observer.addListener(this::doSomething);
  * observer.addDataListener(this::onBoolean);
@@ -23,7 +23,7 @@ public interface Event<T> extends EventListener, EventDataListener<T>, EventObse
   /**
    * @return an observer notified each time this event fires
    */
-  EventObserver<T> getObserver();
+  EventObserver<T> observer();
 
   /**
    * Instantiates a new Event.

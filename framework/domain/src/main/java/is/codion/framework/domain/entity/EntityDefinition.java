@@ -390,7 +390,7 @@ public interface EntityDefinition {
   <T> Key primaryKey(T value);
 
   /**
-   * Returns the Attribute for the getter this method represents in the {@link EntityType#getEntityClass()},
+   * Returns the Attribute for the getter this method represents in the {@link EntityType#entityClass()},
    * null if none exists.
    * @param method the method
    * @return the getter attribute
@@ -398,7 +398,7 @@ public interface EntityDefinition {
   Attribute<?> getGetterAttribute(Method method);
 
   /**
-   * Returns the Attribute for the setter this method represents in the {@link EntityType#getEntityClass()},
+   * Returns the Attribute for the setter this method represents in the {@link EntityType#entityClass()},
    * null if none exists.
    * @param method the method
    * @return the setter attribute
@@ -406,7 +406,7 @@ public interface EntityDefinition {
   Attribute<?> getSetterAttribute(Method method);
 
   /**
-   * Returns the MethodHandle for the given default method in the {@link EntityType#getEntityClass()}.
+   * Returns the MethodHandle for the given default method in the {@link EntityType#entityClass()}.
    * @param method the method
    * @return a MethodHandle based on the method
    */
@@ -471,7 +471,7 @@ public interface EntityDefinition {
      * Specifies the resource bundle key associated with the caption.
      * @param captionResourceKey the name of the resource bundle key associated with the caption for this entity
      * @return this {@link Builder} instance
-     * @see EntityType#getResourceBundleName()
+     * @see EntityType#resourceBundleName()
      */
     Builder captionResourceKey(String captionResourceKey);
 

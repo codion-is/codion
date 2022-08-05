@@ -118,18 +118,18 @@ final class LocalConnectionHandler implements InvocationHandler {
   LocalConnectionHandler(Domain domain, RemoteClient remoteClient, Database database) throws DatabaseException {
     this.domain = domain;
     this.remoteClient = remoteClient;
-    this.connectionPool = database.getConnectionPool(remoteClient.getDatabaseUser().getUsername());
+    this.connectionPool = database.getConnectionPool(remoteClient.databaseUser().getUsername());
     this.database = database;
     this.methodLogger = methodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(), new EntityArgumentToString());
-    this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() + "@" + remoteClient.getClientTypeId();
-    this.userDescription = "Remote user: " + remoteClient.getUser().getUsername() + ", database user: " + remoteClient.getDatabaseUser().getUsername();
+    this.logIdentifier = remoteClient.user().getUsername().toLowerCase() + "@" + remoteClient.clientTypeId();
+    this.userDescription = "Remote user: " + remoteClient.user().getUsername() + ", database user: " + remoteClient.databaseUser().getUsername();
     try {
       if (connectionPool == null) {
-        localEntityConnection = localEntityConnection(database, domain, remoteClient.getDatabaseUser());
+        localEntityConnection = localEntityConnection(database, domain, remoteClient.databaseUser());
         localEntityConnection.setMethodLogger(methodLogger);
       }
       else {
-        poolEntityConnection = localEntityConnection(database, domain, connectionPool.getConnection(remoteClient.getDatabaseUser()));
+        poolEntityConnection = localEntityConnection(database, domain, connectionPool.getConnection(remoteClient.databaseUser()));
         rollbackSilently(poolEntityConnection.getDatabaseConnection());
         returnConnectionToPool();
       }
@@ -194,7 +194,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
   ClientLog getClientLog() {
     synchronized (methodLogger) {
-      return ClientLog.clientLog(remoteClient.getClientId(),
+      return ClientLog.clientLog(remoteClient.clientId(),
               Instant.ofEpochMilli(creationDate).atZone(ZoneId.systemDefault()).toLocalDateTime(),
               methodLogger.getEntries());
     }
@@ -247,7 +247,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     if (poolEntityConnection.isTransactionOpen()) {
       return poolEntityConnection;
     }
-    poolEntityConnection.getDatabaseConnection().setConnection(connectionPool.getConnection(remoteClient.getDatabaseUser()));
+    poolEntityConnection.getDatabaseConnection().setConnection(connectionPool.getConnection(remoteClient.databaseUser()));
     poolEntityConnection.setMethodLogger(methodLogger);
 
     return poolEntityConnection;
@@ -256,7 +256,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   private EntityConnection getLocalEntityConnection() throws DatabaseException {
     if (!localEntityConnection.isConnected()) {
       localEntityConnection.close();//just in case
-      localEntityConnection = localEntityConnection(database, domain, remoteClient.getDatabaseUser());
+      localEntityConnection = localEntityConnection(database, domain, remoteClient.databaseUser());
       localEntityConnection.setMethodLogger(methodLogger);
     }
 
@@ -405,18 +405,18 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
 
     private static String entityToString(Entity entity) {
-      StringBuilder builder = new StringBuilder(entity.getEntityType().getName()).append(" {");
+      StringBuilder builder = new StringBuilder(entity.getEntityType().name()).append(" {");
       List<ColumnProperty<?>> columnProperties = entity.getDefinition().getColumnProperties();
       for (int i = 0; i < columnProperties.size(); i++) {
         ColumnProperty<?> property = columnProperties.get(i);
-        boolean modified = entity.isModified(property.getAttribute());
-        if (property.isPrimaryKeyColumn() || modified) {
+        boolean modified = entity.isModified(property.attribute());
+        if (property.primaryKeyColumn() || modified) {
           StringBuilder valueString = new StringBuilder();
           if (modified) {
-            valueString.append(entity.getOriginal(property.getAttribute())).append("->");
+            valueString.append(entity.getOriginal(property.attribute())).append("->");
           }
-          valueString.append(entity.toString(property.getAttribute()));
-          builder.append(property.getAttribute()).append(":").append(valueString).append(",");
+          valueString.append(entity.toString(property.attribute()));
+          builder.append(property.attribute()).append(":").append(valueString).append(",");
         }
       }
       builder.deleteCharAt(builder.length() - 1);

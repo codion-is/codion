@@ -17,12 +17,12 @@ public interface AttributeCondition<T> extends Condition {
   /**
    * @return the attribute
    */
-  Attribute<T> getAttribute();
+  Attribute<T> attribute();
 
   /**
    * @return the condition operator
    */
-  Operator getOperator();
+  Operator operator();
 
   /**
    * A builder for {@link AttributeCondition}.

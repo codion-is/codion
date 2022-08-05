@@ -6,6 +6,7 @@ package is.codion.common;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -20,7 +21,7 @@ public final class DefaultProxyBuilderTest {
     try {
       //non-existing method
       ProxyBuilder.builder(List.class)
-            .method("nonexistingMethod", arguments -> null);
+              .method("nonexistingMethod", arguments -> null);
       fail();
     }
     catch (Exception e) {
@@ -46,5 +47,49 @@ public final class DefaultProxyBuilderTest {
             .delegate(emptyList())
             .build();
     assertEquals(proxyInstance2, proxyInstance2);
+
+    List<Object> proxyInstance3 = ProxyBuilder.builder(List.class)
+            .method("size", parameters -> parameters.delegate().size())
+            .build();
+    assertThrows(IllegalStateException.class, proxyInstance3::size);//no delegate
+    assertThrows(UnsupportedOperationException.class, () -> proxyInstance3.add("testing"));
+  }
+
+  @Test
+  void example() {
+    List<String> list = new ArrayList<>();
+
+    List<String> listProxy = ProxyBuilder.builder(List.class)
+            .delegate(list)
+            .method("add", Object.class, parameters -> {
+              Object item = parameters.arguments().get(0);
+              System.out.println("Adding: " + item);
+
+              return parameters.delegate().add(item);
+            })
+            .method("remove", Object.class, parameters -> {
+              Object item = parameters.arguments().get(0);
+              System.out.println("Removing: " + item);
+
+              return parameters.delegate().remove(item);
+            })
+            .method("equals", Object.class, parameters -> {
+              Object object = parameters.arguments().get(0);
+              System.out.println("Equals: " + object);
+
+              return parameters.delegate().equals(object);
+            })
+            .method("size", parameters -> {
+              System.out.println("Size");
+
+              return parameters.delegate().size();
+            })
+            .build();
+
+    listProxy.add("hey");
+    listProxy.add("whatsup");
+    listProxy.remove("hey");
+    listProxy.size();
+    listProxy.equals(list);
   }
 }

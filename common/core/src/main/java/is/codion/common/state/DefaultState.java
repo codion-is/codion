@@ -49,7 +49,7 @@ final class DefaultState implements State {
   }
 
   @Override
-  public StateObserver getObserver() {
+  public StateObserver observer() {
     synchronized (this.value) {
       if (observer == null) {
         observer = new DefaultStateObserver(this, false);
@@ -60,8 +60,8 @@ final class DefaultState implements State {
   }
 
   @Override
-  public StateObserver getReversedObserver() {
-    return getObserver().getReversedObserver();
+  public StateObserver reversedObserver() {
+    return observer().reversedObserver();
   }
 
   @Override
@@ -85,8 +85,8 @@ final class DefaultState implements State {
   }
 
   @Override
-  public Set<Value<Boolean>> getLinkedValues() {
-    return this.value.getLinkedValues();
+  public Set<Value<Boolean>> linkedValues() {
+    return this.value.linkedValues();
   }
 
   @Override
@@ -100,8 +100,8 @@ final class DefaultState implements State {
   }
 
   @Override
-  public Collection<Validator<Boolean>> getValidators() {
-    return this.value.getValidators();
+  public Collection<Validator<Boolean>> validators() {
+    return this.value.validators();
   }
 
   @Override
@@ -115,7 +115,7 @@ final class DefaultState implements State {
   }
 
   @Override
-  public boolean isNullable() {
+  public boolean nullable() {
     return false;
   }
 
@@ -126,22 +126,22 @@ final class DefaultState implements State {
 
   @Override
   public void addListener(EventListener listener) {
-    getObserver().addListener(listener);
+    observer().addListener(listener);
   }
 
   @Override
   public void removeListener(EventListener listener) {
-    getObserver().removeListener(listener);
+    observer().removeListener(listener);
   }
 
   @Override
   public void addDataListener(EventDataListener<Boolean> listener) {
-    getObserver().addDataListener(listener);
+    observer().addDataListener(listener);
   }
 
   @Override
   public void removeDataListener(EventDataListener<Boolean> listener) {
-    getObserver().removeDataListener(listener);
+    observer().removeDataListener(listener);
   }
 
   private final class Notifier implements EventDataListener<Boolean> {

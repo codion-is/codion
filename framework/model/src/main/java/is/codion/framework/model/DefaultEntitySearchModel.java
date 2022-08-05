@@ -260,7 +260,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public StateObserver getSearchStringRepresentsSelectedObserver() {
-    return searchStringRepresentsSelectedState.getObserver();
+    return searchStringRepresentsSelectedState.observer();
   }
 
   /**
@@ -291,7 +291,9 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
 
     return (additionalConditionSupplier == null ? conditionCombination :
             additionalConditionSupplier.get().and(conditionCombination))
-            .toSelectCondition().orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
+            .selectBuilder()
+            .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy())
+            .build();
   }
 
   private String prepareSearchText(String rawSearchText, SearchSettings searchSettings) {
@@ -312,7 +314,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
 
     return searchAttributes.stream()
-            .map(attribute -> definition.getProperty(attribute).getCaption())
+            .map(attribute -> definition.getProperty(attribute).caption())
             .collect(joining(", "));
   }
 
@@ -330,7 +332,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private static void validateSearchAttributes(EntityType entityType, Collection<Attribute<String>> searchAttributes) {
     for (Attribute<String> attribute : searchAttributes) {
-      if (!entityType.equals(attribute.getEntityType())) {
+      if (!entityType.equals(attribute.entityType())) {
         throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityType);
       }
     }

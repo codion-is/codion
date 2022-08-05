@@ -23,29 +23,29 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
 
   DefaultCustomCondition(ConditionType conditionType, List<Attribute<?>> attributes,
                          List<Object> values) {
-    super(requireNonNull(conditionType, "conditionType").getEntityType());
+    super(requireNonNull(conditionType, "conditionType").entityType());
     this.conditionType = conditionType;
     this.attributes = unmodifiableList(requireNonNull(attributes, "attributes"));
     this.values = unmodifiableList(requireNonNull(values, "values"));
   }
 
   @Override
-  public ConditionType getConditionType() {
+  public ConditionType conditionType() {
     return conditionType;
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
+  public List<Attribute<?>> attributes() {
     return attributes;
   }
 
   @Override
-  public List<?> getValues() {
+  public List<?> values() {
     return values;
   }
 
   @Override
-  public String getConditionString(EntityDefinition definition) {
+  public String toString(EntityDefinition definition) {
     return requireNonNull(definition).getConditionProvider(conditionType).getConditionString(attributes, values);
   }
 

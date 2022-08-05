@@ -26,13 +26,13 @@ final class DualValueAttributeCondition<T> extends AbstractAttributeCondition<T>
   }
 
   @Override
-  public List<?> getValues() {
+  public List<?> values() {
     return asList(lowerBound, upperBound);
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
-    return asList(getAttribute(), getAttribute());
+  public List<Attribute<?>> attributes() {
+    return asList(attribute(), attribute());
   }
 
   @Override
@@ -57,8 +57,8 @@ final class DualValueAttributeCondition<T> extends AbstractAttributeCondition<T>
   }
 
   @Override
-  protected String getConditionString(String columnExpression) {
-    switch (getOperator()) {
+  protected String toString(String columnExpression) {
+    switch (operator()) {
       case BETWEEN:
         return "(" + columnExpression + " >= ? and " + columnExpression + " <= ?)";
       case NOT_BETWEEN:
@@ -68,7 +68,7 @@ final class DualValueAttributeCondition<T> extends AbstractAttributeCondition<T>
       case NOT_BETWEEN_EXCLUSIVE:
         return "(" + columnExpression + " < ? or " + columnExpression + " > ?)";
       default:
-        throw new IllegalStateException("Unsupported dual value operator: " + getOperator());
+        throw new IllegalStateException("Unsupported dual value operator: " + operator());
     }
   }
 }

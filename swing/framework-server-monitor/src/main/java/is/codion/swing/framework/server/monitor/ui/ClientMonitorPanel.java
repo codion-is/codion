@@ -98,7 +98,7 @@ public final class ClientMonitorPanel extends JPanel {
 
   private void disconnect() throws RemoteException {
     for (RemoteClient remoteClient : clientList.getSelectedValuesList()) {
-      model.getServer().disconnect(remoteClient.getClientId());
+      model.getServer().disconnect(remoteClient.clientId());
       model.getRemoteClientListModel().removeElement(remoteClient);
     }
   }

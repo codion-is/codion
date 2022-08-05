@@ -127,7 +127,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   @Override
   public final void setSelectAttributes(Collection<Attribute<?>> selectAttributes) {
     for (Attribute<?> attribute : requireNonNull(selectAttributes)) {
-      if (!attribute.getEntityType().equals(entityType)) {
+      if (!attribute.entityType().equals(entityType)) {
         throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity type: " + entityType);
       }
     }
@@ -293,9 +293,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     try {
       Condition condition = selectConditionSupplier == null ? condition(entityType) : selectConditionSupplier.get();
 
-      return connectionProvider.getConnection().select(condition.toSelectCondition()
+      return connectionProvider.getConnection().select(condition.selectBuilder()
               .selectAttributes(selectAttributes)
-              .orderBy(orderBy));
+              .orderBy(orderBy)
+              .build());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -328,7 +329,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private SwingEntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
     ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKey);
     SwingEntityComboBoxModel foreignKeyModel =
-            new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), connectionProvider);
+            new SwingEntityComboBoxModel(foreignKeyProperty.referencedEntityType(), connectionProvider);
     foreignKeyModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
@@ -340,9 +341,9 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private void linkForeignKeyComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel,
                                            boolean filter) {
     ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKey);
-    if (!foreignKeyProperty.getReferencedEntityType().equals(foreignKeyModel.getEntityType())) {
+    if (!foreignKeyProperty.referencedEntityType().equals(foreignKeyModel.getEntityType())) {
       throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.getEntityType()
-              + ", should be: " + foreignKeyProperty.getReferencedEntityType());
+              + ", should be: " + foreignKeyProperty.referencedEntityType());
     }
     //if foreign key filter entities have been set previously, initialize with one of those
     Collection<Entity> filterEntities = getForeignKeyFilterEntities(foreignKey);

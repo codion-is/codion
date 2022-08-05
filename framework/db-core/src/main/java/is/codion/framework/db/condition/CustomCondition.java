@@ -14,5 +14,5 @@ public interface CustomCondition extends Condition {
   /**
    * @return the condition type
    */
-  ConditionType getConditionType();
+  ConditionType conditionType();
 }

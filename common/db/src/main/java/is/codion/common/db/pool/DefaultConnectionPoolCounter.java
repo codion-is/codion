@@ -142,7 +142,7 @@ final class DefaultConnectionPoolCounter {
     if (collectSnapshotStatistics && since >= 0) {
       synchronized (snapshotStatistics) {
         statistics.setSnapshot(snapshotStatistics.stream()
-                .filter(state -> state.getTimestamp() >= since)
+                .filter(state -> state.timestamp() >= since)
                 .collect(toList()));
       }
     }

@@ -26,177 +26,91 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   private static final long serialVersionUID = 1;
 
   private final Condition condition;
-  private Map<ForeignKey, Integer> foreignKeyFetchDepths;
-  private Collection<Attribute<?>> selectAttributes = emptyList();
+  private final Map<ForeignKey, Integer> foreignKeyFetchDepths;
+  private final Collection<Attribute<?>> selectAttributes;
+  private final OrderBy orderBy;
+  private final Integer fetchDepth;
+  private final boolean forUpdate;
+  private final int limit;
+  private final int offset;
+  private final int queryTimeout;
 
-  private OrderBy orderBy;
-  private Integer fetchDepth;
-  private boolean forUpdate;
-  private int limit = -1;
-  private int offset = -1;
-  private int queryTimeout = DEFAULT_QUERY_TIMEOUT_SECONDS;
-
-  /**
-   * Instantiates a new {@link DefaultSelectCondition}
-   * @param condition the Condition object
-   */
-  DefaultSelectCondition(Condition condition) {
-    super(requireNonNull(condition, "condition").getEntityType());
-    this.condition = condition;
-  }
-
-  private DefaultSelectCondition(DefaultSelectCondition selectCondition) {
-    super(selectCondition.getEntityType());
-    this.condition = selectCondition.condition;
-    this.foreignKeyFetchDepths = selectCondition.foreignKeyFetchDepths;
-    this.selectAttributes = selectCondition.selectAttributes;
-    this.orderBy = selectCondition.orderBy;
-    this.fetchDepth = selectCondition.fetchDepth;
-    this.forUpdate = selectCondition.forUpdate;
-    this.limit = selectCondition.limit;
-    this.offset = selectCondition.offset;
-    this.queryTimeout = selectCondition.queryTimeout;
+  private DefaultSelectCondition(DefaultBuilder builder) {
+    super(builder.condition.entityType());
+    this.condition = builder.condition;
+    this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths;
+    this.selectAttributes = builder.selectAttributes;
+    this.orderBy = builder.orderBy;
+    this.fetchDepth = builder.fetchDepth;
+    this.forUpdate = builder.forUpdate;
+    this.limit = builder.limit;
+    this.offset = builder.offset;
+    this.queryTimeout = builder.queryTimeout;
   }
 
   @Override
-  public List<?> getValues() {
-    return condition.getValues();
+  public List<?> values() {
+    return condition.values();
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
-    return condition.getAttributes();
+  public List<Attribute<?>> attributes() {
+    return condition.attributes();
   }
 
   @Override
-  public String getConditionString(EntityDefinition definition) {
-    return condition.getConditionString(definition);
+  public String toString(EntityDefinition definition) {
+    return condition.toString(definition);
   }
 
   @Override
-  public Condition getCondition() {
+  public Condition condition() {
     return condition;
   }
 
   @Override
-  public Optional<OrderBy> getOrderBy() {
+  public Optional<OrderBy> orderBy() {
     return Optional.ofNullable(orderBy);
   }
 
   @Override
-  public int getLimit() {
+  public int limit() {
     return limit;
   }
 
   @Override
-  public int getOffset() {
+  public int offset() {
     return offset;
   }
 
   @Override
-  public boolean isForUpdate() {
+  public boolean forUpdate() {
     return forUpdate;
   }
 
   @Override
-  public Optional<Integer> getFetchDepth() {
+  public Optional<Integer> fetchDepth() {
     return Optional.ofNullable(fetchDepth);
   }
 
   @Override
-  public Optional<Integer> getFetchDepth(ForeignKey foreignKey) {
+  public Optional<Integer> fetchDepth(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
     if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKey)) {
       return Optional.of(foreignKeyFetchDepths.get(foreignKey));
     }
 
-    return getFetchDepth();
+    return fetchDepth();
   }
 
   @Override
-  public int getQueryTimeout() {
+  public int queryTimeout() {
     return queryTimeout;
   }
 
   @Override
-  public Collection<Attribute<?>> getSelectAttributes() {
+  public Collection<Attribute<?>> selectAttributes() {
     return selectAttributes;
-  }
-
-  @Override
-  public SelectCondition orderBy(OrderBy orderBy) {
-    DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
-    selectCondition.orderBy = orderBy;
-
-    return selectCondition;
-  }
-
-  @Override
-  public SelectCondition limit(int limit) {
-    DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
-    selectCondition.limit = limit;
-
-    return selectCondition;
-  }
-
-  @Override
-  public SelectCondition offset(int offset) {
-    DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
-    selectCondition.offset = offset;
-
-    return selectCondition;
-  }
-
-  @Override
-  public SelectCondition forUpdate() {
-    DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
-    selectCondition.forUpdate = true;
-
-    return selectCondition;
-  }
-
-  @Override
-  public SelectCondition fetchDepth(int fetchDepth) {
-    DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
-    selectCondition.fetchDepth = fetchDepth;
-
-    return selectCondition;
-  }
-
-  @Override
-  public SelectCondition fetchDepth(ForeignKey foreignKey, int fetchDepth) {
-    requireNonNull(foreignKey);
-    DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
-    if (selectCondition.foreignKeyFetchDepths == null) {
-      selectCondition.foreignKeyFetchDepths = new HashMap<>();
-    }
-    selectCondition.foreignKeyFetchDepths.put(foreignKey, fetchDepth);
-
-    return selectCondition;
-  }
-
-  @Override
-  public SelectCondition selectAttributes(Attribute<?>... attributes) {
-    DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
-    selectCondition.selectAttributes = requireNonNull(attributes).length == 0 ? emptyList() : unmodifiableList(asList(attributes));
-
-    return selectCondition;
-  }
-
-  @Override
-  public SelectCondition selectAttributes(Collection<Attribute<?>> attributes) {
-    DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
-    selectCondition.selectAttributes = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
-
-    return selectCondition;
-  }
-
-  @Override
-  public SelectCondition queryTimeout(int queryTimeout) {
-    DefaultSelectCondition selectCondition = new DefaultSelectCondition(this);
-    selectCondition.queryTimeout = queryTimeout;
-
-    return selectCondition;
   }
 
   @Override
@@ -225,5 +139,98 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   public int hashCode() {
     return Objects.hash(super.hashCode(), condition, foreignKeyFetchDepths,
             selectAttributes, orderBy, fetchDepth, forUpdate, limit, offset);
+  }
+
+  static final class DefaultBuilder implements SelectCondition.Builder {
+
+    private final Condition condition;
+
+    private Map<ForeignKey, Integer> foreignKeyFetchDepths;
+    private Collection<Attribute<?>> selectAttributes = emptyList();
+
+    private OrderBy orderBy;
+    private Integer fetchDepth;
+    private boolean forUpdate;
+    private int limit = -1;
+    private int offset = -1;
+    private int queryTimeout = DEFAULT_QUERY_TIMEOUT_SECONDS;
+
+    DefaultBuilder(Condition condition) {
+      this.condition = requireNonNull(condition);
+      if (condition instanceof DefaultSelectCondition) {
+        DefaultSelectCondition selectCondition = (DefaultSelectCondition) condition;
+        foreignKeyFetchDepths = selectCondition.foreignKeyFetchDepths;
+        selectAttributes = selectCondition.selectAttributes;
+        orderBy = selectCondition.orderBy;
+        fetchDepth = selectCondition.fetchDepth;
+        forUpdate = selectCondition.forUpdate;
+        limit = selectCondition.limit;
+        offset = selectCondition.offset;
+        queryTimeout = selectCondition.queryTimeout;
+      }
+    }
+
+    @Override
+    public Builder orderBy(OrderBy orderBy) {
+      this.orderBy = orderBy;
+      return this;
+    }
+
+    @Override
+    public Builder limit(int limit) {
+      this.limit = limit;
+      return this;
+    }
+
+    @Override
+    public Builder offset(int offset) {
+      this.offset = offset;
+      return this;
+    }
+
+    @Override
+    public Builder forUpdate() {
+      this.forUpdate = true;
+      return this;
+    }
+
+    @Override
+    public Builder fetchDepth(int fetchDepth) {
+      this.fetchDepth = fetchDepth;
+      return this;
+    }
+
+    @Override
+    public Builder fetchDepth(ForeignKey foreignKey, int fetchDepth) {
+      requireNonNull(foreignKey);
+      if (foreignKeyFetchDepths == null) {
+        foreignKeyFetchDepths = new HashMap<>();
+      }
+      foreignKeyFetchDepths.put(foreignKey, fetchDepth);
+      return this;
+    }
+
+    @Override
+    public Builder selectAttributes(Attribute<?>... attributes) {
+      selectAttributes = requireNonNull(attributes).length == 0 ? emptyList() : unmodifiableList(asList(attributes));
+      return this;
+    }
+
+    @Override
+    public Builder selectAttributes(Collection<Attribute<?>> attributes) {
+      selectAttributes = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
+      return this;
+    }
+
+    @Override
+    public Builder queryTimeout(int queryTimeout) {
+      this.queryTimeout = queryTimeout;
+      return this;
+    }
+
+    @Override
+    public SelectCondition build() {
+      return new DefaultSelectCondition(this);
+    }
   }
 }

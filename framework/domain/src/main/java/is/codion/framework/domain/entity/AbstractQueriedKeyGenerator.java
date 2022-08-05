@@ -14,13 +14,13 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 
   protected final <T> void selectAndPut(Entity entity, ColumnProperty<T> keyProperty,
                                         DatabaseConnection connection) throws SQLException {
-    switch (keyProperty.getColumnType()) {
+    switch (keyProperty.columnType()) {
       case Types.INTEGER:
-        entity.put((Attribute<Integer>) keyProperty.getAttribute(),
+        entity.put((Attribute<Integer>) keyProperty.attribute(),
                 connection.selectInteger(getQuery(connection.getDatabase())));
         break;
       case Types.BIGINT:
-        entity.put((Attribute<Long>) keyProperty.getAttribute(),
+        entity.put((Attribute<Long>) keyProperty.attribute(),
                 connection.selectLong(getQuery(connection.getDatabase())));
         break;
       default:

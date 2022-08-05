@@ -155,33 +155,33 @@ public final class TestDomain extends DefaultDomain {
     add(definition(
             primaryKeyProperty(Detail.ID)
                     .beanProperty("id"),
-            columnProperty(Detail.SHORT, Detail.SHORT.getName()),
-            columnProperty(Detail.INT, Detail.INT.getName()),
-            columnProperty(Detail.DOUBLE, Detail.DOUBLE.getName())
+            columnProperty(Detail.SHORT, Detail.SHORT.name()),
+            columnProperty(Detail.INT, Detail.INT.name()),
+            columnProperty(Detail.DOUBLE, Detail.DOUBLE.name())
                     .columnHasDefaultValue(true)
                     .beanProperty("double"),
             columnProperty(Detail.STRING, "Detail string")
                     .selectable(false),
-            columnProperty(Detail.DATE, Detail.DATE.getName())
+            columnProperty(Detail.DATE, Detail.DATE.name())
                     .columnHasDefaultValue(true),
-            columnProperty(Detail.TIMESTAMP, Detail.TIMESTAMP.getName()),
-            columnProperty(Detail.BOOLEAN, Detail.BOOLEAN.getName())
+            columnProperty(Detail.TIMESTAMP, Detail.TIMESTAMP.name()),
+            columnProperty(Detail.BOOLEAN, Detail.BOOLEAN.name())
                     .nullable(false)
                     .defaultValue(true)
                     .description("A boolean property"),
-            columnProperty(Detail.BOOLEAN_NULLABLE, Detail.BOOLEAN_NULLABLE.getName())
+            columnProperty(Detail.BOOLEAN_NULLABLE, Detail.BOOLEAN_NULLABLE.name())
                     .columnHasDefaultValue(true)
                     .defaultValue(true),
             columnProperty(Detail.MASTER_ID),
-            foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.getName())
+            foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.name())
                     .beanProperty("master"),
             columnProperty(Detail.MASTER_CODE_NON_DENORM),
-            foreignKeyProperty(Detail.MASTER_VIA_CODE_FK, Detail.MASTER_FK.getName())
+            foreignKeyProperty(Detail.MASTER_VIA_CODE_FK, Detail.MASTER_FK.name())
                     .beanProperty("master"),
-            denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.getName(), Detail.MASTER_FK, Master.NAME),
-            denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.getName(), Detail.MASTER_FK, Master.CODE),
-            itemProperty(Detail.INT_VALUE_LIST, Detail.INT_VALUE_LIST.getName(), ITEMS),
-            derivedProperty(Detail.INT_DERIVED, Detail.INT_DERIVED.getName(), linkedValues -> {
+            denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.name(), Detail.MASTER_FK, Master.NAME),
+            denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.name(), Detail.MASTER_FK, Master.CODE),
+            itemProperty(Detail.INT_VALUE_LIST, Detail.INT_VALUE_LIST.name(), ITEMS),
+            derivedProperty(Detail.INT_DERIVED, Detail.INT_DERIVED.name(), linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
 
@@ -218,14 +218,14 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(definition(
-            primaryKeyProperty(Department.NO, Department.NO.getName())
+            primaryKeyProperty(Department.NO, Department.NO.name())
                     .updatable(true).nullable(false)
                     .beanProperty("deptNo"),
-            columnProperty(Department.NAME, Department.NAME.getName())
+            columnProperty(Department.NAME, Department.NAME.name())
                     .searchProperty(true)
                     .preferredColumnWidth(120).maximumLength(14).nullable(false)
                     .beanProperty("name"),
-            columnProperty(Department.LOCATION, Department.LOCATION.getName())
+            columnProperty(Department.LOCATION, Department.LOCATION.name())
                     .preferredColumnWidth(150).maximumLength(13)
                     .beanProperty("location"),
             booleanProperty(Department.ACTIVE, null, Integer.class, 1, 0)
@@ -269,34 +269,34 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(definition(
-            primaryKeyProperty(Employee.ID, Employee.ID.getName())
+            primaryKeyProperty(Employee.ID, Employee.ID.name())
                     .columnName("empno")
                     .beanProperty("id"),
-            columnProperty(Employee.NAME, Employee.NAME.getName())
+            columnProperty(Employee.NAME, Employee.NAME.name())
                     .searchProperty(true)
                     .columnName("ename").maximumLength(10).nullable(false)
                     .beanProperty("name"),
             columnProperty(Employee.DEPARTMENT_NO)
                     .nullable(false)
                     .beanProperty("deptno"),
-            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName())
+            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.name())
                     .beanProperty("department"),
-            itemProperty(Employee.JOB, Employee.JOB.getName(),
+            itemProperty(Employee.JOB, Employee.JOB.name(),
                     asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true)
                     .beanProperty("job"),
-            columnProperty(Employee.SALARY, Employee.SALARY.getName())
+            columnProperty(Employee.SALARY, Employee.SALARY.name())
                     .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2)
                     .beanProperty("salary"),
-            columnProperty(Employee.COMMISSION, Employee.COMMISSION.getName())
+            columnProperty(Employee.COMMISSION, Employee.COMMISSION.name())
                     .valueRange(100, 2000).maximumFractionDigits(2)
                     .beanProperty("commission"),
             columnProperty(Employee.MGR)
                     .beanProperty("mgr"),
-            foreignKeyProperty(Employee.MANAGER_FK, Employee.MANAGER_FK.getName())
+            foreignKeyProperty(Employee.MANAGER_FK, Employee.MANAGER_FK.name())
                     .beanProperty("manager"),
-            columnProperty(Employee.HIREDATE, Employee.HIREDATE.getName())
+            columnProperty(Employee.HIREDATE, Employee.HIREDATE.name())
                     .updatable(false)
                     .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDot()
@@ -304,7 +304,7 @@ public final class TestDomain extends DefaultDomain {
                             .build())
                     .nullable(false)
                     .beanProperty("hiredate"),
-            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.getName(), Employee.DEPARTMENT_FK, Department.LOCATION)
+            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION)
                     .preferredColumnWidth(100),
             derivedProperty(Employee.DEPARTMENT_NAME, new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
             blobProperty(Employee.DATA, "Data")

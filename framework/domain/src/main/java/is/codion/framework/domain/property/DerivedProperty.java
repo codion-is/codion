@@ -18,12 +18,12 @@ public interface DerivedProperty<T> extends TransientProperty<T> {
   /**
    * @return the attributes this property derives from.
    */
-  List<Attribute<?>> getSourceAttributes();
+  List<Attribute<?>> sourceAttributes();
 
   /**
    * @return the value provider, providing the derived value
    */
-  Provider<T> getValueProvider();
+  Provider<T> valueProvider();
 
   /**
    * Provides the source values from which to derive the property value.

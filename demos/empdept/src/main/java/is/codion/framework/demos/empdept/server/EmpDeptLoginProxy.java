@@ -30,7 +30,7 @@ public final class EmpDeptLoginProxy implements LoginProxy {
 
   @Override
   public RemoteClient login(RemoteClient remoteClient) throws LoginException {
-    authenticateUser(remoteClient.getUser());
+    authenticateUser(remoteClient.user());
 
     return remoteClient.withDatabaseUser(databaseUser);
   }

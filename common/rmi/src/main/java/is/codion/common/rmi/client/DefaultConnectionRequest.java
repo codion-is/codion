@@ -35,38 +35,38 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
   }
 
   @Override
-  public User getUser() {
+  public User user() {
     return user;
   }
 
   @Override
-  public UUID getClientId() {
+  public UUID clientId() {
     return clientId;
   }
 
   @Override
-  public String getClientTypeId() {
+  public String clientTypeId() {
     return clientTypeId;
   }
 
   @Override
-  public Version getClientVersion() {
+  public Version clientVersion() {
     return clientVersion;
   }
 
   @Override
-  public Version getFrameworkVersion() {
+  public Version frameworkVersion() {
     return frameworkVersion;
   }
 
   @Override
-  public Map<String, Object> getParameters() {
+  public Map<String, Object> parameters() {
     return parameters == null ? emptyMap() : parameters;
   }
 
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof ConnectionRequest && clientId.equals(((ConnectionRequest) obj).getClientId());
+    return this == obj || obj instanceof ConnectionRequest && clientId.equals(((ConnectionRequest) obj).clientId());
   }
 
   @Override

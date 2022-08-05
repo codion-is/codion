@@ -61,7 +61,7 @@ final class LoginPanel extends JPanel {
             .initialValue(defaultUser == null ? "" : defaultUser.getUsername())
             .columns(DEFAULT_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)
-            .enabledState(validatingState.getReversedObserver())
+            .enabledState(validatingState.reversedObserver())
             .build();
     this.passwordField = Components.passwordField()
             .initialValue(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()))
@@ -72,12 +72,12 @@ final class LoginPanel extends JPanel {
     this.okControl = Control.builder(this::onOkPressed)
             .caption(Messages.ok())
             .mnemonic(Messages.okMnemonic())
-            .enabledState(validatingState.getReversedObserver())
+            .enabledState(validatingState.reversedObserver())
             .build();
     this.cancelControl = Control.builder(this::closeDialog)
             .caption(Messages.cancel())
             .mnemonic(Messages.cancelMnemonic())
-            .enabledState(validatingState.getReversedObserver())
+            .enabledState(validatingState.reversedObserver())
             .build();
     this.loginValidator = requireNonNull(loginValidator);
     initializeUI(southComponent);

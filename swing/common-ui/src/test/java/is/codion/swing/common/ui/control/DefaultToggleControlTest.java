@@ -61,7 +61,7 @@ public class DefaultToggleControlTest {
 
   @Test
   void toggleControlTest() {
-    ToggleControl control = ToggleControl.builder(Value.propertyValue(this, "value", boolean.class, valueChangeEvent.getObserver())).build();
+    ToggleControl control = ToggleControl.builder(Value.propertyValue(this, "value", boolean.class, valueChangeEvent.observer())).build();
     control.getValue().set(true);
     assertTrue(value);
     control.getValue().set(false);
@@ -69,7 +69,7 @@ public class DefaultToggleControlTest {
     setValue(true);
     assertTrue(control.getValue().get());
 
-    Value<Boolean> nullableValue = Value.propertyValue(this, "nullableValue", Boolean.class, valueChangeEvent.getObserver());
+    Value<Boolean> nullableValue = Value.propertyValue(this, "nullableValue", Boolean.class, valueChangeEvent.observer());
     ToggleControl nullableControl = ToggleControl.builder(nullableValue).build();
     NullableToggleButtonModel toggleButtonModel = (NullableToggleButtonModel) nullableControl.createButtonModel();
     assertTrue(toggleButtonModel.isSelected());

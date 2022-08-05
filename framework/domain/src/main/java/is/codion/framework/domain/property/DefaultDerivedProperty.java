@@ -24,12 +24,12 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
   }
 
   @Override
-  public Provider<T> getValueProvider() {
+  public Provider<T> valueProvider() {
     return valueProvider;
   }
 
   @Override
-  public List<Attribute<?>> getSourceAttributes() {
+  public List<Attribute<?>> sourceAttributes() {
     return sourceAttributes;
   }
 
@@ -47,7 +47,7 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
         throw new IllegalArgumentException("No source attributes, a derived property must be derived from one or more existing attributes");
       }
       for (Attribute<?> sourceAttribute : sourceAttributes) {
-        if (!attribute.getEntityType().equals(sourceAttribute.getEntityType())) {
+        if (!attribute.entityType().equals(sourceAttribute.entityType())) {
           throw new IllegalArgumentException("Source attribute must be from same entity as the derived property");
         }
         if (attribute.equals(sourceAttribute)) {

@@ -27,13 +27,13 @@ final class CustomConditionSerializer implements Serializable {
   void serialize(CustomCondition condition, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("type", "custom");
-    generator.writeStringField("conditionTypeName", condition.getConditionType().getName());
+    generator.writeStringField("conditionTypeName", condition.conditionType().name());
     generator.writeFieldName("attributes");
-    entityObjectMapper.writeValue(generator, condition.getAttributes().stream()
-            .map(Attribute::getName)
+    entityObjectMapper.writeValue(generator, condition.attributes().stream()
+            .map(Attribute::name)
             .collect(toList()));
     generator.writeFieldName("values");
-    entityObjectMapper.writeValue(generator, condition.getValues());
+    entityObjectMapper.writeValue(generator, condition.values());
     generator.writeEndObject();
   }
 }

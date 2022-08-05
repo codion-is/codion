@@ -125,7 +125,7 @@ final class ExceptionPanel extends JPanel {
   }
 
   public EventObserver<?> getCloseObserver() {
-    return closeEvent.getObserver();
+    return closeEvent.observer();
   }
 
   private void initializeUI() {

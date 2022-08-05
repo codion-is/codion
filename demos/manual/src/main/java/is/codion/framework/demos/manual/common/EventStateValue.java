@@ -23,7 +23,7 @@ public final class EventStateValue {
     Event<String> event = Event.event();
 
     // an observer handles the listeners for an Event but can not trigger it
-    EventObserver<String> eventObserver = event.getObserver();
+    EventObserver<String> eventObserver = event.observer();
 
     // add a listener notified each time the event occurs
     eventObserver.addListener(() -> System.out.println("Event occurred"));
@@ -47,9 +47,9 @@ public final class EventStateValue {
     State state = State.state();
 
     // an observer handles the listeners for a State but can not change it
-    StateObserver stateObserver = state.getObserver();
+    StateObserver stateObserver = state.observer();
     // a reversed observer is always available
-    StateObserver reversedObserver = state.getReversedObserver();
+    StateObserver reversedObserver = state.reversedObserver();
 
     // add a listener notified each time the state changes
     stateObserver.addListener(() -> System.out.println("State changed"));

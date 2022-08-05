@@ -66,17 +66,17 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   }
 
   @Override
-  public final String getColumnName() {
+  public final String columnName() {
     return columnName;
   }
 
   @Override
-  public final String getColumnExpression() {
+  public final String columnExpression() {
     return columnExpression == null ? columnName : columnExpression;
   }
 
   @Override
-  public final int getColumnType() {
+  public final int columnType() {
     return columnType;
   }
 
@@ -91,52 +91,52 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   }
 
   @Override
-  public final boolean isInsertable() {
+  public final boolean insertable() {
     return insertable;
   }
 
   @Override
-  public final boolean isUpdatable() {
+  public final boolean updatable() {
     return updatable;
   }
 
   @Override
-  public final boolean isReadOnly() {
+  public final boolean readOnly() {
     return !insertable && !updatable;
   }
 
   @Override
-  public boolean isDenormalized() {
+  public boolean denormalized() {
     return false;
   }
 
   @Override
-  public final int getPrimaryKeyIndex() {
+  public final int primaryKeyIndex() {
     return primaryKeyIndex;
   }
 
   @Override
-  public final boolean isGroupingColumn() {
+  public final boolean groupingColumn() {
     return groupingColumn;
   }
 
   @Override
-  public final boolean isAggregateColumn() {
+  public final boolean aggregateColumn() {
     return aggregateColumn;
   }
 
   @Override
-  public final boolean isSelectable() {
+  public final boolean selectable() {
     return selectable;
   }
 
   @Override
-  public final boolean isPrimaryKeyColumn() {
+  public final boolean primaryKeyColumn() {
     return primaryKeyIndex >= 0;
   }
 
   @Override
-  public final boolean isSearchProperty() {
+  public final boolean searchProperty() {
     return searchProperty;
   }
 
@@ -146,7 +146,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   }
 
   @Override
-  public final ResultPacker<T> getResultPacker() {
+  public final ResultPacker<T> resultPacker() {
     return resultPacker;
   }
 
@@ -268,13 +268,13 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     DefaultColumnPropertyBuilder(Attribute<T> attribute, String caption) {
       super(attribute, caption);
       this.primaryKeyIndex = -1;
-      this.columnType = getSqlType(attribute.getValueClass());
+      this.columnType = getSqlType(attribute.valueClass());
       this.columnHasDefaultValue = false;
       this.insertable = true;
       this.updatable = true;
       this.searchProperty = false;
-      this.columnName = attribute.getName();
-      this.valueFetcher = (ValueFetcher<Object>) getValueFetcher(this.columnType, attribute.getValueClass());
+      this.columnName = attribute.name();
+      this.valueFetcher = (ValueFetcher<Object>) getValueFetcher(this.columnType, attribute.valueClass());
       this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
       this.groupingColumn = false;
       this.aggregateColumn = false;
@@ -290,7 +290,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     public final <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter) {
       this.columnType = getSqlType(columnClass);
       this.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      this.valueFetcher = (ValueFetcher<Object>) getValueFetcher(this.columnType, attribute.getValueClass());
+      this.valueFetcher = (ValueFetcher<Object>) getValueFetcher(this.columnType, attribute.valueClass());
       return (B) this;
     }
 

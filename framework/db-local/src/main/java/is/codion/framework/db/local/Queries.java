@@ -23,7 +23,7 @@ final class Queries {
     StringBuilder queryBuilder = new StringBuilder("insert ").append("into ").append(tableName).append("(");
     StringBuilder columnValues = new StringBuilder(")").append(NEWLINE).append("values(");
     for (int i = 0; i < insertProperties.size(); i++) {
-      queryBuilder.append(insertProperties.get(i).getColumnName());
+      queryBuilder.append(insertProperties.get(i).columnName());
       columnValues.append("?");
       if (i < insertProperties.size() - 1) {
         queryBuilder.append(", ");
@@ -44,7 +44,7 @@ final class Queries {
                             String conditionString) {
     StringBuilder queryBuilder = new StringBuilder("update ").append(tableName).append(NEWLINE).append("set ");
     for (int i = 0; i < updateProperties.size(); i++) {
-      queryBuilder.append(updateProperties.get(i).getColumnName()).append(" = ?");
+      queryBuilder.append(updateProperties.get(i).columnName()).append(" = ?");
       if (i < updateProperties.size() - 1) {
         queryBuilder.append(", ");
       }

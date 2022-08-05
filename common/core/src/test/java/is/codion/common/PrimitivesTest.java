@@ -22,5 +22,7 @@ public final class PrimitivesTest {
     assertThrows(IllegalArgumentException.class, () -> Primitives.getDefaultValue(Double.class));
     assertThrows(IllegalArgumentException.class, () -> Primitives.getDefaultValue(Integer.class));
     assertThrows(IllegalArgumentException.class, () -> Primitives.getDefaultValue(Boolean.class));
+
+    assertThrows(IllegalArgumentException.class, () -> Primitives.getBoxedType(Number.class));
   }
 }

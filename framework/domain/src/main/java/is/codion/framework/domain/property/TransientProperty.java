@@ -16,7 +16,7 @@ public interface TransientProperty<T> extends Property<T> {
   /**
    * @return true if the value of this property being modified should result in a modified entity
    */
-  boolean isModifiesEntity();
+  boolean modifiesEntity();
 
   /**
    * Builds a TransientProperty instance

@@ -78,8 +78,9 @@ final class DefaultCopyEntities implements CopyEntities {
   public void execute() throws DatabaseException {
     for (EntityType entityType : entityTypes) {
       List<Entity> entities = source.select(conditions.getOrDefault(entityType, Conditions.condition(entityType))
-              .toSelectCondition()
-              .fetchDepth(0));
+              .selectBuilder()
+              .fetchDepth(0)
+              .build());
       if (!includePrimaryKeys) {
         entities.forEach(Entity::clearPrimaryKey);
       }

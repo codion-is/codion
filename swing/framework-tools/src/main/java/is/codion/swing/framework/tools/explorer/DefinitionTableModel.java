@@ -41,7 +41,7 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
   private static Collection<DefinitionRow> createDomainDefinitions(Schema schema) {
     DatabaseDomain domain = new DatabaseDomain(domainType(schema.getName()), schema.getTables().values());
 
-    return domain.getEntities().getDefinitions().stream()
+    return domain.entities().getDefinitions().stream()
             .map(definition -> new DefinitionRow(domain, definition))
             .collect(toList());
   }
@@ -74,9 +74,9 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
     public Object getValue(DefinitionRow row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case DefinitionTableModel.DOMAIN:
-          return row.domain.getDomainType().getName();
+          return row.domain.type().name();
         case DefinitionTableModel.ENTITY:
-          return row.definition.getEntityType().getName();
+          return row.definition.getEntityType().name();
         default:
           throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
       }

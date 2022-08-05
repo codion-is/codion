@@ -79,20 +79,20 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @throws RemoteException in case of an exception
    */
   public AbstractServer(ServerConfiguration configuration) throws RemoteException {
-    super(requireNonNull(configuration, "configuration").getServerPort(),
-            configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
+    super(requireNonNull(configuration, "configuration").serverPort(),
+            configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
     Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     try {
       this.configuration = configuration;
-      this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
-              configuration.getServerPort(), ZonedDateTime.now());
+      this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.serverName(),
+              configuration.serverPort(), ZonedDateTime.now());
       this.connectionMaintenanceScheduler = TaskScheduler.builder(new MaintenanceTask())
-              .interval(configuration.getConnectionMaintenanceInterval())
-              .initialDelay(configuration.getConnectionMaintenanceInterval())
+              .interval(configuration.connectionMaintenanceInterval())
+              .initialDelay(configuration.connectionMaintenanceInterval())
               .timeUnit(TimeUnit.MILLISECONDS)
               .start();
       configureSerializationWhitelist(configuration);
-      startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());
+      startAuxiliaryServers(configuration.auxiliaryServerFactoryClassNames());
       loadLoginProxies();
     }
     catch (Throwable exception) {
@@ -180,13 +180,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       throw new LoginException("Server is shutting down");
     }
     requireNonNull(connectionRequest, "connectionRequest");
-    requireNonNull(connectionRequest.getUser(), "user");
-    requireNonNull(connectionRequest.getClientId(), CLIENT_ID);
-    requireNonNull(connectionRequest.getClientTypeId(), "clientTypeId");
+    requireNonNull(connectionRequest.user(), "user");
+    requireNonNull(connectionRequest.clientId(), CLIENT_ID);
+    requireNonNull(connectionRequest.clientTypeId(), "clientTypeId");
     synchronized (connections) {
-      ClientConnection<T> clientConnection = connections.get(connectionRequest.getClientId());
+      ClientConnection<T> clientConnection = connections.get(connectionRequest.clientId());
       if (clientConnection != null) {
-        validateUserCredentials(connectionRequest.getUser(), clientConnection.getRemoteClient().getUser());
+        validateUserCredentials(connectionRequest.user(), clientConnection.getRemoteClient().user());
         LOG.trace("Active connection exists {}", connectionRequest);
 
         return clientConnection.getConnection();
@@ -211,7 +211,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       for (LoginProxy loginProxy : sharedLoginProxies) {
         loginProxy.logout(remoteClient);
       }
-      LoginProxy loginProxy = loginProxies.get(remoteClient.getClientTypeId());
+      LoginProxy loginProxy = loginProxies.get(remoteClient.clientTypeId());
       if (loginProxy != null) {
         loginProxy.logout(remoteClient);
       }
@@ -267,7 +267,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    */
   final Collection<User> getUsers() {
     return getConnections().keySet().stream()
-            .map(ConnectionRequest::getUser)
+            .map(ConnectionRequest::user)
             .collect(toSet());
   }
 
@@ -284,7 +284,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    */
   final Collection<RemoteClient> getClients(User user) {
     return getConnections().keySet().stream()
-            .filter(remoteClient -> user == null || remoteClient.getUser().equals(user))
+            .filter(remoteClient -> user == null || remoteClient.user().equals(user))
             .collect(toList());
   }
 
@@ -339,13 +339,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    */
   protected Collection<RemoteClient> getClients(String clientTypeId) {
     return getConnections().keySet().stream()
-            .filter(client -> Objects.equals(client.getClientTypeId(), clientTypeId))
+            .filter(client -> Objects.equals(client.clientTypeId(), clientTypeId))
             .collect(toList());
   }
 
   protected final Registry getRegistry() throws RemoteException {
     if (registry == null) {
-      this.registry = LocateRegistry.createRegistry(configuration.getRegistryPort());
+      this.registry = LocateRegistry.createRegistry(configuration.registryPort());
     }
 
     return this.registry;
@@ -378,17 +378,17 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   private ClientConnection<T> createConnection(ConnectionRequest connectionRequest) throws LoginException, RemoteException {
     RemoteClient remoteClient = remoteClient(connectionRequest);
-    setClientHost(remoteClient, (String) connectionRequest.getParameters().get(CLIENT_HOST_KEY));
+    setClientHost(remoteClient, (String) connectionRequest.parameters().get(CLIENT_HOST_KEY));
     for (LoginProxy loginProxy : sharedLoginProxies) {
       remoteClient = loginProxy.login(remoteClient);
     }
-    LoginProxy clientLoginProxy = loginProxies.get(connectionRequest.getClientTypeId());
+    LoginProxy clientLoginProxy = loginProxies.get(connectionRequest.clientTypeId());
     LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, clientLoginProxy);
     if (clientLoginProxy != null) {
       remoteClient = clientLoginProxy.login(remoteClient);
     }
     ClientConnection<T> clientConnection = new ClientConnection<>(remoteClient, connect(remoteClient));
-    connections.put(remoteClient.getClientId(), clientConnection);
+    connections.put(remoteClient.clientId(), clientConnection);
 
     return clientConnection;
   }
@@ -414,11 +414,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   private static void configureSerializationWhitelist(ServerConfiguration configuration) {
-    if (configuration.isSerializationFilterDryRun()) {
-      SerializationWhitelist.configureDryRun(configuration.getSerializationFilterWhitelist());
+    if (configuration.serializationFilterDryRun()) {
+      SerializationWhitelist.configureDryRun(configuration.serializationFilterWhitelist());
     }
     else {
-      SerializationWhitelist.configure(configuration.getSerializationFilterWhitelist());
+      SerializationWhitelist.configure(configuration.serializationFilterWhitelist());
     }
   }
 

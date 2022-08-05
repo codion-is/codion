@@ -19,53 +19,36 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
   private static final long serialVersionUID = 1;
 
   private final Condition condition;
-  private final Map<Attribute<?>, Object> propertyValues = new LinkedHashMap<>();
+  private final Map<Attribute<?>, Object> propertyValues;
 
-  DefaultUpdateCondition(Condition condition) {
-    super(requireNonNull(condition, "condition").getEntityType());
-    this.condition = condition;
-  }
-
-  private DefaultUpdateCondition(DefaultUpdateCondition updateCondition) {
-    super(updateCondition.getEntityType());
-    this.condition = updateCondition.condition;
-    this.propertyValues.putAll(updateCondition.propertyValues);
+  private DefaultUpdateCondition(DefaultUpdateCondition.DefaultBuilder builder) {
+    super(builder.condition.entityType());
+    this.condition = builder.condition;
+    this.propertyValues = builder.propertyValues;
   }
 
   @Override
-  public Condition getCondition() {
+  public Condition condition() {
     return condition;
   }
 
   @Override
-  public List<?> getValues() {
-    return condition.getValues();
+  public List<?> values() {
+    return condition.values();
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
-    return condition.getAttributes();
+  public List<Attribute<?>> attributes() {
+    return condition.attributes();
   }
 
   @Override
-  public String getConditionString(EntityDefinition definition) {
-    return condition.getConditionString(definition);
+  public String toString(EntityDefinition definition) {
+    return condition.toString(definition);
   }
 
   @Override
-  public <T> UpdateCondition set(Attribute<T> attribute, T value) {
-    requireNonNull(attribute, "attribute");
-    if (propertyValues.containsKey(attribute)) {
-      throw new IllegalArgumentException("Update condition already contains a value for attribute: " + attribute);
-    }
-    DefaultUpdateCondition updateCondition = new DefaultUpdateCondition(this);
-    updateCondition.propertyValues.put(attribute, value);
-
-    return updateCondition;
-  }
-
-  @Override
-  public Map<Attribute<?>, Object> getAttributeValues() {
+  public Map<Attribute<?>, Object> attributeValues() {
     return unmodifiableMap(propertyValues);
   }
 
@@ -77,5 +60,38 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
   @Override
   public int hashCode() {
     return Objects.hash(condition, propertyValues);
+  }
+
+  static final class DefaultBuilder implements UpdateCondition.Builder {
+
+    private final Condition condition;
+    private final Map<Attribute<?>, Object> propertyValues;
+
+    DefaultBuilder(Condition condition) {
+      this.condition = requireNonNull(condition);
+      if (condition instanceof DefaultUpdateCondition) {
+        DefaultUpdateCondition updateCondition = (DefaultUpdateCondition) condition;
+        this.propertyValues = updateCondition.propertyValues;
+      }
+      else {
+        this.propertyValues = new LinkedHashMap<>();
+      }
+    }
+
+    @Override
+    public <T> Builder set(Attribute<?> attribute, T value) {
+      requireNonNull(attribute, "attribute");
+      if (propertyValues.containsKey(attribute)) {
+        throw new IllegalArgumentException("Update condition already contains a value for attribute: " + attribute);
+      }
+      propertyValues.put(attribute, value);
+
+      return this;
+    }
+
+    @Override
+    public UpdateCondition build() {
+      return new DefaultUpdateCondition(this);
+    }
   }
 }

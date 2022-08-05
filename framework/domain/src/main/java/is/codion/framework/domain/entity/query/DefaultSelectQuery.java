@@ -24,32 +24,32 @@ final class DefaultSelectQuery implements SelectQuery {
   }
 
   @Override
-  public String getColumns() {
+  public String columns() {
     return columns;
   }
 
   @Override
-  public String getFrom() {
+  public String from() {
     return from;
   }
 
   @Override
-  public String getWhere() {
+  public String where() {
     return where;
   }
 
   @Override
-  public String getGroupBy() {
+  public String groupBy() {
     return groupBy;
   }
 
   @Override
-  public String getHaving() {
+  public String having() {
     return having;
   }
 
   @Override
-  public String getOrderBy() {
+  public String orderBy() {
     return orderBy;
   }
 

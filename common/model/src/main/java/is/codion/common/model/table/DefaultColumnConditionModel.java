@@ -254,7 +254,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
 
   @Override
   public final StateObserver getLockedObserver() {
-    return lockedState.getObserver();
+    return lockedState.observer();
   }
 
   @Override

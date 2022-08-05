@@ -20,37 +20,37 @@ public interface SelectCondition extends Condition {
   /**
    * @return the underlying condition
    */
-  Condition getCondition();
+  Condition condition();
 
   /**
    * @return the OrderBy for this condition, an empty Optional if none is specified
    */
-  Optional<OrderBy> getOrderBy();
+  Optional<OrderBy> orderBy();
 
   /**
    * @return the limit to use for the given condition, -1 for no limit
    */
-  int getLimit();
+  int limit();
 
   /**
    * @return the offset to use for the given condition, -1 for no offset
    */
-  int getOffset();
+  int offset();
 
   /**
    * @return true if this select should lock the result for update
    */
-  boolean isForUpdate();
+  boolean forUpdate();
 
   /**
    * @return the query timeout
    */
-  int getQueryTimeout();
+  int queryTimeout();
 
   /**
    * @return the global fetch depth limit for this condition, an empty Optional if none has been specified
    */
-  Optional<Integer> getFetchDepth();
+  Optional<Integer> fetchDepth();
 
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
@@ -58,76 +58,96 @@ public interface SelectCondition extends Condition {
    * @param foreignKey the foreign key
    * @return the number of levels of foreign key values to fetch
    */
-  Optional<Integer> getFetchDepth(ForeignKey foreignKey);
+  Optional<Integer> fetchDepth(ForeignKey foreignKey);
 
   /**
    * @return the attributes to include in the query result,
    * an empty Collection if all should be included
    */
-  Collection<Attribute<?>> getSelectAttributes();
+  Collection<Attribute<?>> selectAttributes();
 
   /**
-   * Sets the OrderBy for this condition
-   * @param orderBy the OrderBy to use when applying this condition
-   * @return a new {@link SelectCondition} instance with the given order by
+   * Returns a {@link SelectCondition.Builder} instance based on the given condition
+   * @param condition the condition
+   * @return a {@link SelectCondition.Builder} instance
    */
-  SelectCondition orderBy(OrderBy orderBy);
+  static Builder builder(Condition condition) {
+    return new DefaultSelectCondition.DefaultBuilder(condition);
+  }
 
   /**
-   * @param limit the limit to use for this condition
-   * @return a new {@link SelectCondition} instance with the given limit
+   * Builds a {@link SelectCondition}.
    */
-  SelectCondition limit(int limit);
+  interface Builder {
 
-  /**
-   * @param offset the offset to use for this condition
-   * @return a new {@link SelectCondition} instance with the given offset
-   */
-  SelectCondition offset(int offset);
+    /**
+     * Sets the OrderBy for this condition
+     * @param orderBy the OrderBy to use when applying this condition
+     * @return this builder instance
+     */
+    Builder orderBy(OrderBy orderBy);
 
-  /**
-   * Marks this condition as a select for update query, this means the resulting records
-   * will be locked by the given connection until unlocked by running another (non - select for update)
-   * query on the same connection or performing an update
-   * @return a new {@link SelectCondition} instance with for update enabled
-   */
-  SelectCondition forUpdate();
+    /**
+     * @param limit the limit to use for this condition
+     * @return a new {@link SelectCondition} instance with the given limit
+     */
+    Builder limit(int limit);
 
-  /**
-   * Limit the levels of foreign keys to fetch
-   * @param fetchDepth the foreign key fetch depth limit
-   * @return a new {@link SelectCondition} instance with the given fetch depth
-   */
-  SelectCondition fetchDepth(int fetchDepth);
+    /**
+     * @param offset the offset to use for this condition
+     * @return a new {@link SelectCondition} instance with the given offset
+     */
+    Builder offset(int offset);
 
-  /**
-   * Limit the levels of foreign keys to fetch via the given foreign key
-   * @param foreignKey the foreign key
-   * @param fetchDepth the foreign key fetch depth limit
-   * @return this SelectCondition instance
-   */
-  SelectCondition fetchDepth(ForeignKey foreignKey, int fetchDepth);
+    /**
+     * Marks this condition as a select for update query, this means the resulting records
+     * will be locked by the given connection until unlocked by running another (non - select for update)
+     * query on the same connection or performing an update
+     * @return a new {@link SelectCondition} instance with for update enabled
+     */
+    Builder forUpdate();
 
-  /**
-   * Sets the attributes to include in the query result. An empty array means all attributes should be included.
-   * Note that primary key attribute values are always included.
-   * Note that these must be ColumnProperty attributes
-   * @param attributes the attributes to include
-   * @return a new {@link SelectCondition} instance with the given select attributes
-   */
-  SelectCondition selectAttributes(Attribute<?>... attributes);
+    /**
+     * Limit the levels of foreign keys to fetch
+     * @param fetchDepth the foreign key fetch depth limit
+     * @return a new {@link SelectCondition} instance with the given fetch depth
+     */
+    Builder fetchDepth(int fetchDepth);
 
-  /**
-   * Sets the attributes to include in the query result. An empty Collection means all attributes should be included.
-   * Note that primary key attribute values are always included.
-   * @param attributes the attributes to include
-   * @return a new {@link SelectCondition} instance with the given select attributes
-   */
-  SelectCondition selectAttributes(Collection<Attribute<?>> attributes);
+    /**
+     * Limit the levels of foreign keys to fetch via the given foreign key
+     * @param foreignKey the foreign key
+     * @param fetchDepth the foreign key fetch depth limit
+     * @return this Builder instance
+     */
+    Builder fetchDepth(ForeignKey foreignKey, int fetchDepth);
 
-  /**
-   * @param queryTimeout the query timeout, 0 for no timeout
-   * @return a new {@link SelectCondition} instance with the given query timeout
-   */
-  SelectCondition queryTimeout(int queryTimeout);
+    /**
+     * Sets the attributes to include in the query result. An empty array means all attributes should be included.
+     * Note that primary key attribute values are always included.
+     * Note that these must be ColumnProperty attributes
+     * @param attributes the attributes to include
+     * @return a new {@link SelectCondition} instance with the given select attributes
+     */
+    Builder selectAttributes(Attribute<?>... attributes);
+
+    /**
+     * Sets the attributes to include in the query result. An empty Collection means all attributes should be included.
+     * Note that primary key attribute values are always included.
+     * @param attributes the attributes to include
+     * @return a new {@link SelectCondition} instance with the given select attributes
+     */
+    Builder selectAttributes(Collection<Attribute<?>> attributes);
+
+    /**
+     * @param queryTimeout the query timeout, 0 for no timeout
+     * @return a new {@link SelectCondition} instance with the given query timeout
+     */
+    Builder queryTimeout(int queryTimeout);
+
+    /**
+     * @return a new {@link SelectCondition} instance based on this builder
+     */
+    SelectCondition build();
+  }
 }

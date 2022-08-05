@@ -16,23 +16,23 @@ public interface Attribute<T> {
   /**
    * @return the name of this attribute.
    */
-  String getName();
+  String name();
 
   /**
    * @return the Class representing the attribute value
    */
-  Class<T> getValueClass();
+  Class<T> valueClass();
 
   /**
    * @return the entity type this Attribute is associated with
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @param value the value to validate
    * @return the validated value
    * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
-   * @see #getValueClass()
+   * @see #valueClass()
    */
   T validateType(T value);
 

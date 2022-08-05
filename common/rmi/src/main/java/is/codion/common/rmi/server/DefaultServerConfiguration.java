@@ -50,7 +50,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public String getServerName() {
+  public String serverName() {
     if (serverName == null) {
       serverName = serverNameProvider.get();
     }
@@ -59,52 +59,52 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public int getServerPort() {
+  public int serverPort() {
     return serverPort;
   }
 
   @Override
-  public int getRegistryPort() {
+  public int registryPort() {
     return registryPort;
   }
 
   @Override
-  public int getServerAdminPort() {
+  public int serverAdminPort() {
     return serverAdminPort;
   }
 
   @Override
-  public Collection<String> getAuxiliaryServerFactoryClassNames() {
+  public Collection<String> auxiliaryServerFactoryClassNames() {
     return auxiliaryServerFactoryClassNames;
   }
 
   @Override
-  public boolean isSslEnabled() {
+  public boolean sslEnabled() {
     return sslEnabled;
   }
 
   @Override
-  public RMIClientSocketFactory getRmiClientSocketFactory() {
+  public RMIClientSocketFactory rmiClientSocketFactory() {
     return rmiClientSocketFactory;
   }
 
   @Override
-  public RMIServerSocketFactory getRmiServerSocketFactory() {
+  public RMIServerSocketFactory rmiServerSocketFactory() {
     return rmiServerSocketFactory;
   }
 
   @Override
-  public String getSerializationFilterWhitelist() {
+  public String serializationFilterWhitelist() {
     return serializationFilterWhitelist;
   }
 
   @Override
-  public boolean isSerializationFilterDryRun() {
+  public boolean serializationFilterDryRun() {
     return serializationFilterDryRun;
   }
 
   @Override
-  public int getConnectionMaintenanceInterval() {
+  public int connectionMaintenanceInterval() {
     return connectionMaintenanceIntervalMs;
   }
 
@@ -220,7 +220,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     private static synchronized void resolveClasspathKeyStore() {
       String keystore = CLASSPATH_KEYSTORE.get();
       if (nullOrEmpty(keystore)) {
-        LOG.debug("No classpath key store specified via {}", CLASSPATH_KEYSTORE.getPropertyName());
+        LOG.debug("No classpath key store specified via {}", CLASSPATH_KEYSTORE.propertyName());
         return;
       }
       if (KEYSTORE.isNotNull()) {
@@ -238,7 +238,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
         KEYSTORE.set(file.getPath());
         LOG.debug("Classpath key store {} written to file {} and set as {}",
-                CLASSPATH_KEYSTORE.getPropertyName(), file, JAVAX_NET_KEYSTORE);
+                CLASSPATH_KEYSTORE.propertyName(), file, JAVAX_NET_KEYSTORE);
       }
       catch (IOException e) {
         throw new RuntimeException(e);

@@ -47,12 +47,12 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
-  public boolean isNullable() {
+  public boolean nullable() {
     return false;
   }
 
   @Override
-  public StateObserver getReversedObserver() {
+  public StateObserver reversedObserver() {
     synchronized (lock) {
       if (reversedStateObserver == null) {
         reversedStateObserver = new DefaultStateObserver(this, true);
@@ -101,7 +101,7 @@ final class DefaultStateObserver implements StateObserver {
         stateChangedEvent = Event.event();
       }
 
-      return stateChangedEvent.getObserver();
+      return stateChangedEvent.observer();
     }
   }
 }

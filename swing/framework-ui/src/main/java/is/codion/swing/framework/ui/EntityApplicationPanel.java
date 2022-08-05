@@ -378,7 +378,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .owner(this)
             .title(resourceBundle.getString("select_font_size"))
             .onOk(() -> {
-              Integer selectedFontSizeMultiplier = comboBoxModel.getSelectedItem().getValue();
+              Integer selectedFontSizeMultiplier = comboBoxModel.getSelectedItem().value();
               if (!selectedFontSizeMultiplier.equals(fontSizeMultiplier)) {
                 UserPreferences.putUserPreference(applicationFontSizeProperty, selectedFontSizeMultiplier.toString());
                 JOptionPane.showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
@@ -1457,7 +1457,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
     return entities.getDefinition(entityType).getForeignKeys().stream()
-            .allMatch(foreignKey -> foreignKey.getReferencedEntityType().equals(entityType));
+            .allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
   }
 
   /**
@@ -1549,8 +1549,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (EntityDefinition definition : entities.getDefinitions()) {
         for (ForeignKeyProperty fkProperty : definition.getForeignKeyProperties()) {
-          if (fkProperty.getReferencedEntityType().equals(getEntityType()) && !fkProperty.isSoftReference()
-                  && !foreignKeyCycle(fkProperty.getReferencedEntityType())) {
+          if (fkProperty.referencedEntityType().equals(getEntityType()) && !fkProperty.softReference()
+                  && !foreignKeyCycle(fkProperty.referencedEntityType())) {
             childrenList.add(new EntityDependencyTreeNode(definition.getEntityType(), entities));
           }
         }
@@ -1600,7 +1600,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       Component component = defaultListCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
       if (index >= 0) {
         Font font = component.getFont();
-        int newSize = Math.round(font.getSize() * (values.get(index).getValue() / (float) defaultFontSize.doubleValue()));
+        int newSize = Math.round(font.getSize() * (values.get(index).value() / (float) defaultFontSize.doubleValue()));
         component.setFont(new Font(font.getName(), font.getStyle(), newSize));
       }
 

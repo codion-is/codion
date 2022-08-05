@@ -74,7 +74,7 @@ final class CityTablePanel extends ChartTablePanel {
     }
 
     private StateObserver isWorkingObserver() {
-      return cancelledState.getReversedObserver();
+      return cancelledState.reversedObserver();
     }
   }
 }

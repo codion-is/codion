@@ -40,102 +40,102 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public String getServerName() {
-    return serverConfiguration.getServerName();
+  public String serverName() {
+    return serverConfiguration.serverName();
   }
 
   @Override
-  public int getServerPort() {
-    return serverConfiguration.getServerPort();
+  public int serverPort() {
+    return serverConfiguration.serverPort();
   }
 
   @Override
-  public Collection<String> getAuxiliaryServerFactoryClassNames() {
-    return serverConfiguration.getAuxiliaryServerFactoryClassNames();
+  public Collection<String> auxiliaryServerFactoryClassNames() {
+    return serverConfiguration.auxiliaryServerFactoryClassNames();
   }
 
   @Override
-  public boolean isSslEnabled() {
-    return serverConfiguration.isSslEnabled();
+  public boolean sslEnabled() {
+    return serverConfiguration.sslEnabled();
   }
 
   @Override
-  public RMIClientSocketFactory getRmiClientSocketFactory() {
-    return serverConfiguration.getRmiClientSocketFactory();
+  public RMIClientSocketFactory rmiClientSocketFactory() {
+    return serverConfiguration.rmiClientSocketFactory();
   }
 
   @Override
-  public RMIServerSocketFactory getRmiServerSocketFactory() {
-    return serverConfiguration.getRmiServerSocketFactory();
+  public RMIServerSocketFactory rmiServerSocketFactory() {
+    return serverConfiguration.rmiServerSocketFactory();
   }
 
   @Override
-  public String getSerializationFilterWhitelist() {
-    return serverConfiguration.getSerializationFilterWhitelist();
+  public String serializationFilterWhitelist() {
+    return serverConfiguration.serializationFilterWhitelist();
   }
 
   @Override
-  public boolean isSerializationFilterDryRun() {
-    return serverConfiguration.isSerializationFilterDryRun();
+  public boolean serializationFilterDryRun() {
+    return serverConfiguration.serializationFilterDryRun();
   }
 
   @Override
-  public int getConnectionMaintenanceInterval() {
-    return serverConfiguration.getConnectionMaintenanceInterval();
+  public int connectionMaintenanceInterval() {
+    return serverConfiguration.connectionMaintenanceInterval();
   }
 
   @Override
-  public int getRegistryPort() {
-    return serverConfiguration.getRegistryPort();
+  public int registryPort() {
+    return serverConfiguration.registryPort();
   }
 
   @Override
-  public int getServerAdminPort() {
-    return serverConfiguration.getServerAdminPort();
+  public int serverAdminPort() {
+    return serverConfiguration.serverAdminPort();
   }
 
   @Override
-  public Database getDatabase() {
+  public Database database() {
     return database;
   }
 
   @Override
-  public User getAdminUser() {
+  public User adminUser() {
     return adminUser;
   }
 
   @Override
-  public int getConnectionLimit() {
+  public int connectionLimit() {
     return connectionLimit;
   }
 
   @Override
-  public boolean getClientLoggingEnabled() {
+  public boolean clientLoggingEnabled() {
     return clientLoggingEnabled;
   }
 
   @Override
-  public int getIdleConnectionTimeout() {
+  public int idleConnectionTimeout() {
     return idleConnectionTimeout;
   }
 
   @Override
-  public String getConnectionPoolProvider() {
+  public String connectionPoolProvider() {
     return connectionPoolProvider;
   }
 
   @Override
-  public Collection<String> getDomainModelClassNames() {
+  public Collection<String> domainModelClassNames() {
     return domainModelClassNames;
   }
 
   @Override
-  public Collection<User> getConnectionPoolUsers() {
+  public Collection<User> connectionPoolUsers() {
     return connectionPoolUsers;
   }
 
   @Override
-  public Map<String, Integer> getClientTypeIdleConnectionTimeouts() {
+  public Map<String, Integer> clientTypeIdleConnectionTimeouts() {
     return clientTypeIdleConnectionTimeouts;
   }
 

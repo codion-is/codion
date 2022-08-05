@@ -52,8 +52,8 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   public Condition equalTo(Collection<? extends Entity> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    List<Attribute<?>> attributes = foreignKey.getReferences().stream()
-            .map(ForeignKey.Reference::getReferencedAttribute)
+    List<Attribute<?>> attributes = foreignKey.references().stream()
+            .map(ForeignKey.Reference::referencedAttribute)
             .collect(toList());
 
     return foreignKeyCondition(foreignKey, EQUAL, values.stream()
@@ -81,8 +81,8 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   public Condition notEqualTo(Collection<? extends Entity> values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    List<Attribute<?>> attributes = foreignKey.getReferences().stream()
-            .map(ForeignKey.Reference::getReferencedAttribute)
+    List<Attribute<?>> attributes = foreignKey.references().stream()
+            .map(ForeignKey.Reference::referencedAttribute)
             .collect(toList());
 
     return foreignKeyCondition(foreignKey, NOT_EQUAL, values.stream()
@@ -102,27 +102,27 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
 
   private static Condition foreignKeyCondition(ForeignKey foreignKey, Operator operator,
                                                List<Map<Attribute<?>, Object>> valueMaps) {
-    if (foreignKey.getReferences().size() > 1) {
+    if (foreignKey.references().size() > 1) {
       return Conditions.compositeKeyCondition(attributeMap(foreignKey), operator, valueMaps);
     }
 
-    ForeignKey.Reference<?> reference = foreignKey.getReferences().get(0);
+    ForeignKey.Reference<?> reference = foreignKey.references().get(0);
     List<Object> values = valueMaps.stream()
-            .map(map -> map.get(reference.getReferencedAttribute()))
+            .map(map -> map.get(reference.referencedAttribute()))
             .collect(toList());
     if (operator == EQUAL) {
-      return Conditions.where((Attribute<Object>) reference.getAttribute()).equalTo(values);
+      return Conditions.where((Attribute<Object>) reference.attribute()).equalTo(values);
     }
     if (operator == NOT_EQUAL) {
-      return Conditions.where((Attribute<Object>) reference.getAttribute()).notEqualTo(values);
+      return Conditions.where((Attribute<Object>) reference.attribute()).notEqualTo(values);
     }
 
     throw new IllegalArgumentException("Unsupported operator: " + operator);
   }
 
   private static Map<Attribute<?>, Attribute<?>> attributeMap(ForeignKey foreignKeyProperty) {
-    Map<Attribute<?>, Attribute<?>> map = new LinkedHashMap<>(foreignKeyProperty.getReferences().size());
-    foreignKeyProperty.getReferences().forEach(reference -> map.put(reference.getAttribute(), reference.getReferencedAttribute()));
+    Map<Attribute<?>, Attribute<?>> map = new LinkedHashMap<>(foreignKeyProperty.references().size());
+    foreignKeyProperty.references().forEach(reference -> map.put(reference.attribute(), reference.referencedAttribute()));
 
     return map;
   }

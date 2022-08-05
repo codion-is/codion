@@ -54,64 +54,64 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DomainTest {
 
   private final TestDomain domain = new TestDomain();
-  private final Entities entities = domain.getEntities();
+  private final Entities entities = domain.entities();
 
   @Test
   void defineTypes() {
     EntityDefinition definition = entities.getDefinition(Detail.TYPE);
 
     //assert types
-    assertEquals(definition.getProperty(Detail.ID).getAttribute().getValueClass(), Long.class);
-    assertEquals(definition.getProperty(Detail.SHORT).getAttribute().getValueClass(), Short.class);
-    assertEquals(definition.getProperty(Detail.INT).getAttribute().getValueClass(), Integer.class);
-    assertEquals(definition.getProperty(Detail.DOUBLE).getAttribute().getValueClass(), Double.class);
-    assertEquals(definition.getProperty(Detail.STRING).getAttribute().getValueClass(), String.class);
-    assertEquals(definition.getProperty(Detail.DATE).getAttribute().getValueClass(), LocalDate.class);
-    assertEquals(definition.getProperty(Detail.TIMESTAMP).getAttribute().getValueClass(), LocalDateTime.class);
-    assertEquals(definition.getProperty(Detail.BOOLEAN).getAttribute().getValueClass(), Boolean.class);
-    assertEquals(definition.getProperty(Detail.MASTER_FK).getAttribute().getValueClass(), Entity.class);
-    assertEquals(definition.getProperty(Detail.MASTER_ID).getAttribute().getValueClass(), Long.class);
-    assertEquals(definition.getProperty(Detail.MASTER_NAME).getAttribute().getValueClass(), String.class);
-    assertEquals(definition.getProperty(Detail.MASTER_CODE).getAttribute().getValueClass(), Integer.class);
+    assertEquals(definition.getProperty(Detail.ID).attribute().valueClass(), Long.class);
+    assertEquals(definition.getProperty(Detail.SHORT).attribute().valueClass(), Short.class);
+    assertEquals(definition.getProperty(Detail.INT).attribute().valueClass(), Integer.class);
+    assertEquals(definition.getProperty(Detail.DOUBLE).attribute().valueClass(), Double.class);
+    assertEquals(definition.getProperty(Detail.STRING).attribute().valueClass(), String.class);
+    assertEquals(definition.getProperty(Detail.DATE).attribute().valueClass(), LocalDate.class);
+    assertEquals(definition.getProperty(Detail.TIMESTAMP).attribute().valueClass(), LocalDateTime.class);
+    assertEquals(definition.getProperty(Detail.BOOLEAN).attribute().valueClass(), Boolean.class);
+    assertEquals(definition.getProperty(Detail.MASTER_FK).attribute().valueClass(), Entity.class);
+    assertEquals(definition.getProperty(Detail.MASTER_ID).attribute().valueClass(), Long.class);
+    assertEquals(definition.getProperty(Detail.MASTER_NAME).attribute().valueClass(), String.class);
+    assertEquals(definition.getProperty(Detail.MASTER_CODE).attribute().valueClass(), Integer.class);
 
     //assert column names
-    assertEquals(definition.getProperty(Detail.ID).getAttribute(), Detail.ID);
-    assertEquals(definition.getProperty(Detail.SHORT).getAttribute(), Detail.SHORT);
-    assertEquals(definition.getProperty(Detail.INT).getAttribute(), Detail.INT);
-    assertEquals(definition.getProperty(Detail.DOUBLE).getAttribute(), Detail.DOUBLE);
-    assertEquals(definition.getProperty(Detail.STRING).getAttribute(), Detail.STRING);
-    assertEquals(definition.getProperty(Detail.DATE).getAttribute(), Detail.DATE);
-    assertEquals(definition.getProperty(Detail.TIMESTAMP).getAttribute(), Detail.TIMESTAMP);
-    assertEquals(definition.getProperty(Detail.BOOLEAN).getAttribute(), Detail.BOOLEAN);
-    assertEquals(definition.getProperty(Detail.MASTER_ID).getAttribute(), Detail.MASTER_ID);
-    assertEquals(definition.getProperty(Detail.MASTER_NAME).getAttribute(), Detail.MASTER_NAME);
-    assertEquals(definition.getProperty(Detail.MASTER_CODE).getAttribute(), Detail.MASTER_CODE);
+    assertEquals(definition.getProperty(Detail.ID).attribute(), Detail.ID);
+    assertEquals(definition.getProperty(Detail.SHORT).attribute(), Detail.SHORT);
+    assertEquals(definition.getProperty(Detail.INT).attribute(), Detail.INT);
+    assertEquals(definition.getProperty(Detail.DOUBLE).attribute(), Detail.DOUBLE);
+    assertEquals(definition.getProperty(Detail.STRING).attribute(), Detail.STRING);
+    assertEquals(definition.getProperty(Detail.DATE).attribute(), Detail.DATE);
+    assertEquals(definition.getProperty(Detail.TIMESTAMP).attribute(), Detail.TIMESTAMP);
+    assertEquals(definition.getProperty(Detail.BOOLEAN).attribute(), Detail.BOOLEAN);
+    assertEquals(definition.getProperty(Detail.MASTER_ID).attribute(), Detail.MASTER_ID);
+    assertEquals(definition.getProperty(Detail.MASTER_NAME).attribute(), Detail.MASTER_NAME);
+    assertEquals(definition.getProperty(Detail.MASTER_CODE).attribute(), Detail.MASTER_CODE);
 
     //assert captions
-    assertNotNull(definition.getProperty(Detail.ID).getCaption());
-    assertEquals(definition.getProperty(Detail.SHORT).getCaption(), Detail.SHORT.getName());
-    assertEquals(definition.getProperty(Detail.INT).getCaption(), Detail.INT.getName());
-    assertEquals(definition.getProperty(Detail.DOUBLE).getCaption(), Detail.DOUBLE.getName());
-    assertEquals(definition.getProperty(Detail.STRING).getCaption(), "Detail string");
-    assertEquals(definition.getProperty(Detail.DATE).getCaption(), Detail.DATE.getName());
-    assertEquals(definition.getProperty(Detail.TIMESTAMP).getCaption(), Detail.TIMESTAMP.getName());
-    assertEquals(definition.getProperty(Detail.BOOLEAN).getCaption(), Detail.BOOLEAN.getName());
-    assertEquals(definition.getProperty(Detail.MASTER_FK).getCaption(), Detail.MASTER_FK.getName());
-    assertEquals(definition.getProperty(Detail.MASTER_NAME).getCaption(), Detail.MASTER_NAME.getName());
-    assertEquals(definition.getProperty(Detail.MASTER_CODE).getCaption(), Detail.MASTER_CODE.getName());
+    assertNotNull(definition.getProperty(Detail.ID).caption());
+    assertEquals(definition.getProperty(Detail.SHORT).caption(), Detail.SHORT.name());
+    assertEquals(definition.getProperty(Detail.INT).caption(), Detail.INT.name());
+    assertEquals(definition.getProperty(Detail.DOUBLE).caption(), Detail.DOUBLE.name());
+    assertEquals(definition.getProperty(Detail.STRING).caption(), "Detail string");
+    assertEquals(definition.getProperty(Detail.DATE).caption(), Detail.DATE.name());
+    assertEquals(definition.getProperty(Detail.TIMESTAMP).caption(), Detail.TIMESTAMP.name());
+    assertEquals(definition.getProperty(Detail.BOOLEAN).caption(), Detail.BOOLEAN.name());
+    assertEquals(definition.getProperty(Detail.MASTER_FK).caption(), Detail.MASTER_FK.name());
+    assertEquals(definition.getProperty(Detail.MASTER_NAME).caption(), Detail.MASTER_NAME.name());
+    assertEquals(definition.getProperty(Detail.MASTER_CODE).caption(), Detail.MASTER_CODE.name());
 
     //assert hidden status
-    assertTrue(definition.getProperty(Detail.ID).isHidden());
-    assertFalse(definition.getProperty(Detail.SHORT).isHidden());
-    assertFalse(definition.getProperty(Detail.INT).isHidden());
-    assertFalse(definition.getProperty(Detail.DOUBLE).isHidden());
-    assertFalse(definition.getProperty(Detail.STRING).isHidden());
-    assertFalse(definition.getProperty(Detail.DATE).isHidden());
-    assertFalse(definition.getProperty(Detail.TIMESTAMP).isHidden());
-    assertFalse(definition.getProperty(Detail.BOOLEAN).isHidden());
-    assertFalse(definition.getProperty(Detail.MASTER_FK).isHidden());
-    assertFalse(definition.getProperty(Detail.MASTER_NAME).isHidden());
-    assertFalse(definition.getProperty(Detail.MASTER_CODE).isHidden());
+    assertTrue(definition.getProperty(Detail.ID).hidden());
+    assertFalse(definition.getProperty(Detail.SHORT).hidden());
+    assertFalse(definition.getProperty(Detail.INT).hidden());
+    assertFalse(definition.getProperty(Detail.DOUBLE).hidden());
+    assertFalse(definition.getProperty(Detail.STRING).hidden());
+    assertFalse(definition.getProperty(Detail.DATE).hidden());
+    assertFalse(definition.getProperty(Detail.TIMESTAMP).hidden());
+    assertFalse(definition.getProperty(Detail.BOOLEAN).hidden());
+    assertFalse(definition.getProperty(Detail.MASTER_FK).hidden());
+    assertFalse(definition.getProperty(Detail.MASTER_NAME).hidden());
+    assertFalse(definition.getProperty(Detail.MASTER_CODE).hidden());
   }
 
   @Test
@@ -173,10 +173,10 @@ public class DomainTest {
     List<Property<?>> properties = Properties.sort(entities.getDefinition(Employee.TYPE).getProperties(
             asList(Employee.HIREDATE, Employee.COMMISSION,
                     Employee.SALARY, Employee.JOB)));
-    assertEquals(Employee.COMMISSION, properties.get(0).getAttribute());
-    assertEquals(Employee.HIREDATE, properties.get(1).getAttribute());
-    assertEquals(Employee.JOB, properties.get(2).getAttribute());
-    assertEquals(Employee.SALARY, properties.get(3).getAttribute());
+    assertEquals(Employee.COMMISSION, properties.get(0).attribute());
+    assertEquals(Employee.HIREDATE, properties.get(1).attribute());
+    assertEquals(Employee.JOB, properties.get(2).attribute());
+    assertEquals(Employee.SALARY, properties.get(3).attribute());
   }
 
   @Test
@@ -399,7 +399,7 @@ public class DomainTest {
     List<DenormalizedProperty<?>> denormalized =
             entities.getDefinition(Detail.TYPE).getDenormalizedProperties(Detail.MASTER_FK);
     assertFalse(denormalized.isEmpty());
-    assertEquals(Detail.MASTER_CODE_DENORM, denormalized.get(0).getAttribute());
+    assertEquals(Detail.MASTER_CODE_DENORM, denormalized.get(0).attribute());
   }
 
   @Test
@@ -793,14 +793,14 @@ public class DomainTest {
   @Test
   void extendedDomain() {
     TestDomainExtended extended = new TestDomainExtended();
-    Entities entities = extended.getEntities();
+    Entities entities = extended.entities();
 
     entities.entity(TestDomainExtended.T_EXTENDED);
 
     entities.entity(TestDomain.T_COMPOSITE_MASTER);
 
     TestDomainExtended.TestDomainSecondExtension second = new TestDomainExtended.TestDomainSecondExtension();
-    entities = second.getEntities();
+    entities = second.entities();
 
     entities.entity(TestDomainExtended.TestDomainSecondExtension.T_SECOND_EXTENDED);
 

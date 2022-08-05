@@ -439,7 +439,7 @@ public final class PropertyValues {
         return null;
       }
 
-      return selectedItem.getValue();
+      return selectedItem.value();
     }
 
     @Override

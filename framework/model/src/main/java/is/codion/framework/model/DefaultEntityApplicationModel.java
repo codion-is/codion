@@ -70,7 +70,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   @Override
   public final StateObserver getConnectionValidObserver() {
-    return connectionValidState.getObserver();
+    return connectionValidState.observer();
   }
 
   @Override

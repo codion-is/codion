@@ -17,8 +17,8 @@ public class ItemsTest {
   @Test
   void item() throws IOException, ClassNotFoundException {
     Item<String> item = Item.item("hello", "world");
-    assertEquals("hello", item.getValue());
-    assertEquals("world", item.getCaption());
+    assertEquals("hello", item.value());
+    assertEquals("world", item.caption());
     assertEquals("world", item.toString());
 
     Item<String> newItem = Item.item("hello", "bla");
@@ -28,7 +28,7 @@ public class ItemsTest {
 
     Item<String> thirdItem = Item.item("hello");
     assertEquals("hello".hashCode(), thirdItem.hashCode());
-    assertEquals("hello", thirdItem.getCaption());
+    assertEquals("hello", thirdItem.caption());
 
     assertEquals(newItem, Item.item("hello"));
     assertNotEquals(newItem, "hello");
@@ -47,12 +47,12 @@ public class ItemsTest {
 
     Item<String> item = Item.itemI18n("value", ItemsTest.class.getName(), "item");
     Locale.setDefault(new Locale("is", "IS"));
-    assertEquals("Gildi", item.getCaption());
+    assertEquals("Gildi", item.caption());
 
     item = Item.itemI18n("value", ItemsTest.class.getName(), "item");
     Locale.setDefault(new Locale("en", "EN"));
-    assertEquals("Item", item.getCaption());
+    assertEquals("Item", item.caption());
     //repeat for some coverage
-    assertEquals("Item", item.getCaption());
+    assertEquals("Item", item.caption());
   }
 }

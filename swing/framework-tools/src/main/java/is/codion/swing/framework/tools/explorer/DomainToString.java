@@ -52,26 +52,26 @@ final class DomainToString {
   private static void appendAttribute(StringBuilder builder, Property<?> property) {
     if (property instanceof ColumnProperty) {
       ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
-      String valueClassName = columnProperty.getAttribute().getValueClass().getSimpleName();
+      String valueClassName = columnProperty.attribute().valueClass().getSimpleName();
       builder.append("  ").append("Attribute<").append(valueClassName).append("> ")
-              .append(columnProperty.getColumnName().toUpperCase()).append(" = TYPE.").append(getAttributeTypePrefix(valueClassName))
-              .append("Attribute(\"").append(columnProperty.getColumnName().toLowerCase()).append("\");").append(LINE_SEPARATOR);
+              .append(columnProperty.columnName().toUpperCase()).append(" = TYPE.").append(getAttributeTypePrefix(valueClassName))
+              .append("Attribute(\"").append(columnProperty.columnName().toLowerCase()).append("\");").append(LINE_SEPARATOR);
     }
     else if (property instanceof ForeignKeyProperty) {
       ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) property;
       List<String> references = new ArrayList<>();
-      foreignKeyProperty.getReferences().forEach(reference -> {
+      foreignKeyProperty.references().forEach(reference -> {
         StringBuilder referenceBuilder = new StringBuilder();
-        referenceBuilder.append(reference.getAttribute().getName().toUpperCase()).append(", ")
-                .append(getInterfaceName(reference.getReferencedAttribute().getEntityType().getName(), true))
-                .append(".").append(reference.getReferencedAttribute().getName().toUpperCase());
+        referenceBuilder.append(reference.attribute().name().toUpperCase()).append(", ")
+                .append(getInterfaceName(reference.referencedAttribute().entityType().name(), true))
+                .append(".").append(reference.referencedAttribute().name().toUpperCase());
         references.add(referenceBuilder.toString());
       });
 
       //todo wrap references if more than four
       builder.append("  ").append("ForeignKey ")
-              .append(property.getAttribute().getName().toUpperCase()).append(" = TYPE.foreignKey(\"")
-              .append(property.getAttribute().getName().toLowerCase()).append("\", " + String.join("," + LINE_SEPARATOR, references) + ");").append(LINE_SEPARATOR);
+              .append(property.attribute().name().toUpperCase()).append(" = TYPE.foreignKey(\"")
+              .append(property.attribute().name().toLowerCase()).append("\", " + String.join("," + LINE_SEPARATOR, references) + ");").append(LINE_SEPARATOR);
     }
   }
 
@@ -81,7 +81,7 @@ final class DomainToString {
     properties.forEach(property -> {
       if (property instanceof ColumnProperty) {
         strings.add(getColumnProperty(interfaceName, (ColumnProperty<?>) property,
-                definition.isForeignKeyAttribute(property.getAttribute()), definition.getPrimaryKeyAttributes().size() > 1));
+                definition.isForeignKeyAttribute(property.attribute()), definition.getPrimaryKeyAttributes().size() > 1));
       }
       else if (property instanceof ForeignKeyProperty) {
         strings.add(getForeignKeyProperty(interfaceName, (ForeignKeyProperty) property));
@@ -93,20 +93,20 @@ final class DomainToString {
 
   private static String getForeignKeyProperty(String interfaceName, ForeignKeyProperty property) {
     StringBuilder builder = new StringBuilder();
-    String foreignKey = property.getAttribute().getName().toUpperCase();
+    String foreignKey = property.attribute().name().toUpperCase();
     builder.append("          foreignKeyProperty(").append(interfaceName).append(".").append(foreignKey)
-            .append(", \"").append(property.getCaption()).append("\")");
+            .append(", \"").append(property.caption()).append("\")");
 
     return builder.toString();
   }
 
   private static String getColumnProperty(String interfaceName, ColumnProperty<?> property,
                                           boolean isForeignKey, boolean compositePrimaryKey) {
-    StringBuilder builder = new StringBuilder(getPropertyType(property.getAttribute(),
-            property.isPrimaryKeyColumn() && !compositePrimaryKey))
-            .append(interfaceName).append(".").append(property.getColumnName().toUpperCase());
-    if (!isForeignKey && !property.isPrimaryKeyColumn()) {
-      builder.append(", ").append("\"").append(property.getCaption()).append("\")");
+    StringBuilder builder = new StringBuilder(getPropertyType(property.attribute(),
+            property.primaryKeyColumn() && !compositePrimaryKey))
+            .append(interfaceName).append(".").append(property.columnName().toUpperCase());
+    if (!isForeignKey && !property.primaryKeyColumn()) {
+      builder.append(", ").append("\"").append(property.caption()).append("\")");
     }
     else {
       builder.append(")");
@@ -114,27 +114,27 @@ final class DomainToString {
     if (property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
       builder.append(LINE_SEPARATOR).append("                .eagerlyLoaded()");
     }
-    if (property.isPrimaryKeyColumn() && compositePrimaryKey) {
+    if (property.primaryKeyColumn() && compositePrimaryKey) {
       builder.append(LINE_SEPARATOR).append("                .primaryKeyIndex(")
-              .append(property.getPrimaryKeyIndex()).append(")");
+              .append(property.primaryKeyIndex()).append(")");
     }
     if (property.columnHasDefaultValue()) {
       builder.append(LINE_SEPARATOR).append("                .columnHasDefaultValue(true)");
     }
-    if (!property.isNullable() && !property.isPrimaryKeyColumn()) {
+    if (!property.nullable() && !property.primaryKeyColumn()) {
       builder.append(LINE_SEPARATOR).append("                .nullable(false)");
     }
-    if (String.class.equals(property.getAttribute().getValueClass())) {
+    if (String.class.equals(property.attribute().valueClass())) {
       builder.append(LINE_SEPARATOR).append("                .maximumLength(")
-              .append(property.getMaximumLength()).append(")");
+              .append(property.maximumLength()).append(")");
     }
-    if (Double.class.equals(property.getAttribute().getValueClass()) && property.getMaximumFractionDigits() >= 1) {
+    if (Double.class.equals(property.attribute().valueClass()) && property.maximumFractionDigits() >= 1) {
       builder.append(LINE_SEPARATOR).append("                .maximumFractionDigits(")
-              .append(property.getMaximumFractionDigits()).append(")");
+              .append(property.maximumFractionDigits()).append(")");
     }
-    if (!nullOrEmpty(property.getDescription())) {
+    if (!nullOrEmpty(property.description())) {
       builder.append(LINE_SEPARATOR).append("                .description(")
-              .append("\"").append(property.getDescription()).append("\")");
+              .append("\"").append(property.description()).append("\")");
     }
 
     return builder.toString();

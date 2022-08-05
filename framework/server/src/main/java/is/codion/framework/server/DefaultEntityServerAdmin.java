@@ -220,7 +220,7 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   public Map<String, String> getEntityDefinitions() {
     Map<EntityType, String> entityDefinitions = server.getEntityDefinitions();
     Map<String, String> definitions = new HashMap<>();
-    entityDefinitions.forEach((key, value) -> definitions.put(key.getDomainName() + ":" + key.getName(), value));
+    entityDefinitions.forEach((key, value) -> definitions.put(key.domainName() + ":" + key.name(), value));
 
     return definitions;
   }

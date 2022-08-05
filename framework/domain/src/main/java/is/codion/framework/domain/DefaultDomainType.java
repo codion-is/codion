@@ -32,7 +32,7 @@ final class DefaultDomainType implements DomainType, Serializable {
   }
 
   @Override
-  public String getName() {
+  public String name() {
     return domainName;
   }
 
@@ -62,7 +62,7 @@ final class DefaultDomainType implements DomainType, Serializable {
 
   @Override
   public boolean contains(EntityType entityType) {
-    return entityTypes.containsKey(requireNonNull(entityType).getName());
+    return entityTypes.containsKey(requireNonNull(entityType).name());
   }
 
   @Override

@@ -35,10 +35,11 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
     try {
       List<Entity> largestCities = connection.select(where(City.COUNTRY_FK)
               .equalTo(getCurrentItem())
-              .toSelectCondition()
+              .selectBuilder()
               .selectAttributes(City.NAME, City.POPULATION)
               .orderBy(descending(City.POPULATION))
-              .limit(5));
+              .limit(5)
+              .build());
 
       return new JasperReportsDataSource<>(largestCities.iterator(), new CityValueProvider());
     }

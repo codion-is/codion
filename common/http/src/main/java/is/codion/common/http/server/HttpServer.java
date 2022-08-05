@@ -47,18 +47,18 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
    * @param configuration the server configuration.
    */
   public HttpServer(HttpServerConfiguration configuration) {
-    super(requireNonNull(configuration, "configuration").getServerPort());
-    this.port = configuration.getServerPort();
-    if (configuration.isSecure()) {
+    super(requireNonNull(configuration, "configuration").serverPort());
+    this.port = configuration.serverPort();
+    if (configuration.secure()) {
       setupSecureConnector(configuration);
     }
     LOG.info(getClass().getSimpleName() + " created on port: " + port);
     this.handlers = new HandlerList();
     setHandler(handlers);
-    if (!nullOrEmpty(configuration.getDocumentRoot())) {
-      LOG.info("HttpServer serving files from: " + configuration.getDocumentRoot());
+    if (!nullOrEmpty(configuration.documentRoot())) {
+      LOG.info("HttpServer serving files from: " + configuration.documentRoot());
       ResourceHandler fileHandler = new ResourceHandler();
-      fileHandler.setResourceBase(configuration.getDocumentRoot());
+      fileHandler.setResourceBase(configuration.documentRoot());
       addHandler(fileHandler);
     }
   }
@@ -122,13 +122,13 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
     HttpConfiguration httpsConfig = new HttpConfiguration(httpConfiguration);
     httpsConfig.addCustomizer(new SecureRequestCustomizer());
 
-    requireNonNull(configuration.getKeystorePath(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.toString());
+    requireNonNull(configuration.keystorePath(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.toString());
 
-    requireNonNull(configuration.getKeystorePassword(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.toString());
+    requireNonNull(configuration.keystorePassword(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.toString());
 
     SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
-    sslContextFactory.setKeyStorePath(configuration.getKeystorePath());
-    sslContextFactory.setKeyStorePassword(configuration.getKeystorePassword());
+    sslContextFactory.setKeyStorePath(configuration.keystorePath());
+    sslContextFactory.setKeyStorePassword(configuration.keystorePassword());
 
     ServerConnector httpsConnector = new ServerConnector(this,
             new SslConnectionFactory(sslContextFactory, "http/1.1"),

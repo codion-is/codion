@@ -74,8 +74,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final State insertEnabledState = State.state(true);
   private final State updateEnabledState = State.state(true);
   private final State deleteEnabledState = State.state(true);
-  private final StateObserver readOnlyObserver = State.and(insertEnabledState.getReversedObserver(),
-          updateEnabledState.getReversedObserver(), deleteEnabledState.getReversedObserver());
+  private final StateObserver readOnlyObserver = State.and(insertEnabledState.reversedObserver(),
+          updateEnabledState.reversedObserver(), deleteEnabledState.reversedObserver());
 
   /**
    * The Entity being edited by this model
@@ -168,7 +168,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     setReadOnly(getEntityDefinition().isReadOnly());
     initializePersistentValues();
     bindEventsInternal();
-    doSetEntity(getDefaultEntity(Property::getDefaultValue));
+    doSetEntity(getDefaultEntity(Property::defaultValue));
   }
 
   @Override
@@ -245,7 +245,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver getInsertEnabledObserver() {
-    return insertEnabledState.getObserver();
+    return insertEnabledState.observer();
   }
 
   @Override
@@ -260,7 +260,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver getUpdateEnabledObserver() {
-    return updateEnabledState.getObserver();
+    return updateEnabledState.observer();
   }
 
   @Override
@@ -275,17 +275,17 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver getDeleteEnabledObserver() {
-    return deleteEnabledState.getObserver();
+    return deleteEnabledState.observer();
   }
 
   @Override
   public final StateObserver getEntityNewObserver() {
-    return entityNewState.getObserver();
+    return entityNewState.observer();
   }
 
   @Override
   public final StateObserver getPrimaryKeyNullObserver() {
-    return primaryKeyNullState.getObserver();
+    return primaryKeyNullState.observer();
   }
 
   @Override
@@ -335,7 +335,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public StateObserver getModifiedObserver() {
-    return entityModifiedState.getObserver();
+    return entityModifiedState.observer();
   }
 
   @Override
@@ -417,7 +417,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver getValidObserver() {
-    return entityValidState.getObserver();
+    return entityValidState.observer();
   }
 
   @Override
@@ -606,12 +606,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
     ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKey);
     Collection<Attribute<String>> searchAttributes = getEntities()
-            .getDefinition(property.getReferencedEntityType()).getSearchAttributes();
+            .getDefinition(property.referencedEntityType()).getSearchAttributes();
     if (searchAttributes.isEmpty()) {
-      throw new IllegalStateException("No search attributes defined for entity: " + property.getReferencedEntityType());
+      throw new IllegalStateException("No search attributes defined for entity: " + property.referencedEntityType());
     }
 
-    EntitySearchModel searchModel = new DefaultEntitySearchModel(property.getReferencedEntityType(), connectionProvider, searchAttributes);
+    EntitySearchModel searchModel = new DefaultEntitySearchModel(property.referencedEntityType(), connectionProvider, searchAttributes);
     searchModel.getMultipleSelectionEnabledState().set(false);
 
     return searchModel;
@@ -643,7 +643,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     if (isEntityNew()) {
       EntityDefinition entityDefinition = getEntityDefinition();
       for (ColumnProperty<?> property : entityDefinition.getColumnProperties()) {
-        if (!entityDefinition.isForeignKeyAttribute(property.getAttribute()) && valueModified(property.getAttribute())) {
+        if (!entityDefinition.isForeignKeyAttribute(property.attribute()) && valueModified(property.attribute())) {
           return true;
         }
       }
@@ -1026,18 +1026,18 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     EntityDefinition definition = getEntityDefinition();
     Entity newEntity = definition.entity();
     for (@SuppressWarnings("rawtypes") ColumnProperty property : definition.getColumnProperties()) {
-      if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()//these are set via their respective parent properties
+      if (!definition.isForeignKeyAttribute(property.attribute()) && !property.denormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        newEntity.put(property.getAttribute(), valueSupplier.get(property));
+        newEntity.put(property.attribute(), valueSupplier.get(property));
       }
     }
     for (@SuppressWarnings("rawtypes") TransientProperty transientProperty : definition.getTransientProperties()) {
       if (!(transientProperty instanceof DerivedProperty)) {
-        newEntity.put(transientProperty.getAttribute(), valueSupplier.get(transientProperty));
+        newEntity.put(transientProperty.attribute(), valueSupplier.get(transientProperty));
       }
     }
     for (ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
-      newEntity.put(foreignKeyProperty.getAttribute(), valueSupplier.get(foreignKeyProperty));
+      newEntity.put(foreignKeyProperty.attribute(), valueSupplier.get(foreignKeyProperty));
     }
     newEntity.saveAll();
 
@@ -1049,15 +1049,15 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private <T> T getDefaultValue(Property<T> property) {
-    if (isPersistValue(property.getAttribute())) {
+    if (isPersistValue(property.attribute())) {
       if (property instanceof ForeignKeyProperty) {
-        return (T) entity.getForeignKey((ForeignKey) property.getAttribute());
+        return (T) entity.getForeignKey((ForeignKey) property.attribute());
       }
 
-      return entity.get(property.getAttribute());
+      return entity.get(property.attribute());
     }
 
-    return (T) defaultValueSuppliers.computeIfAbsent(property.getAttribute(), k -> property::getDefaultValue).get();
+    return (T) defaultValueSuppliers.computeIfAbsent(property.attribute(), k -> property::defaultValue).get();
   }
 
   private void bindEventsInternal() {
@@ -1072,10 +1072,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     entityDefinition.getDerivedAttributes(attribute).forEach(derivedAttribute ->
             dependentValues.put(derivedAttribute, get(derivedAttribute)));
     entityDefinition.getForeignKeyProperties(attribute).forEach(foreignKeyProperty ->
-            dependentValues.put(foreignKeyProperty.getAttribute(), get(foreignKeyProperty.getAttribute())));
+            dependentValues.put(foreignKeyProperty.attribute(), get(foreignKeyProperty.attribute())));
     if (attribute instanceof ForeignKey) {
-      ((ForeignKey) attribute).getReferences().forEach(reference ->
-              dependentValues.put(reference.getAttribute(), get(reference.getAttribute())));
+      ((ForeignKey) attribute).references().forEach(reference ->
+              dependentValues.put(reference.attribute(), get(reference.attribute())));
     }
 
     return dependentValues;

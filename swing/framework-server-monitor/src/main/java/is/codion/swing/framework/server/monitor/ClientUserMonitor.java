@@ -264,9 +264,9 @@ public final class ClientUserMonitor {
       try {
         List<UserInfo> items = new ArrayList<>(getItems());
         for (RemoteClient remoteClient : server.getClients()) {
-          UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeId(),
-                  remoteClient.getClientHost(), LocalDateTime.now(), remoteClient.getClientId(), remoteClient.getClientVersion(),
-                  remoteClient.getFrameworkVersion());
+          UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientTypeId(),
+                  remoteClient.getClientHost(), LocalDateTime.now(), remoteClient.clientId(), remoteClient.clientVersion(),
+                  remoteClient.frameworkVersion());
           int index = items.indexOf(newUserInfo);
           if (index == -1) {
             items.add(newUserInfo);

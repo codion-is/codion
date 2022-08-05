@@ -223,7 +223,7 @@ public final class ConnectionPoolMonitor {
    * @return EventObserver notified when statistics have been updated
    */
   public EventObserver<?> getStatisticsObserver() {
-    return statisticsUpdatedEvent.getObserver();
+    return statisticsUpdatedEvent.observer();
   }
 
   /**
@@ -258,26 +258,26 @@ public final class ConnectionPoolMonitor {
 
   private void updateStatistics() {
     poolStatistics = connectionPool.getStatistics(lastStatisticsUpdateTime);
-    long timestamp = poolStatistics.getTimestamp();
+    long timestamp = poolStatistics.timestamp();
     lastStatisticsUpdateTime = timestamp;
-    poolSizeSeries.add(timestamp, poolStatistics.getSize());
+    poolSizeSeries.add(timestamp, poolStatistics.size());
     minimumPoolSizeSeries.add(timestamp, connectionPool.getMinimumPoolSize());
     maximumPoolSizeSeries.add(timestamp, connectionPool.getMaximumPoolSize());
-    inPoolSeries.add(timestamp, poolStatistics.getAvailable());
-    inUseSeries.add(timestamp, poolStatistics.getInUse());
-    connectionRequestsPerSecond.add(timestamp, poolStatistics.getRequestsPerSecond());
-    failedRequestsPerSecond.add(timestamp, poolStatistics.getFailedRequestsPerSecond());
-    averageCheckOutTime.add(timestamp, poolStatistics.getAverageGetTime(),
-            poolStatistics.getMinimumCheckOutTime(), poolStatistics.getMaximumCheckOutTime());
-    List<ConnectionPoolState> snapshotStatistics = poolStatistics.getSnapshot();
+    inPoolSeries.add(timestamp, poolStatistics.available());
+    inUseSeries.add(timestamp, poolStatistics.inUse());
+    connectionRequestsPerSecond.add(timestamp, poolStatistics.requestsPerSecond());
+    failedRequestsPerSecond.add(timestamp, poolStatistics.failedRequestsPerSecond());
+    averageCheckOutTime.add(timestamp, poolStatistics.averageGetTime(),
+            poolStatistics.minimumCheckOutTime(), poolStatistics.maximumCheckOutTime());
+    List<ConnectionPoolState> snapshotStatistics = poolStatistics.snapshot();
     if (!snapshotStatistics.isEmpty()) {
       XYSeries snapshotInPoolSeries = new XYSeries("In pool");
       XYSeries snapshotInUseSeries = new XYSeries("In use");
       XYSeries snapshotWaitingSeries = new XYSeries("Waiting");
       for (ConnectionPoolState inPool : snapshotStatistics) {
-        snapshotInPoolSeries.add(inPool.getTimestamp(), inPool.getSize());
-        snapshotInUseSeries.add(inPool.getTimestamp(), inPool.getInUse());
-        snapshotWaitingSeries.add(inPool.getTimestamp(), inPool.getWaiting());
+        snapshotInPoolSeries.add(inPool.timestamp(), inPool.size());
+        snapshotInUseSeries.add(inPool.timestamp(), inPool.inUse());
+        snapshotWaitingSeries.add(inPool.timestamp(), inPool.waiting());
       }
 
       this.snapshotStatisticsCollection.removeAllSeries();

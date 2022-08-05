@@ -58,11 +58,11 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(definition(
-            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
+            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.name())
                     .updatable(true).nullable(false),
-            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
+            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.name())
                     .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
-            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
+            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.name())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
             .orderBy(ascending(DEPARTMENT_NAME))
@@ -86,24 +86,24 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(definition(
-            primaryKeyProperty(EMP_ID, EMP_ID.getName()),
-            columnProperty(EMP_NAME, EMP_NAME.getName())
+            primaryKeyProperty(EMP_ID, EMP_ID.name()),
+            columnProperty(EMP_NAME, EMP_NAME.name())
                     .searchProperty(true).maximumLength(10).nullable(false),
             columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName()),
-            itemProperty(EMP_JOB, EMP_JOB.getName(),
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.name()),
+            itemProperty(EMP_JOB, EMP_JOB.name(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
-            columnProperty(EMP_SALARY, EMP_SALARY.getName())
+            columnProperty(EMP_SALARY, EMP_SALARY.name())
                     .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
-            columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
+            columnProperty(EMP_COMMISSION, EMP_COMMISSION.name())
                     .valueRange(100, 2000).maximumFractionDigits(2),
             columnProperty(EMP_MGR),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName()),
-            columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
+            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.name()),
+            columnProperty(EMP_HIREDATE, EMP_HIREDATE.name())
                     .nullable(false),
-            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION).preferredColumnWidth(100),
+            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.name(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION).preferredColumnWidth(100),
             columnProperty(EMP_DATA, "Data"))
             .stringFactory(EMP_NAME)
             .keyGenerator(increment("scott.emp", "empno"))

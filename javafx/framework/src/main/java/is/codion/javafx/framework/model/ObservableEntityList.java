@@ -109,7 +109,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
   @Override
   public final StateObserver getRefreshingObserver() {
-    return refreshingState.getObserver();
+    return refreshingState.observer();
   }
 
   /**
@@ -324,8 +324,9 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
         condition = condition(entityType);
       }
 
-      return connectionProvider.getConnection().select(condition.toSelectCondition()
-              .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
+      return connectionProvider.getConnection().select(condition.selectBuilder()
+              .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy())
+              .build());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);

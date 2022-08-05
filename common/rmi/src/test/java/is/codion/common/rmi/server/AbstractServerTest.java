@@ -39,17 +39,17 @@ public class AbstractServerTest {
     assertEquals(1, server.getConnectionCount());
     server.connect(connectionRequest2);
     assertEquals(2, server.getConnectionCount());
-    server.disconnect(connectionRequest.getClientId());
+    server.disconnect(connectionRequest.clientId());
     assertEquals(1, server.getConnectionCount());
     server.connect(connectionRequest);
     assertEquals(2, server.getConnectionCount());
     server.connect(connectionRequest3);
     assertEquals(3, server.getConnectionCount());
-    server.disconnect(connectionRequest3.getClientId());
+    server.disconnect(connectionRequest3.clientId());
     assertEquals(2, server.getConnectionCount());
-    server.disconnect(connectionRequest2.getClientId());
+    server.disconnect(connectionRequest2.clientId());
     assertEquals(1, server.getConnectionCount());
-    server.disconnect(connectionRequest.getClientId());
+    server.disconnect(connectionRequest.clientId());
     assertEquals(0, server.getConnectionCount());
     server.shutdown();
   }
@@ -79,22 +79,22 @@ public class AbstractServerTest {
     Map<RemoteClient, ServerTest> connections = server.getConnections();
     assertEquals(1, connections.size());
     assertEquals(connection, connections.get(connectionRequest));
-    assertEquals(connection, server.getConnection(connectionRequest.getClientId()));
-    assertNotNull(server.getConnection(connectionRequest.getClientId()));
+    assertEquals(connection, server.getConnection(connectionRequest.clientId()));
+    assertNotNull(server.getConnection(connectionRequest.clientId()));
     RemoteClient client = server.getClients(UNIT_TEST_USER).iterator().next();
-    client.getConnectionRequest();
+    client.connectionRequest();
     client.getClientHost();
-    client.getClientVersion();
-    client.getFrameworkVersion();
-    client.getDatabaseUser();
+    client.clientVersion();
+    client.frameworkVersion();
+    client.databaseUser();
     client.toString();
-    server.disconnect(connectionRequest.getClientId());
-    assertThrows(IllegalArgumentException.class, () -> server.getConnection(connectionRequest.getClientId()));
+    server.disconnect(connectionRequest.clientId());
+    assertThrows(IllegalArgumentException.class, () -> server.getConnection(connectionRequest.clientId()));
     ServerTest connection3 = server.connect(connectionRequest);
     assertNotSame(connection, connection3);
     assertNotNull(server.getServerInformation());
-    server.getAdmin().disconnect(connection3.getRemoteClient().getClientId());
-    assertThrows(IllegalArgumentException.class, () -> server.getConnection(connection3.getRemoteClient().getClientId()));
+    server.getAdmin().disconnect(connection3.getRemoteClient().clientId());
+    assertThrows(IllegalArgumentException.class, () -> server.getConnection(connection3.getRemoteClient().clientId()));
     assertThrows(NullPointerException.class, () -> server.connect((ConnectionRequest) null));
     server.shutdown();
   }
@@ -111,22 +111,22 @@ public class AbstractServerTest {
     ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
     ServerTest connection = server.connect(connectionRequest);
     assertNotNull(connection);
-    assertEquals(connectionRequest.getClientId(), connection.getRemoteClient().getClientId());
+    assertEquals(connectionRequest.clientId(), connection.getRemoteClient().clientId());
 
-    server.disconnect(connectionRequest.getClientId());
+    server.disconnect(connectionRequest.clientId());
 
     connection = server.connect(connectionRequest);
     assertEquals(2, TestLoginProxy.LOGIN_COUNTER.get());
     assertNotNull(connection);
-    assertEquals(connectionRequest.getClientId(), connection.getRemoteClient().getClientId());
+    assertEquals(connectionRequest.clientId(), connection.getRemoteClient().clientId());
 
-    server.disconnect(connectionRequest.getClientId());
+    server.disconnect(connectionRequest.clientId());
     assertEquals(2, TestLoginProxy.LOGOUT_COUNTER.get());
 
     connection = server.connect(connectionRequest);
     assertEquals(3, TestLoginProxy.LOGIN_COUNTER.get());
     assertNotNull(connection);
-    assertEquals(connectionRequest.getClientId(), connection.getRemoteClient().getClientId());
+    assertEquals(connectionRequest.clientId(), connection.getRemoteClient().clientId());
 
     server.shutdown();
     assertEquals(3, TestLoginProxy.LOGOUT_COUNTER.get());

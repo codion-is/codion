@@ -71,7 +71,7 @@ class Introduction {
   void usage() {
     // tag::domainUsage[]
     Domain store = new StoreImpl();
-    Entities entities = store.getEntities();
+    Entities entities = store.entities();
 
     EntityDefinition customerDefinition = entities.getDefinition(Customer.TYPE);
     EntityDefinition cityDefinition = customerDefinition.getReferencedEntityDefinition(Customer.CITY_FK);

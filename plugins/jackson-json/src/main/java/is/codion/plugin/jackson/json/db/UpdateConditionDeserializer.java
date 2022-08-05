@@ -44,15 +44,15 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     JsonNode conditionNode = jsonNode.get("condition");
     Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
-    UpdateCondition updateCondition = condition.toUpdateCondition();
+    UpdateCondition.Builder updateCondition = condition.updateBuilder();
     JsonNode values = jsonNode.get("values");
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();
-      Attribute<Object> attribute = definition.getProperty(definition.getAttribute(field.getKey())).getAttribute();
-      updateCondition = updateCondition.set(attribute, entityObjectMapper.readValue(field.getValue().toString(), attribute.getValueClass()));
+      Attribute<Object> attribute = definition.getProperty(definition.getAttribute(field.getKey())).attribute();
+      updateCondition.set(attribute, entityObjectMapper.readValue(field.getValue().toString(), attribute.valueClass()));
     }
 
-    return updateCondition;
+    return updateCondition.build();
   }
 }

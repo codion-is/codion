@@ -3,6 +3,8 @@
  */
 package is.codion.common.value;
 
+import is.codion.common.event.Event;
+
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
@@ -53,10 +55,53 @@ public class DefaultPropertyValueTest {
     assertThrows(IllegalArgumentException.class, () -> DefaultPropertyValue.getGetMethod(boolean.class, "", Bean.class));
   }
 
+  @Test
+  void primitive() {
+    Bean bean = new Bean();
+    DefaultPropertyValue<Integer> value = new DefaultPropertyValue<>(bean, "intValue", Integer.TYPE, Event.event());
+    value.addDataListener(System.out::println);
+    assertFalse(value.nullable());
+    assertEquals(0, value.get());//default primitive value
+    value.set(2);
+    value.set(null);
+    assertEquals(0, value.get());
+  }
+
+  @Test
+  void setException() {
+    Bean bean = new Bean();
+    DefaultPropertyValue<Short> value = new DefaultPropertyValue<>(bean, "shortValue", Short.TYPE, Event.event());
+    assertThrows(IllegalStateException.class, () -> value.set((short) 2));
+  }
+
+  @Test
+  void getException() {
+    Bean bean = new Bean();
+    DefaultPropertyValue<Byte> value = new DefaultPropertyValue<>(bean, "byteValue", Byte.TYPE, Event.event());
+    assertThrows(IllegalStateException.class, () -> value.set((byte) 2));
+  }
+
+  @Test
+  void emptyPropertyName() {
+    Bean bean = new Bean();
+    assertThrows(IllegalArgumentException.class, () -> new DefaultPropertyValue<>(bean, "", Byte.TYPE, Event.event()));
+  }
+
+  @Test
+  void shortPropertyName() {
+    Bean bean = new Bean();
+    DefaultPropertyValue<Integer> i = new DefaultPropertyValue<>(bean, "i", Integer.TYPE, Event.event());
+    i.set(2);
+    assertEquals(2, i.get());
+  }
+
   public static final class Bean {
     boolean booleanValue;
     boolean anotherBooleanValue;
     int intValue;
+    short shortValue;
+    byte byteValue;
+    int i;
 
     public boolean isBooleanValue() {
       return booleanValue;
@@ -76,6 +121,30 @@ public class DefaultPropertyValueTest {
 
     public void setIntValue(int intValue) {
       this.intValue = intValue;
+    }
+
+    public short getShortValue() {
+      return shortValue;
+    }
+
+    public void setShortValue(short value) {
+      throw new IllegalStateException();
+    }
+
+    public short getByteValue() {
+      throw new IllegalStateException();
+    }
+
+    public void setByteValue(byte value) {
+      this.byteValue = byteValue;
+    }
+
+    public int getI() {
+      return i;
+    }
+
+    public void setI(int i) {
+      this.i = i;
     }
   }
 }

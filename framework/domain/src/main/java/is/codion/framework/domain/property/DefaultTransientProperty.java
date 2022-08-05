@@ -17,7 +17,7 @@ class DefaultTransientProperty<T> extends AbstractProperty<T> implements Transie
   }
 
   @Override
-  public final boolean isModifiesEntity() {
+  public final boolean modifiesEntity() {
     return modifiesEntity;
   }
 

@@ -84,11 +84,11 @@ public final class DatabaseMonitor {
    */
   public void updateStatistics() throws RemoteException {
     Database.Statistics dbStats = server.getDatabaseStatistics();
-    queriesPerSecond.add(dbStats.getTimestamp(), dbStats.getQueriesPerSecond());
-    selectsPerSecond.add(dbStats.getTimestamp(), dbStats.getSelectsPerSecond());
-    insertsPerSecond.add(dbStats.getTimestamp(), dbStats.getInsertsPerSecond());
-    updatesPerSecond.add(dbStats.getTimestamp(), dbStats.getUpdatesPerSecond());
-    deletesPerSecond.add(dbStats.getTimestamp(), dbStats.getDeletesPerSecond());
+    queriesPerSecond.add(dbStats.timestamp(), dbStats.queriesPerSecond());
+    selectsPerSecond.add(dbStats.timestamp(), dbStats.selectsPerSecond());
+    insertsPerSecond.add(dbStats.timestamp(), dbStats.insertsPerSecond());
+    updatesPerSecond.add(dbStats.timestamp(), dbStats.updatesPerSecond());
+    deletesPerSecond.add(dbStats.timestamp(), dbStats.deletesPerSecond());
   }
 
   /**

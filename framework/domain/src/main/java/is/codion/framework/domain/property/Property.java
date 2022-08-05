@@ -113,30 +113,30 @@ public interface Property<T> {
 
   /**
    * The {@link Attribute} this property is based on, should be unique within an Entity.
-   * By default, the {@link Attribute#getName()} serves as column name for database properties.
+   * By default, the {@link Attribute#name()} serves as column name for database properties.
    * @return the attribute this property is based on
    */
-  Attribute<T> getAttribute();
+  Attribute<T> attribute();
 
   /**
    * @return the type of the entity this Property is associated with
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the caption
    */
-  String getCaption();
+  String caption();
 
   /**
    * @return a String describing this attribute
    */
-  String getDescription();
+  String description();
 
   /**
    * @return the bean property name associated with this property
    */
-  String getBeanProperty();
+  String beanProperty();
 
   /**
    * Prepares the value according to the property configuration, such as rounding
@@ -165,83 +165,83 @@ public interface Property<T> {
    * @return the default value for this property, if no default value has been set null is returned
    * @see #hasDefaultValue()
    */
-  T getDefaultValue();
+  T defaultValue();
 
   /**
    * @return true if this property should be hidden in table views
    */
-  boolean isHidden();
+  boolean hidden();
 
   /**
    * @return the maximum allowed value for this property, null if none is defined,
    * only applicable to numerical properties
    */
-  Number getMaximumValue();
+  Number maximumValue();
 
   /**
    * @return the minimum allowed value for this property, null if none is defined,
    * only applicable to numerical properties
    */
-  Number getMinimumValue();
+  Number minimumValue();
 
   /**
    * @return the maximum number of fraction digits to use for this property value,
    * -1 if this property is not based on Types.DOUBLE or Types.DECIMAL
-   * @see #getDecimalRoundingMode()
+   * @see #decimalRoundingMode()
    */
-  int getMaximumFractionDigits();
+  int maximumFractionDigits();
 
   /**
    * @return the rounding mode to use when working with decimal values
    * @see #DECIMAL_ROUNDING_MODE
-   * @see #getMaximumFractionDigits()
+   * @see #maximumFractionDigits()
    */
-  RoundingMode getDecimalRoundingMode();
+  RoundingMode decimalRoundingMode();
 
   /**
    * @return the preferred column width of this property in pixels when presented in a table, -1 if none has been specified
    */
-  int getPreferredColumnWidth();
+  int preferredColumnWidth();
 
   /**
    * @return true if null is a valid value for this property
    */
-  boolean isNullable();
+  boolean nullable();
 
   /**
    * @return the maximum length of this property value, -1 is returned if the maximum length is undefined,
    * this only applies to String (varchar) based properties
    */
-  int getMaximumLength();
+  int maximumLength();
 
   /**
    * Returns the mnemonic associated with this property.
    * @return the mnemonic to use when creating a label for this property
    */
-  Character getMnemonic();
+  Character mnemonic();
 
   /**
    * Returns the Format used when presenting values for this property, null if none has been specified.
    * @return the Format object used to format the value of properties when being presented
    */
-  Format getFormat();
+  Format format();
 
   /**
    * Returns the date time format pattern used when presenting and inputting values for this property.
    * @return the date/time format pattern
    */
-  String getDateTimePattern();
+  String dateTimePattern();
 
   /**
    * Returns the date time formatter used when presenting and inputting values for this property.
    * @return the DateTimeFormatter for this property or null if this is not a date/time based property
    */
-  DateTimeFormatter getDateTimeFormatter();
+  DateTimeFormatter dateTimeFormatter();
 
   /**
    * @return the Comparator to use when comparing values for this attribute
    */
-  Comparator<T> getComparator();
+  Comparator<T> comparator();
 
   /**
    * Supplies values, for example default ones.
@@ -263,14 +263,14 @@ public interface Property<T> {
 
     /**
      * Specifies the resource bundle from which to retrieve the caption
-     * for this property, assuming the resource key is the attribute name ({@link Attribute#getName()}).
+     * for this property, assuming the resource key is the attribute name ({@link Attribute#name()}).
      * Note that this sets the property to be not hidden.
      * @param captionResourceKey the caption resource bundle key
      * @return this instance
      * @throws IllegalStateException in case the caption has already been set
      * @throws IllegalStateException in case no resource bundle is specified for the entity
      * @throws IllegalStateException in case the caption resource is not found in the entity resource bundle
-     * @see EntityType#getResourceBundleName()
+     * @see EntityType#resourceBundleName()
      */
     B captionResourceKey(String captionResourceKey);
 

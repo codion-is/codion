@@ -142,7 +142,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private <T extends Comparable<T>> Callback<TableColumn.CellDataFeatures<Entity, T>, ObservableValue<T>> getCellValueFactory(Property<T> property) {
-    return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.getAttribute()));
+    return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.attribute()));
   }
 
   private void initializeToolPane() {
@@ -165,7 +165,7 @@ public class EntityTableView extends TableView<Entity> {
     button.setTooltip(new Tooltip(FrameworkMessages.refreshTip()));
     button.setOnAction(event -> listModel.refresh());
     FXUiUtil.link(button.disableProperty(),
-            listModel.getTableConditionModel().getConditionChangedObserver().getReversedObserver());
+            listModel.getTableConditionModel().getConditionChangedObserver().reversedObserver());
 
     return button;
   }
@@ -235,7 +235,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void addUpdateSelectedMenuItem(Menu updateSelected, Property<?> property) {
-    String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
+    String caption = property.caption() == null ? property.attribute().name() : property.caption();
     MenuItem updateProperty = new MenuItem(caption);
     updateProperty.setOnAction(actionEvent -> updateSelectedEntities(property));
     updateSelected.getItems().add(updateProperty);
@@ -266,7 +266,7 @@ public class EntityTableView extends TableView<Entity> {
   private <T> void updateSelectedEntities(Property<T> property) {
     List<Entity> selectedEntities = Entity.deepCopy(listModel.getSelectionModel().getSelectedItems());
 
-    Collection<T> values = Entity.getDistinct(property.getAttribute(), selectedEntities);
+    Collection<T> values = Entity.getDistinct(property.attribute(), selectedEntities);
     T defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
     PropertyInputDialog<T> inputDialog = new PropertyInputDialog<>(property, defaultValue, listModel.getConnectionProvider());
@@ -275,7 +275,7 @@ public class EntityTableView extends TableView<Entity> {
     Optional<PropertyInputDialog.InputResult<T>> inputResult = inputDialog.showAndWait();
     try {
       if (inputResult.isPresent() && inputResult.get().isInputAccepted()) {
-        Entity.put(property.getAttribute(), inputResult.get().getValue(), selectedEntities);
+        Entity.put(property.attribute(), inputResult.get().getValue(), selectedEntities);
         listModel.update(selectedEntities);
       }
     }

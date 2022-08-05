@@ -42,147 +42,147 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
   }
 
   @Override
-  public String getUsername() {
+  public String username() {
     return username;
   }
 
   @Override
-  public List<ConnectionPoolState> getSnapshot() {
+  public List<ConnectionPoolState> snapshot() {
     return snapshot;
   }
 
   @Override
-  public int getAvailable() {
+  public int available() {
     return availableInPool;
   }
 
   @Override
-  public int getInUse() {
+  public int inUse() {
     return connectionsInUse;
   }
 
   @Override
-  public long getTimestamp() {
+  public long timestamp() {
     return timestamp;
   }
 
   @Override
-  public long getCreationDate() {
+  public long creationDate() {
     return this.creationDate;
   }
 
   @Override
-  public int getCreated() {
+  public int created() {
     return connectionsCreated;
   }
 
   @Override
-  public int getDestroyed() {
+  public int destroyed() {
     return connectionsDestroyed;
   }
 
   @Override
-  public int getRequests() {
+  public int requests() {
     return connectionRequests;
   }
 
   @Override
-  public int getFailedRequests() {
+  public int failedRequests() {
     return connectionRequestsFailed;
   }
 
   @Override
-  public int getFailedRequestsPerSecond() {
+  public int failedRequestsPerSecond() {
     return requestsFailedPerSecond;
   }
 
   @Override
-  public int getRequestsPerSecond() {
+  public int requestsPerSecond() {
     return requestsPerSecond;
   }
 
   @Override
-  public long getAverageGetTime() {
+  public long averageGetTime() {
     return averageCheckOutTime;
   }
 
   @Override
-  public long getMinimumCheckOutTime() {
+  public long minimumCheckOutTime() {
     return minimumCheckOutTime;
   }
 
   @Override
-  public long getMaximumCheckOutTime() {
+  public long maximumCheckOutTime() {
     return maximumCheckOutTime;
   }
 
   @Override
-  public int getSize() {
+  public int size() {
     return connectionsInUse + availableInPool;
   }
 
   @Override
-  public long getResetTime() {
+  public long resetTime() {
     return resetDate;
   }
 
-  public void setSnapshot(List<ConnectionPoolState> snapshot) {
+  void setSnapshot(List<ConnectionPoolState> snapshot) {
     this.snapshot = snapshot;
   }
 
-  public void setAvailableInPool(int availableInPool) {
+  void setAvailableInPool(int availableInPool) {
     this.availableInPool = availableInPool;
   }
 
-  public void setConnectionsInUse(int connectionsInUse) {
+  void setConnectionsInUse(int connectionsInUse) {
     this.connectionsInUse = connectionsInUse;
   }
 
-  public void setTimestamp(long timestamp) {
+  void setTimestamp(long timestamp) {
     this.timestamp = timestamp;
   }
 
-  public void setCreationDate(long time) {
+  void setCreationDate(long time) {
     this.creationDate = time;
   }
 
-  public void setConnectionsCreated(int connectionsCreated) {
+  void setConnectionsCreated(int connectionsCreated) {
     this.connectionsCreated = connectionsCreated;
   }
 
-  public void setConnectionsDestroyed(int connectionsDestroyed) {
+  void setConnectionsDestroyed(int connectionsDestroyed) {
     this.connectionsDestroyed = connectionsDestroyed;
   }
 
-  public void setConnectionRequests(int connectionRequests) {
+  void setConnectionRequests(int connectionRequests) {
     this.connectionRequests = connectionRequests;
   }
 
-  public void setRequestsPerSecond(int requestsPerSecond) {
+  void setRequestsPerSecond(int requestsPerSecond) {
     this.requestsPerSecond = requestsPerSecond;
   }
 
-  public void setAverageCheckOutTime(int averageCheckOutTime) {
+  void setAverageCheckOutTime(int averageCheckOutTime) {
     this.averageCheckOutTime = averageCheckOutTime;
   }
 
-  public void setMinimumCheckOutTime(int minimumCheckOutTime) {
+  void setMinimumCheckOutTime(int minimumCheckOutTime) {
     this.minimumCheckOutTime = minimumCheckOutTime;
   }
 
-  public void setMaximumCheckOutTime(int maximumCheckOutTime) {
+  void setMaximumCheckOutTime(int maximumCheckOutTime) {
     this.maximumCheckOutTime = maximumCheckOutTime;
   }
 
-  public void setResetDate(long resetDate) {
+  void setResetDate(long resetDate) {
     this.resetDate = resetDate;
   }
 
-  public void setConnectionRequestsFailed(int connectionRequestsFailed) {
+  void setConnectionRequestsFailed(int connectionRequestsFailed) {
     this.connectionRequestsFailed = connectionRequestsFailed;
   }
 
-  public void setRequestsFailedPerSecond(int requestsFailedPerSecond) {
+  void setRequestsFailedPerSecond(int requestsFailedPerSecond) {
     this.requestsFailedPerSecond = requestsFailedPerSecond;
   }
 }

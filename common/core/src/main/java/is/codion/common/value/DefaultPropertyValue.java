@@ -6,6 +6,7 @@ package is.codion.common.value;
 import is.codion.common.Primitives;
 import is.codion.common.event.EventObserver;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
@@ -38,6 +39,14 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
     try {
       return (T) getMethod.invoke(valueOwner);
     }
+    catch (InvocationTargetException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof RuntimeException) {
+        throw (RuntimeException) cause;
+      }
+
+      throw new RuntimeException(cause);
+    }
     catch (RuntimeException re) {
       throw re;
     }
@@ -54,6 +63,14 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
     try {
       setMethod.invoke(valueOwner, value);
     }
+    catch (InvocationTargetException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof RuntimeException) {
+        throw (RuntimeException) cause;
+      }
+
+      throw new RuntimeException(cause);
+    }
     catch (RuntimeException re) {
       throw re;
     }
@@ -63,18 +80,21 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
   }
 
   @Override
-  protected EventObserver<T> getChangeObserver() {
+  protected EventObserver<T> changeObserver() {
     return changeObserver;
   }
 
   static Optional<Method> getSetMethod(Class<?> valueType, String property, Class<?> ownerClass) {
+    requireNonNull(ownerClass, "ownerClass");
+    requireNonNull(valueType, "valueType");
     if (requireNonNull(property, "property").isEmpty()) {
       throw new IllegalArgumentException("Property must be specified");
     }
 
     try {
-      return Optional.of(requireNonNull(ownerClass, "ownerClass").getMethod("set" +
-              Character.toUpperCase(property.charAt(0)) + property.substring(1), requireNonNull(valueType, "valueType")));
+      String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
+
+      return Optional.of(ownerClass.getMethod("set" + propertyName, valueType));
     }
     catch (NoSuchMethodException e) {
       return Optional.empty();

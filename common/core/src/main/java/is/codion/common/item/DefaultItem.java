@@ -22,7 +22,7 @@ final class DefaultItem<T> extends AbstractItem<T> {
    * @return the caption
    */
   @Override
-  public String getCaption() {
+  public String caption() {
     return caption;
   }
 }

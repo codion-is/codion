@@ -47,27 +47,27 @@ public abstract class DefaultDomain implements Domain {
   }
 
   @Override
-  public final DomainType getDomainType() {
+  public final DomainType type() {
     return domainType;
   }
 
   @Override
-  public final Entities getEntities() {
+  public final Entities entities() {
     return entities;
   }
 
   @Override
-  public final Map<ReportType<?, ?, ?>, Report<?, ?, ?>> getReports() {
+  public final Map<ReportType<?, ?, ?>, Report<?, ?, ?>> reports() {
     return unmodifiableMap(reports.reports);
   }
 
   @Override
-  public final Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> getProcedures() {
+  public final Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> procedures() {
     return unmodifiableMap(procedures.procedures);
   }
 
   @Override
-  public final Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> getFunctions() {
+  public final Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> functions() {
     return unmodifiableMap(functions.functions);
   }
 
@@ -184,10 +184,10 @@ public abstract class DefaultDomain implements Domain {
    * Note that the entity type names must be unique.
    * @param domain the domain model which entities to add
    * @throws IllegalArgumentException in case a non-unique entity type name is encountered
-   * @see EntityType#getName()
+   * @see EntityType#name()
    */
   protected final void addEntities(Domain domain) {
-    requireNonNull(domain).getEntities().getDefinitions().forEach(definition -> {
+    requireNonNull(domain).entities().getDefinitions().forEach(definition -> {
       if (!entities.contains(definition.getEntityType())) {
         entities.addEntityDefinition(definition);
       }
@@ -199,7 +199,7 @@ public abstract class DefaultDomain implements Domain {
    * @param domain the domain model which procedures to add
    */
   protected final void addProcedures(Domain domain) {
-    requireNonNull(domain).getProcedures().forEach((procedureType, procedure) -> {
+    requireNonNull(domain).procedures().forEach((procedureType, procedure) -> {
       if (!procedures.procedures.containsKey(procedureType)) {
         procedures.procedures.put(procedureType, procedure);
       }
@@ -211,7 +211,7 @@ public abstract class DefaultDomain implements Domain {
    * @param domain the domain model which functions to add
    */
   protected final void addFunctions(Domain domain) {
-    requireNonNull(domain).getFunctions().forEach((functionType, function) -> {
+    requireNonNull(domain).functions().forEach((functionType, function) -> {
       if (!functions.functions.containsKey(functionType)) {
         functions.functions.put(functionType, function);
       }
@@ -223,7 +223,7 @@ public abstract class DefaultDomain implements Domain {
    * @param domain the domain model which reports to add
    */
   protected final void addReports(Domain domain) {
-    requireNonNull(domain).getReports().forEach((reportType, report) -> {
+    requireNonNull(domain).reports().forEach((reportType, report) -> {
       if (!reports.reports.containsKey(reportType)) {
         reports.reports.put(reportType, report);
       }

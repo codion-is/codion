@@ -79,47 +79,47 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   /**
    * @return the Database implementation
    */
-  Database getDatabase();
+  Database database();
 
   /**
    * @return the admin user
    */
-  User getAdminUser();
+  User adminUser();
 
   /**
    * @return the maximum number of concurrent connections, -1 for no limit
    */
-  int getConnectionLimit();
+  int connectionLimit();
 
   /**
    * @return true if client logging should be enabled on startup
    */
-  boolean getClientLoggingEnabled();
+  boolean clientLoggingEnabled();
 
   /**
    * @return the idle connection timeout
    */
-  int getIdleConnectionTimeout();
+  int idleConnectionTimeout();
 
   /**
    * @return the connection pool provider classname
    */
-  String getConnectionPoolProvider();
+  String connectionPoolProvider();
 
   /**
    * @return the domain model classes to load on startup
    */
-  Collection<String> getDomainModelClassNames();
+  Collection<String> domainModelClassNames();
 
   /**
    * @return the users for which to initialize connection pools on startup
    */
-  Collection<User> getConnectionPoolUsers();
+  Collection<User> connectionPoolUsers();
 
   /**
    * @return client type specific idle connection timeouts, mapped to clientTypeId
    */
-  Map<String, Integer> getClientTypeIdleConnectionTimeouts();
+  Map<String, Integer> clientTypeIdleConnectionTimeouts();
 
   /**
    * A Builder for EntityServerConfiguration

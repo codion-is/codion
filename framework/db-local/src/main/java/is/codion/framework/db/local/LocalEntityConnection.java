@@ -111,7 +111,7 @@ public interface LocalEntityConnection extends EntityConnection {
   /**
    * @param limitFetchDepth false to override the fetch depth limit provided by condition
    * @return this LocalEntityConnection instance
-   * @see SelectCondition#fetchDepth(int)
+   * @see SelectCondition.Builder#fetchDepth(int)
    */
   LocalEntityConnection setLimitFetchDepth(boolean limitFetchDepth);
 

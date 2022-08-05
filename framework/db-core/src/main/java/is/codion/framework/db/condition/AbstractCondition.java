@@ -21,7 +21,7 @@ abstract class AbstractCondition implements Condition, Serializable {
   }
 
   @Override
-  public final EntityType getEntityType() {
+  public final EntityType entityType() {
     return entityType;
   }
 
@@ -36,26 +36,18 @@ abstract class AbstractCondition implements Condition, Serializable {
   }
 
   @Override
-  public final SelectCondition toSelectCondition() {
-    if (this instanceof SelectCondition) {
-      return (SelectCondition) this;
-    }
-
-    return new DefaultSelectCondition(this);
+  public final SelectCondition.Builder selectBuilder() {
+    return SelectCondition.builder(this);
   }
 
   @Override
-  public final UpdateCondition toUpdateCondition() {
-    if (this instanceof UpdateCondition) {
-      return (UpdateCondition) this;
-    }
-
-    return new DefaultUpdateCondition(this);
+  public final UpdateCondition.Builder updateBuilder() {
+    return UpdateCondition.builder(this);
   }
 
   @Override
   public String toString() {
-    return getClass().getSimpleName() + ": " + getEntityType();
+    return getClass().getSimpleName() + ": " + entityType;
   }
 
   @Override

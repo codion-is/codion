@@ -49,7 +49,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
   public Entity.Builder withDefaultValues() {
     definition.getProperties().forEach(property -> {
       if (!(property instanceof DerivedProperty)) {
-        builderValues.put(property.getAttribute(), property.getDefaultValue());
+        builderValues.put(property.attribute(), property.defaultValue());
       }
     });
 

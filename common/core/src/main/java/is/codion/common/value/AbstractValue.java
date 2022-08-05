@@ -71,7 +71,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final ValueObserver<T> getObserver() {
+  public final ValueObserver<T> observer() {
     synchronized (changeEvent) {
       if (observer == null) {
         observer = new DefaultValueObserver<>(this);
@@ -82,7 +82,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final boolean isNullable() {
+  public final boolean nullable() {
     return nullValue == null;
   }
 
@@ -93,22 +93,22 @@ public abstract class AbstractValue<T> implements Value<T> {
 
   @Override
   public final void addListener(EventListener listener) {
-    getChangeObserver().addListener(listener);
+    changeObserver().addListener(listener);
   }
 
   @Override
   public final void removeListener(EventListener listener) {
-    getChangeObserver().removeListener(listener);
+    changeObserver().removeListener(listener);
   }
 
   @Override
   public final void addDataListener(EventDataListener<T> listener) {
-    getChangeObserver().addDataListener(listener);
+    changeObserver().addDataListener(listener);
   }
 
   @Override
   public final void removeDataListener(EventDataListener<T> listener) {
-    getChangeObserver().removeDataListener(listener);
+    changeObserver().removeDataListener(listener);
   }
 
   @Override
@@ -139,7 +139,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final Set<Value<T>> getLinkedValues() {
+  public final Set<Value<T>> linkedValues() {
     return unmodifiableSet(linkedValues.keySet());
   }
 
@@ -155,7 +155,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
-  public final Collection<Validator<T>> getValidators() {
+  public final Collection<Validator<T>> validators() {
     return unmodifiableSet(validators);
   }
 
@@ -168,8 +168,8 @@ public abstract class AbstractValue<T> implements Value<T> {
   /**
    * @return the change observer to use when adding listeners to this value
    */
-  protected EventObserver<T> getChangeObserver() {
-    return changeEvent.getObserver();
+  protected EventObserver<T> changeObserver() {
+    return changeEvent.observer();
   }
 
   /**

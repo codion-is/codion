@@ -42,16 +42,16 @@ public class RemoteEntityConnectionProviderTest {
   void test() throws DatabaseException, RemoteException, ServerAuthenticationException, NotBoundException {
     EntityServerConfiguration configuration = configure();
 
-    String serverName = configuration.getServerName();
+    String serverName = configuration.serverName();
     EntityServer.startServer(configuration);
     Server<RemoteEntityConnection, EntityServerAdmin> server = (Server<RemoteEntityConnection, EntityServerAdmin>)
-            LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(), configuration.getRegistryPort()).lookup(serverName);
+            LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(), configuration.registryPort()).lookup(serverName);
     EntityServerAdmin admin = server.getServerAdmin(User.parse("scott:tiger"));
 
     RemoteEntityConnectionProvider provider = RemoteEntityConnectionProvider.builder()
             .serverHostName(Clients.SERVER_HOST_NAME.get())
-            .serverPort(configuration.getServerPort())
-            .registryPort(configuration.getRegistryPort())
+            .serverPort(configuration.serverPort())
+            .registryPort(configuration.registryPort())
             .clientTypeId("RemoteEntityConnectionProviderTest")
             .domainClassName("is.codion.framework.db.rmi.TestDomain")
             .user(User.parse("scott:tiger"))

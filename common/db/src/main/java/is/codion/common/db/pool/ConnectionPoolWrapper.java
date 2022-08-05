@@ -78,7 +78,7 @@ public interface ConnectionPoolWrapper {
   /**
    * @return true if pool usage statistics for a snapshot should be collected.
    * @see #getStatistics(long)
-   * @see ConnectionPoolStatistics#getSnapshot()
+   * @see ConnectionPoolStatistics#snapshot()
    */
   boolean isCollectSnapshotStatistics();
 
@@ -86,7 +86,7 @@ public interface ConnectionPoolWrapper {
    * Specifies whether to collect usage statistics for a snapshot.
    * @param collectSnapshotStatistics the value
    * @see #getStatistics(long)
-   * @see ConnectionPoolStatistics#getSnapshot()
+   * @see ConnectionPoolStatistics#snapshot()
    */
   void setCollectSnapshotStatistics(boolean collectSnapshotStatistics);
 

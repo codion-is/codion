@@ -24,13 +24,13 @@ final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<
   }
 
   @Override
-  public List<?> getValues() {
+  public List<?> values() {
     return singletonList(value);
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
-    return singletonList(getAttribute());
+  public List<Attribute<?>> attributes() {
+    return singletonList(attribute());
   }
 
   @Override
@@ -54,8 +54,8 @@ final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<
   }
 
   @Override
-  protected String getConditionString(String columnExpression) {
-    switch (getOperator()) {
+  protected String toString(String columnExpression) {
+    switch (operator()) {
       case LESS_THAN:
         return columnExpression + " < ?";
       case LESS_THAN_OR_EQUAL:
@@ -65,7 +65,7 @@ final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<
       case GREATER_THAN_OR_EQUAL:
         return columnExpression + " >= ?";
       default:
-        throw new IllegalStateException("Unsupported single value operator: " + getOperator());
+        throw new IllegalStateException("Unsupported single value operator: " + operator());
     }
   }
 }

@@ -73,8 +73,9 @@ public final class EntityConnectionDemo {
     // tag::fetchDepthCondition[]
     List<Entity> tracks = connection.select(
             where(Track.NAME).equalTo("Bad%")
-                    .toSelectCondition()
-                    .fetchDepth(0));
+                    .selectBuilder()
+                    .fetchDepth(0)
+                    .build());
 
     Entity track = tracks.get(0);
 
@@ -92,8 +93,9 @@ public final class EntityConnectionDemo {
     // tag::fetchDepthConditionForeignKey[]
     List<Entity> tracks = connection.select(
             where(Track.NAME).equalTo("Bad%")
-                    .toSelectCondition()
-                    .fetchDepth(Track.ALBUM_FK, 0));
+                    .selectBuilder()
+                    .fetchDepth(Track.ALBUM_FK, 0)
+                    .build());
 
     Entity track = tracks.get(0);
 
@@ -231,13 +233,15 @@ public final class EntityConnectionDemo {
     // tag::updateCondition[]
     connection.update(
             where(Artist.NAME).equalTo("Azymuth")
-                    .toUpdateCondition()
-                    .set(Artist.NAME, "Azymouth"));
+                    .updateBuilder()
+                    .set(Artist.NAME, "Azymouth")
+                    .build());
 
     int updateCount = connection.update(
             where(Customer.EMAIL).isNull()
-                    .toUpdateCondition()
-                    .set(Customer.EMAIL, "<none>"));
+                    .updateBuilder()
+                    .set(Customer.EMAIL, "<none>")
+                    .build());
     // end::updateCondition[]
   }
 

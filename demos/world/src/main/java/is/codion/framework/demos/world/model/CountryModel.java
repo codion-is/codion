@@ -27,7 +27,7 @@ public final class CountryModel extends SwingEntityModel {
     cityModel.getTableModel().addRefreshListener(() ->
             averageCityPopulationValue.set(getAverageCityPopulation()));
     CountryEditModel countryEditModel = (CountryEditModel) getEditModel();
-    countryEditModel.setAverageCityPopulationObserver(averageCityPopulationValue.getObserver());
+    countryEditModel.setAverageCityPopulationObserver(averageCityPopulationValue.observer());
   }
 
   private Double getAverageCityPopulation() {

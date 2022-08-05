@@ -5,14 +5,18 @@ package is.codion.common;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.Collator;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class TextTest {
@@ -84,9 +88,16 @@ public final class TextTest {
   }
 
   @Test
+  void getTextFileContentsResource() throws IOException {
+    String contents = "here is" + Separators.LINE_SEPARATOR + "some text";
+    assertEquals(contents, Text.getTextFileContents(TextTest.class, "TextTest.txt"));
+    assertThrows(FileNotFoundException.class, () -> Text.getTextFileContents(TextTest.class, "None.txt"));
+  }
+
+  @Test
   void getTextFileContents() throws IOException {
     String contents = "here is" + Separators.LINE_SEPARATOR + "some text";
-    assertEquals(contents, Text.getTextFileContents("src/test/java/is/codion/common/TextUtilTest.txt", Charset.defaultCharset()));
+    assertEquals(contents, Text.getTextFileContents("src/test/resources/is/codion/common/TextTest.txt", Charset.defaultCharset()));
   }
 
   @Test
@@ -131,5 +142,17 @@ public final class TextTest {
     assertEquals("aBaC", Text.underscoreToCamelCase("a_ba_c"));
     assertEquals("a", Text.underscoreToCamelCase("a__"));
     assertEquals("a", Text.underscoreToCamelCase("__a"));
+  }
+
+  @Test
+  void parseCommaSeparatedValues() {
+    List<String> hello = Collections.singletonList("hello");
+    assertEquals(hello, Text.parseCommaSeparatedValues("hello"));
+    assertEquals(hello, Text.parseCommaSeparatedValues("hello, "));
+    assertEquals(hello, Text.parseCommaSeparatedValues(",hello , "));
+    assertEquals(Arrays.asList("hello", "world", "how", "are", "you"), Text.parseCommaSeparatedValues("hello,world, how , are ,you"));
+    assertEquals(emptyList(), Text.parseCommaSeparatedValues(""));
+    assertEquals(emptyList(), Text.parseCommaSeparatedValues(", ,  , "));
+    assertEquals(emptyList(), Text.parseCommaSeparatedValues(null));
   }
 }

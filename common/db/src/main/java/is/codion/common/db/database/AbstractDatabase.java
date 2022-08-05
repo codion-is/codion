@@ -380,32 +380,32 @@ public abstract class AbstractDatabase implements Database {
     }
 
     @Override
-    public int getQueriesPerSecond() {
+    public int queriesPerSecond() {
       return queriesPerSecond;
     }
 
     @Override
-    public int getDeletesPerSecond() {
+    public int deletesPerSecond() {
       return deletesPerSecond;
     }
 
     @Override
-    public int getInsertsPerSecond() {
+    public int insertsPerSecond() {
       return insertsPerSecond;
     }
 
     @Override
-    public int getSelectsPerSecond() {
+    public int selectsPerSecond() {
       return selectsPerSecond;
     }
 
     @Override
-    public int getUpdatesPerSecond() {
+    public int updatesPerSecond() {
       return updatesPerSecond;
     }
 
     @Override
-    public long getTimestamp() {
+    public long timestamp() {
       return timestamp;
     }
   }

@@ -78,15 +78,15 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     addShutdownListener(new ShutdownListener());
     this.configuration = configuration;
     try {
-      this.database = requireNonNull(configuration.getDatabase(), "database");
-      this.clientLoggingEnabled = configuration.getClientLoggingEnabled();
-      this.domainModels = loadDomainModels(configuration.getDomainModelClassNames());
+      this.database = requireNonNull(configuration.database(), "database");
+      this.clientLoggingEnabled = configuration.clientLoggingEnabled();
+      this.domainModels = loadDomainModels(configuration.domainModelClassNames());
       setAdmin(initializeServerAdmin(configuration));
-      setIdleConnectionTimeout(configuration.getIdleConnectionTimeout());
-      setClientTypeIdleConnectionTimeouts(configuration.getClientTypeIdleConnectionTimeouts());
-      initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getConnectionPoolUsers());
-      setConnectionLimit(configuration.getConnectionLimit());
-      bindToRegistry(configuration.getRegistryPort());
+      setIdleConnectionTimeout(configuration.idleConnectionTimeout());
+      setClientTypeIdleConnectionTimeouts(configuration.clientTypeIdleConnectionTimeouts());
+      initializeConnectionPools(configuration.database(), configuration.connectionPoolProvider(), configuration.connectionPoolUsers());
+      setConnectionLimit(configuration.connectionLimit());
+      bindToRegistry(configuration.registryPort());
     }
     catch (Throwable t) {
       throw logShutdownAndReturn(new RuntimeException(t));
@@ -101,7 +101,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    */
   @Override
   public final EntityServerAdmin getServerAdmin(User user) throws ServerAuthenticationException {
-    validateUserCredentials(user, configuration.getAdminUser());
+    validateUserCredentials(user, configuration.adminUser());
 
     return getAdmin();
   }
@@ -116,7 +116,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     requireNonNull(remoteClient, "remoteClient");
     try {
       AbstractRemoteEntityConnection connection = createRemoteConnection(getDatabase(), remoteClient,
-              configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
+              configuration.serverPort(), configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
       connection.setLoggingEnabled(clientLoggingEnabled);
 
       connection.addDisconnectListener(this::disconnectQuietly);
@@ -212,7 +212,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
         boolean timedOut = hasConnectionTimedOut(connection);
         if (!connected || timedOut) {
           LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
-          disconnect(client.getRemoteClient().getClientId());
+          disconnect(client.getRemoteClient().clientId());
         }
       }
     }
@@ -223,7 +223,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     //using the remoteClient from the connection since it contains the correct database user
     return getConnections().values().stream()
             .map(AbstractRemoteEntityConnection::getRemoteClient)
-            .filter(remoteClient -> remoteClient.getClientTypeId().equals(clientTypeId))
+            .filter(remoteClient -> remoteClient.clientTypeId().equals(clientTypeId))
             .collect(toList());
   }
 
@@ -233,7 +233,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   final Map<EntityType, String> getEntityDefinitions() {
     Map<EntityType, String> definitions = new HashMap<>();
     for (Domain domain : domainModels.values()) {
-      for (EntityDefinition definition : domain.getEntities().getDefinitions()) {
+      for (EntityDefinition definition : domain.entities().getDefinitions()) {
         definitions.put(definition.getEntityType(), definition.getTableName());
       }
     }
@@ -274,22 +274,22 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   final void disconnectClients(boolean timedOutOnly) throws RemoteException {
     List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
     for (RemoteClient client : clients) {
-      AbstractRemoteEntityConnection connection = getConnection(client.getClientId());
+      AbstractRemoteEntityConnection connection = getConnection(client.clientId());
       if (timedOutOnly) {
         boolean active = connection.isActive();
         if (!active && hasConnectionTimedOut(connection)) {
-          disconnect(client.getClientId());
+          disconnect(client.clientId());
         }
       }
       else {
-        disconnect(client.getClientId());
+        disconnect(client.clientId());
       }
     }
   }
 
   private void disconnectQuietly(AbstractRemoteEntityConnection connection) {
     try {
-      disconnect(connection.getRemoteClient().getClientId());
+      disconnect(connection.getRemoteClient().clientId());
     }
     catch (RemoteException ex) {
       LOG.error(ex.getMessage(), ex);
@@ -303,7 +303,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @throws RemoteException in case of an exception
    */
   private EntityServerAdmin initializeServerAdmin(EntityServerConfiguration configuration) throws RemoteException {
-    if (configuration.getServerAdminPort() != 0) {
+    if (configuration.serverAdminPort() != 0) {
       return new DefaultEntityServerAdmin(this, configuration);
     }
 
@@ -323,7 +323,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   private boolean hasConnectionTimedOut(AbstractRemoteEntityConnection connection) {
-    Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.getRemoteClient().getClientTypeId());
+    Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.getRemoteClient().clientTypeId());
     if (timeout == null) {
       timeout = idleConnectionTimeout;
     }
@@ -332,7 +332,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   private Domain getClientDomainModel(RemoteClient remoteClient) {
-    String domainTypeName = (String) remoteClient.getParameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
+    String domainTypeName = (String) remoteClient.parameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE);
     if (domainTypeName == null) {
       throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
     }
@@ -345,13 +345,13 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     List<Domain> serviceDomains = Domain.getDomains();
     try {
       serviceDomains.forEach(domain -> {
-        LOG.info("Server loading and registering domain model '" + domain.getDomainType() + "' as a service");
-        domains.put(domain.getDomainType(), domain);
+        LOG.info("Server loading and registering domain model '" + domain.type() + "' as a service");
+        domains.put(domain.type(), domain);
       });
       for (String className : domainModelClassNames) {
         LOG.info("Server loading and registering domain model class '" + className + "' from classpath");
         Domain domain = (Domain) Class.forName(className).getConstructor().newInstance();
-        domains.put(domain.getDomainType(), domain);
+        domains.put(domain.type(), domain);
       }
 
       return unmodifiableMap(domains);
@@ -416,9 +416,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    */
   static synchronized void shutdownServer() throws ServerAuthenticationException {
     EntityServerConfiguration configuration = EntityServerConfiguration.fromSystemProperties();
-    String serverName = configuration.getServerName();
-    int registryPort = configuration.getRegistryPort();
-    User adminUser = configuration.getAdminUser();
+    String serverName = configuration.serverName();
+    int registryPort = configuration.registryPort();
+    User adminUser = configuration.adminUser();
     if (adminUser == null) {
       throw new ServerAuthenticationException("No admin user specified");
     }

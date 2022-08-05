@@ -12,37 +12,37 @@ final class DefaultConnectionPoolState implements ConnectionPoolState, Serializa
 
   private static final long serialVersionUID = 1;
 
-  private long time;
-  private int connectionCount = -1;
-  private int connectionsInUse = -1;
-  private int connectionsWaiting = -1;
+  private long timestamp;
+  private int size = -1;
+  private int inUse = -1;
+  private int waiting = -1;
 
-  DefaultConnectionPoolState set(long time, int connectionCount, int connectionsInUse, int connectionsWaiting) {
-    this.time = time;
-    this.connectionCount = connectionCount;
-    this.connectionsInUse = connectionsInUse;
-    this.connectionsWaiting = connectionsWaiting;
+  DefaultConnectionPoolState set(long timestamp, int size, int inUse, int waiting) {
+    this.timestamp = timestamp;
+    this.size = size;
+    this.inUse = inUse;
+    this.waiting = waiting;
 
     return this;
   }
 
   @Override
-  public int getSize() {
-    return connectionCount;
+  public int size() {
+    return size;
   }
 
   @Override
-  public int getInUse() {
-    return connectionsInUse;
+  public int inUse() {
+    return inUse;
   }
 
   @Override
-  public int getWaiting() {
-    return connectionsWaiting;
+  public int waiting() {
+    return waiting;
   }
 
   @Override
-  public long getTimestamp() {
-    return time;
+  public long timestamp() {
+    return timestamp;
   }
 }

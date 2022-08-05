@@ -143,7 +143,7 @@ class DefaultKey implements Key, Serializable {
       throw new IllegalArgumentException("Attribute " + attribute + " is not part of key: " + definition.getEntityType());
     }
 
-    return (T) values.get(definition.getColumnProperty(attribute).getAttribute());
+    return (T) values.get(definition.getColumnProperty(attribute).attribute());
   }
 
   @Override
@@ -161,7 +161,7 @@ class DefaultKey implements Key, Serializable {
     StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < attributes.size(); i++) {
       Attribute<Object> attribute = (Attribute<Object>) attributes.get(i);
-      stringBuilder.append(attribute.getName()).append(":").append(values.get(attribute));
+      stringBuilder.append(attribute.name()).append(":").append(values.get(attribute));
       if (i < attributes.size() - 1) {
         stringBuilder.append(",");
       }
@@ -256,8 +256,8 @@ class DefaultKey implements Key, Serializable {
     int hash = 0;
     for (int i = 0; i < attributes.size(); i++) {
       ColumnProperty<?> property = definition.getColumnProperty(attributes.get(i));
-      Object value = values.get(property.getAttribute());
-      if (!property.isNullable() && value == null) {
+      Object value = values.get(property.attribute());
+      if (!property.nullable() && value == null) {
         return null;
       }
       if (value != null) {
@@ -291,13 +291,13 @@ class DefaultKey implements Key, Serializable {
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getDomainName());
-    stream.writeObject(definition.getEntityType().getName());
+    stream.writeObject(definition.getEntityType().name());
     stream.writeInt(definition.getSerializationVersion());
     stream.writeBoolean(primaryKey);
     stream.writeInt(attributes.size());
     for (int i = 0; i < attributes.size(); i++) {
       Attribute<?> attribute = attributes.get(i);
-      stream.writeObject(attribute.getName());
+      stream.writeObject(attribute.name());
       stream.writeObject(values.get(attribute));
     }
   }

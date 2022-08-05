@@ -29,7 +29,7 @@ final class EntityKeySerializer extends StdSerializer<Key> {
   public void serialize(Key key, JsonGenerator generator, SerializerProvider provider) throws IOException {
     requireNonNull(key, "key");
     generator.writeStartObject();
-    generator.writeStringField("entityType", key.getEntityType().getName());
+    generator.writeStringField("entityType", key.getEntityType().name());
     generator.writeFieldName("values");
     writeValues(key, generator);
     generator.writeEndObject();
@@ -38,7 +38,7 @@ final class EntityKeySerializer extends StdSerializer<Key> {
   private void writeValues(Key key, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     for (Attribute<?> attribute : key.getAttributes()) {
-      generator.writeFieldName(attribute.getName());
+      generator.writeFieldName(attribute.name());
       entityObjectMapper.writeValue(generator, key.get(attribute));
     }
     generator.writeEndObject();

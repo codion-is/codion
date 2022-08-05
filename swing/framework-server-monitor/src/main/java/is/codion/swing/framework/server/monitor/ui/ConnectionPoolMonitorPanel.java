@@ -86,13 +86,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void updateView() {
     ConnectionPoolStatistics statistics = model.getConnectionPoolStatistics();
-    poolSizeField.setText(format.format(statistics.getSize()));
-    createdField.setText(format.format(statistics.getCreated()));
-    destroyedField.setText(format.format(statistics.getDestroyed()));
-    resetTimeField.setText(dateTimeFormatter.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
-    requestedField.setText(format.format(statistics.getRequests()));
-    double prc = statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
-    failedField.setText(format.format(statistics.getFailedRequests()) + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
+    poolSizeField.setText(format.format(statistics.size()));
+    createdField.setText(format.format(statistics.created()));
+    destroyedField.setText(format.format(statistics.destroyed()));
+    resetTimeField.setText(dateTimeFormatter.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.resetTime()), ZoneId.systemDefault())));
+    requestedField.setText(format.format(statistics.requests()));
+    double prc = statistics.failedRequests() / (double) statistics.requests() * HUNDRED;
+    failedField.setText(format.format(statistics.failedRequests()) + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
     if (model.datasetContainsData()) {
       inPoolSnapshotChart.getXYPlot().setDataset(model.getSnapshotDataset());
     }

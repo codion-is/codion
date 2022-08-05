@@ -81,28 +81,28 @@ public final class TestDomain extends DefaultDomain {
   void detail() {
     add(definition(
             primaryKeyProperty(DETAIL_ID),
-            columnProperty(DETAIL_INT, DETAIL_INT.getName()),
-            columnProperty(DETAIL_DOUBLE, DETAIL_DOUBLE.getName()),
-            columnProperty(DETAIL_BIG_DECIMAL, DETAIL_BIG_DECIMAL.getName()),
+            columnProperty(DETAIL_INT, DETAIL_INT.name()),
+            columnProperty(DETAIL_DOUBLE, DETAIL_DOUBLE.name()),
+            columnProperty(DETAIL_BIG_DECIMAL, DETAIL_BIG_DECIMAL.name()),
             columnProperty(DETAIL_STRING, "Detail string"),
-            columnProperty(DETAIL_DATE, DETAIL_DATE.getName()),
-            columnProperty(DETAIL_TIME, DETAIL_TIME.getName()),
-            columnProperty(DETAIL_TIMESTAMP, DETAIL_TIMESTAMP.getName()),
-            columnProperty(DETAIL_OFFSET, DETAIL_OFFSET.getName()),
-            columnProperty(DETAIL_BOOLEAN, DETAIL_BOOLEAN.getName())
+            columnProperty(DETAIL_DATE, DETAIL_DATE.name()),
+            columnProperty(DETAIL_TIME, DETAIL_TIME.name()),
+            columnProperty(DETAIL_TIMESTAMP, DETAIL_TIMESTAMP.name()),
+            columnProperty(DETAIL_OFFSET, DETAIL_OFFSET.name()),
+            columnProperty(DETAIL_BOOLEAN, DETAIL_BOOLEAN.name())
                     .nullable(false)
                     .defaultValue(true)
                     .description("A boolean property"),
-            columnProperty(DETAIL_BOOLEAN_NULLABLE, DETAIL_BOOLEAN_NULLABLE.getName())
+            columnProperty(DETAIL_BOOLEAN_NULLABLE, DETAIL_BOOLEAN_NULLABLE.name())
                     .defaultValue(true),
             columnProperty(DETAIL_MASTER_ID),
-            foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName()),
+            foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.name()),
             columnProperty(DETAIL_DETAIL_ID),
-            foreignKeyProperty(DETAIL_DETAIL_FK, DETAIL_DETAIL_FK.getName()),
-            denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_NAME.getName(), DETAIL_MASTER_FK, MASTER_NAME),
-            denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName(), DETAIL_MASTER_FK, MASTER_CODE),
-            itemProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
-            derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.getName(), linkedValues -> {
+            foreignKeyProperty(DETAIL_DETAIL_FK, DETAIL_DETAIL_FK.name()),
+            denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_NAME.name(), DETAIL_MASTER_FK, MASTER_NAME),
+            denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.name(), DETAIL_MASTER_FK, MASTER_CODE),
+            itemProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.name(), ITEMS),
+            derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.name(), linkedValues -> {
               Integer intValue = linkedValues.get(DETAIL_INT);
               if (intValue == null) {
                 return null;
@@ -123,11 +123,11 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(definition(
-            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
+            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.name())
                     .updatable(true).nullable(false),
-            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
+            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.name())
                     .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
-            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
+            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.name())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
             .orderBy(ascending(DEPARTMENT_NAME))
@@ -155,24 +155,24 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(definition(
-            primaryKeyProperty(EMP_ID, EMP_ID.getName()),
-            columnProperty(EMP_NAME, EMP_NAME.getName())
+            primaryKeyProperty(EMP_ID, EMP_ID.name()),
+            columnProperty(EMP_NAME, EMP_NAME.name())
                     .searchProperty(true).maximumLength(10).nullable(false),
             columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName()),
-            itemProperty(EMP_JOB, EMP_JOB.getName(),
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.name()),
+            itemProperty(EMP_JOB, EMP_JOB.name(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
-            columnProperty(EMP_SALARY, EMP_SALARY.getName())
+            columnProperty(EMP_SALARY, EMP_SALARY.name())
                     .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
-            columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
+            columnProperty(EMP_COMMISSION, EMP_COMMISSION.name())
                     .valueRange(100, 2000).maximumFractionDigits(2),
             columnProperty(EMP_MGR),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName()),
-            columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
+            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.name()),
+            columnProperty(EMP_HIREDATE, EMP_HIREDATE.name())
                     .nullable(false),
-            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION)
+            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.name(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION)
                     .preferredColumnWidth(100))
             .stringFactory(EMP_NAME)
             .keyGenerator(increment("scott.emp", "empno"))

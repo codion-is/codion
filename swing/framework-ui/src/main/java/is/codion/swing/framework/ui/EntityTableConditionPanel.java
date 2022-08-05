@@ -91,7 +91,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     List<Property<?>> conditionProperties = getConditionPanelProperties();
     if (!conditionProperties.isEmpty()) {
       if (conditionProperties.size() == 1) {
-        getConditionPanel(conditionProperties.get(0).getAttribute()).requestInputFocus();
+        getConditionPanel(conditionProperties.get(0).attribute()).requestInputFocus();
       }
       else {
         Properties.sort(conditionProperties);
@@ -99,7 +99,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
                 .owner(this)
                 .title(FrameworkMessages.selectInputField())
                 .selectSingle()
-                .ifPresent(property -> getConditionPanel(property.getAttribute()).requestInputFocus());
+                .ifPresent(property -> getConditionPanel(property.attribute()).requestInputFocus());
       }
     }
   }

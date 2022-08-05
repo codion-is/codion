@@ -22,44 +22,44 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
   }
 
   @Override
-  public EntityType getReferencedEntityType() {
-    return references.get(0).getReferencedAttribute().getEntityType();
+  public EntityType referencedType() {
+    return references.get(0).referencedAttribute().entityType();
   }
 
   @Override
-  public List<Reference<?>> getReferences() {
+  public List<Reference<?>> references() {
     return references;
   }
 
   @Override
-  public <T> Reference<T> getReference(Attribute<T> attribute) {
+  public <T> Reference<T> reference(Attribute<T> attribute) {
     for (int i = 0; i < references.size(); i++) {
       Reference<?> reference = references.get(i);
-      if (reference.getAttribute().equals(attribute)) {
+      if (reference.attribute().equals(attribute)) {
         return (Reference<T>) reference;
       }
     }
 
-    throw new IllegalArgumentException("Attribute " + attribute + " is not part of foreign key " + getName());
+    throw new IllegalArgumentException("Attribute " + attribute + " is not part of foreign key " + name());
   }
 
   private List<Reference<?>> validate(List<Reference<?>> references) {
     if (references.isEmpty()) {
-      throw new IllegalArgumentException("No references provided for foreign key: " + getName());
+      throw new IllegalArgumentException("No references provided for foreign key: " + name());
     }
-    EntityType referencedEntityType = references.get(0).getReferencedAttribute().getEntityType();
+    EntityType referencedEntityType = references.get(0).referencedAttribute().entityType();
     List<Reference<?>> referenceList = new ArrayList<>(references.size());
     for (Reference<?> reference : references) {
-      if (!getEntityType().equals(reference.getAttribute().getEntityType())) {
-        throw new IllegalArgumentException("Entity type " + getEntityType() +
-                " expected, got " + reference.getAttribute().getEntityType());
+      if (!entityType().equals(reference.attribute().entityType())) {
+        throw new IllegalArgumentException("Entity type " + entityType() +
+                " expected, got " + reference.attribute().entityType());
       }
-      if (!referencedEntityType.equals(reference.getReferencedAttribute().getEntityType())) {
+      if (!referencedEntityType.equals(reference.referencedAttribute().entityType())) {
         throw new IllegalArgumentException("Entity type " + referencedEntityType +
-                " expected, got " + reference.getReferencedAttribute().getEntityType());
+                " expected, got " + reference.referencedAttribute().entityType());
       }
-      if (referenceList.stream().anyMatch(existingReference -> existingReference.getAttribute().equals(reference.getAttribute()))) {
-        throw new IllegalArgumentException("Foreign key already contains a reference for attribute: " + reference.getAttribute());
+      if (referenceList.stream().anyMatch(existingReference -> existingReference.attribute().equals(reference.attribute()))) {
+        throw new IllegalArgumentException("Foreign key already contains a reference for attribute: " + reference.attribute());
       }
 
       referenceList.add(reference);
@@ -84,12 +84,12 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
     }
 
     @Override
-    public Attribute<T> getAttribute() {
+    public Attribute<T> attribute() {
       return attribute;
     }
 
     @Override
-    public Attribute<T> getReferencedAttribute() {
+    public Attribute<T> referencedAttribute() {
       return referencedAttribute;
     }
   }

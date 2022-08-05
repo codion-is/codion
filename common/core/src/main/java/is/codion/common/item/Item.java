@@ -19,12 +19,12 @@ public interface Item<T> extends Comparable<Item<T>>, Serializable {
   /**
    * @return the caption
    */
-  String getCaption();
+  String caption();
 
   /**
    * @return the value
    */
-  T getValue();
+  T value();
 
   /**
    * Returns an Item, with the caption as item.toString() or an empty string in case of a null value
@@ -55,7 +55,7 @@ public interface Item<T> extends Comparable<Item<T>>, Serializable {
   /**
    * Instantiates a new Item, which gets its caption from a resource bundle.
    * Note that the caption is cached, so that changing the {@link java.util.Locale} after the
-   * first time {@link Item#getCaption} is called will not change the caption.
+   * first time {@link Item#caption} is called will not change the caption.
    * @param value the value, may be null
    * @param resourceBundleName the resource bundle name
    * @param resourceBundleKey the resource bundle key for the item caption

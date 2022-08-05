@@ -46,7 +46,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
   @Override
   public JCheckBoxMenuItem createCheckBoxMenuItem() {
-    if (getValue().isNullable()) {
+    if (getValue().nullable()) {
       throw new IllegalArgumentException("A check box menu item does not support a nullable value");
     }
     ButtonModel buttonModel = createButtonModel();
@@ -69,7 +69,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
   @Override
   public JRadioButtonMenuItem createRadioButtonMenuItem() {
-    if (getValue().isNullable()) {
+    if (getValue().nullable()) {
       throw new IllegalArgumentException("A check box menu item does not support a nullable value");
     }
     ButtonModel buttonModel = createButtonModel();
@@ -93,7 +93,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
   @Override
   public ButtonModel createButtonModel() {
     ButtonModel buttonModel;
-    if (value.isNullable()) {
+    if (value.nullable()) {
       buttonModel = new NullableToggleButtonModel(value.get());
     }
     else {

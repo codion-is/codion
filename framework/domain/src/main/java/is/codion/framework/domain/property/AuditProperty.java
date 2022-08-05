@@ -19,5 +19,5 @@ public interface AuditProperty<T> extends ColumnProperty<T> {
   /**
    * @return the audit action this property represents
    */
-  AuditAction getAuditAction();
+  AuditAction auditAction();
 }

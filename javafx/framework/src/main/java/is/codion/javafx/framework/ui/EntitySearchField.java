@@ -159,7 +159,7 @@ public final class EntitySearchField extends TextField {
     }
 
     private void onEscape() {
-      if (model.getSearchStringRepresentsSelectedObserver().getReversedObserver().get()) {
+      if (model.getSearchStringRepresentsSelectedObserver().reversedObserver().get()) {
         model.refreshSearchText();
         selectAll();
       }

@@ -46,8 +46,8 @@ public final class DefaultEntityServerAdminTest {
               .build();
       server.connect(connectionRequest);
       EntityServerAdmin admin = new DefaultEntityServerAdmin(server, configuration);
-      admin.setLoggingEnabled(connectionRequest.getClientId(), true);
-      assertTrue(admin.isLoggingEnabled(connectionRequest.getClientId()));
+      admin.setLoggingEnabled(connectionRequest.clientId(), true);
+      assertTrue(admin.isLoggingEnabled(connectionRequest.clientId()));
       admin.setLogLevel("TEST");//no op logger
       admin.getLogLevel();
       admin.resetConnectionPoolStatistics(SCOTT);
@@ -66,7 +66,7 @@ public final class DefaultEntityServerAdminTest {
       assertEquals(300, admin.getMaximumPoolCheckOutTime(SCOTT));
       admin.setPooledConnectionIdleTimeout(SCOTT, 1000);
       assertEquals(1000, admin.getPooledConnectionIdleTimeout(SCOTT));
-      admin.getClientLog(connectionRequest.getClientId());
+      admin.getClientLog(connectionRequest.clientId());
 
       admin.getAllocatedMemory();
       admin.setIdleConnectionTimeout(30);

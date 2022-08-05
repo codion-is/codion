@@ -32,7 +32,7 @@ public final class DefaultEntitySearchModelTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final Entities ENTITIES = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().entities();
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
           .domainClassName(TestDomain.class.getName())
@@ -92,7 +92,7 @@ public final class DefaultEntitySearchModelTest {
   @Test
   void setToStringProvider() {
     Property<?> job = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
-    searchModel.setToStringProvider(entity -> entity.toString(job.getAttribute()));
+    searchModel.setToStringProvider(entity -> entity.toString(job.attribute()));
     Entity employee = ENTITIES.builder(TestDomain.T_EMP)
             .with(TestDomain.EMP_NAME, "Darri")
             .with(TestDomain.EMP_JOB, "CLERK")

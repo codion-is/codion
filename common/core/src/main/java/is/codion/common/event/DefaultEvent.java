@@ -21,7 +21,7 @@ final class DefaultEvent<T> implements Event<T> {
   }
 
   @Override
-  public EventObserver<T> getObserver() {
+  public EventObserver<T> observer() {
     synchronized (lock) {
       if (observer == null) {
         observer = new DefaultEventObserver<>();
@@ -33,21 +33,21 @@ final class DefaultEvent<T> implements Event<T> {
 
   @Override
   public void addListener(EventListener listener) {
-    getObserver().addListener(listener);
+    observer().addListener(listener);
   }
 
   @Override
   public void removeListener(EventListener listener) {
-    getObserver().removeListener(listener);
+    observer().removeListener(listener);
   }
 
   @Override
   public void addDataListener(EventDataListener<T> listener) {
-    getObserver().addDataListener(listener);
+    observer().addDataListener(listener);
   }
 
   @Override
   public void removeDataListener(EventDataListener<T> listener) {
-    getObserver().removeDataListener(listener);
+    observer().removeDataListener(listener);
   }
 }

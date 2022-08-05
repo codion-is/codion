@@ -254,7 +254,7 @@ public final class FXUiUtil {
       return listValue;
     }
 
-    Attribute<?> attribute = property.getAttribute();
+    Attribute<?> attribute = property.attribute();
     if (attribute.isBoolean()) {
       Value<Boolean> booleanValue = PropertyValues.booleanPropertyValue(((CheckBox) control).selectedProperty());
       booleanValue.set((Boolean) defaultValue);
@@ -310,7 +310,7 @@ public final class FXUiUtil {
       return (Value<T>) stringValue;
     }
 
-    throw new IllegalArgumentException("Unsupported property type: " + attribute.getValueClass());
+    throw new IllegalArgumentException("Unsupported property type: " + attribute.valueClass());
   }
 
   /**
@@ -363,7 +363,7 @@ public final class FXUiUtil {
       return new ComboBox<>(createItemComboBoxModel((ItemProperty<T>) property));
     }
 
-    Attribute<?> attribute = property.getAttribute();
+    Attribute<?> attribute = property.attribute();
     if (attribute.isBoolean()) {
       return createCheckBox();
     }
@@ -374,7 +374,7 @@ public final class FXUiUtil {
       return createTextField(property);
     }
 
-    throw new IllegalArgumentException("Unsupported type: " + attribute.getValueClass());
+    throw new IllegalArgumentException("Unsupported type: " + attribute.valueClass());
   }
 
   /**
@@ -397,7 +397,7 @@ public final class FXUiUtil {
   public static CheckBox createCheckBox(Property<Boolean> property, FXEntityEditModel editModel,
                                         StateObserver enabledState) {
     CheckBox checkBox = createCheckBox(enabledState);
-    createBooleanValue(checkBox).link(editModel.value(property.getAttribute()));
+    createBooleanValue(checkBox).link(editModel.value(property.attribute()));
 
     return checkBox;
   }
@@ -431,7 +431,7 @@ public final class FXUiUtil {
   public static TextField createTextField(Property<String> property, FXEntityEditModel editModel,
                                           StateObserver enabledState) {
     TextField textField = createTextField(property, enabledState);
-    createStringValue(textField).link(editModel.value(property.getAttribute()));
+    createStringValue(textField).link(editModel.value(property.attribute()));
 
     return textField;
   }
@@ -465,7 +465,7 @@ public final class FXUiUtil {
   public static TextField createLongField(Property<Long> property, FXEntityEditModel editModel,
                                           StateObserver enabledState) {
     TextField textField = createTextField(property, enabledState);
-    createLongValue(property, textField).link(editModel.value(property.getAttribute()));
+    createLongValue(property, textField).link(editModel.value(property.attribute()));
 
     return textField;
   }
@@ -478,7 +478,7 @@ public final class FXUiUtil {
    */
   public static StringValue<Long> createLongValue(Property<Long> property, TextField textField) {
     StringValue<Long> propertyValue = PropertyValues.longPropertyValue(textField.textProperty(),
-            (NumberFormat) property.getFormat());
+            (NumberFormat) property.format());
     textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
 
     return propertyValue;
@@ -504,7 +504,7 @@ public final class FXUiUtil {
   public static TextField createIntegerField(Property<Integer> property, FXEntityEditModel editModel,
                                              StateObserver enabledState) {
     TextField textField = createTextField(property, enabledState);
-    createIntegerValue(property, textField).link(editModel.value(property.getAttribute()));
+    createIntegerValue(property, textField).link(editModel.value(property.attribute()));
 
     return textField;
   }
@@ -517,7 +517,7 @@ public final class FXUiUtil {
    */
   public static StringValue<Integer> createIntegerValue(Property<Integer> property, TextField textField) {
     StringValue<Integer> propertyValue = PropertyValues.integerPropertyValue(textField.textProperty(),
-            (NumberFormat) property.getFormat());
+            (NumberFormat) property.format());
     textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
 
     return propertyValue;
@@ -543,7 +543,7 @@ public final class FXUiUtil {
   public static TextField createDoubleField(Property<Double> property, FXEntityEditModel editModel,
                                             StateObserver enabledState) {
     TextField textField = createTextField(property, enabledState);
-    createDoubleValue(property, textField).link(editModel.value(property.getAttribute()));
+    createDoubleValue(property, textField).link(editModel.value(property.attribute()));
 
     return textField;
   }
@@ -568,7 +568,7 @@ public final class FXUiUtil {
   public static TextField createBigDecimalField(Property<BigDecimal> property, FXEntityEditModel editModel,
                                                 StateObserver enabledState) {
     TextField textField = createTextField(property, enabledState);
-    createBigDecimalValue(property, textField).link(editModel.value(property.getAttribute()));
+    createBigDecimalValue(property, textField).link(editModel.value(property.attribute()));
 
     return textField;
   }
@@ -581,7 +581,7 @@ public final class FXUiUtil {
    */
   public static StringValue<Double> createDoubleValue(Property<Double> property, TextField textField) {
     StringValue<Double> propertyValue = PropertyValues.doublePropertyValue(textField.textProperty(),
-            (NumberFormat) property.getFormat());
+            (NumberFormat) property.format());
     textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
 
     return propertyValue;
@@ -595,7 +595,7 @@ public final class FXUiUtil {
    */
   public static StringValue<BigDecimal> createBigDecimalValue(Property<BigDecimal> property, TextField textField) {
     StringValue<BigDecimal> propertyValue = PropertyValues.bigDecimalPropertyValue(textField.textProperty(),
-            (DecimalFormat) property.getFormat());
+            (DecimalFormat) property.format());
     textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
 
     return propertyValue;
@@ -621,7 +621,7 @@ public final class FXUiUtil {
   public static DatePicker createDatePicker(Property<LocalDate> property, FXEntityEditModel editModel,
                                             StateObserver enabledState) {
     DatePicker picker = createDatePicker(enabledState);
-    createDateValue(property, picker).link(editModel.value(property.getAttribute()));
+    createDateValue(property, picker).link(editModel.value(property.attribute()));
 
     return picker;
   }
@@ -633,9 +633,9 @@ public final class FXUiUtil {
    * @return a {@link StringValue} for {@link LocalDate} values, based on the given property
    */
   public static StringValue<LocalDate> createDateValue(Property<LocalDate> property, DatePicker picker) {
-    StringValue<LocalDate> dateValue = PropertyValues.datePropertyValue(picker.getEditor().textProperty(), property.getDateTimeFormatter());
+    StringValue<LocalDate> dateValue = PropertyValues.datePropertyValue(picker.getEditor().textProperty(), property.dateTimeFormatter());
     picker.setConverter(dateValue.getConverter());
-    picker.setPromptText(property.getDateTimePattern().toLowerCase());
+    picker.setPromptText(property.dateTimePattern().toLowerCase());
 
     return dateValue;
   }
@@ -647,7 +647,7 @@ public final class FXUiUtil {
    * @return a {@link StringValue} for {@link LocalDateTime} values, based on the given property
    */
   public static StringValue<LocalDateTime> createTimestampValue(Property<LocalDateTime> property, TextField textField) {
-    StringValue<LocalDateTime> timestampValue = PropertyValues.timestampPropertyValue(textField.textProperty(), property.getDateTimeFormatter());
+    StringValue<LocalDateTime> timestampValue = PropertyValues.timestampPropertyValue(textField.textProperty(), property.dateTimeFormatter());
     textField.setTextFormatter(new TextFormatter<>(timestampValue.getConverter()));
 
     return timestampValue;
@@ -660,7 +660,7 @@ public final class FXUiUtil {
    * @return a {@link StringValue} for {@link LocalTime} values, based on the given property
    */
   public static StringValue<LocalTime> createTimeValue(Property<LocalTime> property, TextField textField) {
-    StringValue<LocalTime> timeValue = PropertyValues.timePropertyValue(textField.textProperty(), property.getDateTimeFormatter());
+    StringValue<LocalTime> timeValue = PropertyValues.timePropertyValue(textField.textProperty(), property.dateTimeFormatter());
     textField.setTextFormatter(new TextFormatter<>(timeValue.getConverter()));
 
     return timeValue;
@@ -717,7 +717,7 @@ public final class FXUiUtil {
    */
   public static <T> ComboBox<Item<T>> createItemComboBox(ItemProperty<T> itemProperty, FXEntityEditModel editModel) {
     ComboBox<Item<T>> comboBox = new ComboBox<>(createItemComboBoxModel(itemProperty));
-    PropertyValues.selectedItemValue(comboBox.getSelectionModel()).link(editModel.value(itemProperty.getAttribute()));
+    PropertyValues.selectedItemValue(comboBox.getSelectionModel()).link(editModel.value(itemProperty.attribute()));
 
     return comboBox;
   }
@@ -738,7 +738,7 @@ public final class FXUiUtil {
   public static CheckBox createCheckBox(StateObserver enabledState) {
     CheckBox checkBox = new CheckBox();
     if (enabledState != null) {
-      link(checkBox.disableProperty(), enabledState.getReversedObserver());
+      link(checkBox.disableProperty(), enabledState.reversedObserver());
     }
 
     return checkBox;
@@ -751,7 +751,7 @@ public final class FXUiUtil {
    * @return a {@link ObservableList} containing the {@link Item}s associated with the given value list property
    */
   public static <T> ObservableList<Item<T>> createItemComboBoxModel(ItemProperty<T> property) {
-    return new SortedList<>(FXCollections.observableArrayList(property.getItems()),
+    return new SortedList<>(FXCollections.observableArrayList(property.items()),
             Comparator.comparing(Item::toString));
   }
 
@@ -776,7 +776,7 @@ public final class FXUiUtil {
     TextField textField = new TextField();
     textField.textProperty().addListener(new ValidationChangeListener(property, textField.textProperty()));
     if (enabledState != null) {
-      link(textField.disableProperty(), enabledState.getReversedObserver());
+      link(textField.disableProperty(), enabledState.reversedObserver());
     }
 
     return textField;
@@ -796,7 +796,7 @@ public final class FXUiUtil {
   public static DatePicker createDatePicker(StateObserver enabledState) {
     DatePicker picker = new DatePicker();
     if (enabledState != null) {
-      link(picker.disableProperty(), enabledState.getReversedObserver());
+      link(picker.disableProperty(), enabledState.reversedObserver());
     }
 
     return picker;
@@ -924,7 +924,7 @@ public final class FXUiUtil {
 
   private static SortedList<Entity> createEntityListModel(ForeignKeyProperty property,
                                                           EntityConnectionProvider connectionProvider) {
-    ObservableEntityList entityList = new ObservableEntityList(property.getReferencedEntityType(), connectionProvider);
+    ObservableEntityList entityList = new ObservableEntityList(property.referencedEntityType(), connectionProvider);
     entityList.refresh();
 
     return entityList.getSortedList();
@@ -960,14 +960,14 @@ public final class FXUiUtil {
     }
 
     private static boolean isValid(Property<?> property, String value) {
-      int maximumLength = property.getMaximumLength();
+      int maximumLength = property.maximumLength();
       if (maximumLength > -1 && value != null && value.length() > maximumLength) {
         return false;
       }
-      if (property.getAttribute().isTemporal()) {
+      if (property.attribute().isTemporal()) {
         try {
           if (value != null) {
-            property.getDateTimeFormatter().parse(value);
+            property.dateTimeFormatter().parse(value);
           }
 
           return true;
@@ -976,7 +976,7 @@ public final class FXUiUtil {
           return false;
         }
       }
-      Format format = property.getFormat();
+      Format format = property.format();
       Object parsedValue = null;
       try {
         if (format != null && value != null) {
@@ -986,11 +986,11 @@ public final class FXUiUtil {
       catch (NumberFormatException | ParseException e) {
         return false;
       }
-      if (parsedValue != null && property.getAttribute().isNumerical() && !isWithinRange(property, (Number) parsedValue)) {
+      if (parsedValue != null && property.attribute().isNumerical() && !isWithinRange(property, (Number) parsedValue)) {
         return false;
       }
       if (parsedValue instanceof Double && !Objects.equals(parsedValue,
-              Rounder.roundDouble((Double) parsedValue, property.getMaximumFractionDigits()))) {
+              Rounder.roundDouble((Double) parsedValue, property.maximumFractionDigits()))) {
         return false;
       }
 
@@ -998,11 +998,11 @@ public final class FXUiUtil {
     }
 
     private static boolean isWithinRange(Property<?> property, Number value) {
-      Number minimumValue = property.getMinimumValue();
+      Number minimumValue = property.minimumValue();
       if (minimumValue != null && value.doubleValue() < minimumValue.doubleValue()) {
         return false;
       }
-      Number maximumValue = property.getMaximumValue();
+      Number maximumValue = property.maximumValue();
       if (maximumValue != null && value.doubleValue() > maximumValue.doubleValue()) {
         return false;
       }

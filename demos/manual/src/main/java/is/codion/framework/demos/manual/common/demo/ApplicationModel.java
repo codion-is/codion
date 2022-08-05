@@ -68,76 +68,76 @@ public final class ApplicationModel {
     values.forEach(value -> value.set(null));
   }
 
-  public Value<String> getShortStringValue() {
+  public Value<String> shortStringValue() {
     return shortStringValue;
   }
 
-  public Value<String> getLongStringValue() {
+  public Value<String> longStringValue() {
     return longStringValue;
   }
 
-  public Value<String> getTextValue() {
+  public Value<String> textValue() {
     return textValue;
   }
 
-  public Value<LocalDate> getLocalDateValue() {
+  public Value<LocalDate> localDateValue() {
     return localDateValue;
   }
 
-  public Value<LocalDateTime> getLocalDateTimeValue() {
+  public Value<LocalDateTime> localDateTimeValue() {
     return localDateTimeValue;
   }
 
-  public Value<Integer> getIntegerValue() {
+  public Value<Integer> integerValue() {
     return integerValue;
   }
 
-  public Value<Double> getDoubleValue() {
+  public Value<Double> doubleValue() {
     return doubleValue;
   }
 
-  public Value<String> getFormattedStringValue() {
+  public Value<String> formattedStringValue() {
     return formattedStringValue;
   }
 
-  public Value<Boolean> getBooleanValue() {
+  public Value<Boolean> booleanValue() {
     return booleanValue;
   }
 
-  public Value<Boolean> getBooleanSelectionValue() {
+  public Value<Boolean> booleanSelectionValue() {
     return booleanSelectionValue;
   }
 
-  public Value<Integer> getIntegerItemValue() {
+  public Value<Integer> integerItemValue() {
     return integerItemValue;
   }
 
-  public Value<Integer> getIntegerSlideValue() {
+  public Value<Integer> integerSlideValue() {
     return integerSlideValue;
   }
 
-  public Value<Integer> getIntegerSpinValue() {
+  public Value<Integer> integerSpinValue() {
     return integerSpinValue;
   }
 
-  public Value<Integer> getIntegerSelectionValue() {
+  public Value<Integer> integerSelectionValue() {
     return integerSelectionValue;
   }
 
-  public Value<String> getItemSpinnerValue() {
+  public Value<String> itemSpinnerValue() {
     return itemSpinValue;
   }
 
-  public Value<String> getStringSelectionValue() {
+  public Value<String> stringSelectionValue() {
     return stringSelectionValue;
   }
 
-  public Value<String> getStringListValue() {
+  public Value<String> stringListValue() {
     return stringListValue;
   }
 
-  public ValueObserver<String> getMessageObserver() {
-    return messageValue.getObserver();
+  public ValueObserver<String> messageObserver() {
+    return messageValue.observer();
   }
 
   private void exceptionHandler(Thread thread, Throwable exception) {

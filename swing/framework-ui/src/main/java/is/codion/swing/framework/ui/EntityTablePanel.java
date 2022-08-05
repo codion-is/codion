@@ -666,8 +666,8 @@ public class EntityTablePanel extends JPanel {
             .description(FrameworkMessages.updateSelectedTip())
             .build();
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
-      if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
-        String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
+      if (!excludeFromUpdateMenu.contains(property.attribute())) {
+        String caption = property.caption() == null ? property.attribute().name() : property.caption();
         updateControls.add(Control.builder(() -> updateSelectedEntities(property))
                 .caption(caption)
                 .enabledState(enabled)
@@ -731,7 +731,7 @@ public class EntityTablePanel extends JPanel {
             .description(FrameworkMessages.refreshTip())
             .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(frameworkIcons().refresh())
-            .enabledState(tableModel.getRefreshingObserver().getReversedObserver())
+            .enabledState(tableModel.getRefreshingObserver().reversedObserver())
             .build();
   }
 
@@ -760,13 +760,13 @@ public class EntityTablePanel extends JPanel {
     }
 
     List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
-    Collection<T> values = Entity.getDistinct(propertyToUpdate.getAttribute(), selectedEntities);
+    Collection<T> values = Entity.getDistinct(propertyToUpdate.attribute(), selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(propertyToUpdate.getAttribute(), initialValue);
+    ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(propertyToUpdate.attribute(), initialValue);
     boolean updatePerformed = false;
     while (!updatePerformed) {
-      T newValue = Dialogs.showInputDialog(componentValue, this, propertyToUpdate.getCaption());
-      Entity.put(propertyToUpdate.getAttribute(), newValue, selectedEntities);
+      T newValue = Dialogs.showInputDialog(componentValue, this, propertyToUpdate.caption());
+      Entity.put(propertyToUpdate.attribute(), newValue, selectedEntities);
       updatePerformed = update(selectedEntities);
     }
   }
@@ -1236,11 +1236,11 @@ public class EntityTablePanel extends JPanel {
    * @return a TableCellEditor for the given property
    */
   protected <T> TableCellEditor createTableCellEditor(Property<T> property) {
-    if (property instanceof ColumnProperty && !((ColumnProperty<T>) property).isUpdatable()) {
+    if (property instanceof ColumnProperty && !((ColumnProperty<T>) property).updatable()) {
       return null;
     }
     //TODO handle Enter key correctly for foreign key input fields
-    return new EntityTableCellEditor<>(() -> createCellEditorComponentValue(property.getAttribute(), null));
+    return new EntityTableCellEditor<>(() -> createCellEditorComponentValue(property.attribute(), null));
   }
 
   /**

@@ -60,7 +60,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private final State pausedState = State.state();
   private final State collectChartDataState = State.state();
   private final StateObserver chartUpdateSchedulerEnabledState =
-          State.and(pausedState.getReversedObserver(), collectChartDataState);
+          State.and(pausedState.reversedObserver(), collectChartDataState);
 
   private final Value<Integer> loginDelayFactorValue;
   private final Value<Integer> applicationBatchSizeValue;
@@ -343,7 +343,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   @Override
   public final ValueObserver<Integer> applicationCountObserver() {
-    return applicationCountValue.getObserver();
+    return applicationCountValue.observer();
   }
 
   /**

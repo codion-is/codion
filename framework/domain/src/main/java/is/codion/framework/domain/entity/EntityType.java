@@ -21,23 +21,23 @@ public interface EntityType {
   /**
    * @return the name of the domain this entity type is associated with
    */
-  String getDomainName();
+  String domainName();
 
   /**
    * @return the entity type name, unique within a domain.
    */
-  String getName();
+  String name();
 
   /**
    * @param <T> the entity class type
    * @return the entity type class
    */
-  <T extends Entity> Class<T> getEntityClass();
+  <T extends Entity> Class<T> entityClass();
 
   /**
    * @return the name of the resource bundle, containing captions for this entity type, if any
    */
-  String getResourceBundleName();
+  String resourceBundleName();
 
   /**
    * Creates a new {@link Attribute}, associated with this EntityType.

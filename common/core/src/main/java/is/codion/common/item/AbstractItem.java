@@ -25,7 +25,7 @@ abstract class AbstractItem<T> implements Item<T> {
   }
 
   @Override
-  public final T getValue() {
+  public final T value() {
     return value;
   }
 
@@ -36,7 +36,7 @@ abstract class AbstractItem<T> implements Item<T> {
    */
   @Override
   public final int compareTo(Item<T> item) {
-    return getCollator().compare(getCaption(), item.getCaption());
+    return getCollator().compare(caption(), item.caption());
   }
 
   /**
@@ -44,12 +44,12 @@ abstract class AbstractItem<T> implements Item<T> {
    */
   @Override
   public final String toString() {
-    return getCaption();
+    return caption();
   }
 
   @Override
   public final boolean equals(Object obj) {
-    return this == obj || obj instanceof Item && Objects.equals(value, ((Item<?>) obj).getValue());
+    return this == obj || obj instanceof Item && Objects.equals(value, ((Item<?>) obj).value());
   }
 
   @Override

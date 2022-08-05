@@ -31,13 +31,13 @@ final class UpdateConditionSerializer extends StdSerializer<UpdateCondition> {
   public void serialize(UpdateCondition condition, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("entityType", condition.getEntityType().getName());
+    generator.writeStringField("entityType", condition.entityType().name());
     generator.writeFieldName("condition");
-    conditionSerializer.serialize(condition.getCondition(), generator);
+    conditionSerializer.serialize(condition.condition(), generator);
     generator.writeFieldName("values");
     generator.writeStartObject();
-    for (Map.Entry<Attribute<?>, Object> attributeValue : condition.getAttributeValues().entrySet()) {
-      generator.writeFieldName(attributeValue.getKey().getName());
+    for (Map.Entry<Attribute<?>, Object> attributeValue : condition.attributeValues().entrySet()) {
+      generator.writeFieldName(attributeValue.getKey().name());
       entityObjectMapper.writeValue(generator, attributeValue.getValue());
     }
     generator.writeEndObject();

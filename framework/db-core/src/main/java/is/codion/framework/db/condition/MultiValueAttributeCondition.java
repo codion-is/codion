@@ -45,17 +45,17 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
   }
 
   @Override
-  public List<?> getValues() {
+  public List<?> values() {
     return values;
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
+  public List<Attribute<?>> attributes() {
     if (values.size() == 1) {
-      return singletonList(getAttribute());
+      return singletonList(attribute());
     }
 
-    return Collections.nCopies(values.size(), getAttribute());
+    return Collections.nCopies(values.size(), attribute());
   }
 
   @Override
@@ -80,21 +80,21 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
   }
 
   @Override
-  protected String getConditionString(String columnExpression) {
-    boolean notEqual = getOperator() == Operator.NOT_EQUAL;
+  protected String toString(String columnExpression) {
+    boolean notEqual = operator() == Operator.NOT_EQUAL;
     String identifier = columnExpression;
     if (values.isEmpty()) {
       return identifier + (notEqual ? " is not null" : " is null");
     }
-    if (getAttribute().isString() && !caseSensitive) {
+    if (attribute().isString() && !caseSensitive) {
       identifier = "upper(" + identifier + ")";
     }
 
-    String valuePlaceholder = getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
+    String valuePlaceholder = attribute().isString() && !caseSensitive ? "upper(?)" : "?";
     if (values.size() > 1) {
       return getInList(identifier, valuePlaceholder, values.size(), notEqual);
     }
-    if (getAttribute().isString() && containsWildcards((String) values.get(0))) {
+    if (attribute().isString() && containsWildcards((String) values.get(0))) {
       return identifier + (notEqual ? " not like " : " like ") + valuePlaceholder;
     }
 

@@ -31,7 +31,7 @@ public interface State extends StateObserver, Value<Boolean> {
    * Returns a StateObserver notified each time the state changes
    * @return a StateObserver notified each time the state changes
    */
-  StateObserver getObserver();
+  StateObserver observer();
 
   /**
    * A state which combines a number of states, either ANDing or ORing those together
@@ -41,9 +41,9 @@ public interface State extends StateObserver, Value<Boolean> {
 
     /**
      * Returns the {@link Conjunction} used when combining the states.
-     * @return the type of this aggregate state
+     * @return the conjunction of this state combination
      */
-    Conjunction getConjunction();
+    Conjunction conjunction();
 
     /**
      * Adds a state to this state combination

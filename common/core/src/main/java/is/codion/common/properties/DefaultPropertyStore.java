@@ -265,7 +265,7 @@ final class DefaultPropertyStore implements PropertyStore {
     }
 
     @Override
-    public String getPropertyName() {
+    public String propertyName() {
       return propertyName;
     }
 

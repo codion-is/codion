@@ -72,7 +72,7 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
   private final class CombinedValidator implements Validator<T> {
     @Override
     public void validate(T value) throws IllegalArgumentException {
-      getValidators().forEach(validator -> validator.validate(value));
+      validators().forEach(validator -> validator.validate(value));
     }
   }
 }

@@ -385,7 +385,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   public Control createSelectColumnsControl() {
     return Control.builder(this::selectColumns)
             .caption(MESSAGES.getString(SELECT) + "...")
-            .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
+            .enabledState(tableModel.getColumnModel().getLockedState().reversedObserver())
             .description(MESSAGES.getString(SELECT_COLUMNS))
             .build();
   }
@@ -396,7 +396,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   public Controls createToggleColumnsControls() {
     return Controls.builder()
             .caption(MESSAGES.getString(SELECT))
-            .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
+            .enabledState(tableModel.getColumnModel().getLockedState().reversedObserver())
             .controls(tableModel.getColumnModel().getAllColumns().stream()
                     .sorted(new ColumnComparator())
                     .map(this::createToggleColumnControl)
@@ -410,7 +410,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   public Control createResetColumnsControl() {
     return Control.builder(getModel().getColumnModel()::resetColumns)
             .caption(MESSAGES.getString(RESET))
-            .enabledState(tableModel.getColumnModel().getLockedState().getReversedObserver())
+            .enabledState(tableModel.getColumnModel().getLockedState().reversedObserver())
             .description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
             .build();
   }

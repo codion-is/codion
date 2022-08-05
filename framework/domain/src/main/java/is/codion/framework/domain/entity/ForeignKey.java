@@ -10,19 +10,19 @@ public interface ForeignKey extends Attribute<Entity> {
   /**
    * @return the entity type referenced by this foreign key
    */
-  EntityType getReferencedEntityType();
+  EntityType referencedType();
 
   /**
    * @return the {@link Reference}s that comprise this key
    */
-  List<Reference<?>> getReferences();
+  List<Reference<?>> references();
 
   /**
    * @param attribute the attribute
    * @param <T> the attribute type
    * @return the reference that is based on the given attribute
    */
-  <T> Reference<T> getReference(Attribute<T> attribute);
+  <T> Reference<T> reference(Attribute<T> attribute);
 
   /**
    * Represents a foreign key reference between attributes.
@@ -33,12 +33,12 @@ public interface ForeignKey extends Attribute<Entity> {
     /**
      * @return the attribute in the detail entity
      */
-    Attribute<T> getAttribute();
+    Attribute<T> attribute();
 
     /**
      * @return the attribute in the master entity
      */
-    Attribute<T> getReferencedAttribute();
+    Attribute<T> referencedAttribute();
   }
 
   /**

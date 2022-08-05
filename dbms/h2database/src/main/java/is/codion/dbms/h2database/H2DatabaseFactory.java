@@ -62,7 +62,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
    */
   public static void runScript(Database database, String scriptPath, String username, String password, Charset scriptCharset) throws SQLException {
     try {
-      Class runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
+      Class<?> runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
       Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, Charset.class, boolean.class);
       execute.invoke(runScriptToolClass.getDeclaredConstructor().newInstance(), database.getUrl(), username, password, scriptPath, scriptCharset, false);
     }
@@ -73,7 +73,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
       if (ite.getCause() instanceof SQLException) {
         throw (SQLException) ite.getCause();
       }
-      throw new RuntimeException(ite.getTargetException());
+      throw new RuntimeException(ite.getCause());
     }
     catch (Exception e) {
       throw new RuntimeException(e);

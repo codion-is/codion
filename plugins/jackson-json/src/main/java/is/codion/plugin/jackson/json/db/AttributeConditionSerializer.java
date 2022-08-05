@@ -24,11 +24,11 @@ final class AttributeConditionSerializer implements Serializable {
   void serialize(AttributeCondition<?> condition, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("type", "attribute");
-    generator.writeStringField("attribute", condition.getAttribute().getName());
-    generator.writeStringField("operator", condition.getOperator().name());
+    generator.writeStringField("attribute", condition.attribute().name());
+    generator.writeStringField("operator", condition.operator().name());
     generator.writeFieldName("values");
     generator.writeStartArray();
-    for (Object value : condition.getValues()) {
+    for (Object value : condition.values()) {
       entityObjectMapper.writeValue(generator, value);
     }
     generator.writeEndArray();
