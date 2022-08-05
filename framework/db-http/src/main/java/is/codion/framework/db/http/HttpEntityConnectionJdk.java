@@ -107,12 +107,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public Entities getEntities() {
+  public Entities entities() {
     return entities;
   }
 
   @Override
-  public User getUser() {
+  public User user() {
     return user;
   }
 
