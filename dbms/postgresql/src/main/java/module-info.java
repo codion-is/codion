@@ -1,4 +1,6 @@
 /**
+ * {@link is.codion.common.db.database.Database} and {@link is.codion.common.db.database.DatabaseFactory}
+ * implementations for the PostgreSQL database.
  * @provides is.codion.common.db.database.DatabaseFactory
  */
 module is.codion.dbms.postgresql {
