@@ -28,7 +28,7 @@ public class HikariConnectionPoolFactoryTest {
     pool.getConnection(UNIT_TEST_USER).close();
     pool.getConnection(UNIT_TEST_USER).close();
     pool.getConnection(UNIT_TEST_USER).close();
-    pool.getStatistics(startTime).getSnapshot();
+    pool.getStatistics(startTime).snapshot();
     pool.close();
   }
 }

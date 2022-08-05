@@ -8317,3 +8317,4 @@
   EntityTablePanel.ControlCode.CONFIGURE_COLUMNS added
   Configuration.characterValue() bug fixed, infinite recursion blowout prevented
   DefaultPropertyValue bug fixed, exception handling now unwraps InvocationTargetException
+  ConnectionPoolState, ConnectionPoolStatistics, Database.Statistics, get prefix removed from accessors, (functionally) immutable classes can be replaced with records at some point

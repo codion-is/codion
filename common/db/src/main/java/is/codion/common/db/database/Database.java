@@ -302,31 +302,31 @@ public interface Database extends ConnectionFactory {
     /**
      * @return the number of queries being run per second
      */
-    int getQueriesPerSecond();
+    int queriesPerSecond();
 
     /**
      * @return the number of delete queries being run per second
      */
-    int getDeletesPerSecond();
+    int deletesPerSecond();
 
     /**
      * @return the number of insert queries being run per second
      */
-    int getInsertsPerSecond();
+    int insertsPerSecond();
 
     /**
      * @return the number of select queries being run per second
      */
-    int getSelectsPerSecond();
+    int selectsPerSecond();
 
     /**
      * @return the number of update queries being run per second
      */
-    int getUpdatesPerSecond();
+    int updatesPerSecond();
 
     /**
      * @return the timestamp of these statistics
      */
-    long getTimestamp();
+    long timestamp();
   }
 }

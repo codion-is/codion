@@ -13,86 +13,86 @@ public interface ConnectionPoolStatistics {
   /**
    * @return the connection pool username
    */
-  String getUsername();
+  String username();
 
   /**
    * Returns a list containing a snapshot of connection pool states.
    * @return a snapshot of pool states associated with this statistics object
    */
-  List<ConnectionPoolState> getSnapshot();
+  List<ConnectionPoolState> snapshot();
 
   /**
    * @return the number of connections being managed by the pool
    */
-  int getSize();
+  int size();
 
   /**
    * @return the number of available connections
    */
-  int getAvailable();
+  int available();
 
   /**
    * @return the number of connections in use
    */
-  int getInUse();
+  int inUse();
 
   /**
    * @return the timestamp
    */
-  long getTimestamp();
+  long timestamp();
 
   /**
    * @return the time at which this statistics object was created
    */
-  long getCreationDate();
+  long creationDate();
 
   /**
    * @return the number of connections created by the pool
    */
-  int getCreated();
+  int created();
 
   /**
    * @return the number of idle connections destroyed by the pool
    */
-  int getDestroyed();
+  int destroyed();
 
   /**
    * @return the last time stats were reset
    */
-  long getResetTime();
+  long resetTime();
 
   /**
    * @return the number of connection requests since last reset
    */
-  int getRequests();
+  int requests();
 
   /**
    * @return the number of connection requests per second
    */
-  int getRequestsPerSecond();
+  int requestsPerSecond();
 
   /**
    * @return the number of failed connection requests since last reset
    */
-  int getFailedRequests();
+  int failedRequests();
 
   /**
    * @return the number of failed connection requests per second
    */
-  int getFailedRequestsPerSecond();
+  int failedRequestsPerSecond();
 
   /**
    * @return the avarage check out time in ms
    */
-  long getAverageGetTime();
+  long averageGetTime();
 
   /**
    * @return the minimum check out time in ms
    */
-  long getMinimumCheckOutTime();
+  long minimumCheckOutTime();
 
   /**
    * @return the maximum check out time in ms
    */
-  long getMaximumCheckOutTime();
+  long maximumCheckOutTime();
 }
