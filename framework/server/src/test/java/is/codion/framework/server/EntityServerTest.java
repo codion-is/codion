@@ -168,8 +168,10 @@ public class EntityServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    SelectCondition selectCondition = Conditions.condition(TestDomain.T_EMP).toSelectCondition()
-            .orderBy(OrderBy.ascending(TestDomain.EMP_NAME));
+    SelectCondition selectCondition = Conditions.condition(TestDomain.T_EMP)
+            .selectBuilder()
+            .orderBy(OrderBy.ascending(TestDomain.EMP_NAME))
+            .build();
     remoteConnectionTwo.select(selectCondition);
 
     admin.getDatabaseStatistics();

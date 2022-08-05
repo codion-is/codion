@@ -8320,3 +8320,4 @@
   ConnectionPoolState, ConnectionPoolStatistics, Database.Statistics, get prefix removed from accessors, (functionally) immutable classes can be replaced with records at some point
   ServerConfiguration, EntityServerConfiguration, HttpServerConfiguration, get prefix removed from accessors
   ConnectionRequest, RemoteClient, get prefix removed from accessors of immutable properties
+  SelectCondition.Builder added, Condition.toSelectCondition() replaced with selectBuilder()

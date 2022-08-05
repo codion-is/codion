@@ -36,12 +36,8 @@ abstract class AbstractCondition implements Condition, Serializable {
   }
 
   @Override
-  public final SelectCondition toSelectCondition() {
-    if (this instanceof SelectCondition) {
-      return (SelectCondition) this;
-    }
-
-    return new DefaultSelectCondition(this);
+  public final SelectCondition.Builder selectBuilder() {
+    return SelectCondition.builder(this);
   }
 
   @Override

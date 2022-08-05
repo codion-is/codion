@@ -44,46 +44,46 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     JsonNode conditionNode = jsonNode.get("condition");
     Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
-    SelectCondition selectCondition = condition.toSelectCondition();
+    SelectCondition.Builder selectCondition = condition.selectBuilder();
     JsonNode orderBy = jsonNode.get("orderBy");
     if (orderBy != null && !orderBy.isNull()) {
-      selectCondition = selectCondition.orderBy(deserializeOrderBy(definition, orderBy));
+      selectCondition.orderBy(deserializeOrderBy(definition, orderBy));
     }
     JsonNode limit = jsonNode.get("limit");
     if (limit != null && !limit.isNull()) {
-      selectCondition = selectCondition.limit(limit.asInt());
+      selectCondition.limit(limit.asInt());
     }
     JsonNode offset = jsonNode.get("offset");
     if (offset != null && !offset.isNull()) {
-      selectCondition = selectCondition.offset(offset.asInt());
+      selectCondition.offset(offset.asInt());
     }
     JsonNode fetchDepth = jsonNode.get("fetchDepth");
     if (fetchDepth != null && !fetchDepth.isNull()) {
-      selectCondition = selectCondition.fetchDepth(fetchDepth.asInt());
+      selectCondition.fetchDepth(fetchDepth.asInt());
     }
     JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
     if (fkFetchDepth != null && !fkFetchDepth.isNull()) {
       for (ForeignKey foreignKey : definition.getForeignKeys()) {
         JsonNode fetchDepthNode = fkFetchDepth.get(foreignKey.getName());
         if (fetchDepthNode != null) {
-          selectCondition = selectCondition.fetchDepth(foreignKey, fetchDepthNode.asInt());
+          selectCondition.fetchDepth(foreignKey, fetchDepthNode.asInt());
         }
       }
     }
     JsonNode forUpdate = jsonNode.get("forUpdate");
     if (forUpdate != null && !forUpdate.isNull() && forUpdate.asBoolean()) {
-      selectCondition = selectCondition.forUpdate();
+      selectCondition.forUpdate();
     }
     JsonNode selectAttributes = jsonNode.get("selectAttributes");
     if (selectAttributes != null && !selectAttributes.isNull()) {
-      selectCondition = selectCondition.selectAttributes(deserializeSelectAttributes(definition, selectAttributes));
+      selectCondition.selectAttributes(deserializeSelectAttributes(definition, selectAttributes));
     }
     JsonNode queryTimeout = jsonNode.get("queryTimeout");
     if (queryTimeout != null && !queryTimeout.isNull()) {
-      selectCondition = selectCondition.queryTimeout(queryTimeout.asInt());
+      selectCondition.queryTimeout(queryTimeout.asInt());
     }
 
-    return selectCondition;
+    return selectCondition.build();
   }
 
   private static OrderBy deserializeOrderBy(EntityDefinition definition, JsonNode jsonNode) {

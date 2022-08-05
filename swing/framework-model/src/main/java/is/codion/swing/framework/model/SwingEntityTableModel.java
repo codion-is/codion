@@ -572,10 +572,11 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     }
     try {
       return editModel.getConnectionProvider().getConnection().select(getTableConditionModel().getCondition()
-              .toSelectCondition()
+              .selectBuilder()
               .selectAttributes(getSelectAttributes())
               .limit(limit)
-              .orderBy(getOrderBy()));
+              .orderBy(getOrderBy())
+              .build());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);

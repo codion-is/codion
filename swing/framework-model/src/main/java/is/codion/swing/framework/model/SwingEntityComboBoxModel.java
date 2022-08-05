@@ -293,9 +293,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     try {
       Condition condition = selectConditionSupplier == null ? condition(entityType) : selectConditionSupplier.get();
 
-      return connectionProvider.getConnection().select(condition.toSelectCondition()
+      return connectionProvider.getConnection().select(condition.selectBuilder()
               .selectAttributes(selectAttributes)
-              .orderBy(orderBy));
+              .orderBy(orderBy)
+              .build());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);

@@ -126,8 +126,8 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public SelectCondition toSelectCondition() {
-    return new DefaultSelectCondition(this);
+  public SelectCondition.Builder selectBuilder() {
+    return new DefaultSelectCondition.DefaultBuilder(this);
   }
 
   @Override

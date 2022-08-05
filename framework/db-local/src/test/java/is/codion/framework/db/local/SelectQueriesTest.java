@@ -52,9 +52,10 @@ public final class SelectQueriesTest {
 
     SelectCondition condition = Conditions.where(QueryColumnsWhereClause.ENAME)
             .equalTo("SCOTT")
-            .toSelectCondition()
+            .selectBuilder()
             .selectAttributes(QueryColumnsWhereClause.ENAME)
-            .orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO));
+            .orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO))
+            .build();
     builder = queries.builder(testDomain.getEntities().getDefinition(QueryColumnsWhereClause.TYPE))
             .selectCondition(condition);
 

@@ -35,28 +35,25 @@ public final class ConditionsTest {
   @Test
   void selectCondition() {
     SelectCondition condition = where(TestDomain.DEPARTMENT_LOCATION).equalTo("New York")
-            .toSelectCondition().orderBy(OrderBy.ascending(TestDomain.DEPARTMENT_NAME));
+            .selectBuilder()
+            .orderBy(OrderBy.ascending(TestDomain.DEPARTMENT_NAME))
+            .build();
     assertEquals(-1, condition.getLimit());
 
-    condition = Conditions.condition(TestDomain.T_DEPARTMENT).toSelectCondition().limit(10);
+    condition = Conditions.condition(TestDomain.T_DEPARTMENT).selectBuilder()
+            .limit(10)
+            .build();
     assertEquals(10, condition.getLimit());
   }
 
   @Test
   void customConditionTest() {
     SelectCondition condition = Conditions.customCondition(TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID)
-            .toSelectCondition().orderBy(OrderBy.ascending(TestDomain.DEPARTMENT_NAME));
+            .selectBuilder()
+            .orderBy(OrderBy.ascending(TestDomain.DEPARTMENT_NAME))
+            .build();
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getAttributes().isEmpty());
-  }
-
-  @Test
-  void selectConditionOrderBySameAttribute() {
-    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).toSelectCondition()
-            .orderBy(OrderBy.builder()
-                    .ascending(TestDomain.EMP_DEPARTMENT)
-                    .descending(TestDomain.EMP_DEPARTMENT)
-                    .build()));
   }
 
   @Test
@@ -296,15 +293,6 @@ public final class ConditionsTest {
   }
 
   @Test
-  void selectConditionOrderByDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).toSelectCondition()
-            .orderBy(OrderBy.builder()
-                    .ascending(TestDomain.EMP_NAME)
-                    .descending(TestDomain.EMP_NAME)
-                    .build()));
-  }
-
-  @Test
   void attributeConditionWithNonColumnProperty() {
     EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () ->
@@ -491,37 +479,49 @@ public final class ConditionsTest {
 
     condition1 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke", "John");
     condition2 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke", "John");
-    assertEquals(condition1.toSelectCondition(), condition2.toSelectCondition());
-    assertEquals(condition1.toSelectCondition()
-                    .orderBy(OrderBy.ascending(TestDomain.EMP_NAME)),
-            condition2.toSelectCondition()
-                    .orderBy(OrderBy.ascending(TestDomain.EMP_NAME)));
-    assertNotEquals(condition1.toSelectCondition()
-            .orderBy(OrderBy.ascending(TestDomain.EMP_NAME)),
-            condition2.toSelectCondition());
+    assertEquals(condition1.selectBuilder().build(), condition2.selectBuilder().build());
+    assertEquals(condition1.selectBuilder()
+                    .orderBy(OrderBy.ascending(TestDomain.EMP_NAME))
+                    .build(),
+            condition2.selectBuilder()
+                    .orderBy(OrderBy.ascending(TestDomain.EMP_NAME))
+                    .build());
+    assertNotEquals(condition1.selectBuilder()
+                    .orderBy(OrderBy.ascending(TestDomain.EMP_NAME))
+                    .build(),
+            condition2.selectBuilder()
+                    .build());
 
-    assertEquals(condition1.toSelectCondition()
-                    .selectAttributes(TestDomain.EMP_NAME),
-            condition2.toSelectCondition()
-                    .selectAttributes(TestDomain.EMP_NAME));
-
-    assertEquals(condition1.toSelectCondition()
+    assertEquals(condition1.selectBuilder()
                     .selectAttributes(TestDomain.EMP_NAME)
-                    .offset(10),
-            condition2.toSelectCondition()
+                    .build(),
+            condition2.selectBuilder()
                     .selectAttributes(TestDomain.EMP_NAME)
-                    .offset(10));
+                    .build());
 
-    assertNotEquals(condition1.toSelectCondition()
-                    .selectAttributes(TestDomain.EMP_NAME),
-            condition2.toSelectCondition()
+    assertEquals(condition1.selectBuilder()
                     .selectAttributes(TestDomain.EMP_NAME)
-                    .offset(10));
+                    .offset(10)
+                    .build(),
+            condition2.selectBuilder()
+                    .selectAttributes(TestDomain.EMP_NAME)
+                    .offset(10)
+                    .build());
 
-    assertNotEquals(condition1.toSelectCondition()
-                    .selectAttributes(TestDomain.EMP_NAME),
-            condition2.toSelectCondition()
-                    .selectAttributes(TestDomain.EMP_ID));
+    assertNotEquals(condition1.selectBuilder()
+                    .selectAttributes(TestDomain.EMP_NAME)
+                    .build(),
+            condition2.selectBuilder()
+                    .selectAttributes(TestDomain.EMP_NAME)
+                    .offset(10)
+                    .build());
+
+    assertNotEquals(condition1.selectBuilder()
+                    .selectAttributes(TestDomain.EMP_NAME)
+                    .build(),
+            condition2.selectBuilder()
+                    .selectAttributes(TestDomain.EMP_ID)
+                    .build());
 
     condition1 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke");
     condition2 = condition1;

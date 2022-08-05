@@ -92,7 +92,7 @@ public final class ConditionObjectMapperTest {
     ConditionObjectMapper mapper = new ConditionObjectMapper(EntityObjectMapper.createEntityObjectMapper(entities));
 
     SelectCondition selectCondition = Conditions.where(Employee.EMPNO).equalTo(1)
-            .toSelectCondition()
+            .selectBuilder()
             .orderBy(OrderBy.builder()
                     .ascending(Employee.EMPNO)
                     .descending(Employee.NAME)
@@ -103,7 +103,8 @@ public final class ConditionObjectMapperTest {
             .queryTimeout(42)
             .fetchDepth(2)
             .fetchDepth(Employee.DEPARTMENT_FK, 0)
-            .selectAttributes(Employee.COMMISSION, Employee.DEPARTMENT);
+            .selectAttributes(Employee.COMMISSION, Employee.DEPARTMENT)
+            .build();
 
     String jsonString = mapper.writeValueAsString(selectCondition);
     SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
@@ -121,7 +122,7 @@ public final class ConditionObjectMapperTest {
     assertEquals(42, readCondition.getQueryTimeout());
     assertEquals(selectCondition, readCondition);
 
-    selectCondition = Conditions.where(Employee.EMPNO).equalTo(1).toSelectCondition();
+    selectCondition = Conditions.where(Employee.EMPNO).equalTo(1).selectBuilder().build();
 
     jsonString = mapper.writeValueAsString(selectCondition);
     readCondition = mapper.readValue(jsonString, SelectCondition.class);

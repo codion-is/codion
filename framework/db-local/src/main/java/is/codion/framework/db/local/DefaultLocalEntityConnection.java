@@ -322,7 +322,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          List<Entity> selected = doSelect(condition(Entity.getPrimaryKeys(entitiesToUpdate)).toSelectCondition(), 0);//bypass caching
+          List<Entity> selected = doSelect(condition(Entity.getPrimaryKeys(entitiesToUpdate)).selectBuilder().build(), 0);//bypass caching
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -505,7 +505,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         List<Entity> result = new ArrayList<>();
         for (List<Key> entityTypeKeys : Entity.mapKeysToType(keys).values()) {
-          result.addAll(doSelect(condition(entityTypeKeys).toSelectCondition()));
+          result.addAll(doSelect(condition(entityTypeKeys).selectBuilder().build()));
         }
         commitIfTransactionIsNotOpen();
 
@@ -539,7 +539,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public List<Entity> select(Condition condition) throws DatabaseException {
-    SelectCondition selectCondition = requireNonNull(condition, CONDITION_PARAM_NAME).toSelectCondition();
+    SelectCondition selectCondition = requireNonNull(condition, CONDITION_PARAM_NAME).selectBuilder().build();
     synchronized (connection) {
       try {
         List<Entity> result = doSelect(selectCondition);
@@ -609,8 +609,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
-                    .selectCondition(condition.toSelectCondition()
-                            .selectAttributes(entityDefinition.getPrimaryKeyAttributes()))
+                    .selectCondition(condition.selectBuilder()
+                            .selectAttributes(entityDefinition.getPrimaryKeyAttributes())
+                            .build())
                     .build())
             .build();
     PreparedStatement statement = null;
@@ -898,9 +899,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void performOptimisticLocking(Map<EntityType, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
     for (Map.Entry<EntityType, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
       Collection<Key> originalKeys = Entity.getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
-      SelectCondition selectForUpdateCondition = condition(originalKeys).toSelectCondition()
+      SelectCondition selectForUpdateCondition = condition(originalKeys).selectBuilder()
               .selectAttributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()))
-              .forUpdate();
+              .forUpdate()
+              .build();
       List<Entity> currentEntities = doSelect(selectForUpdateCondition);
       EntityDefinition definition = domainEntities.getDefinition(entitiesByEntityTypeEntry.getKey());
       Map<Key, Entity> currentEntitiesByKey = Entity.mapToPrimaryKey(currentEntities);
@@ -975,9 +977,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           }
           else {
             SelectCondition referencedEntitiesCondition = condition(referencedKeys)
-                    .toSelectCondition()
+                    .selectBuilder()
                     .fetchDepth(conditionFetchDepthLimit)
-                    .selectAttributes(getAttributesToSelect(foreignKeyProperty, referencedKeys.get(0).getAttributes()));
+                    .selectAttributes(getAttributesToSelect(foreignKeyProperty, referencedKeys.get(0).getAttributes()))
+                    .build();
             List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
             Map<Key, Entity> referencedEntitiesMappedByKey = Entity.mapToPrimaryKey(referencedEntities);
@@ -1013,7 +1016,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private ResultIterator<Entity> entityIterator(Condition condition) throws SQLException {
-    SelectCondition selectCondition = requireNonNull(condition, CONDITION_PARAM_NAME).toSelectCondition();
+    SelectCondition selectCondition = requireNonNull(condition, CONDITION_PARAM_NAME).selectBuilder().build();
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectQuery = null;

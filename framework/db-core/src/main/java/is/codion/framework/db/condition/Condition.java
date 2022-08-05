@@ -57,9 +57,9 @@ public interface Condition {
   String getConditionString(EntityDefinition definition);
 
   /**
-   * @return a {@link SelectCondition} based on this condition
+   * @return a {@link SelectCondition.Builder} instance based on this condition
    */
-  SelectCondition toSelectCondition();
+  SelectCondition.Builder selectBuilder();
 
   /**
    * @return a {@link UpdateCondition} based on this condition
