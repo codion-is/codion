@@ -28,12 +28,12 @@ public interface EntitySearchModel {
   /**
    * @return the type of the entity this search model is based on
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the connection provider used by this search model
    */
-  EntityConnectionProvider getConnectionProvider();
+  EntityConnectionProvider connectionProvider();
 
   /**
    * @return an unmodifiable view of the selected entities
@@ -66,7 +66,7 @@ public interface EntitySearchModel {
   /**
    * @return the attributes used when performing a search
    */
-  Collection<Attribute<String>> getSearchAttributes();
+  Collection<Attribute<String>> searchAttributes();
 
   /**
    * @param resultSorter the comparator used to sort the search result, null if the result should not be sorted
@@ -92,7 +92,7 @@ public interface EntitySearchModel {
   /**
    * @return the Value controlling the wildcard character
    */
-  Value<Character> getWildcardValue();
+  Value<Character> wildcardValue();
 
   /**
    * @return true if the current search string represents the selected entities
@@ -134,27 +134,27 @@ public interface EntitySearchModel {
   /**
    * @return a StateObserver indicating whether the search string represents the selected entities
    */
-  StateObserver getSearchStringRepresentsSelectedObserver();
+  StateObserver searchStringRepresentsSelectedObserver();
 
   /**
    * @return the settings associated with the search attributes
    */
-  Map<Attribute<String>, SearchSettings> getAttributeSearchSettings();
+  Map<Attribute<String>, SearchSettings> attributeSearchSettings();
 
   /**
    * @return the Value representing the search string
    */
-  Value<String> getSearchStringValue();
+  Value<String> searchStringValue();
 
   /**
    * @return the Value representing the multiple item separator setting
    */
-  Value<String> getMultipleItemSeparatorValue();
+  Value<String> multipleItemSeparatorValue();
 
   /**
    * @return the State representing the multiple selection enabled setting
    */
-  State getMultipleSelectionEnabledState();
+  State multipleSelectionEnabledState();
 
   /**
    * Attribute search settings
@@ -164,16 +164,16 @@ public interface EntitySearchModel {
     /**
      * @return a State representing whether a wildcard is automatically prepended to the search string
      */
-    State getWildcardPrefixState();
+    State wildcardPrefixState();
 
     /**
      * @return a State representing whether a wildcard is automatically appended to the search string
      */
-    State getWildcardPostfixState();
+    State wildcardPostfixState();
 
     /**
      * @return a State representing whether the search is case-sensitive
      */
-    State getCaseSensitiveState();
+    State caseSensitiveState();
   }
 }

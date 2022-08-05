@@ -415,7 +415,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
 
     private InsertEntityAction(EntitySearchField searchField) {
-      this(requireNonNull(searchField, "searchField"), searchField.getModel().getConnectionProvider(), inserted ->
+      this(requireNonNull(searchField, "searchField"), searchField.getModel().connectionProvider(), inserted ->
               searchField.getModel().setSelectedEntities(inserted));
     }
 

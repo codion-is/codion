@@ -71,7 +71,7 @@ public final class PropertyValues {
    * @throws IllegalArgumentException in case the search model has multiple selection enabled
    */
   public static Value<Entity> singleSearchValue(EntitySearchModel searchModel) {
-    if (searchModel.getMultipleSelectionEnabledState().get()) {
+    if (searchModel.multipleSelectionEnabledState().get()) {
       throw new IllegalArgumentException("Multiple item selection is enabled for search model");
     }
 

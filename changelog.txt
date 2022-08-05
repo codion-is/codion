@@ -8330,3 +8330,4 @@
   FunctionType, ProcedureType and ReportType, get prefix removed from accessors
   Entities, EntityConnection, EntityConnectionProvider, LocalEntityConnection, LocalEntityConnectionProvider, get prefix removed from accessors, Entities.getDefinitions() renamed entityDefinitions()
   ServerInformation, RemoteEntityConnectionProvider, get prefix removed from accessors
+  EntitySearchModel, get prefix removed from accessors

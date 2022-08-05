@@ -99,12 +99,12 @@ public final class EntitySearchField extends TextField {
   }
 
   private void linkToModel() {
-    PropertyValues.stringPropertyValue(textProperty()).link(model.getSearchStringValue());
+    PropertyValues.stringPropertyValue(textProperty()).link(model.searchStringValue());
   }
 
   private void selectEntities(List<Entity> queryResult) {
     FXUiUtil.SingleSelection singleSelection;
-    if (model.getMultipleSelectionEnabledState().get()) {
+    if (model.multipleSelectionEnabledState().get()) {
       singleSelection = FXUiUtil.SingleSelection.NO;
     }
     else {
@@ -153,13 +153,13 @@ public final class EntitySearchField extends TextField {
     }
 
     private void onEnter() {
-      if (!model.getSearchStringRepresentsSelectedObserver().get()) {
+      if (!model.searchStringRepresentsSelectedObserver().get()) {
         performSearch(true);
       }
     }
 
     private void onEscape() {
-      if (model.getSearchStringRepresentsSelectedObserver().reversedObserver().get()) {
+      if (model.searchStringRepresentsSelectedObserver().reversedObserver().get()) {
         model.refreshSearchText();
         selectAll();
       }

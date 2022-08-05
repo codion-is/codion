@@ -612,7 +612,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
 
     EntitySearchModel searchModel = new DefaultEntitySearchModel(property.referencedEntityType(), connectionProvider, searchAttributes);
-    searchModel.getMultipleSelectionEnabledState().set(false);
+    searchModel.multipleSelectionEnabledState().set(false);
 
     return searchModel;
   }
