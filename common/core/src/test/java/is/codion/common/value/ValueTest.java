@@ -5,6 +5,7 @@ package is.codion.common.value;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
 
 import org.junit.jupiter.api.Test;
 
@@ -92,8 +93,12 @@ public class ValueTest {
     assertTrue(intValue.toOptional().isPresent());
     assertTrue(intValue.equalTo(42));
     ValueObserver<Integer> valueObserver = intValue.getObserver();
-    intValue.addListener(eventCounter::incrementAndGet);
-    intValue.addDataListener(data -> {
+    assertFalse(valueObserver.isNullable());
+    assertTrue(valueObserver.toOptional().isPresent());
+    assertTrue(valueObserver.equalTo(42));
+    EventListener eventListener = eventCounter::incrementAndGet;
+    valueObserver.addListener(eventListener);
+    valueObserver.addDataListener(data -> {
       if (eventCounter.get() != 2) {
         assertNotNull(data);
       }
@@ -133,6 +138,8 @@ public class ValueTest {
     assertFalse(value.toOptional().isPresent());
     value.set("hello");
     assertTrue(value.toOptional().isPresent());
+
+    valueObserver.removeListener(eventListener);
   }
 
   @Test

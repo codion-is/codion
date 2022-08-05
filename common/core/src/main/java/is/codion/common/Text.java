@@ -15,8 +15,8 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.text.Collator;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -77,8 +77,8 @@ public final class Text {
     }
     int length = minLength == maximumLength ? minLength : RANDOM.nextInt(maximumLength - minLength) + minLength;
 
-    return IntStream.range(0, length).mapToObj(i ->
-            String.valueOf(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length()))))
+    return IntStream.range(0, length)
+            .mapToObj(i -> String.valueOf(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length()))))
             .collect(joining());
   }
 
@@ -271,20 +271,20 @@ public final class Text {
   }
 
   /**
-   * Parses and trims the given comma separated string.
+   * Parses, splits and trims the given comma separated string.
+   * Returns an empty list in case of null or empty string argument.
    * @param commaSeparatedValues a String with comma separated values
    * @return the trimmed values
    */
   public static List<String> parseCommaSeparatedValues(String commaSeparatedValues) {
-    List<String> values = new ArrayList<>();
-    if (!nullOrEmpty(commaSeparatedValues)) {
-      String[] strings = commaSeparatedValues.split(",");
-      for (String value : strings) {
-        values.add(value.trim());
-      }
+    if (nullOrEmpty(commaSeparatedValues)) {
+      return Collections.emptyList();
     }
 
-    return values;
+    return Arrays.stream(commaSeparatedValues.split(","))
+            .map(String::trim)
+            .filter(string -> !string.isEmpty())
+            .collect(Collectors.toList());
   }
 
   /**

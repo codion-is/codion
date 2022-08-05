@@ -129,6 +129,8 @@ public class StateTest {
 
     assertFalse(orState.get(), "Or state should be inactive");
     assertFalse(andState.get(), "And state should be inactive");
+    assertTrue(orState.getReversedObserver().get(), "Reversed Or state should be active");
+    assertTrue(andState.getReversedObserver().get(), "Reversed And state should be active");
 
     stateOne.set(true);
 
@@ -162,6 +164,7 @@ public class StateTest {
     orState.addState(stateThree);
     andState = State.and(stateOne, stateTwo, stateThree);
     assertEquals("Combination and false, false, false, false", andState.toString());
+    assertEquals("Combination or false, false, false, false", orState.toString());
 
     assertFalse(orState.get(), "Or state should be inactive");
     assertFalse(andState.get(), "And state should be inactive");
@@ -195,6 +198,10 @@ public class StateTest {
     assertFalse(orState.get(), "Or state should be inactive when no component state is active");
     stateTwo.set(true);
     assertTrue(orState.get(), "Or state should be active when one component state is active");
+
+    assertFalse(orState.isNull());
+    assertTrue(orState.isNotNull());
+    assertFalse(orState.isNullable());
   }
 
   @Test
