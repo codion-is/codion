@@ -89,13 +89,13 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   }
 
   private void performSimpleSearch() {
-    Conjunction previousConjunction = getTableConditionModel().getConjunction();
+    Conjunction previousConjunction = tableConditionModel().getConjunction();
     try {
-      getTableConditionModel().setConjunction(Conjunction.OR);
+      tableConditionModel().setConjunction(Conjunction.OR);
       onSearchListener.onEvent();
     }
     finally {
-      getTableConditionModel().setConjunction(previousConjunction);
+      tableConditionModel().setConjunction(previousConjunction);
     }
   }
 }

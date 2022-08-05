@@ -130,15 +130,15 @@ public final class EntitySelectionDialog extends JDialog {
                                             boolean singleSelection) {
     EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
     tablePanel.initializePanel();
-    tablePanel.getTable().addDoubleClickListener(mouseEvent -> {
+    tablePanel.table().addDoubleClickListener(mouseEvent -> {
       if (!tableModel.selectionModel().isSelectionEmpty()) {
         okControl.actionPerformed(null);
       }
     });
     tablePanel.setConditionPanelVisible(true);
-    tablePanel.getTable().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+    tablePanel.table().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    tablePanel.getTable().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
+    tablePanel.table().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
     if (preferredSize != null) {
       tablePanel.setPreferredSize(preferredSize);
     }
@@ -156,7 +156,7 @@ public final class EntitySelectionDialog extends JDialog {
     tableModel.refresh();
     if (tableModel.getRowCount() > 0) {
       tableModel.selectionModel().setSelectedIndexes(singletonList(0));
-      entityTablePanel.getTable().requestFocusInWindow();
+      entityTablePanel.table().requestFocusInWindow();
     }
     else {
       JOptionPane.showMessageDialog(getParentWindow(entityTablePanel).orElse(null),

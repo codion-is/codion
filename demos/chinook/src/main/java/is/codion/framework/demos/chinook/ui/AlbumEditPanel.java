@@ -34,6 +34,6 @@ public final class AlbumEditPanel extends EntityEditPanel {
     setLayout(borderLayout());
 
     add(northPanel, BorderLayout.NORTH);
-    add(new CoverArtPanel(getEditModel().value(Album.COVER)), BorderLayout.CENTER);
+    add(new CoverArtPanel(editModel().value(Album.COVER)), BorderLayout.CENTER);
   }
 }

@@ -8332,3 +8332,4 @@
   ServerInformation, RemoteEntityConnectionProvider, get prefix removed from accessors
   EntitySearchModel, get prefix removed from accessors
   common.model, framework.model, swing.common.model, swing.framework.model, javafx.model, get prefix removed from accessors
+  swing.common.ui, swing.framework.ui, get prefix removed from accessors

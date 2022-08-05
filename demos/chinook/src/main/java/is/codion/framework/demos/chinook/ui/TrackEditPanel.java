@@ -50,7 +50,7 @@ public final class TrackEditPanel extends EntityEditPanel {
             .columns(5);
 
     ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();
-    minutesSecondsValue.link(getEditModel().value(Track.MILLISECONDS));
+    minutesSecondsValue.link(editModel().value(Track.MILLISECONDS));
 
     createIntegerField(Track.BYTES)
             .columns(6);

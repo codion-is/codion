@@ -248,7 +248,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the application model this application panel is based on
    */
-  public final M getModel() {
+  public final M model() {
     return applicationModel;
   }
 
@@ -258,7 +258,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final EntityPanel getEntityPanel(EntityType entityType) {
     return entityPanels.stream()
-            .filter(entityPanel -> entityPanel.getModel().entityType().equals(entityType))
+            .filter(entityPanel -> entityPanel.model().entityType().equals(entityType))
             .findFirst()
             .orElse(null);
   }
@@ -266,21 +266,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return an unmodifiable view of the main application panels
    */
-  public final List<EntityPanel> getEntityPanels() {
+  public final List<EntityPanel> entityPanels() {
     return Collections.unmodifiableList(entityPanels);
   }
 
   /**
    * @return the parent window of this panel, if one exists, an empty Optional otherwise
    */
-  public final Optional<Window> getParentWindow() {
+  public final Optional<Window> parentWindow() {
     return Utilities.getParentWindow(this);
   }
 
   /**
    * @return the application name
    */
-  public final String getApplicationName() {
+  public final String applicationName() {
     return applicationName;
   }
 
@@ -288,7 +288,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the application icon, the default logo icon if none has been specified
    * @see FrameworkIcons#logo(int)
    */
-  public final ImageIcon getApplicationIcon() {
+  public final ImageIcon applicationIcon() {
     if (applicationIcon == null) {
       applicationIcon = FrameworkIcons.frameworkIcons().logo(DEFAULT_LOGO_SIZE);
     }
@@ -314,7 +314,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return a State controlling the alwaysOnTop state of this panels parent window
    */
-  public final State getAlwaysOnTopState() {
+  public final State alwaysOnTopState() {
     return alwaysOnTopState;
   }
 
@@ -366,7 +366,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       values.add(Item.item(i, i + "%"));
     }
     ItemComboBoxModel<Integer> comboBoxModel = ItemComboBoxModel.createModel(values);
-    Integer fontSizeMultiplier = getFontSizeMultiplier();
+    Integer fontSizeMultiplier = fontSizeMultiplier();
 
     Dialogs.okCancelDialog(Components.panel(Layouts.borderLayout())
                     .add(Components.itemComboBox(comboBoxModel)
@@ -388,12 +388,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   @Override
-  public final Optional<HierarchyPanel> getParentPanel() {
+  public final Optional<HierarchyPanel> parentPanel() {
     return Optional.empty();
   }
 
   @Override
-  public final Optional<HierarchyPanel> getSelectedChildPanel() {
+  public final Optional<HierarchyPanel> selectedChildPanel() {
     if (applicationTabPane != null) {//initializeUI() may have been overridden
       return Optional.of((HierarchyPanel) applicationTabPane.getSelectedComponent());
     }
@@ -402,24 +402,24 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   @Override
-  public final void setSelectedChildPanel(HierarchyPanel childPanel) {
+  public final void selectChildPanel(HierarchyPanel childPanel) {
     if (applicationTabPane != null) {//initializeUI() may have been overridden
       applicationTabPane.setSelectedComponent((JComponent) childPanel);
     }
   }
 
   @Override
-  public final Optional<HierarchyPanel> getPreviousSiblingPanel() {
+  public final Optional<HierarchyPanel> previousSiblingPanel() {
     return Optional.empty();
   }
 
   @Override
-  public final Optional<HierarchyPanel> getNextSiblingPanel() {
+  public final Optional<HierarchyPanel> nextSiblingPanel() {
     return Optional.empty();
   }
 
   @Override
-  public final List<HierarchyPanel> getChildPanels() {
+  public final List<HierarchyPanel> childPanels() {
     return Collections.unmodifiableList(entityPanels);
   }
 
@@ -460,7 +460,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     catch (Exception e) {
       LOG.debug("Exception while disconnecting from database", e);
     }
-    getParentWindow().ifPresent(Window::dispose);
+    parentWindow().ifPresent(Window::dispose);
     System.exit(0);
   }
 
@@ -554,7 +554,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * initialization has been overridden. Returns null until {@link #initializeUI()} has been called
    * @return the default application tab pane
    */
-  protected final JTabbedPane getApplicationTabPane() {
+  protected final JTabbedPane applicationTabPane() {
     return applicationTabPane;
   }
 
@@ -781,7 +781,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     JPanel panel = new JPanel(Layouts.borderLayout());
     String versionString = Version.getVersionAndMetadataString();
     panel.add(new JLabel(FrameworkIcons.frameworkIcons().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST);
-    Version version = getClientVersion();
+    Version version = clientVersion();
     JPanel versionMemoryPanel = new JPanel(Layouts.gridLayout(version == null ? 2 : 3, 2));
     versionMemoryPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     if (version != null) {
@@ -810,7 +810,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return EntityConnectionProvider.builder()
             .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
             .clientTypeId(clientTypeId)
-            .clientVersion(getClientVersion())
+            .clientVersion(clientVersion())
             .user(user)
             .build();
   }
@@ -818,7 +818,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the client version if specified, null by default
    */
-  protected Version getClientVersion() {
+  protected Version clientVersion() {
     return null;
   }
 
@@ -845,8 +845,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     Comparator<String> comparator = Text.getSpaceAwareCollator();
     Entities entities = applicationModel.entities();
     supportPanelBuilders.sort((ep1, ep2) -> {
-      String thisCompare = ep1.getCaption() == null ? entities.getDefinition(ep1.getEntityType()).getCaption() : ep1.getCaption();
-      String thatCompare = ep2.getCaption() == null ? entities.getDefinition(ep2.getEntityType()).getCaption() : ep2.getCaption();
+      String thisCompare = ep1.getCaption() == null ? entities.getDefinition(ep1.entityType()).getCaption() : ep1.getCaption();
+      String thatCompare = ep2.getCaption() == null ? entities.getDefinition(ep2.entityType()).getCaption() : ep2.getCaption();
 
       return comparator.compare(thisCompare, thatCompare);
     });
@@ -854,7 +854,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .caption(FrameworkMessages.supportTables())
             .mnemonic(FrameworkMessages.supportTablesMnemonic());
     supportPanelBuilders.forEach(panelBuilder -> controlsBuilder.control(Control.builder(() -> displayEntityPanel(panelBuilder))
-            .caption(panelBuilder.getCaption() == null ? entities.getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())));
+            .caption(panelBuilder.getCaption() == null ? entities.getDefinition(panelBuilder.entityType()).getCaption() : panelBuilder.getCaption())));
 
     return controlsBuilder.build();
   }
@@ -888,10 +888,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       else {
         Windows.frame(entityPanel)
                 .relativeTo(this)
-                .title(panelBuilder.getCaption() == null ? applicationModel.entities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption())
+                .title(panelBuilder.getCaption() == null ? applicationModel.entities().getDefinition(panelBuilder.entityType()).getCaption() : panelBuilder.getCaption())
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {
-                  entityPanel.getModel().savePreferences();
+                  entityPanel.model().savePreferences();
                   entityPanel.savePreferences();
                 })
                 .show();
@@ -925,13 +925,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
       else {
         String dialogTitle = panelBuilder.getCaption() == null ?
-                applicationModel.entities().getDefinition(panelBuilder.getEntityType()).getCaption() :
+                applicationModel.entities().getDefinition(panelBuilder.entityType()).getCaption() :
                 panelBuilder.getCaption();
         Dialogs.componentDialog(entityPanel)
-                .owner(getParentWindow().orElse(null))
+                .owner(parentWindow().orElse(null))
                 .title(dialogTitle)
                 .onClosed(e -> {
-                  entityPanel.getModel().savePreferences();
+                  entityPanel.model().savePreferences();
                   entityPanel.savePreferences();
                 })
                 .modal(modalDialog)
@@ -981,17 +981,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Returns the name of the look and feel to use, this default implementation fetches
    * it from user preferences, if no preference is available the default system look and feel is used.
    * @return the look and feel name to use
-   * @see #getDefaultLookAndFeelName()
+   * @see #defaultLookAndFeelName()
    */
-  protected String getLookAndFeelName() {
-    return UserPreferences.getUserPreference(applicationLookAndFeelProperty, getDefaultLookAndFeelName());
+  protected String lookAndFeelName() {
+    return UserPreferences.getUserPreference(applicationLookAndFeelProperty, defaultLookAndFeelName());
   }
 
   /**
    * @return the default look and feel to use for the system we're running on.
    * @see Utilities#getSystemLookAndFeelClassName()
    */
-  protected String getDefaultLookAndFeelName() {
+  protected String defaultLookAndFeelName() {
     return Utilities.getSystemLookAndFeelClassName();
   }
 
@@ -1003,7 +1003,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the font size multiplier to use
    * @see #selectFontSize()
    */
-  protected int getFontSizeMultiplier() {
+  protected int fontSizeMultiplier() {
     return Integer.parseInt(UserPreferences.getUserPreference(applicationFontSizeProperty, "100"));
   }
 
@@ -1042,9 +1042,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return a frame title based on the application name, version and the logged-in user
    */
-  protected String getFrameTitle() {
+  protected String frameTitle() {
     StringBuilder builder = new StringBuilder(applicationName == null ? "" : applicationName);
-    Version version = getClientVersion();
+    Version version = clientVersion();
     if (version != null) {
       if (builder.length() > 0) {
         builder.append(" - ");
@@ -1054,7 +1054,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (builder.length() > 0) {
       builder.append(" - ");
     }
-    builder.append(getUserInfo(getModel().connectionProvider()));
+    builder.append(getUserInfo(model().connectionProvider()));
 
     return builder.toString();
   }
@@ -1071,7 +1071,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                                       boolean mainMenu) {
     JFrame frame = frameProvider.get();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    frame.setIconImage(getApplicationIcon().getImage());
+    frame.setIconImage(applicationIcon().getImage());
     frame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
@@ -1094,7 +1094,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (maximizeFrame) {
       frame.setExtendedState(Frame.MAXIMIZED_BOTH);
     }
-    frame.setTitle(getFrameTitle());
+    frame.setTitle(frameTitle());
     if (mainMenu) {
       frame.setJMenuBar(createMenuBar());
     }
@@ -1139,13 +1139,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the application user
    * @throws CancelException in case a login dialog is cancelled
    */
-  protected User getLoginUser(User defaultUser, LoginValidator loginValidator) {
+  protected User loginUser(User defaultUser, LoginValidator loginValidator) {
     String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.login();
     User user = Dialogs.loginDialog()
-            .defaultUser(defaultUser == null ? User.user(getDefaultUsername()) : defaultUser)
+            .defaultUser(defaultUser == null ? User.user(defaultUsername()) : defaultUser)
             .validator(loginValidator)
             .title(loginDialogTitle)
-            .icon(getApplicationIcon())
+            .icon(applicationIcon())
             .show();
     if (nullOrEmpty(user.getUsername())) {
       throw new IllegalArgumentException(FrameworkMessages.emptyUsername());
@@ -1165,7 +1165,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return a default username previously saved to user preferences or the OS username
    */
-  protected String getDefaultUsername() {
+  protected String defaultUsername() {
     return UserPreferences.getUserPreference(applicationDefaultUsernameProperty,
             EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name"));
   }
@@ -1175,7 +1175,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * by default the full class name is returned.
    * @return a String identifying the application type this panel represents
    */
-  protected String getApplicationIdentifier() {
+  protected String applicationIdentifier() {
     return getClass().getName();
   }
 
@@ -1185,8 +1185,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see EntityApplicationModel#savePreferences()
    */
   protected void savePreferences() {
-    getEntityPanels().forEach(EntityPanel::savePreferences);
-    getModel().savePreferences();
+    entityPanels().forEach(EntityPanel::savePreferences);
+    model().savePreferences();
   }
 
   final void startApplication(User defaultUser, User silentLoginUser, boolean loginRequired,
@@ -1194,8 +1194,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                               boolean includeMainMenu, boolean displayProgressDialog) {
     LOG.debug("{} application starting", applicationName);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    LookAndFeelProvider.getLookAndFeelProvider(getLookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
-    int fontSize = getFontSizeMultiplier();
+    LookAndFeelProvider.getLookAndFeelProvider(lookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
+    int fontSize = fontSizeMultiplier();
     if (fontSize != 100) {
       Utilities.setFontSize(fontSize / 100f);
     }
@@ -1217,8 +1217,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (displayProgressDialog) {
       Dialogs.progressWorkerDialog(() -> createApplicationModel(connectionProvider))
               .title(applicationName)
-              .icon(getApplicationIcon())
-              .westPanel(createStartupIconPanel(getApplicationIcon()))
+              .icon(applicationIcon())
+              .westPanel(createStartupIconPanel(applicationIcon()))
               .onResult(model -> startApplication(model, frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted))
               .onException(this::displayException)
               .execute();
@@ -1247,7 +1247,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Sets the application version as a system property, so that it appears automatically in exception dialogs.
    */
   private void setVersionProperty() {
-    Version version = getClientVersion();
+    Version version = clientVersion();
     if (version != null) {
       System.setProperty(CODION_CLIENT_VERSION, version.toString());
     }
@@ -1257,12 +1257,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                                                             boolean loginRequired) {
     if (silentLoginUser == null && loginRequired) {
       EntityLoginValidator loginValidator = new EntityLoginValidator();
-      getLoginUser(defaultUser, loginValidator);
+      loginUser(defaultUser, loginValidator);
 
       return loginValidator.connectionProvider;
     }
 
-    EntityConnectionProvider connectionProvider = initializeConnectionProvider(silentLoginUser, getApplicationIdentifier());
+    EntityConnectionProvider connectionProvider = initializeConnectionProvider(silentLoginUser, applicationIdentifier());
     connectionProvider.connection();//throws exception if the server is not reachable
 
     return connectionProvider;
@@ -1274,10 +1274,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     tabbedPane.addChangeListener(e -> ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel());
     for (EntityPanel entityPanel : entityPanels) {
       tabbedPane.addTab(entityPanel.getCaption(), entityPanel);
-      if (entityPanel.getEditPanel() != null) {
-        entityPanel.getEditPanel().addActiveListener(panelActivated -> {
+      if (entityPanel.editPanel() != null) {
+        entityPanel.editPanel().addActiveListener(panelActivated -> {
           if (panelActivated) {
-            setSelectedChildPanel(entityPanel);
+            selectChildPanel(entityPanel);
           }
         });
       }
@@ -1305,9 +1305,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private void bindEventsInternal() {
     applicationModel.connectionValidObserver().addDataListener(connectionValid -> SwingUtilities.invokeLater(() ->
-            setParentWindowTitle(connectionValid ? getFrameTitle() : (getFrameTitle() + " - " + resourceBundle.getString("not_connected")))));
+            setParentWindowTitle(connectionValid ? frameTitle() : (frameTitle() + " - " + resourceBundle.getString("not_connected")))));
     alwaysOnTopState.addDataListener(alwaysOnTop ->
-            getParentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)));
+            parentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)));
   }
 
   private void initializePanel() {
@@ -1351,7 +1351,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private boolean cancelExit() {
-    boolean cancelForUnsavedData = getModel().isWarnAboutUnsavedData() && getModel().containsUnsavedData() &&
+    boolean cancelForUnsavedData = model().isWarnAboutUnsavedData() && model().containsUnsavedData() &&
             JOptionPane.showConfirmDialog(this, FrameworkMessages.unsavedDataWarning(),
                     FrameworkMessages.unsavedDataWarningTitle(),
                     JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
@@ -1434,8 +1434,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     for (EntityPanel entityPanel : panels) {
       DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel.getCaption());
       root.add(node);
-      if (!entityPanel.getChildPanels().isEmpty()) {
-        addModelsToTree(node, (Collection<? extends EntityPanel>) entityPanel.getChildPanels());
+      if (!entityPanel.childPanels().isEmpty()) {
+        addModelsToTree(node, (Collection<? extends EntityPanel>) entityPanel.childPanels());
       }
     }
   }
@@ -1578,7 +1578,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     @Override
     public void validate(User user) throws Exception {
-      connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+      connectionProvider = initializeConnectionProvider(user, applicationIdentifier());
       connectionProvider.connection();//throws exception if the server is not reachable
     }
   }

@@ -36,7 +36,7 @@ public class SearchValueLinkTest {
             inputComponents.foreignKeySearchField(TestDomain.EMP_DEPARTMENT_FK,
             model.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK)).buildComponentValue();
     componentValue.link(model.value(TestDomain.EMP_DEPARTMENT_FK));
-    EntitySearchModel searchModel = componentValue.getComponent().getModel();
+    EntitySearchModel searchModel = componentValue.getComponent().model();
     assertEquals(0, searchModel.getSelectedEntities().size());
     Entity department = model.connectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     model.put(TestDomain.EMP_DEPARTMENT_FK, department);

@@ -65,7 +65,7 @@ public class EntityComponents {
   /**
    * @return the underlying entity definition
    */
-  public final EntityDefinition getEntityDefinition() {
+  public final EntityDefinition entityDefinition() {
     return entityDefinition;
   }
 

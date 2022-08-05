@@ -28,28 +28,28 @@ public class DefauitEntityTableCellRendererTest {
   @Test
   void test() {
     EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
-    tablePanel.getTableModel().refresh();
-    EntityTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.getTableModel(),
+    tablePanel.tableModel().refresh();
+    EntityTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.tableModel(),
             DOMAIN.entities().getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_NAME))
             .build();
-    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, false, false, 0, 0);
-    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, false, 0, 0);
-    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, true, 0, 0);
+    renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);
+    renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 0);
+    renderer.getTableCellRendererComponent(tablePanel.table(), null, true, true, 0, 0);
 
-    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, false, false, 0, 1);
-    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, false, 0, 1);
-    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, true, 0, 1);
+    renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 1);
+    renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 1);
+    renderer.getTableCellRendererComponent(tablePanel.table(), null, true, true, 0, 1);
 
-    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, false, false, 0, 7);
-    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, false, 0, 7);
-    renderer.getTableCellRendererComponent(tablePanel.getTable(), null, true, true, 0, 7);
+    renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 7);
+    renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 7);
+    renderer.getTableCellRendererComponent(tablePanel.table(), null, true, true, 0, 7);
   }
 
   @Test
   void entityMismatch() {
     EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
-    tablePanel.getTableModel().refresh();
-    assertThrows(IllegalArgumentException.class, () -> EntityTableCellRenderer.builder(tablePanel.getTableModel(),
+    tablePanel.tableModel().refresh();
+    assertThrows(IllegalArgumentException.class, () -> EntityTableCellRenderer.builder(tablePanel.tableModel(),
             DOMAIN.entities().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DEPARTMENT_NAME)));
   }
 }

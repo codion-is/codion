@@ -61,7 +61,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   }
 
   @Override
-  protected String getApplicationIdentifier() {
+  protected String applicationIdentifier() {
     return "is.codion.demo.SchemaBrowser";
   }
 

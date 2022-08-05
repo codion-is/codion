@@ -44,7 +44,7 @@ public final class MultiPanelDemo {
     JPanel basePanel = new JPanel(gridLayout(2, 2));
     for (int i = 0; i < 4; i++) {
       EntityPanel employeePanel = new EntityPanel(employeeModel, new EmployeeEditPanel(employeeModel.editModel()));
-      employeePanel.getTablePanel().setConditionPanelVisible(true);
+      employeePanel.tablePanel().setConditionPanelVisible(true);
       employeePanel.initializePanel();
       basePanel.add(employeePanel);
     }

@@ -349,11 +349,11 @@ public class StoreDemo {
                     new AddressEditPanel(addressModel.editModel()));
     customerPanel.addDetailPanel(addressPanel);
 
-    customerPanel.getTablePanel().getTable()
+    customerPanel.tablePanel().table()
             .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
-    addressPanel.getTablePanel().getTable()
+    addressPanel.tablePanel().table()
             .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
-    addressPanel.getTablePanel().setConditionPanelVisible(true);
+    addressPanel.tablePanel().setConditionPanelVisible(true);
 
     customerModel.tableModel().refresh();
     customerPanel.initializePanel();

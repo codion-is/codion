@@ -78,7 +78,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityType getEntityType() {
+  public EntityType entityType() {
     return entityType;
   }
 
@@ -220,14 +220,14 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     requireNonNull(model, "model");
     try {
       EntityPanel entityPanel = createPanel(model);
-      if (entityPanel.getTablePanel() != null && tableConditionPanelVisible) {
-        entityPanel.getTablePanel().setConditionPanelVisible(tableConditionPanelVisible);
+      if (entityPanel.tablePanel() != null && tableConditionPanelVisible) {
+        entityPanel.tablePanel().setConditionPanelVisible(tableConditionPanelVisible);
       }
       if (!detailPanelBuilders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
-          SwingEntityModel detailModel = model.getDetailModel(detailPanelBuilder.getEntityType());
+          SwingEntityModel detailModel = model.getDetailModel(detailPanelBuilder.entityType());
           EntityPanel detailPanel = detailPanelBuilder.buildPanel(detailModel);
           entityPanel.addDetailPanel(detailPanel);
         }
@@ -415,8 +415,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
 
     private InsertEntityAction(EntitySearchField searchField) {
-      this(requireNonNull(searchField, "searchField"), searchField.getModel().connectionProvider(), inserted ->
-              searchField.getModel().setSelectedEntities(inserted));
+      this(requireNonNull(searchField, "searchField"), searchField.model().connectionProvider(), inserted ->
+              searchField.model().setSelectedEntities(inserted));
     }
 
     private InsertEntityAction(JComponent component, EntityConnectionProvider connectionProvider,
@@ -438,7 +438,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       EntityEditPanel editPanel = buildEditPanel(connectionProvider);
       editPanel.initializePanel();
       editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
-      editPanel.getEditModel().addAfterInsertListener(inserted -> {
+      editPanel.editModel().addAfterInsertListener(inserted -> {
         this.insertedEntities.clear();
         this.insertedEntities.addAll(inserted);
       });
@@ -458,7 +458,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
           if (cancelled.get()) {
             return;//cancelled
           }
-          insertPerformed = insert(editPanel.getEditModel(), attributeWithInvalidValue);
+          insertPerformed = insert(editPanel.editModel(), attributeWithInvalidValue);
           if (insertPerformed && !insertedEntities.isEmpty()) {
             insertListener.onEvent(insertedEntities);
           }

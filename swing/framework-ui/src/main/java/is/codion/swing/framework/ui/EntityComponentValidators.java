@@ -93,7 +93,7 @@ public final class EntityComponentValidators {
      * the invalidity, if the value is valid this method returns null
      * @return a validation string if the value is invalid, null otherwise
      */
-    protected final String getValidationMessage() {
+    protected final String validationMessage() {
       try {
         editModel.validate(attribute);
         return null;
@@ -114,14 +114,14 @@ public final class EntityComponentValidators {
     /**
      * @return the component associated with the value being validated
      */
-    protected final JComponent getComponent() {
+    protected final JComponent component() {
       return component;
     }
 
     /**
      * @return the default tooltip to show when the field value is valid
      */
-    protected final String getDefaultToolTip() {
+    protected final String defaultToolTip() {
       return defaultToolTip;
     }
 
@@ -166,10 +166,10 @@ public final class EntityComponentValidators {
 
     @Override
     protected void validate() {
-      JComponent component = getComponent();
+      JComponent component = component();
       boolean enabled = component.isEnabled();
       boolean stringValid = isStringValid();
-      String validationMessage = getValidationMessage();
+      String validationMessage = validationMessage();
       if (stringValid && validationMessage == null) {
         component.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
       }
@@ -203,7 +203,7 @@ public final class EntityComponentValidators {
 
     @Override
     protected boolean isStringValid() {
-      boolean stringEqualsMask = ((JTextComponent) getComponent()).getText().equals(maskString);
+      boolean stringEqualsMask = ((JTextComponent) component()).getText().equals(maskString);
 
       return !isNull() || (stringEqualsMask && isNullable());
     }

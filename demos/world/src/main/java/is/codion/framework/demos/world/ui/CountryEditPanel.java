@@ -67,7 +67,7 @@ final class CountryEditPanel extends EntityEditPanel {
             .onBuildEditPanel(this::initializeCapitalEditPanel)
             .createEditPanelAction(capitalComboBox));
     //add a field displaying the avarage city population for the selected country
-    CountryEditModel editModel = (CountryEditModel) getEditModel();
+    CountryEditModel editModel = (CountryEditModel) editModel();
     NumberField<Double> averageCityPopulationField = Components.doubleField()
             .linkedValueObserver(editModel.getAverageCityPopulationValue())
             .maximumFractionDigits(2)
@@ -117,10 +117,10 @@ final class CountryEditPanel extends EntityEditPanel {
 
   private void initializeCapitalEditPanel(EntityEditPanel capitalEditPanel) {
     //set the country to the one selected in the CountryEditPanel
-    Entity country = getEditModel().entityCopy();
+    Entity country = editModel().entityCopy();
     if (country.getPrimaryKey().isNotNull()) {
       //if a country is selected, then we don't allow it to be changed
-      capitalEditPanel.getEditModel().put(City.COUNTRY_FK, country);
+      capitalEditPanel.editModel().put(City.COUNTRY_FK, country);
       //initialize the panel components, so we can configure the country component
       capitalEditPanel.initializePanel();
       //disable the country selection component

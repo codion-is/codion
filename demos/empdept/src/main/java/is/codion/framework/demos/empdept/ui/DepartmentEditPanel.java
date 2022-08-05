@@ -32,8 +32,8 @@ public class DepartmentEditPanel extends EntityEditPanel {
             .upperCase(true);
 
     //we don't allow editing of the department number since it's a primary key
-    getEditModel().getPrimaryKeyNullObserver().addListener(() -> {
-      if (getEditModel().isEntityNew()) {
+    editModel().getPrimaryKeyNullObserver().addListener(() -> {
+      if (editModel().isEntityNew()) {
         departmentIdField.setEnabled(true);
         setInitialFocusAttribute(Department.ID);
       }

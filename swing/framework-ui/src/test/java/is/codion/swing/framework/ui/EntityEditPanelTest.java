@@ -30,7 +30,7 @@ public final class EntityEditPanelTest {
   void test() throws DatabaseException {
     SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     TestEditPanel editPanel = new TestEditPanel(editModel);
-    assertEquals(7, editPanel.getComponentAttributes().size());
+    assertEquals(7, editPanel.componentAttributes().size());
     editPanel.createHorizontalControlPanel();
     editPanel.createVerticalControlPanel();
     editPanel.createControlToolBar(HORIZONTAL);
@@ -38,7 +38,7 @@ public final class EntityEditPanelTest {
     editPanel.initializePanel();
     assertTrue(editPanel.isPanelInitialized());
 
-    assertEquals(editModel, editPanel.getEditModel());
+    assertEquals(editModel, editPanel.editModel());
     assertFalse(editPanel.isActive());
     editPanel.setActive(true);
     assertTrue(editPanel.isActive());
@@ -48,7 +48,7 @@ public final class EntityEditPanelTest {
     assertFalse(editModel.isEntityNew());
     editPanel.clearAndRequestFocus();
     assertTrue(editModel.isEntityNew());
-    assertEquals(7, editPanel.getComponentAttributes().size());
+    assertEquals(7, editPanel.componentAttributes().size());
 
     editPanel.setClearAfterInsert(true);
     assertTrue(editPanel.isClearAfterInsert());

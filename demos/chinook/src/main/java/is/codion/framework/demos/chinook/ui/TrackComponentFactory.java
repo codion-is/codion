@@ -18,7 +18,7 @@ public final class TrackComponentFactory extends DefaultEntityComponentFactory<E
                                                                         Entity initialValue) {
     ComponentValue<Entity, EntitySearchField> componentValue = super.createComponentValue(foreignKey, editModel, initialValue);
     EntitySearchField trackSearchField = componentValue.getComponent();
-    trackSearchField.setSelectionProvider(new TrackSelectionProvider(trackSearchField.getModel()));
+    trackSearchField.setSelectionProvider(new TrackSelectionProvider(trackSearchField.model()));
 
     return componentValue;
   }

@@ -117,15 +117,15 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @return the controls provided by this condition panel, for toggling the advanced mode and clearing the condition
    */
   @Override
-  public Controls getControls() {
+  public Controls controls() {
     Controls.Builder controls = Controls.builder()
             .caption(FrameworkMessages.search())
             .smallIcon(frameworkIcons().filter());
     if (hasAdvancedView()) {
-      controls.control(ToggleControl.builder(getAdvancedState())
+      controls.control(ToggleControl.builder(advancedState())
               .caption(FrameworkMessages.advanced()));
     }
-    controls.control(Control.builder(getTableConditionModel()::clearConditions)
+    controls.control(Control.builder(tableConditionModel()::clearConditions)
             .caption(FrameworkMessages.clear()));
 
     return controls.build();
@@ -139,7 +139,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @throws IllegalArgumentException in case no condition panel exists for the given attribute
    */
   public <C extends Attribute<T>, T> ColumnConditionPanel<C, T> getConditionPanel(C attribute) {
-    for (TableColumn column : getTableColumns()) {
+    for (TableColumn column : tableColumns()) {
       if (column.getIdentifier().equals(attribute)) {
         return (ColumnConditionPanel<C, T>) conditionPanel.getColumnComponents().get(column);
       }
@@ -156,7 +156,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   private List<Property<?>> getConditionPanelProperties() {
     return conditionPanel.getColumnComponents().values().stream()
             .filter(panel -> columnModel.isColumnVisible(panel.getModel().columnIdentifier()))
-            .map(panel -> getTableConditionModel().entityDefinition().getProperty(panel.getModel().columnIdentifier()))
+            .map(panel -> tableConditionModel().entityDefinition().getProperty(panel.getModel().columnIdentifier()))
             .collect(toList());
   }
 

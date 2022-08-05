@@ -116,7 +116,7 @@ public final class ClientArchitecture {
     artistPanel.initializePanel();
 
     // fetch data from the database
-    artistPanel.getModel().tableModel().refresh();
+    artistPanel.model().tableModel().refresh();
 
     // uncomment the below line to display the panel
 //    displayInDialog(null, artistPanel, "Artists");

@@ -53,7 +53,7 @@ public class FilteredTableTest {
 
     new JScrollPane(filteredTable);
 
-    JTextField searchField = filteredTable.getSearchField();
+    JTextField searchField = filteredTable.searchField();
 
     searchField.setText("d");
     assertEquals(0, tableModel.selectionModel().getSelectedIndex());

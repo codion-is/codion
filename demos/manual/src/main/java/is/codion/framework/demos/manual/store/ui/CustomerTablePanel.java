@@ -35,14 +35,14 @@ public class CustomerTablePanel extends EntityTablePanel {
     //enabled only when the selection is not empty
     printControls.add(Control.builder(this::viewCustomerReport)
             .caption("Customer report")
-            .enabledState(getTable().getModel().selectionModel().selectionNotEmptyObserver())
+            .enabledState(table().getModel().selectionModel().selectionNotEmptyObserver())
             .build());
 
     return printControls;
   }
 
   private void viewCustomerReport() throws Exception {
-    List<Entity> selectedCustomers = getTable().getModel().selectionModel().getSelectedItems();
+    List<Entity> selectedCustomers = table().getModel().selectionModel().getSelectedItems();
     if (selectedCustomers.isEmpty()) {
       return;
     }
@@ -51,7 +51,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIds);
 
-    JasperPrint customerReport = getTableModel().connectionProvider().connection()
+    JasperPrint customerReport = tableModel().connectionProvider().connection()
             .fillReport(Store.CUSTOMER_REPORT, reportParameters);
 
     Dialogs.componentDialog(new JRViewer(customerReport))

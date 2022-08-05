@@ -148,7 +148,7 @@ public final class EntitySearchField extends JTextField {
   /**
    * @return the search model this search field is based on
    */
-  public EntitySearchModel getModel() {
+  public EntitySearchModel model() {
     return model;
   }
 
@@ -570,10 +570,10 @@ public final class EntitySearchField extends JTextField {
               .enable(table);
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .action(selectControl)
-              .enable(table.getSearchField());
+              .enable(table.searchField());
       KeyEvents.builder(KeyEvent.VK_F)
               .modifiers(InputEvent.CTRL_DOWN_MASK)
-              .action(Control.control(() -> table.getSearchField().requestFocusInWindow()))
+              .action(Control.control(() -> table.searchField().requestFocusInWindow()))
               .enable(table);
       Collection<Attribute<String>> searchAttributes = searchModel.searchAttributes();
       tableModel.columnModel().setColumns(searchAttributes.toArray(new Attribute[0]));
@@ -582,7 +582,7 @@ public final class EntitySearchField extends JTextField {
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       table.setDoubleClickAction(selectControl);
       scrollPane = new JScrollPane(table);
-      searchPanel.add(table.getSearchField(), BorderLayout.WEST);
+      searchPanel.add(table.searchField(), BorderLayout.WEST);
       basePanel.add(scrollPane, BorderLayout.CENTER);
       basePanel.add(searchPanel, BorderLayout.SOUTH);
       int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
@@ -608,7 +608,7 @@ public final class EntitySearchField extends JTextField {
               .show();
 
       table.getModel().clear();
-      table.getSearchField().setText("");
+      table.searchField().setText("");
     }
 
     @Override
@@ -633,19 +633,19 @@ public final class EntitySearchField extends JTextField {
 
     private SearchFieldSingleValue(EntitySearchField searchField) {
       super(searchField);
-      searchField.getModel().addSelectedEntitiesListener(entities -> notifyValueChange());
+      searchField.model().addSelectedEntitiesListener(entities -> notifyValueChange());
     }
 
     @Override
     protected Entity getComponentValue() {
-      List<Entity> selectedEntities = getComponent().getModel().getSelectedEntities();
+      List<Entity> selectedEntities = getComponent().model().getSelectedEntities();
 
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
     @Override
     protected void setComponentValue(Entity value) {
-      getComponent().getModel().setSelectedEntity(value);
+      getComponent().model().setSelectedEntity(value);
     }
   }
 
@@ -653,17 +653,17 @@ public final class EntitySearchField extends JTextField {
 
     private SearchFieldMultipleValues(EntitySearchField searchField) {
       super(searchField);
-      searchField.getModel().addSelectedEntitiesListener(entities -> notifyValueChange());
+      searchField.model().addSelectedEntitiesListener(entities -> notifyValueChange());
     }
 
     @Override
     protected List<Entity> getComponentValue() {
-      return getComponent().getModel().getSelectedEntities();
+      return getComponent().model().getSelectedEntities();
     }
 
     @Override
     protected void setComponentValue(List<Entity> value) {
-      getComponent().getModel().setSelectedEntities(value);
+      getComponent().model().setSelectedEntities(value);
     }
   }
 
@@ -678,7 +678,7 @@ public final class EntitySearchField extends JTextField {
     public void focusLost(FocusEvent e) {
       if (!e.isTemporary()) {
         if (getText().isEmpty()) {
-          getModel().setSelectedEntity(null);
+          model().setSelectedEntity(null);
         }
         else if (shouldPerformSearch()) {
           performSearch(false);
@@ -780,7 +780,7 @@ public final class EntitySearchField extends JTextField {
         TextComponents.lowerCase(searchField.getDocument());
       }
       if (selectionProviderFactory != null) {
-        searchField.setSelectionProvider(selectionProviderFactory.apply(searchField.getModel()));
+        searchField.setSelectionProvider(selectionProviderFactory.apply(searchField.model()));
       }
       selectAllOnFocusGained(searchField);
 
@@ -794,7 +794,7 @@ public final class EntitySearchField extends JTextField {
 
     @Override
     protected void setInitialValue(EntitySearchField component, Entity initialValue) {
-      component.getModel().setSelectedEntity(initialValue);
+      component.model().setSelectedEntity(initialValue);
     }
 
     @Override

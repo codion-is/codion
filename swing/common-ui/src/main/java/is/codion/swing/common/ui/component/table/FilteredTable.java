@@ -213,7 +213,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   /**
    * @return the search field
    */
-  public JTextField getSearchField() {
+  public JTextField searchField() {
     return searchField;
   }
 

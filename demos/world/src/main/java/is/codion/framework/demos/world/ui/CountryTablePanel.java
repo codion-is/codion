@@ -42,7 +42,7 @@ final class CountryTablePanel extends EntityTablePanel {
   }
 
   private JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) throws DatabaseException, ReportException {
-    return ((CountryTableModel) getTableModel()).fillCountryReport(progressReporter);
+    return ((CountryTableModel) tableModel()).fillCountryReport(progressReporter);
   }
 
   private void viewReport(JasperPrint countryReport) {

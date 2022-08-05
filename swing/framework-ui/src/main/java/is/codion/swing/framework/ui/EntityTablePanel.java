@@ -370,14 +370,14 @@ public class EntityTablePanel extends JPanel {
   /**
    * @return the filtered table instance
    */
-  public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> getTable() {
+  public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table() {
     return table;
   }
 
   /**
    * @return the EntityTableModel used by this EntityTablePanel
    */
-  public final SwingEntityTableModel getTableModel() {
+  public final SwingEntityTableModel tableModel() {
     return tableModel;
   }
 
@@ -388,7 +388,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final void excludeFromUpdateMenu(Attribute<?> attribute) {
     checkIfInitialized();
-    getTableModel().entityDefinition().getProperty(attribute);//just validating that the property exists
+    tableModel().entityDefinition().getProperty(attribute);//just validating that the property exists
     excludeFromUpdateMenu.add(attribute);
   }
 
@@ -526,7 +526,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final <T, A extends Attribute<T>, C extends JComponent> void setUpdateSelectedComponentFactory(A attribute,
                                                                                                         EntityComponentFactory<T, A, C> componentFactory) {
-    getTableModel().entityDefinition().getProperty(attribute);
+    tableModel().entityDefinition().getProperty(attribute);
     updateSelectedComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
@@ -540,14 +540,14 @@ public class EntityTablePanel extends JPanel {
    */
   public final <T, A extends Attribute<T>, C extends JComponent> void setTableCellEditorComponentFactory(A attribute,
                                                                                                          EntityComponentFactory<T, A, C> componentFactory) {
-    getTableModel().entityDefinition().getProperty(attribute);
+    tableModel().entityDefinition().getProperty(attribute);
     tableCellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
   /**
    * @return the condition panel being used by this EntityTablePanel
    */
-  public final AbstractEntityTableConditionPanel getConditionPanel() {
+  public final AbstractEntityTableConditionPanel conditionPanel() {
     return conditionPanel;
   }
 
@@ -560,7 +560,7 @@ public class EntityTablePanel extends JPanel {
       return;
     }
     if (conditionPanel.hasAdvancedView()) {
-      State advancedState = conditionPanel.getAdvancedState();
+      State advancedState = conditionPanel.advancedState();
       if (isConditionPanelVisible()) {
         if (advancedState.get()) {
           setConditionPanelVisible(false);
@@ -1024,7 +1024,7 @@ public class EntityTablePanel extends JPanel {
    */
   protected JPanel initializeSouthPanel() {
     searchFieldPanel = Components.panel(new GridBagLayout())
-            .add(table.getSearchField(), createHorizontalFillConstraints())
+            .add(table.searchField(), createHorizontalFillConstraints())
             .build();
     southPanelSplitPane = Components.splitPane()
             .continuousLayout(true)
@@ -1059,7 +1059,7 @@ public class EntityTablePanel extends JPanel {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(getControl(ControlCode.REQUEST_SEARCH_FIELD_FOCUS))
             .enable(this);
-    if (getConditionPanel() != null) {
+    if (conditionPanel() != null) {
       KeyEvents.builder(KeyEvent.VK_S)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1311,8 +1311,8 @@ public class EntityTablePanel extends JPanel {
     if (includeSelectionModeControl) {
       controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
     }
-    controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(getTable()::requestFocus));
-    controls.put(ControlCode.REQUEST_SEARCH_FIELD_FOCUS, Control.control(getTable().getSearchField()::requestFocus));
+    controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(table()::requestFocus));
+    controls.put(ControlCode.REQUEST_SEARCH_FIELD_FOCUS, Control.control(table().searchField()::requestFocus));
     controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
     controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
   }
@@ -1467,7 +1467,7 @@ public class EntityTablePanel extends JPanel {
                     .horizontalAlignment(SwingConstants.CENTER)
                     .build(), status)
             .add(createRefreshingProgressPanel(), refreshing)
-            .onBuild(panel -> getTableModel().refreshingObserver().addDataListener(isRefreshing -> {
+            .onBuild(panel -> tableModel().refreshingObserver().addDataListener(isRefreshing -> {
               if (showRefreshingProgressBar) {
                 refreshStatusLayout.show(panel, isRefreshing ? refreshing : status);
               }
@@ -1620,7 +1620,7 @@ public class EntityTablePanel extends JPanel {
     if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
       conditionControls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
     }
-    Controls searchPanelControls = conditionPanel.getControls();
+    Controls searchPanelControls = conditionPanel.controls();
     if (!searchPanelControls.isEmpty()) {
       conditionControls.addAll(searchPanelControls);
       conditionControls.addSeparator();
@@ -1710,7 +1710,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private static void addRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
-    tableConditionPanel.getTableColumns().forEach(column -> {
+    tableConditionPanel.tableColumns().forEach(column -> {
       ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.getConditionPanel((Attribute<?>) column.getIdentifier());
       if (columnConditionPanel != null) {
         enableRefreshOnEnterControl(columnConditionPanel.getOperatorComboBox(), refreshControl);
