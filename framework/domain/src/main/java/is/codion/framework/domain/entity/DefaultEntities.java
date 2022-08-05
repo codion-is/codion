@@ -43,7 +43,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final DomainType getDomainType() {
+  public final DomainType domainType() {
     return domainType;
   }
 
@@ -63,7 +63,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Collection<EntityDefinition> getDefinitions() {
+  public final Collection<EntityDefinition> entityDefinitions() {
     return unmodifiableCollection(entityDefinitions.values());
   }
 

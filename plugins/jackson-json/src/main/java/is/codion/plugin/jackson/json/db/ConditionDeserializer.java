@@ -38,7 +38,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
   @Override
   public Condition deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
     JsonNode entityConditionNode = parser.getCodec().readTree(parser);
-    EntityType entityType = entities.getDomainType().entityType(entityConditionNode.get("entityType").asText());
+    EntityType entityType = entities.domainType().entityType(entityConditionNode.get("entityType").asText());
     JsonNode conditionNode = entityConditionNode.get("condition");
 
     return deserialize(entities.getDefinition(entityType), conditionNode);

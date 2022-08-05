@@ -38,11 +38,11 @@ public class SearchValueLinkTest {
     componentValue.link(model.value(TestDomain.EMP_DEPARTMENT_FK));
     EntitySearchModel searchModel = componentValue.getComponent().getModel();
     assertEquals(0, searchModel.getSelectedEntities().size());
-    Entity department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity department = model.getConnectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     model.put(TestDomain.EMP_DEPARTMENT_FK, department);
     assertEquals(searchModel.getSelectedEntities().size(), 1);
     assertEquals(searchModel.getSelectedEntities().iterator().next(), department);
-    department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+    department = model.getConnectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
     searchModel.setSelectedEntity(department);
     assertEquals(model.get(TestDomain.EMP_DEPARTMENT_FK), department);
   }

@@ -34,13 +34,13 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @return the underlying domain entities
    * @throws RemoteException in case of an exception
    */
-  Entities getEntities() throws RemoteException;
+  Entities entities() throws RemoteException;
 
   /**
    * @return the user being used by this connection
    * @throws RemoteException in case of an exception
    */
-  User getUser() throws RemoteException;
+  User user() throws RemoteException;
 
   /**
    * @return true if this connection has been established and is valid

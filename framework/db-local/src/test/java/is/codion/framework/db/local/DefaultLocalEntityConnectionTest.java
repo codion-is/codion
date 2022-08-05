@@ -654,7 +654,7 @@ public class DefaultLocalEntityConnectionTest {
         fail("Should not be able to update record selected for update by another connection");
       }
       catch (DatabaseException ignored) {
-        connection2.getDatabaseConnection().rollback();
+        connection2.databaseConnection().rollback();
       }
 
       connection.select(condition(Department.TYPE));//any query will do

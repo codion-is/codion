@@ -15,7 +15,7 @@ public interface FunctionType<C, T, R> {
   /**
    * @return the function name
    */
-  String getName();
+  String name();
 
   /**
    * Executes the given function.

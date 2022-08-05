@@ -79,7 +79,7 @@ public final class HostMonitor {
     removeUnreachableServers();
     try {
       for (ServerInformation serverInformation : getEntityServers(hostName, registryPort)) {
-        if (!containsServerMonitor(serverInformation.getServerId())) {
+        if (!containsServerMonitor(serverInformation.serverId())) {
           ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInformation, registryPort, adminUser, updateRate);
           serverMonitor.addServerShutDownListener(() -> removeServer(serverMonitor));
           addServer(serverMonitor);
@@ -124,7 +124,7 @@ public final class HostMonitor {
 
   private boolean containsServerMonitor(UUID serverId) {
     return serverMonitors.stream()
-            .anyMatch(serverMonitor -> serverMonitor.getServerInformation().getServerId().equals(serverId));
+            .anyMatch(serverMonitor -> serverMonitor.getServerInformation().serverId().equals(serverId));
   }
 
   private void removeUnreachableServers() {

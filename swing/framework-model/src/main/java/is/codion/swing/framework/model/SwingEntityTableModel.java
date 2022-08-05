@@ -148,7 +148,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   @Override
   public final Entities getEntities() {
-    return editModel.getConnectionProvider().getEntities();
+    return editModel.getConnectionProvider().entities();
   }
 
   @Override
@@ -385,7 +385,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   @Override
   public final void refreshEntities(List<Key> keys) {
     try {
-      replaceEntities(getConnectionProvider().getConnection().select(keys));
+      replaceEntities(getConnectionProvider().connection().select(keys));
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -571,7 +571,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       return emptyList();
     }
     try {
-      return editModel.getConnectionProvider().getConnection().select(getTableConditionModel().getCondition()
+      return editModel.getConnectionProvider().connection().select(getTableConditionModel().getCondition()
               .selectBuilder()
               .selectAttributes(getSelectAttributes())
               .limit(limit)

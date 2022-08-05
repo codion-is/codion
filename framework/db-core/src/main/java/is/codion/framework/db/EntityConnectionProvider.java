@@ -15,7 +15,7 @@ import java.util.UUID;
 
 /**
  * Specifies a class responsible for providing a single {@link EntityConnection} instance.
- * {@link #getConnection()} is guaranteed to return a healthy connection or throw an exception.
+ * {@link #connection()} is guaranteed to return a healthy connection or throw an exception.
  * A factory class for handing out EntityConnectionProviders according to system properties.
  */
 public interface EntityConnectionProvider extends AutoCloseable {
@@ -60,25 +60,25 @@ public interface EntityConnectionProvider extends AutoCloseable {
    * Returns the domain entities this connection is based on
    * @return the underlying domain entities
    */
-  Entities getEntities();
+  Entities entities();
 
   /**
    * Provides a EntityConnection object, is responsible for returning a healthy EntityConnection object,
    * that is, it must reconnect an invalid connection whether remotely or locally
    * @return a EntityConnection instance
    */
-  EntityConnection getConnection();
+  EntityConnection connection();
 
   /**
    * Returns a String specifying the type of connection provided by this connection provider
    * @return a String specifying the type of connection, e.g. "local" or "remote"
    */
-  String getConnectionType();
+  String connectionType();
 
   /**
    * @return a short description of the database provider
    */
-  String getDescription();
+  String description();
 
   /**
    * @return true if a connection has been established, note that this does not check if the actual
@@ -112,27 +112,27 @@ public interface EntityConnectionProvider extends AutoCloseable {
   /**
    * @return the user used by this connection provider
    */
-  User getUser();
+  User user();
 
   /**
    * @return the domain model classname
    */
-  String getDomainClassName();
+  String domainClassName();
 
   /**
    * @return the UUID identifying this client connection
    */
-  UUID getClientId();
+  UUID clientId();
 
   /**
    * @return the String identifying the client type for this connection provider
    */
-  String getClientTypeId();
+  String clientTypeId();
 
   /**
    * @return the client version
    */
-  Version getClientVersion();
+  Version clientVersion();
 
   /**
    * @return a unconfigured {@link Builder} instance,
@@ -142,7 +142,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
   static Builder<?, ?> builder() {
     String clientConnectionType = CLIENT_CONNECTION_TYPE.getOrThrow();
     for (Builder<?, ?> builder : ServiceLoader.load(Builder.class)) {
-      if (builder.getConnectionType().equalsIgnoreCase(clientConnectionType)) {
+      if (builder.connectionType().equalsIgnoreCase(clientConnectionType)) {
         return builder;
       }
     }
@@ -161,7 +161,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
      * Returns a String specifying the type of connection provided by this connection provider builder
      * @return a String specifying the type of connection, e.g. "local" or "remote"
      */
-    String getConnectionType();
+    String connectionType();
 
     /**
      * @param user the user

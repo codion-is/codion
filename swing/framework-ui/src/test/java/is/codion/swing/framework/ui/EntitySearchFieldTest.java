@@ -39,7 +39,7 @@ public class EntitySearchFieldTest {
 
     assertNull(value.get());
 
-    Entity dept = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity dept = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedEntity(dept);
     assertEquals(dept, value.get());

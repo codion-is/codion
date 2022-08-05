@@ -100,7 +100,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final Entities getEntities() {
-    return getConnectionProvider().getEntities();
+    return getConnectionProvider().entities();
   }
 
   @Override
@@ -242,7 +242,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final void refreshEntities(List<Key> keys) {
     try {
-      replaceEntities(getConnectionProvider().getConnection().select(keys));
+      replaceEntities(getConnectionProvider().connection().select(keys));
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -450,7 +450,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
 
     try {
-      return getConnectionProvider().getConnection().select(tableConditionModel.getCondition()
+      return getConnectionProvider().connection().select(tableConditionModel.getCondition()
               .selectBuilder()
               .selectAttributes(getSelectAttributes())
               .limit(limit)

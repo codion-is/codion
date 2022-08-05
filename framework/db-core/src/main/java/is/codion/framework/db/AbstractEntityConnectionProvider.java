@@ -45,7 +45,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final Entities getEntities() {
+  public final Entities entities() {
     synchronized (lock) {
       if (entities == null) {
         doConnect();
@@ -56,27 +56,27 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final User getUser() {
+  public final User user() {
     return user;
   }
 
   @Override
-  public final String getDomainClassName() {
+  public final String domainClassName() {
     return domainClassName;
   }
 
   @Override
-  public final UUID getClientId() {
+  public final UUID clientId() {
     return clientId;
   }
 
   @Override
-  public final String getClientTypeId() {
+  public final String clientTypeId() {
     return clientTypeId;
   }
 
   @Override
-  public final Version getClientVersion() {
+  public final Version clientVersion() {
     return clientVersion;
   }
 
@@ -114,7 +114,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final EntityConnection getConnection() {
+  public final EntityConnection connection() {
     synchronized (lock) {
       if (user == null) {
         throw new IllegalStateException("No user set");
@@ -174,7 +174,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       throw new IllegalStateException("User has not been set for this connection provider");
     }
     entityConnection = connect();
-    entities = entityConnection.getEntities();
+    entities = entityConnection.entities();
     onConnectEvent.onEvent(entityConnection);
   }
 
@@ -194,7 +194,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
 
     @Override
-    public final String getConnectionType() {
+    public final String connectionType() {
       return connectionType;
     }
 

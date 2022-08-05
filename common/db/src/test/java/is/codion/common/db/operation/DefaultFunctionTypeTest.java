@@ -15,7 +15,7 @@ public final class DefaultFunctionTypeTest {
   void test() throws DatabaseException {
     DefaultFunctionType<String, String, String> functionType = new DefaultFunctionType<>("test");
     assertEquals(functionType, new DefaultFunctionType<>("test"));
-    assertEquals(functionType.getName(), functionType.toString());
+    assertEquals(functionType.name(), functionType.toString());
     functionType.execute("conn", (connection, argument) -> "", "hello");
   }
 }

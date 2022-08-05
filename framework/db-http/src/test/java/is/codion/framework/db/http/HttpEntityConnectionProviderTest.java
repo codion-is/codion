@@ -24,7 +24,7 @@ public class HttpEntityConnectionProviderTest {
             .user(User.parse("scott:tiger"))
             .build();
     assertTrue(connectionProvider instanceof HttpEntityConnectionProvider);
-    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_HTTP, connectionProvider.getConnectionType());
+    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_HTTP, connectionProvider.connectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
   }
 }

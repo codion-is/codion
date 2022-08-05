@@ -91,10 +91,10 @@ public final class SwingEntityModelTest
     SwingEntityEditModel employeeEditModel = employeeModel.getEditModel();
     EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     departmentsComboBoxModel.refresh();
-    Key primaryKey = getConnectionProvider().getEntities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations, no employees
+    Key primaryKey = getConnectionProvider().entities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations, no employees
     departmentModel.getTableModel().setSelectedByKey(Collections.singletonList(primaryKey));
     Entity operations = departmentModel.getTableModel().getSelectionModel().getSelectedItem();
-    EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
+    EntityConnection connection = departmentModel.getConnectionProvider().connection();
     connection.beginTransaction();
     try {
       departmentModel.getEditModel().delete();
@@ -130,7 +130,7 @@ public final class SwingEntityModelTest
   @Test
   public void test() throws Exception {
     super.test();
-    EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
+    EntityConnection connection = departmentModel.getConnectionProvider().connection();
     connection.beginTransaction();
     try {
       departmentModel.getTableModel().refresh();

@@ -216,13 +216,13 @@ public final class DefaultEntitySearchModelTest {
     searchAttributes = asList(TestDomain.EMP_NAME, TestDomain.EMP_JOB);
     searchModel = new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER, searchAttributes);
 
-    CONNECTION_PROVIDER.getConnection().beginTransaction();
+    CONNECTION_PROVIDER.connection().beginTransaction();
     setupData();
   }
 
   @AfterEach
   void tearDown() throws Exception {
-    CONNECTION_PROVIDER.getConnection().rollbackTransaction();
+    CONNECTION_PROVIDER.connection().rollbackTransaction();
   }
 
   private static boolean contains(List<Entity> result, String employeeName) {
@@ -278,6 +278,6 @@ public final class DefaultEntitySearchModelTest {
             .with(TestDomain.EMP_SALARY, 1000d)
             .build();
 
-    CONNECTION_PROVIDER.getConnection().insert(asList(dept, emp, emp2, emp3, emp4));
+    CONNECTION_PROVIDER.connection().insert(asList(dept, emp, emp2, emp3, emp4));
   }
 }

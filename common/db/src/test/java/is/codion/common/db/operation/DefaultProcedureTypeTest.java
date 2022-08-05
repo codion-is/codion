@@ -15,7 +15,7 @@ public final class DefaultProcedureTypeTest {
   void test() throws DatabaseException {
     DefaultProcedureType<String, String> procedureType = new DefaultProcedureType<>("test");
     assertEquals(procedureType, new DefaultProcedureType<>("test"));
-    assertEquals(procedureType.getName(), procedureType.toString());
+    assertEquals(procedureType.name(), procedureType.toString());
     procedureType.execute("conn", (connection, argument) -> {}, "hello");
   }
 }

@@ -75,7 +75,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   public SwingEntityComboBoxModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
-    this.entities = connectionProvider.getEntities();
+    this.entities = connectionProvider.entities();
     this.orderBy = this.entities.getDefinition(entityType).getOrderBy();
     setStaticData(this.entities.getDefinition(entityType).isStaticData());
     setIncludeCondition(foreignKeyIncludeCondition);
@@ -293,7 +293,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     try {
       Condition condition = selectConditionSupplier == null ? condition(entityType) : selectConditionSupplier.get();
 
-      return connectionProvider.getConnection().select(condition.selectBuilder()
+      return connectionProvider.connection().select(condition.selectBuilder()
               .selectAttributes(selectAttributes)
               .orderBy(orderBy)
               .build());

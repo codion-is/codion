@@ -18,7 +18,7 @@ public final class LoginLogout extends AbstractEntityUsageScenario<EmpDeptAppPan
     try {
       application.getConnectionProvider().close();
       Thread.sleep(random.nextInt(1500));
-      application.getConnectionProvider().getConnection();
+      application.getConnectionProvider().connection();
     }
     catch (InterruptedException ignored) {/*ignored*/}
   }

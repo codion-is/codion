@@ -129,7 +129,7 @@ public final class EntitiesTutorial {
     // fetch the connection from the provider, note that the provider always
     // returns the same connection or a new one if the previous one has been
     // disconnected or has become invalid for some reason
-    EntityConnection connection = connectionProvider.getConnection();
+    EntityConnection connection = connectionProvider.connection();
 
     // select the artist Metallica by name, the selectSingle() method
     // throws a RecordNotFoundException if no record is found and a
@@ -176,10 +176,10 @@ public final class EntitiesTutorial {
    * @throws DatabaseException in case of an exception
    */
   private static void modifyingEntities(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    EntityConnection connection = connectionProvider.getConnection();
+    EntityConnection connection = connectionProvider.connection();
 
     //this Entities object serves as a factory for Entity instances
-    Entities entities = connectionProvider.getEntities();
+    Entities entities = connectionProvider.entities();
 
     // let's create a new band
     Entity myBand = entities.entity(Artist.TYPE);

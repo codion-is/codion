@@ -22,11 +22,11 @@ public final class EntityPopupMenuTest {
           .domainClassName(TestDomain.class.getName())
           .user(UNIT_TEST_USER)
           .build()) {
-      Entity blake = connectionProvider.getConnection().selectSingle(TestDomain.EMP_NAME, "BLAKE");
+      Entity blake = connectionProvider.connection().selectSingle(TestDomain.EMP_NAME, "BLAKE");
       blake.put(TestDomain.EMP_NAME, "a really long name aaaaaaaaaaaaaaaaaaaaaaaaaa");
       blake.put(TestDomain.EMP_SALARY, 100d);
 
-      new EntityPopupMenu(blake, connectionProvider.getConnection());
+      new EntityPopupMenu(blake, connectionProvider.connection());
     }
   }
 }

@@ -233,7 +233,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   final Map<EntityType, String> getEntityDefinitions() {
     Map<EntityType, String> definitions = new HashMap<>();
     for (Domain domain : domainModels.values()) {
-      for (EntityDefinition definition : domain.entities().getDefinitions()) {
+      for (EntityDefinition definition : domain.entities().entityDefinitions()) {
         definitions.put(definition.getEntityType(), definition.getTableName());
       }
     }
@@ -316,8 +316,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param registryPort the registry port
    */
   private void bindToRegistry(int registryPort) throws RemoteException {
-    getRegistry().rebind(getServerInformation().getServerName(), this);
-    String connectInfo = getServerInformation().getServerName() + " bound to registry on port: " + registryPort;
+    getRegistry().rebind(getServerInformation().serverName(), this);
+    String connectInfo = getServerInformation().serverName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
   }

@@ -55,8 +55,8 @@ public final class ObservableEntityListTest {
     EventListener listener = counter::incrementAndGet;
     list.addFilterListener(listener);
     list.refresh();
-    Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity operations = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
 
     list.setIncludeCondition(item -> Objects.equals(item.get(TestDomain.DEPARTMENT_NAME), "SALES"));
     assertEquals(1, counter.get());
@@ -91,8 +91,8 @@ public final class ObservableEntityListTest {
     }
     catch (IllegalStateException ignored) {}
     list.refresh();
-    Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity operations = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
 
     list.getSelectionModel().setSelectedItem(sales);
     assertFalse(list.getSelectionEmptyObserver().get());

@@ -60,7 +60,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   @Override
   public final User getUser() {
-    return connectionProvider.getConnection().getUser();
+    return connectionProvider.connection().user();
   }
 
   @Override
@@ -75,7 +75,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   @Override
   public final Entities getEntities() {
-    return connectionProvider.getEntities();
+    return connectionProvider.entities();
   }
 
   @Override

@@ -48,7 +48,7 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
   /**
    * @return the name of the host of the server providing the connection
    */
-  String getServerHostName();
+  String serverHostName();
 
   /**
    * Instantiates a new builder instance.

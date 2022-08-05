@@ -31,37 +31,37 @@ final class DefaultServerInformation implements ServerInformation, Serializable 
   }
 
   @Override
-  public String getServerName() {
+  public String serverName() {
     return serverName;
   }
 
   @Override
-  public UUID getServerId() {
+  public UUID serverId() {
     return serverId;
   }
 
   @Override
-  public int getServerPort() {
+  public int serverPort() {
     return serverPort;
   }
 
   @Override
-  public Version getServerVersion() {
+  public Version serverVersion() {
     return serverVersion;
   }
 
   @Override
-  public ZonedDateTime getStartTime() {
+  public ZonedDateTime startTime() {
     return serverStartTime;
   }
 
   @Override
-  public Locale getLocale() {
+  public Locale locale() {
     return locale;
   }
 
   @Override
-  public ZoneId getTimeZone() {
+  public ZoneId timeZone() {
     return serverStartTime.getZone();
   }
 }

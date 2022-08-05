@@ -25,7 +25,7 @@ final class DefaultProcedureType<C, T> implements ProcedureType<C, T>, Serializa
   }
 
   @Override
-  public String getName() {
+  public String name() {
     return name;
   }
 

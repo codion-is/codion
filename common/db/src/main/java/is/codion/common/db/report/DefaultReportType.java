@@ -19,7 +19,7 @@ final class DefaultReportType<T, R, P> implements ReportType<T, R, P>, Serializa
   }
 
   @Override
-  public String getName() {
+  public String name() {
     return name;
   }
 

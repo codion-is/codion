@@ -26,7 +26,7 @@ public final class ViewCustomerReport extends AbstractEntityUsageScenario<Chinoo
             Entity.getDistinct(Customer.ID, customerModel.getSelectionModel().getSelectedItems());
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
-    customerModel.getConnectionProvider().getConnection().fillReport(Customer.REPORT, reportParameters);
+    customerModel.getConnectionProvider().connection().fillReport(Customer.REPORT, reportParameters);
   }
 
   @Override

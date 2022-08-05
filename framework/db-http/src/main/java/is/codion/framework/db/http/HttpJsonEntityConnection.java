@@ -79,7 +79,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
                            HttpClientConnectionManager connectionManager) {
     super(domainTypeName, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
             "application/json", "/entities/json", connectionManager);
-    this.entityObjectMapper = entityObjectMapperFactory(getEntities().getDomainType()).createEntityObjectMapper(getEntities());
+    this.entityObjectMapper = entityObjectMapperFactory(entities().domainType()).createEntityObjectMapper(entities());
     this.conditionObjectMapper = new ConditionObjectMapper(entityObjectMapper);
   }
 
@@ -415,7 +415,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     Objects.requireNonNull(entities, "entities");
     try {
       Map<EntityType, Collection<Entity>> dependencies = new HashMap<>();
-      DomainType domainType = getEntities().getDomainType();
+      DomainType domainType = entities().domainType();
 
       synchronized (this.entities) {
         onJsonResponse(execute(createHttpPost("dependencies",

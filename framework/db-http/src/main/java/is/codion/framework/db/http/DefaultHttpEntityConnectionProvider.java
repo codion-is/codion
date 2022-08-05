@@ -34,30 +34,31 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
   }
 
   @Override
-  public String getConnectionType() {
+  public String connectionType() {
     return CONNECTION_TYPE_HTTP;
   }
 
   @Override
-  public String getDescription() {
-    return getServerHostName();
+  public String description() {
+    return serverHostName();
   }
 
-  public String getServerHostName() {
+  @Override
+  public String serverHostName() {
     return serverHostName;
   }
 
   @Override
   protected EntityConnection connect() {
     try {
-      LOG.debug("Initializing connection for {}", getUser());
+      LOG.debug("Initializing connection for {}", user());
       return HttpEntityConnections.builder()
-              .domainTypeName(getDomainTypeName(getDomainClassName()))
-              .serverHostName(getServerHostName())
+              .domainTypeName(getDomainTypeName(domainClassName()))
+              .serverHostName(serverHostName())
               .serverPort(serverPort)
-              .user(getUser())
-              .clientTypeId(getClientTypeId())
-              .clientId(getClientId())
+              .user(user())
+              .clientTypeId(clientTypeId())
+              .clientId(clientId())
               .json(json)
               .https(https)
               .build();

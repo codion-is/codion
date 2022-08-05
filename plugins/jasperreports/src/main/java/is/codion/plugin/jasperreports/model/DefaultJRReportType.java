@@ -25,8 +25,8 @@ final class DefaultJRReportType implements JRReportType, Serializable {
   }
 
   @Override
-  public String getName() {
-    return reportType.getName();
+  public String name() {
+    return reportType.name();
   }
 
   @Override

@@ -26,9 +26,9 @@ public final class EntitiesInAction {
             .user(User.parse("scott:tiger"))
             .build();
 
-    Entities entities = connectionProvider.getEntities();
+    Entities entities = connectionProvider.entities();
 
-    EntityConnection connection = connectionProvider.getConnection();
+    EntityConnection connection = connectionProvider.connection();
 
     //populate a new category
     Entity insects = entities.builder(Category.TYPE)

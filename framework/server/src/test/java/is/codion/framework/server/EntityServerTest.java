@@ -257,34 +257,34 @@ public class EntityServerTest {
                     .user(UNIT_TEST_USER)
                     .build();
 
-    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, provider.getConnectionType());
+    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, provider.connectionType());
 
-    EntityConnection db = provider.getConnection();
+    EntityConnection db = provider.connection();
     assertNotNull(db);
     assertTrue(db.isConnected());
     provider.close();
 
     //not available until a connection has been requested
-    assertEquals(Clients.SERVER_HOST_NAME.get(), provider.getServerHostName());
+    assertEquals(Clients.SERVER_HOST_NAME.get(), provider.serverHostName());
 
-    EntityConnection db2 = provider.getConnection();
+    EntityConnection db2 = provider.connection();
     assertNotNull(db2);
     assertNotSame(db, db2);
     assertTrue(db2.isConnected());
     provider.close();
 
-    EntityConnection db3 = provider.getConnection();
+    EntityConnection db3 = provider.connection();
     assertTrue(db3.isConnected());
-    admin.disconnect(provider.getClientId());
+    admin.disconnect(provider.clientId());
     assertFalse(db3.isConnected());
 
-    db3 = provider.getConnection();
+    db3 = provider.connection();
     assertTrue(db3.isConnected());
     db3.close();
 
     provider.close();
     assertFalse(provider.isConnectionValid());
-    db3 = provider.getConnection();
+    db3 = provider.connection();
     assertTrue(provider.isConnectionValid());
     db3.close();
   }

@@ -30,7 +30,7 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
   public void validate(Entity entity) throws ValidationException {
     super.validate(entity);
     try {
-      int rowCount = getConnectionProvider().getConnection().rowCount(
+      int rowCount = getConnectionProvider().connection().rowCount(
               where(VetSpecialty.SPECIALTY).equalTo(entity.get(VetSpecialty.SPECIALTY))
                       .and(where(VetSpecialty.VET).equalTo(entity.get(VetSpecialty.VET))));
       if (rowCount > 0) {

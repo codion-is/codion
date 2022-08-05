@@ -17,7 +17,7 @@ public interface Entities {
   /**
    * @return the {@link DomainType} this {@link Entities} instance is associated with
    */
-  DomainType getDomainType();
+  DomainType domainType();
 
   /**
    * Returns the {@link EntityDefinition} for the given entityType
@@ -45,7 +45,7 @@ public interface Entities {
    * Returns all {@link EntityDefinition}s available
    * @return all entity definitions
    */
-  Collection<EntityDefinition> getDefinitions();
+  Collection<EntityDefinition> entityDefinitions();
 
   /**
    * Creates a new {@link Entity} instance with the given entityType

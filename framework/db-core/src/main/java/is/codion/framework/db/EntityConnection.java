@@ -45,12 +45,12 @@ public interface EntityConnection extends AutoCloseable {
   /**
    * @return the underlying domain entities
    */
-  Entities getEntities();
+  Entities entities();
 
   /**
    * @return the user being used by this connection
    */
-  User getUser();
+  User user();
 
   /**
    * @return true if the connection has been established and is valid

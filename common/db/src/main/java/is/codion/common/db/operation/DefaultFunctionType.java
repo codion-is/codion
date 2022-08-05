@@ -25,7 +25,7 @@ final class DefaultFunctionType<C, T, R> implements FunctionType<C, T, R>, Seria
   }
 
   @Override
-  public String getName() {
+  public String name() {
     return name;
   }
 

@@ -150,7 +150,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getValidator());
+    this(entityType, connectionProvider, connectionProvider.entities().getDefinition(entityType).getValidator());
   }
 
   /**
@@ -161,7 +161,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    */
   public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
                                 EntityValidator validator) {
-    this.entity = connectionProvider.getEntities().entity(entityType);
+    this.entity = connectionProvider.entities().entity(entityType);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.validator = validator;
     this.modifiedSupplier = entity::isModified;
@@ -173,7 +173,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entities getEntities() {
-    return connectionProvider.getEntities();
+    return connectionProvider.entities();
   }
 
   @Override
@@ -586,7 +586,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final void refreshEntity() {
     try {
       if (!isEntityNew()) {
-        setEntity(getConnectionProvider().getConnection().select(getEntity().getPrimaryKey()));
+        setEntity(getConnectionProvider().connection().select(getEntity().getPrimaryKey()));
       }
     }
     catch (DatabaseException e) {
@@ -827,7 +827,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @throws DatabaseException in case of a database exception
    */
   protected List<Key> doInsert(List<Entity> entities) throws DatabaseException {
-    return connectionProvider.getConnection().insert(entities);
+    return connectionProvider.connection().insert(entities);
   }
 
   /**
@@ -837,7 +837,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @throws DatabaseException in case of a database exception
    */
   protected List<Entity> doUpdate(List<Entity> entities) throws DatabaseException {
-    return connectionProvider.getConnection().update(entities);
+    return connectionProvider.connection().update(entities);
   }
 
   /**
@@ -847,7 +847,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @throws DatabaseException in case of a database exception
    */
   protected List<Entity> doDelete(List<Entity> entities) throws DatabaseException {
-    connectionProvider.getConnection().delete(Entity.getPrimaryKeys(entities));
+    connectionProvider.connection().delete(Entity.getPrimaryKeys(entities));
 
     return entities;
   }
@@ -965,7 +965,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     notifyBeforeInsert(unmodifiableList(entities));
     validate(entities);
 
-    return connectionProvider.getConnection().select(doInsert(entities));
+    return connectionProvider.connection().select(doInsert(entities));
   }
 
   private boolean isSetEntityAllowed() {

@@ -37,10 +37,10 @@ public final class Misc {
                     .build();
 
     // tag::jasperReportDataSource[]
-    EntityConnection connection = connectionProvider.getConnection();
+    EntityConnection connection = connectionProvider.connection();
 
     EntityDefinition customerDefinition =
-            connection.getEntities().getDefinition(Customer.TYPE);
+            connection.entities().getDefinition(Customer.TYPE);
 
     Iterator<Entity> customerIterator =
             connection.select(condition(Customer.TYPE)).iterator();

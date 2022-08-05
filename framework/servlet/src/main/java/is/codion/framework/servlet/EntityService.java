@@ -51,7 +51,7 @@ public final class EntityService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Serializer.serialize(connection.getEntities())).build();
+      return Response.ok(Serializer.serialize(connection.entities())).build();
     }
     catch (Exception e) {
       return logAndGetExceptionResponse(e);

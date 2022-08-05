@@ -95,12 +95,12 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public final Entities getEntities() {
+  public final Entities entities() {
     return entities;
   }
 
   @Override
-  public final User getUser() {
+  public final User user() {
     return user;
   }
 

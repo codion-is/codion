@@ -782,7 +782,7 @@ public class EntityTablePanel extends JPanel {
     WaitCursor.show(this);
     try {
       Map<EntityType, Collection<Entity>> dependencies =
-              tableModel.getConnectionProvider().getConnection()
+              tableModel.getConnectionProvider().connection()
                       .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
       showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this,
               MESSAGES.getString("no_dependent_records"));
@@ -843,7 +843,7 @@ public class EntityTablePanel extends JPanel {
     try {
       if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
         Map<EntityType, Collection<Entity>> dependencies =
-                tableModel.getConnectionProvider().getConnection().selectDependencies(entities);
+                tableModel.getConnectionProvider().connection().selectDependencies(entities);
         showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this,
                 MESSAGES.getString("unknown_dependent_records"));
       }
@@ -901,7 +901,7 @@ public class EntityTablePanel extends JPanel {
     requireNonNull(connectionProvider);
     requireNonNull(dialogParent);
     try {
-      Map<EntityType, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependencies(entities);
+      Map<EntityType, Collection<Entity>> dependencies = connectionProvider.connection().selectDependencies(entities);
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
     }
     catch (DatabaseException e) {
@@ -1638,7 +1638,7 @@ public class EntityTablePanel extends JPanel {
     Entity selected = tableModel.getSelectionModel().getSelectedItem();
     if (selected != null) {
       Point location = getPopupLocation(table);
-      new EntityPopupMenu(selected.copy(), tableModel.getConnectionProvider().getConnection()).show(table, location.x, location.y);
+      new EntityPopupMenu(selected.copy(), tableModel.getConnectionProvider().connection()).show(table, location.x, location.y);
     }
   }
 
@@ -1773,7 +1773,7 @@ public class EntityTablePanel extends JPanel {
     for (Map.Entry<EntityType, Collection<Entity>> entry : dependencies.entrySet()) {
       Collection<Entity> dependentEntities = entry.getValue();
       if (!dependentEntities.isEmpty()) {
-        tabPane.addTab(connectionProvider.getEntities().getDefinition(entry.getKey()).getCaption(),
+        tabPane.addTab(connectionProvider.entities().getDefinition(entry.getKey()).getCaption(),
                 createEntityTablePanel(dependentEntities, connectionProvider));
       }
     }

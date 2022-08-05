@@ -70,9 +70,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Entities getEntities() {
+  public Entities entities() {
     synchronized (connectionProxy) {
-      return connectionProxy.getEntities();
+      return connectionProxy.entities();
     }
   }
 
