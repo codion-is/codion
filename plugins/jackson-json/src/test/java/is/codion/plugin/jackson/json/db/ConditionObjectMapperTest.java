@@ -141,9 +141,10 @@ public final class ConditionObjectMapperTest {
     ConditionObjectMapper mapper = new ConditionObjectMapper(EntityObjectMapper.createEntityObjectMapper(entities));
 
     UpdateCondition condition = Conditions.where(Department.DEPTNO)
-            .between(1, 2).toUpdateCondition()
+            .between(1, 2).updateBuilder()
             .set(Department.LOCATION, "loc")
-            .set(Department.DEPTNO, 3);
+            .set(Department.DEPTNO, 3)
+            .build();
 
     String jsonString = mapper.writeValueAsString(condition);
     UpdateCondition readCondition = mapper.readValue(jsonString, UpdateCondition.class);

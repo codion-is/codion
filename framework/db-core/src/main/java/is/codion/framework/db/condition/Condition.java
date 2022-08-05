@@ -62,9 +62,9 @@ public interface Condition {
   SelectCondition.Builder selectBuilder();
 
   /**
-   * @return a {@link UpdateCondition} based on this condition
+   * @return a {@link UpdateCondition.Builder} instance based on this condition
    */
-  UpdateCondition toUpdateCondition();
+  UpdateCondition.Builder updateBuilder();
 
   /**
    * An interface encapsulating a combination of Condition objects,

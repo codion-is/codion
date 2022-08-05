@@ -19,16 +19,36 @@ public interface UpdateCondition extends Condition {
   Condition getCondition();
 
   /**
+   * @return an unmodifiable view of the new values mapped to their respective attributes
+   */
+  Map<Attribute<?>, Object> getAttributeValues();
+
+  /**
+   * Returns a {@link UpdateCondition.Builder} instance based on the given condition
+   * @param condition the condition
+   * @return a {@link UpdateCondition.Builder} instance
+   */
+  static Builder builder(Condition condition) {
+    return new DefaultUpdateCondition.DefaultBuilder(condition);
+  }
+
+  /**
+   * Builds an {@link UpdateCondition}.
+   */
+  interface Builder {
+
+  /**
    * Adds a attribute value to update
    * @param attribute the attribute
    * @param value the new value
    * @param <T> the value type
-   * @return a new {@link UpdateCondition} instance with the given value to update
+   * @return this builder
    */
-  <T> UpdateCondition set(Attribute<T> attribute, T value);
+    <T> Builder set(Attribute<?> attribute, T value);
 
-  /**
-   * @return an unmodifiable view of the new values mapped to their respective attributes
-   */
-  Map<Attribute<?>, Object> getAttributeValues();
+    /**
+     * @return a new {@link UpdateCondition} instance based on this builder
+     */
+    UpdateCondition build();
+  }
 }

@@ -41,12 +41,8 @@ abstract class AbstractCondition implements Condition, Serializable {
   }
 
   @Override
-  public final UpdateCondition toUpdateCondition() {
-    if (this instanceof UpdateCondition) {
-      return (UpdateCondition) this;
-    }
-
-    return new DefaultUpdateCondition(this);
+  public final UpdateCondition.Builder updateBuilder() {
+    return UpdateCondition.builder(this);
   }
 
   @Override

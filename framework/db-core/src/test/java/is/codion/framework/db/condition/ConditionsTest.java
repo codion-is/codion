@@ -58,7 +58,7 @@ public final class ConditionsTest {
 
   @Test
   void updateConditionDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).toUpdateCondition()
+    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).updateBuilder()
             .set(TestDomain.EMP_COMMISSION, 123d)
             .set(TestDomain.EMP_COMMISSION, 123d));
   }

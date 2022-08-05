@@ -8321,3 +8321,4 @@
   ServerConfiguration, EntityServerConfiguration, HttpServerConfiguration, get prefix removed from accessors
   ConnectionRequest, RemoteClient, get prefix removed from accessors of immutable properties
   SelectCondition.Builder added, Condition.toSelectCondition() replaced with selectBuilder()
+  UpdateCondition.Builder added, Condition.toUpdateCondition() replaced with updateBuilder()

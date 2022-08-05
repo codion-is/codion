@@ -131,8 +131,8 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public UpdateCondition toUpdateCondition() {
-    return new DefaultUpdateCondition(this);
+  public UpdateCondition.Builder updateBuilder() {
+    return new DefaultUpdateCondition.DefaultBuilder(this);
   }
 
   @Override

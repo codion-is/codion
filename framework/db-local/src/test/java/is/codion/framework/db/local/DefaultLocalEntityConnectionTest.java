@@ -570,7 +570,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateWithConditionNoProperties() throws DatabaseException {
-    UpdateCondition condition = Conditions.condition(Employee.TYPE).toUpdateCondition();
+    UpdateCondition condition = Conditions.condition(Employee.TYPE).updateBuilder().build();
     assertThrows(IllegalArgumentException.class, () -> connection.update(condition));
   }
 
@@ -580,9 +580,10 @@ public class DefaultLocalEntityConnectionTest {
 
     List<Entity> entities = connection.select(condition);
 
-    UpdateCondition updateCondition = where(Employee.COMMISSION).isNull().toUpdateCondition()
+    UpdateCondition updateCondition = where(Employee.COMMISSION).isNull().updateBuilder()
             .set(Employee.COMMISSION, 500d)
-            .set(Employee.SALARY, 4200d);
+            .set(Employee.SALARY, 4200d)
+            .build();
     connection.beginTransaction();
     try {
       connection.update(updateCondition);
@@ -600,8 +601,9 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateWithConditionNoRows() throws DatabaseException {
-    UpdateCondition updateCondition = where(Employee.ID).isNull().toUpdateCondition()
-            .set(Employee.SALARY, 4200d);
+    UpdateCondition updateCondition = where(Employee.ID).isNull().updateBuilder()
+            .set(Employee.SALARY, 4200d)
+            .build();
     connection.beginTransaction();
     try {
       assertEquals(0, connection.update(updateCondition));

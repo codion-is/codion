@@ -255,7 +255,7 @@ public class EntityServletServerTest {
 
     //update condition
     UpdateCondition updateCondition = where(TestDomain.DEPARTMENT_ID)
-            .between(-20, -10).toUpdateCondition().set(TestDomain.DEPARTMENT_LOCATION, "aloc");
+            .between(-20, -10).updateBuilder().set(TestDomain.DEPARTMENT_LOCATION, "aloc").build();
     uriBuilder.setPath("updateByCondition");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new StringEntity(conditionObjectMapper.writeValueAsString(updateCondition)));

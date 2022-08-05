@@ -233,13 +233,15 @@ public final class EntityConnectionDemo {
     // tag::updateCondition[]
     connection.update(
             where(Artist.NAME).equalTo("Azymuth")
-                    .toUpdateCondition()
-                    .set(Artist.NAME, "Azymouth"));
+                    .updateBuilder()
+                    .set(Artist.NAME, "Azymouth")
+                    .build());
 
     int updateCount = connection.update(
             where(Customer.EMAIL).isNull()
-                    .toUpdateCondition()
-                    .set(Customer.EMAIL, "<none>"));
+                    .updateBuilder()
+                    .set(Customer.EMAIL, "<none>")
+                    .build());
     // end::updateCondition[]
   }
 
