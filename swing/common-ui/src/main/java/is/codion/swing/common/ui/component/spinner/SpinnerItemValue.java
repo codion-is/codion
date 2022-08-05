@@ -24,7 +24,7 @@ final class SpinnerItemValue<T> extends AbstractComponentValue<T, JSpinner> {
   protected T getComponentValue() {
     Item<T> selectedValue = (Item<T>) getComponent().getModel().getValue();
 
-    return selectedValue == null ? null : selectedValue.getValue();
+    return selectedValue == null ? null : selectedValue.value();
   }
 
   @Override
@@ -32,7 +32,7 @@ final class SpinnerItemValue<T> extends AbstractComponentValue<T, JSpinner> {
     SpinnerListModel model = (SpinnerListModel) getComponent().getModel();
     model.getList().stream()
             .map(Item.class::cast)
-            .filter(item -> Objects.equals(item.getValue(), value))
+            .filter(item -> Objects.equals(item.value(), value))
             .findFirst()
             .ifPresent(model::setValue);
   }

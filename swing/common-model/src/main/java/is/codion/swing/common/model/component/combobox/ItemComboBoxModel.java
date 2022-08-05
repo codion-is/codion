@@ -43,7 +43,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
    */
   public int indexOf(T value) {
     for (int i = 0; i < getSize(); i++) {
-      if (Objects.equals(getElementAt(i).getValue(), value)) {
+      if (Objects.equals(getElementAt(i).value(), value)) {
         return i;
       }
     }

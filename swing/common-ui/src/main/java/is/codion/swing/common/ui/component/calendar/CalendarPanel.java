@@ -553,7 +553,7 @@ public final class CalendarPanel extends JPanel {
     JFormattedTextField monthTextField = ((JSpinner.DefaultEditor) monthSpinner.getEditor()).getTextField();
     monthTextField.setFont(((JSpinner.DefaultEditor) yearSpinner.getEditor()).getTextField().getFont());
     monthItems.stream()
-            .mapToInt(item -> item.getCaption().length())
+            .mapToInt(item -> item.caption().length())
             .max()
             .ifPresent(monthTextField::setColumns);
 

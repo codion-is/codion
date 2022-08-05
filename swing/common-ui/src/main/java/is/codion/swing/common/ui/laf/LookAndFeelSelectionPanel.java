@@ -69,10 +69,10 @@ public final class LookAndFeelSelectionPanel extends JPanel {
   public LookAndFeelSelectionPanel(boolean changeDuringSelection) {
     this.comboBoxModel = ItemComboBoxModel.createModel(initializeAvailableLookAndFeels());
     getCurrentLookAndFeel().ifPresent(comboBoxModel::setSelectedItem);
-    this.originalLookAndFeel = comboBoxModel.getSelectedValue().getValue();
+    this.originalLookAndFeel = comboBoxModel.getSelectedValue().value();
     if (changeDuringSelection) {
       comboBoxModel.addSelectionListener(lookAndFeelProvider ->
-              LookAndFeelProvider.enableLookAndFeel(lookAndFeelProvider.getValue()));
+              LookAndFeelProvider.enableLookAndFeel(lookAndFeelProvider.value()));
     }
 
     setLayout(Layouts.borderLayout());
@@ -91,7 +91,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
    * @return the currently selected look and feel
    */
   public LookAndFeelProvider getSelectedLookAndFeel() {
-    return comboBoxModel.getSelectedValue().getValue();
+    return comboBoxModel.getSelectedValue().value();
   }
 
   /**
@@ -119,7 +119,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
 
     return comboBoxModel.getItems().stream()
-            .filter(item -> item.getValue().getClassName().equals(currentLookAndFeelClassName))
+            .filter(item -> item.value().getClassName().equals(currentLookAndFeelClassName))
             .findFirst();
   }
 
@@ -200,7 +200,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     public void setItem(Object item) {
       this.item = (Item<LookAndFeelProvider>) item;
       if (this.item != null) {
-        panel.setLookAndFeel(this.item.getValue(), false);
+        panel.setLookAndFeel(this.item.value(), false);
       }
     }
   }
@@ -212,7 +212,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     @Override
     public Component getListCellRendererComponent(JList<? extends Item<LookAndFeelProvider>> list, Item<LookAndFeelProvider> value,
                                                   int index, boolean isSelected, boolean cellHasFocus) {
-      panel.setLookAndFeel(value.getValue(), isSelected);
+      panel.setLookAndFeel(value.value(), isSelected);
 
       return panel;
     }

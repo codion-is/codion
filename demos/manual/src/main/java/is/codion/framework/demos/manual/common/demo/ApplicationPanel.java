@@ -379,12 +379,12 @@ public final class ApplicationPanel extends JPanel {
 
     @Override
     public Integer getValue(Item<Integer> item) {
-      return item.getValue();
+      return item.value();
     }
 
     @Override
     public Predicate<Item<Integer>> getPredicate(Integer value) {
-      return item -> Objects.equals(item.getValue(), value);
+      return item -> Objects.equals(item.value(), value);
     }
   }
 

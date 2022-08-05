@@ -23,7 +23,7 @@ final class ItemI18n<T> extends AbstractItem<T> {
   }
 
   @Override
-  public String getCaption() {
+  public String caption() {
     if (caption == null) {
       caption = ResourceBundle.getBundle(resourceBundleName).getString(resourceBundleKey);
     }

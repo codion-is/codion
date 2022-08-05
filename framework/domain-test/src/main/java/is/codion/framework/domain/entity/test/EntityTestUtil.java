@@ -187,7 +187,7 @@ public final class EntityTestUtil {
     List<Item<T>> items = property.items();
     Item<T> item = items.get(RANDOM.nextInt(items.size()));
 
-    return item.getValue();
+    return item.value();
   }
 
   private static int getRandomInteger(Property<?> property) {

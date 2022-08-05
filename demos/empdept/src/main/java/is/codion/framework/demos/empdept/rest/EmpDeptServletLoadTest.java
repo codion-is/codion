@@ -139,7 +139,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
       client.getConnection().insert(client.getEntities().builder(Employee.TYPE)
               .with(Employee.DEPARTMENT_FK, department)
               .with(Employee.NAME, Text.randomString(5, 10))
-              .with(Employee.JOB, Employee.JOB_VALUES.get(random.nextInt(Employee.JOB_VALUES.size())).getValue())
+              .with(Employee.JOB, Employee.JOB_VALUES.get(random.nextInt(Employee.JOB_VALUES.size())).value())
               .with(Employee.SALARY, BigDecimal.valueOf(random.nextInt(1000) + 1000))
               .with(Employee.HIREDATE, LocalDate.now())
               .with(Employee.COMMISSION, random.nextDouble() * 500)

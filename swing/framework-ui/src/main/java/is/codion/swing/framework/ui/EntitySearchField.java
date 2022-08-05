@@ -401,7 +401,7 @@ public final class EntitySearchField extends JTextField {
       }
       if (propertyComboBoxModel.getSize() > 0) {
         propertyComboBoxModel.addSelectionListener(selected ->
-                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getValue().name()));
+                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.value().name()));
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 

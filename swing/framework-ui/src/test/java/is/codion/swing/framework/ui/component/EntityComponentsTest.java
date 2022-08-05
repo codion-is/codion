@@ -119,12 +119,12 @@ public final class EntityComponentsTest {
                     .linkedValue(editModel.value(TestDomain.DETAIL_BOOLEAN))
                     .buildComponentValue();
     ItemComboBoxModel<Boolean> boxModel = (ItemComboBoxModel<Boolean>) componentValue.getComponent().getModel();
-    assertTrue(boxModel.getSelectedValue().getValue());
+    assertTrue(boxModel.getSelectedValue().value());
     boxModel.setSelectedItem(null);
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN));
 
     editModel.put(TestDomain.DETAIL_BOOLEAN, false);
-    assertFalse(boxModel.getSelectedValue().getValue());
+    assertFalse(boxModel.getSelectedValue().value());
   }
 
   @Test
