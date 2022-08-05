@@ -85,13 +85,16 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
   }
 
   static Optional<Method> getSetMethod(Class<?> valueType, String property, Class<?> ownerClass) {
+    requireNonNull(ownerClass, "ownerClass");
+    requireNonNull(valueType, "valueType");
     if (requireNonNull(property, "property").isEmpty()) {
       throw new IllegalArgumentException("Property must be specified");
     }
 
     try {
-      return Optional.of(requireNonNull(ownerClass, "ownerClass").getMethod("set" +
-              Character.toUpperCase(property.charAt(0)) + property.substring(1), requireNonNull(valueType, "valueType")));
+      String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
+
+      return Optional.of(ownerClass.getMethod("set" + propertyName, valueType));
     }
     catch (NoSuchMethodException e) {
       return Optional.empty();
