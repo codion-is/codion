@@ -81,12 +81,12 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
     SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
     assertEquals(0, employeeTableModel.getRowCount());
-    Entity accounting = getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
+    Entity accounting = getConnectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
     employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, singletonList(accounting));
     assertEquals(7, employeeTableModel.getRowCount());
     employeeTableModel.clear();
     employeeTableModel.setRefreshOnForeignKeyConditionValuesSet(false);
-    Entity sales = getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 30);
+    Entity sales = getConnectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_ID, 30);
     employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, Collections.singleton(sales));
     assertEquals(0, employeeTableModel.getRowCount());
     employeeTableModel.refresh();
@@ -200,10 +200,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.getSortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
     assertEquals(SortOrder.ASCENDING, tableModel.getSortModel().getSortingState(TestDomain.EMP_NAME).getSortOrder());
 
-    Key pk1 = getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, 10);//ADAMS
+    Key pk1 = getConnectionProvider().entities().primaryKey(TestDomain.T_EMP, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
 
-    Key pk2 = getConnectionProvider().getEntities().primaryKey(TestDomain.T_EMP, -66);
+    Key pk2 = getConnectionProvider().entities().primaryKey(TestDomain.T_EMP, -66);
     assertEquals(-1, tableModel.indexOf(pk2));
   }
 

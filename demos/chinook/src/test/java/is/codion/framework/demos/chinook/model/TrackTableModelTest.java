@@ -24,7 +24,7 @@ public final class TrackTableModelTest {
   void raisePriceOfSelected() throws DatabaseException {
     EntityConnectionProvider connectionProvider = createConnectionProvider();
 
-    Entity masterOfPuppets = connectionProvider.getConnection()
+    Entity masterOfPuppets = connectionProvider.connection()
             .selectSingle(Album.TITLE, "Master Of Puppets");
 
     TrackTableModel trackTableModel = new TrackTableModel(connectionProvider);

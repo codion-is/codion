@@ -35,12 +35,12 @@ public class DefaultForeignKeyConditionModelTest {
     EntitySearchModel searchModel = new DefaultEntitySearchModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
             singletonList(TestDomain.DEPARTMENT_NAME));
     ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(TestDomain.EMP_DEPARTMENT_FK, searchModel);
-    Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     searchModel.setSelectedEntity(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
-    Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     List<Entity> salesAccounting = asList(sales, accounting);
     searchModel.setSelectedEntities(salesAccounting);
     assertTrue(conditionModel.getEqualValues().contains(sales));

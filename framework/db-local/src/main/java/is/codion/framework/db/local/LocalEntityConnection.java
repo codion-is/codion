@@ -80,7 +80,7 @@ public interface LocalEntityConnection extends EntityConnection {
   /**
    * @return the underlying connection
    */
-  DatabaseConnection getDatabaseConnection();
+  DatabaseConnection databaseConnection();
 
   /**
    * Returns a result set iterator based on the given query condition, this iterator closes all underlying
@@ -129,7 +129,7 @@ public interface LocalEntityConnection extends EntityConnection {
   /**
    * @return the underlying domain model
    */
-  Domain getDomain();
+  Domain domain();
 
   /**
    * Constructs a new LocalEntityConnection instance

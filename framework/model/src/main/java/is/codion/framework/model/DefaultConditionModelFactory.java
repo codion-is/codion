@@ -60,7 +60,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
    * @return the entity definition
    */
   protected final EntityDefinition getDefinition(EntityType entityType) {
-    return connectionProvider.getEntities().getDefinition(entityType);
+    return connectionProvider.entities().getDefinition(entityType);
   }
 
   private static List<Operator> getOperators(Attribute<?> attribute) {

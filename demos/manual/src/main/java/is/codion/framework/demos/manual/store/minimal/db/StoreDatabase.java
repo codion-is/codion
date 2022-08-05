@@ -37,7 +37,7 @@ public class StoreDatabase {
                     .user(User.parse("scott:tiger"))
                     .build();
 
-    EntityConnection connection = connectionProvider.getConnection();
+    EntityConnection connection = connectionProvider.connection();
 
     List<Entity> customersNamedDoe =
             connection.select(Customer.LAST_NAME, "Doe");
@@ -57,7 +57,7 @@ public class StoreDatabase {
                     .and(where(Customer.EMAIL).isNotNull()));
 
     //The domain model entities, a factory for Entity instances.
-    Entities entities = connection.getEntities();
+    Entities entities = connection.entities();
 
     Entity customer = entities.builder(Customer.TYPE)
             .with(Customer.FIRST_NAME, "Peter")

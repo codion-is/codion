@@ -57,7 +57,7 @@ public class RemoteEntityConnectionProviderTest {
             .user(User.parse("scott:tiger"))
             .build();
 
-    EntityConnection connection = provider.getConnection();
+    EntityConnection connection = provider.connection();
     connection.select(condition(TestDomain.T_DEPARTMENT));
 
     assertThrows(DatabaseException.class, () -> connection.delete(where(TestDomain.EMP_NAME).equalTo("JONES")));
@@ -70,7 +70,7 @@ public class RemoteEntityConnectionProviderTest {
 
     assertFalse(provider.isConnected());
 
-    assertThrows(RuntimeException.class, provider::getConnection);
+    assertThrows(RuntimeException.class, provider::connection);
   }
 
   @Test
@@ -83,7 +83,7 @@ public class RemoteEntityConnectionProviderTest {
             .user(UNIT_TEST_USER)
             .build();
     assertTrue(connectionProvider instanceof RemoteEntityConnectionProvider);
-    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, connectionProvider.getConnectionType());
+    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, connectionProvider.connectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
   }
 

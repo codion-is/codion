@@ -85,7 +85,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void insert() throws IOException, DatabaseException {
-    Entity entity = connection.getEntities().builder(TestDomain.T_DEPARTMENT)
+    Entity entity = connection.entities().builder(TestDomain.T_DEPARTMENT)
             .with(TestDomain.DEPARTMENT_ID, 33)
             .with(TestDomain.DEPARTMENT_NAME, "name")
             .with(TestDomain.DEPARTMENT_LOCATION, "loc")
@@ -97,15 +97,15 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void selectByKey() throws IOException, DatabaseException {
-    Key key = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 10);
+    Key key = connection.entities().primaryKey(TestDomain.T_DEPARTMENT, 10);
     List<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
   @Test
   void selectByKeyDifferentEntityTypes() throws IOException, DatabaseException {
-    Key deptKey = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 10);
-    Key empKey = connection.getEntities().primaryKey(TestDomain.T_EMP, 8);
+    Key deptKey = connection.entities().primaryKey(TestDomain.T_DEPARTMENT, 10);
+    Key empKey = connection.entities().primaryKey(TestDomain.T_EMP, 8);
 
     List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -169,8 +169,8 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void deleteByKeyDifferentEntityTypes() throws IOException, DatabaseException {
-    Key deptKey = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 40);
-    Key empKey = connection.getEntities().primaryKey(TestDomain.T_EMP, 1);
+    Key deptKey = connection.entities().primaryKey(TestDomain.T_DEPARTMENT, 40);
+    Key empKey = connection.entities().primaryKey(TestDomain.T_EMP, 1);
     connection.beginTransaction();
     try {
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());

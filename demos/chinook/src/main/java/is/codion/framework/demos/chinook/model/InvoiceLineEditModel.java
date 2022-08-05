@@ -31,7 +31,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
   @Override
   protected List<Key> doInsert(List<Entity> entities) throws DatabaseException {
-    EntityConnection connection = getConnectionProvider().getConnection();
+    EntityConnection connection = getConnectionProvider().connection();
     connection.beginTransaction();
     try {
       List<Key> keys = connection.insert(entities);
@@ -48,7 +48,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
   @Override
   protected List<Entity> doUpdate(List<Entity> entities) throws DatabaseException {
-    EntityConnection connection = getConnectionProvider().getConnection();
+    EntityConnection connection = getConnectionProvider().connection();
     connection.beginTransaction();
     try {
       List<Entity> updated = connection.update(entities);
@@ -65,7 +65,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
   @Override
   protected List<Entity> doDelete(List<Entity> entities) throws DatabaseException {
-    EntityConnection connection = getConnectionProvider().getConnection();
+    EntityConnection connection = getConnectionProvider().connection();
     connection.beginTransaction();
     try {
       connection.delete(Entity.getPrimaryKeys(entities));

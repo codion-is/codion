@@ -53,7 +53,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   @Override
-  public String getConnectionType() {
+  public String connectionType() {
     return CONNECTION_TYPE_REMOTE;
   }
 
@@ -61,7 +61,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @return a string describing the server connection
    */
   @Override
-  public String getDescription() {
+  public String description() {
     return serverInformation.getServerName() + "@" + serverHostName;
   }
 
@@ -86,15 +86,15 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
       truststoreResolved = true;
     }
     try {
-      LOG.debug("Initializing connection for {}", getUser());
+      LOG.debug("Initializing connection for {}", user());
       return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
               new Class[] {EntityConnection.class}, new RemoteEntityConnectionHandler(
                       getServer().connect(ConnectionRequest.builder()
-                              .user(getUser())
-                              .clientId(getClientId())
-                              .clientTypeId(getClientTypeId())
-                              .clientVersion(getClientVersion())
-                              .parameter(REMOTE_CLIENT_DOMAIN_TYPE, getDomainTypeName(getDomainClassName()))
+                              .user(user())
+                              .clientId(clientId())
+                              .clientTypeId(clientTypeId())
+                              .clientVersion(clientVersion())
+                              .parameter(REMOTE_CLIENT_DOMAIN_TYPE, getDomainTypeName(domainClassName()))
                               .build())));
     }
     catch (Exception e) {
@@ -105,7 +105,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
   @Override
   protected void close(EntityConnection connection) {
     try {
-      server.disconnect(getClientId());
+      server.disconnect(clientId());
     }
     catch (RemoteException e) {
       throw new RuntimeException(e);
@@ -125,13 +125,13 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
       }//just to check the connection
     }
     catch (RemoteException e) {
-      LOG.info("{} was unreachable, {} - {} reconnecting...", serverInformation.getServerName(), getUser(), getClientId());
+      LOG.info("{} was unreachable, {} - {} reconnecting...", serverInformation.getServerName(), user(), clientId());
       unreachable = true;
     }
     if (server == null || unreachable) {
       //if server is not reachable, try to reconnect once and return
       connectToServer();
-      LOG.info("ClientID: {}, {} connected to server: {}", getUser(), getClientId(), serverInformation.getServerName());
+      LOG.info("ClientID: {}, {} connected to server: {}", user(), clientId(), serverInformation.getServerName());
     }
 
     return this.server;

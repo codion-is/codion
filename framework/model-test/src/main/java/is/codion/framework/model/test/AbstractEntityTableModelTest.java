@@ -45,7 +45,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   private final EntityConnectionProvider connectionProvider;
 
-  protected final List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.getEntities());
+  protected final List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
 
   protected final TableModel testModel;
 
@@ -143,7 +143,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     Entities entities = tableModel.getEntities();
     Key pk1 = entities.primaryKey(TestDomain.T_EMP, 1);
     Key pk2 = entities.primaryKey(TestDomain.T_EMP, 2);
-    tableModel.getConnectionProvider().getConnection().beginTransaction();
+    tableModel.getConnectionProvider().connection().beginTransaction();
     try {
       tableModel.setSelectedByKey(singletonList(pk1));
       tableModel.getSelectionModel().setSelectedIndex(0);
@@ -161,7 +161,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
       assertTrue(tableModel.containsItem(selected));
     }
     finally {
-      tableModel.getConnectionProvider().getConnection().rollbackTransaction();
+      tableModel.getConnectionProvider().connection().rollbackTransaction();
     }
   }
 

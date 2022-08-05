@@ -130,7 +130,7 @@ final class LocalConnectionHandler implements InvocationHandler {
       }
       else {
         poolEntityConnection = localEntityConnection(database, domain, connectionPool.getConnection(remoteClient.databaseUser()));
-        rollbackSilently(poolEntityConnection.getDatabaseConnection());
+        rollbackSilently(poolEntityConnection.databaseConnection());
         returnConnectionToPool();
       }
     }
@@ -247,7 +247,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     if (poolEntityConnection.isTransactionOpen()) {
       return poolEntityConnection;
     }
-    poolEntityConnection.getDatabaseConnection().setConnection(connectionPool.getConnection(remoteClient.databaseUser()));
+    poolEntityConnection.databaseConnection().setConnection(connectionPool.getConnection(remoteClient.databaseUser()));
     poolEntityConnection.setMethodLogger(methodLogger);
 
     return poolEntityConnection;
@@ -288,10 +288,10 @@ final class LocalConnectionHandler implements InvocationHandler {
   }
 
   private void returnConnectionToPool() {
-    Connection connection = poolEntityConnection.getDatabaseConnection().getConnection();
+    Connection connection = poolEntityConnection.databaseConnection().getConnection();
     if (connection != null) {
       Database.closeSilently(connection);
-      poolEntityConnection.getDatabaseConnection().setConnection(null);
+      poolEntityConnection.databaseConnection().setConnection(null);
     }
   }
 

@@ -33,10 +33,10 @@ public final class EntityConnectionProviderDemo {
                     .build();
 
     LocalEntityConnection entityConnection =
-            (LocalEntityConnection) connectionProvider.getConnection();
+            (LocalEntityConnection) connectionProvider.connection();
 
     DatabaseConnection databaseConnection =
-            entityConnection.getDatabaseConnection();
+            entityConnection.databaseConnection();
 
     // the underlying JDBC connection is available in a local connection
     Connection connection = databaseConnection.getConnection();
@@ -57,9 +57,9 @@ public final class EntityConnectionProviderDemo {
                     .build();
 
     EntityConnection entityConnection =
-            connectionProvider.getConnection();
+            connectionProvider.connection();
 
-    Entities entities = entityConnection.getEntities();
+    Entities entities = entityConnection.entities();
 
     Entity track = entityConnection.select(entities.primaryKey(Track.TYPE, 42L));
 
@@ -79,9 +79,9 @@ public final class EntityConnectionProviderDemo {
                     .https(false)
                     .build();
 
-    EntityConnection entityConnection = connectionProvider.getConnection();
+    EntityConnection entityConnection = connectionProvider.connection();
 
-    Entities entities = entityConnection.getEntities();
+    Entities entities = entityConnection.entities();
 
     entityConnection.select(entities.primaryKey(Track.TYPE, 42L));
 

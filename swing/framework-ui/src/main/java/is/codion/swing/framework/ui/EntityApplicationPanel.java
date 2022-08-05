@@ -533,7 +533,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public static TreeModel createDependencyTreeModel(Entities entities) {
     requireNonNull(entities);
     DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-    for (EntityDefinition definition : entities.getDefinitions()) {
+    for (EntityDefinition definition : entities.entityDefinitions()) {
       if (definition.getForeignKeys().isEmpty() || referencesOnlySelf(entities, definition.getEntityType())) {
         root.add(new EntityDependencyTreeNode(definition.getEntityType(), entities));
       }
@@ -1203,7 +1203,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
 
     if (silentLoginUser == null && EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
-      saveDefaultUsername(connectionProvider.getUser().getUsername());
+      saveDefaultUsername(connectionProvider.user().getUsername());
     }
 
     startApplication(frameSize, maximizeFrame, displayFrame, includeMainMenu, displayProgressDialog, connectionProvider);
@@ -1263,7 +1263,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     EntityConnectionProvider connectionProvider = initializeConnectionProvider(silentLoginUser, getApplicationIdentifier());
-    connectionProvider.getConnection();//throws exception if the server is not reachable
+    connectionProvider.connection();//throws exception if the server is not reachable
 
     return connectionProvider;
   }
@@ -1441,9 +1441,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private static String getUserInfo(EntityConnectionProvider connectionProvider) {
-    String description = connectionProvider.getDescription();
+    String description = connectionProvider.description();
 
-    return getUsername(connectionProvider.getUser().getUsername().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
+    return getUsername(connectionProvider.user().getUsername().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
   }
 
   private static String getUsername(String username) {
@@ -1547,7 +1547,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     private List<EntityDependencyTreeNode> getChildren() {
       List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
-      for (EntityDefinition definition : entities.getDefinitions()) {
+      for (EntityDefinition definition : entities.entityDefinitions()) {
         for (ForeignKeyProperty fkProperty : definition.getForeignKeyProperties()) {
           if (fkProperty.referencedEntityType().equals(getEntityType()) && !fkProperty.softReference()
                   && !foreignKeyCycle(fkProperty.referencedEntityType())) {
@@ -1579,7 +1579,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     @Override
     public void validate(User user) throws Exception {
       connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
-      connectionProvider.getConnection();//throws exception if the server is not reachable
+      connectionProvider.connection();//throws exception if the server is not reachable
     }
   }
 

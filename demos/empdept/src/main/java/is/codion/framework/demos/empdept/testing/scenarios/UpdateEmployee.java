@@ -27,7 +27,7 @@ public final class UpdateEmployee extends AbstractEntityUsageScenario<EmpDeptApp
     selectRandomRow(departmentModel.getTableModel());
     SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
     if (employeeModel.getTableModel().getRowCount() > 0) {
-      EntityConnection connection = employeeModel.getConnectionProvider().getConnection();
+      EntityConnection connection = employeeModel.getConnectionProvider().connection();
       connection.beginTransaction();
       try {
         selectRandomRow(employeeModel.getTableModel());

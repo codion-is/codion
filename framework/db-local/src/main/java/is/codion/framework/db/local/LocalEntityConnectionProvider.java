@@ -26,17 +26,17 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider 
   /**
    * @return the underlying domain model
    */
-  Domain getDomain();
+  Domain domain();
 
   /**
    * @return the underlying {@link Database} instance
    */
-  Database getDatabase();
+  Database database();
 
   /**
    * @return the default query timeout being used
    */
-  int getDefaultQueryTimeout();
+  int defaultQueryTimeout();
 
   /**
    * Instantiates a new builder instance.

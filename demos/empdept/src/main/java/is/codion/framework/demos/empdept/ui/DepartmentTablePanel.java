@@ -36,7 +36,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
     HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
 
-    JasperPrint employeeReport = getTableModel().getConnectionProvider().getConnection()
+    JasperPrint employeeReport = getTableModel().getConnectionProvider().connection()
             .fillReport(Employee.EMPLOYEE_REPORT, reportParameters);
 
     Dialogs.componentDialog(new JRViewer(employeeReport))

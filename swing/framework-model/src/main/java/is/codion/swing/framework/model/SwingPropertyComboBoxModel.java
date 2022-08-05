@@ -54,7 +54,7 @@ public final class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxMo
     @Override
     public Collection<T> get() {
       try {
-        return connectionProvider.getConnection().select(attribute);
+        return connectionProvider.connection().select(attribute);
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);

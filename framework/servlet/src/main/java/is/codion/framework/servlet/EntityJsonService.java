@@ -346,7 +346,7 @@ public final class EntityJsonService extends AbstractEntityService {
       Entities entities = connection.getEntities();
       ConditionObjectMapper mapper = getConditionObjectMapper(entities);
       JsonNode jsonNode = mapper.readTree(request.getInputStream());
-      EntityType entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
+      EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
       Attribute<?> attribute = entities.getDefinition(entityType).getAttribute(jsonNode.get("attribute").textValue());
       Condition condition = null;
       JsonNode conditionNode = jsonNode.get("condition");
@@ -567,12 +567,12 @@ public final class EntityJsonService extends AbstractEntityService {
   }
 
   private EntityObjectMapper getEntityObjectMapper(Entities entities) {
-    return entityObjectMappers.computeIfAbsent(entities.getDomainType(), domainType ->
+    return entityObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
             entityObjectMapperFactory(domainType).createEntityObjectMapper(entities));
   }
 
   private ConditionObjectMapper getConditionObjectMapper(Entities entities) {
-    return conditionObjectMappers.computeIfAbsent(entities.getDomainType(), domainType ->
+    return conditionObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
             new ConditionObjectMapper(getEntityObjectMapper(entities)));
   }
 

@@ -58,7 +58,7 @@ public class EntityServerMonitorTest {
                     .clientTypeId(clientTypeId)
                     .user(UNIT_TEST_USER)
                     .build();
-    connectionProvider.getConnection();
+    connectionProvider.connection();
     EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.registryPort(), CONFIGURATION.adminUser());
     model.refresh();
     HostMonitor hostMonitor = model.getHostMonitors().iterator().next();
@@ -75,7 +75,7 @@ public class EntityServerMonitorTest {
     clientMonitor.refresh();
     assertEquals(1, clientMonitor.getRemoteClientListModel().size());
     RemoteClient remoteClient = clientMonitor.getRemoteClientListModel().firstElement();
-    assertEquals(connectionProvider.getClientId(), remoteClient.clientId());
+    assertEquals(connectionProvider.clientId(), remoteClient.clientId());
     assertEquals(UNIT_TEST_USER, remoteClient.user());
 
     clientMonitor.getServer().disconnect(remoteClient.clientId());//disconnects the client

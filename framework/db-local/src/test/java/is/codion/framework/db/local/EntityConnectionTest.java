@@ -48,7 +48,7 @@ public class EntityConnectionTest {
     try {
       Database destinationDatabase = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
       DESTINATION_CONNECTION = localEntityConnection(destinationDatabase, DOMAIN, User.user("sa"));
-      DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
+      DESTINATION_CONNECTION.databaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
       DESTINATION_CONNECTION.delete(condition(Employee.TYPE));
       DESTINATION_CONNECTION.delete(condition(Department.TYPE));
     }
@@ -64,7 +64,7 @@ public class EntityConnectionTest {
 
   @Test
   void copyEntities() throws SQLException, DatabaseException {
-    EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
+    EntityConnection sourceConnection = CONNECTION_PROVIDER.connection();
     EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Department.TYPE)
             .batchSize(2)
             .execute();
@@ -91,7 +91,7 @@ public class EntityConnectionTest {
 
   @Test
   void insertEntities() throws SQLException, DatabaseException {
-    EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
+    EntityConnection sourceConnection = CONNECTION_PROVIDER.connection();
 
     List<Entity> source = sourceConnection.select(condition(Department.TYPE));
 
@@ -116,7 +116,7 @@ public class EntityConnectionTest {
   @Test
   void batchInsertNegativeBatchSize() throws DatabaseException {
     assertThrows(IllegalArgumentException.class, () ->
-            EntityConnection.insertEntities(CONNECTION_PROVIDER.getConnection(), Collections.emptyIterator())
+            EntityConnection.insertEntities(CONNECTION_PROVIDER.connection(), Collections.emptyIterator())
                     .batchSize(-6));
   }
 }

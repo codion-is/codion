@@ -751,6 +751,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private void showEntityMenu() {
-    new EntityPopupMenu(getEditModel().getEntityCopy(), getEditModel().getConnectionProvider().getConnection()).show(this, 0, 0);
+    new EntityPopupMenu(getEditModel().getEntityCopy(), getEditModel().getConnectionProvider().connection()).show(this, 0, 0);
   }
 }

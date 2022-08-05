@@ -90,7 +90,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
    * @see EntityDefinition#getSearchAttributes()
    */
   public DefaultEntitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getSearchAttributes());
+    this(entityType, connectionProvider, connectionProvider.entities().getDefinition(entityType).getSearchAttributes());
   }
 
   /**
@@ -226,7 +226,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   @Override
   public List<Entity> performQuery() {
     try {
-      List<Entity> result = connectionProvider.getConnection().select(getEntitySelectCondition());
+      List<Entity> result = connectionProvider.connection().select(getEntitySelectCondition());
       if (resultSorter != null) {
         result.sort(resultSorter);
       }
@@ -292,7 +292,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     return (additionalConditionSupplier == null ? conditionCombination :
             additionalConditionSupplier.get().and(conditionCombination))
             .selectBuilder()
-            .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy())
+            .orderBy(connectionProvider.entities().getDefinition(entityType).getOrderBy())
             .build();
   }
 
@@ -311,7 +311,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private String createDescription() {
-    EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
+    EntityDefinition definition = connectionProvider.entities().getDefinition(entityType);
 
     return searchAttributes.stream()
             .map(attribute -> definition.getProperty(attribute).caption())

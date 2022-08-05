@@ -167,7 +167,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().refresh();
     assertTrue(departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().getRowCount() > 0);
 
-    EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
+    EntityConnection connection = departmentModel.getConnectionProvider().connection();
     Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
 
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
@@ -251,13 +251,13 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    Entity dept = departmentModel.getConnectionProvider().getEntities().builder(TestDomain.T_DEPARTMENT)
+    Entity dept = departmentModel.getConnectionProvider().entities().builder(TestDomain.T_DEPARTMENT)
             .with(TestDomain.DEPARTMENT_ID, -42)
             .with(TestDomain.DEPARTMENT_NAME, "Name")
             .with(TestDomain.DEPARTMENT_LOCATION, "Loc")
             .build();
 
-    Entity emp = connectionProvider.getConnection().selectSingle(TestDomain.EMP_ID, 8).clearPrimaryKey();
+    Entity emp = connectionProvider.connection().selectSingle(TestDomain.EMP_ID, 8).clearPrimaryKey();
     emp.put(TestDomain.EMP_NAME, "NewName");
 
     Model model = createDepartmentModelWithoutDetailModel();

@@ -26,26 +26,26 @@ public final class AbstractEntityConnectionProviderTest {
             .user(UNIT_TEST_USER)
             .domainClassName(TestDomain.class.getName());
     EntityConnectionProvider provider = builder.build();
-    assertEquals("description", provider.getDescription());
-    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.getConnectionType());
-    assertEquals(provider.getEntities(), ENTITIES);
-    assertEquals(UNIT_TEST_USER, provider.getUser());
+    assertEquals("description", provider.description());
+    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.connectionType());
+    assertEquals(provider.entities(), ENTITIES);
+    assertEquals(UNIT_TEST_USER, provider.user());
 
-    EntityConnection connection1 = provider.getConnection();
+    EntityConnection connection1 = provider.connection();
     assertTrue(provider.isConnectionValid());
     provider.close();
     assertFalse(provider.isConnectionValid());
 
-    EntityConnection connection2 = provider.getConnection();
+    EntityConnection connection2 = provider.connection();
     assertTrue(provider.isConnectionValid());
     assertNotEquals(connection1, connection2);
 
     connection2.close();
     assertFalse(provider.isConnectionValid());
-    EntityConnection connection3 = provider.getConnection();
+    EntityConnection connection3 = provider.connection();
     assertNotEquals(connection2, connection3);
 
-    EntityConnection connection4 = provider.getConnection();
+    EntityConnection connection4 = provider.connection();
     assertTrue(provider.isConnectionValid());
     assertNotEquals(connection3, connection4);
   }
@@ -77,12 +77,12 @@ public final class AbstractEntityConnectionProviderTest {
     }
 
     @Override
-    public String getConnectionType() {
+    public String connectionType() {
       return EntityConnectionProvider.CONNECTION_TYPE_LOCAL;
     }
 
     @Override
-    public String getDescription() {
+    public String description() {
       return "description";
     }
   }

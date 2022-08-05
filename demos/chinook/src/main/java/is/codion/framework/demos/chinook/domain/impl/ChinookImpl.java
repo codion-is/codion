@@ -457,7 +457,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
     private static List<Long> getRandomTrackIds(LocalEntityConnection connection,
                                                 int noOfTracks) throws DatabaseException {
-      try (Statement statement = connection.getDatabaseConnection().getConnection().createStatement();
+      try (Statement statement = connection.databaseConnection().getConnection().createStatement();
            ResultSet resultSet = statement.executeQuery(TRACK_ID_QUERY + " " + noOfTracks)) {
         return TRACK_ID_PACKER.pack(resultSet);
       }

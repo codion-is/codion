@@ -57,7 +57,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import static is.codion.common.db.connection.DatabaseConnection.databaseConnection;
 import static is.codion.common.db.database.Database.closeSilently;
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.condition.Conditions.where;
@@ -110,7 +109,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   DefaultLocalEntityConnection(Database database, Domain domain, User user) throws DatabaseException {
     this.domain = requireNonNull(domain, "domain");
     this.domainEntities = domain.entities();
-    this.connection = databaseConnection(database, user);
+    this.connection = DatabaseConnection.databaseConnection(database, user);
     this.selectQueries = new SelectQueries(database);
     this.domain.configureConnection(this.connection);
   }
@@ -124,7 +123,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   DefaultLocalEntityConnection(Database database, Domain domain, Connection connection) throws DatabaseException {
     this.domain = requireNonNull(domain, "domain");
     this.domainEntities = domain.entities();
-    this.connection = databaseConnection(database, connection);
+    this.connection = DatabaseConnection.databaseConnection(database, connection);
     this.selectQueries = new SelectQueries(database);
     this.domain.configureConnection(this.connection);
   }
@@ -146,12 +145,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Entities getEntities() {
+  public Entities entities() {
     return domainEntities;
   }
 
   @Override
-  public User getUser() {
+  public User user() {
     return connection.getUser();
   }
 
@@ -832,7 +831,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public DatabaseConnection getDatabaseConnection() {
+  public DatabaseConnection databaseConnection() {
     return connection;
   }
 
@@ -882,7 +881,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Domain getDomain() {
+  public Domain domain() {
     return domain;
   }
 
@@ -1122,7 +1121,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private List<ForeignKeyProperty> initializeForeignKeyReferences(EntityType entityType) {
-    return domainEntities.getDefinitions().stream()
+    return domainEntities.entityDefinitions().stream()
             .flatMap(entityDefinition -> entityDefinition.getForeignKeyProperties().stream())
             .filter(foreignKeyProperty -> foreignKeyProperty.referencedEntityType().equals(entityType))
             .collect(toList());
@@ -1241,7 +1240,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private String createLogMessage(String sqlStatement, List<?> values, Exception exception) {
-    StringBuilder logMessage = new StringBuilder(getUser().toString()).append("\n");
+    StringBuilder logMessage = new StringBuilder(user().toString()).append("\n");
     logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(values);
     if (exception != null) {
       logMessage.append("\n").append(" [Exception: ").append(exception.getMessage()).append("]");

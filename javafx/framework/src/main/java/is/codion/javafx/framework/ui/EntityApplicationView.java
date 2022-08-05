@@ -127,7 +127,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
       this.mainStage = stage;
       User user = getApplicationUser();
       EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
-      connectionProvider.getConnection();//throws exception if the server is not reachable or credentials are incorrect
+      connectionProvider.connection();//throws exception if the server is not reachable or credentials are incorrect
       this.model = initializeApplicationModel(connectionProvider);
       stage.setTitle(applicationTitle);
       stage.getIcons().add(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName)));

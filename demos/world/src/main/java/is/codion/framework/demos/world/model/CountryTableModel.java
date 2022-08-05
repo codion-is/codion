@@ -35,7 +35,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
 
   public JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) throws ReportException {
     CountryReportDataSource dataSource = new CountryReportDataSource(getSelectionModel().getSelectedItems(),
-            getConnectionProvider().getConnection(), progressReporter);
+            getConnectionProvider().connection(), progressReporter);
 
     return fillReport(classPathReport(CountryTableModel.class, COUNTRY_REPORT), dataSource, getReportParameters());
   }
@@ -55,7 +55,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
   private final class CapitalConditionSupplier implements Supplier<Condition> {
     @Override
     public Condition get() {
-      EntityConnection connection = getConnectionProvider().getConnection();
+      EntityConnection connection = getConnectionProvider().connection();
       try {
         return Conditions.where(City.ID).equalTo(connection.select(Country.CAPITAL));
       }

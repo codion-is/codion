@@ -78,7 +78,7 @@ public class EntityTestUnit {
    * @return the domain entities
    */
   public final Entities getEntities() {
-    return connectionProvider.getEntities();
+    return connectionProvider.entities();
   }
 
   /**
@@ -87,7 +87,7 @@ public class EntityTestUnit {
    * @throws DatabaseException in case of an exception
    */
   public final void test(EntityType entityType) throws DatabaseException {
-    EntityConnection connection = connectionProvider.getConnection();
+    EntityConnection connection = connectionProvider.connection();
     connection.beginTransaction();
     try {
       Map<ForeignKey, Entity> foreignKeyEntities = initializeForeignKeyEntities(entityType, new HashMap<>(), connection);
@@ -115,7 +115,7 @@ public class EntityTestUnit {
    * @return the EntityConnection instance used by this EntityTestUnit
    */
   protected final EntityConnection getConnection() {
-    return connectionProvider.getConnection();
+    return connectionProvider.connection();
   }
 
   /**

@@ -43,7 +43,7 @@ public class SwingForeignKeyConditionModelTest {
   void getSearchEntitiesComboBoxModel() throws DatabaseException {
     SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     SwingForeignKeyConditionModel conditionModel = new SwingForeignKeyConditionModel(TestDomain.EMP_DEPARTMENT_FK, comboBoxModel);
-    Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     comboBoxModel.setSelectedItem(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());

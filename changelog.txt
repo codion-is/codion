@@ -8328,3 +8328,4 @@
   ForeignKey.referencedEntityType() renamed referencedType()
   Event, State, State.Combination, Value, PropertyValue, get prefix removed from accessors
   FunctionType, ProcedureType and ReportType, get prefix removed from accessors
+  Entities, EntityConnection, EntityConnectionProvider, LocalEntityConnection, LocalEntityConnectionProvider, get prefix removed from accessors, Entities.getDefinitions() renamed entityDefinitions()

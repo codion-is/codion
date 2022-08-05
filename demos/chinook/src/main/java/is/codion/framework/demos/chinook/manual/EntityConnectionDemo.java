@@ -115,7 +115,7 @@ public final class EntityConnectionDemo {
 
   static void selectKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectKeys[]
-    Entities entities = connection.getEntities();
+    Entities entities = connection.entities();
 
     Key key42 = entities.primaryKey(Artist.TYPE, 42L);
     Key key43 = entities.primaryKey(Artist.TYPE, 43L);
@@ -147,7 +147,7 @@ public final class EntityConnectionDemo {
 
   static void selectKey(EntityConnection connection) throws DatabaseException {
     // tag::selectKey[]
-    Entities entities = connection.getEntities();
+    Entities entities = connection.entities();
 
     Key key42 = entities.primaryKey(Artist.TYPE, 42L);
 
@@ -191,7 +191,7 @@ public final class EntityConnectionDemo {
 
   static void insert(EntityConnection connection) throws DatabaseException {
     // tag::insert[]
-    Entities entities = connection.getEntities();
+    Entities entities = connection.entities();
 
     Entity myBand = entities.builder(Artist.TYPE)
             .with(Artist.NAME, "My Band")
@@ -333,7 +333,7 @@ public final class EntityConnectionDemo {
 
   static void transaction(EntityConnection connection) throws DatabaseException {
     // tag::transaction[]
-    Entities entities = connection.getEntities();
+    Entities entities = connection.entities();
 
     connection.beginTransaction();
     try {
@@ -371,7 +371,7 @@ public final class EntityConnectionDemo {
                     .user(User.parse("scott:tiger"))
                     .build();
 
-    EntityConnection connection = connectionProvider.getConnection();
+    EntityConnection connection = connectionProvider.connection();
     selectConditionDemo(connection);
     fetchDepthEntity(connection);
     fetchDepthCondition(connection);
