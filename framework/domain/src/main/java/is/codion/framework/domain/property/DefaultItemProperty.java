@@ -33,7 +33,7 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
   }
 
   @Override
-  public List<Item<T>> getItems() {
+  public List<Item<T>> items() {
     return items;
   }
 

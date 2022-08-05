@@ -74,7 +74,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServletServerTest {
 
-  private static final Entities ENTITIES = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().entities();
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -113,7 +113,7 @@ public class EntityServletServerTest {
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
             .build();
-    String domainName = TestDomain.DOMAIN.getName();
+    String domainName = TestDomain.DOMAIN.name();
     final String clientTypeId = "EntityServletServerTest";
     UUID clientId = UUID.randomUUID();
     CloseableHttpClient client = HttpClientBuilder.create()
@@ -146,7 +146,7 @@ public class EntityServletServerTest {
             .setConnectTimeout(2000)
             .build();
 
-    String domainName = new TestDomain().getDomainType().getName();
+    String domainName = new TestDomain().type().name();
     final String clientTypeId = "EntityServletServerTest";
     Value<UUID> clientIdValue = Value.value(UUID.randomUUID());
     HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
@@ -292,8 +292,8 @@ public class EntityServletServerTest {
     //select values
     condition = where(TestDomain.DEPARTMENT_ID).equalTo(10);
     ObjectNode node = entityObjectMapper.createObjectNode();
-    node.set("attribute", conditionObjectMapper.valueToTree(TestDomain.DEPARTMENT_ID.getName()));
-    node.set("entityType", conditionObjectMapper.valueToTree(TestDomain.DEPARTMENT_ID.getEntityType().getName()));
+    node.set("attribute", conditionObjectMapper.valueToTree(TestDomain.DEPARTMENT_ID.name()));
+    node.set("entityType", conditionObjectMapper.valueToTree(TestDomain.DEPARTMENT_ID.entityType().name()));
     node.set("condition", conditionObjectMapper.valueToTree(condition));
 
     uriBuilder.setPath("values");
@@ -320,7 +320,7 @@ public class EntityServletServerTest {
     Map<String, Collection<Entity>> dependencies = entityObjectMapper.readValue(response.getEntity().getContent(),
             new TypeReference<Map<String, Collection<Entity>>>() {});
     assertEquals(1, dependencies.size());
-    assertEquals(12, dependencies.get(TestDomain.T_EMP.getName()).size());
+    assertEquals(12, dependencies.get(TestDomain.T_EMP.name()).size());
     response.close();
 
     //transactions
@@ -396,13 +396,13 @@ public class EntityServletServerTest {
     //test with missing authentication info
     URIBuilder uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
-    uriBuilder.addParameter("domainTypeName", TestDomain.DOMAIN.getName());
+    uriBuilder.addParameter("domainTypeName", TestDomain.DOMAIN.name());
     CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
     client.close();
 
-    String domainName = new TestDomain().getDomainType().getName();
+    String domainName = new TestDomain().type().name();
     final String clientTypeId = "EntityServletServerTest";
     //test with missing clientId header
     client = HttpClientBuilder.create()

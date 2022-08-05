@@ -180,14 +180,14 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param foreignKey the foreign key for which to create a {@link SwingEntityComboBoxModel}
    * @return a {@link SwingEntityComboBoxModel} for the given foreign key
    * @see FilteredComboBoxModel#COMBO_BOX_NULL_CAPTION
-   * @see Property#isNullable()
+   * @see Property#nullable()
    * @see is.codion.framework.model.EntityComboBoxModel#setSelectAttributes(Collection)
-   * @see ForeignKeyProperty#getSelectAttributes()
+   * @see ForeignKeyProperty#selectAttributes()
    */
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
     ForeignKeyProperty foreignKeyProperty = getEntityDefinition().getForeignKeyProperty(foreignKey);
-    SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), getConnectionProvider());
-    model.setSelectAttributes(foreignKeyProperty.getSelectAttributes());
+    SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.referencedEntityType(), getConnectionProvider());
+    model.setSelectAttributes(foreignKeyProperty.selectAttributes());
     if (isNullable(foreignKey)) {
       model.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     }
@@ -208,8 +208,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     SwingPropertyComboBoxModel<T> model = new SwingPropertyComboBoxModel<>(getConnectionProvider(), attribute);
     if (isNullable(attribute)) {
       model.setIncludeNull(true);
-      if (attribute.getValueClass().isInterface()) {
-        model.setNullItem(ProxyBuilder.builder(attribute.getValueClass())
+      if (attribute.valueClass().isInterface()) {
+        model.setNullItem(ProxyBuilder.builder(attribute.valueClass())
                 .method("toString", parameters -> FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get())
                 .build());
       }

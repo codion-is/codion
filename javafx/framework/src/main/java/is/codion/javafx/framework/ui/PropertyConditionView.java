@@ -56,7 +56,7 @@ public final class PropertyConditionView<T> extends BorderPane {
    */
   public PropertyConditionView(ColumnConditionModel<? extends Attribute<?>, T> model, Property<T> property) {
     this.model = model;
-    this.header = new Label(property.getCaption());
+    this.header = new Label(property.caption());
     this.enabledBox = createEnabledBox();
     this.checkBoxPane = createCheckBoxPane();
     this.equalsValueControl = createEqualsValueControl(property);

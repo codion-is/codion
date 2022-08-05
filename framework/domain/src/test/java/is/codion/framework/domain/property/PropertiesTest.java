@@ -122,7 +122,7 @@ public final class PropertiesTest {
 
   @Test
   void getMaximumFractionDigitsNotNumerical() {
-    assertEquals(-1, columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).build().getMaximumFractionDigits());
+    assertEquals(-1, columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).build().maximumFractionDigits());
   }
 
   @Test
@@ -148,7 +148,7 @@ public final class PropertiesTest {
 
   @Test
   void setColumnName() {
-    assertEquals("hello", ((ColumnProperty<?>) columnProperty(ENTITY_TYPE.integerAttribute("attribute")).columnName("hello").build()).getColumnName());
+    assertEquals("hello", ((ColumnProperty<?>) columnProperty(ENTITY_TYPE.integerAttribute("attribute")).columnName("hello").build()).columnName());
   }
 
   @Test
@@ -160,14 +160,14 @@ public final class PropertiesTest {
   void description() {
     final String description = "Here is a description";
     Property<Integer> property = columnProperty(ENTITY_TYPE.integerAttribute("attribute")).description(description).build();
-    assertEquals(description, property.getDescription());
+    assertEquals(description, property.description());
   }
 
   @Test
   void mnemonic() {
     final Character mnemonic = 'M';
     Property<Integer> property = columnProperty(ENTITY_TYPE.integerAttribute("attribute")).mnemonic(mnemonic).build();
-    assertEquals(mnemonic, property.getMnemonic());
+    assertEquals(mnemonic, property.mnemonic());
   }
 
   @Test
@@ -196,12 +196,12 @@ public final class PropertiesTest {
                     .captionResourceKey("test").build();
 
     Locale.setDefault(new Locale("en", "EN"));
-    assertEquals("Test", property.getCaption());
+    assertEquals("Test", property.caption());
 
     property = Serializer.deserialize(Serializer.serialize(property));
 
     Locale.setDefault(new Locale("is", "IS"));
-    assertEquals("Prufa", property.getCaption());
+    assertEquals("Prufa", property.caption());
 
     assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE2.integerAttribute("i18n"))
                     .captionResourceKey("key"));

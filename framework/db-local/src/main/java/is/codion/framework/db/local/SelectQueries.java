@@ -103,19 +103,19 @@ final class SelectQueries {
     Builder entitySelectQuery() {
       SelectQuery selectQuery = definition.getSelectQuery();
       if (selectQuery != null) {
-        if (selectQuery.getColumns() != null) {
-          columns(selectQuery.getColumns());
+        if (selectQuery.columns() != null) {
+          columns(selectQuery.columns());
           selectedProperties = getSelectableProperties();
           columnsClauseFromSelectQuery = true;
         }
         else {
           columns(getAllColumnsClause());
         }
-        from(selectQuery.getFrom());
-        where(selectQuery.getWhere());
-        orderBy(selectQuery.getOrderBy());
-        groupBy(selectQuery.getGroupBy());
-        having(selectQuery.getHaving());
+        from(selectQuery.from());
+        where(selectQuery.where());
+        orderBy(selectQuery.orderBy());
+        groupBy(selectQuery.groupBy());
+        having(selectQuery.having());
       }
 
       return this;
@@ -235,8 +235,8 @@ final class SelectQueries {
       Set<ColumnProperty<?>> propertiesToSelect = new HashSet<>(definition.getPrimaryKeyProperties());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
-          ((ForeignKey) attribute).getReferences().forEach(reference ->
-                  propertiesToSelect.add(definition.getColumnProperty(reference.getAttribute())));
+          ((ForeignKey) attribute).references().forEach(reference ->
+                  propertiesToSelect.add(definition.getColumnProperty(reference.attribute())));
         }
         else {
           propertiesToSelect.add(definition.getColumnProperty(attribute));
@@ -250,7 +250,7 @@ final class SelectQueries {
       return selectablePropertiesCache.computeIfAbsent(definition.getEntityType(), entityType ->
               definition.getColumnProperties().stream()
                       .filter(property -> !definition.getLazyLoadedBlobProperties().contains(property))
-                      .filter(ColumnProperty::isSelectable)
+                      .filter(ColumnProperty::selectable)
                       .collect(toList()));
     }
 
@@ -262,8 +262,8 @@ final class SelectQueries {
       StringBuilder stringBuilder = new StringBuilder();
       for (int i = 0; i < columnProperties.size(); i++) {
         ColumnProperty<?> property = columnProperties.get(i);
-        String columnName = property.getColumnName();
-        String columnExpression = property.getColumnExpression();
+        String columnName = property.columnName();
+        String columnExpression = property.columnExpression();
         stringBuilder.append(columnExpression);
         if (!columnName.equals(columnExpression)) {
           stringBuilder.append(" as ").append(columnName);
@@ -282,7 +282,7 @@ final class SelectQueries {
     }
 
     private String createOrderByClause(OrderBy orderBy) {
-      List<OrderBy.OrderByAttribute> orderByAttributes = orderBy.getOrderByAttributes();
+      List<OrderBy.OrderByAttribute> orderByAttributes = orderBy.orderByAttributes();
       if (orderByAttributes.isEmpty()) {
         throw new IllegalArgumentException("An order by clause must contain at least a single attribute");
       }
@@ -296,7 +296,7 @@ final class SelectQueries {
     }
 
     private String getColumnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByAttribute orderByAttribute) {
-      return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).getColumnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
+      return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).columnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
     }
   }
 }

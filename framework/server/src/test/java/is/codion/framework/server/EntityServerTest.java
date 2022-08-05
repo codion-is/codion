@@ -138,7 +138,7 @@ public class EntityServerTest {
               .user(UNIT_TEST_USER)
               .clientTypeId("ClientTypeID")
               .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE,
-                      new EmptyDomain().getDomainType().getName()).build());
+                      new EmptyDomain().type().name()).build());
       fail();
     }
     catch (LoginException ignored) {}

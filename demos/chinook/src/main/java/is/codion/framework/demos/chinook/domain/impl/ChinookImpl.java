@@ -349,7 +349,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .orderBy(ascending(Playlist.NAME))
             .stringFactory(Playlist.NAME));
 
-    add(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(getEntities()));
+    add(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(entities()));
   }
 
   void playlistTrack() {

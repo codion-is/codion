@@ -277,7 +277,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private void initializeFilterModels(EntityType entityType, FilterModelFactory filterModelProvider) {
     if (filterModelProvider != null) {
       for (Property<?> property : connectionProvider.getEntities().getDefinition(entityType).getProperties()) {
-        if (!property.isHidden()) {
+        if (!property.hidden()) {
           ColumnFilterModel<Entity, Attribute<?>, ?> filterModel = filterModelProvider.createFilterModel(property);
           if (filterModel != null) {
             filterModels.put(filterModel.getColumnIdentifier(), filterModel);
@@ -290,14 +290,14 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private void initializeConditionModels(EntityType entityType, ConditionModelFactory conditionModelFactory) {
     EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
     for (ColumnProperty<?> columnProperty : definition.getColumnProperties()) {
-      ColumnConditionModel<? extends Attribute<?>, ?> conditionModel = conditionModelFactory.createConditionModel(columnProperty.getAttribute());
+      ColumnConditionModel<? extends Attribute<?>, ?> conditionModel = conditionModelFactory.createConditionModel(columnProperty.attribute());
       if (conditionModel != null) {
         conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel);
       }
     }
     for (ForeignKeyProperty foreignKeyProperty :
             connectionProvider.getEntities().getDefinition(entityType).getForeignKeyProperties()) {
-      ColumnConditionModel<ForeignKey, Entity> conditionModel = conditionModelFactory.createConditionModel(foreignKeyProperty.getAttribute());
+      ColumnConditionModel<ForeignKey, Entity> conditionModel = conditionModelFactory.createConditionModel(foreignKeyProperty.attribute());
       if (conditionModel != null) {
         conditionModels.put(conditionModel.getColumnIdentifier(), conditionModel);
       }

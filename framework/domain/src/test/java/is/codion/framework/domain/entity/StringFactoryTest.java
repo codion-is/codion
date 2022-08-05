@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class StringFactoryTest {
 
   private final TestDomain domain = new TestDomain();
-  private final Entities entities = domain.getEntities();
+  private final Entities entities = domain.entities();
 
   @Test
   void builder() {

@@ -49,7 +49,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   @Override
   public final EntityDefinition getDefinition(EntityType entityType) {
-    return getDefinitionInternal(requireNonNull(entityType, "entityType").getName());
+    return getDefinitionInternal(requireNonNull(entityType, "entityType").name());
   }
 
   @Override
@@ -59,7 +59,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   @Override
   public final boolean contains(EntityType entityType) {
-    return entityDefinitions.containsKey(requireNonNull(entityType).getName());
+    return entityDefinitions.containsKey(requireNonNull(entityType).name());
   }
 
   @Override
@@ -114,12 +114,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   protected final void add(EntityDefinition definition) {
-    if (entityDefinitions.containsKey(definition.getEntityType().getName())) {
+    if (entityDefinitions.containsKey(definition.getEntityType().name())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
               definition.getEntityType() + ", for table: " + definition.getTableName());
     }
     validateForeignKeyProperties(definition);
-    entityDefinitions.put(definition.getEntityType().getName(), (DefaultEntityDefinition) definition);
+    entityDefinitions.put(definition.getEntityType().name(), (DefaultEntityDefinition) definition);
     populateForeignDefinitions();
   }
 
@@ -135,17 +135,17 @@ public abstract class DefaultEntities implements Entities, Serializable {
   private void validateForeignKeyProperties(EntityDefinition definition) {
     EntityType entityType = definition.getEntityType();
     for (ForeignKey foreignKey : definition.getForeignKeys()) {
-      EntityType referencedType = foreignKey.getReferencedEntityType();
+      EntityType referencedType = foreignKey.referencedEntityType();
       EntityDefinition referencedEntity = referencedType.equals(entityType) ?
-              definition : entityDefinitions.get(referencedType.getName());
+              definition : entityDefinitions.get(referencedType.name());
       if (referencedEntity == null && strictForeignKeys) {
         throw new IllegalArgumentException("Entity '" + referencedType
                 + "' referenced by entity '" + entityType + "' via foreign key '"
                 + foreignKey + "' has not been defined");
       }
       if (referencedEntity != null) {
-        foreignKey.getReferences().stream()
-                .map(ForeignKey.Reference::getReferencedAttribute)
+        foreignKey.references().stream()
+                .map(ForeignKey.Reference::referencedAttribute)
                 .forEach(attribute -> {
                   if (!referencedEntity.containsAttribute(attribute)) {
                     throw new IllegalArgumentException("Property referenced by foreign key not found in referenced entity: " + attribute);
@@ -158,7 +158,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   private void populateForeignDefinitions() {
     for (DefaultEntityDefinition definition : entityDefinitions.values()) {
       for (ForeignKey foreignKey : definition.getForeignKeys()) {
-        EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.getReferencedEntityType().getName());
+        EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.referencedEntityType().name());
         if (referencedDefinition != null && !definition.hasReferencedEntityDefinition(foreignKey)) {
           definition.setReferencedEntityDefinition(foreignKey, referencedDefinition);
         }

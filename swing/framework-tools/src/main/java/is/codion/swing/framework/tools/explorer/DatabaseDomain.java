@@ -39,7 +39,7 @@ final class DatabaseDomain extends DefaultDomain {
 
   private void defineEntity(Table table) {
     if (!tableEntityTypes.containsKey(table)) {
-      EntityType entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
+      EntityType entityType = type().entityType(table.getSchema().getName() + "." + table.getTableName());
       tableEntityTypes.put(table, entityType);
       table.getForeignKeys().stream()
               .map(ForeignKeyConstraint::getReferencedTable)

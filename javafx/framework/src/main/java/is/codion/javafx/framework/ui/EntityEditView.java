@@ -118,11 +118,11 @@ public abstract class EntityEditView extends BorderPane {
     List<Property<?>> properties = Properties.sort(getEditModel()
             .getEntityDefinition().getProperties(controls.keySet()));
     properties.removeIf(property -> {
-      Control control = controls.get(property.getAttribute());
+      Control control = controls.get(property.attribute());
 
       return control == null || control.isDisabled() || !control.isVisible();
     });
-    controls.get(FXUiUtil.selectValues(properties).get(0).getAttribute()).requestFocus();
+    controls.get(FXUiUtil.selectValues(properties).get(0).attribute()).requestFocus();
   }
 
   /**
@@ -260,7 +260,7 @@ public abstract class EntityEditView extends BorderPane {
    * @return a {@link Label} for the given attribute
    */
   protected final Label createLabel(Attribute<?> attribute) {
-    return new Label(getEditModel().getEntityDefinition().getProperty(attribute).getCaption());
+    return new Label(getEditModel().getEntityDefinition().getProperty(attribute).caption());
   }
 
   protected final BorderPane createPropertyPanel(Attribute<?> attribute) {

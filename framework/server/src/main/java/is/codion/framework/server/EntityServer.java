@@ -233,7 +233,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   final Map<EntityType, String> getEntityDefinitions() {
     Map<EntityType, String> definitions = new HashMap<>();
     for (Domain domain : domainModels.values()) {
-      for (EntityDefinition definition : domain.getEntities().getDefinitions()) {
+      for (EntityDefinition definition : domain.entities().getDefinitions()) {
         definitions.put(definition.getEntityType(), definition.getTableName());
       }
     }
@@ -345,13 +345,13 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     List<Domain> serviceDomains = Domain.getDomains();
     try {
       serviceDomains.forEach(domain -> {
-        LOG.info("Server loading and registering domain model '" + domain.getDomainType() + "' as a service");
-        domains.put(domain.getDomainType(), domain);
+        LOG.info("Server loading and registering domain model '" + domain.type() + "' as a service");
+        domains.put(domain.type(), domain);
       });
       for (String className : domainModelClassNames) {
         LOG.info("Server loading and registering domain model class '" + className + "' from classpath");
         Domain domain = (Domain) Class.forName(className).getConstructor().newInstance();
-        domains.put(domain.getDomainType(), domain);
+        domains.put(domain.type(), domain);
       }
 
       return unmodifiableMap(domains);

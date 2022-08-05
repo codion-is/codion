@@ -17,19 +17,19 @@ public class DefaultFilterModelFactory implements FilterModelFactory {
 
   @Override
   public <T> ColumnFilterModel<Entity, Attribute<?>, T> createFilterModel(Property<T> property) {
-    if (property.getAttribute().isEntity()) {
+    if (property.attribute().isEntity()) {
       return null;
     }
 
     DefaultColumnFilterModel<Entity, Attribute<?>, T> filterModel = new DefaultColumnFilterModel<>(
-            property.getAttribute(), property.getAttribute().getValueClass(),
-            Text.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
+            property.attribute(), property.attribute().valueClass(),
+            Text.WILDCARD_CHARACTER.get(), property.format(), property.dateTimePattern());
     filterModel.setComparableFunction(row -> {
-      if (row.isNull(property.getAttribute())) {
+      if (row.isNull(property.attribute())) {
         return null;
       }
 
-      Object value = row.get(property.getAttribute());
+      Object value = row.get(property.attribute());
       if (value instanceof Entity) {
         return (Comparable<T>) value.toString();
       }

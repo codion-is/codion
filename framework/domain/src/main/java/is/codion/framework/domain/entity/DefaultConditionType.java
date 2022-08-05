@@ -21,12 +21,12 @@ final class DefaultConditionType implements ConditionType, Serializable {
   }
 
   @Override
-  public EntityType getEntityType() {
+  public EntityType entityType() {
     return entityType;
   }
 
   @Override
-  public String getName() {
+  public String name() {
     return name;
   }
 

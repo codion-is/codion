@@ -13,7 +13,7 @@ public final class HttpJsonEntityConnectionTest extends AbstractHttpEntityConnec
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   public HttpJsonEntityConnectionTest() {
-    super(new HttpJsonEntityConnection(TestDomain.DOMAIN.getName(),
+    super(new HttpJsonEntityConnection(TestDomain.DOMAIN.name(),
           HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
           HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
           HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get(),

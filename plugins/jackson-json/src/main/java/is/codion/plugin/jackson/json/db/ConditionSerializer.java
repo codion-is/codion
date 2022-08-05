@@ -36,7 +36,7 @@ final class ConditionSerializer extends StdSerializer<Condition> {
   public void serialize(Condition condition, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("entityType", condition.entityType().getName());
+    generator.writeStringField("entityType", condition.entityType().name());
     generator.writeFieldName("condition");
     serialize(condition, generator);
     generator.writeEndObject();

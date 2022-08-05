@@ -29,27 +29,27 @@ public interface Domain {
   /**
    * @return the domain type
    */
-  DomainType getDomainType();
+  DomainType type();
 
   /**
    * @return the Domain entities
    */
-  Entities getEntities();
+  Entities entities();
 
   /**
    * @return an unmodifiable view of this domain's reports
    */
-  Map<ReportType<?, ?, ?>, Report<?, ?, ?>> getReports();
+  Map<ReportType<?, ?, ?>, Report<?, ?, ?>> reports();
 
   /**
    * @return an unmodifiable view of this domain's procedures
    */
-  Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> getProcedures();
+  Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> procedures();
 
   /**
    * @return an unmodifiable view of this domain's functions
    */
-  Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> getFunctions();
+  Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> functions();
 
   /**
    * Retrieves the report of the given type.
@@ -106,12 +106,12 @@ public interface Domain {
   /**
    * @param name the domain name
    * @return a {@link Domain} implementation with the given name, if found
-   * @see DomainType#getName()
+   * @see DomainType#name()
    */
   static Optional<Domain> getInstanceByName(String name) {
     requireNonNull(name);
     for (Domain domain : getDomains()) {
-      if (domain.getDomainType().getName().equals(name)) {
+      if (domain.type().name().equals(name)) {
         return Optional.of(domain);
       }
     }
@@ -122,7 +122,7 @@ public interface Domain {
   /**
    * @param className the domain classname
    * @return a {@link Domain} implementation of the given type, if found
-   * @see DomainType#getName()
+   * @see DomainType#name()
    */
   static Optional<Domain> getInstanceByClassName(String className) {
     requireNonNull(className);

@@ -97,14 +97,14 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(definition(
-            primaryKeyProperty(Department.DEPTNO, Department.DEPTNO.getName())
+            primaryKeyProperty(Department.DEPTNO, Department.DEPTNO.name())
                     .updatable(true)
                     .nullable(false)
                     .beanProperty("id"),
-            columnProperty(Department.DNAME, Department.DNAME.getName())
+            columnProperty(Department.DNAME, Department.DNAME.name())
                     .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false)
                     .beanProperty("name"),
-            columnProperty(Department.LOC, Department.LOC.getName())
+            columnProperty(Department.LOC, Department.LOC.name())
                     .preferredColumnWidth(150).maximumLength(13)
                     .beanProperty("location"))
             .smallDataset(true)
@@ -146,27 +146,27 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(definition(
-            primaryKeyProperty(Employee.ID, Employee.ID.getName()),
-            columnProperty(Employee.NAME, Employee.NAME.getName())
+            primaryKeyProperty(Employee.ID, Employee.ID.name()),
+            columnProperty(Employee.NAME, Employee.NAME.name())
                     .searchProperty(true).maximumLength(10).nullable(false),
             columnProperty(Employee.DEPARTMENT)
                     .nullable(false),
-            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName()),
-            itemProperty(Employee.JOB, Employee.JOB.getName(),
+            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.name()),
+            itemProperty(Employee.JOB, Employee.JOB.name(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
-            columnProperty(Employee.SALARY, Employee.SALARY.getName())
+            columnProperty(Employee.SALARY, Employee.SALARY.name())
                     .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
-            columnProperty(Employee.COMMISSION, Employee.COMMISSION.getName())
+            columnProperty(Employee.COMMISSION, Employee.COMMISSION.name())
                     .valueRange(100, 2000).maximumFractionDigits(2),
             columnProperty(Employee.MGR),
-            foreignKeyProperty(Employee.MGR_FK, Employee.MGR_FK.getName())
+            foreignKeyProperty(Employee.MGR_FK, Employee.MGR_FK.name())
                     //not really soft, just for testing purposes
                     .softReference(),
-            columnProperty(Employee.HIREDATE, Employee.HIREDATE.getName())
+            columnProperty(Employee.HIREDATE, Employee.HIREDATE.name())
                     .nullable(false),
-            columnProperty(Employee.HIRETIME, Employee.HIRETIME.getName()),
-            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOC.getName(), Employee.DEPARTMENT_FK, Department.LOC).preferredColumnWidth(100),
+            columnProperty(Employee.HIRETIME, Employee.HIRETIME.name()),
+            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOC.name(), Employee.DEPARTMENT_FK, Department.LOC).preferredColumnWidth(100),
             columnProperty(Employee.DATA_LAZY),
             blobProperty(Employee.DATA)
                     .eagerlyLoaded(true))
@@ -187,9 +187,9 @@ public final class TestDomain extends DefaultDomain {
 
   void departmentFk() {
     add(definition(
-            primaryKeyProperty(DepartmentFk.DEPTNO, Department.DEPTNO.getName()),
-            columnProperty(DepartmentFk.DNAME, DepartmentFk.DNAME.getName()),
-            columnProperty(DepartmentFk.LOC, DepartmentFk.LOC.getName()))
+            primaryKeyProperty(DepartmentFk.DEPTNO, Department.DEPTNO.name()),
+            columnProperty(DepartmentFk.DNAME, DepartmentFk.DNAME.name()),
+            columnProperty(DepartmentFk.LOC, DepartmentFk.LOC.name()))
             .tableName("scott.dept")
             .stringFactory(DepartmentFk.DNAME));
   }
@@ -213,23 +213,23 @@ public final class TestDomain extends DefaultDomain {
 
   void employeeFk() {
     add(definition(
-            primaryKeyProperty(EmployeeFk.ID, EmployeeFk.ID.getName()),
-            columnProperty(EmployeeFk.NAME, EmployeeFk.NAME.getName())
+            primaryKeyProperty(EmployeeFk.ID, EmployeeFk.ID.name()),
+            columnProperty(EmployeeFk.NAME, EmployeeFk.NAME.name())
                     .nullable(false),
             columnProperty(EmployeeFk.DEPARTMENT)
                     .nullable(false),
-            foreignKeyProperty(EmployeeFk.DEPARTMENT_FK, EmployeeFk.DEPARTMENT_FK.getName())
+            foreignKeyProperty(EmployeeFk.DEPARTMENT_FK, EmployeeFk.DEPARTMENT_FK.name())
                     .selectAttributes(DepartmentFk.DNAME),
-            columnProperty(EmployeeFk.JOB, EmployeeFk.JOB.getName()),
-            columnProperty(EmployeeFk.SALARY, EmployeeFk.SALARY.getName())
+            columnProperty(EmployeeFk.JOB, EmployeeFk.JOB.name()),
+            columnProperty(EmployeeFk.SALARY, EmployeeFk.SALARY.name())
                     .maximumFractionDigits(2),
-            columnProperty(EmployeeFk.COMMISSION, EmployeeFk.COMMISSION.getName()),
+            columnProperty(EmployeeFk.COMMISSION, EmployeeFk.COMMISSION.name()),
             columnProperty(EmployeeFk.MGR),
-            foreignKeyProperty(EmployeeFk.MGR_FK, EmployeeFk.MGR_FK.getName())
+            foreignKeyProperty(EmployeeFk.MGR_FK, EmployeeFk.MGR_FK.name())
                     .selectAttributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK),
-            columnProperty(EmployeeFk.HIREDATE, EmployeeFk.HIREDATE.getName())
+            columnProperty(EmployeeFk.HIREDATE, EmployeeFk.HIREDATE.name())
                     .nullable(false),
-            columnProperty(EmployeeFk.HIRETIME, EmployeeFk.HIRETIME.getName()))
+            columnProperty(EmployeeFk.HIRETIME, EmployeeFk.HIRETIME.name()))
             .tableName("scott.emp")
             .stringFactory(EmployeeFk.NAME)
             .keyGenerator(increment("scott.emp", "empno"))

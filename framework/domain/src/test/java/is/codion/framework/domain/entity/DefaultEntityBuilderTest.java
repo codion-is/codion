@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityBuilderTest {
 
-  private static final Entities ENTITIES = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().entities();
 
   @Test
   void valueOrder() {
@@ -74,7 +74,7 @@ public final class DefaultEntityBuilderTest {
                 .tableName("tableName"));
       }
     }
-    Entities entities = new TestDomain().getEntities();
+    Entities entities = new TestDomain().entities();
 
     assertThrows(IllegalArgumentException.class, () -> entities.builder(entityType)
             .with(derivedValue, -42));

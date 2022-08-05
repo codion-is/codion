@@ -40,7 +40,7 @@ public final class DefaultEntityEditModelTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private static final Entities ENTITIES = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().entities();
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
           .domainClassName(TestDomain.class.getName())
@@ -301,7 +301,7 @@ public final class DefaultEntityEditModelTest {
       assertEquals(50d, e.getValue());
       Property<?> property = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(e.getAttribute());
       assertTrue(e.getMessage().contains(property.toString()));
-      assertTrue(e.getMessage().contains(property.getMinimumValue().toString()));
+      assertTrue(e.getMessage().contains(property.minimumValue().toString()));
     }
 
     employeeEditModel.setDefaultValues();

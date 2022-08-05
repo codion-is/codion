@@ -19,7 +19,7 @@ import static java.util.Collections.singletonList;
 
 public class JasperReportsDataSourceTest {
 
-  private static final Entities ENTITIES = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().entities();
 
   @Test
   void iterator() throws Exception {
@@ -34,7 +34,7 @@ public class JasperReportsDataSourceTest {
             new JasperReportsDataSource<>(entities.iterator(), (entity, field) ->
                     entity.get(definition.getAttribute(field.getName())));
     while (source.next()) {
-      JRField field = new TestField(TestDomain.DEPARTMENT_NAME.getName());
+      JRField field = new TestField(TestDomain.DEPARTMENT_NAME.name());
       source.getFieldValue(field);
     }
   }

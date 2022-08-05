@@ -38,37 +38,37 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
   }
 
   @Override
-  public ForeignKey getAttribute() {
-    return (ForeignKey) super.getAttribute();
+  public ForeignKey attribute() {
+    return (ForeignKey) super.attribute();
   }
 
   @Override
-  public EntityType getReferencedEntityType() {
+  public EntityType referencedEntityType() {
     return referencedEntityType;
   }
 
   @Override
-  public int getFetchDepth() {
+  public int fetchDepth() {
     return fetchDepth;
   }
 
   @Override
-  public boolean isSoftReference() {
+  public boolean softReference() {
     return softReference;
   }
 
   @Override
-  public boolean isReadOnly(Attribute<?> referenceAttribute) {
+  public boolean readOnly(Attribute<?> referenceAttribute) {
     return readOnlyAttributes.contains(referenceAttribute);
   }
 
   @Override
-  public List<ForeignKey.Reference<?>> getReferences() {
-    return getAttribute().getReferences();
+  public List<ForeignKey.Reference<?>> references() {
+    return this.attribute().references();
   }
 
   @Override
-  public List<Attribute<?>> getSelectAttributes() {
+  public List<Attribute<?>> selectAttributes() {
     return selectAttributes;
   }
 
@@ -83,7 +83,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
 
     DefaultForeignKeyPropertyBuilder(ForeignKey foreignKey, String caption) {
       super(foreignKey, caption);
-      this.referencedEntityType = foreignKey.getReferencedEntityType();
+      this.referencedEntityType = foreignKey.referencedEntityType();
       this.fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
       this.softReference = false;
     }
@@ -107,7 +107,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
 
     @Override
     public ForeignKeyProperty.Builder readOnly(Attribute<?> referenceAttribute) {
-      if (((ForeignKey) attribute).getReference(referenceAttribute) == null) {
+      if (((ForeignKey) attribute).reference(referenceAttribute) == null) {
         throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key: " + attribute);
       }
       this.readOnlyAttributes.add(referenceAttribute);
@@ -118,7 +118,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
     public ForeignKeyProperty.Builder selectAttributes(Attribute<?>... attributes) {
       Set<Attribute<?>> selectAttributeSet = new HashSet<>();
       for (Attribute<?> attribute : requireNonNull(attributes)) {
-        if (!attribute.getEntityType().equals(referencedEntityType)) {
+        if (!attribute.entityType().equals(referencedEntityType)) {
           throw new IllegalArgumentException("Select attribute must be part of the referenced entity type");
         }
         selectAttributeSet.add(attribute);

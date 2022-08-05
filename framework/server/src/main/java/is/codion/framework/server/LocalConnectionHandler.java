@@ -405,18 +405,18 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
 
     private static String entityToString(Entity entity) {
-      StringBuilder builder = new StringBuilder(entity.getEntityType().getName()).append(" {");
+      StringBuilder builder = new StringBuilder(entity.getEntityType().name()).append(" {");
       List<ColumnProperty<?>> columnProperties = entity.getDefinition().getColumnProperties();
       for (int i = 0; i < columnProperties.size(); i++) {
         ColumnProperty<?> property = columnProperties.get(i);
-        boolean modified = entity.isModified(property.getAttribute());
-        if (property.isPrimaryKeyColumn() || modified) {
+        boolean modified = entity.isModified(property.attribute());
+        if (property.primaryKeyColumn() || modified) {
           StringBuilder valueString = new StringBuilder();
           if (modified) {
-            valueString.append(entity.getOriginal(property.getAttribute())).append("->");
+            valueString.append(entity.getOriginal(property.attribute())).append("->");
           }
-          valueString.append(entity.toString(property.getAttribute()));
-          builder.append(property.getAttribute()).append(":").append(valueString).append(",");
+          valueString.append(entity.toString(property.attribute()));
+          builder.append(property.attribute()).append(":").append(valueString).append(",");
         }
       }
       builder.deleteCharAt(builder.length() - 1);

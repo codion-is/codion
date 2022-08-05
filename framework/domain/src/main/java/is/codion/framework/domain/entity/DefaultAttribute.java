@@ -35,17 +35,17 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public final String getName() {
+  public final String name() {
     return name;
   }
 
   @Override
-  public final Class<T> getValueClass() {
+  public final Class<T> valueClass() {
     return valueClass;
   }
 
   @Override
-  public final EntityType getEntityType() {
+  public final EntityType entityType() {
     return entityType;
   }
 
@@ -164,7 +164,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   @Override
   public final String toString() {
-    return entityType.getName() + "." + name;
+    return entityType.name() + "." + name;
   }
 
   private boolean isType(Class<?> valueClass) {

@@ -312,7 +312,7 @@ public interface Entity extends Comparable<Entity> {
     /**
      * Sets the default value for all attributes.
      * @return this builder instance
-     * @see Property#getDefaultValue()
+     * @see Property#defaultValue()
      */
     Builder withDefaultValues();
 
@@ -380,12 +380,12 @@ public interface Entity extends Comparable<Entity> {
     return comparison.entrySet().stream()
             .map(entry -> definition.getProperty(entry.getKey()))
             .filter(property -> {
-              boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
+              boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).updatable();
               boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
 
-              return updatableColumnProperty && !lazilyLoadedBlobProperty && isValueMissingOrModified(entity, comparison, property.getAttribute());
+              return updatableColumnProperty && !lazilyLoadedBlobProperty && isValueMissingOrModified(entity, comparison, property.attribute());
             })
-            .map(Property::getAttribute)
+            .map(Property::attribute)
             .collect(toList());
   }
 

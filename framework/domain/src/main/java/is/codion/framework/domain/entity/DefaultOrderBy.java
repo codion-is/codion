@@ -22,7 +22,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
   }
 
   @Override
-  public List<OrderByAttribute> getOrderByAttributes() {
+  public List<OrderByAttribute> orderByAttributes() {
     return orderByAttributes;
   }
 

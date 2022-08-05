@@ -52,7 +52,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   @Override
   public <T> boolean isNullable(Entity entity, Attribute<T> attribute) {
-    return requireNonNull(entity).getDefinition().getProperty(attribute).isNullable();
+    return requireNonNull(entity).getDefinition().getProperty(attribute).nullable();
   }
 
   @Override
@@ -60,7 +60,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     requireNonNull(entity, ENTITY_PARAM);
     List<Attribute<?>> attributes = entity.getDefinition().getProperties().stream()
             .filter(DefaultEntityValidator::validationRequired)
-            .map(Property::getAttribute)
+            .map(Property::attribute)
             .collect(Collectors.toList());
     for (Attribute<?> attribute : attributes) {
       validate(entity, attribute);
@@ -92,13 +92,13 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
         boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
         boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(entity.getDefinition(), property);
         if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
-          throw new NullValidationException(property.getAttribute(),
-                  MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.getCaption()));
+          throw new NullValidationException(property.attribute(),
+                  MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.caption()));
         }
       }
       else {
-        throw new NullValidationException(property.getAttribute(),
-                MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.getCaption()));
+        throw new NullValidationException(property.attribute(),
+                MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.caption()));
       }
     }
   }
@@ -111,15 +111,15 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
 
     Property<T> property = entity.getDefinition().getProperty(attribute);
-    Number value = entity.get(property.getAttribute());
-    Number minimumValue = property.getMinimumValue();
+    Number value = entity.get(property.attribute());
+    Number minimumValue = property.minimumValue();
     if (minimumValue != null && value.doubleValue() < minimumValue.doubleValue()) {
-      throw new RangeValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
+      throw new RangeValidationException(property.attribute(), value, "'" + property.caption() + "' " +
               MESSAGES.getString("property_value_too_small") + " " + minimumValue);
     }
-    Number maximumValue = property.getMaximumValue();
+    Number maximumValue = property.maximumValue();
     if (maximumValue != null && value.doubleValue() > maximumValue.doubleValue()) {
-      throw new RangeValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
+      throw new RangeValidationException(property.attribute(), value, "'" + property.caption() + "' " +
               MESSAGES.getString("property_value_too_large") + " " + maximumValue);
     }
   }
@@ -132,21 +132,21 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
 
     Property<?> property = entity.getDefinition().getProperty(attribute);
-    int maximumLength = property.getMaximumLength();
+    int maximumLength = property.maximumLength();
     String value = entity.get(attribute);
     if (maximumLength != -1 && value.length() > maximumLength) {
-      throw new LengthValidationException(property.getAttribute(), value, "'" + property.getCaption() + "' " +
+      throw new LengthValidationException(property.attribute(), value, "'" + property.caption() + "' " +
               MESSAGES.getString("property_value_too_long") + " " + maximumLength + "\n:'" + value + "'");
     }
   }
 
   private static boolean isNonGeneratedPrimaryKeyProperty(EntityDefinition definition, Property<?> property) {
     return (property instanceof ColumnProperty
-            && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) && !definition.isKeyGenerated();
+            && ((ColumnProperty<?>) property).primaryKeyColumn()) && !definition.isKeyGenerated();
   }
 
   private static boolean isNonKeyColumnPropertyWithoutDefaultValue(Property<?> property) {
-    return property instanceof ColumnProperty && !((ColumnProperty<?>) property).isPrimaryKeyColumn()
+    return property instanceof ColumnProperty && !((ColumnProperty<?>) property).primaryKeyColumn()
             && !((ColumnProperty<?>) property).columnHasDefaultValue();
   }
 
@@ -154,7 +154,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     if (property instanceof DerivedProperty) {
       return false;
     }
-    if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isReadOnly()) {
+    if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).readOnly()) {
       return false;
     }
 

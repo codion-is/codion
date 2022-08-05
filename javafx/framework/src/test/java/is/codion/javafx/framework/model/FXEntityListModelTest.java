@@ -84,11 +84,11 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     FXEntityListModel tableModel = createEmployeeTableModel();
     OrderBy orderBy = tableModel.getOrderBy();
     //default order by for entity
-    assertEquals(2, orderBy.getOrderByAttributes().size());
-    assertTrue(orderBy.getOrderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.getOrderByAttributes().get(0).getAttribute());
-    assertTrue(orderBy.getOrderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.getOrderByAttributes().get(1).getAttribute());
+    assertEquals(2, orderBy.orderByAttributes().size());
+    assertTrue(orderBy.orderByAttributes().get(0).isAscending());
+    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).getAttribute());
+    assertTrue(orderBy.orderByAttributes().get(1).isAscending());
+    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).getAttribute());
 
     ObservableList<TableColumn<Entity, ?>> sortOrder = tableModel.getColumnSortOrder();
     sortOrder.clear();
@@ -97,17 +97,17 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     sortOrder.add((TableColumn<Entity, ?>) column);
     orderBy = tableModel.getOrderBy();
     //still default order by for entity
-    assertEquals(2, orderBy.getOrderByAttributes().size());
-    assertTrue(orderBy.getOrderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.getOrderByAttributes().get(0).getAttribute());
-    assertTrue(orderBy.getOrderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.getOrderByAttributes().get(1).getAttribute());
+    assertEquals(2, orderBy.orderByAttributes().size());
+    assertTrue(orderBy.orderByAttributes().get(0).isAscending());
+    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).getAttribute());
+    assertTrue(orderBy.orderByAttributes().get(1).isAscending());
+    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).getAttribute());
 
     tableModel.setOrderQueryBySortOrder(true);
     orderBy = tableModel.getOrderBy();
-    assertEquals(1, orderBy.getOrderByAttributes().size());
-    assertTrue(orderBy.getOrderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.getOrderByAttributes().get(0).getAttribute());
+    assertEquals(1, orderBy.orderByAttributes().size());
+    assertTrue(orderBy.orderByAttributes().get(0).isAscending());
+    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(0).getAttribute());
 
     sortOrder.clear();
     column = tableModel.getTableColumn(TestDomain.EMP_HIREDATE);
@@ -118,19 +118,19 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     sortOrder.add(column);
 
     orderBy = tableModel.getOrderBy();
-    assertEquals(2, orderBy.getOrderByAttributes().size());
-    assertFalse(orderBy.getOrderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_HIREDATE, orderBy.getOrderByAttributes().get(0).getAttribute());
-    assertTrue(orderBy.getOrderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.getOrderByAttributes().get(1).getAttribute());
+    assertEquals(2, orderBy.orderByAttributes().size());
+    assertFalse(orderBy.orderByAttributes().get(0).isAscending());
+    assertEquals(TestDomain.EMP_HIREDATE, orderBy.orderByAttributes().get(0).getAttribute());
+    assertTrue(orderBy.orderByAttributes().get(1).isAscending());
+    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).getAttribute());
 
     sortOrder.clear();
     orderBy = tableModel.getOrderBy();
     //back to default order by for entity
-    assertEquals(2, orderBy.getOrderByAttributes().size());
-    assertTrue(orderBy.getOrderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.getOrderByAttributes().get(0).getAttribute());
-    assertTrue(orderBy.getOrderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.getOrderByAttributes().get(1).getAttribute());
+    assertEquals(2, orderBy.orderByAttributes().size());
+    assertTrue(orderBy.orderByAttributes().get(0).isAscending());
+    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).getAttribute());
+    assertTrue(orderBy.orderByAttributes().get(1).isAscending());
+    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).getAttribute());
   }
 }

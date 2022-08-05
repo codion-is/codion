@@ -177,7 +177,7 @@ public final class EmpDept extends DefaultDomain {
             denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, "Location",
                     Employee.DEPARTMENT_FK, Department.LOCATION)
                     .preferredColumnWidth(100))
-            .keyGenerator(increment("scott.emp", Employee.ID.getName()))
+            .keyGenerator(increment("scott.emp", Employee.ID.name()))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(Employee.NAME)
             .caption("Employee")

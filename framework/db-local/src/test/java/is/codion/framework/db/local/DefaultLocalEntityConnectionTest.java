@@ -62,7 +62,7 @@ public class DefaultLocalEntityConnectionTest {
   private LocalEntityConnection connection;
 
   private static final TestDomain DOMAIN = new TestDomain();
-  private static final Entities ENTITIES = DOMAIN.getEntities();
+  private static final Entities ENTITIES = DOMAIN.entities();
 
   @BeforeEach
   void setup() throws ClassNotFoundException, DatabaseException {

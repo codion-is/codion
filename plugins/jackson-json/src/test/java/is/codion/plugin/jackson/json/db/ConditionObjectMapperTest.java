@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class ConditionObjectMapperTest {
 
-  private final Entities entities = new TestDomain().getEntities();
+  private final Entities entities = new TestDomain().entities();
 
   @Test
   void condition() throws JsonProcessingException {
@@ -110,7 +110,7 @@ public final class ConditionObjectMapperTest {
     SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
 
     assertEquals(selectCondition.condition().attributes(), readCondition.condition().attributes());
-    assertEquals(selectCondition.orderBy().orElse(null).getOrderByAttributes(), readCondition.orderBy().get().getOrderByAttributes());
+    assertEquals(selectCondition.orderBy().orElse(null).orderByAttributes(), readCondition.orderBy().get().orderByAttributes());
     assertEquals(selectCondition.limit(), readCondition.limit());
     assertEquals(selectCondition.offset(), readCondition.offset());
     assertEquals(selectCondition.fetchDepth().orElse(null), readCondition.fetchDepth().orElse(null));

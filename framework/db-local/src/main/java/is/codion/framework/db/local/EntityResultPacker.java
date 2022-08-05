@@ -48,7 +48,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     for (int i = 0; i < columnProperties.size(); i++) {
       ColumnProperty<Object> property = (ColumnProperty<Object>) columnProperties.get(i);
       try {
-        values.put(property.getAttribute(), property.prepareValue(property.fetchValue(resultSet, i + 1)));
+        values.put(property.attribute(), property.prepareValue(property.fetchValue(resultSet, i + 1)));
       }
       catch (Exception e) {
         throw new SQLException("Exception fetching: " + property + ", entity: " +
@@ -62,7 +62,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     for (int i = 0; i < transientProperties.size(); i++) {
       TransientProperty<?> transientProperty = transientProperties.get(i);
       if (!(transientProperty instanceof DerivedProperty)) {
-        values.put(transientProperty.getAttribute(), null);
+        values.put(transientProperty.attribute(), null);
       }
     }
   }
@@ -71,8 +71,8 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     List<ColumnProperty<?>> lazyLoadedBlobProperties = definition.getLazyLoadedBlobProperties();
     for (int i = 0; i < lazyLoadedBlobProperties.size(); i++) {
       ColumnProperty<?> blobProperty = lazyLoadedBlobProperties.get(i);
-      if (!values.containsKey(blobProperty.getAttribute())) {
-        values.put(blobProperty.getAttribute(), null);
+      if (!values.containsKey(blobProperty.attribute())) {
+        values.put(blobProperty.attribute(), null);
       }
     }
   }

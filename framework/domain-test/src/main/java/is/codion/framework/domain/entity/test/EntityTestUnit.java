@@ -138,7 +138,7 @@ public class EntityTestUnit {
    * @throws DatabaseException in case of an exception
    */
   protected Entity initializeForeignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities) throws DatabaseException {
-    return EntityTestUtil.createRandomEntity(getEntities(), foreignKey.getReferencedEntityType(), foreignKeyEntities);
+    return EntityTestUtil.createRandomEntity(getEntities(), foreignKey.referencedEntityType(), foreignKeyEntities);
   }
 
   /**
@@ -164,9 +164,9 @@ public class EntityTestUnit {
                                                                EntityConnection connection) throws DatabaseException {
     List<ForeignKey> foreignKeys = new ArrayList<>(getEntities().getDefinition(entityType).getForeignKeys());
     //we have to start with non-self-referential ones
-    foreignKeys.sort((fk1, fk2) -> !fk1.getReferencedEntityType().equals(entityType) ? -1 : 1);
+    foreignKeys.sort((fk1, fk2) -> !fk1.referencedEntityType().equals(entityType) ? -1 : 1);
     for (ForeignKey foreignKey : foreignKeys) {
-      EntityType referencedEntityType = foreignKey.getReferencedEntityType();
+      EntityType referencedEntityType = foreignKey.referencedEntityType();
       if (!foreignKeyEntities.containsKey(foreignKey)) {
         if (!Objects.equals(entityType, referencedEntityType)) {
           foreignKeyEntities.put(foreignKey, null);//short circuit recursion, value replaced below
@@ -239,17 +239,17 @@ public class EntityTestUnit {
     Entity updated = connection.update(testEntity);
     assertEquals(testEntity.getPrimaryKey(), updated.getPrimaryKey());
     for (ColumnProperty<?> property : testEntity.getDefinition().getColumnProperties()) {
-      if (property.isUpdatable()) {
-        Object beforeUpdate = testEntity.get(property.getAttribute());
-        Object afterUpdate = updated.get(property.getAttribute());
+      if (property.updatable()) {
+        Object beforeUpdate = testEntity.get(property.attribute());
+        Object afterUpdate = updated.get(property.attribute());
         String message = "Values of property " + property + " should be equal after update ["
                 + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
                 + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]";
-        if (property.getAttribute().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
+        if (property.attribute().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
           assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
                   && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
         }
-        else if (property.getAttribute().isByteArray() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
+        else if (property.attribute().isByteArray() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
           assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
         }
         else {

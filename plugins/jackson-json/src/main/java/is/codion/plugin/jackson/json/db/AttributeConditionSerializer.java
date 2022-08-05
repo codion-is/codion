@@ -24,7 +24,7 @@ final class AttributeConditionSerializer implements Serializable {
   void serialize(AttributeCondition<?> condition, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("type", "attribute");
-    generator.writeStringField("attribute", condition.attribute().getName());
+    generator.writeStringField("attribute", condition.attribute().name());
     generator.writeStringField("operator", condition.operator().name());
     generator.writeFieldName("values");
     generator.writeStartArray();

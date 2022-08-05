@@ -81,12 +81,12 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
       return settings.getSelectionBackgroundColor(row);
     }
 
-    return settings.getBackgroundColor(tableModel, property.getAttribute(), row, displayConditionState);
+    return settings.getBackgroundColor(tableModel, property.attribute(), row, displayConditionState);
   }
 
   @Override
   public Color getForeground(JTable table, int row, boolean selected) {
-    return settings.getForegroundColor(tableModel, property.getAttribute(), row);
+    return settings.getForegroundColor(tableModel, property.attribute(), row);
   }
 
   /**
@@ -158,12 +158,12 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
         return settings.getSelectionBackgroundColor(row);
       }
 
-      return settings.getBackgroundColor(tableModel, property.getAttribute(), row, displayConditionState);
+      return settings.getBackgroundColor(tableModel, property.attribute(), row, displayConditionState);
     }
 
     @Override
     public Color getForeground(JTable table, int row, boolean selected) {
-      return settings.getForegroundColor(tableModel, property.getAttribute(), row);
+      return settings.getForegroundColor(tableModel, property.attribute(), row);
     }
   }
 
@@ -272,7 +272,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     DefaultBuilder(SwingEntityTableModel tableModel, Property<T> property) {
       this.tableModel = requireNonNull(tableModel);
       this.property = requireNonNull(property);
-      this.tableModel.getEntityDefinition().getProperty(property.getAttribute());
+      this.tableModel.getEntityDefinition().getProperty(property.attribute());
       this.horizontalAlignment = getDefaultHorizontalAlignment(property);
     }
 
@@ -314,7 +314,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
 
     @Override
     public EntityTableCellRenderer build() {
-      if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
+      if (property.attribute().isBoolean() && !(property instanceof ItemProperty)) {
         return new BooleanRenderer((DefaultBuilder<Boolean>) this);
       }
 
@@ -322,13 +322,13 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     }
 
     private static int getDefaultHorizontalAlignment(Property<?> property) {
-      if (property.getAttribute().isBoolean() && !(property instanceof ItemProperty)) {
+      if (property.attribute().isBoolean() && !(property instanceof ItemProperty)) {
         return EntityTableCellRenderer.BOOLEAN_HORIZONTAL_ALIGNMENT.get();
       }
-      if (property.getAttribute().isNumerical()) {
+      if (property.attribute().isNumerical()) {
         return EntityTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.get();
       }
-      if (property.getAttribute().isTemporal()) {
+      if (property.attribute().isTemporal()) {
         return EntityTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.get();
       }
 

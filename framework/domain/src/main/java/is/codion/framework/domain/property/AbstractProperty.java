@@ -40,7 +40,6 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   /**
    * The attribute this property is based on, should be unique within an Entity.
    * The name of this attribute serves as column name for column properties by default.
-   * @see #getAttribute()
    */
   private final Attribute<T> attribute;
 
@@ -167,26 +166,26 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
 
   @Override
   public final String toString() {
-    return getCaption();
+    return caption();
   }
 
   @Override
-  public Attribute<T> getAttribute() {
+  public Attribute<T> attribute() {
     return attribute;
   }
 
   @Override
-  public final EntityType getEntityType() {
-    return attribute.getEntityType();
+  public final EntityType entityType() {
+    return attribute.entityType();
   }
 
   @Override
-  public final String getBeanProperty() {
+  public final String beanProperty() {
     return beanProperty;
   }
 
   @Override
-  public final boolean isHidden() {
+  public final boolean hidden() {
     return hidden;
   }
 
@@ -196,52 +195,52 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final T getDefaultValue() {
+  public final T defaultValue() {
     return defaultValueSupplier.get();
   }
 
   @Override
-  public final boolean isNullable() {
+  public final boolean nullable() {
     return nullable;
   }
 
   @Override
-  public final int getMaximumLength() {
+  public final int maximumLength() {
     return maximumLength;
   }
 
   @Override
-  public final Number getMaximumValue() {
+  public final Number maximumValue() {
     return maximumValue;
   }
 
   @Override
-  public final Number getMinimumValue() {
+  public final Number minimumValue() {
     return minimumValue;
   }
 
   @Override
-  public final int getPreferredColumnWidth() {
+  public final int preferredColumnWidth() {
     return preferredColumnWidth;
   }
 
   @Override
-  public final String getDescription() {
+  public final String description() {
     return description;
   }
 
   @Override
-  public final Character getMnemonic() {
+  public final Character mnemonic() {
     return mnemonic;
   }
 
   @Override
-  public final Format getFormat() {
+  public final Format format() {
     return format;
   }
 
   @Override
-  public final String getDateTimePattern() {
+  public final String dateTimePattern() {
     if (dateTimePattern == null) {
       dateTimePattern = localeDateTimePattern == null ? getDefaultDateTimePattern() : localeDateTimePattern.getDateTimePattern();
     }
@@ -250,9 +249,9 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final DateTimeFormatter getDateTimeFormatter() {
+  public final DateTimeFormatter dateTimeFormatter() {
     if (dateTimeFormatter == null) {
-      String pattern = getDateTimePattern();
+      String pattern = dateTimePattern();
       dateTimeFormatter = pattern == null ? null : ofPattern(pattern);
     }
 
@@ -260,12 +259,12 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final Comparator<T> getComparator() {
+  public final Comparator<T> comparator() {
     return comparator;
   }
 
   @Override
-  public final int getMaximumFractionDigits() {
+  public final int maximumFractionDigits() {
     if (!(format instanceof NumberFormat)) {
       return -1;
     }
@@ -274,15 +273,15 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final RoundingMode getDecimalRoundingMode() {
+  public final RoundingMode decimalRoundingMode() {
     return decimalRoundingMode;
   }
 
   @Override
-  public final String getCaption() {
-    if (attribute.getEntityType().getResourceBundleName() != null) {
+  public final String caption() {
+    if (attribute.entityType().resourceBundleName() != null) {
       if (resourceCaption == null) {
-        ResourceBundle bundle = ResourceBundle.getBundle(attribute.getEntityType().getResourceBundleName());
+        ResourceBundle bundle = ResourceBundle.getBundle(attribute.entityType().resourceBundleName());
         resourceCaption = bundle.containsKey(captionResourceKey) ? bundle.getString(captionResourceKey) : "";
       }
 
@@ -291,7 +290,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       }
     }
 
-    return caption == null ? attribute.getName() : caption;
+    return caption == null ? attribute.name() : caption;
   }
 
   @Override
@@ -315,10 +314,10 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   @Override
   public final T prepareValue(T value) {
     if (value instanceof Double) {
-      return (T) Rounder.roundDouble((Double) value, getMaximumFractionDigits(), decimalRoundingMode);
+      return (T) Rounder.roundDouble((Double) value, maximumFractionDigits(), decimalRoundingMode);
     }
     if (value instanceof BigDecimal) {
-      return (T) ((BigDecimal) value).setScale(getMaximumFractionDigits(), decimalRoundingMode).stripTrailingZeros();
+      return (T) ((BigDecimal) value).setScale(maximumFractionDigits(), decimalRoundingMode).stripTrailingZeros();
     }
 
     return value;
@@ -330,7 +329,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       return "";
     }
     if (attribute.isTemporal()) {
-      DateTimeFormatter formatter = getDateTimeFormatter();
+      DateTimeFormatter formatter = dateTimeFormatter();
       if (formatter != null) {
         return formatter.format((TemporalAccessor) value);
       }
@@ -431,9 +430,9 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       this.caption = caption;
       format = initializeDefaultFormat(attribute);
       comparator = initializeDefaultComparator(attribute);
-      beanProperty = Text.underscoreToCamelCase(attribute.getName());
-      captionResourceKey = attribute.getName();
-      hidden = caption == null && resourceNotFound(attribute.getEntityType().getResourceBundleName(), captionResourceKey);
+      beanProperty = Text.underscoreToCamelCase(attribute.name());
+      captionResourceKey = attribute.name();
+      hidden = caption == null && resourceNotFound(attribute.entityType().resourceBundleName(), captionResourceKey);
       nullable = true;
       preferredColumnWidth = -1;
       maximumLength = -1;
@@ -451,9 +450,9 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       if (caption != null) {
         throw new IllegalStateException("Caption has already been set for property: " + attribute);
       }
-      String resourceBundleName = attribute.getEntityType().getResourceBundleName();
+      String resourceBundleName = attribute.entityType().resourceBundleName();
       if (resourceBundleName == null) {
-        throw new IllegalStateException("No resource bundle specified for entity: " + attribute.getEntityType());
+        throw new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType());
       }
       if (resourceNotFound(resourceBundleName, requireNonNull(captionResourceKey, "captionResourceKey"))) {
         throw new IllegalArgumentException("Resource " + captionResourceKey + " not found in bundle: " + resourceBundleName);
@@ -688,7 +687,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       if (attribute.isString() && USE_LEXICAL_STRING_COMPARATOR.get()) {
         return (Comparator<T>) LEXICAL_COMPARATOR;
       }
-      if (Comparable.class.isAssignableFrom(attribute.getValueClass())) {
+      if (Comparable.class.isAssignableFrom(attribute.valueClass())) {
         return (Comparator<T>) COMPARABLE_COMPARATOR;
       }
 

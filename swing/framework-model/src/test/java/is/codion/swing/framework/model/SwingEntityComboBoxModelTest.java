@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityComboBoxModelTest {
 
-  private static final Entities ENTITIES = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().entities();
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));

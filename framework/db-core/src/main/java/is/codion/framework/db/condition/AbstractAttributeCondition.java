@@ -19,7 +19,7 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   private final Operator operator;
 
   protected AbstractAttributeCondition(Attribute<T> attribute, Operator operator) {
-    super(requireNonNull(attribute, "attribute").getEntityType());
+    super(requireNonNull(attribute, "attribute").entityType());
     this.attribute = attribute;
     this.operator = requireNonNull(operator);
   }
@@ -36,7 +36,7 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
 
   @Override
   public final String toString(EntityDefinition definition) {
-    return toString(requireNonNull(definition).getColumnProperty(attribute).getColumnExpression());
+    return toString(requireNonNull(definition).getColumnProperty(attribute).columnExpression());
   }
 
   @Override

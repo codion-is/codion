@@ -36,16 +36,16 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
       return (ColumnConditionModel<A, T>) new DefaultForeignKeyConditionModel(foreignKey,
-              new DefaultEntitySearchModel(foreignKey.getReferencedEntityType(), connectionProvider));
+              new DefaultEntitySearchModel(foreignKey.referencedEntityType(), connectionProvider));
     }
 
-    ColumnProperty<T> property = getDefinition(attribute.getEntityType()).getColumnProperty(attribute);
-    if (property.isAggregateColumn()) {
+    ColumnProperty<T> property = getDefinition(attribute.entityType()).getColumnProperty(attribute);
+    if (property.aggregateColumn()) {
       return null;
     }
 
-    return new DefaultColumnConditionModel<>(attribute, attribute.getValueClass(), getOperators(attribute),
-            Text.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimePattern());
+    return new DefaultColumnConditionModel<>(attribute, attribute.valueClass(), getOperators(attribute),
+            Text.WILDCARD_CHARACTER.get(), property.format(), property.dateTimePattern());
   }
 
   /**

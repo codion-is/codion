@@ -19,40 +19,40 @@ public interface ForeignKeyProperty extends Property<Entity> {
    * @return the foreign key attribute this property is based on.
    */
   @Override
-  ForeignKey getAttribute();
+  ForeignKey attribute();
 
   /**
    * @return the type of the entity referenced by this foreign key
    */
-  EntityType getReferencedEntityType();
+  EntityType referencedEntityType();
 
   /**
    * @return the default query fetch depth for this foreign key
    */
-  int getFetchDepth();
+  int fetchDepth();
 
   /**
    * @return true if this foreign key is not based on a physical (table) foreign key
    * and should not prevent deletion
    */
-  boolean isSoftReference();
+  boolean softReference();
 
   /**
    * Returns true if the given foreign key reference attribute as read-only, as in, not updated when the foreign key value is set.
    * @param referenceAttribute the reference attribute
    * @return true if the given foreign key reference attribute as read-only
    */
-  boolean isReadOnly(Attribute<?> referenceAttribute);
+  boolean readOnly(Attribute<?> referenceAttribute);
 
   /**
    * @return the {@link ForeignKey.Reference}s that comprise this foreign key
    */
-  List<ForeignKey.Reference<?>> getReferences();
+  List<ForeignKey.Reference<?>> references();
 
   /**
    * @return the attributes to select when fetching entities referenced via this foreign key, an empty list in case of all attributes
    */
-  List<Attribute<?>> getSelectAttributes();
+  List<Attribute<?>> selectAttributes();
 
   /**
    * Provides setters for ForeignKeyProperty properties

@@ -95,12 +95,12 @@ public final class EntityTestUtil {
   public static <T> T createRandomValue(Property<T> property, Map<ForeignKey, Entity> referenceEntities) {
     requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
-      return (T) getReferenceEntity(((ForeignKeyProperty) property).getAttribute(), referenceEntities);
+      return (T) getReferenceEntity(((ForeignKeyProperty) property).attribute(), referenceEntities);
     }
     if (property instanceof ItemProperty) {
       return getRandomItem((ItemProperty<T>) property);
     }
-    Attribute<?> attribute = property.getAttribute();
+    Attribute<?> attribute = property.attribute();
     if (attribute.isBoolean()) {
       return (T) Boolean.valueOf(RANDOM.nextBoolean());
     }
@@ -146,20 +146,20 @@ public final class EntityTestUtil {
     requireNonNull(valueProvider, "valueProvider");
     EntityDefinition definition = entity.getDefinition();
     for (@SuppressWarnings("rawtypes") ColumnProperty property : properties) {
-      if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()) {
-        entity.put(property.getAttribute(), valueProvider.apply(property));
+      if (!definition.isForeignKeyAttribute(property.attribute()) && !property.denormalized()) {
+        entity.put(property.attribute(), valueProvider.apply(property));
       }
     }
     for (ForeignKeyProperty property : entity.getDefinition().getForeignKeyProperties()) {
       Entity value = (Entity) valueProvider.apply(property);
       if (value != null) {
-        entity.put(property.getAttribute(), value);
+        entity.put(property.attribute(), value);
       }
     }
   }
 
   private static String getRandomString(Property<?> property) {
-    int length = property.getMaximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaximumLength();
+    int length = property.maximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.maximumLength();
 
     return Text.randomString(length, length);
   }
@@ -184,22 +184,22 @@ public final class EntityTestUtil {
   }
 
   private static <T> T getRandomItem(ItemProperty<T> property) {
-    List<Item<T>> items = property.getItems();
+    List<Item<T>> items = property.items();
     Item<T> item = items.get(RANDOM.nextInt(items.size()));
 
     return item.getValue();
   }
 
   private static int getRandomInteger(Property<?> property) {
-    int min = property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue().intValue();
-    int max = property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue().intValue();
+    int min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : property.minimumValue().intValue();
+    int max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.maximumValue().intValue();
 
     return RANDOM.nextInt((max - min) + 1) + min;
   }
 
   private static double getRandomDouble(Property<?> property) {
-    double min = property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue().doubleValue();
-    double max = property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue().doubleValue();
+    double min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : property.minimumValue().doubleValue();
+    double max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.maximumValue().doubleValue();
 
     return RANDOM.nextDouble() * (max - min) + min;
   }

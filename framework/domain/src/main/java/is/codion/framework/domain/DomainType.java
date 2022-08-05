@@ -17,7 +17,7 @@ public interface DomainType {
   /**
    * @return the domain name
    */
-  String getName();
+  String name();
 
   /**
    * Instantiates a {@link EntityType} associated with this domain type.

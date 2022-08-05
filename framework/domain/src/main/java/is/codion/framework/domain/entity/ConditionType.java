@@ -11,12 +11,12 @@ public interface ConditionType {
   /**
    * @return the entity type
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the name
    */
-  String getName();
+  String name();
 
   /**
    * Instantiates a new {@link ConditionType} for the given entity type

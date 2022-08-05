@@ -30,10 +30,10 @@ public final class EntityTableColumn<T> extends FXEntityListModel.AttributeTable
    */
   public EntityTableColumn(FXEntityListModel listModel, Property<T> property,
                            Callback<CellDataFeatures<Entity, T>, ObservableValue<T>> cellValueFactory) {
-    super(property.getAttribute(), property.getCaption());
+    super(property.attribute(), property.caption());
     this.conditionView = initializeConditionView(listModel, property);
     setCellValueFactory(cellValueFactory);
-    int preferredWidth = property.getPreferredColumnWidth();
+    int preferredWidth = property.preferredColumnWidth();
     if (preferredWidth > 0) {
       setPrefWidth(preferredWidth);
     }
@@ -62,7 +62,7 @@ public final class EntityTableColumn<T> extends FXEntityListModel.AttributeTable
   private PropertyConditionView<T> initializeConditionView(FXEntityListModel listModel, Property<T> property) {
     if (property instanceof ColumnProperty || property instanceof ForeignKeyProperty) {
       ColumnConditionModel<? extends Attribute<T>, T> conditionModel = (ColumnConditionModel<? extends Attribute<T>, T>)
-              listModel.getTableConditionModel().getConditionModels().get(property.getAttribute());
+              listModel.getTableConditionModel().getConditionModels().get(property.attribute());
       if (conditionModel != null) {
         PropertyConditionView<T> view = new PropertyConditionView<>(conditionModel, property);
         view.prefWidthProperty().setValue(getWidth());

@@ -323,8 +323,8 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
     Objects.requireNonNull(attribute);
     try {
       ObjectNode node = entityObjectMapper.createObjectNode();
-      node.set("attribute", conditionObjectMapper.valueToTree(attribute.getName()));
-      node.set("entityType", conditionObjectMapper.valueToTree(attribute.getEntityType().getName()));
+      node.set("attribute", conditionObjectMapper.valueToTree(attribute.name()));
+      node.set("entityType", conditionObjectMapper.valueToTree(attribute.entityType().name()));
       if (condition != null) {
         node.set("condition", conditionObjectMapper.valueToTree(condition));
       }

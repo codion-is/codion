@@ -19,7 +19,7 @@ class DefaultAuditProperty<T> extends DefaultColumnProperty<T> implements AuditP
   }
 
   @Override
-  public final AuditAction getAuditAction() {
+  public final AuditAction auditAction() {
     return auditAction;
   }
 

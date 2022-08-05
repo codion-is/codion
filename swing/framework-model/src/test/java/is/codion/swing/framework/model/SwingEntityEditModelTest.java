@@ -74,7 +74,7 @@ public class SwingEntityEditModelTest {
     assertTrue(model.isCleared());
     assertTrue(model.getItems().isEmpty());
     ForeignKeyProperty deptProperty = employeeEditModel.getEntities().getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
-    assertEquals(deptProperty.getReferencedEntityType(), model.getEntityType());
+    assertEquals(deptProperty.referencedEntityType(), model.getEntityType());
     model.refresh();
     for (Entity department : model.getItems()) {
       assertTrue(department.contains(TestDomain.DEPARTMENT_ID));

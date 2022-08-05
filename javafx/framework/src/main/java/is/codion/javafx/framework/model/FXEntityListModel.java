@@ -428,7 +428,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     columns.forEach(entityTableColumn -> {
       Attribute<?> attribute = ((AttributeTableColumn<?>) entityTableColumn).getAttribute();
       attributes.add(attribute);
-      header.add(getEntityDefinition().getProperty(attribute).getCaption());
+      header.add(getEntityDefinition().getProperty(attribute).caption());
     });
 
     return Text.getDelimitedString(header, Entity.getStringValueList(attributes,
@@ -471,7 +471,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   protected OrderBy getOrderBy() {
     if (orderQueryBySortOrder && columnSortOrder != null && !columnSortOrder.isEmpty()) {
       OrderBy orderBy = getOrderByFromSortModel();
-      if (!orderBy.getOrderByAttributes().isEmpty()) {
+      if (!orderBy.orderByAttributes().isEmpty()) {
         return orderBy;
       }
     }
@@ -613,7 +613,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       Attribute<?> property = column.getAttribute();
       if (columns.contains(column)) {
         try {
-          JSONObject columnPreferences = preferences.getJSONObject(property.getName());
+          JSONObject columnPreferences = preferences.getJSONObject(property.name());
           column.setPrefWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
           if (!columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
             columns.remove(column);
@@ -642,7 +642,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
       columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? columns.indexOf(column) : -1);
-      columnPreferencesRoot.put(property.getName(), columnObject);
+      columnPreferencesRoot.put(property.name(), columnObject);
     }
 
     return columnPreferencesRoot;
@@ -684,7 +684,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
     @Override
     public final String toString() {
-      return attribute.getName();
+      return attribute.name();
     }
   }
 
@@ -699,8 +699,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     @Override
     public int compare(TableColumn<Entity, ?> col1, TableColumn<Entity, ?> col2) {
       try {
-        JSONObject columnOnePreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col1).getAttribute().getName());
-        JSONObject columnTwoPreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col2).getAttribute().getName());
+        JSONObject columnOnePreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col1).getAttribute().name());
+        JSONObject columnTwoPreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col2).getAttribute().name());
         Integer firstIndex = columnOnePreferences.getInt(PREFERENCES_COLUMN_INDEX);
         if (firstIndex == null) {
           firstIndex = 0;

@@ -1457,7 +1457,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
     return entities.getDefinition(entityType).getForeignKeys().stream()
-            .allMatch(foreignKey -> foreignKey.getReferencedEntityType().equals(entityType));
+            .allMatch(foreignKey -> foreignKey.referencedEntityType().equals(entityType));
   }
 
   /**
@@ -1549,8 +1549,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (EntityDefinition definition : entities.getDefinitions()) {
         for (ForeignKeyProperty fkProperty : definition.getForeignKeyProperties()) {
-          if (fkProperty.getReferencedEntityType().equals(getEntityType()) && !fkProperty.isSoftReference()
-                  && !foreignKeyCycle(fkProperty.getReferencedEntityType())) {
+          if (fkProperty.referencedEntityType().equals(getEntityType()) && !fkProperty.softReference()
+                  && !foreignKeyCycle(fkProperty.referencedEntityType())) {
             childrenList.add(new EntityDependencyTreeNode(definition.getEntityType(), entities));
           }
         }

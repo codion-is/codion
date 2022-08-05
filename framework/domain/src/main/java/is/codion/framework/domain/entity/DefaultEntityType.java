@@ -47,22 +47,22 @@ final class DefaultEntityType implements EntityType, Serializable {
   }
 
   @Override
-  public String getDomainName() {
+  public String domainName() {
     return domainName;
   }
 
   @Override
-  public String getName() {
+  public String name() {
     return name;
   }
 
   @Override
-  public <T extends Entity> Class<T> getEntityClass() {
+  public <T extends Entity> Class<T> entityClass() {
     return (Class<T>) (entityClass == null ? Entity.class : entityClass);
   }
 
   @Override
-  public String getResourceBundleName() {
+  public String resourceBundleName() {
     return resourceBundleName;
   }
 

@@ -64,7 +64,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
     if (fkFetchDepth != null && !fkFetchDepth.isNull()) {
       for (ForeignKey foreignKey : definition.getForeignKeys()) {
-        JsonNode fetchDepthNode = fkFetchDepth.get(foreignKey.getName());
+        JsonNode fetchDepthNode = fkFetchDepth.get(foreignKey.name());
         if (fetchDepthNode != null) {
           selectCondition.fetchDepth(foreignKey, fetchDepthNode.asInt());
         }

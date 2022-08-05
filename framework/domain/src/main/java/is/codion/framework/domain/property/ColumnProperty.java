@@ -18,17 +18,17 @@ public interface ColumnProperty<T> extends Property<T> {
   /**
    * @return the column name
    */
-  String getColumnName();
+  String columnName();
 
   /**
    * @return the column expression to use when selecting or the column name if no expression has been set
    */
-  String getColumnExpression();
+  String columnExpression();
 
   /**
    * @return the sql data type of the underlying column ({@link java.sql.Types}.
    */
-  int getColumnType();
+  int columnType();
 
   /**
    * Translates the given value into a sql value, usually this is not required
@@ -45,50 +45,50 @@ public interface ColumnProperty<T> extends Property<T> {
   /**
    * @return this propertys zero based index in the primary key, -1 if this property is not part of a primary key
    */
-  int getPrimaryKeyIndex();
+  int primaryKeyIndex();
 
   /**
    * @return true if this property is part of a primary key
    */
-  boolean isPrimaryKeyColumn();
+  boolean primaryKeyColumn();
 
   /**
    * @return true if this column is a group by column
    */
-  boolean isGroupingColumn();
+  boolean groupingColumn();
 
   /**
    * @return true if this is an aggregate column
    */
-  boolean isAggregateColumn();
+  boolean aggregateColumn();
 
   /**
    * @return true if this property should be included in select queries
    */
-  boolean isSelectable();
+  boolean selectable();
 
   /**
    * Specifies whether this property is insertable
    * @return true if this property is insertable
    */
-  boolean isInsertable();
+  boolean insertable();
 
   /**
    * Indicates whether this column is updatable
    * @return true if this column is updatable
    */
-  boolean isUpdatable();
+  boolean updatable();
 
   /**
    * @return true if this property is neither insertable nor updatable.
    */
-  boolean isReadOnly();
+  boolean readOnly();
 
   /**
    * @return true if this column is a denormalized column, one which should receives a value
    * from a column in a table referenced via a foreign key
    */
-  boolean isDenormalized();
+  boolean denormalized();
 
   /**
    * @return true if the underlying column has a default value
@@ -98,7 +98,7 @@ public interface ColumnProperty<T> extends Property<T> {
   /**
    * @return true if this property should be included when searching by string
    */
-  boolean isSearchProperty();
+  boolean searchProperty();
 
   /**
    * Fetches a value for this property from a ResultSet
@@ -112,7 +112,7 @@ public interface ColumnProperty<T> extends Property<T> {
   /**
    * @return a ResultPacker responsible for packing this property
    */
-  ResultPacker<T> getResultPacker();
+  ResultPacker<T> resultPacker();
 
   /**
    * Fetches a single value from a result set.

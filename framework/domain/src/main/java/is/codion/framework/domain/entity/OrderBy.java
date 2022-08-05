@@ -16,7 +16,7 @@ public interface OrderBy {
   /**
    * @return the order by attributes comprising this order by clause
    */
-  List<OrderByAttribute> getOrderByAttributes();
+  List<OrderByAttribute> orderByAttributes();
 
   /**
    * Specifies an order by attribute and whether it's ascending or descending

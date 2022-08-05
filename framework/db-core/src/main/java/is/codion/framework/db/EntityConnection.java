@@ -320,7 +320,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param entities the entities for which to retrieve dependencies, must be of same type
    * @return the entities that depend on {@code entities}
    * @throws DatabaseException in case of a database exception
-   * @see ForeignKeyProperty#isSoftReference()
+   * @see ForeignKeyProperty#softReference()
    */
   Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException;
 

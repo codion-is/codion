@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityObjectMapperTest {
 
-  private final Entities entities = new TestDomain().getEntities();
+  private final Entities entities = new TestDomain().entities();
 
   @Test
   void entity() throws JsonProcessingException {
@@ -302,7 +302,7 @@ public final class EntityObjectMapperTest {
 
     Map<String, Collection<Entity>> map = new HashMap<>();
 
-    map.put(Department.TYPE.getName(), singletonList(dept));
+    map.put(Department.TYPE.name(), singletonList(dept));
 
     String string = mapper.writeValueAsString(map);
 

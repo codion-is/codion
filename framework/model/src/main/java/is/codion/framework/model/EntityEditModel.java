@@ -76,7 +76,7 @@ public interface EntityEditModel {
   /**
    * Populates this edit model with default values.
    * @see #setDefaultValueSupplier(Attribute, Supplier)
-   * @see Property#getDefaultValue()
+   * @see Property#defaultValue()
    */
   void setDefaultValues();
 

@@ -42,7 +42,7 @@ public class DefaultEntityTest {
 
   private final String masterName = "master";
 
-  private static final Entities ENTITIES = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().entities();
 
   @Test
   void construction() {
@@ -706,7 +706,7 @@ public class DefaultEntityTest {
   @Test
   void readOnlyForeignKeyReferences() {
     ForeignKeyDomain domain = new ForeignKeyDomain();
-    Entities entities = domain.getEntities();
+    Entities entities = domain.entities();
 
     Entity cod = entities.builder(Species.TYPE)
             .with(Species.NO, 1)

@@ -141,7 +141,7 @@ public class EntityComponents {
       return (ComponentBuilder<T, C, B>) bigDecimalField((Attribute<BigDecimal>) attribute);
     }
 
-    throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + attribute.getValueClass() + ")");
+    throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + attribute.valueClass() + ")");
   }
 
   /**
@@ -153,9 +153,9 @@ public class EntityComponents {
     Property<Boolean> property = entityDefinition.getProperty(attribute);
 
     return Components.checkBox()
-            .toolTipText(property.getDescription())
-            .nullable(property.isNullable())
-            .caption(property.getCaption())
+            .toolTipText(property.description())
+            .nullable(property.nullable())
+            .caption(property.caption())
             .includeCaption(false);
   }
 
@@ -169,8 +169,8 @@ public class EntityComponents {
     Property<Boolean> property = entityDefinition.getProperty(attribute);
 
     return (ButtonBuilder<Boolean, JToggleButton, B>) Components.toggleButton()
-            .toolTipText(property.getDescription())
-            .caption(property.getCaption())
+            .toolTipText(property.description())
+            .caption(property.caption())
             .includeCaption(false);
   }
 
@@ -183,7 +183,7 @@ public class EntityComponents {
     Property<Boolean> property = entityDefinition.getProperty(attribute);
 
     return Components.booleanComboBox(ItemComboBoxModel.createBooleanModel())
-            .toolTipText(property.getDescription());
+            .toolTipText(property.description());
   }
 
   /**
@@ -198,7 +198,7 @@ public class EntityComponents {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
     return (ComboBoxBuilder<Entity, EntityComboBox, B>) EntityComboBox.builder(comboBoxModel)
-            .toolTipText(foreignKeyProperty.getDescription());
+            .toolTipText(foreignKeyProperty.description());
   }
 
   /**
@@ -211,7 +211,7 @@ public class EntityComponents {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
     return EntitySearchField.builder(searchModel)
-            .toolTipText(foreignKeyProperty.getDescription() == null ? searchModel.getDescription() : foreignKeyProperty.getDescription());
+            .toolTipText(foreignKeyProperty.description() == null ? searchModel.getDescription() : foreignKeyProperty.description());
   }
 
   /**
@@ -224,7 +224,7 @@ public class EntityComponents {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
     return (TextFieldBuilder<Entity, JTextField, B>) Components.textField(Entity.class)
-            .toolTipText(foreignKeyProperty.getDescription())
+            .toolTipText(foreignKeyProperty.description())
             .format(new EntityReadOnlyFormat())
             .editable(false)
             .focusable(false);
@@ -239,7 +239,7 @@ public class EntityComponents {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
 
     return Components.<Entity>label()
-            .toolTipText(foreignKeyProperty.getDescription());
+            .toolTipText(foreignKeyProperty.description());
   }
 
   /**
@@ -253,12 +253,12 @@ public class EntityComponents {
   public final <T> ItemComboBoxBuilder<T> itemComboBox(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
     if (!(property instanceof ItemProperty)) {
-      throw new IllegalArgumentException("Property based on '" + property.getAttribute() + "' is not a ItemProperty");
+      throw new IllegalArgumentException("Property based on '" + property.attribute() + "' is not a ItemProperty");
     }
 
-    return Components.itemComboBox(((ItemProperty<T>) property).getItems())
-            .toolTipText(property.getDescription())
-            .nullable(property.isNullable());
+    return Components.itemComboBox(((ItemProperty<T>) property).items())
+            .toolTipText(property.description())
+            .nullable(property.nullable());
   }
 
   /**
@@ -275,7 +275,7 @@ public class EntityComponents {
     Property<T> property = entityDefinition.getProperty(attribute);
 
     return (ComboBoxBuilder<T, C, B>) Components.comboBox(comboBoxModel)
-            .toolTipText(property.getDescription());
+            .toolTipText(property.description());
   }
 
   /**
@@ -285,7 +285,7 @@ public class EntityComponents {
    * @return a {@link TemporalInputPanel} builder
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute) {
-    return temporalInputPanel(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+    return temporalInputPanel(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
   }
 
   /**
@@ -296,8 +296,8 @@ public class EntityComponents {
    * @return a {@link TemporalInputPanel} builder
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
-    return Components.temporalInputPanel(attribute.getValueClass(), dateTimePattern)
-            .toolTipText(entityDefinition.getProperty(attribute).getDescription());
+    return Components.temporalInputPanel(attribute.valueClass(), dateTimePattern)
+            .toolTipText(entityDefinition.getProperty(attribute).description());
   }
 
   /**
@@ -309,9 +309,9 @@ public class EntityComponents {
     Property<String> property = entityDefinition.getProperty(attribute);
 
     return Components.textInputPanel()
-            .toolTipText(property.getDescription())
-            .maximumLength(property.getMaximumLength())
-            .dialogTitle(property.getCaption());
+            .toolTipText(property.description())
+            .maximumLength(property.maximumLength())
+            .dialogTitle(property.caption());
   }
 
   /**
@@ -326,8 +326,8 @@ public class EntityComponents {
     }
 
     return Components.textArea()
-            .toolTipText(property.getDescription())
-            .maximumLength(property.getMaximumLength());
+            .toolTipText(property.description())
+            .maximumLength(property.maximumLength());
   }
 
   /**
@@ -341,28 +341,28 @@ public class EntityComponents {
   public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
     Property<T> property = entityDefinition.getProperty(attribute);
 
-    Class<T> valueClass = attribute.getValueClass();
+    Class<T> valueClass = attribute.valueClass();
     if (valueClass.equals(LocalTime.class)) {
       return (TextFieldBuilder<T, C, B>) localTimeField((Attribute<LocalTime>) attribute)
-              .toolTipText(property.getDescription());
+              .toolTipText(property.description());
     }
     else if (valueClass.equals(LocalDate.class)) {
       return (TextFieldBuilder<T, C, B>) localDateField((Attribute<LocalDate>) attribute)
-              .toolTipText(property.getDescription());
+              .toolTipText(property.description());
     }
     else if (valueClass.equals(LocalDateTime.class)) {
       return (TextFieldBuilder<T, C, B>) localDateTimeField((Attribute<LocalDateTime>) attribute)
-              .toolTipText(property.getDescription());
+              .toolTipText(property.description());
     }
     else if (valueClass.equals(OffsetDateTime.class)) {
       return (TextFieldBuilder<T, C, B>) offsetDateTimeField((Attribute<OffsetDateTime>) attribute)
-              .toolTipText(property.getDescription());
+              .toolTipText(property.description());
     }
 
     return (TextFieldBuilder<T, C, B>) Components.textField(valueClass)
-            .format(property.getFormat())
-            .maximumLength(property.getMaximumLength())
-            .toolTipText(property.getDescription());
+            .format(property.format())
+            .maximumLength(property.maximumLength())
+            .toolTipText(property.description());
   }
 
   /**
@@ -371,7 +371,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute) {
-    return localTimeField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+    return localTimeField(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
   }
 
   /**
@@ -382,7 +382,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute, String dateTimePattern) {
     return Components.localTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.getProperty(attribute).getDescription());
+            .toolTipText(entityDefinition.getProperty(attribute).description());
   }
 
   /**
@@ -391,7 +391,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute) {
-    return localDateField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+    return localDateField(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
   }
 
   /**
@@ -402,7 +402,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute, String dateTimePattern) {
     return Components.localDateField(dateTimePattern)
-            .toolTipText(entityDefinition.getProperty(attribute).getDescription());
+            .toolTipText(entityDefinition.getProperty(attribute).description());
   }
 
   /**
@@ -411,7 +411,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute) {
-    return localDateTimeField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+    return localDateTimeField(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
   }
 
   /**
@@ -422,7 +422,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute, String dateTimePattern) {
     return Components.localDateTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.getProperty(attribute).getDescription());
+            .toolTipText(entityDefinition.getProperty(attribute).description());
   }
 
   /**
@@ -431,7 +431,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
-    return offsetDateTimeField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+    return offsetDateTimeField(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
   }
 
   /**
@@ -442,7 +442,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute, String dateTimePattern) {
     return Components.offsetDateTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.getProperty(attribute).getDescription());
+            .toolTipText(entityDefinition.getProperty(attribute).description());
   }
 
   /**
@@ -452,7 +452,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute) {
-    return temporalField(attribute, entityDefinition.getProperty(attribute).getDateTimePattern());
+    return temporalField(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
   }
 
   /**
@@ -465,8 +465,8 @@ public class EntityComponents {
   public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute, String dateTimePattern) {
     Property<T> property = entityDefinition.getProperty(attribute);
 
-    return Components.temporalField(property.getAttribute().getValueClass(), dateTimePattern)
-            .toolTipText(property.getDescription());
+    return Components.temporalField(property.attribute().valueClass(), dateTimePattern)
+            .toolTipText(property.description());
   }
 
   /**
@@ -478,10 +478,10 @@ public class EntityComponents {
     Property<Integer> property = entityDefinition.getProperty(attribute);
 
     return Components.integerField()
-            .format(property.getFormat())
-            .minimumValue(property.getMinimumValue())
-            .maximumValue(property.getMaximumValue())
-            .toolTipText(property.getDescription());
+            .format(property.format())
+            .minimumValue(property.minimumValue())
+            .maximumValue(property.maximumValue())
+            .toolTipText(property.description());
   }
 
   /**
@@ -493,10 +493,10 @@ public class EntityComponents {
     Property<Long> property = entityDefinition.getProperty(attribute);
 
     return Components.longField()
-            .format(property.getFormat())
-            .minimumValue(property.getMinimumValue())
-            .maximumValue(property.getMaximumValue())
-            .toolTipText(property.getDescription());
+            .format(property.format())
+            .minimumValue(property.minimumValue())
+            .maximumValue(property.maximumValue())
+            .toolTipText(property.description());
   }
 
   /**
@@ -508,11 +508,11 @@ public class EntityComponents {
     Property<Double> property = entityDefinition.getProperty(attribute);
 
     return Components.doubleField()
-            .format(property.getFormat())
-            .minimumValue(property.getMinimumValue())
-            .maximumValue(property.getMaximumValue())
-            .maximumFractionDigits(property.getMaximumFractionDigits())
-            .toolTipText(property.getDescription());
+            .format(property.format())
+            .minimumValue(property.minimumValue())
+            .maximumValue(property.maximumValue())
+            .maximumFractionDigits(property.maximumFractionDigits())
+            .toolTipText(property.description());
   }
 
   /**
@@ -524,11 +524,11 @@ public class EntityComponents {
     Property<BigDecimal> property = entityDefinition.getProperty(attribute);
 
     return Components.bigDecimalField()
-            .format(property.getFormat())
-            .minimumValue(property.getMinimumValue())
-            .maximumValue(property.getMaximumValue())
-            .maximumFractionDigits(property.getMaximumFractionDigits())
-            .toolTipText(property.getDescription());
+            .format(property.format())
+            .minimumValue(property.minimumValue())
+            .maximumValue(property.maximumValue())
+            .maximumFractionDigits(property.maximumFractionDigits())
+            .toolTipText(property.description());
   }
 
   /**
@@ -540,7 +540,7 @@ public class EntityComponents {
     Property<String> property = entityDefinition.getProperty(attribute);
 
     return Components.maskedTextField()
-            .toolTipText(property.getDescription());
+            .toolTipText(property.description());
   }
 
   private static final class EntityReadOnlyFormat extends Format {

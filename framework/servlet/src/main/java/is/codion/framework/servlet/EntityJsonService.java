@@ -300,7 +300,7 @@ public final class EntityJsonService extends AbstractEntityService {
       List<Entity> entities = entityObjectMapper.deserializeEntities(request.getInputStream());
 
       Map<String, Collection<Entity>> dependencies = new HashMap<>();
-      connection.selectDependencies(entities).forEach((entityType, deps) -> dependencies.put(entityType.getName(), deps));
+      connection.selectDependencies(entities).forEach((entityType, deps) -> dependencies.put(entityType.name(), deps));
 
       return Response.ok(entityObjectMapper.writeValueAsString(dependencies)).type(MediaType.APPLICATION_JSON_TYPE).build();
     }

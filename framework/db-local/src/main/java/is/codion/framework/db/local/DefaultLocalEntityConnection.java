@@ -109,7 +109,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   DefaultLocalEntityConnection(Database database, Domain domain, User user) throws DatabaseException {
     this.domain = requireNonNull(domain, "domain");
-    this.domainEntities = domain.getEntities();
+    this.domainEntities = domain.entities();
     this.connection = databaseConnection(database, user);
     this.selectQueries = new SelectQueries(database);
     this.domain.configureConnection(this.connection);
@@ -123,7 +123,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   DefaultLocalEntityConnection(Database database, Domain domain, Connection connection) throws DatabaseException {
     this.domain = requireNonNull(domain, "domain");
-    this.domainEntities = domain.getEntities();
+    this.domainEntities = domain.entities();
     this.connection = databaseConnection(database, connection);
     this.selectQueries = new SelectQueries(database);
     this.domain.configureConnection(this.connection);
@@ -241,7 +241,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           keyGenerator.beforeInsert(entity, primaryKeyProperties, connection);
 
           populatePropertiesAndValues(entity, getInsertableProperties(entityDefinition, keyGenerator.isInserted()),
-                  statementProperties, statementValues, columnProperty -> entity.contains(columnProperty.getAttribute()));
+                  statementProperties, statementValues, columnProperty -> entity.contains(columnProperty.attribute()));
           if (statementProperties.isEmpty()) {
             throw new SQLException("Unable to insert entity " + entity.getEntityType() + ", no properties to insert");
           }
@@ -303,7 +303,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           List<Entity> entitiesToUpdate = entityTypeEntities.getValue();
           for (Entity entity : entitiesToUpdate) {
             populatePropertiesAndValues(entity, updatableProperties, statementProperties, statementValues,
-                    columnProperty -> entity.isModified(columnProperty.getAttribute()));
+                    columnProperty -> entity.isModified(columnProperty.attribute()));
             if (statementProperties.isEmpty()) {
               throw new SQLException("Unable to update entity " + entity.getEntityType() + ", no modified values found");
             }
@@ -370,11 +370,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         EntityDefinition entityDefinition = domainEntities.getDefinition(condition.entityType());
         for (Map.Entry<Attribute<?>, Object> propertyValue : condition.attributeValues().entrySet()) {
           ColumnProperty<Object> columnProperty = entityDefinition.getColumnProperty((Attribute<Object>) propertyValue.getKey());
-          if (!columnProperty.isUpdatable()) {
-            throw new IllegalArgumentException("Property is not updatable: " + columnProperty.getAttribute());
+          if (!columnProperty.updatable()) {
+            throw new IllegalArgumentException("Property is not updatable: " + columnProperty.attribute());
           }
           statementProperties.add(columnProperty);
-          statementValues.add(columnProperty.getAttribute().validateType(propertyValue.getValue()));
+          statementValues.add(columnProperty.attribute().validateType(propertyValue.getValue()));
         }
         updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, condition.toString(entityDefinition));
         statement = prepareStatement(updateQuery);
@@ -563,17 +563,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
-    EntityDefinition entityDefinition = domainEntities.getDefinition(requireNonNull(attribute, "attribute").getEntityType());
+    EntityDefinition entityDefinition = domainEntities.getDefinition(requireNonNull(attribute, "attribute").entityType());
     if (entityDefinition.getSelectQuery() != null) {
       throw new UnsupportedOperationException("select is not implemented for entities with custom select queries");
     }
     Condition combinedCondition = where(attribute).isNotNull();
     if (condition != null) {
-      condition.attributes().forEach(conditionAttribute -> validateAttribute(attribute.getEntityType(), conditionAttribute));
+      condition.attributes().forEach(conditionAttribute -> validateAttribute(attribute.entityType(), conditionAttribute));
       combinedCondition = combinedCondition.and(condition);
     }
     ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
-    String columnExpression = propertyToSelect.getColumnExpression();
+    String columnExpression = propertyToSelect.columnExpression();
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("distinct " + columnExpression)
             .where(combinedCondition)
@@ -585,7 +585,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         statement = prepareStatement(selectQuery);
         resultSet = executeStatement(statement, selectQuery, combinedCondition, entityDefinition);
-        List<T> result = propertyToSelect.getResultPacker().pack(resultSet);
+        List<T> result = propertyToSelect.resultPacker().pack(resultSet);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -650,10 +650,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
     Collection<ForeignKeyProperty> foreignKeyReferences = getForeignKeyReferences(entities.iterator().next().getEntityType());
     for (ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
-      if (!foreignKeyReference.isSoftReference()) {
-        List<Entity> dependencies = select(where(foreignKeyReference.getAttribute()).equalTo(entities));
+      if (!foreignKeyReference.softReference()) {
+        List<Entity> dependencies = select(where(foreignKeyReference.attribute()).equalTo(entities));
         if (!dependencies.isEmpty()) {
-          dependencyMap.put(foreignKeyReference.getEntityType(), dependencies);
+          dependencyMap.put(foreignKeyReference.entityType(), dependencies);
         }
       }
     }
@@ -797,7 +797,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     ResultSet resultSet = null;
     Condition condition = condition(primaryKey);
     String selectQuery = selectQueries.builder(entityDefinition)
-            .columns(blobProperty.getColumnExpression())
+            .columns(blobProperty.columnExpression())
             .where(condition)
             .build();
     synchronized (connection) {
@@ -962,11 +962,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             getForeignKeyPropertiesToSet(entities.get(0).getEntityType(), condition.selectAttributes());
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
-      ForeignKey foreignKey = foreignKeyProperty.getAttribute();
+      ForeignKey foreignKey = foreignKeyProperty.attribute();
       int conditionFetchDepthLimit = condition.fetchDepth(foreignKey)
-              .orElse(foreignKeyProperty.getFetchDepth());
+              .orElse(foreignKeyProperty.fetchDepth());
       if (isWithinFetchDepthLimit(currentForeignKeyFetchDepth, conditionFetchDepthLimit)
-              && containsReferenceAttributes(entities.get(0), foreignKey.getReferences())) {
+              && containsReferenceAttributes(entities.get(0), foreignKey.references())) {
         try {
           logAccess("setForeignKeys", foreignKeyProperty);
           List<Key> referencedKeys = new ArrayList<>(Entity.getReferencedKeys(entities, foreignKey));
@@ -1007,7 +1007,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Set<Attribute<?>> selectAttributes = new HashSet<>(conditionSelectAttributes);
 
     return domainEntities.getDefinition(entityType).getForeignKeyProperties().stream()
-            .filter(foreignKeyProperty -> selectAttributes.contains(foreignKeyProperty.getAttribute()))
+            .filter(foreignKeyProperty -> selectAttributes.contains(foreignKeyProperty.attribute()))
             .collect(toList());
   }
 
@@ -1124,7 +1124,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private List<ForeignKeyProperty> initializeForeignKeyReferences(EntityType entityType) {
     return domainEntities.getDefinitions().stream()
             .flatMap(entityDefinition -> entityDefinition.getForeignKeyProperties().stream())
-            .filter(foreignKeyProperty -> foreignKeyProperty.getReferencedEntityType().equals(entityType))
+            .filter(foreignKeyProperty -> foreignKeyProperty.referencedEntityType().equals(entityType))
             .collect(toList());
   }
 
@@ -1171,7 +1171,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       });
 
       return writableAndPrimaryKeyProperties.stream()
-              .map(ColumnProperty::getAttribute).toArray(Attribute<?>[]::new);
+              .map(ColumnProperty::attribute).toArray(Attribute<?>[]::new);
     });
   }
 
@@ -1323,10 +1323,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Object columnValue = property.toColumnValue(value, statement);
     try {
       if (columnValue == null) {
-        statement.setNull(parameterIndex, property.getColumnType());
+        statement.setNull(parameterIndex, property.columnType());
       }
       else {
-        statement.setObject(parameterIndex, columnValue, property.getColumnType());
+        statement.setObject(parameterIndex, columnValue, property.columnType());
       }
     }
     catch (SQLException e) {
@@ -1352,7 +1352,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       ColumnProperty<?> property = entityProperties.get(i);
       if (includeIf.test(property)) {
         statementProperties.add(property);
-        statementValues.add(entity.get(property.getAttribute()));
+        statementValues.add(entity.get(property.attribute()));
       }
     }
   }
@@ -1366,7 +1366,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static boolean containsReferenceAttributes(Entity entity, List<ForeignKey.Reference<?>> references) {
     for (int i = 0; i < references.size(); i++) {
-      if (!entity.contains(references.get(i).getAttribute())) {
+      if (!entity.contains(references.get(i).attribute())) {
         return false;
       }
     }
@@ -1376,19 +1376,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static Collection<Attribute<?>> getAttributesToSelect(ForeignKeyProperty foreignKeyProperty,
                                                                 List<Attribute<?>> referencedAttributes) {
-    if (foreignKeyProperty.getSelectAttributes().isEmpty()) {
+    if (foreignKeyProperty.selectAttributes().isEmpty()) {
       return emptyList();
     }
 
-    Set<Attribute<?>> selectAttributes = new HashSet<>(foreignKeyProperty.getSelectAttributes());
+    Set<Attribute<?>> selectAttributes = new HashSet<>(foreignKeyProperty.selectAttributes());
     selectAttributes.addAll(referencedAttributes);
 
     return selectAttributes;
   }
 
   private static void validateAttribute(EntityType entityType, Attribute<?> conditionAttribute) {
-    if (!conditionAttribute.getEntityType().equals(entityType)) {
-      throw new IllegalArgumentException("Condition attribute entity type " + entityType + " required, got " + conditionAttribute.getEntityType());
+    if (!conditionAttribute.entityType().equals(entityType)) {
+      throw new IllegalArgumentException("Condition attribute entity type " + entityType + " required, got " + conditionAttribute.entityType());
     }
   }
 }

@@ -12,32 +12,32 @@ public interface SelectQuery {
   /**
    * @return the COLUMNS clause string
    */
-  String getColumns();
+  String columns();
 
   /**
    * @return the FROM clause
    */
-  String getFrom();
+  String from();
 
   /**
    * @return the WHERE clause
    */
-  String getWhere();
+  String where();
 
   /**
    * @return the GROUP BY clause
    */
-  String getGroupBy();
+  String groupBy();
 
   /**
    * @return the HAVING clause
    */
-  String getHaving();
+  String having();
 
   /**
    * @return the order by clause
    */
-  String getOrderBy();
+  String orderBy();
 
   /**
    * Creates a {@link Builder}

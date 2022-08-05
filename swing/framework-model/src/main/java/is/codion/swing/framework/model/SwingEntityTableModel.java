@@ -303,7 +303,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
     Property<?> property = getEntityDefinition().getProperty(attribute);
 
-    return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
+    return property instanceof ColumnProperty && ((ColumnProperty<?>) property).updatable();
   }
 
   /**
@@ -499,7 +499,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     while (columnEnumeration.hasMoreElements()) {
       Attribute<?> attribute = (Attribute<?>) columnEnumeration.nextElement().getIdentifier();
       attributes.add(attribute);
-      header.add(getEntityDefinition().getProperty(attribute).getCaption());
+      header.add(getEntityDefinition().getProperty(attribute).caption());
     }
 
     return Text.getDelimitedString(header, Entity.getStringValueList(attributes,
@@ -538,10 +538,10 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     List<TableColumn> columns = new ArrayList<>(properties.size());
     for (Property<?> property : properties) {
       TableColumn column = new TableColumn(columns.size());
-      column.setIdentifier(property.getAttribute());
-      column.setHeaderValue(property.getCaption());
-      if (property.getPreferredColumnWidth() > 0) {
-        column.setPreferredWidth(property.getPreferredColumnWidth());
+      column.setIdentifier(property.attribute());
+      column.setHeaderValue(property.caption());
+      if (property.preferredColumnWidth() > 0) {
+        column.setPreferredWidth(property.preferredColumnWidth());
       }
       columns.add(column);
     }
@@ -552,7 +552,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   @Override
   protected final <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
     if (attribute.isNumerical()) {
-      return Optional.of(new DefaultSummaryValueProvider<>(attribute, this, getEntityDefinition().getProperty(attribute).getFormat()));
+      return Optional.of(new DefaultSummaryValueProvider<>(attribute, this, getEntityDefinition().getProperty(attribute).format()));
     }
 
     return Optional.empty();
@@ -615,7 +615,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   protected OrderBy getOrderBy() {
     if (orderQueryBySortOrder && getSortModel().isSortingEnabled()) {
       OrderBy orderBy = getOrderByFromSortModel();
-      if (!orderBy.getOrderByAttributes().isEmpty()) {
+      if (!orderBy.orderByAttributes().isEmpty()) {
         return orderBy;
       }
     }
@@ -796,7 +796,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
       columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? getColumnModel().getColumnIndex(attribute) : -1);
-      columnPreferencesRoot.put(attribute.getName(), columnObject);
+      columnPreferencesRoot.put(attribute.name(), columnObject);
     }
 
     return columnPreferencesRoot;
@@ -822,7 +822,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
       if (columnModel.containsColumn(attribute)) {
         try {
-          JSONObject columnPreferences = preferences.getJSONObject(attribute.getName());
+          JSONObject columnPreferences = preferences.getJSONObject(attribute.name());
           column.setPreferredWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
           if (columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
             int index = Math.min(columnModel.getColumnCount() - 1, columnPreferences.getInt(PREFERENCES_COLUMN_INDEX));
@@ -858,16 +858,16 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
     @Override
     public Class<?> getColumnClass(Attribute<?> attribute) {
-      return attribute.getValueClass();
+      return attribute.valueClass();
     }
 
     @Override
     public Comparator<?> getComparator(Attribute<?> attribute) {
       if (attribute instanceof ForeignKey) {
-        return entities.getDefinition(((ForeignKey) attribute).getReferencedEntityType()).getComparator();
+        return entities.getDefinition(((ForeignKey) attribute).referencedEntityType()).getComparator();
       }
 
-      return entities.getDefinition(attribute.getEntityType()).getProperty(attribute).getComparator();
+      return entities.getDefinition(attribute.entityType()).getProperty(attribute).comparator();
     }
 
     @Override

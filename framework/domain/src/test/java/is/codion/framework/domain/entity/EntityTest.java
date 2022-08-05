@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityTest {
 
-  private final Entities entities = new TestDomain().getEntities();
+  private final Entities entities = new TestDomain().entities();
 
   @Test
   void equal() {
@@ -267,7 +267,7 @@ public final class EntityTest {
             .build();
 
     List<Attribute<?>> attributes = entities.getDefinition(Department.TYPE)
-            .getColumnProperties().stream().map(Property::getAttribute).collect(Collectors.toList());
+            .getColumnProperties().stream().map(Property::attribute).collect(Collectors.toList());
 
     List<List<String>> strings =
             Entity.getStringValueList(attributes, asList(dept1, dept2));
@@ -365,19 +365,19 @@ public final class EntityTest {
   void putNull() {
     Entity dept = entities.entity(Department.TYPE);
     for (Property<?> property : entities.getDefinition(Department.TYPE).getProperties()) {
-      assertFalse(dept.contains(property.getAttribute()));
-      assertTrue(dept.isNull(property.getAttribute()));
-      assertFalse(dept.isNotNull(property.getAttribute()));
+      assertFalse(dept.contains(property.attribute()));
+      assertTrue(dept.isNull(property.attribute()));
+      assertFalse(dept.isNotNull(property.attribute()));
     }
     for (Property<?> property : entities.getDefinition(Department.TYPE).getProperties()) {
-      dept.put(property.getAttribute(), null);
+      dept.put(property.attribute(), null);
     }
     //putting nulls should not have an effect
     assertFalse(dept.isModified());
     for (Property<?> property : entities.getDefinition(Department.TYPE).getProperties()) {
-      assertTrue(dept.contains(property.getAttribute()));
-      assertTrue(dept.isNull(property.getAttribute()));
-      assertFalse(dept.isNotNull(property.getAttribute()));
+      assertTrue(dept.contains(property.attribute()));
+      assertTrue(dept.isNull(property.attribute()));
+      assertFalse(dept.isNotNull(property.attribute()));
     }
   }
 

@@ -256,7 +256,7 @@ public class EntityEditComponentPanel extends JPanel {
   public void selectInputComponent() {
     Entities entities = getEditModel().getEntities();
     List<Property<?>> properties = getSelectComponentAttributes().stream()
-            .map(attribute -> entities.getDefinition(attribute.getEntityType()).getProperty(attribute))
+            .map(attribute -> entities.getDefinition(attribute.entityType()).getProperty(attribute))
             .collect(Collectors.toList());
     Properties.sort(properties);
     Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
@@ -264,7 +264,7 @@ public class EntityEditComponentPanel extends JPanel {
                     .owner(this)
                     .title(FrameworkMessages.selectInputField())
                     .selectSingle();
-    optionalProperty.ifPresent(property -> requestComponentFocus(property.getAttribute()));
+    optionalProperty.ifPresent(property -> requestComponentFocus(property.attribute()));
   }
 
   /**
@@ -796,9 +796,9 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T> LabelBuilder<T> createLabel(Attribute<T> attribute) {
     Property<T> property = getEditModel().getEntities()
-            .getDefinition(requireNonNull(attribute).getEntityType()).getProperty(attribute);
-    return (LabelBuilder<T>) Components.label(property.getCaption())
-            .displayedMnemonic(property.getMnemonic() == null ? 0 : property.getMnemonic())
+            .getDefinition(requireNonNull(attribute).entityType()).getProperty(attribute);
+    return (LabelBuilder<T>) Components.label(property.caption())
+            .displayedMnemonic(property.mnemonic() == null ? 0 : property.mnemonic())
             .labelFor(getComponentInternal(attribute));
   }
 
