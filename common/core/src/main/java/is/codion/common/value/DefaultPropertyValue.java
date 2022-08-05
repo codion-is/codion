@@ -6,6 +6,7 @@ package is.codion.common.value;
 import is.codion.common.Primitives;
 import is.codion.common.event.EventObserver;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
@@ -38,6 +39,14 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
     try {
       return (T) getMethod.invoke(valueOwner);
     }
+    catch (InvocationTargetException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof RuntimeException) {
+        throw (RuntimeException) cause;
+      }
+
+      throw new RuntimeException(cause);
+    }
     catch (RuntimeException re) {
       throw re;
     }
@@ -53,6 +62,14 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
     }
     try {
       setMethod.invoke(valueOwner, value);
+    }
+    catch (InvocationTargetException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof RuntimeException) {
+        throw (RuntimeException) cause;
+      }
+
+      throw new RuntimeException(cause);
     }
     catch (RuntimeException re) {
       throw re;

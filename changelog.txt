@@ -8316,3 +8316,4 @@
   EntityPanel.create***Control() now private
   EntityTablePanel.ControlCode.CONFIGURE_COLUMNS added
   Configuration.characterValue() bug fixed, infinite recursion blowout prevented
+  DefaultPropertyValue bug fixed, exception handling now unwraps InvocationTargetException
