@@ -8,6 +8,36 @@ import java.util.List;
 /**
  * Builds a simple dynamic proxy for a single interface.
  * Note that if the {@link Object#equals(Object)} method is not proxied the resulting proxy is equal only to itself.
+ * <pre>
+ * List&lt;String&gt; list = new ArrayList&lt;&gt;();
+ *
+ * List&lt;String&gt; listProxy = ProxyBuilder.builder(List.class)
+ *     .delegate(list)
+ *     .method("add", Object.class, parameters -&gt; {
+ *       Object item = parameters.arguments().get(0);
+ *       System.out.println("Adding: " + item);
+ *
+ *       return parameters.delegate().add(item);
+ *     })
+ *     .method("remove", Object.class, parameters -&gt; {
+ *       Object item = parameters.arguments().get(0);
+ *       System.out.println("Removing: " + item);
+ *
+ *       return parameters.delegate().remove(item);
+ *     })
+ *     .method("equals", Object.class, parameters -&gt; {
+ *       Object object = parameters.arguments().get(0);
+ *       System.out.println("Equals: " + object);
+ *
+ *       return parameters.delegate().equals(object);
+ *     })
+ *     .method("size", parameters -&gt; {
+ *       System.out.println("Size");
+ *
+ *       return parameters.delegate().size();
+ *     })
+ *     .build();
+ * </pre>
  * @param <T> the proxy type
  * @see #builder(Class)
  */
@@ -15,7 +45,7 @@ public interface ProxyBuilder<T> {
 
   /**
    * Sets the delegate instance to forward non-proxied method calls to.
-   * If not specified, all non-proxied methods will throw {@link UnsupportedOperationException}.
+   * If not specified, all non-proxied methods throw {@link UnsupportedOperationException}.
    * @param delegate the delegate instance to receive all non-proxied method calls
    * @return this proxy builder
    */
@@ -48,6 +78,7 @@ public interface ProxyBuilder<T> {
   ProxyBuilder<T> method(String methodName, List<Class<?>> parameterTypes, ProxyMethod<T> proxyMethod);
 
   /**
+   * Builds the Proxy instance.
    * @return a new proxy instance
    */
   T build();
@@ -59,6 +90,7 @@ public interface ProxyBuilder<T> {
   interface ProxyMethod<T> {
 
     /**
+     * Invokes this proxy method.
      * @param parameters the parameters
      * @return the result
      */
