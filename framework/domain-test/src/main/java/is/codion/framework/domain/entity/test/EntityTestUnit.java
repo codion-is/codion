@@ -114,7 +114,7 @@ public class EntityTestUnit {
   /**
    * @return the EntityConnection instance used by this EntityTestUnit
    */
-  protected final EntityConnection getConnection() {
+  protected final EntityConnection connection() {
     return connectionProvider.connection();
   }
 
