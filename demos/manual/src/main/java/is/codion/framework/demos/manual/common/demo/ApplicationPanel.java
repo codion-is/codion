@@ -191,7 +191,7 @@ public final class ApplicationPanel extends JPanel {
     label("Integer Item")
             .build(inputPanel::add);
     ItemComboBoxModel<Integer> integerItemComboBoxModel = createIntegerItemComboBoxModel();
-    Value<Integer> integerItemSelectorValue = integerItemComboBoxModel.selectorValue(new IntegerItemFinder());
+    Value<Integer> integerItemSelectorValue = integerItemComboBoxModel.createSelectorValue(new IntegerItemFinder());
     NumberField<Integer> integerItemSelectorField = integerField(integerItemSelectorValue)
             .columns(2)
             .horizontalAlignment(SwingConstants.CENTER)

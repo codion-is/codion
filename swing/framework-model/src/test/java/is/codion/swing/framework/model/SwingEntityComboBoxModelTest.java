@@ -210,8 +210,8 @@ public final class SwingEntityComboBoxModelTest {
   @Test
   void selectorValue() {
     comboBoxModel.refresh();
-    assertThrows(IllegalArgumentException.class, () -> comboBoxModel.selectorValue(TestDomain.DEPARTMENT_ID));
-    Value<Integer> empIdValue = comboBoxModel.selectorValue(TestDomain.EMP_ID);
+    assertThrows(IllegalArgumentException.class, () -> comboBoxModel.createSelectorValue(TestDomain.DEPARTMENT_ID));
+    Value<Integer> empIdValue = comboBoxModel.createSelectorValue(TestDomain.EMP_ID);
     assertNull(empIdValue.get());
     Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(TestDomain.T_EMP, 5);
     comboBoxModel.selectEntityByKey(jonesKey);

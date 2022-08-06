@@ -95,7 +95,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
   public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerSelectorField(
           Attribute<Integer> attribute) {
     requireNonNull(attribute);
-    return (B) Components.integerField(getModel().selectorValue(attribute))
+    return (B) Components.integerField(getModel().createSelectorValue(attribute))
             .columns(2)
             .selectAllOnFocusGained(true);
   }
@@ -109,7 +109,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
   public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerSelectorField(
           Finder<Entity, Integer> finder) {
     requireNonNull(finder);
-    return (B) Components.integerField(getModel().selectorValue(finder))
+    return (B) Components.integerField(getModel().createSelectorValue(finder))
             .columns(2)
             .selectAllOnFocusGained(true);
   }
@@ -123,7 +123,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
   public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringSelectorField(
           Attribute<String> attribute) {
     requireNonNull(attribute);
-    return (B) Components.textField(getModel().selectorValue(attribute))
+    return (B) Components.textField(getModel().createSelectorValue(attribute))
             .columns(2)
             .selectAllOnFocusGained(true);
   }
@@ -137,7 +137,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
   public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringSelectorField(
           Finder<Entity, String> finder) {
     requireNonNull(finder);
-    return (B) Components.textField(getModel().selectorValue(finder))
+    return (B) Components.textField(getModel().createSelectorValue(finder))
             .columns(2)
             .selectAllOnFocusGained(true);
   }

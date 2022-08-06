@@ -8343,3 +8343,4 @@
   get prefix removed from more accessors
   ComponentValue.getComponent() renamed component()
   CompletionDocument.getComboBox() and getModel() renamed comboBox() and model() respectively
+  FilteredComboBoxModel, EntityComboBoxModel.selectorValue() renamed createSelectorValue()

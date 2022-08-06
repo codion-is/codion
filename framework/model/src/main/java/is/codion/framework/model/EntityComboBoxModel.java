@@ -189,5 +189,5 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param attribute the attribute
    * @return a {@link Value} for selecting items by attribute value
    */
-  <V> Value<V> selectorValue(Attribute<V> attribute);
+  <V> Value<V> createSelectorValue(Attribute<V> attribute);
 }

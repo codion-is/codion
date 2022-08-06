@@ -170,7 +170,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
    * @return a value linked to the selected item via the given finder instance
    * @param <V> the value type
    */
-  <V> Value<V> selectorValue(Finder<T, V> finder);
+  <V> Value<V> createSelectorValue(Finder<T, V> finder);
 
   /**
    * Refreshes the items in this combo box model.
