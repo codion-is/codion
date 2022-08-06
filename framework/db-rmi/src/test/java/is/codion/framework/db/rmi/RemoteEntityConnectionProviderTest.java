@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.rmi;
 
-import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.Server;
@@ -99,7 +99,7 @@ public class RemoteEntityConnectionProviderTest {
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
             .adminUser(User.parse("scott:tiger"))
-            .database(DatabaseFactory.getDatabase())
+            .database(Database.instance())
             .domainModelClassNames(singletonList("is.codion.framework.db.rmi.TestDomain"))
             .sslEnabled(true)
             .build();

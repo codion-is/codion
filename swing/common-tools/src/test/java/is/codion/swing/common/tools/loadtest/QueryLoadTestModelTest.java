@@ -4,7 +4,6 @@
 package is.codion.swing.common.tools.loadtest;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 
@@ -57,6 +56,6 @@ public final class QueryLoadTestModelTest {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("../../demos/empdept/src/main/sql/create_schema.sql");
 
-    return DatabaseFactory.getDatabase();
+    return Database.instance();
   }
 }

@@ -13,13 +13,13 @@ final class CharacterFieldValue extends AbstractTextComponentValue<Character, JT
 
   @Override
   protected Character getComponentValue() {
-    String string = getComponent().getText();
+    String string = component().getText();
 
     return string.isEmpty() ? null : string.charAt(0);
   }
 
   @Override
   protected void setComponentValue(Character value) {
-    getComponent().setText(value == null ? "" : String.valueOf(value));
+    component().setText(value == null ? "" : String.valueOf(value));
   }
 }

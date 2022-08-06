@@ -59,7 +59,7 @@ class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEd
   private JComponent createEditorComponent() {
     ComponentValue<T, ? extends JComponent> componentValue = inputComponentSupplier.get();
     componentValue.link(cellValue);
-    JComponent editorComponent = componentValue.getComponent();
+    JComponent editorComponent = componentValue.component();
     if (editorComponent instanceof JCheckBox) {
       ((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
     }

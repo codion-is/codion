@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.empdept.server;
 
-import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
@@ -38,7 +38,7 @@ public final class EmployeeServerTest {
 
     EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
             .adminPort(SERVER_ADMIN_PORT)
-            .database(DatabaseFactory.getDatabase())
+            .database(Database.instance())
             .idleConnectionTimeout(60_000)
             .adminUser(User.parse("scott:tiger"))
             .sslEnabled(false)

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.database.Database;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.TestDomain.Query;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class SelectQueriesTest {
 
   private final TestDomain testDomain = new TestDomain();
-  private final SelectQueries queries = new SelectQueries(DatabaseFactory.getDatabase());
+  private final SelectQueries queries = new SelectQueries(Database.instance());
 
   @Test
   void builder() {

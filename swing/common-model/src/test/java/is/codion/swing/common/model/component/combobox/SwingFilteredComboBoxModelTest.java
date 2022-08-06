@@ -257,7 +257,7 @@ public class SwingFilteredComboBoxModelTest {
 
   @Test
   void selectorValue() {
-    Value<Character> selectorValue = testModel.selectorValue(new Finder<String, Character>() {
+    Value<Character> selectorValue = testModel.createSelectorValue(new Finder<String, Character>() {
       @Override
       public Character getValue(String item) {
         return item.charAt(0);

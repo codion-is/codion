@@ -243,12 +243,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final <T> Value<T> selectorValue(Attribute<T> attribute) {
+  public final <T> Value<T> createSelectorValue(Attribute<T> attribute) {
     if (!entities.definition(entityType()).containsAttribute(attribute)) {
       throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
     }
 
-    return selectorValue(new EntityFinder<>(attribute));
+    return createSelectorValue(new EntityFinder<>(attribute));
   }
 
   @Override

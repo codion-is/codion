@@ -83,11 +83,11 @@ class CompletionDocument extends PlainDocument {
     }
   }
 
-  protected final JComboBox<?> getComboBox() {
+  protected final JComboBox<?> comboBox() {
     return comboBox;
   }
 
-  protected final ComboBoxModel<?> getModel() {
+  protected final ComboBoxModel<?> model() {
     return model;
   }
 

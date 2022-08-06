@@ -16,11 +16,11 @@ final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<
 
   @Override
   protected T getComponentValue() {
-    return (T) getComponent().getValue();
+    return (T) component().getValue();
   }
 
   @Override
   protected void setComponentValue(T value) {
-    getComponent().setValue(value == null ? 0 : value);
+    component().setValue(value == null ? 0 : value);
   }
 }

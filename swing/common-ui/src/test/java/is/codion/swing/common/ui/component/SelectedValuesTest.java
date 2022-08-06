@@ -33,7 +33,7 @@ public class SelectedValuesTest {
     });
     ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}), originalValue)
             .buildComponentValue();
-    JComboBox<String> box = componentValue.getComponent();
+    JComboBox<String> box = componentValue.component();
 
     assertEquals("b", box.getSelectedItem());
     box.setSelectedItem("d");
@@ -47,7 +47,7 @@ public class SelectedValuesTest {
     ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}),
                     Value.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent))
             .buildComponentValue();
-    JComboBox<String> box = componentValue.getComponent();
+    JComboBox<String> box = componentValue.component();
 
     assertNull(selectedItem);
     setSelectedItem("s");
@@ -78,7 +78,7 @@ public class SelectedValuesTest {
   void selectedValue() {
     ComponentValue<String, JComboBox<String>> value = Components.comboBox(new DefaultComboBoxModel<>(new String[] {null, "one", "two", "three"}))
             .buildComponentValue();
-    JComboBox<String> box = value.getComponent();
+    JComboBox<String> box = value.component();
 
     assertNull(value.get());
     box.setSelectedIndex(1);

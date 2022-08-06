@@ -239,7 +239,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   void orderQueryBySortOrder() {
     SwingEntityTableModel tableModel = createEmployeeTableModel();
-    OrderBy orderBy = tableModel.getOrderBy();
+    OrderBy orderBy = tableModel.orderBy();
     //default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
@@ -248,7 +248,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
 
     tableModel.sortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
-    orderBy = tableModel.getOrderBy();
+    orderBy = tableModel.orderBy();
     //still default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
@@ -257,7 +257,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
 
     tableModel.setOrderQueryBySortOrder(true);
-    orderBy = tableModel.getOrderBy();
+    orderBy = tableModel.orderBy();
     assertEquals(1, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
     assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(0).attribute());
@@ -265,7 +265,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.sortModel().setSortOrder(TestDomain.EMP_HIREDATE, SortOrder.DESCENDING);
     tableModel.sortModel().addSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
 
-    orderBy = tableModel.getOrderBy();
+    orderBy = tableModel.orderBy();
     assertEquals(2, orderBy.orderByAttributes().size());
     assertFalse(orderBy.orderByAttributes().get(0).isAscending());
     assertEquals(TestDomain.EMP_HIREDATE, orderBy.orderByAttributes().get(0).attribute());
@@ -273,7 +273,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
 
     tableModel.sortModel().clear();
-    orderBy = tableModel.getOrderBy();
+    orderBy = tableModel.orderBy();
     //back to default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());

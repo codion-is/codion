@@ -150,7 +150,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values
    * @param <T> the value type
-   * @return the values (including nulls) of the column identified by the given identifier from the rows in the table model
+   * @return the values (including nulls) of the column identified by the given identifier from the visible rows in the table model
    */
   <T> Collection<T> values(C columnIdentifier);
 

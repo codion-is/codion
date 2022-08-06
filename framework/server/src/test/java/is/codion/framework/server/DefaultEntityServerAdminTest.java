@@ -3,7 +3,7 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.ServerConfiguration;
@@ -33,7 +33,7 @@ public final class DefaultEntityServerAdminTest {
     EntityServerConfiguration configuration = EntityServerConfiguration.builder(3224, 3222)
             .adminPort(3225)
             .adminUser(ADMIN_USER)
-            .database(DatabaseFactory.getDatabase())
+            .database(Database.instance())
             .domainModelClassNames(singletonList("is.codion.framework.server.TestDomain"))
             .connectionPoolUsers(singletonList(ADMIN_USER))
             .build();

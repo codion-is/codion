@@ -39,7 +39,7 @@ public abstract class AbstractDatabase implements Database {
   private static final String OFFSET = "offset ";
   private static final String LIMIT = "limit ";
 
-  static Database instance;
+  private static Database instance;
 
   private final Map<String, ConnectionPoolWrapper> connectionPools = new HashMap<>();
   private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.get();
@@ -64,7 +64,7 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public final Connection createConnection(User user) throws DatabaseException {
-    DriverManager.setLoginTimeout(getLoginTimeout());
+    DriverManager.setLoginTimeout(loginTimeout());
     try {
       Connection connection = connectionProvider.connection(user, jdbcUrl);
       if (Database.TRANSACTION_ISOLATION.isNotNull()) {
@@ -212,11 +212,36 @@ public abstract class AbstractDatabase implements Database {
     return false;
   }
 
+  static Database instance() {
+    try {
+      synchronized (AbstractDatabase.class) {
+        String databaseUrl = DATABASE_URL.get();
+        if (AbstractDatabase.instance == null || !AbstractDatabase.instance.url().equals(databaseUrl)) {
+          Database previousInstance = AbstractDatabase.instance;
+          //replace the instance
+          AbstractDatabase.instance = DatabaseFactory.instance().createDatabase(databaseUrl);
+          if (previousInstance != null) {
+            //cleanup
+            previousInstance.closeConnectionPools();
+          }
+        }
+
+        return AbstractDatabase.instance;
+      }
+    }
+    catch (RuntimeException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   /**
    * @return the connection timeout in seconds
    * @see Database#LOGIN_TIMEOUT
    */
-  protected int getLoginTimeout() {
+  protected int loginTimeout() {
     return Database.LOGIN_TIMEOUT.getOrThrow();
   }
 

@@ -8379,3 +8379,11 @@
   framework.model, get prefix removed from more accessors
   FilteredTableColumModel, SwingEntityTableModel.setColumns() renamed setVisibleColumns(), EntityTableModel, FilteredTableModel, javafx, get prefix removed from more accessors
   get prefix removed from more accessors
+  ComponentValue.getComponent() renamed component()
+  CompletionDocument.getComboBox() and getModel() renamed comboBox() and model() respectively
+  FilteredComboBoxModel, EntityComboBoxModel.selectorValue() renamed createSelectorValue()
+  SwingEntityTableModel.getSelectAttributes(), getOrderBy() and getUserPreferencesKey(), get prefix removed
+  DatabaseFactory.getDatabase() renamed database()
+  DatabaseFactory.database() moved to Database and renamed instance()
+  DatabaseFactory.databaseFactory() renamed instance()
+  Database.instance() now closes connection pools for the existing database when replaced, synchronization added

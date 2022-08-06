@@ -30,7 +30,7 @@ public final class SchemaBrowser extends DefaultDomain {
 
   static {
     try {
-      String databaseFactoryClassName = DatabaseFactory.databaseFactory().getClass().getName();
+      String databaseFactoryClassName = DatabaseFactory.instance().getClass().getName();
       bundle = ResourceBundle.getBundle(SchemaBrowser.class.getName(),
               new Locale(databaseFactoryClassName.substring(databaseFactoryClassName.lastIndexOf('.') + 1)));
     }

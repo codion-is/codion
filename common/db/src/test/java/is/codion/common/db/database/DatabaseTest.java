@@ -40,7 +40,7 @@ public class DatabaseTest {
 
     public TestDatabase() {
       super("jdbc:h2:mem:h2db");
-      this.database = DatabaseFactory.getDatabase();
+      this.database = Database.instance();
     }
 
     @Override

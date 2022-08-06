@@ -525,7 +525,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected Double getComponentValue() {
-      Number number = getComponent().getNumber();
+      Number number = component().getNumber();
       if (number == null) {
         return nullable() ? null : 0d;
       }
@@ -535,7 +535,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected void setComponentValue(Double value) {
-      getComponent().setNumber(value);
+      component().setNumber(value);
     }
   }
 
@@ -550,7 +550,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected Integer getComponentValue() {
-      Number number = getComponent().getNumber();
+      Number number = component().getNumber();
       if (number == null) {
         return nullable() ? null : 0;
       }
@@ -560,7 +560,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected void setComponentValue(Integer value) {
-      getComponent().setNumber(value);
+      component().setNumber(value);
     }
   }
 
@@ -575,7 +575,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected Long getComponentValue() {
-      Number number = getComponent().getNumber();
+      Number number = component().getNumber();
       if (number == null) {
         return nullable() ? null : 0L;
       }
@@ -585,7 +585,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected void setComponentValue(Long value) {
-      getComponent().setNumber(value);
+      component().setNumber(value);
     }
   }
 
@@ -597,12 +597,12 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected BigDecimal getComponentValue() {
-      return getComponent().getNumber();
+      return component().getNumber();
     }
 
     @Override
     protected void setComponentValue(BigDecimal value) {
-      getComponent().setNumber(value);
+      component().setNumber(value);
     }
   }
 }

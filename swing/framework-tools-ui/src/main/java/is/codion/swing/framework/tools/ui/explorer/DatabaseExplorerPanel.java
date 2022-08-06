@@ -4,7 +4,6 @@
 package is.codion.swing.framework.tools.ui.explorer;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
@@ -100,7 +99,7 @@ public final class DatabaseExplorerPanel extends JPanel {
    */
   public static void main(String[] arguments) {
     try {
-      Database database = DatabaseFactory.getDatabase();
+      Database database = Database.instance();
       DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(database,
               Dialogs.loginDialog()
                       .icon(Logos.logoTransparent())

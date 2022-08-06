@@ -92,7 +92,7 @@ public class StringValuesTest {
   void textValue() {
     ComponentValue<String, JTextField> value = Components.textField()
             .buildComponentValue();
-    JTextField textField = value.getComponent();
+    JTextField textField = value.component();
 
     assertNull(value.get());
     textField.setText("hello there");
@@ -109,9 +109,9 @@ public class StringValuesTest {
     ComponentValue<Character, JTextField> value = Components.textField(Character.class)
             .buildComponentValue();
     assertNull(value.get());
-    value.getComponent().setText("2");
+    value.component().setText("2");
     assertEquals('2', value.get());
     value.set(null);
-    assertTrue(value.getComponent().getText().isEmpty());
+    assertTrue(value.component().getText().isEmpty());
   }
 }

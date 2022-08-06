@@ -4,7 +4,6 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
@@ -33,7 +32,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
   DefaultLocalEntityConnectionProvider(DefaultLocalEntityConnectionProviderBuilder builder) {
     super(builder);
     this.domain = initializeDomain(domainClassName());
-    this.database = builder.database == null ? DatabaseFactory.getDatabase() : builder.database;
+    this.database = builder.database == null ? Database.instance() : builder.database;
     this.defaultQueryTimeout = builder.defaultQueryTimeout;
   }
 

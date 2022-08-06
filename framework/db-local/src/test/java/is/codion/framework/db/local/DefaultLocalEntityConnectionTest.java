@@ -5,7 +5,6 @@ package is.codion.framework.db.local;
 
 import is.codion.common.db.database.ConnectionProvider;
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.DeleteException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
@@ -798,7 +797,7 @@ public class DefaultLocalEntityConnectionTest {
   void testConstructor() throws Exception {
     Connection connection = null;
     try {
-      Database db = DatabaseFactory.getDatabase();
+      Database db = Database.instance();
       connection = db.createConnection(UNIT_TEST_USER);
       EntityConnection conn = new DefaultLocalEntityConnection(db, DOMAIN, connection);
       assertTrue(conn.isConnected());
@@ -818,7 +817,7 @@ public class DefaultLocalEntityConnectionTest {
     assertThrows(DatabaseException.class, () -> {
       Connection connection = null;
       try {
-        Database db = DatabaseFactory.getDatabase();
+        Database db = Database.instance();
         connection = db.createConnection(UNIT_TEST_USER);
         connection.close();
         new DefaultLocalEntityConnection(db, DOMAIN, connection);
@@ -1044,7 +1043,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   private static LocalEntityConnection initializeConnection(boolean setLockTimeout) throws DatabaseException {
-    Database database = DatabaseFactory.getDatabase();
+    Database database = Database.instance();
     if (setLockTimeout) {
       database.setConnectionProvider(new ConnectionProvider() {
         @Override

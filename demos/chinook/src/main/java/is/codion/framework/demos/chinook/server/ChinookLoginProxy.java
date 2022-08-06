@@ -4,7 +4,6 @@
 package is.codion.framework.demos.chinook.server;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
@@ -37,7 +36,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   /**
    * The Database instance we're connecting to.
    */
-  private final Database database = DatabaseFactory.getDatabase();
+  private final Database database = Database.instance();
 
   /**
    * The actual user credentials to return for successfully authenticated users.

@@ -356,12 +356,12 @@ public final class TextInputPanel extends JPanel {
 
     @Override
     protected String getComponentValue() {
-      return getComponent().getText();
+      return component().getText();
     }
 
     @Override
     protected void setComponentValue(String value) {
-      getComponent().setText(value);
+      component().setText(value);
     }
   }
 }
