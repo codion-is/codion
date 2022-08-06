@@ -101,7 +101,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
             CLIENT_TYPE_ID, Objects.requireNonNull(clientTypeId, CLIENT_TYPE_ID),
             CLIENT_ID, Objects.requireNonNull(clientId, CLIENT_ID).toString(),
             CONTENT_TYPE, APPLICATION_OCTET_STREAM,
-            AUTHORIZATION, BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + String.valueOf(user.getPassword())).getBytes())
+            AUTHORIZATION, BASIC + Base64.getEncoder().encodeToString((user.username() + ":" + String.valueOf(user.getPassword())).getBytes())
     };
     this.entities = initializeEntities();
   }
