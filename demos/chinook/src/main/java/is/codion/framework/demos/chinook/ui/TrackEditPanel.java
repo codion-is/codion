@@ -67,7 +67,7 @@ public final class TrackEditPanel extends EntityEditPanel {
     JPanel durationPanel = new JPanel(flexibleGridLayout(1, 3));
     durationPanel.add(createInputPanel(Track.BYTES));
     durationPanel.add(createInputPanel(Track.MILLISECONDS));
-    durationPanel.add(minutesSecondsValue.getComponent());
+    durationPanel.add(minutesSecondsValue.component());
 
     JPanel unitPricePanel = panel(borderLayout())
             .add(createInputPanel(Track.UNITPRICE), BorderLayout.EAST)

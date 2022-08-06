@@ -18,6 +18,6 @@ final class LabelComponentValue<T> extends AbstractComponentValue<T, JLabel> {
 
   @Override
   protected void setComponentValue(T value) {
-    getComponent().setText(value == null ? "" : value.toString());
+    component().setText(value == null ? "" : value.toString());
   }
 }

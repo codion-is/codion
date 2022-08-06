@@ -46,7 +46,7 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
   }
 
   @Override
-  public final C getComponent() {
+  public final C component() {
     return component;
   }
 
@@ -83,14 +83,14 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
   /**
    * Returns the value from the underlying component
    * @return the value from the underlying component
-   * @see #getComponent()
+   * @see #component()
    */
   protected abstract T getComponentValue();
 
   /**
    * Sets the given value in the underlying component. Note that this method is called on the EDT.
    * @param value the value to display in the underlying component
-   * @see #getComponent()
+   * @see #component()
    */
   protected abstract void setComponentValue(T value);
 }

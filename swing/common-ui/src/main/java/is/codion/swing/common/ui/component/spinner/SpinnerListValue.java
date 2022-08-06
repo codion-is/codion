@@ -20,11 +20,11 @@ final class SpinnerListValue<T> extends AbstractComponentValue<T, JSpinner> {
 
   @Override
   protected T getComponentValue() {
-    return (T) getComponent().getValue();
+    return (T) component().getValue();
   }
 
   @Override
   protected void setComponentValue(T value) {
-    getComponent().setValue(value == null ? ((SpinnerListModel) getComponent().getModel()).getList().get(0) : value);
+    component().setValue(value == null ? ((SpinnerListModel) component().getModel()).getList().get(0) : value);
   }
 }

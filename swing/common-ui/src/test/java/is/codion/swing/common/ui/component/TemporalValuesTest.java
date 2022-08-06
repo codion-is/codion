@@ -121,7 +121,7 @@ public class TemporalValuesTest {
 
     ComponentValue<LocalTime, TemporalField<LocalTime>> value = Components.localTimeField(format)
             .buildComponentValue();
-    TemporalField<LocalTime> textField = value.getComponent();
+    TemporalField<LocalTime> textField = value.component();
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
@@ -144,7 +144,7 @@ public class TemporalValuesTest {
   void localDateUiValue() {
     ComponentValue<LocalDate, TemporalField<LocalDate>> value = Components.localDateField("dd-MM-yyyy")
             .buildComponentValue();
-    TemporalField<LocalDate> textField = value.getComponent();
+    TemporalField<LocalDate> textField = value.component();
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
@@ -166,7 +166,7 @@ public class TemporalValuesTest {
   void localDateTimeUiValue() {
     ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> value = Components.localDateTimeField("dd-MM-yyyy HH:mm")
             .buildComponentValue();
-    TemporalField<LocalDateTime> textField = value.getComponent();
+    TemporalField<LocalDateTime> textField = value.component();
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 

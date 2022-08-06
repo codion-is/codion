@@ -8341,3 +8341,4 @@
   framework.model, get prefix removed from more accessors
   FilteredTableColumModel, SwingEntityTableModel.setColumns() renamed setVisibleColumns(), EntityTableModel, FilteredTableModel, javafx, get prefix removed from more accessors
   get prefix removed from more accessors
+  ComponentValue.getComponent() renamed component()

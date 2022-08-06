@@ -323,13 +323,13 @@ public final class InputControls {
 
       @Override
       protected Person getComponentValue() {
-        return new Person(getComponent().firstNameField.getText(), getComponent().lastNameField.getText());
+        return new Person(component().firstNameField.getText(), component().lastNameField.getText());
       }
 
       @Override
       protected void setComponentValue(Person value) {
-        getComponent().firstNameField.setText(value == null ? null : value.firstName);
-        getComponent().lastNameField.setText(value == null ? null : value.lastName);
+        component().firstNameField.setText(value == null ? null : value.firstName);
+        component().lastNameField.setText(value == null ? null : value.lastName);
       }
     }
 
@@ -349,7 +349,7 @@ public final class InputControls {
             Components.integerField()
                     .buildComponentValue();
 
-    NumberField<Integer> horizontalAlignmentField = fieldValue.getComponent();
+    NumberField<Integer> horizontalAlignmentField = fieldValue.component();
 
     Value<Integer> horizontalAlignmentValue =
             Value.propertyValue(horizontalAlignmentField, "horizontalAlignment",

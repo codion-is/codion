@@ -14,19 +14,19 @@ final class SelectedItemValue<T, C extends JComboBox<Item<T>>> extends AbstractC
 
   SelectedItemValue(C comboBox) {
     super(comboBox);
-    getComponent().addItemListener(new NotifyOnItemSelectedListener());
+    component().addItemListener(new NotifyOnItemSelectedListener());
   }
 
   @Override
   protected T getComponentValue() {
-    Item<T> selectedValue = (Item<T>) getComponent().getModel().getSelectedItem();
+    Item<T> selectedValue = (Item<T>) component().getModel().getSelectedItem();
 
     return selectedValue == null ? null : selectedValue.value();
   }
 
   @Override
   protected void setComponentValue(T value) {
-    getComponent().getModel().setSelectedItem(value);
+    component().getModel().setSelectedItem(value);
   }
 
   private final class NotifyOnItemSelectedListener implements ItemListener {

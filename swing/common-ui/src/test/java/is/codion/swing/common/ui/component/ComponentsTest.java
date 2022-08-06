@@ -82,14 +82,14 @@ public final class ComponentsTest {
     NumberField<Integer> component = builder.build();
     ComponentValue<Integer, NumberField<Integer>> componentValue = builder.buildComponentValue();
 
-    assertSame(component, componentValue.getComponent());
+    assertSame(component, componentValue.component());
 
     builder.clear();
 
     NumberField<Integer> nextComponent = builder.build();
     ComponentValue<Integer, NumberField<Integer>> nextComponentValue = builder.buildComponentValue();
 
-    assertSame(nextComponent, nextComponentValue.getComponent());
+    assertSame(nextComponent, nextComponentValue.component());
 
     assertNotSame(component, nextComponent);
     assertNotSame(componentValue, nextComponentValue);
@@ -127,7 +127,7 @@ public final class ComponentsTest {
             .background(Color.BLACK)
             .linkedValue(value)
             .buildComponentValue();
-    assertEquals(componentValue.getComponent().getText(), "42");
+    assertEquals(componentValue.component().getText(), "42");
   }
 
   @Test
@@ -140,7 +140,7 @@ public final class ComponentsTest {
             .maximumWidth(10)
             .linkedValue(value)
             .buildComponentValue();
-    assertEquals(componentValue.getComponent().getText(), "42");
+    assertEquals(componentValue.component().getText(), "42");
   }
 
   @Test
@@ -155,7 +155,7 @@ public final class ComponentsTest {
             .maximumSize(new Dimension(10, 10))
             .linkedValue(value)
             .buildComponentValue();
-    assertEquals(componentValue.getComponent().getNumber(), value.get());
+    assertEquals(componentValue.component().getNumber(), value.get());
   }
 
   @Test
@@ -168,7 +168,7 @@ public final class ComponentsTest {
             .maximumSize(new Dimension(10, 10))
             .linkedValue(value)
             .buildComponentValue();
-    assertEquals(componentValue.getComponent().getNumber(), value.get());
+    assertEquals(componentValue.component().getNumber(), value.get());
   }
 
   @Test
@@ -228,11 +228,11 @@ public final class ComponentsTest {
                     .buildComponentValue();
     assertNull(componentValue.get());
 
-    componentValue.getComponent().setTemporal(date);
+    componentValue.component().setTemporal(date);
 
     assertEquals(value.get(), date);
 
-    componentValue.getComponent().inputField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));
+    componentValue.component().inputField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));
     assertEquals(date, componentValue.get());
   }
 
@@ -253,7 +253,7 @@ public final class ComponentsTest {
             .includeCaption(true)
             .transferFocusOnEnter(true)
             .buildComponentValue();
-    JCheckBox box = componentValue.getComponent();
+    JCheckBox box = componentValue.component();
     assertTrue(box.isSelected());
     assertTrue(value.get());
 
@@ -274,7 +274,7 @@ public final class ComponentsTest {
             .includeCaption(true)
             .transferFocusOnEnter(true)
             .buildComponentValue();
-    JToggleButton box = componentValue.getComponent();
+    JToggleButton box = componentValue.component();
     assertTrue(box.isSelected());
     assertTrue(value.get());
 
@@ -295,7 +295,7 @@ public final class ComponentsTest {
             .includeCaption(true)
             .transferFocusOnEnter(true)
             .buildComponentValue();
-    JRadioButton button = componentValue.getComponent();
+    JRadioButton button = componentValue.component();
     assertTrue(button.isSelected());
     assertTrue(value.get());
 
@@ -315,7 +315,7 @@ public final class ComponentsTest {
             .transferFocusOnEnter(true)
             .nullable(true)
             .buildComponentValue();
-    NullableCheckBox box = (NullableCheckBox) componentValue.getComponent();
+    NullableCheckBox box = (NullableCheckBox) componentValue.component();
     assertTrue(box.isSelected());
     assertTrue(value.get());
 
@@ -338,7 +338,7 @@ public final class ComponentsTest {
                     .linkedValue(value)
                     .buildComponentValue();
     ItemComboBoxModel<Boolean> boxModel =
-            (ItemComboBoxModel<Boolean>) componentValue.getComponent().getModel();
+            (ItemComboBoxModel<Boolean>) componentValue.component().getModel();
     assertTrue(boxModel.selectedValue().value());
     boxModel.setSelectedItem(null);
     assertNull(value.get());
@@ -359,7 +359,7 @@ public final class ComponentsTest {
             .linkedValue(value)
             .nullable(true)
             .buildComponentValue();
-    JComboBox<Item<Integer>> comboBox = componentValue.getComponent();
+    JComboBox<Item<Integer>> comboBox = componentValue.component();
     ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
     assertTrue(model.containsItem(Item.item(null)));
@@ -387,7 +387,7 @@ public final class ComponentsTest {
             .linkedValue(value)
             .mouseWheelScrollingWithWrapAround(true)
             .transferFocusOnEnter(true).buildComponentValue();
-    JComboBox<String> box = componentValue.getComponent();
+    JComboBox<String> box = componentValue.component();
 
     assertNull(value.get());
     box.setSelectedItem("1");
@@ -413,7 +413,7 @@ public final class ComponentsTest {
             .horizontalAlignment(SwingConstants.CENTER)
             .linkedValue(value)
             .buildComponentValue();
-    JTextField field = componentValue.getComponent();
+    JTextField field = componentValue.component();
     field.setText("hello");
     assertEquals("HELLO", value.get());
   }
@@ -431,7 +431,7 @@ public final class ComponentsTest {
             .linkedValue(value);
     ComponentValue<String, JTextArea> componentValue = builder
             .buildComponentValue();
-    JTextArea textArea = componentValue.getComponent();
+    JTextArea textArea = componentValue.component();
     textArea.setText("hello");
     assertEquals("hello", value.get());
     builder.scrollPane().build();
@@ -454,7 +454,7 @@ public final class ComponentsTest {
             .updateOn(UpdateOn.KEYSTROKE)
             .linkedValue(value)
             .buildComponentValue();
-    TextInputPanel inputPanel = componentValue.getComponent();
+    TextInputPanel inputPanel = componentValue.component();
     inputPanel.setText("hello");
     assertEquals("hello", value.get());
 
@@ -464,10 +464,10 @@ public final class ComponentsTest {
 
     assertNull(componentValue.get());
 
-    componentValue.getComponent().setText("tester");
+    componentValue.component().setText("tester");
     assertEquals("tester", componentValue.get());
 
-    componentValue.getComponent().setText("");
+    componentValue.component().setText("");
     assertNull(componentValue.get());
 
     assertThrows(IllegalArgumentException.class, () -> inputPanel.textField().setText("asdfasdfasdfasdfasdf"));
@@ -488,7 +488,7 @@ public final class ComponentsTest {
             .emptyStringToNullValue(true)
             .linkedValue(value)
             .buildComponentValue();
-    JFormattedTextField field = componentValue.getComponent();
+    JFormattedTextField field = componentValue.component();
     field.setText("1234");
     assertEquals("12:34", value.get());
     field.setText("");
@@ -588,9 +588,9 @@ public final class ComponentsTest {
             .displayedMnemonic('l')
             .labelFor(new JButton())
             .buildComponentValue();
-    assertEquals("label", componentValue.getComponent().getText());
+    assertEquals("label", componentValue.component().getText());
     textValue.set("hello");
-    assertEquals("hello", componentValue.getComponent().getText());
+    assertEquals("hello", componentValue.component().getText());
   }
 
   @Test

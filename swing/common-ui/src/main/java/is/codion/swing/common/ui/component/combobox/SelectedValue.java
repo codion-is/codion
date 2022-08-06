@@ -24,7 +24,7 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
 
   @Override
   protected T getComponentValue() {
-    ComboBoxModel<T> comboBoxModel = getComponent().getModel();
+    ComboBoxModel<T> comboBoxModel = component().getModel();
     if (comboBoxModel instanceof FilteredComboBoxModel) {
       return ((FilteredComboBoxModel<T>) comboBoxModel).selectedValue();
     }
@@ -34,7 +34,7 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
 
   @Override
   protected void setComponentValue(T value) {
-    getComponent().getModel().setSelectedItem(value);
+    component().getModel().setSelectedItem(value);
   }
 
   private final class NotifyOnItemSelectedListener implements ItemListener {

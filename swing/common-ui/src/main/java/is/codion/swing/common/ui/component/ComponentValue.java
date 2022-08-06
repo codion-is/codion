@@ -18,5 +18,5 @@ public interface ComponentValue<T, C extends JComponent> extends Value<T> {
   /**
    * @return the input component representing the value
    */
-  C getComponent();
+  C component();
 }

@@ -166,7 +166,7 @@ public final class Dialogs {
   public static <T, C extends JComponent> T showInputDialog(ComponentValue<T, C> componentValue, JComponent dialogOwner, String title) {
     State okPressed = State.state();
     JPanel basePanel = new JPanel(Layouts.borderLayout());
-    basePanel.add(componentValue.getComponent(), BorderLayout.CENTER);
+    basePanel.add(componentValue.component(), BorderLayout.CENTER);
     basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
     okCancelDialog(basePanel)
             .owner(dialogOwner)

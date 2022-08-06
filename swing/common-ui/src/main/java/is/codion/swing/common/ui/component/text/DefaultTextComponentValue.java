@@ -20,7 +20,7 @@ final class DefaultTextComponentValue<T, C extends JTextComponent> extends Abstr
 
   @Override
   protected T getComponentValue() {
-    String text = getComponent().getText();
+    String text = component().getText();
     if (nullOrEmpty(text)) {
       return null;
     }
@@ -30,7 +30,7 @@ final class DefaultTextComponentValue<T, C extends JTextComponent> extends Abstr
 
   @Override
   protected void setComponentValue(T value) {
-    getComponent().setText(value == null ? "" : (format == null ? value.toString() : format.format(value)));
+    component().setText(value == null ? "" : (format == null ? value.toString() : format.format(value)));
   }
 
   /**
