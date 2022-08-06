@@ -37,7 +37,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.rmi.server.AuxiliaryServerFactory.auxiliaryServerFactory;
-import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 import static java.util.Collections.unmodifiableCollection;
@@ -103,10 +102,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   /**
    * @return a map containing the current connections
    */
-  public final Map<RemoteClient, T> getConnections() {
+  public final Map<RemoteClient, T> connections() {
     Map<RemoteClient, T> clients = new HashMap<>();
     for (ClientConnection<T> clientConnection : connections.values()) {
-      clients.put(clientConnection.getRemoteClient(), clientConnection.getConnection());
+      clients.put(clientConnection.remoteClient(), clientConnection.connection());
     }
 
     return clients;
@@ -117,10 +116,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return the connection associated with the given client
    * @throws IllegalArgumentException in case no such client is connected
    */
-  public final T getConnection(UUID clientId) {
+  public final T connection(UUID clientId) {
     ClientConnection<T> clientConnection = connections.get(requireNonNull(clientId, CLIENT_ID));
     if (clientConnection != null) {
-      return clientConnection.getConnection();
+      return clientConnection.connection();
     }
 
     throw new IllegalArgumentException("Client not connected: " + clientId);
@@ -129,7 +128,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   /**
    * @return the current number of connections
    */
-  public final int getConnectionCount() {
+  public final int connectionCount() {
     return connections.size();
   }
 
@@ -164,7 +163,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   @Override
-  public final ServerInformation getServerInformation() {
+  public final ServerInformation serverInformation() {
     return serverInformation;
   }
 
@@ -186,10 +185,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     synchronized (connections) {
       ClientConnection<T> clientConnection = connections.get(connectionRequest.clientId());
       if (clientConnection != null) {
-        validateUserCredentials(connectionRequest.user(), clientConnection.getRemoteClient().user());
+        validateUserCredentials(connectionRequest.user(), clientConnection.remoteClient().user());
         LOG.trace("Active connection exists {}", connectionRequest);
 
-        return clientConnection.getConnection();
+        return clientConnection.connection();
       }
 
       if (maximumNumberOfConnectionsReached()) {
@@ -198,7 +197,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       }
       LOG.trace("No active connection found for client {}, establishing a new connection", connectionRequest);
 
-      return createConnection(connectionRequest).getConnection();
+      return createConnection(connectionRequest).connection();
     }
   }
 
@@ -206,8 +205,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   public final void disconnect(UUID clientId) throws RemoteException {
     ClientConnection<T> clientConnection = connections.remove(requireNonNull(clientId, CLIENT_ID));
     if (clientConnection != null) {
-      disconnect(clientConnection.getConnection());
-      RemoteClient remoteClient = clientConnection.getRemoteClient();
+      disconnect(clientConnection.connection());
+      RemoteClient remoteClient = clientConnection.remoteClient();
       for (LoginProxy loginProxy : sharedLoginProxies) {
         loginProxy.logout(remoteClient);
       }
@@ -254,19 +253,19 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   public final void addLoginProxy(LoginProxy loginProxy) {
     requireNonNull(loginProxy, "loginProxy");
-    if (loginProxy.getClientTypeId() == null) {
+    if (loginProxy.clientTypeId() == null) {
       sharedLoginProxies.add(loginProxy);
     }
     else {
-      loginProxies.put(loginProxy.getClientTypeId(), loginProxy);
+      loginProxies.put(loginProxy.clientTypeId(), loginProxy);
     }
   }
 
   /**
    * @return info on all connected users
    */
-  final Collection<User> getUsers() {
-    return getConnections().keySet().stream()
+  final Collection<User> users() {
+    return connections().keySet().stream()
             .map(ConnectionRequest::user)
             .collect(toSet());
   }
@@ -274,16 +273,18 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   /**
    * @return info on all connected clients
    */
-  final Collection<RemoteClient> getClients() {
-    return new ArrayList<>(getConnections().keySet());
+  final Collection<RemoteClient> clients() {
+    return new ArrayList<>(connections().keySet());
   }
 
   /**
    * @param user the user
    * @return all clients connected with the given user
    */
-  final Collection<RemoteClient> getClients(User user) {
-    return getConnections().keySet().stream()
+  final Collection<RemoteClient> clients(User user) {
+    requireNonNull(user);
+
+    return connections().keySet().stream()
             .filter(remoteClient -> user == null || remoteClient.user().equals(user))
             .collect(toList());
   }
@@ -337,8 +338,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @param clientTypeId the client type id
    * @return all clients of the given type
    */
-  protected Collection<RemoteClient> getClients(String clientTypeId) {
-    return getConnections().keySet().stream()
+  protected Collection<RemoteClient> clients(String clientTypeId) {
+    return connections().keySet().stream()
             .filter(client -> Objects.equals(client.clientTypeId(), clientTypeId))
             .collect(toList());
   }
@@ -366,18 +367,18 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    */
   protected static final void validateUserCredentials(User userToCheck, User requiredUser) throws ServerAuthenticationException {
     if (userToCheck == null || requiredUser == null
-            || !Objects.equals(userToCheck.getUsername(), requiredUser.getUsername())
+            || !Objects.equals(userToCheck.username(), requiredUser.username())
             || !Arrays.equals(userToCheck.getPassword(), requiredUser.getPassword())) {
       throw new ServerAuthenticationException("Wrong username or password");
     }
   }
 
   private boolean maximumNumberOfConnectionsReached() {
-    return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
+    return connectionLimit > -1 && connectionCount() >= connectionLimit;
   }
 
   private ClientConnection<T> createConnection(ConnectionRequest connectionRequest) throws LoginException, RemoteException {
-    RemoteClient remoteClient = remoteClient(connectionRequest);
+    RemoteClient remoteClient = RemoteClient.remoteClient(connectionRequest);
     setClientHost(remoteClient, (String) connectionRequest.parameters().get(CLIENT_HOST_KEY));
     for (LoginProxy loginProxy : sharedLoginProxies) {
       remoteClient = loginProxy.login(remoteClient);
@@ -429,7 +430,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       loginProxy.close();
     }
     catch (Exception e) {
-      LOG.error("Exception while closing loginProxy for client type: " + loginProxy.getClientTypeId(), e);
+      LOG.error("Exception while closing loginProxy for client type: " + loginProxy.clientTypeId(), e);
     }
   }
 
@@ -489,7 +490,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   private void loadLoginProxies() {
     LoginProxy.getLoginProxies().forEach(loginProxy -> {
-      String clientTypeId = loginProxy.getClientTypeId();
+      String clientTypeId = loginProxy.clientTypeId();
       LOG.info("Server loading " + (clientTypeId == null ? "shared" : "") + "login proxy '" + loginProxy.getClass().getName() + "' as service");
       addLoginProxy(loginProxy);
     });
@@ -505,11 +506,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       this.connection = connection;
     }
 
-    public RemoteClient getRemoteClient() {
+    public RemoteClient remoteClient() {
       return client;
     }
 
-    public T getConnection() {
+    public T connection() {
       return connection;
     }
   }
@@ -519,7 +520,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     @Override
     public void run() {
       try {
-        if (getConnectionCount() > 0) {
+        if (connectionCount() > 0) {
           maintainConnections(unmodifiableCollection(connections.values()));
         }
       }

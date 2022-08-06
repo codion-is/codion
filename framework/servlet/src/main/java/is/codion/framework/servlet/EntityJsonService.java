@@ -323,7 +323,7 @@ public final class EntityJsonService extends AbstractEntityService {
 
       ConditionObjectMapper conditionObjectMapper = getConditionObjectMapper(connection.entities());
 
-      return Response.ok(conditionObjectMapper.getEntityObjectMapper().writeValueAsString(connection.rowCount(conditionObjectMapper
+      return Response.ok(conditionObjectMapper.entityObjectMapper().writeValueAsString(connection.rowCount(conditionObjectMapper
               .readValue(request.getInputStream(), Condition.class)))).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
     catch (Exception e) {
@@ -354,7 +354,7 @@ public final class EntityJsonService extends AbstractEntityService {
         condition = mapper.readValue(conditionNode.toString(), Condition.class);
       }
 
-      return Response.ok(mapper.getEntityObjectMapper().writeValueAsString(connection.select(attribute, condition)))
+      return Response.ok(mapper.entityObjectMapper().writeValueAsString(connection.select(attribute, condition)))
               .type(MediaType.APPLICATION_JSON_TYPE).build();
     }
     catch (Exception e) {
@@ -401,7 +401,7 @@ public final class EntityJsonService extends AbstractEntityService {
       SelectCondition selectConditionJson = mapper
               .readValue(request.getInputStream(), SelectCondition.class);
 
-      return Response.ok(mapper.getEntityObjectMapper().writeValueAsString(connection.select(selectConditionJson)))
+      return Response.ok(mapper.entityObjectMapper().writeValueAsString(connection.select(selectConditionJson)))
               .type(MediaType.APPLICATION_JSON_TYPE).build();
     }
     catch (Exception e) {
@@ -468,7 +468,7 @@ public final class EntityJsonService extends AbstractEntityService {
       ConditionObjectMapper mapper = getConditionObjectMapper(connection.entities());
       UpdateCondition updateCondition = mapper.readValue(request.getInputStream(), UpdateCondition.class);
 
-      return Response.ok(mapper.getEntityObjectMapper().writeValueAsString(connection.update(updateCondition)))
+      return Response.ok(mapper.entityObjectMapper().writeValueAsString(connection.update(updateCondition)))
               .type(MediaType.APPLICATION_JSON_TYPE).build();
     }
     catch (Exception e) {
@@ -491,7 +491,7 @@ public final class EntityJsonService extends AbstractEntityService {
       ConditionObjectMapper mapper = getConditionObjectMapper(connection.entities());
       Condition deleteCondition = mapper.readValue(request.getInputStream(), Condition.class);
 
-      return Response.ok(mapper.getEntityObjectMapper().writeValueAsString(connection.delete(deleteCondition)))
+      return Response.ok(mapper.entityObjectMapper().writeValueAsString(connection.delete(deleteCondition)))
               .type(MediaType.APPLICATION_JSON_TYPE).build();
     }
     catch (Exception e) {

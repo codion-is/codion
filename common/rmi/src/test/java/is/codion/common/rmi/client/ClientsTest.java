@@ -26,9 +26,9 @@ public final class ClientsTest {
     assertEquals(user, request.user());
     assertEquals(uuid, request.clientId());
     assertNull(request.clientVersion());
-    assertEquals(Version.getVersion(), request.frameworkVersion());
+    assertEquals(Version.version(), request.frameworkVersion());
     assertEquals(uuid.hashCode(), request.hashCode());
     assertEquals("test", request.clientTypeId());
-    assertTrue(request.toString().contains(user.getUsername()));
+    assertTrue(request.toString().contains(user.username()));
   }
 }

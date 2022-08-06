@@ -32,23 +32,23 @@ public final class CredentialsServerTest {
 
       UUID token = UUID.randomUUID();
       server.addAuthenticationToken(token, scott);
-      User userCredentials = provider.getCredentials(token);
+      User userCredentials = provider.credentials(token);
       assertEquals(scott, userCredentials);
-      assertNull(provider.getCredentials(token));
+      assertNull(provider.credentials(token));
 
       token = UUID.randomUUID();
       server.addAuthenticationToken(token, scott);
-      userCredentials = provider.getCredentials(provider.getAuthenticationToken(
+      userCredentials = provider.credentials(provider.getAuthenticationToken(
               new String[] {"bla", CredentialsProvider.AUTHENTICATION_TOKEN_PREFIX + ":" + token, "bla"}));
       assertEquals(scott, userCredentials);
-      assertNull(provider.getCredentials(token));
+      assertNull(provider.credentials(token));
 
-      assertNull(provider.getCredentials(provider.getAuthenticationToken(new String[] {"bla", "bla"})));
+      assertNull(provider.credentials(provider.getAuthenticationToken(new String[] {"bla", "bla"})));
 
       server.addAuthenticationToken(token, scott);
       Thread.sleep(1300);
       //token expired and cleaned up
-      assertNull(provider.getCredentials(token));
+      assertNull(provider.credentials(token));
       server.exit();
       System.clearProperty("java.rmi.server.hostname");
     }

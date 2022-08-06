@@ -79,13 +79,13 @@ public final class ServerMonitorPanel extends JPanel {
    */
   public ServerMonitorPanel(ServerMonitor model) throws RemoteException {
     this.model = model;
-    requestsPerSecondChart.getXYPlot().setDataset(model.getConnectionRequestsDataset());
-    memoryUsageChart.getXYPlot().setDataset(model.getMemoryUsageDataset());
-    connectionCountChart.getXYPlot().setDataset(model.getConnectionCountDataset());
-    systemLoadChart.getXYPlot().setDataset(model.getSystemLoadDataset());
+    requestsPerSecondChart.getXYPlot().setDataset(model.connectionRequestsDataset());
+    memoryUsageChart.getXYPlot().setDataset(model.memoryUsageDataset());
+    connectionCountChart.getXYPlot().setDataset(model.connectionCountDataset());
+    systemLoadChart.getXYPlot().setDataset(model.systemLoadDataset());
     systemLoadChart.getXYPlot().getRangeAxis().setRange(0, 100);
-    gcEventsChart.getXYPlot().setDataset(model.getGcEventsDataset());
-    threadCountChart.getXYPlot().setDataset(model.getThreadCountDataset());
+    gcEventsChart.getXYPlot().setDataset(model.gcEventsDataset());
+    threadCountChart.getXYPlot().setDataset(model.threadCountDataset());
     setColors(requestsPerSecondChart);
     setColors(memoryUsageChart);
     setColors(connectionCountChart);
@@ -96,7 +96,7 @@ public final class ServerMonitorPanel extends JPanel {
     bindEvents();
   }
 
-  public ServerMonitor getModel() {
+  public ServerMonitor model() {
     return model;
   }
 
@@ -112,7 +112,7 @@ public final class ServerMonitorPanel extends JPanel {
     serverPanel.add(new JLabel("Connections", SwingConstants.RIGHT));
     serverPanel.add(initializeConnectionCountField());
     serverPanel.add(new JLabel("limit", SwingConstants.RIGHT));
-    serverPanel.add(Components.integerSpinner(model.getConnectionLimitValue())
+    serverPanel.add(Components.integerSpinner(model.connectionLimitValue())
             .columns(SPINNER_COLUMNS)
             .build());
     serverPanel.add(new JLabel("Mem. usage", SwingConstants.RIGHT));
@@ -133,8 +133,8 @@ public final class ServerMonitorPanel extends JPanel {
     add(northPanel, BorderLayout.NORTH);
     JTabbedPane pane = new JTabbedPane();
     pane.addTab("Performance", initializePerformancePanel());
-    pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
-    pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.getClientMonitor()));
+    pane.addTab("Database", new DatabaseMonitorPanel(model.databaseMonitor()));
+    pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.clientMonitor()));
     pane.addTab("Environment", initializeEnvironmentPanel());
 
     add(pane, BorderLayout.CENTER);
@@ -146,7 +146,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     JPanel intervalPanel = new JPanel(Layouts.borderLayout());
     intervalPanel.add(new JLabel("Update interval (s)"), BorderLayout.WEST);
-    intervalPanel.add(Components.integerSpinner(model.getUpdateIntervalValue())
+    intervalPanel.add(Components.integerSpinner(model.updateIntervalValue())
             .minimum(1)
             .columns(SPINNER_COLUMNS)
             .editable(false)
@@ -205,8 +205,8 @@ public final class ServerMonitorPanel extends JPanel {
 
   private JPanel initializeDomainModelPanel() {
     JPanel panel = new JPanel(Layouts.borderLayout());
-    JTable table = new JTable(model.getDomainTableModel());
-    table.setRowSorter(new TableRowSorter<>(model.getDomainTableModel()));
+    JTable table = new JTable(model.domainTableModel());
+    table.setRowSorter(new TableRowSorter<>(model.domainTableModel()));
     JScrollPane scroller = new JScrollPane(table);
 
     JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
@@ -225,7 +225,7 @@ public final class ServerMonitorPanel extends JPanel {
             .editable(false)
             .lineWrap(true)
             .wrapStyleWord(true)
-            .initialValue(model.getEnvironmentInfo())
+            .initialValue(model.environmentInfo())
             .scrollPane()
             .build();
   }
@@ -235,7 +235,7 @@ public final class ServerMonitorPanel extends JPanel {
             .columns(4)
             .editable(false)
             .horizontalAlignment(SwingConstants.CENTER)
-            .linkedValueObserver(model.getConnectionCountObserver())
+            .linkedValueObserver(model.connectionCountObserver())
             .build();
   }
 
@@ -244,14 +244,14 @@ public final class ServerMonitorPanel extends JPanel {
             .columns(8)
             .editable(false)
             .horizontalAlignment(SwingConstants.CENTER)
-            .linkedValueObserver(model.getMemoryUsageObserver())
+            .linkedValueObserver(model.memoryUsageObserver())
             .build();
   }
 
   private JComboBox<Object> initializeLogLevelField() {
-    DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.getLogLevels().toArray());
+    DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.logLevels().toArray());
 
-    return Components.comboBox(comboModel, model.getLogLevelValue())
+    return Components.comboBox(comboModel, model.logLevelValue())
             .build();
   }
 

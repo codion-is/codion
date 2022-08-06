@@ -50,7 +50,7 @@ public final class ClientUserMonitor {
   private static final int CLIENT_HOST_COLUMN = 4;
   private static final int LAST_SEEN_COLUMN = 5;
   private static final int CONNECTION_COUNT_COLUMN = 6;
-  private static final Comparator<User> USER_COMPARATOR = (u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername());
+  private static final Comparator<User> USER_COMPARATOR = (u1, u2) -> u1.username().compareToIgnoreCase(u2.username());
 
   private final EntityServerAdmin server;
   private final Value<Integer> idleConnectionTimeoutValue;
@@ -88,21 +88,21 @@ public final class ClientUserMonitor {
   /**
    * @return a ListModel containing the connected client types
    */
-  public DefaultListModel<ClientMonitor> getClientTypeListModel() {
+  public DefaultListModel<ClientMonitor> clientTypeListModel() {
     return clientTypeListModel;
   }
 
   /**
    * @return a ListModel containing the connected users
    */
-  public DefaultListModel<ClientMonitor> getUserListModel() {
+  public DefaultListModel<ClientMonitor> userListModel() {
     return userListModel;
   }
 
   /**
    * @return a TableModel for displaying the user connection history
    */
-  public UserHistoryTableModel getUserHistoryTableModel() {
+  public UserHistoryTableModel userHistoryTableModel() {
     return userHistoryTableModel;
   }
 
@@ -166,26 +166,26 @@ public final class ClientUserMonitor {
   /**
    * @return a Value linked to the idle connection timeout
    */
-  public Value<Integer> getIdleConnectionTimeoutValue() {
+  public Value<Integer> idleConnectionTimeoutValue() {
     return idleConnectionTimeoutValue;
   }
 
   /**
    * @return the value controlling the update interval
    */
-  public Value<Integer> getUpdateIntervalValue() {
+  public Value<Integer> updateIntervalValue() {
     return updateIntervalValue;
   }
 
   private List<String> getSortedClientTypes() throws RemoteException {
-    List<String> users = new ArrayList<>(server.getClientTypes());
+    List<String> users = new ArrayList<>(server.clientTypes());
     Collections.sort(users);
 
     return users;
   }
 
   private List<User> getSortedUsers() throws RemoteException {
-    List<User> users = new ArrayList<>(server.getUsers());
+    List<User> users = new ArrayList<>(server.users());
     users.sort(USER_COMPARATOR);
 
     return users;
@@ -263,7 +263,7 @@ public final class ClientUserMonitor {
     protected Collection<UserInfo> refreshItems() {
       try {
         List<UserInfo> items = new ArrayList<>(items());
-        for (RemoteClient remoteClient : server.getClients()) {
+        for (RemoteClient remoteClient : server.clients()) {
           UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientTypeId(),
                   remoteClient.getClientHost(), LocalDateTime.now(), remoteClient.clientId(), remoteClient.clientVersion(),
                   remoteClient.frameworkVersion());
@@ -308,13 +308,13 @@ public final class ClientUserMonitor {
     @Override
     public Object getValue(UserInfo row, Integer columnIdentifier) {
       switch (columnIdentifier) {
-        case USERNAME_COLUMN: return row.getUser().getUsername();
-        case CLIENT_TYPE_COLUMN: return row.getClientTypeId();
-        case CLIENT_VERSION_COLUMN: return row.getClientVersion();
-        case FRAMEWORK_VERSION_COLUMN: return row.getFrameworkVersion();
-        case CLIENT_HOST_COLUMN: return row.getClientHost();
+        case USERNAME_COLUMN: return row.user().username();
+        case CLIENT_TYPE_COLUMN: return row.clientTypeId();
+        case CLIENT_VERSION_COLUMN: return row.clientVersion();
+        case FRAMEWORK_VERSION_COLUMN: return row.frameworkVersion();
+        case CLIENT_HOST_COLUMN: return row.clientHost();
         case LAST_SEEN_COLUMN: return row.getLastSeen();
-        case CONNECTION_COUNT_COLUMN: return row.getConnectionCount();
+        case CONNECTION_COUNT_COLUMN: return row.connectionCount();
         default: throw new IllegalArgumentException(columnIdentifier.toString());
       }
     }
@@ -342,15 +342,15 @@ public final class ClientUserMonitor {
       this.frameworkVersion = frameworkVersion;
     }
 
-    public User getUser() {
+    public User user() {
       return user;
     }
 
-    public String getClientTypeId() {
+    public String clientTypeId() {
       return clientTypeId;
     }
 
-    public String getClientHost() {
+    public String clientHost() {
       return clientHost;
     }
 
@@ -362,15 +362,15 @@ public final class ClientUserMonitor {
       return clientId;
     }
 
-    public Version getClientVersion() {
+    public Version clientVersion() {
       return clientVersion;
     }
 
-    public Version getFrameworkVersion() {
+    public Version frameworkVersion() {
       return frameworkVersion;
     }
 
-    public int getConnectionCount() {
+    public int connectionCount() {
       return connectionCount;
     }
 
@@ -397,13 +397,13 @@ public final class ClientUserMonitor {
 
       UserInfo that = (UserInfo) obj;
 
-      return this.user.getUsername().equalsIgnoreCase(that.user.getUsername()) &&
+      return this.user.username().equalsIgnoreCase(that.user.username()) &&
               this.clientTypeId.equals(that.clientTypeId) && this.clientHost.equals(that.clientHost);
     }
 
     @Override
     public int hashCode() {
-      int result = user.getUsername().toLowerCase().hashCode();
+      int result = user.username().toLowerCase().hashCode();
       result = 31 * result + clientTypeId.hashCode();
       result = 31 * result + clientHost.hashCode();
 

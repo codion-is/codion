@@ -36,11 +36,11 @@ public enum Operator {
     return caption;
   }
 
-  public String getCaption() {
+  public String caption() {
     return caption;
   }
 
-  public String getDescription() {
+  public String description() {
     return description;
   }
 }

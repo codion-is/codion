@@ -55,7 +55,7 @@ public final class DatabaseMonitor {
   /**
    * @return the connection pool monitor
    */
-  public PoolMonitor getConnectionPoolMonitor() {
+  public PoolMonitor connectionPoolMonitor() {
     return poolMonitor;
   }
 
@@ -83,7 +83,7 @@ public final class DatabaseMonitor {
    * @throws RemoteException in case of an exception
    */
   public void updateStatistics() throws RemoteException {
-    Database.Statistics dbStats = server.getDatabaseStatistics();
+    Database.Statistics dbStats = server.databaseStatistics();
     queriesPerSecond.add(dbStats.timestamp(), dbStats.queriesPerSecond());
     selectsPerSecond.add(dbStats.timestamp(), dbStats.selectsPerSecond());
     insertsPerSecond.add(dbStats.timestamp(), dbStats.insertsPerSecond());
@@ -94,14 +94,14 @@ public final class DatabaseMonitor {
   /**
    * @return the graph series collection for the number of queries
    */
-  public XYDataset getQueriesPerSecondCollection() {
+  public XYDataset queriesPerSecondCollection() {
     return queriesPerSecondCollection;
   }
 
   /**
    * @return the value controlling the update interval
    */
-  public Value<Integer> getUpdateIntervalValue() {
+  public Value<Integer> updateIntervalValue() {
     return updateIntervalValue;
   }
 

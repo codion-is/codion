@@ -18,11 +18,11 @@ public class DatabaseExceptionTest {
       throw new DatabaseException("hello");
     });
     DatabaseException dbException = new DatabaseException("hello", "statement");
-    assertEquals("statement", dbException.getStatement());
+    assertEquals("statement", dbException.statement());
     dbException = new DatabaseException(new SQLException(), "message", "statement");
     assertEquals("message", dbException.getMessage());
-    assertEquals("statement", dbException.getStatement());
+    assertEquals("statement", dbException.statement());
     dbException = new DatabaseException(null, "test", "stmt");
-    assertEquals(-1, dbException.getErrorCode());
+    assertEquals(-1, dbException.errorCode());
   }
 }

@@ -23,7 +23,7 @@ public final class ViewInvoice extends AbstractEntityUsageScenario<ChinookApplic
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 10;
   }
 }

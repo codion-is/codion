@@ -44,12 +44,12 @@ public class DatabaseTest {
     }
 
     @Override
-    public String getName() {
-      return database.getName();
+    public String name() {
+      return database.name();
     }
 
     @Override
-    public String getCheckConnectionQuery() {
+    public String checkConnectionQuery() {
       return "select 1 from dual";
     }
 
@@ -59,18 +59,18 @@ public class DatabaseTest {
     }
 
     @Override
-    public String getSelectForUpdateClause() {
+    public String selectForUpdateClause() {
       return "for update nowait";
     }
 
     @Override
-    public String getLimitOffsetClause(Integer limit, Integer offset) {
+    public String limitOffsetClause(Integer limit, Integer offset) {
       return createLimitOffsetClause(limit, offset);
     }
 
     @Override
-    public String getAutoIncrementQuery(String idSource) {
-      return database.getAutoIncrementQuery(idSource);
+    public String autoIncrementQuery(String idSource) {
+      return database.autoIncrementQuery(idSource);
     }
   }
 }

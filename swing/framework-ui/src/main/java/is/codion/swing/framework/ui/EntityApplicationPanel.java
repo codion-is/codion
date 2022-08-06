@@ -130,7 +130,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Default value: https://codion.is/doc/{version}/{jdk}/help/client.html
    */
   public static final PropertyValue<String> HELP_URL = Configuration.stringValue("codion.swing.helpUrl",
-          "https://codion.is/doc/" + Version.getVersionString() + "/jdk8/help/client.html");
+          "https://codion.is/doc/" + Version.versionString() + "/jdk8/help/client.html");
 
   /**
    * Indicates whether the application should ask for confirmation when exiting<br>
@@ -256,7 +256,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param entityType the entityType
    * @return the first entity panel found based on the given entity type, null if none is found
    */
-  public final EntityPanel getEntityPanel(EntityType entityType) {
+  public final EntityPanel entityPanel(EntityType entityType) {
     return entityPanels.stream()
             .filter(entityPanel -> entityPanel.model().entityType().equals(entityType))
             .findFirst()
@@ -326,7 +326,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (loggerProxy == LoggerProxy.NULL_PROXY) {
       throw new RuntimeException("No LoggerProxy implementation available");
     }
-    ComboBoxModel<Object> model = new DefaultComboBoxModel<>(loggerProxy.getLogLevels().toArray());
+    ComboBoxModel<Object> model = new DefaultComboBoxModel<>(loggerProxy.logLevels().toArray());
     model.setSelectedItem(loggerProxy.getLogLevel());
     Dialogs.okCancelDialog(new JComboBox<>(model))
             .owner(this)
@@ -779,7 +779,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected JPanel createAboutPanel() {
     JPanel panel = new JPanel(Layouts.borderLayout());
-    String versionString = Version.getVersionAndMetadataString();
+    String versionString = Version.versionAndMetadataString();
     panel.add(new JLabel(FrameworkIcons.frameworkIcons().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST);
     Version version = clientVersion();
     JPanel versionMemoryPanel = new JPanel(Layouts.gridLayout(version == null ? 2 : 3, 2));
@@ -791,7 +791,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     versionMemoryPanel.add(new JLabel(resourceBundle.getString(CODION_VERSION) + ":"));
     versionMemoryPanel.add(new JLabel(versionString));
     versionMemoryPanel.add(new JLabel(resourceBundle.getString(MEMORY_USAGE) + ":"));
-    versionMemoryPanel.add(new JLabel(Memory.getMemoryUsage()));
+    versionMemoryPanel.add(new JLabel(Memory.memoryUsage()));
     panel.add(versionMemoryPanel, BorderLayout.CENTER);
 
     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -842,7 +842,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return null;
     }
 
-    Comparator<String> comparator = Text.getSpaceAwareCollator();
+    Comparator<String> comparator = Text.spaceAwareCollator();
     Entities entities = applicationModel.entities();
     supportPanelBuilders.sort((ep1, ep2) -> {
       String thisCompare = ep1.getCaption() == null ? entities.definition(ep1.entityType()).caption() : ep1.getCaption();
@@ -1147,7 +1147,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .title(loginDialogTitle)
             .icon(applicationIcon())
             .show();
-    if (nullOrEmpty(user.getUsername())) {
+    if (nullOrEmpty(user.username())) {
       throw new IllegalArgumentException(FrameworkMessages.emptyUsername());
     }
 
@@ -1203,7 +1203,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
 
     if (silentLoginUser == null && EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
-      saveDefaultUsername(connectionProvider.user().getUsername());
+      saveDefaultUsername(connectionProvider.user().username());
     }
 
     startApplication(frameSize, maximizeFrame, displayFrame, includeMainMenu, displayProgressDialog, connectionProvider);
@@ -1375,7 +1375,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       CredentialsProvider provider = CredentialsProvider.credentialsProvider();
       if (provider != null) {
-        return provider.getCredentials(provider.getAuthenticationToken(args));
+        return provider.credentials(provider.getAuthenticationToken(args));
       }
 
       LOG.debug("No CredentialsProvider available");
@@ -1399,7 +1399,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     Object currentLogLevel = loggerProxy.getLogLevel();
     Map<Object, State> levelStateMap = new LinkedHashMap<>();
     State.Group logLevelStateGroup = State.group();
-    for (Object logLevel : loggerProxy.getLogLevels()) {
+    for (Object logLevel : loggerProxy.logLevels()) {
       State logLevelState = State.state(Objects.equals(logLevel, currentLogLevel));
       logLevelStateGroup.addState(logLevelState);
       logLevelState.addDataListener(enabled -> {
@@ -1443,7 +1443,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static String getUserInfo(EntityConnectionProvider connectionProvider) {
     String description = connectionProvider.description();
 
-    return getUsername(connectionProvider.user().getUsername().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
+    return getUsername(connectionProvider.user().username().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
   }
 
   private static String getUsername(String username) {
@@ -1532,7 +1532,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     /**
      * @return the type of the entity this node represents
      */
-    public EntityType getEntityType() {
+    public EntityType entityType() {
       return (EntityType) getUserObject();
     }
 
@@ -1549,7 +1549,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (EntityDefinition definition : entities.definitions()) {
         for (ForeignKeyProperty fkProperty : definition.foreignKeyProperties()) {
-          if (fkProperty.referencedEntityType().equals(getEntityType()) && !fkProperty.softReference()
+          if (fkProperty.referencedEntityType().equals(entityType()) && !fkProperty.softReference()
                   && !foreignKeyCycle(fkProperty.referencedEntityType())) {
             childrenList.add(new EntityDependencyTreeNode(definition.entityType(), entities));
           }
@@ -1562,7 +1562,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     private boolean foreignKeyCycle(EntityType referencedEntityType) {
       TreeNode tmp = getParent();
       while (tmp instanceof EntityDependencyTreeNode) {
-        if (((EntityDependencyTreeNode) tmp).getEntityType().equals(referencedEntityType)) {
+        if (((EntityDependencyTreeNode) tmp).entityType().equals(referencedEntityType)) {
           return true;
         }
         tmp = tmp.getParent();

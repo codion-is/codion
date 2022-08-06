@@ -26,33 +26,33 @@ public interface ServerAdmin extends Remote {
    * @return the users currently connected to the server
    * @throws RemoteException in case of a communication error
    */
-  Collection<User> getUsers() throws RemoteException;
+  Collection<User> users() throws RemoteException;
 
   /**
    * @return all clients connected to the server
    * @throws RemoteException in case of a communication error
    */
-  Collection<RemoteClient> getClients() throws RemoteException;
+  Collection<RemoteClient> clients() throws RemoteException;
 
   /**
    * @param user the user for which to retrieve the clients
    * @return the clients associated with the given user
    * @throws RemoteException in case of a communication error
    */
-  Collection<RemoteClient> getClients(User user) throws RemoteException;
+  Collection<RemoteClient> clients(User user) throws RemoteException;
 
   /**
    * @param clientTypeId the client type for which to retrieve the clients
    * @return the clients associated with the given user
    * @throws RemoteException in case of a communication error
    */
-  Collection<RemoteClient> getClients(String clientTypeId) throws RemoteException;
+  Collection<RemoteClient> clients(String clientTypeId) throws RemoteException;
 
   /**
    * @return the identifiers of the client types connected to the server
    * @throws RemoteException in case of an exception
    */
-  Collection<String> getClientTypes() throws RemoteException;
+  Collection<String> clientTypes() throws RemoteException;
 
   /**
    * Shuts down the server
@@ -64,19 +64,19 @@ public interface ServerAdmin extends Remote {
    * @return static information about the server
    * @throws RemoteException in case of an exception
    */
-  ServerInformation getServerInformation() throws RemoteException;
+  ServerInformation serverInformation() throws RemoteException;
 
   /**
    * @return the number of service requests per second
    * @throws RemoteException in case of an exception
    */
-  int getRequestsPerSecond() throws RemoteException;
+  int requestsPerSecond() throws RemoteException;
 
   /**
    * @return the number of active connections
    * @throws RemoteException in case of a communication error
    */
-  int getConnectionCount() throws RemoteException;
+  int connectionCount() throws RemoteException;
 
   /**
    * @return the maximum number of concurrent connections this server accepts
@@ -94,59 +94,59 @@ public interface ServerAdmin extends Remote {
    * @return the total amount of memory allocated by the server process
    * @throws RemoteException in case of a communication error
    */
-  long getAllocatedMemory() throws RemoteException;
+  long allocatedMemory() throws RemoteException;
 
   /**
    * @return the amount of memory being used by the server process
    * @throws RemoteException in case of a communication error
    */
-  long getUsedMemory() throws RemoteException;
+  long usedMemory() throws RemoteException;
 
   /**
    * @return the maximum amount of memory available to the server process
    * @throws RemoteException in case of a communication error
    */
-  long getMaxMemory() throws RemoteException;
+  long maxMemory() throws RemoteException;
 
   /**
    * @return the system cpu load, a negative number if not available
    * @throws RemoteException in case of a communication error
    * @see com.sun.management.OperatingSystemMXBean#getSystemCpuLoad()
    */
-  double getSystemCpuLoad() throws RemoteException;
+  double systemCpuLoad() throws RemoteException;
 
   /**
    * @return the java vm process cpu load, a negative number if not available
    * @throws RemoteException in case of a communication error
    * @see com.sun.management.OperatingSystemMXBean#getProcessCpuLoad()
    */
-  double getProcessCpuLoad() throws RemoteException;
+  double processCpuLoad() throws RemoteException;
 
   /**
    * @return the server system properties
    * @throws RemoteException in case of an exception
    */
-  String getSystemProperties() throws RemoteException;
+  String systemProperties() throws RemoteException;
 
   /**
    * @param since the time since from which to get gc events
    * @return a list containing garbage collection notifications
    * @throws RemoteException in case of an exception
    */
-  List<GcEvent> getGcEvents(long since) throws RemoteException;
+  List<GcEvent> gcEvents(long since) throws RemoteException;
 
   /**
    * @return current thread statistics
    * @throws RemoteException in case of an exception
    */
-  ThreadStatistics getThreadStatistics() throws RemoteException;
+  ThreadStatistics threadStatistics() throws RemoteException;
 
   /**
    * @param since the time since from which to retrieve statistics
    * @return current statistics for this server
    * @throws RemoteException in case of an exception
    */
-  ServerStatistics getServerStatistics(long since) throws RemoteException;
+  ServerStatistics serverStatistics(long since) throws RemoteException;
 
   /**
    * Basic server performance statistics.
@@ -156,57 +156,57 @@ public interface ServerAdmin extends Remote {
     /**
      * @return the timestamp
      */
-    long getTimestamp();
+    long timestamp();
 
     /**
      * @return the connection count
      */
-    int getConnectionCount();
+    int connectionCount();
 
     /**
      * @return the connection limit
      */
-    int getConnectionLimit();
+    int connectionLimit();
 
     /**
      * @return used memory
      */
-    long getUsedMemory();
+    long usedMemory();
 
     /**
      * @return maximum memory
      */
-    long getMaximumMemory();
+    long maximumMemory();
 
     /**
      * @return allocated memory
      */
-    long getAllocatedMemory();
+    long allocatedMemory();
 
     /**
      * @return requests per second
      */
-    int getRequestsPerSecond();
+    int requestsPerSecond();
 
     /**
      * @return the system cpu load
      */
-    double getSystemCpuLoad();
+    double systemCpuLoad();
 
     /**
      * @return the process cpu load
      */
-    double getProcessCpuLoad();
+    double processCpuLoad();
 
     /**
      * @return thread statistics
      */
-    ThreadStatistics getThreadStatistics();
+    ThreadStatistics threadStatistics();
 
     /**
      * @return GC events
      */
-    List<GcEvent> getGcEvents();
+    List<GcEvent> gcEvents();
   }
 
   /**
@@ -217,17 +217,17 @@ public interface ServerAdmin extends Remote {
     /**
      * @return the number of threads
      */
-    int getThreadCount();
+    int threadCount();
 
     /**
      * @return the number daemon threads
      */
-    int getDaemonThreadCount();
+    int daemonThreadCount();
 
     /**
      * @return the number of threads in each state
      */
-    Map<Thread.State, Integer> getThreadStateCount();
+    Map<Thread.State, Integer> threadStateCount();
   }
 
   /**
@@ -238,16 +238,16 @@ public interface ServerAdmin extends Remote {
     /**
      * @return event time stamp
      */
-    long getTimestamp();
+    long timestamp();
 
     /**
      * @return event gc name
      */
-    String getGcName();
+    String gcName();
 
     /**
      * @return event duration
      */
-    long getDuration();
+    long duration();
   }
 }

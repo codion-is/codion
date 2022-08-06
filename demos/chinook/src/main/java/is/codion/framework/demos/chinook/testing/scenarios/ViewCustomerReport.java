@@ -30,7 +30,7 @@ public final class ViewCustomerReport extends AbstractEntityUsageScenario<Chinoo
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 2;
   }
 }

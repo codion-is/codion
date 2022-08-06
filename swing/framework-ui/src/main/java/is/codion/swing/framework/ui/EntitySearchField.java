@@ -592,7 +592,7 @@ public final class EntitySearchField extends JTextField {
     /**
      * @return the underlying FilteredTable
      */
-    public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> getTable() {
+    public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table() {
       return table;
     }
 

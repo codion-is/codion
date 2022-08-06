@@ -24,9 +24,9 @@ public class TomcatConnectionPoolFactoryTest {
             Database.DATABASE_INIT_SCRIPTS.get()), UNIT_TEST_USER);
     pool.setCollectSnapshotStatistics(true);
     assertTrue(pool.isCollectSnapshotStatistics());
-    pool.getConnection(UNIT_TEST_USER).close();
-    pool.getConnection(UNIT_TEST_USER).close();
-    pool.getConnection(UNIT_TEST_USER).close();
+    pool.connection(UNIT_TEST_USER).close();
+    pool.connection(UNIT_TEST_USER).close();
+    pool.connection(UNIT_TEST_USER).close();
     pool.close();
   }
 }

@@ -14,14 +14,14 @@ public class MariaDBDatabaseTest {
   @Test
   void getName() {
     MariaDBDatabase database = new MariaDBDatabase("jdbc:mariadb://host.com:1234/dbname");
-    assertEquals("dbname", database.getName());
+    assertEquals("dbname", database.name());
     database = new MariaDBDatabase("jdbc:mariadb://host.com:1234/dbname;option=true;option2=false");
-    assertEquals("dbname", database.getName());
+    assertEquals("dbname", database.name());
   }
 
   @Test
   void getSequenceQuery() {
-    assertThrows(UnsupportedOperationException.class, () -> new MariaDBDatabase(URL).getSequenceQuery("seq"));
+    assertThrows(UnsupportedOperationException.class, () -> new MariaDBDatabase(URL).sequenceQuery("seq"));
   }
 
   @Test
@@ -33,7 +33,7 @@ public class MariaDBDatabaseTest {
   @Test
   void getAutoIncrementQuery() {
     MariaDBDatabase db = new MariaDBDatabase(URL);
-    assertEquals(MariaDBDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
+    assertEquals(MariaDBDatabase.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
   }
 
   @Test

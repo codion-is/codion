@@ -693,8 +693,8 @@ public class DefaultLocalEntityConnectionTest {
         fail("Should not be able to update record deleted by another connection");
       }
       catch (RecordModifiedException e) {
-        assertNotNull(e.getRow());
-        assertNull(e.getModifiedRow());
+        assertNotNull(e.row());
+        assertNull(e.modifiedRow());
       }
 
       try {
@@ -727,8 +727,8 @@ public class DefaultLocalEntityConnectionTest {
         fail("RecordModifiedException should have been thrown");
       }
       catch (RecordModifiedException e) {
-        assertTrue(((Entity) e.getModifiedRow()).columnValuesEqual(updatedDepartment));
-        assertTrue(((Entity) e.getRow()).columnValuesEqual(department));
+        assertTrue(((Entity) e.modifiedRow()).columnValuesEqual(updatedDepartment));
+        assertTrue(((Entity) e.row()).columnValuesEqual(department));
       }
     }
     finally {
@@ -769,8 +769,8 @@ public class DefaultLocalEntityConnectionTest {
         fail("RecordModifiedException should have been thrown");
       }
       catch (RecordModifiedException e) {
-        assertTrue(((Entity) e.getModifiedRow()).columnValuesEqual(updatedEmployee));
-        assertTrue(((Entity) e.getRow()).columnValuesEqual(employee));
+        assertTrue(((Entity) e.modifiedRow()).columnValuesEqual(updatedEmployee));
+        assertTrue(((Entity) e.row()).columnValuesEqual(employee));
       }
     }
     finally {
@@ -1048,8 +1048,8 @@ public class DefaultLocalEntityConnectionTest {
     if (setLockTimeout) {
       database.setConnectionProvider(new ConnectionProvider() {
         @Override
-        public Connection getConnection(User user, String jdbcUrl) throws SQLException {
-          Connection connection = ConnectionProvider.super.getConnection(user, jdbcUrl);
+        public Connection connection(User user, String jdbcUrl) throws SQLException {
+          Connection connection = ConnectionProvider.super.connection(user, jdbcUrl);
           try (Statement statement = connection.createStatement()) {
             statement.execute("SET LOCK_TIMEOUT 10");
           }

@@ -1463,7 +1463,7 @@ public class EntityTablePanel extends JPanel {
     CardLayout refreshStatusLayout = new CardLayout();
 
     return Components.panel(refreshStatusLayout)
-            .add(Components.label(tableModel.getStatusMessageObserver())
+            .add(Components.label(tableModel.statusMessageObserver())
                     .horizontalAlignment(SwingConstants.CENTER)
                     .build(), status)
             .add(createRefreshingProgressPanel(), refreshing)
@@ -1711,12 +1711,12 @@ public class EntityTablePanel extends JPanel {
 
   private static void addRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
     tableConditionPanel.tableColumns().forEach(column -> {
-      ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.getConditionPanel((Attribute<?>) column.getIdentifier());
+      ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.conditionPanel((Attribute<?>) column.getIdentifier());
       if (columnConditionPanel != null) {
-        enableRefreshOnEnterControl(columnConditionPanel.getOperatorComboBox(), refreshControl);
-        enableRefreshOnEnterControl(columnConditionPanel.getEqualField(), refreshControl);
-        enableRefreshOnEnterControl(columnConditionPanel.getLowerBoundField(), refreshControl);
-        enableRefreshOnEnterControl(columnConditionPanel.getUpperBoundField(), refreshControl);
+        enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
+        enableRefreshOnEnterControl(columnConditionPanel.equalField(), refreshControl);
+        enableRefreshOnEnterControl(columnConditionPanel.lowerBoundField(), refreshControl);
+        enableRefreshOnEnterControl(columnConditionPanel.upperBoundField(), refreshControl);
       }
     });
   }

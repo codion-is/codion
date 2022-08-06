@@ -16,8 +16,8 @@ final class DefaultKeyBuilder implements Key.Builder {
   private boolean primaryKey = false;
 
   DefaultKeyBuilder(Key key) {
-    this(key.getDefinition());
-    key.getAttributes().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
+    this(key.definition());
+    key.attributes().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
   }
 
   DefaultKeyBuilder(EntityDefinition definition) {

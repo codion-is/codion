@@ -189,7 +189,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * @return a {@link StateObserver} indicating whether this panel is active
    */
-  public final StateObserver getActiveObserver() {
+  public final StateObserver activeObserver() {
     return activeState.observer();
   }
 
@@ -288,7 +288,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public void onValidationException(ValidationException exception) {
     JOptionPane.showMessageDialog(this, exception.getMessage(),
             Messages.error(), JOptionPane.ERROR_MESSAGE);
-    requestComponentFocus(exception.getAttribute());
+    requestComponentFocus(exception.attribute());
   }
 
   /**

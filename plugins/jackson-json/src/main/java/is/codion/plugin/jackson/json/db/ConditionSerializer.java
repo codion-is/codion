@@ -29,7 +29,7 @@ final class ConditionSerializer extends StdSerializer<Condition> {
     this.attributeConditionSerializer = new AttributeConditionSerializer(entityObjectMapper);
     this.conditionCombinationSerializer = new ConditionCombinationSerializer(attributeConditionSerializer);
     this.customConditionSerializer = new CustomConditionSerializer(entityObjectMapper);
-    this.entities = entityObjectMapper.getEntities();
+    this.entities = entityObjectMapper.entities();
   }
 
   @Override

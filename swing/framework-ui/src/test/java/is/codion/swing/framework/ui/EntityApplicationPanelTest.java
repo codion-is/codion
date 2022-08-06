@@ -67,7 +67,7 @@ public class EntityApplicationPanelTest {
         return model;
       }
     };
-    panel.addApplicationStartedListener(frame -> assertNotNull(panel.getEntityPanel(TestDomain.T_EMP)));
+    panel.addApplicationStartedListener(frame -> assertNotNull(panel.entityPanel(TestDomain.T_EMP)));
     panel.startApplication(null, UNIT_TEST_USER, false, null, false, false, true, false);
   }
 }

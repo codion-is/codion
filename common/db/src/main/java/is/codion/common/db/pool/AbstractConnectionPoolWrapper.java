@@ -47,17 +47,17 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   }
 
   @Override
-  public final User getUser() {
+  public final User user() {
     return user;
   }
 
   @Override
-  public final DataSource getPoolDataSource() {
+  public final DataSource poolDataSource() {
     return poolDataSource;
   }
 
   @Override
-  public final Connection getConnection(User user) throws DatabaseException {
+  public final Connection connection(User user) throws DatabaseException {
     requireNonNull(user, "user");
     checkConnectionPoolCredentials(user);
     long startTime = counter.isCollectCheckOutTimes() ? System.nanoTime() : 0;
@@ -103,7 +103,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   }
 
   @Override
-  public final ConnectionPoolStatistics getStatistics(long since) {
+  public final ConnectionPoolStatistics statistics(long since) {
     return counter.getStatistics(since);
   }
 
@@ -158,7 +158,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
    * @throws AuthenticationException in case the username or password do not match the ones in the connection pool
    */
   private void checkConnectionPoolCredentials(User user) throws AuthenticationException {
-    if (!this.user.getUsername().equalsIgnoreCase(user.getUsername()) || !Arrays.equals(this.user.getPassword(), user.getPassword())) {
+    if (!this.user.username().equalsIgnoreCase(user.username()) || !Arrays.equals(this.user.getPassword(), user.getPassword())) {
       throw new AuthenticationException("Wrong username or password");
     }
   }

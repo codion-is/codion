@@ -23,22 +23,22 @@ public final class LocaleDateTimePatternTest {
     Locale iceland = new Locale("is", "IS");
     Locale us = new Locale("en", "US");
 
-    assertEquals("HH:mm", pattern.getTimePattern());
-    assertEquals("dd-MM-yyyy", pattern.getDatePattern(iceland));
-    assertEquals("MM-dd-yyyy", pattern.getDatePattern(us));
-    assertEquals("dd-MM-yyyy HH:mm", pattern.getDateTimePattern(iceland));
-    assertEquals("MM-dd-yyyy HH:mm", pattern.getDateTimePattern(us));
+    assertEquals("HH:mm", pattern.timePattern());
+    assertEquals("dd-MM-yyyy", pattern.datePattern(iceland));
+    assertEquals("MM-dd-yyyy", pattern.datePattern(us));
+    assertEquals("dd-MM-yyyy HH:mm", pattern.dateTimePattern(iceland));
+    assertEquals("MM-dd-yyyy HH:mm", pattern.dateTimePattern(us));
 
     pattern = LocaleDateTimePattern.builder()
             .delimiterDot()
             .yearTwoDigits()
             .hoursMinutesSeconds()
             .build();
-    assertEquals("HH:mm:ss", pattern.getTimePattern());
-    assertEquals("dd.MM.yy", pattern.getDatePattern(iceland));
-    assertEquals("MM.dd.yy", pattern.getDatePattern(us));
-    assertEquals("dd.MM.yy HH:mm:ss", pattern.getDateTimePattern(iceland));
-    assertEquals("MM.dd.yy HH:mm:ss", pattern.getDateTimePattern(us));
+    assertEquals("HH:mm:ss", pattern.timePattern());
+    assertEquals("dd.MM.yy", pattern.datePattern(iceland));
+    assertEquals("MM.dd.yy", pattern.datePattern(us));
+    assertEquals("dd.MM.yy HH:mm:ss", pattern.dateTimePattern(iceland));
+    assertEquals("MM.dd.yy HH:mm:ss", pattern.dateTimePattern(us));
 
     pattern = LocaleDateTimePattern.builder()
             .delimiterSlash()
@@ -46,15 +46,15 @@ public final class LocaleDateTimePatternTest {
             .hoursMinutesSecondsMilliseconds()
             .build();
 
-    assertEquals("HH:mm:ss.SSS", pattern.getTimePattern());
-    assertEquals("dd/MM/yyyy", pattern.getDatePattern(iceland));
-    assertEquals("MM/dd/yyyy", pattern.getDatePattern(us));
-    assertEquals("dd/MM/yyyy HH:mm:ss.SSS", pattern.getDateTimePattern(iceland));
-    assertEquals("MM/dd/yyyy HH:mm:ss.SSS", pattern.getDateTimePattern(us));
+    assertEquals("HH:mm:ss.SSS", pattern.timePattern());
+    assertEquals("dd/MM/yyyy", pattern.datePattern(iceland));
+    assertEquals("MM/dd/yyyy", pattern.datePattern(us));
+    assertEquals("dd/MM/yyyy HH:mm:ss.SSS", pattern.dateTimePattern(iceland));
+    assertEquals("MM/dd/yyyy HH:mm:ss.SSS", pattern.dateTimePattern(us));
 
     //a bit of coverage
     assertNotNull(pattern.createFormatter());
-    pattern.getDatePattern();
-    pattern.getDateTimePattern();
+    pattern.datePattern();
+    pattern.dateTimePattern();
   }
 }

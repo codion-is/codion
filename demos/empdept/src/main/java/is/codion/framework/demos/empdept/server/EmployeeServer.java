@@ -46,14 +46,14 @@ public final class EmployeeServer extends EntityServer {
     }
 
     @Override
-    public List<Entity> getEmployees() throws RemoteException, DatabaseException {
+    public List<Entity> employees() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
         return connectionProxy.select(condition(Employee.TYPE));
       }
     }
 
     @Override
-    public List<Employee> getEmployeeBeans() throws RemoteException, DatabaseException {
+    public List<Employee> employeeBeans() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
         List<Entity> employees = connectionProxy.select(condition(Employee.TYPE)
                 .selectBuilder()

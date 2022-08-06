@@ -27,9 +27,9 @@ public final class DatabaseExplorerModelTest {
 
   static {
     try {
-      ADDRESS_DEF = Text.getTextFileContents(DatabaseExplorerModelTest.class, "address.txt").trim();
-      TAG_ITEM_DEF = Text.getTextFileContents(DatabaseExplorerModelTest.class, "tagitem.txt").trim();
-      PRODUCT_DEF = Text.getTextFileContents(DatabaseExplorerModelTest.class, "product.txt").trim();
+      ADDRESS_DEF = Text.textFileContents(DatabaseExplorerModelTest.class, "address.txt").trim();
+      TAG_ITEM_DEF = Text.textFileContents(DatabaseExplorerModelTest.class, "tagitem.txt").trim();
+      PRODUCT_DEF = Text.textFileContents(DatabaseExplorerModelTest.class, "product.txt").trim();
     }
     catch (IOException e) {
       throw new RuntimeException(e);
@@ -41,12 +41,12 @@ public final class DatabaseExplorerModelTest {
   @BeforeEach
   void setUp() throws Exception {
     model = new DatabaseExplorerModel(DatabaseFactory.getDatabase(), UNIT_TEST_USER);
-    model.getSchemaModel().refresh();
-    model.getSchemaModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
-    model.getSchemaModel().selectionModel().setSelectedIndex(2);
+    model.schemaModel().refresh();
+    model.schemaModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
+    model.schemaModel().selectionModel().setSelectedIndex(2);
     model.populateSelected(schema -> {});
-    model.getDefinitionModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
-    model.getDefinitionModel().sortModel().addSortOrder(1, SortOrder.ASCENDING);
+    model.definitionModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
+    model.definitionModel().sortModel().addSortOrder(1, SortOrder.ASCENDING);
   }
 
   @AfterEach
@@ -56,22 +56,22 @@ public final class DatabaseExplorerModelTest {
 
   @Test
   void address() {
-    model.getDefinitionModel().selectionModel().setSelectedIndex(0);
-    String addressDef = model.getDomainSourceObserver().get().trim();
+    model.definitionModel().selectionModel().setSelectedIndex(0);
+    String addressDef = model.domainSourceObserver().get().trim();
     assertEquals(ADDRESS_DEF, addressDef);
   }
 
   @Test
   void product() {
-    model.getDefinitionModel().selectionModel().setSelectedIndex(3);
-    String productDef = model.getDomainSourceObserver().get().trim();
+    model.definitionModel().selectionModel().setSelectedIndex(3);
+    String productDef = model.domainSourceObserver().get().trim();
     assertEquals(PRODUCT_DEF, productDef);
   }
 
   @Test
   void tagItem() throws Exception {
-    model.getDefinitionModel().selectionModel().setSelectedIndex(6);
-    String tagItemDef = model.getDomainSourceObserver().get().trim();
+    model.definitionModel().selectionModel().setSelectedIndex(6);
+    String tagItemDef = model.domainSourceObserver().get().trim();
     assertEquals(TAG_ITEM_DEF, tagItemDef);
   }
 }

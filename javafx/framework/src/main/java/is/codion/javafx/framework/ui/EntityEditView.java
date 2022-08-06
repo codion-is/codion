@@ -96,7 +96,7 @@ public abstract class EntityEditView extends BorderPane {
   /**
    * @return the button panel for this edit view
    */
-  public final Node getButtonPanel() {
+  public final Node createButtonPanel() {
     Button save = createInsertButton();
     save.maxWidthProperty().setValue(Double.MAX_VALUE);
     Button update = createUpdateButton();
@@ -341,7 +341,7 @@ public abstract class EntityEditView extends BorderPane {
     }
     catch (ValidationException e) {
       FXUiUtil.showExceptionDialog(e);
-      requestComponentFocus(e.getAttribute());
+      requestComponentFocus(e.attribute());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -357,7 +357,7 @@ public abstract class EntityEditView extends BorderPane {
       }
       catch (ValidationException e) {
         FXUiUtil.showExceptionDialog(e);
-        requestComponentFocus(e.getAttribute());
+        requestComponentFocus(e.attribute());
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);

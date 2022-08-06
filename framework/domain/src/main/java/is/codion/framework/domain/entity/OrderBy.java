@@ -26,7 +26,7 @@ public interface OrderBy {
     /**
      * @return the attribute to order by
      */
-    Attribute<?> getAttribute();
+    Attribute<?> attribute();
 
     /**
      * @return true if the order is ascending, false for descending

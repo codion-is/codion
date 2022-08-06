@@ -29,8 +29,8 @@ final class DerbyDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getName() {
-    String name = getUrl();
+  public String name() {
+    String name = url();
     boolean tcp = name.startsWith(JDBC_URL_PREFIX_TCP);
     name = removeUrlPrefixOptionsAndParameters(name, JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE);
     if (tcp && name.contains("/")) {
@@ -41,17 +41,17 @@ final class DerbyDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getSelectForUpdateClause() {
+  public String selectForUpdateClause() {
     return "for update";
   }
 
   @Override
-  public String getLimitOffsetClause(Integer limit, Integer offset) {
+  public String limitOffsetClause(Integer limit, Integer offset) {
     return createOffsetFetchNextClause(limit, offset);
   }
 
   @Override
-  public String getAutoIncrementQuery(String idSource) {
+  public String autoIncrementQuery(String idSource) {
     return AUTO_INCREMENT_QUERY + requireNonNull(idSource, "idSource");
   }
 
@@ -68,7 +68,7 @@ final class DerbyDatabase extends AbstractDatabase {
   @Override
   public void shutdownEmbedded() {
     try {
-      DriverManager.getConnection(getUrl() + ";shutdown=true").close();
+      DriverManager.getConnection(url() + ";shutdown=true").close();
     }
     catch (SQLException e) {
       if (!e.getSQLState().equals(SHUTDOWN_ERROR_CODE)) {//08006 is expected on Derby shutdown

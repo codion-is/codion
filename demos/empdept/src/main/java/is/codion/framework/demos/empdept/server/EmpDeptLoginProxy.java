@@ -24,7 +24,7 @@ public final class EmpDeptLoginProxy implements LoginProxy {
   }
 
   @Override
-  public String getClientTypeId() {
+  public String clientTypeId() {
     return "is.codion.framework.demos.empdept.ui.EmpDeptAppPanel";
   }
 
@@ -44,7 +44,7 @@ public final class EmpDeptLoginProxy implements LoginProxy {
   }
 
   private void authenticateUser(User user) throws LoginException {
-    String password = users.get(user.getUsername());
+    String password = users.get(user.username());
     if (password == null || !password.equals(String.valueOf(user.getPassword()))) {
       throw new ServerAuthenticationException("Wrong username or password");
     }

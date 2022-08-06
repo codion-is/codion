@@ -15,7 +15,7 @@ public interface TextFieldHint {
   /**
    * @return the search hint string
    */
-  String getHintText();
+  String hintText();
 
   /**
    * @return true if the field does not have focus and is displaying the hint text

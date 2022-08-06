@@ -77,7 +77,7 @@ final class DefaultEntity implements Entity, Serializable {
    * @param key the key
    */
   DefaultEntity(Key key) {
-    this(requireNonNull(key, "key").getDefinition(), createValueMap(key), null);
+    this(requireNonNull(key, "key").definition(), createValueMap(key), null);
     if (key.isPrimaryKey()) {
       this.primaryKey = key;
     }
@@ -827,7 +827,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private static Map<Attribute<?>, Object> createValueMap(Key key) {
-    Collection<Attribute<?>> attributes = key.getAttributes();
+    Collection<Attribute<?>> attributes = key.attributes();
     Map<Attribute<?>, Object> values = new HashMap<>(attributes.size());
     for (Attribute<?> attribute : attributes) {
       values.put(attribute, key.get(attribute));
@@ -911,7 +911,7 @@ final class DefaultEntity implements Entity, Serializable {
         return Optional.ofNullable(value);
       }
       if (value == null && getterReturnType.isPrimitive()) {
-        return Primitives.getDefaultValue(getterReturnType);
+        return Primitives.defaultValue(getterReturnType);
       }
 
       return value;

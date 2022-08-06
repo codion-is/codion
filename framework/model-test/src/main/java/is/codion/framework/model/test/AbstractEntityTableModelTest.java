@@ -263,7 +263,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
             .build();
     keys.add(tmpEnt.primaryKey());
 
-    Collection<Entity> entitiesByKey = testModel.getEntitiesByKey(keys);
+    Collection<Entity> entitiesByKey = testModel.entitiesByKey(keys);
     assertEquals(3, entitiesByKey.size());
   }
 

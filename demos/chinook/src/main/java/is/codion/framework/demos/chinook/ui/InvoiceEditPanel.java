@@ -100,7 +100,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
     private CustomerSelectionProvider(EntitySearchModel searchModel) {
       super(searchModel);
-      SwingEntityTableModel tableModel = getTable().getModel();
+      SwingEntityTableModel tableModel = table().getModel();
       tableModel.columnModel().setVisibleColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
       tableModel.sortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
       setPreferredSize(new Dimension(500, 300));

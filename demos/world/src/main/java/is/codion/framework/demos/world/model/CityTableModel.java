@@ -47,7 +47,7 @@ public final class CityTableModel extends SwingEntityTableModel {
     addRefreshListener(this::refreshChartDataset);
   }
 
-  public PieDataset<String> getChartDataset() {
+  public PieDataset<String> chartDataset() {
     return chartDataset;
   }
 
@@ -55,7 +55,7 @@ public final class CityTableModel extends SwingEntityTableModel {
     displayLocationEvent.addDataListener(listener);
   }
 
-  public StateObserver getCitiesWithoutLocationSelectedObserver() {
+  public StateObserver citiesWithoutLocationSelectedObserver() {
     return citiesWithoutLocationSelectedState.observer();
   }
 

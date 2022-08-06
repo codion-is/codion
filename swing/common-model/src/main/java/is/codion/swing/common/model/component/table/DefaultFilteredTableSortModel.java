@@ -37,7 +37,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   }
 
   @Override
-  public SortingState getSortingState(C columnIdentifier) {
+  public SortingState sortingState(C columnIdentifier) {
     requireNonNull(columnIdentifier, "columnIdentifier");
 
     return sortingStates.getOrDefault(columnIdentifier, EMPTY_SORTING_STATE);
@@ -92,7 +92,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
       sortingStates.remove(columnIdentifier);
     }
     else {
-      SortingState state = getSortingState(columnIdentifier);
+      SortingState state = sortingState(columnIdentifier);
       if (state.equals(EMPTY_SORTING_STATE)) {
         sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, getNextSortPriority()));
       }

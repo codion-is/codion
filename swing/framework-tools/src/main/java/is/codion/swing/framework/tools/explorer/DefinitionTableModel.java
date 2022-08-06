@@ -39,7 +39,7 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
   }
 
   private static Collection<DefinitionRow> createDomainDefinitions(Schema schema) {
-    DatabaseDomain domain = new DatabaseDomain(domainType(schema.getName()), schema.getTables().values());
+    DatabaseDomain domain = new DatabaseDomain(domainType(schema.name()), schema.tables().values());
 
     return domain.entities().definitions().stream()
             .map(definition -> new DefinitionRow(domain, definition))

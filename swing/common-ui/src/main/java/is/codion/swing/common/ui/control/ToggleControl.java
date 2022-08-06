@@ -23,7 +23,7 @@ public interface ToggleControl extends Control {
   /**
    * @return the value being toggled by this toggle control
    */
-  Value<Boolean> getValue();
+  Value<Boolean> value();
 
   /**
    * @return a check-box menu item based on this control

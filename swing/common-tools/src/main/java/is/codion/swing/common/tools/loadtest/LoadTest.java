@@ -39,7 +39,7 @@ public interface LoadTest<T> {
    * The title of this LoadTest
    * @return the title
    */
-  String getTitle();
+  String title();
 
   /**
    * Sets the random chooser weight for the given scenario
@@ -63,13 +63,13 @@ public interface LoadTest<T> {
   /**
    * @return the names of the usage scenarios used by this load test.
    */
-  Collection<String> getUsageScenarios();
+  Collection<String> usageScenarios();
 
   /**
    * @param usageScenarioName the scenario name
    * @return the usage scenario
    */
-  UsageScenario<T> getUsageScenario(String usageScenarioName);
+  UsageScenario<T> usageScenario(String usageScenarioName);
 
   /**
    * @return the chart data update interval in milliseconds
@@ -84,39 +84,39 @@ public interface LoadTest<T> {
   /**
    * @return the number of active applications
    */
-  int getApplicationCount();
+  int applicationCount();
 
   /**
    * @return the Value controlling the number of applications to initialize per batch
    */
-  Value<Integer> getApplicationBatchSizeValue();
+  Value<Integer> applicationBatchSizeValue();
 
   /**
    * @return the state controlling the paused state of this load test
    */
-  State getPausedState();
+  State pausedState();
 
   /**
    * @return the Value controlling the maximum number of milliseconds that should pass between work requests
    */
-  Value<Integer> getMaximumThinkTimeValue();
+  Value<Integer> maximumThinkTimeValue();
 
   /**
    * @return the Value controlling the minimum number of milliseconds that should pass between work requests
    */
-  Value<Integer> getMinimumThinkTimeValue();
+  Value<Integer> minimumThinkTimeValue();
 
   /**
    * This value controls the factor with which to multiply the think time when logging in, this helps
    * spread the application logins when creating a batch of application.
    * @return the Value controlling the factor with which to multiply the think time when logging in
    */
-  Value<Integer> getLoginDelayFactorValue();
+  Value<Integer> loginDelayFactorValue();
 
   /**
    * @return the state controlling whether this load test collects chart data
    */
-  State getCollectChartDataState();
+  State collectChartDataState();
 
   /**
    * @return an observer notified each time the application count changes
@@ -125,13 +125,13 @@ public interface LoadTest<T> {
 
   /**
    * Adds a batch of applications.
-   * @see #getApplicationBatchSizeValue()
+   * @see #applicationBatchSizeValue()
    */
   void addApplicationBatch();
 
   /**
    * Removes one batch of applications.
-   * @see #getApplicationBatchSizeValue()
+   * @see #applicationBatchSizeValue()
    */
   void removeApplicationBatch();
 
@@ -144,40 +144,40 @@ public interface LoadTest<T> {
    * @return a dataset plotting the average scenario duration
    * @param name the scenario name
    */
-  IntervalXYDataset getScenarioDurationDataset(String name);
+  IntervalXYDataset scenarioDurationDataset(String name);
 
   /**
    * @return a dataset plotting the think time
    */
-  XYDataset getThinkTimeDataset();
+  XYDataset thinkTimeDataset();
 
   /**
    * @return a dataset plotting the number of active applications
    */
-  XYDataset getNumberOfApplicationsDataset();
+  XYDataset numberOfApplicationsDataset();
 
   /**
    * @return a dataset plotting the number of runs each usage scenario is being run per second
    */
-  XYDataset getUsageScenarioDataset();
+  XYDataset usageScenarioDataset();
 
   /**
    * @return a dataset plotting the memory usage of this load test model
    */
-  XYDataset getMemoryUsageDataset();
+  XYDataset memoryUsageDataset();
 
   /**
    * @return a dataset plotting the system load of this load test model
    */
-  XYDataset getSystemLoadDataset();
+  XYDataset systemLoadDataset();
 
   /**
    * @return a dataset plotting the failure rate of each usage scenario
    */
-  XYDataset getUsageScenarioFailureDataset();
+  XYDataset usageScenarioFailureDataset();
 
   /**
    * @return the randomizer used to select scenarios
    */
-  ItemRandomizer<UsageScenario<T>> getScenarioChooser();
+  ItemRandomizer<UsageScenario<T>> scenarioChooser();
 }

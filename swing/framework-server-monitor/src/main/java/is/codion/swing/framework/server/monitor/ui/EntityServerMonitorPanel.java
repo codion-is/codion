@@ -86,14 +86,14 @@ public final class EntityServerMonitorPanel extends JPanel {
     bindEvents();
   }
 
-  public EntityServerMonitor getModel() {
+  public EntityServerMonitor model() {
     return model;
   }
 
   /**
    * @return a State controlling the alwaysOnTop state of this panels parent window
    */
-  public State getAlwaysOnTopState() {
+  public State alwaysOnTopState() {
     return alwaysOnTopState;
   }
 
@@ -142,8 +142,8 @@ public final class EntityServerMonitorPanel extends JPanel {
   private void initializeUI() throws RemoteException {
     setLayout(new BorderLayout());
     JTabbedPane hostPane = new JTabbedPane();
-    for (HostMonitor hostMonitor : model.getHostMonitors()) {
-      hostPane.addTab(hostMonitor.getHostName() + ":" + hostMonitor.getRegistryPort(), new HostMonitorPanel(hostMonitor));
+    for (HostMonitor hostMonitor : model.hostMonitors()) {
+      hostPane.addTab(hostMonitor.hostName() + ":" + hostMonitor.registryPort(), new HostMonitorPanel(hostMonitor));
     }
     add(hostPane, BorderLayout.CENTER);
     add(initializeSouthPanel(), BorderLayout.SOUTH);
@@ -229,7 +229,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     Dialogs.okCancelDialog(panel)
             .owner(this)
             .title("Update interval (s)")
-            .onOk(() -> getModel().setUpdateInterval(field.getNumber()))
+            .onOk(() -> model().setUpdateInterval(field.getNumber()))
             .show();
   }
 

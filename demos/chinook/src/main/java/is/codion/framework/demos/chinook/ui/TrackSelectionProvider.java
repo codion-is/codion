@@ -16,7 +16,7 @@ final class TrackSelectionProvider extends EntitySearchField.TableSelectionProvi
 
   TrackSelectionProvider(EntitySearchModel trackSearchModel) {
     super(trackSearchModel);
-    SwingEntityTableModel tableModel = getTable().getModel();
+    SwingEntityTableModel tableModel = table().getModel();
     tableModel.columnModel().setVisibleColumns(Track.ARTIST_DENORM, Track.ALBUM_FK, Track.NAME);
     tableModel.sortModel().setSortOrder(Track.ARTIST_DENORM, ASCENDING);
     tableModel.sortModel().addSortOrder(Track.ALBUM_FK, ASCENDING);

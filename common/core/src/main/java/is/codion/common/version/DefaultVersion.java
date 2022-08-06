@@ -51,7 +51,7 @@ final class DefaultVersion implements Version, Serializable {
    * @return the major part of this version
    */
   @Override
-  public int getMajor() {
+  public int major() {
     return major;
   }
 
@@ -59,7 +59,7 @@ final class DefaultVersion implements Version, Serializable {
    * @return the minor part of this version
    */
   @Override
-  public int getMinor() {
+  public int minor() {
     return minor;
   }
 
@@ -67,7 +67,7 @@ final class DefaultVersion implements Version, Serializable {
    * @return the patch part of this version
    */
   @Override
-  public int getPatch() {
+  public int patch() {
     return patch;
   }
 
@@ -75,7 +75,7 @@ final class DefaultVersion implements Version, Serializable {
    * @return the metadata part of this version
    */
   @Override
-  public String getMetadata() {
+  public String metadata() {
     return metadata;
   }
 
@@ -104,14 +104,14 @@ final class DefaultVersion implements Version, Serializable {
 
   @Override
   public int compareTo(Version version) {
-    int result = Integer.compare(major, version.getMajor());
+    int result = Integer.compare(major, version.major());
     if (result == 0) {
-      result = Integer.compare(minor, version.getMinor());
+      result = Integer.compare(minor, version.minor());
       if (result == 0) {
-        result = Integer.compare(patch, version.getPatch());
+        result = Integer.compare(patch, version.patch());
       }
       if (result == 0) {
-        result = compareMetadata(metadata, version.getMetadata());
+        result = compareMetadata(metadata, version.metadata());
       }
     }
 

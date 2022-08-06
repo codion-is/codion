@@ -67,7 +67,7 @@ public final class ConnectionPoolMonitor {
    * @param updateRate the initial statistics update rate in seconds
    */
   public ConnectionPoolMonitor(ConnectionPoolWrapper connectionPool, int updateRate) {
-    this.username = connectionPool.getUser().getUsername();
+    this.username = connectionPool.user().username();
     this.connectionPool = connectionPool;
     this.pooledConnectionTimeoutValue = Value.value(connectionPool::getIdleConnectionTimeout, connectionPool::setIdleConnectionTimeout, 0);
     this.pooledCleanupIntervalValue = Value.value(connectionPool::getCleanupInterval, connectionPool::setCleanupInterval, 0);
@@ -96,49 +96,49 @@ public final class ConnectionPoolMonitor {
   /**
    * @return the user the connection pool is based on
    */
-  public String getUsername() {
+  public String username() {
     return username;
   }
 
   /**
    * @return the latest pool statistics
    */
-  public ConnectionPoolStatistics getConnectionPoolStatistics() {
+  public ConnectionPoolStatistics connectionPoolStatistics() {
     return poolStatistics;
   }
 
   /**
    * @return the pool connection timeout in milliseconds
    */
-  public Value<Integer> getPooledConnectionTimeoutValue() {
+  public Value<Integer> pooledConnectionTimeoutValue() {
     return pooledConnectionTimeoutValue;
   }
 
   /**
    * @return the pool maintenance interval in seconds
    */
-  public Value<Integer> getPoolCleanupIntervalValue() {
+  public Value<Integer> poolCleanupIntervalValue() {
     return pooledCleanupIntervalValue;
   }
 
   /**
    * @return the minimum pool size to maintain
    */
-  public Value<Integer> getMinimumPoolSizeValue() {
+  public Value<Integer> minimumPoolSizeValue() {
     return minimumPoolSizeValue;
   }
 
   /**
    * @return the maximum allowed pool size
    */
-  public Value<Integer> getMaximumPoolSizeValue() {
+  public Value<Integer> maximumPoolSizeValue() {
     return maximumPoolSizeValue;
   }
 
   /**
    * @return the maximum wait time for a connection
    */
-  public Value<Integer> getMaximumCheckOutTimeValue() {
+  public Value<Integer> maximumCheckOutTimeValue() {
     return maximumCheckoutTimeValue;
   }
 
@@ -154,7 +154,7 @@ public final class ConnectionPoolMonitor {
   /**
    * @return the dataset for snapshot pool stats
    */
-  public XYDataset getSnapshotDataset() {
+  public XYDataset snapshotDataset() {
     XYSeriesCollection poolDataset = new XYSeriesCollection();
     poolDataset.addSeries(snapshotStatisticsCollection.getSeries(0));
     poolDataset.addSeries(snapshotStatisticsCollection.getSeries(1));
@@ -166,21 +166,21 @@ public final class ConnectionPoolMonitor {
   /**
    * @return the dataset for the number of connections in the pool
    */
-  public XYDataset getInPoolDataset() {
+  public XYDataset inPoolDataset() {
     return statisticsCollection;
   }
 
   /**
    * @return the dataset for the number of connection requests per second
    */
-  public XYDataset getRequestsPerSecondDataset() {
+  public XYDataset requestsPerSecondDataset() {
     return connectionRequestsPerSecondCollection;
   }
 
   /**
    * @return the dataset for the connection check out time
    */
-  public IntervalXYDataset getCheckOutTimeCollection() {
+  public IntervalXYDataset checkOutTimeCollection() {
     return checkOutTimeCollection;
   }
 
@@ -208,28 +208,28 @@ public final class ConnectionPoolMonitor {
   /**
    * @return the State controlling whether snapshot statistics are collected
    */
-  public State getCollectSnapshotStatisticsState() {
+  public State collectSnapshotStatisticsState() {
     return collectSnapshotStatisticsState;
   }
 
   /**
    * @return the State controlling whether checkout times are collected
    */
-  public State getCollectCheckOutTimesState() {
+  public State collectCheckOutTimesState() {
     return collectCheckOutTimesState;
   }
 
   /**
    * @return EventObserver notified when statistics have been updated
    */
-  public EventObserver<?> getStatisticsObserver() {
+  public EventObserver<?> statisticsObserver() {
     return statisticsUpdatedEvent.observer();
   }
 
   /**
    * @return the value controlling the update interval
    */
-  public Value<Integer> getUpdateIntervalValue() {
+  public Value<Integer> updateIntervalValue() {
     return updateIntervalValue;
   }
 
@@ -257,7 +257,7 @@ public final class ConnectionPoolMonitor {
   }
 
   private void updateStatistics() {
-    poolStatistics = connectionPool.getStatistics(lastStatisticsUpdateTime);
+    poolStatistics = connectionPool.statistics(lastStatisticsUpdateTime);
     long timestamp = poolStatistics.timestamp();
     lastStatisticsUpdateTime = timestamp;
     poolSizeSeries.add(timestamp, poolStatistics.size());

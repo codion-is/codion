@@ -40,7 +40,7 @@ public final class DatabaseMonitorPanel extends JPanel {
    */
   public DatabaseMonitorPanel(DatabaseMonitor model) {
     this.model = model;
-    this.queriesPerSecondChart.getXYPlot().setDataset(model.getQueriesPerSecondCollection());
+    this.queriesPerSecondChart.getXYPlot().setDataset(model.queriesPerSecondCollection());
     ChartUtil.linkColors(this, queriesPerSecondChart);
     initializeUI();
   }
@@ -48,7 +48,7 @@ public final class DatabaseMonitorPanel extends JPanel {
   private void initializeUI() {
     setLayout(new BorderLayout());
     JTabbedPane tabPane = new JTabbedPane();
-    tabPane.addTab("Connection Pools", new PoolMonitorPanel(model.getConnectionPoolMonitor()));
+    tabPane.addTab("Connection Pools", new PoolMonitorPanel(model.connectionPoolMonitor()));
     tabPane.addTab("Performance", getChartPanel());
     add(tabPane, BorderLayout.CENTER);
   }
@@ -57,7 +57,7 @@ public final class DatabaseMonitorPanel extends JPanel {
     JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 3));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     chartConfig.add(new JLabel("Update interval (s)"));
-    chartConfig.add(Components.integerSpinner(model.getUpdateIntervalValue())
+    chartConfig.add(Components.integerSpinner(model.updateIntervalValue())
             .minimum(1)
             .columns(SPINNER_COLUMNS)
             .editable(false)

@@ -77,7 +77,7 @@ public class EntityTestUnit {
   /**
    * @return the domain entities
    */
-  public final Entities getEntities() {
+  public final Entities entities() {
     return connectionProvider.entities();
   }
 
@@ -92,7 +92,7 @@ public class EntityTestUnit {
     try {
       Map<ForeignKey, Entity> foreignKeyEntities = initializeForeignKeyEntities(entityType, new HashMap<>(), connection);
       Entity testEntity = null;
-      EntityDefinition entityDefinition = getEntities().definition(entityType);
+      EntityDefinition entityDefinition = entities().definition(entityType);
       if (!entityDefinition.isReadOnly()) {
         testEntity = testInsert(requireNonNull(initializeTestEntity(entityType, foreignKeyEntities), "test entity"), connection);
         assertTrue(testEntity.primaryKey().isNotNull());
@@ -126,7 +126,7 @@ public class EntityTestUnit {
    * @return the entity instance to use for testing the entity type
    */
   protected Entity initializeTestEntity(EntityType entityType, Map<ForeignKey, Entity> foreignKeyEntities) {
-    return EntityTestUtil.createRandomEntity(getEntities(), entityType, foreignKeyEntities);
+    return EntityTestUtil.createRandomEntity(entities(), entityType, foreignKeyEntities);
   }
 
   /**
@@ -138,7 +138,7 @@ public class EntityTestUnit {
    * @throws DatabaseException in case of an exception
    */
   protected Entity initializeForeignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities) throws DatabaseException {
-    return EntityTestUtil.createRandomEntity(getEntities(), foreignKey.referencedType(), foreignKeyEntities);
+    return EntityTestUtil.createRandomEntity(entities(), foreignKey.referencedType(), foreignKeyEntities);
   }
 
   /**
@@ -147,7 +147,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
   protected void modifyEntity(Entity testEntity, Map<ForeignKey, Entity> foreignKeyEntities) {
-    EntityTestUtil.randomize(getEntities(), testEntity, foreignKeyEntities);
+    EntityTestUtil.randomize(entities(), testEntity, foreignKeyEntities);
   }
 
   /**
@@ -162,7 +162,7 @@ public class EntityTestUnit {
   private Map<ForeignKey, Entity> initializeForeignKeyEntities(EntityType entityType,
                                                                Map<ForeignKey, Entity> foreignKeyEntities,
                                                                EntityConnection connection) throws DatabaseException {
-    List<ForeignKey> foreignKeys = new ArrayList<>(getEntities().definition(entityType).foreignKeys());
+    List<ForeignKey> foreignKeys = new ArrayList<>(entities().definition(entityType).foreignKeys());
     //we have to start with non-self-referential ones
     foreignKeys.sort((fk1, fk2) -> !fk1.referencedType().equals(entityType) ? -1 : 1);
     for (ForeignKey foreignKey : foreignKeys) {

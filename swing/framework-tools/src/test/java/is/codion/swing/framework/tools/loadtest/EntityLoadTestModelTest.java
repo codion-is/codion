@@ -41,7 +41,7 @@ public class EntityLoadTestModelTest {
     EntityServer.startServer(configuration);
     server = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(),
             configuration.registryPort()).lookup(configuration.serverName());
-    admin = server.getServerAdmin(ADMIN_USER);
+    admin = server.serverAdmin(ADMIN_USER);
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
   }
 
@@ -76,7 +76,7 @@ public class EntityLoadTestModelTest {
 
   @Test
   void setLoginDelayFactorNegative() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().getLoginDelayFactorValue().set(-1));
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().loginDelayFactorValue().set(-1));
   }
 
   @Test
@@ -88,45 +88,45 @@ public class EntityLoadTestModelTest {
   void testLoadTesting() throws Exception {
     TestLoadTestModel loadTest = new TestLoadTestModel();
 
-    loadTest.getCollectChartDataState().set(true);
+    loadTest.collectChartDataState().set(true);
     loadTest.setUpdateInterval(350);
-    loadTest.getLoginDelayFactorValue().set(1);
+    loadTest.loginDelayFactorValue().set(1);
 
     assertEquals(350, loadTest.getUpdateInterval());
-    assertEquals(1, loadTest.getLoginDelayFactorValue().get());
+    assertEquals(1, loadTest.loginDelayFactorValue().get());
 
     loadTest.setWeight("1", 1);
     loadTest.setWeight("2", 0);
 
-    loadTest.getMinimumThinkTimeValue().set(50);
-    loadTest.getMaximumThinkTimeValue().set(100);
+    loadTest.minimumThinkTimeValue().set(50);
+    loadTest.maximumThinkTimeValue().set(100);
 
-    loadTest.getApplicationBatchSizeValue().set(2);
-    assertEquals(2, loadTest.getApplicationBatchSizeValue().get());
+    loadTest.applicationBatchSizeValue().set(2);
+    assertEquals(2, loadTest.applicationBatchSizeValue().get());
 
     loadTest.addApplicationBatch();
 
     Thread.sleep(1500);
 
-    assertEquals(2, loadTest.getApplicationCount(),
+    assertEquals(2, loadTest.applicationCount(),
             "Two clients expected, if this fails try increasing the Thread.sleep() value above");
-    assertTrue(loadTest.getUsageScenario("1").getTotalRunCount() > 0);
-    assertTrue(loadTest.getUsageScenario("1").getSuccessfulRunCount() > 0);
-    assertEquals(0, loadTest.getUsageScenario("1").getUnsuccessfulRunCount());
-    assertEquals(0, loadTest.getUsageScenario("2").getTotalRunCount());
+    assertTrue(loadTest.usageScenario("1").totalRunCount() > 0);
+    assertTrue(loadTest.usageScenario("1").successfulRunCount() > 0);
+    assertEquals(0, loadTest.usageScenario("1").unsuccessfulRunCount());
+    assertEquals(0, loadTest.usageScenario("2").totalRunCount());
 
-    loadTest.getPausedState().set(true);
+    loadTest.pausedState().set(true);
 
     loadTest.resetChartData();
 
-    loadTest.getApplicationBatchSizeValue().set(1);
+    loadTest.applicationBatchSizeValue().set(1);
     loadTest.removeApplicationBatch();
-    assertEquals(1, loadTest.getApplicationCount());
+    assertEquals(1, loadTest.applicationCount());
     loadTest.shutdown();
 
     Thread.sleep(500);
 
-    assertEquals(0, loadTest.getApplicationCount());
+    assertEquals(0, loadTest.applicationCount());
   }
 
   private static EntityServerConfiguration configure() {

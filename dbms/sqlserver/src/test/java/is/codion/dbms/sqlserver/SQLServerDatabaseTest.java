@@ -14,14 +14,14 @@ public class SQLServerDatabaseTest {
   @Test
   void getName() {
     SQLServerDatabase database = new SQLServerDatabase("jdbc:sqlserver://host.db\\instance:1234");
-    assertEquals("instance", database.getName());
+    assertEquals("instance", database.name());
     database = new SQLServerDatabase("jdbc:sqlserver://host.db\\instance:1234;options");
-    assertEquals("instance", database.getName());
+    assertEquals("instance", database.name());
   }
 
   @Test
   void getSequenceQuery() {
-    assertThrows(UnsupportedOperationException.class, () -> new SQLServerDatabase(URL).getSequenceQuery("seq"));
+    assertThrows(UnsupportedOperationException.class, () -> new SQLServerDatabase(URL).sequenceQuery("seq"));
   }
 
   @Test
@@ -33,7 +33,7 @@ public class SQLServerDatabaseTest {
   @Test
   void getAutoIncrementQuery() {
     SQLServerDatabase db = new SQLServerDatabase(URL);
-    assertEquals(SQLServerDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
+    assertEquals(SQLServerDatabase.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
   }
 
   @Test

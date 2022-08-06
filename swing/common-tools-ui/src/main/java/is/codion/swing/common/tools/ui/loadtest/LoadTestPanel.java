@@ -95,7 +95,7 @@ public final class LoadTestPanel<T> extends JPanel {
   /**
    * @return the load test model this panel is based on
    */
-  public LoadTest<T> getModel() {
+  public LoadTest<T> model() {
     return loadTestModel;
   }
 
@@ -107,7 +107,7 @@ public final class LoadTestPanel<T> extends JPanel {
     return Windows.frame(this)
             .icon(Logos.logoTransparent())
             .menuBar(initializeMainMenuControls().createMenuBar())
-            .title("Codion - " + loadTestModel.getTitle())
+            .title("Codion - " + loadTestModel.title())
             .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
             .onClosing(windowEvent -> {
               JFrame frame = (JFrame) windowEvent.getWindow();
@@ -154,7 +154,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private ItemRandomizerPanel<UsageScenario<T>> initializeScenarioPanel() {
-    ItemRandomizerPanel<UsageScenario<T>> panel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
+    ItemRandomizerPanel<UsageScenario<T>> panel = new ItemRandomizerPanel<>(loadTestModel.scenarioChooser());
     panel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
     panel.addSelectedItemListener(this::onScenarioSelectionChanged);
 
@@ -164,7 +164,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeUserPanel() {
     User user = loadTestModel.getUser();
     JTextField usernameField = Components.textField()
-            .initialValue(user.getUsername())
+            .initialValue(user.username())
             .columns(LARGE_TEXT_FIELD_COLUMNS)
             .build();
     JPasswordField passwordField = Components.passwordField()
@@ -194,7 +194,7 @@ public final class LoadTestPanel<T> extends JPanel {
                             .horizontalAlignment(SwingConstants.CENTER)
                             .linkedValueObserver(loadTestModel.applicationCountObserver())
                             .build(), BorderLayout.CENTER)
-                    .add(Components.integerSpinner(loadTestModel.getApplicationBatchSizeValue())
+                    .add(Components.integerSpinner(loadTestModel.applicationBatchSizeValue())
                             .editable(false)
                             .columns(SMALL_TEXT_FIELD_COLUMNS)
                             .toolTipText("Application batch size")
@@ -223,7 +223,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeChartControlPanel() {
     return Components.panel(Layouts.flexibleGridLayout(1, 2))
             .border(BorderFactory.createTitledBorder("Charts"))
-            .add(Components.checkBox(loadTestModel.getCollectChartDataState())
+            .add(Components.checkBox(loadTestModel.collectChartDataState())
                     .caption("Collect chart data")
                     .build())
             .add(Control.builder(loadTestModel::resetChartData)
@@ -234,37 +234,37 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private JPanel initializeChartPanel() {
     JFreeChart thinkTimeChart = ChartFactory.createXYStepChart(null,
-            null, null, loadTestModel.getThinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, loadTestModel.thinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(thinkTimeChart);
     ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
     thinkTimeChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     JFreeChart numberOfApplicationsChart = ChartFactory.createXYStepChart(null,
-            null, null, loadTestModel.getNumberOfApplicationsDataset(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, loadTestModel.numberOfApplicationsDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(numberOfApplicationsChart);
     ChartPanel numberOfApplicationsChartPanel = new ChartPanel(numberOfApplicationsChart);
     numberOfApplicationsChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     JFreeChart usageScenarioChart = ChartFactory.createXYStepChart(null,
-            null, null, loadTestModel.getUsageScenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, loadTestModel.usageScenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(usageScenarioChart);
     ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
     usageScenarioChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     JFreeChart failureChart = ChartFactory.createXYStepChart(null,
-            null, null, loadTestModel.getUsageScenarioFailureDataset(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, loadTestModel.usageScenarioFailureDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(failureChart);
     ChartPanel failureChartPanel = new ChartPanel(failureChart);
     failureChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     JFreeChart memoryUsageChart = ChartFactory.createXYStepChart(null,
-            null, null, loadTestModel.getMemoryUsageDataset(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, loadTestModel.memoryUsageDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(memoryUsageChart);
     ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
     memoryUsageChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     JFreeChart systemLoadChart = ChartFactory.createXYStepChart(null,
-            null, null, loadTestModel.getSystemLoadDataset(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, loadTestModel.systemLoadDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(systemLoadChart);
     systemLoadChart.getXYPlot().getRangeAxis().setRange(0, 100);
     ChartPanel systemLoadChartPanel = new ChartPanel(systemLoadChart);
@@ -302,16 +302,16 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeActivityPanel() {
     return Components.panel(Layouts.flexibleGridLayout(4, 2))
             .add(new JLabel("Max. think time", SwingConstants.CENTER))
-            .add(Components.integerSpinner(loadTestModel.getMaximumThinkTimeValue())
+            .add(Components.integerSpinner(loadTestModel.maximumThinkTimeValue())
                     .stepSize(SPINNER_STEP_SIZE)
                     .columns(SMALL_TEXT_FIELD_COLUMNS)
                     .build())
             .add(new JLabel("Min. think time", SwingConstants.CENTER))
-            .add(Components.integerSpinner(loadTestModel.getMinimumThinkTimeValue())
+            .add(Components.integerSpinner(loadTestModel.minimumThinkTimeValue())
                     .stepSize(SPINNER_STEP_SIZE)
                     .columns(SMALL_TEXT_FIELD_COLUMNS)
                     .build())
-            .add(Components.toggleButton(loadTestModel.getPausedState())
+            .add(Components.toggleButton(loadTestModel.pausedState())
                     .caption("Pause")
                     .mnemonic('P')
                     .build())
@@ -322,7 +322,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private void onScenarioSelectionChanged(List<ItemRandomizer.RandomItem<UsageScenario<T>>> selectedScenarios) {
     scenarioBase.removeAll();
     for (ItemRandomizer.RandomItem<UsageScenario<T>> selectedItem : selectedScenarios) {
-      scenarioBase.add(createScenarioPanel(selectedItem.getItem()));
+      scenarioBase.add(createScenarioPanel(selectedItem.item()));
     }
     validate();
     repaint();
@@ -330,7 +330,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private JPanel createScenarioPanel(UsageScenario<T> item) {
     JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
-            null, null, loadTestModel.getScenarioDurationDataset(item.getName()),
+            null, null, loadTestModel.scenarioDurationDataset(item.name()),
             PlotOrientation.VERTICAL, true, true, false);
     setColors(scenarioDurationChart);
     ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
@@ -412,7 +412,7 @@ public final class LoadTestPanel<T> extends JPanel {
     @Override
     public void actionPerformed(ActionEvent e) {
       getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
-      List<Exception> exceptions = getScenario().getExceptions();
+      List<Exception> exceptions = getScenario().exceptions();
       for (Exception exception : exceptions) {
         getExceptionsTextArea().append(exception.getMessage());
         getExceptionsTextArea().append(Separators.LINE_SEPARATOR);

@@ -19,10 +19,10 @@ public class DefaultClientLogTest {
     UUID uuid = UUID.randomUUID();
     LocalDateTime currentTime = LocalDateTime.now();
     ClientLog log = ClientLog.clientLog(uuid, currentTime, emptyList());
-    assertEquals(uuid, log.getClientId());
-    assertEquals(currentTime, log.getConnectionCreationDate());
+    assertEquals(uuid, log.clientId());
+    assertEquals(currentTime, log.connectionCreationDate());
     assertEquals(log, ClientLog.clientLog(uuid, currentTime, emptyList()));
     assertEquals(uuid.hashCode(), log.hashCode());
-    assertTrue(log.getEntries().isEmpty());
+    assertTrue(log.entries().isEmpty());
   }
 }

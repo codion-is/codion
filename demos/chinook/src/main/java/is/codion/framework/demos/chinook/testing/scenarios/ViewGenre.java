@@ -25,7 +25,7 @@ public final class ViewGenre extends AbstractEntityUsageScenario<ChinookApplicat
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 10;
   }
 }

@@ -63,7 +63,7 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
     public Object getValue(Schema row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case SchemaTableModel.SCHEMA:
-          return row.getName();
+          return row.name();
         case SchemaTableModel.POPULATED:
           return row.isPopulated();
         default:

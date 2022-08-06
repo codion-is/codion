@@ -71,8 +71,8 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
   }
 
   @Override
-  public String getTitle() {
-    return super.getTitle() + " " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
+  public String title() {
+    return super.title() + " " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
   }
 
   /**

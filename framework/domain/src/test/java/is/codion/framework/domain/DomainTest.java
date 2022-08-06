@@ -218,13 +218,13 @@ public class DomainTest {
 
     Key key = entities.keyBuilder(entityType).build();
     assertEquals(0, key.hashCode());
-    assertTrue(key.getAttributes().isEmpty());
+    assertTrue(key.attributes().isEmpty());
     assertTrue(key.isNull());
 
     assertThrows(IllegalStateException.class, () -> entities.primaryKey(entityType, 1));
     assertThrows(IllegalStateException.class, key::get);
     assertThrows(IllegalStateException.class, key::getOptional);
-    assertThrows(IllegalStateException.class, key::getAttribute);
+    assertThrows(IllegalStateException.class, key::attribute);
 
     key = key.copyBuilder()
             .with(attribute1, 1)
@@ -435,7 +435,7 @@ public class DomainTest {
     }
     catch (ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(Employee.DEPARTMENT_FK, e.getAttribute());
+      assertEquals(Employee.DEPARTMENT_FK, e.attribute());
     }
     emp.put(Employee.DEPARTMENT_NO, 1);
     try {
@@ -451,7 +451,7 @@ public class DomainTest {
     }
     catch (ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(Employee.SALARY, e.getAttribute());
+      assertEquals(Employee.SALARY, e.attribute());
     }
   }
 
@@ -566,13 +566,13 @@ public class DomainTest {
   @Test
   void getFunctionNonExisting() {
     FunctionType<?, ?, ?> functionType = FunctionType.functionType("nonexisting");
-    assertThrows(IllegalArgumentException.class, () -> domain.getFunction(functionType));
+    assertThrows(IllegalArgumentException.class, () -> domain.function(functionType));
   }
 
   @Test
   void getProcedureNonExisting() {
     ProcedureType<?, ?> procedureType = ProcedureType.procedureType("nonexisting");
-    assertThrows(IllegalArgumentException.class, () -> domain.getProcedure(procedureType));
+    assertThrows(IllegalArgumentException.class, () -> domain.procedure(procedureType));
   }
 
   @Test
@@ -808,9 +808,9 @@ public class DomainTest {
 
     entities.entity(TestDomain.T_COMPOSITE_MASTER);
 
-    assertNotNull(second.getProcedure(TestDomainExtended.PROC_TYPE));
-    assertNotNull(second.getFunction(TestDomainExtended.FUNC_TYPE));
-    assertNotNull(second.getReport(TestDomainExtended.REP_TYPE));
+    assertNotNull(second.procedure(TestDomainExtended.PROC_TYPE));
+    assertNotNull(second.function(TestDomainExtended.FUNC_TYPE));
+    assertNotNull(second.report(TestDomainExtended.REP_TYPE));
 
     //entity type name clash
     assertThrows(IllegalArgumentException.class, TestDomainExtended.TestDomainThirdExtension::new);

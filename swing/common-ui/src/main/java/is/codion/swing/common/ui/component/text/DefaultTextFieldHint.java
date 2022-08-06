@@ -49,7 +49,7 @@ final class DefaultTextFieldHint implements TextFieldHint {
   }
 
   @Override
-  public String getHintText() {
+  public String hintText() {
     return hintText;
   }
 

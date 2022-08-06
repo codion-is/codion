@@ -79,7 +79,7 @@ public class JasperReportsDataSource<T> implements JRDataSource {
    * @return the current item
    * @throws IllegalStateException in case next has not been called and no current item is available
    */
-  public final T getCurrentItem() {
+  public final T currentItem() {
     if (currentItem == null) {
       throw new IllegalStateException("Next has not been called, no current item available");
     }

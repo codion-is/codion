@@ -32,7 +32,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     super(UpdateCondition.class);
     this.conditionDeserializer = new ConditionDeserializer(entityObjectMapper);
     this.entityObjectMapper = entityObjectMapper;
-    this.entities = entityObjectMapper.getEntities();
+    this.entities = entityObjectMapper.entities();
   }
 
   @Override

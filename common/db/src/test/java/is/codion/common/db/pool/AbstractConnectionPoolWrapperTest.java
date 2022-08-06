@@ -29,15 +29,15 @@ public final class AbstractConnectionPoolWrapperTest {
     User user = User.parse("scott:tiger");
     long startTime = System.currentTimeMillis();
     ConnectionPoolWrapper poolWrapper = poolFactory.createConnectionPoolWrapper(database, user);
-    poolWrapper.getUser();
+    poolWrapper.user();
     poolWrapper.setCollectSnapshotStatistics(true);
     assertTrue(poolWrapper.isCollectSnapshotStatistics());
     for (int i = 0; i < 100; i++) {
-      poolWrapper.getConnection(user).close();
+      poolWrapper.connection(user).close();
     }
     //just wait a bit for statistics to be collected
     Thread.sleep(100);
-    ConnectionPoolStatistics statistics = poolWrapper.getStatistics(startTime);
+    ConnectionPoolStatistics statistics = poolWrapper.statistics(startTime);
     statistics.available();
     statistics.inUse();
     statistics.created();

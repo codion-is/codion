@@ -11,22 +11,22 @@ public interface Version extends Comparable<Version> {
   /**
    * @return the major part of this version
    */
-  int getMajor();
+  int major();
 
   /**
    * @return the minor part of this version
    */
-  int getMinor();
+  int minor();
 
   /**
    * @return the patch part of this version
    */
-  int getPatch();
+  int patch();
 
   /**
    * @return the metadata part of this version
    */
-  String getMetadata();
+  String metadata();
 
   /**
    * Instantiates a new version [major].0.0
@@ -73,8 +73,8 @@ public interface Version extends Comparable<Version> {
   /**
    * @return a string containing the framework version number, without any version metadata (fx. build no.)
    */
-  static String getVersionString() {
-    String versionString = getVersionAndMetadataString();
+  static String versionString() {
+    String versionString = versionAndMetadataString();
     if (versionString.toLowerCase().contains("-")) {
       return versionString.substring(0, versionString.toLowerCase().indexOf('-'));
     }
@@ -85,14 +85,14 @@ public interface Version extends Comparable<Version> {
   /**
    * @return a string containing the framework version and version metadata
    */
-  static String getVersionAndMetadataString() {
+  static String versionAndMetadataString() {
     return DefaultVersion.VERSION.toString();
   }
 
   /**
    * @return the framework Version
    */
-  static Version getVersion() {
+  static Version version() {
     return DefaultVersion.VERSION;
   }
 

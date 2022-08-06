@@ -684,13 +684,13 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     }
 
     private Icon getHeaderRendererIcon(C columnIdentifier, int iconSizePixels) {
-      SortOrder sortOrder = tableModel.sortModel().getSortingState(columnIdentifier).sortOrder();
+      SortOrder sortOrder = tableModel.sortModel().sortingState(columnIdentifier).sortOrder();
       if (sortOrder == SortOrder.UNSORTED) {
         return null;
       }
 
       return new Arrow(sortOrder == SortOrder.DESCENDING, iconSizePixels,
-              tableModel.sortModel().getSortingState(columnIdentifier).priority());
+              tableModel.sortModel().sortingState(columnIdentifier).priority());
     }
   }
 
@@ -772,7 +772,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
         C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
         if (isSortingEnabled(columnIdentifier)) {
           FilteredTableSortModel<R, C> sortModel = getModel().sortModel();
-          SortOrder newSortOrder = getNewSortOrder(sortModel.getSortingState(columnIdentifier).sortOrder(), e.isShiftDown());
+          SortOrder newSortOrder = getNewSortOrder(sortModel.sortingState(columnIdentifier).sortOrder(), e.isShiftDown());
           if (e.isControlDown()) {
             sortModel.addSortOrder(columnIdentifier, newSortOrder);
           }

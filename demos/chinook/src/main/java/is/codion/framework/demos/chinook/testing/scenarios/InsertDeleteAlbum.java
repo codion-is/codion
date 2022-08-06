@@ -56,7 +56,7 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 3;
   }
 }

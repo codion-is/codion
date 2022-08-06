@@ -31,35 +31,35 @@ public final class Table {
     this.schema = requireNonNull(schema);
     this.tableName = requireNonNull(tableName);
     this.foreignKeyColumns = requireNonNull(foreignKeyColumns);
-    requireNonNull(columns).forEach(column -> this.columns.put(column.getColumnName(), column));
+    requireNonNull(columns).forEach(column -> this.columns.put(column.columnName(), column));
   }
 
-  public String getTableName() {
+  public String tableName() {
     return tableName;
   }
 
-  public Schema getSchema() {
+  public Schema schema() {
     return schema;
   }
 
-  public List<Column> getColumns() {
+  public List<Column> columns() {
     return unmodifiableList(new ArrayList<>(columns.values()));
   }
 
-  public Collection<String> getReferencedSchemaNames() {
+  public Collection<String> referencedSchemaNames() {
     return foreignKeyColumns.stream()
             .filter(this::referencesExternalSchema)
-            .map(ForeignKeyColumn::getPkSchemaName)
+            .map(ForeignKeyColumn::pkSchemaName)
             .collect(toSet());
   }
 
-  public Collection<ForeignKeyConstraint> getForeignKeys() {
+  public Collection<ForeignKeyConstraint> foreignKeys() {
     return unmodifiableCollection(foreignKeys);
   }
 
   @Override
   public String toString() {
-    return schema.getName() + "." + tableName;
+    return schema.name() + "." + tableName;
   }
 
   @Override
@@ -73,7 +73,7 @@ public final class Table {
 
     Table table = (Table) object;
 
-    return Objects.equals(schema, table.getSchema()) && Objects.equals(tableName, table.getTableName());
+    return Objects.equals(schema, table.schema()) && Objects.equals(tableName, table.tableName());
   }
 
   @Override
@@ -85,26 +85,26 @@ public final class Table {
     for (ForeignKeyColumn foreignKeyColumn : foreignKeyColumns) {
       Table referencedTable = getReferencedTable(foreignKeyColumn, schemas);
       ForeignKeyConstraint foreignKeyConstraint;
-      if (foreignKeyColumn.getKeySeq() == 1) {//new key
+      if (foreignKeyColumn.keySeq() == 1) {//new key
         foreignKeyConstraint = new ForeignKeyConstraint(referencedTable);
         foreignKeys.add(foreignKeyConstraint);
       }
       else {//add to previous
         foreignKeyConstraint = foreignKeys.get(foreignKeys.size() - 1);
       }
-      foreignKeyConstraint.addReference(columns.get(foreignKeyColumn.getFkColumnName()),
-              referencedTable.columns.get(foreignKeyColumn.getPkColumnName()));
+      foreignKeyConstraint.addReference(columns.get(foreignKeyColumn.fkColumnName()),
+              referencedTable.columns.get(foreignKeyColumn.pkColumnName()));
     }
   }
 
   private boolean referencesExternalSchema(ForeignKeyColumn foreignKeyColumn) {
-    return !foreignKeyColumn.getPkSchemaName().equals(schema.getName());
+    return !foreignKeyColumn.pkSchemaName().equals(schema.name());
   }
 
   private static Table getReferencedTable(ForeignKeyColumn foreignKeyColumn, Map<String, Schema> schemas) {
-    Table referencedTable = schemas.get(foreignKeyColumn.getPkSchemaName()).getTables().get(foreignKeyColumn.getPkTableName());
+    Table referencedTable = schemas.get(foreignKeyColumn.pkSchemaName()).tables().get(foreignKeyColumn.pkTableName());
     if (referencedTable == null) {
-      throw new IllegalStateException("Referenced table not found: " + foreignKeyColumn.getPkSchemaName() + "." + foreignKeyColumn.getPkTableName());
+      throw new IllegalStateException("Referenced table not found: " + foreignKeyColumn.pkSchemaName() + "." + foreignKeyColumn.pkTableName());
     }
 
     return referencedTable;

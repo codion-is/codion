@@ -36,7 +36,7 @@ public class SwingForeignKeyConditionModelTest {
   void refresh() {
     conditionModel.refresh();
     assertTrue(((SwingForeignKeyConditionModel) conditionModel.conditionModel(TestDomain.EMP_DEPARTMENT_FK))
-            .getEntityComboBoxModel().getSize() > 1);
+            .entityComboBoxModel().getSize() > 1);
   }
 
   @Test

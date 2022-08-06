@@ -737,7 +737,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static Class<?> getMethodReturnType(Method method) {
     Class<?> returnType = method.getReturnType();
     if (returnType.isPrimitive()) {
-      return Primitives.getBoxedType(returnType);
+      return Primitives.boxedType(returnType);
     }
 
     return returnType;
@@ -760,7 +760,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static Class<?> getSetterParameterType(Method method) {
     Class<?> parameterType = method.getParameterTypes()[0];
     if (parameterType.isPrimitive()) {
-      return Primitives.getBoxedType(parameterType);
+      return Primitives.boxedType(parameterType);
     }
 
     return parameterType;
@@ -809,7 +809,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       if (requireNonNull(propertyBuilders, "propertyBuilders").isEmpty()) {
         throw new IllegalArgumentException("One of more properties must be specified for an entity");
       }
-      this.entityType = propertyBuilders.get(0).getAttribute().entityType();
+      this.entityType = propertyBuilders.get(0).attribute().entityType();
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.attributeMap = initializeAttributeMap(propertyMap);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
@@ -849,7 +849,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       Map<Attribute<?>, Property<?>> ordereredMap = new LinkedHashMap<>(builders.size());
       //retain the original attribute order
       for (Property.Builder<?, ?> builder : builders) {
-        ordereredMap.put(builder.getAttribute(), map.get(builder.getAttribute()));
+        ordereredMap.put(builder.attribute(), map.get(builder.attribute()));
       }
 
       return unmodifiableMap(ordereredMap);
@@ -868,7 +868,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private void initializeForeignKeyColumnProperties(List<ForeignKeyProperty.Builder> foreignKeyBuilders,
                                                       Map<Attribute<?>, Property<?>> propertyMap) {
       Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties = foreignKeyBuilders.stream()
-              .map(ForeignKeyProperty.Builder::getAttribute)
+              .map(ForeignKeyProperty.Builder::attribute)
               .map(ForeignKey.class::cast)
               .collect(toMap(foreignKey -> foreignKey, foreignKey -> getForeignKeyColumnProperties(foreignKey, propertyMap)));
       foreignKeyColumnAttributes.addAll(foreignKeyColumnProperties.values().stream()
@@ -1056,7 +1056,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private static void setForeignKeyNullable(ForeignKeyProperty.Builder foreignKeyBuilder,
                                               Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties) {
       //make foreign key properties nullable if and only if any of their constituent column properties are nullable
-      foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.getAttribute())
+      foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.attribute())
               .stream()
               .anyMatch(Property::nullable));
     }
@@ -1081,7 +1081,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private Function<Entity, String> stringFactory = new DefaultStringFactory();
     private ColorProvider backgroundColorProvider = new NullColorProvider();
     private ColorProvider foregroundColorProvider = new NullColorProvider();
-    private Comparator<Entity> comparator = Text.getSpaceAwareCollator();
+    private Comparator<Entity> comparator = Text.spaceAwareCollator();
     private EntityValidator validator = new DefaultEntityValidator();
 
     DefaultBuilder(List<Property.Builder<?, ?>> propertyBuilders) {

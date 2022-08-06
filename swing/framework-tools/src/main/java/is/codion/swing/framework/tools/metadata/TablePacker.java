@@ -34,14 +34,14 @@ final class TablePacker implements ResultPacker<Table> {
 
   private static List<PrimaryKeyColumn> getPrimaryKeyColumns(Schema schema, DatabaseMetaData metaData,
                                                              String catalog, String tableName) throws SQLException {
-    try (ResultSet resultSet = metaData.getPrimaryKeys(catalog, schema.getName(), tableName)) {
+    try (ResultSet resultSet = metaData.getPrimaryKeys(catalog, schema.name(), tableName)) {
       return new PrimaryKeyColumnPacker().pack(resultSet);
     }
   }
 
   private static List<ForeignKeyColumn> getForeignKeyColumns(Schema schema, DatabaseMetaData metaData,
                                                              String catalog, String tableName) throws SQLException {
-    try (ResultSet resultSet = metaData.getImportedKeys(catalog, schema.getName(), tableName)) {
+    try (ResultSet resultSet = metaData.getImportedKeys(catalog, schema.name(), tableName)) {
       return new ForeignKeyColumnPacker().pack(resultSet);
     }
   }
@@ -49,7 +49,7 @@ final class TablePacker implements ResultPacker<Table> {
   private static List<Column> getColumns(Schema schema, DatabaseMetaData metaData, String catalog,
                                          String tableName, List<PrimaryKeyColumn> primaryKeyColumns,
                                          List<ForeignKeyColumn> foreignKeyColumns) throws SQLException {
-    try (ResultSet resultSet = metaData.getColumns(catalog, schema.getName(), tableName, null)) {
+    try (ResultSet resultSet = metaData.getColumns(catalog, schema.name(), tableName, null)) {
       return new ColumnPacker(primaryKeyColumns, foreignKeyColumns).pack(resultSet);
     }
   }

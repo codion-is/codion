@@ -49,7 +49,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   /**
    * @return the Temporal class this field is based on
    */
-  public Class<T> getTemporalClass() {
+  public Class<T> temporalClass() {
     return temporalClass;
   }
 

@@ -201,12 +201,12 @@ final class SelectQueries {
       if (orderBy != null) {
         builder.append(NEWLINE).append(ORDER_BY).append(orderBy);
       }
-      String limitOffsetClause = database.getLimitOffsetClause(limit, offset);
+      String limitOffsetClause = database.limitOffsetClause(limit, offset);
       if (!limitOffsetClause.isEmpty()) {
         builder.append(NEWLINE).append(limitOffsetClause);
       }
       if (forUpdate) {
-        String forUpdateClause = database.getSelectForUpdateClause();
+        String forUpdateClause = database.selectForUpdateClause();
         if (!nullOrEmpty(forUpdateClause)) {
           builder.append(NEWLINE).append(forUpdateClause);
         }
@@ -296,7 +296,7 @@ final class SelectQueries {
     }
 
     private String getColumnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByAttribute orderByAttribute) {
-      return entityDefinition.columnProperty(orderByAttribute.getAttribute()).columnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
+      return entityDefinition.columnProperty(orderByAttribute.attribute()).columnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
     }
   }
 }

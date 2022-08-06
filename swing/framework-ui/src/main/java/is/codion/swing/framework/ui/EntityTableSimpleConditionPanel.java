@@ -56,7 +56,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   /**
    * @return the search field
    */
-  public JTextField getSimpleSearchTextField() {
+  public JTextField simpleSearchTextField() {
     return simpleSearchTextField;
   }
 

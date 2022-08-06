@@ -24,13 +24,13 @@ public interface LookAndFeelProvider {
    * The name of the underlying LookAndFeel class
    * @return the look and feel classname
    */
-  String getClassName();
+  String className();
 
   /**
    * @return a unique name representing this look and feel, the classname by default
    */
-  default String getName() {
-    return getClassName();
+  default String name() {
+    return className();
   }
 
   /**
@@ -39,7 +39,7 @@ public interface LookAndFeelProvider {
    */
   default void enable() {
     try {
-      UIManager.setLookAndFeel(getClassName());
+      UIManager.setLookAndFeel(className());
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -106,7 +106,7 @@ public interface LookAndFeelProvider {
    * @param lookAndFeelProvider the look and feel provider to add
    */
   static void addLookAndFeelProvider(LookAndFeelProvider lookAndFeelProvider) {
-    DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS.put(requireNonNull(lookAndFeelProvider).getName(), lookAndFeelProvider);
+    DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS.put(requireNonNull(lookAndFeelProvider).name(), lookAndFeelProvider);
   }
 
   /**

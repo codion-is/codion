@@ -32,11 +32,11 @@ public final class SwingEntityTreeModelTest {
     tableModel.refresh();
 
     SwingEntityTreeModel.EntityTreeNode root = (SwingEntityTreeModel.EntityTreeNode) treeModel.getRoot().children().nextElement();
-    assertEquals("KING", root.getEntity().get(TestDomain.EMP_NAME));
+    assertEquals("KING", root.entity().get(TestDomain.EMP_NAME));
 
     tableModel.selectByKey(Collections.singletonList(connectionProvider.entities().primaryKey(TestDomain.T_EMP, 3)));//Jones
 
     SwingEntityTreeModel.EntityTreeNode node = (SwingEntityTreeModel.EntityTreeNode) treeModel.treeSelectionModel().getSelectionPath().getLastPathComponent();
-    assertEquals("JONES", node.getEntity().get(TestDomain.EMP_NAME));
+    assertEquals("JONES", node.entity().get(TestDomain.EMP_NAME));
   }
 }

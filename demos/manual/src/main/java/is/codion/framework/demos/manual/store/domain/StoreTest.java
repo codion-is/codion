@@ -45,7 +45,7 @@ public class StoreTest extends EntityTestUnit {
           throws DatabaseException {
     //see if the currently running test requires an ADDRESS entity
     if (foreignKey.referencedType().equals(Address.TYPE)) {
-      return getEntities().builder(Address.TYPE)
+      return entities().builder(Address.TYPE)
               .with(Address.ID, 21L)
               .with(Address.STREET, "One Way")
               .with(Address.CITY, "Sin City")
@@ -61,7 +61,7 @@ public class StoreTest extends EntityTestUnit {
     if (entityType.equals(Address.TYPE)) {
       //Initialize an entity representing the table STORE.ADDRESS,
       //which can be used for the testing
-      return getEntities().builder(Address.TYPE)
+      return entities().builder(Address.TYPE)
               .with(Address.ID, 42L)
               .with(Address.STREET, "Street")
               .with(Address.CITY, "City")
@@ -70,7 +70,7 @@ public class StoreTest extends EntityTestUnit {
     else if (entityType.equals(Customer.TYPE)) {
       //Initialize an entity representing the table STORE.CUSTOMER,
       //which can be used for the testing
-      return getEntities().builder(Customer.TYPE)
+      return entities().builder(Customer.TYPE)
               .with(Customer.ID, UUID.randomUUID().toString())
               .with(Customer.FIRST_NAME, "Robert")
               .with(Customer.LAST_NAME, "Ford")
@@ -78,7 +78,7 @@ public class StoreTest extends EntityTestUnit {
               .build();
     }
     else if (entityType.equals(CustomerAddress.TYPE)) {
-      return getEntities().builder(CustomerAddress.TYPE)
+      return entities().builder(CustomerAddress.TYPE)
               .with(CustomerAddress.CUSTOMER_FK, foreignKeyEntities.get(Customer.TYPE))
               .with(CustomerAddress.ADDRESS_FK, foreignKeyEntities.get(Address.TYPE))
               .build();

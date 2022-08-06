@@ -24,7 +24,7 @@ public final class LoginLogout extends AbstractEntityUsageScenario<EmpDeptAppPan
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 4;
   }
 }

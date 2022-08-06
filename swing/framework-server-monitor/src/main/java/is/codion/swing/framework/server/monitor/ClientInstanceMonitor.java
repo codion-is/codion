@@ -51,14 +51,14 @@ public final class ClientInstanceMonitor {
   /**
    * @return the {@link RemoteClient}
    */
-  public RemoteClient getRemoteClient() {
+  public RemoteClient remoteClient() {
     return remoteClient;
   }
 
   /**
    * @return the {@link State} for controlling whether logging is enabled
    */
-  public State getLoggingEnabledState() {
+  public State loggingEnabledState() {
     return loggingEnabledState;
   }
 
@@ -66,10 +66,10 @@ public final class ClientInstanceMonitor {
    * @return the creation date of the client connection
    * @throws RemoteException in case of an exception
    */
-  public LocalDateTime getCreationDate() throws RemoteException {
-    ClientLog log = server.getClientLog(remoteClient.clientId());
+  public LocalDateTime creationDate() throws RemoteException {
+    ClientLog log = server.clientLog(remoteClient.clientId());
 
-    return log == null ? null : log.getConnectionCreationDate();
+    return log == null ? null : log.connectionCreationDate();
   }
 
   /**
@@ -85,17 +85,17 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshLog() throws RemoteException {
-    ClientLog log = server.getClientLog(remoteClient.clientId());
+    ClientLog log = server.clientLog(remoteClient.clientId());
     try {
       logDocument.remove(0, logDocument.getLength());
       logRootNode.removeAllChildren();
       if (log != null) {
         StringBuilder logBuilder = new StringBuilder();
-        for (MethodLogger.Entry entry : log.getEntries()) {
+        for (MethodLogger.Entry entry : log.entries()) {
           entry.append(logBuilder);
           DefaultMutableTreeNode entryNode = new DefaultMutableTreeNode(getEntryString(entry));
           if (entry.hasChildEntries()) {
-            addChildEntries(entryNode, entry.getChildEntries());
+            addChildEntries(entryNode, entry.childEntries());
           }
           logRootNode.add(entryNode);
         }
@@ -111,14 +111,14 @@ public final class ClientInstanceMonitor {
     }
   }
 
-  public Document getLogDocument() {
+  public Document logDocument() {
     return logDocument;
   }
 
   /**
    * @return the TreeModel for displaying the log in a Tree view
    */
-  public DefaultTreeModel getLogTreeModel() {
+  public DefaultTreeModel logTreeModel() {
     return logTreeModel;
   }
 
@@ -147,18 +147,18 @@ public final class ClientInstanceMonitor {
     for (MethodLogger.Entry entry : childEntries) {
       DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(getEntryString(entry));
       if (entry.hasChildEntries()) {
-        addChildEntries(subEntry, entry.getChildEntries());
+        addChildEntries(subEntry, entry.childEntries());
       }
       entryNode.add(subEntry);
     }
   }
 
   private static String getEntryString(MethodLogger.Entry entry) {
-    StringBuilder builder = new StringBuilder(entry.getMethod()).append(" [")
-            .append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.getDuration())))
+    StringBuilder builder = new StringBuilder(entry.method()).append(" [")
+            .append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.duration())))
             .append(" μs").append("]");
-    if (entry.getAccessMessage() != null) {
-      builder.append(": ").append(entry.getAccessMessage()).toString();
+    if (entry.accessMessage() != null) {
+      builder.append(": ").append(entry.accessMessage()).toString();
     }
 
     return builder.toString();

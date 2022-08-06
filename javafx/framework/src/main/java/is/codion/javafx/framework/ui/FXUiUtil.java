@@ -824,7 +824,7 @@ public final class FXUiUtil {
     grid.setVgap(10);
     grid.setPadding(new Insets(20, 150, 10, 10));
 
-    TextField username = new TextField(defaultUser == null ? "" : defaultUser.getUsername());
+    TextField username = new TextField(defaultUser == null ? "" : defaultUser.username());
     username.setPromptText(Messages.username());
     PasswordField password = new PasswordField();
     password.setText(defaultUser == null || defaultUser.getPassword() == null ? "" : String.valueOf(defaultUser.getPassword()));
@@ -911,7 +911,7 @@ public final class FXUiUtil {
    * @param <T> the type of the parent
    * @return the parent, or null if none is found
    */
-  public static <T> T getParentOfType(Node node, Class<T> clazz) {
+  public static <T> T parentOfType(Node node, Class<T> clazz) {
     requireNonNull(node);
     requireNonNull(clazz);
     Parent parent = node.getParent();

@@ -68,7 +68,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   public void updateView() throws RemoteException {
-    creationDateField.setText(DATE_TIME_FORMATTER.format(model.getCreationDate()));
+    creationDateField.setText(DATE_TIME_FORMATTER.format(model.creationDate()));
     model.refreshLog();
   }
 
@@ -78,7 +78,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     creationDatePanel.add(creationDateField);
 
     JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    Components.checkBox(model.getLoggingEnabledState())
+    Components.checkBox(model.loggingEnabledState())
             .caption("Logging enabled")
             .build(settingsPanel::add);
     Components.button(control(this::updateView))
@@ -108,14 +108,14 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   private JTree createLogTree() {
-    JTree treeLog = new JTree(model.getLogTreeModel());
+    JTree treeLog = new JTree(model.logTreeModel());
     treeLog.setRootVisible(false);
 
     return treeLog;
   }
 
   private JTextArea createLogTextArea() {
-    JTextArea textArea = new JTextArea(model.getLogDocument());
+    JTextArea textArea = new JTextArea(model.logDocument());
     Font font = textArea.getFont();
     textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
     textArea.setEditable(false);
@@ -139,9 +139,9 @@ public final class ClientInstanceMonitorPanel extends JPanel {
       throw new IllegalStateException("No client selected");
     }
 
-    User user = model.getRemoteClient().user();
+    User user = model.remoteClient().user();
     LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
-    String filename = user.getUsername() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate) + ".log";
+    String filename = user.username() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate) + ".log";
 
     Files.write(Dialogs.fileSelectionDialog()
             .owner(this)

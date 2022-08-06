@@ -98,7 +98,7 @@ public class EntityServletServerTest {
     SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/ser";
     SERVER_JSON_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/json";
     server = EntityServer.startServer(configuration);
-    admin = server.getServerAdmin(ADMIN_USER);
+    admin = server.serverAdmin(ADMIN_USER);
   }
 
   @AfterAll
@@ -567,7 +567,7 @@ public class EntityServletServerTest {
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
 
-    Collection<RemoteClient> clients = admin.getClients(clientTypeId);
+    Collection<RemoteClient> clients = admin.clients(clientTypeId);
     assertEquals(1, clients.size());
 
     //try to change the clientId
@@ -591,7 +591,7 @@ public class EntityServletServerTest {
 
     client.close();
 
-    clients = admin.getClients(clientTypeId);
+    clients = admin.clients(clientTypeId);
     assertTrue(clients.isEmpty());
   }
 
@@ -620,7 +620,7 @@ public class EntityServletServerTest {
     CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     credentialsProvider.setCredentials(
             new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-            new UsernamePasswordCredentials(user.getUsername(), String.valueOf(user.getPassword())));
+            new UsernamePasswordCredentials(user.username(), String.valueOf(user.getPassword())));
 
     AuthCache authCache = new BasicAuthCache();
     authCache.put(targetHost, new BasicScheme());

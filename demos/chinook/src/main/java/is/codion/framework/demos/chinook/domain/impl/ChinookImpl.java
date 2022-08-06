@@ -414,8 +414,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                           RandomPlaylistParameters parameters) throws DatabaseException {
       connection.beginTransaction();
       try {
-        Key playlistKey = insertPlaylistTracks(connection, parameters.getPlaylistName(),
-                getRandomTrackIds((LocalEntityConnection) connection, parameters.getNoOfTracks()));
+        Key playlistKey = insertPlaylistTracks(connection, parameters.playlistName(),
+                getRandomTrackIds((LocalEntityConnection) connection, parameters.noOfTracks()));
 
         connection.commitTransaction();
 
@@ -473,14 +473,14 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     public List<Entity> execute(EntityConnection entityConnection,
                                 RaisePriceParameters parameters) throws DatabaseException {
       SelectCondition selectCondition = where(Track.ID)
-              .equalTo(parameters.getTrackIds())
+              .equalTo(parameters.trackIds())
               .selectBuilder()
               .forUpdate()
               .build();
 
       return entityConnection.update(Entity.castTo(Track.class,
                       entityConnection.select(selectCondition)).stream()
-              .map(track -> track.raisePrice(parameters.getPriceIncrease()))
+              .map(track -> track.raisePrice(parameters.priceIncrease()))
               .collect(toList()));
     }
   }

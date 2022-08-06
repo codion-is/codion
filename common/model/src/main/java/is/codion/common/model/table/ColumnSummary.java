@@ -21,7 +21,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider) {
+    public <T extends Number> String summary(SummaryValueProvider<T> valueProvider) {
       return "";
     }
   }, SUM {
@@ -31,7 +31,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider) {
+    public <T extends Number> String summary(SummaryValueProvider<T> valueProvider) {
       Collection<T> values = valueProvider.values();
       if (!values.isEmpty()) {
         return addSubsetIndicator(valueProvider.format(values.stream()
@@ -48,7 +48,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider) {
+    public <T extends Number> String summary(SummaryValueProvider<T> valueProvider) {
       Collection<T> values = valueProvider.values();
       if (!values.isEmpty()) {
         OptionalDouble average = values.stream()
@@ -68,7 +68,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider) {
+    public <T extends Number> String summary(SummaryValueProvider<T> valueProvider) {
       Collection<T> values = valueProvider.values();
       if (!values.isEmpty()) {
         OptionalDouble min = values.stream()
@@ -89,7 +89,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider) {
+    public <T extends Number> String summary(SummaryValueProvider<T> valueProvider) {
       Collection<T> values = valueProvider.values();
       if (!values.isEmpty()) {
         OptionalDouble max = values.stream()
@@ -110,7 +110,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
     }
 
     @Override
-    public <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider) {
+    public <T extends Number> String summary(SummaryValueProvider<T> valueProvider) {
       Collection<T> values = valueProvider.values();
       if (!values.isEmpty()) {
         OptionalDouble min = values.stream()

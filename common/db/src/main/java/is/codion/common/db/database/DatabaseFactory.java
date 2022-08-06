@@ -65,7 +65,7 @@ public interface DatabaseFactory {
   static Database getDatabase() {
     try {
       DatabaseFactory factory = databaseFactory();
-      if (AbstractDatabase.instance == null || !AbstractDatabase.instance.getUrl().equals(Database.DATABASE_URL.get())) {
+      if (AbstractDatabase.instance == null || !AbstractDatabase.instance.url().equals(Database.DATABASE_URL.get())) {
         //replace the instance
         AbstractDatabase.instance = factory.createDatabase(Database.DATABASE_URL.get());
       }

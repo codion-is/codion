@@ -27,7 +27,7 @@ public interface FilteredTableSortModel<R, C> {
    * @param columnIdentifier the identifier of the column to sort by
    * @param sortOrder the sorting order
    * @see #addSortOrder(Object, SortOrder)
-   * @see #getSortingState(Object)
+   * @see #sortingState(Object)
    */
   void setSortOrder(C columnIdentifier, SortOrder sortOrder);
 
@@ -38,7 +38,7 @@ public interface FilteredTableSortModel<R, C> {
    * @param columnIdentifier the identifier of the column to sort by
    * @param sortOrder the sorting order
    * @see #setSortOrder(Object, SortOrder)
-   * @see #getSortingState(Object)
+   * @see #sortingState(Object)
    */
   void addSortOrder(C columnIdentifier, SortOrder sortOrder);
 
@@ -46,7 +46,7 @@ public interface FilteredTableSortModel<R, C> {
    * @param columnIdentifier the column identifier
    * @return the {@link SortingState} associated with the given column
    */
-  SortingState getSortingState(C columnIdentifier);
+  SortingState sortingState(C columnIdentifier);
 
   /**
    * @return true if sorting is enabled for one or more columns

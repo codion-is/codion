@@ -81,7 +81,7 @@ public class DatabaseException extends Exception {
    * available when running with a local database connection.
    * @return the sql query which caused the exception, null if not applicable
    */
-  public final String getStatement() {
+  public final String statement() {
     return this.statement;
   }
 
@@ -90,7 +90,7 @@ public class DatabaseException extends Exception {
    * a local database connection.
    * @return the underlying error code, -1 if not available
    */
-  public final int getErrorCode() {
+  public final int errorCode() {
     return errorCode;
   }
 

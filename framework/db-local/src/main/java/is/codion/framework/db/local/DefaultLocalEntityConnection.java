@@ -151,7 +151,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public User user() {
-    return connection.getUser();
+    return connection.user();
   }
 
   @Override
@@ -672,7 +672,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     try {
       logAccess("executeFunction: " + functionType, argument);
       synchronized (connection) {
-        return functionType.execute((C) this, domain.getFunction(functionType), argument);
+        return functionType.execute((C) this, domain.function(functionType), argument);
       }
     }
     catch (DatabaseException e) {
@@ -697,7 +697,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     try {
       logAccess("executeProcedure: " + procedureType, argument);
       synchronized (connection) {
-        procedureType.execute((C) this, domain.getProcedure(procedureType), argument);
+        procedureType.execute((C) this, domain.procedure(procedureType), argument);
       }
     }
     catch (DatabaseException e) {
@@ -717,7 +717,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         logAccess("fillReport: " + reportType, reportParameters);
-        R result = reportType.fillReport(connection.getConnection(), domain.getReport(reportType), reportParameters);
+        R result = reportType.fillReport(connection.getConnection(), domain.report(reportType), reportParameters);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -743,7 +743,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws DatabaseException {
     requireNonNull(blobData, "blobData");
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").getEntityType());
+    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").entityType());
     checkIfReadOnly(entityDefinition.entityType());
     ColumnProperty<byte[]> blobProperty = entityDefinition.columnProperty(blobAttribute);
     Condition condition = condition(primaryKey);
@@ -789,7 +789,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException {
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").getEntityType());
+    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").entityType());
     ColumnProperty<byte[]> blobProperty = entityDefinition.columnProperty(blobAttribute);
     PreparedStatement statement = null;
     SQLException exception = null;
@@ -978,7 +978,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             SelectCondition referencedEntitiesCondition = condition(referencedKeys)
                     .selectBuilder()
                     .fetchDepth(conditionFetchDepthLimit)
-                    .selectAttributes(getAttributesToSelect(foreignKeyProperty, referencedKeys.get(0).getAttributes()))
+                    .selectAttributes(getAttributesToSelect(foreignKeyProperty, referencedKeys.get(0).attributes()))
                     .build();
             List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
@@ -1175,18 +1175,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private DatabaseException translateSQLException(SQLException exception) {
-    Database database = connection.getDatabase();
+    Database database = connection.database();
     if (database.isUniqueConstraintException(exception)) {
-      return new UniqueConstraintException(exception, database.getErrorMessage(exception));
+      return new UniqueConstraintException(exception, database.errorMessage(exception));
     }
     else if (database.isReferentialIntegrityException(exception)) {
-      return new ReferentialIntegrityException(exception, database.getErrorMessage(exception));
+      return new ReferentialIntegrityException(exception, database.errorMessage(exception));
     }
     else if (database.isTimeoutException(exception)) {
-      return new QueryTimeoutException(exception, database.getErrorMessage(exception));
+      return new QueryTimeoutException(exception, database.errorMessage(exception));
     }
 
-    return new DatabaseException(exception, database.getErrorMessage(exception));
+    return new DatabaseException(exception, database.errorMessage(exception));
   }
 
   private void rollbackQuietly() {
@@ -1250,7 +1250,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private void countQuery(String query) {
-    connection.getDatabase().countQuery(query);
+    connection.database().countQuery(query);
   }
 
   private void checkIfReadOnly(List<? extends Entity> entities) throws DatabaseException {

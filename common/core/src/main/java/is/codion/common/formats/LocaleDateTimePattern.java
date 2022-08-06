@@ -37,29 +37,29 @@ public interface LocaleDateTimePattern {
   /**
    * @return the time part of this format, null if none is available
    */
-  String getTimePattern();
+  String timePattern();
 
   /**
    * @return the date part of this format using the default Locale
    */
-  String getDatePattern();
+  String datePattern();
 
   /**
    * @return the date and time (if available) parts of this format using the default Locale
    */
-  String getDateTimePattern();
+  String dateTimePattern();
 
   /**
    * @param locale the locale
    * @return the date part of this format
    */
-  String getDatePattern(Locale locale);
+  String datePattern(Locale locale);
 
   /**
    * @param locale the locale
    * @return the date and time (if available) parts of this format
    */
-  String getDateTimePattern(Locale locale);
+  String dateTimePattern(Locale locale);
 
   /**
    * @return a new {@link DateTimeFormatter} instance based on this pattern

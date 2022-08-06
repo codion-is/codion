@@ -14,18 +14,18 @@ public interface UsageScenario<T> {
   /**
    * @return the name of this scenario
    */
-  String getName();
+  String name();
 
   /**
    * @return the default weight for this scenario, 1 by default
    */
-  int getDefaultWeight();
+  int defaultWeight();
 
   /**
    * The maximum time in milliseconds this scenario can run before issuing a warning.
    * @return the warning time
    */
-  int getMaximumTime();
+  int maximumTime();
 
   /**
    * Runs this scenario with the given application
@@ -36,12 +36,12 @@ public interface UsageScenario<T> {
   /**
    * @return the total number of times this scenario has been run
    */
-  int getTotalRunCount();
+  int totalRunCount();
 
   /**
    * @return any exceptions that have occurred during a run
    */
-  List<Exception> getExceptions();
+  List<Exception> exceptions();
 
   /**
    * Resets the run counters
@@ -56,10 +56,10 @@ public interface UsageScenario<T> {
   /**
    * @return the number of times this scenario has been successfully run
    */
-  int getSuccessfulRunCount();
+  int successfulRunCount();
 
   /**
    * @return the number of times this scenario has been unsuccessfully run
    */
-  int getUnsuccessfulRunCount();
+  int unsuccessfulRunCount();
 }

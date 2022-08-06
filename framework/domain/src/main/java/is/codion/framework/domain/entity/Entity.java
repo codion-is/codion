@@ -346,7 +346,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static boolean isKeyModified(Collection<Entity> entities) {
     return requireNonNull(entities).stream()
-            .anyMatch(entity -> entity.primaryKey().getAttributes().stream()
+            .anyMatch(entity -> entity.primaryKey().attributes().stream()
                     .anyMatch(entity::isModified));
   }
 
@@ -605,7 +605,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static LinkedHashMap<EntityType, List<Key>> mapKeysToType(Collection<Key> keys) {
     return requireNonNull(keys).stream()
-            .collect(groupingBy(Key::getEntityType, LinkedHashMap::new, toList()));
+            .collect(groupingBy(Key::entityType, LinkedHashMap::new, toList()));
   }
 
   /**

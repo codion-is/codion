@@ -149,91 +149,91 @@ public final class ServerMonitor {
   /**
    * @return the server being monitored
    */
-  public EntityServerAdmin getServer() {
+  public EntityServerAdmin server() {
     return server;
   }
 
   /**
    * @return the server information
    */
-  public ServerInformation getServerInformation() {
+  public ServerInformation serverInformation() {
     return serverInformation;
   }
 
   /**
    * @return the amount of memory being used by the server
    */
-  public ValueObserver<String> getMemoryUsageObserver() {
+  public ValueObserver<String> memoryUsageObserver() {
     return memoryUsageValue;
   }
 
   /**
    * @return the number of connected clients
    */
-  public ValueObserver<Integer> getConnectionCountObserver() {
+  public ValueObserver<Integer> connectionCountObserver() {
     return connectionCountValue;
   }
 
   /**
    * @return the client monitor
    */
-  public ClientUserMonitor getClientMonitor() {
+  public ClientUserMonitor clientMonitor() {
     return clientMonitor;
   }
 
   /**
    * @return the database monitor
    */
-  public DatabaseMonitor getDatabaseMonitor() {
+  public DatabaseMonitor databaseMonitor() {
     return databaseMonitor;
   }
 
   /**
    * @return the available log levels
    */
-  public List<Object> getLogLevels() {
-    return loggerProxy.getLogLevels();
+  public List<Object> logLevels() {
+    return loggerProxy.logLevels();
   }
 
   /**
    * @return the connection request dataset
    */
-  public XYDataset getConnectionRequestsDataset() {
+  public XYDataset connectionRequestsDataset() {
     return connectionRequestsPerSecondCollection;
   }
 
   /**
    * @return the memory usage dataset
    */
-  public XYDataset getMemoryUsageDataset() {
+  public XYDataset memoryUsageDataset() {
     return memoryUsageCollection;
   }
 
   /**
    * @return the system load dataset
    */
-  public XYDataset getSystemLoadDataset() {
+  public XYDataset systemLoadDataset() {
     return systemLoadCollection;
   }
 
   /**
    * @return the connection count dataset
    */
-  public XYDataset getConnectionCountDataset() {
+  public XYDataset connectionCountDataset() {
     return connectionCountCollection;
   }
 
   /**
    * @return the garbage collection event dataset
    */
-  public XYDataset getGcEventsDataset() {
+  public XYDataset gcEventsDataset() {
     return gcEventsCollection;
   }
 
   /**
    * @return the thread count dataset
    */
-  public XYDataset getThreadCountDataset() {
+  public XYDataset threadCountDataset() {
     return threadCountCollection;
   }
 
@@ -241,7 +241,7 @@ public final class ServerMonitor {
    * @return the server environment info
    * @throws RemoteException in case of a communication error
    */
-  public String getEnvironmentInfo() throws RemoteException {
+  public String environmentInfo() throws RemoteException {
     StringBuilder contents = new StringBuilder();
     String startDate = LocaleDateTimePattern.builder()
             .delimiterDash().yearFourDigits().hoursMinutesSeconds()
@@ -252,13 +252,13 @@ public final class ServerMonitor {
     contents.append("Server version:").append("\n");
     contents.append(serverInformation.serverVersion()).append("\n");
     contents.append("Database URL:").append("\n");
-    contents.append(server.getDatabaseUrl()).append("\n").append("\n");
+    contents.append(server.databaseUrl()).append("\n").append("\n");
     contents.append("Server locale: ").append("\n");
     contents.append(serverInformation.locale()).append("\n");
     contents.append("Server time zone: ").append("\n");
     contents.append(serverInformation.timeZone()).append("\n");
     contents.append("System properties:").append("\n");
-    contents.append(server.getSystemProperties());
+    contents.append(server.systemProperties());
 
     return contents.toString();
   }
@@ -287,7 +287,7 @@ public final class ServerMonitor {
    */
   public void refreshDomainList() throws RemoteException {
     domainListModel.setDataVector(new Object[][] {}, new Object[] {"Entity Type", "Table name"});
-    Map<String, String> definitions = server.getEntityDefinitions();
+    Map<String, String> definitions = server.entityDefinitions();
     for (Map.Entry<String, String> definition : definitions.entrySet()) {
       domainListModel.addRow(new Object[] {definition.getKey(), definition.getValue()});
     }
@@ -296,7 +296,7 @@ public final class ServerMonitor {
   /**
    * @return the table model for viewing the domain models
    */
-  public TableModel getDomainTableModel() {
+  public TableModel domainTableModel() {
     return domainListModel;
   }
 
@@ -317,7 +317,7 @@ public final class ServerMonitor {
    */
   public boolean isServerReachable() {
     try {
-      server.getUsedMemory();
+      server.usedMemory();
       return true;
     }
     catch (Exception e) {
@@ -328,7 +328,7 @@ public final class ServerMonitor {
   /**
    * @return the value controlling the update interval
    */
-  public Value<Integer> getUpdateIntervalValue() {
+  public Value<Integer> updateIntervalValue() {
     return updateIntervalValue;
   }
 
@@ -342,14 +342,14 @@ public final class ServerMonitor {
   /**
    * @return a listener notified when the connection number limit is changed
    */
-  public Value<Integer> getConnectionLimitValue() {
+  public Value<Integer> connectionLimitValue() {
     return connectionLimitValue;
   }
 
   /**
    * @return a listener notified when the log level has changed
    */
-  public Value<Object> getLogLevelValue() {
+  public Value<Object> logLevelValue() {
     return logLevelValue;
   }
 
@@ -393,9 +393,9 @@ public final class ServerMonitor {
     long time = System.currentTimeMillis();
     try {
       Server<?, EntityServerAdmin> theServer = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
-      EntityServerAdmin serverAdmin = theServer.getServerAdmin(serverAdminUser);
+      EntityServerAdmin serverAdmin = theServer.serverAdmin(serverAdminUser);
       //just some simple call to validate the remote connection
-      serverAdmin.getUsedMemory();
+      serverAdmin.usedMemory();
       LOG.info("ServerMonitor connected to server: {}", serverName);
       return serverAdmin;
     }
@@ -415,31 +415,31 @@ public final class ServerMonitor {
   private void updateStatistics() {
     try {
       if (!shutdown) {
-        ServerAdmin.ServerStatistics statistics = server.getServerStatistics(lastStatisticsUpdateTime);
-        long timestamp = statistics.getTimestamp();
+        ServerAdmin.ServerStatistics statistics = server.serverStatistics(lastStatisticsUpdateTime);
+        long timestamp = statistics.timestamp();
         lastStatisticsUpdateTime = timestamp;
-        connectionLimitValue.set(statistics.getConnectionLimit());
-        connectionCountValue.set(statistics.getConnectionCount());
-        memoryUsageValue.set(MEMORY_USAGE_FORMAT.format(statistics.getUsedMemory()) + " KB");
-        connectionRequestsPerSecondSeries.add(timestamp, statistics.getRequestsPerSecond());
-        maxMemorySeries.add(timestamp, statistics.getMaximumMemory() / THOUSAND);
-        allocatedMemorySeries.add(timestamp, statistics.getAllocatedMemory() / THOUSAND);
-        usedMemorySeries.add(timestamp, statistics.getUsedMemory() / THOUSAND);
-        systemLoadSeries.add(timestamp, statistics.getSystemCpuLoad() * 100);
-        processLoadSeries.add(timestamp, statistics.getProcessCpuLoad() * 100);
-        connectionCountSeries.add(timestamp, statistics.getConnectionCount());
-        connectionLimitSeries.add(timestamp, statistics.getConnectionLimit());
-        addThreadStatistics(timestamp, statistics.getThreadStatistics());
-        addGCInfo(statistics.getGcEvents());
+        connectionLimitValue.set(statistics.connectionLimit());
+        connectionCountValue.set(statistics.connectionCount());
+        memoryUsageValue.set(MEMORY_USAGE_FORMAT.format(statistics.usedMemory()) + " KB");
+        connectionRequestsPerSecondSeries.add(timestamp, statistics.requestsPerSecond());
+        maxMemorySeries.add(timestamp, statistics.maximumMemory() / THOUSAND);
+        allocatedMemorySeries.add(timestamp, statistics.allocatedMemory() / THOUSAND);
+        usedMemorySeries.add(timestamp, statistics.usedMemory() / THOUSAND);
+        systemLoadSeries.add(timestamp, statistics.systemCpuLoad() * 100);
+        processLoadSeries.add(timestamp, statistics.processCpuLoad() * 100);
+        connectionCountSeries.add(timestamp, statistics.connectionCount());
+        connectionLimitSeries.add(timestamp, statistics.connectionLimit());
+        addThreadStatistics(timestamp, statistics.threadStatistics());
+        addGCInfo(statistics.gcEvents());
       }
     }
     catch (RemoteException ignored) {/*ignored*/}
   }
 
   private void addThreadStatistics(long timestamp, ServerAdmin.ThreadStatistics threadStatistics) {
-    threadCountSeries.add(timestamp, threadStatistics.getThreadCount());
-    daemonThreadCountSeries.add(timestamp, threadStatistics.getDaemonThreadCount());
-    for (Map.Entry<Thread.State, Integer> entry : threadStatistics.getThreadStateCount().entrySet()) {
+    threadCountSeries.add(timestamp, threadStatistics.threadCount());
+    daemonThreadCountSeries.add(timestamp, threadStatistics.daemonThreadCount());
+    for (Map.Entry<Thread.State, Integer> entry : threadStatistics.threadStateCount().entrySet()) {
       XYSeries stateSeries = threadStateSeries.get(entry.getKey());
       if (stateSeries == null) {
         stateSeries = new XYSeries(entry.getKey());
@@ -452,13 +452,13 @@ public final class ServerMonitor {
 
   private void addGCInfo(List<ServerAdmin.GcEvent> gcEvents) {
     for (ServerAdmin.GcEvent event : gcEvents) {
-      XYSeries typeSeries = gcTypeSeries.get(GC_EVENT_PREFIX + event.getGcName());
+      XYSeries typeSeries = gcTypeSeries.get(GC_EVENT_PREFIX + event.gcName());
       if (typeSeries == null) {
-        typeSeries = new XYSeries(GC_EVENT_PREFIX + event.getGcName());
-        gcTypeSeries.put(GC_EVENT_PREFIX + event.getGcName(), typeSeries);
+        typeSeries = new XYSeries(GC_EVENT_PREFIX + event.gcName());
+        gcTypeSeries.put(GC_EVENT_PREFIX + event.gcName(), typeSeries);
         gcEventsCollection.addSeries(typeSeries);
       }
-      typeSeries.add(event.getTimestamp(), event.getDuration());
+      typeSeries.add(event.timestamp(), event.duration());
     }
   }
 

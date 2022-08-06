@@ -68,15 +68,15 @@ final class H2Database extends AbstractDatabase {
   }
 
   @Override
-  public String getName() {
-    String name= removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
+  public String name() {
+    String name= removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
             JDBC_URL_PREFIX_MEM, JDBC_URL_PREFIX_SSL, JDBC_URL_PREFIX_ZIP, JDBC_URL_PREFIX);
 
     return name.isEmpty() ? "private" : name;
   }
 
   @Override
-  public String getSelectForUpdateClause() {
+  public String selectForUpdateClause() {
     if (nowait) {
       return FOR_UPDATE_NOWAIT;
     }
@@ -85,17 +85,17 @@ final class H2Database extends AbstractDatabase {
   }
 
   @Override
-  public String getLimitOffsetClause(Integer limit, Integer offset) {
+  public String limitOffsetClause(Integer limit, Integer offset) {
     return createLimitOffsetClause(limit, offset);
   }
 
   @Override
-  public String getAutoIncrementQuery(String idSource) {
+  public String autoIncrementQuery(String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
   @Override
-  public String getSequenceQuery(String sequenceName) {
+  public String sequenceQuery(String sequenceName) {
     return SEQUENCE_VALUE_QUERY + requireNonNull(sequenceName, "sequenceName");
   }
 
@@ -125,7 +125,7 @@ final class H2Database extends AbstractDatabase {
       Properties properties = new Properties();
       properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
       for (String scriptPath : scriptPaths) {
-        String initUrl = getUrl() + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
+        String initUrl = url() + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
         try {
           DriverManager.getConnection(initUrl, properties).close();
         }
@@ -134,15 +134,15 @@ final class H2Database extends AbstractDatabase {
         }
       }
     }
-    INITIALIZED_DATABASES.add(getUrl().toLowerCase());
+    INITIALIZED_DATABASES.add(url().toLowerCase());
   }
 
   private String getDatabasePath() {
-    return removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX_FILE, JDBC_URL_PREFIX);
+    return removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX_FILE, JDBC_URL_PREFIX);
   }
 
   private boolean isEmbeddedInMemory() {
-    return getUrl().startsWith(JDBC_URL_PREFIX_MEM);
+    return url().startsWith(JDBC_URL_PREFIX_MEM);
   }
 
   private boolean databaseFileExists() {

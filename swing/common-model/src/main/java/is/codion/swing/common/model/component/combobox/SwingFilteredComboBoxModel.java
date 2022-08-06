@@ -495,7 +495,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   private static final class SortComparator<T> implements Comparator<T> {
 
-    private final Comparator<T> comparator = Text.getSpaceAwareCollator();
+    private final Comparator<T> comparator = Text.spaceAwareCollator();
 
     @Override
     public int compare(T o1, T o2) {

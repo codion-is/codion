@@ -34,7 +34,7 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
     entityComboBoxModel.refresh();
   }
 
-  public SwingEntityComboBoxModel getEntityComboBoxModel() {
+  public SwingEntityComboBoxModel entityComboBoxModel() {
     return entityComboBoxModel;
   }
 

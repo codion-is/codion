@@ -277,7 +277,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
 
   private void activateView() {
     initializePanel();
-    TabPane parent = FXUiUtil.getParentOfType(this, TabPane.class);
+    TabPane parent = FXUiUtil.parentOfType(this, TabPane.class);
     if (parent != null) {
       parent.getTabs().stream()
               .filter(tab -> tab.getContent().equals(this))
@@ -300,7 +300,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
       editPane = new BorderPane();
       editView.initializePanel();
       editPane.setCenter(editView);
-      editPane.setRight(editView.getButtonPanel());
+      editPane.setRight(editView.createButtonPanel());
     }
     else {
       editPane = null;

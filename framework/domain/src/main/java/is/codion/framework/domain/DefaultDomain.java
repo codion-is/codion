@@ -72,7 +72,7 @@ public abstract class DefaultDomain implements Domain {
   }
 
   @Override
-  public final <T, R, P> Report<T, R, P> getReport(ReportType<T, R, P> reportType) {
+  public final <T, R, P> Report<T, R, P> report(ReportType<T, R, P> reportType) {
     Report<T, R, P> report = reports.getReport(reportType);
     if (report == null) {
       throw new IllegalArgumentException("Undefined report: " + reportType);
@@ -82,12 +82,12 @@ public abstract class DefaultDomain implements Domain {
   }
 
   @Override
-  public final <C, T> DatabaseProcedure<C, T> getProcedure(ProcedureType<C, T> procedureType) {
+  public final <C, T> DatabaseProcedure<C, T> procedure(ProcedureType<C, T> procedureType) {
     return procedures.getProcedure(procedureType);
   }
 
   @Override
-  public final <C, T, R> DatabaseFunction<C, T, R> getFunction(FunctionType<C, T, R> functionType) {
+  public final <C, T, R> DatabaseFunction<C, T, R> function(FunctionType<C, T, R> functionType) {
     return functions.getFunction(functionType);
   }
 

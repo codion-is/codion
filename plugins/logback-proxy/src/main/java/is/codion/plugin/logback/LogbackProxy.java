@@ -32,7 +32,7 @@ public final class LogbackProxy implements LoggerProxy {
   }
 
   @Override
-  public List<Object> getLogLevels() {
+  public List<Object> logLevels() {
     return asList(Level.OFF, Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR);
   }
 }

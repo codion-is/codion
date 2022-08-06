@@ -14,18 +14,18 @@ public class PostgreSQLDatabaseTest {
   @Test
   void getName() {
     PostgreSQLDatabase database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid");
-    assertEquals("sid", database.getName());
+    assertEquals("sid", database.name());
     database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid;options");
-    assertEquals("sid", database.getName());
+    assertEquals("sid", database.name());
     database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid?parameters");
-    assertEquals("sid", database.getName());
+    assertEquals("sid", database.name());
     database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid?parameters;options");
-    assertEquals("sid", database.getName());
+    assertEquals("sid", database.name());
   }
 
   @Test
   void getSequenceQueryNullSequence() {
-    assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase(URL).getSequenceQuery(null));
+    assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase(URL).sequenceQuery(null));
   }
 
   @Test
@@ -37,19 +37,19 @@ public class PostgreSQLDatabaseTest {
   @Test
   void getAutoIncrementQuery() {
     PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
-    assertEquals("select currval('seq')", db.getAutoIncrementQuery("seq"));
+    assertEquals("select currval('seq')", db.autoIncrementQuery("seq"));
   }
 
   @Test
   void getSequenceQuery() {
     PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
-    assertEquals("select nextval('seq')", db.getSequenceQuery("seq"));
+    assertEquals("select nextval('seq')", db.sequenceQuery("seq"));
   }
 
   @Test
   void getCheckConnectionQuery() {
     PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
-    assertEquals(PostgreSQLDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
+    assertEquals(PostgreSQLDatabase.CHECK_QUERY, db.checkConnectionQuery());
   }
 
   @Test

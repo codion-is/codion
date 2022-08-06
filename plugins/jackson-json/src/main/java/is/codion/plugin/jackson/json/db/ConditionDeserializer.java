@@ -29,7 +29,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
 
   ConditionDeserializer(EntityObjectMapper entityObjectMapper) {
     super(Condition.class);
-    this.entities = entityObjectMapper.getEntities();
+    this.entities = entityObjectMapper.entities();
     this.attributeConditionDeserializer = new AttributeConditionDeserializer(entityObjectMapper);
     this.conditionCombinationDeserializer = new ConditionCombinationDeserializer(this);
     this.customConditionDeserializer = new CustomConditionDeserializer(entityObjectMapper);

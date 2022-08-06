@@ -25,7 +25,7 @@ public class TextComponentsTest {
     TextComponents.maximumLength(document, 3);
     textField.setText("123");
     assertThrows(IllegalArgumentException.class, () -> textField.setText("1234"));
-    assertEquals(1, document.getDocumentFilter().getValidators().size());
+    assertEquals(1, document.getDocumentFilter().validators().size());
     TextComponents.maximumLength(document, -1);
     textField.setText("123456789");
   }
@@ -41,7 +41,7 @@ public class TextComponentsTest {
     assertThrows(IllegalArgumentException.class, () -> textArea.setText("1234"));
     DocumentFilter documentFilter = ((AbstractDocument) document).getDocumentFilter();
     assertTrue(documentFilter instanceof CaseDocumentFilter);
-    assertEquals(1, ((CaseDocumentFilter) documentFilter).getValidators().size());
+    assertEquals(1, ((CaseDocumentFilter) documentFilter).validators().size());
     TextComponents.maximumLength(document, -1);
     textArea.setText("123456789");
   }

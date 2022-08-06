@@ -61,7 +61,7 @@ public interface MethodLogger {
   /**
    * @return an unmodifiable view of the log entries
    */
-  List<Entry> getEntries();
+  List<Entry> entries();
 
   /**
    * Instantiates a new MethodLogger, disabled by default.
@@ -95,32 +95,32 @@ public interface MethodLogger {
     /**
      * @return the child log entries
      */
-    List<Entry> getChildEntries();
+    List<Entry> childEntries();
 
     /**
      * @return the name of the method logged by this entry
      */
-    String getMethod();
+    String method();
 
     /**
      * @return true if the exit time has been set for this entry
      */
-    boolean isComplete();
+    boolean complete();
 
     /**
      * @return the method access time
      */
-    long getAccessTime();
+    long accessTime();
 
     /**
      * @return the exit time
      */
-    long getExitTime();
+    long exitTime();
 
     /**
      * @return the access message
      */
-    String getAccessMessage();
+    String accessMessage();
 
     /**
      * Returns the duration of the method call this entry represents in nanoseconds,
@@ -128,7 +128,7 @@ public interface MethodLogger {
      * This can be checked via {@code isComplete()}.
      * @return the duration of the method call this entry represents
      */
-    long getDuration();
+    long duration();
 
     /**
      * Appends this logger entry along with any child-entries to the given StringBuilder.

@@ -139,7 +139,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @return the condition model this panel uses
    */
-  public ColumnConditionModel<C, T> getModel() {
+  public ColumnConditionModel<C, T> model() {
     return this.conditionModel;
   }
 
@@ -200,7 +200,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @return the dialog used to show this filter panel
    */
-  public JDialog getDialog() {
+  public JDialog dialog() {
     return dialog;
   }
 
@@ -247,28 +247,28 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @return the condition operator combo box
    */
-  public JComboBox<Operator> getOperatorComboBox() {
+  public JComboBox<Operator> operatorComboBox() {
     return operatorCombo;
   }
 
   /**
    * @return the JComponent used to specify the equal value
    */
-  public JComponent getEqualField() {
+  public JComponent equalField() {
     return equalField;
   }
 
   /**
    * @return the JComponent used to specify the upper bound
    */
-  public JComponent getUpperBoundField() {
+  public JComponent upperBoundField() {
     return upperBoundField;
   }
 
   /**
    * @return the JComponent used to specify the lower bound
    */
-  public JComponent getLowerBoundField() {
+  public JComponent lowerBoundField() {
     return lowerBoundField;
   }
 
@@ -504,9 +504,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
             .maximumRowCount(operators.size())
-            .toolTipText(operatorComboBoxModel.selectedValue().getDescription())
+            .toolTipText(operatorComboBoxModel.selectedValue().description())
             .onBuild(comboBox -> operatorComboBoxModel.addSelectionListener(selectedOperator ->
-                    comboBox.setToolTipText(selectedOperator.getDescription())))
+                    comboBox.setToolTipText(selectedOperator.description())))
             .build();
   }
 

@@ -22,7 +22,7 @@ public class TemporalInputPanelTest {
   void setText() {
     TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class, "dd.MM.yyyy").build();
     TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
-    panel.getInputField().setText("01.03.2010");
+    panel.inputField().setText("01.03.2010");
     assertEquals(LocalDate.parse("01.03.2010", DateTimeFormatter.ofPattern("dd.MM.yyyy")), panel.getTemporal());
   }
 
@@ -32,9 +32,9 @@ public class TemporalInputPanelTest {
     TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class, "dd.MM.yyyy").build();
     TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
     panel.setTemporal(LocalDate.parse("03.04.2010", formatter));
-    assertEquals("03.04.2010", panel.getInputField().getText());
+    assertEquals("03.04.2010", panel.inputField().getText());
     panel.setTemporal(null);
-    assertEquals("__.__.____", panel.getInputField().getText());
+    assertEquals("__.__.____", panel.inputField().getText());
   }
 
   @Test
@@ -42,11 +42,11 @@ public class TemporalInputPanelTest {
     TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class, "dd.MM.yyyy").build();
     TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
     assertFalse(panel.getOptional().isPresent());
-    panel.getInputField().setText("03");
+    panel.inputField().setText("03");
     assertFalse(panel.getOptional().isPresent());
-    panel.getInputField().setText("03.04");
+    panel.inputField().setText("03.04");
     assertFalse(panel.getOptional().isPresent());
-    panel.getInputField().setText("03.04.2010");
+    panel.inputField().setText("03.04.2010");
     assertNotNull(panel.getTemporal());
   }
 
@@ -54,7 +54,7 @@ public class TemporalInputPanelTest {
   void unsupportedType() {
     TemporalField<LocalTime> field = TemporalField.builder(LocalTime.class, "hh:MM").build();
     TemporalInputPanel<LocalTime> panel = new TemporalInputPanel<>(field);
-    assertFalse(panel.getCalendarButton().isPresent());
+    assertFalse(panel.calendarButton().isPresent());
   }
 
   @Test
@@ -69,7 +69,7 @@ public class TemporalInputPanelTest {
     TemporalInputPanel<LocalDate> inputPanel = new TemporalInputPanel<>(field);
     Utilities.linkToEnabledState(enabledState, inputPanel);
     assertFalse(field.isEnabled());
-    Optional<JButton> calendarButton = inputPanel.getCalendarButton();
+    Optional<JButton> calendarButton = inputPanel.calendarButton();
     assertTrue(calendarButton.isPresent());
     assertFalse(calendarButton.get().isEnabled());
     enabledState.set(true);

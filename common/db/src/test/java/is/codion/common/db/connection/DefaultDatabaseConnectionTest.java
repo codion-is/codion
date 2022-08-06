@@ -64,7 +64,7 @@ public class DefaultDatabaseConnectionTest {
 
   @Test
   void wrongPassword() throws Exception {
-    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray())));
+    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray())));
   }
 
   @Test
@@ -85,12 +85,12 @@ public class DefaultDatabaseConnectionTest {
 
   @Test
   void getDatabase() {
-    assertEquals(DATABASE, dbConnection.getDatabase());
+    assertEquals(DATABASE, dbConnection.database());
   }
 
   @Test
   void getUser() {
-    assertEquals(dbConnection.getUser(), UNIT_TEST_USER);
+    assertEquals(dbConnection.user(), UNIT_TEST_USER);
   }
 
   @Test

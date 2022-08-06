@@ -31,7 +31,7 @@ public final class DefaultTextFieldHintTest {
   void hint() {
     JTextField textField = new JTextField();
     TextFieldHint hint = new DefaultTextFieldHint(textField, "search");
-    assertEquals("search", hint.getHintText());
+    assertEquals("search", hint.hintText());
     assertEquals("search", textField.getText());
     textField.setText("he");
     assertEquals("he", textField.getText());

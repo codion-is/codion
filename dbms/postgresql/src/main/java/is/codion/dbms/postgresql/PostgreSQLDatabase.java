@@ -36,8 +36,8 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getName() {
-    String name = removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX);
+  public String name() {
+    String name = removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX);
     if (name.contains("/")) {
       name = name.substring(name.lastIndexOf('/') + 1);
     }
@@ -46,7 +46,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getSelectForUpdateClause() {
+  public String selectForUpdateClause() {
     if (nowait) {
       return FOR_UPDATE_NOWAIT;
     }
@@ -55,17 +55,17 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getLimitOffsetClause(Integer limit, Integer offset) {
+  public String limitOffsetClause(Integer limit, Integer offset) {
     return createLimitOffsetClause(limit, offset);
   }
 
   @Override
-  public String getAutoIncrementQuery(String idSource) {
+  public String autoIncrementQuery(String idSource) {
     return "select currval('" + requireNonNull(idSource, "idSource") + "')";
   }
 
   @Override
-  public String getSequenceQuery(String sequenceName) {
+  public String sequenceQuery(String sequenceName) {
     return "select nextval('" + requireNonNull(sequenceName, "sequenceName") + "')";
   }
 
@@ -106,7 +106,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getCheckConnectionQuery() {
+  public String checkConnectionQuery() {
     return CHECK_QUERY;
   }
 }

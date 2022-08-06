@@ -75,11 +75,11 @@ public interface Condition {
     /**
      * @return the Conditions comprising this Combination
      */
-    Collection<Condition> getConditions();
+    Collection<Condition> conditions();
 
     /**
      * @return the conjunction
      */
-    Conjunction getConjunction();
+    Conjunction conjunction();
   }
 }

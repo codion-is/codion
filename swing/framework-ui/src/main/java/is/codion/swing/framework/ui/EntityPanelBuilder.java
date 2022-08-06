@@ -67,7 +67,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   EntityPanelBuilder(SwingEntityModel.Builder modelBuilder) {
     this.modelBuilder = requireNonNull(modelBuilder, "modelBuilder");
-    this.entityType = modelBuilder.getEntityType();
+    this.entityType = modelBuilder.entityType();
     this.model = null;
   }
 
@@ -482,7 +482,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         }
       }
       catch (ValidationException e) {
-        attributeWithInvalidValue.set(e.getAttribute());
+        attributeWithInvalidValue.set(e.attribute());
         JOptionPane.showMessageDialog(component, e.getMessage(),
                 Messages.error(), JOptionPane.ERROR_MESSAGE);
       }

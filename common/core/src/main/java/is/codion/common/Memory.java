@@ -18,37 +18,37 @@ public final class Memory {
   /**
    * @return the total memory allocated by this JVM in kilobytes
    */
-  public static long getAllocatedMemory() {
+  public static long allocatedMemory() {
     return Runtime.getRuntime().totalMemory() / K;
   }
 
   /**
    * @return the free memory available to this JVM in kilobytes
    */
-  public static long getFreeMemory() {
+  public static long freeMemory() {
     return Runtime.getRuntime().freeMemory() / K;
   }
 
   /**
    * @return the maximum memory available to this JVM in kilobytes
    */
-  public static long getMaxMemory() {
+  public static long maxMemory() {
     return Runtime.getRuntime().maxMemory() / K;
   }
 
   /**
    * @return the memory used by this JVM in kilobytes
    */
-  public static long getUsedMemory() {
-    return getAllocatedMemory() - getFreeMemory();
+  public static long usedMemory() {
+    return allocatedMemory() - freeMemory();
   }
 
   /**
    * @return a String containing the memory usage of this JVM in kilobytes.
    */
-  public static String getMemoryUsage() {
+  public static String memoryUsage() {
     synchronized (FORMAT) {
-      return FORMAT.format(getUsedMemory()) + " KB";
+      return FORMAT.format(usedMemory()) + " KB";
     }
   }
 }

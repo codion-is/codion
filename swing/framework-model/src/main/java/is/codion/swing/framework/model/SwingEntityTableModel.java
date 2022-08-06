@@ -332,14 +332,14 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   @Override
   public Color backgroundColor(int row, Attribute<?> attribute) {
-    Object color = entityDefinition().backgroundColorProvider().getColor(itemAt(row), attribute);
+    Object color = entityDefinition().backgroundColorProvider().color(itemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
 
   @Override
   public Color foregroundColor(int row, Attribute<?> attribute) {
-    Object color = entityDefinition().foregroundColorProvider().getColor(itemAt(row), attribute);
+    Object color = entityDefinition().foregroundColorProvider().color(itemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
@@ -442,7 +442,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public final Collection<Entity> getEntitiesByKey(Collection<Key> keys) {
+  public final Collection<Entity> entitiesByKey(Collection<Key> keys) {
     requireNonNull(keys, "keys");
     return items().stream()
             .filter(entity -> keys.contains(entity.primaryKey()))
@@ -502,7 +502,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       header.add(entityDefinition().property(attribute).caption());
     }
 
-    return Text.getDelimitedString(header, Entity.getStringValueList(attributes,
+    return Text.delimitedString(header, Entity.getStringValueList(attributes,
                     selectionModel().isSelectionEmpty() ? visibleItems() : selectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }
@@ -515,7 +515,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   /**
    * @return an Observer for the table model status message, that is, the number of rows, number of selected rows etc
    */
-  public final ValueObserver<String> getStatusMessageObserver() {
+  public final ValueObserver<String> statusMessageObserver() {
     return statusMessageValue.observer();
   }
 

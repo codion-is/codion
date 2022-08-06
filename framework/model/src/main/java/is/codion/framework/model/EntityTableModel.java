@@ -317,7 +317,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param keys the primary key values to use as condition
    * @return the entities having the primary key values as in {@code keys}
    */
-  Collection<Entity> getEntitiesByKey(Collection<Key> keys);
+  Collection<Entity> entitiesByKey(Collection<Key> keys);
 
   /**
    * Sets the selected entities according to the primary keys in {@code primaryKeys}

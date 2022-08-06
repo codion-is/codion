@@ -35,7 +35,7 @@ public final class FileInputPanel extends JPanel {
     add(browseButton, BorderLayout.EAST);
   }
 
-  public JTextField getFilePathField() {
+  public JTextField filePathField() {
     return filePathField;
   }
 

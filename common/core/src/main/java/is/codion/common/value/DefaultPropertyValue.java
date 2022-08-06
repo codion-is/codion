@@ -23,7 +23,7 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
 
   DefaultPropertyValue(Object valueOwner, String propertyName, Class<T> valueClass,
                        EventObserver<T> changeObserver) {
-    super(requireNonNull(valueClass).isPrimitive() ? Primitives.getDefaultValue(valueClass) : null);
+    super(requireNonNull(valueClass).isPrimitive() ? Primitives.defaultValue(valueClass) : null);
     if (nullOrEmpty(propertyName)) {
       throw new IllegalArgumentException("propertyName is null or an empty string");
     }

@@ -150,7 +150,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final <T> EntityTableColumn<T> tableColumn(Attribute<T> attribute) {
     Optional<? extends TableColumn<Entity, ?>> tableColumn = columns.stream()
             .filter((Predicate<TableColumn<Entity, ?>>) entityTableColumn ->
-                    ((EntityTableColumn<?>) entityTableColumn).getAttribute().equals(attribute))
+                    ((EntityTableColumn<?>) entityTableColumn).attribute().equals(attribute))
             .findFirst();
 
     if (tableColumn.isPresent()) {
@@ -306,12 +306,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final Color backgroundColor(int row, Attribute<?> attribute) {
-    return (Color) entityDefinition().backgroundColorProvider().getColor(get(row), attribute);
+    return (Color) entityDefinition().backgroundColorProvider().color(get(row), attribute);
   }
 
   @Override
   public final Color foregroundColor(int row, Attribute<?> attribute) {
-    return (Color) entityDefinition().foregroundColorProvider().getColor(get(row), attribute);
+    return (Color) entityDefinition().foregroundColorProvider().color(get(row), attribute);
   }
 
   @Override
@@ -357,7 +357,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final Collection<Entity> getEntitiesByKey(Collection<Key> keys) {
+  public final Collection<Entity> entitiesByKey(Collection<Key> keys) {
     return items().stream()
             .filter(entity -> keys.stream()
                     .anyMatch(key -> entity.primaryKey().equals(key)))
@@ -409,13 +409,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final void setVisibleColumns(Attribute<?>... attributes) {
     List<Attribute<?>> attributeList = asList(attributes);
     new ArrayList<>(columns).forEach(column -> {
-      if (!attributeList.contains(((AttributeTableColumn<?>) column).getAttribute())) {
+      if (!attributeList.contains(((AttributeTableColumn<?>) column).attribute())) {
         columns.remove(column);
       }
     });
     columns.sort((col1, col2) -> {
-      Integer first = attributeList.indexOf(((AttributeTableColumn<?>) col1).getAttribute());
-      Integer second = attributeList.indexOf(((AttributeTableColumn<?>) col2).getAttribute());
+      Integer first = attributeList.indexOf(((AttributeTableColumn<?>) col1).attribute());
+      Integer second = attributeList.indexOf(((AttributeTableColumn<?>) col2).attribute());
 
       return first.compareTo(second);
     });
@@ -426,12 +426,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     List<String> header = new ArrayList<>();
     List<Attribute<?>> attributes = new ArrayList<>();
     columns.forEach(entityTableColumn -> {
-      Attribute<?> attribute = ((AttributeTableColumn<?>) entityTableColumn).getAttribute();
+      Attribute<?> attribute = ((AttributeTableColumn<?>) entityTableColumn).attribute();
       attributes.add(attribute);
       header.add(entityDefinition().property(attribute).caption());
     });
 
-    return Text.getDelimitedString(header, Entity.getStringValueList(attributes,
+    return Text.delimitedString(header, Entity.getStringValueList(attributes,
                     selectionModel().isSelectionEmpty() ? visibleItems() : selectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }
@@ -553,7 +553,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private boolean containsColumn(Attribute<?> attribute) {
     return columns.stream()
             .map(EntityTableColumn.class::cast)
-            .anyMatch(column -> column.getAttribute().equals(attribute));
+            .anyMatch(column -> column.attribute().equals(attribute));
   }
 
   /**
@@ -573,13 +573,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     OrderBy.Builder builder = OrderBy.builder();
     columnSortOrder.stream()
             .map(EntityTableColumn.class::cast)
-            .filter(column -> isColumnProperty(column.getAttribute()))
+            .filter(column -> isColumnProperty(column.attribute()))
             .forEach(column -> {
               if (column.getSortType() == SortType.ASCENDING) {
-                builder.ascending(column.getAttribute());
+                builder.ascending(column.attribute());
               }
               else {
-                builder.descending(column.getAttribute());
+                builder.descending(column.attribute());
               }
             });
 
@@ -610,7 +610,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private void applyColumnPreferences(JSONObject preferences) {
     for (AttributeTableColumn<?> column : initialColumns) {
-      Attribute<?> property = column.getAttribute();
+      Attribute<?> property = column.attribute();
       if (columns.contains(column)) {
         try {
           JSONObject columnPreferences = preferences.getJSONObject(property.name());
@@ -636,7 +636,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private JSONObject createColumnPreferences() throws Exception {
     JSONObject columnPreferencesRoot = new JSONObject();
     for (AttributeTableColumn<?> column : initialColumns) {
-      Attribute<?> property = column.getAttribute();
+      Attribute<?> property = column.attribute();
       JSONObject columnObject = new JSONObject();
       boolean visible = columns.contains(column);
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
@@ -678,7 +678,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     /**
      * @return the underlying property
      */
-    public final Attribute<T> getAttribute() {
+    public final Attribute<T> attribute() {
       return attribute;
     }
 
@@ -699,8 +699,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     @Override
     public int compare(TableColumn<Entity, ?> col1, TableColumn<Entity, ?> col2) {
       try {
-        JSONObject columnOnePreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col1).getAttribute().name());
-        JSONObject columnTwoPreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col2).getAttribute().name());
+        JSONObject columnOnePreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col1).attribute().name());
+        JSONObject columnTwoPreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col2).attribute().name());
         Integer firstIndex = columnOnePreferences.getInt(PREFERENCES_COLUMN_INDEX);
         if (firstIndex == null) {
           firstIndex = 0;

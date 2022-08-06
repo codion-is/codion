@@ -18,7 +18,7 @@ public final class SelectDepartment extends AbstractEntityUsageScenario<EmpDeptA
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 10;
   }
 }

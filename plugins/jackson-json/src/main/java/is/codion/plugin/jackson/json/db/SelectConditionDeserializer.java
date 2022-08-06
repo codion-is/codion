@@ -32,7 +32,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
   SelectConditionDeserializer(EntityObjectMapper entityObjectMapper) {
     super(SelectCondition.class);
     this.conditionDeserializer = new ConditionDeserializer(entityObjectMapper);
-    this.entities = entityObjectMapper.getEntities();
+    this.entities = entityObjectMapper.entities();
   }
 
   @Override

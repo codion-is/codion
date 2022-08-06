@@ -198,7 +198,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.connectionProvider());
     tableModel.refresh();
     tableModel.sortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
-    assertEquals(SortOrder.ASCENDING, tableModel.sortModel().getSortingState(TestDomain.EMP_NAME).sortOrder());
+    assertEquals(SortOrder.ASCENDING, tableModel.sortModel().sortingState(TestDomain.EMP_NAME).sortOrder());
 
     Key pk1 = getConnectionProvider().entities().primaryKey(TestDomain.T_EMP, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
@@ -243,24 +243,24 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     //default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).getAttribute());
+    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).getAttribute());
+    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
 
     tableModel.sortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
     orderBy = tableModel.getOrderBy();
     //still default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).getAttribute());
+    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).getAttribute());
+    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
 
     tableModel.setOrderQueryBySortOrder(true);
     orderBy = tableModel.getOrderBy();
     assertEquals(1, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(0).getAttribute());
+    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(0).attribute());
 
     tableModel.sortModel().setSortOrder(TestDomain.EMP_HIREDATE, SortOrder.DESCENDING);
     tableModel.sortModel().addSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
@@ -268,17 +268,17 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     orderBy = tableModel.getOrderBy();
     assertEquals(2, orderBy.orderByAttributes().size());
     assertFalse(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_HIREDATE, orderBy.orderByAttributes().get(0).getAttribute());
+    assertEquals(TestDomain.EMP_HIREDATE, orderBy.orderByAttributes().get(0).attribute());
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).getAttribute());
+    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
 
     tableModel.sortModel().clear();
     orderBy = tableModel.getOrderBy();
     //back to default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).getAttribute());
+    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).getAttribute());
+    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
   }
 }

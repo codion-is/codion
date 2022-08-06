@@ -5,6 +5,6 @@ import is.codion.framework.demos.world.model.CountryLanguageTableModel;
 final class CountryLanguageTablePanel extends ChartTablePanel {
 
   CountryLanguageTablePanel(CountryLanguageTableModel tableModel) {
-    super(tableModel, tableModel.getChartDataset(), "Languages");
+    super(tableModel, tableModel.chartDataset(), "Languages");
   }
 }

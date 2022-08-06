@@ -102,7 +102,7 @@ final class DefaultServerLocator implements Server.Locator {
 
   private static <T extends Remote, A extends ServerAdmin> Server<T, A> getIfReachable(Server<T, A> server,
                                                                                        int requestedServerPort) throws RemoteException {
-    ServerInformation serverInformation = server.getServerInformation();
+    ServerInformation serverInformation = server.serverInformation();
     if (requestedServerPort != -1 && serverInformation.serverPort() != requestedServerPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
               serverInformation.serverName(), serverInformation.serverPort(), requestedServerPort);
@@ -121,7 +121,7 @@ final class DefaultServerLocator implements Server.Locator {
     @Override
     public int compare(Server<T, A> o1, Server<T, A> o2) {
       try {
-        return Integer.compare(o1.getServerLoad(), o2.getServerLoad());
+        return Integer.compare(o1.serverLoad(), o2.serverLoad());
       }
       catch (RemoteException e) {
         return 1;

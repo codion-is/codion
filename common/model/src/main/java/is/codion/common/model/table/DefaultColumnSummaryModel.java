@@ -60,6 +60,6 @@ public final class DefaultColumnSummaryModel<T extends Number> implements Column
   }
 
   private void updateSummary() {
-    summaryTextValue.set(summaryValue().get().getSummary(valueProvider));
+    summaryTextValue.set(summaryValue().get().summary(valueProvider));
   }
 }

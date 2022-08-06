@@ -14,7 +14,7 @@ public interface User {
   /**
    * @return the username
    */
-  String getUsername();
+  String username();
 
   /**
    * @param password the password

@@ -27,7 +27,7 @@ public interface ColumnSummaryModel {
      * @param <T> the value type
      * @return a summary text
      */
-    <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider);
+    <T extends Number> String summary(SummaryValueProvider<T> valueProvider);
   }
 
   /**

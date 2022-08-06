@@ -16,12 +16,12 @@ class DefaultParseResult<T> implements Parser.ParseResult<T> {
   }
 
   @Override
-  public final String getText() {
+  public final String text() {
     return text;
   }
 
   @Override
-  public final T getValue() {
+  public final T value() {
     return value;
   }
 

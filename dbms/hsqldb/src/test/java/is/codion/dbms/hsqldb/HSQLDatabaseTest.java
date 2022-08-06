@@ -14,18 +14,18 @@ public class HSQLDatabaseTest {
   @Test
   void getDatabaseName() {
     HSQLDatabase database = new HSQLDatabase("jdbc:hsqldb:file:C:/data/sample;option=true;option2=false");
-    assertEquals("C:/data/sample", database.getName());
+    assertEquals("C:/data/sample", database.name());
     database = new HSQLDatabase("jdbc:hsqldb:mem:sampleDb;option=true;option2=false");
-    assertEquals("sampleDb", database.getName());
+    assertEquals("sampleDb", database.name());
     database = new HSQLDatabase("jdbc:hsqldb:mem:");
-    assertEquals("private", database.getName());
+    assertEquals("private", database.name());
     database = new HSQLDatabase("jdbc:hsqldb:res:/dir/db");
-    assertEquals("/dir/db", database.getName());
+    assertEquals("/dir/db", database.name());
   }
 
   @Test
   void getSequenceSQLNullSequence() {
-    assertThrows(NullPointerException.class, () -> new HSQLDatabase(URL).getSequenceQuery(null));
+    assertThrows(NullPointerException.class, () -> new HSQLDatabase(URL).sequenceQuery(null));
   }
 
   @Test
@@ -37,14 +37,14 @@ public class HSQLDatabaseTest {
   @Test
   void getAutoIncrementQuery() {
     HSQLDatabase db = new HSQLDatabase(URL);
-    assertEquals(HSQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
+    assertEquals(HSQLDatabase.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
   }
 
   @Test
   void getSequenceQuery() {
     HSQLDatabase db = new HSQLDatabase(URL);
     final String idSource = "seq";
-    assertEquals(HSQLDatabase.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));
+    assertEquals(HSQLDatabase.SEQUENCE_VALUE_QUERY + idSource, db.sequenceQuery(idSource));
   }
 
   @Test

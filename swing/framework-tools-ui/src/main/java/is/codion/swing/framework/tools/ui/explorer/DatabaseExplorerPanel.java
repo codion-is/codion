@@ -44,12 +44,12 @@ public final class DatabaseExplorerPanel extends JPanel {
   DatabaseExplorerPanel(DatabaseExplorerModel model) {
     this.model = requireNonNull(model);
     FilteredTable<Schema, Integer, FilteredTableModel<Schema, Integer>> schemaTable =
-            new FilteredTable<>(model.getSchemaModel());
+            new FilteredTable<>(model.schemaModel());
     JScrollPane schemaScroller = new JScrollPane(schemaTable);
 
     FilteredTable<DefinitionRow, Integer,
             FilteredTableModel<DefinitionRow, Integer>> domainTable =
-            new FilteredTable<>(model.getDefinitionModel());
+            new FilteredTable<>(model.definitionModel());
     JScrollPane tableScroller = new JScrollPane(domainTable);
 
     JSplitPane schemaTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -67,7 +67,7 @@ public final class DatabaseExplorerPanel extends JPanel {
     setLayout(Layouts.borderLayout());
     add(splitPane, BorderLayout.CENTER);
 
-    model.getDomainSourceObserver().addDataListener(textArea::setText);
+    model.domainSourceObserver().addDataListener(textArea::setText);
     schemaTable.addDoubleClickListener(this::populateSchema);
   }
 
@@ -90,7 +90,7 @@ public final class DatabaseExplorerPanel extends JPanel {
             .owner(this)
             .title("Populating")
             .northPanel(northPanel)
-            .onResult(model.getSchemaModel()::refresh)
+            .onResult(model.schemaModel()::refresh)
             .execute();
   }
 

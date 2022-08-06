@@ -17,7 +17,7 @@ public final class EmployeeTableModel extends SwingEntityTableModel {
     this.treeModel = new SwingEntityTreeModel(this, Employee.REPORTSTO_FK);
   }
 
-  public SwingEntityTreeModel getTreeModel() {
+  public SwingEntityTreeModel treeModel() {
     return treeModel;
   }
 }

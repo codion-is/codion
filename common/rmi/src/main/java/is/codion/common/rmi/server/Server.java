@@ -47,7 +47,7 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
    * @throws RemoteException in case of a communication error
    * @throws ServerAuthenticationException in case authentication fails
    */
-  A getServerAdmin(User user) throws RemoteException, ServerAuthenticationException;
+  A serverAdmin(User user) throws RemoteException, ServerAuthenticationException;
 
   /**
    * Disconnects the connection identified by the given key.
@@ -60,13 +60,13 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
    * @return static information about this server
    * @throws RemoteException in case of an exception
    */
-  ServerInformation getServerInformation() throws RemoteException;
+  ServerInformation serverInformation() throws RemoteException;
 
   /**
    * @return the server load as number of service requests per second
    * @throws RemoteException in case of an exception
    */
-  int getServerLoad() throws RemoteException;
+  int serverLoad() throws RemoteException;
 
   /**
    * @return true if there are connections available

@@ -90,7 +90,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
   /**
    * @return the currently selected look and feel
    */
-  public LookAndFeelProvider getSelectedLookAndFeel() {
+  public LookAndFeelProvider selectedLookAndFeel() {
     return comboBoxModel.selectedValue().value();
   }
 
@@ -99,8 +99,8 @@ public final class LookAndFeelSelectionPanel extends JPanel {
    */
   public void enableSelected() {
     String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
-    if (!getSelectedLookAndFeel().getClassName().equals(currentLookAndFeelClassName)) {
-      LookAndFeelProvider.enableLookAndFeel(getSelectedLookAndFeel());
+    if (!selectedLookAndFeel().className().equals(currentLookAndFeelClassName)) {
+      LookAndFeelProvider.enableLookAndFeel(selectedLookAndFeel());
     }
   }
 
@@ -110,7 +110,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
    */
   public void revert() {
     String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
-    if (!currentLookAndFeelClassName.equals(originalLookAndFeel.getClassName())) {
+    if (!currentLookAndFeelClassName.equals(originalLookAndFeel.className())) {
       LookAndFeelProvider.enableLookAndFeel(originalLookAndFeel);
     }
   }
@@ -119,14 +119,14 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
 
     return comboBoxModel.items().stream()
-            .filter(item -> item.value().getClassName().equals(currentLookAndFeelClassName))
+            .filter(item -> item.value().className().equals(currentLookAndFeelClassName))
             .findFirst();
   }
 
   private static List<Item<LookAndFeelProvider>> initializeAvailableLookAndFeels() {
     return LookAndFeelProvider.getLookAndFeelProviders().values().stream()
-            .sorted(Comparator.comparing(LookAndFeelProvider::getName))
-            .map(provider -> Item.item(provider, provider.getName()))
+            .sorted(Comparator.comparing(LookAndFeelProvider::name))
+            .map(provider -> Item.item(provider, provider.name()))
             .collect(Collectors.toList());
   }
 
@@ -146,8 +146,8 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     private void setLookAndFeel(LookAndFeelProvider lookAndFeel, boolean selected) {
       textLabel.setOpaque(true);
       colorLabel.setOpaque(true);
-      textLabel.setText(lookAndFeel.getClassName());
-      UIDefaults defaults = getDefaults(lookAndFeel.getClassName());
+      textLabel.setText(lookAndFeel.className());
+      UIDefaults defaults = getDefaults(lookAndFeel.className());
       if (defaults == nullDefaults) {
         textLabel.setBackground(selected ? Color.LIGHT_GRAY : Color.WHITE);
         textLabel.setForeground(Color.BLACK);

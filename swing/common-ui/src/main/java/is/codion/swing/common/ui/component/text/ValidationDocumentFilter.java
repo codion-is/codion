@@ -33,7 +33,7 @@ public class ValidationDocumentFilter<T> extends DocumentFilter {
   /**
    * @return an unmodifiable view of the document validators
    */
-  public final Collection<Value.Validator<T>> getValidators() {
+  public final Collection<Value.Validator<T>> validators() {
     return Collections.unmodifiableSet(new HashSet<>(validators));
   }
 

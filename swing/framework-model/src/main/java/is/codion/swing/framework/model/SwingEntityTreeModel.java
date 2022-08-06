@@ -175,7 +175,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
      * Returns the entity, note that this entity is null for the root node.
      * @return the entity, null in case of the root node
      */
-    public Entity getEntity() {
+    public Entity entity() {
       return nodeEntity;
     }
 
@@ -247,7 +247,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
         if (!tableSelectionChangingState.get()) {
           List<Entity> selectedEntities = new ArrayList<>(treeSelectionModel.getSelectionCount());
           for (TreePath selectedPath : treeSelectionModel.getSelectionPaths()) {
-            selectedEntities.add(((EntityTreeNode) selectedPath.getLastPathComponent()).getEntity());
+            selectedEntities.add(((EntityTreeNode) selectedPath.getLastPathComponent()).entity());
           }
           tableSelectionModel.setSelectedItems(selectedEntities);
         }

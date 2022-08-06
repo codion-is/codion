@@ -29,12 +29,12 @@ public interface ConnectionProvider {
    * @return a JDBC {@link Connection} instance
    * @throws SQLException in case of an exception
    */
-  default Connection getConnection(User user, String jdbcUrl) throws SQLException {
-    if (nullOrEmpty(requireNonNull(user, "user").getUsername())) {
+  default Connection connection(User user, String jdbcUrl) throws SQLException {
+    if (nullOrEmpty(requireNonNull(user, "user").username())) {
       throw new IllegalArgumentException("Username must be specified");
     }
     Properties connectionProperties = new Properties();
-    connectionProperties.put(Database.USER_PROPERTY, user.getUsername());
+    connectionProperties.put(Database.USER_PROPERTY, user.username());
     connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
 
     return DriverManager.getConnection(jdbcUrl, connectionProperties);

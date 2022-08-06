@@ -14,14 +14,14 @@ public class MySQLDatabaseTest {
   @Test
   void getName() {
     MySQLDatabase database = new MySQLDatabase("jdbc:mysql://host.com:1234/dbname");
-    assertEquals("dbname", database.getName());
+    assertEquals("dbname", database.name());
     database = new MySQLDatabase("jdbc:mysql://host.com:1234/dbname;option=true;option2=false");
-    assertEquals("dbname", database.getName());
+    assertEquals("dbname", database.name());
   }
 
   @Test
   void getSequenceQuery() {
-    assertThrows(UnsupportedOperationException.class, () -> new MySQLDatabase(URL).getSequenceQuery("seq"));
+    assertThrows(UnsupportedOperationException.class, () -> new MySQLDatabase(URL).sequenceQuery("seq"));
   }
 
   @Test
@@ -33,7 +33,7 @@ public class MySQLDatabaseTest {
   @Test
   void getAutoIncrementQuery() {
     MySQLDatabase db = new MySQLDatabase(URL);
-    assertEquals(MySQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
+    assertEquals(MySQLDatabase.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
   }
 
   @Test

@@ -30,14 +30,14 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
   private static final Logger LOG = LoggerFactory.getLogger(DefaultCredentialsProvider.class);
 
   @Override
-  public User getCredentials(UUID authenticationToken) throws CredentialsException {
+  public User credentials(UUID authenticationToken) throws CredentialsException {
     LOG.debug("DefaultCredentialsProvider.getCredentials(" + authenticationToken + ")");
     if (authenticationToken == null) {
       return null;
     }
     Remote credentialsService = getCredentialsService(getRegistry(CredentialsService.REGISTRY_PORT.getOrThrow()));
     try {
-      return ((CredentialsService) credentialsService).getUser(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
+      return ((CredentialsService) credentialsService).user(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
     }
     catch (RemoteException e) {
       throw new ProviderNotReachableException(e.getMessage(), e);

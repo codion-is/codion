@@ -67,15 +67,15 @@ public class TableColumnComponentPanelTest {
     columnModel.setColumnVisible(1, false);
 
     TableColumnComponentPanel<JPanel> panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
-    assertTrue(panel.getColumnComponents().containsKey(column1));
+    assertTrue(panel.columnComponents().containsKey(column1));
 
-    assertNull(panel.getColumnComponents().get(column1).getParent());
+    assertNull(panel.columnComponents().get(column1).getParent());
     columnModel.setColumnVisible(1, true);
-    assertNotNull(panel.getColumnComponents().get(column1).getParent());
+    assertNotNull(panel.columnComponents().get(column1).getParent());
     columnModel.setColumnVisible(2, false);
-    assertNull(panel.getColumnComponents().get(column2).getParent());
+    assertNull(panel.columnComponents().get(column2).getParent());
     columnModel.setColumnVisible(2, true);
-    assertNotNull(panel.getColumnComponents().get(column2).getParent());
+    assertNotNull(panel.columnComponents().get(column2).getParent());
   }
 
   @Test
@@ -95,11 +95,11 @@ public class TableColumnComponentPanelTest {
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     TableColumnComponentPanel<JPanel> panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
     column0.setWidth(100);
-    assertEquals(100, panel.getColumnComponents().get(column0).getPreferredSize().width);
+    assertEquals(100, panel.columnComponents().get(column0).getPreferredSize().width);
     column1.setWidth(90);
-    assertEquals(90, panel.getColumnComponents().get(column1).getPreferredSize().width);
+    assertEquals(90, panel.columnComponents().get(column1).getPreferredSize().width);
     column2.setWidth(80);
-    assertEquals(80, panel.getColumnComponents().get(column2).getPreferredSize().width);
+    assertEquals(80, panel.columnComponents().get(column2).getPreferredSize().width);
   }
 
   private static Map<TableColumn, JPanel> createColumnComponents(FilteredTableColumnModel<?> columnModel) {

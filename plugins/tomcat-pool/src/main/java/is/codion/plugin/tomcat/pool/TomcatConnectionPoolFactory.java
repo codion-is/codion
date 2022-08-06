@@ -34,9 +34,9 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 
   private static DataSource createDataSource(User user, ConnectionFactory connectionFactory) {
     PoolProperties pp = new PoolProperties();
-    pp.setUrl(connectionFactory.getUrl());
+    pp.setUrl(connectionFactory.url());
     pp.setDefaultAutoCommit(false);
-    pp.setName(user.getUsername());
+    pp.setName(user.username());
     //Codion does not validate connections coming from a connection pool
     pp.setTestOnBorrow(true);
     pp.setValidator(new ConnectionValidator(connectionFactory));
@@ -53,7 +53,7 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 
     private DataSourceWrapper(ConnectionFactory connectionFactory, User user, DataSource dataSource) {
       super(connectionFactory, user, dataSource);
-      dataSource.setDataSource(getPoolDataSource());
+      dataSource.setDataSource(poolDataSource());
       setPool(dataSource);
     }
 

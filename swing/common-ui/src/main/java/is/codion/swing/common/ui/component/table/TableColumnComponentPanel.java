@@ -83,7 +83,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   /**
    * @return the column components mapped their respective columns
    */
-  public Map<TableColumn, T> getColumnComponents() {
+  public Map<TableColumn, T> columnComponents() {
     return columnComponents;
   }
 

@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface EmployeeService extends Remote {
 
-  List<Entity> getEmployees() throws RemoteException, DatabaseException;
+  List<Entity> employees() throws RemoteException, DatabaseException;
 
-  List<Employee> getEmployeeBeans() throws RemoteException, DatabaseException;
+  List<Employee> employeeBeans() throws RemoteException, DatabaseException;
 }

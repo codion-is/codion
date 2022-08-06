@@ -47,7 +47,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   /**
    * @return the underlying connection pool
    */
-  public ConnectionPoolWrapper getConnectionPool() {
+  public ConnectionPoolWrapper connectionPool() {
     return pool;
   }
 
@@ -114,7 +114,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
       PreparedStatement statement = null;
       ResultSet resultSet = null;
       try {
-        connection = application.pool.getConnection(user);
+        connection = application.pool.connection(user);
         statement = connection.prepareCall(query);
         setStatementParameters(statement);
         resultSet = statement.executeQuery();

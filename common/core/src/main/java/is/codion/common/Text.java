@@ -37,7 +37,7 @@ public final class Text {
    * Specifies the default collator locale language.<br>
    * Value type: String<br>
    * Default value: {@code Locale.getDefault().getLanguage()}.
-   * @see #getSpaceAwareCollator()
+   * @see #spaceAwareCollator()
    * @see #collate(List)
    * @see Locale#toLanguageTag()
    */
@@ -84,11 +84,11 @@ public final class Text {
 
   /**
    * Sorts the string representations of the list contents, using the space aware collator
-   * @see Text#getSpaceAwareCollator()
+   * @see Text#spaceAwareCollator()
    * @param values the list to sort (collate)
    */
   public static void collate(List<?> values) {
-    values.sort(getSpaceAwareCollator());
+    values.sort(spaceAwareCollator());
   }
 
   /**
@@ -98,8 +98,8 @@ public final class Text {
    * @return a space aware collator
    * @see #DEFAULT_COLLATOR_LANGUAGE
    */
-  public static <T> Comparator<T> getSpaceAwareCollator() {
-    return getSpaceAwareCollator(new Locale(DEFAULT_COLLATOR_LANGUAGE.get()));
+  public static <T> Comparator<T> spaceAwareCollator() {
+    return spaceAwareCollator(new Locale(DEFAULT_COLLATOR_LANGUAGE.get()));
   }
 
   /**
@@ -110,7 +110,7 @@ public final class Text {
    * @return a space aware collator
    * @see #DEFAULT_COLLATOR_LANGUAGE
    */
-  public static <T> Comparator<T> getSpaceAwareCollator(Locale locale) {
+  public static <T> Comparator<T> spaceAwareCollator(Locale locale) {
     return new ComparatorSansSpace<>(locale);
   }
 
@@ -172,8 +172,8 @@ public final class Text {
    * @param columnDelimiter the column delimiter
    * @return a String comprised of the given header and lines using the given column delimiter
    */
-  public static String getDelimitedString(List<String> header, List<List<String>> lines,
-                                          String columnDelimiter) {
+  public static String delimitedString(List<String> header, List<List<String>> lines,
+                                       String columnDelimiter) {
     requireNonNull(header, "header");
     requireNonNull(lines, "lines");
     requireNonNull(columnDelimiter, "delimiter");
@@ -194,8 +194,8 @@ public final class Text {
    * @return the contents of the resource file
    * @throws IOException in case an IOException occurs
    */
-  public static <T> String getTextFileContents(Class<T> resourceClass, String resourceName) throws IOException {
-    return getTextFileContents(resourceClass, resourceName, Charset.defaultCharset());
+  public static <T> String textFileContents(Class<T> resourceClass, String resourceName) throws IOException {
+    return textFileContents(resourceClass, resourceName, Charset.defaultCharset());
   }
 
   /**
@@ -207,7 +207,7 @@ public final class Text {
    * @return the contents of the resource file
    * @throws IOException in case an IOException occurs
    */
-  public static <T> String getTextFileContents(Class<T> resourceClass, String resourceName, Charset charset) throws IOException {
+  public static <T> String textFileContents(Class<T> resourceClass, String resourceName, Charset charset) throws IOException {
     requireNonNull(resourceClass, "resourceClass");
     requireNonNull(resourceName, "resourceName");
     InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
@@ -215,7 +215,7 @@ public final class Text {
       throw new FileNotFoundException("Resource not found: '" + resourceName + "'");
     }
 
-    return getTextFileContents(inputStream, charset);
+    return textFileContents(inputStream, charset);
   }
 
   /**
@@ -225,10 +225,10 @@ public final class Text {
    * @return the file contents as a String
    * @throws IOException in case of an exception
    */
-  public static String getTextFileContents(String filename, Charset charset) throws IOException {
+  public static String textFileContents(String filename, Charset charset) throws IOException {
     requireNonNull(filename, "filename");
 
-    return getTextFileContents(new File(filename), charset);
+    return textFileContents(new File(filename), charset);
   }
 
   /**
@@ -238,10 +238,10 @@ public final class Text {
    * @return the file contents as a String
    * @throws IOException in case of an exception
    */
-  public static String getTextFileContents(File file, Charset charset) throws IOException {
+  public static String textFileContents(File file, Charset charset) throws IOException {
     requireNonNull(file, "file");
     try (FileInputStream inputStream = new FileInputStream(file)) {
-      return getTextFileContents(inputStream, charset);
+      return textFileContents(inputStream, charset);
     }
   }
 
@@ -253,7 +253,7 @@ public final class Text {
    * @return the stream contents as a String
    * @throws IOException in case of an exception
    */
-  public static String getTextFileContents(InputStream inputStream, Charset charset) throws IOException {
+  public static String textFileContents(InputStream inputStream, Charset charset) throws IOException {
     requireNonNull(inputStream, "inputStream");
     StringBuilder contents = new StringBuilder();
     try (BufferedReader input = new BufferedReader(new InputStreamReader(inputStream, charset))) {

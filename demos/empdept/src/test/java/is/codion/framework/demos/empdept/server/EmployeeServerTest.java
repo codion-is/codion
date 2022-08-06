@@ -57,10 +57,10 @@ public final class EmployeeServerTest {
             .clientTypeId("EmployeeServerTest")
             .build());
 
-    List<Entity> employees = employeeService.getEmployees();
+    List<Entity> employees = employeeService.employees();
     assertEquals(16, employees.size());
 
-    List<Employee> employeeBeans = employeeService.getEmployeeBeans();
+    List<Employee> employeeBeans = employeeService.employeeBeans();
     assertEquals(16, employeeBeans.size());
 
     employeeServer.disconnect(clientId);

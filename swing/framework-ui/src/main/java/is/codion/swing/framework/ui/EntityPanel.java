@@ -507,7 +507,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the detail panel of the given type
    * @throws IllegalArgumentException in case the panel was not found
    */
-  public final EntityPanel getDetailPanel(EntityType entityType) {
+  public final EntityPanel detailPanel(EntityType entityType) {
     for (EntityPanel detailPanel : detailEntityPanels) {
       if (detailPanel.entityModel.entityType().equals(entityType)) {
         return detailPanel;

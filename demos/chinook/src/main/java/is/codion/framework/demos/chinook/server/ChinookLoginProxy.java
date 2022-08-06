@@ -63,7 +63,7 @@ public final class ChinookLoginProxy implements LoginProxy {
    * Handles logins from clients with this id
    */
   @Override
-  public String getClientTypeId() {
+  public String clientTypeId() {
     return "is.codion.framework.demos.chinook.ui.ChinookAppPanel";
   }
 
@@ -87,7 +87,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   private void authenticateUser(User user) throws LoginException {
     try (EntityConnection connection = getConnectionFromPool()) {
       int rows = connection.rowCount(where(Authentication.User.USERNAME)
-              .equalToIgnoreCase(user.getUsername())
+              .equalToIgnoreCase(user.username())
               .and(where(Authentication.User.PASSWORD_HASH)
                       .equalTo(valueOf(user.getPassword()).hashCode())));
       if (rows == 0) {
@@ -100,7 +100,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   }
 
   private EntityConnection getConnectionFromPool() throws DatabaseException {
-    return localEntityConnection(database, domain, connectionPool.getConnection(databaseUser));
+    return localEntityConnection(database, domain, connectionPool.connection(databaseUser));
   }
 
   private static final class Authentication extends DefaultDomain {

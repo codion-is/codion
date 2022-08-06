@@ -35,7 +35,7 @@ public final class DatabaseExplorerModel {
     this.connection = requireNonNull(database, "database").createConnection(user);
     try {
       this.metaDataModel = new MetaDataModel(connection.getMetaData());
-      this.schemaTableModel = new SchemaTableModel(metaDataModel.getSchemas());
+      this.schemaTableModel = new SchemaTableModel(metaDataModel.schemas());
       this.definitionTableModel = new DefinitionTableModel(schemaTableModel);
       this.schemaTableModel.refresh();
       bindEvents();
@@ -45,15 +45,15 @@ public final class DatabaseExplorerModel {
     }
   }
 
-  public FilteredTableModel<Schema, Integer> getSchemaModel() {
+  public FilteredTableModel<Schema, Integer> schemaModel() {
     return schemaTableModel;
   }
 
-  public FilteredTableModel<DefinitionRow, Integer> getDefinitionModel() {
+  public FilteredTableModel<DefinitionRow, Integer> definitionModel() {
     return definitionTableModel;
   }
 
-  public ValueObserver<String> getDomainSourceObserver() {
+  public ValueObserver<String> domainSourceObserver() {
     return domainSourceValue.observer();
   }
 
@@ -68,7 +68,7 @@ public final class DatabaseExplorerModel {
 
   public void populateSelected(EventDataListener<String> schemaNotifier) {
     schemaTableModel.selectionModel().getSelectedItems().forEach(schema ->
-            metaDataModel.populateSchema(schema.getName(), schemaNotifier));
+            metaDataModel.populateSchema(schema.name(), schemaNotifier));
     definitionTableModel.refresh();
   }
 

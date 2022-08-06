@@ -99,17 +99,17 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public EntityType getEntityType() {
+  public EntityType entityType() {
     return definition.entityType();
   }
 
   @Override
-  public EntityDefinition getDefinition() {
+  public EntityDefinition definition() {
     return definition;
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
+  public List<Attribute<?>> attributes() {
     return attributes;
   }
 
@@ -119,7 +119,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> Attribute<T> getAttribute() {
+  public <T> Attribute<T> attribute() {
     assertSingleValueKey();
 
     return (Attribute<T>) attributes.get(0);

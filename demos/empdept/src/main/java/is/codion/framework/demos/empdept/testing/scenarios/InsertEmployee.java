@@ -32,7 +32,7 @@ public final class InsertEmployee extends AbstractEntityUsageScenario<EmpDeptApp
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 3;
   }
 }

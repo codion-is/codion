@@ -12,14 +12,14 @@ public class SQLiteDatabaseTest {
 @Test
   void getName() {
     SQLiteDatabase database = new SQLiteDatabase("jdbc:sqlite:/path/to/file.db");
-    assertEquals("/path/to/file.db", database.getName());
+    assertEquals("/path/to/file.db", database.name());
     database = new SQLiteDatabase("jdbc:sqlite:/path/to/file.db;options");
-    assertEquals("/path/to/file.db", database.getName());
+    assertEquals("/path/to/file.db", database.name());
   }
 
   @Test
   void getAutoIncrementQuery() {
     SQLiteDatabase database = new SQLiteDatabase("test");
-    assertEquals("select last_insert_rowid()", database.getAutoIncrementQuery(null));
+    assertEquals("select last_insert_rowid()", database.autoIncrementQuery(null));
   }
 }

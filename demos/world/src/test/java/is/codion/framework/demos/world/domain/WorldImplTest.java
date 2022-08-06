@@ -74,12 +74,12 @@ public final class WorldImplTest extends EntityTestUnit {
                                               Map<ForeignKey, Entity> foreignKeyEntities)
           throws DatabaseException {
     if (foreignKey.referencedType().equals(Country.TYPE)) {
-      return getEntities().builder(Country.TYPE)
+      return entities().builder(Country.TYPE)
               .with(Country.CODE, "ISL")
               .build();
     }
     if (foreignKey.referencedType().equals(City.TYPE)) {
-      return getEntities().builder(City.TYPE)
+      return entities().builder(City.TYPE)
               .with(City.ID, 1449)
               .build();
     }

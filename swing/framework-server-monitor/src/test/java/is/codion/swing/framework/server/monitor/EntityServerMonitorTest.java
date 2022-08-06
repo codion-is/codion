@@ -39,7 +39,7 @@ public class EntityServerMonitorTest {
     EntityServer.startServer(CONFIGURATION);
     server = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(),
             CONFIGURATION.registryPort()).lookup(CONFIGURATION.serverName());
-    admin = server.getServerAdmin(ADMIN_USER);
+    admin = server.serverAdmin(ADMIN_USER);
   }
 
   @AfterAll
@@ -61,30 +61,30 @@ public class EntityServerMonitorTest {
     connectionProvider.connection();
     EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.registryPort(), CONFIGURATION.adminUser());
     model.refresh();
-    HostMonitor hostMonitor = model.getHostMonitors().iterator().next();
-    assertEquals("localhost", hostMonitor.getHostName());
+    HostMonitor hostMonitor = model.hostMonitors().iterator().next();
+    assertEquals("localhost", hostMonitor.hostName());
     hostMonitor.refresh();
-    ServerMonitor serverMonitor = hostMonitor.getServerMonitors().iterator().next();
+    ServerMonitor serverMonitor = hostMonitor.serverMonitors().iterator().next();
     assertNotNull(serverMonitor);
-    ClientUserMonitor clientUserMonitor = serverMonitor.getClientMonitor();
+    ClientUserMonitor clientUserMonitor = serverMonitor.clientMonitor();
     clientUserMonitor.refresh();
-    assertEquals(1, clientUserMonitor.getUserListModel().size());
-    assertEquals(1, clientUserMonitor.getClientTypeListModel().size());
-    ClientMonitor clientMonitor = clientUserMonitor.getClientTypeListModel().firstElement();
-    assertEquals(clientTypeId, clientMonitor.getClientTypeId());
+    assertEquals(1, clientUserMonitor.userListModel().size());
+    assertEquals(1, clientUserMonitor.clientTypeListModel().size());
+    ClientMonitor clientMonitor = clientUserMonitor.clientTypeListModel().firstElement();
+    assertEquals(clientTypeId, clientMonitor.clientTypeId());
     clientMonitor.refresh();
-    assertEquals(1, clientMonitor.getRemoteClientListModel().size());
-    RemoteClient remoteClient = clientMonitor.getRemoteClientListModel().firstElement();
+    assertEquals(1, clientMonitor.remoteClientListModel().size());
+    RemoteClient remoteClient = clientMonitor.remoteClientListModel().firstElement();
     assertEquals(connectionProvider.clientId(), remoteClient.clientId());
     assertEquals(UNIT_TEST_USER, remoteClient.user());
 
-    clientMonitor.getServer().disconnect(remoteClient.clientId());//disconnects the client
+    clientMonitor.server().disconnect(remoteClient.clientId());//disconnects the client
 
     clientMonitor.refresh();
-    assertTrue(clientMonitor.getRemoteClientListModel().isEmpty());
+    assertTrue(clientMonitor.remoteClientListModel().isEmpty());
     clientUserMonitor.refresh();
-    assertTrue(clientUserMonitor.getUserListModel().isEmpty());
-    assertTrue(clientUserMonitor.getClientTypeListModel().isEmpty());
+    assertTrue(clientUserMonitor.userListModel().isEmpty());
+    assertTrue(clientUserMonitor.clientTypeListModel().isEmpty());
 
     serverMonitor.shutdown();
   }

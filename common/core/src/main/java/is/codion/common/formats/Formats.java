@@ -16,7 +16,7 @@ public final class Formats {
   /**
    * @return a NumberFormat instance with grouping disabled
    */
-  public static NumberFormat getNonGroupingNumberFormat() {
+  public static NumberFormat nonGroupingNumberFormat() {
     NumberFormat format = NumberFormat.getNumberInstance();
     format.setGroupingUsed(false);
 
@@ -26,7 +26,7 @@ public final class Formats {
   /**
    * @return an Integer NumberFormat instance with grouping disabled
    */
-  public static NumberFormat getNonGroupingIntegerFormat() {
+  public static NumberFormat nonGroupingIntegerFormat() {
     NumberFormat format = NumberFormat.getIntegerInstance();
     format.setGroupingUsed(false);
 
@@ -36,7 +36,7 @@ public final class Formats {
   /**
    * @return a BigDecimal parsing DecimalFormat
    */
-  public static DecimalFormat getBigDecimalNumberFormat() {
+  public static DecimalFormat bigDecimalNumberFormat() {
     DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance();
     format.setParseBigDecimal(true);
 

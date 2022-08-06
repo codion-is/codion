@@ -126,7 +126,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
     private JComponent createForeignKeyField() {
       if (model instanceof SwingForeignKeyConditionModel) {
-        SwingEntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) model).getEntityComboBoxModel();
+        SwingEntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) model).entityComboBoxModel();
 
         return entityComponents.foreignKeyComboBox(model.columnIdentifier(), comboBoxModel)
                 .completionMode(Completion.Mode.MAXIMUM_MATCH)
