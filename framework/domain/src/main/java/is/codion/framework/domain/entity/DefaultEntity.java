@@ -58,7 +58,7 @@ final class DefaultEntity implements Entity, Serializable {
   private String toString;
 
   /**
-   * Caches the result of {@link #getReferencedKey} method
+   * Caches the result of {@link #referencedKey} method
    */
   private Map<ForeignKey, Key> referencedKeyCache;
 
@@ -165,10 +165,10 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Entity getForeignKey(ForeignKey foreignKey) {
+  public Entity referencedEntity(ForeignKey foreignKey) {
     Entity value = (Entity) values.get(foreignKey);
     if (value == null) {//possibly not loaded
-      Key referencedKey = getReferencedKey(foreignKey);
+      Key referencedKey = referencedKey(foreignKey);
       if (referencedKey != null) {
         return new DefaultEntity(referencedKey);
       }
@@ -187,7 +187,7 @@ final class DefaultEntity implements Entity, Serializable {
   public <T> String toString(Attribute<T> attribute) {
     Property<T> property = definition.getProperty(attribute);
     if (attribute instanceof ForeignKey && values.get(attribute) == null) {
-      Key referencedKey = getReferencedKey((ForeignKey) attribute);
+      Key referencedKey = referencedKey((ForeignKey) attribute);
       if (referencedKey != null) {
         return referencedKey.toString();
       }
@@ -371,7 +371,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Key getReferencedKey(ForeignKey foreignKey) {
+  public Key referencedKey(ForeignKey foreignKey) {
     definition.getForeignKeyProperty(foreignKey);
     Key cachedReferencedKey = getCachedReferencedKey(foreignKey);
     if (cachedReferencedKey != null) {
@@ -897,7 +897,7 @@ final class DefaultEntity implements Entity, Serializable {
     private Object getValue(Attribute<?> attribute, Class<?> getterReturnType) {
       Object value;
       if (attribute instanceof ForeignKey) {
-        value = entity.getForeignKey((ForeignKey) attribute);
+        value = entity.referencedEntity((ForeignKey) attribute);
       }
       else {
         value = entity.get(attribute);

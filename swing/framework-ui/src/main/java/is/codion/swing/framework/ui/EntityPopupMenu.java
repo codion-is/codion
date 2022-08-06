@@ -98,7 +98,7 @@ final class EntityPopupMenu extends JPopupMenu {
           rootMenu.add(menuItem);
         }
         else {
-          Entity referencedEntity = selectEntity(entity.getReferencedKey(foreignKey), connection);
+          Entity referencedEntity = selectEntity(entity.referencedKey(foreignKey), connection);
           entity.put(foreignKey, referencedEntity);
           JMenu foreignKeyMenu = new JMenu(captionBuilder.append(createValueString(entity, property)).toString());
           setInvalidModified(foreignKeyMenu, isValid(validator, entity, foreignKey), entity.isModified(foreignKey));

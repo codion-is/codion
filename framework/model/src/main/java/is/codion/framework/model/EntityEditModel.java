@@ -176,7 +176,7 @@ public interface EntityEditModel {
    * @return the value assuming it is an {@link Entity}
    * @throws ClassCastException in case the value was not an {@link Entity}
    */
-  Entity getForeignKey(ForeignKey foreignKey);
+  Entity referencedEntity(ForeignKey foreignKey);
 
   /**
    * Returns a Value based on {@code attribute} in this edit model, note that

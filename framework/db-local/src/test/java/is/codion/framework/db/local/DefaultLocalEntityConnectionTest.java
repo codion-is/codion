@@ -254,7 +254,7 @@ public class DefaultLocalEntityConnectionTest {
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
-    emp = emp.getForeignKey(Employee.MGR_FK);
+    emp = emp.referencedEntity(Employee.MGR_FK);
     assertFalse(emp.isLoaded(Employee.MGR_FK));
 
     condition = condition.selectBuilder().fetchDepth(Employee.DEPARTMENT_FK, 0).build();
@@ -277,7 +277,7 @@ public class DefaultLocalEntityConnectionTest {
     emp = result.get(0);
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
-    emp = emp.getForeignKey(Employee.MGR_FK);
+    emp = emp.referencedEntity(Employee.MGR_FK);
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
     condition = condition.selectBuilder().fetchDepth(Employee.MGR_FK, -1).build();
@@ -286,7 +286,7 @@ public class DefaultLocalEntityConnectionTest {
     emp = result.get(0);
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
-    emp = emp.getForeignKey(Employee.MGR_FK);
+    emp = emp.referencedEntity(Employee.MGR_FK);
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
     assertEquals(4, connection.rowCount(where(Employee.ID).equalTo(asList(1, 2, 3, 4))));
@@ -328,7 +328,7 @@ public class DefaultLocalEntityConnectionTest {
             .fetchDepth(EmployeeFk.MGR_FK, 2)
             .build());
     for (Entity emp : emps) {
-      Entity mgr = emp.getForeignKey(EmployeeFk.MGR_FK);
+      Entity mgr = emp.referencedEntity(EmployeeFk.MGR_FK);
       assertTrue(mgr.contains(EmployeeFk.ID));//pk automatically included
       assertTrue(mgr.contains(EmployeeFk.NAME));
       assertTrue(mgr.contains(EmployeeFk.JOB));

@@ -140,7 +140,7 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals(5, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       Entity item = comboBoxModel.getElementAt(i);
-      assertEquals(item.getForeignKey(TestDomain.EMP_MGR_FK), blake);
+      assertEquals(item.referencedEntity(TestDomain.EMP_MGR_FK), blake);
     }
 
     Entity sales = comboBoxModel.connectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
@@ -148,8 +148,8 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals(2, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       Entity item = comboBoxModel.getElementAt(i);
-      assertEquals(item.getForeignKey(TestDomain.EMP_DEPARTMENT_FK), sales);
-      assertEquals(item.getForeignKey(TestDomain.EMP_MGR_FK), blake);
+      assertEquals(item.referencedEntity(TestDomain.EMP_DEPARTMENT_FK), sales);
+      assertEquals(item.referencedEntity(TestDomain.EMP_MGR_FK), blake);
     }
 
     Entity accounting = comboBoxModel.connectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
@@ -158,11 +158,11 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals(3, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       Entity item = comboBoxModel.getElementAt(i);
-      assertEquals(item.getForeignKey(TestDomain.EMP_DEPARTMENT_FK), accounting);
-      assertEquals(item.getForeignKey(TestDomain.EMP_MGR_FK), blake);
+      assertEquals(item.referencedEntity(TestDomain.EMP_DEPARTMENT_FK), accounting);
+      assertEquals(item.referencedEntity(TestDomain.EMP_MGR_FK), blake);
     }
     for (Entity employee : comboBoxModel.items()) {
-      if (employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK).equals(accounting)) {
+      if (employee.referencedEntity(TestDomain.EMP_DEPARTMENT_FK).equals(accounting)) {
         comboBoxModel.setSelectedItem(employee);
         break;
       }
@@ -180,7 +180,7 @@ public final class SwingEntityComboBoxModelTest {
         kingFound = true;
       }
       else {
-        assertEquals(item.getForeignKey(TestDomain.EMP_MGR_FK), blake);
+        assertEquals(item.referencedEntity(TestDomain.EMP_MGR_FK), blake);
       }
     }
     assertTrue(kingFound);

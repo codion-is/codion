@@ -358,7 +358,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
     addSelectionListener(selected -> {
       if (selected != null) {
-        foreignKeyModel.setSelectedEntityByKey(selected.getReferencedKey(foreignKey));
+        foreignKeyModel.setSelectedEntityByKey(selected.referencedKey(foreignKey));
       }
     });
     addRefreshListener(foreignKeyModel::forceRefresh);
@@ -430,7 +430,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     @Override
     public boolean test(Entity item) {
       for (Map.Entry<ForeignKey, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
-        Entity foreignKeyValue = item.getForeignKey(entry.getKey());
+        Entity foreignKeyValue = item.referencedEntity(entry.getKey());
         if (foreignKeyValue == null) {
           return !strictForeignKeyFiltering;
         }

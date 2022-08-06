@@ -186,7 +186,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
 
     private List<EntityTreeNode> loadChildren() {
       return tableModel.items().stream()
-              .filter(entity -> Objects.equals(this.nodeEntity, entity.getForeignKey(parentForeignKey)))
+              .filter(entity -> Objects.equals(this.nodeEntity, entity.referencedEntity(parentForeignKey)))
               .map(entity -> new EntityTreeNode(tableModel, entity, stringFunction, parentForeignKey, nodeComparator))
               .map(EntityTreeNode::refresh)
               .sorted(nodeComparator)

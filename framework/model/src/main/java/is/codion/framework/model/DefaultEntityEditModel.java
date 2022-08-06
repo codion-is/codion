@@ -329,8 +329,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Entity getForeignKey(ForeignKey foreignKey) {
-    return entity.get(foreignKey);
+  public final Entity referencedEntity(ForeignKey foreignKey) {
+    return entity.referencedEntity(foreignKey);
   }
 
   @Override
@@ -879,7 +879,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param values the foreign key entities
    */
   protected void replaceForeignKey(ForeignKey foreignKey, List<Entity> values) {
-    Entity currentForeignKeyValue = getForeignKey(foreignKey);
+    Entity currentForeignKeyValue = referencedEntity(foreignKey);
     if (currentForeignKeyValue != null) {
       for (Entity replacementValue : values) {
         if (currentForeignKeyValue.equals(replacementValue)) {
@@ -1051,7 +1051,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private <T> T getDefaultValue(Property<T> property) {
     if (isPersistValue(property.attribute())) {
       if (property instanceof ForeignKeyProperty) {
-        return (T) entity.getForeignKey((ForeignKey) property.attribute());
+        return (T) entity.referencedEntity((ForeignKey) property.attribute());
       }
 
       return entity.get(property.attribute());

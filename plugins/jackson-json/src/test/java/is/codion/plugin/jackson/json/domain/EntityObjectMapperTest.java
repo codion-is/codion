@@ -98,7 +98,7 @@ public final class EntityObjectMapperTest {
     Entity readEmp = mapper.readValue(jsonString, Entity.class);
     assertTrue(emp.columnValuesEqual(readEmp));
 
-    Entity readDept = readEmp.getForeignKey(Employee.DEPARTMENT_FK);
+    Entity readDept = readEmp.referencedEntity(Employee.DEPARTMENT_FK);
     assertTrue(dept.columnValuesEqual(readDept));
   }
 
@@ -209,8 +209,8 @@ public final class EntityObjectMapperTest {
     jsonString = mapper.writeValueAsString(singletonList(emp1));
     Entity emp1Deserialized = mapper.deserializeEntities(jsonString).get(0);
     assertTrue(emp1.columnValuesEqual(emp1Deserialized));
-    assertTrue(emp1.getForeignKey(Employee.DEPARTMENT_FK).columnValuesEqual(emp1Deserialized.getForeignKey(Employee.DEPARTMENT_FK)));
-    assertTrue(emp1.getForeignKey(Employee.MGR_FK).columnValuesEqual(emp1Deserialized.getForeignKey(Employee.MGR_FK)));
+    assertTrue(emp1.referencedEntity(Employee.DEPARTMENT_FK).columnValuesEqual(emp1Deserialized.referencedEntity(Employee.DEPARTMENT_FK)));
+    assertTrue(emp1.referencedEntity(Employee.MGR_FK).columnValuesEqual(emp1Deserialized.referencedEntity(Employee.MGR_FK)));
 
     LocalDate newHiredate = LocalDate.parse("2002-11-21", format);
     emp1.put(Employee.COMMISSION, 550.55);

@@ -8334,3 +8334,4 @@
   common.model, framework.model, swing.common.model, swing.framework.model, javafx.model, get prefix removed from accessors
   swing.common.ui, swing.framework.ui, get prefix removed from accessors
   EntityDefinition, Entity, get prefix removed from accessors
+  Entity, EntityEditModel.getForeignKey() renamed referencedEntity(), Entity.getReferencedKey() renamed referencedKey()

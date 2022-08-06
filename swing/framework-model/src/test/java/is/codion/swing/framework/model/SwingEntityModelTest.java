@@ -113,7 +113,7 @@ public final class SwingEntityModelTest
       departmentModel.editModel().update();
 
       for (Entity employee : employeeModel.tableModel().items()) {
-        Entity dept = employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
+        Entity dept = employee.referencedEntity(TestDomain.EMP_DEPARTMENT_FK);
         assertEquals("NewName", dept.get(TestDomain.DEPARTMENT_NAME));
       }
     }

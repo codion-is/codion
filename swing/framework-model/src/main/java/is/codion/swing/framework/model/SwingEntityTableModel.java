@@ -409,7 +409,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     for (Entity entity : items()) {
       for (ForeignKey foreignKey : foreignKeys) {
         for (Entity foreignKeyValue : foreignKeyValues) {
-          Entity currentForeignKeyValue = entity.getForeignKey(foreignKey);
+          Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
           if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
             currentForeignKeyValue.setAs(foreignKeyValue);
             changed = true;

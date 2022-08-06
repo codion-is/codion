@@ -168,7 +168,7 @@ public final class StringFactory {
         return "";
       }
 
-      return entity.getForeignKey(foreignKey).toString(attribute);
+      return entity.referencedEntity(foreignKey).toString(attribute);
     }
   }
 

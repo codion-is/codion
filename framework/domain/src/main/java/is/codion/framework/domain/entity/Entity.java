@@ -156,7 +156,7 @@ public interface Entity extends Comparable<Entity> {
    * @throws IllegalArgumentException if the attribute is not a foreign key attribute
    * @see #isLoaded(ForeignKey)
    */
-  Entity getForeignKey(ForeignKey foreignKey);
+  Entity referencedEntity(ForeignKey foreignKey);
 
   /**
    * Returns the primary key of the entity referenced by the given {@link Attribute},
@@ -164,7 +164,7 @@ public interface Entity extends Comparable<Entity> {
    * @param foreignKey the foreign key for which to retrieve the underlying {@link Key}
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
-  Key getReferencedKey(ForeignKey foreignKey);
+  Key referencedKey(ForeignKey foreignKey);
 
   /**
    * Returns true if the value of the given foreign key is null, in case of composite
@@ -408,7 +408,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static Set<Key> getReferencedKeys(Collection<? extends Entity> entities, ForeignKey foreignKey) {
     return requireNonNull(entities).stream()
-            .map(entity -> entity.getReferencedKey(foreignKey))
+            .map(entity -> entity.referencedKey(foreignKey))
             .filter(Objects::nonNull)
             .collect(toSet());
   }

@@ -159,14 +159,14 @@ public final class DefaultEntityEditModelTest {
             TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
     //clear the department foreign key value
-    Entity dept = employeeEditModel.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
+    Entity dept = employeeEditModel.referencedEntity(TestDomain.EMP_DEPARTMENT_FK);
     employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, null);
     //set the reference key property value
     assertTrue(employeeEditModel.isNull(TestDomain.EMP_DEPARTMENT_FK));
     assertFalse(employeeEditModel.isNotNull(TestDomain.EMP_DEPARTMENT_FK));
     employeeEditModel.put(TestDomain.EMP_DEPARTMENT, dept.get(TestDomain.DEPARTMENT_ID));
     assertFalse(employeeEditModel.entityCopy().isLoaded(TestDomain.EMP_DEPARTMENT_FK));
-    dept = employeeEditModel.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
+    dept = employeeEditModel.referencedEntity(TestDomain.EMP_DEPARTMENT_FK);
     assertNull(dept);
     employeeEditModel.setDefaultValues();
     assertNotNull(employeeEditModel.get(TestDomain.EMP_DEPARTMENT_FK));
@@ -508,9 +508,9 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(james);
     Entity blake = employeeEditModel.connectionProvider().connection()
             .selectSingle(TestDomain.EMP_NAME, "BLAKE");
-    assertNotSame(employeeEditModel.getForeignKey(TestDomain.EMP_MGR_FK), blake);
+    assertNotSame(employeeEditModel.referencedEntity(TestDomain.EMP_MGR_FK), blake);
     employeeEditModel.replaceForeignKeyValues(singletonList(blake));
-    assertSame(employeeEditModel.getForeignKey(TestDomain.EMP_MGR_FK), blake);
+    assertSame(employeeEditModel.referencedEntity(TestDomain.EMP_MGR_FK), blake);
   }
 
   @Test

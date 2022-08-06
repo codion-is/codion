@@ -204,7 +204,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     for (Entity entity : items()) {
       for (ForeignKey foreignKey : foreignKeys) {
         for (Entity foreignKeyValue : foreignKeyValues) {
-          Entity currentForeignKeyValue = entity.getForeignKey(foreignKey);
+          Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
           if (Objects.equals(currentForeignKeyValue, foreignKeyValue)) {
             currentForeignKeyValue.setAs(foreignKeyValue);
           }

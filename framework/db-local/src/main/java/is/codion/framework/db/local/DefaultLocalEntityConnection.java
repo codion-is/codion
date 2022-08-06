@@ -985,7 +985,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             Map<Key, Entity> referencedEntitiesMappedByKey = Entity.mapToPrimaryKey(referencedEntities);
             for (int j = 0; j < entities.size(); j++) {
               Entity entity = entities.get(j);
-              Key referencedKey = entity.getReferencedKey(foreignKey);
+              Key referencedKey = entity.referencedKey(foreignKey);
               entity.put(foreignKey, getReferencedEntity(referencedKey, referencedEntitiesMappedByKey));
             }
           }
