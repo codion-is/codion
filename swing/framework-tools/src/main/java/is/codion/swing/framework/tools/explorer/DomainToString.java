@@ -24,15 +24,15 @@ final class DomainToString {
 
   static String toString(EntityDefinition definition) {
     StringBuilder builder = new StringBuilder();
-    String interfaceName = getInterfaceName(definition.getTableName(), true);
+    String interfaceName = getInterfaceName(definition.tableName(), true);
     builder.append("public interface ").append(interfaceName).append(" {").append(LINE_SEPARATOR);
     builder.append("  ").append("EntityType TYPE = ").append("DOMAIN.entityType(\"")
-            .append(definition.getTableName().toLowerCase()).append("\");").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-    List<Property<?>> columnProperties = definition.getProperties().stream()
+            .append(definition.tableName().toLowerCase()).append("\");").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+    List<Property<?>> columnProperties = definition.properties().stream()
             .filter(ColumnProperty.class::isInstance)
             .collect(toList());
     columnProperties.forEach(property -> appendAttribute(builder, property));
-    List<Property<?>> foreignKeyProperties = definition.getProperties().stream()
+    List<Property<?>> foreignKeyProperties = definition.properties().stream()
             .filter(ForeignKeyProperty.class::isInstance)
             .collect(toList());
     if (!foreignKeyProperties.isEmpty()) {
@@ -40,9 +40,9 @@ final class DomainToString {
       foreignKeyProperties.forEach(property -> appendAttribute(builder, property));
     }
     builder.append("}").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-    builder.append("void ").append(getInterfaceName(definition.getTableName(), false)).append("() {").append(LINE_SEPARATOR);
+    builder.append("void ").append(getInterfaceName(definition.tableName(), false)).append("() {").append(LINE_SEPARATOR);
     builder.append("  add(definition(").append(LINE_SEPARATOR);
-    builder.append(String.join("," + LINE_SEPARATOR, getPropertyStrings(definition.getProperties(), interfaceName, definition)));
+    builder.append(String.join("," + LINE_SEPARATOR, getPropertyStrings(definition.properties(), interfaceName, definition)));
     builder.append(LINE_SEPARATOR).append("  ));").append(LINE_SEPARATOR);
     builder.append("}").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
@@ -81,7 +81,7 @@ final class DomainToString {
     properties.forEach(property -> {
       if (property instanceof ColumnProperty) {
         strings.add(getColumnProperty(interfaceName, (ColumnProperty<?>) property,
-                definition.isForeignKeyAttribute(property.attribute()), definition.getPrimaryKeyAttributes().size() > 1));
+                definition.isForeignKeyAttribute(property.attribute()), definition.primaryKeyAttributes().size() > 1));
       }
       else if (property instanceof ForeignKeyProperty) {
         strings.add(getForeignKeyProperty(interfaceName, (ForeignKeyProperty) property));

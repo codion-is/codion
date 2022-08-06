@@ -501,7 +501,7 @@ public interface EntityEditModel {
    * @param entities the entities to validate
    * @throws ValidationException on finding the first invalid entity
    * @see #validator()
-   * @see EntityDefinition#getValidator()
+   * @see EntityDefinition#validator()
    */
   void validate(Collection<Entity> entities) throws ValidationException;
 
@@ -527,7 +527,7 @@ public interface EntityEditModel {
 
   /**
    * @return true if the underlying Entity contains only valid values
-   * @see #getValidObserver()
+   * @see #validObserver()
    */
   boolean isValid();
 
@@ -536,7 +536,7 @@ public interface EntityEditModel {
    * @see #validator()
    * @see #isValid()
    */
-  StateObserver getValidObserver();
+  StateObserver validObserver();
 
   /**
    * Returns a StateObserver responsible for indicating when and if any values in the underlying Entity have been modified.

@@ -150,7 +150,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, connectionProvider.entities().getDefinition(entityType).getValidator());
+    this(entityType, connectionProvider, connectionProvider.entities().getDefinition(entityType).validator());
   }
 
   /**
@@ -178,12 +178,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final EntityDefinition entityDefinition() {
-    return entity.getDefinition();
+    return entity.entityDefinition();
   }
 
   @Override
   public final String toString() {
-    return getClass().toString() + ", " + entity.getEntityType();
+    return getClass().toString() + ", " + entity.entityType();
   }
 
   @Override
@@ -304,7 +304,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final EntityType entityType() {
-    return entity.getEntityType();
+    return entity.entityType();
   }
 
   @Override
@@ -416,7 +416,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final StateObserver getValidObserver() {
+  public final StateObserver validObserver() {
     return entityValidState.observer();
   }
 
@@ -444,11 +444,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public void validate(Entity entity) throws ValidationException {
-    if (entity.getEntityType().equals(entityType())) {
+    if (entity.entityType().equals(entityType())) {
       validator.validate(entity);
     }
     else {
-      entity.getDefinition().getValidator().validate(entity);
+      entity.entityDefinition().validator().validate(entity);
     }
   }
 
@@ -586,7 +586,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final void refreshEntity() {
     try {
       if (!isEntityNew()) {
-        setEntity(connectionProvider().connection().select(entity().getPrimaryKey()));
+        setEntity(connectionProvider().connection().select(entity().primaryKey()));
       }
     }
     catch (DatabaseException e) {
@@ -606,7 +606,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
     ForeignKeyProperty property = entityDefinition().getForeignKeyProperty(foreignKey);
     Collection<Attribute<String>> searchAttributes = entities()
-            .getDefinition(property.referencedEntityType()).getSearchAttributes();
+            .getDefinition(property.referencedEntityType()).searchAttributes();
     if (searchAttributes.isEmpty()) {
       throw new IllegalStateException("No search attributes defined for entity: " + property.referencedEntityType());
     }
@@ -642,12 +642,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final boolean containsUnsavedData() {
     if (isEntityNew()) {
       EntityDefinition entityDefinition = entityDefinition();
-      for (ColumnProperty<?> property : entityDefinition.getColumnProperties()) {
+      for (ColumnProperty<?> property : entityDefinition.columnProperties()) {
         if (!entityDefinition.isForeignKeyAttribute(property.attribute()) && valueModified(property.attribute())) {
           return true;
         }
       }
-      for (ForeignKey foreignKey : entityDefinition.getForeignKeys()) {
+      for (ForeignKey foreignKey : entityDefinition.foreignKeys()) {
         if (valueModified(foreignKey)) {
           return true;
         }
@@ -1008,7 +1008,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private void initializePersistentValues() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
-      entityDefinition().getForeignKeys().forEach(foreignKey -> setPersistValue(foreignKey, true));
+      entityDefinition().foreignKeys().forEach(foreignKey -> setPersistValue(foreignKey, true));
     }
   }
 
@@ -1025,18 +1025,18 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private Entity getDefaultEntity(ValueSupplier valueSupplier) {
     EntityDefinition definition = entityDefinition();
     Entity newEntity = definition.entity();
-    for (@SuppressWarnings("rawtypes") ColumnProperty property : definition.getColumnProperties()) {
+    for (@SuppressWarnings("rawtypes") ColumnProperty property : definition.columnProperties()) {
       if (!definition.isForeignKeyAttribute(property.attribute()) && !property.denormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
         newEntity.put(property.attribute(), valueSupplier.get(property));
       }
     }
-    for (@SuppressWarnings("rawtypes") TransientProperty transientProperty : definition.getTransientProperties()) {
+    for (@SuppressWarnings("rawtypes") TransientProperty transientProperty : definition.transientProperties()) {
       if (!(transientProperty instanceof DerivedProperty)) {
         newEntity.put(transientProperty.attribute(), valueSupplier.get(transientProperty));
       }
     }
-    for (ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
+    for (ForeignKeyProperty foreignKeyProperty : definition.foreignKeyProperties()) {
       newEntity.put(foreignKeyProperty.attribute(), valueSupplier.get(foreignKeyProperty));
     }
     newEntity.saveAll();
@@ -1104,7 +1104,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private void updateEntityStates() {
     entityModifiedState.set(isModified());
     entityValidState.set(validator.isValid(entity));
-    primaryKeyNullState.set(entity.getPrimaryKey().isNull());
+    primaryKeyNullState.set(entity.primaryKey().isNull());
     entityNewState.set(isEntityNew());
   }
 
@@ -1120,7 +1120,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
     Map<Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
     for (Entity entity : entitiesBeforeUpdate) {
-      keyMap.put(entity.getOriginalPrimaryKey(), findAndRemove(entity.getPrimaryKey(), entitiesAfterUpdateCopy.listIterator()));
+      keyMap.put(entity.originalPrimaryKey(), findAndRemove(entity.primaryKey(), entitiesAfterUpdateCopy.listIterator()));
     }
 
     return unmodifiableMap(keyMap);
@@ -1129,7 +1129,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private static Entity findAndRemove(Key primaryKey, ListIterator<Entity> iterator) {
     while (iterator.hasNext()) {
       Entity current = iterator.next();
-      if (current.getPrimaryKey().equals(primaryKey)) {
+      if (current.primaryKey().equals(primaryKey)) {
         iterator.remove();
 
         return current;

@@ -317,7 +317,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     requireNonNull(entityModel, ENTITY_MODEL_PARAM);
     setFocusCycleRoot(true);
     this.entityModel = entityModel;
-    this.caption = entityModel.editModel().entityDefinition().getCaption();
+    this.caption = entityModel.editModel().entityDefinition().caption();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
   }

@@ -90,7 +90,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + tableConditionModel.entityType()
               + ", tableModel: " + entityType());
     }
-    if (entityDefinition().getVisibleProperties().isEmpty()) {
+    if (entityDefinition().visibleProperties().isEmpty()) {
       throw new IllegalArgumentException("No visible properties defined for entity: " + entityType());
     }
     this.editModel = editModel;
@@ -306,12 +306,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final Color getBackgroundColor(int row, Attribute<?> attribute) {
-    return (Color) entityDefinition().getBackgroundColorProvider().getColor(get(row), attribute);
+    return (Color) entityDefinition().backgroundColorProvider().getColor(get(row), attribute);
   }
 
   @Override
   public final Color getForegroundColor(int row, Attribute<?> attribute) {
-    return (Color) entityDefinition().getForegroundColorProvider().getColor(get(row), attribute);
+    return (Color) entityDefinition().foregroundColorProvider().getColor(get(row), attribute);
   }
 
   @Override
@@ -360,7 +360,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final Collection<Entity> getEntitiesByKey(Collection<Key> keys) {
     return items().stream()
             .filter(entity -> keys.stream()
-                    .anyMatch(key -> entity.getPrimaryKey().equals(key)))
+                    .anyMatch(key -> entity.primaryKey().equals(key)))
             .collect(toList());
   }
 
@@ -368,9 +368,9 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final void setSelectedByKey(Collection<Key> keys) {
     List<Key> keyList = new ArrayList<>(keys);
     List<Entity> toSelect = new ArrayList<>(keys.size());
-    stream().filter(entity -> keyList.contains(entity.getPrimaryKey())).forEach(entity -> {
+    stream().filter(entity -> keyList.contains(entity.primaryKey())).forEach(entity -> {
       toSelect.add(entity);
-      keyList.remove(entity.getPrimaryKey());
+      keyList.remove(entity.primaryKey());
     });
     selectionModel().setSelectedItems(toSelect);
   }
@@ -378,7 +378,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final Entity getEntityByKey(Key primaryKey) {
     return filteredList().stream()
-            .filter(entity -> entity.getPrimaryKey().equals(primaryKey))
+            .filter(entity -> entity.primaryKey().equals(primaryKey))
             .findFirst()
             .orElse(null);
   }
@@ -466,7 +466,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * The order by clause to use when selecting the data for this model,
    * by default the order by clause defined for the underlying entity
    * @return the order by clause
-   * @see EntityDefinition#getOrderBy()
+   * @see EntityDefinition#orderBy()
    */
   protected OrderBy getOrderBy() {
     if (orderQueryBySortOrder && columnSortOrder != null && !columnSortOrder.isEmpty()) {
@@ -476,7 +476,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       }
     }
 
-    return entityDefinition().getOrderBy();
+    return entityDefinition().orderBy();
   }
 
   /**
@@ -490,7 +490,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       return emptyList();
     }
 
-    return entityDefinition().getDefaultSelectAttributes().stream()
+    return entityDefinition().defaultSelectAttributes().stream()
             .filter(this::containsColumn)
             .collect(toList());
   }
@@ -524,7 +524,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     selectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
       List<Entity> entitiesToAdd = insertedEntities.stream()
-              .filter(entity -> entity.getEntityType().equals(entityType()))
+              .filter(entity -> entity.entityType().equals(entityType()))
               .collect(toList());
       switch (insertAction) {
         case ADD_TOP:
@@ -563,7 +563,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private void replaceEntitiesByKey(Map<Key, Entity> entityMap) {
     List<Integer> selected = selectionModel().getSelectedIndexes();
     replaceAll(entity -> {
-      Entity toReplaceWith = entityMap.get(entity.getPrimaryKey());
+      Entity toReplaceWith = entityMap.get(entity.primaryKey());
       return toReplaceWith == null ? entity : toReplaceWith;
     });
     selectionModel().setSelectedIndexes(selected);

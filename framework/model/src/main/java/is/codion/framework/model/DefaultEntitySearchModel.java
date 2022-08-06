@@ -87,10 +87,10 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
    * Instantiates a new DefaultEntitySearchModel, using the search properties for the given entity type
    * @param entityType the type of the entity to search
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
-   * @see EntityDefinition#getSearchAttributes()
+   * @see EntityDefinition#searchAttributes()
    */
   public DefaultEntitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, connectionProvider.entities().getDefinition(entityType).getSearchAttributes());
+    this(entityType, connectionProvider, connectionProvider.entities().getDefinition(entityType).searchAttributes());
   }
 
   /**
@@ -292,7 +292,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     return (additionalConditionSupplier == null ? conditionCombination :
             additionalConditionSupplier.get().and(conditionCombination))
             .selectBuilder()
-            .orderBy(connectionProvider.entities().getDefinition(entityType).getOrderBy())
+            .orderBy(connectionProvider.entities().getDefinition(entityType).orderBy())
             .build();
   }
 
@@ -325,8 +325,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private void validateType(Entity entity) {
-    if (!entity.getEntityType().equals(entityType)) {
-      throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.getEntityType());
+    if (!entity.entityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.entityType());
     }
   }
 

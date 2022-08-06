@@ -182,7 +182,7 @@ public class DomainTest {
   @Test
   void getUpdatableProperties() {
     EntityDefinition definition = entities.getDefinition(Detail.TYPE);
-    List<Property<?>> properties = definition.getUpdatableProperties();
+    List<Property<?>> properties = definition.updatableProperties();
     assertEquals(11, properties.size());
     assertFalse(properties.contains(definition.getProperty(Detail.MASTER_NAME)));
     assertFalse(properties.contains(definition.getProperty(Detail.MASTER_CODE)));
@@ -311,7 +311,7 @@ public class DomainTest {
     Key key = entities.primaryKey(Master.TYPE, 10L);
 
     Entity master = Entity.entity(key);
-    assertEquals(Master.TYPE, master.getEntityType());
+    assertEquals(Master.TYPE, master.entityType());
     assertTrue(master.contains(Master.ID));
     assertEquals(10L, master.get(Master.ID));
 
@@ -331,13 +331,13 @@ public class DomainTest {
     assertTrue(properties.contains(location));
     assertTrue(properties.contains(name));
 
-    properties = definition.getVisibleProperties();
+    properties = definition.visibleProperties();
     assertTrue(properties.contains(id));
     assertTrue(properties.contains(location));
     assertTrue(properties.contains(name));
     assertFalse(properties.contains(active));
 
-    List<Property<?>> allProperties = definition.getProperties();
+    List<Property<?>> allProperties = definition.properties();
     assertTrue(allProperties.contains(id));
     assertTrue(allProperties.contains(location));
     assertTrue(allProperties.contains(name));
@@ -409,7 +409,7 @@ public class DomainTest {
 
   @Test
   void getStringFactory() {
-    assertNotNull(entities.getDefinition(Department.TYPE).getStringFactory());
+    assertNotNull(entities.getDefinition(Department.TYPE).stringFactory());
   }
 
   @Test
@@ -489,11 +489,11 @@ public class DomainTest {
   @Test
   void getSearchAttributes() {
     EntityDefinition definition = entities.getDefinition(Employee.TYPE);
-    Collection<Attribute<String>> searchAttributes = definition.getSearchAttributes();
+    Collection<Attribute<String>> searchAttributes = definition.searchAttributes();
     assertTrue(searchAttributes.contains(Employee.JOB));
     assertTrue(searchAttributes.contains(Employee.NAME));
 
-    searchAttributes = entities.getDefinition(Department.TYPE).getSearchAttributes();
+    searchAttributes = entities.getDefinition(Department.TYPE).searchAttributes();
     //should contain all string based properties
     assertTrue(searchAttributes.contains(Department.NAME));
   }

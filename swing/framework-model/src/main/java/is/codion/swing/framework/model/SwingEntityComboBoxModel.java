@@ -76,7 +76,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.entities = connectionProvider.entities();
-    this.orderBy = this.entities.getDefinition(entityType).getOrderBy();
+    this.orderBy = this.entities.getDefinition(entityType).orderBy();
     setStaticData(this.entities.getDefinition(entityType).isStaticData());
     setIncludeCondition(foreignKeyIncludeCondition);
     addRefreshListener(() -> forceRefresh = false);
@@ -156,7 +156,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     requireNonNull(primaryKey);
 
     return items().stream()
-            .filter(entity -> entity != null && entity.getPrimaryKey().equals(primaryKey))
+            .filter(entity -> entity != null && entity.primaryKey().equals(primaryKey))
             .findFirst();
   }
 
@@ -258,7 +258,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
 
     if (item instanceof Entity) {
-      int indexOfKey = getIndexOfKey(((Entity) item).getPrimaryKey());
+      int indexOfKey = getIndexOfKey(((Entity) item).primaryKey());
       if (indexOfKey >= 0) {
         return getElementAt(indexOfKey);
       }
@@ -308,7 +308,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     int startIndex = isIncludeNull() ? 1 : 0;
     for (int index = startIndex; index < size; index++) {
       Entity item = getElementAt(index);
-      if (item != null && item.getPrimaryKey().equals(primaryKey)) {
+      if (item != null && item.primaryKey().equals(primaryKey)) {
         return index;
       }
     }
@@ -319,7 +319,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     List<Entity> filteredItems = filteredItems();
     for (int index = 0; index < filteredItems.size(); index++) {
       Entity item = filteredItems.get(index);
-      if (item.getPrimaryKey().equals(primaryKey)) {
+      if (item.primaryKey().equals(primaryKey)) {
         return index;
       }
     }

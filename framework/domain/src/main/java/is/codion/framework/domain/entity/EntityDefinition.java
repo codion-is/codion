@@ -39,12 +39,12 @@ public interface EntityDefinition {
   /**
    * @return the entity type
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the name of the underlying table, with schema prefix if applicable
    */
-  String getTableName();
+  String tableName();
 
   /**
    * Returns the {@link ConditionProvider} associated with the given type
@@ -57,17 +57,17 @@ public interface EntityDefinition {
   /**
    * @return the name of the domain this entity type belongs to
    */
-  String getDomainName();
+  String domainName();
 
   /**
    * @return the validator for this entity type
    */
-  EntityValidator getValidator();
+  EntityValidator validator();
 
   /**
    * @return the caption to use when presenting entities of this type
    */
-  String getCaption();
+  String caption();
 
   /**
    * @return true if the underlying table is small enough for displaying the contents in a combo box
@@ -88,7 +88,7 @@ public interface EntityDefinition {
    * @return the object responsible for generating primary key values for entities of this type
    * @see Builder#keyGenerator(KeyGenerator)
    */
-  KeyGenerator getKeyGenerator();
+  KeyGenerator keyGenerator();
 
   /**
    * Returns true if the value for the primary key of this entity is generated with a {@link KeyGenerator}.
@@ -100,38 +100,38 @@ public interface EntityDefinition {
   /**
    * @return the default order by clause to use when querying entities of this type
    */
-  OrderBy getOrderBy();
+  OrderBy orderBy();
 
   /**
    * @return the group by clause to use when querying entities of this type,
    * without the "group by" keywords
    */
-  String getGroupByClause();
+  String groupByClause();
 
   /**
    * @return the name of the table to use when selecting entities of this type
    */
-  String getSelectTableName();
+  String selectTableName();
 
   /**
    * @return the select query to use when selecting entities of this type
    */
-  SelectQuery getSelectQuery();
+  SelectQuery setSelectQuery();
 
   /**
    * @return the object responsible for providing toString values for this entity type
    */
-  Function<Entity, String> getStringFactory();
+  Function<Entity, String> stringFactory();
 
   /**
    * @return the comparator used when comparing this entity type to other entities
    */
-  Comparator<Entity> getComparator();
+  Comparator<Entity> comparator();
 
   /**
    * @return an unmodifiable list view of the properties
    */
-  List<Property<?>> getProperties();
+  List<Property<?>> properties();
 
   /**
    * @return true if this entity has a defined primary key
@@ -165,44 +165,44 @@ public interface EntityDefinition {
    * If the entity has no primary key attributes defined, an empty list is returned.
    * @return the primary key attributes of this entity type, sorted by primary key column index
    */
-  List<Attribute<?>> getPrimaryKeyAttributes();
+  List<Attribute<?>> primaryKeyAttributes();
 
   /**
    * Returns a list containing all primary key properties associated with this entity type.
    * If the entity has no primary key properties defined, an empty list is returned.
    * @return the primary key properties of this entity type, sorted by primary key column index
    */
-  List<ColumnProperty<?>> getPrimaryKeyProperties();
+  List<ColumnProperty<?>> primaryKeyProperties();
 
   /**
    * @return a list containing the visible properties for this entity type
    */
-  List<Property<?>> getVisibleProperties();
+  List<Property<?>> visibleProperties();
 
   /**
    * @return a list containing the column-based properties for this entity type
    */
-  List<ColumnProperty<?>> getColumnProperties();
+  List<ColumnProperty<?>> columnProperties();
 
   /**
    * @return a list containing all lazy loaded blob properties for this entity type
    */
-  List<ColumnProperty<?>> getLazyLoadedBlobProperties();
+  List<ColumnProperty<?>> lazyLoadedBlobProperties();
 
   /**
    * @return a list containing the non-column-based properties for this entity type
    */
-  List<TransientProperty<?>> getTransientProperties();
+  List<TransientProperty<?>> transientProperties();
 
   /**
    * @return a list containing the foreign key properties for this entity type
    */
-  List<ForeignKeyProperty> getForeignKeyProperties();
+  List<ForeignKeyProperty> foreignKeyProperties();
 
   /**
    * @return all foreign keys for this entity type
    */
-  Collection<ForeignKey> getForeignKeys();
+  Collection<ForeignKey> foreignKeys();
 
   /**
    * Returns the {@link EntityDefinition} of the entity referenced by the given foreign key property.
@@ -249,14 +249,14 @@ public interface EntityDefinition {
    * @return the attributes to use when searching by string
    * @see ColumnProperty.Builder#searchProperty(boolean)
    */
-  Collection<Attribute<String>> getSearchAttributes();
+  Collection<Attribute<String>> searchAttributes();
 
   /**
    * Returns the attributes selected by default for this entity type.
    * Contains the selectable column property attributes and foreign keys, excluding lazy loaded blob attributes.
    * @return the default select attributes
    */
-  Collection<Attribute<?>> getDefaultSelectAttributes();
+  Collection<Attribute<?>> defaultSelectAttributes();
 
   /**
    * @param attribute the attribute
@@ -309,7 +309,7 @@ public interface EntityDefinition {
   /**
    * @return a list containing all updatable properties associated with the given entityType
    */
-  List<Property<?>> getUpdatableProperties();
+  List<Property<?>> updatableProperties();
 
   /**
    * @param foreignKey the foreign key
@@ -348,13 +348,13 @@ public interface EntityDefinition {
    * Returns the background color provider, never null
    * @return the background color provider
    */
-  ColorProvider getBackgroundColorProvider();
+  ColorProvider backgroundColorProvider();
 
   /**
    * Returns the foreground color provider, never null
    * @return the foreground color provider
    */
-  ColorProvider getForegroundColorProvider();
+  ColorProvider foregroundColorProvider();
 
   /**
    * Creates a new {@link Entity} instance based on this definition
@@ -418,7 +418,7 @@ public interface EntityDefinition {
    * means they are (very likely) compatible when it comes to serialization.
    * @return a version indicator for the underlying entity
    */
-  int getSerializationVersion();
+  int serializationVersion();
 
   /**
    * Builds a EntityDefinition

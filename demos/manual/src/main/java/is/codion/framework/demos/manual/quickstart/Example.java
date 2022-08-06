@@ -296,7 +296,7 @@ public final class Example {
 
     connection.update(customer);
 
-    connection.delete(customerAddress.getPrimaryKey());
+    connection.delete(customerAddress.primaryKey());
     // end::persist[]
   }
 }

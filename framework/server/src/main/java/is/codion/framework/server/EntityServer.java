@@ -234,7 +234,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     Map<EntityType, String> definitions = new HashMap<>();
     for (Domain domain : domainModels.values()) {
       for (EntityDefinition definition : domain.entities().entityDefinitions()) {
-        definitions.put(definition.getEntityType(), definition.getTableName());
+        definitions.put(definition.entityType(), definition.tableName());
       }
     }
 

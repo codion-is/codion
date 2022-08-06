@@ -100,7 +100,7 @@ class DefaultKey implements Key, Serializable {
 
   @Override
   public EntityType getEntityType() {
-    return definition.getEntityType();
+    return definition.entityType();
   }
 
   @Override
@@ -140,7 +140,7 @@ class DefaultKey implements Key, Serializable {
   @Override
   public <T> T get(Attribute<T> attribute) {
     if (!values.containsKey(attribute)) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of key: " + definition.getEntityType());
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of key: " + definition.entityType());
     }
 
     return (T) values.get(definition.getColumnProperty(attribute).attribute());
@@ -290,9 +290,9 @@ class DefaultKey implements Key, Serializable {
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.getDomainName());
-    stream.writeObject(definition.getEntityType().name());
-    stream.writeInt(definition.getSerializationVersion());
+    stream.writeObject(definition.domainName());
+    stream.writeObject(definition.entityType().name());
+    stream.writeInt(definition.serializationVersion());
     stream.writeBoolean(primaryKey);
     stream.writeInt(attributes.size());
     for (int i = 0; i < attributes.size(); i++) {
@@ -305,8 +305,8 @@ class DefaultKey implements Key, Serializable {
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     Entities entities = DefaultEntities.getEntities((String) stream.readObject());
     definition = entities.getDefinition((String) stream.readObject());
-    if (definition.getSerializationVersion() != stream.readInt()) {
-      throw new IllegalArgumentException("Entity type '" + definition.getEntityType() + "' can not be deserialized due to version difference");
+    if (definition.serializationVersion() != stream.readInt()) {
+      throw new IllegalArgumentException("Entity type '" + definition.entityType() + "' can not be deserialized due to version difference");
     }
     primaryKey = stream.readBoolean();
     int attributeCount = stream.readInt();

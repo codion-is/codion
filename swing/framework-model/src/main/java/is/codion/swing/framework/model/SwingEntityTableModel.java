@@ -332,14 +332,14 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   @Override
   public Color getBackgroundColor(int row, Attribute<?> attribute) {
-    Object color = entityDefinition().getBackgroundColorProvider().getColor(getItemAt(row), attribute);
+    Object color = entityDefinition().backgroundColorProvider().getColor(getItemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
 
   @Override
   public Color getForegroundColor(int row, Attribute<?> attribute) {
-    Object color = entityDefinition().getForegroundColorProvider().getColor(getItemAt(row), attribute);
+    Object color = entityDefinition().foregroundColorProvider().getColor(getItemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
@@ -347,7 +347,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   @Override
   public final Entity getEntityByKey(Key primaryKey) {
     return visibleItems().stream()
-            .filter(entity -> entity.getPrimaryKey().equals(primaryKey))
+            .filter(entity -> entity.primaryKey().equals(primaryKey))
             .findFirst()
             .orElse(null);
   }
@@ -428,7 +428,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     List<Key> keyList = new ArrayList<>(keys);
     List<Integer> indexes = new ArrayList<>();
     for (Entity visibleEntity : visibleItems()) {
-      int index = keyList.indexOf(visibleEntity.getPrimaryKey());
+      int index = keyList.indexOf(visibleEntity.primaryKey());
       if (index >= 0) {
         indexes.add(indexOf(visibleEntity));
         keyList.remove(index);
@@ -445,7 +445,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   public final Collection<Entity> getEntitiesByKey(Collection<Key> keys) {
     requireNonNull(keys, "keys");
     return items().stream()
-            .filter(entity -> keys.contains(entity.getPrimaryKey()))
+            .filter(entity -> keys.contains(entity.primaryKey()))
             .collect(toList());
   }
 
@@ -525,7 +525,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @return a list of TableColumns based on the given entity
    */
   public static List<TableColumn> createColumns(EntityDefinition definition) {
-    return createColumns(requireNonNull(definition).getVisibleProperties());
+    return createColumns(requireNonNull(definition).visibleProperties());
   }
 
   /**
@@ -610,7 +610,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * The order by clause to use when selecting the data for this model,
    * by default the order by clause defined for the underlying entity
    * @return the order by clause
-   * @see EntityDefinition#getOrderBy()
+   * @see EntityDefinition#orderBy()
    */
   protected OrderBy getOrderBy() {
     if (orderQueryBySortOrder && sortModel().isSortingEnabled()) {
@@ -620,7 +620,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       }
     }
 
-    return entityDefinition().getOrderBy();
+    return entityDefinition().orderBy();
   }
 
   /**
@@ -634,7 +634,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       return emptyList();
     }
 
-    return entityDefinition().getDefaultSelectAttributes().stream()
+    return entityDefinition().defaultSelectAttributes().stream()
             .filter(columnModel()::isColumnVisible)
             .collect(toList());
   }
@@ -682,7 +682,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     selectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
       List<Entity> entitiesToAdd = insertedEntities.stream()
-              .filter(entity -> entity.getEntityType().equals(entityType()))
+              .filter(entity -> entity.entityType().equals(entityType()))
               .collect(toList());
       switch (insertAction) {
         case ADD_TOP:
@@ -731,7 +731,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       Iterator<Map.Entry<Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
       while (mapIterator.hasNext()) {
         Map.Entry<Key, Entity> entry = mapIterator.next();
-        if (entity.getPrimaryKey().equals(entry.getKey())) {
+        if (entity.primaryKey().equals(entry.getKey())) {
           mapIterator.remove();
           entity.setAs(entry.getValue());
           int index = indexOf(entity);
@@ -864,7 +864,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     @Override
     public Comparator<?> getComparator(Attribute<?> attribute) {
       if (attribute instanceof ForeignKey) {
-        return entities.getDefinition(((ForeignKey) attribute).referencedType()).getComparator();
+        return entities.getDefinition(((ForeignKey) attribute).referencedType()).comparator();
       }
 
       return entities.getDefinition(attribute.entityType()).getProperty(attribute).comparator();

@@ -66,10 +66,10 @@ public final class SwingEntityComboBoxModelTest {
     temp.save(TestDomain.EMP_NAME);
 
     Map<Key, Entity> updated = new HashMap<>();
-    updated.put(temp.getPrimaryKey(), temp);
+    updated.put(temp.primaryKey(), temp);
 
     EntityEditEvents.notifyUpdated(updated);
-    assertEquals("Newname", comboBoxModel.getEntity(temp.getPrimaryKey()).orElse(null).get(TestDomain.EMP_NAME));
+    assertEquals("Newname", comboBoxModel.getEntity(temp.primaryKey()).orElse(null).get(TestDomain.EMP_NAME));
 
     EntityEditEvents.notifyDeleted(singletonList(temp));
     assertFalse(comboBoxModel.isVisible(temp));
@@ -190,12 +190,12 @@ public final class SwingEntityComboBoxModelTest {
   void setSelectedEntityByKey() throws DatabaseException {
     comboBoxModel.refresh();
     Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(TestDomain.EMP_NAME, "CLARK");
-    comboBoxModel.setSelectedEntityByKey(clark.getPrimaryKey());
+    comboBoxModel.setSelectedEntityByKey(clark.primaryKey());
     assertEquals(clark, comboBoxModel.selectedValue());
     comboBoxModel.setSelectedItem(null);
     assertNull(comboBoxModel.selectedValue());
     comboBoxModel.setIncludeCondition(entity -> false);
-    comboBoxModel.setSelectedEntityByKey(clark.getPrimaryKey());
+    comboBoxModel.setSelectedEntityByKey(clark.primaryKey());
     assertEquals(clark, comboBoxModel.selectedValue());
     Key nobodyPK = ENTITIES.primaryKey(TestDomain.T_EMP, -1);
     comboBoxModel.setSelectedEntityByKey(nobodyPK);

@@ -38,7 +38,7 @@ final class DefaultKeyBuilder implements Key.Builder {
   @Override
   public Key build() {
     if (primaryKey) {
-      definition.getPrimaryKeyAttributes().forEach(attribute -> attributeValues.putIfAbsent(attribute, null));
+      definition.primaryKeyAttributes().forEach(attribute -> attributeValues.putIfAbsent(attribute, null));
     }
 
     return new DefaultKey(definition, attributeValues, primaryKey);

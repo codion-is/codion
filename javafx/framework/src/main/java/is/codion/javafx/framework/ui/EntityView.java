@@ -87,7 +87,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * @param tableView the tableView
    */
   public EntityView(FXEntityModel model, EntityEditView editView, EntityTableView tableView) {
-    this(model.editModel().entityDefinition().getCaption(), model, editView, tableView);
+    this(model.editModel().entityDefinition().caption(), model, editView, tableView);
   }
 
   /**

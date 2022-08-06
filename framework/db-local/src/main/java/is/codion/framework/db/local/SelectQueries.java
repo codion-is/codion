@@ -86,7 +86,7 @@ final class SelectQueries {
       //default from clause is handled by getFrom()
       where(condition);
       if (groupBy == null) {
-        groupBy(definition.getGroupByClause());
+        groupBy(definition.groupByClause());
       }
       condition.orderBy().ifPresent(this::setOrderBy);
       forUpdate(condition.forUpdate());
@@ -101,7 +101,7 @@ final class SelectQueries {
     }
 
     Builder entitySelectQuery() {
-      SelectQuery selectQuery = definition.getSelectQuery();
+      SelectQuery selectQuery = definition.setSelectQuery();
       if (selectQuery != null) {
         if (selectQuery.columns() != null) {
           columns(selectQuery.columns());
@@ -228,11 +228,11 @@ final class SelectQueries {
     }
 
     private String getFrom() {
-      return from == null ? forUpdate ? definition.getTableName() : definition.getSelectTableName() : from;
+      return from == null ? forUpdate ? definition.tableName() : definition.selectTableName() : from;
     }
 
     private List<ColumnProperty<?>> getPropertiesToSelect(Collection<Attribute<?>> selectAttributes) {
-      Set<ColumnProperty<?>> propertiesToSelect = new HashSet<>(definition.getPrimaryKeyProperties());
+      Set<ColumnProperty<?>> propertiesToSelect = new HashSet<>(definition.primaryKeyProperties());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
           ((ForeignKey) attribute).references().forEach(reference ->
@@ -247,15 +247,15 @@ final class SelectQueries {
     }
 
     private List<ColumnProperty<?>> getSelectableProperties() {
-      return selectablePropertiesCache.computeIfAbsent(definition.getEntityType(), entityType ->
-              definition.getColumnProperties().stream()
-                      .filter(property -> !definition.getLazyLoadedBlobProperties().contains(property))
+      return selectablePropertiesCache.computeIfAbsent(definition.entityType(), entityType ->
+              definition.columnProperties().stream()
+                      .filter(property -> !definition.lazyLoadedBlobProperties().contains(property))
                       .filter(ColumnProperty::selectable)
                       .collect(toList()));
     }
 
     private String getAllColumnsClause() {
-      return allColumnsClauseCache.computeIfAbsent(definition.getEntityType(), type -> getColumnsClause(getSelectableProperties()));
+      return allColumnsClauseCache.computeIfAbsent(definition.entityType(), type -> getColumnsClause(getSelectableProperties()));
     }
 
     private String getColumnsClause(List<ColumnProperty<?>> columnProperties) {

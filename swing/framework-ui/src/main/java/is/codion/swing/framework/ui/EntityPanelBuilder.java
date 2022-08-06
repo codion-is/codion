@@ -294,7 +294,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         entityPanel = findModelConstructor(getPanelClass()).newInstance(entityModel);
       }
       entityPanel.setCaption(caption == null ? entityModel.connectionProvider()
-              .entities().getDefinition(entityModel.entityType()).getCaption() : caption);
+              .entities().getDefinition(entityModel.entityType()).caption() : caption);
       if (preferredSize != null) {
         entityPanel.setPreferredSize(preferredSize);
       }
@@ -446,7 +446,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       Value<Attribute<?>> attributeWithInvalidValue = Value.value();
       JDialog dialog = Dialogs.okCancelDialog(editPanel)
               .owner(component)
-              .title(caption == null ? connectionProvider.entities().getDefinition(entityType).getCaption() : caption)
+              .title(caption == null ? connectionProvider.entities().getDefinition(entityType).caption() : caption)
               .onShown(dlg -> attributeWithInvalidValue.toOptional()
                       .ifPresent(editPanel::requestComponentFocus))
               .onCancel(() -> cancelled.set(true))

@@ -65,18 +65,18 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
     tableModel.setSelectedByKey(singletonList(pk1));
     Entity selectedPK1 = tableModel.selectionModel().getSelectedItem();
-    assertEquals(pk1, selectedPK1.getPrimaryKey());
+    assertEquals(pk1, selectedPK1.primaryKey());
     assertEquals(1, tableModel.selectionModel().selectionCount());
 
     tableModel.setSelectedByKey(singletonList(pk2));
     Entity selectedPK2 = tableModel.selectionModel().getSelectedItem();
-    assertEquals(pk2, selectedPK2.getPrimaryKey());
+    assertEquals(pk2, selectedPK2.primaryKey());
     assertEquals(1, tableModel.selectionModel().selectionCount());
 
     tableModel.setSelectedByKey(keys);
     List<Entity> selectedItems = tableModel.selectionModel().getSelectedItems();
     for (Entity selected : selectedItems) {
-      assertTrue(keys.contains(selected.getPrimaryKey()));
+      assertTrue(keys.contains(selected.primaryKey()));
     }
     assertEquals(2, tableModel.selectionModel().selectionCount());
   }
@@ -251,17 +251,17 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     Entity tmpEnt = entities.builder(TestDomain.T_DETAIL)
             .with(TestDomain.DETAIL_ID, 3L)
             .build();
-    assertEquals("c", testModel.getEntityByKey(tmpEnt.getPrimaryKey()).get(TestDomain.DETAIL_STRING));
+    assertEquals("c", testModel.getEntityByKey(tmpEnt.primaryKey()).get(TestDomain.DETAIL_STRING));
     List<Key> keys = new ArrayList<>();
-    keys.add(tmpEnt.getPrimaryKey());
+    keys.add(tmpEnt.primaryKey());
     tmpEnt = entities.builder(TestDomain.T_DETAIL)
             .with(TestDomain.DETAIL_ID, 2L)
             .build();
-    keys.add(tmpEnt.getPrimaryKey());
+    keys.add(tmpEnt.primaryKey());
     tmpEnt = entities.builder(TestDomain.T_DETAIL)
             .with(TestDomain.DETAIL_ID, 1L)
             .build();
-    keys.add(tmpEnt.getPrimaryKey());
+    keys.add(tmpEnt.primaryKey());
 
     Collection<Entity> entitiesByKey = testModel.getEntitiesByKey(keys);
     assertEquals(3, entitiesByKey.size());

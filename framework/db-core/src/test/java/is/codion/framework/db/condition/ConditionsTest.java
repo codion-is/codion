@@ -184,10 +184,10 @@ public final class ConditionsTest {
             .build();
 
     EntityDefinition masterDefinition = ENTITIES.getDefinition(TestDomain.T_MASTER);
-    Condition condition = Conditions.condition(master1.getPrimaryKey());
+    Condition condition = Conditions.condition(master1.primaryKey());
     assertEquals("(id = ? and id2 = ?)", condition.toString(masterDefinition));
 
-    condition = Conditions.condition(asList(master1.getPrimaryKey(), master2.getPrimaryKey()));
+    condition = Conditions.condition(asList(master1.primaryKey(), master2.primaryKey()));
     assertEquals("((id = ? and id2 = ?) or (id = ? and id2 = ?))", condition.toString(masterDefinition));
   }
 
@@ -253,10 +253,10 @@ public final class ConditionsTest {
 
     EntityDefinition deptDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
 
-    Condition condition = Conditions.condition(entity.getPrimaryKey());
+    Condition condition = Conditions.condition(entity.primaryKey());
     assertDepartmentKeyCondition(condition, deptDefinition);
 
-    condition = Conditions.condition(entity.getPrimaryKey());
+    condition = Conditions.condition(entity.primaryKey());
     assertDepartmentKeyCondition(condition, deptDefinition);
 
     condition = where(TestDomain.DEPARTMENT_NAME).notEqualTo("DEPT");
@@ -271,10 +271,10 @@ public final class ConditionsTest {
 
     EntityDefinition deptDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
 
-    Condition condition = Conditions.condition(entity.getPrimaryKey());
+    Condition condition = Conditions.condition(entity.primaryKey());
     assertDepartmentKeyCondition(condition, deptDefinition);
 
-    condition = Conditions.condition(singletonList(entity.getPrimaryKey()));
+    condition = Conditions.condition(singletonList(entity.primaryKey()));
     assertDepartmentKeyCondition(condition, deptDefinition);
 
     condition = where(TestDomain.DEPARTMENT_NAME).notEqualTo("DEPT");

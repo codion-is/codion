@@ -261,7 +261,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   private void setConditionString(String searchString) {
     Collection<Attribute<String>> searchAttributes =
-            connectionProvider.entities().getDefinition(entityType).getSearchAttributes();
+            connectionProvider.entities().getDefinition(entityType).searchAttributes();
     conditionModels.values().stream()
             .filter(conditionModel -> searchAttributes.contains(conditionModel.columnIdentifier()))
             .map(conditionModel -> (ColumnConditionModel<Attribute<String>, String>) conditionModel)
@@ -276,7 +276,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   private void initializeFilterModels(EntityType entityType, FilterModelFactory filterModelProvider) {
     if (filterModelProvider != null) {
-      for (Property<?> property : connectionProvider.entities().getDefinition(entityType).getProperties()) {
+      for (Property<?> property : connectionProvider.entities().getDefinition(entityType).properties()) {
         if (!property.hidden()) {
           ColumnFilterModel<Entity, Attribute<?>, ?> filterModel = filterModelProvider.createFilterModel(property);
           if (filterModel != null) {
@@ -289,14 +289,14 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   private void initializeConditionModels(EntityType entityType, ConditionModelFactory conditionModelFactory) {
     EntityDefinition definition = connectionProvider.entities().getDefinition(entityType);
-    for (ColumnProperty<?> columnProperty : definition.getColumnProperties()) {
+    for (ColumnProperty<?> columnProperty : definition.columnProperties()) {
       ColumnConditionModel<? extends Attribute<?>, ?> conditionModel = conditionModelFactory.createConditionModel(columnProperty.attribute());
       if (conditionModel != null) {
         conditionModels.put(conditionModel.columnIdentifier(), conditionModel);
       }
     }
     for (ForeignKeyProperty foreignKeyProperty :
-            connectionProvider.entities().getDefinition(entityType).getForeignKeyProperties()) {
+            connectionProvider.entities().getDefinition(entityType).foreignKeyProperties()) {
       ColumnConditionModel<ForeignKey, Entity> conditionModel = conditionModelFactory.createConditionModel(foreignKeyProperty.attribute());
       if (conditionModel != null) {
         conditionModels.put(conditionModel.columnIdentifier(), conditionModel);

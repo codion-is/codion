@@ -73,7 +73,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     this.connectionProvider = connectionProvider;
     this.entityDefinition =  connectionProvider.entities().getDefinition(entityType);
     this.filteredList = new FilteredList<>(this);
-    this.sortedList = new SortedList<>(filteredList, connectionProvider.entities().getDefinition(entityType).getComparator());
+    this.sortedList = new SortedList<>(filteredList, connectionProvider.entities().getDefinition(entityType).comparator());
   }
 
   /**
@@ -325,7 +325,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
       }
 
       return connectionProvider.connection().select(condition.selectBuilder()
-              .orderBy(connectionProvider.entities().getDefinition(entityType).getOrderBy())
+              .orderBy(connectionProvider.entities().getDefinition(entityType).orderBy())
               .build());
     }
     catch (DatabaseException e) {

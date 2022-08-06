@@ -45,7 +45,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
                               Function<Entity, String> stringFunction) {
     super(new EntityTreeNode(requireNonNull(tableModel, "tableModel"), null,
             requireNonNull(stringFunction, "stringFunction"), requireNonNull(parentForeignKey, "parentForeignKey"),
-            new EntityTreeNodeComparator(tableModel.entityDefinition().getComparator())));
+            new EntityTreeNodeComparator(tableModel.entityDefinition().comparator())));
     this.parentForeignKey = parentForeignKey;
     this.treeSelectionModel = new DefaultTreeSelectionModel();
     this.treeSelectionModel.addTreeSelectionListener(new EntityTreeSelectionListener(treeSelectionModel,
@@ -149,9 +149,9 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
                            Function<Entity, String> stringFunction, ForeignKey parentForeignKey,
                            Comparator<EntityTreeNode> nodeComparator) {
       super(nodeEntity);
-      if (nodeEntity != null && !nodeEntity.getEntityType().equals(tableModel.entityType())) {
+      if (nodeEntity != null && !nodeEntity.entityType().equals(tableModel.entityType())) {
         throw new IllegalArgumentException("Entity of type " +
-                tableModel.entityType() + " expected, got: " + nodeEntity.getEntityType());
+                tableModel.entityType() + " expected, got: " + nodeEntity.entityType());
       }
       this.tableModel = tableModel;
       this.nodeEntity = nodeEntity;

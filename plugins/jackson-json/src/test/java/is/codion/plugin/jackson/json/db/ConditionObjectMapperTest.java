@@ -114,7 +114,7 @@ public final class ConditionObjectMapperTest {
     assertEquals(selectCondition.limit(), readCondition.limit());
     assertEquals(selectCondition.offset(), readCondition.offset());
     assertEquals(selectCondition.fetchDepth().orElse(null), readCondition.fetchDepth().orElse(null));
-    for (ForeignKey foreignKey : entities.getDefinition(selectCondition.entityType()).getForeignKeys()) {
+    for (ForeignKey foreignKey : entities.getDefinition(selectCondition.entityType()).foreignKeys()) {
       assertEquals(selectCondition.fetchDepth(foreignKey), readCondition.fetchDepth(foreignKey));
     }
     assertEquals(selectCondition.selectAttributes(), readCondition.selectAttributes());

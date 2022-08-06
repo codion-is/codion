@@ -97,17 +97,17 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public EntityType getEntityType() {
-    return definition.getEntityType();
+  public EntityType entityType() {
+    return definition.entityType();
   }
 
   @Override
-  public EntityDefinition getDefinition() {
+  public EntityDefinition entityDefinition() {
     return definition;
   }
 
   @Override
-  public Key getPrimaryKey() {
+  public Key primaryKey() {
     if (primaryKey == null) {
       primaryKey = initializePrimaryKey(false);
     }
@@ -116,7 +116,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Key getOriginalPrimaryKey() {
+  public Key originalPrimaryKey() {
     return initializePrimaryKey(true);
   }
 
@@ -158,8 +158,8 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public boolean isNew() {
-    Key key = getPrimaryKey();
-    Key originalKey = getOriginalPrimaryKey();
+    Key key = primaryKey();
+    Key originalKey = originalPrimaryKey();
 
     return key.isNull() || originalKey.isNull();
   }
@@ -198,7 +198,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public Entity clearPrimaryKey() {
-    definition.getPrimaryKeyAttributes().forEach(this::remove);
+    definition.primaryKeyAttributes().forEach(this::remove);
     primaryKey = null;
 
     return this;
@@ -254,11 +254,11 @@ final class DefaultEntity implements Entity, Serializable {
     if (entity == this) {
       return emptyMap();
     }
-    if (entity != null && !definition.getEntityType().equals(entity.getEntityType())) {
-      throw new IllegalArgumentException("Entity of type: " + definition.getEntityType() + " expected, got: " + entity.getEntityType());
+    if (entity != null && !definition.entityType().equals(entity.entityType())) {
+      throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.entityType());
     }
     Map<Property<?>, Object> previousValues = new HashMap<>();
-    definition.getProperties().forEach(property -> previousValues.put(property, get(property)));
+    definition.properties().forEach(property -> previousValues.put(property, get(property)));
     clear();
     if (entity != null) {
       entity.entrySet().forEach(attributeValue -> values.put(attributeValue.getKey(), attributeValue.getValue()));
@@ -293,7 +293,7 @@ final class DefaultEntity implements Entity, Serializable {
   @Override
   public Entity deepCopy() {
     Entity copy = copy();
-    for (ForeignKey foreignKey : definition.getForeignKeys()) {
+    for (ForeignKey foreignKey : definition.foreignKeys()) {
       Entity foreignKeyValue = copy.get(foreignKey);
       if (foreignKeyValue != null) {
         copy.put(foreignKey, foreignKeyValue.deepCopy());
@@ -310,8 +310,8 @@ final class DefaultEntity implements Entity, Serializable {
       // no wrapping required
       return (T) this;
     }
-    if (!getEntityType().entityClass().equals(entityClass)) {
-      throw new IllegalArgumentException("entityClass " + getEntityType().entityClass() + " expected, got: " + entityClass);
+    if (!entityType().entityClass().equals(entityClass)) {
+      throw new IllegalArgumentException("entityClass " + entityType().entityClass() + " expected, got: " + entityClass);
     }
 
     return (T) Proxy.newProxyInstance(getClass().getClassLoader(),
@@ -320,12 +320,12 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public boolean columnValuesEqual(Entity entity) {
-    if (!definition.getEntityType().equals(requireNonNull(entity, "entity").getEntityType())) {
-      throw new IllegalArgumentException("Entity of type " + definition.getEntityType() +
-              " expected, got: " + entity.getEntityType());
+    if (!definition.entityType().equals(requireNonNull(entity, "entity").entityType())) {
+      throw new IllegalArgumentException("Entity of type " + definition.entityType() +
+              " expected, got: " + entity.entityType());
     }
 
-    return definition.getColumnProperties().stream()
+    return definition.columnProperties().stream()
             .allMatch(property -> valueEqual(entity, property));
   }
 
@@ -335,7 +335,7 @@ final class DefaultEntity implements Entity, Serializable {
    */
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof Entity && getPrimaryKey().equals(((Entity) obj).getPrimaryKey());
+    return this == obj || obj instanceof Entity && primaryKey().equals(((Entity) obj).primaryKey());
   }
 
   /**
@@ -345,7 +345,7 @@ final class DefaultEntity implements Entity, Serializable {
    */
   @Override
   public int compareTo(Entity entity) {
-    return definition.getComparator().compare(this, entity);
+    return definition.comparator().compare(this, entity);
   }
 
   /**
@@ -353,18 +353,18 @@ final class DefaultEntity implements Entity, Serializable {
    */
   @Override
   public int hashCode() {
-    return getPrimaryKey().hashCode();
+    return primaryKey().hashCode();
   }
 
   /**
    * @return a string representation of this entity
    * @see EntityDefinition.Builder#stringFactory(java.util.function.Function)
-   * @see EntityDefinition#getStringFactory()
+   * @see EntityDefinition#stringFactory()
    */
   @Override
   public String toString() {
     if (toString == null) {
-      toString = definition.getStringFactory().apply(this);
+      toString = definition.stringFactory().apply(this);
     }
 
     return toString;
@@ -502,9 +502,9 @@ final class DefaultEntity implements Entity, Serializable {
 
   private void validateForeignKeyValue(ForeignKeyProperty property, Entity foreignKeyValue) {
     EntityType referencedEntityType = property.referencedEntityType();
-    if (!Objects.equals(referencedEntityType, foreignKeyValue.getEntityType())) {
+    if (!Objects.equals(referencedEntityType, foreignKeyValue.entityType())) {
       throw new IllegalArgumentException("Entity of type " + referencedEntityType +
-              " expected for property " + property + ", got: " + foreignKeyValue.getEntityType());
+              " expected for property " + property + ", got: " + foreignKeyValue.entityType());
     }
     property.references().forEach(reference -> throwIfModifiesReadOnlyReference(property, foreignKeyValue, reference));
   }
@@ -613,7 +613,7 @@ final class DefaultEntity implements Entity, Serializable {
       keyValues.put(reference.referencedAttribute(), value);
     }
     Set<Attribute<?>> referencedAttributes = keyValues.keySet();
-    List<Attribute<?>> primaryKeyAttributes = referencedEntityDefinition.getPrimaryKeyAttributes();
+    List<Attribute<?>> primaryKeyAttributes = referencedEntityDefinition.primaryKeyAttributes();
     boolean isPrimaryKey = referencedAttributes.size() == primaryKeyAttributes.size() && referencedAttributes.containsAll(primaryKeyAttributes);
 
     return cacheReferencedKey(foreignKey, new DefaultKey(referencedEntityDefinition, keyValues, isPrimaryKey));
@@ -627,7 +627,7 @@ final class DefaultEntity implements Entity, Serializable {
       return null;
     }
 
-    boolean isPrimaryKey = reference.referencedAttribute().equals(referencedEntityDefinition.getPrimaryKeyAttributes().get(0));
+    boolean isPrimaryKey = reference.referencedAttribute().equals(referencedEntityDefinition.primaryKeyAttributes().get(0));
 
     return cacheReferencedKey(foreignKey,
             new DefaultKey(definition.getReferencedEntityDefinition(foreignKey),
@@ -669,7 +669,7 @@ final class DefaultEntity implements Entity, Serializable {
     if (!definition.hasPrimaryKey()) {
       return new DefaultKey(definition, emptyList(), true);
     }
-    List<Attribute<?>> primaryKeyAttributes = definition.getPrimaryKeyAttributes();
+    List<Attribute<?>> primaryKeyAttributes = definition.primaryKeyAttributes();
     if (primaryKeyAttributes.size() > 1) {
       Map<Attribute<?>, Object> keyValues = new HashMap<>(primaryKeyAttributes.size());
       for (int i = 0; i < primaryKeyAttributes.size(); i++) {
@@ -766,12 +766,12 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.getDomainName());
-    stream.writeObject(definition.getEntityType().name());
-    stream.writeInt(definition.getSerializationVersion());
+    stream.writeObject(definition.domainName());
+    stream.writeObject(definition.entityType().name());
+    stream.writeInt(definition.serializationVersion());
     boolean isModified = isModified(true);
     stream.writeBoolean(isModified);
-    List<Property<?>> properties = definition.getProperties();
+    List<Property<?>> properties = definition.properties();
     for (int i = 0; i < properties.size(); i++) {
       Property<?> property = properties.get(i);
       if (!(property instanceof DerivedProperty)) {
@@ -795,12 +795,12 @@ final class DefaultEntity implements Entity, Serializable {
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     Entities entities = DefaultEntities.getEntities((String) stream.readObject());
     definition = entities.getDefinition((String) stream.readObject());
-    if (definition.getSerializationVersion() != stream.readInt()) {
-      throw new IllegalArgumentException("Entity type '" + definition.getEntityType() + "' can not be deserialized due to version difference");
+    if (definition.serializationVersion() != stream.readInt()) {
+      throw new IllegalArgumentException("Entity type '" + definition.entityType() + "' can not be deserialized due to version difference");
     }
     boolean isModified = stream.readBoolean();
     values = new HashMap<>();
-    List<Property<?>> properties = definition.getProperties();
+    List<Property<?>> properties = definition.properties();
     for (int i = 0; i < properties.size(); i++) {
       Property<Object> property = (Property<Object>) properties.get(i);
       if (!(property instanceof DerivedProperty)) {
@@ -905,7 +905,7 @@ final class DefaultEntity implements Entity, Serializable {
       if (value instanceof Entity) {
         Entity entityValue = (Entity) value;
 
-        value = entityValue.castTo(entityValue.getEntityType().entityClass());
+        value = entityValue.castTo(entityValue.entityType().entityClass());
       }
       if (getterReturnType.equals(Optional.class)) {
         return Optional.ofNullable(value);

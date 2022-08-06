@@ -131,7 +131,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void initializeColumns() {
-    for (Property<?> property : getListModel().entityDefinition().getVisibleProperties()) {
+    for (Property<?> property : getListModel().entityDefinition().visibleProperties()) {
       getColumns().add(entityTableColumn(property));
     }
     listModel.setColumns(getColumns());
@@ -227,7 +227,7 @@ public class EntityTableView extends TableView<Entity> {
   private Menu createUpdateSelectedItem() {
     Menu updateSelected = new Menu(FrameworkMessages.update());
     FXUiUtil.link(updateSelected.disableProperty(), listModel.selectionEmptyObserver());
-    Properties.sort(getListModel().entityDefinition().getUpdatableProperties()).stream()
+    Properties.sort(getListModel().entityDefinition().updatableProperties()).stream()
             .filter(this::includeUpdateSelectedProperty)
             .forEach(property -> addUpdateSelectedMenuItem(updateSelected, property));
 
@@ -338,7 +338,7 @@ public class EntityTableView extends TableView<Entity> {
 
     return !entityTableModel.isReadOnly() && entityTableModel.isUpdateEnabled() &&
             entityTableModel.isBatchUpdateEnabled() &&
-            !entityTableModel.entityDefinition().getUpdatableProperties().isEmpty();
+            !entityTableModel.entityDefinition().updatableProperties().isEmpty();
   }
 
   private boolean includeDeleteSelectedControl() {

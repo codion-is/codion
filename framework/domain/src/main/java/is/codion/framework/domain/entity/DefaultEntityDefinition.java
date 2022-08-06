@@ -221,7 +221,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public EntityType getEntityType() {
+  public EntityType entityType() {
     return entityType;
   }
 
@@ -242,12 +242,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public int getSerializationVersion() {
+  public int serializationVersion() {
     return entityProperties.serializationVersion;
   }
 
   @Override
-  public String getTableName() {
+  public String tableName() {
     return tableName;
   }
 
@@ -265,12 +265,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public String getDomainName() {
+  public String domainName() {
     return domainName;
   }
 
   @Override
-  public String getCaption() {
+  public String caption() {
     if (entityType.resourceBundleName() != null) {
       if (resourceCaption == null) {
         ResourceBundle bundle = ResourceBundle.getBundle(entityType.resourceBundleName());
@@ -301,7 +301,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public KeyGenerator getKeyGenerator() {
+  public KeyGenerator keyGenerator() {
     return keyGenerator;
   }
 
@@ -311,32 +311,32 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public OrderBy getOrderBy() {
+  public OrderBy orderBy() {
     return orderBy;
   }
 
   @Override
-  public String getGroupByClause() {
+  public String groupByClause() {
     return groupByClause;
   }
 
   @Override
-  public String getSelectTableName() {
+  public String selectTableName() {
     return selectTableName == null ? tableName : selectTableName;
   }
 
   @Override
-  public SelectQuery getSelectQuery() {
+  public SelectQuery setSelectQuery() {
     return selectQuery;
   }
 
   @Override
-  public Function<Entity, String> getStringFactory() {
+  public Function<Entity, String> stringFactory() {
     return stringFactory;
   }
 
   @Override
-  public Comparator<Entity> getComparator() {
+  public Comparator<Entity> comparator() {
     return comparator;
   }
 
@@ -351,7 +351,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Collection<Attribute<String>> getSearchAttributes() {
+  public Collection<Attribute<String>> searchAttributes() {
     return entityProperties.columnProperties.stream()
             .filter(ColumnProperty::searchProperty)
             .map(property -> ((ColumnProperty<String>) property).attribute())
@@ -359,7 +359,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Collection<Attribute<?>> getDefaultSelectAttributes() {
+  public Collection<Attribute<?>> defaultSelectAttributes() {
     return entityProperties.defaultSelectAttributes;
   }
 
@@ -424,7 +424,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<Property<?>> getUpdatableProperties() {
+  public List<Property<?>> updatableProperties() {
     List<ColumnProperty<?>> writableColumnProperties = getWritableColumnProperties(!isKeyGenerated(), false);
     writableColumnProperties.removeIf(property -> isForeignKeyAttribute(property.attribute()) || property.denormalized());
     List<Property<?>> updatable = new ArrayList<>(writableColumnProperties);
@@ -452,7 +452,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public List<ForeignKey> getForeignKeys(EntityType referencedEntityType) {
     requireNonNull(referencedEntityType, "referencedEntityType");
-    return getForeignKeys().stream()
+    return foreignKeys().stream()
             .filter(foreignKey -> foreignKey.referencedType().equals(referencedEntityType))
             .collect(toList());
   }
@@ -475,7 +475,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<Property<?>> getProperties() {
+  public List<Property<?>> properties() {
     return entityProperties.properties;
   }
 
@@ -500,44 +500,44 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<Attribute<?>> getPrimaryKeyAttributes() {
+  public List<Attribute<?>> primaryKeyAttributes() {
     return entityProperties.primaryKeyAttribues;
   }
 
   @Override
-  public List<ColumnProperty<?>> getPrimaryKeyProperties() {
+  public List<ColumnProperty<?>> primaryKeyProperties() {
     return entityProperties.primaryKeyProperties;
   }
 
   @Override
-  public List<Property<?>> getVisibleProperties() {
+  public List<Property<?>> visibleProperties() {
     return entityProperties.properties.stream()
             .filter(property -> !property.hidden())
             .collect(toList());
   }
 
   @Override
-  public List<ColumnProperty<?>> getColumnProperties() {
+  public List<ColumnProperty<?>> columnProperties() {
     return entityProperties.columnProperties;
   }
 
   @Override
-  public List<ColumnProperty<?>> getLazyLoadedBlobProperties() {
+  public List<ColumnProperty<?>> lazyLoadedBlobProperties() {
     return entityProperties.lazyLoadedBlobProperties;
   }
 
   @Override
-  public List<TransientProperty<?>> getTransientProperties() {
+  public List<TransientProperty<?>> transientProperties() {
     return entityProperties.transientProperties;
   }
 
   @Override
-  public List<ForeignKeyProperty> getForeignKeyProperties() {
+  public List<ForeignKeyProperty> foreignKeyProperties() {
     return entityProperties.foreignKeyProperties;
   }
 
   @Override
-  public Collection<ForeignKey> getForeignKeys() {
+  public Collection<ForeignKey> foreignKeys() {
     return entityProperties.foreignKeyPropertyMap.keySet();
   }
 
@@ -573,17 +573,17 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public EntityValidator getValidator() {
+  public EntityValidator validator() {
     return validator;
   }
 
   @Override
-  public ColorProvider getBackgroundColorProvider() {
+  public ColorProvider backgroundColorProvider() {
     return backgroundColorProvider;
   }
 
   @Override
-  public ColorProvider getForegroundColorProvider() {
+  public ColorProvider foregroundColorProvider() {
     return foregroundColorProvider;
   }
 
@@ -607,10 +607,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     if (!hasPrimaryKey()) {
       throw new IllegalArgumentException("Entity '" + entityType + "' has no primary key");
     }
-    if (getPrimaryKeyAttributes().size() > 1) {
+    if (primaryKeyAttributes().size() > 1) {
       throw new IllegalStateException(entityType + " has a composite primary key");
     }
-    Attribute<T> attribute = (Attribute<T>) getPrimaryKeyAttributes().get(0);
+    Attribute<T> attribute = (Attribute<T>) primaryKeyAttributes().get(0);
     attribute.validateType(value);
 
     return new DefaultKey(this, attribute, value, true);
@@ -639,7 +639,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     if (foreignEntityDefinitions.containsKey(foreignKey)) {
       throw new IllegalStateException("Foreign definition has already been set for " + foreignKey);
     }
-    if (!foreignKeyProperty.referencedEntityType().equals(definition.getEntityType())) {
+    if (!foreignKeyProperty.referencedEntityType().equals(definition.entityType())) {
       throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.referencedEntityType() +
               " expected for " + foreignKey);
     }
@@ -674,11 +674,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
           defaultMethodHandles.put(method.getName(), createDefaultMethodHandle(method));
         }
         else {
-          getProperties().stream()
+          properties().stream()
                   .filter(property -> isGetter(method, property))
                   .findFirst()
                   .ifPresent(property -> getters.put(method.getName(), property.attribute()));
-          getProperties().stream()
+          properties().stream()
                   .filter(property -> isSetter(method, property))
                   .findFirst()
                   .ifPresent(property -> setters.put(method.getName(), property.attribute()));

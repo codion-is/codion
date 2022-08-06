@@ -52,13 +52,13 @@ final class EntityResultPacker implements ResultPacker<Entity> {
       }
       catch (Exception e) {
         throw new SQLException("Exception fetching: " + property + ", entity: " +
-                definition.getEntityType() + " [" + e.getMessage() + "]", e);
+                definition.entityType() + " [" + e.getMessage() + "]", e);
       }
     }
   }
 
   private void addTransientNullValues(Map<Attribute<?>, Object> values) {
-    List<TransientProperty<?>> transientProperties = definition.getTransientProperties();
+    List<TransientProperty<?>> transientProperties = definition.transientProperties();
     for (int i = 0; i < transientProperties.size(); i++) {
       TransientProperty<?> transientProperty = transientProperties.get(i);
       if (!(transientProperty instanceof DerivedProperty)) {
@@ -68,7 +68,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   private void addLazyLoadedBlobNullValues(Map<Attribute<?>, Object> values) {
-    List<ColumnProperty<?>> lazyLoadedBlobProperties = definition.getLazyLoadedBlobProperties();
+    List<ColumnProperty<?>> lazyLoadedBlobProperties = definition.lazyLoadedBlobProperties();
     for (int i = 0; i < lazyLoadedBlobProperties.size(); i++) {
       ColumnProperty<?> blobProperty = lazyLoadedBlobProperties.get(i);
       if (!values.containsKey(blobProperty.attribute())) {

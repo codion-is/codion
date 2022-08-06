@@ -300,7 +300,7 @@ public final class EntityComponentsTest {
   @Test
   void inputComponent() {
     EntityDefinition definition = CONNECTION_PROVIDER.entities().getDefinition(TestDomain.T_DETAIL);
-    definition.getColumnProperties()
+    definition.columnProperties()
             .forEach(property -> inputComponents.component(property.attribute()).build());
 
     assertThrows(IllegalArgumentException.class, () -> inputComponents.component(TestDomain.DETAIL_MASTER_FK));

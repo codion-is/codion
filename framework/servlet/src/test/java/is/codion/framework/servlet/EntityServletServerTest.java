@@ -229,7 +229,7 @@ public class EntityServletServerTest {
 
     keys = entityObjectMapper.deserializeKeys(response.getEntity().getContent());
     assertEquals(2, keys.size());
-    assertTrue(entities.stream().map(Entity::getPrimaryKey).collect(Collectors.toList()).containsAll(keys));
+    assertTrue(entities.stream().map(Entity::primaryKey).collect(Collectors.toList()).containsAll(keys));
     response.close();
 
     //update entities
@@ -481,14 +481,14 @@ public class EntityServletServerTest {
     assertEquals(200, response.getStatusLine().getStatusCode());
     List<Key> queryKeys = deserializeResponse(response);
     assertEquals(1, queryKeys.size());
-    assertEquals(department.getPrimaryKey(), queryKeys.get(0));
+    assertEquals(department.primaryKey(), queryKeys.get(0));
     response.close();
 
     //delete
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getPrimaryKey()))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.primaryKey()))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
@@ -502,7 +502,7 @@ public class EntityServletServerTest {
     assertEquals(200, response.getStatusLine().getStatusCode());
     List<Key> keys = deserializeResponse(response);
     assertEquals(1, keys.size());
-    assertEquals(department.getPrimaryKey(), keys.get(0));
+    assertEquals(department.primaryKey(), keys.get(0));
     response.close();
 
     //update
@@ -535,7 +535,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getPrimaryKey()))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.primaryKey()))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);

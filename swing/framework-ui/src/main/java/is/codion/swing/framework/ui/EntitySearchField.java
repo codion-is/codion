@@ -172,7 +172,7 @@ public final class EntitySearchField extends JTextField {
    * @param dialogTitle the title to display on the dialog
    * @return the selected entity, an empty Optional in case none was selected
    * @throws is.codion.common.model.CancelException in case the user cancelled
-   * @see EntityDefinition#getSearchAttributes()
+   * @see EntityDefinition#searchAttributes()
    */
   public static Optional<Entity> lookupEntity(EntityType entityType, EntityConnectionProvider connectionProvider,
                                               JComponent dialogParent, String dialogTitle) {
@@ -190,7 +190,7 @@ public final class EntitySearchField extends JTextField {
    * @param dialogTitle the title to display on the dialog
    * @return the selected entities
    * @throws is.codion.common.model.CancelException in case the user cancelled
-   * @see EntityDefinition#getSearchAttributes()
+   * @see EntityDefinition#searchAttributes()
    */
   public static List<Entity> lookupEntities(EntityType entityType, EntityConnectionProvider connectionProvider,
                                             JComponent dialogParent, String dialogTitle) {

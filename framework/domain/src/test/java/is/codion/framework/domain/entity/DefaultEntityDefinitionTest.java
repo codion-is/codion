@@ -62,19 +62,19 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
     EntityDefinition definition = domain.entities().getDefinition(entityType);
     assertEquals(entityType.name(), definition.toString());
-    assertEquals(entityType, definition.getEntityType());
-    assertEquals("tableName", definition.getTableName());
-    assertNotNull(definition.getKeyGenerator());
+    assertEquals(entityType, definition.entityType());
+    assertEquals("tableName", definition.tableName());
+    assertNotNull(definition.keyGenerator());
     assertFalse(definition.isKeyGenerated());
-    assertEquals("*", definition.getSelectQuery().columns());
-    assertEquals("dual", definition.getSelectQuery().from());
-    assertEquals("name", definition.getSelectQuery().groupBy());
+    assertEquals("*", definition.setSelectQuery().columns());
+    assertEquals("dual", definition.setSelectQuery().from());
+    assertEquals("name", definition.setSelectQuery().groupBy());
     assertFalse(definition.isSmallDataset());
     assertTrue(definition.isReadOnly());
-    assertEquals("selectTableName", definition.getSelectTableName());
-    assertEquals("name", definition.getGroupByClause());
-    assertEquals(stringFactory, definition.getStringFactory());
-    assertEquals(comparator, definition.getComparator());
+    assertEquals("selectTableName", definition.selectTableName());
+    assertEquals("name", definition.groupByClause());
+    assertEquals(stringFactory, definition.stringFactory());
+    assertEquals(comparator, definition.comparator());
   }
 
   @Test
@@ -82,7 +82,7 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     Collection<Attribute<?>> defaultSelectAttributes = domain.entities()
-            .getDefinition(Employee.TYPE).getDefaultSelectAttributes();
+            .getDefinition(Employee.TYPE).defaultSelectAttributes();
     assertTrue(defaultSelectAttributes.contains(Employee.ID));
     assertTrue(defaultSelectAttributes.contains(Employee.NAME));
     assertTrue(defaultSelectAttributes.contains(Employee.JOB));
@@ -98,7 +98,7 @@ public class DefaultEntityDefinitionTest {
     assertFalse(defaultSelectAttributes.contains(Employee.DEPARTMENT_NAME));
 
     defaultSelectAttributes = domain.entities()
-            .getDefinition(Department.TYPE).getDefaultSelectAttributes();
+            .getDefinition(Department.TYPE).defaultSelectAttributes();
     assertTrue(defaultSelectAttributes.contains(Department.NO));
     assertTrue(defaultSelectAttributes.contains(Department.NAME));
     assertTrue(defaultSelectAttributes.contains(Department.LOCATION));
@@ -106,7 +106,7 @@ public class DefaultEntityDefinitionTest {
     assertFalse(defaultSelectAttributes.contains(Department.DATA));
 
     defaultSelectAttributes = domain.entities()
-            .getDefinition(Detail.TYPE).getDefaultSelectAttributes();
+            .getDefinition(Detail.TYPE).defaultSelectAttributes();
     assertTrue(defaultSelectAttributes.contains(Detail.ID));
     assertTrue(defaultSelectAttributes.contains(Detail.INT));
     assertTrue(defaultSelectAttributes.contains(Detail.DOUBLE));
@@ -196,7 +196,7 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().getDefinition(entityType);
-    assertEquals("p1, p2", definition.getGroupByClause());
+    assertEquals("p1, p2", definition.groupByClause());
   }
 
   @Test
@@ -215,7 +215,7 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().getDefinition(entityType);
-    assertEquals(havingClause, definition.getSelectQuery().having());
+    assertEquals(havingClause, definition.setSelectQuery().having());
   }
 
   @Test
@@ -301,8 +301,8 @@ public class DefaultEntityDefinitionTest {
 
     Entity entity = entities.entity(entityType);
     EntityDefinition definition = entities.getDefinition(entityType);
-    assertEquals(colorBlue, definition.getBackgroundColorProvider().getColor(entity, entity.getPrimaryKey().getAttribute()));
-    assertEquals(colorYellow, definition.getForegroundColorProvider().getColor(entity, entity.getPrimaryKey().getAttribute()));
+    assertEquals(colorBlue, definition.backgroundColorProvider().getColor(entity, entity.primaryKey().getAttribute()));
+    assertEquals(colorYellow, definition.foregroundColorProvider().getColor(entity, entity.primaryKey().getAttribute()));
   }
 
   @Test
@@ -363,9 +363,9 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().getDefinition(entityType);
-    assertNotNull(definition.getKeyGenerator());
+    assertNotNull(definition.keyGenerator());
     assertFalse(definition.isKeyGenerated());
-    assertTrue(definition.getKeyGenerator().isInserted());
+    assertTrue(definition.keyGenerator().isInserted());
   }
 
   @Test
@@ -394,9 +394,9 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().getDefinition(entityType);
-    assertNotNull(definition.getKeyGenerator());
+    assertNotNull(definition.keyGenerator());
     assertTrue(definition.isKeyGenerated());
-    assertFalse(definition.getKeyGenerator().isInserted());
+    assertFalse(definition.keyGenerator().isInserted());
   }
 
   @Test
@@ -439,12 +439,12 @@ public class DefaultEntityDefinitionTest {
     EntityDefinition definition = domain.entities().getDefinition(entityType);
 
     Locale.setDefault(new Locale("en", "EN"));
-    assertEquals("Test", definition.getCaption());
+    assertEquals("Test", definition.caption());
 
     definition = Serializer.deserialize(Serializer.serialize(definition));
 
     Locale.setDefault(new Locale("is", "IS"));
-    assertEquals("Prufa", definition.getCaption());
+    assertEquals("Prufa", definition.caption());
   }
 
   private static final DomainType COMPATIBILITY = domainType("compatibility");
@@ -511,10 +511,10 @@ public class DefaultEntityDefinitionTest {
             columnProperty(PersonDifferentType.ENABLED))
             .build();
 
-    assertNotEquals(definition.getSerializationVersion(), missingProperty.getSerializationVersion());
-    assertEquals(definition.getSerializationVersion(), missingDerivedProperty.getSerializationVersion());
-    assertNotEquals(definition.getSerializationVersion(), differentOrder.getSerializationVersion());
-    assertNotEquals(missingProperty.getSerializationVersion(), differentOrder.getSerializationVersion());
-    assertNotEquals(definition.getSerializationVersion(), differentType.getSerializationVersion());
+    assertNotEquals(definition.serializationVersion(), missingProperty.serializationVersion());
+    assertEquals(definition.serializationVersion(), missingDerivedProperty.serializationVersion());
+    assertNotEquals(definition.serializationVersion(), differentOrder.serializationVersion());
+    assertNotEquals(missingProperty.serializationVersion(), differentOrder.serializationVersion());
+    assertNotEquals(definition.serializationVersion(), differentType.serializationVersion());
   }
 }

@@ -280,7 +280,7 @@ public final class EntityConnectionDemo {
     toDelete.addAll(Entity.getPrimaryKeys(playlistTracks));
     toDelete.addAll(Entity.getPrimaryKeys(tracks));
     toDelete.addAll(Entity.getPrimaryKeys(albums));
-    toDelete.add(audioslave.getPrimaryKey());
+    toDelete.add(audioslave.primaryKey());
 
     connection.delete(toDelete);
     // end::deleteKey[]

@@ -158,8 +158,8 @@ abstract class AbstractHttpEntityConnectionTest {
     Entity employee = connection.selectSingle(TestDomain.EMP_NAME, "ADAMS");
     connection.beginTransaction();
     try {
-      connection.delete(employee.getPrimaryKey());
-      List<Entity> selected = connection.select(singletonList(employee.getPrimaryKey()));
+      connection.delete(employee.primaryKey());
+      List<Entity> selected = connection.select(singletonList(employee.primaryKey()));
       assertTrue(selected.isEmpty());
     }
     finally {
@@ -222,8 +222,8 @@ abstract class AbstractHttpEntityConnectionTest {
     new Random().nextBytes(bytes);
 
     Entity scott = connection.selectSingle(TestDomain.EMP_ID, 7);
-    connection.writeBlob(scott.getPrimaryKey(), TestDomain.EMP_DATA, bytes);
-    assertArrayEquals(bytes, connection.readBlob(scott.getPrimaryKey(), TestDomain.EMP_DATA));
+    connection.writeBlob(scott.primaryKey(), TestDomain.EMP_DATA, bytes);
+    assertArrayEquals(bytes, connection.readBlob(scott.primaryKey(), TestDomain.EMP_DATA));
   }
 
   @Test
@@ -235,7 +235,7 @@ abstract class AbstractHttpEntityConnectionTest {
   @Test
   void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
     Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Conditions.condition(department.getPrimaryKey())));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Conditions.condition(department.primaryKey())));
   }
 
   @Test

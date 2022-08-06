@@ -92,13 +92,13 @@ public class DefaultEntityTest {
     List<Object> fromFile = Serializer.deserialize(Serializer.serialize(singletonList(entity)));
     assertEquals(1, fromFile.size());
     Entity entityFromFile = (Entity) fromFile.get(0);
-    assertEquals(Detail.TYPE, entity.getEntityType());
+    assertEquals(Detail.TYPE, entity.entityType());
     assertTrue(entity.columnValuesEqual(entityFromFile));
     assertTrue(entityFromFile.isModified());
     assertTrue(entityFromFile.isModified(Detail.STRING));
     assertEquals(originalStringValue, entityFromFile.getOriginal(Detail.STRING));
 
-    Key key = entity.getPrimaryKey();
+    Key key = entity.primaryKey();
     byte[] serialized = Serializer.serialize(singletonList(key));
     List<Object> keyFromFile = Serializer.deserialize(serialized);
     assertEquals(1, keyFromFile.size());
@@ -313,9 +313,9 @@ public class DefaultEntityTest {
             .with(NoPk.COL2, 2)
             .with(NoPk.COL3, 3)
             .build();
-    Key key = noPk.getPrimaryKey();
+    Key key = noPk.primaryKey();
     assertTrue(key.isNull());
-    Key originalKey = noPk.getOriginalPrimaryKey();
+    Key originalKey = noPk.originalPrimaryKey();
     assertTrue(originalKey.isNull());
   }
 
@@ -448,7 +448,7 @@ public class DefaultEntityTest {
     assertTrue(testEntity.isModified());
 
     testEntity.setAs(null);
-    assertTrue(testEntity.getPrimaryKey().isNull());
+    assertTrue(testEntity.primaryKey().isNull());
     assertFalse(testEntity.contains(Detail.DATE));
     assertFalse(testEntity.contains(Detail.STRING));
     assertFalse(testEntity.contains(Detail.BOOLEAN));
@@ -458,7 +458,7 @@ public class DefaultEntityTest {
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
 
     testEntity.clearPrimaryKey();
-    assertTrue(testEntity.getPrimaryKey().isNull());
+    assertTrue(testEntity.primaryKey().isNull());
     assertTrue(testEntity.contains(Detail.DATE));
     assertTrue(testEntity.contains(Detail.STRING));
     assertTrue(testEntity.contains(Detail.BOOLEAN));
@@ -669,7 +669,7 @@ public class DefaultEntityTest {
     assertNull(emp.get(Employee.DEPARTMENT_FK));
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     Entity empDept = emp.getForeignKey(Employee.DEPARTMENT_FK);
-    assertEquals(Integer.valueOf(2), empDept.getPrimaryKey().get());
+    assertEquals(Integer.valueOf(2), empDept.primaryKey().get());
 
     Entity dept2 = ENTITIES.builder(Department.TYPE)
             .with(Department.NO, 3)

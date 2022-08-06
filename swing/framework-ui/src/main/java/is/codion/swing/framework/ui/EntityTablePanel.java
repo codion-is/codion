@@ -665,7 +665,7 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(frameworkIcons().edit())
             .description(FrameworkMessages.updateSelectedTip())
             .build();
-    Properties.sort(tableModel.entityDefinition().getUpdatableProperties()).forEach(property -> {
+    Properties.sort(tableModel.entityDefinition().updatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.attribute())) {
         String caption = property.caption() == null ? property.attribute().name() : property.caption();
         updateControls.add(Control.builder(() -> updateSelectedEntities(property))
@@ -921,7 +921,7 @@ public class EntityTablePanel extends JPanel {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    SwingEntityEditModel editModel = new SwingEntityEditModel(entities.iterator().next().getEntityType(), connectionProvider);
+    SwingEntityEditModel editModel = new SwingEntityEditModel(entities.iterator().next().entityType(), connectionProvider);
     editModel.setReadOnly(true);
     SwingEntityTableModel tableModel = new SwingEntityTableModel(editModel) {
       @Override
@@ -947,7 +947,7 @@ public class EntityTablePanel extends JPanel {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    EntityType entityType = entities.iterator().next().getEntityType();
+    EntityType entityType = entities.iterator().next().entityType();
     SwingEntityTableModel tableModel = new SwingEntityTableModel(entityType, connectionProvider) {
       @Override
       protected Collection<Entity> refreshItems() {
@@ -1404,7 +1404,7 @@ public class EntityTablePanel extends JPanel {
   private boolean includeUpdateSelectedControls() {
     return !tableModel.isReadOnly() && tableModel.isUpdateEnabled() &&
             tableModel.isBatchUpdateEnabled() &&
-            !tableModel.entityDefinition().getUpdatableProperties().isEmpty();
+            !tableModel.entityDefinition().updatableProperties().isEmpty();
   }
 
   private boolean includeDeleteSelectedControl() {
@@ -1773,7 +1773,7 @@ public class EntityTablePanel extends JPanel {
     for (Map.Entry<EntityType, Collection<Entity>> entry : dependencies.entrySet()) {
       Collection<Entity> dependentEntities = entry.getValue();
       if (!dependentEntities.isEmpty()) {
-        tabPane.addTab(connectionProvider.entities().getDefinition(entry.getKey()).getCaption(),
+        tabPane.addTab(connectionProvider.entities().getDefinition(entry.getKey()).caption(),
                 createEntityTablePanel(dependentEntities, connectionProvider));
       }
     }

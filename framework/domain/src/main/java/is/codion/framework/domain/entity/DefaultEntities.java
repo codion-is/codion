@@ -114,12 +114,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   protected final void add(EntityDefinition definition) {
-    if (entityDefinitions.containsKey(definition.getEntityType().name())) {
+    if (entityDefinitions.containsKey(definition.entityType().name())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
-              definition.getEntityType() + ", for table: " + definition.getTableName());
+              definition.entityType() + ", for table: " + definition.tableName());
     }
     validateForeignKeyProperties(definition);
-    entityDefinitions.put(definition.getEntityType().name(), (DefaultEntityDefinition) definition);
+    entityDefinitions.put(definition.entityType().name(), (DefaultEntityDefinition) definition);
     populateForeignDefinitions();
   }
 
@@ -133,8 +133,8 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   private void validateForeignKeyProperties(EntityDefinition definition) {
-    EntityType entityType = definition.getEntityType();
-    for (ForeignKey foreignKey : definition.getForeignKeys()) {
+    EntityType entityType = definition.entityType();
+    for (ForeignKey foreignKey : definition.foreignKeys()) {
       EntityType referencedType = foreignKey.referencedType();
       EntityDefinition referencedEntity = referencedType.equals(entityType) ?
               definition : entityDefinitions.get(referencedType.name());
@@ -157,7 +157,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   private void populateForeignDefinitions() {
     for (DefaultEntityDefinition definition : entityDefinitions.values()) {
-      for (ForeignKey foreignKey : definition.getForeignKeys()) {
+      for (ForeignKey foreignKey : definition.foreignKeys()) {
         EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.referencedType().name());
         if (referencedDefinition != null && !definition.hasReferencedEntityDefinition(foreignKey)) {
           definition.setReferencedEntityDefinition(foreignKey, referencedDefinition);
