@@ -11,6 +11,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Provides {@link Database} implementations
+ * @see #instance()
+ * @see #instance(String)
+ * @see #createDatabase(String)
  */
 public interface DatabaseFactory {
 
