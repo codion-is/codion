@@ -160,7 +160,7 @@ public final class Completion {
     @Override
     public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
       int offs = offset;
-      if (isSelecting() || getModel().getSize() == 0) {
+      if (isSelecting() || model().getSize() == 0) {
         return;
       }
       super.insertString(offs, str, a);
@@ -171,7 +171,7 @@ public final class Completion {
         setSelectedItem(item);
       }
       else {
-        item = getComboBox().getSelectedItem();
+        item = comboBox().getSelectedItem();
         offs = offs - str.length();
       }
 
@@ -190,8 +190,8 @@ public final class Completion {
       String selectedAsString = selectedItem.toString();
       int match = selectedAsString.length();
       // look for items that match the given pattern
-      for (int i = 0; i < getModel().getSize(); i++) {
-        Object currentItem = getModel().getElementAt(i);
+      for (int i = 0; i < model().getSize(); i++) {
+        Object currentItem = model().getElementAt(i);
         String itemAsString = currentItem == null ? "" : currentItem.toString();
         if (startsWithIgnoreCase(itemAsString, pattern, isNormalize())) {
           // current item matches the pattern
