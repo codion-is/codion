@@ -33,15 +33,15 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
   @Override
   protected Collection<DefinitionRow> refreshItems() {
     Collection<DefinitionRow> items = new ArrayList<>();
-    schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema -> items.addAll(createDomainDefinitions(schema)));
+    schemaTableModel.selectionModel().getSelectedItems().forEach(schema -> items.addAll(createDomainDefinitions(schema)));
 
     return items;
   }
 
   private static Collection<DefinitionRow> createDomainDefinitions(Schema schema) {
-    DatabaseDomain domain = new DatabaseDomain(domainType(schema.getName()), schema.getTables().values());
+    DatabaseDomain domain = new DatabaseDomain(domainType(schema.name()), schema.tables().values());
 
-    return domain.entities().entityDefinitions().stream()
+    return domain.entities().definitions().stream()
             .map(definition -> new DefinitionRow(domain, definition))
             .collect(toList());
   }
@@ -76,7 +76,7 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
         case DefinitionTableModel.DOMAIN:
           return row.domain.type().name();
         case DefinitionTableModel.ENTITY:
-          return row.definition.getEntityType().name();
+          return row.definition.entityType().name();
         default:
           throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
       }

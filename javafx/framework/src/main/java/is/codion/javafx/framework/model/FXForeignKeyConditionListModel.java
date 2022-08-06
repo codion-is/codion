@@ -35,7 +35,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
   /**
    * @return the {@link ObservableEntityList} this model is based on
    */
-  public ObservableEntityList getListModel() {
+  public ObservableEntityList listModel() {
     return listModel;
   }
 
@@ -47,7 +47,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
   private void bindListModelEvents() {
     listModel.addSelectionChangedListener(() -> {
       if (!isUpdatingModel()) {
-        setEqualValue(listModel.getSelectionModel().getSelectedItem());
+        setEqualValue(listModel.selectionModel().getSelectedItem());
       }
     });
     addEqualsValueListener(() -> {
@@ -55,17 +55,17 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
         setUpdatingModel(true);
         Collection<Entity> equalsValues = getEqualValues();
         if (!equalsValues.isEmpty()) {
-          listModel.getSelectionModel().setSelectedItem(equalsValues.iterator().next());
+          listModel.selectionModel().setSelectedItem(equalsValues.iterator().next());
         }
         else {
-          listModel.getSelectionModel().clearSelection();
+          listModel.selectionModel().clearSelection();
         }
       }
       finally {
         setUpdatingModel(false);
       }
     });
-    listModel.addRefreshListener(() -> listModel.getSelectionModelOptional().ifPresent(selectionModel -> {
+    listModel.addRefreshListener(() -> listModel.selectionModelOptional().ifPresent(selectionModel -> {
       Collection<Entity> equalsValues = getEqualValues();
       if (!equalsValues.isEmpty()) {
         selectionModel.setSelectedItem(equalsValues.iterator().next());

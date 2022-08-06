@@ -14,11 +14,11 @@ public final class SelectDepartment extends AbstractEntityUsageScenario<EmpDeptA
 
   @Override
   protected void perform(EmpDeptAppPanel.EmpDeptApplicationModel application) {
-    selectRandomRow(application.getEntityModel(Department.TYPE).getTableModel());
+    selectRandomRow(application.entityModel(Department.TYPE).tableModel());
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 10;
   }
 }

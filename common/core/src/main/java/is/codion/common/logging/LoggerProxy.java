@@ -29,7 +29,7 @@ public interface LoggerProxy {
     public void setLogLevel(Object logLevel) {/*no op*/}
 
     @Override
-    public List<Object> getLogLevels() {
+    public List<Object> logLevels() {
       return Collections.emptyList();
     }
   };
@@ -48,7 +48,7 @@ public interface LoggerProxy {
   /**
    * @return the available log levels
    */
-  List<Object> getLogLevels();
+  List<Object> logLevels();
 
   /**
    * @return the first available LoggerProxy implementation found, {@link #NULL_PROXY} if none is available.

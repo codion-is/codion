@@ -14,12 +14,12 @@ final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInput
 
   FileInputPanelValue(FileInputPanel fileInputPanel) {
     super(fileInputPanel);
-    fileInputPanel.getFilePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+    fileInputPanel.filePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
   }
 
   @Override
   protected byte[] getComponentValue() {
-    String filePath = getComponent().getFilePathField().getText();
+    String filePath = getComponent().filePathField().getText();
     if (filePath.isEmpty()) {
       return null;
     }

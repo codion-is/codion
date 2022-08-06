@@ -32,7 +32,7 @@ public final class MetaDataModel {
     }
   }
 
-  public Collection<Schema> getSchemas() {
+  public Collection<Schema> schemas() {
     return unmodifiableCollection(schemas.values());
   }
 
@@ -48,11 +48,11 @@ public final class MetaDataModel {
     Map<String, Schema> schemas = new HashMap<>();
     try (ResultSet resultSet = metaData.getCatalogs()) {
       schemas.putAll(new SchemaPacker("TABLE_CAT").pack(resultSet).stream()
-              .collect(toMap(Schema::getName, schema -> schema)));
+              .collect(toMap(Schema::name, schema -> schema)));
     }
     try (ResultSet resultSet = metaData.getSchemas()) {
       schemas.putAll(new SchemaPacker("TABLE_SCHEM").pack(resultSet).stream()
-              .collect(toMap(Schema::getName, schema -> schema)));
+              .collect(toMap(Schema::name, schema -> schema)));
     }
 
     return schemas;

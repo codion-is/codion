@@ -153,7 +153,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   @Override
   public final String toString() {
-    return getEditModel().toString();
+    return editModel().toString();
   }
 
   /**
@@ -189,7 +189,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * @return a {@link StateObserver} indicating whether this panel is active
    */
-  public final StateObserver getActiveObserver() {
+  public final StateObserver activeObserver() {
     return activeState.observer();
   }
 
@@ -199,7 +199,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #requestInitialFocus()
    */
   public final void clearAndRequestFocus() {
-    getEditModel().setDefaultValues();
+    editModel().setDefaultValues();
     requestInitialFocus();
   }
 
@@ -273,7 +273,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     requireNonNull(exception);
     requireNonNull(entity);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
-      EntityTablePanel.showDependenciesDialog(singletonList(entity), getEditModel().getConnectionProvider(),
+      EntityTablePanel.showDependenciesDialog(singletonList(entity), editModel().connectionProvider(),
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }
     else {
@@ -288,7 +288,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public void onValidationException(ValidationException exception) {
     JOptionPane.showMessageDialog(this, exception.getMessage(),
             Messages.error(), JOptionPane.ERROR_MESSAGE);
-    requestComponentFocus(exception.getAttribute());
+    requestComponentFocus(exception.attribute());
   }
 
   /**
@@ -387,9 +387,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       validateData();
       WaitCursor.show(this);
       try {
-        getEditModel().insert();
+        editModel().insert();
         if (clearAfterInsert) {
-          getEditModel().setDefaultValues();
+          editModel().setDefaultValues();
         }
         if (requestFocusAfterInsert) {
           requestAfterInsertFocus();
@@ -433,7 +433,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     try {
       WaitCursor.show(this);
       try {
-        getEditModel().delete();
+        editModel().delete();
         requestInitialFocus();
 
         return true;
@@ -444,7 +444,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      onReferentialIntegrityException(e, getEditModel().getEntityCopy());
+      onReferentialIntegrityException(e, editModel().entityCopy());
     }
     catch (Exception ex) {
       LOG.error(ex.getMessage(), ex);
@@ -475,7 +475,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       validateData();
       WaitCursor.show(this);
       try {
-        getEditModel().update();
+        editModel().update();
         requestInitialFocus();
 
         return true;
@@ -628,7 +628,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #getControl(ControlCode)
    */
   private void setupControls() {
-    if (!getEditModel().isReadOnly()) {
+    if (!editModel().isReadOnly()) {
       setupEditControls();
     }
     if (controlCodes.contains(ControlCode.CLEAR)) {
@@ -640,21 +640,21 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private void setupEditControls() {
-    if (getEditModel().isInsertEnabled() && controlCodes.contains(ControlCode.INSERT)) {
+    if (editModel().isInsertEnabled() && controlCodes.contains(ControlCode.INSERT)) {
       controls.putIfAbsent(ControlCode.INSERT, createInsertControl());
     }
-    if (getEditModel().isUpdateEnabled() && controlCodes.contains(ControlCode.UPDATE)) {
+    if (editModel().isUpdateEnabled() && controlCodes.contains(ControlCode.UPDATE)) {
       controls.putIfAbsent(ControlCode.UPDATE, createUpdateControl());
     }
-    if (getEditModel().isDeleteEnabled() && controlCodes.contains(ControlCode.DELETE)) {
+    if (editModel().isDeleteEnabled() && controlCodes.contains(ControlCode.DELETE)) {
       controls.putIfAbsent(ControlCode.DELETE, createDeleteControl());
     }
   }
 
   private Control createRefreshControl() {
-    return Control.builder(getEditModel()::refresh)
+    return Control.builder(editModel()::refresh)
             .caption(FrameworkMessages.refresh())
-            .enabledState(State.and(activeState, getEditModel().getRefreshingObserver().reversedObserver()))
+            .enabledState(State.and(activeState, editModel().refreshingObserver().reversedObserver()))
             .description(FrameworkMessages.refreshTip() + ALT_PREFIX + FrameworkMessages.refreshMnemonic() + ")")
             .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(frameworkIcons().refresh())
@@ -665,8 +665,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return Control.builder(this::delete)
             .caption(FrameworkMessages.delete())
             .enabledState(State.and(activeState,
-                    getEditModel().getDeleteEnabledObserver(),
-                    getEditModel().getEntityNewObserver().reversedObserver()))
+                    editModel().deleteEnabledObserver(),
+                    editModel().entityNewObserver().reversedObserver()))
             .description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
             .mnemonic(FrameworkMessages.deleteMnemonic())
             .smallIcon(frameworkIcons().delete())
@@ -687,9 +687,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return Control.builder(this::update)
             .caption(FrameworkMessages.update())
             .enabledState(State.and(activeState,
-                    getEditModel().getUpdateEnabledObserver(),
-                    getEditModel().getEntityNewObserver().reversedObserver(),
-                    getEditModel().getModifiedObserver()))
+                    editModel().updateEnabledObserver(),
+                    editModel().entityNewObserver().reversedObserver(),
+                    editModel().modifiedObserver()))
             .description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
             .mnemonic(FrameworkMessages.updateMnemonic())
             .smallIcon(frameworkIcons().update())
@@ -702,7 +702,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
     return Control.builder(this::insert)
             .caption(caption)
-            .enabledState(State.and(activeState, getEditModel().getInsertEnabledObserver()))
+            .enabledState(State.and(activeState, editModel().insertEnabledObserver()))
             .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic)
             .smallIcon(frameworkIcons().add())
@@ -732,8 +732,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(Control.control(this::showEntityMenu))
             .enable(this);
-    getEditModel().getRefreshingObserver().addDataListener(this::onRefreshingChanged);
-    getEditModel().addConfirmSetEntityObserver(confirmationState -> {
+    editModel().refreshingObserver().addDataListener(this::onRefreshingChanged);
+    editModel().addConfirmSetEntityObserver(confirmationState -> {
       int result = JOptionPane.showConfirmDialog(Utilities.getParentWindow(EntityEditPanel.this).orElse(null),
               FrameworkMessages.unsavedDataWarning(), FrameworkMessages.unsavedDataWarningTitle(),
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
@@ -751,6 +751,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private void showEntityMenu() {
-    new EntityPopupMenu(getEditModel().getEntityCopy(), getEditModel().getConnectionProvider().connection()).show(this, 0, 0);
+    new EntityPopupMenu(editModel().entityCopy(), editModel().connectionProvider().connection()).show(this, 0, 0);
   }
 }

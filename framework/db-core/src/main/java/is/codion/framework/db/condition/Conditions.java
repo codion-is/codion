@@ -51,11 +51,11 @@ public final class Conditions {
    * @return a condition based on the given key
    */
   public static Condition condition(Key key) {
-    if (requireNonNull(key).getAttributes().size() > 1) {
-      return compositeCondition(attributeMap(key.getAttributes()), EQUAL, valueMap(key));
+    if (requireNonNull(key).attributes().size() > 1) {
+      return compositeCondition(attributeMap(key.attributes()), EQUAL, valueMap(key));
     }
 
-    return new MultiValueAttributeCondition<>(key.getAttribute(), singletonList(key.get()), EQUAL);
+    return new MultiValueAttributeCondition<>(key.attribute(), singletonList(key.get()), EQUAL);
   }
 
   /**
@@ -69,13 +69,13 @@ public final class Conditions {
       throw new IllegalArgumentException("No keys specified for key condition");
     }
     Key firstKey = (keys instanceof List) ? ((List<Key>) keys).get(0) : keys.iterator().next();
-    if (firstKey.getAttributes().size() > 1) {
-      return compositeKeyCondition(attributeMap(firstKey.getAttributes()), EQUAL, keys.stream()
+    if (firstKey.attributes().size() > 1) {
+      return compositeKeyCondition(attributeMap(firstKey.attributes()), EQUAL, keys.stream()
               .map(Conditions::valueMap)
               .collect(toList()));
     }
 
-    return new MultiValueAttributeCondition<>((Attribute<?>) firstKey.getAttribute(), getValues(keys), EQUAL);
+    return new MultiValueAttributeCondition<>((Attribute<?>) firstKey.attribute(), getValues(keys), EQUAL);
   }
 
   /**
@@ -188,7 +188,7 @@ public final class Conditions {
 
   private static Map<Attribute<?>, Object> valueMap(Key key) {
     Map<Attribute<?>, Object> values = new HashMap<>();
-    key.getAttributes().forEach(attribute -> values.put(attribute, key.get(attribute)));
+    key.attributes().forEach(attribute -> values.put(attribute, key.get(attribute)));
 
     return values;
   }

@@ -77,7 +77,7 @@ public class EntityTestUnit {
   /**
    * @return the domain entities
    */
-  public final Entities getEntities() {
+  public final Entities entities() {
     return connectionProvider.entities();
   }
 
@@ -92,10 +92,10 @@ public class EntityTestUnit {
     try {
       Map<ForeignKey, Entity> foreignKeyEntities = initializeForeignKeyEntities(entityType, new HashMap<>(), connection);
       Entity testEntity = null;
-      EntityDefinition entityDefinition = getEntities().getDefinition(entityType);
+      EntityDefinition entityDefinition = entities().definition(entityType);
       if (!entityDefinition.isReadOnly()) {
         testEntity = testInsert(requireNonNull(initializeTestEntity(entityType, foreignKeyEntities), "test entity"), connection);
-        assertTrue(testEntity.getPrimaryKey().isNotNull());
+        assertTrue(testEntity.primaryKey().isNotNull());
         testUpdate(testEntity, initializeForeignKeyEntities(entityType, foreignKeyEntities, connection), connection, this);
       }
       testSelect(entityType, testEntity, connection);
@@ -126,7 +126,7 @@ public class EntityTestUnit {
    * @return the entity instance to use for testing the entity type
    */
   protected Entity initializeTestEntity(EntityType entityType, Map<ForeignKey, Entity> foreignKeyEntities) {
-    return EntityTestUtil.createRandomEntity(getEntities(), entityType, foreignKeyEntities);
+    return EntityTestUtil.createRandomEntity(entities(), entityType, foreignKeyEntities);
   }
 
   /**
@@ -138,7 +138,7 @@ public class EntityTestUnit {
    * @throws DatabaseException in case of an exception
    */
   protected Entity initializeForeignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities) throws DatabaseException {
-    return EntityTestUtil.createRandomEntity(getEntities(), foreignKey.referencedType(), foreignKeyEntities);
+    return EntityTestUtil.createRandomEntity(entities(), foreignKey.referencedType(), foreignKeyEntities);
   }
 
   /**
@@ -147,7 +147,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
   protected void modifyEntity(Entity testEntity, Map<ForeignKey, Entity> foreignKeyEntities) {
-    EntityTestUtil.randomize(getEntities(), testEntity, foreignKeyEntities);
+    EntityTestUtil.randomize(entities(), testEntity, foreignKeyEntities);
   }
 
   /**
@@ -162,7 +162,7 @@ public class EntityTestUnit {
   private Map<ForeignKey, Entity> initializeForeignKeyEntities(EntityType entityType,
                                                                Map<ForeignKey, Entity> foreignKeyEntities,
                                                                EntityConnection connection) throws DatabaseException {
-    List<ForeignKey> foreignKeys = new ArrayList<>(getEntities().getDefinition(entityType).getForeignKeys());
+    List<ForeignKey> foreignKeys = new ArrayList<>(entities().definition(entityType).foreignKeys());
     //we have to start with non-self-referential ones
     foreignKeys.sort((fk1, fk2) -> !fk1.referencedType().equals(entityType) ? -1 : 1);
     for (ForeignKey foreignKey : foreignKeys) {
@@ -195,7 +195,7 @@ public class EntityTestUnit {
       return connection.select(key);
     }
     catch (RecordNotFoundException e) {
-      fail("Inserted entity of type " + testEntity.getEntityType() + " not returned by select after insert");
+      fail("Inserted entity of type " + testEntity.entityType() + " not returned by select after insert");
       throw e;
     }
   }
@@ -211,8 +211,8 @@ public class EntityTestUnit {
   private static void testSelect(EntityType entityType, Entity testEntity,
                                  EntityConnection connection) throws DatabaseException {
     if (testEntity != null) {
-      assertEquals(testEntity, connection.select(testEntity.getPrimaryKey()),
-              "Entity of type " + testEntity.getEntityType() + " failed equals comparison");
+      assertEquals(testEntity, connection.select(testEntity.primaryKey()),
+              "Entity of type " + testEntity.entityType() + " failed equals comparison");
     }
     else {
       connection.select(condition(entityType).selectBuilder()
@@ -237,8 +237,8 @@ public class EntityTestUnit {
     }
 
     Entity updated = connection.update(testEntity);
-    assertEquals(testEntity.getPrimaryKey(), updated.getPrimaryKey());
-    for (ColumnProperty<?> property : testEntity.getDefinition().getColumnProperties()) {
+    assertEquals(testEntity.primaryKey(), updated.primaryKey());
+    for (ColumnProperty<?> property : testEntity.entityDefinition().columnProperties()) {
       if (property.updatable()) {
         Object beforeUpdate = testEntity.get(property.attribute());
         Object afterUpdate = updated.get(property.attribute());
@@ -269,12 +269,12 @@ public class EntityTestUnit {
     connection.delete(Entity.getPrimaryKeys(singletonList(testEntity)));
     boolean caught = false;
     try {
-      connection.select(testEntity.getPrimaryKey());
+      connection.select(testEntity.primaryKey());
     }
     catch (RecordNotFoundException e) {
       caught = true;
     }
-    assertTrue(caught, "Entity of type " + testEntity.getEntityType() + " failed delete test");
+    assertTrue(caught, "Entity of type " + testEntity.entityType() + " failed delete test");
   }
 
   /**
@@ -286,8 +286,8 @@ public class EntityTestUnit {
    */
   private static Entity insertOrSelect(Entity entity, EntityConnection connection) throws DatabaseException {
     try {
-      if (entity.getPrimaryKey().isNotNull()) {
-        List<Entity> selected = connection.select(singletonList(entity.getPrimaryKey()));
+      if (entity.primaryKey().isNotNull()) {
+        List<Entity> selected = connection.select(singletonList(entity.primaryKey()));
         if (!selected.isEmpty()) {
           return selected.get(0);
         }

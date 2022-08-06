@@ -17,17 +17,17 @@ public interface ClientLog {
   /**
    * @return the log entry list
    */
-  List<MethodLogger.Entry> getEntries();
+  List<MethodLogger.Entry> entries();
 
   /**
    * @return the UUID identifying this logs client
    */
-  UUID getClientId();
+  UUID clientId();
 
   /**
    * @return the log creation date
    */
-  LocalDateTime getConnectionCreationDate();
+  LocalDateTime connectionCreationDate();
 
   /**
    * Instantiates a new ClientLog instance.

@@ -45,11 +45,11 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
                               Function<Entity, String> stringFunction) {
     super(new EntityTreeNode(requireNonNull(tableModel, "tableModel"), null,
             requireNonNull(stringFunction, "stringFunction"), requireNonNull(parentForeignKey, "parentForeignKey"),
-            new EntityTreeNodeComparator(tableModel.getEntityDefinition().getComparator())));
+            new EntityTreeNodeComparator(tableModel.entityDefinition().comparator())));
     this.parentForeignKey = parentForeignKey;
     this.treeSelectionModel = new DefaultTreeSelectionModel();
     this.treeSelectionModel.addTreeSelectionListener(new EntityTreeSelectionListener(treeSelectionModel,
-            tableModel.getSelectionModel(), getRoot()));
+            tableModel.selectionModel(), getRoot()));
   }
 
   /**
@@ -63,7 +63,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
   /**
    * @return the selection model
    */
-  public TreeSelectionModel getTreeSelectionModel() {
+  public TreeSelectionModel treeSelectionModel() {
     return treeSelectionModel;
   }
 
@@ -117,9 +117,9 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
 
   private void bindEvents(SwingEntityTableModel tableModel) {
     tableModel.addRefreshListener(this::refreshRoot);
-    tableModel.getEditModel().addAfterUpdateListener(updatedEntities -> this.nodesUpdated(updatedEntities.values()));
-    tableModel.getEditModel().addAfterInsertListener(this::nodesUpdated);
-    tableModel.getEditModel().addAfterDeleteListener(this::nodesDeleted);
+    tableModel.editModel().addAfterUpdateListener(updatedEntities -> this.nodesUpdated(updatedEntities.values()));
+    tableModel.editModel().addAfterInsertListener(this::nodesUpdated);
+    tableModel.editModel().addAfterDeleteListener(this::nodesDeleted);
   }
 
   private static TreePath find(EntityTreeNode root, Entity entity) {
@@ -149,9 +149,9 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
                            Function<Entity, String> stringFunction, ForeignKey parentForeignKey,
                            Comparator<EntityTreeNode> nodeComparator) {
       super(nodeEntity);
-      if (nodeEntity != null && !nodeEntity.getEntityType().equals(tableModel.getEntityType())) {
+      if (nodeEntity != null && !nodeEntity.entityType().equals(tableModel.entityType())) {
         throw new IllegalArgumentException("Entity of type " +
-                tableModel.getEntityType() + " expected, got: " + nodeEntity.getEntityType());
+                tableModel.entityType() + " expected, got: " + nodeEntity.entityType());
       }
       this.tableModel = tableModel;
       this.nodeEntity = nodeEntity;
@@ -175,7 +175,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
      * Returns the entity, note that this entity is null for the root node.
      * @return the entity, null in case of the root node
      */
-    public Entity getEntity() {
+    public Entity entity() {
       return nodeEntity;
     }
 
@@ -185,8 +185,8 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
     }
 
     private List<EntityTreeNode> loadChildren() {
-      return tableModel.getItems().stream()
-              .filter(entity -> Objects.equals(this.nodeEntity, entity.getForeignKey(parentForeignKey)))
+      return tableModel.items().stream()
+              .filter(entity -> Objects.equals(this.nodeEntity, entity.referencedEntity(parentForeignKey)))
               .map(entity -> new EntityTreeNode(tableModel, entity, stringFunction, parentForeignKey, nodeComparator))
               .map(EntityTreeNode::refresh)
               .sorted(nodeComparator)
@@ -247,7 +247,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
         if (!tableSelectionChangingState.get()) {
           List<Entity> selectedEntities = new ArrayList<>(treeSelectionModel.getSelectionCount());
           for (TreePath selectedPath : treeSelectionModel.getSelectionPaths()) {
-            selectedEntities.add(((EntityTreeNode) selectedPath.getLastPathComponent()).getEntity());
+            selectedEntities.add(((EntityTreeNode) selectedPath.getLastPathComponent()).entity());
           }
           tableSelectionModel.setSelectedItems(selectedEntities);
         }

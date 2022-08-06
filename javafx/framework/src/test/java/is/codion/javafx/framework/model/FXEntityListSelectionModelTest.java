@@ -37,16 +37,16 @@ public final class FXEntityListSelectionModelTest {
   void selectionMode() {
     FXEntityListModel list = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     new EntityTableView(list);
-    FXEntityListSelectionModel selectionModel = list.getSelectionModel();
-    MultipleSelectionModel<Entity> multipleSelectionModel = (MultipleSelectionModel<Entity>) selectionModel.getSelectionModel();
-    assertFalse(selectionModel.getSingleSelectionModeState().get());
+    FXEntityListSelectionModel selectionModel = list.selectionModel();
+    MultipleSelectionModel<Entity> multipleSelectionModel = (MultipleSelectionModel<Entity>) selectionModel.selectionModel();
+    assertFalse(selectionModel.singleSelectionModeState().get());
     multipleSelectionModel.setSelectionMode(SelectionMode.SINGLE);
-    assertTrue(selectionModel.getSingleSelectionModeState().get());
+    assertTrue(selectionModel.singleSelectionModeState().get());
     multipleSelectionModel.setSelectionMode(SelectionMode.MULTIPLE);
-    assertFalse(selectionModel.getSingleSelectionModeState().get());
-    selectionModel.getSingleSelectionModeState().set(true);
+    assertFalse(selectionModel.singleSelectionModeState().get());
+    selectionModel.singleSelectionModeState().set(true);
     assertEquals(SelectionMode.SINGLE, multipleSelectionModel.getSelectionMode());
-    selectionModel.getSingleSelectionModeState().set(false);
+    selectionModel.singleSelectionModeState().set(false);
     assertEquals(SelectionMode.MULTIPLE, multipleSelectionModel.getSelectionMode());
   }
 }

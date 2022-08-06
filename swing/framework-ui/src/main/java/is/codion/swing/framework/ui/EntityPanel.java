@@ -286,7 +286,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param entityModel the EntityModel
    */
   public EntityPanel(SwingEntityModel entityModel) {
-    this(entityModel, null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
+    this(entityModel, null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
   }
 
   /**
@@ -295,7 +295,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel) {
-    this(entityModel, editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
+    this(entityModel, editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
   }
 
   /**
@@ -317,7 +317,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     requireNonNull(entityModel, ENTITY_MODEL_PARAM);
     setFocusCycleRoot(true);
     this.entityModel = entityModel;
-    this.caption = entityModel.getEditModel().getEntityDefinition().getCaption();
+    this.caption = entityModel.editModel().entityDefinition().caption();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
   }
@@ -334,22 +334,22 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * @return the EntityModel
    */
-  public final SwingEntityModel getModel() {
+  public final SwingEntityModel model() {
     return entityModel;
   }
 
   /**
    * @return the EntityEditModel
    */
-  public final SwingEntityEditModel getEditModel() {
-    return entityModel.getEditModel();
+  public final SwingEntityEditModel editModel() {
+    return entityModel.editModel();
   }
 
   /**
    * @return the EntityTableModel, null if none is available
    */
-  public final SwingEntityTableModel getTableModel() {
-    return entityModel.getTableModel();
+  public final SwingEntityTableModel tableModel() {
+    return entityModel.tableModel();
   }
 
   /**
@@ -457,7 +457,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * @return the edit panel
    */
-  public final EntityEditPanel getEditPanel() {
+  public final EntityEditPanel editPanel() {
     return editPanel;
   }
 
@@ -471,7 +471,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * @return the EntityTablePanel used by this EntityPanel
    */
-  public final EntityTablePanel getTablePanel() {
+  public final EntityTablePanel tablePanel() {
     return tablePanel;
   }
 
@@ -486,15 +486,15 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Returns the panel containing the edit panel and the edit controls panel.
    * @return the edit control panel
    */
-  public final JPanel getEditControlPanel() {
+  public final JPanel editControlPanel() {
     return editControlPanel;
   }
 
   /**
    * @return the currently visible/linked detail EntityPanel, if any
    */
-  public final Collection<EntityPanel> getLinkedDetailPanels() {
-    Collection<SwingEntityModel> linkedDetailModels = entityModel.getLinkedDetailModels();
+  public final Collection<EntityPanel> linkedDetailPanels() {
+    Collection<SwingEntityModel> linkedDetailModels = entityModel.linkedDetailModels();
 
     return detailEntityPanels.stream()
             .filter(detailPanel -> linkedDetailModels.contains(detailPanel.entityModel))
@@ -507,9 +507,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the detail panel of the given type
    * @throws IllegalArgumentException in case the panel was not found
    */
-  public final EntityPanel getDetailPanel(EntityType entityType) {
+  public final EntityPanel detailPanel(EntityType entityType) {
     for (EntityPanel detailPanel : detailEntityPanels) {
-      if (detailPanel.entityModel.getEntityType().equals(entityType)) {
+      if (detailPanel.entityModel.entityType().equals(entityType)) {
         return detailPanel;
       }
     }
@@ -521,7 +521,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Returns all detail panels.
    * @return the detail panels
    */
-  public final Collection<EntityPanel> getDetailPanels() {
+  public final Collection<EntityPanel> detailPanels() {
     return Collections.unmodifiableCollection(detailEntityPanels);
   }
 
@@ -532,7 +532,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   public final boolean containsDetailPanel(EntityType entityType) {
     return detailEntityPanels.stream()
-            .anyMatch(detailPanel -> detailPanel.entityModel.getEntityType().equals(entityType));
+            .anyMatch(detailPanel -> detailPanel.entityModel.entityType().equals(entityType));
   }
 
   @Override
@@ -557,8 +557,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   @Override
   public final void activatePanel() {
-    getParentPanel().ifPresent(parentPanel ->
-            parentPanel.setSelectedChildPanel(this));
+    parentPanel().ifPresent(parentPanel ->
+            parentPanel.selectChildPanel(this));
     initializePanel();
     requestInitialFocus();
     if (editPanelWindow != null) {
@@ -567,7 +567,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final Optional<HierarchyPanel> getParentPanel() {
+  public final Optional<HierarchyPanel> parentPanel() {
     if (masterPanel == null) {
       return Utilities.getParentOfType(HierarchyPanel.class, this);
     }
@@ -576,8 +576,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final Optional<HierarchyPanel> getSelectedChildPanel() {
-    Collection<EntityPanel> linkedDetailPanels = getLinkedDetailPanels();
+  public final Optional<HierarchyPanel> selectedChildPanel() {
+    Collection<EntityPanel> linkedDetailPanels = linkedDetailPanels();
     if (!linkedDetailPanels.isEmpty()) {
       return Optional.of(linkedDetailPanels.iterator().next());
     }
@@ -586,24 +586,24 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final void setSelectedChildPanel(HierarchyPanel childPanel) {
+  public final void selectChildPanel(HierarchyPanel childPanel) {
     if (detailPanelTabbedPane != null) {
       detailPanelTabbedPane.setSelectedComponent((JComponent) childPanel);
-      for (SwingEntityModel linkedModel : new ArrayList<>(entityModel.getLinkedDetailModels())) {
+      for (SwingEntityModel linkedModel : new ArrayList<>(entityModel.linkedDetailModels())) {
         entityModel.removeLinkedDetailModel(linkedModel);
       }
-      entityModel.addLinkedDetailModel(getTabbedDetailPanel().getModel());
+      entityModel.addLinkedDetailModel(getTabbedDetailPanel().model());
     }
   }
 
   @Override
-  public final Optional<HierarchyPanel> getPreviousSiblingPanel() {
-    Optional<HierarchyPanel> optionalParent = getParentPanel();
+  public final Optional<HierarchyPanel> previousSiblingPanel() {
+    Optional<HierarchyPanel> optionalParent = parentPanel();
     if (!optionalParent.isPresent()) {//no parent, no siblings
       return Optional.empty();
     }
     HierarchyPanel parentPanel = optionalParent.get();
-    List<? extends HierarchyPanel> siblingPanels = parentPanel.getChildPanels();
+    List<? extends HierarchyPanel> siblingPanels = parentPanel.childPanels();
     if (siblingPanels.contains(this)) {
       int index = siblingPanels.indexOf(this);
       if (index == 0) {//wrap around
@@ -617,13 +617,13 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final Optional<HierarchyPanel> getNextSiblingPanel() {
-    Optional<HierarchyPanel> optionalParent = getParentPanel();
+  public final Optional<HierarchyPanel> nextSiblingPanel() {
+    Optional<HierarchyPanel> optionalParent = parentPanel();
     if (!optionalParent.isPresent()) {//no parent, no siblings
       return Optional.empty();
     }
     HierarchyPanel parentPanel = optionalParent.get();
-    List<? extends HierarchyPanel> siblingPanels = parentPanel.getChildPanels();
+    List<? extends HierarchyPanel> siblingPanels = parentPanel.childPanels();
     if (siblingPanels.contains(this)) {
       int index = siblingPanels.indexOf(this);
       if (index == siblingPanels.size() - 1) {//wrap around
@@ -637,7 +637,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final List<? extends HierarchyPanel> getChildPanels() {
+  public final List<? extends HierarchyPanel> childPanels() {
     return Collections.unmodifiableList(detailEntityPanels);
   }
 
@@ -877,7 +877,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     if (containsTablePanel()) {
-      tablePanel.getTable().setFilterPanelsVisible(visible);
+      tablePanel.table().setFilterPanelsVisible(visible);
     }
     for (EntityPanel detailEntityPanel : detailEntityPanels) {
       detailEntityPanel.setFilterPanelsVisible(visible);
@@ -930,7 +930,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       editPanel.requestInitialFocus();
     }
     else if (tablePanel != null) {
-      tablePanel.getTable().requestFocus();
+      tablePanel.table().requestFocus();
     }
     else if (getComponentCount() > 0) {
       getComponents()[0].requestFocus();
@@ -998,7 +998,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * |                  |             |
    * |__________________|_____________|
    * </pre>
-   * @see #getEditControlPanel()
+   * @see #editControlPanel()
    * @see #getEditControlTablePanel()
    */
   protected void initializeUI() {
@@ -1105,9 +1105,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   protected final void initializeKeyboardActions() {
     if (containsTablePanel()) {
-      Control selectTablePanelControl = getTablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS);
-      Control selectSearchFieldControl = getTablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_SEARCH_FIELD_FOCUS);
-      Control selectConditionPanelAction = getTablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL);
+      Control selectTablePanelControl = tablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS);
+      Control selectSearchFieldControl = tablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_SEARCH_FIELD_FOCUS);
+      Control selectConditionPanelAction = tablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL);
       KeyEvents.builder(KeyEvent.VK_T)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1118,7 +1118,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectSearchFieldControl)
               .enable(this);
-      if (tablePanel.getConditionPanel() != null) {
+      if (tablePanel.conditionPanel() != null) {
         KeyEvents.builder(KeyEvent.VK_S)
                 .modifiers(CTRL_DOWN_MASK)
                 .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1136,7 +1136,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
                 .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                 .action(selectSearchFieldControl)
                 .enable(editControlPanel);
-        if (tablePanel.getConditionPanel() != null) {
+        if (tablePanel.conditionPanel() != null) {
           KeyEvents.builder(KeyEvent.VK_S)
                   .modifiers(CTRL_DOWN_MASK)
                   .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1293,8 +1293,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {
       tablePanel.addPopupControls(createDetailPanelControls(EMBEDDED));
     }
-    if (tablePanel.getTable().getDoubleClickAction() == null) {
-      tablePanel.getTable().setDoubleClickAction(createTableDoubleClickAction());
+    if (tablePanel.table().getDoubleClickAction() == null) {
+      tablePanel.table().setDoubleClickAction(createTableDoubleClickAction());
     }
     tablePanel.initializePanel();
     tablePanel.setMinimumSize(new Dimension(0, 0));
@@ -1409,14 +1409,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (getEditPanelState() == HIDDEN) {
       setEditPanelState(EMBEDDED);
     }
-    getEditPanel().requestInitialFocus();
+    editPanel().requestInitialFocus();
   }
 
   private void selectInputComponent() {
     if (getEditPanelState() == HIDDEN) {
       setEditPanelState(EMBEDDED);
     }
-    getEditPanel().selectInputComponent();
+    editPanel().selectInputComponent();
   }
 
   private void updateEditPanelState() {
@@ -1587,22 +1587,22 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     public void actionPerformed(ActionEvent e) {
       switch (direction) {
         case LEFT:
-          entityPanel.getPreviousSiblingPanel()
+          entityPanel.previousSiblingPanel()
                   .ifPresent(HierarchyPanel::activatePanel);
           break;
         case RIGHT:
-          entityPanel.getNextSiblingPanel()
+          entityPanel.nextSiblingPanel()
                   .ifPresent(HierarchyPanel::activatePanel);
           break;
         case UP:
-          entityPanel.getParentPanel()
+          entityPanel.parentPanel()
                   .ifPresent(HierarchyPanel::activatePanel);
           break;
         case DOWN:
           if (entityPanel.getDetailPanelState() == HIDDEN) {
             entityPanel.setDetailPanelState(EMBEDDED);
           }
-          entityPanel.getSelectedChildPanel()
+          entityPanel.selectedChildPanel()
                   .ifPresent(HierarchyPanel::activatePanel);
           break;
         default:
@@ -1656,8 +1656,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       }
       else {
         Utilities.getParentOfType(EntityPanel.class, (Component) changeEvent.getNewValue()).ifPresent(parent -> {
-          if (parent.getEditPanel() != null) {
-            parent.getEditPanel().setActive(true);
+          if (parent.editPanel() != null) {
+            parent.editPanel().setActive(true);
           }
         });
       }
@@ -1683,7 +1683,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     /**
      * @return the entityType
      */
-    EntityType getEntityType();
+    EntityType entityType();
 
     /**
      * @param caption the panel caption

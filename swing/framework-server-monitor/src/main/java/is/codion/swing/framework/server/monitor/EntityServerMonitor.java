@@ -52,7 +52,7 @@ public final class EntityServerMonitor {
   /**
    * @return the host monitors for this server
    */
-  public Collection<HostMonitor> getHostMonitors() {
+  public Collection<HostMonitor> hostMonitors() {
     return hostMonitors;
   }
 
@@ -68,12 +68,12 @@ public final class EntityServerMonitor {
 
   public void setUpdateInterval(Integer interval) {
     for (HostMonitor hostMonitor : hostMonitors) {
-      hostMonitor.getServerMonitors().forEach(serverMonitor -> {
-        serverMonitor.getUpdateIntervalValue().set(interval);
-        serverMonitor.getDatabaseMonitor().getUpdateIntervalValue().set(interval);
-        serverMonitor.getDatabaseMonitor().getConnectionPoolMonitor().getConnectionPoolInstanceMonitors()
-                .forEach(poolMonitor -> poolMonitor.getUpdateIntervalValue().set(interval));
-        serverMonitor.getClientMonitor().getUpdateIntervalValue().set(interval);
+      hostMonitor.serverMonitors().forEach(serverMonitor -> {
+        serverMonitor.updateIntervalValue().set(interval);
+        serverMonitor.databaseMonitor().updateIntervalValue().set(interval);
+        serverMonitor.databaseMonitor().connectionPoolMonitor().connectionPoolInstanceMonitors()
+                .forEach(poolMonitor -> poolMonitor.updateIntervalValue().set(interval));
+        serverMonitor.clientMonitor().updateIntervalValue().set(interval);
       });
     }
   }

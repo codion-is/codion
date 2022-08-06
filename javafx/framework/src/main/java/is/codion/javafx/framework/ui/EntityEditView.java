@@ -79,7 +79,7 @@ public abstract class EntityEditView extends BorderPane {
   /**
    * @return the underlying edit model
    */
-  public final FXEntityEditModel getEditModel() {
+  public final FXEntityEditModel editModel() {
     return editModel;
   }
 
@@ -96,7 +96,7 @@ public abstract class EntityEditView extends BorderPane {
   /**
    * @return the button panel for this edit view
    */
-  public final Node getButtonPanel() {
+  public final Node createButtonPanel() {
     Button save = createInsertButton();
     save.maxWidthProperty().setValue(Double.MAX_VALUE);
     Button update = createUpdateButton();
@@ -115,8 +115,8 @@ public abstract class EntityEditView extends BorderPane {
    * Displays a dialog for choosing an input component to receive focus
    */
   public void selectInputControl() {
-    List<Property<?>> properties = Properties.sort(getEditModel()
-            .getEntityDefinition().getProperties(controls.keySet()));
+    List<Property<?>> properties = Properties.sort(editModel()
+            .entityDefinition().properties(controls.keySet()));
     properties.removeIf(property -> {
       Control control = controls.get(property.attribute());
 
@@ -167,7 +167,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final EntitySearchField createForeignKeySearchField(ForeignKey foreignKey) {
     checkControl(foreignKey);
-    getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey);
+    editModel().entityDefinition().foreignKeyProperty(foreignKey);
     EntitySearchField searchField = FXUiUtil.createSearchField(foreignKey, editModel);
 
     controls.put(foreignKey, searchField);
@@ -182,7 +182,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final ComboBox<Entity> createForeignKeyComboBox(ForeignKey foreignKey) {
     checkControl(foreignKey);
-    getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey);
+    editModel().entityDefinition().foreignKeyProperty(foreignKey);
     ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(foreignKey, editModel);
 
     controls.put(foreignKey, box);
@@ -199,7 +199,7 @@ public abstract class EntityEditView extends BorderPane {
   protected final <T> ComboBox<Item<T>> createItemComboBox(Attribute<T> attribute) {
     checkControl(attribute);
     ComboBox<Item<T>> box = FXUiUtil.createItemComboBox((ItemProperty<T>)
-            getEditModel().getEntityDefinition().getProperty(attribute), editModel);
+            editModel().entityDefinition().property(attribute), editModel);
 
     controls.put(attribute, box);
 
@@ -214,7 +214,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final <T> TextField createTextField(Attribute<T> attribute) {
     checkControl(attribute);
-    Property<?> property = getEditModel().getEntityDefinition().getProperty(attribute);
+    Property<?> property = editModel().entityDefinition().property(attribute);
     TextField textField;
     if (attribute.isInteger()) {
       textField = FXUiUtil.createIntegerField((Property<Integer>) property, editModel);
@@ -247,8 +247,8 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final DatePicker createDatePicker(Attribute<LocalDate> attribute) {
     checkControl(attribute);
-    DatePicker picker = FXUiUtil.createDatePicker(getEditModel()
-            .getEntityDefinition().getProperty(attribute), editModel);
+    DatePicker picker = FXUiUtil.createDatePicker(editModel()
+            .entityDefinition().property(attribute), editModel);
     controls.put(attribute, picker);
 
     return picker;
@@ -260,7 +260,7 @@ public abstract class EntityEditView extends BorderPane {
    * @return a {@link Label} for the given attribute
    */
   protected final Label createLabel(Attribute<?> attribute) {
-    return new Label(getEditModel().getEntityDefinition().getProperty(attribute).caption());
+    return new Label(editModel().entityDefinition().property(attribute).caption());
   }
 
   protected final BorderPane createPropertyPanel(Attribute<?> attribute) {
@@ -295,8 +295,8 @@ public abstract class EntityEditView extends BorderPane {
     button.setTooltip(new Tooltip(FrameworkMessages.updateTip()));
     button.setOnAction(event -> update(true));
     StateObserver existingAndModifiedState = State.and(
-            editModel.getEntityNewObserver().reversedObserver(),
-            editModel.getModifiedObserver());
+            editModel.entityNewObserver().reversedObserver(),
+            editModel.modifiedObserver());
     FXUiUtil.link(button.disableProperty(), existingAndModifiedState.reversedObserver());
 
     return button;
@@ -306,7 +306,7 @@ public abstract class EntityEditView extends BorderPane {
     Button button = new Button(FrameworkMessages.delete());
     button.setTooltip(new Tooltip(FrameworkMessages.deleteCurrentTip()));
     button.setOnAction(event -> delete());
-    FXUiUtil.link(button.disableProperty(), editModel.getEntityNewObserver());
+    FXUiUtil.link(button.disableProperty(), editModel.entityNewObserver());
 
     return button;
   }
@@ -341,7 +341,7 @@ public abstract class EntityEditView extends BorderPane {
     }
     catch (ValidationException e) {
       FXUiUtil.showExceptionDialog(e);
-      requestComponentFocus(e.getAttribute());
+      requestComponentFocus(e.attribute());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -357,7 +357,7 @@ public abstract class EntityEditView extends BorderPane {
       }
       catch (ValidationException e) {
         FXUiUtil.showExceptionDialog(e);
-        requestComponentFocus(e.getAttribute());
+        requestComponentFocus(e.attribute());
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);

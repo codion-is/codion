@@ -57,7 +57,7 @@ public class EntityApplicationPanelTest {
     EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>("Test") {
       @Override
       protected List<EntityPanel> createEntityPanels(SwingEntityApplicationModel applicationModel) {
-        return singletonList(new EntityPanel(applicationModel.getEntityModel(TestDomain.T_EMP)));
+        return singletonList(new EntityPanel(applicationModel.entityModel(TestDomain.T_EMP)));
       }
       @Override
       protected SwingEntityApplicationModel createApplicationModel(EntityConnectionProvider connectionProvider) {
@@ -67,7 +67,7 @@ public class EntityApplicationPanelTest {
         return model;
       }
     };
-    panel.addApplicationStartedListener(frame -> assertNotNull(panel.getEntityPanel(TestDomain.T_EMP)));
+    panel.addApplicationStartedListener(frame -> assertNotNull(panel.entityPanel(TestDomain.T_EMP)));
     panel.startApplication(null, UNIT_TEST_USER, false, null, false, false, true, false);
   }
 }

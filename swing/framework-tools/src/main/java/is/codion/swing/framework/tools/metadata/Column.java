@@ -36,11 +36,11 @@ public final class Column {
     this.foreignKeyColumn = foreignKeyColumn;
   }
 
-  public String getColumnName() {
+  public String columnName() {
     return columnName;
   }
 
-  public int getPosition() {
+  public int position() {
     return position;
   }
 
@@ -48,7 +48,7 @@ public final class Column {
     return primaryKeyIndex != -1;
   }
 
-  public int getPrimaryKeyIndex() {
+  public int primaryKeyIndex() {
     return primaryKeyIndex;
   }
 
@@ -56,7 +56,7 @@ public final class Column {
     return foreignKeyColumn;
   }
 
-  public Class<?> getColumnClass() {
+  public Class<?> columnClass() {
     return columnClass;
   }
 
@@ -64,19 +64,19 @@ public final class Column {
     return defaultValue;
   }
 
-  public int getNullable() {
+  public int nullable() {
     return nullable;
   }
 
-  public int getColumnSize() {
+  public int columnSize() {
     return columnSize;
   }
 
-  public int getDecimalDigits() {
+  public int decimalDigits() {
     return decimalDigits;
   }
 
-  public String getComment() {
+  public String comment() {
     return comment;
   }
 

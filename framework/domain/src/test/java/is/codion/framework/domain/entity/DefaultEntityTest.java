@@ -46,7 +46,7 @@ public class DefaultEntityTest {
 
   @Test
   void construction() {
-    EntityDefinition masterDefinition = ENTITIES.getDefinition(Master.TYPE);
+    EntityDefinition masterDefinition = ENTITIES.definition(Master.TYPE);
 
     Map<Attribute<?>, Object> values = new HashMap<>();
     values.put(Detail.BOOLEAN, false);
@@ -92,13 +92,13 @@ public class DefaultEntityTest {
     List<Object> fromFile = Serializer.deserialize(Serializer.serialize(singletonList(entity)));
     assertEquals(1, fromFile.size());
     Entity entityFromFile = (Entity) fromFile.get(0);
-    assertEquals(Detail.TYPE, entity.getEntityType());
+    assertEquals(Detail.TYPE, entity.entityType());
     assertTrue(entity.columnValuesEqual(entityFromFile));
     assertTrue(entityFromFile.isModified());
     assertTrue(entityFromFile.isModified(Detail.STRING));
     assertEquals(originalStringValue, entityFromFile.getOriginal(Detail.STRING));
 
-    Key key = entity.getPrimaryKey();
+    Key key = entity.primaryKey();
     byte[] serialized = Serializer.serialize(singletonList(key));
     List<Object> keyFromFile = Serializer.deserialize(serialized);
     assertEquals(1, keyFromFile.size());
@@ -244,8 +244,8 @@ public class DefaultEntityTest {
             .with(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 2)
             .build();
 
-    Key referencedKey = compositeDetail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
-    Key cachedKey = compositeDetail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+    Key referencedKey = compositeDetail.referencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+    Key cachedKey = compositeDetail.referencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
 
     assertSame(cachedKey, referencedKey);
 
@@ -257,9 +257,9 @@ public class DefaultEntityTest {
             .with(Detail.MASTER_VIA_CODE_FK, master)
             .build();
 
-    Key codeKey = detail.getReferencedKey(Detail.MASTER_VIA_CODE_FK);
+    Key codeKey = detail.referencedKey(Detail.MASTER_VIA_CODE_FK);
     assertEquals(Integer.valueOf(3), codeKey.get());
-    Key cachedCodeKey = detail.getReferencedKey(Detail.MASTER_VIA_CODE_FK);
+    Key cachedCodeKey = detail.referencedKey(Detail.MASTER_VIA_CODE_FK);
     assertEquals(Integer.valueOf(3), cachedCodeKey.get());
 
     assertSame(codeKey, cachedCodeKey);
@@ -288,7 +288,7 @@ public class DefaultEntityTest {
     masterCopy.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
 
-    assertNull(detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
+    assertNull(detail.referencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
 
     master.put(TestDomain.COMPOSITE_MASTER_ID, 1);
     master.put(TestDomain.COMPOSITE_MASTER_ID_2, 3);
@@ -303,7 +303,7 @@ public class DefaultEntityTest {
 
     detail2.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, null);
     assertTrue(detail2.isNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
-    assertNull(detail2.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
+    assertNull(detail2.referencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
   }
 
   @Test
@@ -313,9 +313,9 @@ public class DefaultEntityTest {
             .with(NoPk.COL2, 2)
             .with(NoPk.COL3, 3)
             .build();
-    Key key = noPk.getPrimaryKey();
+    Key key = noPk.primaryKey();
     assertTrue(key.isNull());
-    Key originalKey = noPk.getOriginalPrimaryKey();
+    Key originalKey = noPk.originalPrimaryKey();
     assertTrue(originalKey.isNull());
   }
 
@@ -348,14 +348,14 @@ public class DefaultEntityTest {
     assertFalse(testEntity.isNull(Detail.MASTER_ID));
     assertTrue(testEntity.isNotNull(Detail.MASTER_ID));
 
-    testEntity.getReferencedKey(Detail.MASTER_FK);
+    testEntity.referencedKey(Detail.MASTER_FK);
 
     //test copy()
     Entity test2 = testEntity.deepCopy();
     assertNotSame(test2, testEntity, "Entity copy should not be == the original");
     assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
     assertTrue(test2.columnValuesEqual(testEntity), "Entity property values should be equal after .getCopy()");
-    assertNotSame(testEntity.getForeignKey(Detail.MASTER_FK), test2.getForeignKey(Detail.MASTER_FK), "This should be a deep copy");
+    assertNotSame(testEntity.referencedEntity(Detail.MASTER_FK), test2.referencedEntity(Detail.MASTER_FK), "This should be a deep copy");
 
     test2.put(Detail.DOUBLE, 2.1);
     assertTrue(test2.isModified());
@@ -408,7 +408,7 @@ public class DefaultEntityTest {
     Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertThrows(IllegalArgumentException.class, () ->
-            testEntity.getReferencedKey(Employee.DEPARTMENT_FK));
+            testEntity.referencedKey(Employee.DEPARTMENT_FK));
   }
 
   @Test
@@ -421,7 +421,7 @@ public class DefaultEntityTest {
     testEntity.put(Detail.MASTER_ID, 10L);
 
     assertFalse(testEntity.isLoaded(Detail.MASTER_FK));
-    Entity referencedEntityValue = testEntity.getForeignKey(Detail.MASTER_FK);
+    Entity referencedEntityValue = testEntity.referencedEntity(Detail.MASTER_FK);
     assertEquals(10L, referencedEntityValue.get(Master.ID));
     assertFalse(testEntity.isLoaded(Detail.MASTER_FK));
     assertFalse(testEntity.isNull(Detail.MASTER_FK));
@@ -448,7 +448,7 @@ public class DefaultEntityTest {
     assertTrue(testEntity.isModified());
 
     testEntity.setAs(null);
-    assertTrue(testEntity.getPrimaryKey().isNull());
+    assertTrue(testEntity.primaryKey().isNull());
     assertFalse(testEntity.contains(Detail.DATE));
     assertFalse(testEntity.contains(Detail.STRING));
     assertFalse(testEntity.contains(Detail.BOOLEAN));
@@ -458,7 +458,7 @@ public class DefaultEntityTest {
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
 
     testEntity.clearPrimaryKey();
-    assertTrue(testEntity.getPrimaryKey().isNull());
+    assertTrue(testEntity.primaryKey().isNull());
     assertTrue(testEntity.contains(Detail.DATE));
     assertTrue(testEntity.contains(Detail.STRING));
     assertTrue(testEntity.contains(Detail.BOOLEAN));
@@ -594,12 +594,12 @@ public class DefaultEntityTest {
             .with(Employee.ID, -10)
             .with(Employee.DEPARTMENT_FK, department)
             .build();
-    assertNotNull(employee.getForeignKey(Employee.DEPARTMENT_FK));
+    assertNotNull(employee.referencedEntity(Employee.DEPARTMENT_FK));
     assertEquals(Integer.valueOf(-10), employee.get(Employee.DEPARTMENT_NO));
 
     employee.remove(Employee.DEPARTMENT_FK);
     assertNull(employee.get(Employee.DEPARTMENT_FK));
-    Entity empDepartment = employee.getForeignKey(Employee.DEPARTMENT_FK);
+    Entity empDepartment = employee.referencedEntity(Employee.DEPARTMENT_FK);
     assertNotNull(empDepartment);
     //non loaded entity, created from foreign key
     assertFalse(empDepartment.contains(Department.NAME));
@@ -668,8 +668,8 @@ public class DefaultEntityTest {
     emp.put(Employee.DEPARTMENT_NO, 2);
     assertNull(emp.get(Employee.DEPARTMENT_FK));
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
-    Entity empDept = emp.getForeignKey(Employee.DEPARTMENT_FK);
-    assertEquals(Integer.valueOf(2), empDept.getPrimaryKey().get());
+    Entity empDept = emp.referencedEntity(Employee.DEPARTMENT_FK);
+    assertEquals(Integer.valueOf(2), empDept.primaryKey().get());
 
     Entity dept2 = ENTITIES.builder(Department.TYPE)
             .with(Department.NO, 3)
@@ -696,11 +696,11 @@ public class DefaultEntityTest {
     assertNotSame(emp, copy);
     assertTrue(emp.columnValuesEqual(copy));
     assertNotSame(emp.get(Employee.MANAGER_FK), copy.get(Employee.MANAGER_FK));
-    assertTrue(emp.getForeignKey(Employee.MANAGER_FK).columnValuesEqual(copy.getForeignKey(Employee.MANAGER_FK)));
-    assertNotSame(emp.getForeignKey(Employee.MANAGER_FK).getForeignKey(Employee.DEPARTMENT_FK),
-            copy.getForeignKey(Employee.MANAGER_FK).getForeignKey(Employee.DEPARTMENT_FK));
-    assertTrue(emp.getForeignKey(Employee.MANAGER_FK).getForeignKey(Employee.DEPARTMENT_FK)
-            .columnValuesEqual(copy.getForeignKey(Employee.MANAGER_FK).getForeignKey(Employee.DEPARTMENT_FK)));
+    assertTrue(emp.referencedEntity(Employee.MANAGER_FK).columnValuesEqual(copy.referencedEntity(Employee.MANAGER_FK)));
+    assertNotSame(emp.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK),
+            copy.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK));
+    assertTrue(emp.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK)
+            .columnValuesEqual(copy.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK)));
   }
 
   @Test

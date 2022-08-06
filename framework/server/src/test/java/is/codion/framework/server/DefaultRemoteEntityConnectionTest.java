@@ -46,7 +46,7 @@ public class DefaultRemoteEntityConnectionTest {
   @Test
   void wrongPassword() throws Exception {
     RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
-            .user(User.user(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()))
+            .user(User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray()))
             .clientTypeId("DefaultRemoteEntityConnectionTestClient")
             .build());
     assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1235));

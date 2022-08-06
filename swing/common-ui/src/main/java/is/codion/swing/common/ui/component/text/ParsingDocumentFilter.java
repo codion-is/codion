@@ -32,8 +32,8 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
     builder.insert(offset, transformedString);
     Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
     if (parseResult.successful()) {
-      if (parseResult.getValue() != null) {
-        validate(parseResult.getValue());
+      if (parseResult.value() != null) {
+        validate(parseResult.value());
       }
       super.insertString(filterBypass, offset, transformedString, attributeSet);
     }
@@ -46,8 +46,8 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
     builder.replace(offset, offset + length, "");
     Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
     if (parseResult.successful()) {
-      if (parseResult.getValue() != null) {
-        validate(parseResult.getValue());
+      if (parseResult.value() != null) {
+        validate(parseResult.value());
       }
       super.remove(filterBypass, offset, length);
     }
@@ -62,8 +62,8 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
     builder.replace(offset, offset + length, transformedString);
     Parser.ParseResult<T> parseResult = parser.parse(builder.toString());
     if (parseResult.successful()) {
-      if (parseResult.getValue() != null) {
-        validate(parseResult.getValue());
+      if (parseResult.value() != null) {
+        validate(parseResult.value());
       }
       super.replace(filterBypass, offset, length, transformedString, attributeSet);
     }

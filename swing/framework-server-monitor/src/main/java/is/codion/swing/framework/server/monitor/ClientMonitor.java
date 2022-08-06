@@ -19,7 +19,7 @@ import java.util.List;
 public final class ClientMonitor {
 
   private static final Comparator<RemoteClient> CLIENT_INFO_COMPARATOR = (c1, c2) ->
-          c1.user().getUsername().compareToIgnoreCase(c2.user().getUsername());
+          c1.user().username().compareToIgnoreCase(c2.user().username());
   private final EntityServerAdmin server;
   private final String clientTypeId;
   private final User user;
@@ -46,7 +46,7 @@ public final class ClientMonitor {
    */
   public void refresh() throws RemoteException {
     clientInstanceListModel.clear();
-    List<RemoteClient> clients = new ArrayList<>(clientTypeId == null ? server.getClients(user) : server.getClients(clientTypeId));
+    List<RemoteClient> clients = new ArrayList<>(clientTypeId == null ? server.clients(user) : server.clients(clientTypeId));
     clients.sort(CLIENT_INFO_COMPARATOR);
     for (RemoteClient client : clients) {
       clientInstanceListModel.addElement(client);
@@ -56,18 +56,18 @@ public final class ClientMonitor {
   /**
    * @return the ListModel for displaying the client instances
    */
-  public DefaultListModel<RemoteClient> getRemoteClientListModel() {
+  public DefaultListModel<RemoteClient> remoteClientListModel() {
     return clientInstanceListModel;
   }
 
-  public EntityServerAdmin getServer() {
+  public EntityServerAdmin server() {
     return server;
   }
 
   /**
    * @return the clientTypeId being monitored
    */
-  public String getClientTypeId() {
+  public String clientTypeId() {
     return clientTypeId;
   }
 

@@ -78,28 +78,28 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the type of the entity this table model is based on
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the connection provider used by this table model
    */
-  EntityConnectionProvider getConnectionProvider();
+  EntityConnectionProvider connectionProvider();
 
   /**
    * @return the underlying domain entities
    */
-  Entities getEntities();
+  Entities entities();
 
   /**
    * @return the definition of the underlying entity
    */
-  EntityDefinition getEntityDefinition();
+  EntityDefinition entityDefinition();
 
   /**
    * Returns the {@link EntityEditModel} associated with this table model
    * @return the edit model associated with this table model
    */
-  E getEditModel();
+  E editModel();
 
   /**
    * Sets {@code foreignKeyValues} as the search condition values for the given foreign key
@@ -167,7 +167,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
    */
-  EntityTableConditionModel getTableConditionModel();
+  EntityTableConditionModel tableConditionModel();
 
   /**
    * @return true if this table model is editable
@@ -210,7 +210,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return an Object representing the background color for this row and attribute, specified by the row entity
    * @see EntityDefinition.Builder#backgroundColorProvider(ColorProvider)
    */
-  Object getBackgroundColor(int row, Attribute<?> attribute);
+  Object backgroundColor(int row, Attribute<?> attribute);
 
   /**
    * @param row the row for which to retrieve the foreground color
@@ -218,7 +218,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return an Object representing the foreground color for this row and attribute, specified by the row entity
    * @see EntityDefinition.Builder#foregroundColorProvider(ColorProvider)
    */
-  Object getForegroundColor(int row, Attribute<?> attribute);
+  Object foregroundColor(int row, Attribute<?> attribute);
 
   /**
    * Returns the maximum number of records to fetch via the underlying query the next time
@@ -288,7 +288,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * with a large underlying dataset.
    * @return a State specifying whether this table model requires a query condition
    */
-  State getQueryConditionRequiredState();
+  State queryConditionRequiredState();
 
   /**
    * @return true if entities that are deleted via the associated edit model
@@ -317,25 +317,25 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param keys the primary key values to use as condition
    * @return the entities having the primary key values as in {@code keys}
    */
-  Collection<Entity> getEntitiesByKey(Collection<Key> keys);
+  Collection<Entity> entitiesByKey(Collection<Key> keys);
 
   /**
    * Sets the selected entities according to the primary keys in {@code primaryKeys}
    * @param keys the primary keys of the entities to select
    */
-  void setSelectedByKey(Collection<Key> keys);
+  void selectByKey(Collection<Key> keys);
 
   /**
    * Returns an Iterator which iterates through the selected entities
    * @return the iterator used when generating reports
    */
-  Iterator<Entity> getSelectedEntitiesIterator();
+  Iterator<Entity> selectedEntitiesIterator();
 
   /**
    * @param primaryKey the primary key to search by
    * @return the entity with the given primary key from the table model, null if it's not found
    */
-  Entity getEntityByKey(Key primaryKey);
+  Entity entityByKey(Key primaryKey);
 
   /**
    * @param primaryKey the primary key
@@ -352,17 +352,17 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Arranges the column model so that only the given columns are visible and in the given order
    * @param attributes the column attributes
    */
-  void setColumns(Attribute<?>... attributes);
+  void setVisibleColumns(Attribute<?>... attributes);
 
   /**
    * @param delimiter the delimiter
    * @return the table data as a tab delimited string, with column names as a header
    */
-  String getTableDataAsDelimitedString(char delimiter);
+  String tableDataAsDelimitedString(char delimiter);
 
   /**
    * Refreshes the items in this table model, according to the underlying condition
-   * @see #getTableConditionModel()
+   * @see #tableConditionModel()
    */
   void refresh();
 
@@ -379,7 +379,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the {@link SelectionModel}
    */
-  SelectionModel<Entity> getSelectionModel();
+  SelectionModel<Entity> selectionModel();
 
   /**
    * @param listener notified when the selection changes in the underlying selection model

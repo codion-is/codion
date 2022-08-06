@@ -51,24 +51,24 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
             .user(getUser())
             .build());
 
-    SwingEntityModel customerModel = applicationModel.getEntityModel(Customer.TYPE);
-    SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
+    SwingEntityModel customerModel = applicationModel.entityModel(Customer.TYPE);
+    SwingEntityModel invoiceModel = customerModel.detailModel(Invoice.TYPE);
     customerModel.addLinkedDetailModel(invoiceModel);
 
-    SwingEntityModel artistModel = applicationModel.getEntityModel(Artist.TYPE);
-    SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
-    SwingEntityModel trackModel = albumModel.getDetailModel(Track.TYPE);
+    SwingEntityModel artistModel = applicationModel.entityModel(Artist.TYPE);
+    SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
+    SwingEntityModel trackModel = albumModel.detailModel(Track.TYPE);
 
     artistModel.addLinkedDetailModel(albumModel);
     albumModel.addLinkedDetailModel(trackModel);
 
-    SwingEntityModel playlistModel = applicationModel.getEntityModel(Playlist.TYPE);
-    SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);
+    SwingEntityModel playlistModel = applicationModel.entityModel(Playlist.TYPE);
+    SwingEntityModel playlistTrackModel = playlistModel.detailModel(PlaylistTrack.TYPE);
     playlistModel.addLinkedDetailModel(playlistTrackModel);
 
     /* Add a Genre model used in the ViewGenre scenario */
-    SwingEntityModel genreModel = new SwingEntityModel(Genre.TYPE, applicationModel.getConnectionProvider());
-    SwingEntityModel genreTrackModel = new SwingEntityModel(Track.TYPE, applicationModel.getConnectionProvider());
+    SwingEntityModel genreModel = new SwingEntityModel(Genre.TYPE, applicationModel.connectionProvider());
+    SwingEntityModel genreTrackModel = new SwingEntityModel(Track.TYPE, applicationModel.connectionProvider());
     genreModel.addDetailModel(genreTrackModel);
     genreModel.addLinkedDetailModel(genreTrackModel);
 

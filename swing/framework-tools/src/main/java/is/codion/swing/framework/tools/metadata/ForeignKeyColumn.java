@@ -25,31 +25,31 @@ public final class ForeignKeyColumn {
     this.keySeq = keySeq;
   }
 
-  public String getPkSchemaName() {
+  public String pkSchemaName() {
     return pkSchemaName;
   }
 
-  public String getPkTableName() {
+  public String pkTableName() {
     return pkTableName;
   }
 
-  public String getPkColumnName() {
+  public String pkColumnName() {
     return pkColumnName;
   }
 
-  public String getFkTableName() {
+  public String fkTableName() {
     return fkTableName;
   }
 
-  public String getFkSchemaName() {
+  public String fkSchemaName() {
     return fkSchemaName;
   }
 
-  public String getFkColumnName() {
+  public String fkColumnName() {
     return fkColumnName;
   }
 
-  public int getKeySeq() {
+  public int keySeq() {
     return keySeq;
   }
 }

@@ -17,8 +17,8 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
   public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel, new EntityTableConditionPanel(tableModel.getTableConditionModel(), tableModel.getColumnModel(),
-            new PlaylistTrackConditionPanelFactory(tableModel.getTableConditionModel())));
+    super(tableModel, new EntityTableConditionPanel(tableModel.tableConditionModel(), tableModel.columnModel(),
+            new PlaylistTrackConditionPanelFactory(tableModel.tableConditionModel())));
     setUpdateSelectedComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory());
   }
 
@@ -31,9 +31,9 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
     @Override
     protected <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createConditionPanel(ColumnConditionModel<C, T> conditionModel) {
       ColumnConditionPanel<C, T> conditionPanel = super.createConditionPanel(conditionModel);
-      if (PlaylistTrack.TRACK_FK.equals(conditionModel.getColumnIdentifier())) {
-        EntitySearchField equalField = (EntitySearchField) conditionPanel.getEqualField();
-        equalField.setSelectionProvider(new TrackSelectionProvider(equalField.getModel()));
+      if (PlaylistTrack.TRACK_FK.equals(conditionModel.columnIdentifier())) {
+        EntitySearchField equalField = (EntitySearchField) conditionPanel.equalField();
+        equalField.setSelectionProvider(new TrackSelectionProvider(equalField.model()));
       }
 
       return conditionPanel;

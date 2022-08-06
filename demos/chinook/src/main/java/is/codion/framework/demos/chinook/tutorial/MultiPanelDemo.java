@@ -39,12 +39,12 @@ public final class MultiPanelDemo {
     EntityEditModel.POST_EDIT_EVENTS.set(true);
 
     SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, connectionProvider);
-    employeeModel.getTableModel().refresh();
+    employeeModel.tableModel().refresh();
 
     JPanel basePanel = new JPanel(gridLayout(2, 2));
     for (int i = 0; i < 4; i++) {
-      EntityPanel employeePanel = new EntityPanel(employeeModel, new EmployeeEditPanel(employeeModel.getEditModel()));
-      employeePanel.getTablePanel().setConditionPanelVisible(true);
+      EntityPanel employeePanel = new EntityPanel(employeeModel, new EmployeeEditPanel(employeeModel.editModel()));
+      employeePanel.tablePanel().setConditionPanelVisible(true);
       employeePanel.initializePanel();
       basePanel.add(employeePanel);
     }

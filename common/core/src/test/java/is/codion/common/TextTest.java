@@ -28,7 +28,7 @@ public final class TextTest {
     final String three = "björ n";
     List<String> strings = asList(one, two, three);
 
-    Comparator<String> collator = Text.getSpaceAwareCollator();
+    Comparator<String> collator = Text.spaceAwareCollator();
     strings.sort(collator);
     assertEquals(two, strings.get(0));
     assertEquals(three, strings.get(1));
@@ -40,14 +40,14 @@ public final class TextTest {
     final String seven = "aj";
     strings = asList(four, five, six, seven);
 
-    collator = Text.getSpaceAwareCollator(new Locale("is"));
+    collator = Text.spaceAwareCollator(new Locale("is"));
     strings.sort(collator);
     assertEquals(seven, strings.get(0));
     assertEquals(four, strings.get(1));
     assertEquals(five, strings.get(2));
     assertEquals(six, strings.get(3));
 
-    collator = Text.getSpaceAwareCollator(new Locale("en"));
+    collator = Text.spaceAwareCollator(new Locale("en"));
     strings.sort(collator);
     assertEquals(six, strings.get(0));
     assertEquals(seven, strings.get(1));
@@ -83,21 +83,21 @@ public final class TextTest {
   @Test
   void getDelimitedString() {
     String result = "test\ttest2" + Separators.LINE_SEPARATOR + "data1\tdata2" + Separators.LINE_SEPARATOR + "data3\tdata4";
-    assertEquals(result, Text.getDelimitedString(asList("test", "test2"),
+    assertEquals(result, Text.delimitedString(asList("test", "test2"),
             asList(asList("data1", "data2"), asList("data3", "data4")), "\t"));
   }
 
   @Test
   void getTextFileContentsResource() throws IOException {
     String contents = "here is" + Separators.LINE_SEPARATOR + "some text";
-    assertEquals(contents, Text.getTextFileContents(TextTest.class, "TextTest.txt"));
-    assertThrows(FileNotFoundException.class, () -> Text.getTextFileContents(TextTest.class, "None.txt"));
+    assertEquals(contents, Text.textFileContents(TextTest.class, "TextTest.txt"));
+    assertThrows(FileNotFoundException.class, () -> Text.textFileContents(TextTest.class, "None.txt"));
   }
 
   @Test
   void getTextFileContents() throws IOException {
     String contents = "here is" + Separators.LINE_SEPARATOR + "some text";
-    assertEquals(contents, Text.getTextFileContents("src/test/resources/is/codion/common/TextTest.txt", Charset.defaultCharset()));
+    assertEquals(contents, Text.textFileContents("src/test/resources/is/codion/common/TextTest.txt", Charset.defaultCharset()));
   }
 
   @Test

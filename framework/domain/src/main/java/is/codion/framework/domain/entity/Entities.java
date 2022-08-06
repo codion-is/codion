@@ -25,7 +25,7 @@ public interface Entities {
    * @return the entity definition
    * @throws IllegalArgumentException in case the definition is not found
    */
-  EntityDefinition getDefinition(EntityType entityType);
+  EntityDefinition definition(EntityType entityType);
 
   /**
    * Returns the {@link EntityDefinition} for the given entityType name
@@ -33,7 +33,7 @@ public interface Entities {
    * @return the entity definition
    * @throws IllegalArgumentException in case the definition is not found
    */
-   EntityDefinition getDefinition(String entityTypeName);
+   EntityDefinition definition(String entityTypeName);
 
   /**
    * @param entityType the entityType
@@ -45,7 +45,7 @@ public interface Entities {
    * Returns all {@link EntityDefinition}s available
    * @return all entity definitions
    */
-  Collection<EntityDefinition> entityDefinitions();
+  Collection<EntityDefinition> definitions();
 
   /**
    * Creates a new {@link Entity} instance with the given entityType

@@ -24,10 +24,10 @@ public class ColumnConditionPanelTest {
     final String key = "key";
     ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>(key, String.class, ALL_OPERATORS, '%');
     ColumnConditionPanel<String, String> panel = new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);
-    assertEquals(model, panel.getModel());
-    assertNotNull(panel.getEqualField());
-    assertNotNull(panel.getUpperBoundField());
-    assertNotNull(panel.getLowerBoundField());
+    assertEquals(model, panel.model());
+    assertNotNull(panel.equalField());
+    assertNotNull(panel.upperBoundField());
+    assertNotNull(panel.lowerBoundField());
     assertFalse(panel.isDialogVisible());
     assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String>(null, null));
   }

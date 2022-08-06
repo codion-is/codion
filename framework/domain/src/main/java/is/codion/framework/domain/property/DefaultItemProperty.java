@@ -38,7 +38,7 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
   }
 
   @Override
-  public Item<T> getItem(T value) {
+  public Item<T> item(T value) {
     Item<T> item = itemMap.get(value);
     if (item == null) {
       throw new IllegalArgumentException("Invalid item value: " + value);
@@ -54,7 +54,7 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
       return "";
     }
 
-    return getItem(value).caption();
+    return item(value).caption();
   }
 
   static final class DefaultItemPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>> extends DefaultColumnPropertyBuilder<T, B> {

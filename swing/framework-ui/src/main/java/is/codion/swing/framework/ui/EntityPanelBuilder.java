@@ -67,18 +67,18 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   EntityPanelBuilder(SwingEntityModel.Builder modelBuilder) {
     this.modelBuilder = requireNonNull(modelBuilder, "modelBuilder");
-    this.entityType = modelBuilder.getEntityType();
+    this.entityType = modelBuilder.entityType();
     this.model = null;
   }
 
   EntityPanelBuilder(SwingEntityModel model) {
     this.model = requireNonNull(model, "model");
-    this.entityType = model.getEntityType();
+    this.entityType = model.entityType();
     this.modelBuilder = null;
   }
 
   @Override
-  public EntityType getEntityType() {
+  public EntityType entityType() {
     return entityType;
   }
 
@@ -220,21 +220,21 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     requireNonNull(model, "model");
     try {
       EntityPanel entityPanel = createPanel(model);
-      if (entityPanel.getTablePanel() != null && tableConditionPanelVisible) {
-        entityPanel.getTablePanel().setConditionPanelVisible(tableConditionPanelVisible);
+      if (entityPanel.tablePanel() != null && tableConditionPanelVisible) {
+        entityPanel.tablePanel().setConditionPanelVisible(tableConditionPanelVisible);
       }
       if (!detailPanelBuilders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
-          SwingEntityModel detailModel = model.getDetailModel(detailPanelBuilder.getEntityType());
+          SwingEntityModel detailModel = model.detailModel(detailPanelBuilder.entityType());
           EntityPanel detailPanel = detailPanelBuilder.buildPanel(detailModel);
           entityPanel.addDetailPanel(detailPanel);
         }
       }
       onBuildPanel.accept(entityPanel);
       if (refreshOnInit && model.containsTableModel()) {
-        model.getTableModel().refresh();
+        model.tableModel().refresh();
       }
 
       return entityPanel;
@@ -285,16 +285,16 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     try {
       EntityPanel entityPanel;
       if (getPanelClass().equals(EntityPanel.class)) {
-        EntityTablePanel tablePanel = entityModel.containsTableModel() ? createTablePanel(entityModel.getTableModel()) : null;
-        EntityEditPanel editPanel = getEditPanelClass() == null ? null : createEditPanel(entityModel.getEditModel());
+        EntityTablePanel tablePanel = entityModel.containsTableModel() ? createTablePanel(entityModel.tableModel()) : null;
+        EntityEditPanel editPanel = getEditPanelClass() == null ? null : createEditPanel(entityModel.editModel());
         entityPanel = getPanelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
                 .newInstance(entityModel, editPanel, tablePanel);
       }
       else {
         entityPanel = findModelConstructor(getPanelClass()).newInstance(entityModel);
       }
-      entityPanel.setCaption(caption == null ? entityModel.getConnectionProvider()
-              .entities().getDefinition(entityModel.getEntityType()).getCaption() : caption);
+      entityPanel.setCaption(caption == null ? entityModel.connectionProvider()
+              .entities().definition(entityModel.entityType()).caption() : caption);
       if (preferredSize != null) {
         entityPanel.setPreferredSize(preferredSize);
       }
@@ -313,8 +313,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     if (editPanelClass == null) {
       throw new IllegalArgumentException("No edit panel class has been specified for entity panel builder: " + entityType);
     }
-    if (!editModel.getEntityType().equals(entityType)) {
-      throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.getEntityType() + ", required: " + entityType);
+    if (!editModel.entityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.entityType() + ", required: " + entityType);
     }
     try {
       EntityEditPanel editPanel = findEditModelConstructor(editPanelClass).newInstance(editModel);
@@ -332,8 +332,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   private EntityTablePanel createTablePanel(SwingEntityTableModel tableModel) {
     try {
-      if (!tableModel.getEntityType().equals(entityType)) {
-        throw new IllegalArgumentException("Entity type mismatch, tableModel: " + tableModel.getEntityType() + ", required: " + entityType);
+      if (!tableModel.entityType().equals(entityType)) {
+        throw new IllegalArgumentException("Entity type mismatch, tableModel: " + tableModel.entityType() + ", required: " + entityType);
       }
       EntityTablePanel tablePanel = findTableModelConstructor(getTablePanelClass()).newInstance(tableModel);
       onBuildTablePanel.accept(tablePanel);
@@ -406,7 +406,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     private final List<Entity> insertedEntities = new ArrayList<>();
 
     private InsertEntityAction(EntityComboBox comboBox) {
-      this(requireNonNull(comboBox, "comboBox"), comboBox.getModel().getConnectionProvider(), inserted -> {
+      this(requireNonNull(comboBox, "comboBox"), comboBox.getModel().connectionProvider(), inserted -> {
         EntityComboBoxModel comboBoxModel = comboBox.getModel();
         Entity item = inserted.get(0);
         comboBoxModel.addItem(item);
@@ -415,8 +415,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
 
     private InsertEntityAction(EntitySearchField searchField) {
-      this(requireNonNull(searchField, "searchField"), searchField.getModel().getConnectionProvider(), inserted ->
-              searchField.getModel().setSelectedEntities(inserted));
+      this(requireNonNull(searchField, "searchField"), searchField.model().connectionProvider(), inserted ->
+              searchField.model().setSelectedEntities(inserted));
     }
 
     private InsertEntityAction(JComponent component, EntityConnectionProvider connectionProvider,
@@ -438,7 +438,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       EntityEditPanel editPanel = buildEditPanel(connectionProvider);
       editPanel.initializePanel();
       editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
-      editPanel.getEditModel().addAfterInsertListener(inserted -> {
+      editPanel.editModel().addAfterInsertListener(inserted -> {
         this.insertedEntities.clear();
         this.insertedEntities.addAll(inserted);
       });
@@ -446,7 +446,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       Value<Attribute<?>> attributeWithInvalidValue = Value.value();
       JDialog dialog = Dialogs.okCancelDialog(editPanel)
               .owner(component)
-              .title(caption == null ? connectionProvider.entities().getDefinition(entityType).getCaption() : caption)
+              .title(caption == null ? connectionProvider.entities().definition(entityType).caption() : caption)
               .onShown(dlg -> attributeWithInvalidValue.toOptional()
                       .ifPresent(editPanel::requestComponentFocus))
               .onCancel(() -> cancelled.set(true))
@@ -458,7 +458,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
           if (cancelled.get()) {
             return;//cancelled
           }
-          insertPerformed = insert(editPanel.getEditModel(), attributeWithInvalidValue);
+          insertPerformed = insert(editPanel.editModel(), attributeWithInvalidValue);
           if (insertPerformed && !insertedEntities.isEmpty()) {
             insertListener.onEvent(insertedEntities);
           }
@@ -482,7 +482,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         }
       }
       catch (ValidationException e) {
-        attributeWithInvalidValue.set(e.getAttribute());
+        attributeWithInvalidValue.set(e.attribute());
         JOptionPane.showMessageDialog(component, e.getMessage(),
                 Messages.error(), JOptionPane.ERROR_MESSAGE);
       }

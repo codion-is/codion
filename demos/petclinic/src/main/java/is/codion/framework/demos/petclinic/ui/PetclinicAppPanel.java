@@ -42,27 +42,27 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 
   @Override
   protected List<EntityPanel> createEntityPanels(PetclinicAppModel applicationModel) {
-    SwingEntityModel ownersModel = applicationModel.getEntityModel(Owner.TYPE);
-    SwingEntityModel petsModel = ownersModel.getDetailModel(Pet.TYPE);
-    SwingEntityModel visitsModel = petsModel.getDetailModel(Visit.TYPE);
+    SwingEntityModel ownersModel = applicationModel.entityModel(Owner.TYPE);
+    SwingEntityModel petsModel = ownersModel.detailModel(Pet.TYPE);
+    SwingEntityModel visitsModel = petsModel.detailModel(Visit.TYPE);
 
     EntityPanel ownersPanel = new EntityPanel(ownersModel,
-            new OwnerEditPanel(ownersModel.getEditModel()));
+            new OwnerEditPanel(ownersModel.editModel()));
     EntityPanel petsPanel = new EntityPanel(petsModel,
-            new PetEditPanel(petsModel.getEditModel()));
+            new PetEditPanel(petsModel.editModel()));
     EntityPanel visitsPanel = new EntityPanel(visitsModel,
-            new VisitEditPanel(visitsModel.getEditModel()));
+            new VisitEditPanel(visitsModel.editModel()));
 
     ownersPanel.addDetailPanel(petsPanel);
     petsPanel.addDetailPanel(visitsPanel);
 
-    SwingEntityModel vetsModel = applicationModel.getEntityModel(Vet.TYPE);
-    SwingEntityModel vetSpecialtiesModel = vetsModel.getDetailModel(VetSpecialty.TYPE);
+    SwingEntityModel vetsModel = applicationModel.entityModel(Vet.TYPE);
+    SwingEntityModel vetSpecialtiesModel = vetsModel.detailModel(VetSpecialty.TYPE);
 
     EntityPanel vetsPanel = new EntityPanel(vetsModel,
-            new VetEditPanel(vetsModel.getEditModel()));
+            new VetEditPanel(vetsModel.editModel()));
     EntityPanel vetSpecialtiesPanel = new EntityPanel(vetSpecialtiesModel,
-            new VetSpecialtyEditPanel(vetSpecialtiesModel.getEditModel()));
+            new VetSpecialtyEditPanel(vetSpecialtiesModel.editModel()));
 
     vetsPanel.addDetailPanel(vetSpecialtiesPanel);
 

@@ -17,30 +17,30 @@ public final class AbstractDatabaseTest {
 
   private final AbstractDatabase database = new AbstractDatabase("jdbc:h2:mem:h2db") {
     @Override
-    public String getName() {
+    public String name() {
       return "name";
     }
     @Override
-    public String getAutoIncrementQuery(String idSource) {
+    public String autoIncrementQuery(String idSource) {
       return null;
     }
     @Override
-    public String getSelectForUpdateClause() {
+    public String selectForUpdateClause() {
       return "for update nowait";
     }
     @Override
-    public String getLimitOffsetClause(Integer limit, Integer offset) {
+    public String limitOffsetClause(Integer limit, Integer offset) {
       return createLimitOffsetClause(limit, offset);
     }
   };
 
   @Test
   void test() throws Exception {
-    assertEquals("for update nowait", database.getSelectForUpdateClause());
+    assertEquals("for update nowait", database.selectForUpdateClause());
     assertTrue(database.supportsIsValid());
-    assertEquals("name", database.getName());
+    assertEquals("name", database.name());
     database.shutdownEmbedded();
-    database.getErrorMessage(new SQLException());
+    database.errorMessage(new SQLException());
   }
 
   @Test
@@ -49,7 +49,7 @@ public final class AbstractDatabaseTest {
     Connection connection = database.createConnection(sa);
     database.setConnectionProvider(new ConnectionProvider() {
       @Override
-      public Connection getConnection(User user, String jdbcUrl) throws SQLException {
+      public Connection connection(User user, String jdbcUrl) throws SQLException {
         return connection;
       }
     });
@@ -67,10 +67,10 @@ public final class AbstractDatabaseTest {
     assertEquals("offset 5 rows", database.createOffsetFetchNextClause(null, 5));
     assertEquals("fetch next 10 rows only", database.createOffsetFetchNextClause(10, null));
     assertEquals("offset 5 rows fetch next 10 rows only", database.createOffsetFetchNextClause(10, 5));
-    assertEquals("", database.getLimitOffsetClause(null, null));
-    assertEquals("offset 5", database.getLimitOffsetClause(null, 5));
-    assertEquals("limit 10", database.getLimitOffsetClause(10, null));
-    assertEquals("limit 10 offset 5", database.getLimitOffsetClause(10, 5));
+    assertEquals("", database.limitOffsetClause(null, null));
+    assertEquals("offset 5", database.limitOffsetClause(null, 5));
+    assertEquals("limit 10", database.limitOffsetClause(10, null));
+    assertEquals("limit 10 offset 5", database.limitOffsetClause(10, 5));
   }
 
   @Test

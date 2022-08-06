@@ -23,7 +23,7 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
   private final UUID clientId;
   private final String clientTypeId;
   private final Version clientVersion;
-  private final Version frameworkVersion = Version.getVersion();
+  private final Version frameworkVersion = Version.version();
   private final Map<String, Object> parameters;
 
   private DefaultConnectionRequest(DefaultBuilder builder) {

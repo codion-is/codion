@@ -30,19 +30,19 @@ public interface ItemRandomizer<T> {
   /**
    * @return the number of items in this model.
    */
-  int getItemCount();
+  int itemCount();
 
   /**
    * @return the items in this model.
    */
-  Collection<RandomItem<T>> getItems();
+  Collection<RandomItem<T>> items();
 
   /**
    * Returns the weight of the given item.
    * @param item the item
    * @return the item weight
    */
-  int getWeight(T item);
+  int weight(T item);
 
   /**
    * Sets the weight of the given item
@@ -68,14 +68,14 @@ public interface ItemRandomizer<T> {
    * Fetches a random item from this model based on the item weights.
    * @return a randomly chosen item.
    */
-  T getRandomItem();
+  T randomItem();
 
   /**
    * Returns this items share in the total weights as a floating point number between 0 and 1
    * @param item the item
    * @return the ratio of the total weights held by the given item
    */
-  double getWeightRatio(T item);
+  double weightRatio(T item);
 
   /**
    * Increments the weight of the given item by one
@@ -126,7 +126,7 @@ public interface ItemRandomizer<T> {
     /**
      * @return the random weight assigned to this item
      */
-    int getWeight();
+    int weight();
 
     /**
      * @return true if this item is enabled
@@ -141,6 +141,6 @@ public interface ItemRandomizer<T> {
     /**
      * @return the item this random item represents
      */
-    T getItem();
+    T item();
   }
 }

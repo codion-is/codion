@@ -16,12 +16,12 @@ public final class FormatsTest {
 
   @Test
   void test() throws ParseException {
-    NumberFormat format = Formats.getNonGroupingNumberFormat();
+    NumberFormat format = Formats.nonGroupingNumberFormat();
     assertFalse(format.isGroupingUsed());
-    format = Formats.getNonGroupingIntegerFormat();
+    format = Formats.nonGroupingIntegerFormat();
     assertFalse(format.isGroupingUsed());
     assertTrue(format.isParseIntegerOnly());
-    format = Formats.getBigDecimalNumberFormat();
+    format = Formats.bigDecimalNumberFormat();
     assertTrue(format instanceof DecimalFormat);
     assertTrue(((DecimalFormat) format).isParseBigDecimal());
   }

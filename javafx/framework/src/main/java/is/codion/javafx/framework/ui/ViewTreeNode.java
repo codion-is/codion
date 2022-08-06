@@ -15,20 +15,20 @@ public interface ViewTreeNode<T extends ViewTreeNode<T>> {
   /**
    * @return the parent view or an empty Optional if none exists
    */
-  Optional<ViewTreeNode<T>> getParentView();
+  Optional<ViewTreeNode<T>> parentView();
 
   /**
    * @return the previous sibling or an empty Optional if none exists, wraps around
    */
-  Optional<T> getPreviousSiblingView();
+  Optional<T> previousSiblingView();
 
   /**
    * @return the next sibling or an empty Optional if none exists, wraps around
    */
-  Optional<T> getNextSiblingView();
+  Optional<T> nextSiblingView();
 
   /**
    * @return a List containing the child views, empty if none exist
    */
-  List<T> getChildViews();
+  List<T> childViews();
 }

@@ -19,22 +19,22 @@ public final class ContinentModel extends SwingEntityModel {
 
   ContinentModel(EntityConnectionProvider connectionProvider) {
     super(Continent.TYPE, connectionProvider);
-    getTableModel().addRefreshListener(this::refreshChartDatasets);
+    tableModel().addRefreshListener(this::refreshChartDatasets);
   }
 
-  public PieDataset<String> getPopulationDataset() {
+  public PieDataset<String> populationDataset() {
     return populationDataset;
   }
 
-  public PieDataset<String> getSurfaceAreaDataset() {
+  public PieDataset<String> surfaceAreaDataset() {
     return surfaceAreaDataset;
   }
 
-  public PieDataset<String> getGnpDataset() {
+  public PieDataset<String> gnpDataset() {
     return gnpDataset;
   }
 
-  public CategoryDataset getLifeExpectancyDataset() {
+  public CategoryDataset lifeExpectancyDataset() {
     return lifeExpectancyDataset;
   }
 
@@ -43,7 +43,7 @@ public final class ContinentModel extends SwingEntityModel {
     surfaceAreaDataset.clear();
     gnpDataset.clear();
     lifeExpectancyDataset.clear();
-    Entity.castTo(Continent.class, getTableModel().getItems()).forEach(continent -> {
+    Entity.castTo(Continent.class, tableModel().items()).forEach(continent -> {
       populationDataset.setValue(continent.name(), continent.population());
       surfaceAreaDataset.setValue(continent.name(), continent.surfaceArea());
       gnpDataset.setValue(continent.name(), continent.gnp());

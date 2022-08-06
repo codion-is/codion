@@ -202,7 +202,7 @@ public interface World {
     private static final String GREEN = "#00ff00";
 
     @Override
-    public Object getColor(Entity cityEntity, Attribute<?> attribute) {
+    public Object color(Entity cityEntity, Attribute<?> attribute) {
       if (attribute.equals(City.POPULATION) &&
               cityEntity.get(City.POPULATION) > 1_000_000) {
         return YELLOW;

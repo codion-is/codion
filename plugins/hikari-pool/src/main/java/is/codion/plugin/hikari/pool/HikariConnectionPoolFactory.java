@@ -38,15 +38,15 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
     private final HikariConfig config = new HikariConfig();
 
     public HikariConnectionPoolWrapper(ConnectionFactory connectionFactory, User user) {
-      super(connectionFactory, user, new DriverDataSource(connectionFactory.getUrl(), null,
-              new Properties(), user.getUsername(), String.valueOf(user.getPassword())));
-      config.setJdbcUrl(connectionFactory.getUrl());
+      super(connectionFactory, user, new DriverDataSource(connectionFactory.url(), null,
+              new Properties(), user.username(), String.valueOf(user.getPassword())));
+      config.setJdbcUrl(connectionFactory.url());
       config.setAutoCommit(false);
-      config.setUsername(user.getUsername());
+      config.setUsername(user.username());
       config.setMaximumPoolSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.get());
       config.setMinimumIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.get());
       config.setIdleTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.get());
-      config.setDataSource(getPoolDataSource());
+      config.setDataSource(poolDataSource());
       setPool(new HikariPool(config));
     }
 

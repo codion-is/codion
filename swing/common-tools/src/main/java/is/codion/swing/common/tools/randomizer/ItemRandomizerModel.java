@@ -30,27 +30,27 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
   @Override
   public void incrementWeight(T item) {
-    getRandomItem(item).incrementWeight();
+    randomItem(item).incrementWeight();
   }
 
   @Override
   public void decrementWeight(T item) {
-    getRandomItem(item).decrementWeight();
+    randomItem(item).decrementWeight();
   }
 
   @Override
   public void setWeight(T item, int weight) {
-    getRandomItem(item).setWeight(weight);
+    randomItem(item).setWeight(weight);
   }
 
   @Override
   public final boolean isItemEnabled(T item) {
-    return getRandomItem(item).isEnabled();
+    return randomItem(item).isEnabled();
   }
 
   @Override
   public final void setItemEnabled(T item, boolean enabled) {
-    getRandomItem(item).setEnabled(enabled);
+    randomItem(item).setEnabled(enabled);
   }
 
   @Override
@@ -59,17 +59,17 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   @Override
-  public final List<ItemRandomizer.RandomItem<T>> getItems() {
+  public final List<ItemRandomizer.RandomItem<T>> items() {
     return items;
   }
 
   @Override
-  public final int getItemCount() {
+  public final int itemCount() {
     return items.size();
   }
 
   @Override
-  public final T getRandomItem() {
+  public final T randomItem() {
     int totalWeights = getTotalWeights();
     if (totalWeights == 0) {
       throw new IllegalStateException("Can not choose a random item unless total weights exceed 0");
@@ -78,9 +78,9 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     int randomNumber = random.nextInt(totalWeights + 1);
     int position = 0;
     for (ItemRandomizer.RandomItem<T> item : items) {
-      position += item.getWeight();
-      if (randomNumber <= position && item.getWeight() > 0) {
-        return item.getItem();
+      position += item.weight();
+      if (randomNumber <= position && item.weight() > 0) {
+        return item.item();
       }
     }
 
@@ -88,18 +88,18 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   @Override
-  public final double getWeightRatio(T item) {
+  public final double weightRatio(T item) {
     int totalWeights = getTotalWeights();
     if (totalWeights == 0) {
       return 0;
     }
 
-    return getWeight(item) / (double) totalWeights;
+    return weight(item) / (double) totalWeights;
   }
 
   @Override
-  public final int getWeight(T item) {
-    return getRandomItem(item).getWeight();
+  public final int weight(T item) {
+    return randomItem(item).weight();
   }
 
   /**
@@ -108,9 +108,9 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
    * @return the RandomItem
    * @throws RuntimeException in case the item is not found
    */
-  protected final ItemRandomizer.RandomItem<T> getRandomItem(T item) {
+  protected final ItemRandomizer.RandomItem<T> randomItem(T item) {
     for (ItemRandomizer.RandomItem<T> randomItem : items) {
-      if (randomItem.getItem().equals(item)) {
+      if (randomItem.item().equals(item)) {
         return randomItem;
       }
     }
@@ -120,7 +120,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
   private int getTotalWeights() {
     return items.stream()
-            .mapToInt(RandomItem::getWeight)
+            .mapToInt(RandomItem::weight)
             .sum();
   }
 
@@ -149,7 +149,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     }
 
     @Override
-    public int getWeight() {
+    public int weight() {
       return enabled ? weight : 0;
     }
 
@@ -164,7 +164,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     }
 
     @Override
-    public T getItem() {
+    public T item() {
       return item;
     }
 
@@ -175,7 +175,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
     @Override
     public boolean equals(Object obj) {
-      return obj instanceof ItemRandomizer.RandomItem && (((ItemRandomizer.RandomItem<T>) obj).getItem().equals(item));
+      return obj instanceof ItemRandomizer.RandomItem && (((ItemRandomizer.RandomItem<T>) obj).item().equals(item));
     }
 
     @Override

@@ -61,7 +61,7 @@ public final class HostMonitorPanel extends JPanel {
     model.addServerRemovedListener(serverMonitor -> {
       for (int i = 0; i < serverPane.getTabCount(); i++) {
         ServerMonitorPanel panel = (ServerMonitorPanel) serverPane.getComponentAt(i);
-        if (panel.getModel() == serverMonitor) {
+        if (panel.model() == serverMonitor) {
           removeServerTab(panel);
         }
       }
@@ -69,14 +69,14 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void initializeServerTabs() throws RemoteException {
-    for (ServerMonitor serverMonitor : model.getServerMonitors()) {
+    for (ServerMonitor serverMonitor : model.serverMonitors()) {
       addServerTab(serverMonitor);
     }
   }
 
   private void addServerTab(ServerMonitor serverMonitor) throws RemoteException {
     ServerMonitorPanel serverMonitorPanel = new ServerMonitorPanel(serverMonitor);
-    serverPane.addTab(serverMonitor.getServerInformation().serverName(), serverMonitorPanel);
+    serverPane.addTab(serverMonitor.serverInformation().serverName(), serverMonitorPanel);
   }
 
   private void removeServerTab(ServerMonitorPanel panel) {

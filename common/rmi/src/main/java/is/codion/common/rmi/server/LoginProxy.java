@@ -17,7 +17,7 @@ public interface LoginProxy {
   /**
    * @return the String identifying the client type for which to use this login proxy, null to share between all clients
    */
-  String getClientTypeId();
+  String clientTypeId();
 
   /**
    * Performs login validation for the user specified by the remote client

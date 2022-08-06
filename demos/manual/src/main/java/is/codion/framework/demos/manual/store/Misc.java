@@ -40,7 +40,7 @@ public final class Misc {
     EntityConnection connection = connectionProvider.connection();
 
     EntityDefinition customerDefinition =
-            connection.entities().getDefinition(Customer.TYPE);
+            connection.entities().definition(Customer.TYPE);
 
     Iterator<Entity> customerIterator =
             connection.select(condition(Customer.TYPE)).iterator();
@@ -48,7 +48,7 @@ public final class Misc {
     JasperReportsDataSource<Entity> dataSource =
             new JasperReportsDataSource<>(customerIterator,
                     (entity, reportField) ->
-                            entity.get(customerDefinition.getAttribute(reportField.getName())));
+                            entity.get(customerDefinition.attribute(reportField.getName())));
 
     JRReport customerReport = fileReport("reports/customer.jasper");
 

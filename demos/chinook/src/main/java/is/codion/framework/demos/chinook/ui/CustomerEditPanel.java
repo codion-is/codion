@@ -83,7 +83,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
     @Override
     public Collection<String> get() {
       try {
-        return getEditModel().getConnectionProvider().connection().select(Customer.STATE);
+        return editModel().connectionProvider().connection().select(Customer.STATE);
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);

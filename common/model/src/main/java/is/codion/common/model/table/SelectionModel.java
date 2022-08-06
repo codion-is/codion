@@ -20,27 +20,27 @@ public interface SelectionModel<R> {
   /**
    * @return a StateObserver indicating whether the selection is empty
    */
-  StateObserver getSelectionEmptyObserver();
+  StateObserver selectionEmptyObserver();
 
   /**
    * @return a StateObserver indicating whether one or more items are selected
    */
-  StateObserver getSelectionNotEmptyObserver();
+  StateObserver selectionNotEmptyObserver();
 
   /**
    * @return a StateObserver indicating whether multiple rows are selected
    */
-  StateObserver getMultipleSelectionObserver();
+  StateObserver multipleSelectionObserver();
 
   /**
    * @return a StateObserver indicating whether a single row is selected
    */
-  StateObserver getSingleSelectionObserver();
+  StateObserver singleSelectionObserver();
 
   /**
    * @return a State controlling the single selection mode of this selection model
    */
-  State getSingleSelectionModeState();
+  State singleSelectionModeState();
 
   /**
    * @param listener a listener to be notified each time the selection changes
@@ -162,7 +162,7 @@ public interface SelectionModel<R> {
   /**
    * @return the number of selected indexes in the underlying selection model.
    */
-  int getSelectionCount();
+  int selectionCount();
 
   /**
    * Selects the given items

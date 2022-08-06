@@ -26,12 +26,12 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
     super(UNIT_TEST_USER, singletonList(new AbstractUsageScenario<PetstoreAppModel>("selectRecords") {
       @Override
       protected void perform(PetstoreAppModel application) {
-        SwingEntityModel categoryModel = application.getEntityModels().iterator().next();
-        categoryModel.getTableModel().getSelectionModel().clearSelection();
-        categoryModel.getTableModel().refresh();
-        selectRandomRow(categoryModel.getTableModel());
-        selectRandomRow(categoryModel.getDetailModels().iterator().next().getTableModel());
-        selectRandomRow(categoryModel.getDetailModels().iterator().next().getDetailModels().iterator().next().getTableModel());
+        SwingEntityModel categoryModel = application.entityModels().iterator().next();
+        categoryModel.tableModel().selectionModel().clearSelection();
+        categoryModel.tableModel().refresh();
+        selectRandomRow(categoryModel.tableModel());
+        selectRandomRow(categoryModel.detailModels().iterator().next().tableModel());
+        selectRandomRow(categoryModel.detailModels().iterator().next().detailModels().iterator().next().tableModel());
       }
     }));
   }
@@ -44,12 +44,12 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
                     .clientTypeId(getClass().getSimpleName())
                     .user(getUser())
                     .build());
-    SwingEntityModel categoryModel = applicationModel.getEntityModels().iterator().next();
-    categoryModel.addLinkedDetailModel(categoryModel.getDetailModels().iterator().next());
-    SwingEntityModel productModel = categoryModel.getDetailModels().iterator().next();
-    productModel.addLinkedDetailModel(productModel.getDetailModels().iterator().next());
-    SwingEntityModel itemModel = productModel.getDetailModels().iterator().next();
-    itemModel.addLinkedDetailModel(itemModel.getDetailModels().iterator().next());
+    SwingEntityModel categoryModel = applicationModel.entityModels().iterator().next();
+    categoryModel.addLinkedDetailModel(categoryModel.detailModels().iterator().next());
+    SwingEntityModel productModel = categoryModel.detailModels().iterator().next();
+    productModel.addLinkedDetailModel(productModel.detailModels().iterator().next());
+    SwingEntityModel itemModel = productModel.detailModels().iterator().next();
+    itemModel.addLinkedDetailModel(itemModel.detailModels().iterator().next());
 
     return applicationModel;
   }

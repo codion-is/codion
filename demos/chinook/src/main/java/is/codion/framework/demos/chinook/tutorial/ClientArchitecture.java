@@ -63,13 +63,13 @@ public final class ClientArchitecture {
     SwingEntityModel artistModel = artistModel(connectionProvider);
 
     // the edit model
-    SwingEntityEditModel artistEditModel = artistModel.getEditModel();
+    SwingEntityEditModel artistEditModel = artistModel.editModel();
 
     // the table model
-    SwingEntityTableModel artistTableModel = artistModel.getTableModel();
+    SwingEntityTableModel artistTableModel = artistModel.tableModel();
 
     // the album detail model
-    SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+    SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
 
     // create a EntityEditPanel instance, based on the artist edit model
     EntityEditPanel artistEditPanel = new EntityEditPanel(artistEditModel) {
@@ -116,7 +116,7 @@ public final class ClientArchitecture {
     artistPanel.initializePanel();
 
     // fetch data from the database
-    artistPanel.getModel().getTableModel().refresh();
+    artistPanel.model().tableModel().refresh();
 
     // uncomment the below line to display the panel
 //    displayInDialog(null, artistPanel, "Artists");

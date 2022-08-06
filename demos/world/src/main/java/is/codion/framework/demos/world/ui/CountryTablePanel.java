@@ -22,7 +22,7 @@ final class CountryTablePanel extends EntityTablePanel {
   CountryTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
     setControl(ControlCode.PRINT_TABLE, Control.builder(this::viewCountryReport)
-            .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
+            .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
             .smallIcon(frameworkIcons().print())
             .build());
   }
@@ -42,7 +42,7 @@ final class CountryTablePanel extends EntityTablePanel {
   }
 
   private JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) throws DatabaseException, ReportException {
-    return ((CountryTableModel) getTableModel()).fillCountryReport(progressReporter);
+    return ((CountryTableModel) tableModel()).fillCountryReport(progressReporter);
   }
 
   private void viewReport(JasperPrint countryReport) {

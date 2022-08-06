@@ -56,7 +56,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
     }
 
     @Override
-    public Attribute<?> getAttribute() {
+    public Attribute<?> attribute() {
       return attribute;
     }
 
@@ -111,7 +111,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
       }
       for (Attribute<?> attribute : attributes) {
         for (OrderByAttribute orderByAttribute : orderByAttributes) {
-          if (requireNonNull(attribute).equals(orderByAttribute.getAttribute())) {
+          if (requireNonNull(attribute).equals(orderByAttribute.attribute())) {
             throw new IllegalArgumentException("Order by already contains attribute: " + attribute);
           }
         }

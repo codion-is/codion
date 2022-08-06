@@ -66,11 +66,11 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public String toString() {
-    return getClass().getSimpleName() + ": " + user.getUsername();
+    return getClass().getSimpleName() + ": " + user.username();
   }
 
   @Override
-  public User getUser() {
+  public User user() {
     return user;
   }
 
@@ -115,7 +115,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   @Override
-  public Database getDatabase() {
+  public Database database() {
     return database;
   }
 
@@ -211,7 +211,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       connection.commit();
     }
     catch (SQLException e) {
-      System.err.println("Exception during commit: " + user.getUsername() + ": " + e.getMessage());
+      System.err.println("Exception during commit: " + user.username() + ": " + e.getMessage());
       exception = e;
       throw e;
     }

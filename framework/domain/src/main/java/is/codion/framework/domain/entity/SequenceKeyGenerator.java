@@ -31,6 +31,6 @@ final class SequenceKeyGenerator extends AbstractQueriedKeyGenerator {
 
   @Override
   protected String getQuery(Database database) {
-    return database.getSequenceQuery(sequenceName);
+    return database.sequenceQuery(sequenceName);
   }
 }

@@ -91,7 +91,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final StateObserver getRefreshingObserver() {
+  public final StateObserver refreshingObserver() {
     return refreshingState.observer();
   }
 
@@ -148,7 +148,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final List<T> getVisibleItems() {
+  public final List<T> visibleItems() {
     if (visibleItems.isEmpty()) {
       return emptyList();
     }
@@ -160,13 +160,13 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final List<T> getFilteredItems() {
+  public final List<T> filteredItems() {
     return unmodifiableList(filteredItems);
   }
 
   @Override
-  public final List<T> getItems() {
-    List<T> entities = new ArrayList<>(getVisibleItems());
+  public final List<T> items() {
+    List<T> entities = new ArrayList<>(visibleItems());
     entities.addAll(filteredItems);
 
     return entities;
@@ -184,12 +184,12 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final int getFilteredItemCount() {
+  public final int filteredItemCount() {
     return filteredItems.size();
   }
 
   @Override
-  public final int getVisibleItemCount() {
+  public final int visibleItemCount() {
     return visibleItems.size();
   }
 
@@ -283,11 +283,11 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   @Override
   public final boolean isSelectionEmpty() {
-    return getSelectedValue() == null;
+    return selectedValue() == null;
   }
 
   @Override
-  public final T getSelectedValue() {
+  public final T selectedValue() {
     if (isNullSelected()) {
       return null;
     }
@@ -297,7 +297,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   /**
    * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
-   * via {@link #setNullItem(Object)}, {@link #getSelectedValue()} is usually what you want
+   * via {@link #setNullItem(Object)}, {@link #selectedValue()} is usually what you want
    */
   @Override
   public final T getSelectedItem() {
@@ -495,7 +495,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   private static final class SortComparator<T> implements Comparator<T> {
 
-    private final Comparator<T> comparator = Text.getSpaceAwareCollator();
+    private final Comparator<T> comparator = Text.spaceAwareCollator();
 
     @Override
     public int compare(T o1, T o2) {
@@ -532,12 +532,12 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
         return null;
       }
 
-      return finder.getValue(getSelectedValue());
+      return finder.getValue(selectedValue());
     }
 
     @Override
     protected void setValue(V value) {
-      setSelectedItem(value == null ? null : finder.findItem(getVisibleItems(), value));
+      setSelectedItem(value == null ? null : finder.findItem(visibleItems(), value));
     }
   }
 }

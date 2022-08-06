@@ -51,7 +51,7 @@ public interface Property<T> {
   PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", LocaleDateTimePattern.builder()
           .hoursMinutes()
           .build()
-          .getTimePattern());
+          .timePattern());
 
   /**
    * The default date/time format pattern to use when showing date/time values in tables and when creating default date/time input fields<br>
@@ -63,7 +63,7 @@ public interface Property<T> {
           .yearFourDigits()
           .hoursMinutes()
           .build()
-          .getDateTimePattern());
+          .dateTimePattern());
 
   /**
    * The default date format pattern to use when showing date values in tables and when creating default date input fields<br>
@@ -74,7 +74,7 @@ public interface Property<T> {
           .delimiterDash()
           .yearFourDigits()
           .build()
-          .getDatePattern());
+          .datePattern());
 
   /**
    * Specifies whether number format grouping is used by default<br>
@@ -259,7 +259,7 @@ public interface Property<T> {
     /**
      * @return the underying attribute
      */
-    Attribute<T> getAttribute();
+    Attribute<T> attribute();
 
     /**
      * Specifies the resource bundle from which to retrieve the caption

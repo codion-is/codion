@@ -14,25 +14,25 @@ public class Db2DatabaseTest {
   @Test
   void getName() {
     Db2Database database = new Db2Database(URL);
-    assertEquals("database", database.getName());
+    assertEquals("database", database.name());
     database = new Db2Database( URL + ";options");
-    assertEquals("database", database.getName());
+    assertEquals("database", database.name());
   }
 
   @Test
   void getAutoIncrementQuery() {
     Db2Database database = new Db2Database("test");
-    assertEquals("select previous value for seq", database.getAutoIncrementQuery("seq"));
+    assertEquals("select previous value for seq", database.autoIncrementQuery("seq"));
   }
 
   @Test
   void getSequenceSQLNullSequence() {
-    assertThrows(NullPointerException.class, () -> new Db2Database(URL).getSequenceQuery(null));
+    assertThrows(NullPointerException.class, () -> new Db2Database(URL).sequenceQuery(null));
   }
 
   @Test
   void getAutoIncrementQueryNullIdSource() {
-    assertThrows(NullPointerException.class, () -> new Db2Database(URL).getAutoIncrementQuery(null));
+    assertThrows(NullPointerException.class, () -> new Db2Database(URL).autoIncrementQuery(null));
   }
 
   @Test

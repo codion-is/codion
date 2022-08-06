@@ -22,22 +22,22 @@ final class SQLiteDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getName() {
-    return removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX);
+  public String name() {
+    return removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX);
   }
 
   @Override
-  public String getAutoIncrementQuery(String idSource) {
+  public String autoIncrementQuery(String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
   @Override
-  public String getSelectForUpdateClause() {
+  public String selectForUpdateClause() {
     return "for update";
   }
 
   @Override
-  public String getLimitOffsetClause(Integer limit, Integer offset) {
+  public String limitOffsetClause(Integer limit, Integer offset) {
     return createLimitOffsetClause(limit, offset);
   }
 

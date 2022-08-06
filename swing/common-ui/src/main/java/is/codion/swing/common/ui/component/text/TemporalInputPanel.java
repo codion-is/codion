@@ -48,7 +48,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     super(new BorderLayout());
     this.inputField = requireNonNull(temporalField, "temporalField");
     add(temporalField, BorderLayout.CENTER);
-    if (supportsCalendar(temporalField.getTemporalClass())) {
+    if (supportsCalendar(temporalField.temporalClass())) {
       Control displayCalendarControl = Control.builder(this::displayCalendar)
               .caption("...")
               .build();
@@ -68,14 +68,14 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   /**
    * @return the input field
    */
-  public TemporalField<T> getInputField() {
+  public TemporalField<T> inputField() {
     return inputField;
   }
 
   /**
    * @return the calendar button
    */
-  public Optional<JButton> getCalendarButton() {
+  public Optional<JButton> calendarButton() {
     return Optional.ofNullable(calendarButton);
   }
 
@@ -158,14 +158,14 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   private void displayCalendar() {
-    if (LocalDate.class.equals(inputField.getTemporalClass())) {
+    if (LocalDate.class.equals(inputField.temporalClass())) {
       Dialogs.calendarDialog()
               .owner(inputField)
               .initialValue((LocalDate) getTemporal())
               .selectDate()
               .ifPresent(inputField::setTemporal);
     }
-    else if (LocalDateTime.class.equals(inputField.getTemporalClass())) {
+    else if (LocalDateTime.class.equals(inputField.temporalClass())) {
       Dialogs.calendarDialog()
               .owner(inputField)
               .initialValue((LocalDateTime) getTemporal())
@@ -173,7 +173,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
               .ifPresent(inputField::setTemporal);
     }
     else {
-      throw new IllegalArgumentException("Unsupported temporal type: " + inputField.getTemporalClass());
+      throw new IllegalArgumentException("Unsupported temporal type: " + inputField.temporalClass());
     }
   }
 
@@ -276,7 +276,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     @Override
     protected TemporalInputPanel<T> createComponent() {
       TemporalInputPanel<T> inputPanel = new TemporalInputPanel<>(createTemporalField());
-      inputPanel.getCalendarButton().ifPresent(button ->
+      inputPanel.calendarButton().ifPresent(button ->
               button.setFocusable(buttonFocusable));
 
       return inputPanel;
@@ -310,7 +310,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
 
     private TemporalInputPanelValue(TemporalInputPanel<T> inputPanel) {
       super(inputPanel);
-      inputPanel.getInputField().addTemporalListener(temporal -> notifyValueChange());
+      inputPanel.inputField().addTemporalListener(temporal -> notifyValueChange());
     }
 
     @Override

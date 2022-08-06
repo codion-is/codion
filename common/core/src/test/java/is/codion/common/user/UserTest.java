@@ -19,7 +19,7 @@ public class UserTest {
   @Test
   void test() throws Exception {
     User user = User.parse("scott:tiger");
-    assertEquals("scott", user.getUsername());
+    assertEquals("scott", user.username());
     assertEquals("tiger", String.valueOf(user.getPassword()));
     user.setPassword("mess".toCharArray());
     assertEquals("mess", String.valueOf(user.getPassword()));
@@ -39,19 +39,19 @@ public class UserTest {
   @Test
   void parse() {
     User user = User.parse("scott:tiger");
-    assertEquals("scott", user.getUsername());
+    assertEquals("scott", user.username());
     assertEquals("tiger", String.valueOf(user.getPassword()));
     user = User.parse(" scott:ti ger");
-    assertEquals("scott", user.getUsername());
+    assertEquals("scott", user.username());
     assertEquals("ti ger", String.valueOf(user.getPassword()));
     user = User.parse("pete");
-    assertEquals("pete", user.getUsername());
+    assertEquals("pete", user.username());
     assertTrue(String.valueOf(user.getPassword()).isEmpty());
     user = User.parse(" john ");
-    assertEquals("john", user.getUsername());
+    assertEquals("john", user.username());
     assertTrue(String.valueOf(user.getPassword()).isEmpty());
     user = User.parse("scott:tiger:pet:e");
-    assertEquals("scott", user.getUsername());
+    assertEquals("scott", user.username());
     assertEquals("tiger:pet:e", String.valueOf(user.getPassword()));
   }
 

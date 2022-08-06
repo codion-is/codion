@@ -40,11 +40,11 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   public EntityTableSimpleConditionPanel(EntityTableConditionModel tableConditionModel,
                                          FilteredTableColumnModel<?> columnModel,
                                          EventListener onSearchListener) {
-    super(tableConditionModel, columnModel.getAllColumns());
+    super(tableConditionModel, columnModel.columns());
     this.searchControl = Control.builder(this::performSimpleSearch)
             .caption(FrameworkMessages.search())
             .build();
-    this.simpleSearchTextField = Components.textField(tableConditionModel.getSimpleConditionStringValue())
+    this.simpleSearchTextField = Components.textField(tableConditionModel.simpleConditionStringValue())
             .columns(12)
             .action(searchControl)
             .build();
@@ -56,7 +56,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   /**
    * @return the search field
    */
-  public JTextField getSimpleSearchTextField() {
+  public JTextField simpleSearchTextField() {
     return simpleSearchTextField;
   }
 
@@ -89,13 +89,13 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   }
 
   private void performSimpleSearch() {
-    Conjunction previousConjunction = getTableConditionModel().getConjunction();
+    Conjunction previousConjunction = tableConditionModel().getConjunction();
     try {
-      getTableConditionModel().setConjunction(Conjunction.OR);
+      tableConditionModel().setConjunction(Conjunction.OR);
       onSearchListener.onEvent();
     }
     finally {
-      getTableConditionModel().setConjunction(previousConjunction);
+      tableConditionModel().setConjunction(previousConjunction);
     }
   }
 }

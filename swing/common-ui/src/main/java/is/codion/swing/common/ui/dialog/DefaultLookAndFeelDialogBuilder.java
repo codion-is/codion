@@ -47,7 +47,7 @@ final class DefaultLookAndFeelDialogBuilder implements LookAndFeelSelectionDialo
     return Control.builder(() -> selectLookAndFeel()
                     .ifPresent(provider -> {
                       if (userPreferencePropertyName != null) {
-                        UserPreferences.putUserPreference(userPreferencePropertyName, provider.getName());
+                        UserPreferences.putUserPreference(userPreferencePropertyName, provider.name());
                       }
                     }))
             .caption(caption)
@@ -66,7 +66,7 @@ final class DefaultLookAndFeelDialogBuilder implements LookAndFeelSelectionDialo
     if (okPressed.get()) {
       lookAndFeelSelectionPanel.enableSelected();
 
-      return Optional.of(lookAndFeelSelectionPanel.getSelectedLookAndFeel());
+      return Optional.of(lookAndFeelSelectionPanel.selectedLookAndFeel());
     }
     lookAndFeelSelectionPanel.revert();
 

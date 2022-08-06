@@ -18,11 +18,11 @@ public class TextInputPanelTest {
             .caption("caption")
             .dialogTitle("title")
             .build();
-    assertNotNull(panel.getButton());
-    panel.getTextField().setText("hello");
+    assertNotNull(panel.button());
+    panel.textField().setText("hello");
     assertEquals("hello", panel.getText());
     panel.setText("just");
-    assertEquals("just", panel.getTextField().getText());
+    assertEquals("just", panel.textField().getText());
   }
 
   @Test
@@ -46,11 +46,11 @@ public class TextInputPanelTest {
     TextInputPanel inputPanel = TextInputPanel.builder()
             .build();
     Utilities.linkToEnabledState(enabledState, inputPanel);
-    assertFalse(inputPanel.getTextField().isEnabled());
-    assertFalse(inputPanel.getButton().isEnabled());
+    assertFalse(inputPanel.textField().isEnabled());
+    assertFalse(inputPanel.button().isEnabled());
     enabledState.set(true);
     Thread.sleep(100);
-    assertTrue(inputPanel.getTextField().isEnabled());
-    assertTrue(inputPanel.getButton().isEnabled());
+    assertTrue(inputPanel.textField().isEnabled());
+    assertTrue(inputPanel.button().isEnabled());
   }
 }

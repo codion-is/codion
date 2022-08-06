@@ -30,14 +30,14 @@ public class ValidationException extends Exception {
   /**
    * @return the value attribute
    */
-  public final Attribute<?> getAttribute() {
+  public final Attribute<?> attribute() {
     return attribute;
   }
 
   /**
    * @return the invalid value
    */
-  public final Object getValue() {
+  public final Object value() {
     return value;
   }
 }

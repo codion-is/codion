@@ -27,28 +27,28 @@ public interface ColumnSummaryModel {
      * @param <T> the value type
      * @return a summary text
      */
-    <T extends Number> String getSummary(SummaryValueProvider<T> valueProvider);
+    <T extends Number> String summary(SummaryValueProvider<T> valueProvider);
   }
 
   /**
    * @return the locked state, if true then changing summary type is disabled
    */
-  State getLockedState();
+  State lockedState();
 
   /**
    * @return a list containing the available summaries
    */
-  List<Summary> getAvailableSummaries();
+  List<Summary> availableSummaries();
 
   /**
    * @return the value controlling the summary
    */
-  Value<Summary> getSummaryValue();
+  Value<Summary> summaryValue();
 
   /**
    * @return an observer for the string representing the summary value
    */
-  ValueObserver<String> getSummaryTextObserver();
+  ValueObserver<String> summaryTextObserver();
 
   /**
    * Provides the values on which to base the summary .
@@ -65,10 +65,10 @@ public interface ColumnSummaryModel {
     /**
      * @return the values to base the summary on
      */
-    Collection<T> getValues();
+    Collection<T> values();
 
     /**
-     * @return true if the values provided by {@code getValues()} is a subset of the total available values
+     * @return true if the values provided by {@link #values()} is a subset of the total available values
      */
     boolean isValueSubset();
 

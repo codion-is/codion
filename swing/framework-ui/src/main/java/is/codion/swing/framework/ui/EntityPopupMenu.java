@@ -61,10 +61,10 @@ final class EntityPopupMenu extends JPopupMenu {
    * @param visitedEntities used to prevent cyclical dependencies wreaking havoc
    */
   private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection, Set<Entity> visitedEntities) {
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.getDefinition().getPrimaryKeyProperties()));
-    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entity.getDefinition()
-            .getForeignKeyProperties()), visitedEntities);
-    populateValueMenu(rootMenu, entity, new ArrayList<>(entity.getDefinition().getProperties()));
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.entityDefinition().primaryKeyProperties()));
+    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entity.entityDefinition()
+            .foreignKeyProperties()), visitedEntities);
+    populateValueMenu(rootMenu, entity, new ArrayList<>(entity.entityDefinition().properties()));
   }
 
   private static void populatePrimaryKeyMenu(JComponent rootMenu, Entity entity, List<ColumnProperty<?>> primaryKeyProperties) {
@@ -86,8 +86,8 @@ final class EntityPopupMenu extends JPopupMenu {
     if (!visitedEntities.contains(entity)) {
       visitedEntities.add(entity);
       Text.collate(fkProperties);
-      EntityDefinition definition = entity.getDefinition();
-      EntityValidator validator = definition.getValidator();
+      EntityDefinition definition = entity.entityDefinition();
+      EntityValidator validator = definition.validator();
       for (ForeignKeyProperty property : fkProperties) {
         ForeignKey foreignKey = property.attribute();
         StringBuilder captionBuilder = new StringBuilder("[FK] ").append(property.caption()).append(": ");
@@ -98,7 +98,7 @@ final class EntityPopupMenu extends JPopupMenu {
           rootMenu.add(menuItem);
         }
         else {
-          Entity referencedEntity = selectEntity(entity.getReferencedKey(foreignKey), connection);
+          Entity referencedEntity = selectEntity(entity.referencedKey(foreignKey), connection);
           entity.put(foreignKey, referencedEntity);
           JMenu foreignKeyMenu = new JMenu(captionBuilder.append(createValueString(entity, property)).toString());
           setInvalidModified(foreignKeyMenu, isValid(validator, entity, foreignKey), entity.isModified(foreignKey));
@@ -118,8 +118,8 @@ final class EntityPopupMenu extends JPopupMenu {
 
   private static void populateValueMenu(JComponent rootMenu, Entity entity, List<Property<?>> properties) {
     Text.collate(properties);
-    EntityDefinition definition = entity.getDefinition();
-    EntityValidator validator = definition.getValidator();
+    EntityDefinition definition = entity.entityDefinition();
+    EntityValidator validator = definition.validator();
     for (Property<?> property : properties) {
       boolean isPrimaryKeyProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).primaryKeyColumn();
       if (!isPrimaryKeyProperty && !(property instanceof ForeignKeyProperty)) {

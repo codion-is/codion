@@ -66,12 +66,12 @@ public interface EntityEditModel {
   /**
    * @return the type of the entity this edit model is based on
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the connection provider used by this edit model
    */
-  EntityConnectionProvider getConnectionProvider();
+  EntityConnectionProvider connectionProvider();
 
   /**
    * Populates this edit model with default values.
@@ -99,7 +99,7 @@ public interface EntityEditModel {
    * @return a deep copy of the active entity
    * @see is.codion.framework.domain.entity.Entity#copy()
    */
-  Entity getEntityCopy();
+  Entity entityCopy();
 
   /**
    * Returns true if the active entity is new or false if it represents a row already persisted.
@@ -107,7 +107,7 @@ public interface EntityEditModel {
    * Basing the result of this function on a database query is not recommended since it is called very frequently,
    * as in, every time a property value changes.
    * @return true if the active entity is new, that is, does not represent a persistent row
-   * @see #getPrimaryKeyNullObserver
+   * @see #primaryKeyNullObserver
    * @see Key#isNull()
    */
   boolean isEntityNew();
@@ -176,7 +176,7 @@ public interface EntityEditModel {
    * @return the value assuming it is an {@link Entity}
    * @throws ClassCastException in case the value was not an {@link Entity}
    */
-  Entity getForeignKey(ForeignKey foreignKey);
+  Entity referencedEntity(ForeignKey foreignKey);
 
   /**
    * Returns a Value based on {@code attribute} in this edit model, note that
@@ -190,12 +190,12 @@ public interface EntityEditModel {
   /**
    * @return the underlying domain entities
    */
-  Entities getEntities();
+  Entities entities();
 
   /**
    * @return the definition of the underlying entity
    */
-  EntityDefinition getEntityDefinition();
+  EntityDefinition entityDefinition();
 
   /**
    * @return true if this model is read only, that is if the insert, update and delete operations are not enabled
@@ -307,7 +307,7 @@ public interface EntityEditModel {
    * @return the {@link EntitySearchModel} associated with the {@code foreignKey}, if no search model
    * has been initialized for the given foreign key, a new one is created, associated with the foreign key and returned.
    */
-  EntitySearchModel getForeignKeySearchModel(ForeignKey foreignKey);
+  EntitySearchModel foreignKeySearchModel(ForeignKey foreignKey);
 
   /**
    * Sets the default value provider for the given attribute. Used when the underlying value is not persistent.
@@ -325,7 +325,7 @@ public interface EntityEditModel {
    * the modified state of the underlying entity. The default supplier returns {@link Entity#isModified()}.
    * @param modifiedSupplier specifies whether the underlying entity is modified
    * @see Entity#isModified()
-   * @see #getModifiedObserver()
+   * @see #modifiedObserver()
    */
   void setModifiedSupplier(Supplier<Boolean> modifiedSupplier);
 
@@ -433,7 +433,7 @@ public interface EntityEditModel {
   /**
    * @return true if the underlying Entity is modified
    * @see #setModifiedSupplier(Supplier)
-   * @see #getModifiedObserver()
+   * @see #modifiedObserver()
    */
   boolean isModified();
 
@@ -478,13 +478,13 @@ public interface EntityEditModel {
   /**
    * @return the validator
    */
-  EntityValidator getValidator();
+  EntityValidator validator();
 
   /**
    * Validates the value associated with the given attribute, using the underlying validator.
    * @param attribute the attribute the value is associated with
    * @throws ValidationException if the given value is not valid for the given attribute
-   * @see #getValidator()
+   * @see #validator()
    */
   void validate(Attribute<?> attribute) throws ValidationException;
 
@@ -500,8 +500,8 @@ public interface EntityEditModel {
    * their respective validators are used.
    * @param entities the entities to validate
    * @throws ValidationException on finding the first invalid entity
-   * @see #getValidator()
-   * @see EntityDefinition#getValidator()
+   * @see #validator()
+   * @see EntityDefinition#validator()
    */
   void validate(Collection<Entity> entities) throws ValidationException;
 
@@ -512,7 +512,7 @@ public interface EntityEditModel {
    * @param entity the entity to validate
    * @throws ValidationException in case the entity is invalid
    * @throws NullPointerException in case the entity is null
-   * @see #getValidator()
+   * @see #validator()
    */
   void validate(Entity entity) throws ValidationException;
 
@@ -527,65 +527,65 @@ public interface EntityEditModel {
 
   /**
    * @return true if the underlying Entity contains only valid values
-   * @see #getValidObserver()
+   * @see #validObserver()
    */
   boolean isValid();
 
   /**
    * @return a StateObserver indicating the valid status of the underlying Entity.
-   * @see #getValidator()
+   * @see #validator()
    * @see #isValid()
    */
-  StateObserver getValidObserver();
+  StateObserver validObserver();
 
   /**
    * Returns a StateObserver responsible for indicating when and if any values in the underlying Entity have been modified.
    * @return a StateObserver indicating the modified state of this edit model
    * @see #isModified()
    */
-  StateObserver getModifiedObserver();
+  StateObserver modifiedObserver();
 
   /**
    * @return an observer indicating whether the active entity is new
    * @see #isEntityNew()
    */
-  StateObserver getEntityNewObserver();
+  StateObserver entityNewObserver();
 
   /**
    * @return the state used to determine if deleting should be enabled
    * @see #isDeleteEnabled()
    * @see #setDeleteEnabled(boolean)
    */
-  StateObserver getDeleteEnabledObserver();
+  StateObserver deleteEnabledObserver();
 
   /**
    * @return a {@link StateObserver} indicating whether the primary key of the active entity is null
    */
-  StateObserver getPrimaryKeyNullObserver();
+  StateObserver primaryKeyNullObserver();
 
   /**
    * @return the {@link StateObserver} used to determine if updating should be enabled
    * @see #isUpdateEnabled()
    * @see #setUpdateEnabled(boolean)
    */
-  StateObserver getUpdateEnabledObserver();
+  StateObserver updateEnabledObserver();
 
   /**
    * @return the {@link StateObserver} used to determine if inserting should be enabled
    * @see #isInsertEnabled()
    * @see #setInsertEnabled(boolean)
    */
-  StateObserver getInsertEnabledObserver();
+  StateObserver insertEnabledObserver();
 
   /**
    * @return a {@link StateObserver} which is active while data models are being refreshed
    */
-  StateObserver getRefreshingObserver();
+  StateObserver refreshingObserver();
 
   /**
    * Adds a {@link StateObserver} instance to this edit models refreshing observer
    * @param refreshingObserver the refreshing observer to add
-   * @see #getRefreshingObserver()
+   * @see #refreshingObserver()
    */
   void addRefreshingObserver(StateObserver refreshingObserver);
 

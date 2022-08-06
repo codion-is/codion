@@ -29,7 +29,7 @@ final class AttributeConditionDeserializer implements Serializable {
 
   <T> AttributeCondition<T> deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     String attributeName = conditionNode.get("attribute").asText();
-    Property<T> property = definition.getProperty(definition.getAttribute(attributeName));
+    Property<T> property = definition.property(definition.attribute(attributeName));
     JsonNode valuesNode = conditionNode.get("values");
     List<T> values = new ArrayList<>();
     for (JsonNode valueNode : valuesNode) {

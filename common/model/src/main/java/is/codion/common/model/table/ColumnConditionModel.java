@@ -73,7 +73,7 @@ public interface ColumnConditionModel<C, T> {
     /**
      * @return a description
      */
-    public String getDescription() {
+    public String description() {
       return description;
     }
   }
@@ -81,29 +81,29 @@ public interface ColumnConditionModel<C, T> {
   /**
    * @return the column identifier
    */
-  C getColumnIdentifier();
+  C columnIdentifier();
 
   /**
    * @return the State controlling whether this model is case-sensitive, when working with strings
    */
-  State getCaseSensitiveState();
+  State caseSensitiveState();
 
   /**
    * @return the Format object to use when formatting input, if any
    */
-  Format getFormat();
+  Format format();
 
   /**
    * @return the date/time format pattern, if any
    */
-  String getDateTimePattern();
+  String dateTimePattern();
 
   /**
    * Note that this is only applicable to string based condition models and only used for
    * operators {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL}
    * @return the Value controlling whether automatic wildcards are enabled when working with strings
    */
-  Value<AutomaticWildcard> getAutomaticWildcardValue();
+  Value<AutomaticWildcard> automaticWildcardValue();
 
   /**
    * @param locked true to lock this model, false to unlock
@@ -118,7 +118,7 @@ public interface ColumnConditionModel<C, T> {
   /**
    * @return the column class this condition model is based on
    */
-  Class<T> getColumnClass();
+  Class<T> columnClass();
 
   /**
    * Sets the values used when the {@link Operator#EQUAL} is enabled.
@@ -185,12 +185,12 @@ public interface ColumnConditionModel<C, T> {
   /**
    * @return the operators available in this condition model
    */
-  List<Operator> getOperators();
+  List<Operator> operators();
 
   /**
    * @return the Value controlling the character used as a wildcard when working with strings
    */
-  Value<Character> getWildcardValue();
+  Value<Character> wildcardValue();
 
   /**
    * @return true if auto enable is enabled
@@ -222,32 +222,32 @@ public interface ColumnConditionModel<C, T> {
   /**
    * @return a ValueSet based on the equals values of this condition model
    */
-  ValueSet<T> getEqualValueSet();
+  ValueSet<T> equalValueSet();
 
   /**
    * @return a Value based on the upper bound value of this condition model
    */
-  Value<T> getUpperBoundValue();
+  Value<T> upperBoundValue();
 
   /**
    * @return a Value based on the lower bound value of this condition model
    */
-  Value<T> getLowerBoundValue();
+  Value<T> lowerBoundValue();
 
   /**
    * @return an observer for this model's locked state
    */
-  StateObserver getLockedObserver();
+  StateObserver lockedObserver();
 
   /**
    * @return a State controlling the enabled state
    */
-  State getEnabledState();
+  State enabledState();
 
   /**
    * @return a Value based on the operator
    */
-  Value<Operator> getOperatorValue();
+  Value<Operator> operatorValue();
 
   /**
    * @param listener a listener to be notified each time the enabled state changes

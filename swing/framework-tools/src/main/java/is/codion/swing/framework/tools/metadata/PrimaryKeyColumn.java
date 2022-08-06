@@ -13,11 +13,11 @@ public final class PrimaryKeyColumn {
     this.index = index;
   }
 
-  public String getColumnName() {
+  public String columnName() {
     return columnName;
   }
 
-  public int getIndex() {
+  public int index() {
     return index;
   }
 }

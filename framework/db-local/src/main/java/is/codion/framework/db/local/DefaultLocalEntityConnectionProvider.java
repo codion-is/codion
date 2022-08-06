@@ -44,7 +44,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 
   @Override
   public String description() {
-    return database().getName().toUpperCase();
+    return database().name().toUpperCase();
   }
 
   public Domain domain() {

@@ -60,7 +60,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
   protected final T getNumber() {
     try {
-      return getDocumentFilter().getParser().parse(getText(0, getLength())).getValue();
+      return getDocumentFilter().getParser().parse(getText(0, getLength())).value();
     }
     catch (BadLocationException e) {
       throw new RuntimeException(e);
@@ -255,7 +255,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
       /**
        * @return the number of characters added
        */
-      int getCharetOffset();
+      int charetOffset();
     }
 
     protected static final class DefaultNumberParseResult<T extends Number>
@@ -274,7 +274,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
       }
 
       @Override
-      public int getCharetOffset() {
+      public int charetOffset() {
         return charetOffset;
       }
     }
@@ -314,12 +314,12 @@ class NumberDocument<T extends Number> extends PlainDocument {
       builder.replace(offset, offset + length, text);
       NumberParser.NumberParseResult<T> parseResult = parser.parse(builder.toString());
       if (parseResult.successful()) {
-        if (parseResult.getValue() != null) {
-          validate(parseResult.getValue());
+        if (parseResult.value() != null) {
+          validate(parseResult.value());
         }
-        super.replace(filterBypass, 0, document.getLength(), parseResult.getText(), attributeSet);
+        super.replace(filterBypass, 0, document.getLength(), parseResult.text(), attributeSet);
         if (textComponent != null) {
-          textComponent.getCaret().setDot(offset + text.length() + parseResult.getCharetOffset());
+          textComponent.getCaret().setDot(offset + text.length() + parseResult.charetOffset());
         }
       }
     }

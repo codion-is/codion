@@ -9,6 +9,6 @@ public final class LookAndFeelSelectionPanelTest {
 
   @Test
   void test() {
-    new LookAndFeelSelectionPanel(true).getSelectedLookAndFeel();
+    new LookAndFeelSelectionPanel(true).selectedLookAndFeel();
   }
 }

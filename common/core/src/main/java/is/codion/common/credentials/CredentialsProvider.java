@@ -45,7 +45,7 @@ public interface CredentialsProvider {
    * was null, the user credentials were not found or have expired
    * @throws CredentialsException in case of an exception while fetching credentials, such as no credentials provider found
    */
-  User getCredentials(UUID authenticationToken) throws CredentialsException;
+  User credentials(UUID authenticationToken) throws CredentialsException;
 
   /**
    * Returns the first {@link CredentialsProvider} implementation service found.

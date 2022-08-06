@@ -52,7 +52,7 @@ public final class Primitives {
    * @return the default value for the given type
    * @throws IllegalArgumentException in case primitiveType is not a primitive type
    */
-  public static <T> T getDefaultValue(Class<T> primitiveType) {
+  public static <T> T defaultValue(Class<T> primitiveType) {
     if (!requireNonNull(primitiveType).isPrimitive()) {
       throw new IllegalArgumentException("Not a primitive type: " + primitiveType);
     }
@@ -66,7 +66,7 @@ public final class Primitives {
    * @return the boxed type
    * @throws IllegalArgumentException in case primitiveType is not a primitive type
    */
-  public static <T> Class<T> getBoxedType(Class<T> primitiveType) {
+  public static <T> Class<T> boxedType(Class<T> primitiveType) {
     if (!requireNonNull(primitiveType).isPrimitive()) {
       throw new IllegalArgumentException("Not a primitive type: " + primitiveType);
     }

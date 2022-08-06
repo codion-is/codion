@@ -51,7 +51,7 @@ public class LoadTestModelTest {
   @Test
   void setApplicationBatchSizeNegative() {
     TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.getApplicationBatchSizeValue().set(-5));
+    assertThrows(IllegalArgumentException.class, () -> model.applicationBatchSizeValue().set(-5));
   }
 
   @Test
@@ -63,77 +63,77 @@ public class LoadTestModelTest {
   @Test
   void setLoginDelayFactorNegative() {
     TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.getLoginDelayFactorValue().set(-1));
+    assertThrows(IllegalArgumentException.class, () -> model.loginDelayFactorValue().set(-1));
   }
 
   @Test
   void setMinimumThinkTimeNegative() {
     TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.getMinimumThinkTimeValue().set(-1));
+    assertThrows(IllegalArgumentException.class, () -> model.minimumThinkTimeValue().set(-1));
   }
 
   @Test
   void setMaximumThinkTimeNegative() {
     TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.getMaximumThinkTimeValue().set(-1));
+    assertThrows(IllegalArgumentException.class, () -> model.maximumThinkTimeValue().set(-1));
   }
 
   @Test
   void getUnknownUsageScenario() {
     TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.getUsageScenario("bla"));
+    assertThrows(IllegalArgumentException.class, () -> model.usageScenario("bla"));
   }
 
   @Test
   void test() throws Exception {
     TestLoadTestModel model = new TestLoadTestModel(UNIT_TEST_USER, 50, 2, 2);
-    assertEquals(2, model.getApplicationBatchSizeValue().get());
-    model.getCollectChartDataState().set(true);
+    assertEquals(2, model.applicationBatchSizeValue().get());
+    model.collectChartDataState().set(true);
 
-    assertNotNull(model.getMemoryUsageDataset());
-    assertNotNull(model.getNumberOfApplicationsDataset());
-    assertNotNull(model.getThinkTimeDataset());
-    assertNotNull(model.getUsageScenarioDataset());
+    assertNotNull(model.memoryUsageDataset());
+    assertNotNull(model.numberOfApplicationsDataset());
+    assertNotNull(model.thinkTimeDataset());
+    assertNotNull(model.usageScenarioDataset());
 
-    assertEquals(2, model.getLoginDelayFactorValue().get());
-    model.getLoginDelayFactorValue().set(3);
-    assertEquals(3, model.getLoginDelayFactorValue().get());
+    assertEquals(2, model.loginDelayFactorValue().get());
+    model.loginDelayFactorValue().set(3);
+    assertEquals(3, model.loginDelayFactorValue().get());
     assertEquals(LoadTestModel.DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, model.getUpdateInterval());
-    assertEquals(2, model.getApplicationBatchSizeValue().get());
+    assertEquals(2, model.applicationBatchSizeValue().get());
 
-    assertEquals(25, model.getMinimumThinkTimeValue().get());
-    assertEquals(50, model.getMaximumThinkTimeValue().get());
-    model.getMaximumThinkTimeValue().set(40);
-    model.getMinimumThinkTimeValue().set(20);
-    assertEquals(20, model.getMinimumThinkTimeValue().get());
-    assertEquals(40, model.getMaximumThinkTimeValue().get());
+    assertEquals(25, model.minimumThinkTimeValue().get());
+    assertEquals(50, model.maximumThinkTimeValue().get());
+    model.maximumThinkTimeValue().set(40);
+    model.minimumThinkTimeValue().set(20);
+    assertEquals(20, model.minimumThinkTimeValue().get());
+    assertEquals(40, model.maximumThinkTimeValue().get());
 
-    model.getApplicationBatchSizeValue().set(5);
-    assertTrue(model.getUsageScenarios().contains(SCENARIO.getName()));
+    model.applicationBatchSizeValue().set(5);
+    assertTrue(model.usageScenarios().contains(SCENARIO.name()));
     model.setUser(UNIT_TEST_USER);
     assertEquals(UNIT_TEST_USER, model.getUser());
-    assertNotNull(model.getScenarioChooser());
-    model.setWeight(SCENARIO.getName(), 2);
-    model.setScenarioEnabled(SCENARIO_II.getName(), false);
+    assertNotNull(model.scenarioChooser());
+    model.setWeight(SCENARIO.name(), 2);
+    model.setScenarioEnabled(SCENARIO_II.name(), false);
     model.addApplicationBatch();
     Thread.sleep(500);
-    model.getPausedState().set(true);
+    model.pausedState().set(true);
     Thread.sleep(200);
-    model.getPausedState().set(false);
-    assertEquals(5, model.getApplicationCount());
-    assertEquals(0, SCENARIO_II.getTotalRunCount());
-    assertTrue(SCENARIO.getSuccessfulRunCount() > 0);
-    assertTrue(SCENARIO.getUnsuccessfulRunCount() > 0);
-    assertTrue(SCENARIO.getExceptions().size() > 0);
+    model.pausedState().set(false);
+    assertEquals(5, model.applicationCount());
+    assertEquals(0, SCENARIO_II.totalRunCount());
+    assertTrue(SCENARIO.successfulRunCount() > 0);
+    assertTrue(SCENARIO.unsuccessfulRunCount() > 0);
+    assertTrue(SCENARIO.exceptions().size() > 0);
     SCENARIO.clearExceptions();
-    assertEquals(0, SCENARIO.getExceptions().size());
-    assertEquals(SCENARIO.getSuccessfulRunCount() + SCENARIO.getUnsuccessfulRunCount(), SCENARIO.getTotalRunCount());
+    assertEquals(0, SCENARIO.exceptions().size());
+    assertEquals(SCENARIO.successfulRunCount() + SCENARIO.unsuccessfulRunCount(), SCENARIO.totalRunCount());
     SCENARIO.resetRunCount();
-    assertEquals(0, SCENARIO.getSuccessfulRunCount());
-    assertEquals(0, SCENARIO.getUnsuccessfulRunCount());
+    assertEquals(0, SCENARIO.successfulRunCount());
+    assertEquals(0, SCENARIO.unsuccessfulRunCount());
     model.resetChartData();
     model.removeApplicationBatch();
-    assertEquals(0, model.getApplicationCount());
+    assertEquals(0, model.applicationCount());
 
     AtomicInteger exitCounter = new AtomicInteger();
     model.addShutdownListener(exitCounter::incrementAndGet);

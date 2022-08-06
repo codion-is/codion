@@ -49,7 +49,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   /**
    * @return the randomizer this panel is based on
    */
-  public ItemRandomizer<T> getModel() {
+  public ItemRandomizer<T> model() {
     return model;
   }
 
@@ -70,7 +70,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   /**
    * @return the currently selected item
    */
-  public List<ItemRandomizer.RandomItem<T>> getSelectedItems() {
+  public List<ItemRandomizer.RandomItem<T>> selectedItems() {
     return itemList.getSelectedValuesList();
   }
 
@@ -78,8 +78,8 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * Initializes the UI
    */
   private void initializeUI() {
-    List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(model.getItems());
-    items.sort(Comparator.comparing(item -> item.getItem().toString()));
+    List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(model.items());
+    items.sort(Comparator.comparing(item -> item.item().toString()));
     items.forEach(((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel())::addElement);
     itemList.addListSelectionListener(e -> selectedItemChangedEvent.onEvent(itemList.getSelectedValuesList()));
     addSelectedItemListener(selectedItems -> {
@@ -101,17 +101,17 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private JPanel initializeWeightPanel(ItemRandomizer.RandomItem<T> item) {
     JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.add(new JLabel(item.getItem().toString()), BorderLayout.NORTH);
-    panel.add(Components.checkBox(new EnabledModelValue(item.getItem()))
+    panel.add(new JLabel(item.item().toString()), BorderLayout.NORTH);
+    panel.add(Components.checkBox(new EnabledModelValue(item.item()))
             .caption("Enabled")
             .build(), BorderLayout.WEST);
     panel.add(Components.label("Weight")
             .horizontalAlignment(SwingConstants.RIGHT)
             .build(), BorderLayout.CENTER);
-    panel.add(Components.integerSpinner(new WeightModelValue(item.getItem()))
+    panel.add(Components.integerSpinner(new WeightModelValue(item.item()))
             .minimum(0)
             .columns(SPINNER_COLUMNS)
-            .toolTipText(item.getItem().toString())
+            .toolTipText(item.item().toString())
             .build(), BorderLayout.EAST);
 
     return panel;
@@ -148,7 +148,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     @Override
     public Integer get() {
-      return model.getWeight(item);
+      return model.weight(item);
     }
 
     @Override

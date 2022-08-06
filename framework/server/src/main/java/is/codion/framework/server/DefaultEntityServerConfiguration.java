@@ -161,7 +161,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
         }
 
         return ServerConfiguration.SERVER_NAME_PREFIX.get() + " " +
-                Version.getVersionString() + "@" + database.getName().toUpperCase();
+                Version.versionString() + "@" + database.name().toUpperCase();
       });
     }
 

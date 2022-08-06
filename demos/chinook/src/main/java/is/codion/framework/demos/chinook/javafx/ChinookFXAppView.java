@@ -25,13 +25,13 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
 
   @Override
   protected void initializeEntityViews() {
-    ChinookFXAppModel model = getModel();
+    ChinookFXAppModel model = model();
 
-    FXEntityModel artistModel = model.getEntityModel(Artist.TYPE);
-    EntityView artists = new EntityView(artistModel, new ArtistEditVew(artistModel.getEditModel()));
-    FXEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+    FXEntityModel artistModel = model.entityModel(Artist.TYPE);
+    EntityView artists = new EntityView(artistModel, new ArtistEditVew(artistModel.editModel()));
+    FXEntityModel albumModel = artistModel.detailModel(Album.TYPE);
     EntityView albums = new EntityView(albumModel);
-    FXEntityModel trackModel = albumModel.getDetailModel(Track.TYPE);
+    FXEntityModel trackModel = albumModel.detailModel(Track.TYPE);
     EntityView tracks = new EntityView(trackModel);
 
     artists.addDetailView(albums);
@@ -40,9 +40,9 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
     addEntityView(artists);
 
     //playlists
-    FXEntityModel playlistModel = model.getEntityModel(Playlist.TYPE);
+    FXEntityModel playlistModel = model.entityModel(Playlist.TYPE);
     EntityView playlists = new EntityView(playlistModel);
-    FXEntityModel playlisttrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);
+    FXEntityModel playlisttrackModel = playlistModel.detailModel(PlaylistTrack.TYPE);
     EntityView playlisttracks = new EntityView(playlisttrackModel);
 
     playlists.addDetailView(playlisttracks);
@@ -50,11 +50,11 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
     addEntityView(playlists);
 
     //customers
-    FXEntityModel customerModel = model.getEntityModel(Customer.TYPE);
+    FXEntityModel customerModel = model.entityModel(Customer.TYPE);
     EntityView customers = new EntityView(customerModel);
-    FXEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
+    FXEntityModel invoiceModel = customerModel.detailModel(Invoice.TYPE);
     EntityView invoices = new EntityView(invoiceModel);
-    FXEntityModel invoicelineModel = invoiceModel.getDetailModel(InvoiceLine.TYPE);
+    FXEntityModel invoicelineModel = invoiceModel.detailModel(InvoiceLine.TYPE);
     EntityView invoicelines = new EntityView(invoicelineModel);
 
     customers.addDetailView(invoices);
@@ -69,7 +69,7 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
   }
 
   @Override
-  protected User getDefaultUser() {
+  protected User defaultUser() {
     return User.parse("scott:tiger");
   }
 

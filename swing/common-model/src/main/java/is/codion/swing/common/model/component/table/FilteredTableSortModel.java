@@ -27,7 +27,7 @@ public interface FilteredTableSortModel<R, C> {
    * @param columnIdentifier the identifier of the column to sort by
    * @param sortOrder the sorting order
    * @see #addSortOrder(Object, SortOrder)
-   * @see #getSortingState(Object)
+   * @see #sortingState(Object)
    */
   void setSortOrder(C columnIdentifier, SortOrder sortOrder);
 
@@ -38,7 +38,7 @@ public interface FilteredTableSortModel<R, C> {
    * @param columnIdentifier the identifier of the column to sort by
    * @param sortOrder the sorting order
    * @see #setSortOrder(Object, SortOrder)
-   * @see #getSortingState(Object)
+   * @see #sortingState(Object)
    */
   void addSortOrder(C columnIdentifier, SortOrder sortOrder);
 
@@ -46,7 +46,7 @@ public interface FilteredTableSortModel<R, C> {
    * @param columnIdentifier the column identifier
    * @return the {@link SortingState} associated with the given column
    */
-  SortingState getSortingState(C columnIdentifier);
+  SortingState sortingState(C columnIdentifier);
 
   /**
    * @return true if sorting is enabled for one or more columns
@@ -57,7 +57,7 @@ public interface FilteredTableSortModel<R, C> {
    * Returns the current column sort order, in order of priority
    * @return the current column sort orderk, in order of priority
    */
-  LinkedHashMap<C, SortOrder> getColumnSortOrder();
+  LinkedHashMap<C, SortOrder> columnSortOrder();
 
   /**
    * Clears the sorting states from this sort model. Note that only one sorting change event
@@ -78,11 +78,11 @@ public interface FilteredTableSortModel<R, C> {
     /**
      * @return the sorting order currently associated with the column
      */
-    SortOrder getSortOrder();
+    SortOrder sortOrder();
 
     /**
      * @return the sorting priority, 0 for first, 1 for second etc.
      */
-    int getPriority();
+    int priority();
   }
 }

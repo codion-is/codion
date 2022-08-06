@@ -57,7 +57,7 @@ public class EntityTableView extends TableView<Entity> {
    * @param listModel the list mode to base the table view on
    */
   public EntityTableView(FXEntityListModel listModel) {
-    super(listModel.getSortedList());
+    super(listModel.sortedList());
     this.listModel = listModel;
     this.listModel.setSelectionModel(getSelectionModel());
     this.listModel.setColumnSortOrder(getSortOrder());
@@ -102,21 +102,21 @@ public class EntityTableView extends TableView<Entity> {
   /**
    * @return the underlying {@link FXEntityListModel}
    */
-  public final FXEntityListModel getListModel() {
+  public final FXEntityListModel listModel() {
     return listModel;
   }
 
   /**
    * @return the {@link TextField} used to filter this table view
    */
-  public final TextField getFilterTextField() {
+  public final TextField filterTextField() {
     return filterText;
   }
 
   /**
    * @return the tool pane associated with this table view
    */
-  public final Pane getToolPane() {
+  public final Pane toolPane() {
     return toolPane;
   }
 
@@ -131,7 +131,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void initializeColumns() {
-    for (Property<?> property : getListModel().getEntityDefinition().getVisibleProperties()) {
+    for (Property<?> property : listModel().entityDefinition().visibleProperties()) {
       getColumns().add(entityTableColumn(property));
     }
     listModel.setColumns(getColumns());
@@ -165,7 +165,7 @@ public class EntityTableView extends TableView<Entity> {
     button.setTooltip(new Tooltip(FrameworkMessages.refreshTip()));
     button.setOnAction(event -> listModel.refresh());
     FXUiUtil.link(button.disableProperty(),
-            listModel.getTableConditionModel().getConditionChangedObserver().reversedObserver());
+            listModel.tableConditionModel().conditionChangedObserver().reversedObserver());
 
     return button;
   }
@@ -196,7 +196,7 @@ public class EntityTableView extends TableView<Entity> {
 
   private Menu createCopyMenu() {
     MenuItem copyCell = new MenuItem(FrameworkMessages.copyCell());
-    FXUiUtil.link(copyCell.disableProperty(), listModel.getSelectionEmptyObserver());
+    FXUiUtil.link(copyCell.disableProperty(), listModel.selectionEmptyObserver());
     copyCell.setOnAction(event -> copyCell());
     MenuItem copyTable = new MenuItem(FrameworkMessages.copyTableWithHeader());
     copyTable.setOnAction(event -> copyTable());
@@ -214,7 +214,7 @@ public class EntityTableView extends TableView<Entity> {
     CheckMenuItem advanced = new CheckMenuItem(FrameworkMessages.advanced());
     advanced.selectedProperty().addListener((observable, oldValue, newValue) -> setConditionPaneAdvanced(newValue));
     MenuItem clearSearch = new MenuItem(FrameworkMessages.clear());
-    clearSearch.setOnAction(event -> listModel.getTableConditionModel().clearConditions());
+    clearSearch.setOnAction(event -> listModel.tableConditionModel().clearConditions());
 
     Menu searchMenu = new Menu(FrameworkMessages.search());
     searchMenu.getItems().add(showConditionPane);
@@ -226,8 +226,8 @@ public class EntityTableView extends TableView<Entity> {
 
   private Menu createUpdateSelectedItem() {
     Menu updateSelected = new Menu(FrameworkMessages.update());
-    FXUiUtil.link(updateSelected.disableProperty(), listModel.getSelectionEmptyObserver());
-    Properties.sort(getListModel().getEntityDefinition().getUpdatableProperties()).stream()
+    FXUiUtil.link(updateSelected.disableProperty(), listModel.selectionEmptyObserver());
+    Properties.sort(listModel().entityDefinition().updatableProperties()).stream()
             .filter(this::includeUpdateSelectedProperty)
             .forEach(property -> addUpdateSelectedMenuItem(updateSelected, property));
 
@@ -244,7 +244,7 @@ public class EntityTableView extends TableView<Entity> {
   private MenuItem createDeleteSelectionItem() {
     MenuItem delete = new MenuItem(FrameworkMessages.delete());
     delete.setOnAction(actionEvent -> deleteSelected());
-    FXUiUtil.link(delete.disableProperty(), listModel.getSelectionEmptyObserver());
+    FXUiUtil.link(delete.disableProperty(), listModel.selectionEmptyObserver());
 
     return delete;
   }
@@ -264,18 +264,18 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private <T> void updateSelectedEntities(Property<T> property) {
-    List<Entity> selectedEntities = Entity.deepCopy(listModel.getSelectionModel().getSelectedItems());
+    List<Entity> selectedEntities = Entity.deepCopy(listModel.selectionModel().getSelectedItems());
 
     Collection<T> values = Entity.getDistinct(property.attribute(), selectedEntities);
     T defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
-    PropertyInputDialog<T> inputDialog = new PropertyInputDialog<>(property, defaultValue, listModel.getConnectionProvider());
+    PropertyInputDialog<T> inputDialog = new PropertyInputDialog<>(property, defaultValue, listModel.connectionProvider());
 
-    Platform.runLater(inputDialog.getControl()::requestFocus);
+    Platform.runLater(inputDialog.control()::requestFocus);
     Optional<PropertyInputDialog.InputResult<T>> inputResult = inputDialog.showAndWait();
     try {
       if (inputResult.isPresent() && inputResult.get().isInputAccepted()) {
-        Entity.put(property.attribute(), inputResult.get().getValue(), selectedEntities);
+        Entity.put(property.attribute(), inputResult.get().value(), selectedEntities);
         listModel.update(selectedEntities);
       }
     }
@@ -288,7 +288,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void copyTable() {
-    FXUiUtil.setClipboard(listModel.getTableDataAsDelimitedString('\t'));
+    FXUiUtil.setClipboard(listModel.tableDataAsDelimitedString('\t'));
   }
 
   private void copyCell() {
@@ -296,7 +296,7 @@ public class EntityTableView extends TableView<Entity> {
     if (!selectionModel.isEmpty()) {
       TablePosition<Entity, Object> pos = getSelectionModel().getSelectedCells().get(0);
       Entity item = listModel.get(pos.getRow());
-      String value = item.toString(((EntityTableColumn<?>) pos.getTableColumn()).getAttribute());
+      String value = item.toString(((EntityTableColumn<?>) pos.getTableColumn()).attribute());
       FXUiUtil.setClipboard(value);
     }
   }
@@ -319,7 +319,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void bindEvents() {
-    listModel.getSortedList().comparatorProperty().bind(comparatorProperty());
+    listModel.sortedList().comparatorProperty().bind(comparatorProperty());
     filterText.textProperty().addListener((observable, oldValue, newValue) -> {
       if (nullOrEmpty(newValue)) {
         listModel.setIncludeCondition(null);
@@ -334,15 +334,15 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private boolean includeUpdateSelectedControls() {
-    FXEntityListModel entityTableModel = getListModel();
+    FXEntityListModel entityTableModel = listModel();
 
     return !entityTableModel.isReadOnly() && entityTableModel.isUpdateEnabled() &&
             entityTableModel.isBatchUpdateEnabled() &&
-            !entityTableModel.getEntityDefinition().getUpdatableProperties().isEmpty();
+            !entityTableModel.entityDefinition().updatableProperties().isEmpty();
   }
 
   private boolean includeDeleteSelectedControl() {
-    FXEntityListModel entityTableModel = getListModel();
+    FXEntityListModel entityTableModel = listModel();
 
     return !entityTableModel.isReadOnly() && entityTableModel.isDeleteEnabled();
   }

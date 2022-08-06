@@ -33,6 +33,6 @@ public final class SelectColumnsPanelTest {
               }
             });
 
-    new SelectColumnsPanel<>(tableModel.getColumnModel());
+    new SelectColumnsPanel<>(tableModel.columnModel());
   }
 }

@@ -37,8 +37,8 @@ public class BoundedItemRandomizerModelTest {
   @Test
   void construct() {
     BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
-    assertEquals(3, model.getItemCount());
-    assertEquals(10, model.getWeightBounds());
+    assertEquals(3, model.itemCount());
+    assertEquals(10, model.weightBounds());
   }
 
   @Test
@@ -57,39 +57,39 @@ public class BoundedItemRandomizerModelTest {
   void test() {
     BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
 
-    assertEquals(3, model.getWeight(one));//last
-    assertEquals(3, model.getWeight(two));
-    assertEquals(4, model.getWeight(three));
+    assertEquals(3, model.weight(one));//last
+    assertEquals(3, model.weight(two));
+    assertEquals(4, model.weight(three));
 
     model.incrementWeight(one);
 
-    assertEquals(4, model.getWeight(one));
-    assertEquals(3, model.getWeight(two));
-    assertEquals(3, model.getWeight(three));//last
+    assertEquals(4, model.weight(one));
+    assertEquals(3, model.weight(two));
+    assertEquals(3, model.weight(three));//last
 
     model.incrementWeight(three);
 
-    assertEquals(4, model.getWeight(one));
-    assertEquals(2, model.getWeight(two));//last
-    assertEquals(4, model.getWeight(three));
+    assertEquals(4, model.weight(one));
+    assertEquals(2, model.weight(two));//last
+    assertEquals(4, model.weight(three));
 
     model.decrementWeight(one);
 
-    assertEquals(3, model.getWeight(one));
-    assertEquals(2, model.getWeight(two));
-    assertEquals(5, model.getWeight(three));//last
+    assertEquals(3, model.weight(one));
+    assertEquals(2, model.weight(two));
+    assertEquals(5, model.weight(three));//last
 
     model.decrementWeight(two);
 
-    assertEquals(4, model.getWeight(one));//last
-    assertEquals(1, model.getWeight(two));
-    assertEquals(5, model.getWeight(three));
+    assertEquals(4, model.weight(one));//last
+    assertEquals(1, model.weight(two));
+    assertEquals(5, model.weight(three));
 
     model.decrementWeight(two);
 
-    assertEquals(4, model.getWeight(one));
-    assertEquals(0, model.getWeight(two));
-    assertEquals(6, model.getWeight(three));//last
+    assertEquals(4, model.weight(one));
+    assertEquals(0, model.weight(two));
+    assertEquals(6, model.weight(three));//last
 
     try {
       model.decrementWeight(two);
@@ -99,51 +99,51 @@ public class BoundedItemRandomizerModelTest {
 
     model.incrementWeight(three);
 
-    assertEquals(3, model.getWeight(one));//last
-    assertEquals(0, model.getWeight(two));
-    assertEquals(7, model.getWeight(three));
+    assertEquals(3, model.weight(one));//last
+    assertEquals(0, model.weight(two));
+    assertEquals(7, model.weight(three));
 
     model.incrementWeight(three);
 
-    assertEquals(2, model.getWeight(one));//last
-    assertEquals(0, model.getWeight(two));
-    assertEquals(8, model.getWeight(three));
+    assertEquals(2, model.weight(one));//last
+    assertEquals(0, model.weight(two));
+    assertEquals(8, model.weight(three));
 
     model.decrementWeight(three);
 
-    assertEquals(2, model.getWeight(one));
-    assertEquals(1, model.getWeight(two));//last
-    assertEquals(7, model.getWeight(three));
+    assertEquals(2, model.weight(one));
+    assertEquals(1, model.weight(two));//last
+    assertEquals(7, model.weight(three));
 
     model.decrementWeight(three);
 
-    assertEquals(3, model.getWeight(one));//last
-    assertEquals(1, model.getWeight(two));
-    assertEquals(6, model.getWeight(three));
+    assertEquals(3, model.weight(one));//last
+    assertEquals(1, model.weight(two));
+    assertEquals(6, model.weight(three));
 
     model.decrementWeight(two);
 
-    assertEquals(3, model.getWeight(one));
-    assertEquals(0, model.getWeight(two));
-    assertEquals(7, model.getWeight(three));//last
+    assertEquals(3, model.weight(one));
+    assertEquals(0, model.weight(two));
+    assertEquals(7, model.weight(three));//last
 
     model.incrementWeight(three);
 
-    assertEquals(2, model.getWeight(one));//last
-    assertEquals(0, model.getWeight(two));
-    assertEquals(8, model.getWeight(three));
+    assertEquals(2, model.weight(one));//last
+    assertEquals(0, model.weight(two));
+    assertEquals(8, model.weight(three));
 
     model.incrementWeight(three);
 
-    assertEquals(1, model.getWeight(one));//last
-    assertEquals(0, model.getWeight(two));
-    assertEquals(9, model.getWeight(three));
+    assertEquals(1, model.weight(one));//last
+    assertEquals(0, model.weight(two));
+    assertEquals(9, model.weight(three));
 
     model.incrementWeight(three);
 
-    assertEquals(0, model.getWeight(one));//last
-    assertEquals(0, model.getWeight(two));
-    assertEquals(10, model.getWeight(three));
+    assertEquals(0, model.weight(one));//last
+    assertEquals(0, model.weight(two));
+    assertEquals(10, model.weight(three));
 
     try {
       model.incrementWeight(three);

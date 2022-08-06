@@ -488,7 +488,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected NumberFormat createFormat() {
-      return Formats.getNonGroupingIntegerFormat();
+      return Formats.nonGroupingIntegerFormat();
     }
   }
 
@@ -510,7 +510,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected NumberFormat createFormat() {
-      return Formats.getNonGroupingIntegerFormat();
+      return Formats.nonGroupingIntegerFormat();
     }
   }
 

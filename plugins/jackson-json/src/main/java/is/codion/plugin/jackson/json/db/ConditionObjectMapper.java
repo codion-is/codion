@@ -36,7 +36,7 @@ public final class ConditionObjectMapper extends ObjectMapper {
     registerModule(module);
   }
 
-  public EntityObjectMapper getEntityObjectMapper() {
+  public EntityObjectMapper entityObjectMapper() {
     return entityObjectMapper;
   }
 }

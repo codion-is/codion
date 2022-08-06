@@ -32,11 +32,11 @@ public class DepartmentTablePanel extends EntityTablePanel {
   public void viewEmployeeReport() throws Exception {
     Collection<Integer> departmentNumbers =
             Entity.getDistinct(Department.ID,
-                    getTableModel().getSelectionModel().getSelectedItems());
+                    tableModel().selectionModel().getSelectedItems());
     HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
 
-    JasperPrint employeeReport = getTableModel().getConnectionProvider().connection()
+    JasperPrint employeeReport = tableModel().connectionProvider().connection()
             .fillReport(Employee.EMPLOYEE_REPORT, reportParameters);
 
     Dialogs.componentDialog(new JRViewer(employeeReport))
@@ -51,7 +51,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
   @Override
   protected Controls createPrintControls() {
     StateObserver selectionNotEmptyObserver =
-            getTableModel().getSelectionModel().getSelectionNotEmptyObserver();
+            tableModel().selectionModel().selectionNotEmptyObserver();
 
     return super.createPrintControls()
             .add(Control.builder(this::viewEmployeeReport)

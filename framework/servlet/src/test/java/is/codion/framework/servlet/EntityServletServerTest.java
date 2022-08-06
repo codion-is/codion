@@ -98,7 +98,7 @@ public class EntityServletServerTest {
     SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/ser";
     SERVER_JSON_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/json";
     server = EntityServer.startServer(configuration);
-    admin = server.getServerAdmin(ADMIN_USER);
+    admin = server.serverAdmin(ADMIN_USER);
   }
 
   @AfterAll
@@ -229,7 +229,7 @@ public class EntityServletServerTest {
 
     keys = entityObjectMapper.deserializeKeys(response.getEntity().getContent());
     assertEquals(2, keys.size());
-    assertTrue(entities.stream().map(Entity::getPrimaryKey).collect(Collectors.toList()).containsAll(keys));
+    assertTrue(entities.stream().map(Entity::primaryKey).collect(Collectors.toList()).containsAll(keys));
     response.close();
 
     //update entities
@@ -481,14 +481,14 @@ public class EntityServletServerTest {
     assertEquals(200, response.getStatusLine().getStatusCode());
     List<Key> queryKeys = deserializeResponse(response);
     assertEquals(1, queryKeys.size());
-    assertEquals(department.getPrimaryKey(), queryKeys.get(0));
+    assertEquals(department.primaryKey(), queryKeys.get(0));
     response.close();
 
     //delete
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getPrimaryKey()))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.primaryKey()))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
@@ -502,7 +502,7 @@ public class EntityServletServerTest {
     assertEquals(200, response.getStatusLine().getStatusCode());
     List<Key> keys = deserializeResponse(response);
     assertEquals(1, keys.size());
-    assertEquals(department.getPrimaryKey(), keys.get(0));
+    assertEquals(department.primaryKey(), keys.get(0));
     response.close();
 
     //update
@@ -535,7 +535,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getPrimaryKey()))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.primaryKey()))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
@@ -567,7 +567,7 @@ public class EntityServletServerTest {
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
 
-    Collection<RemoteClient> clients = admin.getClients(clientTypeId);
+    Collection<RemoteClient> clients = admin.clients(clientTypeId);
     assertEquals(1, clients.size());
 
     //try to change the clientId
@@ -591,7 +591,7 @@ public class EntityServletServerTest {
 
     client.close();
 
-    clients = admin.getClients(clientTypeId);
+    clients = admin.clients(clientTypeId);
     assertTrue(clients.isEmpty());
   }
 
@@ -620,7 +620,7 @@ public class EntityServletServerTest {
     CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     credentialsProvider.setCredentials(
             new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-            new UsernamePasswordCredentials(user.getUsername(), String.valueOf(user.getPassword())));
+            new UsernamePasswordCredentials(user.username(), String.valueOf(user.getPassword())));
 
     AuthCache authCache = new BasicAuthCache();
     authCache.put(targetHost, new BasicScheme());

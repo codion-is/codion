@@ -16,15 +16,15 @@ public final class LoginLogout extends AbstractEntityUsageScenario<EmpDeptAppPan
   @Override
   protected void perform(EmpDeptAppPanel.EmpDeptApplicationModel application) {
     try {
-      application.getConnectionProvider().close();
+      application.connectionProvider().close();
       Thread.sleep(random.nextInt(1500));
-      application.getConnectionProvider().connection();
+      application.connectionProvider().connection();
     }
     catch (InterruptedException ignored) {/*ignored*/}
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 4;
   }
 }

@@ -140,7 +140,7 @@ public final class ClientTutorial {
       SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
       SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
       artistModel.addDetailModel(albumModel);
-      artistModel.getTableModel().refresh();
+      artistModel.tableModel().refresh();
 
       SwingEntityApplicationModel applicationModel = new SwingEntityApplicationModel(connectionProvider);
       applicationModel.addEntityModel(artistModel);
@@ -150,10 +150,10 @@ public final class ClientTutorial {
 
     @Override
     protected List<EntityPanel> createEntityPanels(SwingEntityApplicationModel applicationModel) {
-      SwingEntityModel artistModel = applicationModel.getEntityModel(Artist.TYPE);
-      SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
-      EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
-      EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.getEditModel()));
+      SwingEntityModel artistModel = applicationModel.entityModel(Artist.TYPE);
+      SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
+      EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.editModel()));
+      EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.editModel()));
       artistPanel.addDetailPanel(albumPanel);
 
       return singletonList(artistPanel);

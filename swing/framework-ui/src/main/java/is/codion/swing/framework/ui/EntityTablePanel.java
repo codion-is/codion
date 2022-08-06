@@ -335,7 +335,7 @@ public class EntityTablePanel extends JPanel {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(SwingEntityTableModel tableModel) {
-    this(tableModel, new EntityTableConditionPanel(tableModel.getTableConditionModel(), tableModel.getColumnModel()));
+    this(tableModel, new EntityTableConditionPanel(tableModel.tableConditionModel(), tableModel.columnModel()));
   }
 
   /**
@@ -370,14 +370,14 @@ public class EntityTablePanel extends JPanel {
   /**
    * @return the filtered table instance
    */
-  public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> getTable() {
+  public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table() {
     return table;
   }
 
   /**
    * @return the EntityTableModel used by this EntityTablePanel
    */
-  public final SwingEntityTableModel getTableModel() {
+  public final SwingEntityTableModel tableModel() {
     return tableModel;
   }
 
@@ -388,7 +388,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final void excludeFromUpdateMenu(Attribute<?> attribute) {
     checkIfInitialized();
-    getTableModel().getEntityDefinition().getProperty(attribute);//just validating that the property exists
+    tableModel().entityDefinition().property(attribute);//just validating that the property exists
     excludeFromUpdateMenu.add(attribute);
   }
 
@@ -526,7 +526,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final <T, A extends Attribute<T>, C extends JComponent> void setUpdateSelectedComponentFactory(A attribute,
                                                                                                         EntityComponentFactory<T, A, C> componentFactory) {
-    getTableModel().getEntityDefinition().getProperty(attribute);
+    tableModel().entityDefinition().property(attribute);
     updateSelectedComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
@@ -540,14 +540,14 @@ public class EntityTablePanel extends JPanel {
    */
   public final <T, A extends Attribute<T>, C extends JComponent> void setTableCellEditorComponentFactory(A attribute,
                                                                                                          EntityComponentFactory<T, A, C> componentFactory) {
-    getTableModel().getEntityDefinition().getProperty(attribute);
+    tableModel().entityDefinition().property(attribute);
     tableCellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
   /**
    * @return the condition panel being used by this EntityTablePanel
    */
-  public final AbstractEntityTableConditionPanel getConditionPanel() {
+  public final AbstractEntityTableConditionPanel conditionPanel() {
     return conditionPanel;
   }
 
@@ -560,7 +560,7 @@ public class EntityTablePanel extends JPanel {
       return;
     }
     if (conditionPanel.hasAdvancedView()) {
-      State advancedState = conditionPanel.getAdvancedState();
+      State advancedState = conditionPanel.advancedState();
       if (isConditionPanelVisible()) {
         if (advancedState.get()) {
           setConditionPanelVisible(false);
@@ -617,7 +617,7 @@ public class EntityTablePanel extends JPanel {
 
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + tableModel.getEntityType();
+    return getClass().getSimpleName() + ": " + tableModel.entityType();
   }
 
   /**
@@ -645,19 +645,19 @@ public class EntityTablePanel extends JPanel {
   /**
    * Creates a {@link Controls} containing controls for updating the value of a single property
    * for the selected entities. These controls are enabled as long as the selection is not empty
-   * and {@link EntityEditModel#getUpdateEnabledObserver()} is enabled.
+   * and {@link EntityEditModel#updateEnabledObserver()} is enabled.
    * @return controls containing a control for each updatable property in the
    * underlying entity, for performing an update on the selected entities
    * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
    * @see #excludeFromUpdateMenu(Attribute)
-   * @see EntityEditModel#getUpdateEnabledObserver()
+   * @see EntityEditModel#updateEnabledObserver()
    */
   public final Controls createUpdateSelectedControls() {
     if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
-    StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
-    StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
+    StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
+    StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
     StateObserver enabled = State.and(selectionNotEmpty, updateEnabled);
     Controls updateControls = Controls.builder()
             .caption(FrameworkMessages.update())
@@ -665,7 +665,7 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(frameworkIcons().edit())
             .description(FrameworkMessages.updateSelectedTip())
             .build();
-    Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
+    Properties.sort(tableModel.entityDefinition().updatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.attribute())) {
         String caption = property.caption() == null ? property.attribute().name() : property.caption();
         updateControls.add(Control.builder(() -> updateSelectedEntities(property))
@@ -684,7 +684,7 @@ public class EntityTablePanel extends JPanel {
   public final Control createViewDependenciesControl() {
     return Control.builder(this::viewSelectionDependencies)
             .caption(FrameworkMessages.viewDependencies() + "...")
-            .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
+            .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
             .description(FrameworkMessages.viewDependenciesTip())
             .mnemonic('W')
             .smallIcon(frameworkIcons().dependencies())
@@ -702,8 +702,8 @@ public class EntityTablePanel extends JPanel {
     return Control.builder(this::delete)
             .caption(FrameworkMessages.delete())
             .enabledState(State.and(
-                    tableModel.getEditModel().getDeleteEnabledObserver(),
-                    tableModel.getSelectionModel().getSelectionNotEmptyObserver()))
+                    tableModel.editModel().deleteEnabledObserver(),
+                    tableModel.selectionModel().selectionNotEmptyObserver()))
             .description(FrameworkMessages.deleteSelectedTip())
             .smallIcon(frameworkIcons().delete())
             .build();
@@ -731,7 +731,7 @@ public class EntityTablePanel extends JPanel {
             .description(FrameworkMessages.refreshTip())
             .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(frameworkIcons().refresh())
-            .enabledState(tableModel.getRefreshingObserver().reversedObserver())
+            .enabledState(tableModel.refreshingObserver().reversedObserver())
             .build();
   }
 
@@ -755,11 +755,11 @@ public class EntityTablePanel extends JPanel {
    */
   public final <T> void updateSelectedEntities(Property<T> propertyToUpdate) {
     requireNonNull(propertyToUpdate);
-    if (tableModel.getSelectionModel().isSelectionEmpty()) {
+    if (tableModel.selectionModel().isSelectionEmpty()) {
       return;
     }
 
-    List<Entity> selectedEntities = Entity.deepCopy(tableModel.getSelectionModel().getSelectedItems());
+    List<Entity> selectedEntities = Entity.deepCopy(tableModel.selectionModel().getSelectedItems());
     Collection<T> values = Entity.getDistinct(propertyToUpdate.attribute(), selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
     ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(propertyToUpdate.attribute(), initialValue);
@@ -775,16 +775,16 @@ public class EntityTablePanel extends JPanel {
    * Shows a dialog containing lists of entities depending on the selected entities via foreign key
    */
   public final void viewSelectionDependencies() {
-    if (tableModel.getSelectionModel().isSelectionEmpty()) {
+    if (tableModel.selectionModel().isSelectionEmpty()) {
       return;
     }
 
     WaitCursor.show(this);
     try {
       Map<EntityType, Collection<Entity>> dependencies =
-              tableModel.getConnectionProvider().connection()
-                      .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
-      showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this,
+              tableModel.connectionProvider().connection()
+                      .selectDependencies(tableModel.selectionModel().getSelectedItems());
+      showDependenciesDialog(dependencies, tableModel.connectionProvider(), this,
               MESSAGES.getString("no_dependent_records"));
     }
     catch (Exception e) {
@@ -814,7 +814,7 @@ public class EntityTablePanel extends JPanel {
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      onReferentialIntegrityException(e, tableModel.getSelectionModel().getSelectedItems());
+      onReferentialIntegrityException(e, tableModel.selectionModel().getSelectedItems());
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -843,8 +843,8 @@ public class EntityTablePanel extends JPanel {
     try {
       if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
         Map<EntityType, Collection<Entity>> dependencies =
-                tableModel.getConnectionProvider().connection().selectDependencies(entities);
-        showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this,
+                tableModel.connectionProvider().connection().selectDependencies(entities);
+        showDependenciesDialog(dependencies, tableModel.connectionProvider(), this,
                 MESSAGES.getString("unknown_dependent_records"));
       }
       else {
@@ -921,7 +921,7 @@ public class EntityTablePanel extends JPanel {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    SwingEntityEditModel editModel = new SwingEntityEditModel(entities.iterator().next().getEntityType(), connectionProvider);
+    SwingEntityEditModel editModel = new SwingEntityEditModel(entities.iterator().next().entityType(), connectionProvider);
     editModel.setReadOnly(true);
     SwingEntityTableModel tableModel = new SwingEntityTableModel(editModel) {
       @Override
@@ -947,7 +947,7 @@ public class EntityTablePanel extends JPanel {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    EntityType entityType = entities.iterator().next().getEntityType();
+    EntityType entityType = entities.iterator().next().entityType();
     SwingEntityTableModel tableModel = new SwingEntityTableModel(entityType, connectionProvider) {
       @Override
       protected Collection<Entity> refreshItems() {
@@ -1024,7 +1024,7 @@ public class EntityTablePanel extends JPanel {
    */
   protected JPanel initializeSouthPanel() {
     searchFieldPanel = Components.panel(new GridBagLayout())
-            .add(table.getSearchField(), createHorizontalFillConstraints())
+            .add(table.searchField(), createHorizontalFillConstraints())
             .build();
     southPanelSplitPane = Components.splitPane()
             .continuousLayout(true)
@@ -1059,7 +1059,7 @@ public class EntityTablePanel extends JPanel {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(getControl(ControlCode.REQUEST_SEARCH_FIELD_FOCUS))
             .enable(this);
-    if (getConditionPanel() != null) {
+    if (conditionPanel() != null) {
       KeyEvents.builder(KeyEvent.VK_S)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1311,8 +1311,8 @@ public class EntityTablePanel extends JPanel {
     if (includeSelectionModeControl) {
       controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
     }
-    controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(getTable()::requestFocus));
-    controls.put(ControlCode.REQUEST_SEARCH_FIELD_FOCUS, Control.control(getTable().getSearchField()::requestFocus));
+    controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(table()::requestFocus));
+    controls.put(ControlCode.REQUEST_SEARCH_FIELD_FOCUS, Control.control(table().searchField()::requestFocus));
     controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
     controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
   }
@@ -1336,22 +1336,22 @@ public class EntityTablePanel extends JPanel {
   }
 
   private Control createClearSelectionControl() {
-    return Control.builder(tableModel.getSelectionModel()::clearSelection)
-            .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
+    return Control.builder(tableModel.selectionModel()::clearSelection)
+            .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
             .smallIcon(frameworkIcons().clearSelection())
             .description(MESSAGES.getString("clear_selection_tip"))
             .build();
   }
 
   private Control createMoveSelectionDownControl() {
-    return Control.builder(tableModel.getSelectionModel()::moveSelectionDown)
+    return Control.builder(tableModel.selectionModel()::moveSelectionDown)
             .smallIcon(frameworkIcons().down())
             .description(MESSAGES.getString("selection_down_tip"))
             .build();
   }
 
   private Control createMoveSelectionUpControl() {
-    return Control.builder(tableModel.getSelectionModel()::moveSelectionUp)
+    return Control.builder(tableModel.selectionModel()::moveSelectionUp)
             .smallIcon(frameworkIcons().up())
             .description(MESSAGES.getString("selection_up_tip"))
             .build();
@@ -1387,7 +1387,7 @@ public class EntityTablePanel extends JPanel {
   private Control createCopyCellControl() {
     return Control.builder(table::copySelectedCell)
             .caption(FrameworkMessages.copyCell())
-            .enabledState(tableModel.getSelectionModel().getSelectionNotEmptyObserver())
+            .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
             .build();
   }
 
@@ -1398,13 +1398,13 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void copyTableAsDelimitedString() {
-    Utilities.setClipboard(tableModel.getTableDataAsDelimitedString('\t'));
+    Utilities.setClipboard(tableModel.tableDataAsDelimitedString('\t'));
   }
 
   private boolean includeUpdateSelectedControls() {
     return !tableModel.isReadOnly() && tableModel.isUpdateEnabled() &&
             tableModel.isBatchUpdateEnabled() &&
-            !tableModel.getEntityDefinition().getUpdatableProperties().isEmpty();
+            !tableModel.entityDefinition().updatableProperties().isEmpty();
   }
 
   private boolean includeDeleteSelectedControl() {
@@ -1424,12 +1424,12 @@ public class EntityTablePanel extends JPanel {
 
   private <T> ComponentValue<T, ? extends JComponent> createUpdateSelectedComponentValue(Attribute<T> attribute, T initialValue) {
     return ((EntityComponentFactory<T, Attribute<T>, ?>) updateSelectedComponentFactories.computeIfAbsent(attribute, a ->
-            new UpdateSelectedComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.getEditModel(), initialValue);
+            new UpdateSelectedComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
   }
 
   private <T> ComponentValue<T, ? extends JComponent> createCellEditorComponentValue(Attribute<T> attribute, T initialValue) {
     return ((EntityComponentFactory<T, Attribute<T>, ?>) tableCellEditorComponentFactories.computeIfAbsent(attribute, a ->
-            new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.getEditModel(), initialValue);
+            new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
   }
 
   /**
@@ -1437,7 +1437,7 @@ public class EntityTablePanel extends JPanel {
    */
   private JToolBar createRefreshToolBar() {
     Control refreshControl = Control.builder(tableModel::refresh)
-            .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
+            .enabledState(tableModel.tableConditionModel().conditionChangedObserver())
             .smallIcon(frameworkIcons().refreshRequired())
             .build();
 
@@ -1463,11 +1463,11 @@ public class EntityTablePanel extends JPanel {
     CardLayout refreshStatusLayout = new CardLayout();
 
     return Components.panel(refreshStatusLayout)
-            .add(Components.label(tableModel.getStatusMessageObserver())
+            .add(Components.label(tableModel.statusMessageObserver())
                     .horizontalAlignment(SwingConstants.CENTER)
                     .build(), status)
             .add(createRefreshingProgressPanel(), refreshing)
-            .onBuild(panel -> getTableModel().getRefreshingObserver().addDataListener(isRefreshing -> {
+            .onBuild(panel -> tableModel().refreshingObserver().addDataListener(isRefreshing -> {
               if (showRefreshingProgressBar) {
                 refreshStatusLayout.show(panel, isRefreshing ? refreshing : status);
               }
@@ -1485,7 +1485,7 @@ public class EntityTablePanel extends JPanel {
       return null;
     }
 
-    return new TableColumnComponentPanel<>(tableModel.getColumnModel(), columnSummaryPanels);
+    return new TableColumnComponentPanel<>(tableModel.columnModel(), columnSummaryPanels);
   }
 
   private JScrollPane createSummaryScrollPane(JScrollPane tableScrollPane) {
@@ -1527,14 +1527,14 @@ public class EntityTablePanel extends JPanel {
     }
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisibleInternal);
     summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisibleInternal);
-    tableModel.getTableConditionModel().getConditionModels().values().forEach(conditionModel ->
+    tableModel.tableConditionModel().conditionModels().values().forEach(conditionModel ->
             conditionModel.addConditionChangedListener(this::onConditionChanged));
-    tableModel.getRefreshingObserver().addDataListener(this::onRefreshingChanged);
+    tableModel.refreshingObserver().addDataListener(this::onRefreshingChanged);
     tableModel.addRefreshFailedListener(this::onException);
-    tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
+    tableModel.editModel().addEntitiesEditedListener(table::repaint);
     if (conditionPanel != null) {
       Control refreshControl = Control.builder(tableModel::refresh)
-              .enabledState(tableModel.getTableConditionModel().getConditionChangedObserver())
+              .enabledState(tableModel.tableConditionModel().conditionChangedObserver())
               .build();
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1570,7 +1570,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void initializeTable() {
-    tableModel.getColumnModel().getAllColumns().forEach(this::configureColumn);
+    tableModel.columnModel().columns().forEach(this::configureColumn);
     JTableHeader header = table.getTableHeader();
     header.setFocusable(false);
     if (includePopupMenu) {
@@ -1579,7 +1579,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private <T> void configureColumn(TableColumn column) {
-    Property<T> property = tableModel.getEntityDefinition().getProperty((Attribute<T>) column.getIdentifier());
+    Property<T> property = tableModel.entityDefinition().property((Attribute<T>) column.getIdentifier());
     column.setCellRenderer(createTableCellRenderer(property));
     column.setCellEditor(createTableCellEditor(property));
     column.setResizable(true);
@@ -1620,12 +1620,12 @@ public class EntityTablePanel extends JPanel {
     if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
       conditionControls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
     }
-    Controls searchPanelControls = conditionPanel.getControls();
+    Controls searchPanelControls = conditionPanel.controls();
     if (!searchPanelControls.isEmpty()) {
       conditionControls.addAll(searchPanelControls);
       conditionControls.addSeparator();
     }
-    conditionControls.add(ToggleControl.builder(tableModel.getQueryConditionRequiredState())
+    conditionControls.add(ToggleControl.builder(tableModel.queryConditionRequiredState())
             .caption(MESSAGES.getString("require_query_condition"))
             .description(MESSAGES.getString("require_query_condition_description"))
             .build());
@@ -1635,10 +1635,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void showEntityMenu() {
-    Entity selected = tableModel.getSelectionModel().getSelectedItem();
+    Entity selected = tableModel.selectionModel().getSelectedItem();
     if (selected != null) {
       Point location = getPopupLocation(table);
-      new EntityPopupMenu(selected.copy(), tableModel.getConnectionProvider().connection()).show(table, location.x, location.y);
+      new EntityPopupMenu(selected.copy(), tableModel.connectionProvider().connection()).show(table, location.x, location.y);
     }
   }
 
@@ -1710,13 +1710,13 @@ public class EntityTablePanel extends JPanel {
   }
 
   private static void addRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
-    tableConditionPanel.getTableColumns().forEach(column -> {
-      ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.getConditionPanel((Attribute<?>) column.getIdentifier());
+    tableConditionPanel.tableColumns().forEach(column -> {
+      ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.conditionPanel((Attribute<?>) column.getIdentifier());
       if (columnConditionPanel != null) {
-        enableRefreshOnEnterControl(columnConditionPanel.getOperatorComboBox(), refreshControl);
-        enableRefreshOnEnterControl(columnConditionPanel.getEqualField(), refreshControl);
-        enableRefreshOnEnterControl(columnConditionPanel.getLowerBoundField(), refreshControl);
-        enableRefreshOnEnterControl(columnConditionPanel.getUpperBoundField(), refreshControl);
+        enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
+        enableRefreshOnEnterControl(columnConditionPanel.equalField(), refreshControl);
+        enableRefreshOnEnterControl(columnConditionPanel.lowerBoundField(), refreshControl);
+        enableRefreshOnEnterControl(columnConditionPanel.upperBoundField(), refreshControl);
       }
     });
   }
@@ -1750,8 +1750,8 @@ public class EntityTablePanel extends JPanel {
 
   private static Map<TableColumn, JPanel> createColumnSummaryPanels(FilteredTableModel<?, Attribute<?>> tableModel) {
     Map<TableColumn, JPanel> components = new HashMap<>();
-    tableModel.getColumnModel().getAllColumns().forEach(column ->
-            tableModel.getColumnSummaryModel((Attribute<?>) column.getIdentifier())
+    tableModel.columnModel().columns().forEach(column ->
+            tableModel.columnSummaryModel((Attribute<?>) column.getIdentifier())
                     .ifPresent(columnSummaryModel ->
                             components.put(column, new ColumnSummaryPanel(columnSummaryModel))));
 
@@ -1773,7 +1773,7 @@ public class EntityTablePanel extends JPanel {
     for (Map.Entry<EntityType, Collection<Entity>> entry : dependencies.entrySet()) {
       Collection<Entity> dependentEntities = entry.getValue();
       if (!dependentEntities.isEmpty()) {
-        tabPane.addTab(connectionProvider.entities().getDefinition(entry.getKey()).getCaption(),
+        tabPane.addTab(connectionProvider.entities().definition(entry.getKey()).caption(),
                 createEntityTablePanel(dependentEntities, connectionProvider));
       }
     }
@@ -1806,12 +1806,12 @@ public class EntityTablePanel extends JPanel {
       Component component = wrappedRenderer == null ?
               table.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) :
               wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
+      TableColumn tableColumn = tableModel.columnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
       Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
       boolean displayConditionState = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isDisplayConditionState()
-              && tableModel.getTableConditionModel().isConditionEnabled(attribute);
+              && tableModel.tableConditionModel().isConditionEnabled(attribute);
       Font defaultFont = component.getFont();
       component.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
@@ -1826,7 +1826,7 @@ public class EntityTablePanel extends JPanel {
       requireNonNull(attribute, "attribute");
       requireNonNull(editModel, "editModel");
       if (attribute.isString()) {
-        return (ComponentValue<T, C>) new EntityComponents(editModel.getEntityDefinition())
+        return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
                 .textInputPanel((Attribute<String>) attribute)
                 .buildComponentValue();
       }
@@ -1846,7 +1846,7 @@ public class EntityTablePanel extends JPanel {
     @Override
     public ColumnConditionPanel<?, ?> createConditionPanel(TableColumn column) {
       ColumnFilterModel<Entity, Attribute<?>, ?> filterModel =
-              tableModel.getTableConditionModel().getFilterModels().get(column.getIdentifier());
+              tableModel.tableConditionModel().filterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
       }

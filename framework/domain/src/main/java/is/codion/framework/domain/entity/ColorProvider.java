@@ -17,5 +17,5 @@ public interface ColorProvider extends Serializable {
    * @param attribute the attribute
    * @return the color to use for this entity and attribute, null if no color is specified
    */
-  Object getColor(Entity entity, Attribute<?> attribute);
+  Object color(Entity entity, Attribute<?> attribute);
 }

@@ -18,7 +18,7 @@ final class LookupTablePanel extends EntityTablePanel {
 
   LookupTablePanel(SwingEntityTableModel lookupModel) {
     super(lookupModel);
-    getTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+    table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     setConditionPanelVisible(true);
     setShowRefreshingProgressBar(true);
     setControl(ControlCode.CLEAR, Control.builder(this::clearTableAndConditions)
@@ -41,7 +41,7 @@ final class LookupTablePanel extends EntityTablePanel {
     File fileToSave = Dialogs.fileSelectionDialog()
             .owner(this)
             .selectFileToSave("export.csv");
-    Dialogs.progressWorkerDialog(() -> ((LookupTableModel) getTableModel()).exportCSV(fileToSave))
+    Dialogs.progressWorkerDialog(() -> ((LookupTableModel) tableModel()).exportCSV(fileToSave))
             .owner(this)
             .title("Exporting data")
             .onResult("Export successful")
@@ -50,7 +50,7 @@ final class LookupTablePanel extends EntityTablePanel {
   }
 
   private void clearTableAndConditions() {
-    getTableModel().clear();
-    getTableModel().getTableConditionModel().clearConditions();
+    tableModel().clear();
+    tableModel().tableConditionModel().clearConditions();
   }
 }

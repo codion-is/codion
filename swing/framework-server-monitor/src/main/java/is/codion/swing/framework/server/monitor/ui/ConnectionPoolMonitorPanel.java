@@ -85,7 +85,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void updateView() {
-    ConnectionPoolStatistics statistics = model.getConnectionPoolStatistics();
+    ConnectionPoolStatistics statistics = model.connectionPoolStatistics();
     poolSizeField.setText(format.format(statistics.size()));
     createdField.setText(format.format(statistics.created()));
     destroyedField.setText(format.format(statistics.destroyed()));
@@ -94,7 +94,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     double prc = statistics.failedRequests() / (double) statistics.requests() * HUNDRED;
     failedField.setText(format.format(statistics.failedRequests()) + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
     if (model.datasetContainsData()) {
-      inPoolSnapshotChart.getXYPlot().setDataset(model.getSnapshotDataset());
+      inPoolSnapshotChart.getXYPlot().setDataset(model.snapshotDataset());
     }
   }
 
@@ -109,7 +109,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void initializeCharts(ConnectionPoolMonitor model) {
     JFreeChart checkOutTimeChart = ChartFactory.createXYStepChart(null,
-            null, null, model.getCheckOutTimeCollection(), PlotOrientation.VERTICAL, true, true, false);
+            null, null, model.checkOutTimeCollection(), PlotOrientation.VERTICAL, true, true, false);
     setColors(checkOutTimeChart);
     checkOutTimePanel = new ChartPanel(checkOutTimeChart);
     checkOutTimePanel.setBorder(BorderFactory.createEtchedBorder());
@@ -118,15 +118,15 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     devRenderer.setDefaultShapesVisible(false);
     checkOutTimeChart.getXYPlot().setRenderer(devRenderer);
 
-    inPoolChart.getXYPlot().setDataset(model.getInPoolDataset());
+    inPoolChart.getXYPlot().setDataset(model.inPoolDataset());
     XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) inPoolChart.getXYPlot().getRenderer();
     renderer.setSeriesPaint(0, Color.RED);
     renderer.setSeriesPaint(1, Color.BLUE);
     renderer.setSeriesPaint(2, Color.PINK);
     renderer.setSeriesPaint(3, Color.GREEN);
     renderer.setSeriesPaint(4, Color.MAGENTA);
-    requestsPerSecondChart.getXYPlot().setDataset(model.getRequestsPerSecondDataset());
-    checkOutTimeChart.getXYPlot().setDataset(model.getCheckOutTimeCollection());
+    requestsPerSecondChart.getXYPlot().setDataset(model.requestsPerSecondDataset());
+    checkOutTimeChart.getXYPlot().setDataset(model.checkOutTimeCollection());
     setColors(inPoolSnapshotChart);
     setColors(inPoolChart);
     setColors(requestsPerSecondChart);
@@ -138,32 +138,32 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.getStatisticsObserver().addListener(this::updateView);
+    model.statisticsObserver().addListener(this::updateView);
   }
 
   private JPanel getConfigurationPanel() {
     JPanel configBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
     configBase.setBorder(BorderFactory.createTitledBorder("Configuration"));
-    configBase.add(createWestCenterPanel(new JLabel("Mininum size"), Components.integerSpinner(model.getMinimumPoolSizeValue())
+    configBase.add(createWestCenterPanel(new JLabel("Mininum size"), Components.integerSpinner(model.minimumPoolSizeValue())
             .columns(3)
             .editable(false)
             .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Maximum size"), Components.integerSpinner(model.getMaximumPoolSizeValue())
+    configBase.add(createWestCenterPanel(new JLabel("Maximum size"), Components.integerSpinner(model.maximumPoolSizeValue())
             .columns(3)
             .editable(false)
             .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Checkout timeout (ms)"), Components.integerSpinner(model.getMaximumCheckOutTimeValue())
+    configBase.add(createWestCenterPanel(new JLabel("Checkout timeout (ms)"), Components.integerSpinner(model.maximumCheckOutTimeValue())
             .stepSize(1000)
             .columns(6)
             .editable(false)
             .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Idle timeout (ms)"), Components.integerSpinner(model.getPooledConnectionTimeoutValue())
+    configBase.add(createWestCenterPanel(new JLabel("Idle timeout (ms)"), Components.integerSpinner(model.pooledConnectionTimeoutValue())
             .stepSize(1000)
             .columns(6)
             .groupingUsed(true)
             .editable(false)
             .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Cleanup interval (s)"), Components.integerSpinner(model.getPoolCleanupIntervalValue())
+    configBase.add(createWestCenterPanel(new JLabel("Cleanup interval (s)"), Components.integerSpinner(model.poolCleanupIntervalValue())
             .columns(3)
             .editable(false)
             .build()));
@@ -189,18 +189,18 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 4));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     chartConfig.add(new JLabel("Update interval (s)"));
-    chartConfig.add(Components.integerSpinner(model.getUpdateIntervalValue())
+    chartConfig.add(Components.integerSpinner(model.updateIntervalValue())
             .minimum(1)
             .columns(SPINNER_COLUMNS)
             .editable(false)
             .build());
 
-    chartConfig.add(Components.checkBox(model.getCollectSnapshotStatisticsState())
+    chartConfig.add(Components.checkBox(model.collectSnapshotStatisticsState())
             .caption("Snapshot")
             .maximumSize(TextComponents.getPreferredTextFieldSize())
             .build());
 
-    chartConfig.add(Components.checkBox(model.getCollectCheckOutTimesState())
+    chartConfig.add(Components.checkBox(model.collectCheckOutTimesState())
             .caption("Check out times")
             .maximumSize(TextComponents.getPreferredTextFieldSize())
             .build());

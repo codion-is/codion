@@ -29,7 +29,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
 
   ConditionDeserializer(EntityObjectMapper entityObjectMapper) {
     super(Condition.class);
-    this.entities = entityObjectMapper.getEntities();
+    this.entities = entityObjectMapper.entities();
     this.attributeConditionDeserializer = new AttributeConditionDeserializer(entityObjectMapper);
     this.conditionCombinationDeserializer = new ConditionCombinationDeserializer(this);
     this.customConditionDeserializer = new CustomConditionDeserializer(entityObjectMapper);
@@ -41,7 +41,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
     EntityType entityType = entities.domainType().entityType(entityConditionNode.get("entityType").asText());
     JsonNode conditionNode = entityConditionNode.get("condition");
 
-    return deserialize(entities.getDefinition(entityType), conditionNode);
+    return deserialize(entities.definition(entityType), conditionNode);
   }
 
   Condition deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
@@ -57,7 +57,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
       return customConditionDeserializer.deserialize(definition, conditionNode);
     }
     else if ("empty".equals(typeString)) {
-      return Conditions.condition(definition.getEntityType());
+      return Conditions.condition(definition.entityType());
     }
 
     throw new IllegalArgumentException("Unknown condition type: " + type);

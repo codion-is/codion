@@ -22,12 +22,12 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
     SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
     SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
     SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
-    trackModel.getEditModel().initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
+    trackModel.editModel().initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
 
     albumModel.addDetailModel(trackModel);
     artistModel.addDetailModel(albumModel);
 
-    artistModel.getTableModel().refresh();
+    artistModel.tableModel().refresh();
 
     return artistModel;
   }
@@ -35,22 +35,22 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
   private static SwingEntityModel initializePlaylistModel(EntityConnectionProvider connectionProvider) {
     SwingEntityModel playlistModel = new SwingEntityModel(new PlaylistTableModel(connectionProvider));
     SwingEntityModel playlistTrackModel = new SwingEntityModel(PlaylistTrack.TYPE, connectionProvider);
-    playlistTrackModel.getEditModel().initializeComboBoxModels(PlaylistTrack.PLAYLIST_FK);
+    playlistTrackModel.editModel().initializeComboBoxModels(PlaylistTrack.PLAYLIST_FK);
 
     playlistModel.addDetailModel(playlistTrackModel);
 
-    playlistModel.getTableModel().refresh();
+    playlistModel.tableModel().refresh();
 
     return playlistModel;
   }
 
   private static SwingEntityModel initializeCustomerModel(EntityConnectionProvider connectionProvider) {
     SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-    customerModel.getEditModel().initializeComboBoxModels(Customer.SUPPORTREP_FK);
+    customerModel.editModel().initializeComboBoxModels(Customer.SUPPORTREP_FK);
     SwingEntityModel invoiceModel = new InvoiceModel(connectionProvider);
     customerModel.addDetailModel(invoiceModel);
 
-    customerModel.getTableModel().refresh();
+    customerModel.tableModel().refresh();
 
     return customerModel;
   }

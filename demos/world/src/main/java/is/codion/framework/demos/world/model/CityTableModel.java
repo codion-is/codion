@@ -42,12 +42,12 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   CityTableModel(EntityConnectionProvider connectionProvider) {
     super(City.TYPE, connectionProvider);
-    getSelectionModel().addSelectedItemsListener(displayLocationEvent::onEvent);
-    getSelectionModel().addSelectionChangedListener(this::updateCitiesWithoutLocationSelected);
+    selectionModel().addSelectedItemsListener(displayLocationEvent::onEvent);
+    selectionModel().addSelectionChangedListener(this::updateCitiesWithoutLocationSelected);
     addRefreshListener(this::refreshChartDataset);
   }
 
-  public PieDataset<String> getChartDataset() {
+  public PieDataset<String> chartDataset() {
     return chartDataset;
   }
 
@@ -55,7 +55,7 @@ public final class CityTableModel extends SwingEntityTableModel {
     displayLocationEvent.addDataListener(listener);
   }
 
-  public StateObserver getCitiesWithoutLocationSelectedObserver() {
+  public StateObserver citiesWithoutLocationSelectedObserver() {
     return citiesWithoutLocationSelectedState.observer();
   }
 
@@ -63,7 +63,7 @@ public final class CityTableModel extends SwingEntityTableModel {
                                        StateObserver cancelFetchLocationObserver)
           throws IOException, DatabaseException, ValidationException {
     Collection<Entity> updatedCities = new ArrayList<>();
-    Collection<City> selectedCitiesWithoutLocation = getSelectionModel().getSelectedItems().stream()
+    Collection<City> selectedCitiesWithoutLocation = selectionModel().getSelectedItems().stream()
             .filter(city -> city.isNull(City.LOCATION))
             .map(city -> city.castTo(City.class))
             .collect(toList());
@@ -76,7 +76,7 @@ public final class CityTableModel extends SwingEntityTableModel {
       progressReporter.setProgress(100 * updatedCities.size() / selectedCitiesWithoutLocation.size());
       displayLocationEvent.onEvent(singletonList(city));
     }
-    displayLocationEvent.onEvent(getSelectionModel().getSelectedItems());
+    displayLocationEvent.onEvent(selectionModel().getSelectedItems());
   }
 
   private void fetchLocation(City city) throws IOException, DatabaseException, ValidationException {
@@ -91,7 +91,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   private void fetchLocation(City city, JSONObject cityInformation) throws DatabaseException, ValidationException {
     city.location(new Location(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));
-    getEditModel().update(singletonList(city));
+    editModel().update(singletonList(city));
   }
 
   private static JSONArray toJSONArray(URL url) throws IOException {
@@ -102,12 +102,12 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   private void refreshChartDataset() {
     chartDataset.clear();
-    Entity.castTo(City.class, getVisibleItems()).forEach(city ->
+    Entity.castTo(City.class, visibleItems()).forEach(city ->
             chartDataset.setValue(city.name(), city.population()));
   }
 
   private void updateCitiesWithoutLocationSelected() {
-    citiesWithoutLocationSelectedState.set(getSelectionModel().getSelectedItems().stream()
+    citiesWithoutLocationSelectedState.set(selectionModel().getSelectedItems().stream()
             .anyMatch(city -> city.isNull(City.LOCATION)));
   }
 }

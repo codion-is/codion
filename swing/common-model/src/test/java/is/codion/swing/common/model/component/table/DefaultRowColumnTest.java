@@ -15,11 +15,11 @@ public final class DefaultRowColumnTest {
   @Test
   void test() {
     RowColumn rowColumn1 = new DefaultFilteredTableSearchModel.DefaultRowColumn(1, 2);
-    assertEquals(1, rowColumn1.getRow());
-    assertEquals(2, rowColumn1.getColumn());
+    assertEquals(1, rowColumn1.row());
+    assertEquals(2, rowColumn1.column());
     RowColumn rowColumn2 = new DefaultFilteredTableSearchModel.DefaultRowColumn(3, 4);
-    assertEquals(3, rowColumn2.getRow());
-    assertEquals(4, rowColumn2.getColumn());
+    assertEquals(3, rowColumn2.row());
+    assertEquals(4, rowColumn2.column());
 
     assertEquals(3, rowColumn1.hashCode());
 

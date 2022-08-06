@@ -62,7 +62,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void clear() {}
     @Override
-    public StateObserver getRefreshingObserver() {
+    public StateObserver refreshingObserver() {
       return null;
     }
     @Override

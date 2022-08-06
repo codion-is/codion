@@ -48,12 +48,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final EntityDefinition getDefinition(EntityType entityType) {
+  public final EntityDefinition definition(EntityType entityType) {
     return getDefinitionInternal(requireNonNull(entityType, "entityType").name());
   }
 
   @Override
-  public final EntityDefinition getDefinition(String entityTypeName) {
+  public final EntityDefinition definition(String entityTypeName) {
     return getDefinitionInternal(requireNonNull(entityTypeName, "entityTypeName"));
   }
 
@@ -63,23 +63,23 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Collection<EntityDefinition> entityDefinitions() {
+  public final Collection<EntityDefinition> definitions() {
     return unmodifiableCollection(entityDefinitions.values());
   }
 
   @Override
   public final Entity entity(EntityType entityType) {
-    return getDefinition(entityType).entity();
+    return definition(entityType).entity();
   }
 
   @Override
   public final Entity.Builder builder(EntityType entityType) {
-    return new DefaultEntityBuilder(getDefinition(entityType));
+    return new DefaultEntityBuilder(definition(entityType));
   }
 
   @Override
   public final <T> Key primaryKey(EntityType entityType, T value) {
-    return getDefinition(entityType).primaryKey(value);
+    return definition(entityType).primaryKey(value);
   }
 
   @Override
@@ -91,7 +91,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   @Override
   public final Key.Builder keyBuilder(EntityType entityType) {
-    return new DefaultKeyBuilder(getDefinition(entityType));
+    return new DefaultKeyBuilder(definition(entityType));
   }
 
   /**
@@ -114,12 +114,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   protected final void add(EntityDefinition definition) {
-    if (entityDefinitions.containsKey(definition.getEntityType().name())) {
+    if (entityDefinitions.containsKey(definition.entityType().name())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
-              definition.getEntityType() + ", for table: " + definition.getTableName());
+              definition.entityType() + ", for table: " + definition.tableName());
     }
     validateForeignKeyProperties(definition);
-    entityDefinitions.put(definition.getEntityType().name(), (DefaultEntityDefinition) definition);
+    entityDefinitions.put(definition.entityType().name(), (DefaultEntityDefinition) definition);
     populateForeignDefinitions();
   }
 
@@ -133,8 +133,8 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   private void validateForeignKeyProperties(EntityDefinition definition) {
-    EntityType entityType = definition.getEntityType();
-    for (ForeignKey foreignKey : definition.getForeignKeys()) {
+    EntityType entityType = definition.entityType();
+    for (ForeignKey foreignKey : definition.foreignKeys()) {
       EntityType referencedType = foreignKey.referencedType();
       EntityDefinition referencedEntity = referencedType.equals(entityType) ?
               definition : entityDefinitions.get(referencedType.name());
@@ -157,7 +157,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   private void populateForeignDefinitions() {
     for (DefaultEntityDefinition definition : entityDefinitions.values()) {
-      for (ForeignKey foreignKey : definition.getForeignKeys()) {
+      for (ForeignKey foreignKey : definition.foreignKeys()) {
         EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.referencedType().name());
         if (referencedDefinition != null && !definition.hasReferencedEntityDefinition(foreignKey)) {
           definition.setReferencedEntityDefinition(foreignKey, referencedDefinition);

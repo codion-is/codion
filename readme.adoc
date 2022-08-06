@@ -343,19 +343,19 @@ public class StoreDemo {
 
     EntityPanel customerPanel =
             new EntityPanel(customerModel,
-                    new CustomerEditPanel(customerModel.getEditModel()));
+                    new CustomerEditPanel(customerModel.editModel()));
     EntityPanel addressPanel =
             new EntityPanel(addressModel,
-                    new AddressEditPanel(addressModel.getEditModel()));
+                    new AddressEditPanel(addressModel.editModel()));
     customerPanel.addDetailPanel(addressPanel);
 
-    customerPanel.getTablePanel().getTable()
+    customerPanel.tablePanel().table()
             .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
-    addressPanel.getTablePanel().getTable()
+    addressPanel.tablePanel().table()
             .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
-    addressPanel.getTablePanel().setConditionPanelVisible(true);
+    addressPanel.tablePanel().setConditionPanelVisible(true);
 
-    customerModel.getTableModel().refresh();
+    customerModel.tableModel().refresh();
     customerPanel.initializePanel();
 
     Dialogs.componentDialog(customerPanel)

@@ -58,7 +58,7 @@ final class LoginPanel extends JPanel {
 
   LoginPanel(User defaultUser, LoginValidator loginValidator, ImageIcon icon, JComponent southComponent) {
     this.usernameField = Components.textField()
-            .initialValue(defaultUser == null ? "" : defaultUser.getUsername())
+            .initialValue(defaultUser == null ? "" : defaultUser.username())
             .columns(DEFAULT_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)
             .enabledState(validatingState.reversedObserver())

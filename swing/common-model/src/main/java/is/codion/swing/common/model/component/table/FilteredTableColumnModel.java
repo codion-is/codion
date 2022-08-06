@@ -22,31 +22,31 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   /**
    * @return an unmodifiable view of all columns in this model, both hidden and visible, in no particular order
    */
-  Collection<TableColumn> getAllColumns();
+  Collection<TableColumn> columns();
 
   /**
    * @return an unmodifiable view of the currently visible columns
    */
-  List<TableColumn> getVisibleColumns();
+  List<TableColumn> visibleColumns();
 
   /**
    * @return an unmodifiable view of currently hidden columns, in no particular order
    */
-  Collection<TableColumn> getHiddenColumns();
+  Collection<TableColumn> hiddenColumns();
 
   /**
    * Returns a {@link State} instance controlling whether this model is locked or not.
    * A locked column model does not allow adding or removing of columns, but columns can be reordered.
    * @return a {@link State} controlling whether this model is locked or not
    */
-  State getLockedState();
+  State lockedState();
 
   /**
    * @param columnIdentifier the columnd identifier
    * @param visible true if the column should be visible, false if it should be hidden
    * @return true if the column visibility changed
    * @throws IllegalStateException in case this model is locked
-   * @see #getLockedState()
+   * @see #lockedState()
    */
   boolean setColumnVisible(C columnIdentifier, boolean visible);
 
@@ -60,13 +60,13 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * Arranges the columns so that only the given columns are visible and in the given order
    * @param columnIdentifiers the column identifiers
    */
-  void setColumns(C... columnIdentifiers);
+  void setVisibleColumns(C... columnIdentifiers);
 
   /**
    * Arranges the columns so that only the given columns are visible and in the given order
    * @param columnIdentifiers the column identifiers
    */
-  void setColumns(List<C> columnIdentifiers);
+  void setVisibleColumns(List<C> columnIdentifiers);
 
   /**
    * Returns the TableColumn with the given identifier
@@ -74,7 +74,7 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * @return the TableColumn with the given identifier
    * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
    */
-  TableColumn getTableColumn(C identifier);
+  TableColumn tableColumn(C identifier);
 
   /**
    * @param identifier the column identifier
@@ -86,7 +86,7 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * @param modelColumnIndex the column model index
    * @return the column identifier
    */
-  C getColumnIdentifier(int modelColumnIndex);
+  C columnIdentifier(int modelColumnIndex);
 
   /**
    * Resets the columns to their original location and visibility

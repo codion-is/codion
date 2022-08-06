@@ -13,7 +13,7 @@ public final class JulProxyTest {
   void test() {
     JulProxy proxy = new JulProxy();
     proxy.getLogLevel();
-    proxy.setLogLevel(proxy.getLogLevels().get(2));
+    proxy.setLogLevel(proxy.logLevels().get(2));
     assertThrows(IllegalArgumentException.class, () -> proxy.setLogLevel("hello"));
   }
 }

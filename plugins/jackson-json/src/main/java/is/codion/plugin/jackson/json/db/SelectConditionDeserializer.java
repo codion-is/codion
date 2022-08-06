@@ -32,7 +32,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
   SelectConditionDeserializer(EntityObjectMapper entityObjectMapper) {
     super(SelectCondition.class);
     this.conditionDeserializer = new ConditionDeserializer(entityObjectMapper);
-    this.entities = entityObjectMapper.getEntities();
+    this.entities = entityObjectMapper.entities();
   }
 
   @Override
@@ -40,7 +40,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
           throws IOException {
     JsonNode jsonNode = parser.getCodec().readTree(parser);
     EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
-    EntityDefinition definition = entities.getDefinition(entityType);
+    EntityDefinition definition = entities.definition(entityType);
     JsonNode conditionNode = jsonNode.get("condition");
     Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
@@ -63,7 +63,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     }
     JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
     if (fkFetchDepth != null && !fkFetchDepth.isNull()) {
-      for (ForeignKey foreignKey : definition.getForeignKeys()) {
+      for (ForeignKey foreignKey : definition.foreignKeys()) {
         JsonNode fetchDepthNode = fkFetchDepth.get(foreignKey.name());
         if (fetchDepthNode != null) {
           selectCondition.fetchDepth(foreignKey, fetchDepthNode.asInt());
@@ -96,10 +96,10 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
       String[] split = node.asText().split(":");
       String attributeName = split[0];
       if ("asc".equals(split[1])) {
-        builder.ascending(definition.getAttribute(attributeName));
+        builder.ascending(definition.attribute(attributeName));
       }
       else {
-        builder.descending(definition.getAttribute(attributeName));
+        builder.descending(definition.attribute(attributeName));
       }
     }
 
@@ -109,7 +109,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
   private static Attribute<?>[] deserializeSelectAttributes(EntityDefinition definition, JsonNode jsonNode) {
     List<Attribute<?>> attributes = new ArrayList<>(jsonNode.size());
     for (JsonNode node : jsonNode) {
-      attributes.add(definition.getAttribute(node.asText()));
+      attributes.add(definition.attribute(node.asText()));
     }
 
     return attributes.toArray(new Attribute[0]);

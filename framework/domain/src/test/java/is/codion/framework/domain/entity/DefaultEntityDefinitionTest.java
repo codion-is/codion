@@ -60,21 +60,21 @@ public class DefaultEntityDefinitionTest {
       }
     }
     Domain domain = new TestDomain();
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
+    EntityDefinition definition = domain.entities().definition(entityType);
     assertEquals(entityType.name(), definition.toString());
-    assertEquals(entityType, definition.getEntityType());
-    assertEquals("tableName", definition.getTableName());
-    assertNotNull(definition.getKeyGenerator());
+    assertEquals(entityType, definition.entityType());
+    assertEquals("tableName", definition.tableName());
+    assertNotNull(definition.keyGenerator());
     assertFalse(definition.isKeyGenerated());
-    assertEquals("*", definition.getSelectQuery().columns());
-    assertEquals("dual", definition.getSelectQuery().from());
-    assertEquals("name", definition.getSelectQuery().groupBy());
+    assertEquals("*", definition.setSelectQuery().columns());
+    assertEquals("dual", definition.setSelectQuery().from());
+    assertEquals("name", definition.setSelectQuery().groupBy());
     assertFalse(definition.isSmallDataset());
     assertTrue(definition.isReadOnly());
-    assertEquals("selectTableName", definition.getSelectTableName());
-    assertEquals("name", definition.getGroupByClause());
-    assertEquals(stringFactory, definition.getStringFactory());
-    assertEquals(comparator, definition.getComparator());
+    assertEquals("selectTableName", definition.selectTableName());
+    assertEquals("name", definition.groupByClause());
+    assertEquals(stringFactory, definition.stringFactory());
+    assertEquals(comparator, definition.comparator());
   }
 
   @Test
@@ -82,7 +82,7 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     Collection<Attribute<?>> defaultSelectAttributes = domain.entities()
-            .getDefinition(Employee.TYPE).getDefaultSelectAttributes();
+            .definition(Employee.TYPE).defaultSelectAttributes();
     assertTrue(defaultSelectAttributes.contains(Employee.ID));
     assertTrue(defaultSelectAttributes.contains(Employee.NAME));
     assertTrue(defaultSelectAttributes.contains(Employee.JOB));
@@ -98,7 +98,7 @@ public class DefaultEntityDefinitionTest {
     assertFalse(defaultSelectAttributes.contains(Employee.DEPARTMENT_NAME));
 
     defaultSelectAttributes = domain.entities()
-            .getDefinition(Department.TYPE).getDefaultSelectAttributes();
+            .definition(Department.TYPE).defaultSelectAttributes();
     assertTrue(defaultSelectAttributes.contains(Department.NO));
     assertTrue(defaultSelectAttributes.contains(Department.NAME));
     assertTrue(defaultSelectAttributes.contains(Department.LOCATION));
@@ -106,7 +106,7 @@ public class DefaultEntityDefinitionTest {
     assertFalse(defaultSelectAttributes.contains(Department.DATA));
 
     defaultSelectAttributes = domain.entities()
-            .getDefinition(Detail.TYPE).getDefaultSelectAttributes();
+            .definition(Detail.TYPE).defaultSelectAttributes();
     assertTrue(defaultSelectAttributes.contains(Detail.ID));
     assertTrue(defaultSelectAttributes.contains(Detail.INT));
     assertTrue(defaultSelectAttributes.contains(Detail.DOUBLE));
@@ -172,11 +172,11 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
-    Collection<Attribute<?>> linked = definition.getDerivedAttributes(name);
+    EntityDefinition definition = domain.entities().definition(entityType);
+    Collection<Attribute<?>> linked = definition.derivedAttributes(name);
     assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
-    linked = definition.getDerivedAttributes(info);
+    linked = definition.derivedAttributes(info);
     assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
   }
@@ -195,8 +195,8 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
-    assertEquals("p1, p2", definition.getGroupByClause());
+    EntityDefinition definition = domain.entities().definition(entityType);
+    assertEquals("p1, p2", definition.groupByClause());
   }
 
   @Test
@@ -214,15 +214,15 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
-    assertEquals(havingClause, definition.getSelectQuery().having());
+    EntityDefinition definition = domain.entities().definition(entityType);
+    assertEquals(havingClause, definition.setSelectQuery().having());
   }
 
   @Test
   void testForeignKeyNullability() {
     Domain domain = new TestDomain();
-    assertFalse(domain.entities().getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK).nullable());
-    assertTrue(domain.entities().getDefinition(Detail.TYPE).getForeignKeyProperty(Detail.MASTER_FK).nullable());
+    assertFalse(domain.entities().definition(TestDomain.T_COMPOSITE_DETAIL).foreignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK).nullable());
+    assertTrue(domain.entities().definition(Detail.TYPE).foreignKeyProperty(Detail.MASTER_FK).nullable());
   }
 
   @Test
@@ -279,7 +279,7 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
+    EntityDefinition definition = domain.entities().definition(entityType);
     assertTrue(definition.hasDerivedAttributes(attribute1));
     assertTrue(definition.hasDerivedAttributes(attribute2));
   }
@@ -300,9 +300,9 @@ public class DefaultEntityDefinitionTest {
     Entities entities = new TestDomain().entities();
 
     Entity entity = entities.entity(entityType);
-    EntityDefinition definition = entities.getDefinition(entityType);
-    assertEquals(colorBlue, definition.getBackgroundColorProvider().getColor(entity, entity.getPrimaryKey().getAttribute()));
-    assertEquals(colorYellow, definition.getForegroundColorProvider().getColor(entity, entity.getPrimaryKey().getAttribute()));
+    EntityDefinition definition = entities.definition(entityType);
+    assertEquals(colorBlue, definition.backgroundColorProvider().color(entity, entity.primaryKey().attribute()));
+    assertEquals(colorYellow, definition.foregroundColorProvider().color(entity, entity.primaryKey().attribute()));
   }
 
   @Test
@@ -362,10 +362,10 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
-    assertNotNull(definition.getKeyGenerator());
+    EntityDefinition definition = domain.entities().definition(entityType);
+    assertNotNull(definition.keyGenerator());
     assertFalse(definition.isKeyGenerated());
-    assertTrue(definition.getKeyGenerator().isInserted());
+    assertTrue(definition.keyGenerator().isInserted());
   }
 
   @Test
@@ -393,22 +393,22 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
-    assertNotNull(definition.getKeyGenerator());
+    EntityDefinition definition = domain.entities().definition(entityType);
+    assertNotNull(definition.keyGenerator());
     assertTrue(definition.isKeyGenerated());
-    assertFalse(definition.getKeyGenerator().isInserted());
+    assertFalse(definition.keyGenerator().isInserted());
   }
 
   @Test
   void compositeKeySingleValueConstructor() {
     assertThrows(IllegalStateException.class, () -> new TestDomain().entities()
-            .getDefinition(TestDomain.T_COMPOSITE_MASTER).primaryKey(1L));
+            .definition(TestDomain.T_COMPOSITE_MASTER).primaryKey(1L));
   }
 
   @Test
   void singleValueConstructorWrongType() {
     assertThrows(IllegalArgumentException.class, () -> new TestDomain().entities()
-            .getDefinition(Department.TYPE).primaryKey(1L));
+            .definition(Department.TYPE).primaryKey(1L));
   }
 
   @Test
@@ -436,15 +436,15 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
+    EntityDefinition definition = domain.entities().definition(entityType);
 
     Locale.setDefault(new Locale("en", "EN"));
-    assertEquals("Test", definition.getCaption());
+    assertEquals("Test", definition.caption());
 
     definition = Serializer.deserialize(Serializer.serialize(definition));
 
     Locale.setDefault(new Locale("is", "IS"));
-    assertEquals("Prufa", definition.getCaption());
+    assertEquals("Prufa", definition.caption());
   }
 
   private static final DomainType COMPATIBILITY = domainType("compatibility");
@@ -511,10 +511,10 @@ public class DefaultEntityDefinitionTest {
             columnProperty(PersonDifferentType.ENABLED))
             .build();
 
-    assertNotEquals(definition.getSerializationVersion(), missingProperty.getSerializationVersion());
-    assertEquals(definition.getSerializationVersion(), missingDerivedProperty.getSerializationVersion());
-    assertNotEquals(definition.getSerializationVersion(), differentOrder.getSerializationVersion());
-    assertNotEquals(missingProperty.getSerializationVersion(), differentOrder.getSerializationVersion());
-    assertNotEquals(definition.getSerializationVersion(), differentType.getSerializationVersion());
+    assertNotEquals(definition.serializationVersion(), missingProperty.serializationVersion());
+    assertEquals(definition.serializationVersion(), missingDerivedProperty.serializationVersion());
+    assertNotEquals(definition.serializationVersion(), differentOrder.serializationVersion());
+    assertNotEquals(missingProperty.serializationVersion(), differentOrder.serializationVersion());
+    assertNotEquals(definition.serializationVersion(), differentType.serializationVersion());
   }
 }

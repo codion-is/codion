@@ -28,17 +28,17 @@ final class DefaultClientLog implements ClientLog, Serializable {
   }
 
   @Override
-  public List<MethodLogger.Entry> getEntries() {
+  public List<MethodLogger.Entry> entries() {
     return entries;
   }
 
   @Override
-  public UUID getClientId() {
+  public UUID clientId() {
     return clientId;
   }
 
   @Override
-  public LocalDateTime getConnectionCreationDate() {
+  public LocalDateTime connectionCreationDate() {
     return connectionCreationDate;
   }
 

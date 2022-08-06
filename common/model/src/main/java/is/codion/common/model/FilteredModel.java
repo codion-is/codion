@@ -40,30 +40,30 @@ public interface FilteredModel<T> {
 
   /**
    * @return an unmodifiable view of all visible and filtered items in this model, in no particular order
-   * @see #getVisibleItems()
-   * @see #getFilteredItems()
+   * @see #visibleItems()
+   * @see #filteredItems()
    */
-  List<T> getItems();
+  List<T> items();
 
   /**
    * @return an unmodifiable view of the visible items
    */
-  List<T> getVisibleItems();
+  List<T> visibleItems();
 
   /**
    * @return an unmodifiable view of the filtered items
    */
-  List<T> getFilteredItems();
+  List<T> filteredItems();
 
   /**
    * @return the number of currently visible items
    */
-  int getVisibleItemCount();
+  int visibleItemCount();
 
   /**
    * @return the number of currently filtered items
    */
-  int getFilteredItemCount();
+  int filteredItemCount();
 
   /**
    * Returns true if this model contains the given item, visible or filtered.
@@ -90,7 +90,7 @@ public interface FilteredModel<T> {
    * Refreshes the data in this model.
    * Note that this method only throws exceptions when run synchronously, as in, off the EDT.
    * Use {@link #addRefreshFailedListener(EventDataListener)} to listen for exceptions that happen during asynchronous refresh.
-   * @see #getRefreshingObserver()
+   * @see #refreshingObserver()
    * @see #addRefreshListener(EventListener)
    * @see #addRefreshFailedListener(EventDataListener)
    */
@@ -99,7 +99,7 @@ public interface FilteredModel<T> {
   /**
    * @return an observer active while a refresh is in progress
    */
-  StateObserver getRefreshingObserver();
+  StateObserver refreshingObserver();
 
   /**
    * @param listener a listener to be notified each time this model has been successfully refreshed

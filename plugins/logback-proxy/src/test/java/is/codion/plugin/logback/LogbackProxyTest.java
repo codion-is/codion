@@ -13,7 +13,7 @@ public final class LogbackProxyTest {
   void test() {
     LogbackProxy proxy = new LogbackProxy();
     proxy.getLogLevel();
-    proxy.setLogLevel(proxy.getLogLevels().get(2));
+    proxy.setLogLevel(proxy.logLevels().get(2));
     assertThrows(IllegalArgumentException.class, () -> proxy.setLogLevel("hello"));
   }
 }

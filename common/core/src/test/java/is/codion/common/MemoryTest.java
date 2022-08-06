@@ -9,10 +9,10 @@ public final class MemoryTest {
 
   @Test
   void test() {
-    Memory.getAllocatedMemory();
-    Memory.getFreeMemory();
-    Memory.getMaxMemory();
-    Memory.getUsedMemory();
-    Memory.getMemoryUsage();
+    Memory.allocatedMemory();
+    Memory.freeMemory();
+    Memory.maxMemory();
+    Memory.usedMemory();
+    Memory.memoryUsage();
   }
 }

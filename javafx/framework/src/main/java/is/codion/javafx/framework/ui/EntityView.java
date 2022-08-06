@@ -68,7 +68,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * @param editView the editView
    */
   public EntityView(FXEntityModel model, EntityEditView editView) {
-    this(model, editView, new EntityTableView(model.getTableModel()));
+    this(model, editView, new EntityTableView(model.tableModel()));
   }
 
   /**
@@ -87,7 +87,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * @param tableView the tableView
    */
   public EntityView(FXEntityModel model, EntityEditView editView, EntityTableView tableView) {
-    this(model.getEditModel().getEntityDefinition().getCaption(), model, editView, tableView);
+    this(model.editModel().entityDefinition().caption(), model, editView, tableView);
   }
 
   /**
@@ -108,14 +108,14 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   /**
    * @return the underlying {@link FXEntityModel}
    */
-  public final FXEntityModel getModel() {
+  public final FXEntityModel model() {
     return model;
   }
 
   /**
    * @return the view caption
    */
-  public final String getCaption() {
+  public final String caption() {
     return caption;
   }
 
@@ -128,17 +128,17 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   }
 
   @Override
-  public final Optional<ViewTreeNode<EntityView>> getParentView() {
+  public final Optional<ViewTreeNode<EntityView>> parentView() {
     return Optional.ofNullable(parentView);
   }
 
   @Override
-  public final Optional<EntityView> getPreviousSiblingView() {
-    if (!getParentView().isPresent()) {
+  public final Optional<EntityView> previousSiblingView() {
+    if (!parentView().isPresent()) {
       return Optional.empty();
     }
 
-    List<EntityView> siblings = getParentView().get().getChildViews();
+    List<EntityView> siblings = parentView().get().childViews();
     if (siblings.contains(this)) {
       int index = siblings.indexOf(this);
       if (index == 0) {
@@ -152,11 +152,11 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   }
 
   @Override
-  public final Optional<EntityView> getNextSiblingView() {
-    if (!getParentView().isPresent()) {//no parent, no siblings
+  public final Optional<EntityView> nextSiblingView() {
+    if (!parentView().isPresent()) {//no parent, no siblings
       return Optional.empty();
     }
-    List<EntityView> siblings = getParentView().get().getChildViews();
+    List<EntityView> siblings = parentView().get().childViews();
     if (siblings.contains(this)) {
       int index = siblings.indexOf(this);
       if (index == siblings.size() - 1) {
@@ -170,7 +170,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   }
 
   @Override
-  public final List<EntityView> getChildViews() {
+  public final List<EntityView> childViews() {
     return detailViews;
   }
 
@@ -190,14 +190,14 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   /**
    * @return the {@link EntityEditView} or null if none exists
    */
-  public EntityEditView getEditView() {
+  public EntityEditView editView() {
     return editView;
   }
 
   /**
    * @return the {@link EntityTableView}
    */
-  public EntityTableView getTableView() {
+  public EntityTableView tableView() {
     return tableView;
   }
 
@@ -244,11 +244,11 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   }
 
   private void navigateLeft() {
-    getPreviousSiblingView().ifPresent(EntityView::activateView);
+    previousSiblingView().ifPresent(EntityView::activateView);
   }
 
   private void navigateRight() {
-    getNextSiblingView().ifPresent(EntityView::activateView);
+    nextSiblingView().ifPresent(EntityView::activateView);
   }
 
   private void navigateUp() {
@@ -277,7 +277,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
 
   private void activateView() {
     initializePanel();
-    TabPane parent = FXUiUtil.getParentOfType(this, TabPane.class);
+    TabPane parent = FXUiUtil.parentOfType(this, TabPane.class);
     if (parent != null) {
       parent.getTabs().stream()
               .filter(tab -> tab.getContent().equals(this))
@@ -300,13 +300,13 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
       editPane = new BorderPane();
       editView.initializePanel();
       editPane.setCenter(editView);
-      editPane.setRight(editView.getButtonPanel());
+      editPane.setRight(editView.createButtonPanel());
     }
     else {
       editPane = null;
     }
     BorderPane tableBottomPane = new BorderPane();
-    tableBottomPane.setCenter(tableView.getToolPane());
+    tableBottomPane.setCenter(tableView.toolPane());
     BorderPane tablePane = new BorderPane();
     tablePane.setCenter(tableView);
     tablePane.setBottom(tableBottomPane);
@@ -324,7 +324,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
       leftPane.setCenter(tablePane);
 
       for (EntityView detailView : detailViews) {
-        detailViewTabPane.getTabs().add(new Tab(detailView.getCaption(), detailView));
+        detailViewTabPane.getTabs().add(new Tab(detailView.caption(), detailView));
       }
       splitPane.getItems().add(leftPane);
       setCenter(splitPane);
@@ -338,7 +338,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
       getTabbedDetailPanel().initializePanel();
     }
 
-    FXEntityModel entityModel = getModel();
+    FXEntityModel entityModel = model();
     if (state == PanelState.HIDDEN) {
       entityModel.removeLinkedDetailModel(getTabbedDetailPanel().model);
     }
@@ -365,7 +365,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
         break;
       case F:
         if (tableView != null && event.isControlDown()) {
-          tableView.getFilterTextField().requestFocus();
+          tableView.filterTextField().requestFocus();
           event.consume();
         }
         break;
@@ -384,7 +384,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
         break;
       case F5:
         if (tableView != null) {
-          tableView.getListModel().refresh();
+          tableView.listModel().refresh();
           event.consume();
         }
         break;

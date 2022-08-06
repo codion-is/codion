@@ -65,8 +65,8 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                  boolean hasFocus, int row, int column) {
     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-    setForeground(getForeground(table, row, isSelected));
-    setBackground(getBackground(table, row, isSelected));
+    setForeground(foregroundColor(table, row, isSelected));
+    setBackground(backgroundColor(table, row, isSelected));
     setBorder(hasFocus || isSearchResult(row, column, tableModel) ? settings.focusedCellBorder : settings.defaultCellBorder);
     if (toolTipData) {
       setToolTipText(value == null ? "" : value.toString());
@@ -76,17 +76,17 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
   }
 
   @Override
-  public Color getBackground(JTable table, int row, boolean selected) {
+  public Color backgroundColor(JTable table, int row, boolean selected) {
     if (selected) {
       return settings.getSelectionBackgroundColor(row);
     }
 
-    return settings.getBackgroundColor(tableModel, property.attribute(), row, displayConditionState);
+    return settings.backgroundColor(tableModel, property.attribute(), row, displayConditionState);
   }
 
   @Override
-  public Color getForeground(JTable table, int row, boolean selected) {
-    return settings.getForegroundColor(tableModel, property.attribute(), row);
+  public Color foregroundColor(JTable table, int row, boolean selected) {
+    return settings.foregroundColor(tableModel, property.attribute(), row);
   }
 
   /**
@@ -98,9 +98,9 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
   }
 
   private static boolean isSearchResult(int row, int column, SwingEntityTableModel tableModel) {
-    RowColumn searchResult = tableModel.getSearchModel().currentResult();
+    RowColumn searchResult = tableModel.searchModel().currentResult();
 
-    return searchResult.getRow() == row && searchResult.getColumn() == column;
+    return searchResult.row() == row && searchResult.column() == column;
   }
 
   private final class DefaultDisplayValueProvider implements Function<T, Object> {
@@ -145,25 +145,25 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                    boolean hasFocus, int row, int column) {
       getNullableModel().setState((Boolean) value);
-      setForeground(getForeground(table, row, isSelected));
-      setBackground(getBackground(table, row, isSelected));
+      setForeground(foregroundColor(table, row, isSelected));
+      setBackground(backgroundColor(table, row, isSelected));
       setBorder(hasFocus || isSearchResult(row, column, tableModel) ? settings.focusedCellBorder : settings.defaultCellBorder);
 
       return this;
     }
 
     @Override
-    public Color getBackground(JTable table, int row, boolean selected) {
+    public Color backgroundColor(JTable table, int row, boolean selected) {
       if (selected) {
         return settings.getSelectionBackgroundColor(row);
       }
 
-      return settings.getBackgroundColor(tableModel, property.attribute(), row, displayConditionState);
+      return settings.backgroundColor(tableModel, property.attribute(), row, displayConditionState);
     }
 
     @Override
-    public Color getForeground(JTable table, int row, boolean selected) {
-      return settings.getForegroundColor(tableModel, property.attribute(), row);
+    public Color foregroundColor(JTable table, int row, boolean selected) {
+      return settings.foregroundColor(tableModel, property.attribute(), row);
     }
   }
 
@@ -211,12 +211,12 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
       focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
     }
 
-    private Color getBackgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute,
-                                     int row, boolean indicateCondition) {
-      boolean conditionEnabled = tableModel.getTableConditionModel().isConditionEnabled(attribute);
-      boolean filterEnabled = tableModel.getTableConditionModel().isFilterEnabled(attribute);
+    private Color backgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute,
+                                  int row, boolean indicateCondition) {
+      boolean conditionEnabled = tableModel.tableConditionModel().isConditionEnabled(attribute);
+      boolean filterEnabled = tableModel.tableConditionModel().isFilterEnabled(attribute);
       boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
-      Color cellColor = tableModel.getBackgroundColor(row, attribute);
+      Color cellColor = tableModel.backgroundColor(row, attribute);
       if (showCondition) {
         return getConditionEnabledColor(row, conditionEnabled && filterEnabled, cellColor);
       }
@@ -227,8 +227,8 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
       return isEven(row) ? backgroundColor : alternateBackgroundColor;
     }
 
-    private Color getForegroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute, int row) {
-      Color cellColor = tableModel.getForegroundColor(row, attribute);
+    private Color foregroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute, int row) {
+      Color cellColor = tableModel.foregroundColor(row, attribute);
 
       return cellColor == null ? foregroundColor : cellColor;
     }
@@ -272,7 +272,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     DefaultBuilder(SwingEntityTableModel tableModel, Property<T> property) {
       this.tableModel = requireNonNull(tableModel);
       this.property = requireNonNull(property);
-      this.tableModel.getEntityDefinition().getProperty(property.attribute());
+      this.tableModel.entityDefinition().property(property.attribute());
       this.horizontalAlignment = getDefaultHorizontalAlignment(property);
     }
 

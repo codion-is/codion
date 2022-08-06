@@ -72,7 +72,7 @@ public final class EntitySelectionDialog extends JDialog {
     }
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     this.tableModel = requireNonNull(tableModel, "tableModel");
-    this.tableModel.getEditModel().setReadOnly(true);
+    this.tableModel.editModel().setReadOnly(true);
     this.entityTablePanel = createTablePanel(tableModel, preferredSize, singleSelection);
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -130,15 +130,15 @@ public final class EntitySelectionDialog extends JDialog {
                                             boolean singleSelection) {
     EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
     tablePanel.initializePanel();
-    tablePanel.getTable().addDoubleClickListener(mouseEvent -> {
-      if (!tableModel.getSelectionModel().isSelectionEmpty()) {
+    tablePanel.table().addDoubleClickListener(mouseEvent -> {
+      if (!tableModel.selectionModel().isSelectionEmpty()) {
         okControl.actionPerformed(null);
       }
     });
     tablePanel.setConditionPanelVisible(true);
-    tablePanel.getTable().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+    tablePanel.table().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    tablePanel.getTable().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
+    tablePanel.table().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
     if (preferredSize != null) {
       tablePanel.setPreferredSize(preferredSize);
     }
@@ -148,15 +148,15 @@ public final class EntitySelectionDialog extends JDialog {
   }
 
   private void ok() {
-    selectedEntities.addAll(tableModel.getSelectionModel().getSelectedItems());
+    selectedEntities.addAll(tableModel.selectionModel().getSelectedItems());
     dispose();
   }
 
   private void search() {
     tableModel.refresh();
     if (tableModel.getRowCount() > 0) {
-      tableModel.getSelectionModel().setSelectedIndexes(singletonList(0));
-      entityTablePanel.getTable().requestFocusInWindow();
+      tableModel.selectionModel().setSelectedIndexes(singletonList(0));
+      entityTablePanel.table().requestFocusInWindow();
     }
     else {
       JOptionPane.showMessageDialog(getParentWindow(entityTablePanel).orElse(null),

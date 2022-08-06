@@ -29,8 +29,8 @@ public final class PoolMonitorPanel extends JPanel {
   private void initializeUI() {
     setLayout(new BorderLayout());
     JTabbedPane connectionPoolPane = new JTabbedPane();
-    for (ConnectionPoolMonitor monitor : model.getConnectionPoolInstanceMonitors()) {
-      connectionPoolPane.addTab(monitor.getUsername(), new ConnectionPoolMonitorPanel(monitor));
+    for (ConnectionPoolMonitor monitor : model.connectionPoolInstanceMonitors()) {
+      connectionPoolPane.addTab(monitor.username(), new ConnectionPoolMonitorPanel(monitor));
     }
     add(connectionPoolPane, BorderLayout.CENTER);
   }

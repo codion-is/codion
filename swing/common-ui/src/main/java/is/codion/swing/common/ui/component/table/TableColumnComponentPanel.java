@@ -50,7 +50,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   public TableColumnComponentPanel(FilteredTableColumnModel<?> columnModel,
                                    Map<TableColumn, T> columnComponents) {
     this.columnModel = requireNonNull(columnModel);
-    this.columns = columnModel.getAllColumns();
+    this.columns = columnModel.columns();
     requireNonNull(columnComponents).forEach((column, component) -> {
       if (!columns.contains(column)) {
         throw new IllegalArgumentException("Column with model index " + column.getModelIndex() + " is not part of column model");
@@ -83,7 +83,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   /**
    * @return the column components mapped their respective columns
    */
-  public Map<TableColumn, T> getColumnComponents() {
+  public Map<TableColumn, T> columnComponents() {
     return columnComponents;
   }
 

@@ -232,7 +232,7 @@ public final class ComponentsTest {
 
     assertEquals(value.get(), date);
 
-    componentValue.getComponent().getInputField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));
+    componentValue.getComponent().inputField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));
     assertEquals(date, componentValue.get());
   }
 
@@ -339,12 +339,12 @@ public final class ComponentsTest {
                     .buildComponentValue();
     ItemComboBoxModel<Boolean> boxModel =
             (ItemComboBoxModel<Boolean>) componentValue.getComponent().getModel();
-    assertTrue(boxModel.getSelectedValue().value());
+    assertTrue(boxModel.selectedValue().value());
     boxModel.setSelectedItem(null);
     assertNull(value.get());
 
     value.set(false);
-    assertFalse(boxModel.getSelectedValue().value());
+    assertFalse(boxModel.selectedValue().value());
   }
 
   @Test
@@ -470,7 +470,7 @@ public final class ComponentsTest {
     componentValue.getComponent().setText("");
     assertNull(componentValue.get());
 
-    assertThrows(IllegalArgumentException.class, () -> inputPanel.getTextField().setText("asdfasdfasdfasdfasdf"));
+    assertThrows(IllegalArgumentException.class, () -> inputPanel.textField().setText("asdfasdfasdfasdfasdf"));
   }
 
   @Test

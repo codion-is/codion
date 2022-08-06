@@ -40,21 +40,21 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
   /**
    * @return the condition model this condition panel is based on
    */
-  public final EntityTableConditionModel getTableConditionModel() {
+  public final EntityTableConditionModel tableConditionModel() {
     return tableConditionModel;
   }
 
   /**
    * @return all columns from the underlying column model
    */
-  public final Collection<TableColumn> getTableColumns() {
+  public final Collection<TableColumn> tableColumns() {
     return tableColumns;
   }
 
   /**
    * @return the state controlling the advanced state of this condition panel
    */
-  public final State getAdvancedState() {
+  public final State advancedState() {
     return advancedState;
   }
 
@@ -62,7 +62,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
    * @return the controls provided by this condition panel, such as toggling the advanced mode and clearing the condition,
    * an empty {@link Controls} instance in case of no controls.
    */
-  public Controls getControls() {
+  public Controls controls() {
     return Controls.controls();
   }
 

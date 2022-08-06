@@ -18,10 +18,10 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
 
   static {
     LookAndFeelProvider systemProvider = lookAndFeelProvider(Utilities.getSystemLookAndFeelClassName());
-    LOOK_AND_FEEL_PROVIDERS.put(systemProvider.getName(), systemProvider);
+    LOOK_AND_FEEL_PROVIDERS.put(systemProvider.name(), systemProvider);
     LookAndFeelProvider crossPlatformProvider = lookAndFeelProvider(UIManager.getCrossPlatformLookAndFeelClassName());
-    if (!LOOK_AND_FEEL_PROVIDERS.containsKey(crossPlatformProvider.getName())) {
-      LOOK_AND_FEEL_PROVIDERS.put(crossPlatformProvider.getName(), crossPlatformProvider);
+    if (!LOOK_AND_FEEL_PROVIDERS.containsKey(crossPlatformProvider.name())) {
+      LOOK_AND_FEEL_PROVIDERS.put(crossPlatformProvider.name(), crossPlatformProvider);
     }
   }
 
@@ -36,12 +36,12 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
   }
 
   @Override
-  public String getClassName() {
+  public String className() {
     return classname;
   }
 
   @Override
-  public String getName() {
+  public String name() {
     return name;
   }
 
@@ -52,6 +52,6 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
 
   @Override
   public String toString() {
-    return getName();
+    return name();
   }
 }

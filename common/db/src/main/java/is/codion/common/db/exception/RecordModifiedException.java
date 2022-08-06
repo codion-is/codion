@@ -26,14 +26,14 @@ public final class RecordModifiedException extends UpdateException {
   /**
    * @return the row being updated
    */
-  public Object getRow() {
+  public Object row() {
     return row;
   }
 
   /**
    * @return the current (modified) version of the row, null if it has been deleted
    */
-  public Object getModifiedRow() {
+  public Object modifiedRow() {
     return modifiedRow;
   }
 }

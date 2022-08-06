@@ -60,14 +60,14 @@ public final class HostMonitor {
   /**
    * @return the host name
    */
-  public String getHostName() {
+  public String hostName() {
     return hostName;
   }
 
   /**
    * @return the registry port
    */
-  public int getRegistryPort() {
+  public int registryPort() {
     return registryPort;
   }
 
@@ -94,7 +94,7 @@ public final class HostMonitor {
   /**
    * @return the server monitors for this host
    */
-  public Collection<ServerMonitor> getServerMonitors() {
+  public Collection<ServerMonitor> serverMonitors() {
     return serverMonitors;
   }
 
@@ -124,7 +124,7 @@ public final class HostMonitor {
 
   private boolean containsServerMonitor(UUID serverId) {
     return serverMonitors.stream()
-            .anyMatch(serverMonitor -> serverMonitor.getServerInformation().serverId().equals(serverId));
+            .anyMatch(serverMonitor -> serverMonitor.serverInformation().serverId().equals(serverId));
   }
 
   private void removeUnreachableServers() {
@@ -149,7 +149,7 @@ public final class HostMonitor {
       for (String name : boundNames) {
         LOG.debug("HostMonitor found server '{}'", name);
         Server<?, ?> server = (Server<?, ?>) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
-        servers.add(server.getServerInformation());
+        servers.add(server.serverInformation());
       }
     }
     catch (RemoteException | NotBoundException e) {

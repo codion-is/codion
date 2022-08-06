@@ -55,14 +55,14 @@ public final class SearchHighlighter {
   /**
    * @return the search string value
    */
-  public Value<String> getSearchStringValue() {
+  public Value<String> searchStringValue() {
     return searchStringValue;
   }
 
   /**
    * @return the state controlling whether the search is case-sensitive.
    */
-  public State getCaseSensitiveState() {
+  public State caseSensitiveState() {
     return caseSensitiveState;
   }
 

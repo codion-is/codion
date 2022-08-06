@@ -90,7 +90,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
    * @return the selected value, null in case the value representing null is selected
    * @see #isNullSelected()
    */
-  T getSelectedValue();
+  T selectedValue();
 
   /**
    * Sets the Comparator used when sorting the items visible in this model and sorts the model accordingly.
@@ -204,7 +204,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
      * @param value the value to search for, never null
      * @return a {@link Predicate} based on the given value
      */
-    Predicate<T> getPredicate(V value);
+    Predicate<T> createPredicate(V value);
 
     /**
      * Returns the first item in the given collection containing the given {@code value}. Only called for non-null {@code value}s.
@@ -216,7 +216,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
       requireNonNull(value);
 
       return requireNonNull(items).stream()
-              .filter(getPredicate(value))
+              .filter(createPredicate(value))
               .findFirst()
               .orElse(null);
     }

@@ -46,17 +46,17 @@ public interface ConnectionPoolWrapper {
    * @see #setMaximumCheckOutTime(int)
    * @see Connection#close()
    */
-  Connection getConnection(User user) throws DatabaseException;
+  Connection connection(User user) throws DatabaseException;
 
   /**
    * @return the user this connection pool is based on.
    */
-  User getUser();
+  User user();
 
   /**
    * @return the DataSource used by this connection pool
    */
-  DataSource getPoolDataSource();
+  DataSource poolDataSource();
 
   /**
    * Closes this connection pool, connections subsequently checked in are disconnected
@@ -68,7 +68,7 @@ public interface ConnectionPoolWrapper {
    * @param since the time from which statistics should be retrieved
    * @return connection pool usage statistics
    */
-  ConnectionPoolStatistics getStatistics(long since);
+  ConnectionPoolStatistics statistics(long since);
 
   /**
    * Resets the collected usage statistics
@@ -77,7 +77,7 @@ public interface ConnectionPoolWrapper {
 
   /**
    * @return true if pool usage statistics for a snapshot should be collected.
-   * @see #getStatistics(long)
+   * @see #statistics(long)
    * @see ConnectionPoolStatistics#snapshot()
    */
   boolean isCollectSnapshotStatistics();
@@ -85,21 +85,21 @@ public interface ConnectionPoolWrapper {
   /**
    * Specifies whether to collect usage statistics for a snapshot.
    * @param collectSnapshotStatistics the value
-   * @see #getStatistics(long)
+   * @see #statistics(long)
    * @see ConnectionPoolStatistics#snapshot()
    */
   void setCollectSnapshotStatistics(boolean collectSnapshotStatistics);
 
   /**
    * @return true if connection check out times should be collected.
-   * @see #getStatistics(long)
+   * @see #statistics(long)
    */
   boolean isCollectCheckOutTimes();
 
   /**
    * Specifies whether to collect connection check out times.
    * @param collectCheckOutTimes the value
-   * @see #getStatistics(long)
+   * @see #statistics(long)
    */
   void setCollectCheckOutTimes(boolean collectCheckOutTimes);
 

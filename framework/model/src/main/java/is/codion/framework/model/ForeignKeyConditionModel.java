@@ -15,7 +15,7 @@ public interface ForeignKeyConditionModel extends ColumnConditionModel<ForeignKe
   /**
    * @return the {@link EntitySearchModel} used by this ForeignKeyConditionModel, if any
    */
-  EntitySearchModel getEntitySearchModel();
+  EntitySearchModel entitySearchModel();
 
   /**
    * Refreshes any data bound models in this condition model

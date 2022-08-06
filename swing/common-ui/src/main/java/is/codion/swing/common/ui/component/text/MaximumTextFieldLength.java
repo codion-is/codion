@@ -26,7 +26,7 @@ final class MaximumTextFieldLength {
       }
       else if (documentFilter instanceof CaseDocumentFilter) {
         CaseDocumentFilter caseDocumentFilter = (CaseDocumentFilter) documentFilter;
-        Optional<StringLengthValidator> lengthValidator = caseDocumentFilter.getValidators().stream()
+        Optional<StringLengthValidator> lengthValidator = caseDocumentFilter.validators().stream()
                 .filter(StringLengthValidator.class::isInstance)
                 .map(StringLengthValidator.class::cast)
                 .findFirst();

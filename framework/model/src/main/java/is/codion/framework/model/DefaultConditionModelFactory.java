@@ -39,7 +39,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
               new DefaultEntitySearchModel(foreignKey.referencedType(), connectionProvider));
     }
 
-    ColumnProperty<T> property = getDefinition(attribute.entityType()).getColumnProperty(attribute);
+    ColumnProperty<T> property = definition(attribute.entityType()).columnProperty(attribute);
     if (property.aggregateColumn()) {
       return null;
     }
@@ -51,7 +51,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
   /**
    * @return the underlying connection provider
    */
-  protected final EntityConnectionProvider getConnectionProvider() {
+  protected final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
   }
 
@@ -59,8 +59,8 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
    * @param entityType the entity type
    * @return the entity definition
    */
-  protected final EntityDefinition getDefinition(EntityType entityType) {
-    return connectionProvider.entities().getDefinition(entityType);
+  protected final EntityDefinition definition(EntityType entityType) {
+    return connectionProvider.entities().definition(entityType);
   }
 
   private static List<Operator> getOperators(Attribute<?> attribute) {

@@ -36,7 +36,7 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
 
   @Override
   public final String toString(EntityDefinition definition) {
-    return toString(requireNonNull(definition).getColumnProperty(attribute).columnExpression());
+    return toString(requireNonNull(definition).columnProperty(attribute).columnExpression());
   }
 
   @Override

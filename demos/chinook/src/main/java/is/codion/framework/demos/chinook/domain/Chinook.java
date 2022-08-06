@@ -156,11 +156,11 @@ public interface Chinook {
         this.priceIncrease = requireNonNull(priceIncrease);
       }
 
-      public Collection<Long> getTrackIds() {
+      public Collection<Long> trackIds() {
         return trackIds;
       }
 
-      public BigDecimal getPriceIncrease() {
+      public BigDecimal priceIncrease() {
         return priceIncrease;
       }
     }
@@ -226,11 +226,11 @@ public interface Chinook {
         this.noOfTracks = noOfTracks;
       }
 
-      public String getPlaylistName() {
+      public String playlistName() {
         return playlistName;
       }
 
-      public int getNoOfTracks() {
+      public int noOfTracks() {
         return noOfTracks;
       }
     }

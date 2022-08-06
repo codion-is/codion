@@ -58,7 +58,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final String getUrl() {
+  public final String url() {
     return jdbcUrl;
   }
 
@@ -66,7 +66,7 @@ public abstract class AbstractDatabase implements Database {
   public final Connection createConnection(User user) throws DatabaseException {
     DriverManager.setLoginTimeout(getLoginTimeout());
     try {
-      Connection connection = connectionProvider.getConnection(user, jdbcUrl);
+      Connection connection = connectionProvider.connection(user, jdbcUrl);
       if (Database.TRANSACTION_ISOLATION.isNotNull()) {
         connection.setTransactionIsolation(Database.TRANSACTION_ISOLATION.get());
       }
@@ -77,7 +77,7 @@ public abstract class AbstractDatabase implements Database {
       if (isAuthenticationException(e)) {
         throw new AuthenticationException(e.getMessage());
       }
-      throw new DatabaseException(e, getErrorMessage(e));
+      throw new DatabaseException(e, errorMessage(e));
     }
   }
 
@@ -104,7 +104,7 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final Statistics getStatistics() {
+  public final Statistics statistics() {
     return queryCounter.getStatisticsAndResetCounter();
   }
 
@@ -113,14 +113,14 @@ public abstract class AbstractDatabase implements Database {
                                              User poolUser) throws DatabaseException {
     requireNonNull(connectionPoolFactory, "connectionPoolFactory");
     requireNonNull(poolUser, "poolUser");
-    if (connectionPools.containsKey(poolUser.getUsername())) {
-      throw new IllegalStateException("Connection pool for user " + poolUser.getUsername() + " has already been initialized");
+    if (connectionPools.containsKey(poolUser.username())) {
+      throw new IllegalStateException("Connection pool for user " + poolUser.username() + " has already been initialized");
     }
-    connectionPools.put(poolUser.getUsername().toLowerCase(), connectionPoolFactory.createConnectionPoolWrapper(this, poolUser));
+    connectionPools.put(poolUser.username().toLowerCase(), connectionPoolFactory.createConnectionPoolWrapper(this, poolUser));
   }
 
   @Override
-  public final ConnectionPoolWrapper getConnectionPool(String username) {
+  public final ConnectionPoolWrapper connectionPool(String username) {
     return connectionPools.get(requireNonNull(username, "username").toLowerCase());
   }
 
@@ -135,12 +135,12 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public final void closeConnectionPools() {
     for (ConnectionPoolWrapper pool : connectionPools.values()) {
-      closeConnectionPool(pool.getUser().getUsername());
+      closeConnectionPool(pool.user().username());
     }
   }
 
   @Override
-  public final Collection<String> getConnectionPoolUsernames() {
+  public final Collection<String> connectionPoolUsernames() {
     return new ArrayList<>(connectionPools.keySet());
   }
 
@@ -160,12 +160,12 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public String getCheckConnectionQuery() {
+  public String checkConnectionQuery() {
     throw new IllegalStateException("No check connection query specified");
   }
 
   @Override
-  public int getValidityCheckTimeout() {
+  public int validityCheckTimeout() {
     return validityCheckTimeout;
   }
 
@@ -173,12 +173,12 @@ public abstract class AbstractDatabase implements Database {
   public void shutdownEmbedded() {}
 
   @Override
-  public String getSequenceQuery(String sequenceName) {
+  public String sequenceQuery(String sequenceName) {
     throw new UnsupportedOperationException("Sequence support is not implemented for database: " + getClass().getSimpleName());
   }
 
   @Override
-  public String getErrorMessage(SQLException exception) {
+  public String errorMessage(SQLException exception) {
     return exception.getMessage();
   }
 
@@ -273,7 +273,7 @@ public abstract class AbstractDatabase implements Database {
         }
         catch (SQLException ignored) {/*Not all databases have implemented this feature*/}
       }
-      rs = statement.executeQuery(getCheckConnectionQuery());
+      rs = statement.executeQuery(checkConnectionQuery());
 
       return true;
     }

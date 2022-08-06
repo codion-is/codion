@@ -99,17 +99,17 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public EntityType getEntityType() {
-    return definition.getEntityType();
+  public EntityType entityType() {
+    return definition.entityType();
   }
 
   @Override
-  public EntityDefinition getDefinition() {
+  public EntityDefinition definition() {
     return definition;
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
+  public List<Attribute<?>> attributes() {
     return attributes;
   }
 
@@ -119,7 +119,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> Attribute<T> getAttribute() {
+  public <T> Attribute<T> attribute() {
     assertSingleValueKey();
 
     return (Attribute<T>) attributes.get(0);
@@ -140,10 +140,10 @@ class DefaultKey implements Key, Serializable {
   @Override
   public <T> T get(Attribute<T> attribute) {
     if (!values.containsKey(attribute)) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of key: " + definition.getEntityType());
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of key: " + definition.entityType());
     }
 
-    return (T) values.get(definition.getColumnProperty(attribute).attribute());
+    return (T) values.get(definition.columnProperty(attribute).attribute());
   }
 
   @Override
@@ -255,7 +255,7 @@ class DefaultKey implements Key, Serializable {
   private Integer computeMultipleValueHashCode() {
     int hash = 0;
     for (int i = 0; i < attributes.size(); i++) {
-      ColumnProperty<?> property = definition.getColumnProperty(attributes.get(i));
+      ColumnProperty<?> property = definition.columnProperty(attributes.get(i));
       Object value = values.get(property.attribute());
       if (!property.nullable() && value == null) {
         return null;
@@ -290,9 +290,9 @@ class DefaultKey implements Key, Serializable {
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.getDomainName());
-    stream.writeObject(definition.getEntityType().name());
-    stream.writeInt(definition.getSerializationVersion());
+    stream.writeObject(definition.domainName());
+    stream.writeObject(definition.entityType().name());
+    stream.writeInt(definition.serializationVersion());
     stream.writeBoolean(primaryKey);
     stream.writeInt(attributes.size());
     for (int i = 0; i < attributes.size(); i++) {
@@ -304,15 +304,15 @@ class DefaultKey implements Key, Serializable {
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     Entities entities = DefaultEntities.getEntities((String) stream.readObject());
-    definition = entities.getDefinition((String) stream.readObject());
-    if (definition.getSerializationVersion() != stream.readInt()) {
-      throw new IllegalArgumentException("Entity type '" + definition.getEntityType() + "' can not be deserialized due to version difference");
+    definition = entities.definition((String) stream.readObject());
+    if (definition.serializationVersion() != stream.readInt()) {
+      throw new IllegalArgumentException("Entity type '" + definition.entityType() + "' can not be deserialized due to version difference");
     }
     primaryKey = stream.readBoolean();
     int attributeCount = stream.readInt();
     values = new HashMap<>(attributeCount);
     for (int i = 0; i < attributeCount; i++) {
-      Attribute<Object> attribute = definition.getAttribute((String) stream.readObject());
+      Attribute<Object> attribute = definition.attribute((String) stream.readObject());
       values.put(attribute, attribute.validateType(stream.readObject()));
     }
     attributes = new ArrayList<>(values.keySet());

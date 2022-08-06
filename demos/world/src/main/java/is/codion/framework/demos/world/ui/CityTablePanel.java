@@ -14,7 +14,7 @@ import java.util.List;
 final class CityTablePanel extends ChartTablePanel {
 
   CityTablePanel(CityTableModel tableModel) {
-    super(tableModel, tableModel.getChartDataset(), "Cities");
+    super(tableModel, tableModel.chartDataset(), "Cities");
   }
 
   @Override
@@ -27,12 +27,12 @@ final class CityTablePanel extends ChartTablePanel {
   private Control createFetchLocationControl() {
     return Control.builder(this::fetchLocation)
             .caption("Fetch location")
-            .enabledState(((CityTableModel) getTableModel()).getCitiesWithoutLocationSelectedObserver())
+            .enabledState(((CityTableModel) tableModel()).citiesWithoutLocationSelectedObserver())
             .build();
   }
 
   private void fetchLocation() {
-    FetchLocationTask fetchLocationTask = new FetchLocationTask(((CityTableModel) getTableModel()));
+    FetchLocationTask fetchLocationTask = new FetchLocationTask(((CityTableModel) tableModel()));
 
     Dialogs.progressWorkerDialog(fetchLocationTask)
             .owner(this)

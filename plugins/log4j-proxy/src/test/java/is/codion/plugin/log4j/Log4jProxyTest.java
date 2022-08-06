@@ -13,7 +13,7 @@ public final class Log4jProxyTest {
   void test() {
     Log4jProxy proxy = new Log4jProxy();
     proxy.getLogLevel();
-    proxy.setLogLevel(proxy.getLogLevels().get(2));
+    proxy.setLogLevel(proxy.logLevels().get(2));
     assertThrows(IllegalArgumentException.class, () -> proxy.setLogLevel("hello"));
   }
 }

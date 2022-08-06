@@ -32,11 +32,11 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
           = new AbstractEntityUsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel>() {
     @Override
     protected void perform(SchemaBrowserAppPanel.SchemaBrowserApplicationModel application) {
-      SwingEntityModel schemaModel = application.getEntityModels().iterator().next();
-      schemaModel.getTableModel().refresh();
-      selectRandomRow(schemaModel.getTableModel());
-      selectRandomRow(schemaModel.getDetailModels().iterator().next().getTableModel());
-      selectRandomRow(schemaModel.getDetailModels().iterator().next().getDetailModels().iterator().next().getTableModel());
+      SwingEntityModel schemaModel = application.entityModels().iterator().next();
+      schemaModel.tableModel().refresh();
+      selectRandomRow(schemaModel.tableModel());
+      selectRandomRow(schemaModel.detailModels().iterator().next().tableModel());
+      selectRandomRow(schemaModel.detailModels().iterator().next().detailModels().iterator().next().tableModel());
     }
   };
 
@@ -53,14 +53,14 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
                             .clientTypeId(getClass().getSimpleName())
                             .user(getUser())
                             .build());
-    SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
-    SwingEntityModel dbObjectModel = schemaModel.getDetailModel(Table.TYPE);
+    SwingEntityModel schemaModel = applicationModel.entityModel(Schema.TYPE);
+    SwingEntityModel dbObjectModel = schemaModel.detailModel(Table.TYPE);
     schemaModel.addLinkedDetailModel(dbObjectModel);
-    SwingEntityModel columnModel = dbObjectModel.getDetailModel(Column.TYPE);
-    SwingEntityModel constraintModel = dbObjectModel.getDetailModel(Constraint.TYPE);
+    SwingEntityModel columnModel = dbObjectModel.detailModel(Column.TYPE);
+    SwingEntityModel constraintModel = dbObjectModel.detailModel(Constraint.TYPE);
     dbObjectModel.addDetailModel(columnModel);
     dbObjectModel.addDetailModel(constraintModel);
-    SwingEntityModel constraintColumnModel = dbObjectModel.getDetailModel(ConstraintColumn.TYPE);
+    SwingEntityModel constraintColumnModel = dbObjectModel.detailModel(ConstraintColumn.TYPE);
     constraintModel.addDetailModel(constraintColumnModel);
     dbObjectModel.addLinkedDetailModel(columnModel);
 

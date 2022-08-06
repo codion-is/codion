@@ -35,7 +35,7 @@ public final class DatabaseExplorerModel {
     this.connection = requireNonNull(database, "database").createConnection(user);
     try {
       this.metaDataModel = new MetaDataModel(connection.getMetaData());
-      this.schemaTableModel = new SchemaTableModel(metaDataModel.getSchemas());
+      this.schemaTableModel = new SchemaTableModel(metaDataModel.schemas());
       this.definitionTableModel = new DefinitionTableModel(schemaTableModel);
       this.schemaTableModel.refresh();
       bindEvents();
@@ -45,15 +45,15 @@ public final class DatabaseExplorerModel {
     }
   }
 
-  public FilteredTableModel<Schema, Integer> getSchemaModel() {
+  public FilteredTableModel<Schema, Integer> schemaModel() {
     return schemaTableModel;
   }
 
-  public FilteredTableModel<DefinitionRow, Integer> getDefinitionModel() {
+  public FilteredTableModel<DefinitionRow, Integer> definitionModel() {
     return definitionTableModel;
   }
 
-  public ValueObserver<String> getDomainSourceObserver() {
+  public ValueObserver<String> domainSourceObserver() {
     return domainSourceValue.observer();
   }
 
@@ -62,19 +62,19 @@ public final class DatabaseExplorerModel {
   }
 
   private void bindEvents() {
-    schemaTableModel.getSelectionModel().addSelectionChangedListener(definitionTableModel::refresh);
-    definitionTableModel.getSelectionModel().addSelectionChangedListener(this::updateCodeValue);
+    schemaTableModel.selectionModel().addSelectionChangedListener(definitionTableModel::refresh);
+    definitionTableModel.selectionModel().addSelectionChangedListener(this::updateCodeValue);
   }
 
   public void populateSelected(EventDataListener<String> schemaNotifier) {
-    schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema ->
-            metaDataModel.populateSchema(schema.getName(), schemaNotifier));
+    schemaTableModel.selectionModel().getSelectedItems().forEach(schema ->
+            metaDataModel.populateSchema(schema.name(), schemaNotifier));
     definitionTableModel.refresh();
   }
 
   private void updateCodeValue() {
     StringBuilder builder = new StringBuilder();
-    definitionTableModel.getSelectionModel().getSelectedItems().forEach(definitionRow ->
+    definitionTableModel.selectionModel().getSelectedItems().forEach(definitionRow ->
             builder.append(DomainToString.toString(definitionRow.definition)));
     domainSourceValue.set(builder.toString());
   }

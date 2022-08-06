@@ -55,15 +55,15 @@ final class ColumnPacker implements ResultPacker<Column> {
 
   private int getPrimaryKeyColumnIndex(String columnName) {
     return primaryKeyColumns.stream()
-            .filter(primaryKeyColumn -> columnName.equals(primaryKeyColumn.getColumnName()))
+            .filter(primaryKeyColumn -> columnName.equals(primaryKeyColumn.columnName()))
             .findFirst()
-            .map(PrimaryKeyColumn::getIndex)
+            .map(PrimaryKeyColumn::index)
             .orElse(-1);
   }
 
   private boolean isForeignKeyColumn(String columnName) {
     return foreignKeyColumns.stream()
-            .anyMatch(foreignKeyColumn -> foreignKeyColumn.getFkColumnName().equals(columnName));
+            .anyMatch(foreignKeyColumn -> foreignKeyColumn.fkColumnName().equals(columnName));
   }
 
   private static Class<?> getColumnClass(int sqlType, int decimalDigits) {

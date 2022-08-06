@@ -101,12 +101,12 @@ public interface DatabaseConnection extends AutoCloseable {
   /**
    * @return the connection user
    */
-  User getUser();
+  User user();
 
   /**
    * @return the database implementation this connection is based on
    */
-  Database getDatabase();
+  Database database();
 
   /**
    * @param methodLogger the MethodLogger to use, null to disable method logging

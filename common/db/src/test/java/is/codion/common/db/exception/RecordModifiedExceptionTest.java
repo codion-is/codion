@@ -12,8 +12,8 @@ public class RecordModifiedExceptionTest {
   @Test
   void test() {
     RecordModifiedException ex = new RecordModifiedException("row", "hello", "message");
-    assertEquals("row", ex.getRow());
-    assertEquals("hello", ex.getModifiedRow());
+    assertEquals("row", ex.row());
+    assertEquals("hello", ex.modifiedRow());
     assertEquals("message", ex.getMessage());
   }
 }

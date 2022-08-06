@@ -37,7 +37,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   }
 
   @Override
-  public SortingState getSortingState(C columnIdentifier) {
+  public SortingState sortingState(C columnIdentifier) {
     requireNonNull(columnIdentifier, "columnIdentifier");
 
     return sortingStates.getOrDefault(columnIdentifier, EMPTY_SORTING_STATE);
@@ -60,10 +60,10 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   }
 
   @Override
-  public LinkedHashMap<C, SortOrder> getColumnSortOrder() {
+  public LinkedHashMap<C, SortOrder> columnSortOrder() {
     LinkedHashMap<C, SortOrder> columnSortOrder = new LinkedHashMap<>();
     getSortingStatesOrderedByPriority().forEach(entry ->
-            columnSortOrder.put(entry.getKey(), entry.getValue().getSortOrder()));
+            columnSortOrder.put(entry.getKey(), entry.getValue().sortOrder()));
 
     return columnSortOrder;
   }
@@ -92,12 +92,12 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
       sortingStates.remove(columnIdentifier);
     }
     else {
-      SortingState state = getSortingState(columnIdentifier);
+      SortingState state = sortingState(columnIdentifier);
       if (state.equals(EMPTY_SORTING_STATE)) {
         sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, getNextSortPriority()));
       }
       else {
-        sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, state.getPriority()));
+        sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, state.priority()));
       }
     }
     sortingChangedEvent.onEvent(columnIdentifier);
@@ -112,7 +112,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   private int getNextSortPriority() {
     int maxPriority = -1;
     for (SortingState state : sortingStates.values()) {
-      maxPriority = Math.max(state.getPriority(), maxPriority);
+      maxPriority = Math.max(state.priority(), maxPriority);
     }
 
     return maxPriority + 1;
@@ -129,7 +129,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     @Override
     public int compare(R rowOne, R rowTwo) {
       for (Map.Entry<C, FilteredTableSortModel.SortingState> state : sortedSortingStates) {
-        int comparison = compareRows(rowOne, rowTwo, state.getKey(), state.getValue().getSortOrder());
+        int comparison = compareRows(rowOne, rowTwo, state.getKey(), state.getValue().sortOrder());
         if (comparison != 0) {
           return comparison;
         }
@@ -167,7 +167,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   private final class SortingStatesComparator implements Comparator<Map.Entry<C, SortingState>> {
     @Override
     public int compare(Map.Entry<C, SortingState> state1, Map.Entry<C, SortingState> state2) {
-      return Integer.compare(state1.getValue().getPriority(), state2.getValue().getPriority());
+      return Integer.compare(state1.getValue().priority(), state2.getValue().priority());
     }
   }
 
@@ -182,12 +182,12 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     }
 
     @Override
-    public int getPriority() {
+    public int priority() {
       return priority;
     }
 
     @Override
-    public SortOrder getSortOrder() {
+    public SortOrder sortOrder() {
       return sortOrder;
     }
   }

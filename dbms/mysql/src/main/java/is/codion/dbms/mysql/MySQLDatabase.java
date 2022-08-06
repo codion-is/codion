@@ -25,8 +25,8 @@ final class MySQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getName() {
-    String name = removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX);
+  public String name() {
+    String name = removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX);
     if (name.contains("/")) {
       name = name.substring(name.lastIndexOf('/') + 1);
     }
@@ -35,17 +35,17 @@ final class MySQLDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getAutoIncrementQuery(String idSource) {
+  public String autoIncrementQuery(String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
   @Override
-  public String getSelectForUpdateClause() {
+  public String selectForUpdateClause() {
     return "for update";
   }
 
   @Override
-  public String getLimitOffsetClause(Integer limit, Integer offset) {
+  public String limitOffsetClause(Integer limit, Integer offset) {
     return createLimitOffsetClause(limit, offset);
   }
 

@@ -73,7 +73,7 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
    * @param selected true if the cell is selected
    * @return the foreground color
    */
-  default Color getForeground(JTable table, int row, boolean selected) {
+  default Color foregroundColor(JTable table, int row, boolean selected) {
     if (selected) {
       return table.getSelectionForeground();
     }
@@ -88,7 +88,7 @@ public interface EntityTableCellRenderer extends TableCellRenderer {
    * @param selected true if the cell is selected
    * @return the background color
    */
-  default Color getBackground(JTable table, int row, boolean selected) {
+  default Color backgroundColor(JTable table, int row, boolean selected) {
     if (selected) {
       return table.getSelectionBackground();
     }

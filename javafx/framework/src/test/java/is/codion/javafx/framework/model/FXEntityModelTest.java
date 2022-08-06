@@ -20,17 +20,17 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
   @Override
   protected FXEntityModel createDepartmentModel() {
     FXEntityModel entityModel = new FXEntityModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
-    new EntityTableView(entityModel.getTableModel());
+    new EntityTableView(entityModel.tableModel());
     FXEntityModel employeeModel = new FXEntityModel(new FXEntityEditModel(TestDomain.T_EMP, getConnectionProvider()));
-    employeeModel.getEditModel().refreshDataModels();
-    FXEntityListModel employeeListModel = employeeModel.getTableModel();
+    employeeModel.editModel().refreshDataModels();
+    FXEntityListModel employeeListModel = employeeModel.tableModel();
     new EntityTableView(employeeListModel);
-    FXEntityEditModel employeeEditModel = employeeModel.getEditModel();
-    new EntityTableView(employeeEditModel.getForeignKeyListModel(TestDomain.EMP_DEPARTMENT_FK));
+    FXEntityEditModel employeeEditModel = employeeModel.editModel();
+    new EntityTableView(employeeEditModel.foreignKeyListModel(TestDomain.EMP_DEPARTMENT_FK));
     entityModel.addDetailModel(employeeModel);
     entityModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);
     entityModel.addLinkedDetailModel(employeeModel);
-    employeeModel.getTableModel().getQueryConditionRequiredState().set(false);
+    employeeModel.tableModel().queryConditionRequiredState().set(false);
 
     return entityModel;
   }
@@ -38,7 +38,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
   @Override
   protected FXEntityModel createDepartmentModelWithoutDetailModel() {
     FXEntityModel model = new FXEntityModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
-    new EntityTableView(model.getTableModel());
+    new EntityTableView(model.tableModel());
 
     return model;
   }
@@ -67,7 +67,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
   @Override
   protected FXEntityModel createEmployeeModel() {
     FXEntityModel model = new FXEntityModel(TestDomain.T_EMP, getConnectionProvider());
-    new EntityTableView(model.getTableModel());
+    new EntityTableView(model.tableModel());
 
     return model;
   }

@@ -36,7 +36,7 @@ abstract class AbstractItem<T> implements Item<T> {
    */
   @Override
   public final int compareTo(Item<T> item) {
-    return getCollator().compare(caption(), item.caption());
+    return collator().compare(caption(), item.caption());
   }
 
   /**
@@ -57,9 +57,9 @@ abstract class AbstractItem<T> implements Item<T> {
     return value == null ? 0 : value.hashCode();
   }
 
-  private Comparator<String> getCollator() {
+  private Comparator<String> collator() {
     if (collator == null) {
-      collator = Text.getSpaceAwareCollator();
+      collator = Text.spaceAwareCollator();
     }
 
     return collator;

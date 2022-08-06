@@ -100,14 +100,14 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @throws IllegalStateException in case no server admin instance is available
    */
   @Override
-  public final EntityServerAdmin getServerAdmin(User user) throws ServerAuthenticationException {
+  public final EntityServerAdmin serverAdmin(User user) throws ServerAuthenticationException {
     validateUserCredentials(user, configuration.adminUser());
 
     return getAdmin();
   }
 
   @Override
-  public final int getServerLoad() {
+  public final int serverLoad() {
     return AbstractRemoteEntityConnection.getRequestsPerSecond();
   }
 
@@ -199,29 +199,29 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @return a {@link Database.Statistics} object containing query statistics collected since
    * the last time this function was called.
    */
-  final Database.Statistics getDatabaseStatistics() {
-    return database.getStatistics();
+  final Database.Statistics databaseStatistics() {
+    return database.statistics();
   }
 
   @Override
   protected final void maintainConnections(Collection<ClientConnection<AbstractRemoteEntityConnection>> connections) throws RemoteException {
     for (ClientConnection<AbstractRemoteEntityConnection> client : connections) {
-      AbstractRemoteEntityConnection connection = client.getConnection();
+      AbstractRemoteEntityConnection connection = client.connection();
       if (!connection.isActive()) {
         boolean connected = connection.isConnected();
         boolean timedOut = hasConnectionTimedOut(connection);
         if (!connected || timedOut) {
           LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
-          disconnect(client.getRemoteClient().clientId());
+          disconnect(client.remoteClient().clientId());
         }
       }
     }
   }
 
   @Override
-  protected final Collection<RemoteClient> getClients(String clientTypeId) {
+  protected final Collection<RemoteClient> clients(String clientTypeId) {
     //using the remoteClient from the connection since it contains the correct database user
-    return getConnections().values().stream()
+    return connections().values().stream()
             .map(AbstractRemoteEntityConnection::getRemoteClient)
             .filter(remoteClient -> remoteClient.clientTypeId().equals(clientTypeId))
             .collect(toList());
@@ -233,8 +233,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   final Map<EntityType, String> getEntityDefinitions() {
     Map<EntityType, String> definitions = new HashMap<>();
     for (Domain domain : domainModels.values()) {
-      for (EntityDefinition definition : domain.entities().entityDefinitions()) {
-        definitions.put(definition.getEntityType(), definition.getTableName());
+      for (EntityDefinition definition : domain.entities().definitions()) {
+        definitions.put(definition.entityType(), definition.tableName());
       }
     }
 
@@ -247,7 +247,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @return the client log for the given connection
    */
   final ClientLog getClientLog(UUID clientId) {
-    return getConnection(clientId).getClientLog();
+    return connection(clientId).getClientLog();
   }
 
   /**
@@ -255,7 +255,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @return true if logging is enabled for the given client
    */
   final boolean isLoggingEnabled(UUID clientId) {
-    return getConnection(clientId).isLoggingEnabled();
+    return connection(clientId).isLoggingEnabled();
   }
 
   /**
@@ -263,7 +263,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param loggingEnabled the new logging status
    */
   final void setLoggingEnabled(UUID clientId, boolean loggingEnabled) {
-    getConnection(clientId).setLoggingEnabled(loggingEnabled);
+    connection(clientId).setLoggingEnabled(loggingEnabled);
   }
 
   /**
@@ -272,9 +272,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @see #hasConnectionTimedOut(AbstractRemoteEntityConnection)
    */
   final void disconnectClients(boolean timedOutOnly) throws RemoteException {
-    List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
+    List<RemoteClient> clients = new ArrayList<>(connections().keySet());
     for (RemoteClient client : clients) {
-      AbstractRemoteEntityConnection connection = getConnection(client.clientId());
+      AbstractRemoteEntityConnection connection = connection(client.clientId());
       if (timedOutOnly) {
         boolean active = connection.isActive();
         if (!active && hasConnectionTimedOut(connection)) {
@@ -316,8 +316,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param registryPort the registry port
    */
   private void bindToRegistry(int registryPort) throws RemoteException {
-    getRegistry().rebind(getServerInformation().serverName(), this);
-    String connectInfo = getServerInformation().serverName() + " bound to registry on port: " + registryPort;
+    getRegistry().rebind(serverInformation().serverName(), this);
+    String connectInfo = serverInformation().serverName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
   }
@@ -426,7 +426,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     try {
       Registry registry = LocateRegistry.getRegistry(registryPort);
       Server<?, EntityServerAdmin> server = (Server<?, EntityServerAdmin>) registry.lookup(serverName);
-      EntityServerAdmin serverAdmin = server.getServerAdmin(adminUser);
+      EntityServerAdmin serverAdmin = server.serverAdmin(adminUser);
       String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
       LOG.info(shutDownInfo);
       System.out.println(shutDownInfo);

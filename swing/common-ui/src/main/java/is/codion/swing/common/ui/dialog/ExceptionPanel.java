@@ -124,7 +124,7 @@ final class ExceptionPanel extends JPanel {
     showDetailsState.addDataListener(detailsListener);
   }
 
-  public EventObserver<?> getCloseObserver() {
+  public EventObserver<?> closeObserver() {
     return closeEvent.observer();
   }
 

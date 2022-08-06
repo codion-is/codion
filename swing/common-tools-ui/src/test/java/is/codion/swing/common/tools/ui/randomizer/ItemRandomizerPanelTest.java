@@ -20,7 +20,7 @@ public class ItemRandomizerPanelTest {
     model.addItem("two", 5);
     model.addItem("three", 5);
     ItemRandomizerPanel<String> panel = new ItemRandomizerPanel<>(model);
-    assertEquals(model, panel.getModel());
+    assertEquals(model, panel.model());
   }
 
   @Test

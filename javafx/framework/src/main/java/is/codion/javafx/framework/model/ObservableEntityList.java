@@ -71,29 +71,29 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     super(FXCollections.observableArrayList());
     this.entityType = entityType;
     this.connectionProvider = connectionProvider;
-    this.entityDefinition =  connectionProvider.entities().getDefinition(entityType);
+    this.entityDefinition =  connectionProvider.entities().definition(entityType);
     this.filteredList = new FilteredList<>(this);
-    this.sortedList = new SortedList<>(filteredList, connectionProvider.entities().getDefinition(entityType).getComparator());
+    this.sortedList = new SortedList<>(filteredList, connectionProvider.entities().definition(entityType).comparator());
   }
 
   /**
    * @return the id of the underlying entity
    */
-  public final EntityType getEntityType() {
+  public final EntityType entityType() {
     return entityType;
   }
 
   /**
    * @return the definition of the underlying entity
    */
-  public final EntityDefinition getEntityDefinition() {
+  public final EntityDefinition entityDefinition() {
     return entityDefinition;
   }
 
   /**
    * @return the connection provider
    */
-  public final EntityConnectionProvider getConnectionProvider() {
+  public final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
   }
 
@@ -108,7 +108,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   @Override
-  public final StateObserver getRefreshingObserver() {
+  public final StateObserver refreshingObserver() {
     return refreshingState.observer();
   }
 
@@ -116,14 +116,14 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @return a filtered view of this list
    * @see #setIncludeCondition(Predicate)
    */
-  public final FilteredList<Entity> getFilteredList() {
+  public final FilteredList<Entity> filteredList() {
     return filteredList;
   }
 
   /**
    * @return a sorted view of this list
    */
-  public final SortedList<Entity> getSortedList() {
+  public final SortedList<Entity> sortedList() {
     return sortedList;
   }
 
@@ -161,7 +161,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @return the selection model
    * @throws IllegalStateException in case the selection model has not been set
    */
-  public final FXEntityListSelectionModel getSelectionModel() {
+  public final FXEntityListSelectionModel selectionModel() {
     checkIfSelectionModelHasBeenSet();
     return selectionModel;
   }
@@ -169,7 +169,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   /**
    * @return the selection model, or an empty optional if the selection model has not been set
    */
-  public final Optional<FXEntityListSelectionModel> getSelectionModelOptional() {
+  public final Optional<FXEntityListSelectionModel> selectionModelOptional() {
     return Optional.ofNullable(selectionModel);
   }
 
@@ -177,27 +177,27 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * @return a {@link StateObserver} active when the selection is empty
    * @throws IllegalStateException in case the selection model has not been set
    */
-  public final StateObserver getSelectionEmptyObserver() {
+  public final StateObserver selectionEmptyObserver() {
     checkIfSelectionModelHasBeenSet();
-    return selectionModel.getSelectionEmptyObserver();
+    return selectionModel.selectionEmptyObserver();
   }
 
   /**
    * @return a {@link StateObserver} active when a single item is selected
    * @throws IllegalStateException in case the selection model has not been set
    */
-  public final StateObserver getSingleSelectionObserver() {
+  public final StateObserver singleSelectionObserver() {
     checkIfSelectionModelHasBeenSet();
-    return selectionModel.getSingleSelectionObserver();
+    return selectionModel.singleSelectionObserver();
   }
 
   /**
    * @return a {@link StateObserver} active when multiple items are selected
    * @throws IllegalStateException in case the selection model has not been set
    */
-  public final StateObserver getMultipleSelectionObserver() {
+  public final StateObserver multipleSelectionObserver() {
     checkIfSelectionModelHasBeenSet();
-    return selectionModel.getMultipleSelectionObserver();
+    return selectionModel.multipleSelectionObserver();
   }
 
   /**
@@ -223,12 +223,12 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   @Override
-  public final List<Entity> getItems() {
+  public final List<Entity> items() {
     return FXCollections.unmodifiableObservableList(this);
   }
 
   @Override
-  public final List<Entity> getFilteredItems() {
+  public final List<Entity> filteredItems() {
     if (size() != filteredList.size()) {
       List<Entity> result = new ArrayList<>(this);
       result.removeAll(filteredList);
@@ -240,17 +240,17 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   @Override
-  public final List<Entity> getVisibleItems() {
+  public final List<Entity> visibleItems() {
     return FXCollections.unmodifiableObservableList(this);
   }
 
   @Override
-  public final int getVisibleItemCount() {
+  public final int visibleItemCount() {
     return filteredList.size();
   }
 
   @Override
-  public final int getFilteredItemCount() {
+  public final int filteredItemCount() {
     return size() - filteredList.size();
   }
 
@@ -325,7 +325,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
       }
 
       return connectionProvider.connection().select(condition.selectBuilder()
-              .orderBy(connectionProvider.entities().getDefinition(entityType).getOrderBy())
+              .orderBy(connectionProvider.entities().definition(entityType).orderBy())
               .build());
     }
     catch (DatabaseException e) {

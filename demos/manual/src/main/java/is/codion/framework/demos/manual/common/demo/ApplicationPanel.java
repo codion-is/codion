@@ -149,7 +149,7 @@ public final class ApplicationPanel extends JPanel {
             .delimiterDash()
             .yearFourDigits()
             .build()
-            .getDateTimePattern(), model.localDateValue())
+            .dateTimePattern(), model.localDateValue())
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
@@ -161,7 +161,7 @@ public final class ApplicationPanel extends JPanel {
             .yearTwoDigits()
             .hoursMinutes()
             .build()
-            .getDateTimePattern(), model.localDateTimeValue())
+            .dateTimePattern(), model.localDateTimeValue())
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
@@ -383,7 +383,7 @@ public final class ApplicationPanel extends JPanel {
     }
 
     @Override
-    public Predicate<Item<Integer>> getPredicate(Integer value) {
+    public Predicate<Item<Integer>> createPredicate(Integer value) {
       return item -> Objects.equals(item.value(), value);
     }
   }

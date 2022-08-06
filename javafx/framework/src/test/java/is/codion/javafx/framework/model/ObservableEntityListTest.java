@@ -61,9 +61,9 @@ public final class ObservableEntityListTest {
     list.setIncludeCondition(item -> Objects.equals(item.get(TestDomain.DEPARTMENT_NAME), "SALES"));
     assertEquals(1, counter.get());
     assertNotNull(list.getIncludeCondition());
-    assertEquals(3, list.getFilteredItemCount());
-    assertEquals(1, list.getVisibleItemCount());
-    assertEquals(3, list.getFilteredItems().size());
+    assertEquals(3, list.filteredItemCount());
+    assertEquals(1, list.visibleItemCount());
+    assertEquals(3, list.filteredItems().size());
     assertFalse(list.isFiltered(sales));
     assertTrue(list.isVisible(sales));
 
@@ -72,9 +72,9 @@ public final class ObservableEntityListTest {
     list.setIncludeCondition(null);
     assertEquals(2, counter.get());
     assertNull(list.getIncludeCondition());
-    assertEquals(0, list.getFilteredItemCount());
-    assertEquals(4, list.getVisibleItemCount());
-    assertEquals(0, list.getFilteredItems().size());
+    assertEquals(0, list.filteredItemCount());
+    assertEquals(4, list.visibleItemCount());
+    assertEquals(0, list.filteredItems().size());
     assertFalse(list.isFiltered(sales));
     assertTrue(list.isVisible(sales));
     list.removeFilterListener(listener);
@@ -94,19 +94,19 @@ public final class ObservableEntityListTest {
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     Entity operations = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
 
-    list.getSelectionModel().setSelectedItem(sales);
-    assertFalse(list.getSelectionEmptyObserver().get());
-    assertTrue(list.getSingleSelectionObserver().get());
-    assertFalse(list.getMultipleSelectionObserver().get());
+    list.selectionModel().setSelectedItem(sales);
+    assertFalse(list.selectionEmptyObserver().get());
+    assertTrue(list.singleSelectionObserver().get());
+    assertFalse(list.multipleSelectionObserver().get());
 
-    list.getSelectionModel().setSelectedItems(asList(sales, operations));
-    assertFalse(list.getSelectionEmptyObserver().get());
-    assertFalse(list.getSingleSelectionObserver().get());
-    assertTrue(list.getMultipleSelectionObserver().get());
+    list.selectionModel().setSelectedItems(asList(sales, operations));
+    assertFalse(list.selectionEmptyObserver().get());
+    assertFalse(list.singleSelectionObserver().get());
+    assertTrue(list.multipleSelectionObserver().get());
 
-    list.getSelectionModel().clearSelection();
-    assertTrue(list.getSelectionEmptyObserver().get());
-    assertFalse(list.getSingleSelectionObserver().get());
-    assertFalse(list.getMultipleSelectionObserver().get());
+    list.selectionModel().clearSelection();
+    assertTrue(list.selectionEmptyObserver().get());
+    assertFalse(list.singleSelectionObserver().get());
+    assertFalse(list.multipleSelectionObserver().get());
   }
 }

@@ -24,9 +24,9 @@ final class ConditionCombinationSerializer implements Serializable {
   void serialize(Condition.Combination combination, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("type", "combination");
-    generator.writeStringField("conjunction", combination.getConjunction().name());
+    generator.writeStringField("conjunction", combination.conjunction().name());
     generator.writeArrayFieldStart("conditions");
-    for (Condition condition : combination.getConditions()) {
+    for (Condition condition : combination.conditions()) {
       if (condition instanceof Condition.Combination) {
         serialize((Condition.Combination) condition, generator);
       }

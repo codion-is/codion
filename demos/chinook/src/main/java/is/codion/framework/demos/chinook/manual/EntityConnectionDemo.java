@@ -85,7 +85,7 @@ public final class EntityConnectionDemo {
     // using track.getForeignKey(Track.GENRE_FK) you get a 'genre'
     // instance containing only the primary key, since the condition
     // fetch depth limit prevented it from being selected
-    genre = track.getForeignKey(Track.GENRE_FK);
+    genre = track.referencedEntity(Track.GENRE_FK);
     // end::fetchDepthCondition[]
   }
 
@@ -109,7 +109,7 @@ public final class EntityConnectionDemo {
     // using track.getForeignKey(Track.ALBUM_FK) you get a 'album'
     // instance containing only the primary key, since the condition
     // fetch depth limit prevented it from being selected
-    album = track.getForeignKey(Track.ALBUM_FK);
+    album = track.referencedEntity(Track.ALBUM_FK);
     // end::fetchDepthConditionForeignKey[]
   }
 
@@ -280,7 +280,7 @@ public final class EntityConnectionDemo {
     toDelete.addAll(Entity.getPrimaryKeys(playlistTracks));
     toDelete.addAll(Entity.getPrimaryKeys(tracks));
     toDelete.addAll(Entity.getPrimaryKeys(albums));
-    toDelete.add(audioslave.getPrimaryKey());
+    toDelete.add(audioslave.primaryKey());
 
     connection.delete(toDelete);
     // end::deleteKey[]

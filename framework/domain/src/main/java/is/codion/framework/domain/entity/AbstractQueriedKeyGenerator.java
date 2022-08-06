@@ -17,11 +17,11 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
     switch (keyProperty.columnType()) {
       case Types.INTEGER:
         entity.put((Attribute<Integer>) keyProperty.attribute(),
-                connection.selectInteger(getQuery(connection.getDatabase())));
+                connection.selectInteger(getQuery(connection.database())));
         break;
       case Types.BIGINT:
         entity.put((Attribute<Long>) keyProperty.attribute(),
-                connection.selectLong(getQuery(connection.getDatabase())));
+                connection.selectLong(getQuery(connection.database())));
         break;
       default:
         throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes", null, null);

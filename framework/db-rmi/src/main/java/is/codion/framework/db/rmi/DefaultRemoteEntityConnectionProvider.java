@@ -123,7 +123,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
     boolean unreachable = false;
     try {
       if (this.server != null) {
-        this.server.getServerLoad();
+        this.server.serverLoad();
       }//just to check the connection
     }
     catch (RemoteException e) {
@@ -141,7 +141,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   private void connectToServer() throws RemoteException, NotBoundException {
     this.server = Server.Locator.locator().getServer(serverHostName, ServerConfiguration.SERVER_NAME_PREFIX.get(), registryPort, serverPort);
-    this.serverInformation = this.server.getServerInformation();
+    this.serverInformation = this.server.serverInformation();
   }
 
   private static final class RemoteEntityConnectionHandler implements InvocationHandler {

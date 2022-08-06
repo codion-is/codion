@@ -33,6 +33,6 @@ public final class EntityViewTest {
     FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     FXEntityModel model = new FXEntityModel(listModel);
 
-    new EntityView(model, new EntityEditViewTest.EmpEditView(listModel.getEditModel()), new EntityTableView(listModel)).initializePanel();
+    new EntityView(model, new EntityEditViewTest.EmpEditView(listModel.editModel()), new EntityTableView(listModel)).initializePanel();
   }
 }

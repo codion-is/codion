@@ -66,12 +66,12 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JSplitPane createCurrentConnectionsPanel() throws RemoteException {
-    JList<ClientMonitor> clientTypeList = new JList<>(model.getClientTypeListModel());
+    JList<ClientMonitor> clientTypeList = new JList<>(model.clientTypeListModel());
 
     clientTypeList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     clientTypeList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel(clientTypeList.getSelectedValue()));
 
-    JList<ClientMonitor> userList = new JList<>(model.getUserListModel());
+    JList<ClientMonitor> userList = new JList<>(model.userListModel());
 
     userList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     userList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel(userList.getSelectedValue()));
@@ -95,7 +95,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(initializeMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Idle connection timeout (s)"));
-    actionBase.add(Components.integerSpinner(new SpinnerNumberModel(), model.getIdleConnectionTimeoutValue())
+    actionBase.add(Components.integerSpinner(new SpinnerNumberModel(), model.idleConnectionTimeoutValue())
             .columns(7)
             .build());
 
@@ -129,7 +129,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   private JPanel createConnectionHistoryPanel() {
     JPanel configPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     configPanel.add(new JLabel("Update interval (s)"));
-    configPanel.add(Components.integerSpinner(model.getUpdateIntervalValue())
+    configPanel.add(Components.integerSpinner(model.updateIntervalValue())
             .minimum(1)
             .columns(SPINNER_COLUMNS)
             .editable(false)
@@ -141,7 +141,7 @@ public final class ClientUserMonitorPanel extends JPanel {
             .caption("Reset")
             .build(), BorderLayout.EAST);
 
-    FilteredTable<?, ?, ?> userHistoryTable = new FilteredTable<>(model.getUserHistoryTableModel());
+    FilteredTable<?, ?, ?> userHistoryTable = new FilteredTable<>(model.userHistoryTableModel());
 
     JPanel connectionHistoryPanel = new JPanel(Layouts.borderLayout());
     connectionHistoryPanel.add(new JScrollPane(userHistoryTable), BorderLayout.CENTER);

@@ -65,7 +65,7 @@ public class EntityComponents {
   /**
    * @return the underlying entity definition
    */
-  public final EntityDefinition getEntityDefinition() {
+  public final EntityDefinition entityDefinition() {
     return entityDefinition;
   }
 
@@ -78,7 +78,7 @@ public class EntityComponents {
     if (attribute instanceof ForeignKey) {
       return false;
     }
-    Property<?> property = entityDefinition.getProperty(attribute);
+    Property<?> property = entityDefinition.property(attribute);
     if (property instanceof ItemProperty) {
       return true;
     }
@@ -106,7 +106,7 @@ public class EntityComponents {
    * @throws IllegalArgumentException in case the attribute type is not supported
    */
   public <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> component(Attribute<T> attribute) {
-    Property<T> property = entityDefinition.getProperty(attribute);
+    Property<T> property = entityDefinition.property(attribute);
     if (property instanceof ItemProperty) {
       return (ComponentBuilder<T, C, B>) itemComboBox(attribute);
     }
@@ -150,7 +150,7 @@ public class EntityComponents {
    * @return a CheckBox builder
    */
   public final CheckBoxBuilder checkBox(Attribute<Boolean> attribute) {
-    Property<Boolean> property = entityDefinition.getProperty(attribute);
+    Property<Boolean> property = entityDefinition.property(attribute);
 
     return Components.checkBox()
             .toolTipText(property.description())
@@ -166,7 +166,7 @@ public class EntityComponents {
    * @return a ToggleButton builder
    */
   public final <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(Attribute<Boolean> attribute) {
-    Property<Boolean> property = entityDefinition.getProperty(attribute);
+    Property<Boolean> property = entityDefinition.property(attribute);
 
     return (ButtonBuilder<Boolean, JToggleButton, B>) Components.toggleButton()
             .toolTipText(property.description())
@@ -180,7 +180,7 @@ public class EntityComponents {
    * @return a boolean ComboBox builder
    */
   public final ItemComboBoxBuilder<Boolean> booleanComboBox(Attribute<Boolean> attribute) {
-    Property<Boolean> property = entityDefinition.getProperty(attribute);
+    Property<Boolean> property = entityDefinition.property(attribute);
 
     return Components.booleanComboBox(ItemComboBoxModel.createBooleanModel())
             .toolTipText(property.description());
@@ -195,7 +195,7 @@ public class EntityComponents {
    */
   public final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> foreignKeyComboBox(ForeignKey foreignKey,
                                                                                                                                     SwingEntityComboBoxModel comboBoxModel) {
-    ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
+    ForeignKeyProperty foreignKeyProperty = entityDefinition.foreignKeyProperty(foreignKey);
 
     return (ComboBoxBuilder<Entity, EntityComboBox, B>) EntityComboBox.builder(comboBoxModel)
             .toolTipText(foreignKeyProperty.description());
@@ -208,7 +208,7 @@ public class EntityComponents {
    * @return a foreign key search field builder
    */
   public final EntitySearchField.Builder foreignKeySearchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
-    ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
+    ForeignKeyProperty foreignKeyProperty = entityDefinition.foreignKeyProperty(foreignKey);
 
     return EntitySearchField.builder(searchModel)
             .toolTipText(foreignKeyProperty.description() == null ? searchModel.getDescription() : foreignKeyProperty.description());
@@ -221,7 +221,7 @@ public class EntityComponents {
    * @return a foreign key text field builder
    */
   public final <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> foreignKeyTextField(ForeignKey foreignKey) {
-    ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
+    ForeignKeyProperty foreignKeyProperty = entityDefinition.foreignKeyProperty(foreignKey);
 
     return (TextFieldBuilder<Entity, JTextField, B>) Components.textField(Entity.class)
             .toolTipText(foreignKeyProperty.description())
@@ -236,7 +236,7 @@ public class EntityComponents {
    * @return a foreign key label builder
    */
   public final LabelBuilder<Entity> foreignKeyLabel(ForeignKey foreignKey) {
-    ForeignKeyProperty foreignKeyProperty = entityDefinition.getForeignKeyProperty(foreignKey);
+    ForeignKeyProperty foreignKeyProperty = entityDefinition.foreignKeyProperty(foreignKey);
 
     return Components.<Entity>label()
             .toolTipText(foreignKeyProperty.description());
@@ -251,7 +251,7 @@ public class EntityComponents {
    * @throws IllegalArgumentException in case the given attribute is not associated with a {@link ItemProperty}
    */
   public final <T> ItemComboBoxBuilder<T> itemComboBox(Attribute<T> attribute) {
-    Property<T> property = entityDefinition.getProperty(attribute);
+    Property<T> property = entityDefinition.property(attribute);
     if (!(property instanceof ItemProperty)) {
       throw new IllegalArgumentException("Property based on '" + property.attribute() + "' is not a ItemProperty");
     }
@@ -272,7 +272,7 @@ public class EntityComponents {
    */
   public final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(Attribute<T> attribute,
                                                                                                                  ComboBoxModel<T> comboBoxModel) {
-    Property<T> property = entityDefinition.getProperty(attribute);
+    Property<T> property = entityDefinition.property(attribute);
 
     return (ComboBoxBuilder<T, C, B>) Components.comboBox(comboBoxModel)
             .toolTipText(property.description());
@@ -285,7 +285,7 @@ public class EntityComponents {
    * @return a {@link TemporalInputPanel} builder
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute) {
-    return temporalInputPanel(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
+    return temporalInputPanel(attribute, entityDefinition.property(attribute).dateTimePattern());
   }
 
   /**
@@ -297,7 +297,7 @@ public class EntityComponents {
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
     return Components.temporalInputPanel(attribute.valueClass(), dateTimePattern)
-            .toolTipText(entityDefinition.getProperty(attribute).description());
+            .toolTipText(entityDefinition.property(attribute).description());
   }
 
   /**
@@ -306,7 +306,7 @@ public class EntityComponents {
    * @return a {@link TextInputPanel} builder
    */
   public final TextInputPanel.Builder textInputPanel(Attribute<String> attribute) {
-    Property<String> property = entityDefinition.getProperty(attribute);
+    Property<String> property = entityDefinition.property(attribute);
 
     return Components.textInputPanel()
             .toolTipText(property.description())
@@ -320,7 +320,7 @@ public class EntityComponents {
    * @return a TextArea builder
    */
   public final TextAreaBuilder textArea(Attribute<String> attribute) {
-    Property<String> property = entityDefinition.getProperty(attribute);
+    Property<String> property = entityDefinition.property(attribute);
     if (!attribute.isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string attribute");
     }
@@ -339,7 +339,7 @@ public class EntityComponents {
    * @return a text field builder
    */
   public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
-    Property<T> property = entityDefinition.getProperty(attribute);
+    Property<T> property = entityDefinition.property(attribute);
 
     Class<T> valueClass = attribute.valueClass();
     if (valueClass.equals(LocalTime.class)) {
@@ -371,7 +371,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute) {
-    return localTimeField(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
+    return localTimeField(attribute, entityDefinition.property(attribute).dateTimePattern());
   }
 
   /**
@@ -382,7 +382,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<LocalTime> localTimeField(Attribute<LocalTime> attribute, String dateTimePattern) {
     return Components.localTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.getProperty(attribute).description());
+            .toolTipText(entityDefinition.property(attribute).description());
   }
 
   /**
@@ -391,7 +391,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute) {
-    return localDateField(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
+    return localDateField(attribute, entityDefinition.property(attribute).dateTimePattern());
   }
 
   /**
@@ -402,7 +402,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<LocalDate> localDateField(Attribute<LocalDate> attribute, String dateTimePattern) {
     return Components.localDateField(dateTimePattern)
-            .toolTipText(entityDefinition.getProperty(attribute).description());
+            .toolTipText(entityDefinition.property(attribute).description());
   }
 
   /**
@@ -411,7 +411,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute) {
-    return localDateTimeField(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
+    return localDateTimeField(attribute, entityDefinition.property(attribute).dateTimePattern());
   }
 
   /**
@@ -422,7 +422,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<LocalDateTime> localDateTimeField(Attribute<LocalDateTime> attribute, String dateTimePattern) {
     return Components.localDateTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.getProperty(attribute).description());
+            .toolTipText(entityDefinition.property(attribute).description());
   }
 
   /**
@@ -431,7 +431,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute) {
-    return offsetDateTimeField(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
+    return offsetDateTimeField(attribute, entityDefinition.property(attribute).dateTimePattern());
   }
 
   /**
@@ -442,7 +442,7 @@ public class EntityComponents {
    */
   public final TemporalField.Builder<OffsetDateTime> offsetDateTimeField(Attribute<OffsetDateTime> attribute, String dateTimePattern) {
     return Components.offsetDateTimeField(dateTimePattern)
-            .toolTipText(entityDefinition.getProperty(attribute).description());
+            .toolTipText(entityDefinition.property(attribute).description());
   }
 
   /**
@@ -452,7 +452,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute) {
-    return temporalField(attribute, entityDefinition.getProperty(attribute).dateTimePattern());
+    return temporalField(attribute, entityDefinition.property(attribute).dateTimePattern());
   }
 
   /**
@@ -463,7 +463,7 @@ public class EntityComponents {
    * @return a {@link TemporalField} builder
    */
   public final <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute, String dateTimePattern) {
-    Property<T> property = entityDefinition.getProperty(attribute);
+    Property<T> property = entityDefinition.property(attribute);
 
     return Components.temporalField(property.attribute().valueClass(), dateTimePattern)
             .toolTipText(property.description());
@@ -475,7 +475,7 @@ public class EntityComponents {
    * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<Integer> integerField(Attribute<Integer> attribute) {
-    Property<Integer> property = entityDefinition.getProperty(attribute);
+    Property<Integer> property = entityDefinition.property(attribute);
 
     return Components.integerField()
             .format(property.format())
@@ -490,7 +490,7 @@ public class EntityComponents {
    * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<Long> longField(Attribute<Long> attribute) {
-    Property<Long> property = entityDefinition.getProperty(attribute);
+    Property<Long> property = entityDefinition.property(attribute);
 
     return Components.longField()
             .format(property.format())
@@ -505,7 +505,7 @@ public class EntityComponents {
    * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<Double> doubleField(Attribute<Double> attribute) {
-    Property<Double> property = entityDefinition.getProperty(attribute);
+    Property<Double> property = entityDefinition.property(attribute);
 
     return Components.doubleField()
             .format(property.format())
@@ -521,7 +521,7 @@ public class EntityComponents {
    * @return a {@link NumberField} builder
    */
   public final NumberField.Builder<BigDecimal> bigDecimalField(Attribute<BigDecimal> attribute) {
-    Property<BigDecimal> property = entityDefinition.getProperty(attribute);
+    Property<BigDecimal> property = entityDefinition.property(attribute);
 
     return Components.bigDecimalField()
             .format(property.format())
@@ -537,7 +537,7 @@ public class EntityComponents {
    * @return a masked text field builder
    */
   public final MaskedTextFieldBuilder maskedTextField(Attribute<String> attribute) {
-    Property<String> property = entityDefinition.getProperty(attribute);
+    Property<String> property = entityDefinition.property(attribute);
 
     return Components.maskedTextField()
             .toolTipText(property.description());

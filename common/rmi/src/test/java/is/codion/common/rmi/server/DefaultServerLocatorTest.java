@@ -61,12 +61,12 @@ public class DefaultServerLocatorTest {
     @Override
     protected Remote connect(RemoteClient remoteClient) {return null;}
     @Override
-    public ServerAdmin getServerAdmin(User user) throws RemoteException, ServerAuthenticationException {return null;}
+    public ServerAdmin serverAdmin(User user) throws RemoteException, ServerAuthenticationException {return null;}
     @Override
     protected void disconnect(Remote connection) {}
     @Override
     protected void maintainConnections(Collection<ClientConnection<Remote>> connections) throws RemoteException {}
     @Override
-    public int getServerLoad() {return 0;}
+    public int serverLoad() {return 0;}
   }
 }

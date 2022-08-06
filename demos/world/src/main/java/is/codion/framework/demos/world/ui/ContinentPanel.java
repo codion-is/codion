@@ -21,21 +21,21 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 final class ContinentPanel extends EntityPanel {
 
   ContinentPanel(SwingEntityModel continentModel) {
-    super(continentModel, new ContinentTablePanel(continentModel.getTableModel()));
+    super(continentModel, new ContinentTablePanel(continentModel.tableModel()));
   }
 
   @Override
   protected void initializeUI() {
-    ContinentModel model = (ContinentModel) getModel();
+    ContinentModel model = (ContinentModel) model();
 
-    EntityTablePanel tablePanel = getTablePanel();
+    EntityTablePanel tablePanel = tablePanel();
     tablePanel.initializePanel();
     setPreferredHeight(tablePanel, 200);
 
-    ChartPanel populationChartPanel = createPieChartPanel(this, model.getPopulationDataset(), "Population");
-    ChartPanel surfaceAreaChartPanel = createPieChartPanel(this, model.getSurfaceAreaDataset(), "Surface area");
-    ChartPanel gnpChartPanel = createPieChartPanel(this, model.getGnpDataset(), "GNP");
-    ChartPanel lifeExpectancyChartPanel = createBarChartPanel(this, model.getLifeExpectancyDataset(), "Life expectancy", "Continent", "Years");
+    ChartPanel populationChartPanel = createPieChartPanel(this, model.populationDataset(), "Population");
+    ChartPanel surfaceAreaChartPanel = createPieChartPanel(this, model.surfaceAreaDataset(), "Surface area");
+    ChartPanel gnpChartPanel = createPieChartPanel(this, model.gnpDataset(), "GNP");
+    ChartPanel lifeExpectancyChartPanel = createBarChartPanel(this, model.lifeExpectancyDataset(), "Life expectancy", "Continent", "Years");
 
     Dimension pieChartSize = new Dimension(300, 300);
     populationChartPanel.setPreferredSize(pieChartSize);

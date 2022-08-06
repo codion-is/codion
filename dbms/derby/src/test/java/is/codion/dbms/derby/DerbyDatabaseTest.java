@@ -14,18 +14,18 @@ public class DerbyDatabaseTest {
   @Test
   void getName() {
     DerbyDatabase database = new DerbyDatabase("jdbc:derby:C:/data/sample;option=true;option2=false");
-    assertEquals("C:/data/sample", database.getName());
+    assertEquals("C:/data/sample", database.name());
     database = new DerbyDatabase("jdbc:derby://sample.db:1234;option=true;option2=false");
-    assertEquals("sample.db:1234", database.getName());
+    assertEquals("sample.db:1234", database.name());
     database = new DerbyDatabase("jdbc:derby://sample.db:1234");
-    assertEquals("sample.db:1234", database.getName());
+    assertEquals("sample.db:1234", database.name());
     database = new DerbyDatabase("jdbc:derby://sample.db:1234/dbname");
-    assertEquals("dbname", database.getName());
+    assertEquals("dbname", database.name());
   }
 
   @Test
   void getSequenceQuery() {
-    assertThrows(UnsupportedOperationException.class, () -> new DerbyDatabase(URL).getSequenceQuery("seq"));
+    assertThrows(UnsupportedOperationException.class, () -> new DerbyDatabase(URL).sequenceQuery("seq"));
   }
 
   @Test
@@ -37,14 +37,14 @@ public class DerbyDatabaseTest {
   @Test
   void supportsNoWait() {
     DerbyDatabase db = new DerbyDatabase(URL);
-    assertEquals("for update", db.getSelectForUpdateClause());
+    assertEquals("for update", db.selectForUpdateClause());
   }
 
   @Test
   void getAutoIncrementQuery() {
     DerbyDatabase db = new DerbyDatabase(URL);
     final String idSource = "id_source";
-    assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.getAutoIncrementQuery(idSource));
+    assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.autoIncrementQuery(idSource));
   }
 
   @Test

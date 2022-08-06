@@ -26,7 +26,7 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
             asList(new DefaultColumnFilterModel<>(0, String.class, '%'),
                     new DefaultColumnFilterModel<>(0, Boolean.class, '%')));
     this.schemas = schemas;
-    getSortModel().setSortOrder(0, SortOrder.ASCENDING);
+    sortModel().setSortOrder(0, SortOrder.ASCENDING);
   }
 
   @Override
@@ -63,7 +63,7 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
     public Object getValue(Schema row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case SchemaTableModel.SCHEMA:
-          return row.getName();
+          return row.name();
         case SchemaTableModel.POPULATED:
           return row.isPopulated();
         default:

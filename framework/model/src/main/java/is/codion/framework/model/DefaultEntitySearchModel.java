@@ -87,10 +87,10 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
    * Instantiates a new DefaultEntitySearchModel, using the search properties for the given entity type
    * @param entityType the type of the entity to search
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
-   * @see EntityDefinition#getSearchAttributes()
+   * @see EntityDefinition#searchAttributes()
    */
   public DefaultEntitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, connectionProvider.entities().getDefinition(entityType).getSearchAttributes());
+    this(entityType, connectionProvider, connectionProvider.entities().definition(entityType).searchAttributes());
   }
 
   /**
@@ -114,17 +114,17 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public EntityType getEntityType() {
+  public EntityType entityType() {
     return entityType;
   }
 
   @Override
-  public EntityConnectionProvider getConnectionProvider() {
+  public EntityConnectionProvider connectionProvider() {
     return connectionProvider;
   }
 
   @Override
-  public Collection<Attribute<String>> getSearchAttributes() {
+  public Collection<Attribute<String>> searchAttributes() {
     return unmodifiableCollection(searchAttributes);
   }
 
@@ -175,12 +175,12 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Map<Attribute<String>, SearchSettings> getAttributeSearchSettings() {
+  public Map<Attribute<String>, SearchSettings> attributeSearchSettings() {
     return attributeSearchSettings;
   }
 
   @Override
-  public Value<Character> getWildcardValue() {
+  public Value<Character> wildcardValue() {
     return wildcardValue;
   }
 
@@ -226,7 +226,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   @Override
   public List<Entity> performQuery() {
     try {
-      List<Entity> result = connectionProvider.connection().select(getEntitySelectCondition());
+      List<Entity> result = connectionProvider.connection().select(entitySelectCondition());
       if (resultSorter != null) {
         result.sort(resultSorter);
       }
@@ -239,17 +239,17 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Value<String> getSearchStringValue() {
+  public Value<String> searchStringValue() {
     return searchStringValue;
   }
 
   @Override
-  public Value<String> getMultipleItemSeparatorValue() {
+  public Value<String> multipleItemSeparatorValue() {
     return multipleItemSeparatorValue;
   }
 
   @Override
-  public State getMultipleSelectionEnabledState() {
+  public State multipleSelectionEnabledState() {
     return multipleSelectionEnabledState;
   }
 
@@ -259,7 +259,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public StateObserver getSearchStringRepresentsSelectedObserver() {
+  public StateObserver searchStringRepresentsSelectedObserver() {
     return searchStringRepresentsSelectedState.observer();
   }
 
@@ -268,7 +268,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
    * @throws IllegalStateException in case no search properties are specified
    * @see #setAdditionalConditionProvider(Condition.Provider)
    */
-  private SelectCondition getEntitySelectCondition() {
+  private SelectCondition entitySelectCondition() {
     if (searchAttributes.isEmpty()) {
       throw new IllegalStateException("No search attributes provided for search model: " + entityType);
     }
@@ -279,7 +279,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
       SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
       for (String rawSearchText : searchTexts) {
         AttributeCondition.Builder<String> builder = where(searchAttribute);
-        if (searchSettings.getCaseSensitiveState().get()) {
+        if (searchSettings.caseSensitiveState().get()) {
           conditions.add(builder.equalTo(prepareSearchText(rawSearchText, searchSettings)));
         }
         else {
@@ -292,13 +292,13 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     return (additionalConditionSupplier == null ? conditionCombination :
             additionalConditionSupplier.get().and(conditionCombination))
             .selectBuilder()
-            .orderBy(connectionProvider.entities().getDefinition(entityType).getOrderBy())
+            .orderBy(connectionProvider.entities().definition(entityType).orderBy())
             .build();
   }
 
   private String prepareSearchText(String rawSearchText, SearchSettings searchSettings) {
-    boolean wildcardPrefix = searchSettings.getWildcardPrefixState().get();
-    boolean wildcardPostfix = searchSettings.getWildcardPostfixState().get();
+    boolean wildcardPrefix = searchSettings.wildcardPrefixState().get();
+    boolean wildcardPostfix = searchSettings.wildcardPostfixState().get();
 
     return rawSearchText.equals(String.valueOf(wildcardValue.get())) ? String.valueOf(wildcardValue.get()) :
             ((wildcardPrefix ? wildcardValue.get() : "") + rawSearchText.trim() + (wildcardPostfix ? wildcardValue.get() : ""));
@@ -311,10 +311,10 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private String createDescription() {
-    EntityDefinition definition = connectionProvider.entities().getDefinition(entityType);
+    EntityDefinition definition = connectionProvider.entities().definition(entityType);
 
     return searchAttributes.stream()
-            .map(attribute -> definition.getProperty(attribute).caption())
+            .map(attribute -> definition.property(attribute).caption())
             .collect(joining(", "));
   }
 
@@ -325,8 +325,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private void validateType(Entity entity) {
-    if (!entity.getEntityType().equals(entityType)) {
-      throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.getEntityType());
+    if (!entity.entityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.entityType());
     }
   }
 
@@ -345,17 +345,17 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     private final State caseSensitiveState = State.state(false);
 
     @Override
-    public State getWildcardPrefixState() {
+    public State wildcardPrefixState() {
       return wildcardPrefixState;
     }
 
     @Override
-    public State getWildcardPostfixState() {
+    public State wildcardPostfixState() {
       return wildcardPostfixState;
     }
 
     @Override
-    public State getCaseSensitiveState() {
+    public State caseSensitiveState() {
       return caseSensitiveState;
     }
   }

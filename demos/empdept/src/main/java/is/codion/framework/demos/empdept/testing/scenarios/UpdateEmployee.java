@@ -23,23 +23,23 @@ public final class UpdateEmployee extends AbstractEntityUsageScenario<EmpDeptApp
 
   @Override
   protected void perform(EmpDeptAppPanel.EmpDeptApplicationModel application) throws Exception {
-    SwingEntityModel departmentModel = application.getEntityModel(Department.TYPE);
-    selectRandomRow(departmentModel.getTableModel());
-    SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
-    if (employeeModel.getTableModel().getRowCount() > 0) {
-      EntityConnection connection = employeeModel.getConnectionProvider().connection();
+    SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
+    selectRandomRow(departmentModel.tableModel());
+    SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
+    if (employeeModel.tableModel().getRowCount() > 0) {
+      EntityConnection connection = employeeModel.connectionProvider().connection();
       connection.beginTransaction();
       try {
-        selectRandomRow(employeeModel.getTableModel());
-        Entity selected = employeeModel.getTableModel().getSelectionModel().getSelectedItem();
-        randomize(application.getEntities(), selected, null);
-        employeeModel.getEditModel().setEntity(selected);
-        employeeModel.getEditModel().update();
-        selectRandomRow(employeeModel.getTableModel());
-        selected = employeeModel.getTableModel().getSelectionModel().getSelectedItem();
-        randomize(application.getEntities(), selected, null);
-        employeeModel.getEditModel().setEntity(selected);
-        employeeModel.getEditModel().update();
+        selectRandomRow(employeeModel.tableModel());
+        Entity selected = employeeModel.tableModel().selectionModel().getSelectedItem();
+        randomize(application.entities(), selected, null);
+        employeeModel.editModel().setEntity(selected);
+        employeeModel.editModel().update();
+        selectRandomRow(employeeModel.tableModel());
+        selected = employeeModel.tableModel().selectionModel().getSelectedItem();
+        randomize(application.entities(), selected, null);
+        employeeModel.editModel().setEntity(selected);
+        employeeModel.editModel().update();
       }
       finally {
         if (random.nextBoolean()) {
@@ -53,7 +53,7 @@ public final class UpdateEmployee extends AbstractEntityUsageScenario<EmpDeptApp
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 5;
   }
 }

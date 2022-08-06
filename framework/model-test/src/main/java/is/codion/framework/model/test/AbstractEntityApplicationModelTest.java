@@ -46,18 +46,18 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     Model deptModel = createDepartmentModel();
     model.addEntityModel(deptModel);
-    assertNotNull(model.getEntityModel(TestDomain.T_DEPARTMENT));
-    assertEquals(1, model.getEntityModels().size());
+    assertNotNull(model.entityModel(TestDomain.T_DEPARTMENT));
+    assertEquals(1, model.entityModels().size());
     model.clear();
-    assertEquals(UNIT_TEST_USER, model.getUser());
+    assertEquals(UNIT_TEST_USER, model.user());
 
-    assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(TestDomain.T_EMP));
+    assertThrows(IllegalArgumentException.class, () -> model.entityModel(TestDomain.T_EMP));
     if (!deptModel.containsTableModel()) {
       return;
     }
-    deptModel.getDetailModel(TestDomain.T_EMP).getTableModel().getQueryConditionRequiredState().set(false);
+    deptModel.detailModel(TestDomain.T_EMP).tableModel().queryConditionRequiredState().set(false);
     model.refresh();
-    assertTrue(deptModel.getTableModel().getRowCount() > 0);
+    assertTrue(deptModel.tableModel().getRowCount() > 0);
   }
 
   @Test
@@ -68,7 +68,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
   @Test
   public void getEntityModelByEntityTypeNotFound() {
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(TestDomain.T_DEPARTMENT));
+    assertThrows(IllegalArgumentException.class, () -> model.entityModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test
@@ -76,16 +76,16 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     Model departmentModel = createDepartmentModel();
     model.addEntityModel(departmentModel);
-    assertEquals(departmentModel, model.getEntityModel(TestDomain.T_DEPARTMENT));
+    assertEquals(departmentModel, model.entityModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test
   public void getEntityModelByClass() {
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     Model departmentModel = createDepartmentModel();
-    assertThrows(IllegalArgumentException.class, () -> model.getEntityModel((Class<? extends Model>) departmentModel.getClass()));
+    assertThrows(IllegalArgumentException.class, () -> model.entityModel((Class<? extends Model>) departmentModel.getClass()));
     model.addEntityModels(departmentModel);
-    assertEquals(departmentModel, model.getEntityModel((Class<? extends Model>) departmentModel.getClass()));
+    assertEquals(departmentModel, model.entityModel((Class<? extends Model>) departmentModel.getClass()));
   }
 
   @Test
@@ -99,7 +99,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     assertTrue(model.containsEntityModel(departmentModel));
 
     assertFalse(model.containsEntityModel(TestDomain.T_EMP));
-    assertFalse(model.containsEntityModel(departmentModel.getDetailModel(TestDomain.T_EMP)));
+    assertFalse(model.containsEntityModel(departmentModel.detailModel(TestDomain.T_EMP)));
   }
 
   @Test
@@ -109,7 +109,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
       return;
     }
 
-    Model empModel = deptModel.getDetailModel(TestDomain.T_EMP);
+    Model empModel = deptModel.detailModel(TestDomain.T_EMP);
     deptModel.addLinkedDetailModel(empModel);
 
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
@@ -119,21 +119,21 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
     model.refresh();
 
-    deptModel.getTableModel().getSelectionModel().setSelectedIndex(0);
-    empModel.getTableModel().getSelectionModel().setSelectedIndex(0);
+    deptModel.tableModel().selectionModel().setSelectedIndex(0);
+    empModel.tableModel().selectionModel().setSelectedIndex(0);
 
-    String name = empModel.getEditModel().get(TestDomain.EMP_NAME);
-    empModel.getEditModel().put(TestDomain.EMP_NAME, "Darri");
+    String name = empModel.editModel().get(TestDomain.EMP_NAME);
+    empModel.editModel().put(TestDomain.EMP_NAME, "Darri");
     assertTrue(model.containsUnsavedData());
 
-    empModel.getEditModel().put(TestDomain.EMP_NAME, name);
+    empModel.editModel().put(TestDomain.EMP_NAME, name);
     assertFalse(model.containsUnsavedData());
 
-    name = deptModel.getEditModel().get(TestDomain.DEPARTMENT_NAME);
-    deptModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, "Darri");
+    name = deptModel.editModel().get(TestDomain.DEPARTMENT_NAME);
+    deptModel.editModel().put(TestDomain.DEPARTMENT_NAME, "Darri");
     assertTrue(model.containsUnsavedData());
 
-    deptModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, name);
+    deptModel.editModel().put(TestDomain.DEPARTMENT_NAME, name);
     assertFalse(model.containsUnsavedData());
   }
 

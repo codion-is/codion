@@ -59,22 +59,22 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final User getUser() {
+  public final User user() {
     return connectionProvider.connection().user();
   }
 
   @Override
-  public final EntityConnectionProvider getConnectionProvider() {
+  public final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
   }
 
   @Override
-  public final StateObserver getConnectionValidObserver() {
+  public final StateObserver connectionValidObserver() {
     return connectionValidState.observer();
   }
 
   @Override
-  public final Entities getEntities() {
+  public final Entities entities() {
     return connectionProvider.entities();
   }
 
@@ -103,7 +103,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   @Override
   public final boolean containsEntityModel(EntityType entityType) {
     return entityModels.stream()
-            .anyMatch(entityModel -> entityModel.getEntityType().equals(entityType));
+            .anyMatch(entityModel -> entityModel.entityType().equals(entityType));
   }
 
   @Override
@@ -112,7 +112,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final List<M> getEntityModels() {
+  public final List<M> entityModels() {
     return Collections.unmodifiableList(entityModels);
   }
 
@@ -120,7 +120,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   public final void refresh() {
     for (M entityModel : entityModels) {
       if (entityModel.containsTableModel()) {
-        entityModel.getTableModel().refresh();
+        entityModel.tableModel().refresh();
       }
     }
   }
@@ -133,7 +133,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final <T extends M> T getEntityModel(Class<? extends M> modelClass) {
+  public final <T extends M> T entityModel(Class<? extends M> modelClass) {
     for (M model : entityModels) {
       if (model.getClass().equals(modelClass)) {
         return (T) model;
@@ -144,9 +144,9 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final M getEntityModel(EntityType entityType) {
+  public final M entityModel(EntityType entityType) {
     for (M entityModel : entityModels) {
-      if (entityModel.getEntityType().equals(entityType)) {
+      if (entityModel.entityType().equals(entityType)) {
         return entityModel;
       }
     }
@@ -171,7 +171,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   @Override
   public void savePreferences() {
-    getEntityModels().forEach(EntityModel::savePreferences);
+    entityModels().forEach(EntityModel::savePreferences);
   }
 
   private void checkConnectionValidity() {
@@ -183,8 +183,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
 
   private static boolean containsUnsavedData(Collection<? extends EntityModel<?, ?, ?>> models) {
     for (EntityModel<?, ?, ?> model : models) {
-      EntityEditModel editModel = model.getEditModel();
-      if (editModel.containsUnsavedData() || containsUnsavedData(model.getDetailModels())) {
+      EntityEditModel editModel = model.editModel();
+      if (editModel.containsUnsavedData() || containsUnsavedData(model.detailModels())) {
         return true;
       }
     }

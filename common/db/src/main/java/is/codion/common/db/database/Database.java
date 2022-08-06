@@ -103,7 +103,7 @@ public interface Database extends ConnectionFactory {
   /**
    * @return a name identifying this database
    */
-  String getName();
+  String name();
 
   /**
    * Returns a query string for retrieving the last automatically generated id from the given id source
@@ -111,7 +111,7 @@ public interface Database extends ConnectionFactory {
    * @return a query string for retrieving the last auto-increment value from idSource
    * @throws NullPointerException in case {@code idSource} is required and is null
    */
-  String getAutoIncrementQuery(String idSource);
+  String autoIncrementQuery(String idSource);
 
   /**
    * Returns a query string for selecting the next value from the given sequence.
@@ -120,7 +120,7 @@ public interface Database extends ConnectionFactory {
    * @throws UnsupportedOperationException in case the underlying database does not support sequences
    * @throws NullPointerException in case {@code sequenceName} is null
    */
-  String getSequenceQuery(String sequenceName);
+  String sequenceQuery(String sequenceName);
 
   /**
    * This should shut down the database in case it is an embedded one
@@ -132,7 +132,7 @@ public interface Database extends ConnectionFactory {
    * Returns a select for update clause, an empty string if not supported.
    * @return a select for update clause
    */
-  String getSelectForUpdateClause();
+  String selectForUpdateClause();
 
   /**
    * Returns a limit/offset clause variation for this database, based on the given limit and offset values.
@@ -141,7 +141,7 @@ public interface Database extends ConnectionFactory {
    * @param offset the offset
    * @return a limit/offset clause
    */
-  String getLimitOffsetClause(Integer limit, Integer offset);
+  String limitOffsetClause(Integer limit, Integer offset);
 
   /**
    * Returns true if the dbms supports the Java 6 jdbc call {@link Connection#isValid(int)}.
@@ -162,12 +162,12 @@ public interface Database extends ConnectionFactory {
    * @return a check connection query
    * @see #supportsIsValid()
    */
-  String getCheckConnectionQuery();
+  String checkConnectionQuery();
 
   /**
    * @return the timeout in seconds to use when checking connection validity
    */
-  int getValidityCheckTimeout();
+  int validityCheckTimeout();
 
   /**
    * Returns a user-friendly error message for the given exception,
@@ -175,7 +175,7 @@ public interface Database extends ConnectionFactory {
    * @param exception the underlying SQLException
    * @return the message assigned to the given exception
    */
-  String getErrorMessage(SQLException exception);
+  String errorMessage(SQLException exception);
 
   /**
    * Returns true if this exception represents a login credentials failure
@@ -208,7 +208,7 @@ public interface Database extends ConnectionFactory {
   /**
    * Counts this query, based on the first character.
    * @param query the query to count
-   * @see #getStatistics()
+   * @see #statistics()
    */
   void countQuery(String query);
 
@@ -217,7 +217,7 @@ public interface Database extends ConnectionFactory {
    * Note that calling this method resets the counter.
    * @return collected statistics.
    */
-  Statistics getStatistics();
+  Statistics statistics();
 
   /**
    * Initializes a connection pool for the given user in this database.
@@ -231,12 +231,12 @@ public interface Database extends ConnectionFactory {
    * @param username the username
    * @return the connection pool for the given user, null if none exists
    */
-  ConnectionPoolWrapper getConnectionPool(String username);
+  ConnectionPoolWrapper connectionPool(String username);
 
   /**
    * @return the usernames of all available connection pools
    */
-  Collection<String> getConnectionPoolUsernames();
+  Collection<String> connectionPoolUsernames();
 
   /**
    * Closes and removes the pool associated with the given user

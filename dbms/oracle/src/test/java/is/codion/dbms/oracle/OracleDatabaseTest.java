@@ -14,18 +14,18 @@ public class OracleDatabaseTest {
   @Test
   void getName() {
     OracleDatabase database = new OracleDatabase("jdbc:oracle:thin:@host.com:1234:sid");
-    assertEquals("sid", database.getName());
+    assertEquals("sid", database.name());
     database = new OracleDatabase("jdbc:oracle:thin:@host.com:1234:sid;option=true;option2=false");
-    assertEquals("sid", database.getName());
+    assertEquals("sid", database.name());
     database = new OracleDatabase("jdbc:oracle:thin:@host.com:1234/sid;option=true;option2=false");
-    assertEquals("sid", database.getName());
+    assertEquals("sid", database.name());
     database = new OracleDatabase("jdbc:oracle:thin:/@sid");
-    assertEquals("sid", database.getName());
+    assertEquals("sid", database.name());
   }
 
   @Test
   void getSequenceSQLNullSequence() {
-    assertThrows(NullPointerException.class, () -> new OracleDatabase(URL).getSequenceQuery(null));
+    assertThrows(NullPointerException.class, () -> new OracleDatabase(URL).sequenceQuery(null));
   }
 
   @Test
@@ -37,25 +37,25 @@ public class OracleDatabaseTest {
   @Test
   void getAutoIncrementQuery() {
     OracleDatabase db = new OracleDatabase(URL);
-    assertEquals("select seq.currval from dual", db.getAutoIncrementQuery("seq"));
+    assertEquals("select seq.currval from dual", db.autoIncrementQuery("seq"));
   }
 
   @Test
   void getSequenceQuery() {
     OracleDatabase db = new OracleDatabase(URL);
-    assertEquals("select seq.nextval from dual", db.getSequenceQuery("seq"));
+    assertEquals("select seq.nextval from dual", db.sequenceQuery("seq"));
   }
 
   @Test
   void getURL() {
     OracleDatabase db = new OracleDatabase(URL);
-    assertEquals("jdbc:oracle:thin:@host:1234:sid", db.getUrl());
+    assertEquals("jdbc:oracle:thin:@host:1234:sid", db.url());
   }
 
   @Test
   void getCheckConnectionQuery() {
     OracleDatabase db = new OracleDatabase(URL);
-    assertEquals(OracleDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
+    assertEquals(OracleDatabase.CHECK_QUERY, db.checkConnectionQuery());
   }
 
   @Test

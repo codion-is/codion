@@ -54,28 +54,28 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   }
 
   @Override
-  public final ServerInformation getServerInformation() {
-    return server.getServerInformation();
+  public final ServerInformation serverInformation() {
+    return server.serverInformation();
   }
 
   @Override
-  public final String getSystemProperties() {
+  public final String systemProperties() {
     return PropertyStore.getSystemProperties(propertyFormatter);
   }
 
   @Override
-  public final List<GcEvent> getGcEvents(long since) {
+  public final List<GcEvent> gcEvents(long since) {
     List<GcEvent> gcEvents;
     synchronized (gcEventList) {
       gcEvents = new LinkedList<>(gcEventList);
     }
-    gcEvents.removeIf(gcEvent -> gcEvent.getTimestamp() < since);
+    gcEvents.removeIf(gcEvent -> gcEvent.timestamp() < since);
 
     return gcEvents;
   }
 
   @Override
-  public final ThreadStatistics getThreadStatistics() throws RemoteException {
+  public final ThreadStatistics threadStatistics() throws RemoteException {
     ThreadMXBean bean = ManagementFactory.getThreadMXBean();
     Map<Thread.State, Integer> threadStateMap = new EnumMap<>(Thread.State.class);
     for (Long threadId : bean.getAllThreadIds()) {
@@ -86,28 +86,28 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   }
 
   @Override
-  public final Collection<User> getUsers() throws RemoteException {
-    return server.getUsers();
+  public final Collection<User> users() throws RemoteException {
+    return server.users();
   }
 
   @Override
-  public final Collection<RemoteClient> getClients(User user) throws RemoteException {
-    return server.getClients(user);
+  public final Collection<RemoteClient> clients(User user) throws RemoteException {
+    return server.clients(user);
   }
 
   @Override
-  public final Collection<RemoteClient> getClients(String clientTypeId) {
-    return server.getClients(clientTypeId);
+  public final Collection<RemoteClient> clients(String clientTypeId) {
+    return server.clients(clientTypeId);
   }
 
   @Override
-  public final Collection<RemoteClient> getClients() {
-    return server.getClients();
+  public final Collection<RemoteClient> clients() {
+    return server.clients();
   }
 
   @Override
-  public final Collection<String> getClientTypes() {
-    return getClients().stream()
+  public final Collection<String> clientTypes() {
+    return clients().stream()
             .map(ConnectionRequest::clientTypeId)
             .collect(toSet());
   }
@@ -124,45 +124,45 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   }
 
   @Override
-  public int getRequestsPerSecond() {
+  public int requestsPerSecond() {
     return -1;
   }
 
   @Override
-  public final ServerStatistics getServerStatistics(long since) throws RemoteException {
-    return new DefaultServerStatistics(System.currentTimeMillis(), getConnectionCount(), getConnectionLimit(),
-            getUsedMemory(), getMaxMemory(), getAllocatedMemory(), getRequestsPerSecond(), getSystemCpuLoad(),
-            getProcessCpuLoad(), getThreadStatistics(), getGcEvents(since));
+  public final ServerStatistics serverStatistics(long since) throws RemoteException {
+    return new DefaultServerStatistics(System.currentTimeMillis(), connectionCount(), getConnectionLimit(),
+            usedMemory(), maxMemory(), allocatedMemory(), requestsPerSecond(), systemCpuLoad(),
+            processCpuLoad(), threadStatistics(), gcEvents(since));
   }
 
   @Override
-  public final long getAllocatedMemory() {
-    return Memory.getAllocatedMemory();
+  public final long allocatedMemory() {
+    return Memory.allocatedMemory();
   }
 
   @Override
-  public final long getUsedMemory() {
-    return Memory.getUsedMemory();
+  public final long usedMemory() {
+    return Memory.usedMemory();
   }
 
   @Override
-  public final long getMaxMemory() {
-    return Memory.getMaxMemory();
+  public final long maxMemory() {
+    return Memory.maxMemory();
   }
 
   @Override
-  public final double getSystemCpuLoad() throws RemoteException {
+  public final double systemCpuLoad() throws RemoteException {
     return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad();
   }
 
   @Override
-  public final double getProcessCpuLoad() throws RemoteException {
+  public final double processCpuLoad() throws RemoteException {
     return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
   }
 
   @Override
-  public final int getConnectionCount() {
-    return server.getConnectionCount();
+  public final int connectionCount() {
+    return server.connectionCount();
   }
 
   @Override
@@ -232,57 +232,57 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
     }
 
     @Override
-    public long getTimestamp() {
+    public long timestamp() {
       return timestamp;
     }
 
     @Override
-    public int getConnectionCount() {
+    public int connectionCount() {
       return connectionCount;
     }
 
     @Override
-    public int getConnectionLimit() {
+    public int connectionLimit() {
       return connectionLimit;
     }
 
     @Override
-    public long getUsedMemory() {
+    public long usedMemory() {
       return usedMemory;
     }
 
     @Override
-    public long getMaximumMemory() {
+    public long maximumMemory() {
       return maximumMemory;
     }
 
     @Override
-    public long getAllocatedMemory() {
+    public long allocatedMemory() {
       return allocatedMemory;
     }
 
     @Override
-    public int getRequestsPerSecond() {
+    public int requestsPerSecond() {
       return requestsPerSecond;
     }
 
     @Override
-    public double getSystemCpuLoad() {
+    public double systemCpuLoad() {
       return systemCpuLoad;
     }
 
     @Override
-    public double getProcessCpuLoad() {
+    public double processCpuLoad() {
       return processCpuLoad;
     }
 
     @Override
-    public ThreadStatistics getThreadStatistics() {
+    public ThreadStatistics threadStatistics() {
       return threadStatistics;
     }
 
     @Override
-    public List<GcEvent> getGcEvents() {
+    public List<GcEvent> gcEvents() {
       return gcEvents;
     }
   }
@@ -303,17 +303,17 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
     }
 
     @Override
-    public int getThreadCount() {
+    public int threadCount() {
       return threadCount;
     }
 
     @Override
-    public int getDaemonThreadCount() {
+    public int daemonThreadCount() {
       return daemonThreadCount;
     }
 
     @Override
-    public Map<Thread.State, Integer> getThreadStateCount() {
+    public Map<Thread.State, Integer> threadStateCount() {
       return threadStateCount;
     }
   }
@@ -333,17 +333,17 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
     }
 
     @Override
-    public long getTimestamp() {
+    public long timestamp() {
       return timestamp;
     }
 
     @Override
-    public String getGcName() {
+    public String gcName() {
       return gcName;
     }
 
     @Override
-    public long getDuration() {
+    public long duration() {
       return duration;
     }
   }

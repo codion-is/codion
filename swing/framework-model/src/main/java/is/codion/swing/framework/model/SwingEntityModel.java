@@ -59,7 +59,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
     /**
      * @return the underlying entity type
      */
-    EntityType getEntityType();
+    EntityType entityType();
 
     /**
      * Sets the model class

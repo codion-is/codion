@@ -32,7 +32,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private static final Comparator<?> LEXICAL_COMPARATOR = Text.getSpaceAwareCollator();
+  private static final Comparator<?> LEXICAL_COMPARATOR = Text.spaceAwareCollator();
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
   private static final Comparator<Object> TO_STRING_COMPARATOR = new ToStringComparator();
   private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
@@ -242,7 +242,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   @Override
   public final String dateTimePattern() {
     if (dateTimePattern == null) {
-      dateTimePattern = localeDateTimePattern == null ? getDefaultDateTimePattern() : localeDateTimePattern.getDateTimePattern();
+      dateTimePattern = localeDateTimePattern == null ? getDefaultDateTimePattern() : localeDateTimePattern.dateTimePattern();
     }
 
     return dateTimePattern;
@@ -441,7 +441,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final Attribute<T> getAttribute() {
+    public final Attribute<T> attribute() {
       return attribute;
     }
 
@@ -599,7 +599,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
         throw new IllegalStateException("dateTimePattern has already been set for property: " + attribute);
       }
       this.localeDateTimePattern = localeDateTimePattern;
-      this.dateTimePattern = localeDateTimePattern.getDateTimePattern();
+      this.dateTimePattern = localeDateTimePattern.dateTimePattern();
       this.dateTimeFormatter = localeDateTimePattern.createFormatter();
 
       return (B) this;
@@ -662,10 +662,10 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     private static NumberFormat getDefaultNumberFormat(Attribute<?> attribute) {
       boolean grouping = NUMBER_FORMAT_GROUPING.get();
       if (attribute.isInteger() || attribute.isLong()) {
-        return setSeparators(grouping ? NumberFormat.getIntegerInstance() : Formats.getNonGroupingIntegerFormat());
+        return setSeparators(grouping ? NumberFormat.getIntegerInstance() : Formats.nonGroupingIntegerFormat());
       }
 
-      return setSeparators(grouping ? NumberFormat.getNumberInstance() : Formats.getNonGroupingNumberFormat());
+      return setSeparators(grouping ? NumberFormat.getNumberInstance() : Formats.nonGroupingNumberFormat());
     }
 
     private static NumberFormat setSeparators(NumberFormat numberFormat) {

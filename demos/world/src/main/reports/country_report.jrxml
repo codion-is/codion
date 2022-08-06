@@ -51,7 +51,7 @@
 				<reportElement x="-30" y="30" width="595" height="16" uuid="fe0b73e2-e164-4dd6-a08d-9afb8d964fc2">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<dataSourceExpression><![CDATA[((CountryReportDataSource) $P{REPORT_DATA_SOURCE}).getCityDataSource()]]></dataSourceExpression>
+				<dataSourceExpression><![CDATA[((CountryReportDataSource) $P{REPORT_DATA_SOURCE}).cityDataSource()]]></dataSourceExpression>
 				<subreportExpression><![CDATA[$P{CITY_SUBREPORT}]]></subreportExpression>
 			</subreport>
 			<staticText>

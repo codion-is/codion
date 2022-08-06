@@ -15,6 +15,6 @@ final class DefaultStringFactory implements Function<Entity, String>, Serializab
 
   @Override
   public String apply(Entity entity) {
-    return entity.getEntityType() + ": " + entity.getPrimaryKey();
+    return entity.entityType() + ": " + entity.primaryKey();
   }
 }

@@ -64,8 +64,8 @@ public final class EntityTestUtil {
     requireNonNull(entities);
     requireNonNull(entityType);
     Entity entity = entities.entity(entityType);
-    populateEntity(entity, entities.getDefinition(entityType).getWritableColumnProperties(
-            !entities.getDefinition(entityType).isKeyGenerated(), true), valueProvider);
+    populateEntity(entity, entities.definition(entityType).writableColumnProperties(
+            !entities.definition(entityType).isKeyGenerated(), true), valueProvider);
 
     return entity;
   }
@@ -81,7 +81,7 @@ public final class EntityTestUtil {
     requireNonNull(entities);
     requireNonNull(entity);
     populateEntity(entity,
-            entity.getDefinition().getWritableColumnProperties(false, true),
+            entity.entityDefinition().writableColumnProperties(false, true),
             property -> createRandomValue(property, foreignKeyEntities));
   }
 
@@ -144,13 +144,13 @@ public final class EntityTestUtil {
   private static void populateEntity(Entity entity, Collection<ColumnProperty<?>> properties,
                                      Function<Property<?>, Object> valueProvider) {
     requireNonNull(valueProvider, "valueProvider");
-    EntityDefinition definition = entity.getDefinition();
+    EntityDefinition definition = entity.entityDefinition();
     for (@SuppressWarnings("rawtypes") ColumnProperty property : properties) {
       if (!definition.isForeignKeyAttribute(property.attribute()) && !property.denormalized()) {
         entity.put(property.attribute(), valueProvider.apply(property));
       }
     }
-    for (ForeignKeyProperty property : entity.getDefinition().getForeignKeyProperties()) {
+    for (ForeignKeyProperty property : entity.entityDefinition().foreignKeyProperties()) {
       Entity value = (Entity) valueProvider.apply(property);
       if (value != null) {
         entity.put(property.attribute(), value);

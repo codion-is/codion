@@ -25,8 +25,8 @@ public class EntityTableSimpleConditionPanelTest {
   @Test
   void test() {
     SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
-    EntityTableSimpleConditionPanel panel = new EntityTableSimpleConditionPanel(tableModel.getTableConditionModel(),
-            tableModel.getColumnModel(), tableModel::refresh);
+    EntityTableSimpleConditionPanel panel = new EntityTableSimpleConditionPanel(tableModel.tableConditionModel(),
+            tableModel.columnModel(), tableModel::refresh);
     panel.setSearchText("BLAKE");
     panel.performSearch();
     assertEquals(1, tableModel.getRowCount());

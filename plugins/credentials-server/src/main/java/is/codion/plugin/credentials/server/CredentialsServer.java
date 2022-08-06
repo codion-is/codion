@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * new ProcessBuilder().command("javaws", "-open", token.toString(), jnlpUrl).start();
  * }
  * </pre>
- * @see CredentialsProvider#getCredentials(UUID)
+ * @see CredentialsProvider#credentials(UUID)
  */
 public final class CredentialsServer extends UnicastRemoteObject implements CredentialsService {
 
@@ -94,7 +94,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
   }
 
   @Override
-  public User getUser(UUID authenticationToken) throws RemoteException {
+  public User user(UUID authenticationToken) throws RemoteException {
     try {
       String clientHost = getClientHost();
       if (!Objects.equals(clientHost, LOCALHOST)) {

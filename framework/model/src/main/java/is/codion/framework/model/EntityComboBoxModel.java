@@ -26,30 +26,30 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * @return the type of the entity this combo box model is based on
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the connection provider used by this combo box model
    */
-  EntityConnectionProvider getConnectionProvider();
+  EntityConnectionProvider connectionProvider();
 
   /**
    * @param primaryKey the primary key of the entity to fetch from this model
    * @return the entity with the given key if found in the model, an empty Optional otherwise
    */
-  Optional<Entity> getEntity(Key primaryKey);
+  Optional<Entity> entity(Key primaryKey);
 
   /**
    * Use this method to retrieve the default foreign key filter include condition if you
    * want to add a custom {@link Predicate} to this model via {@link #setIncludeCondition(Predicate)}.
    * <pre>
-   *   Predicate fkCondition = model.getForeignKeyIncludeCondition();
+   *   Predicate fkCondition = model.foreignKeyIncludeCondition();
    *   model.setIncludeCondition(item -&gt; fkCondition.test(item) &amp;&amp; ...);
    * </pre>
    * @return the {@link Predicate} based on the foreign key filter entities
    * @see #setForeignKeyFilterEntities(ForeignKey, Collection)
    */
-  Predicate<Entity> getForeignKeyIncludeCondition();
+  Predicate<Entity> foreignKeyIncludeCondition();
 
   /**
    * @param foreignKey the foreign key
@@ -118,7 +118,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * in the model this method returns silently without changing the selection
    * @param primaryKey the primary key of the entity to select
    */
-  void setSelectedEntityByKey(Key primaryKey);
+  void selectEntityByKey(Key primaryKey);
 
   /**
    * Forces a refresh of this model, disregarding the staticData directive

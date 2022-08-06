@@ -22,7 +22,7 @@ public interface EntityServerAdmin extends ServerAdmin {
    * @return the database URL
    * @throws RemoteException in case of a communication error
    */
-  String getDatabaseUrl() throws RemoteException;
+  String databaseUrl() throws RemoteException;
 
   /**
    * @return the number of ms that should pass between maintenance cycles,
@@ -43,7 +43,7 @@ public interface EntityServerAdmin extends ServerAdmin {
    * @return the log for the given connection
    * @throws RemoteException in case of a communication error
    */
-  ClientLog getClientLog(UUID clientId) throws RemoteException;
+  ClientLog clientLog(UUID clientId) throws RemoteException;
 
   /**
    * Returns true if logging is enabled for the given connection
@@ -92,7 +92,7 @@ public interface EntityServerAdmin extends ServerAdmin {
    * @return a collection containing usernames backed by a connection pool
    * @throws RemoteException in case of an exception
    */
-  Collection<String> getConnectionPoolUsernames() throws RemoteException;
+  Collection<String> connectionPoolUsernames() throws RemoteException;
 
   /**
    * @param username the username
@@ -100,7 +100,7 @@ public interface EntityServerAdmin extends ServerAdmin {
    * @return the pool statistics
    * @throws RemoteException in case of an exception
    */
-  ConnectionPoolStatistics getConnectionPoolStatistics(String username, long since) throws RemoteException;
+  ConnectionPoolStatistics connectionPoolStatistics(String username, long since) throws RemoteException;
 
   /**
    * Returns the statistics gathered via {@link Database#countQuery(String)}.
@@ -108,7 +108,7 @@ public interface EntityServerAdmin extends ServerAdmin {
    * the last time this function was called.
    * @throws RemoteException in case of an exception
    */
-  Database.Statistics getDatabaseStatistics() throws RemoteException;
+  Database.Statistics databaseStatistics() throws RemoteException;
 
   /**
    * Disconnects all timed-out clients.
@@ -161,7 +161,7 @@ public interface EntityServerAdmin extends ServerAdmin {
    * @return a map containing all entityType names, with their respective table names as an associated value
    * @throws RemoteException in case of an exception
    */
-  Map<String, String> getEntityDefinitions() throws RemoteException;
+  Map<String, String> entityDefinitions() throws RemoteException;
 
   /**
    * @param username the username

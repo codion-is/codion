@@ -60,19 +60,19 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    departmentModel.getTableModel().refresh();
-    EntityEditModel deptEditModel = departmentModel.getEditModel();
-    TableModel deptTableModel = departmentModel.getTableModel();
-    Key operationsKey = deptEditModel.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations
-    deptTableModel.setSelectedByKey(singletonList(operationsKey));
+    departmentModel.tableModel().refresh();
+    EntityEditModel deptEditModel = departmentModel.editModel();
+    TableModel deptTableModel = departmentModel.tableModel();
+    Key operationsKey = deptEditModel.entities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations
+    deptTableModel.selectByKey(singletonList(operationsKey));
 
-    assertTrue(deptTableModel.getSelectionModel().isSelectionNotEmpty());
+    assertTrue(deptTableModel.selectionModel().isSelectionNotEmpty());
     deptEditModel.put(TestDomain.DEPARTMENT_ID, 80);
-    assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());
+    assertFalse(deptTableModel.selectionModel().isSelectionEmpty());
     deptEditModel.update();
 
-    assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());
-    Entity operations = deptTableModel.getSelectionModel().getSelectedItem();
+    assertFalse(deptTableModel.selectionModel().isSelectionEmpty());
+    Entity operations = deptTableModel.selectionModel().getSelectedItem();
     assertEquals(80, operations.get(TestDomain.DEPARTMENT_ID));
 
     deptTableModel.setIncludeCondition(item ->
@@ -84,7 +84,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
     deptTableModel.filterContents();
 
-    assertTrue(deptTableModel.getFilteredItems().isEmpty());
+    assertTrue(deptTableModel.filteredItems().isEmpty());
   }
 
   @Test
@@ -93,8 +93,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   }
 
   @Test
-  public void getDetailModelNotFound() {
-    assertThrows(IllegalArgumentException.class, () -> departmentModel.getDetailModel(TestDomain.T_DEPARTMENT));
+  public void detailModelNotFound() {
+    assertThrows(IllegalArgumentException.class, () -> departmentModel.detailModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test
@@ -102,18 +102,18 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    departmentModel.getTableModel().refresh();
-    assertTrue(departmentModel.getTableModel().getRowCount() > 0);
+    departmentModel.tableModel().refresh();
+    assertTrue(departmentModel.tableModel().getRowCount() > 0);
 
-    Model employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
-    employeeModel.getTableModel().refresh();
-    assertTrue(employeeModel.getTableModel().getRowCount() > 0);
+    Model employeeModel = departmentModel.detailModel(TestDomain.T_EMP);
+    employeeModel.tableModel().refresh();
+    assertTrue(employeeModel.tableModel().getRowCount() > 0);
 
     departmentModel.clearDetailModels();
-    assertEquals(0, employeeModel.getTableModel().getRowCount());
+    assertEquals(0, employeeModel.tableModel().getRowCount());
 
     departmentModel.clear();
-    assertEquals(0, departmentModel.getTableModel().getRowCount());
+    assertEquals(0, departmentModel.tableModel().getRowCount());
   }
 
   @Test
@@ -126,18 +126,18 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    departmentModel.getTableModel().refresh();
-    departmentModel.getTableModel().getSelectionModel().setSelectedIndexes(asList(1, 2, 3));
-    assertTrue(departmentModel.getTableModel().getSelectionModel().isSelectionNotEmpty());
-    assertFalse(departmentModel.getEditModel().isEntityNew());
-    departmentModel.getEditModel().setDefaultValues();
-    assertTrue(departmentModel.getTableModel().getSelectionModel().isSelectionEmpty());
+    departmentModel.tableModel().refresh();
+    departmentModel.tableModel().selectionModel().setSelectedIndexes(asList(1, 2, 3));
+    assertTrue(departmentModel.tableModel().selectionModel().isSelectionNotEmpty());
+    assertFalse(departmentModel.editModel().isEntityNew());
+    departmentModel.editModel().setDefaultValues();
+    assertTrue(departmentModel.tableModel().selectionModel().isSelectionEmpty());
   }
 
   @Test
   public void test() throws Exception {
     assertNull(departmentModel.getMasterModel());
-    assertNotNull(departmentModel.getEditModel());
+    assertNotNull(departmentModel.editModel());
 
     EventDataListener<Model> linkedListener = model -> {};
     departmentModel.addLinkedDetailModelAddedListener(linkedListener);
@@ -148,35 +148,35 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void detailModel() throws Exception {
-    departmentModel.getDetailModel((Class<? extends Model>) departmentModel.getDetailModel(TestDomain.T_EMP).getClass());
+    departmentModel.detailModel((Class<? extends Model>) departmentModel.detailModel(TestDomain.T_EMP).getClass());
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
-    assertTrue(departmentModel.containsDetailModel(departmentModel.getDetailModel(TestDomain.T_EMP)));
-    assertTrue(departmentModel.containsDetailModel((Class<? extends Model>) departmentModel.getDetailModel(TestDomain.T_EMP).getClass()));
-    assertEquals(1, departmentModel.getDetailModels().size(), "Only one detail model should be in DepartmentModel");
-    assertEquals(1, departmentModel.getLinkedDetailModels().size());
+    assertTrue(departmentModel.containsDetailModel(departmentModel.detailModel(TestDomain.T_EMP)));
+    assertTrue(departmentModel.containsDetailModel((Class<? extends Model>) departmentModel.detailModel(TestDomain.T_EMP).getClass()));
+    assertEquals(1, departmentModel.detailModels().size(), "Only one detail model should be in DepartmentModel");
+    assertEquals(1, departmentModel.linkedDetailModels().size());
 
-    departmentModel.getDetailModel(TestDomain.T_EMP);
+    departmentModel.detailModel(TestDomain.T_EMP);
 
-    assertTrue(departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(TestDomain.T_EMP)));
-    assertNotNull(departmentModel.getDetailModel(TestDomain.T_EMP));
+    assertTrue(departmentModel.linkedDetailModels().contains(departmentModel.detailModel(TestDomain.T_EMP)));
+    assertNotNull(departmentModel.detailModel(TestDomain.T_EMP));
     if (!departmentModel.containsTableModel()) {
       return;
     }
 
-    departmentModel.getTableModel().refresh();
-    departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().refresh();
-    assertTrue(departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().getRowCount() > 0);
+    departmentModel.tableModel().refresh();
+    departmentModel.detailModel(TestDomain.T_EMP).tableModel().refresh();
+    assertTrue(departmentModel.detailModel(TestDomain.T_EMP).tableModel().getRowCount() > 0);
 
-    EntityConnection connection = departmentModel.getConnectionProvider().connection();
+    EntityConnection connection = departmentModel.connectionProvider().connection();
     Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
 
-    departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
+    departmentModel.tableModel().selectionModel().setSelectedItem(department);
 
     List<Entity> salesEmployees = connection.select(where(TestDomain.EMP_DEPARTMENT_FK).equalTo(department));
     assertFalse(salesEmployees.isEmpty());
-    departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
+    departmentModel.tableModel().selectionModel().setSelectedItem(department);
     List<Entity> employeesFromDetailModel =
-            departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().getItems();
+            departmentModel.detailModel(TestDomain.T_EMP).tableModel().items();
     assertTrue(salesEmployees.containsAll(employeesFromDetailModel), "Filtered list should contain all employees for department");
   }
 
@@ -219,11 +219,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void addRemoveLinkedDetailModel() {
-    departmentModel.removeLinkedDetailModel(departmentModel.getDetailModel(TestDomain.T_EMP));
-    assertTrue(departmentModel.getLinkedDetailModels().isEmpty());
-    departmentModel.addLinkedDetailModel(departmentModel.getDetailModel(TestDomain.T_EMP));
-    assertFalse(departmentModel.getLinkedDetailModels().isEmpty());
-    assertTrue(departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(TestDomain.T_EMP)));
+    departmentModel.removeLinkedDetailModel(departmentModel.detailModel(TestDomain.T_EMP));
+    assertTrue(departmentModel.linkedDetailModels().isEmpty());
+    departmentModel.addLinkedDetailModel(departmentModel.detailModel(TestDomain.T_EMP));
+    assertFalse(departmentModel.linkedDetailModels().isEmpty());
+    assertTrue(departmentModel.linkedDetailModels().contains(departmentModel.detailModel(TestDomain.T_EMP)));
   }
 
   @Test
@@ -231,16 +231,16 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    Model employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
+    Model employeeModel = departmentModel.detailModel(TestDomain.T_EMP);
     employeeModel.setSearchOnMasterInsert(true);
     assertTrue(employeeModel.isSearchOnMasterInsert());
-    EntityEditModel editModel = departmentModel.getEditModel();
+    EntityEditModel editModel = departmentModel.editModel();
     editModel.put(TestDomain.DEPARTMENT_ID, 100);
     editModel.put(TestDomain.DEPARTMENT_NAME, "Name");
     editModel.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
     Entity inserted = editModel.insert();
-    Collection<Entity> equalsValues = employeeModel.getTableModel().getTableConditionModel()
-            .getConditionModel(TestDomain.EMP_DEPARTMENT_FK)
+    Collection<Entity> equalsValues = employeeModel.tableModel().tableConditionModel()
+            .conditionModel(TestDomain.EMP_DEPARTMENT_FK)
             .getEqualValues();
     assertEquals(inserted, equalsValues.iterator().next());
     editModel.delete();
@@ -251,7 +251,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    Entity dept = departmentModel.getConnectionProvider().entities().builder(TestDomain.T_DEPARTMENT)
+    Entity dept = departmentModel.connectionProvider().entities().builder(TestDomain.T_DEPARTMENT)
             .with(TestDomain.DEPARTMENT_ID, -42)
             .with(TestDomain.DEPARTMENT_NAME, "Name")
             .with(TestDomain.DEPARTMENT_LOCATION, "Loc")
@@ -261,13 +261,13 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     emp.put(TestDomain.EMP_NAME, "NewName");
 
     Model model = createDepartmentModelWithoutDetailModel();
-    model.getEditModel().insert(asList(dept, emp));
-    assertTrue(model.getTableModel().containsItem(dept));
-    assertFalse(model.getTableModel().containsItem(emp));
+    model.editModel().insert(asList(dept, emp));
+    assertTrue(model.tableModel().containsItem(dept));
+    assertFalse(model.tableModel().containsItem(emp));
 
-    model.getEditModel().delete(asList(dept, emp));
+    model.editModel().delete(asList(dept, emp));
 
-    assertFalse(model.getTableModel().containsItem(dept));
+    assertFalse(model.tableModel().containsItem(dept));
   }
 
   protected final EntityConnectionProvider getConnectionProvider() {

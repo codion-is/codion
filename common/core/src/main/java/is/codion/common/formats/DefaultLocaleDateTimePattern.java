@@ -40,41 +40,41 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
   }
 
   @Override
-  public String getTimePattern() {
+  public String timePattern() {
     return timeFormat;
   }
 
   @Override
-  public String getDatePattern() {
-    return getDatePattern(Locale.getDefault());
+  public String datePattern() {
+    return datePattern(Locale.getDefault());
   }
 
   @Override
-  public String getDateTimePattern() {
-    return getDateTimePattern(Locale.getDefault());
+  public String dateTimePattern() {
+    return dateTimePattern(Locale.getDefault());
   }
 
   @Override
-  public String getDatePattern(Locale locale) {
-    return getDatePattern(locale, delimiter, fourDigitYear);
+  public String datePattern(Locale locale) {
+    return datePattern(locale, delimiter, fourDigitYear);
   }
 
   @Override
-  public String getDateTimePattern(Locale locale) {
-    return getDateTimePattern(locale, delimiter, fourDigitYear, timeFormat);
+  public String dateTimePattern(Locale locale) {
+    return dateTimePattern(locale, delimiter, fourDigitYear, timeFormat);
   }
 
   @Override
   public DateTimeFormatter createFormatter() {
-    return DateTimeFormatter.ofPattern(getDateTimePattern());
+    return DateTimeFormatter.ofPattern(dateTimePattern());
   }
 
-  private static String getDatePattern(Locale locale, String delimiter, boolean fourDigitYear) {
-    return getDateTimePattern(locale, delimiter, fourDigitYear, null);
+  private static String datePattern(Locale locale, String delimiter, boolean fourDigitYear) {
+    return dateTimePattern(locale, delimiter, fourDigitYear, null);
   }
 
-  private static String getDateTimePattern(Locale locale, String delimiter, boolean fourDigitYear,
-                                           String timePattern) {
+  private static String dateTimePattern(Locale locale, String delimiter, boolean fourDigitYear,
+                                        String timePattern) {
     String datePattern = DateTimeFormatterBuilder.
             getLocalizedDateTimePattern(FormatStyle.SHORT, null, IsoChronology.INSTANCE, locale).toLowerCase(locale);
     List<String> pattern = new ArrayList<>(Arrays.asList(null, null, null));

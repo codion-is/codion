@@ -52,7 +52,7 @@ public final class EntitySearchField extends TextField {
   /**
    * @return the search model
    */
-  public EntitySearchModel getModel() {
+  public EntitySearchModel model() {
     return model;
   }
 
@@ -99,12 +99,12 @@ public final class EntitySearchField extends TextField {
   }
 
   private void linkToModel() {
-    PropertyValues.stringPropertyValue(textProperty()).link(model.getSearchStringValue());
+    PropertyValues.stringPropertyValue(textProperty()).link(model.searchStringValue());
   }
 
   private void selectEntities(List<Entity> queryResult) {
     FXUiUtil.SingleSelection singleSelection;
-    if (model.getMultipleSelectionEnabledState().get()) {
+    if (model.multipleSelectionEnabledState().get()) {
       singleSelection = FXUiUtil.SingleSelection.NO;
     }
     else {
@@ -122,7 +122,7 @@ public final class EntitySearchField extends TextField {
   private void onFocusChanged(Boolean hasFocus) {
     if (!hasFocus) {
       if (getText().isEmpty()) {
-        getModel().setSelectedEntity(null);
+        model().setSelectedEntity(null);
       }
       else if (!performingSearch && !model.searchStringRepresentsSelected()) {
         performSearch(false);
@@ -153,13 +153,13 @@ public final class EntitySearchField extends TextField {
     }
 
     private void onEnter() {
-      if (!model.getSearchStringRepresentsSelectedObserver().get()) {
+      if (!model.searchStringRepresentsSelectedObserver().get()) {
         performSearch(true);
       }
     }
 
     private void onEscape() {
-      if (model.getSearchStringRepresentsSelectedObserver().reversedObserver().get()) {
+      if (model.searchStringRepresentsSelectedObserver().reversedObserver().get()) {
         model.refreshSearchText();
         selectAll();
       }

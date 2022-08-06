@@ -71,8 +71,8 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
   }
 
   @Override
-  public String getTitle() {
-    return super.getTitle() + " " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
+  public String title() {
+    return super.title() + " " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
   }
 
   /**
@@ -84,7 +84,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
       return;
     }
 
-    tableModel.getSelectionModel().setSelectedIndex(RANDOM.nextInt(tableModel.getRowCount()));
+    tableModel.selectionModel().setSelectedIndex(RANDOM.nextInt(tableModel.getRowCount()));
   }
 
   /**
@@ -97,7 +97,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
       return;
     }
     if (tableModel.getRowCount() <= count) {
-      tableModel.getSelectionModel().selectAll();
+      tableModel.selectionModel().selectAll();
     }
     else {
       int startIdx = RANDOM.nextInt(tableModel.getRowCount() - count);
@@ -106,7 +106,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
         indexes.add(i);
       }
 
-      tableModel.getSelectionModel().setSelectedIndexes(indexes);
+      tableModel.selectionModel().setSelectedIndexes(indexes);
     }
   }
 
@@ -126,7 +126,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
       indexes.add(i);
     }
 
-    tableModel.getSelectionModel().setSelectedIndexes(indexes);
+    tableModel.selectionModel().setSelectedIndexes(indexes);
   }
 
   /**
@@ -137,7 +137,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
     if (comboBoxModel.isCleared()) {
       comboBoxModel.refresh();
     }
-    List<Entity> visibleItems = comboBoxModel.getVisibleItems();
+    List<Entity> visibleItems = comboBoxModel.visibleItems();
     if (visibleItems.isEmpty() || visibleItems.size() == 1 && visibleItems.get(0) == null) {
       return;
     }
@@ -147,7 +147,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
 
   @Override
   protected final void disconnectApplication(M application) {
-    application.getConnectionProvider().close();
+    application.connectionProvider().close();
   }
 
   @Override

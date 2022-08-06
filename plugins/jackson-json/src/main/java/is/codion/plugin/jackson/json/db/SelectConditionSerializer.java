@@ -27,7 +27,7 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
   SelectConditionSerializer(EntityObjectMapper entityObjectMapper) {
     super(SelectCondition.class);
     this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
-    this.entities = entityObjectMapper.getEntities();
+    this.entities = entityObjectMapper.entities();
   }
 
   @Override
@@ -45,7 +45,7 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     else {
       generator.writeStartArray();
       for (OrderBy.OrderByAttribute attribute : orderBy.orderByAttributes()) {
-        generator.writeString(attribute.getAttribute().name() + ":" + (attribute.isAscending() ? "asc" : "desc"));
+        generator.writeString(attribute.attribute().name() + ":" + (attribute.isAscending() ? "asc" : "desc"));
       }
       generator.writeEndArray();
     }
@@ -57,7 +57,7 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeObjectField("fetchDepth", conditionFetchDepth);
     generator.writeFieldName("fkFetchDepth");
     generator.writeStartObject();
-    for (ForeignKey foreignKey : entities.getDefinition(condition.entityType()).getForeignKeys()) {
+    for (ForeignKey foreignKey : entities.definition(condition.entityType()).foreignKeys()) {
       Integer fkFetchDepth = condition.fetchDepth(foreignKey).orElse(null);
       if (!Objects.equals(fkFetchDepth, conditionFetchDepth)) {
         generator.writeObjectField(foreignKey.name(), fkFetchDepth);

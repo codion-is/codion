@@ -26,11 +26,11 @@ public final class Schema {
     this.name = requireNonNull(name);
   }
 
-  public String getName() {
+  public String name() {
     return name;
   }
 
-  public Map<String, Table> getTables() {
+  public Map<String, Table> tables() {
     return unmodifiableMap(tables);
   }
 
@@ -40,9 +40,9 @@ public final class Schema {
       schemaNotifier.onEvent(name);
       try (ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
         tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
-                .collect(toMap(Table::getTableName, table -> table)));
+                .collect(toMap(Table::tableName, table -> table)));
         tables.values().stream()
-                .flatMap(table -> table.getReferencedSchemaNames().stream())
+                .flatMap(table -> table.referencedSchemaNames().stream())
                 .map(schemas::get)
                 .forEach(schema -> schema.populate(metaData, schemas, schemaNotifier));
         tables.values().forEach(table -> table.resolveForeignKeys(schemas));

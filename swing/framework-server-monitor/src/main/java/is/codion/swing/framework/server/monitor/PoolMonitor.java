@@ -31,7 +31,7 @@ public final class PoolMonitor {
    */
   public PoolMonitor(EntityServerAdmin server, int updateRate) throws RemoteException {
     this.server = server;
-    for (String username : this.server.getConnectionPoolUsernames()) {
+    for (String username : this.server.connectionPoolUsernames()) {
       connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPoolWrapper(username, this.server), updateRate));
     }
   }
@@ -39,7 +39,7 @@ public final class PoolMonitor {
   /**
    * @return the avilable {@link ConnectionPoolMonitor} instances
    */
-  public Collection<ConnectionPoolMonitor> getConnectionPoolInstanceMonitors() {
+  public Collection<ConnectionPoolMonitor> connectionPoolInstanceMonitors() {
     return connectionPoolMonitors;
   }
 
@@ -65,7 +65,7 @@ public final class PoolMonitor {
     @Override
     public int getMaximumPoolSize() {
       try {
-        return server.getMaximumConnectionPoolSize(user.getUsername());
+        return server.getMaximumConnectionPoolSize(user.username());
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -75,7 +75,7 @@ public final class PoolMonitor {
     @Override
     public int getMinimumPoolSize() {
       try {
-        return server.getMinimumConnectionPoolSize(user.getUsername());
+        return server.getMinimumConnectionPoolSize(user.username());
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -85,7 +85,7 @@ public final class PoolMonitor {
     @Override
     public int getCleanupInterval() {
       try {
-        return server.getConnectionPoolCleanupInterval(user.getUsername());
+        return server.getConnectionPoolCleanupInterval(user.username());
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -95,7 +95,7 @@ public final class PoolMonitor {
     @Override
     public int getIdleConnectionTimeout() {
       try {
-        return server.getPooledConnectionIdleTimeout(user.getUsername());
+        return server.getPooledConnectionIdleTimeout(user.username());
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -111,7 +111,7 @@ public final class PoolMonitor {
         throw new IllegalArgumentException("Maximum pool size must be equal to or exceed minimum pool size");
       }
       try {
-        server.setMaximumConnectionPoolSize(user.getUsername(), maximumPoolSize);
+        server.setMaximumConnectionPoolSize(user.username(), maximumPoolSize);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -127,7 +127,7 @@ public final class PoolMonitor {
         throw new IllegalArgumentException("Minimum pool size equal to or below maximum pool size time");
       }
       try {
-        server.setMinimumConnectionPoolSize(user.getUsername(), minimumPoolSize);
+        server.setMinimumConnectionPoolSize(user.username(), minimumPoolSize);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -140,7 +140,7 @@ public final class PoolMonitor {
         throw new IllegalArgumentException("Idle connection timeout must be a positive integer");
       }
       try {
-        server.setPooledConnectionIdleTimeout(user.getUsername(), idleConnectionTimeout);
+        server.setPooledConnectionIdleTimeout(user.username(), idleConnectionTimeout);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -150,7 +150,7 @@ public final class PoolMonitor {
     @Override
     public int getMaximumCheckOutTime() {
       try {
-        return server.getMaximumPoolCheckOutTime(user.getUsername());
+        return server.getMaximumPoolCheckOutTime(user.username());
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -163,7 +163,7 @@ public final class PoolMonitor {
         throw new IllegalArgumentException("Maximum check out time must be a positive integer");
       }
       try {
-        server.setMaximumPoolCheckOutTime(user.getUsername(), maximumCheckOutTime);
+        server.setMaximumPoolCheckOutTime(user.username(), maximumCheckOutTime);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -176,7 +176,7 @@ public final class PoolMonitor {
         throw new IllegalArgumentException("Cleanup interval must be a positive integer");
       }
       try {
-        server.setConnectionPoolCleanupInterval(user.getUsername(), poolCleanupInterval);
+        server.setConnectionPoolCleanupInterval(user.username(), poolCleanupInterval);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -184,9 +184,9 @@ public final class PoolMonitor {
     }
 
     @Override
-    public ConnectionPoolStatistics getStatistics(long since) {
+    public ConnectionPoolStatistics statistics(long since) {
       try {
-        return server.getConnectionPoolStatistics(user.getUsername(), since);
+        return server.connectionPoolStatistics(user.username(), since);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -194,14 +194,14 @@ public final class PoolMonitor {
     }
 
     @Override
-    public User getUser() {
+    public User user() {
       return user;
     }
 
     @Override
     public boolean isCollectSnapshotStatistics() {
       try {
-        return server.isCollectPoolSnapshotStatistics(user.getUsername());
+        return server.isCollectPoolSnapshotStatistics(user.username());
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -211,7 +211,7 @@ public final class PoolMonitor {
     @Override
     public void setCollectSnapshotStatistics(boolean collectSnapshotStatistics) {
       try {
-        server.setCollectPoolSnapshotStatistics(user.getUsername(), collectSnapshotStatistics);
+        server.setCollectPoolSnapshotStatistics(user.username(), collectSnapshotStatistics);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -221,7 +221,7 @@ public final class PoolMonitor {
     @Override
     public boolean isCollectCheckOutTimes() {
       try {
-        return server.isCollectPoolCheckOutTimes(user.getUsername());
+        return server.isCollectPoolCheckOutTimes(user.username());
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -231,7 +231,7 @@ public final class PoolMonitor {
     @Override
     public void setCollectCheckOutTimes(boolean collectCheckOutTimes) {
       try {
-        server.setCollectPoolCheckOutTimes(user.getUsername(), collectCheckOutTimes);
+        server.setCollectPoolCheckOutTimes(user.username(), collectCheckOutTimes);
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -241,7 +241,7 @@ public final class PoolMonitor {
     @Override
     public void resetStatistics() {
       try {
-        server.resetConnectionPoolStatistics(user.getUsername());
+        server.resetConnectionPoolStatistics(user.username());
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -249,12 +249,12 @@ public final class PoolMonitor {
     }
 
     @Override
-    public Connection getConnection(User user) {
+    public Connection connection(User user) {
       return null;
     }
 
     @Override
-    public DataSource getPoolDataSource() {
+    public DataSource poolDataSource() {
       return null;
     }
 

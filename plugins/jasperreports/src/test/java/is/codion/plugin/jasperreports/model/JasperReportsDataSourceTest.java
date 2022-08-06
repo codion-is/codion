@@ -28,11 +28,11 @@ public class JasperReportsDataSourceTest {
             .with(TestDomain.DEPARTMENT_NAME, "name")
             .with(TestDomain.DEPARTMENT_LOCATION, "none")
             .build();
-    EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
+    EntityDefinition definition = ENTITIES.definition(TestDomain.T_DEPARTMENT);
     List<Entity> entities = singletonList(department);
     JasperReportsDataSource<Entity> source =
             new JasperReportsDataSource<>(entities.iterator(), (entity, field) ->
-                    entity.get(definition.getAttribute(field.getName())));
+                    entity.get(definition.attribute(field.getName())));
     while (source.next()) {
       JRField field = new TestField(TestDomain.DEPARTMENT_NAME.name());
       source.getFieldValue(field);

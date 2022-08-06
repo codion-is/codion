@@ -39,17 +39,17 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   void test() {
-    assertEquals(TestDomain.T_EMP, conditionModel.getEntityType());
+    assertEquals(TestDomain.T_EMP, conditionModel.entityType());
     conditionModel.setConjunction(Conjunction.OR);
     assertEquals(Conjunction.OR, conditionModel.getConjunction());
-    assertEquals(7, conditionModel.getFilterModels().size());
-    assertEquals(10, conditionModel.getConditionModels().size());
+    assertEquals(7, conditionModel.filterModels().size());
+    assertEquals(10, conditionModel.conditionModels().size());
 
     assertFalse(conditionModel.isFilterEnabled(TestDomain.EMP_DEPARTMENT_FK));
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
 
     assertFalse(conditionModel.isConditionEnabled());
-    conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK).setEnabled(true);
+    conditionModel.conditionModel(TestDomain.EMP_DEPARTMENT_FK).setEnabled(true);
     assertTrue(conditionModel.isConditionEnabled());
 
     conditionModel.refresh();
@@ -61,36 +61,36 @@ public class DefaultEntityTableConditionModelTest {
             CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory(CONNECTION_PROVIDER));
     //no search properties defined for master entity
     ColumnConditionModel<? extends Attribute<Entity>, Entity> masterModel =
-            model.getConditionModel(TestDomain.DETAIL_MASTER_FK);
+            model.conditionModel(TestDomain.DETAIL_MASTER_FK);
     assertThrows(IllegalStateException.class, () ->
-            ((DefaultForeignKeyConditionModel) masterModel).getEntitySearchModel().performQuery());
+            ((DefaultForeignKeyConditionModel) masterModel).entitySearchModel().performQuery());
   }
 
   @Test
   void getPropertyFilterModel() {
-    assertNotNull(conditionModel.getFilterModel(TestDomain.EMP_COMMISSION));
+    assertNotNull(conditionModel.filterModel(TestDomain.EMP_COMMISSION));
   }
 
   @Test
   void getPropertyConditionModel() {
-    assertNotNull(conditionModel.getConditionModel(TestDomain.EMP_COMMISSION));
+    assertNotNull(conditionModel.conditionModel(TestDomain.EMP_COMMISSION));
   }
 
   @Test
   void getPropertyConditionModelNonExisting() {
-    assertThrows(IllegalArgumentException.class, () -> conditionModel.getConditionModel(TestDomain.DEPARTMENT_ID));
+    assertThrows(IllegalArgumentException.class, () -> conditionModel.conditionModel(TestDomain.DEPARTMENT_ID));
   }
 
   @Test
   void getPropertyFilterModelNonExisting() {
-    assertThrows(IllegalArgumentException.class, () -> conditionModel.getFilterModel(TestDomain.EMP_DEPARTMENT_FK));
-    assertThrows(IllegalArgumentException.class, () -> conditionModel.getFilterModel(TestDomain.EMP_DEPARTMENT_FK));
+    assertThrows(IllegalArgumentException.class, () -> conditionModel.filterModel(TestDomain.EMP_DEPARTMENT_FK));
+    assertThrows(IllegalArgumentException.class, () -> conditionModel.filterModel(TestDomain.EMP_DEPARTMENT_FK));
   }
 
   @Test
   void setEqualFilterValue() {
     conditionModel.setEqualFilterValue(TestDomain.EMP_COMMISSION, 1400d);
-    ColumnConditionModel<?, Double> propertyConditionModel = conditionModel.getFilterModel(TestDomain.EMP_COMMISSION);
+    ColumnConditionModel<?, Double> propertyConditionModel = conditionModel.filterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
     assertEquals(Operator.EQUAL, propertyConditionModel.getOperator());
@@ -106,7 +106,7 @@ public class DefaultEntityTableConditionModelTest {
     assertTrue(searchStateChanged);
     assertTrue(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
     ColumnConditionModel<? extends Attribute<Entity>, Entity> deptModel =
-            conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK);
+            conditionModel.conditionModel(TestDomain.EMP_DEPARTMENT_FK);
     assertTrue(deptModel.getEqualValues().contains(sales));
     assertTrue(deptModel.getEqualValues().contains(accounting));
     searchStateChanged = conditionModel.setEqualConditionValues(TestDomain.EMP_DEPARTMENT_FK, null);
@@ -140,7 +140,7 @@ public class DefaultEntityTableConditionModelTest {
     Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
     conditionModel.setEqualConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
-    ColumnConditionModel<?, String> nameConditionModel = conditionModel.getConditionModel(TestDomain.EMP_NAME);
+    ColumnConditionModel<?, String> nameConditionModel = conditionModel.conditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setEqualValue("SCOTT");
     conditionModel.setAdditionalConditionSupplier(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_2_TYPE));
     assertNotNull(conditionModel.getAdditionalConditionSupplier());
@@ -152,7 +152,7 @@ public class DefaultEntityTableConditionModelTest {
     EventListener conditionChangedListener = counter::incrementAndGet;
     conditionModel.addConditionChangedListener(conditionChangedListener);
     ColumnConditionModel<? extends Attribute<Double>, Double> commissionModel =
-            conditionModel.getConditionModel(TestDomain.EMP_COMMISSION);
+            conditionModel.conditionModel(TestDomain.EMP_COMMISSION);
     commissionModel.setEnabled(true);
     assertEquals(1, counter.get());
     commissionModel.setEnabled(false);
@@ -168,7 +168,7 @@ public class DefaultEntityTableConditionModelTest {
   void testSearchState() {
     assertFalse(conditionModel.hasConditionChanged());
     ColumnConditionModel<? extends Attribute<String>, String> jobModel =
-            conditionModel.getConditionModel(TestDomain.EMP_JOB);
+            conditionModel.conditionModel(TestDomain.EMP_JOB);
     jobModel.setEqualValue("job");
     assertTrue(conditionModel.hasConditionChanged());
     jobModel.setEnabled(false);
@@ -183,16 +183,16 @@ public class DefaultEntityTableConditionModelTest {
   void testSimpleSearchString() {
     final String value = "test";
     char wildcard = Text.WILDCARD_CHARACTER.get();
-    conditionModel.getSimpleConditionStringValue().set(value);
-    for (ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
-      if (model.getColumnClass().equals(String.class)) {
+    conditionModel.simpleConditionStringValue().set(value);
+    for (ColumnConditionModel<?, ?> model : conditionModel.conditionModels().values()) {
+      if (model.columnClass().equals(String.class)) {
         assertEquals(wildcard + value + wildcard, model.getEqualValue());
         assertTrue(model.isEnabled());
       }
     }
-    conditionModel.getSimpleConditionStringValue().set(null);
-    for (ColumnConditionModel<?, ?> model : conditionModel.getConditionModels().values()) {
-      if (model.getColumnClass().equals(String.class)) {
+    conditionModel.simpleConditionStringValue().set(null);
+    for (ColumnConditionModel<?, ?> model : conditionModel.conditionModels().values()) {
+      if (model.columnClass().equals(String.class)) {
         assertNull(model.getUpperBound());
         assertFalse(model.isEnabled());
       }

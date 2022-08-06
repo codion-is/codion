@@ -142,7 +142,7 @@ public class DefaultColumnFilterModelTest {
     assertTrue(conditionModel.include("hello"));
     assertFalse(conditionModel.include("helo"));
 
-    conditionModel.getCaseSensitiveState().set(false);
+    conditionModel.caseSensitiveState().set(false);
     assertTrue(conditionModel.include("HELlo"));
     assertFalse(conditionModel.include("heLo"));
     assertFalse(conditionModel.include(null));
@@ -151,7 +151,7 @@ public class DefaultColumnFilterModelTest {
     assertTrue(conditionModel.include("hello"));
     assertTrue(conditionModel.include("helo"));
 
-    conditionModel.getCaseSensitiveState().set(true);
+    conditionModel.caseSensitiveState().set(true);
     conditionModel.setEqualValue("hello");
     conditionModel.setOperator(Operator.NOT_EQUAL);
     assertFalse(conditionModel.include("hello"));
@@ -162,7 +162,7 @@ public class DefaultColumnFilterModelTest {
     assertFalse(conditionModel.include("hello"));
     assertTrue(conditionModel.include("helo"));
 
-    conditionModel.getCaseSensitiveState().set(false);
+    conditionModel.caseSensitiveState().set(false);
     assertFalse(conditionModel.include("HELlo"));
     assertTrue(conditionModel.include("heLo"));
     assertTrue(conditionModel.include(null));

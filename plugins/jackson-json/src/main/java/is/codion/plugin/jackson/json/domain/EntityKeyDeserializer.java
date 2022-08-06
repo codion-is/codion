@@ -37,13 +37,13 @@ final class EntityKeyDeserializer extends StdDeserializer<Key> {
   public Key deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
     ObjectCodec codec = parser.getCodec();
     JsonNode node = codec.readTree(parser);
-    EntityDefinition definition = definitions.computeIfAbsent(node.get("entityType").asText(), entities::getDefinition);
+    EntityDefinition definition = definitions.computeIfAbsent(node.get("entityType").asText(), entities::definition);
     JsonNode values = node.get("values");
-    Key.Builder builder = entities.keyBuilder(definition.getEntityType());
+    Key.Builder builder = entities.keyBuilder(definition.entityType());
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();
-      ColumnProperty<Object> property = definition.getColumnProperty(definition.getAttribute(field.getKey()));
+      ColumnProperty<Object> property = definition.columnProperty(definition.attribute(field.getKey()));
       builder.with(property.attribute(), entityObjectMapper.readValue(field.getValue().toString(), property.attribute().valueClass()));
     }
 

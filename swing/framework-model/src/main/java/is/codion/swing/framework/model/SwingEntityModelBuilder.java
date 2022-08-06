@@ -49,7 +49,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public EntityType getEntityType() {
+  public EntityType entityType() {
     return entityType;
   }
 

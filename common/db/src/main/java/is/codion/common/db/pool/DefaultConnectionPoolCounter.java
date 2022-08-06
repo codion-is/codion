@@ -119,7 +119,7 @@ final class DefaultConnectionPoolCounter {
   }
 
   ConnectionPoolStatistics getStatistics(long since) {
-    DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(connectionPool.getUser().getUsername());
+    DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(connectionPool.user().username());
     long current = System.currentTimeMillis();
     statistics.setTimestamp(current);
     statistics.setResetDate(resetDate.get());

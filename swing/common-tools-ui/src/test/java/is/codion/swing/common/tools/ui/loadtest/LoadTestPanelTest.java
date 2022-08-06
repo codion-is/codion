@@ -19,7 +19,7 @@ public class LoadTestPanelTest {
   void test() {
     TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     LoadTestPanel<Object> panel = new LoadTestPanel<Object>(model);
-    assertEquals(model, panel.getModel());
+    assertEquals(model, panel.model());
     model.shutdown();
   }
 

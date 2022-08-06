@@ -18,11 +18,11 @@ public final class ForeignKeyConstraint {
     this.referencedTable = requireNonNull(referencedTable);
   }
 
-  public Table getReferencedTable() {
+  public Table referencedTable() {
     return referencedTable;
   }
 
-  public Map<Column, Column> getReferences() {
+  public Map<Column, Column> references() {
     return Collections.unmodifiableMap(references);
   }
 

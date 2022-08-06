@@ -22,26 +22,26 @@ public class H2DatabaseTest {
   @Test
   void getDatabaseName() {
     H2Database database = new H2Database("jdbc:h2:file:C:/data/sample;option=true;option2=false");
-    assertEquals("C:/data/sample", database.getName());
+    assertEquals("C:/data/sample", database.name());
     database = new H2Database("jdbc:h2:C:/data/sample;option=true;option2=false");
-    assertEquals("C:/data/sample", database.getName());
+    assertEquals("C:/data/sample", database.name());
     database = new H2Database("jdbc:h2:mem:sampleDb;option=true;option2=false");
-    assertEquals("sampleDb", database.getName());
+    assertEquals("sampleDb", database.name());
     database = new H2Database("jdbc:h2:mem:");
-    assertEquals("private", database.getName());
+    assertEquals("private", database.name());
     database = new H2Database("jdbc:h2:tcp://sample.Db:1234");
-    assertEquals("sample.Db:1234", database.getName());
+    assertEquals("sample.Db:1234", database.name());
     database = new H2Database("jdbc:h2:tcp://sample.Db:1234;option=true;option2=false");
-    assertEquals("sample.Db:1234", database.getName());
+    assertEquals("sample.Db:1234", database.name());
     database = new H2Database("jdbc:h2:zip:db.zip!/h2db");
-    assertEquals("db.zip!/h2db", database.getName());
+    assertEquals("db.zip!/h2db", database.name());
     database = new H2Database("jdbc:h2:zip:db.zip!/h2db;option");
-    assertEquals("db.zip!/h2db", database.getName());
+    assertEquals("db.zip!/h2db", database.name());
   }
 
   @Test
   void getSequenceSQLNullSequence() {
-    assertThrows(NullPointerException.class, () -> new H2Database("url").getSequenceQuery(null));
+    assertThrows(NullPointerException.class, () -> new H2Database("url").sequenceQuery(null));
   }
 
   @Test
@@ -53,14 +53,14 @@ public class H2DatabaseTest {
   @Test
   void getAutoIncrementQuery() {
     H2Database db = new H2Database("url");
-    assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
+    assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
   }
 
   @Test
   void getSequenceQuery() {
     H2Database db = new H2Database("url");
     final String idSource = "seq";
-    assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));
+    assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.sequenceQuery(idSource));
   }
 
   @Test

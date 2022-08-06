@@ -42,7 +42,7 @@ public final class PropertyInputDialog<T> extends Dialog<PropertyInputDialog.Inp
   /**
    * @return the input control used by this input dialog
    */
-  public Control getControl() {
+  public Control control() {
     return control;
   }
 
@@ -79,7 +79,7 @@ public final class PropertyInputDialog<T> extends Dialog<PropertyInputDialog.Inp
     /**
      * @return the value
      */
-    public T getValue() {
+    public T value() {
       return value;
     }
   }

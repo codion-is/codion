@@ -110,22 +110,22 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final C getColumnIdentifier() {
+  public final C columnIdentifier() {
     return columnIdentifier;
   }
 
   @Override
-  public final State getCaseSensitiveState() {
+  public final State caseSensitiveState() {
     return caseSensitiveState;
   }
 
   @Override
-  public final Format getFormat() {
+  public final Format format() {
     return format;
   }
 
   @Override
-  public final String getDateTimePattern() {
+  public final String dateTimePattern() {
     return dateTimePattern;
   }
 
@@ -140,7 +140,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final Class<T> getColumnClass() {
+  public final Class<T> columnClass() {
     return columnClass;
   }
 
@@ -208,12 +208,12 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final List<Operator> getOperators() {
+  public final List<Operator> operators() {
     return operators;
   }
 
   @Override
-  public final Value<Character> getWildcardValue() {
+  public final Value<Character> wildcardValue() {
     return wildcardValue;
   }
 
@@ -238,7 +238,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final Value<AutomaticWildcard> getAutomaticWildcardValue() {
+  public final Value<AutomaticWildcard> automaticWildcardValue() {
     return automaticWildcardValue;
   }
 
@@ -253,27 +253,27 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final StateObserver getLockedObserver() {
+  public final StateObserver lockedObserver() {
     return lockedState.observer();
   }
 
   @Override
-  public final ValueSet<T> getEqualValueSet() {
+  public final ValueSet<T> equalValueSet() {
     return equalValues;
   }
 
   @Override
-  public final Value<T> getLowerBoundValue() {
+  public final Value<T> lowerBoundValue() {
     return lowerBoundValue;
   }
 
   @Override
-  public final Value<T> getUpperBoundValue() {
+  public final Value<T> upperBoundValue() {
     return upperBoundValue;
   }
 
   @Override
-  public final State getEnabledState() {
+  public final State enabledState() {
     return enabledState;
   }
 
@@ -348,7 +348,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final Value<Operator> getOperatorValue() {
+  public final Value<Operator> operatorValue() {
     return operatorValue;
   }
 

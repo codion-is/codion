@@ -14,17 +14,17 @@ public interface Key {
   /**
    * @return the entity type
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the entity definition
    */
-  EntityDefinition getDefinition();
+  EntityDefinition definition();
 
   /**
    * @return the attributes comprising this key
    */
-  List<Attribute<?>> getAttributes();
+  List<Attribute<?>> attributes();
 
   /**
    * @return true if this key represents a primary key for an entity, note that this is true
@@ -62,7 +62,7 @@ public interface Key {
    * @return the key attribute, useful for single attribute keys
    * @throws IllegalStateException in case this is a composite key or if it contains no attributes
    */
-  <T> Attribute<T> getAttribute();
+  <T> Attribute<T> attribute();
 
   /**
    * Returns the value of this key. Note that this method throws an exception if this key is a composite key.

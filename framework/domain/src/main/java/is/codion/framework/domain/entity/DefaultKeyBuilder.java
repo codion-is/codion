@@ -16,8 +16,8 @@ final class DefaultKeyBuilder implements Key.Builder {
   private boolean primaryKey = false;
 
   DefaultKeyBuilder(Key key) {
-    this(key.getDefinition());
-    key.getAttributes().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
+    this(key.definition());
+    key.attributes().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
   }
 
   DefaultKeyBuilder(EntityDefinition definition) {
@@ -26,7 +26,7 @@ final class DefaultKeyBuilder implements Key.Builder {
 
   @Override
   public <T> Key.Builder with(Attribute<T> attribute, T value) {
-    ColumnProperty<T> property = definition.getColumnProperty(attribute);
+    ColumnProperty<T> property = definition.columnProperty(attribute);
     if (property.primaryKeyColumn()) {
       primaryKey = true;
     }
@@ -38,7 +38,7 @@ final class DefaultKeyBuilder implements Key.Builder {
   @Override
   public Key build() {
     if (primaryKey) {
-      definition.getPrimaryKeyAttributes().forEach(attribute -> attributeValues.putIfAbsent(attribute, null));
+      definition.primaryKeyAttributes().forEach(attribute -> attributeValues.putIfAbsent(attribute, null));
     }
 
     return new DefaultKey(definition, attributeValues, primaryKey);

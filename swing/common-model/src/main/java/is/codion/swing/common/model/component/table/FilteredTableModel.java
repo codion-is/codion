@@ -84,7 +84,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @param rowIndex the row index
    * @return the item at the given row index in the table model
    */
-  R getItemAt(int rowIndex);
+  R itemAt(int rowIndex);
 
   /**
    * Returns a String representation of the value for the given row and column.
@@ -124,19 +124,19 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @return the FilteredTableColumnModel used by this TableModel
    */
-  FilteredTableColumnModel<C> getColumnModel();
+  FilteredTableColumnModel<C> columnModel();
 
   /**
    * Returns the {@link ColumnSummaryModel} associated with {@code columnIdentifier}
    * @param columnIdentifier the column identifier
    * @return the ColumnSummaryModel for the column identified by the given identifier, an empty Optional if none is available
    */
-  Optional<ColumnSummaryModel> getColumnSummaryModel(C columnIdentifier);
+  Optional<ColumnSummaryModel> columnSummaryModel(C columnIdentifier);
 
   /**
    * @return the column filter models, mapped to their respective column identifier
    */
-  Map<C, ColumnFilterModel<R, C, ?>> getColumnFilterModels();
+  Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels();
 
   /**
    * Returns the {@link ColumnConditionModel} for the column with the given identifier.
@@ -145,14 +145,14 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @return the ColumnConditionModel for the column with the given identifier.
    * @throws IllegalArgumentException in case no filter model exists for the given column
    */
-  <T> ColumnFilterModel<R, C, T> getColumnFilterModel(C columnIdentifier);
+  <T> ColumnFilterModel<R, C, T> columnFilterModel(C columnIdentifier);
 
   /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values
    * @param <T> the value type
    * @return the values (including nulls) of the column identified by the given identifier from the rows in the table model
    */
-  <T> Collection<T> getValues(C columnIdentifier);
+  <T> Collection<T> values(C columnIdentifier);
 
   /**
    * Returns the class of the column with the given identifier
@@ -166,7 +166,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @param <T> the value type
    * @return the values (including nulls) of the column identified by the given identifier from the selected rows in the table model
    */
-  <T> Collection<T> getSelectedValues(C columnIdentifier);
+  <T> Collection<T> selectedValues(C columnIdentifier);
 
   /**
    * @return true if merge on refresh is enabled
@@ -181,7 +181,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * Sorts the visible contents according to the {@link FilteredTableSortModel}, keeping the selected items.
    * Calling this method with the sort model disabled has no effect.
-   * @see #getSortModel()
+   * @see #sortModel()
    * @see #addSortListener(EventListener)
    * @see FilteredTableSortModel#isSortingEnabled
    */
@@ -190,17 +190,17 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @return the selection model used by this table model
    */
-  FilteredTableSelectionModel<R> getSelectionModel();
+  FilteredTableSelectionModel<R> selectionModel();
 
   /**
    * @return the sorting model
    */
-  FilteredTableSortModel<R, C> getSortModel();
+  FilteredTableSortModel<R, C> sortModel();
 
   /**
    * @return the search model
    */
-  FilteredTableSearchModel getSearchModel();
+  FilteredTableSearchModel searchModel();
 
   /**
    * Refreshes the items in this table model, respecting the selection, filtering as well as sorting states.
@@ -285,11 +285,11 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
     /**
      * @return the from row index
      */
-    int getFromRow();
+    int fromRow();
 
     /**
      * @return the to row index
      */
-    int getToRow();
+    int toRow();
   }
 }

@@ -60,7 +60,7 @@ public interface Domain {
    * @return the report
    * @throws IllegalArgumentException in case the report is not found
    */
-  <T, R, P> Report<T, R, P> getReport(ReportType<T, R, P> reportType);
+  <T, R, P> Report<T, R, P> report(ReportType<T, R, P> reportType);
 
   /**
    * Retrieves the procedure of the given type.
@@ -70,7 +70,7 @@ public interface Domain {
    * @return the procedure
    * @throws IllegalArgumentException in case the procedure is not found
    */
-  <C, T> DatabaseProcedure<C, T> getProcedure(ProcedureType<C, T> procedureType);
+  <C, T> DatabaseProcedure<C, T> procedure(ProcedureType<C, T> procedureType);
 
   /**
    * Retrieves the function of the given type.
@@ -81,7 +81,7 @@ public interface Domain {
    * @return the function
    * @throws IllegalArgumentException in case the function is not found
    */
-  <C, T, R> DatabaseFunction<C, T, R> getFunction(FunctionType<C, T, R> functionType);
+  <C, T, R> DatabaseFunction<C, T, R> function(FunctionType<C, T, R> functionType);
 
   /**
    * Configures a database connection for applications using this domain model, for example adding extensions or properties.

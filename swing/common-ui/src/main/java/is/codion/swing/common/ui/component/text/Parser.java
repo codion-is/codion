@@ -25,12 +25,12 @@ public interface Parser<T> {
     /**
      * @return the text being parsed
      */
-    String getText();
+    String text();
 
     /**
      * @return the parsed value
      */
-    T getValue();
+    T value();
 
     /**
      * @return true if the parsing was successful

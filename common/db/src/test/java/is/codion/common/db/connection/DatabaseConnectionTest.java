@@ -31,8 +31,8 @@ public class DatabaseConnectionTest {
       connection = DATABASE.createConnection(UNIT_TEST_USER);
       DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
       assertTrue(databaseConnection.isConnected());
-      assertNotNull(databaseConnection.getUser());
-      assertTrue(UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
+      assertNotNull(databaseConnection.user());
+      assertTrue(UNIT_TEST_USER.username().equalsIgnoreCase(databaseConnection.user().username()));
     }
     finally {
       Database.closeSilently(connection);

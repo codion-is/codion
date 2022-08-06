@@ -86,13 +86,13 @@ public final class PropertiesTest {
   @Test
   void intPropertyWithDateFormat() {
     assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("attribute"))
-            .format(new SimpleDateFormat(LocaleDateTimePattern.builder().yearTwoDigits().build().getDatePattern())));
+            .format(new SimpleDateFormat(LocaleDateTimePattern.builder().yearTwoDigits().build().datePattern())));
   }
 
   @Test
   void doublePropertyWithDateFormat() {
     assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.doubleAttribute("attribute"))
-            .format(new SimpleDateFormat(LocaleDateTimePattern.builder().yearTwoDigits().build().getDatePattern())));
+            .format(new SimpleDateFormat(LocaleDateTimePattern.builder().yearTwoDigits().build().datePattern())));
   }
 
   @Test
@@ -218,10 +218,10 @@ public final class PropertiesTest {
     List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(3));
     ItemProperty<Integer> property = (ItemProperty<Integer>) Properties.itemProperty(ENTITY_TYPE.integerAttribute("item"), items).build();
     assertFalse(property.isValid(4));
-    assertThrows(IllegalArgumentException.class, () -> property.getItem(4));
+    assertThrows(IllegalArgumentException.class, () -> property.item(4));
     assertTrue(property.isValid(null));
     assertTrue(property.isValid(2));
-    assertNotNull(property.getItem(null));
-    assertNotNull(property.getItem(1));
+    assertNotNull(property.item(null));
+    assertNotNull(property.item(1));
   }
 }

@@ -87,7 +87,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
             .add(cityPostalCodeStateCountryPanel)
             .build();
 
-    invoiceLinePanel.setBorder(BorderFactory.createTitledBorder(getEditModel().getEntities().getDefinition(InvoiceLine.TYPE).getCaption()));
+    invoiceLinePanel.setBorder(BorderFactory.createTitledBorder(editModel().entities().definition(InvoiceLine.TYPE).caption()));
     invoiceLinePanel.initializePanel();
 
     setLayout(borderLayout());
@@ -100,9 +100,9 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
     private CustomerSelectionProvider(EntitySearchModel searchModel) {
       super(searchModel);
-      SwingEntityTableModel tableModel = getTable().getModel();
-      tableModel.getColumnModel().setColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
-      tableModel.getSortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
+      SwingEntityTableModel tableModel = table().getModel();
+      tableModel.columnModel().setVisibleColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
+      tableModel.sortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
       setPreferredSize(new Dimension(500, 300));
     }
   }

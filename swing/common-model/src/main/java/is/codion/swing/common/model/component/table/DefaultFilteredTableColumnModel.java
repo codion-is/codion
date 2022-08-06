@@ -57,12 +57,12 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public Collection<TableColumn> getAllColumns() {
+  public Collection<TableColumn> columns() {
     return unmodifiableCollection(columns.values());
   }
 
   @Override
-  public State getLockedState() {
+  public State lockedState() {
     return lockedState;
   }
 
@@ -82,12 +82,12 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public void setColumns(C... columnIdentifiers) {
-    setColumns(asList(columnIdentifiers));
+  public void setVisibleColumns(C... columnIdentifiers) {
+    setVisibleColumns(asList(columnIdentifiers));
   }
 
   @Override
-  public void setColumns(List<C> columnIdentifiers) {
+  public void setVisibleColumns(List<C> columnIdentifiers) {
     requireNonNull(columnIdentifiers);
     checkIfLocked();
     int columnIndex = 0;
@@ -95,7 +95,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
       showColumn(identifier);
       moveColumn(getColumnIndex(identifier), columnIndex++);
     }
-    for (TableColumn column : getAllColumns()) {
+    for (TableColumn column : columns()) {
       if (!columnIdentifiers.contains(column.getIdentifier())) {
         hideColumn((C) column.getIdentifier());
       }
@@ -103,19 +103,19 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public List<TableColumn> getVisibleColumns() {
+  public List<TableColumn> visibleColumns() {
     return unmodifiableList(Collections.list(tableColumnModel.getColumns()));
   }
 
   @Override
-  public Collection<TableColumn> getHiddenColumns() {
+  public Collection<TableColumn> hiddenColumns() {
     return unmodifiableCollection(hiddenColumns.values().stream()
             .map(hiddenColumn -> hiddenColumn.column)
             .collect(Collectors.toList()));
   }
 
   @Override
-  public TableColumn getTableColumn(C columnIdentifier) {
+  public TableColumn tableColumn(C columnIdentifier) {
     TableColumn column = columns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
     if (column != null) {
       return column;
@@ -130,7 +130,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public C getColumnIdentifier(int columnModelIndex) {
+  public C columnIdentifier(int columnModelIndex) {
     C identifier = columnIdentifiers.get(columnModelIndex);
     if (identifier != null) {
       return identifier;
@@ -141,7 +141,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 
   @Override
   public void resetColumns() {
-    setColumns(new ArrayList<>(columns.keySet()));
+    setVisibleColumns(new ArrayList<>(columns.keySet()));
   }
 
   /* TableColumnModel implementation begins */
@@ -281,7 +281,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   private boolean hideColumn(C columnIdentifier) {
     checkIfLocked();
     if (!hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER))) {
-      HiddenColumn hiddenColumn = new HiddenColumn(getTableColumn(columnIdentifier));
+      HiddenColumn hiddenColumn = new HiddenColumn(tableColumn(columnIdentifier));
       hiddenColumns.put(columnIdentifier, hiddenColumn);
       tableColumnModel.removeColumn(hiddenColumn.column);
       columnHiddenEvent.onEvent(columnIdentifier);

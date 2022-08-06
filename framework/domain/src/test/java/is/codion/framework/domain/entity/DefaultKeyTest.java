@@ -21,26 +21,26 @@ public final class DefaultKeyTest {
   @Test
   void compositeKeyNull() {
     Entity master = ENTITIES.entity(TestDomain.T_COMPOSITE_MASTER);
-    assertTrue(master.getPrimaryKey().isNull());
-    assertFalse(master.getPrimaryKey().isNotNull());
+    assertTrue(master.primaryKey().isNull());
+    assertFalse(master.primaryKey().isNotNull());
 
     master.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
     master.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
-    assertFalse(master.getPrimaryKey().isNull());
-    assertTrue(master.getPrimaryKey().isNotNull());
+    assertFalse(master.primaryKey().isNull());
+    assertTrue(master.primaryKey().isNotNull());
 
     master.put(TestDomain.COMPOSITE_MASTER_ID, null);
-    assertFalse(master.getPrimaryKey().isNull());
-    assertTrue(master.getPrimaryKey().isNotNull());
+    assertFalse(master.primaryKey().isNull());
+    assertTrue(master.primaryKey().isNotNull());
 
     master.put(TestDomain.COMPOSITE_MASTER_ID, 2);
     master.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
-    assertTrue(master.getPrimaryKey().isNull());
-    assertFalse(master.getPrimaryKey().isNotNull());
+    assertTrue(master.primaryKey().isNull());
+    assertFalse(master.primaryKey().isNotNull());
 
     master.put(TestDomain.COMPOSITE_MASTER_ID, null);
-    assertTrue(master.getPrimaryKey().isNull());
-    assertFalse(master.getPrimaryKey().isNotNull());
+    assertTrue(master.primaryKey().isNull());
+    assertFalse(master.primaryKey().isNotNull());
   }
 
   @Test
@@ -122,22 +122,22 @@ public final class DefaultKeyTest {
             .with(Department.NO, 1)
             .build();
 
-    assertEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+    assertEquals(department1.primaryKey(), department2.primaryKey());
 
     department2.put(Department.NO, 2);
-    assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+    assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
     department1.put(Department.NO, null);
-    assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+    assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
     department2.put(Department.NO, null);
-    assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+    assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
     department1.remove(Department.NO);
-    assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+    assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
     department2.remove(Department.NO);
-    assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+    assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
     Key departmentKey = ENTITIES.primaryKey(Department.TYPE, 42);
     Key employeeKey = ENTITIES.primaryKey(Employee.TYPE, 42);

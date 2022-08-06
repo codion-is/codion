@@ -86,7 +86,7 @@ final class SelectQueries {
       //default from clause is handled by getFrom()
       where(condition);
       if (groupBy == null) {
-        groupBy(definition.getGroupByClause());
+        groupBy(definition.groupByClause());
       }
       condition.orderBy().ifPresent(this::setOrderBy);
       forUpdate(condition.forUpdate());
@@ -101,7 +101,7 @@ final class SelectQueries {
     }
 
     Builder entitySelectQuery() {
-      SelectQuery selectQuery = definition.getSelectQuery();
+      SelectQuery selectQuery = definition.setSelectQuery();
       if (selectQuery != null) {
         if (selectQuery.columns() != null) {
           columns(selectQuery.columns());
@@ -201,12 +201,12 @@ final class SelectQueries {
       if (orderBy != null) {
         builder.append(NEWLINE).append(ORDER_BY).append(orderBy);
       }
-      String limitOffsetClause = database.getLimitOffsetClause(limit, offset);
+      String limitOffsetClause = database.limitOffsetClause(limit, offset);
       if (!limitOffsetClause.isEmpty()) {
         builder.append(NEWLINE).append(limitOffsetClause);
       }
       if (forUpdate) {
-        String forUpdateClause = database.getSelectForUpdateClause();
+        String forUpdateClause = database.selectForUpdateClause();
         if (!nullOrEmpty(forUpdateClause)) {
           builder.append(NEWLINE).append(forUpdateClause);
         }
@@ -228,18 +228,18 @@ final class SelectQueries {
     }
 
     private String getFrom() {
-      return from == null ? forUpdate ? definition.getTableName() : definition.getSelectTableName() : from;
+      return from == null ? forUpdate ? definition.tableName() : definition.selectTableName() : from;
     }
 
     private List<ColumnProperty<?>> getPropertiesToSelect(Collection<Attribute<?>> selectAttributes) {
-      Set<ColumnProperty<?>> propertiesToSelect = new HashSet<>(definition.getPrimaryKeyProperties());
+      Set<ColumnProperty<?>> propertiesToSelect = new HashSet<>(definition.primaryKeyProperties());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
           ((ForeignKey) attribute).references().forEach(reference ->
-                  propertiesToSelect.add(definition.getColumnProperty(reference.attribute())));
+                  propertiesToSelect.add(definition.columnProperty(reference.attribute())));
         }
         else {
-          propertiesToSelect.add(definition.getColumnProperty(attribute));
+          propertiesToSelect.add(definition.columnProperty(attribute));
         }
       });
 
@@ -247,15 +247,15 @@ final class SelectQueries {
     }
 
     private List<ColumnProperty<?>> getSelectableProperties() {
-      return selectablePropertiesCache.computeIfAbsent(definition.getEntityType(), entityType ->
-              definition.getColumnProperties().stream()
-                      .filter(property -> !definition.getLazyLoadedBlobProperties().contains(property))
+      return selectablePropertiesCache.computeIfAbsent(definition.entityType(), entityType ->
+              definition.columnProperties().stream()
+                      .filter(property -> !definition.lazyLoadedBlobProperties().contains(property))
                       .filter(ColumnProperty::selectable)
                       .collect(toList()));
     }
 
     private String getAllColumnsClause() {
-      return allColumnsClauseCache.computeIfAbsent(definition.getEntityType(), type -> getColumnsClause(getSelectableProperties()));
+      return allColumnsClauseCache.computeIfAbsent(definition.entityType(), type -> getColumnsClause(getSelectableProperties()));
     }
 
     private String getColumnsClause(List<ColumnProperty<?>> columnProperties) {
@@ -296,7 +296,7 @@ final class SelectQueries {
     }
 
     private String getColumnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByAttribute orderByAttribute) {
-      return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).columnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
+      return entityDefinition.columnProperty(orderByAttribute.attribute()).columnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
     }
   }
 }

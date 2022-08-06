@@ -18,27 +18,27 @@ public final class DefaultVersionTest {
   @Test
   void parse() {
     Version version = Version.parse("2.12.4 2018.01.02 15:27");
-    assertEquals(version.getMajor(), 2);
-    assertEquals(version.getMinor(), 12);
-    assertEquals(version.getPatch(), 4);
-    assertEquals("2018.01.02 15:27", version.getMetadata());
+    assertEquals(version.major(), 2);
+    assertEquals(version.minor(), 12);
+    assertEquals(version.patch(), 4);
+    assertEquals("2018.01.02 15:27", version.metadata());
 
     version = Version.parse("2.12.4");
-    assertEquals(version.getMajor(), 2);
-    assertEquals(version.getMinor(), 12);
-    assertEquals(version.getPatch(), 4);
+    assertEquals(version.major(), 2);
+    assertEquals(version.minor(), 12);
+    assertEquals(version.patch(), 4);
 
     version = Version.parse("0.2-build 23");
-    assertEquals(version.getMajor(), 0);
-    assertEquals(version.getMinor(), 2);
-    assertEquals(version.getPatch(), 0);
-    assertEquals("build 23", version.getMetadata());
+    assertEquals(version.major(), 0);
+    assertEquals(version.minor(), 2);
+    assertEquals(version.patch(), 0);
+    assertEquals("build 23", version.metadata());
 
     version = Version.parse("1-RC");
-    assertEquals(version.getMajor(), 1);
-    assertEquals(version.getMinor(), 0);
-    assertEquals(version.getPatch(), 0);
-    assertEquals("RC", version.getMetadata());
+    assertEquals(version.major(), 1);
+    assertEquals(version.minor(), 0);
+    assertEquals(version.patch(), 0);
+    assertEquals("RC", version.metadata());
   }
 
   @Test
@@ -54,19 +54,19 @@ public final class DefaultVersionTest {
   @Test
   void constructor() {
     Version version = Version.version(1);
-    assertEquals(version.getMajor(), 1);
-    assertEquals(version.getMinor(), 0);
-    assertEquals(version.getPatch(), 0);
+    assertEquals(version.major(), 1);
+    assertEquals(version.minor(), 0);
+    assertEquals(version.patch(), 0);
 
     version = Version.version(1, 0, 23);
-    assertEquals(version.getMajor(), 1);
-    assertEquals(version.getMinor(), 0);
-    assertEquals(version.getPatch(), 23);
+    assertEquals(version.major(), 1);
+    assertEquals(version.minor(), 0);
+    assertEquals(version.patch(), 23);
 
     version = Version.version(0, 2, 1);
-    assertEquals(version.getMajor(), 0);
-    assertEquals(version.getMinor(), 2);
-    assertEquals(version.getPatch(), 1);
+    assertEquals(version.major(), 0);
+    assertEquals(version.minor(), 2);
+    assertEquals(version.patch(), 1);
   }
 
   @Test

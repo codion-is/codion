@@ -72,8 +72,8 @@ final class DefaultMethodLogger implements MethodLogger {
       throw new IllegalStateException("Call stack is empty when trying to log method exit: " + method);
     }
     DefaultEntry entry = callStack.pop();
-    if (!entry.getMethod().equals(method)) {//todo pop until found or empty?
-      throw new IllegalStateException("Expecting method " + entry.getMethod() + " but got " + method + " when trying to log method exit");
+    if (!entry.method().equals(method)) {//todo pop until found or empty?
+      throw new IllegalStateException("Expecting method " + entry.method() + " but got " + method + " when trying to log method exit");
     }
     entry.setExitTime();
     entry.setException(exception);
@@ -104,7 +104,7 @@ final class DefaultMethodLogger implements MethodLogger {
   }
 
   @Override
-  public synchronized List<Entry> getEntries() {
+  public synchronized List<Entry> entries() {
     return Collections.unmodifiableList(entries);
   }
 
@@ -156,44 +156,44 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     @Override
-    public List<Entry> getChildEntries() {
+    public List<Entry> childEntries() {
       return Collections.unmodifiableList(childEntries);
     }
 
     @Override
-    public String getMethod() {
+    public String method() {
       return method;
     }
 
     @Override
-    public boolean isComplete() {
+    public boolean complete() {
       return exitTime != 0;
     }
 
     @Override
-    public long getAccessTime() {
+    public long accessTime() {
       return accessTime;
     }
 
     @Override
-    public long getExitTime() {
+    public long exitTime() {
       return exitTime;
     }
 
     @Override
-    public String getAccessMessage() {
+    public String accessMessage() {
       return accessMessage;
     }
 
     @Override
-    public long getDuration() {
+    public long duration() {
       return exitTimeNano - accessTimeNano;
     }
 
     @Override
     public void append(StringBuilder builder) {
       builder.append(this).append(NEWLINE);
-      appendLogEntries(builder, getChildEntries(), 1);
+      appendLogEntries(builder, childEntries(), 1);
     }
 
     @Override
@@ -217,10 +217,10 @@ final class DefaultMethodLogger implements MethodLogger {
           stringBuilder.append(" : ").append(accessMessage);
         }
       }
-      if (isComplete()) {
+      if (complete()) {
         LocalDateTime exitDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(exitTime), TimeZone.getDefault().toZoneId());
         stringBuilder.append(NEWLINE).append(indentString).append(TIMESTAMP_FORMATTER.format(exitDateTime)).append(" > ")
-                .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(getDuration()))).append(" μs")
+                .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(duration()))).append(" μs")
                 .append(exitMessage == null ? "" : " (" + exitMessage + ")");
         if (stackTrace != null) {
           stringBuilder.append(NEWLINE).append(padString).append(stackTrace.replace(NEWLINE, NEWLINE + padString));
@@ -279,7 +279,7 @@ final class DefaultMethodLogger implements MethodLogger {
     private static void appendLogEntries(StringBuilder log, List<Entry> entries, int indentationLevel) {
       for (Entry entry : entries) {
         log.append(entry.toString(indentationLevel)).append(NEWLINE);
-        appendLogEntries(log, entry.getChildEntries(), indentationLevel + 1);
+        appendLogEntries(log, entry.childEntries(), indentationLevel + 1);
       }
     }
 

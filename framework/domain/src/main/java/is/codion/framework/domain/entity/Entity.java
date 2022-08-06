@@ -34,12 +34,12 @@ public interface Entity extends Comparable<Entity> {
   /**
    * @return the entity type
    */
-  EntityType getEntityType();
+  EntityType entityType();
 
   /**
    * @return the entity definition
    */
-  EntityDefinition getDefinition();
+  EntityDefinition entityDefinition();
 
   /**
    * Sets the value of the given attribute, returning the old value if any
@@ -156,7 +156,7 @@ public interface Entity extends Comparable<Entity> {
    * @throws IllegalArgumentException if the attribute is not a foreign key attribute
    * @see #isLoaded(ForeignKey)
    */
-  Entity getForeignKey(ForeignKey foreignKey);
+  Entity referencedEntity(ForeignKey foreignKey);
 
   /**
    * Returns the primary key of the entity referenced by the given {@link Attribute},
@@ -164,7 +164,7 @@ public interface Entity extends Comparable<Entity> {
    * @param foreignKey the foreign key for which to retrieve the underlying {@link Key}
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
-  Key getReferencedKey(ForeignKey foreignKey);
+  Key referencedKey(ForeignKey foreignKey);
 
   /**
    * Returns true if the value of the given foreign key is null, in case of composite
@@ -260,14 +260,14 @@ public interface Entity extends Comparable<Entity> {
    * If the entity has no primary key attribute defined, this key contains no values.
    * @return the primary key of this entity
    */
-  Key getPrimaryKey();
+  Key primaryKey();
 
   /**
    * Returns the primary key of this entity, in its original state.
    * If the entity has no primary key attributes defined, this key contains no values.
    * @return the primary key of this entity in its original state
    */
-  Key getOriginalPrimaryKey();
+  Key originalPrimaryKey();
 
   /**
    * Returns an unmodifiable view of the entries in this Entity, note that
@@ -346,7 +346,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static boolean isKeyModified(Collection<Entity> entities) {
     return requireNonNull(entities).stream()
-            .anyMatch(entity -> entity.getPrimaryKey().getAttributes().stream()
+            .anyMatch(entity -> entity.primaryKey().attributes().stream()
                     .anyMatch(entity::isModified));
   }
 
@@ -378,7 +378,7 @@ public interface Entity extends Comparable<Entity> {
     requireNonNull(entity);
     requireNonNull(comparison);
     return comparison.entrySet().stream()
-            .map(entry -> definition.getProperty(entry.getKey()))
+            .map(entry -> definition.property(entry.getKey()))
             .filter(property -> {
               boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).updatable();
               boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
@@ -396,7 +396,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static List<Key> getPrimaryKeys(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
-            .map(Entity::getPrimaryKey)
+            .map(Entity::primaryKey)
             .collect(toList());
   }
 
@@ -408,7 +408,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static Set<Key> getReferencedKeys(Collection<? extends Entity> entities, ForeignKey foreignKey) {
     return requireNonNull(entities).stream()
-            .map(entity -> entity.getReferencedKey(foreignKey))
+            .map(entity -> entity.referencedKey(foreignKey))
             .filter(Objects::nonNull)
             .collect(toSet());
   }
@@ -420,7 +420,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static Collection<Key> getOriginalPrimaryKeys(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
-            .map(Entity::getOriginalPrimaryKey)
+            .map(Entity::originalPrimaryKey)
             .collect(toList());
   }
 
@@ -508,7 +508,7 @@ public interface Entity extends Comparable<Entity> {
     requireNonNull(attribute, "attribute");
     Map<Key, T> previousValues = new HashMap<>(requireNonNull(entities).size());
     for (Entity entity : entities) {
-      previousValues.put(entity.getPrimaryKey(), entity.put(attribute, value));
+      previousValues.put(entity.primaryKey(), entity.put(attribute, value));
     }
 
     return previousValues;
@@ -521,7 +521,7 @@ public interface Entity extends Comparable<Entity> {
    * @throws IllegalArgumentException in case the entities are not of the same type
    */
   static void put(Entity destination, Entity source) {
-    if (!requireNonNull(destination).getEntityType().equals(requireNonNull(source).getEntityType())) {
+    if (!requireNonNull(destination).entityType().equals(requireNonNull(source).entityType())) {
       throw new IllegalArgumentException("Entities of same type expected");
     }
     source.entrySet().forEach(entry -> destination.put((Attribute<Object>) entry.getKey(), entry.getValue()));
@@ -570,7 +570,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static Map<Key, Entity> mapToPrimaryKey(Collection<Entity> entities) {
     return requireNonNull(entities).stream()
-            .collect(toMap(Entity::getPrimaryKey, entity -> entity));
+            .collect(toMap(Entity::primaryKey, entity -> entity));
   }
 
   /**
@@ -594,7 +594,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static LinkedHashMap<EntityType, List<Entity>> mapToType(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
-            .collect(groupingBy(Entity::getEntityType, LinkedHashMap::new, toList()));
+            .collect(groupingBy(Entity::entityType, LinkedHashMap::new, toList()));
   }
 
   /**
@@ -605,7 +605,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static LinkedHashMap<EntityType, List<Key>> mapKeysToType(Collection<Key> keys) {
     return requireNonNull(keys).stream()
-            .collect(groupingBy(Key::getEntityType, LinkedHashMap::new, toList()));
+            .collect(groupingBy(Key::entityType, LinkedHashMap::new, toList()));
   }
 
   /**
@@ -661,8 +661,8 @@ public interface Entity extends Comparable<Entity> {
    * @return true if the values of the given attributes are equal in the given entities
    */
   static boolean valuesEqual(Entity entityOne, Entity entityTwo, Attribute<?>... attributes) {
-    if (!requireNonNull(entityOne).getEntityType().equals(requireNonNull(entityTwo).getEntityType())) {
-      throw new IllegalArgumentException("Type mismatch: " + entityOne.getEntityType() + " - " + entityTwo.getEntityType());
+    if (!requireNonNull(entityOne).entityType().equals(requireNonNull(entityTwo).entityType())) {
+      throw new IllegalArgumentException("Type mismatch: " + entityOne.entityType() + " - " + entityTwo.entityType());
     }
     if (requireNonNull(attributes).length == 0) {
       throw new IllegalArgumentException("No attributes provided for equality check");

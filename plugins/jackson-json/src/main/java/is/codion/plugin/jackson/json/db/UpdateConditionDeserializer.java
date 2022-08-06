@@ -32,7 +32,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     super(UpdateCondition.class);
     this.conditionDeserializer = new ConditionDeserializer(entityObjectMapper);
     this.entityObjectMapper = entityObjectMapper;
-    this.entities = entityObjectMapper.getEntities();
+    this.entities = entityObjectMapper.entities();
   }
 
   @Override
@@ -40,7 +40,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
           throws IOException {
     JsonNode jsonNode = parser.getCodec().readTree(parser);
     EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
-    EntityDefinition definition = entities.getDefinition(entityType);
+    EntityDefinition definition = entities.definition(entityType);
     JsonNode conditionNode = jsonNode.get("condition");
     Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
@@ -49,7 +49,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();
-      Attribute<Object> attribute = definition.getProperty(definition.getAttribute(field.getKey())).attribute();
+      Attribute<Object> attribute = definition.property(definition.attribute(field.getKey())).attribute();
       updateCondition.set(attribute, entityObjectMapper.readValue(field.getValue().toString(), attribute.valueClass()));
     }
 

@@ -39,13 +39,13 @@ final class DatabaseDomain extends DefaultDomain {
 
   private void defineEntity(Table table) {
     if (!tableEntityTypes.containsKey(table)) {
-      EntityType entityType = type().entityType(table.getSchema().getName() + "." + table.getTableName());
+      EntityType entityType = type().entityType(table.schema().name() + "." + table.tableName());
       tableEntityTypes.put(table, entityType);
-      table.getForeignKeys().stream()
-              .map(ForeignKeyConstraint::getReferencedTable)
+      table.foreignKeys().stream()
+              .map(ForeignKeyConstraint::referencedTable)
               .filter(referencedTable -> !referencedTable.equals(table))
               .forEach(this::defineEntity);
-      define(getPropertyBuilders(table, entityType, new ArrayList<>(table.getForeignKeys())));
+      define(getPropertyBuilders(table, entityType, new ArrayList<>(table.foreignKeys())));
     }
   }
 
@@ -58,7 +58,7 @@ final class DatabaseDomain extends DefaultDomain {
   private List<Property.Builder<?, ?>> getPropertyBuilders(Table table, EntityType entityType,
                                                            List<ForeignKeyConstraint> foreignKeyConstraints) {
     List<Property.Builder<?, ?>> builders = new ArrayList<>();
-    table.getColumns().forEach(column -> {
+    table.columns().forEach(column -> {
       builders.add(getColumnPropertyBuilder(column, entityType));
       if (column.isForeignKeyColumn()) {
         foreignKeyConstraints.stream()
@@ -77,18 +77,18 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private Property.Builder<?, ?> getForeignKeyPropertyBuilder(ForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
-    Table referencedTable = foreignKeyConstraint.getReferencedTable();
+    Table referencedTable = foreignKeyConstraint.referencedTable();
     EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
     ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
-            foreignKeyConstraint.getReferences().entrySet().stream()
+            foreignKeyConstraint.references().entrySet().stream()
                     .map(entry -> reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
                     .collect(toList()));
 
-    return foreignKeyProperty(foreignKey, getCaption(referencedTable.getTableName()));
+    return foreignKeyProperty(foreignKey, getCaption(referencedTable.tableName()));
   }
 
   private static ColumnProperty.Builder<?, ?> getColumnPropertyBuilder(Column column, EntityType entityType) {
-    String caption = getCaption(column.getColumnName());
+    String caption = getCaption(column.columnName());
     Attribute<?> attribute = getAttribute(entityType, column);
     ColumnProperty.Builder<?, ?> builder;
     if (attribute.isByteArray()) {
@@ -98,29 +98,29 @@ final class DatabaseDomain extends DefaultDomain {
       builder = columnProperty(attribute, caption);
     }
     if (column.isPrimaryKeyColumn()) {
-      builder.primaryKeyIndex(column.getPrimaryKeyIndex() - 1);
+      builder.primaryKeyIndex(column.primaryKeyIndex() - 1);
     }
-    if (!column.isPrimaryKeyColumn() && column.getNullable() == DatabaseMetaData.columnNoNulls) {
+    if (!column.isPrimaryKeyColumn() && column.nullable() == DatabaseMetaData.columnNoNulls) {
       builder.nullable(false);
     }
-    if (attribute.isString() && column.getColumnSize() > 0) {
-      builder.maximumLength(column.getColumnSize());
+    if (attribute.isString() && column.columnSize() > 0) {
+      builder.maximumLength(column.columnSize());
     }
-    if (attribute.isDecimal() && column.getDecimalDigits() >= 1) {
-      builder.maximumFractionDigits(column.getDecimalDigits());
+    if (attribute.isDecimal() && column.decimalDigits() >= 1) {
+      builder.maximumFractionDigits(column.decimalDigits());
     }
     if (!column.isPrimaryKeyColumn() && column.defaultValue() != null) {
       builder.columnHasDefaultValue(true);
     }
-    if (!nullOrEmpty(column.getComment())) {
-      builder.description(column.getComment());
+    if (!nullOrEmpty(column.comment())) {
+      builder.description(column.comment());
     }
 
     return builder;
   }
 
   private static <T> Attribute<T> getAttribute(EntityType entityType, Column column) {
-    return (Attribute<T>) entityType.attribute(column.getColumnName(), column.getColumnClass());
+    return (Attribute<T>) entityType.attribute(column.columnName(), column.columnClass());
   }
 
   private static String getCaption(String name) {
@@ -130,15 +130,15 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private static boolean isLastKeyColumn(ForeignKeyConstraint foreignKeyConstraint, Column column) {
-    return foreignKeyConstraint.getReferences().keySet().stream()
-            .mapToInt(Column::getPosition)
+    return foreignKeyConstraint.references().keySet().stream()
+            .mapToInt(Column::position)
             .max()
-            .orElse(-1) == column.getPosition();
+            .orElse(-1) == column.position();
   }
 
   private static String createForeignKeyName(ForeignKeyConstraint foreignKeyConstraint) {
-    return foreignKeyConstraint.getReferences().keySet().stream()
-            .map(Column::getColumnName)
+    return foreignKeyConstraint.references().keySet().stream()
+            .map(Column::columnName)
             .map(String::toUpperCase)
             .collect(joining("_"));
   }

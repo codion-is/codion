@@ -68,8 +68,8 @@ final class OracleDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getName() {
-    String name = removeUrlPrefixOptionsAndParameters(getUrl(), JDBC_URL_PREFIX, JDBC_URL_WALLET_PREFIX);
+  public String name() {
+    String name = removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX, JDBC_URL_WALLET_PREFIX);
     if (name.contains("/")) {//pluggable database
       name = name.substring(name.lastIndexOf('/') + 1);
     }
@@ -78,17 +78,17 @@ final class OracleDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getAutoIncrementQuery(String idSource) {
+  public String autoIncrementQuery(String idSource) {
     return "select " + requireNonNull(idSource, "idSource") + ".currval from dual";
   }
 
   @Override
-  public String getSequenceQuery(String sequenceName) {
+  public String sequenceQuery(String sequenceName) {
     return "select " + requireNonNull(sequenceName, "sequenceName") + ".nextval from dual";
   }
 
   @Override
-  public String getSelectForUpdateClause() {
+  public String selectForUpdateClause() {
     if (nowait) {
       return FOR_UPDATE_NOWAIT;
     }
@@ -97,7 +97,7 @@ final class OracleDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getLimitOffsetClause(Integer limit, Integer offset) {
+  public String limitOffsetClause(Integer limit, Integer offset) {
     return createOffsetFetchNextClause(limit, offset);
   }
 
@@ -110,12 +110,12 @@ final class OracleDatabase extends AbstractDatabase {
   }
 
   @Override
-  public String getCheckConnectionQuery() {
+  public String checkConnectionQuery() {
     return CHECK_QUERY;
   }
 
   @Override
-  public String getErrorMessage(SQLException exception) {
+  public String errorMessage(SQLException exception) {
     if (exception.getErrorCode() == NULL_VALUE_ERROR || exception.getErrorCode() == NULL_VALUE_ERROR_2) {
       String exceptionMessage = exception.getMessage();
       int newlineIndex = exception.getMessage().indexOf('\n');

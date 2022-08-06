@@ -20,7 +20,7 @@ public final class EntityTree extends JTree {
    */
   public EntityTree(SwingEntityTreeModel treeModel) {
     super(requireNonNull(treeModel, "treeModel"));
-    setSelectionModel(treeModel.getTreeSelectionModel());
+    setSelectionModel(treeModel.treeSelectionModel());
     setRootVisible(false);
     setShowsRootHandles(true);
     bindEvents();

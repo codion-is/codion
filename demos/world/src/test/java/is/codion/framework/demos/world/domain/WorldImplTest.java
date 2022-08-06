@@ -61,10 +61,10 @@ public final class WorldImplTest extends EntityTestUnit {
   @Override
   protected void modifyEntity(Entity testEntity, Map<ForeignKey, Entity> foreignKeyEntities) {
     super.modifyEntity(testEntity, foreignKeyEntities);
-    if (testEntity.getEntityType().equals(Country.TYPE)) {
+    if (testEntity.entityType().equals(Country.TYPE)) {
       testEntity.put(Country.CONTINENT, "Europe");
     }
-    else if (testEntity.getEntityType().equals(City.TYPE)) {
+    else if (testEntity.entityType().equals(City.TYPE)) {
       testEntity.put(City.LOCATION, null);
     }
   }
@@ -74,12 +74,12 @@ public final class WorldImplTest extends EntityTestUnit {
                                               Map<ForeignKey, Entity> foreignKeyEntities)
           throws DatabaseException {
     if (foreignKey.referencedType().equals(Country.TYPE)) {
-      return getEntities().builder(Country.TYPE)
+      return entities().builder(Country.TYPE)
               .with(Country.CODE, "ISL")
               .build();
     }
     if (foreignKey.referencedType().equals(City.TYPE)) {
-      return getEntities().builder(City.TYPE)
+      return entities().builder(City.TYPE)
               .with(City.ID, 1449)
               .build();
     }

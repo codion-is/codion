@@ -17,7 +17,7 @@ public interface ConnectionFactory {
    * Returns the database url for this connection factory.
    * @return the database url for this connection factory.
    */
-  String getUrl();
+  String url();
 
   /**
    * Creates a connection for the given user.

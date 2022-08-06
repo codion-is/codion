@@ -60,15 +60,15 @@ public final class SearchHighlighterTest {
     highlighter.previousSearchPosition();
     assertEquals(22, highlighter.getSelectedHighlightPosition());
 
-    highlighter.getCaseSensitiveState().set(true);
-    highlighter.getSearchStringValue().set("he");
+    highlighter.caseSensitiveState().set(true);
+    highlighter.searchStringValue().set("he");
     assertEquals(7, highlighter.getSelectedHighlightPosition());
 
-    highlighter.getCaseSensitiveState().set(false);
+    highlighter.caseSensitiveState().set(false);
     assertEquals(0, highlighter.getSelectedHighlightPosition());
 
-    highlighter.getCaseSensitiveState().set(true);
-    highlighter.getSearchStringValue().set("He");
+    highlighter.caseSensitiveState().set(true);
+    highlighter.searchStringValue().set("He");
     highlighter.nextSearchPosition();
     assertEquals(0, highlighter.getSelectedHighlightPosition());
 

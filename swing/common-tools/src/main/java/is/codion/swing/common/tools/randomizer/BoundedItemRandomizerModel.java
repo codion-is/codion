@@ -48,31 +48,31 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
 
     this.weightBounds = boundedWeight;
     initializeItems(items);
-    lastAffected = getItems().get(0);
+    lastAffected = items().get(0);
   }
 
-  public int getWeightBounds() {
+  public int weightBounds() {
     return weightBounds;
   }
 
   @Override
   public void incrementWeight(T item) {
     synchronized (lock) {
-      RandomItem<T> randomItem = getRandomItem(item);
-      if (randomItem.getWeight() >= weightBounds) {
+      RandomItem<T> randomItem = randomItem(item);
+      if (randomItem.weight() >= weightBounds) {
         throw new IllegalStateException("Maximum weight reached");
       }
 
       decrementWeight(randomItem);
-      getRandomItem(item).incrementWeight();
+      randomItem(item).incrementWeight();
     }
   }
 
   @Override
   public void decrementWeight(T item) {
     synchronized (lock) {
-      RandomItem<T> randomItem = getRandomItem(item);
-      if (randomItem.getWeight() == 0) {
+      RandomItem<T> randomItem = randomItem(item);
+      if (randomItem.weight() == 0) {
         throw new IllegalStateException("No weight to shed");
       }
 
@@ -112,17 +112,17 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
   }
 
   private RandomItem<T> getNextItem(RandomItem<?> exclude, boolean nonEmpty) {
-    int index = getItems().indexOf(lastAffected);
+    int index = items().indexOf(lastAffected);
     RandomItem<T> item = null;
-    while (item == null || item.equals(exclude) || (nonEmpty ? item.getWeight() == 0 : item.getWeight() == weightBounds)) {
+    while (item == null || item.equals(exclude) || (nonEmpty ? item.weight() == 0 : item.weight() == weightBounds)) {
       if (index == 0) {
-        index = getItems().size() - 1;
+        index = items().size() - 1;
       }
       else {
         index--;
       }
 
-      item = getItems().get(index);
+      item = items().get(index);
     }
 
     return item;

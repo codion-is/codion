@@ -55,11 +55,11 @@ public class EntityPanelBuilderTest {
     EntityPanel customerPanel = customerPanelBuilder.buildPanel(customerModel);
     assertEquals(customerCaption, customerPanel.getCaption());
     assertTrue(customerPanel.containsDetailPanel(TestDomain.T_EMP));
-    EntityPanel invoicePanel = customerPanel.getDetailPanel(TestDomain.T_EMP);
+    EntityPanel invoicePanel = customerPanel.detailPanel(TestDomain.T_EMP);
     assertEquals("empCaption", invoicePanel.getCaption());
-    assertEquals(1, customerPanel.getDetailPanels().size());
+    assertEquals(1, customerPanel.detailPanels().size());
 
-    assertEquals(customerModel, customerPanel.getModel());
-    assertEquals(customerModel.getDetailModel(TestDomain.T_EMP), invoicePanel.getModel());
+    assertEquals(customerModel, customerPanel.model());
+    assertEquals(customerModel.detailModel(TestDomain.T_EMP), invoicePanel.model());
   }
 }

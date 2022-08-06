@@ -15,30 +15,30 @@ public final class CountryModel extends SwingEntityModel {
 
   CountryModel(EntityConnectionProvider connectionProvider) {
     super(new CountryTableModel(connectionProvider));
-    getEditModel().initializeComboBoxModels(Country.CAPITAL_FK);
+    editModel().initializeComboBoxModels(Country.CAPITAL_FK);
 
     SwingEntityModel cityModel = new SwingEntityModel(new CityTableModel(connectionProvider));
-    cityModel.getEditModel().initializeComboBoxModels(City.COUNTRY_FK);
+    cityModel.editModel().initializeComboBoxModels(City.COUNTRY_FK);
     SwingEntityModel countryLanguageModel = new SwingEntityModel(new CountryLanguageTableModel(connectionProvider));
-    countryLanguageModel.getEditModel().initializeComboBoxModels(CountryLanguage.COUNTRY_FK);
+    countryLanguageModel.editModel().initializeComboBoxModels(CountryLanguage.COUNTRY_FK);
 
     addDetailModels(cityModel, countryLanguageModel);
 
-    cityModel.getTableModel().addRefreshListener(() ->
+    cityModel.tableModel().addRefreshListener(() ->
             averageCityPopulationValue.set(getAverageCityPopulation()));
-    CountryEditModel countryEditModel = (CountryEditModel) getEditModel();
+    CountryEditModel countryEditModel = (CountryEditModel) editModel();
     countryEditModel.setAverageCityPopulationObserver(averageCityPopulationValue.observer());
   }
 
   private Double getAverageCityPopulation() {
-    if (getEditModel().isEntityNew()) {
+    if (editModel().isEntityNew()) {
       return null;
     }
 
-    SwingEntityTableModel cityTableModel = getDetailModel(City.TYPE).getTableModel();
-    Entity country = getEditModel().getEntityCopy();
+    SwingEntityTableModel cityTableModel = detailModel(City.TYPE).tableModel();
+    Entity country = editModel().entityCopy();
 
-    return Entity.castTo(City.class, cityTableModel.getItems()).stream()
+    return Entity.castTo(City.class, cityTableModel.items()).stream()
             .filter(city -> city.isInCountry(country))
             .map(City::population)
             .mapToInt(Integer::valueOf)

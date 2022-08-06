@@ -27,7 +27,7 @@ final class DefaultUser implements User, Serializable {
   }
 
   @Override
-  public String getUsername() {
+  public String username() {
     return username;
   }
 
@@ -57,7 +57,7 @@ final class DefaultUser implements User, Serializable {
    */
   @Override
   public boolean equals(Object obj) {
-    return this == obj || obj instanceof User && ((User) obj).getUsername().equalsIgnoreCase(username);
+    return this == obj || obj instanceof User && ((User) obj).username().equalsIgnoreCase(username);
   }
 
   @Override

@@ -55,7 +55,7 @@ public final class DefaultEntityServerAdminTest {
       assertTrue(admin.isCollectPoolSnapshotStatistics(SCOTT));
       admin.setCollectPoolCheckOutTimes(SCOTT, true);
       assertTrue(admin.isCollectPoolCheckOutTimes(SCOTT));
-      assertNotNull(admin.getConnectionPoolStatistics(SCOTT, System.currentTimeMillis()));
+      assertNotNull(admin.connectionPoolStatistics(SCOTT, System.currentTimeMillis()));
       admin.setConnectionPoolCleanupInterval(SCOTT, 10);
       assertEquals(0, admin.getConnectionPoolCleanupInterval(SCOTT));//not configurable for hikari
       admin.setMinimumConnectionPoolSize(SCOTT, 2);
@@ -66,9 +66,9 @@ public final class DefaultEntityServerAdminTest {
       assertEquals(300, admin.getMaximumPoolCheckOutTime(SCOTT));
       admin.setPooledConnectionIdleTimeout(SCOTT, 1000);
       assertEquals(1000, admin.getPooledConnectionIdleTimeout(SCOTT));
-      admin.getClientLog(connectionRequest.clientId());
+      admin.clientLog(connectionRequest.clientId());
 
-      admin.getAllocatedMemory();
+      admin.allocatedMemory();
       admin.setIdleConnectionTimeout(30);
       try {
         admin.setIdleConnectionTimeout(-1);
@@ -76,24 +76,24 @@ public final class DefaultEntityServerAdminTest {
       }
       catch (IllegalArgumentException ignored) {/*ignored*/}
       assertEquals(30, admin.getIdleConnectionTimeout());
-      admin.getDatabaseStatistics();
-      admin.getDatabaseUrl();
-      admin.getConnectionPoolUsernames();
+      admin.databaseStatistics();
+      admin.databaseUrl();
+      admin.connectionPoolUsernames();
       admin.setMaintenanceInterval(500);
-      admin.getEntityDefinitions();
+      admin.entityDefinitions();
       assertEquals(500, admin.getMaintenanceInterval());
-      admin.getMaxMemory();
-      admin.getRequestsPerSecond();
+      admin.maxMemory();
+      admin.requestsPerSecond();
       try {
-        admin.getThreadStatistics();
+        admin.threadStatistics();
       }
       catch (NullPointerException e) {/*Github Actions on Windows build keeps failing here, let's see what happens now*/}
-      admin.getGcEvents(0);
-      admin.getServerInformation();
-      admin.getSystemProperties();
-      admin.getUsedMemory();
-      admin.getUsers();
-      admin.getServerStatistics(System.currentTimeMillis());
+      admin.gcEvents(0);
+      admin.serverInformation();
+      admin.systemProperties();
+      admin.usedMemory();
+      admin.users();
+      admin.serverStatistics(System.currentTimeMillis());
       admin.disconnectTimedOutClients();
       admin.disconnectAllClients();
     }

@@ -72,7 +72,7 @@ public abstract class DefaultDomain implements Domain {
   }
 
   @Override
-  public final <T, R, P> Report<T, R, P> getReport(ReportType<T, R, P> reportType) {
+  public final <T, R, P> Report<T, R, P> report(ReportType<T, R, P> reportType) {
     Report<T, R, P> report = reports.getReport(reportType);
     if (report == null) {
       throw new IllegalArgumentException("Undefined report: " + reportType);
@@ -82,12 +82,12 @@ public abstract class DefaultDomain implements Domain {
   }
 
   @Override
-  public final <C, T> DatabaseProcedure<C, T> getProcedure(ProcedureType<C, T> procedureType) {
+  public final <C, T> DatabaseProcedure<C, T> procedure(ProcedureType<C, T> procedureType) {
     return procedures.getProcedure(procedureType);
   }
 
   @Override
-  public final <C, T, R> DatabaseFunction<C, T, R> getFunction(FunctionType<C, T, R> functionType) {
+  public final <C, T, R> DatabaseFunction<C, T, R> function(FunctionType<C, T, R> functionType) {
     return functions.getFunction(functionType);
   }
 
@@ -110,8 +110,8 @@ public abstract class DefaultDomain implements Domain {
    */
   protected final void add(EntityDefinition definition) {
     requireNonNull(definition, "definition");
-    if (!domainType.contains(definition.getEntityType())) {
-      throw new IllegalArgumentException("Entity type '" + definition.getEntityType() + "' is not part of domain: " + domainType);
+    if (!domainType.contains(definition.entityType())) {
+      throw new IllegalArgumentException("Entity type '" + definition.entityType() + "' is not part of domain: " + domainType);
     }
     entities.addEntityDefinition(definition);
   }
@@ -187,8 +187,8 @@ public abstract class DefaultDomain implements Domain {
    * @see EntityType#name()
    */
   protected final void addEntities(Domain domain) {
-    requireNonNull(domain).entities().entityDefinitions().forEach(definition -> {
-      if (!entities.contains(definition.getEntityType())) {
+    requireNonNull(domain).entities().definitions().forEach(definition -> {
+      if (!entities.contains(definition.entityType())) {
         entities.addEntityDefinition(definition);
       }
     });

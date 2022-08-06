@@ -19,8 +19,8 @@ final class DefaultEntityBuilder implements Entity.Builder {
   private final Map<Attribute<?>, Object> builderValues = new LinkedHashMap<>();
 
   DefaultEntityBuilder(Key key) {
-    this(requireNonNull(key).getDefinition());
-    key.getAttributes().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
+    this(requireNonNull(key).definition());
+    key.attributes().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
   }
 
   DefaultEntityBuilder(EntityDefinition definition) {
@@ -36,7 +36,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 
   @Override
   public <T> Entity.Builder with(Attribute<T> attribute, T value) {
-    Property<T> property = definition.getProperty(attribute);
+    Property<T> property = definition.property(attribute);
     if (property instanceof DerivedProperty) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
@@ -47,7 +47,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 
   @Override
   public Entity.Builder withDefaultValues() {
-    definition.getProperties().forEach(property -> {
+    definition.properties().forEach(property -> {
       if (!(property instanceof DerivedProperty)) {
         builderValues.put(property.attribute(), property.defaultValue());
       }

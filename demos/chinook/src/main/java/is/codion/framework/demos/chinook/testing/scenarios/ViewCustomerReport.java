@@ -18,19 +18,19 @@ public final class ViewCustomerReport extends AbstractEntityUsageScenario<Chinoo
 
   @Override
   protected void perform(ChinookApplicationModel application) throws Exception {
-    SwingEntityTableModel customerModel = application.getEntityModel(Customer.TYPE).getTableModel();
+    SwingEntityTableModel customerModel = application.entityModel(Customer.TYPE).tableModel();
     customerModel.refresh();
     EntityLoadTestModel.selectRandomRow(customerModel);
 
     Collection<Long> customerIDs =
-            Entity.getDistinct(Customer.ID, customerModel.getSelectionModel().getSelectedItems());
+            Entity.getDistinct(Customer.ID, customerModel.selectionModel().getSelectedItems());
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
-    customerModel.getConnectionProvider().connection().fillReport(Customer.REPORT, reportParameters);
+    customerModel.connectionProvider().connection().fillReport(Customer.REPORT, reportParameters);
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 2;
   }
 }

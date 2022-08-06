@@ -242,7 +242,7 @@ public final class DefaultPropertyStoreTest {
   void getSystemProperties() {
     PropertyStore.PropertyFormatter formatter = (property, value) -> {
       if (property.equals("codion.test.user")) {
-        return User.parse(value).getUsername();
+        return User.parse(value).username();
       }
 
       return value;

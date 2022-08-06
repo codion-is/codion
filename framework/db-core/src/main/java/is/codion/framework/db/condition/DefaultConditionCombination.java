@@ -63,12 +63,12 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public Collection<Condition> getConditions() {
+  public Collection<Condition> conditions() {
     return unmodifiableList(conditions);
   }
 
   @Override
-  public Conjunction getConjunction() {
+  public Conjunction conjunction() {
     return conjunction;
   }
 

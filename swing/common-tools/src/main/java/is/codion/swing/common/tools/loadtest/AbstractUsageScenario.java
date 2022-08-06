@@ -51,32 +51,32 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   }
 
   @Override
-  public final String getName() {
+  public final String name() {
     return this.name;
   }
 
   @Override
-  public final int getMaximumTime() {
+  public final int maximumTime() {
     return maximumTime;
   }
 
   @Override
-  public final int getSuccessfulRunCount() {
+  public final int successfulRunCount() {
     return successfulRunCount.get();
   }
 
   @Override
-  public final int getUnsuccessfulRunCount() {
+  public final int unsuccessfulRunCount() {
     return unsuccessfulRunCount.get();
   }
 
   @Override
-  public final int getTotalRunCount() {
+  public final int totalRunCount() {
     return successfulRunCount.get() + unsuccessfulRunCount.get();
   }
 
   @Override
-  public final List<Exception> getExceptions() {
+  public final List<Exception> exceptions() {
     synchronized (exceptions) {
       return new ArrayList<>(exceptions);
     }
@@ -128,11 +128,11 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
 
   @Override
   public final boolean equals(Object obj) {
-    return obj instanceof UsageScenario && ((UsageScenario<T>) obj).getName().equals(name);
+    return obj instanceof UsageScenario && ((UsageScenario<T>) obj).name().equals(name);
   }
 
   @Override
-  public int getDefaultWeight() {
+  public int defaultWeight() {
     return 1;
   }
 
