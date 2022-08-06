@@ -31,9 +31,10 @@ public interface DatabaseFactory {
    * @throws IllegalStateException in case {@link Database#DATABASE_URL} ('codion.db.url') is not specified.
    * @throws IllegalArgumentException in case no such implementation is found
    * @throws SQLException in case loading of the database driver failed
+   * @throws IllegalArgumentException in case no implementation exists for the configured jdbc url
    */
-  static DatabaseFactory databaseFactory() throws SQLException {
-    return databaseFactory(Database.DATABASE_URL.getOrThrow("codion.db.url must be specified before discovering DatabaseFactories"));
+  static DatabaseFactory instance() throws SQLException {
+    return instance(Database.DATABASE_URL.getOrThrow("codion.db.url must be specified before discovering DatabaseFactories"));
   }
 
   /**
@@ -41,8 +42,9 @@ public interface DatabaseFactory {
    * @return a {@link DatabaseFactory} implementation for the given jdbc url
    * @throws IllegalArgumentException in case no such implementation is found
    * @throws SQLException in case loading of database driver failed
+   * @throws IllegalArgumentException in case no implementation exists for the given jdbc url
    */
-  static DatabaseFactory databaseFactory(String jdbcUrl) throws SQLException {
+  static DatabaseFactory instance(String jdbcUrl) throws SQLException {
     String driver = driverClassName(jdbcUrl);
     ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
     for (DatabaseFactory factory : loader) {
@@ -52,32 +54,6 @@ public interface DatabaseFactory {
     }
 
     throw new IllegalArgumentException("No DatabaseFactory implementation available for driver: " + driver);
-  }
-
-  /**
-   * Returns a {@link Database} instance based on the currently configured JDBC URL ({@link Database#DATABASE_URL}).
-   * Subsequent calls to this method return the same instance, until the JDBC URL changes, then a new instance is created.
-   * @return a Database instance based on the current jdbc url
-   * @see Database#DATABASE_URL
-   * @throws IllegalArgumentException in case an unsupported database type is specified
-   * @throws RuntimeException in case of an exception occurring while instantiating the database implementation
-   */
-  static Database database() {
-    try {
-      DatabaseFactory factory = databaseFactory();
-      if (AbstractDatabase.instance == null || !AbstractDatabase.instance.url().equals(Database.DATABASE_URL.get())) {
-        //replace the instance
-        AbstractDatabase.instance = factory.createDatabase(Database.DATABASE_URL.get());
-      }
-
-      return AbstractDatabase.instance;
-    }
-    catch (RuntimeException e) {
-      throw e;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
   /**

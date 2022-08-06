@@ -19,9 +19,9 @@ import java.util.Collection;
 
 /**
  * Defines DBMS specific functionality as well as basic database configuration settings.
- * @see DatabaseFactory#database()
- * @see DatabaseFactory#databaseFactory()
- * @see DatabaseFactory#databaseFactory(String)
+ * @see Database#instance()
+ * @see DatabaseFactory#instance()
+ * @see DatabaseFactory#instance(String)
  * @see DatabaseFactory#createDatabase(String)
  */
 public interface Database extends ConnectionFactory {
@@ -254,6 +254,32 @@ public interface Database extends ConnectionFactory {
    * @param connectionProvider the connection provider
    */
   void setConnectionProvider(ConnectionProvider connectionProvider);
+
+  /**
+   * Returns a {@link Database} instance based on the currently configured JDBC URL ({@link Database#DATABASE_URL}).
+   * Subsequent calls to this method return the same instance, until the JDBC URL changes, then a new instance is created.
+   * @return a Database instance based on the current jdbc url
+   * @see Database#DATABASE_URL
+   * @throws IllegalArgumentException in case an unsupported database type is specified
+   * @throws RuntimeException in case of an exception occurring while instantiating the database implementation
+   */
+  static Database instance() {
+    try {
+      DatabaseFactory factory = DatabaseFactory.instance();
+      if (AbstractDatabase.instance == null || !AbstractDatabase.instance.url().equals(DATABASE_URL.get())) {
+        //replace the instance
+        AbstractDatabase.instance = factory.createDatabase(DATABASE_URL.get());
+      }
+
+      return AbstractDatabase.instance;
+    }
+    catch (RuntimeException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   /**
    * Closes the given ResultSet instance, suppressing any SQLExceptions that may occur.

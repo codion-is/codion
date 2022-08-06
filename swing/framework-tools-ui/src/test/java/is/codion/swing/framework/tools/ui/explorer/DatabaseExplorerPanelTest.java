@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.tools.ui.explorer;
 
-import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.swing.framework.tools.explorer.DatabaseExplorerModel;
@@ -17,7 +17,7 @@ public class DatabaseExplorerPanelTest {
 
   @Test
   void test() throws ClassNotFoundException, DatabaseException {
-    DatabaseExplorerModel model = new DatabaseExplorerModel(DatabaseFactory.database(), UNIT_TEST_USER);
+    DatabaseExplorerModel model = new DatabaseExplorerModel(Database.instance(), UNIT_TEST_USER);
     new DatabaseExplorerPanel(model);
     model.schemaModel().refresh();
     model.schemaModel().sort();

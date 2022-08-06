@@ -18,7 +18,7 @@ public final class Demo {
     // tag::systemProperty[]
     System.setProperty("codion.db.url", "jdbc:h2:mem:h2db");
 
-    Database database = DatabaseFactory.database();
+    Database database = Database.instance();
     // end::systemProperty[]
   }
 
@@ -26,7 +26,7 @@ public final class Demo {
     // tag::configuration[]
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 
-    Database database = DatabaseFactory.database();
+    Database database = Database.instance();
     // end::configuration[]
   }
 
@@ -34,7 +34,7 @@ public final class Demo {
     // tag::url[]
     String jdbcUrl = "jdbc:h2:mem:h2db";
 
-    DatabaseFactory databaseFactory = DatabaseFactory.databaseFactory(jdbcUrl);
+    DatabaseFactory databaseFactory = DatabaseFactory.instance(jdbcUrl);
 
     Database database = databaseFactory.createDatabase(jdbcUrl);
     // end::url[]
@@ -54,7 +54,7 @@ public final class Demo {
     // tag::connection[]
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 
-    Database database = DatabaseFactory.database();
+    Database database = Database.instance();
 
     User user = User.parse("scott:tiger");
 
@@ -66,7 +66,7 @@ public final class Demo {
     // tag::databaseConnection[]
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 
-    Database database = DatabaseFactory.database();
+    Database database = Database.instance();
 
     User user = User.parse("scott:tiger");
 

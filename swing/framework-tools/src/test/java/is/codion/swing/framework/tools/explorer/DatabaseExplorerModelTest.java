@@ -4,7 +4,7 @@
 package is.codion.swing.framework.tools.explorer;
 
 import is.codion.common.Text;
-import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.AfterEach;
@@ -40,7 +40,7 @@ public final class DatabaseExplorerModelTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    model = new DatabaseExplorerModel(DatabaseFactory.database(), UNIT_TEST_USER);
+    model = new DatabaseExplorerModel(Database.instance(), UNIT_TEST_USER);
     model.schemaModel().refresh();
     model.schemaModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
     model.schemaModel().selectionModel().setSelectedIndex(2);

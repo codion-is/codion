@@ -4,7 +4,7 @@
 package is.codion.framework.servlet;
 
 import is.codion.common.Serializer;
-import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.database.Database;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.RemoteClient;
@@ -661,7 +661,7 @@ public class EntityServletServerTest {
             .adminPort(3223)
             .adminUser(User.parse("scott:tiger"))
             .domainModelClassNames(singletonList(TestDomain.class.getName()))
-            .database(DatabaseFactory.database())
+            .database(Database.instance())
             .sslEnabled(false)
             .auxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()))
             .build();

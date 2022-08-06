@@ -4,7 +4,6 @@
 package is.codion.common.db.connection;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 
@@ -25,7 +24,7 @@ public class DefaultDatabaseConnectionTest {
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  private final Database DATABASE = DatabaseFactory.database();
+  private final Database DATABASE = Database.instance();
   private DefaultDatabaseConnection dbConnection;
 
   @BeforeEach
@@ -69,7 +68,7 @@ public class DefaultDatabaseConnectionTest {
 
   @Test
   void queryInteger() throws Exception {
-    try (DatabaseConnection connection = new DefaultDatabaseConnection(DatabaseFactory.database(), UNIT_TEST_USER)) {
+    try (DatabaseConnection connection = new DefaultDatabaseConnection(Database.instance(), UNIT_TEST_USER)) {
       int qInt = connection.selectInteger("select empno from scott.emp where ename = 'ADAMS'");
       assertEquals(10, qInt);
     }
@@ -77,7 +76,7 @@ public class DefaultDatabaseConnectionTest {
 
   @Test
   void queryLong() throws Exception {
-    try (DatabaseConnection connection = new DefaultDatabaseConnection(DatabaseFactory.database(), UNIT_TEST_USER)) {
+    try (DatabaseConnection connection = new DefaultDatabaseConnection(Database.instance(), UNIT_TEST_USER)) {
       long qLong = connection.selectLong("select empno from scott.emp where ename = 'ADAMS'");
       assertEquals(10L, qLong);
     }

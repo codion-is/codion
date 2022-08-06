@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.report.Report;
@@ -287,7 +287,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
-            .database(DatabaseFactory.database())
+            .database(Database.instance())
             .domainModelClassNames(singletonList(TestDomain.class.getName()))
             .sslEnabled(false)
             .auxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()))

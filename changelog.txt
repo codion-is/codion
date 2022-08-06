@@ -8346,3 +8346,5 @@
   FilteredComboBoxModel, EntityComboBoxModel.selectorValue() renamed createSelectorValue()
   SwingEntityTableModel.getSelectAttributes(), getOrderBy() and getUserPreferencesKey(), get prefix removed
   DatabaseFactory.getDatabase() renamed database()
+  DatabaseFactory.database() moved to Database and renamed instance()
+  DatabaseFactory.databaseFactory() renamed instance()

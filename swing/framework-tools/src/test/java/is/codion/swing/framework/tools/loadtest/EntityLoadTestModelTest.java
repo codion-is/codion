@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.tools.loadtest;
 
-import is.codion.common.db.database.DatabaseFactory;
+import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
@@ -139,7 +139,7 @@ public class EntityLoadTestModelTest {
             .connectionPoolUsers(Collections.singletonList(UNIT_TEST_USER))
             .clientTypeIdleConnectionTimeouts(Collections.singletonMap("ClientTypeID", 10000))
             .domainModelClassNames(Collections.singletonList("is.codion.swing.framework.tools.loadtest.TestDomain"))
-            .database(DatabaseFactory.database())
+            .database(Database.instance())
             .sslEnabled(false)
             .build();
   }
