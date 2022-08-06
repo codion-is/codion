@@ -483,7 +483,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   public final void savePreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       try {
-        UserPreferences.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
+        UserPreferences.putUserPreference(userPreferencesKey(), createPreferences().toString());
       }
       catch (Exception e) {
         LOG.error("Error while saving preferences", e);
@@ -560,7 +560,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
-   * using the order by clause returned by {@link #getOrderBy()}
+   * using the order by clause returned by {@link #orderBy()}
    * @return entities selected from the database according the query condition.
    * @see #queryConditionRequiredState()
    * @see EntityTableConditionModel#condition()
@@ -573,9 +573,9 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     try {
       return editModel.connectionProvider().connection().select(tableConditionModel().condition()
               .selectBuilder()
-              .selectAttributes(getSelectAttributes())
+              .selectAttributes(selectAttributes())
               .limit(limit)
-              .orderBy(getOrderBy())
+              .orderBy(orderBy())
               .build());
     }
     catch (DatabaseException e) {
@@ -612,7 +612,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @return the order by clause
    * @see EntityDefinition#orderBy()
    */
-  protected OrderBy getOrderBy() {
+  protected OrderBy orderBy() {
     if (orderQueryBySortOrder && sortModel().isSortingEnabled()) {
       OrderBy orderBy = getOrderByFromSortModel();
       if (!orderBy.orderByAttributes().isEmpty()) {
@@ -629,7 +629,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @return the attributes to select when querying data, an empty Collection if all should be selected.
    * @see #isQueryHiddenColumns()
    */
-  protected Collection<Attribute<?>> getSelectAttributes() {
+  protected Collection<Attribute<?>> selectAttributes() {
     if (queryHiddenColumns || columnModel().hiddenColumns().isEmpty()) {
       return emptyList();
     }
@@ -650,7 +650,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * Override in case this key is not unique.
    * @return the key used to identify user preferences for this table model
    */
-  protected String getUserPreferencesKey() {
+  protected String userPreferencesKey() {
     return getClass().getSimpleName() + "-" + entityType();
   }
 
@@ -658,7 +658,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * Clears any user preferences saved for this table model
    */
   final void clearPreferences() {
-    UserPreferences.removeUserPreference(getUserPreferencesKey());
+    UserPreferences.removeUserPreference(userPreferencesKey());
   }
 
   private void bindEventsInternal() {
@@ -804,7 +804,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   private void applyPreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
-      String preferencesString = UserPreferences.getUserPreference(getUserPreferencesKey(), "");
+      String preferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
       try {
         if (preferencesString.length() > 0) {
           applyColumnPreferences(new JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS));

@@ -8344,3 +8344,4 @@
   ComponentValue.getComponent() renamed component()
   CompletionDocument.getComboBox() and getModel() renamed comboBox() and model() respectively
   FilteredComboBoxModel, EntityComboBoxModel.selectorValue() renamed createSelectorValue()
+  SwingEntityTableModel.getSelectAttributes(), getOrderBy() and getUserPreferencesKey(), get prefix removed
