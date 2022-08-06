@@ -533,7 +533,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public static TreeModel createDependencyTreeModel(Entities entities) {
     requireNonNull(entities);
     DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-    for (EntityDefinition definition : entities.entityDefinitions()) {
+    for (EntityDefinition definition : entities.definitions()) {
       if (definition.foreignKeys().isEmpty() || referencesOnlySelf(entities, definition.entityType())) {
         root.add(new EntityDependencyTreeNode(definition.entityType(), entities));
       }
@@ -845,8 +845,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     Comparator<String> comparator = Text.getSpaceAwareCollator();
     Entities entities = applicationModel.entities();
     supportPanelBuilders.sort((ep1, ep2) -> {
-      String thisCompare = ep1.getCaption() == null ? entities.getDefinition(ep1.entityType()).caption() : ep1.getCaption();
-      String thatCompare = ep2.getCaption() == null ? entities.getDefinition(ep2.entityType()).caption() : ep2.getCaption();
+      String thisCompare = ep1.getCaption() == null ? entities.definition(ep1.entityType()).caption() : ep1.getCaption();
+      String thatCompare = ep2.getCaption() == null ? entities.definition(ep2.entityType()).caption() : ep2.getCaption();
 
       return comparator.compare(thisCompare, thatCompare);
     });
@@ -854,7 +854,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .caption(FrameworkMessages.supportTables())
             .mnemonic(FrameworkMessages.supportTablesMnemonic());
     supportPanelBuilders.forEach(panelBuilder -> controlsBuilder.control(Control.builder(() -> displayEntityPanel(panelBuilder))
-            .caption(panelBuilder.getCaption() == null ? entities.getDefinition(panelBuilder.entityType()).caption() : panelBuilder.getCaption())));
+            .caption(panelBuilder.getCaption() == null ? entities.definition(panelBuilder.entityType()).caption() : panelBuilder.getCaption())));
 
     return controlsBuilder.build();
   }
@@ -888,7 +888,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       else {
         Windows.frame(entityPanel)
                 .relativeTo(this)
-                .title(panelBuilder.getCaption() == null ? applicationModel.entities().getDefinition(panelBuilder.entityType()).caption() : panelBuilder.getCaption())
+                .title(panelBuilder.getCaption() == null ? applicationModel.entities().definition(panelBuilder.entityType()).caption() : panelBuilder.getCaption())
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {
                   entityPanel.model().savePreferences();
@@ -925,7 +925,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
       else {
         String dialogTitle = panelBuilder.getCaption() == null ?
-                applicationModel.entities().getDefinition(panelBuilder.entityType()).caption() :
+                applicationModel.entities().definition(panelBuilder.entityType()).caption() :
                 panelBuilder.getCaption();
         Dialogs.componentDialog(entityPanel)
                 .owner(parentWindow().orElse(null))
@@ -1456,7 +1456,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
-    return entities.getDefinition(entityType).foreignKeys().stream()
+    return entities.definition(entityType).foreignKeys().stream()
             .allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
   }
 
@@ -1547,7 +1547,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     private List<EntityDependencyTreeNode> getChildren() {
       List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
-      for (EntityDefinition definition : entities.entityDefinitions()) {
+      for (EntityDefinition definition : entities.definitions()) {
         for (ForeignKeyProperty fkProperty : definition.foreignKeyProperties()) {
           if (fkProperty.referencedEntityType().equals(getEntityType()) && !fkProperty.softReference()
                   && !foreignKeyCycle(fkProperty.referencedEntityType())) {

@@ -64,8 +64,8 @@ public final class EntityTestUtil {
     requireNonNull(entities);
     requireNonNull(entityType);
     Entity entity = entities.entity(entityType);
-    populateEntity(entity, entities.getDefinition(entityType).writableColumnProperties(
-            !entities.getDefinition(entityType).isKeyGenerated(), true), valueProvider);
+    populateEntity(entity, entities.definition(entityType).writableColumnProperties(
+            !entities.definition(entityType).isKeyGenerated(), true), valueProvider);
 
     return entity;
   }

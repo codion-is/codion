@@ -794,7 +794,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     Entities entities = DefaultEntities.getEntities((String) stream.readObject());
-    definition = entities.getDefinition((String) stream.readObject());
+    definition = entities.definition((String) stream.readObject());
     if (definition.serializationVersion() != stream.readInt()) {
       throw new IllegalArgumentException("Entity type '" + definition.entityType() + "' can not be deserialized due to version difference");
     }

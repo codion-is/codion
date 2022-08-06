@@ -187,7 +187,7 @@ public abstract class DefaultDomain implements Domain {
    * @see EntityType#name()
    */
   protected final void addEntities(Domain domain) {
-    requireNonNull(domain).entities().entityDefinitions().forEach(definition -> {
+    requireNonNull(domain).entities().definitions().forEach(definition -> {
       if (!entities.contains(definition.entityType())) {
         entities.addEntityDefinition(definition);
       }

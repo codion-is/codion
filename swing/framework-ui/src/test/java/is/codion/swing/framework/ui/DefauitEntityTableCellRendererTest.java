@@ -30,7 +30,7 @@ public class DefauitEntityTableCellRendererTest {
     EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.tableModel().refresh();
     EntityTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.tableModel(),
-            DOMAIN.entities().getDefinition(TestDomain.T_EMP).property(TestDomain.EMP_NAME))
+            DOMAIN.entities().definition(TestDomain.T_EMP).property(TestDomain.EMP_NAME))
             .build();
     renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 0);
@@ -50,6 +50,6 @@ public class DefauitEntityTableCellRendererTest {
     EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.tableModel().refresh();
     assertThrows(IllegalArgumentException.class, () -> EntityTableCellRenderer.builder(tablePanel.tableModel(),
-            DOMAIN.entities().getDefinition(TestDomain.T_DETAIL).property(TestDomain.DEPARTMENT_NAME)));
+            DOMAIN.entities().definition(TestDomain.T_DETAIL).property(TestDomain.DEPARTMENT_NAME)));
   }
 }

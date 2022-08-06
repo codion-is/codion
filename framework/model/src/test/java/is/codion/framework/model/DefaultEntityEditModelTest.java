@@ -299,7 +299,7 @@ public final class DefaultEntityEditModelTest {
     catch (ValidationException e) {
       assertEquals(TestDomain.EMP_COMMISSION, e.getAttribute());
       assertEquals(50d, e.getValue());
-      Property<?> property = ENTITIES.getDefinition(TestDomain.T_EMP).property(e.getAttribute());
+      Property<?> property = ENTITIES.definition(TestDomain.T_EMP).property(e.getAttribute());
       assertTrue(e.getMessage().contains(property.toString()));
       assertTrue(e.getMessage().contains(property.minimumValue().toString()));
     }

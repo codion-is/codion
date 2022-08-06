@@ -87,7 +87,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
             .add(cityPostalCodeStateCountryPanel)
             .build();
 
-    invoiceLinePanel.setBorder(BorderFactory.createTitledBorder(editModel().entities().getDefinition(InvoiceLine.TYPE).caption()));
+    invoiceLinePanel.setBorder(BorderFactory.createTitledBorder(editModel().entities().definition(InvoiceLine.TYPE).caption()));
     invoiceLinePanel.initializePanel();
 
     setLayout(borderLayout());

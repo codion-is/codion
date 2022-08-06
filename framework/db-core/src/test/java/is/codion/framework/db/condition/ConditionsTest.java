@@ -66,11 +66,11 @@ public final class ConditionsTest {
   @Test
   void combinationEmpty() {
     Condition.Combination combination = Conditions.combination(Conjunction.AND);
-    assertEquals("", combination.toString(ENTITIES.getDefinition(TestDomain.T_EMP)));
+    assertEquals("", combination.toString(ENTITIES.definition(TestDomain.T_EMP)));
 
     combination = combination.and(Conditions.condition(TestDomain.T_EMP),
             where(TestDomain.EMP_ID).equalTo(1));
-    assertEquals("(empno = ?)", combination.toString(ENTITIES.getDefinition(TestDomain.T_EMP)));
+    assertEquals("(empno = ?)", combination.toString(ENTITIES.definition(TestDomain.T_EMP)));
   }
 
   @Test
@@ -81,16 +81,16 @@ public final class ConditionsTest {
             .with(TestDomain.MASTER_CODE, 3)
             .build();
     Condition condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(master);
-    assertEquals("(master_id = ? and master_id_2 = ?)", condition.toString(ENTITIES.getDefinition(TestDomain.T_DETAIL)));
+    assertEquals("(master_id = ? and master_id_2 = ?)", condition.toString(ENTITIES.definition(TestDomain.T_DETAIL)));
     Condition condition2 = where(TestDomain.DETAIL_MASTER_VIA_CODE_FK).equalTo(master);
-    assertEquals("master_code = ?", condition2.toString(ENTITIES.getDefinition(TestDomain.T_DETAIL)));
+    assertEquals("master_code = ?", condition2.toString(ENTITIES.definition(TestDomain.T_DETAIL)));
   }
 
   @Test
   void combination() {
     Condition.Combination combination1 = where(TestDomain.DETAIL_STRING).equalTo("value")
             .and(where(TestDomain.DETAIL_INT).equalTo(666));
-    EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
+    EntityDefinition detailDefinition = ENTITIES.definition(TestDomain.T_DETAIL);
     assertEquals("(string = ? and int = ?)", combination1.toString(detailDefinition));
     Condition.Combination combination2 = where(TestDomain.DETAIL_DOUBLE).equalTo(666.666)
             .and(where(TestDomain.DETAIL_STRING).equalToIgnoreCase("valu%e2"));
@@ -102,13 +102,13 @@ public final class ConditionsTest {
   @Test
   void attributeConditionTest() {
     Condition critOne = where(TestDomain.DEPARTMENT_LOCATION).equalTo("New York");
-    assertEquals("loc = ?", critOne.toString(ENTITIES.getDefinition(TestDomain.T_DEPARTMENT)));
+    assertEquals("loc = ?", critOne.toString(ENTITIES.definition(TestDomain.T_DEPARTMENT)));
     assertNotNull(critOne);
   }
 
   @Test
   void foreignKeyConditionNull() {
-    EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_EMP);
+    EntityDefinition definition = ENTITIES.definition(TestDomain.T_EMP);
     Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).isNull();
     assertEquals("deptno is null", condition.toString(definition));
 
@@ -121,7 +121,7 @@ public final class ConditionsTest {
     Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
             .with(TestDomain.DEPARTMENT_ID, 10)
             .build();
-    EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
+    EntityDefinition empDefinition = ENTITIES.definition(TestDomain.T_EMP);
     Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo(department);
     assertEquals("deptno = ?", condition.toString(empDefinition));
 
@@ -140,7 +140,7 @@ public final class ConditionsTest {
     Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
             .with(TestDomain.DEPARTMENT_ID, 10)
             .build();
-    EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
+    EntityDefinition empDefinition = ENTITIES.definition(TestDomain.T_EMP);
     Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo(department);
     assertEquals("deptno = ?", condition.toString(empDefinition));
   }
@@ -157,7 +157,7 @@ public final class ConditionsTest {
             .with(TestDomain.MASTER_ID_2, 4)
             .build();
 
-    EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
+    EntityDefinition detailDefinition = ENTITIES.definition(TestDomain.T_DETAIL);
     Condition condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(master1);
     assertEquals("(master_id = ? and master_id_2 = ?)", condition.toString(detailDefinition));
 
@@ -183,7 +183,7 @@ public final class ConditionsTest {
             .with(TestDomain.MASTER_ID_2, 4)
             .build();
 
-    EntityDefinition masterDefinition = ENTITIES.getDefinition(TestDomain.T_MASTER);
+    EntityDefinition masterDefinition = ENTITIES.definition(TestDomain.T_MASTER);
     Condition condition = Conditions.condition(master1.primaryKey());
     assertEquals("(id = ? and id2 = ?)", condition.toString(masterDefinition));
 
@@ -202,7 +202,7 @@ public final class ConditionsTest {
     assertThrows(NullPointerException.class, () ->
             where(TestDomain.EMP_DEPARTMENT_FK).notEqualTo((Collection<Entity>) null));
 
-    EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
+    EntityDefinition empDefinition = ENTITIES.definition(TestDomain.T_EMP);
     Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).isNull();
     assertEquals("deptno is null", condition.toString(empDefinition));
 
@@ -229,7 +229,7 @@ public final class ConditionsTest {
             .with(TestDomain.MASTER_ID_2, null)
             .build();
 
-    EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
+    EntityDefinition detailDefinition = ENTITIES.definition(TestDomain.T_DETAIL);
     condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(master1);
     assertEquals("(master_id is null and master_id_2 is null)", condition.toString(detailDefinition));
 
@@ -251,7 +251,7 @@ public final class ConditionsTest {
             .with(TestDomain.DEPARTMENT_ID, 10)
             .build();
 
-    EntityDefinition deptDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
+    EntityDefinition deptDefinition = ENTITIES.definition(TestDomain.T_DEPARTMENT);
 
     Condition condition = Conditions.condition(entity.primaryKey());
     assertDepartmentKeyCondition(condition, deptDefinition);
@@ -269,7 +269,7 @@ public final class ConditionsTest {
             .with(TestDomain.DEPARTMENT_ID, 10)
             .build();
 
-    EntityDefinition deptDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
+    EntityDefinition deptDefinition = ENTITIES.definition(TestDomain.T_DEPARTMENT);
 
     Condition condition = Conditions.condition(entity.primaryKey());
     assertDepartmentKeyCondition(condition, deptDefinition);
@@ -294,7 +294,7 @@ public final class ConditionsTest {
 
   @Test
   void attributeConditionWithNonColumnProperty() {
-    EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_EMP);
+    EntityDefinition definition = ENTITIES.definition(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () ->
             where(TestDomain.EMP_DEPARTMENT_LOCATION).isNull().toString(definition));
   }
@@ -310,7 +310,7 @@ public final class ConditionsTest {
 
   @Test
   void whereClause() throws Exception {
-    EntityDefinition departmentDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
+    EntityDefinition departmentDefinition = ENTITIES.definition(TestDomain.T_DEPARTMENT);
     ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.property(TestDomain.DEPARTMENT_NAME);
     Condition condition = where(TestDomain.DEPARTMENT_NAME).equalTo("upper%");
     assertEquals(property.columnExpression() + " like ?", condition.toString(departmentDefinition));

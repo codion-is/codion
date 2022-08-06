@@ -73,7 +73,7 @@ class Introduction {
     Domain store = new StoreImpl();
     Entities entities = store.entities();
 
-    EntityDefinition customerDefinition = entities.getDefinition(Customer.TYPE);
+    EntityDefinition customerDefinition = entities.definition(Customer.TYPE);
     EntityDefinition cityDefinition = customerDefinition.referencedEntityDefinition(Customer.CITY_FK);
     List<Attribute<?>> cityPrimaryKeyAttributes = cityDefinition.primaryKeyAttributes();
 

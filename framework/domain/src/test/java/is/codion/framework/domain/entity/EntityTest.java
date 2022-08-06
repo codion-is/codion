@@ -93,7 +93,7 @@ public final class EntityTest {
             .with(Department.ACTIVE, true)
             .build();
 
-    EntityDefinition definition = entities.getDefinition(Department.TYPE);
+    EntityDefinition definition = entities.definition(Department.TYPE);
 
     Entity current = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
@@ -146,7 +146,7 @@ public final class EntityTest {
     byte[] modifiedBytes = new byte[1024];
     random.nextBytes(modifiedBytes);
 
-    EntityDefinition definition = entities.getDefinition(Employee.TYPE);
+    EntityDefinition definition = entities.definition(Employee.TYPE);
     //eagerly loaded blob
     Entity emp1 = entities.builder(Employee.TYPE)
             .with(Employee.ID, 1)
@@ -174,7 +174,7 @@ public final class EntityTest {
             .with(Department.DATA, modifiedBytes)
             .build();
 
-    EntityDefinition departmentDefinition = entities.getDefinition(Department.TYPE);
+    EntityDefinition departmentDefinition = entities.definition(Department.TYPE);
 
     modifiedAttributes = Entity.getModifiedColumnAttributes(departmentDefinition, dept1, dept2);
     assertFalse(modifiedAttributes.contains(Department.DATA));
@@ -266,7 +266,7 @@ public final class EntityTest {
             .with(Department.LOCATION, "loc2")
             .build();
 
-    List<Attribute<?>> attributes = entities.getDefinition(Department.TYPE)
+    List<Attribute<?>> attributes = entities.definition(Department.TYPE)
             .columnProperties().stream().map(Property::attribute).collect(Collectors.toList());
 
     List<List<String>> strings =
@@ -364,17 +364,17 @@ public final class EntityTest {
   @Test
   void putNull() {
     Entity dept = entities.entity(Department.TYPE);
-    for (Property<?> property : entities.getDefinition(Department.TYPE).properties()) {
+    for (Property<?> property : entities.definition(Department.TYPE).properties()) {
       assertFalse(dept.contains(property.attribute()));
       assertTrue(dept.isNull(property.attribute()));
       assertFalse(dept.isNotNull(property.attribute()));
     }
-    for (Property<?> property : entities.getDefinition(Department.TYPE).properties()) {
+    for (Property<?> property : entities.definition(Department.TYPE).properties()) {
       dept.put(property.attribute(), null);
     }
     //putting nulls should not have an effect
     assertFalse(dept.isModified());
-    for (Property<?> property : entities.getDefinition(Department.TYPE).properties()) {
+    for (Property<?> property : entities.definition(Department.TYPE).properties()) {
       assertTrue(dept.contains(property.attribute()));
       assertTrue(dept.isNull(property.attribute()));
       assertFalse(dept.isNotNull(property.attribute()));

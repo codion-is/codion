@@ -46,7 +46,7 @@ public class DefaultEntityTest {
 
   @Test
   void construction() {
-    EntityDefinition masterDefinition = ENTITIES.getDefinition(Master.TYPE);
+    EntityDefinition masterDefinition = ENTITIES.definition(Master.TYPE);
 
     Map<Attribute<?>, Object> values = new HashMap<>();
     values.put(Detail.BOOLEAN, false);

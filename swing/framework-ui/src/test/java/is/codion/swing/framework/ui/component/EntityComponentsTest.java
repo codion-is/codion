@@ -299,7 +299,7 @@ public final class EntityComponentsTest {
 
   @Test
   void inputComponent() {
-    EntityDefinition definition = CONNECTION_PROVIDER.entities().getDefinition(TestDomain.T_DETAIL);
+    EntityDefinition definition = CONNECTION_PROVIDER.entities().definition(TestDomain.T_DETAIL);
     definition.columnProperties()
             .forEach(property -> inputComponents.component(property.attribute()).build());
 

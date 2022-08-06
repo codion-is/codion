@@ -42,7 +42,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, connectionProvider.entities().getDefinition(entityType).validator());
+    this(entityType, connectionProvider, connectionProvider.entities().definition(entityType).validator());
   }
 
   /**

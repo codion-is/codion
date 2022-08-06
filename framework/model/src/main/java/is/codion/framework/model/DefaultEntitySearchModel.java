@@ -90,7 +90,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
    * @see EntityDefinition#searchAttributes()
    */
   public DefaultEntitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, connectionProvider.entities().getDefinition(entityType).searchAttributes());
+    this(entityType, connectionProvider, connectionProvider.entities().definition(entityType).searchAttributes());
   }
 
   /**
@@ -292,7 +292,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     return (additionalConditionSupplier == null ? conditionCombination :
             additionalConditionSupplier.get().and(conditionCombination))
             .selectBuilder()
-            .orderBy(connectionProvider.entities().getDefinition(entityType).orderBy())
+            .orderBy(connectionProvider.entities().definition(entityType).orderBy())
             .build();
   }
 
@@ -311,7 +311,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private String createDescription() {
-    EntityDefinition definition = connectionProvider.entities().getDefinition(entityType);
+    EntityDefinition definition = connectionProvider.entities().definition(entityType);
 
     return searchAttributes.stream()
             .map(attribute -> definition.property(attribute).caption())

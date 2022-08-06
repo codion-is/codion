@@ -393,7 +393,7 @@ public final class EntitySearchField extends JTextField {
     private void initializeUI(EntitySearchModel searchModel) {
       JPanel propertyBasePanel = new JPanel(new CardLayout(5, 5));
       SwingFilteredComboBoxModel<Item<Attribute<String>>> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
-      EntityDefinition definition = searchModel.connectionProvider().entities().getDefinition(searchModel.entityType());
+      EntityDefinition definition = searchModel.connectionProvider().entities().definition(searchModel.entityType());
       for (Map.Entry<Attribute<String>, EntitySearchModel.SearchSettings> entry :
               searchModel.attributeSearchSettings().entrySet()) {
         propertyComboBoxModel.addItem(Item.item(entry.getKey(), definition.property(entry.getKey()).caption()));

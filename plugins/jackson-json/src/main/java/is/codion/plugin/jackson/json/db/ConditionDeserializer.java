@@ -41,7 +41,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
     EntityType entityType = entities.domainType().entityType(entityConditionNode.get("entityType").asText());
     JsonNode conditionNode = entityConditionNode.get("condition");
 
-    return deserialize(entities.getDefinition(entityType), conditionNode);
+    return deserialize(entities.definition(entityType), conditionNode);
   }
 
   Condition deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {

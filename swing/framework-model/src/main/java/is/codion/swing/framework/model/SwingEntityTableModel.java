@@ -133,7 +133,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @param tableConditionModel the table condition model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
-    super(createColumns(requireNonNull(editModel, "editModel").entities().getDefinition(editModel.entityType())),
+    super(createColumns(requireNonNull(editModel, "editModel").entities().definition(editModel.entityType())),
             new EntityColumnValueProvider(editModel.entities()),
             requireNonNull(tableConditionModel, "tableConditionModel").filterModels().values());
     if (!tableConditionModel.entityType().equals(editModel.entityType())) {
@@ -864,10 +864,10 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     @Override
     public Comparator<?> getComparator(Attribute<?> attribute) {
       if (attribute instanceof ForeignKey) {
-        return entities.getDefinition(((ForeignKey) attribute).referencedType()).comparator();
+        return entities.definition(((ForeignKey) attribute).referencedType()).comparator();
       }
 
-      return entities.getDefinition(attribute.entityType()).property(attribute).comparator();
+      return entities.definition(attribute.entityType()).property(attribute).comparator();
     }
 
     @Override

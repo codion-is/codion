@@ -38,7 +38,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   @Override
   public Entity deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
     JsonNode entityNode = parser.getCodec().readTree(parser);
-    EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entities::getDefinition);
+    EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entities::definition);
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
   }

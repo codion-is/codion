@@ -28,7 +28,7 @@ public class JasperReportsDataSourceTest {
             .with(TestDomain.DEPARTMENT_NAME, "name")
             .with(TestDomain.DEPARTMENT_LOCATION, "none")
             .build();
-    EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
+    EntityDefinition definition = ENTITIES.definition(TestDomain.T_DEPARTMENT);
     List<Entity> entities = singletonList(department);
     JasperReportsDataSource<Entity> source =
             new JasperReportsDataSource<>(entities.iterator(), (entity, field) ->

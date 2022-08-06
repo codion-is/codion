@@ -40,7 +40,7 @@ public final class Misc {
     EntityConnection connection = connectionProvider.connection();
 
     EntityDefinition customerDefinition =
-            connection.entities().getDefinition(Customer.TYPE);
+            connection.entities().definition(Customer.TYPE);
 
     Iterator<Entity> customerIterator =
             connection.select(condition(Customer.TYPE)).iterator();

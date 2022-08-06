@@ -150,7 +150,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, connectionProvider.entities().getDefinition(entityType).validator());
+    this(entityType, connectionProvider, connectionProvider.entities().definition(entityType).validator());
   }
 
   /**
@@ -606,7 +606,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
     ForeignKeyProperty property = entityDefinition().foreignKeyProperty(foreignKey);
     Collection<Attribute<String>> searchAttributes = entities()
-            .getDefinition(property.referencedEntityType()).searchAttributes();
+            .definition(property.referencedEntityType()).searchAttributes();
     if (searchAttributes.isEmpty()) {
       throw new IllegalStateException("No search attributes defined for entity: " + property.referencedEntityType());
     }

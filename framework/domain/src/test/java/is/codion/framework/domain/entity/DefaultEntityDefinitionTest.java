@@ -60,7 +60,7 @@ public class DefaultEntityDefinitionTest {
       }
     }
     Domain domain = new TestDomain();
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
+    EntityDefinition definition = domain.entities().definition(entityType);
     assertEquals(entityType.name(), definition.toString());
     assertEquals(entityType, definition.entityType());
     assertEquals("tableName", definition.tableName());
@@ -82,7 +82,7 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     Collection<Attribute<?>> defaultSelectAttributes = domain.entities()
-            .getDefinition(Employee.TYPE).defaultSelectAttributes();
+            .definition(Employee.TYPE).defaultSelectAttributes();
     assertTrue(defaultSelectAttributes.contains(Employee.ID));
     assertTrue(defaultSelectAttributes.contains(Employee.NAME));
     assertTrue(defaultSelectAttributes.contains(Employee.JOB));
@@ -98,7 +98,7 @@ public class DefaultEntityDefinitionTest {
     assertFalse(defaultSelectAttributes.contains(Employee.DEPARTMENT_NAME));
 
     defaultSelectAttributes = domain.entities()
-            .getDefinition(Department.TYPE).defaultSelectAttributes();
+            .definition(Department.TYPE).defaultSelectAttributes();
     assertTrue(defaultSelectAttributes.contains(Department.NO));
     assertTrue(defaultSelectAttributes.contains(Department.NAME));
     assertTrue(defaultSelectAttributes.contains(Department.LOCATION));
@@ -106,7 +106,7 @@ public class DefaultEntityDefinitionTest {
     assertFalse(defaultSelectAttributes.contains(Department.DATA));
 
     defaultSelectAttributes = domain.entities()
-            .getDefinition(Detail.TYPE).defaultSelectAttributes();
+            .definition(Detail.TYPE).defaultSelectAttributes();
     assertTrue(defaultSelectAttributes.contains(Detail.ID));
     assertTrue(defaultSelectAttributes.contains(Detail.INT));
     assertTrue(defaultSelectAttributes.contains(Detail.DOUBLE));
@@ -172,7 +172,7 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
+    EntityDefinition definition = domain.entities().definition(entityType);
     Collection<Attribute<?>> linked = definition.derivedAttributes(name);
     assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
@@ -195,7 +195,7 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
+    EntityDefinition definition = domain.entities().definition(entityType);
     assertEquals("p1, p2", definition.groupByClause());
   }
 
@@ -214,15 +214,15 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
+    EntityDefinition definition = domain.entities().definition(entityType);
     assertEquals(havingClause, definition.setSelectQuery().having());
   }
 
   @Test
   void testForeignKeyNullability() {
     Domain domain = new TestDomain();
-    assertFalse(domain.entities().getDefinition(TestDomain.T_COMPOSITE_DETAIL).foreignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK).nullable());
-    assertTrue(domain.entities().getDefinition(Detail.TYPE).foreignKeyProperty(Detail.MASTER_FK).nullable());
+    assertFalse(domain.entities().definition(TestDomain.T_COMPOSITE_DETAIL).foreignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK).nullable());
+    assertTrue(domain.entities().definition(Detail.TYPE).foreignKeyProperty(Detail.MASTER_FK).nullable());
   }
 
   @Test
@@ -279,7 +279,7 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
+    EntityDefinition definition = domain.entities().definition(entityType);
     assertTrue(definition.hasDerivedAttributes(attribute1));
     assertTrue(definition.hasDerivedAttributes(attribute2));
   }
@@ -300,7 +300,7 @@ public class DefaultEntityDefinitionTest {
     Entities entities = new TestDomain().entities();
 
     Entity entity = entities.entity(entityType);
-    EntityDefinition definition = entities.getDefinition(entityType);
+    EntityDefinition definition = entities.definition(entityType);
     assertEquals(colorBlue, definition.backgroundColorProvider().getColor(entity, entity.primaryKey().getAttribute()));
     assertEquals(colorYellow, definition.foregroundColorProvider().getColor(entity, entity.primaryKey().getAttribute()));
   }
@@ -362,7 +362,7 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
+    EntityDefinition definition = domain.entities().definition(entityType);
     assertNotNull(definition.keyGenerator());
     assertFalse(definition.isKeyGenerated());
     assertTrue(definition.keyGenerator().isInserted());
@@ -393,7 +393,7 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
+    EntityDefinition definition = domain.entities().definition(entityType);
     assertNotNull(definition.keyGenerator());
     assertTrue(definition.isKeyGenerated());
     assertFalse(definition.keyGenerator().isInserted());
@@ -402,13 +402,13 @@ public class DefaultEntityDefinitionTest {
   @Test
   void compositeKeySingleValueConstructor() {
     assertThrows(IllegalStateException.class, () -> new TestDomain().entities()
-            .getDefinition(TestDomain.T_COMPOSITE_MASTER).primaryKey(1L));
+            .definition(TestDomain.T_COMPOSITE_MASTER).primaryKey(1L));
   }
 
   @Test
   void singleValueConstructorWrongType() {
     assertThrows(IllegalArgumentException.class, () -> new TestDomain().entities()
-            .getDefinition(Department.TYPE).primaryKey(1L));
+            .definition(Department.TYPE).primaryKey(1L));
   }
 
   @Test
@@ -436,7 +436,7 @@ public class DefaultEntityDefinitionTest {
     }
     Domain domain = new TestDomain();
 
-    EntityDefinition definition = domain.entities().getDefinition(entityType);
+    EntityDefinition definition = domain.entities().definition(entityType);
 
     Locale.setDefault(new Locale("en", "EN"));
     assertEquals("Test", definition.caption());

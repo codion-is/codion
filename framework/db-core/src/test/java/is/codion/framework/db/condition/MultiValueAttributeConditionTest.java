@@ -21,7 +21,7 @@ public final class MultiValueAttributeConditionTest {
 
   @Test
   void inClauseParenthesis() {
-    EntityDefinition definition = domain.entities().getDefinition(TestDomain.T_EMP);
+    EntityDefinition definition = domain.entities().definition(TestDomain.T_EMP);
 
     List<Integer> ids = new ArrayList<>();
     IntStream.range(0, 95).forEach(ids::add);

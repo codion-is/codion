@@ -22,7 +22,7 @@ public final class SelectQueriesTest {
 
   @Test
   void builder() {
-    SelectQueries.Builder builder = queries.builder(testDomain.entities().getDefinition(Query.TYPE))
+    SelectQueries.Builder builder = queries.builder(testDomain.entities().definition(Query.TYPE))
             .entitySelectQuery();
     assertEquals("select empno, ename\nfrom scott.emp e\norder by ename", builder.build());
 
@@ -32,21 +32,21 @@ public final class SelectQueriesTest {
     builder.forUpdate(true);
     assertEquals("select empno\nfrom scott.emp\norder by ename\nfor update nowait", builder.build());
 
-    builder = queries.builder(testDomain.entities().getDefinition(QueryColumnsWhereClause.TYPE))
+    builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
             .entitySelectQuery();
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
 
     builder.orderBy("ename");
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\norder by ename", builder.build());
 
-    builder = queries.builder(testDomain.entities().getDefinition(QueryFromClause.TYPE))
+    builder = queries.builder(testDomain.entities().definition(QueryFromClause.TYPE))
             .entitySelectQuery();
     assertEquals("select empno, ename\nfrom scott.emp\norder by ename", builder.build());
   }
 
   @Test
   void selectCondition() {
-    SelectQueries.Builder builder = queries.builder(testDomain.entities().getDefinition(QueryColumnsWhereClause.TYPE))
+    SelectQueries.Builder builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
             .entitySelectQuery();
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
 
@@ -56,7 +56,7 @@ public final class SelectQueriesTest {
             .selectAttributes(QueryColumnsWhereClause.ENAME)
             .orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO))
             .build();
-    builder = queries.builder(testDomain.entities().getDefinition(QueryColumnsWhereClause.TYPE))
+    builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
             .selectCondition(condition);
 
     //select condition should not affect columns when the columns are hardcoded in the entity query

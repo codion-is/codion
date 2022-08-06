@@ -347,7 +347,7 @@ public final class EntityJsonService extends AbstractEntityService {
       ConditionObjectMapper mapper = getConditionObjectMapper(entities);
       JsonNode jsonNode = mapper.readTree(request.getInputStream());
       EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
-      Attribute<?> attribute = entities.getDefinition(entityType).attribute(jsonNode.get("attribute").textValue());
+      Attribute<?> attribute = entities.definition(entityType).attribute(jsonNode.get("attribute").textValue());
       Condition condition = null;
       JsonNode conditionNode = jsonNode.get("condition");
       if (conditionNode != null) {

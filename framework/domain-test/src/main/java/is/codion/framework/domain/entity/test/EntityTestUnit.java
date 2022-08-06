@@ -92,7 +92,7 @@ public class EntityTestUnit {
     try {
       Map<ForeignKey, Entity> foreignKeyEntities = initializeForeignKeyEntities(entityType, new HashMap<>(), connection);
       Entity testEntity = null;
-      EntityDefinition entityDefinition = getEntities().getDefinition(entityType);
+      EntityDefinition entityDefinition = getEntities().definition(entityType);
       if (!entityDefinition.isReadOnly()) {
         testEntity = testInsert(requireNonNull(initializeTestEntity(entityType, foreignKeyEntities), "test entity"), connection);
         assertTrue(testEntity.primaryKey().isNotNull());
@@ -162,7 +162,7 @@ public class EntityTestUnit {
   private Map<ForeignKey, Entity> initializeForeignKeyEntities(EntityType entityType,
                                                                Map<ForeignKey, Entity> foreignKeyEntities,
                                                                EntityConnection connection) throws DatabaseException {
-    List<ForeignKey> foreignKeys = new ArrayList<>(getEntities().getDefinition(entityType).foreignKeys());
+    List<ForeignKey> foreignKeys = new ArrayList<>(getEntities().definition(entityType).foreignKeys());
     //we have to start with non-self-referential ones
     foreignKeys.sort((fk1, fk2) -> !fk1.referencedType().equals(entityType) ? -1 : 1);
     for (ForeignKey foreignKey : foreignKeys) {

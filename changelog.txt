@@ -8337,3 +8337,4 @@
   Entity, EntityEditModel.getForeignKey() renamed referencedEntity(), Entity.getReferencedKey() renamed referencedKey()
   EntityEditModel, get prefix removed from observer accessors
   EntityDefinition, get prefix removed from accessors with parameters
+  Entities, get prefix removed from accessors with parameters

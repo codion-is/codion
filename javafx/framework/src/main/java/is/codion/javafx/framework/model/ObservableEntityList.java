@@ -71,9 +71,9 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     super(FXCollections.observableArrayList());
     this.entityType = entityType;
     this.connectionProvider = connectionProvider;
-    this.entityDefinition =  connectionProvider.entities().getDefinition(entityType);
+    this.entityDefinition =  connectionProvider.entities().definition(entityType);
     this.filteredList = new FilteredList<>(this);
-    this.sortedList = new SortedList<>(filteredList, connectionProvider.entities().getDefinition(entityType).comparator());
+    this.sortedList = new SortedList<>(filteredList, connectionProvider.entities().definition(entityType).comparator());
   }
 
   /**
@@ -325,7 +325,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
       }
 
       return connectionProvider.connection().select(condition.selectBuilder()
-              .orderBy(connectionProvider.entities().getDefinition(entityType).orderBy())
+              .orderBy(connectionProvider.entities().definition(entityType).orderBy())
               .build());
     }
     catch (DatabaseException e) {

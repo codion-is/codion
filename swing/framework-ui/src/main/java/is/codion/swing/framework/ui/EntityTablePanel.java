@@ -1773,7 +1773,7 @@ public class EntityTablePanel extends JPanel {
     for (Map.Entry<EntityType, Collection<Entity>> entry : dependencies.entrySet()) {
       Collection<Entity> dependentEntities = entry.getValue();
       if (!dependentEntities.isEmpty()) {
-        tabPane.addTab(connectionProvider.entities().getDefinition(entry.getKey()).caption(),
+        tabPane.addTab(connectionProvider.entities().definition(entry.getKey()).caption(),
                 createEntityTablePanel(dependentEntities, connectionProvider));
       }
     }

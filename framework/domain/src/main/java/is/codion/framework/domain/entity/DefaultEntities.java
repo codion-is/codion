@@ -48,12 +48,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final EntityDefinition getDefinition(EntityType entityType) {
+  public final EntityDefinition definition(EntityType entityType) {
     return getDefinitionInternal(requireNonNull(entityType, "entityType").name());
   }
 
   @Override
-  public final EntityDefinition getDefinition(String entityTypeName) {
+  public final EntityDefinition definition(String entityTypeName) {
     return getDefinitionInternal(requireNonNull(entityTypeName, "entityTypeName"));
   }
 
@@ -63,23 +63,23 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Collection<EntityDefinition> entityDefinitions() {
+  public final Collection<EntityDefinition> definitions() {
     return unmodifiableCollection(entityDefinitions.values());
   }
 
   @Override
   public final Entity entity(EntityType entityType) {
-    return getDefinition(entityType).entity();
+    return definition(entityType).entity();
   }
 
   @Override
   public final Entity.Builder builder(EntityType entityType) {
-    return new DefaultEntityBuilder(getDefinition(entityType));
+    return new DefaultEntityBuilder(definition(entityType));
   }
 
   @Override
   public final <T> Key primaryKey(EntityType entityType, T value) {
-    return getDefinition(entityType).primaryKey(value);
+    return definition(entityType).primaryKey(value);
   }
 
   @Override
@@ -91,7 +91,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   @Override
   public final Key.Builder keyBuilder(EntityType entityType) {
-    return new DefaultKeyBuilder(getDefinition(entityType));
+    return new DefaultKeyBuilder(definition(entityType));
   }
 
   /**
