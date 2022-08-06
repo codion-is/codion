@@ -331,14 +331,14 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public Color getBackgroundColor(int row, Attribute<?> attribute) {
+  public Color backgroundColor(int row, Attribute<?> attribute) {
     Object color = entityDefinition().backgroundColorProvider().getColor(getItemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
 
   @Override
-  public Color getForegroundColor(int row, Attribute<?> attribute) {
+  public Color foregroundColor(int row, Attribute<?> attribute) {
     Object color = entityDefinition().foregroundColorProvider().getColor(getItemAt(row), attribute);
 
     return color == null ? null : getColor(color);

@@ -15,10 +15,10 @@ public final class ViewInvoice extends AbstractEntityUsageScenario<ChinookApplic
 
   @Override
   protected void perform(ChinookApplicationModel application) throws Exception {
-    SwingEntityModel customerModel = application.getEntityModel(Customer.TYPE);
+    SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
     customerModel.tableModel().refresh();
     selectRandomRow(customerModel.tableModel());
-    SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
+    SwingEntityModel invoiceModel = customerModel.detailModel(Invoice.TYPE);
     selectRandomRow(invoiceModel.tableModel());
   }
 

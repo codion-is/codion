@@ -31,11 +31,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
   @Override
   protected List<EntityPanel> createEntityPanels(SchemaBrowserApplicationModel applicationModel) {
-    SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
-    SwingEntityModel tableModel = schemaModel.getDetailModel(Table.TYPE);
-    SwingEntityModel columnModel = tableModel.getDetailModel(Column.TYPE);
-    SwingEntityModel constraintModel = tableModel.getDetailModel(Constraint.TYPE);
-    SwingEntityModel columnConstraintModel = constraintModel.getDetailModel(ConstraintColumn.TYPE);
+    SwingEntityModel schemaModel = applicationModel.entityModel(Schema.TYPE);
+    SwingEntityModel tableModel = schemaModel.detailModel(Table.TYPE);
+    SwingEntityModel columnModel = tableModel.detailModel(Column.TYPE);
+    SwingEntityModel constraintModel = tableModel.detailModel(Constraint.TYPE);
+    SwingEntityModel columnConstraintModel = constraintModel.detailModel(ConstraintColumn.TYPE);
 
     EntityPanel schemaPanel = new EntityPanel(schemaModel);
     EntityPanel tablePanel = new EntityPanel(tableModel);

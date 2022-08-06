@@ -269,7 +269,7 @@ public final class EntityComponentsTest {
 
   @Test
   void createForeignKeySearchField() {
-    inputComponents.foreignKeySearchField(TestDomain.DETAIL_MASTER_FK, editModel.getForeignKeySearchModel(TestDomain.DETAIL_MASTER_FK))
+    inputComponents.foreignKeySearchField(TestDomain.DETAIL_MASTER_FK, editModel.foreignKeySearchModel(TestDomain.DETAIL_MASTER_FK))
             .columns(20)
             .upperCase(true)
             .lowerCase(false)
@@ -279,7 +279,7 @@ public final class EntityComponentsTest {
 
   @Test
   void createForeignKeyComboBox() {
-    inputComponents.foreignKeyComboBox(TestDomain.DETAIL_MASTER_FK, editModel.getForeignKeyComboBoxModel(TestDomain.DETAIL_MASTER_FK))
+    inputComponents.foreignKeyComboBox(TestDomain.DETAIL_MASTER_FK, editModel.foreignKeyComboBoxModel(TestDomain.DETAIL_MASTER_FK))
             .linkedValue(editModel.value(TestDomain.DETAIL_MASTER_FK))
             .buildComponentValue();
   }

@@ -42,7 +42,7 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
     @Override
     protected void perform(StoreAppModel application)
             throws Exception {
-      SwingEntityModel customerModel = application.getEntityModel(Customer.TYPE);
+      SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
       customerModel.tableModel().refresh();
       selectRandomRow(customerModel.tableModel());
     }

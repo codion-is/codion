@@ -18,7 +18,7 @@ public final class ViewCustomerReport extends AbstractEntityUsageScenario<Chinoo
 
   @Override
   protected void perform(ChinookApplicationModel application) throws Exception {
-    SwingEntityTableModel customerModel = application.getEntityModel(Customer.TYPE).tableModel();
+    SwingEntityTableModel customerModel = application.entityModel(Customer.TYPE).tableModel();
     customerModel.refresh();
     EntityLoadTestModel.selectRandomRow(customerModel);
 

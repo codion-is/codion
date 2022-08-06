@@ -38,8 +38,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
   @Override
   protected List<EntityPanel> createEntityPanels(EmpDeptApplicationModel applicationModel) {
-    SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
-    SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
+    SwingEntityModel departmentModel = applicationModel.entityModel(Department.TYPE);
+    SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
 
     EntityPanel employeePanelBuilder = new EntityPanel(employeeModel,
             new EmployeeEditPanel(employeeModel.editModel()));;

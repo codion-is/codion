@@ -34,7 +34,7 @@ public class SearchValueLinkTest {
   void test() throws Exception {
     ComponentValue<Entity, EntitySearchField> componentValue =
             inputComponents.foreignKeySearchField(TestDomain.EMP_DEPARTMENT_FK,
-            model.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK)).buildComponentValue();
+            model.foreignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK)).buildComponentValue();
     componentValue.link(model.value(TestDomain.EMP_DEPARTMENT_FK));
     EntitySearchModel searchModel = componentValue.getComponent().model();
     assertEquals(0, searchModel.getSelectedEntities().size());

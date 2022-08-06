@@ -14,7 +14,7 @@ public final class SelectDepartment extends AbstractEntityUsageScenario<EmpDeptA
 
   @Override
   protected void perform(EmpDeptAppPanel.EmpDeptApplicationModel application) {
-    selectRandomRow(application.getEntityModel(Department.TYPE).tableModel());
+    selectRandomRow(application.entityModel(Department.TYPE).tableModel());
   }
 
   @Override

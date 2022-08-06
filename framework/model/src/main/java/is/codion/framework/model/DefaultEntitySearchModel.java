@@ -226,7 +226,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   @Override
   public List<Entity> performQuery() {
     try {
-      List<Entity> result = connectionProvider.connection().select(getEntitySelectCondition());
+      List<Entity> result = connectionProvider.connection().select(entitySelectCondition());
       if (resultSorter != null) {
         result.sort(resultSorter);
       }
@@ -268,7 +268,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
    * @throws IllegalStateException in case no search properties are specified
    * @see #setAdditionalConditionProvider(Condition.Provider)
    */
-  private SelectCondition getEntitySelectCondition() {
+  private SelectCondition entitySelectCondition() {
     if (searchAttributes.isEmpty()) {
       throw new IllegalStateException("No search attributes provided for search model: " + entityType);
     }

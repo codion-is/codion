@@ -35,7 +35,7 @@ public final class CountryModel extends SwingEntityModel {
       return null;
     }
 
-    SwingEntityTableModel cityTableModel = getDetailModel(City.TYPE).tableModel();
+    SwingEntityTableModel cityTableModel = detailModel(City.TYPE).tableModel();
     Entity country = editModel().entityCopy();
 
     return Entity.castTo(City.class, cityTableModel.items()).stream()

@@ -138,13 +138,13 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * @param modelClass the model class
    * @return the EntityModel of the given type
    */
-  <T extends M> T getEntityModel(Class<? extends M> modelClass);
+  <T extends M> T entityModel(Class<? extends M> modelClass);
 
   /**
    * @param entityType the entityType
    * @return the EntityModel based on the given entityType
    */
-  M getEntityModel(EntityType entityType);
+  M entityModel(EntityType entityType);
 
   /**
    * Refreshes all data models contained in this application model

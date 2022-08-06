@@ -13,8 +13,8 @@ public final class CustomerPanel extends EntityPanel {
   public CustomerPanel(SwingEntityModel customerModel) {
     super(customerModel, new CustomerEditPanel(customerModel.editModel()), new CustomerTablePanel(customerModel.tableModel()));
 
-    SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
-    SwingEntityModel invoiceLineModel = invoiceModel.getDetailModel(InvoiceLine.TYPE);
+    SwingEntityModel invoiceModel = customerModel.detailModel(Invoice.TYPE);
+    SwingEntityModel invoiceLineModel = invoiceModel.detailModel(InvoiceLine.TYPE);
 
     InvoiceLineTablePanel invoiceLineTablePanel = new InvoiceLineTablePanel(invoiceLineModel.tableModel());
     InvoiceLineEditPanel invoiceLineEditPanel = new InvoiceLineEditPanel(invoiceLineModel.editModel(),

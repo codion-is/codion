@@ -307,7 +307,7 @@ public interface EntityEditModel {
    * @return the {@link EntitySearchModel} associated with the {@code foreignKey}, if no search model
    * has been initialized for the given foreign key, a new one is created, associated with the foreign key and returned.
    */
-  EntitySearchModel getForeignKeySearchModel(ForeignKey foreignKey);
+  EntitySearchModel foreignKeySearchModel(ForeignKey foreignKey);
 
   /**
    * Sets the default value provider for the given attribute. Used when the underlying value is not persistent.

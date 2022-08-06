@@ -15,10 +15,10 @@ public final class ViewAlbum extends AbstractEntityUsageScenario<ChinookApplicat
 
   @Override
   protected void perform(ChinookApplicationModel application) throws Exception {
-    SwingEntityModel artistModel = application.getEntityModel(Artist.TYPE);
+    SwingEntityModel artistModel = application.entityModel(Artist.TYPE);
     artistModel.tableModel().refresh();
     selectRandomRow(artistModel.tableModel());
-    SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+    SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
     selectRandomRow(albumModel.tableModel());
   }
 

@@ -274,7 +274,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
     assertEquals(6, tableModel.getRowCount());
     ColumnConditionModel<?, Double> commissionConditionModel =
-            tableModel.tableConditionModel().getConditionModel(TestDomain.EMP_COMMISSION);
+            tableModel.tableConditionModel().conditionModel(TestDomain.EMP_COMMISSION);
     commissionConditionModel.setOperator(Operator.EQUAL);
     commissionConditionModel.setEnabled(true);
     tableModel.refresh();

@@ -66,11 +66,11 @@ public final class SwingEntityModelTest
     //here we're basically testing for the entity in the edit model being modified after
     //being set when selected in the table model, this usually happens when combo box models
     //are being filtered on property value change, see EmployeeEditModel.bindEvents()
-    SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
+    SwingEntityModel employeeModel = departmentModel.detailModel(TestDomain.T_EMP);
     SwingEntityEditModel employeeEditModel = employeeModel.editModel();
     SwingEntityTableModel employeeTableModel = employeeModel.tableModel();
 
-    SwingEntityComboBoxModel comboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK);
+    SwingEntityComboBoxModel comboBoxModel = employeeEditModel.foreignKeyComboBoxModel(TestDomain.EMP_MGR_FK);
     new EntityComboBoxModelValue(comboBoxModel).link(employeeEditModel.value(TestDomain.EMP_MGR_FK));
     employeeTableModel.refresh();
     for (Entity employee : employeeTableModel.items()) {
@@ -84,12 +84,12 @@ public final class SwingEntityModelTest
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
     assertFalse(departmentModel.containsDetailModel(TestDomain.T_DEPARTMENT));
     assertFalse(departmentModel.containsDetailModel(EmpModel.class));
-    SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
+    SwingEntityModel employeeModel = departmentModel.detailModel(TestDomain.T_EMP);
     assertNotNull(employeeModel);
     assertTrue(departmentModel.linkedDetailModels().contains(employeeModel));
     departmentModel.tableModel().refresh();
     SwingEntityEditModel employeeEditModel = employeeModel.editModel();
-    EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
+    EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.foreignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     departmentsComboBoxModel.refresh();
     Key primaryKey = getConnectionProvider().entities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations, no employees
     departmentModel.tableModel().setSelectedByKey(Collections.singletonList(primaryKey));
@@ -106,7 +106,7 @@ public final class SwingEntityModelTest
       departmentModel.tableModel().selectionModel().setSelectedItem(inserted);
       departmentModel.editModel().put(TestDomain.DEPARTMENT_NAME, "nameitagain");
       departmentModel.editModel().update();
-      assertEquals("nameitagain", departmentsComboBoxModel.getEntity(inserted.primaryKey()).orElse(null).get(TestDomain.DEPARTMENT_NAME));
+      assertEquals("nameitagain", departmentsComboBoxModel.entity(inserted.primaryKey()).orElse(null).get(TestDomain.DEPARTMENT_NAME));
 
       departmentModel.tableModel().setSelectedByKey(Collections.singletonList(primaryKey.copyBuilder().with(TestDomain.DEPARTMENT_ID, 20).build()));
       departmentModel.editModel().put(TestDomain.DEPARTMENT_NAME, "NewName");
@@ -124,7 +124,7 @@ public final class SwingEntityModelTest
 
   @Test
   void getDetailModelNonExisting() {
-    assertThrows(IllegalArgumentException.class, () -> departmentModel.getDetailModel(EmpModel.class));
+    assertThrows(IllegalArgumentException.class, () -> departmentModel.detailModel(EmpModel.class));
   }
 
   @Test
@@ -137,14 +137,14 @@ public final class SwingEntityModelTest
       Entity department =
               connection.selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.tableModel().selectionModel().setSelectedItem(department);
-      SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
+      SwingEntityModel employeeModel = departmentModel.detailModel(TestDomain.T_EMP);
       EntityComboBoxModel deptComboBoxModel = employeeModel.editModel()
-              .getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
+              .foreignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
       deptComboBoxModel.refresh();
       deptComboBoxModel.setSelectedItem(department);
       departmentModel.tableModel().deleteSelected();
-      assertEquals(3, employeeModel.editModel().getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSize());
-      assertNotNull(employeeModel.editModel().getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).selectedValue());
+      assertEquals(3, employeeModel.editModel().foreignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSize());
+      assertNotNull(employeeModel.editModel().foreignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).selectedValue());
     }
     finally {
       connection.rollbackTransaction();

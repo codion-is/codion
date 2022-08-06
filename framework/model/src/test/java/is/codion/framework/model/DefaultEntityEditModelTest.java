@@ -102,10 +102,10 @@ public final class DefaultEntityEditModelTest {
   @Test
   void getForeignKeySearchModel() {
     assertFalse(employeeEditModel.containsSearchModel(TestDomain.EMP_DEPARTMENT_FK));
-    EntitySearchModel model = employeeEditModel.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK);
+    EntitySearchModel model = employeeEditModel.foreignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK);
     assertTrue(employeeEditModel.containsSearchModel(TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(model);
-    assertEquals(model, employeeEditModel.getForeignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK));
+    assertEquals(model, employeeEditModel.foreignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK));
   }
 
   @Test

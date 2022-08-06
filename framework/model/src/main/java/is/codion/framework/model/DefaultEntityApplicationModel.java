@@ -133,7 +133,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final <T extends M> T getEntityModel(Class<? extends M> modelClass) {
+  public final <T extends M> T entityModel(Class<? extends M> modelClass) {
     for (M model : entityModels) {
       if (model.getClass().equals(modelClass)) {
         return (T) model;
@@ -144,7 +144,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final M getEntityModel(EntityType entityType) {
+  public final M entityModel(EntityType entityType) {
     for (M entityModel : entityModels) {
       if (entityModel.entityType().equals(entityType)) {
         return entityModel;

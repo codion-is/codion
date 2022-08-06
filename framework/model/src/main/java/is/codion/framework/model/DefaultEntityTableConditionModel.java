@@ -93,7 +93,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(C attribute) {
+  public <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> filterModel(C attribute) {
     ColumnFilterModel<Entity, C, T> filterModel = (ColumnFilterModel<Entity, C, T>) filterModels.get(attribute);
     if (filterModel == null) {
       throw new IllegalArgumentException("No filter model available for attribute: " + attribute);
@@ -132,7 +132,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <C extends Attribute<T>, T> ColumnConditionModel<C, T> getConditionModel(C attribute) {
+  public <C extends Attribute<T>, T> ColumnConditionModel<C, T> conditionModel(C attribute) {
     ColumnConditionModel<C, T> conditionModel = (ColumnConditionModel<C, T>) conditionModels.get(attribute);
     if (conditionModel == null) {
       throw new IllegalArgumentException("No condition model available for attribute: " + attribute);

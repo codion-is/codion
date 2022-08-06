@@ -227,7 +227,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
-          SwingEntityModel detailModel = model.getDetailModel(detailPanelBuilder.entityType());
+          SwingEntityModel detailModel = model.detailModel(detailPanelBuilder.entityType());
           EntityPanel detailPanel = detailPanelBuilder.buildPanel(detailModel);
           entityPanel.addDetailPanel(detailPanel);
         }

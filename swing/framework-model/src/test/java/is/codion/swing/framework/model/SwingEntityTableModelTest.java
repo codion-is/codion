@@ -110,7 +110,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void testFiltering() {
     testModel.refresh();
     ColumnConditionModel<Attribute<String>, String> filterModel =
-            testModel.tableConditionModel().getFilterModel(TestDomain.DETAIL_STRING);
+            testModel.tableConditionModel().filterModel(TestDomain.DETAIL_STRING);
     filterModel.setEqualValue("a");
     testModel.filterContents();
     assertEquals(4, testModel.filteredItems().size());
@@ -187,10 +187,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void backgroundColor() {
     SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
     ColumnConditionModel<Attribute<String>, String> nameConditionModel =
-            employeeTableModel.tableConditionModel().getConditionModel(TestDomain.EMP_NAME);
+            employeeTableModel.tableConditionModel().conditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setEqualValue("BLAKE");
     employeeTableModel.refresh();
-    assertEquals(Color.GREEN, employeeTableModel.getBackgroundColor(0, TestDomain.EMP_JOB));
+    assertEquals(Color.GREEN, employeeTableModel.backgroundColor(0, TestDomain.EMP_JOB));
   }
 
   @Test

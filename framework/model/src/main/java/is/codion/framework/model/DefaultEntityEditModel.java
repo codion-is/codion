@@ -526,7 +526,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
     LOG.debug("{} - update {}", this, entities);
 
-    List<Entity> modifiedEntities = getModifiedEntities(entities);
+    List<Entity> modifiedEntities = modifiedEntities(entities);
     if (modifiedEntities.isEmpty()) {
       return emptyList();
     }
@@ -618,10 +618,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntitySearchModel getForeignKeySearchModel(ForeignKey foreignKey) {
+  public final EntitySearchModel foreignKeySearchModel(ForeignKey foreignKey) {
     entityDefinition().foreignKeyProperty(foreignKey);
     synchronized (entitySearchModels) {
-      // can't use computeIfAbsent here, see comment in SwingEntityEditModel.getForeignKeyComboBoxModel()
+      // can't use computeIfAbsent here, see comment in SwingEntityEditModel.foreignKeyComboBoxModel()
       EntitySearchModel entitySearchModel = entitySearchModels.get(foreignKey);
       if (entitySearchModel == null) {
         entitySearchModel = createForeignKeySearchModel(foreignKey);
@@ -862,7 +862,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see #update()
    * @see #update(java.util.List)
    */
-  protected List<Entity> getModifiedEntities(List<Entity> entities) {
+  protected List<Entity> modifiedEntities(List<Entity> entities) {
     return Entity.getModified(entities);
   }
 

@@ -152,7 +152,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final Optional<Entity> getEntity(Key primaryKey) {
+  public final Optional<Entity> entity(Key primaryKey) {
     requireNonNull(primaryKey);
 
     return items().stream()
@@ -161,7 +161,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final void setSelectedEntityByKey(Key primaryKey) {
+  public final void selectEntityByKey(Key primaryKey) {
     requireNonNull(primaryKey);
     int indexOfKey = getIndexOfKey(primaryKey);
     if (indexOfKey >= 0) {
@@ -358,7 +358,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
     addSelectionListener(selected -> {
       if (selected != null) {
-        foreignKeyModel.setSelectedEntityByKey(selected.referencedKey(foreignKey));
+        foreignKeyModel.selectEntityByKey(selected.referencedKey(foreignKey));
       }
     });
     addRefreshListener(foreignKeyModel::forceRefresh);

@@ -248,8 +248,8 @@ public final class EmpDeptMinimalApp {
     @Override
     protected List<EntityPanel> createEntityPanels(EmpDeptApplicationModel applicationModel) {
       //now, let's assemble our application
-      SwingEntityModel departmentModel = applicationModel.getEntityModel(Department.TYPE);
-      SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
+      SwingEntityModel departmentModel = applicationModel.entityModel(Department.TYPE);
+      SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
 
       EntityPanel employeePanel = new EntityPanel(employeeModel,
               new EmployeeEditPanel(employeeModel.editModel()));

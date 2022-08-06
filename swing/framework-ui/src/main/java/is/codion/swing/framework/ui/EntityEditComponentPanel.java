@@ -736,7 +736,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a combo box builder
    */
   protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createAttributeComboBox(Attribute<T> attribute) {
-    FilteredComboBoxModel<T> comboBoxModel = editModel().getComboBoxModel(attribute);
+    FilteredComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(attribute);
     comboBoxModel.addRefreshFailedListener(this::onException);
 
     return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, (ComboBoxModel<T>) comboBoxModel)
@@ -750,7 +750,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a foreign key combo box builder
    */
   protected final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyComboBox(ForeignKey foreignKey) {
-    SwingEntityComboBoxModel comboBoxModel = editModel().getForeignKeyComboBoxModel(foreignKey);
+    SwingEntityComboBoxModel comboBoxModel = editModel().foreignKeyComboBoxModel(foreignKey);
     comboBoxModel.addRefreshFailedListener(this::onException);
 
     return (ComboBoxBuilder<Entity, EntityComboBox, B>) setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
@@ -764,7 +764,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final EntitySearchField.Builder createForeignKeySearchField(ForeignKey foreignKey) {
     return setComponentBuilder(foreignKey, entityComponents.foreignKeySearchField(foreignKey,
-                    editModel().getForeignKeySearchModel(foreignKey))
+                    editModel().foreignKeySearchModel(foreignKey))
             .columns(defaultTextFieldColumns));
   }
 

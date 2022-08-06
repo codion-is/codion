@@ -685,7 +685,7 @@ public final class FXUiUtil {
    * @return a {@link EntitySearchField} based on the given property
    */
   public static EntitySearchField createSearchField(ForeignKey foreignKey, FXEntityEditModel editModel) {
-    EntitySearchModel searchModel = requireNonNull(editModel).getForeignKeySearchModel(requireNonNull(foreignKey));
+    EntitySearchModel searchModel = requireNonNull(editModel).foreignKeySearchModel(requireNonNull(foreignKey));
     EntitySearchField searchField = new EntitySearchField(searchModel);
     PropertyValues.singleSearchValue(searchModel).link(editModel.value(foreignKey));
 

@@ -216,7 +216,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
       boolean conditionEnabled = tableModel.tableConditionModel().isConditionEnabled(attribute);
       boolean filterEnabled = tableModel.tableConditionModel().isFilterEnabled(attribute);
       boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
-      Color cellColor = tableModel.getBackgroundColor(row, attribute);
+      Color cellColor = tableModel.backgroundColor(row, attribute);
       if (showCondition) {
         return getConditionEnabledColor(row, conditionEnabled && filterEnabled, cellColor);
       }
@@ -228,7 +228,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     }
 
     private Color getForegroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute, int row) {
-      Color cellColor = tableModel.getForegroundColor(row, attribute);
+      Color cellColor = tableModel.foregroundColor(row, attribute);
 
       return cellColor == null ? foregroundColor : cellColor;
     }

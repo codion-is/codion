@@ -8338,3 +8338,4 @@
   EntityEditModel, get prefix removed from observer accessors
   EntityDefinition, get prefix removed from accessors with parameters
   Entities, get prefix removed from accessors with parameters
+  framework.model, get prefix removed from more accessors

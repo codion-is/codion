@@ -22,9 +22,9 @@ public final class InsertEmployee extends AbstractEntityUsageScenario<EmpDeptApp
 
   @Override
   protected void perform(EmpDeptAppPanel.EmpDeptApplicationModel application) throws Exception {
-    SwingEntityModel departmentModel = application.getEntityModel(Department.TYPE);
+    SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
     selectRandomRow(departmentModel.tableModel());
-    SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
+    SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
     Map<ForeignKey, Entity> foreignKeyEntities = new HashMap<>();
     foreignKeyEntities.put(Employee.DEPARTMENT_FK, departmentModel.tableModel().selectionModel().getSelectedItem());
     employeeModel.editModel().setEntity(createRandomEntity(application.entities(), Employee.TYPE, foreignKeyEntities));

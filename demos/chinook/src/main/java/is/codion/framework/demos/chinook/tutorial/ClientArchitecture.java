@@ -69,7 +69,7 @@ public final class ClientArchitecture {
     SwingEntityTableModel artistTableModel = artistModel.tableModel();
 
     // the album detail model
-    SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+    SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
 
     // create a EntityEditPanel instance, based on the artist edit model
     EntityEditPanel artistEditPanel = new EntityEditPanel(artistEditModel) {

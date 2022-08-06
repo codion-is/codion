@@ -19,13 +19,13 @@ public final class RaisePrices extends AbstractEntityUsageScenario<ChinookApplic
 
   @Override
   protected void perform(ChinookApplicationModel application) throws Exception {
-    SwingEntityModel artistModel = application.getEntityModel(Artist.TYPE);
+    SwingEntityModel artistModel = application.entityModel(Artist.TYPE);
     artistModel.tableModel().refresh();
     selectRandomRows(artistModel.tableModel(), 2);
-    SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+    SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
     selectRandomRows(albumModel.tableModel(), 0.5);
     TrackTableModel trackTableModel =
-            (TrackTableModel) albumModel.getDetailModel(Track.TYPE).tableModel();
+            (TrackTableModel) albumModel.detailModel(Track.TYPE).tableModel();
     selectRandomRows(trackTableModel, 4);
     trackTableModel.raisePriceOfSelected(BigDecimal.valueOf(0.01));
   }

@@ -164,7 +164,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case a model is not found
    */
-  <T extends M> T getDetailModel(Class<? extends M> modelClass);
+  <T extends M> T detailModel(Class<? extends M> modelClass);
 
   /**
    * Returns a detail model of the given type
@@ -172,7 +172,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case no detail model for the given entityType is found
    */
-  M getDetailModel(EntityType entityType);
+  M detailModel(EntityType entityType);
 
   /**
    * @return an unmodifiable collection containing the detail models this model contains
@@ -195,7 +195,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param detailModel the detail model
    * @return the foreign key the given detail model is based on, null if none has been defined
    */
-  ForeignKey getDetailModelForeignKey(M detailModel);
+  ForeignKey detailModelForeignKey(M detailModel);
 
   /**
    * Clears all data models used by this model.

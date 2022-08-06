@@ -60,6 +60,6 @@ public class EntityPanelBuilderTest {
     assertEquals(1, customerPanel.detailPanels().size());
 
     assertEquals(customerModel, customerPanel.model());
-    assertEquals(customerModel.getDetailModel(TestDomain.T_EMP), invoicePanel.model());
+    assertEquals(customerModel.detailModel(TestDomain.T_EMP), invoicePanel.model());
   }
 }

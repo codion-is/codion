@@ -238,7 +238,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final <T extends M> T getDetailModel(Class<? extends M> modelClass) {
+  public final <T extends M> T detailModel(Class<? extends M> modelClass) {
     requireNonNull(modelClass, "modelClass");
     for (M detailModel : detailModels) {
       if (detailModel.getClass().equals(modelClass)) {
@@ -250,7 +250,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M getDetailModel(EntityType entityType) {
+  public final M detailModel(EntityType entityType) {
     requireNonNull(entityType, "entityType");
     for (M detailModel : detailModels) {
       if (detailModel.entityType().equals(entityType)) {
@@ -277,7 +277,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final ForeignKey getDetailModelForeignKey(M detailModel) {
+  public final ForeignKey detailModelForeignKey(M detailModel) {
     return detailModelForeignKeys.get(requireNonNull(detailModel, DETAIL_MODEL_PARAMETER));
   }
 
@@ -401,7 +401,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     editModel.addForeignKeyValues(insertedEntities);
     editModel.setForeignKeyValues(insertedEntities);
     if (containsTableModel() && searchOnMasterInsert) {
-      ForeignKey foreignKey = masterModel.getDetailModelForeignKey((M) this);
+      ForeignKey foreignKey = masterModel.detailModelForeignKey((M) this);
       if (foreignKey == null) {
         foreignKey = editModel.entityDefinition().foreignKeys(masterModel.entityType()).get(0);
       }

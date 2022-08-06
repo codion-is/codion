@@ -22,7 +22,7 @@ public final class FXEntityApplicationModelTest extends AbstractEntityApplicatio
   protected FXEntityModel createDepartmentModel() {
     FXEntityModel model = new DeptModel(getConnectionProvider());
     new EntityTableView(model.tableModel());
-    new EntityTableView(model.getDetailModel(TestDomain.T_EMP).tableModel());
+    new EntityTableView(model.detailModel(TestDomain.T_EMP).tableModel());
 
     return model;
   }

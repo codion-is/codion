@@ -210,7 +210,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return an Object representing the background color for this row and attribute, specified by the row entity
    * @see EntityDefinition.Builder#backgroundColorProvider(ColorProvider)
    */
-  Object getBackgroundColor(int row, Attribute<?> attribute);
+  Object backgroundColor(int row, Attribute<?> attribute);
 
   /**
    * @param row the row for which to retrieve the foreground color
@@ -218,7 +218,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return an Object representing the foreground color for this row and attribute, specified by the row entity
    * @see EntityDefinition.Builder#foregroundColorProvider(ColorProvider)
    */
-  Object getForegroundColor(int row, Attribute<?> attribute);
+  Object foregroundColor(int row, Attribute<?> attribute);
 
   /**
    * Returns the maximum number of records to fetch via the underlying query the next time

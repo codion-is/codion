@@ -150,8 +150,8 @@ public final class ClientTutorial {
 
     @Override
     protected List<EntityPanel> createEntityPanels(SwingEntityApplicationModel applicationModel) {
-      SwingEntityModel artistModel = applicationModel.getEntityModel(Artist.TYPE);
-      SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+      SwingEntityModel artistModel = applicationModel.entityModel(Artist.TYPE);
+      SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
       EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.editModel()));
       EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.editModel()));
       artistPanel.addDetailPanel(albumPanel);

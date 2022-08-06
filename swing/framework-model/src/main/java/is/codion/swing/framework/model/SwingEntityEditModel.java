@@ -73,10 +73,10 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     requireNonNull(attributes);
     for (Attribute<?> attribute : attributes) {
       if (attribute instanceof ForeignKey) {
-        getForeignKeyComboBoxModel((ForeignKey) attribute).refresh();
+        foreignKeyComboBoxModel((ForeignKey) attribute).refresh();
       }
       else {
-        getComboBoxModel(attribute).refresh();
+        comboBoxModel(attribute).refresh();
       }
     }
   }
@@ -122,7 +122,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @return a {@link SwingEntityComboBoxModel} based on the entity referenced by the given foreign key attribute
    * @see #createForeignKeyComboBoxModel(ForeignKey)
    */
-  public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(ForeignKey foreignKey) {
+  public final SwingEntityComboBoxModel foreignKeyComboBoxModel(ForeignKey foreignKey) {
     entityDefinition().foreignKeyProperty(foreignKey);
     synchronized (comboBoxModels) {
       // can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
@@ -145,10 +145,10 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @return a {@link SwingFilteredComboBoxModel} for the given attribute
    * @see #createComboBoxModel(Attribute)
    */
-  public final <T> SwingFilteredComboBoxModel<T> getComboBoxModel(Attribute<T> attribute) {
+  public final <T> SwingFilteredComboBoxModel<T> comboBoxModel(Attribute<T> attribute) {
     entityDefinition().property(attribute);
     synchronized (comboBoxModels) {
-      // can't use computeIfAbsent here, see getForeignKeyComboBoxModel() comment
+      // can't use computeIfAbsent here, see foreignKeyComboBoxModel() comment
       SwingFilteredComboBoxModel<T> comboBoxModel = (SwingFilteredComboBoxModel<T>) comboBoxModels.get(attribute);
       if (comboBoxModel == null) {
         comboBoxModel = createAndInitializeAttributeComboBoxModel(attribute);
@@ -225,7 +225,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     for (Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
       for (ForeignKey foreignKey : entityDefinition().foreignKeys(entry.getKey())) {
         if (containsComboBoxModel(foreignKey)) {
-          SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKey);
+          SwingEntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
           for (Entity inserted : entry.getValue()) {
             comboBoxModel.addItem(inserted);
           }
@@ -240,7 +240,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     for (Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
       for (ForeignKey foreignKey : entityDefinition().foreignKeys(entry.getKey())) {
         if (containsComboBoxModel(foreignKey)) {
-          SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKey);
+          SwingEntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
           Entity selectedEntity = comboBoxModel.selectedValue();
           for (Entity deletedEntity : entry.getValue()) {
             comboBoxModel.removeItem(deletedEntity);
@@ -279,7 +279,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   protected void replaceForeignKey(ForeignKey foreignKey, List<Entity> entities) {
     super.replaceForeignKey(foreignKey, entities);
     if (containsComboBoxModel(foreignKey)) {
-      SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKey);
+      SwingEntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
       entities.forEach(foreignKeyValue -> comboBoxModel.replaceItem(foreignKeyValue, foreignKeyValue));
     }
   }

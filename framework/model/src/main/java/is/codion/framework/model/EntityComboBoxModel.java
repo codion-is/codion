@@ -37,7 +37,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param primaryKey the primary key of the entity to fetch from this model
    * @return the entity with the given key if found in the model, an empty Optional otherwise
    */
-  Optional<Entity> getEntity(Key primaryKey);
+  Optional<Entity> entity(Key primaryKey);
 
   /**
    * Use this method to retrieve the default foreign key filter include condition if you
@@ -118,7 +118,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * in the model this method returns silently without changing the selection
    * @param primaryKey the primary key of the entity to select
    */
-  void setSelectedEntityByKey(Key primaryKey);
+  void selectEntityByKey(Key primaryKey);
 
   /**
    * Forces a refresh of this model, disregarding the staticData directive

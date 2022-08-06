@@ -124,7 +124,7 @@ public interface EntityTableConditionModel {
    * @return the {@link ColumnConditionModel} associated with {@code attribute}
    * @throws IllegalArgumentException in case no condition model exists for the given attribute
    */
-  <C extends Attribute<T>, T> ColumnConditionModel<C, T> getConditionModel(C attribute);
+  <C extends Attribute<T>, T> ColumnConditionModel<C, T> conditionModel(C attribute);
 
   /**
    * Clears the search state of all the condition models, disables them and
@@ -145,7 +145,7 @@ public interface EntityTableConditionModel {
    * @return the {@link ColumnFilterModel} for the {@code attribute}
    * @throws IllegalArgumentException in case no filter model exists for the given attribute
    */
-  <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> getFilterModel(C attribute);
+  <C extends Attribute<T>, T> ColumnFilterModel<Entity, C, T> filterModel(C attribute);
 
   /**
    * Clears the search state of all the filter models, disables them and
