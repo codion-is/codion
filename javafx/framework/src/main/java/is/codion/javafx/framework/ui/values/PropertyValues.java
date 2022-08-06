@@ -373,7 +373,7 @@ public final class PropertyValues {
     }
 
     @Override
-    public StringConverter<T> getConverter() {
+    public StringConverter<T> converter() {
       return converter;
     }
 

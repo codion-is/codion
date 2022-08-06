@@ -149,7 +149,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   public R getSelectedItem() {
     int index = getSelectedIndex();
     if (index >= 0 && index < tableModel.getRowCount()) {
-      return tableModel.getItemAt(index);
+      return tableModel.itemAt(index);
     }
 
     return null;
@@ -159,7 +159,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   public List<R> getSelectedItems() {
     return getSelectedIndexes().stream()
             .mapToInt(Integer::intValue)
-            .mapToObj(tableModel::getItemAt)
+            .mapToObj(tableModel::itemAt)
             .collect(toList());
   }
 
@@ -288,7 +288,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
       //we don't call getSelectedItems() since that would cause another call to getSelectedIndexes()
       selectedItemsChangedEvent.onEvent(selectedIndexes.stream()
               .mapToInt(modelIndex -> modelIndex)
-              .mapToObj(tableModel::getItemAt)
+              .mapToObj(tableModel::itemAt)
               .collect(toList()));
     }
   }

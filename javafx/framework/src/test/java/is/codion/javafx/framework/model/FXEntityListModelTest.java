@@ -56,7 +56,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
   protected FXEntityListModel createDepartmentTableModel() {
     FXEntityListModel deptModel = new FXEntityListModel(TestDomain.T_DEPARTMENT, testModel.connectionProvider());
     EntityTableView tableView = new EntityTableView(deptModel);
-    tableView.getSortOrder().add(deptModel.getTableColumn(TestDomain.DEPARTMENT_NAME));
+    tableView.getSortOrder().add(deptModel.tableColumn(TestDomain.DEPARTMENT_NAME));
 
     return deptModel;
   }
@@ -92,7 +92,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
     ObservableList<TableColumn<Entity, ?>> sortOrder = tableModel.getColumnSortOrder();
     sortOrder.clear();
-    EntityTableColumn<?> column = tableModel.getTableColumn(TestDomain.EMP_NAME);
+    EntityTableColumn<?> column = tableModel.tableColumn(TestDomain.EMP_NAME);
     column.setSortType(TableColumn.SortType.ASCENDING);
     sortOrder.add((TableColumn<Entity, ?>) column);
     orderBy = tableModel.getOrderBy();
@@ -110,10 +110,10 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(0).getAttribute());
 
     sortOrder.clear();
-    column = tableModel.getTableColumn(TestDomain.EMP_HIREDATE);
+    column = tableModel.tableColumn(TestDomain.EMP_HIREDATE);
     column.setSortType(TableColumn.SortType.DESCENDING);
     sortOrder.add(column);
-    column = tableModel.getTableColumn(TestDomain.EMP_NAME);
+    column = tableModel.tableColumn(TestDomain.EMP_NAME);
     column.setSortType(TableColumn.SortType.ASCENDING);
     sortOrder.add(column);
 

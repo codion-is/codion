@@ -68,7 +68,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
   /**
    * @return the application model
    */
-  public final M getModel() {
+  public final M model() {
     if (model == null) {
       throw new IllegalStateException("The application model is only available after the application has been started");
     }
@@ -88,7 +88,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @return null, since {@link EntityApplicationView} does not have a parent view
    */
   @Override
-  public final Optional<ViewTreeNode<EntityView>> getParentView() {
+  public final Optional<ViewTreeNode<EntityView>> parentView() {
     return Optional.empty();
   }
 
@@ -96,7 +96,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @return null, since {@link EntityApplicationView} does not have a previous sibling view
    */
   @Override
-  public final Optional<EntityView> getPreviousSiblingView() {
+  public final Optional<EntityView> previousSiblingView() {
     return Optional.empty();
   }
 
@@ -104,7 +104,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @return null, since {@link EntityApplicationView} does not have a next sibling view
    */
   @Override
-  public final Optional<EntityView> getNextSiblingView() {
+  public final Optional<EntityView> nextSiblingView() {
     return Optional.empty();
   }
 
@@ -113,7 +113,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @see #addEntityView(EntityView)
    */
   @Override
-  public final List<EntityView> getChildViews() {
+  public final List<EntityView> childViews() {
     return entityViews;
   }
 
@@ -125,8 +125,8 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
   public final void start(Stage stage) {
     try {
       this.mainStage = stage;
-      User user = getApplicationUser();
-      EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+      User user = loginUser();
+      EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, applicationIdentifier());
       connectionProvider.connection();//throws exception if the server is not reachable or credentials are incorrect
       this.model = initializeApplicationModel(connectionProvider);
       stage.setTitle(applicationTitle);
@@ -160,7 +160,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
   /**
    * @return the default user when logging into this application
    */
-  protected User getDefaultUser() {
+  protected User defaultUser() {
     String defaultUserName = EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name");
 
     return User.user(defaultUserName);
@@ -169,7 +169,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
   /**
    * @return a String identifying this application, the class name by default
    */
-  protected String getApplicationIdentifier() {
+  protected String applicationIdentifier() {
     return getClass().getName();
   }
 
@@ -191,14 +191,14 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * Displays a login panel in case authentication is required, otherwise returns the default user.
    * @return the user to use when logging into this application.
    * @see EntityApplicationModel#AUTHENTICATION_REQUIRED
-   * @see #getDefaultUser()
+   * @see #defaultUser()
    */
-  protected final User getApplicationUser() {
+  protected final User loginUser() {
     if (EntityApplicationModel.AUTHENTICATION_REQUIRED.get()) {
-      return showLoginPanel(getDefaultUser());
+      return showLoginPanel(defaultUser());
     }
 
-    return getDefaultUser();
+    return defaultUser();
   }
 
   /**
@@ -219,7 +219,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    */
   protected void savePreferences() {
     entityViews.forEach(EntityView::savePreferences);
-    getModel().savePreferences();
+    model().savePreferences();
   }
 
   /**
@@ -239,7 +239,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
     TabPane tabPane = new TabPane();
     for (EntityView entityView : entityViews) {
       entityView.initializePanel();
-      tabPane.getTabs().add(new Tab(entityView.getCaption(), entityView));
+      tabPane.getTabs().add(new Tab(entityView.caption(), entityView));
     }
 
     return new Scene(tabPane);

@@ -166,7 +166,7 @@ public final class DefaultEntityEditModelTest {
     assertFalse(employeeEditModel.isNotNull(TestDomain.EMP_DEPARTMENT_FK));
     employeeEditModel.put(TestDomain.EMP_DEPARTMENT, dept.get(TestDomain.DEPARTMENT_ID));
     assertFalse(employeeEditModel.entityCopy().isLoaded(TestDomain.EMP_DEPARTMENT_FK));
-    dept = employeeEditModel.referencedEntity(TestDomain.EMP_DEPARTMENT_FK);
+    dept = employeeEditModel.get(TestDomain.EMP_DEPARTMENT_FK);
     assertNull(dept);
     employeeEditModel.setDefaultValues();
     assertNotNull(employeeEditModel.get(TestDomain.EMP_DEPARTMENT_FK));

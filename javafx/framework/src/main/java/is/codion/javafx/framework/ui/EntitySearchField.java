@@ -52,7 +52,7 @@ public final class EntitySearchField extends TextField {
   /**
    * @return the search model
    */
-  public EntitySearchModel getModel() {
+  public EntitySearchModel model() {
     return model;
   }
 
@@ -122,7 +122,7 @@ public final class EntitySearchField extends TextField {
   private void onFocusChanged(Boolean hasFocus) {
     if (!hasFocus) {
       if (getText().isEmpty()) {
-        getModel().setSelectedEntity(null);
+        model().setSelectedEntity(null);
       }
       else if (!performingSearch && !model.searchStringRepresentsSelected()) {
         performSearch(false);

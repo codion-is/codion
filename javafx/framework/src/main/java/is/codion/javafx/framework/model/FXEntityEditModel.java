@@ -54,7 +54,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param foreignKey the foreign key
    * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key
    */
-  public final FXEntityListModel getForeignKeyListModel(ForeignKey foreignKey) {
+  public final FXEntityListModel foreignKeyListModel(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
     return foreignKeyListModels.computeIfAbsent(foreignKey, k -> createForeignKeyListModel(foreignKey));
   }

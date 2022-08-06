@@ -25,7 +25,7 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
 
   @Override
   protected void initializeEntityViews() {
-    ChinookFXAppModel model = getModel();
+    ChinookFXAppModel model = model();
 
     FXEntityModel artistModel = model.entityModel(Artist.TYPE);
     EntityView artists = new EntityView(artistModel, new ArtistEditVew(artistModel.editModel()));
@@ -69,7 +69,7 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
   }
 
   @Override
-  protected User getDefaultUser() {
+  protected User defaultUser() {
     return User.parse("scott:tiger");
   }
 

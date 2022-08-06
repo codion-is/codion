@@ -159,8 +159,8 @@ public final class PropertyConditionView<T> extends BorderPane {
     Control control;
     if (model instanceof FXForeignKeyConditionListModel) {
       FXForeignKeyConditionListModel listModel = (FXForeignKeyConditionListModel) model;
-      control = new ComboBox<>(listModel.getListModel().sortedList());
-      listModel.getListModel().setSelectionModel(((ComboBox<Entity>) control).getSelectionModel());
+      control = new ComboBox<>(listModel.listModel().sortedList());
+      listModel.listModel().setSelectionModel(((ComboBox<Entity>) control).getSelectionModel());
     }
     else if (model instanceof DefaultForeignKeyConditionModel) {
       control = new EntitySearchField(((DefaultForeignKeyConditionModel) model).entitySearchModel());

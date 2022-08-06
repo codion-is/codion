@@ -1398,7 +1398,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void copyTableAsDelimitedString() {
-    Utilities.setClipboard(tableModel.getTableDataAsDelimitedString('\t'));
+    Utilities.setClipboard(tableModel.tableDataAsDelimitedString('\t'));
   }
 
   private boolean includeUpdateSelectedControls() {
@@ -1751,7 +1751,7 @@ public class EntityTablePanel extends JPanel {
   private static Map<TableColumn, JPanel> createColumnSummaryPanels(FilteredTableModel<?, Attribute<?>> tableModel) {
     Map<TableColumn, JPanel> components = new HashMap<>();
     tableModel.columnModel().columns().forEach(column ->
-            tableModel.getColumnSummaryModel((Attribute<?>) column.getIdentifier())
+            tableModel.columnSummaryModel((Attribute<?>) column.getIdentifier())
                     .ifPresent(columnSummaryModel ->
                             components.put(column, new ColumnSummaryPanel(columnSummaryModel))));
 

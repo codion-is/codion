@@ -576,7 +576,7 @@ public final class EntitySearchField extends JTextField {
               .action(Control.control(() -> table.searchField().requestFocusInWindow()))
               .enable(table);
       Collection<Attribute<String>> searchAttributes = searchModel.searchAttributes();
-      tableModel.columnModel().setColumns(searchAttributes.toArray(new Attribute[0]));
+      tableModel.columnModel().setVisibleColumns(searchAttributes.toArray(new Attribute[0]));
       tableModel.sortModel().setSortOrder(searchAttributes.iterator().next(), SortOrder.ASCENDING);
       table.setSelectionMode(searchModel.multipleSelectionEnabledState().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);

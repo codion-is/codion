@@ -8339,3 +8339,4 @@
   EntityDefinition, get prefix removed from accessors with parameters
   Entities, get prefix removed from accessors with parameters
   framework.model, get prefix removed from more accessors
+  FilteredTableColumModel, SwingEntityTableModel.setColumns() renamed setVisibleColumns(), EntityTableModel, FilteredTableModel, javafx, get prefix removed from more accessors

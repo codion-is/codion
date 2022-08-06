@@ -323,7 +323,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Sets the selected entities according to the primary keys in {@code primaryKeys}
    * @param keys the primary keys of the entities to select
    */
-  void setSelectedByKey(Collection<Key> keys);
+  void selectByKey(Collection<Key> keys);
 
   /**
    * Returns an Iterator which iterates through the selected entities
@@ -335,7 +335,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param primaryKey the primary key to search by
    * @return the entity with the given primary key from the table model, null if it's not found
    */
-  Entity getEntityByKey(Key primaryKey);
+  Entity entityByKey(Key primaryKey);
 
   /**
    * @param primaryKey the primary key
@@ -352,13 +352,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Arranges the column model so that only the given columns are visible and in the given order
    * @param attributes the column attributes
    */
-  void setColumns(Attribute<?>... attributes);
+  void setVisibleColumns(Attribute<?>... attributes);
 
   /**
    * @param delimiter the delimiter
    * @return the table data as a tab delimited string, with column names as a header
    */
-  String getTableDataAsDelimitedString(char delimiter);
+  String tableDataAsDelimitedString(char delimiter);
 
   /**
    * Refreshes the items in this table model, according to the underlying condition

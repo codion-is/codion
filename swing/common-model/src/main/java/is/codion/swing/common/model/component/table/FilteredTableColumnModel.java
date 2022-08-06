@@ -60,13 +60,13 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * Arranges the columns so that only the given columns are visible and in the given order
    * @param columnIdentifiers the column identifiers
    */
-  void setColumns(C... columnIdentifiers);
+  void setVisibleColumns(C... columnIdentifiers);
 
   /**
    * Arranges the columns so that only the given columns are visible and in the given order
    * @param columnIdentifiers the column identifiers
    */
-  void setColumns(List<C> columnIdentifiers);
+  void setVisibleColumns(List<C> columnIdentifiers);
 
   /**
    * Returns the TableColumn with the given identifier
@@ -74,7 +74,7 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * @return the TableColumn with the given identifier
    * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
    */
-  TableColumn getTableColumn(C identifier);
+  TableColumn tableColumn(C identifier);
 
   /**
    * @param identifier the column identifier
@@ -86,7 +86,7 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * @param modelColumnIndex the column model index
    * @return the column identifier
    */
-  C getColumnIdentifier(int modelColumnIndex);
+  C columnIdentifier(int modelColumnIndex);
 
   /**
    * Resets the columns to their original location and visibility

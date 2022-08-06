@@ -24,13 +24,13 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   }
 
   @Override
-  protected User getDefaultUser() {
+  protected User defaultUser() {
     return User.parse("scott:tiger");
   }
 
   @Override
   protected void initializeEntityViews() {
-    FXEntityModel departmentModel = getModel().entityModel(Department.TYPE);
+    FXEntityModel departmentModel = model().entityModel(Department.TYPE);
     EntityView departmentView = new EntityView(departmentModel,
             new DepartmentEditView(departmentModel.editModel()),
             new EntityTableView(departmentModel.tableModel()));

@@ -160,14 +160,14 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertThrows(IllegalStateException.class, () -> tableModel.setValueAt("newname", 0, 1));
     tableModel.setEditable(true);
     tableModel.setValueAt("newname", 0, 1);
-    Entity entity = tableModel.getItemAt(0);
+    Entity entity = tableModel.itemAt(0);
     assertEquals("newname", entity.get(TestDomain.EMP_NAME));
     assertThrows(RuntimeException.class, () -> tableModel.setValueAt("newname", 0, 0));
   }
 
   @Test
   void columnModel() {
-    TableColumn column = testModel.columnModel().getTableColumn(TestDomain.DETAIL_STRING);
+    TableColumn column = testModel.columnModel().tableColumn(TestDomain.DETAIL_STRING);
     assertEquals(TestDomain.DETAIL_STRING, column.getIdentifier());
   }
 

@@ -147,7 +147,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @return the column
    * @throws IllegalArgumentException in case the column was not found
    */
-  public final <T> EntityTableColumn<T> getTableColumn(Attribute<T> attribute) {
+  public final <T> EntityTableColumn<T> tableColumn(Attribute<T> attribute) {
     Optional<? extends TableColumn<Entity, ?>> tableColumn = columns.stream()
             .filter((Predicate<TableColumn<Entity, ?>>) entityTableColumn ->
                     ((EntityTableColumn<?>) entityTableColumn).getAttribute().equals(attribute))
@@ -365,7 +365,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setSelectedByKey(Collection<Key> keys) {
+  public final void selectByKey(Collection<Key> keys) {
     List<Key> keyList = new ArrayList<>(keys);
     List<Entity> toSelect = new ArrayList<>(keys.size());
     stream().filter(entity -> keyList.contains(entity.primaryKey())).forEach(entity -> {
@@ -376,7 +376,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final Entity getEntityByKey(Key primaryKey) {
+  public final Entity entityByKey(Key primaryKey) {
     return filteredList().stream()
             .filter(entity -> entity.primaryKey().equals(primaryKey))
             .findFirst()
@@ -390,7 +390,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final int indexOf(Key primaryKey) {
-    return indexOf(getEntityByKey(primaryKey));
+    return indexOf(entityByKey(primaryKey));
   }
 
   @Override
@@ -406,7 +406,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setColumns(Attribute<?>... attributes) {
+  public final void setVisibleColumns(Attribute<?>... attributes) {
     List<Attribute<?>> attributeList = asList(attributes);
     new ArrayList<>(columns).forEach(column -> {
       if (!attributeList.contains(((AttributeTableColumn<?>) column).getAttribute())) {
@@ -422,7 +422,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final String getTableDataAsDelimitedString(char delimiter) {
+  public final String tableDataAsDelimitedString(char delimiter) {
     List<String> header = new ArrayList<>();
     List<Attribute<?>> attributes = new ArrayList<>();
     columns.forEach(entityTableColumn -> {

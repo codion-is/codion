@@ -296,7 +296,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     if (!editable || isReadOnly() || !isUpdateEnabled()) {
       return false;
     }
-    Attribute<?> attribute = columnModel().getColumnIdentifier(modelColumnIndex);
+    Attribute<?> attribute = columnModel().columnIdentifier(modelColumnIndex);
     if (attribute instanceof ForeignKey) {
       return entityDefinition().isUpdatable((ForeignKey) attribute);
     }
@@ -317,9 +317,9 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     if (!editable || isReadOnly() || !isUpdateEnabled()) {
       throw new IllegalStateException("This table model is readOnly or has disabled update");
     }
-    Entity entity = getItemAt(rowIndex).copy();
+    Entity entity = itemAt(rowIndex).copy();
 
-    Attribute<?> columnIdentifier = columnModel().getColumnIdentifier(modelColumnIndex);
+    Attribute<?> columnIdentifier = columnModel().columnIdentifier(modelColumnIndex);
 
     entity.put((Attribute<Object>) columnIdentifier, value);
     try {
@@ -332,20 +332,20 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   @Override
   public Color backgroundColor(int row, Attribute<?> attribute) {
-    Object color = entityDefinition().backgroundColorProvider().getColor(getItemAt(row), attribute);
+    Object color = entityDefinition().backgroundColorProvider().getColor(itemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
 
   @Override
   public Color foregroundColor(int row, Attribute<?> attribute) {
-    Object color = entityDefinition().foregroundColorProvider().getColor(getItemAt(row), attribute);
+    Object color = entityDefinition().foregroundColorProvider().getColor(itemAt(row), attribute);
 
     return color == null ? null : getColor(color);
   }
 
   @Override
-  public final Entity getEntityByKey(Key primaryKey) {
+  public final Entity entityByKey(Key primaryKey) {
     return visibleItems().stream()
             .filter(entity -> entity.primaryKey().equals(primaryKey))
             .findFirst()
@@ -354,7 +354,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   @Override
   public final int indexOf(Key primaryKey) {
-    return indexOf(getEntityByKey(primaryKey));
+    return indexOf(entityByKey(primaryKey));
   }
 
   @Override
@@ -423,7 +423,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public final void setSelectedByKey(Collection<Key> keys) {
+  public final void selectByKey(Collection<Key> keys) {
     requireNonNull(keys, "keys");
     List<Key> keyList = new ArrayList<>(keys);
     List<Integer> indexes = new ArrayList<>();
@@ -475,8 +475,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public final void setColumns(Attribute<?>... attributes) {
-    columnModel().setColumns(attributes);
+  public final void setVisibleColumns(Attribute<?>... attributes) {
+    columnModel().setVisibleColumns(attributes);
   }
 
   @Override
@@ -492,7 +492,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public final String getTableDataAsDelimitedString(char delimiter) {
+  public final String tableDataAsDelimitedString(char delimiter) {
     List<String> header = new ArrayList<>();
     List<Attribute<?>> attributes = new ArrayList<>();
     Enumeration<TableColumn> columnEnumeration = columnModel().getColumns();

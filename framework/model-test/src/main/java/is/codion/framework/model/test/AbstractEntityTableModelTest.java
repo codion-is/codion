@@ -63,17 +63,17 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     Key pk1 = keys.get(0);
     Key pk2 = keys.get(1);
 
-    tableModel.setSelectedByKey(singletonList(pk1));
+    tableModel.selectByKey(singletonList(pk1));
     Entity selectedPK1 = tableModel.selectionModel().getSelectedItem();
     assertEquals(pk1, selectedPK1.primaryKey());
     assertEquals(1, tableModel.selectionModel().selectionCount());
 
-    tableModel.setSelectedByKey(singletonList(pk2));
+    tableModel.selectByKey(singletonList(pk2));
     Entity selectedPK2 = tableModel.selectionModel().getSelectedItem();
     assertEquals(pk2, selectedPK2.primaryKey());
     assertEquals(1, tableModel.selectionModel().selectionCount());
 
-    tableModel.setSelectedByKey(keys);
+    tableModel.selectByKey(keys);
     List<Entity> selectedItems = tableModel.selectionModel().getSelectedItems();
     for (Entity selected : selectedItems) {
       assertTrue(keys.contains(selected.primaryKey()));
@@ -145,7 +145,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     Key pk2 = entities.primaryKey(TestDomain.T_EMP, 2);
     tableModel.connectionProvider().connection().beginTransaction();
     try {
-      tableModel.setSelectedByKey(singletonList(pk1));
+      tableModel.selectByKey(singletonList(pk1));
       tableModel.selectionModel().setSelectedIndex(0);
       Entity selected = tableModel.selectionModel().getSelectedItem();
       tableModel.setRemoveEntitiesOnDelete(true);
@@ -153,7 +153,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
       tableModel.deleteSelected();
       assertFalse(tableModel.containsItem(selected));
 
-      tableModel.setSelectedByKey(singletonList(pk2));
+      tableModel.selectByKey(singletonList(pk2));
       selected = tableModel.selectionModel().getSelectedItem();
       tableModel.setRemoveEntitiesOnDelete(false);
       assertFalse(tableModel.isRemoveEntitiesOnDelete());
@@ -172,10 +172,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
     Entities entities = tableModel.entities();
     Key pk1 = entities.primaryKey(TestDomain.T_EMP, 1);
-    assertNotNull(tableModel.getEntityByKey(pk1));
+    assertNotNull(tableModel.entityByKey(pk1));
 
     Key pk2 = entities.primaryKey(TestDomain.T_EMP, -66);
-    assertNull(tableModel.getEntityByKey(pk2));
+    assertNull(tableModel.entityByKey(pk2));
   }
 
   @Test
@@ -251,7 +251,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     Entity tmpEnt = entities.builder(TestDomain.T_DETAIL)
             .with(TestDomain.DETAIL_ID, 3L)
             .build();
-    assertEquals("c", testModel.getEntityByKey(tmpEnt.primaryKey()).get(TestDomain.DETAIL_STRING));
+    assertEquals("c", testModel.entityByKey(tmpEnt.primaryKey()).get(TestDomain.DETAIL_STRING));
     List<Key> keys = new ArrayList<>();
     keys.add(tmpEnt.primaryKey());
     tmpEnt = entities.builder(TestDomain.T_DETAIL)
@@ -294,7 +294,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void getTableDataAsDelimitedString() {
     TableModel deptModel = createDepartmentTableModel();
-    deptModel.setColumns(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION);
+    deptModel.setVisibleColumns(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION);
     deptModel.refresh();
     String newline = Separators.LINE_SEPARATOR;
     String expected = "deptno\tdname\tloc" + newline +
@@ -302,13 +302,13 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
             "40\tOPERATIONS\tBOSTON" + newline +
             "20\tRESEARCH\tDALLAS" + newline +
             "30\tSALES\tCHICAGO";
-    assertEquals(expected, deptModel.getTableDataAsDelimitedString('\t'));
+    assertEquals(expected, deptModel.tableDataAsDelimitedString('\t'));
   }
 
   @Test
   public void setColumns() {
     TableModel empModel = createEmployeeTableModel();
-    empModel.setColumns(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT_FK, TestDomain.EMP_HIREDATE);
+    empModel.setVisibleColumns(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT_FK, TestDomain.EMP_HIREDATE);
   }
 
   protected final EntityConnectionProvider getConnectionProvider() {

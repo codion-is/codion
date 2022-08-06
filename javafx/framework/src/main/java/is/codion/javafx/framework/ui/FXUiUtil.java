@@ -241,7 +241,7 @@ public final class FXUiUtil {
         return (Value<T>) entityValue;
       }
       else if (control instanceof EntitySearchField) {
-        Value<List<Entity>> entityValue = PropertyValues.multipleSearchValue(((EntitySearchField) control).getModel());
+        Value<List<Entity>> entityValue = PropertyValues.multipleSearchValue(((EntitySearchField) control).model());
         entityValue.set(defaultValue == null ? emptyList() : singletonList((Entity) defaultValue));
 
         return (Value<T>) entityValue;
@@ -479,7 +479,7 @@ public final class FXUiUtil {
   public static StringValue<Long> createLongValue(Property<Long> property, TextField textField) {
     StringValue<Long> propertyValue = PropertyValues.longPropertyValue(textField.textProperty(),
             (NumberFormat) property.format());
-    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
+    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.converter()));
 
     return propertyValue;
   }
@@ -518,7 +518,7 @@ public final class FXUiUtil {
   public static StringValue<Integer> createIntegerValue(Property<Integer> property, TextField textField) {
     StringValue<Integer> propertyValue = PropertyValues.integerPropertyValue(textField.textProperty(),
             (NumberFormat) property.format());
-    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
+    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.converter()));
 
     return propertyValue;
   }
@@ -582,7 +582,7 @@ public final class FXUiUtil {
   public static StringValue<Double> createDoubleValue(Property<Double> property, TextField textField) {
     StringValue<Double> propertyValue = PropertyValues.doublePropertyValue(textField.textProperty(),
             (NumberFormat) property.format());
-    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
+    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.converter()));
 
     return propertyValue;
   }
@@ -596,7 +596,7 @@ public final class FXUiUtil {
   public static StringValue<BigDecimal> createBigDecimalValue(Property<BigDecimal> property, TextField textField) {
     StringValue<BigDecimal> propertyValue = PropertyValues.bigDecimalPropertyValue(textField.textProperty(),
             (DecimalFormat) property.format());
-    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
+    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.converter()));
 
     return propertyValue;
   }
@@ -634,7 +634,7 @@ public final class FXUiUtil {
    */
   public static StringValue<LocalDate> createDateValue(Property<LocalDate> property, DatePicker picker) {
     StringValue<LocalDate> dateValue = PropertyValues.datePropertyValue(picker.getEditor().textProperty(), property.dateTimeFormatter());
-    picker.setConverter(dateValue.getConverter());
+    picker.setConverter(dateValue.converter());
     picker.setPromptText(property.dateTimePattern().toLowerCase());
 
     return dateValue;
@@ -648,7 +648,7 @@ public final class FXUiUtil {
    */
   public static StringValue<LocalDateTime> createTimestampValue(Property<LocalDateTime> property, TextField textField) {
     StringValue<LocalDateTime> timestampValue = PropertyValues.timestampPropertyValue(textField.textProperty(), property.dateTimeFormatter());
-    textField.setTextFormatter(new TextFormatter<>(timestampValue.getConverter()));
+    textField.setTextFormatter(new TextFormatter<>(timestampValue.converter()));
 
     return timestampValue;
   }
@@ -661,7 +661,7 @@ public final class FXUiUtil {
    */
   public static StringValue<LocalTime> createTimeValue(Property<LocalTime> property, TextField textField) {
     StringValue<LocalTime> timeValue = PropertyValues.timePropertyValue(textField.textProperty(), property.dateTimeFormatter());
-    textField.setTextFormatter(new TextFormatter<>(timeValue.getConverter()));
+    textField.setTextFormatter(new TextFormatter<>(timeValue.converter()));
 
     return timeValue;
   }
@@ -699,7 +699,7 @@ public final class FXUiUtil {
    * @return a {@link ComboBox} based on the given property
    */
   public static ComboBox<Entity> createForeignKeyComboBox(ForeignKey foreignKey, FXEntityEditModel editModel) {
-    FXEntityListModel listModel = requireNonNull(editModel).getForeignKeyListModel(requireNonNull(foreignKey));
+    FXEntityListModel listModel = requireNonNull(editModel).foreignKeyListModel(requireNonNull(foreignKey));
     listModel.refresh();
     ComboBox<Entity> box = new ComboBox<>(listModel.sortedList());
     listModel.setSelectionModel(box.getSelectionModel());

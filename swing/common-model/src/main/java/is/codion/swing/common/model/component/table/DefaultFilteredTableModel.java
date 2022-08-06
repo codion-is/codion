@@ -205,7 +205,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final Optional<ColumnSummaryModel> getColumnSummaryModel(C columnIdentifier) {
+  public final Optional<ColumnSummaryModel> columnSummaryModel(C columnIdentifier) {
     return Optional.ofNullable(columnSummaryModels.computeIfAbsent(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER), identifier ->
             createColumnValueProvider(columnIdentifier)
                     .map(DefaultColumnSummaryModel::new)
@@ -218,7 +218,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final <T> ColumnFilterModel<R, C, T> getColumnFilterModel(C columnIdentifier) {
+  public final <T> ColumnFilterModel<R, C, T> columnFilterModel(C columnIdentifier) {
     ColumnFilterModel<R, C, T> filterModel = (ColumnFilterModel<R, C, T>) columnFilterModels.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
     if (filterModel == null) {
       throw new IllegalArgumentException("No filter model exists for column: " + columnIdentifier);
@@ -228,15 +228,15 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final <T> Collection<T> getValues(C columnIdentifier) {
+  public final <T> Collection<T> values(C columnIdentifier) {
     return (Collection<T>) getColumnValues(IntStream.range(0, visibleItemCount()).boxed(),
-            columnModel.getTableColumn(columnIdentifier).getModelIndex());
+            columnModel.tableColumn(columnIdentifier).getModelIndex());
   }
 
   @Override
-  public final <T> Collection<T> getSelectedValues(C columnIdentifier) {
+  public final <T> Collection<T> selectedValues(C columnIdentifier) {
     return (Collection<T>) getColumnValues(selectionModel().getSelectedIndexes().stream(),
-            columnModel.getTableColumn(columnIdentifier).getModelIndex());
+            columnModel.tableColumn(columnIdentifier).getModelIndex());
   }
 
   @Override
@@ -250,7 +250,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final R getItemAt(int rowIndex) {
+  public final R itemAt(int rowIndex) {
     return visibleItems.get(rowIndex);
   }
 
@@ -366,17 +366,17 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final Class<?> getColumnClass(int columnIndex) {
-    return getColumnClass(columnModel().getColumnIdentifier(columnIndex));
+    return getColumnClass(columnModel().columnIdentifier(columnIndex));
   }
 
   @Override
   public final Object getValueAt(int rowIndex, int columnIndex) {
-    return columnValueProvider.getValue(getItemAt(rowIndex), columnModel().getColumnIdentifier(columnIndex));
+    return columnValueProvider.getValue(itemAt(rowIndex), columnModel().columnIdentifier(columnIndex));
   }
 
   @Override
   public final String getStringAt(int rowIndex, C columnIdentifier) {
-    return columnValueProvider.getString(getItemAt(rowIndex), columnIdentifier);
+    return columnValueProvider.getString(itemAt(rowIndex), columnIdentifier);
   }
 
   @Override
@@ -745,7 +745,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
     @Override
     public Collection<T> values() {
-      return isValueSubset() ? tableModel.getSelectedValues(columnIdentifier) : tableModel.getValues(columnIdentifier);
+      return isValueSubset() ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier);
     }
 
     @Override

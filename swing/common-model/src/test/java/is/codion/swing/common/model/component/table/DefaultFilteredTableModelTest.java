@@ -238,7 +238,7 @@ public final class DefaultFilteredTableModelTest {
     tableModel.addTableDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
-    tableModel.getColumnFilterModel(0).setEqualValue("a");
+    tableModel.columnFilterModel(0).setEqualValue("a");
     tableModel.removeItem(B);
     assertEquals(3, events.get());
     assertFalse(tableModel.isVisible(B));
@@ -465,9 +465,9 @@ public final class DefaultFilteredTableModelTest {
     tableModel.refresh();
     FilteredTableSortModel<List<String>, Integer> sortModel = tableModel.sortModel();
     sortModel.setSortOrder(0, SortOrder.ASCENDING);
-    assertEquals(E, tableModel.getItemAt(0));
+    assertEquals(E, tableModel.itemAt(0));
     sortModel.setSortOrder(0, SortOrder.DESCENDING);
-    assertEquals(A, tableModel.getItemAt(0));
+    assertEquals(A, tableModel.itemAt(0));
   }
 
   @Test
@@ -480,18 +480,18 @@ public final class DefaultFilteredTableModelTest {
     FilteredTableSortModel<List<String>, Integer> sortModel = tableModel.sortModel();
     sortModel.setSortOrder(0, SortOrder.DESCENDING);
     assertEquals(SortOrder.DESCENDING, sortModel.getSortingState(0).sortOrder());
-    assertEquals(E, tableModel.getItemAt(0));
+    assertEquals(E, tableModel.itemAt(0));
     assertEquals(1, actionsPerformed.get());
     sortModel.setSortOrder(0, SortOrder.ASCENDING);
     assertEquals(SortOrder.ASCENDING, sortModel.getSortingState(0).sortOrder());
-    assertEquals(A, tableModel.getItemAt(0));
+    assertEquals(A, tableModel.itemAt(0));
     assertEquals(0, sortModel.getSortingState(0).priority());
     assertEquals(2, actionsPerformed.get());
 
     sortModel.setSortOrder(0, SortOrder.DESCENDING);
     tableModel.refresh();
-    assertEquals(A, tableModel.getItemAt(4));
-    assertEquals(E, tableModel.getItemAt(0));
+    assertEquals(A, tableModel.itemAt(4));
+    assertEquals(E, tableModel.itemAt(0));
     sortModel.setSortOrder(0, SortOrder.ASCENDING);
 
     List<List<String>> items = new ArrayList<>();
@@ -717,8 +717,8 @@ public final class DefaultFilteredTableModelTest {
     tableModel.selectionModel().addSelectedIndexes(singletonList(3));
     assertEquals(3, selectionModel.getMinSelectionIndex());
 
-    tableModel.getColumnFilterModel(0).setEqualValue("d");
-    tableModel.getColumnFilterModel(0).setEnabled(false);
+    tableModel.columnFilterModel(0).setEqualValue("d");
+    tableModel.columnFilterModel(0).setEnabled(false);
 
     selectionModel.setSelectedIndexes(singletonList(3));
     assertEquals(3, selectionModel.getMinSelectionIndex());
@@ -745,10 +745,10 @@ public final class DefaultFilteredTableModelTest {
     tableModel.selectionModel().addSelectedIndexes(singletonList(3));
     assertEquals(3, tableModel.selectionModel().getMinSelectionIndex());
 
-    tableModel.getColumnFilterModel(0).setEqualValue("d");
+    tableModel.columnFilterModel(0).setEqualValue("d");
     assertEquals(0, tableModel.selectionModel().getMinSelectionIndex());
     assertEquals(singletonList(0), tableModel.selectionModel().getSelectedIndexes());
-    tableModel.getColumnFilterModel(0).setEnabled(false);
+    tableModel.columnFilterModel(0).setEnabled(false);
     assertEquals(0, tableModel.selectionModel().getMinSelectionIndex());
     assertEquals(ITEMS.get(3), tableModel.selectionModel().getSelectedItem());
   }
@@ -768,7 +768,7 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void filterAndRemove() {
     tableModel.refresh();
-    tableModel.getColumnFilterModel(0).setEqualValue("a");
+    tableModel.columnFilterModel(0).setEqualValue("a");
     assertTrue(tableModel.containsItem(B));
     tableModel.removeItem(B);
     assertFalse(tableModel.containsItem(B));
@@ -788,14 +788,14 @@ public final class DefaultFilteredTableModelTest {
 
     //test filters
     assertTrue(tableModel.isVisible(B));
-    tableModel.getColumnFilterModel(0).setEqualValue("a");
+    tableModel.columnFilterModel(0).setEqualValue("a");
     assertEquals(2, done.get());
     assertTrue(tableModel.isVisible(A));
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.isFiltered(D));
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.containsItem(B));
-    assertTrue(tableModel.getColumnFilterModel(0).isEnabled());
+    assertTrue(tableModel.columnFilterModel(0).isEnabled());
     assertEquals(4, tableModel.filteredItemCount());
     assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
     assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
@@ -804,22 +804,22 @@ public final class DefaultFilteredTableModelTest {
     assertTrue(tableModel.filteredItems().size() > 0);
     assertTrue(tableModel.items().size() > 0);
 
-    tableModel.getColumnFilterModel(0).setEnabled(false);
+    tableModel.columnFilterModel(0).setEnabled(false);
     assertEquals(3, done.get());
-    assertFalse(tableModel.getColumnFilterModel(0).isEnabled());
+    assertFalse(tableModel.columnFilterModel(0).isEnabled());
 
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
-    tableModel.getColumnFilterModel(0).setEqualValue("t"); // ekki til
-    assertTrue(tableModel.getColumnFilterModel(0).isEnabled());
+    tableModel.columnFilterModel(0).setEqualValue("t"); // ekki til
+    assertTrue(tableModel.columnFilterModel(0).isEnabled());
     assertEquals(5, tableModel.filteredItemCount());
     assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
     assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
-    tableModel.getColumnFilterModel(0).setEnabled(false);
+    tableModel.columnFilterModel(0).setEnabled(false);
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
-    assertFalse(tableModel.getColumnFilterModel(0).isEnabled());
+    assertFalse(tableModel.columnFilterModel(0).isEnabled());
 
-    tableModel.getColumnFilterModel(0).setEqualValue("b");
+    tableModel.columnFilterModel(0).setEqualValue("b");
     int rowCount = tableModel.getRowCount();
     tableModel.addItemsAt(0, singletonList(singletonList("x")));
     assertEquals(rowCount, tableModel.getRowCount());
@@ -831,12 +831,12 @@ public final class DefaultFilteredTableModelTest {
   void getValues() {
     tableModel.refresh();
     tableModel.selectionModel().setSelectedIndexes(asList(0, 2));
-    Collection<String> values = tableModel.getSelectedValues(0);
+    Collection<String> values = tableModel.selectedValues(0);
     assertEquals(2, values.size());
     assertTrue(values.contains("a"));
     assertTrue(values.contains("c"));
 
-    values = tableModel.getValues(0);
+    values = tableModel.values(0);
     assertEquals(5, values.size());
     assertTrue(values.contains("a"));
     assertTrue(values.contains("b"));
@@ -848,7 +848,7 @@ public final class DefaultFilteredTableModelTest {
 
   @Test
   void columnModel() {
-    TableColumn column = tableModel.columnModel().getTableColumn(0);
+    TableColumn column = tableModel.columnModel().tableColumn(0);
     assertEquals(0, column.getIdentifier());
   }
 

@@ -92,7 +92,7 @@ public final class SwingEntityModelTest
     EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.foreignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     departmentsComboBoxModel.refresh();
     Key primaryKey = getConnectionProvider().entities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations, no employees
-    departmentModel.tableModel().setSelectedByKey(Collections.singletonList(primaryKey));
+    departmentModel.tableModel().selectByKey(Collections.singletonList(primaryKey));
     Entity operations = departmentModel.tableModel().selectionModel().getSelectedItem();
     EntityConnection connection = departmentModel.connectionProvider().connection();
     connection.beginTransaction();
@@ -108,7 +108,7 @@ public final class SwingEntityModelTest
       departmentModel.editModel().update();
       assertEquals("nameitagain", departmentsComboBoxModel.entity(inserted.primaryKey()).orElse(null).get(TestDomain.DEPARTMENT_NAME));
 
-      departmentModel.tableModel().setSelectedByKey(Collections.singletonList(primaryKey.copyBuilder().with(TestDomain.DEPARTMENT_ID, 20).build()));
+      departmentModel.tableModel().selectByKey(Collections.singletonList(primaryKey.copyBuilder().with(TestDomain.DEPARTMENT_ID, 20).build()));
       departmentModel.editModel().put(TestDomain.DEPARTMENT_NAME, "NewName");
       departmentModel.editModel().update();
 

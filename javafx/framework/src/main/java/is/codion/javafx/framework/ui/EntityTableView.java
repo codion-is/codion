@@ -102,21 +102,21 @@ public class EntityTableView extends TableView<Entity> {
   /**
    * @return the underlying {@link FXEntityListModel}
    */
-  public final FXEntityListModel getListModel() {
+  public final FXEntityListModel listModel() {
     return listModel;
   }
 
   /**
    * @return the {@link TextField} used to filter this table view
    */
-  public final TextField getFilterTextField() {
+  public final TextField filterTextField() {
     return filterText;
   }
 
   /**
    * @return the tool pane associated with this table view
    */
-  public final Pane getToolPane() {
+  public final Pane toolPane() {
     return toolPane;
   }
 
@@ -131,7 +131,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void initializeColumns() {
-    for (Property<?> property : getListModel().entityDefinition().visibleProperties()) {
+    for (Property<?> property : listModel().entityDefinition().visibleProperties()) {
       getColumns().add(entityTableColumn(property));
     }
     listModel.setColumns(getColumns());
@@ -227,7 +227,7 @@ public class EntityTableView extends TableView<Entity> {
   private Menu createUpdateSelectedItem() {
     Menu updateSelected = new Menu(FrameworkMessages.update());
     FXUiUtil.link(updateSelected.disableProperty(), listModel.selectionEmptyObserver());
-    Properties.sort(getListModel().entityDefinition().updatableProperties()).stream()
+    Properties.sort(listModel().entityDefinition().updatableProperties()).stream()
             .filter(this::includeUpdateSelectedProperty)
             .forEach(property -> addUpdateSelectedMenuItem(updateSelected, property));
 
@@ -271,11 +271,11 @@ public class EntityTableView extends TableView<Entity> {
 
     PropertyInputDialog<T> inputDialog = new PropertyInputDialog<>(property, defaultValue, listModel.connectionProvider());
 
-    Platform.runLater(inputDialog.getControl()::requestFocus);
+    Platform.runLater(inputDialog.control()::requestFocus);
     Optional<PropertyInputDialog.InputResult<T>> inputResult = inputDialog.showAndWait();
     try {
       if (inputResult.isPresent() && inputResult.get().isInputAccepted()) {
-        Entity.put(property.attribute(), inputResult.get().getValue(), selectedEntities);
+        Entity.put(property.attribute(), inputResult.get().value(), selectedEntities);
         listModel.update(selectedEntities);
       }
     }
@@ -288,7 +288,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void copyTable() {
-    FXUiUtil.setClipboard(listModel.getTableDataAsDelimitedString('\t'));
+    FXUiUtil.setClipboard(listModel.tableDataAsDelimitedString('\t'));
   }
 
   private void copyCell() {
@@ -334,7 +334,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private boolean includeUpdateSelectedControls() {
-    FXEntityListModel entityTableModel = getListModel();
+    FXEntityListModel entityTableModel = listModel();
 
     return !entityTableModel.isReadOnly() && entityTableModel.isUpdateEnabled() &&
             entityTableModel.isBatchUpdateEnabled() &&
@@ -342,7 +342,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private boolean includeDeleteSelectedControl() {
-    FXEntityListModel entityTableModel = getListModel();
+    FXEntityListModel entityTableModel = listModel();
 
     return !entityTableModel.isReadOnly() && entityTableModel.isDeleteEnabled();
   }

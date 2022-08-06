@@ -26,7 +26,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
     FXEntityListModel employeeListModel = employeeModel.tableModel();
     new EntityTableView(employeeListModel);
     FXEntityEditModel employeeEditModel = employeeModel.editModel();
-    new EntityTableView(employeeEditModel.getForeignKeyListModel(TestDomain.EMP_DEPARTMENT_FK));
+    new EntityTableView(employeeEditModel.foreignKeyListModel(TestDomain.EMP_DEPARTMENT_FK));
     entityModel.addDetailModel(employeeModel);
     entityModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);
     entityModel.addLinkedDetailModel(employeeModel);

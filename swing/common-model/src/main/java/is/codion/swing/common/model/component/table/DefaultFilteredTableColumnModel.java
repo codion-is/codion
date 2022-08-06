@@ -82,12 +82,12 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public void setColumns(C... columnIdentifiers) {
-    setColumns(asList(columnIdentifiers));
+  public void setVisibleColumns(C... columnIdentifiers) {
+    setVisibleColumns(asList(columnIdentifiers));
   }
 
   @Override
-  public void setColumns(List<C> columnIdentifiers) {
+  public void setVisibleColumns(List<C> columnIdentifiers) {
     requireNonNull(columnIdentifiers);
     checkIfLocked();
     int columnIndex = 0;
@@ -115,7 +115,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public TableColumn getTableColumn(C columnIdentifier) {
+  public TableColumn tableColumn(C columnIdentifier) {
     TableColumn column = columns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
     if (column != null) {
       return column;
@@ -130,7 +130,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public C getColumnIdentifier(int columnModelIndex) {
+  public C columnIdentifier(int columnModelIndex) {
     C identifier = columnIdentifiers.get(columnModelIndex);
     if (identifier != null) {
       return identifier;
@@ -141,7 +141,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 
   @Override
   public void resetColumns() {
-    setColumns(new ArrayList<>(columns.keySet()));
+    setVisibleColumns(new ArrayList<>(columns.keySet()));
   }
 
   /* TableColumnModel implementation begins */
@@ -281,7 +281,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   private boolean hideColumn(C columnIdentifier) {
     checkIfLocked();
     if (!hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER))) {
-      HiddenColumn hiddenColumn = new HiddenColumn(getTableColumn(columnIdentifier));
+      HiddenColumn hiddenColumn = new HiddenColumn(tableColumn(columnIdentifier));
       hiddenColumns.put(columnIdentifier, hiddenColumn);
       tableColumnModel.removeColumn(hiddenColumn.column);
       columnHiddenEvent.onEvent(columnIdentifier);

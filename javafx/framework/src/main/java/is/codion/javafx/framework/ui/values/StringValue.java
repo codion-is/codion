@@ -16,5 +16,5 @@ public interface StringValue<T> extends Value<T> {
   /**
    * @return the {@link StringConverter} used to convert the value to and from String
    */
-  StringConverter<T> getConverter();
+  StringConverter<T> converter();
 }
