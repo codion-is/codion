@@ -39,7 +39,7 @@ public abstract class AbstractDatabase implements Database {
   private static final String OFFSET = "offset ";
   private static final String LIMIT = "limit ";
 
-  static Database instance;
+  private static Database instance;
 
   private final Map<String, ConnectionPoolWrapper> connectionPools = new HashMap<>();
   private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.get();
@@ -210,6 +210,31 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public boolean isTimeoutException(SQLException exception) {
     return false;
+  }
+
+  static Database instance() {
+    try {
+      synchronized (AbstractDatabase.class) {
+        String databaseUrl = DATABASE_URL.get();
+        if (AbstractDatabase.instance == null || !AbstractDatabase.instance.url().equals(databaseUrl)) {
+          Database previousInstance = AbstractDatabase.instance;
+          //replace the instance
+          AbstractDatabase.instance = DatabaseFactory.instance().createDatabase(databaseUrl);
+          if (previousInstance != null) {
+            //cleanup
+            previousInstance.closeConnectionPools();
+          }
+        }
+
+        return AbstractDatabase.instance;
+      }
+    }
+    catch (RuntimeException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**

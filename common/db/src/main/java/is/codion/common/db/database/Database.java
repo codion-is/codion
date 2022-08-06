@@ -264,21 +264,7 @@ public interface Database extends ConnectionFactory {
    * @throws RuntimeException in case of an exception occurring while instantiating the database implementation
    */
   static Database instance() {
-    try {
-      DatabaseFactory factory = DatabaseFactory.instance();
-      if (AbstractDatabase.instance == null || !AbstractDatabase.instance.url().equals(DATABASE_URL.get())) {
-        //replace the instance
-        AbstractDatabase.instance = factory.createDatabase(DATABASE_URL.get());
-      }
-
-      return AbstractDatabase.instance;
-    }
-    catch (RuntimeException e) {
-      throw e;
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    return AbstractDatabase.instance();
   }
 
   /**
