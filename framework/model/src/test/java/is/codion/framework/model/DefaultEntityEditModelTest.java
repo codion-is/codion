@@ -186,23 +186,23 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   void test() throws Exception {
-    StateObserver primaryKeyNullState = employeeEditModel.getPrimaryKeyNullObserver();
-    StateObserver entityNewState = employeeEditModel.getEntityNewObserver();
+    StateObserver primaryKeyNullState = employeeEditModel.primaryKeyNullObserver();
+    StateObserver entityNewState = employeeEditModel.entityNewObserver();
 
     assertTrue(primaryKeyNullState.get());
     assertTrue(entityNewState.get());
 
     employeeEditModel.setReadOnly(false);
     assertFalse(employeeEditModel.isReadOnly());
-    assertTrue(employeeEditModel.getInsertEnabledObserver().get());
-    assertTrue(employeeEditModel.getUpdateEnabledObserver().get());
-    assertTrue(employeeEditModel.getDeleteEnabledObserver().get());
+    assertTrue(employeeEditModel.insertEnabledObserver().get());
+    assertTrue(employeeEditModel.updateEnabledObserver().get());
+    assertTrue(employeeEditModel.deleteEnabledObserver().get());
 
     employeeEditModel.setReadOnly(true);
     assertTrue(employeeEditModel.isReadOnly());
-    assertFalse(employeeEditModel.getInsertEnabledObserver().get());
-    assertFalse(employeeEditModel.getUpdateEnabledObserver().get());
-    assertFalse(employeeEditModel.getDeleteEnabledObserver().get());
+    assertFalse(employeeEditModel.insertEnabledObserver().get());
+    assertFalse(employeeEditModel.updateEnabledObserver().get());
+    assertFalse(employeeEditModel.deleteEnabledObserver().get());
 
     employeeEditModel.setDeleteEnabled(true);
     assertFalse(employeeEditModel.isReadOnly());
@@ -217,9 +217,9 @@ public final class DefaultEntityEditModelTest {
     assertTrue(employeeEditModel.isReadOnly());
 
     employeeEditModel.setReadOnly(false);
-    assertTrue(employeeEditModel.getInsertEnabledObserver().get());
-    assertTrue(employeeEditModel.getUpdateEnabledObserver().get());
-    assertTrue(employeeEditModel.getDeleteEnabledObserver().get());
+    assertTrue(employeeEditModel.insertEnabledObserver().get());
+    assertTrue(employeeEditModel.updateEnabledObserver().get());
+    assertTrue(employeeEditModel.deleteEnabledObserver().get());
 
     EventDataListener eventDataListener = data -> {};
     employeeEditModel.addAfterDeleteListener(eventDataListener);
@@ -235,7 +235,7 @@ public final class DefaultEntityEditModelTest {
 
     employeeEditModel.refresh();
     assertTrue(employeeEditModel.isEntityNew());
-    assertFalse(employeeEditModel.getModifiedObserver().get());
+    assertFalse(employeeEditModel.modifiedObserver().get());
 
     Entity employee = employeeEditModel.connectionProvider().connection().selectSingle(TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
@@ -244,10 +244,10 @@ public final class DefaultEntityEditModelTest {
 
     assertTrue(employeeEditModel.entityCopy().columnValuesEqual(employee), "Active entity is not equal to the entity just set");
     assertFalse(employeeEditModel.isEntityNew(), "Active entity is new after an entity is set");
-    assertFalse(employeeEditModel.getModifiedObserver().get());
+    assertFalse(employeeEditModel.modifiedObserver().get());
     employeeEditModel.setDefaultValues();
     assertTrue(employeeEditModel.isEntityNew(), "Active entity is new after entity is set to null");
-    assertFalse(employeeEditModel.getModifiedObserver().get());
+    assertFalse(employeeEditModel.modifiedObserver().get());
     assertTrue(employeeEditModel.entityCopy().primaryKey().isNull(), "Active entity primary key is not null after entity is set to null");
 
     employeeEditModel.setEntity(employee);
@@ -270,7 +270,7 @@ public final class DefaultEntityEditModelTest {
     final String name = "Mr. Mr";
 
     employeeEditModel.put(TestDomain.EMP_COMMISSION, commission);
-    assertTrue(employeeEditModel.getModifiedObserver().get());
+    assertTrue(employeeEditModel.modifiedObserver().get());
     employeeEditModel.put(TestDomain.EMP_HIREDATE, hiredate);
     employeeEditModel.put(TestDomain.EMP_NAME, name);
 
@@ -280,7 +280,7 @@ public final class DefaultEntityEditModelTest {
 
     employeeEditModel.put(TestDomain.EMP_COMMISSION, originalCommission);
     assertTrue(employeeEditModel.isModified());
-    assertTrue(employeeEditModel.getModifiedObserver().get());
+    assertTrue(employeeEditModel.modifiedObserver().get());
     employeeEditModel.put(TestDomain.EMP_HIREDATE, originalHiredate);
     assertTrue(employeeEditModel.isModified());
     employeeEditModel.put(TestDomain.EMP_NAME, originalName);
@@ -404,7 +404,7 @@ public final class DefaultEntityEditModelTest {
       assertTrue(employeeEditModel.isUpdateEnabled());
 
       employeeEditModel.update();
-      assertFalse(employeeEditModel.getModifiedObserver().get());
+      assertFalse(employeeEditModel.modifiedObserver().get());
       employeeEditModel.removeAfterUpdateListener(listener);
     }
     finally {
@@ -538,7 +538,7 @@ public final class DefaultEntityEditModelTest {
       @Override
       public void clear() {}
       @Override
-      public StateObserver getRefreshingObserver() {
+      public StateObserver refreshingObserver() {
         return null;
       }
       @Override
@@ -643,7 +643,7 @@ public final class DefaultEntityEditModelTest {
     public void clear() {}
 
     @Override
-    public StateObserver getRefreshingObserver() {
+    public StateObserver refreshingObserver() {
       return null;
     }
 

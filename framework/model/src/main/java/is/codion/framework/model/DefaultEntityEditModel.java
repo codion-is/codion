@@ -244,7 +244,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final StateObserver getInsertEnabledObserver() {
+  public final StateObserver insertEnabledObserver() {
     return insertEnabledState.observer();
   }
 
@@ -259,7 +259,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final StateObserver getUpdateEnabledObserver() {
+  public final StateObserver updateEnabledObserver() {
     return updateEnabledState.observer();
   }
 
@@ -274,17 +274,17 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final StateObserver getDeleteEnabledObserver() {
+  public final StateObserver deleteEnabledObserver() {
     return deleteEnabledState.observer();
   }
 
   @Override
-  public final StateObserver getEntityNewObserver() {
+  public final StateObserver entityNewObserver() {
     return entityNewState.observer();
   }
 
   @Override
-  public final StateObserver getPrimaryKeyNullObserver() {
+  public final StateObserver primaryKeyNullObserver() {
     return primaryKeyNullState.observer();
   }
 
@@ -334,7 +334,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public StateObserver getModifiedObserver() {
+  public StateObserver modifiedObserver() {
     return entityModifiedState.observer();
   }
 

@@ -266,7 +266,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  public final StateObserver getRefreshingObserver() {
+  public final StateObserver refreshingObserver() {
     return refreshingObserver;
   }
 

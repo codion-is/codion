@@ -129,7 +129,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  public final StateObserver getRefreshingObserver() {
+  public final StateObserver refreshingObserver() {
     return refreshingObserver;
   }
 

@@ -107,7 +107,7 @@ public interface EntityEditModel {
    * Basing the result of this function on a database query is not recommended since it is called very frequently,
    * as in, every time a property value changes.
    * @return true if the active entity is new, that is, does not represent a persistent row
-   * @see #getPrimaryKeyNullObserver
+   * @see #primaryKeyNullObserver
    * @see Key#isNull()
    */
   boolean isEntityNew();
@@ -325,7 +325,7 @@ public interface EntityEditModel {
    * the modified state of the underlying entity. The default supplier returns {@link Entity#isModified()}.
    * @param modifiedSupplier specifies whether the underlying entity is modified
    * @see Entity#isModified()
-   * @see #getModifiedObserver()
+   * @see #modifiedObserver()
    */
   void setModifiedSupplier(Supplier<Boolean> modifiedSupplier);
 
@@ -433,7 +433,7 @@ public interface EntityEditModel {
   /**
    * @return true if the underlying Entity is modified
    * @see #setModifiedSupplier(Supplier)
-   * @see #getModifiedObserver()
+   * @see #modifiedObserver()
    */
   boolean isModified();
 
@@ -543,49 +543,49 @@ public interface EntityEditModel {
    * @return a StateObserver indicating the modified state of this edit model
    * @see #isModified()
    */
-  StateObserver getModifiedObserver();
+  StateObserver modifiedObserver();
 
   /**
    * @return an observer indicating whether the active entity is new
    * @see #isEntityNew()
    */
-  StateObserver getEntityNewObserver();
+  StateObserver entityNewObserver();
 
   /**
    * @return the state used to determine if deleting should be enabled
    * @see #isDeleteEnabled()
    * @see #setDeleteEnabled(boolean)
    */
-  StateObserver getDeleteEnabledObserver();
+  StateObserver deleteEnabledObserver();
 
   /**
    * @return a {@link StateObserver} indicating whether the primary key of the active entity is null
    */
-  StateObserver getPrimaryKeyNullObserver();
+  StateObserver primaryKeyNullObserver();
 
   /**
    * @return the {@link StateObserver} used to determine if updating should be enabled
    * @see #isUpdateEnabled()
    * @see #setUpdateEnabled(boolean)
    */
-  StateObserver getUpdateEnabledObserver();
+  StateObserver updateEnabledObserver();
 
   /**
    * @return the {@link StateObserver} used to determine if inserting should be enabled
    * @see #isInsertEnabled()
    * @see #setInsertEnabled(boolean)
    */
-  StateObserver getInsertEnabledObserver();
+  StateObserver insertEnabledObserver();
 
   /**
    * @return a {@link StateObserver} which is active while data models are being refreshed
    */
-  StateObserver getRefreshingObserver();
+  StateObserver refreshingObserver();
 
   /**
    * Adds a {@link StateObserver} instance to this edit models refreshing observer
    * @param refreshingObserver the refreshing observer to add
-   * @see #getRefreshingObserver()
+   * @see #refreshingObserver()
    */
   void addRefreshingObserver(StateObserver refreshingObserver);
 

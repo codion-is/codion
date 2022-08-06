@@ -645,19 +645,19 @@ public class EntityTablePanel extends JPanel {
   /**
    * Creates a {@link Controls} containing controls for updating the value of a single property
    * for the selected entities. These controls are enabled as long as the selection is not empty
-   * and {@link EntityEditModel#getUpdateEnabledObserver()} is enabled.
+   * and {@link EntityEditModel#updateEnabledObserver()} is enabled.
    * @return controls containing a control for each updatable property in the
    * underlying entity, for performing an update on the selected entities
    * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
    * @see #excludeFromUpdateMenu(Attribute)
-   * @see EntityEditModel#getUpdateEnabledObserver()
+   * @see EntityEditModel#updateEnabledObserver()
    */
   public final Controls createUpdateSelectedControls() {
     if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
     StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
-    StateObserver updateEnabled = tableModel.editModel().getUpdateEnabledObserver();
+    StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
     StateObserver enabled = State.and(selectionNotEmpty, updateEnabled);
     Controls updateControls = Controls.builder()
             .caption(FrameworkMessages.update())
@@ -702,7 +702,7 @@ public class EntityTablePanel extends JPanel {
     return Control.builder(this::delete)
             .caption(FrameworkMessages.delete())
             .enabledState(State.and(
-                    tableModel.editModel().getDeleteEnabledObserver(),
+                    tableModel.editModel().deleteEnabledObserver(),
                     tableModel.selectionModel().selectionNotEmptyObserver()))
             .description(FrameworkMessages.deleteSelectedTip())
             .smallIcon(frameworkIcons().delete())

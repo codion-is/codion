@@ -654,7 +654,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private Control createRefreshControl() {
     return Control.builder(editModel()::refresh)
             .caption(FrameworkMessages.refresh())
-            .enabledState(State.and(activeState, editModel().getRefreshingObserver().reversedObserver()))
+            .enabledState(State.and(activeState, editModel().refreshingObserver().reversedObserver()))
             .description(FrameworkMessages.refreshTip() + ALT_PREFIX + FrameworkMessages.refreshMnemonic() + ")")
             .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(frameworkIcons().refresh())
@@ -665,8 +665,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return Control.builder(this::delete)
             .caption(FrameworkMessages.delete())
             .enabledState(State.and(activeState,
-                    editModel().getDeleteEnabledObserver(),
-                    editModel().getEntityNewObserver().reversedObserver()))
+                    editModel().deleteEnabledObserver(),
+                    editModel().entityNewObserver().reversedObserver()))
             .description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
             .mnemonic(FrameworkMessages.deleteMnemonic())
             .smallIcon(frameworkIcons().delete())
@@ -687,9 +687,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return Control.builder(this::update)
             .caption(FrameworkMessages.update())
             .enabledState(State.and(activeState,
-                    editModel().getUpdateEnabledObserver(),
-                    editModel().getEntityNewObserver().reversedObserver(),
-                    editModel().getModifiedObserver()))
+                    editModel().updateEnabledObserver(),
+                    editModel().entityNewObserver().reversedObserver(),
+                    editModel().modifiedObserver()))
             .description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
             .mnemonic(FrameworkMessages.updateMnemonic())
             .smallIcon(frameworkIcons().update())
@@ -702,7 +702,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
     return Control.builder(this::insert)
             .caption(caption)
-            .enabledState(State.and(activeState, editModel().getInsertEnabledObserver()))
+            .enabledState(State.and(activeState, editModel().insertEnabledObserver()))
             .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic)
             .smallIcon(frameworkIcons().add())
@@ -732,7 +732,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(Control.control(this::showEntityMenu))
             .enable(this);
-    editModel().getRefreshingObserver().addDataListener(this::onRefreshingChanged);
+    editModel().refreshingObserver().addDataListener(this::onRefreshingChanged);
     editModel().addConfirmSetEntityObserver(confirmationState -> {
       int result = JOptionPane.showConfirmDialog(Utilities.getParentWindow(EntityEditPanel.this).orElse(null),
               FrameworkMessages.unsavedDataWarning(), FrameworkMessages.unsavedDataWarningTitle(),
