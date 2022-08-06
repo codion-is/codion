@@ -64,7 +64,7 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public final Connection createConnection(User user) throws DatabaseException {
-    DriverManager.setLoginTimeout(getLoginTimeout());
+    DriverManager.setLoginTimeout(loginTimeout());
     try {
       Connection connection = connectionProvider.connection(user, jdbcUrl);
       if (Database.TRANSACTION_ISOLATION.isNotNull()) {
@@ -241,7 +241,7 @@ public abstract class AbstractDatabase implements Database {
    * @return the connection timeout in seconds
    * @see Database#LOGIN_TIMEOUT
    */
-  protected int getLoginTimeout() {
+  protected int loginTimeout() {
     return Database.LOGIN_TIMEOUT.getOrThrow();
   }
 
