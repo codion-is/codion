@@ -99,7 +99,7 @@ public class RemoteEntityConnectionProviderTest {
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
             .adminUser(User.parse("scott:tiger"))
-            .database(DatabaseFactory.getDatabase())
+            .database(DatabaseFactory.database())
             .domainModelClassNames(singletonList("is.codion.framework.db.rmi.TestDomain"))
             .sslEnabled(true)
             .build();

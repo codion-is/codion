@@ -19,7 +19,7 @@ import java.util.Collection;
 
 /**
  * Defines DBMS specific functionality as well as basic database configuration settings.
- * @see DatabaseFactory#getDatabase()
+ * @see DatabaseFactory#database()
  * @see DatabaseFactory#databaseFactory()
  * @see DatabaseFactory#databaseFactory(String)
  * @see DatabaseFactory#createDatabase(String)

@@ -306,7 +306,7 @@ public class EntityServerTest {
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
             .adminUser(User.parse("scott:tiger"))
-            .database(DatabaseFactory.getDatabase())
+            .database(DatabaseFactory.database())
             .connectionPoolUsers(singletonList(UNIT_TEST_USER))
             .clientTypeIdleConnectionTimeouts(singletonMap("ClientTypeID", 10000))
             .domainModelClassNames(singletonList("is.codion.framework.server.TestDomain"))

@@ -57,6 +57,6 @@ public final class QueryLoadTestModelTest {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("../../demos/empdept/src/main/sql/create_schema.sql");
 
-    return DatabaseFactory.getDatabase();
+    return DatabaseFactory.database();
   }
 }

@@ -43,7 +43,7 @@ public interface DatabaseFactory {
    * @throws SQLException in case loading of database driver failed
    */
   static DatabaseFactory databaseFactory(String jdbcUrl) throws SQLException {
-    String driver = getDriverClassName(jdbcUrl);
+    String driver = driverClassName(jdbcUrl);
     ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
     for (DatabaseFactory factory : loader) {
       if (factory.isDriverCompatible(driver)) {
@@ -62,7 +62,7 @@ public interface DatabaseFactory {
    * @throws IllegalArgumentException in case an unsupported database type is specified
    * @throws RuntimeException in case of an exception occurring while instantiating the database implementation
    */
-  static Database getDatabase() {
+  static Database database() {
     try {
       DatabaseFactory factory = databaseFactory();
       if (AbstractDatabase.instance == null || !AbstractDatabase.instance.url().equals(Database.DATABASE_URL.get())) {
@@ -85,7 +85,7 @@ public interface DatabaseFactory {
    * @return the database driver class name according to jdbc url
    * @throws SQLException in case loading of database driver failed
    */
-  static String getDriverClassName(String jdbcUrl) throws SQLException {
+  static String driverClassName(String jdbcUrl) throws SQLException {
     return DriverManager.getDriver(requireNonNull(jdbcUrl, "jdbcUrl")).getClass().getName();
   }
 }

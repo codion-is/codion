@@ -33,7 +33,7 @@ public final class DefaultEntityServerAdminTest {
     EntityServerConfiguration configuration = EntityServerConfiguration.builder(3224, 3222)
             .adminPort(3225)
             .adminUser(ADMIN_USER)
-            .database(DatabaseFactory.getDatabase())
+            .database(DatabaseFactory.database())
             .domainModelClassNames(singletonList("is.codion.framework.server.TestDomain"))
             .connectionPoolUsers(singletonList(ADMIN_USER))
             .build();

@@ -37,7 +37,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   /**
    * The Database instance we're connecting to.
    */
-  private final Database database = DatabaseFactory.getDatabase();
+  private final Database database = DatabaseFactory.database();
 
   /**
    * The actual user credentials to return for successfully authenticated users.

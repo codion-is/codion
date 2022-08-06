@@ -40,7 +40,7 @@ public final class DatabaseExplorerModelTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    model = new DatabaseExplorerModel(DatabaseFactory.getDatabase(), UNIT_TEST_USER);
+    model = new DatabaseExplorerModel(DatabaseFactory.database(), UNIT_TEST_USER);
     model.schemaModel().refresh();
     model.schemaModel().sortModel().setSortOrder(0, SortOrder.ASCENDING);
     model.schemaModel().selectionModel().setSelectedIndex(2);

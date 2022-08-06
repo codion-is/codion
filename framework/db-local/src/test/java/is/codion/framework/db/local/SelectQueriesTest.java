@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class SelectQueriesTest {
 
   private final TestDomain testDomain = new TestDomain();
-  private final SelectQueries queries = new SelectQueries(DatabaseFactory.getDatabase());
+  private final SelectQueries queries = new SelectQueries(DatabaseFactory.database());
 
   @Test
   void builder() {

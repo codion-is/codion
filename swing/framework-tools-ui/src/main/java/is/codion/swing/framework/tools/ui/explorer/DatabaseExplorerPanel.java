@@ -100,7 +100,7 @@ public final class DatabaseExplorerPanel extends JPanel {
    */
   public static void main(String[] arguments) {
     try {
-      Database database = DatabaseFactory.getDatabase();
+      Database database = DatabaseFactory.database();
       DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(database,
               Dialogs.loginDialog()
                       .icon(Logos.logoTransparent())

@@ -40,7 +40,7 @@ public class DefaultRemoteEntityConnectionTest {
             .user(User.user("foo", "bar".toCharArray()))
             .clientTypeId("DefaultRemoteEntityConnectionTestClient")
             .build());
-    assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1234));
+    assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.database(), client, 1234));
   }
 
   @Test
@@ -49,7 +49,7 @@ public class DefaultRemoteEntityConnectionTest {
             .user(User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray()))
             .clientTypeId("DefaultRemoteEntityConnectionTestClient")
             .build());
-    assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1235));
+    assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.database(), client, 1235));
   }
 
   @Test
@@ -58,13 +58,13 @@ public class DefaultRemoteEntityConnectionTest {
             .user(UNIT_TEST_USER)
             .clientTypeId("DefaultRemoteEntityConnectionTestClient")
             .build());
-    DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1238);
+    DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.database(), client, 1238);
     Condition condition = Conditions.condition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.select(condition).isEmpty());
     connection.close();
-    connection = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1238);
+    connection = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.database(), client, 1238);
     assertTrue(connection.select(condition).size() > 0);
     connection.close();
   }
@@ -77,7 +77,7 @@ public class DefaultRemoteEntityConnectionTest {
     try {
       RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
               .user(UNIT_TEST_USER).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
-      adapter = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.getDatabase(), client, 1238);
+      adapter = new DefaultRemoteEntityConnection(DOMAIN, DatabaseFactory.database(), client, 1238);
 
       registry = Server.Locator.locator().initializeRegistry(Registry.REGISTRY_PORT);
 

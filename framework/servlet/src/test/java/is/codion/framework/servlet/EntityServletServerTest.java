@@ -661,7 +661,7 @@ public class EntityServletServerTest {
             .adminPort(3223)
             .adminUser(User.parse("scott:tiger"))
             .domainModelClassNames(singletonList(TestDomain.class.getName()))
-            .database(DatabaseFactory.getDatabase())
+            .database(DatabaseFactory.database())
             .sslEnabled(false)
             .auxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()))
             .build();

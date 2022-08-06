@@ -139,7 +139,7 @@ public class EntityLoadTestModelTest {
             .connectionPoolUsers(Collections.singletonList(UNIT_TEST_USER))
             .clientTypeIdleConnectionTimeouts(Collections.singletonMap("ClientTypeID", 10000))
             .domainModelClassNames(Collections.singletonList("is.codion.swing.framework.tools.loadtest.TestDomain"))
-            .database(DatabaseFactory.getDatabase())
+            .database(DatabaseFactory.database())
             .sslEnabled(false)
             .build();
   }

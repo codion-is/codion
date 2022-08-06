@@ -38,7 +38,7 @@ public final class EmployeeServerTest {
 
     EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
             .adminPort(SERVER_ADMIN_PORT)
-            .database(DatabaseFactory.getDatabase())
+            .database(DatabaseFactory.database())
             .idleConnectionTimeout(60_000)
             .adminUser(User.parse("scott:tiger"))
             .sslEnabled(false)

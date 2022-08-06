@@ -207,7 +207,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
             .serializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get())
             .adminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()))
             .connectionLimit(SERVER_CONNECTION_LIMIT.get())
-            .database(DatabaseFactory.getDatabase())
+            .database(DatabaseFactory.database())
             .domainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()))
             .connectionPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOL_USERS.get()).stream()
                     .map(User::parse)

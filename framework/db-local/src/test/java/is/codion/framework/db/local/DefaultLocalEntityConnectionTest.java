@@ -798,7 +798,7 @@ public class DefaultLocalEntityConnectionTest {
   void testConstructor() throws Exception {
     Connection connection = null;
     try {
-      Database db = DatabaseFactory.getDatabase();
+      Database db = DatabaseFactory.database();
       connection = db.createConnection(UNIT_TEST_USER);
       EntityConnection conn = new DefaultLocalEntityConnection(db, DOMAIN, connection);
       assertTrue(conn.isConnected());
@@ -818,7 +818,7 @@ public class DefaultLocalEntityConnectionTest {
     assertThrows(DatabaseException.class, () -> {
       Connection connection = null;
       try {
-        Database db = DatabaseFactory.getDatabase();
+        Database db = DatabaseFactory.database();
         connection = db.createConnection(UNIT_TEST_USER);
         connection.close();
         new DefaultLocalEntityConnection(db, DOMAIN, connection);
@@ -1044,7 +1044,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   private static LocalEntityConnection initializeConnection(boolean setLockTimeout) throws DatabaseException {
-    Database database = DatabaseFactory.getDatabase();
+    Database database = DatabaseFactory.database();
     if (setLockTimeout) {
       database.setConnectionProvider(new ConnectionProvider() {
         @Override

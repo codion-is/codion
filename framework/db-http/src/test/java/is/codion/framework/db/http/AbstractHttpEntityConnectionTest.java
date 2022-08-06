@@ -287,7 +287,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
-            .database(DatabaseFactory.getDatabase())
+            .database(DatabaseFactory.database())
             .domainModelClassNames(singletonList(TestDomain.class.getName()))
             .sslEnabled(false)
             .auxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()))
