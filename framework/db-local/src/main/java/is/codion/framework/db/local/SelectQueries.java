@@ -236,10 +236,10 @@ final class SelectQueries {
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
           ((ForeignKey) attribute).references().forEach(reference ->
-                  propertiesToSelect.add(definition.getColumnProperty(reference.attribute())));
+                  propertiesToSelect.add(definition.columnProperty(reference.attribute())));
         }
         else {
-          propertiesToSelect.add(definition.getColumnProperty(attribute));
+          propertiesToSelect.add(definition.columnProperty(attribute));
         }
       });
 
@@ -296,7 +296,7 @@ final class SelectQueries {
     }
 
     private String getColumnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByAttribute orderByAttribute) {
-      return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).columnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
+      return entityDefinition.columnProperty(orderByAttribute.getAttribute()).columnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
     }
   }
 }

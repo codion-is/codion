@@ -116,7 +116,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   public void selectInputControl() {
     List<Property<?>> properties = Properties.sort(getEditModel()
-            .entityDefinition().getProperties(controls.keySet()));
+            .entityDefinition().properties(controls.keySet()));
     properties.removeIf(property -> {
       Control control = controls.get(property.attribute());
 
@@ -167,7 +167,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final EntitySearchField createForeignKeySearchField(ForeignKey foreignKey) {
     checkControl(foreignKey);
-    getEditModel().entityDefinition().getForeignKeyProperty(foreignKey);
+    getEditModel().entityDefinition().foreignKeyProperty(foreignKey);
     EntitySearchField searchField = FXUiUtil.createSearchField(foreignKey, editModel);
 
     controls.put(foreignKey, searchField);
@@ -182,7 +182,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final ComboBox<Entity> createForeignKeyComboBox(ForeignKey foreignKey) {
     checkControl(foreignKey);
-    getEditModel().entityDefinition().getForeignKeyProperty(foreignKey);
+    getEditModel().entityDefinition().foreignKeyProperty(foreignKey);
     ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(foreignKey, editModel);
 
     controls.put(foreignKey, box);
@@ -199,7 +199,7 @@ public abstract class EntityEditView extends BorderPane {
   protected final <T> ComboBox<Item<T>> createItemComboBox(Attribute<T> attribute) {
     checkControl(attribute);
     ComboBox<Item<T>> box = FXUiUtil.createItemComboBox((ItemProperty<T>)
-            getEditModel().entityDefinition().getProperty(attribute), editModel);
+            getEditModel().entityDefinition().property(attribute), editModel);
 
     controls.put(attribute, box);
 
@@ -214,7 +214,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final <T> TextField createTextField(Attribute<T> attribute) {
     checkControl(attribute);
-    Property<?> property = getEditModel().entityDefinition().getProperty(attribute);
+    Property<?> property = getEditModel().entityDefinition().property(attribute);
     TextField textField;
     if (attribute.isInteger()) {
       textField = FXUiUtil.createIntegerField((Property<Integer>) property, editModel);
@@ -248,7 +248,7 @@ public abstract class EntityEditView extends BorderPane {
   protected final DatePicker createDatePicker(Attribute<LocalDate> attribute) {
     checkControl(attribute);
     DatePicker picker = FXUiUtil.createDatePicker(getEditModel()
-            .entityDefinition().getProperty(attribute), editModel);
+            .entityDefinition().property(attribute), editModel);
     controls.put(attribute, picker);
 
     return picker;
@@ -260,7 +260,7 @@ public abstract class EntityEditView extends BorderPane {
    * @return a {@link Label} for the given attribute
    */
   protected final Label createLabel(Attribute<?> attribute) {
-    return new Label(getEditModel().entityDefinition().getProperty(attribute).caption());
+    return new Label(getEditModel().entityDefinition().property(attribute).caption());
   }
 
   protected final BorderPane createPropertyPanel(Attribute<?> attribute) {

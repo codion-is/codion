@@ -85,7 +85,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   public void addForeignKeyValues(List<Entity> entities) {
     Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
     for (Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
-      for (ForeignKey foreignKey : entityDefinition().getForeignKeys(entry.getKey())) {
+      for (ForeignKey foreignKey : entityDefinition().foreignKeys(entry.getKey())) {
         FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
         if (listModel != null) {
           listModel.addAll(entry.getValue());
@@ -102,7 +102,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   public void removeForeignKeyValues(List<Entity> entities) {
     Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
     for (Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
-      for (ForeignKey foreignKey : entityDefinition().getForeignKeys(entry.getKey())) {
+      for (ForeignKey foreignKey : entityDefinition().foreignKeys(entry.getKey())) {
         FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
         if (listModel != null) {
           listModel.removeAll(entry.getValue());

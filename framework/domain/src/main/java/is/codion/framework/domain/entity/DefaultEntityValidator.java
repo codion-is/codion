@@ -52,7 +52,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   @Override
   public <T> boolean isNullable(Entity entity, Attribute<T> attribute) {
-    return requireNonNull(entity).entityDefinition().getProperty(attribute).nullable();
+    return requireNonNull(entity).entityDefinition().property(attribute).nullable();
   }
 
   @Override
@@ -85,7 +85,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   private <T> void performNullValidation(Entity entity, Attribute<T> attribute) throws NullValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
-    Property<T> property = entity.entityDefinition().getProperty(attribute);
+    Property<T> property = entity.entityDefinition().property(attribute);
     if (!isNullable(entity, attribute) && entity.isNull(attribute)) {
       if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
@@ -110,7 +110,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       return;
     }
 
-    Property<T> property = entity.entityDefinition().getProperty(attribute);
+    Property<T> property = entity.entityDefinition().property(attribute);
     Number value = entity.get(property.attribute());
     Number minimumValue = property.minimumValue();
     if (minimumValue != null && value.doubleValue() < minimumValue.doubleValue()) {
@@ -131,7 +131,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       return;
     }
 
-    Property<?> property = entity.entityDefinition().getProperty(attribute);
+    Property<?> property = entity.entityDefinition().property(attribute);
     int maximumLength = property.maximumLength();
     String value = entity.get(attribute);
     if (maximumLength != -1 && value.length() > maximumLength) {

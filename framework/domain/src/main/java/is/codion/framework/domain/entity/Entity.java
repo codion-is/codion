@@ -378,7 +378,7 @@ public interface Entity extends Comparable<Entity> {
     requireNonNull(entity);
     requireNonNull(comparison);
     return comparison.entrySet().stream()
-            .map(entry -> definition.getProperty(entry.getKey()))
+            .map(entry -> definition.property(entry.getKey()))
             .filter(property -> {
               boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).updatable();
               boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();

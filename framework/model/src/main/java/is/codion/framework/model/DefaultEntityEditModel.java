@@ -189,7 +189,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final <T> void setDefaultValueSupplier(Attribute<T> attribute, Supplier<T> valueSupplier) {
     requireNonNull(valueSupplier, "valueSupplier");
-    entityDefinition().getProperty(attribute);
+    entityDefinition().property(attribute);
     defaultValueSuppliers.put(attribute, valueSupplier);
   }
 
@@ -222,14 +222,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public boolean isPersistValue(Attribute<?> attribute) {
-    entityDefinition().getProperty(attribute);
+    entityDefinition().property(attribute);
 
     return Boolean.TRUE.equals(persistentValues.get(attribute));
   }
 
   @Override
   public final void setPersistValue(Attribute<?> attribute, boolean persistValue) {
-    entityDefinition().getProperty(attribute);
+    entityDefinition().property(attribute);
     persistentValues.put(attribute, persistValue);
   }
 
@@ -316,7 +316,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final void replaceForeignKeyValues(Collection<Entity> entities) {
     Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
     for (Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
-      List<ForeignKey> foreignKeys = entityDefinition().getForeignKeys(entityTypeEntities.getKey());
+      List<ForeignKey> foreignKeys = entityDefinition().foreignKeys(entityTypeEntities.getKey());
       for (ForeignKey foreignKey : foreignKeys) {
         replaceForeignKey(foreignKey, entityTypeEntities.getValue());
       }
@@ -352,7 +352,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final void setForeignKeyValues(Collection<Entity> entities) {
     Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
     for (Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
-      for (ForeignKey foreignKey : entityDefinition().getForeignKeys(entityTypeEntities.getKey())) {
+      for (ForeignKey foreignKey : entityDefinition().foreignKeys(entityTypeEntities.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
         put(foreignKey, entityTypeEntities.getValue().iterator().next());
       }
@@ -596,7 +596,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean containsSearchModel(ForeignKey foreignKey) {
-    entityDefinition().getForeignKeyProperty(foreignKey);
+    entityDefinition().foreignKeyProperty(foreignKey);
     synchronized (entitySearchModels) {
       return entitySearchModels.containsKey(foreignKey);
     }
@@ -604,7 +604,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
-    ForeignKeyProperty property = entityDefinition().getForeignKeyProperty(foreignKey);
+    ForeignKeyProperty property = entityDefinition().foreignKeyProperty(foreignKey);
     Collection<Attribute<String>> searchAttributes = entities()
             .getDefinition(property.referencedEntityType()).searchAttributes();
     if (searchAttributes.isEmpty()) {
@@ -619,7 +619,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final EntitySearchModel getForeignKeySearchModel(ForeignKey foreignKey) {
-    entityDefinition().getForeignKeyProperty(foreignKey);
+    entityDefinition().foreignKeyProperty(foreignKey);
     synchronized (entitySearchModels) {
       // can't use computeIfAbsent here, see comment in SwingEntityEditModel.getForeignKeyComboBoxModel()
       EntitySearchModel entitySearchModel = entitySearchModels.get(foreignKey);
@@ -634,7 +634,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> Value<T> value(Attribute<T> attribute) {
-    entityDefinition().getProperty(attribute);
+    entityDefinition().property(attribute);
     return (Value<T>) editModelValues.computeIfAbsent(attribute, k -> new EditModelValue<>(this, attribute));
   }
 
@@ -997,12 +997,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private <T> Event<T> getEditEvent(Attribute<T> attribute) {
-    entityDefinition().getProperty(attribute);
+    entityDefinition().property(attribute);
     return (Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
   private <T> Event<T> getValueEvent(Attribute<T> attribute) {
-    entityDefinition().getProperty(attribute);
+    entityDefinition().property(attribute);
     return (Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
@@ -1045,7 +1045,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private <T> T getDefaultValue(Attribute<T> attribute) {
-    return getDefaultValue(entityDefinition().getProperty(attribute));
+    return getDefaultValue(entityDefinition().property(attribute));
   }
 
   private <T> T getDefaultValue(Property<T> property) {
@@ -1069,9 +1069,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private Map<Attribute<?>, Object> getDependentValues(Attribute<?> attribute) {
     Map<Attribute<?>, Object> dependentValues = new HashMap<>();
     EntityDefinition entityDefinition = entityDefinition();
-    entityDefinition.getDerivedAttributes(attribute).forEach(derivedAttribute ->
+    entityDefinition.derivedAttributes(attribute).forEach(derivedAttribute ->
             dependentValues.put(derivedAttribute, get(derivedAttribute)));
-    entityDefinition.getForeignKeyProperties(attribute).forEach(foreignKeyProperty ->
+    entityDefinition.foreignKeyProperties(attribute).forEach(foreignKeyProperty ->
             dependentValues.put(foreignKeyProperty.attribute(), get(foreignKeyProperty.attribute())));
     if (attribute instanceof ForeignKey) {
       ((ForeignKey) attribute).references().forEach(reference ->

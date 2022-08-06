@@ -39,7 +39,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
               new DefaultEntitySearchModel(foreignKey.referencedType(), connectionProvider));
     }
 
-    ColumnProperty<T> property = getDefinition(attribute.entityType()).getColumnProperty(attribute);
+    ColumnProperty<T> property = getDefinition(attribute.entityType()).columnProperty(attribute);
     if (property.aggregateColumn()) {
       return null;
     }

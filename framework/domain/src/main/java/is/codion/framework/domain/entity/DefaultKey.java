@@ -143,7 +143,7 @@ class DefaultKey implements Key, Serializable {
       throw new IllegalArgumentException("Attribute " + attribute + " is not part of key: " + definition.entityType());
     }
 
-    return (T) values.get(definition.getColumnProperty(attribute).attribute());
+    return (T) values.get(definition.columnProperty(attribute).attribute());
   }
 
   @Override
@@ -255,7 +255,7 @@ class DefaultKey implements Key, Serializable {
   private Integer computeMultipleValueHashCode() {
     int hash = 0;
     for (int i = 0; i < attributes.size(); i++) {
-      ColumnProperty<?> property = definition.getColumnProperty(attributes.get(i));
+      ColumnProperty<?> property = definition.columnProperty(attributes.get(i));
       Object value = values.get(property.attribute());
       if (!property.nullable() && value == null) {
         return null;
@@ -312,7 +312,7 @@ class DefaultKey implements Key, Serializable {
     int attributeCount = stream.readInt();
     values = new HashMap<>(attributeCount);
     for (int i = 0; i < attributeCount; i++) {
-      Attribute<Object> attribute = definition.getAttribute((String) stream.readObject());
+      Attribute<Object> attribute = definition.attribute((String) stream.readObject());
       values.put(attribute, attribute.validateType(stream.readObject()));
     }
     attributes = new ArrayList<>(values.keySet());

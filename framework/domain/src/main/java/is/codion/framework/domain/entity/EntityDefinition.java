@@ -52,7 +52,7 @@ public interface EntityDefinition {
    * @return the condition provider associated with the given id
    * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionType
    */
-  ConditionProvider getConditionProvider(ConditionType conditionType);
+  ConditionProvider conditionProvider(ConditionType conditionType);
 
   /**
    * @return the name of the domain this entity type belongs to
@@ -158,7 +158,7 @@ public interface EntityDefinition {
    * @param <T> the attribute type
    * @return a collection containing the attributes which are derived from the given attribute
    */
-  <T> Collection<Attribute<?>> getDerivedAttributes(Attribute<T> attribute);
+  <T> Collection<Attribute<?>> derivedAttributes(Attribute<T> attribute);
 
   /**
    * Returns a list containing all primary key attributes associated with this entity type.
@@ -209,7 +209,7 @@ public interface EntityDefinition {
    * @param foreignKey the foreign key
    * @return the definition of the referenced entity
    */
-  EntityDefinition getReferencedEntityDefinition(ForeignKey foreignKey);
+  EntityDefinition referencedEntityDefinition(ForeignKey foreignKey);
 
   /**
    * @return true if this entity type has any denormalized properties
@@ -228,7 +228,7 @@ public interface EntityDefinition {
    * @return a list containing the denormalized properties which values originate from the entity
    * referenced by the given foreign key property
    */
-  List<DenormalizedProperty<?>> getDenormalizedProperties(Attribute<Entity> entityAttribute);
+  List<DenormalizedProperty<?>> denormalizedProperties(Attribute<Entity> entityAttribute);
 
   /**
    * @param attribute the attribute
@@ -242,7 +242,7 @@ public interface EntityDefinition {
    * @param <T> the attribute type
    * @return the attribute with the given name, null if none is found
    */
-  <T> Attribute<T> getAttribute(String attributeName);
+  <T> Attribute<T> attribute(String attributeName);
 
   /**
    * Returns the attributes to search by when searching for entities of this type by a string value
@@ -264,7 +264,7 @@ public interface EntityDefinition {
    * @param <T> the attribute type
    * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
    */
-  <T> ColumnProperty<T> getColumnProperty(Attribute<T> attribute);
+  <T> ColumnProperty<T> columnProperty(Attribute<T> attribute);
 
   /**
    * @param attribute the attribute
@@ -272,7 +272,7 @@ public interface EntityDefinition {
    * @param <T> the attribute type
    * @throws IllegalArgumentException in case no such property exists
    */
-  <T> Property<T> getProperty(Attribute<T> attribute);
+  <T> Property<T> property(Attribute<T> attribute);
 
   /**
    * @param attribute the attribute
@@ -280,21 +280,21 @@ public interface EntityDefinition {
    * @param <T> the attribute type
    * @throws IllegalArgumentException in case no such property exists
    */
-  <T> ColumnProperty<T> getPrimaryKeyProperty(Attribute<T> attribute);
+  <T> ColumnProperty<T> primaryKeyProperty(Attribute<T> attribute);
 
   /**
    * Returns the {@link Property}s based on the given attributes
    * @param attributes the attributes which properties to retrieve
    * @return a list containing the properties based on the given attributes
    */
-  List<Property<?>> getProperties(Collection<Attribute<?>> attributes);
+  List<Property<?>> properties(Collection<Attribute<?>> attributes);
 
   /**
    * Returns the {@link ColumnProperty}s based on the given attributes
    * @param attributes the attributes which properties to retrieve
    * @return a list of column properties
    */
-  List<ColumnProperty<?>> getColumnProperties(List<Attribute<?>> attributes);
+  List<ColumnProperty<?>> columnProperties(List<Attribute<?>> attributes);
 
   /**
    * Retrieves the writable (non-read-only) column properties comprising this entity type
@@ -304,7 +304,7 @@ public interface EntityDefinition {
    * @return a list containing the writable column properties (properties that map to database columns) comprising
    * the entity of type {@code entityType}
    */
-  List<ColumnProperty<?>> getWritableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
+  List<ColumnProperty<?>> writableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
 
   /**
    * @return a list containing all updatable properties associated with the given entityType
@@ -328,21 +328,21 @@ public interface EntityDefinition {
    * @param referencedEntityType the referenced entity type
    * @return a List containing the foreign keys, an empty list is returned in case no foreign keys are found
    */
-  List<ForeignKey> getForeignKeys(EntityType referencedEntityType);
+  List<ForeignKey> foreignKeys(EntityType referencedEntityType);
 
   /**
    * @param foreignKey the foreign key
    * @return the ForeignKeyProperty based on the given foreign key
    * @throws IllegalArgumentException in case no such property exists
    */
-  ForeignKeyProperty getForeignKeyProperty(ForeignKey foreignKey);
+  ForeignKeyProperty foreignKeyProperty(ForeignKey foreignKey);
 
   /**
    * @param columnAttribute the column attribute
    * @param <T> the attribute type
    * @return the ForeignKeyProperties based on the given column attribute
    */
-  <T> List<ForeignKeyProperty> getForeignKeyProperties(Attribute<T> columnAttribute);
+  <T> List<ForeignKeyProperty> foreignKeyProperties(Attribute<T> columnAttribute);
 
   /**
    * Returns the background color provider, never null
@@ -395,7 +395,7 @@ public interface EntityDefinition {
    * @param method the method
    * @return the getter attribute
    */
-  Attribute<?> getGetterAttribute(Method method);
+  Attribute<?> getterAttribute(Method method);
 
   /**
    * Returns the Attribute for the setter this method represents in the {@link EntityType#entityClass()},
@@ -403,14 +403,14 @@ public interface EntityDefinition {
    * @param method the method
    * @return the setter attribute
    */
-  Attribute<?> getSetterAttribute(Method method);
+  Attribute<?> setterAttribute(Method method);
 
   /**
    * Returns the MethodHandle for the given default method in the {@link EntityType#entityClass()}.
    * @param method the method
    * @return a MethodHandle based on the method
    */
-  MethodHandle getDefaultMethodHandle(Method method);
+  MethodHandle defaultMethodHandle(Method method);
 
   /**
    * Returns a serialization version indicator for the underlying entity.

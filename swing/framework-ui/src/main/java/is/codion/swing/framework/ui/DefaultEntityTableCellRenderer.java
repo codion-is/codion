@@ -272,7 +272,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     DefaultBuilder(SwingEntityTableModel tableModel, Property<T> property) {
       this.tableModel = requireNonNull(tableModel);
       this.property = requireNonNull(property);
-      this.tableModel.entityDefinition().getProperty(property.attribute());
+      this.tableModel.entityDefinition().property(property.attribute());
       this.horizontalAlignment = getDefaultHorizontalAlignment(property);
     }
 

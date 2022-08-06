@@ -156,7 +156,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   private List<Property<?>> getConditionPanelProperties() {
     return conditionPanel.getColumnComponents().values().stream()
             .filter(panel -> columnModel.isColumnVisible(panel.getModel().columnIdentifier()))
-            .map(panel -> tableConditionModel().entityDefinition().getProperty(panel.getModel().columnIdentifier()))
+            .map(panel -> tableConditionModel().entityDefinition().property(panel.getModel().columnIdentifier()))
             .collect(toList());
   }
 

@@ -327,7 +327,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   private SwingEntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
-    ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKey);
+    ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).foreignKeyProperty(foreignKey);
     SwingEntityComboBoxModel foreignKeyModel =
             new SwingEntityComboBoxModel(foreignKeyProperty.referencedEntityType(), connectionProvider);
     foreignKeyModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
@@ -340,7 +340,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   private void linkForeignKeyComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel,
                                            boolean filter) {
-    ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKey);
+    ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).foreignKeyProperty(foreignKey);
     if (!foreignKeyProperty.referencedEntityType().equals(foreignKeyModel.entityType())) {
       throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.entityType()
               + ", should be: " + foreignKeyProperty.referencedEntityType());

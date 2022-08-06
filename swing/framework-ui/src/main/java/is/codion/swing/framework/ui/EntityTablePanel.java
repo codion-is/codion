@@ -388,7 +388,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final void excludeFromUpdateMenu(Attribute<?> attribute) {
     checkIfInitialized();
-    tableModel().entityDefinition().getProperty(attribute);//just validating that the property exists
+    tableModel().entityDefinition().property(attribute);//just validating that the property exists
     excludeFromUpdateMenu.add(attribute);
   }
 
@@ -526,7 +526,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final <T, A extends Attribute<T>, C extends JComponent> void setUpdateSelectedComponentFactory(A attribute,
                                                                                                         EntityComponentFactory<T, A, C> componentFactory) {
-    tableModel().entityDefinition().getProperty(attribute);
+    tableModel().entityDefinition().property(attribute);
     updateSelectedComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
@@ -540,7 +540,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final <T, A extends Attribute<T>, C extends JComponent> void setTableCellEditorComponentFactory(A attribute,
                                                                                                          EntityComponentFactory<T, A, C> componentFactory) {
-    tableModel().entityDefinition().getProperty(attribute);
+    tableModel().entityDefinition().property(attribute);
     tableCellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
@@ -1579,7 +1579,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private <T> void configureColumn(TableColumn column) {
-    Property<T> property = tableModel.entityDefinition().getProperty((Attribute<T>) column.getIdentifier());
+    Property<T> property = tableModel.entityDefinition().property((Attribute<T>) column.getIdentifier());
     column.setCellRenderer(createTableCellRenderer(property));
     column.setCellEditor(createTableCellEditor(property));
     column.setResizable(true);

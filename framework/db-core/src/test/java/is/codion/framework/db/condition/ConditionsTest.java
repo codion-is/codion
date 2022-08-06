@@ -311,7 +311,7 @@ public final class ConditionsTest {
   @Test
   void whereClause() throws Exception {
     EntityDefinition departmentDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
-    ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.getProperty(TestDomain.DEPARTMENT_NAME);
+    ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.property(TestDomain.DEPARTMENT_NAME);
     Condition condition = where(TestDomain.DEPARTMENT_NAME).equalTo("upper%");
     assertEquals(property.columnExpression() + " like ?", condition.toString(departmentDefinition));
     condition = where(TestDomain.DEPARTMENT_NAME).equalTo("upper");

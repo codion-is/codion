@@ -226,17 +226,17 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Attribute<?> getGetterAttribute(Method method) {
+  public Attribute<?> getterAttribute(Method method) {
     return getters.get(requireNonNull(method, METHOD).getName());
   }
 
   @Override
-  public Attribute<?> getSetterAttribute(Method method) {
+  public Attribute<?> setterAttribute(Method method) {
     return setters.get(requireNonNull(method, METHOD).getName());
   }
 
   @Override
-  public MethodHandle getDefaultMethodHandle(Method method) {
+  public MethodHandle defaultMethodHandle(Method method) {
     return defaultMethodHandles.computeIfAbsent(requireNonNull(method, METHOD).getName(),
             methodName -> createDefaultMethodHandle(method));
   }
@@ -252,7 +252,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public ConditionProvider getConditionProvider(ConditionType conditionType) {
+  public ConditionProvider conditionProvider(ConditionType conditionType) {
     requireNonNull(conditionType);
     if (conditionProviders != null) {
       ConditionProvider conditionProvider = conditionProviders.get(conditionType);
@@ -346,7 +346,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T> Attribute<T> getAttribute(String attributeName) {
+  public <T> Attribute<T> attribute(String attributeName) {
     return (Attribute<T>) entityProperties.attributeMap.get(requireNonNull(attributeName));
   }
 
@@ -364,8 +364,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T> ColumnProperty<T> getColumnProperty(Attribute<T> attribute) {
-    Property<T> property = getProperty(attribute);
+  public <T> ColumnProperty<T> columnProperty(Attribute<T> attribute) {
+    Property<T> property = property(attribute);
     if (!(property instanceof ColumnProperty)) {
       throw new IllegalArgumentException("Property based on " + attribute + " is not a ColumnProperty");
     }
@@ -374,7 +374,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T> Property<T> getProperty(Attribute<T> attribute) {
+  public <T> Property<T> property(Attribute<T> attribute) {
     requireNonNull(attribute, ATTRIBUTE);
     Property<T> property = (Property<T>) entityProperties.propertyMap.get(attribute);
     if (property == null) {
@@ -385,7 +385,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T> ColumnProperty<T> getPrimaryKeyProperty(Attribute<T> attribute) {
+  public <T> ColumnProperty<T> primaryKeyProperty(Attribute<T> attribute) {
     requireNonNull(attribute, ATTRIBUTE);
     ColumnProperty<T> property = (ColumnProperty<T>) entityProperties.primaryKeyPropertyMap.get(attribute);
     if (property == null) {
@@ -396,28 +396,28 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<Property<?>> getProperties(Collection<Attribute<?>> attributes) {
+  public List<Property<?>> properties(Collection<Attribute<?>> attributes) {
     requireNonNull(attributes, ATTRIBUTES);
 
     return attributes.stream()
-            .map(this::getProperty)
+            .map(this::property)
             .collect(toList());
   }
 
   @Override
-  public List<ColumnProperty<?>> getColumnProperties(List<Attribute<?>> attributes) {
+  public List<ColumnProperty<?>> columnProperties(List<Attribute<?>> attributes) {
     requireNonNull(attributes, ATTRIBUTES);
     List<ColumnProperty<?>> theProperties = new ArrayList<>(attributes.size());
     for (int i = 0; i < attributes.size(); i++) {
-      theProperties.add(getColumnProperty(attributes.get(i)));
+      theProperties.add(columnProperty(attributes.get(i)));
     }
 
     return theProperties;
   }
 
   @Override
-  public List<ColumnProperty<?>> getWritableColumnProperties(boolean includePrimaryKeyProperties,
-                                                             boolean includeNonUpdatable) {
+  public List<ColumnProperty<?>> writableColumnProperties(boolean includePrimaryKeyProperties,
+                                                          boolean includeNonUpdatable) {
     return entityProperties.columnProperties.stream()
             .filter(property -> isWritable(property, includePrimaryKeyProperties, includeNonUpdatable))
             .collect(toList());
@@ -425,7 +425,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public List<Property<?>> updatableProperties() {
-    List<ColumnProperty<?>> writableColumnProperties = getWritableColumnProperties(!isKeyGenerated(), false);
+    List<ColumnProperty<?>> writableColumnProperties = writableColumnProperties(!isKeyGenerated(), false);
     writableColumnProperties.removeIf(property -> isForeignKeyAttribute(property.attribute()) || property.denormalized());
     List<Property<?>> updatable = new ArrayList<>(writableColumnProperties);
     for (ForeignKeyProperty foreignKeyProperty : entityProperties.foreignKeyProperties) {
@@ -440,7 +440,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public boolean isUpdatable(ForeignKey foreignKey) {
     return foreignKey.references().stream()
-            .map(reference -> getColumnProperty(reference.attribute()))
+            .map(reference -> columnProperty(reference.attribute()))
             .allMatch(ColumnProperty::updatable);
   }
 
@@ -450,7 +450,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<ForeignKey> getForeignKeys(EntityType referencedEntityType) {
+  public List<ForeignKey> foreignKeys(EntityType referencedEntityType) {
     requireNonNull(referencedEntityType, "referencedEntityType");
     return foreignKeys().stream()
             .filter(foreignKey -> foreignKey.referencedType().equals(referencedEntityType))
@@ -458,7 +458,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public ForeignKeyProperty getForeignKeyProperty(ForeignKey foreignKey) {
+  public ForeignKeyProperty foreignKeyProperty(ForeignKey foreignKey) {
     requireNonNull(foreignKey, FOREIGN_KEY);
     ForeignKeyProperty property = entityProperties.foreignKeyPropertyMap.get(foreignKey);
     if (property == null) {
@@ -469,7 +469,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T> List<ForeignKeyProperty> getForeignKeyProperties(Attribute<T> columnAttribute) {
+  public <T> List<ForeignKeyProperty> foreignKeyProperties(Attribute<T> columnAttribute) {
     requireNonNull(columnAttribute, "columnAttribute");
     return entityProperties.columnPropertyForeignKeyProperties.computeIfAbsent(columnAttribute, attribute -> Collections.emptyList());
   }
@@ -495,7 +495,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T> Collection<Attribute<?>> getDerivedAttributes(Attribute<T> attribute) {
+  public <T> Collection<Attribute<?>> derivedAttributes(Attribute<T> attribute) {
     return entityProperties.derivedAttributes.getOrDefault(attribute, emptySet());
   }
 
@@ -542,7 +542,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public EntityDefinition getReferencedEntityDefinition(ForeignKey foreignKey) {
+  public EntityDefinition referencedEntityDefinition(ForeignKey foreignKey) {
     requireNonNull(foreignKey, FOREIGN_KEY);
     EntityDefinition definition = foreignEntityDefinitions.get(foreignKey);
     if (definition == null) {
@@ -563,7 +563,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<DenormalizedProperty<?>> getDenormalizedProperties(Attribute<Entity> entityAttribute) {
+  public List<DenormalizedProperty<?>> denormalizedProperties(Attribute<Entity> entityAttribute) {
     return entityProperties.denormalizedProperties.get(entityAttribute);
   }
 
@@ -635,7 +635,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   void setReferencedEntityDefinition(ForeignKey foreignKey, EntityDefinition definition) {
     requireNonNull(foreignKey, FOREIGN_KEY);
     requireNonNull(definition, "definition");
-    ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKey);
+    ForeignKeyProperty foreignKeyProperty = foreignKeyProperty(foreignKey);
     if (foreignEntityDefinitions.containsKey(foreignKey)) {
       throw new IllegalStateException("Foreign definition has already been set for " + foreignKey);
     }

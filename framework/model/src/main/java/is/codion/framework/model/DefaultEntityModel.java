@@ -301,7 +301,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   public final void initialize(EntityType foreignKeyEntityType, List<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyEntityType);
     requireNonNull(foreignKeyValues);
-    List<ForeignKey> foreignKeys = editModel.entityDefinition().getForeignKeys(foreignKeyEntityType);
+    List<ForeignKey> foreignKeys = editModel.entityDefinition().foreignKeys(foreignKeyEntityType);
     if (!foreignKeys.isEmpty()) {
       initialize(foreignKeys.get(0), foreignKeyValues);
     }
@@ -403,7 +403,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (containsTableModel() && searchOnMasterInsert) {
       ForeignKey foreignKey = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKey == null) {
-        foreignKey = editModel.entityDefinition().getForeignKeys(masterModel.entityType()).get(0);
+        foreignKey = editModel.entityDefinition().foreignKeys(masterModel.entityType()).get(0);
       }
       tableModel.setForeignKeyConditionValues(foreignKey, insertedEntities);
     }

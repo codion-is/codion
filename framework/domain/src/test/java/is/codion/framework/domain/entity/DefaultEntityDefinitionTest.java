@@ -173,10 +173,10 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().getDefinition(entityType);
-    Collection<Attribute<?>> linked = definition.getDerivedAttributes(name);
+    Collection<Attribute<?>> linked = definition.derivedAttributes(name);
     assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
-    linked = definition.getDerivedAttributes(info);
+    linked = definition.derivedAttributes(info);
     assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
   }
@@ -221,8 +221,8 @@ public class DefaultEntityDefinitionTest {
   @Test
   void testForeignKeyNullability() {
     Domain domain = new TestDomain();
-    assertFalse(domain.entities().getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK).nullable());
-    assertTrue(domain.entities().getDefinition(Detail.TYPE).getForeignKeyProperty(Detail.MASTER_FK).nullable());
+    assertFalse(domain.entities().getDefinition(TestDomain.T_COMPOSITE_DETAIL).foreignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK).nullable());
+    assertTrue(domain.entities().getDefinition(Detail.TYPE).foreignKeyProperty(Detail.MASTER_FK).nullable());
   }
 
   @Test

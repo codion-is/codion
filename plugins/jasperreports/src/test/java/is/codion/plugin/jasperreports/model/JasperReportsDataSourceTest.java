@@ -32,7 +32,7 @@ public class JasperReportsDataSourceTest {
     List<Entity> entities = singletonList(department);
     JasperReportsDataSource<Entity> source =
             new JasperReportsDataSource<>(entities.iterator(), (entity, field) ->
-                    entity.get(definition.getAttribute(field.getName())));
+                    entity.get(definition.attribute(field.getName())));
     while (source.next()) {
       JRField field = new TestField(TestDomain.DEPARTMENT_NAME.name());
       source.getFieldValue(field);

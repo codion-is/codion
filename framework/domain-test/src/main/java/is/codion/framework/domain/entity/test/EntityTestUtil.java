@@ -64,7 +64,7 @@ public final class EntityTestUtil {
     requireNonNull(entities);
     requireNonNull(entityType);
     Entity entity = entities.entity(entityType);
-    populateEntity(entity, entities.getDefinition(entityType).getWritableColumnProperties(
+    populateEntity(entity, entities.getDefinition(entityType).writableColumnProperties(
             !entities.getDefinition(entityType).isKeyGenerated(), true), valueProvider);
 
     return entity;
@@ -81,7 +81,7 @@ public final class EntityTestUtil {
     requireNonNull(entities);
     requireNonNull(entity);
     populateEntity(entity,
-            entity.entityDefinition().getWritableColumnProperties(false, true),
+            entity.entityDefinition().writableColumnProperties(false, true),
             property -> createRandomValue(property, foreignKeyEntities));
   }
 

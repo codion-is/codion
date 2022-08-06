@@ -96,10 +96,10 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
       String[] split = node.asText().split(":");
       String attributeName = split[0];
       if ("asc".equals(split[1])) {
-        builder.ascending(definition.getAttribute(attributeName));
+        builder.ascending(definition.attribute(attributeName));
       }
       else {
-        builder.descending(definition.getAttribute(attributeName));
+        builder.descending(definition.attribute(attributeName));
       }
     }
 
@@ -109,7 +109,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
   private static Attribute<?>[] deserializeSelectAttributes(EntityDefinition definition, JsonNode jsonNode) {
     List<Attribute<?>> attributes = new ArrayList<>(jsonNode.size());
     for (JsonNode node : jsonNode) {
-      attributes.add(definition.getAttribute(node.asText()));
+      attributes.add(definition.attribute(node.asText()));
     }
 
     return attributes.toArray(new Attribute[0]);

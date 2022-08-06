@@ -301,7 +301,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       return entityDefinition().isUpdatable((ForeignKey) attribute);
     }
 
-    Property<?> property = entityDefinition().getProperty(attribute);
+    Property<?> property = entityDefinition().property(attribute);
 
     return property instanceof ColumnProperty && ((ColumnProperty<?>) property).updatable();
   }
@@ -395,7 +395,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   @Override
   public void setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKey, "foreignKey");
-    entityDefinition().getForeignKeyProperty(foreignKey);
+    entityDefinition().foreignKeyProperty(foreignKey);
     if (tableConditionModel.setEqualConditionValues(foreignKey, foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
@@ -404,7 +404,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   @Override
   public final void replaceForeignKeyValues(EntityType foreignKeyEntityType, Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyValues, "foreignKeyValues");
-    List<ForeignKey> foreignKeys = entityDefinition().getForeignKeys(requireNonNull(foreignKeyEntityType, "foreignKeyEntityType"));
+    List<ForeignKey> foreignKeys = entityDefinition().foreignKeys(requireNonNull(foreignKeyEntityType, "foreignKeyEntityType"));
     boolean changed = false;
     for (Entity entity : items()) {
       for (ForeignKey foreignKey : foreignKeys) {
@@ -499,7 +499,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     while (columnEnumeration.hasMoreElements()) {
       Attribute<?> attribute = (Attribute<?>) columnEnumeration.nextElement().getIdentifier();
       attributes.add(attribute);
-      header.add(entityDefinition().getProperty(attribute).caption());
+      header.add(entityDefinition().property(attribute).caption());
     }
 
     return Text.getDelimitedString(header, Entity.getStringValueList(attributes,
@@ -552,7 +552,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   @Override
   protected final <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
     if (attribute.isNumerical()) {
-      return Optional.of(new DefaultSummaryValueProvider<>(attribute, this, entityDefinition().getProperty(attribute).format()));
+      return Optional.of(new DefaultSummaryValueProvider<>(attribute, this, entityDefinition().property(attribute).format()));
     }
 
     return Optional.empty();
@@ -775,7 +775,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   private boolean isColumnProperty(Attribute<?> attribute) {
-    Property<?> property = entityDefinition().getProperty(attribute);
+    Property<?> property = entityDefinition().property(attribute);
 
     return property instanceof ColumnProperty;
   }
@@ -867,7 +867,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
         return entities.getDefinition(((ForeignKey) attribute).referencedType()).comparator();
       }
 
-      return entities.getDefinition(attribute.entityType()).getProperty(attribute).comparator();
+      return entities.getDefinition(attribute.entityType()).property(attribute).comparator();
     }
 
     @Override

@@ -310,7 +310,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             Condition condition = condition(entity.originalPrimaryKey());
             updateQuery = updateQuery(entityDefinition.tableName(), statementProperties, condition.toString(entityDefinition));
             statement = prepareStatement(updateQuery);
-            statementProperties.addAll(entityDefinition.getColumnProperties(condition.attributes()));
+            statementProperties.addAll(entityDefinition.columnProperties(condition.attributes()));
             statementValues.addAll(condition.values());
             int updatedRows = executeStatement(statement, updateQuery, statementProperties, statementValues);
             if (updatedRows == 0) {
@@ -368,7 +368,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         List<ColumnProperty<?>> statementProperties = new ArrayList<>();
         EntityDefinition entityDefinition = domainEntities.getDefinition(condition.entityType());
         for (Map.Entry<Attribute<?>, Object> propertyValue : condition.attributeValues().entrySet()) {
-          ColumnProperty<Object> columnProperty = entityDefinition.getColumnProperty((Attribute<Object>) propertyValue.getKey());
+          ColumnProperty<Object> columnProperty = entityDefinition.columnProperty((Attribute<Object>) propertyValue.getKey());
           if (!columnProperty.updatable()) {
             throw new IllegalArgumentException("Property is not updatable: " + columnProperty.attribute());
           }
@@ -377,7 +377,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
         updateQuery = updateQuery(entityDefinition.tableName(), statementProperties, condition.toString(entityDefinition));
         statement = prepareStatement(updateQuery);
-        statementProperties.addAll(entityDefinition.getColumnProperties(condition.attributes()));
+        statementProperties.addAll(entityDefinition.columnProperties(condition.attributes()));
         statementValues.addAll(condition.values());
         int updatedRows = executeStatement(statement, updateQuery, statementProperties, statementValues);
         commitIfTransactionIsNotOpen();
@@ -407,7 +407,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
         statement = prepareStatement(deleteQuery);
         int deleteCount = executeStatement(statement, deleteQuery,
-                entityDefinition.getColumnProperties(condition.attributes()), condition.values());
+                entityDefinition.columnProperties(condition.attributes()), condition.values());
         commitIfTransactionIsNotOpen();
 
         return deleteCount;
@@ -448,7 +448,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
           statement = prepareStatement(deleteQuery);
           deleteCount += executeStatement(statement, deleteQuery,
-                  entityDefinition.getColumnProperties(condition.attributes()), condition.values());
+                  entityDefinition.columnProperties(condition.attributes()), condition.values());
           statement.close();
         }
         if (keys.size() != deleteCount) {
@@ -571,7 +571,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       condition.attributes().forEach(conditionAttribute -> validateAttribute(attribute.entityType(), conditionAttribute));
       combinedCondition = combinedCondition.and(condition);
     }
-    ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
+    ColumnProperty<T> propertyToSelect = entityDefinition.columnProperty(attribute);
     String columnExpression = propertyToSelect.columnExpression();
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("distinct " + columnExpression)
@@ -745,7 +745,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(blobData, "blobData");
     EntityDefinition entityDefinition = domainEntities.getDefinition(requireNonNull(primaryKey, "primaryKey").getEntityType());
     checkIfReadOnly(entityDefinition.entityType());
-    ColumnProperty<byte[]> blobProperty = entityDefinition.getColumnProperty(blobAttribute);
+    ColumnProperty<byte[]> blobProperty = entityDefinition.columnProperty(blobAttribute);
     Condition condition = condition(primaryKey);
     String updateQuery = updateQuery(entityDefinition.tableName(), singletonList(blobProperty), condition.toString(entityDefinition));
     List<Object> statementValues = new ArrayList<>();
@@ -753,7 +753,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     statementValues.addAll(condition.values());
     List<ColumnProperty<?>> statementProperties = new ArrayList<>();
     statementProperties.add(blobProperty);
-    statementProperties.addAll(entityDefinition.getColumnProperties(condition.attributes()));
+    statementProperties.addAll(entityDefinition.columnProperties(condition.attributes()));
     synchronized (connection) {
       Exception exception = null;
       PreparedStatement statement = null;
@@ -790,7 +790,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException {
     EntityDefinition entityDefinition = domainEntities.getDefinition(requireNonNull(primaryKey, "primaryKey").getEntityType());
-    ColumnProperty<byte[]> blobProperty = entityDefinition.getColumnProperty(blobAttribute);
+    ColumnProperty<byte[]> blobProperty = entityDefinition.columnProperty(blobAttribute);
     PreparedStatement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
@@ -803,7 +803,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         logAccess("readBlob", selectQuery);
         statement = prepareStatement(selectQuery);
-        setParameterValues(statement, entityDefinition.getColumnProperties(condition.attributes()), condition.values());
+        setParameterValues(statement, entityDefinition.columnProperties(condition.attributes()), condition.values());
 
         resultSet = statement.executeQuery();
         List<byte[]> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
@@ -1067,7 +1067,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     List<?> statementValues = condition.values();
     try {
       logAccess(EXECUTE_STATEMENT, statementValues);
-      setParameterValues(statement, entityDefinition.getColumnProperties(condition.attributes()), statementValues);
+      setParameterValues(statement, entityDefinition.columnProperties(condition.attributes()), statementValues);
 
       return statement.executeQuery();
     }
@@ -1150,19 +1150,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private List<ColumnProperty<?>> getInsertableProperties(EntityDefinition entityDefinition,
                                                           boolean includePrimaryKeyProperties) {
     return insertablePropertiesCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
-            entityDefinition.getWritableColumnProperties(includePrimaryKeyProperties, true));
+            entityDefinition.writableColumnProperties(includePrimaryKeyProperties, true));
   }
 
   private List<ColumnProperty<?>> getUpdatableProperties(EntityDefinition entityDefinition) {
     return updatablePropertiesCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
-            entityDefinition.getWritableColumnProperties(true, false));
+            entityDefinition.writableColumnProperties(true, false));
   }
 
   private Attribute<?>[] getPrimaryKeyAndWritableColumnAttributes(EntityType entityType) {
     return primaryKeyAndWritableColumnPropertiesCache.computeIfAbsent(entityType, e -> {
       EntityDefinition entityDefinition = domainEntities.getDefinition(entityType);
       List<ColumnProperty<?>> writableAndPrimaryKeyProperties =
-              new ArrayList<>(entityDefinition.getWritableColumnProperties(true, true));
+              new ArrayList<>(entityDefinition.writableColumnProperties(true, true));
       entityDefinition.primaryKeyProperties().forEach(primaryKeyProperty -> {
         if (!writableAndPrimaryKeyProperties.contains(primaryKeyProperty)) {
           writableAndPrimaryKeyProperties.add(primaryKeyProperty);

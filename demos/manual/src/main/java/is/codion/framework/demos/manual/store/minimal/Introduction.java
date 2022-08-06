@@ -74,7 +74,7 @@ class Introduction {
     Entities entities = store.entities();
 
     EntityDefinition customerDefinition = entities.getDefinition(Customer.TYPE);
-    EntityDefinition cityDefinition = customerDefinition.getReferencedEntityDefinition(Customer.CITY_FK);
+    EntityDefinition cityDefinition = customerDefinition.referencedEntityDefinition(Customer.CITY_FK);
     List<Attribute<?>> cityPrimaryKeyAttributes = cityDefinition.primaryKeyAttributes();
 
     Entity city = entities.builder(City.TYPE)

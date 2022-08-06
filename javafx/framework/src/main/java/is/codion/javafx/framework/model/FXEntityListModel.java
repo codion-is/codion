@@ -182,7 +182,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final void setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> entities) {
-    entityDefinition().getForeignKeyProperty(foreignKey);
+    entityDefinition().foreignKeyProperty(foreignKey);
     if (tableConditionModel.setEqualConditionValues(foreignKey, entities) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
@@ -200,7 +200,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final void replaceForeignKeyValues(EntityType foreignKeyEntityType, Collection<Entity> foreignKeyValues) {
-    List<ForeignKey> foreignKeys = entityDefinition().getForeignKeys(foreignKeyEntityType);
+    List<ForeignKey> foreignKeys = entityDefinition().foreignKeys(foreignKeyEntityType);
     for (Entity entity : items()) {
       for (ForeignKey foreignKey : foreignKeys) {
         for (Entity foreignKeyValue : foreignKeyValues) {
@@ -428,7 +428,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     columns.forEach(entityTableColumn -> {
       Attribute<?> attribute = ((AttributeTableColumn<?>) entityTableColumn).getAttribute();
       attributes.add(attribute);
-      header.add(entityDefinition().getProperty(attribute).caption());
+      header.add(entityDefinition().property(attribute).caption());
     });
 
     return Text.getDelimitedString(header, Entity.getStringValueList(attributes,
@@ -587,7 +587,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private boolean isColumnProperty(Attribute<?> attribute) {
-    Property<?> property = entityDefinition().getProperty(attribute);
+    Property<?> property = entityDefinition().property(attribute);
 
     return property instanceof ColumnProperty;
   }

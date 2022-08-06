@@ -314,7 +314,7 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
     EntityDefinition definition = connectionProvider.entities().getDefinition(entityType);
 
     return searchAttributes.stream()
-            .map(attribute -> definition.getProperty(attribute).caption())
+            .map(attribute -> definition.property(attribute).caption())
             .collect(joining(", "));
   }
 

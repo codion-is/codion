@@ -396,7 +396,7 @@ public final class EntitySearchField extends JTextField {
       EntityDefinition definition = searchModel.connectionProvider().entities().getDefinition(searchModel.entityType());
       for (Map.Entry<Attribute<String>, EntitySearchModel.SearchSettings> entry :
               searchModel.attributeSearchSettings().entrySet()) {
-        propertyComboBoxModel.addItem(Item.item(entry.getKey(), definition.getProperty(entry.getKey()).caption()));
+        propertyComboBoxModel.addItem(Item.item(entry.getKey(), definition.property(entry.getKey()).caption()));
         propertyBasePanel.add(createPropertyPanel(entry.getValue()), entry.getKey().name());
       }
       if (propertyComboBoxModel.getSize() > 0) {
