@@ -36,7 +36,7 @@ public interface EntityObjectMapperFactory {
    * @param domainType the domain type for which to find a mapper factory
    * @return a {@link EntityObjectMapperFactory} instance compatible with the given domain type.
    */
-  static EntityObjectMapperFactory entityObjectMapperFactory(DomainType domainType) {
+  static EntityObjectMapperFactory instance(DomainType domainType) {
     requireNonNull(domainType);
     ServiceLoader<EntityObjectMapperFactory> loader = ServiceLoader.load(EntityObjectMapperFactory.class);
     for (EntityObjectMapperFactory factory : loader) {

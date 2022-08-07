@@ -44,6 +44,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +95,6 @@ import java.util.Set;
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.util.Objects.requireNonNull;
 
@@ -130,6 +130,7 @@ public class EntityTablePanel extends JPanel {
   private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanel.class);
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
+  private static final FrameworkIcons FRAMEWORK_ICONS = FrameworkIcons.instance();
 
   /**
    * Specifies whether columns can be rearranged in tables<br>
@@ -662,7 +663,7 @@ public class EntityTablePanel extends JPanel {
     Controls updateControls = Controls.builder()
             .caption(FrameworkMessages.update())
             .enabledState(enabled)
-            .smallIcon(frameworkIcons().edit())
+            .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.updateSelectedTip())
             .build();
     Properties.sort(tableModel.entityDefinition().updatableProperties()).forEach(property -> {
@@ -687,7 +688,7 @@ public class EntityTablePanel extends JPanel {
             .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
             .description(FrameworkMessages.viewDependenciesTip())
             .mnemonic('W')
-            .smallIcon(frameworkIcons().dependencies())
+            .smallIcon(FrameworkIcons.instance().dependencies())
             .build();
   }
 
@@ -705,7 +706,7 @@ public class EntityTablePanel extends JPanel {
                     tableModel.editModel().deleteEnabledObserver(),
                     tableModel.selectionModel().selectionNotEmptyObserver()))
             .description(FrameworkMessages.deleteSelectedTip())
-            .smallIcon(frameworkIcons().delete())
+            .smallIcon(FrameworkIcons.instance().delete())
             .build();
   }
 
@@ -718,7 +719,7 @@ public class EntityTablePanel extends JPanel {
             .caption(printCaption)
             .description(printCaption)
             .mnemonic(Messages.printMnemonic())
-            .smallIcon(frameworkIcons().print())
+            .smallIcon(FrameworkIcons.instance().print())
             .build();
   }
 
@@ -730,7 +731,7 @@ public class EntityTablePanel extends JPanel {
             .caption(FrameworkMessages.refresh())
             .description(FrameworkMessages.refreshTip())
             .mnemonic(FrameworkMessages.refreshMnemonic())
-            .smallIcon(frameworkIcons().refresh())
+            .smallIcon(FrameworkIcons.instance().refresh())
             .enabledState(tableModel.refreshingObserver().reversedObserver())
             .build();
   }
@@ -743,7 +744,7 @@ public class EntityTablePanel extends JPanel {
             .caption(FrameworkMessages.clear())
             .description(FrameworkMessages.clearTip())
             .mnemonic(FrameworkMessages.clearMnemonic())
-            .smallIcon(frameworkIcons().clear())
+            .smallIcon(FrameworkIcons.instance().clear())
             .build();
   }
 
@@ -1193,7 +1194,7 @@ public class EntityTablePanel extends JPanel {
     Controls.Builder builder = Controls.builder()
             .caption(Messages.print())
             .mnemonic(Messages.printMnemonic())
-            .smallIcon(frameworkIcons().print());
+            .smallIcon(FrameworkIcons.instance().print());
     if (controls.containsKey(ControlCode.PRINT_TABLE)) {
       builder.control(controls.get(ControlCode.PRINT_TABLE));
     }
@@ -1323,14 +1324,14 @@ public class EntityTablePanel extends JPanel {
     }
 
     return Control.builder(this::toggleConditionPanel)
-            .smallIcon(frameworkIcons().filter())
+            .smallIcon(FrameworkIcons.instance().filter())
             .description(MESSAGES.getString("show_condition_panel"))
             .build();
   }
 
   private Control createToggleSummaryPanelControl() {
     return ToggleControl.builder(summaryPanelVisibleState)
-            .smallIcon(frameworkIcons().summary())
+            .smallIcon(FrameworkIcons.instance().summary())
             .description(MESSAGES.getString("toggle_summary_tip"))
             .build();
   }
@@ -1338,21 +1339,21 @@ public class EntityTablePanel extends JPanel {
   private Control createClearSelectionControl() {
     return Control.builder(tableModel.selectionModel()::clearSelection)
             .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
-            .smallIcon(frameworkIcons().clearSelection())
+            .smallIcon(FrameworkIcons.instance().clearSelection())
             .description(MESSAGES.getString("clear_selection_tip"))
             .build();
   }
 
   private Control createMoveSelectionDownControl() {
     return Control.builder(tableModel.selectionModel()::moveSelectionDown)
-            .smallIcon(frameworkIcons().down())
+            .smallIcon(FrameworkIcons.instance().down())
             .description(MESSAGES.getString("selection_down_tip"))
             .build();
   }
 
   private Control createMoveSelectionUpControl() {
     return Control.builder(tableModel.selectionModel()::moveSelectionUp)
-            .smallIcon(frameworkIcons().up())
+            .smallIcon(FrameworkIcons.instance().up())
             .description(MESSAGES.getString("selection_up_tip"))
             .build();
   }
@@ -1379,7 +1380,7 @@ public class EntityTablePanel extends JPanel {
   private Controls createCopyControls() {
     return Controls.builder()
             .caption(Messages.copy())
-            .smallIcon(frameworkIcons().copy())
+            .smallIcon(FrameworkIcons.instance().copy())
             .controls(createCopyCellControl(), createCopyTableWithHeaderControl())
             .build();
   }
@@ -1438,7 +1439,7 @@ public class EntityTablePanel extends JPanel {
   private JToolBar createRefreshToolBar() {
     Control refreshControl = Control.builder(tableModel::refresh)
             .enabledState(tableModel.tableConditionModel().conditionChangedObserver())
-            .smallIcon(frameworkIcons().refreshRequired())
+            .smallIcon(FrameworkIcons.instance().refreshRequired())
             .build();
 
     KeyEvents.builder(KeyEvent.VK_F5)
@@ -1615,7 +1616,7 @@ public class EntityTablePanel extends JPanel {
   private void addConditionControls(Controls popupControls) {
     Controls conditionControls = Controls.builder()
             .caption(FrameworkMessages.search())
-            .smallIcon(frameworkIcons().filter())
+            .smallIcon(FrameworkIcons.instance().filter())
             .build();
     if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
       conditionControls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));

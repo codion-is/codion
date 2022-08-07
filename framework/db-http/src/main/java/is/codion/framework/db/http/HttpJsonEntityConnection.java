@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 import is.codion.plugin.jackson.json.db.ConditionObjectMapper;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
+import is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,7 +50,6 @@ import java.util.UUID;
 
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.condition.Conditions.where;
-import static is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory.entityObjectMapperFactory;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -79,7 +79,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
                            HttpClientConnectionManager connectionManager) {
     super(domainTypeName, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
             "application/json", "/entities/json", connectionManager);
-    this.entityObjectMapper = entityObjectMapperFactory(entities().domainType()).createEntityObjectMapper(entities());
+    this.entityObjectMapper = EntityObjectMapperFactory.instance(entities().domainType()).createEntityObjectMapper(entities());
     this.conditionObjectMapper = new ConditionObjectMapper(entityObjectMapper);
   }
 

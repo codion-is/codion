@@ -179,7 +179,7 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public List<String> getProperties(String prefix) {
+  public List<String> properties(String prefix) {
     requireNonNull(prefix);
     return properties.stringPropertyNames().stream()
             .filter(propertyName -> propertyName.startsWith(prefix))
@@ -188,7 +188,7 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public List<String> getPropertyNames(String prefix) {
+  public List<String> propertyNames(String prefix) {
     requireNonNull(prefix);
     return properties.stringPropertyNames().stream()
             .filter(propertyName -> propertyName.startsWith(prefix))
@@ -202,7 +202,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public void removeAll(String prefix) {
-    List<String> propertyKeys = getPropertyNames(prefix);
+    List<String> propertyKeys = propertyNames(prefix);
     if (propertyKeys.stream().anyMatch(propertyValues::containsKey)) {
       throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
     }

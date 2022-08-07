@@ -9,13 +9,12 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 
 import java.awt.Dimension;
-
-import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 final class CountryTablePanel extends EntityTablePanel {
 
@@ -23,7 +22,7 @@ final class CountryTablePanel extends EntityTablePanel {
     super(tableModel);
     setControl(ControlCode.PRINT_TABLE, Control.builder(this::viewCountryReport)
             .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
-            .smallIcon(frameworkIcons().print())
+            .smallIcon(FrameworkIcons.instance().print())
             .build());
   }
 

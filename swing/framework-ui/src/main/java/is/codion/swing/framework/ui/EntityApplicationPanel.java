@@ -291,7 +291,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final ImageIcon applicationIcon() {
     if (applicationIcon == null) {
-      applicationIcon = FrameworkIcons.frameworkIcons().logo(DEFAULT_LOGO_SIZE);
+      applicationIcon = FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE);
     }
 
     return applicationIcon;
@@ -323,7 +323,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Shows a dialog for setting the log level
    */
   public final void setLogLevel() {
-    LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
+    LoggerProxy loggerProxy = LoggerProxy.instance();
     if (loggerProxy == LoggerProxy.NULL_PROXY) {
       throw new RuntimeException("No LoggerProxy implementation available");
     }
@@ -781,7 +781,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected JPanel createAboutPanel() {
     JPanel panel = new JPanel(Layouts.borderLayout());
     String versionString = Version.versionAndMetadataString();
-    panel.add(new JLabel(FrameworkIcons.frameworkIcons().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST);
+    panel.add(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST);
     Version version = clientVersion();
     JPanel versionMemoryPanel = new JPanel(Layouts.gridLayout(version == null ? 2 : 3, 2));
     versionMemoryPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -1396,7 +1396,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private static Map<Object, State> createLogLevelStateMap() {
-    LoggerProxy loggerProxy = LoggerProxy.loggerProxy();
+    LoggerProxy loggerProxy = LoggerProxy.instance();
     if (loggerProxy == LoggerProxy.NULL_PROXY) {
       return Collections.emptyMap();
     }

@@ -30,8 +30,8 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
     this.changeObserver = requireNonNull(changeObserver);
     this.propertyName = propertyName;
     this.valueOwner = requireNonNull(valueOwner, "valueOwner");
-    this.getMethod = getGetMethod(valueClass, propertyName, valueOwner.getClass());
-    this.setMethod = getSetMethod(valueClass, propertyName, valueOwner.getClass()).orElse(null);
+    this.getMethod = findGetMethod(valueClass, propertyName, valueOwner.getClass());
+    this.setMethod = findSetMethod(valueClass, propertyName, valueOwner.getClass()).orElse(null);
   }
 
   @Override
@@ -84,7 +84,7 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
     return changeObserver;
   }
 
-  static Optional<Method> getSetMethod(Class<?> valueType, String property, Class<?> ownerClass) {
+  static Optional<Method> findSetMethod(Class<?> valueType, String property, Class<?> ownerClass) {
     requireNonNull(ownerClass, "ownerClass");
     requireNonNull(valueType, "valueType");
     if (requireNonNull(property, "property").isEmpty()) {
@@ -101,7 +101,7 @@ final class DefaultPropertyValue<T> extends AbstractValue<T> {
     }
   }
 
-  static Method getGetMethod(Class<?> valueType, String property, Class<?> ownerClass) {
+  static Method findGetMethod(Class<?> valueType, String property, Class<?> ownerClass) {
     requireNonNull(valueType, "valueType");
     requireNonNull(property, "property");
     requireNonNull(ownerClass, "ownerClass");

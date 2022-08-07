@@ -20,6 +20,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 import is.codion.plugin.jackson.json.db.ConditionObjectMapper;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
+import is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -40,8 +41,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory.entityObjectMapperFactory;
 
 /**
  * A service for dealing with entities in JSON format.
@@ -568,7 +567,7 @@ public final class EntityJsonService extends AbstractEntityService {
 
   private EntityObjectMapper getEntityObjectMapper(Entities entities) {
     return entityObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
-            entityObjectMapperFactory(domainType).createEntityObjectMapper(entities));
+            EntityObjectMapperFactory.instance(domainType).createEntityObjectMapper(entities));
   }
 
   private ConditionObjectMapper getConditionObjectMapper(Entities entities) {

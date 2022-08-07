@@ -241,14 +241,14 @@ public interface PropertyStore {
    * @return all values associated with the properties with the given prefix
    * @param prefix the property prefix
    */
-  List<String> getProperties(String prefix);
+  List<String> properties(String prefix);
 
   /**
    * Returns all property names with the given prefix
    * @return all property names with the given prefix
    * @param prefix the property name prefix
    */
-  List<String> getPropertyNames(String prefix);
+  List<String> propertyNames(String prefix);
 
   /**
    * Returns true if this PropertyStore contains a value for the given property

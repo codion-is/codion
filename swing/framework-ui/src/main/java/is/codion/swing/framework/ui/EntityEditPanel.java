@@ -21,6 +21,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -657,7 +657,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .enabledState(State.and(activeState, editModel().refreshingObserver().reversedObserver()))
             .description(FrameworkMessages.refreshTip() + ALT_PREFIX + FrameworkMessages.refreshMnemonic() + ")")
             .mnemonic(FrameworkMessages.refreshMnemonic())
-            .smallIcon(frameworkIcons().refresh())
+            .smallIcon(FrameworkIcons.instance().refresh())
             .build();
   }
 
@@ -669,7 +669,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
                     editModel().entityNewObserver().reversedObserver()))
             .description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
             .mnemonic(FrameworkMessages.deleteMnemonic())
-            .smallIcon(frameworkIcons().delete())
+            .smallIcon(FrameworkIcons.instance().delete())
             .build();
   }
 
@@ -679,7 +679,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .enabledState(activeState)
             .description(FrameworkMessages.clearTip() + ALT_PREFIX + FrameworkMessages.clearMnemonic() + ")")
             .mnemonic(FrameworkMessages.clearMnemonic())
-            .smallIcon(frameworkIcons().clear())
+            .smallIcon(FrameworkIcons.instance().clear())
             .build();
   }
 
@@ -692,7 +692,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
                     editModel().modifiedObserver()))
             .description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
             .mnemonic(FrameworkMessages.updateMnemonic())
-            .smallIcon(frameworkIcons().update())
+            .smallIcon(FrameworkIcons.instance().update())
             .build();
   }
 
@@ -705,7 +705,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .enabledState(State.and(activeState, editModel().insertEnabledObserver()))
             .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic)
-            .smallIcon(frameworkIcons().add())
+            .smallIcon(FrameworkIcons.instance().add())
             .build();
   }
 

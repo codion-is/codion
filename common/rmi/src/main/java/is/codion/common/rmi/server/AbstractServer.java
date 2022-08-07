@@ -36,7 +36,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.rmi.server.AuxiliaryServerFactory.auxiliaryServerFactory;
 import static is.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 import static java.util.Collections.unmodifiableCollection;
@@ -397,7 +396,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   private void startAuxiliaryServers(Collection<String> auxiliaryServerFactoryClassNames) {
     try {
       for (String auxiliaryServerFactoryClassName : auxiliaryServerFactoryClassNames) {
-        AuxiliaryServerFactory<T, A, ?> auxiliaryServerFactory = auxiliaryServerFactory(auxiliaryServerFactoryClassName);
+        AuxiliaryServerFactory<T, A, ?> auxiliaryServerFactory = AuxiliaryServerFactory.instance(auxiliaryServerFactoryClassName);
         AuxiliaryServer auxiliaryServer = auxiliaryServerFactory.createServer(this);
         auxiliaryServers.add(auxiliaryServer);
         Callable<?> starter = () -> startAuxiliaryServer(auxiliaryServer);
@@ -489,7 +488,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   private void loadLoginProxies() {
-    LoginProxy.getLoginProxies().forEach(loginProxy -> {
+    LoginProxy.loginProxies().forEach(loginProxy -> {
       String clientTypeId = loginProxy.clientTypeId();
       LOG.info("Server loading " + (clientTypeId == null ? "shared" : "") + "login proxy '" + loginProxy.getClass().getName() + "' as service");
       addLoginProxy(loginProxy);

@@ -14,45 +14,45 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultPropertyValueTest {
 
   @Test
-  void getGetMethod() throws NoSuchMethodException {
-    Method getMethod = DefaultPropertyValue.getGetMethod(boolean.class, "booleanValue", Bean.class);
+  void findGetMethod() throws NoSuchMethodException {
+    Method getMethod = DefaultPropertyValue.findGetMethod(boolean.class, "booleanValue", Bean.class);
     assertEquals("isBooleanValue", getMethod.getName());
-    getMethod = DefaultPropertyValue.getGetMethod(int.class, "intValue", Bean.class);
+    getMethod = DefaultPropertyValue.findGetMethod(int.class, "intValue", Bean.class);
     assertEquals("getIntValue", getMethod.getName());
   }
 
   @Test
-  void getGetMethodBoolean() throws NoSuchMethodException {
-    Method getMethod = DefaultPropertyValue.getGetMethod(boolean.class, "anotherBooleanValue", Bean.class);
+  void findGetMethodBoolean() throws NoSuchMethodException {
+    Method getMethod = DefaultPropertyValue.findGetMethod(boolean.class, "anotherBooleanValue", Bean.class);
     assertEquals("getAnotherBooleanValue", getMethod.getName());
   }
 
   @Test
-  void getSetMethod() throws NoSuchMethodException {
-    Method setMethod = DefaultPropertyValue.getSetMethod(boolean.class, "booleanValue", Bean.class).orElse(null);
+  void findSetMethod() throws NoSuchMethodException {
+    Method setMethod = DefaultPropertyValue.findSetMethod(boolean.class, "booleanValue", Bean.class).orElse(null);
     assertEquals("setBooleanValue", setMethod.getName());
-    setMethod = DefaultPropertyValue.getSetMethod(int.class, "intValue", Bean.class).orElse(null);
+    setMethod = DefaultPropertyValue.findSetMethod(int.class, "intValue", Bean.class).orElse(null);
     assertEquals("setIntValue", setMethod.getName());
   }
 
   @Test
-  void getGetMethodInvalidMethod() throws NoSuchMethodException {
-    assertThrows(IllegalArgumentException.class, () -> DefaultPropertyValue.getGetMethod(boolean.class, "invalidValue", Bean.class));
+  void findGetMethodInvalidMethod() throws NoSuchMethodException {
+    assertThrows(IllegalArgumentException.class, () -> DefaultPropertyValue.findGetMethod(boolean.class, "invalidValue", Bean.class));
   }
 
   @Test
-  void getSetMethodInvalidMethod() throws NoSuchMethodException {
-    assertFalse(DefaultPropertyValue.getSetMethod(boolean.class, "invalidValue", Bean.class).isPresent());
+  void findSetMethodInvalidMethod() throws NoSuchMethodException {
+    assertFalse(DefaultPropertyValue.findSetMethod(boolean.class, "invalidValue", Bean.class).isPresent());
   }
 
   @Test
-  void getSetMethodNoProperty() throws NoSuchMethodException {
-    assertThrows(IllegalArgumentException.class, () -> DefaultPropertyValue.getSetMethod(boolean.class, "", Bean.class));
+  void findSetMethodNoProperty() throws NoSuchMethodException {
+    assertThrows(IllegalArgumentException.class, () -> DefaultPropertyValue.findSetMethod(boolean.class, "", Bean.class));
   }
 
   @Test
-  void getGetMethodNoProperty() throws NoSuchMethodException {
-    assertThrows(IllegalArgumentException.class, () -> DefaultPropertyValue.getGetMethod(boolean.class, "", Bean.class));
+  void findGetMethodNoProperty() throws NoSuchMethodException {
+    assertThrows(IllegalArgumentException.class, () -> DefaultPropertyValue.findGetMethod(boolean.class, "", Bean.class));
   }
 
   @Test

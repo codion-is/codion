@@ -39,7 +39,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    */
   public QueryLoadTestModel(Database database, User user, Collection<? extends QueryScenario> scenarios) throws DatabaseException {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE);
-    ConnectionPoolFactory poolProvider = ConnectionPoolFactory.connectionPoolFactory();
+    ConnectionPoolFactory poolProvider = ConnectionPoolFactory.instance();
     this.pool = poolProvider.createConnectionPoolWrapper(database, user);
     addShutdownListener(pool::close);
   }

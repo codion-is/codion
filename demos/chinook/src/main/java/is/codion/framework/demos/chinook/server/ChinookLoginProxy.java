@@ -55,7 +55,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   private final ConnectionPoolWrapper connectionPool;
 
   public ChinookLoginProxy() throws DatabaseException {
-    connectionPool = ConnectionPoolFactory.connectionPoolFactory().createConnectionPoolWrapper(database, databaseUser);
+    connectionPool = ConnectionPoolFactory.instance().createConnectionPoolWrapper(database, databaseUser);
   }
 
   /**
