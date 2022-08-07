@@ -99,6 +99,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -1372,10 +1373,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * the user credentials have expired or if no authentication server is running
    */
   protected static User getUser(String[] args) {
+    Optional<UUID> token = CredentialsProvider.authenticationToken(args);
     try {
-      CredentialsProvider provider = CredentialsProvider.credentialsProvider();
-      if (provider != null) {
-        return provider.credentials(provider.getAuthenticationToken(args));
+      if (token.isPresent()) {
+        Optional<CredentialsProvider> optionalProvider = CredentialsProvider.instance();
+        if (optionalProvider.isPresent()) {
+          return optionalProvider.get().credentials(token.get()).orElse(null);
+        }
       }
 
       LOG.debug("No CredentialsProvider available");

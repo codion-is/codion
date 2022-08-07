@@ -8349,3 +8349,4 @@
   DatabaseFactory.database() moved to Database and renamed instance()
   DatabaseFactory.databaseFactory() renamed instance()
   Database.instance() now closes connection pools for the existing database when replaced, synchronization added
+  CredentialsProvider and CredentialsServer refactored

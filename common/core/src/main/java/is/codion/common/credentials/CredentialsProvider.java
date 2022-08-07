@@ -7,6 +7,7 @@ import is.codion.common.user.User;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.UUID;
 
@@ -21,44 +22,43 @@ public interface CredentialsProvider {
   String AUTHENTICATION_TOKEN_DELIMITER = ":";
 
   /**
+   * Performs an authentication lookup, using the default registry port (1099).
+   * @param authenticationToken the authentication token
+   * @return the User credentials associated with the {@code authenticationToken},
+   * an empty Optional if the user credentials were not found or have expired
+   * @throws CredentialsException in case of an exception while fetching credentials, such as no credentials provider found
+   */
+  Optional<User> credentials(UUID authenticationToken) throws CredentialsException;
+
+  /**
+   * Returns the first {@link CredentialsProvider} implementation service found.
+   * @return a {@link CredentialsProvider} implementation, an empty Optional if none is available
+   */
+  static Optional<CredentialsProvider> instance() {
+    ServiceLoader<CredentialsProvider> loader = ServiceLoader.load(CredentialsProvider.class);
+    Iterator<CredentialsProvider> providerIterator = loader.iterator();
+    if (providerIterator.hasNext()) {
+      return Optional.of(providerIterator.next());
+    }
+
+    return Optional.empty();
+  }
+
+  /**
    * Finds and returns an authentication token in the given String array
-   * @param args the array
-   * @return the authentication token or null if none is found
+   * @param args the argument array
+   * @return the authentication token or an empty Optional if none is found
    * @see #AUTHENTICATION_TOKEN_PREFIX
    */
-  default UUID getAuthenticationToken(String[] args) {
+  static Optional<UUID> authenticationToken(String[] args) {
     if (args == null) {
-      return null;
+      return Optional.empty();
     }
 
     return Arrays.stream(args)
             .filter(CredentialsProvider::isAuthenticationToken)
             .findFirst()
-            .map(CredentialsProvider::parseAuthenticationToken)
-            .orElse(null);
-  }
-
-  /**
-   * Performs an authentication lookup, using the default registry port (1099).
-   * @param authenticationToken the authentication token
-   * @return the User credentials associated with the {@code authenticationToken}, null if authenticationToken
-   * was null, the user credentials were not found or have expired
-   * @throws CredentialsException in case of an exception while fetching credentials, such as no credentials provider found
-   */
-  User credentials(UUID authenticationToken) throws CredentialsException;
-
-  /**
-   * Returns the first {@link CredentialsProvider} implementation service found.
-   * @return a {@link CredentialsProvider} implementation, null if none is available
-   */
-  static CredentialsProvider credentialsProvider() {
-    ServiceLoader<CredentialsProvider> loader = ServiceLoader.load(CredentialsProvider.class);
-    Iterator<CredentialsProvider> providerIterator = loader.iterator();
-    if (providerIterator.hasNext()) {
-      return providerIterator.next();
-    }
-
-    return null;
+            .map(CredentialsProvider::parseAuthenticationToken);
   }
 
   /**

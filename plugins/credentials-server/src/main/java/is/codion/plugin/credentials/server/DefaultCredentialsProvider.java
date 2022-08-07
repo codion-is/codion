@@ -17,6 +17,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -30,14 +31,13 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
   private static final Logger LOG = LoggerFactory.getLogger(DefaultCredentialsProvider.class);
 
   @Override
-  public User credentials(UUID authenticationToken) throws CredentialsException {
-    LOG.debug("DefaultCredentialsProvider.getCredentials(" + authenticationToken + ")");
-    if (authenticationToken == null) {
-      return null;
-    }
+  public Optional<User> credentials(UUID authenticationToken) throws CredentialsException {
+    requireNonNull(authenticationToken);
+    LOG.debug("DefaultCredentialsProvider.credentials(" + authenticationToken + ")");
     Remote credentialsService = getCredentialsService(getRegistry(CredentialsService.REGISTRY_PORT.getOrThrow()));
     try {
-      return ((CredentialsService) credentialsService).user(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
+      return Optional.ofNullable(((CredentialsService) credentialsService)
+              .user(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX)));
     }
     catch (RemoteException e) {
       throw new ProviderNotReachableException(e.getMessage(), e);

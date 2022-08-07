@@ -6,7 +6,7 @@ package is.codion.common.credentials;
 /**
  * An exception occurring while fetching credentials.
  */
-public class CredentialsException extends Exception {
+public class CredentialsException extends RuntimeException {
 
   protected CredentialsException(String message, Throwable cause) {
     super(message, cause);
