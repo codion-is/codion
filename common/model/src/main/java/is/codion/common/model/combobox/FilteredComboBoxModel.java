@@ -197,7 +197,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
      * @param item the item, never null
      * @return the value associated with the given item
      */
-    V getValue(T item);
+    V value(T item);
 
     /**
      * Returns the {@link Predicate} to use when searching for the given value

@@ -8353,3 +8353,5 @@
   Static factory methods using a ServiceLoader lookup renamed instance() or similar
   common.db, few more get prefixes removed
   AbstractConnectionPoolWrapper.size() renamed available()
+  FilteredComboBoxModel.Finder.getValue() renamed value()
+  AbstractServer.getRegistry() renamed registry()

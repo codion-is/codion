@@ -452,7 +452,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
 
     @Override
-    public T getValue(Entity item) {
+    public T value(Entity item) {
       return item.get(attribute);
     }
 

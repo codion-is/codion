@@ -343,7 +343,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
             .collect(toList());
   }
 
-  protected final Registry getRegistry() throws RemoteException {
+  protected final Registry registry() throws RemoteException {
     if (registry == null) {
       this.registry = LocateRegistry.createRegistry(configuration.registryPort());
     }

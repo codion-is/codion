@@ -532,7 +532,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
         return null;
       }
 
-      return finder.getValue(selectedValue());
+      return finder.value(selectedValue());
     }
 
     @Override
