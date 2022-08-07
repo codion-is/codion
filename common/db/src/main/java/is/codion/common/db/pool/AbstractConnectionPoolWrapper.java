@@ -129,19 +129,19 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
   }
 
   /**
-   * @return the number of connections in this pool
+   * @return the number of available connections in this pool
    */
-  protected abstract int getSize();
+  protected abstract int available();
 
   /**
    * @return the number of connections in active use
    */
-  protected abstract int getInUse();
+  protected abstract int inUse();
 
   /**
-   * @return the number of waiting connections
+   * @return the number of waiting connection requests
    */
-  protected abstract int getWaiting();
+  protected abstract int waiting();
 
   /**
    * Updates the given state instance with the current pool state.
@@ -149,7 +149,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
    * @return the updated state
    */
   final DefaultConnectionPoolState updateState(DefaultConnectionPoolState state) {
-    return state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
+    return state.set(System.currentTimeMillis(), available(), inUse(), waiting());
   }
 
   /**

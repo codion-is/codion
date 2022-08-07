@@ -92,12 +92,12 @@ public final class DefaultPropertyStoreTest {
     PropertyValue<Boolean> booleanValue = store.booleanValue("boolean.property", false);
     assertTrue(booleanValue.get());
 
-    List<String> intProperties = store.getPropertyNames("int.");
+    List<String> intProperties = store.propertyNames("int.");
     assertTrue(intProperties.contains("int.property1"));
     assertTrue(intProperties.contains("int.property2"));
     assertTrue(intProperties.contains("int.property3"));
 
-    List<String> intPropertyValues = store.getProperties("int.");
+    List<String> intPropertyValues = store.properties("int.");
     assertTrue(intPropertyValues.contains("42"));
     assertTrue(intPropertyValues.contains("0"));
     assertTrue(intPropertyValues.contains("44"));

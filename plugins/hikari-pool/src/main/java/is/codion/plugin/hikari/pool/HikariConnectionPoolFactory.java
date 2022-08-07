@@ -99,12 +99,12 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    protected int getSize() {
+    protected int available() {
       return getPool().getIdleConnections();
     }
 
     @Override
-    protected int getInUse() {
+    protected int inUse() {
       return getPool().getActiveConnections();
     }
 
@@ -124,7 +124,7 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    protected int getWaiting() {
+    protected int waiting() {
       return getPool().getThreadsAwaitingConnection();
     }
   }

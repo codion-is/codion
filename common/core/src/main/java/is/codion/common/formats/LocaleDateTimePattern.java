@@ -24,11 +24,11 @@ import java.util.Locale;
  * Locale iceland = new Locale("is", "IS");
  * Locale us = new Locale("en", "US");
  *
- * pattern.getDatePattern(iceland);    // "dd-MM-yyyy"
- * pattern.getDatePattern(us);         // "MM-dd-yyyy"
+ * pattern.datePattern(iceland);    // "dd-MM-yyyy"
+ * pattern.datePattern(us);         // "MM-dd-yyyy"
  *
- * pattern.getDateTimePattern(iceland);// "dd-MM-yyyy HH:mm"
- * pattern.getDateTimePattern(us)     ;// "MM-dd-yyyy HH:mm"
+ * pattern.dateTimePattern(iceland);// "dd-MM-yyyy HH:mm"
+ * pattern.dateTimePattern(us)     ;// "MM-dd-yyyy HH:mm"
  * </pre>
  * @see #builder()
  */

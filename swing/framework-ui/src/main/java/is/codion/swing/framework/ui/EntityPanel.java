@@ -21,6 +21,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -56,7 +57,6 @@ import java.util.function.Consumer;
 
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
-import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
@@ -1366,7 +1366,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   private Control createToggleEditPanelControl() {
     return Control.builder(this::toggleEditPanelState)
-            .smallIcon(frameworkIcons().editPanel())
+            .smallIcon(FrameworkIcons.instance().editPanel())
             .description(MESSAGES.getString("toggle_edit"))
             .build();
   }
@@ -1376,7 +1376,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   private Control createToggleDetailPanelControl() {
     return Control.builder(this::toggleDetailPanelState)
-            .smallIcon(frameworkIcons().detail())
+            .smallIcon(FrameworkIcons.instance().detail())
             .description(MESSAGES.getString("toggle_detail"))
             .build();
   }
@@ -1393,7 +1393,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     Controls.Builder controls = Controls.builder()
             .caption(MESSAGES.getString(MSG_DETAIL_TABLES))
-            .smallIcon(frameworkIcons().detail());
+            .smallIcon(FrameworkIcons.instance().detail());
     detailEntityPanels.forEach(detailPanel ->
             controls.control(Control.builder(createDetailPanelCommand(status, detailPanel))
                     .caption(detailPanel.getCaption())));

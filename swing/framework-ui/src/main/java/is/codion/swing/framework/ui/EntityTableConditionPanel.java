@@ -18,6 +18,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
@@ -25,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -120,7 +120,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   public Controls controls() {
     Controls.Builder controls = Controls.builder()
             .caption(FrameworkMessages.search())
-            .smallIcon(frameworkIcons().filter());
+            .smallIcon(FrameworkIcons.instance().filter());
     if (hasAdvancedView()) {
       controls.control(ToggleControl.builder(advancedState())
               .caption(FrameworkMessages.advanced()));

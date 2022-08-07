@@ -123,8 +123,8 @@ final class DefaultConnectionPoolCounter {
     long current = System.currentTimeMillis();
     statistics.setTimestamp(current);
     statistics.setResetDate(resetDate.get());
-    statistics.setAvailableInPool(connectionPool.getSize());
-    statistics.setConnectionsInUse(connectionPool.getInUse());
+    statistics.setAvailableInPool(connectionPool.available());
+    statistics.setConnectionsInUse(connectionPool.inUse());
     statistics.setConnectionsCreated(connectionsCreated.get());
     statistics.setConnectionsDestroyed(connectionsDestroyed.get());
     statistics.setCreationDate(creationDate);

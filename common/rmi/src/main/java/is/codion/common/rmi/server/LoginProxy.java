@@ -48,7 +48,7 @@ public interface LoginProxy {
   /**
    * @return a list containing all the LoginProxies registered with {@link ServiceLoader}.
    */
-  static List<LoginProxy> getLoginProxies() {
+  static List<LoginProxy> loginProxies() {
     List<LoginProxy> loginProxies = new ArrayList<>();
     ServiceLoader<LoginProxy> loader = ServiceLoader.load(LoginProxy.class);
     for (LoginProxy loginProxy : loader) {

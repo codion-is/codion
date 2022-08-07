@@ -137,7 +137,7 @@ public interface FrameworkIcons extends Logos {
    * {@link FrameworkIcons#FRAMEWORK_ICONS_CLASSNAME}.
    * @throws IllegalArgumentException in case no such implementation is found
    */
-  static FrameworkIcons frameworkIcons() {
+  static FrameworkIcons instance() {
     String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.get();
     ServiceLoader<FrameworkIcons> loader = ServiceLoader.load(FrameworkIcons.class);
     for (FrameworkIcons icons : loader) {

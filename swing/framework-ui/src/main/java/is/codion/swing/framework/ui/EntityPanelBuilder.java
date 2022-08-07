@@ -20,6 +20,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -37,7 +38,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Objects.requireNonNull;
 
 final class EntityPanelBuilder implements EntityPanel.Builder {
@@ -421,7 +421,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     private InsertEntityAction(JComponent component, EntityConnectionProvider connectionProvider,
                                EventDataListener<List<Entity>> insertListener) {
-      super("", frameworkIcons().add());
+      super("", FrameworkIcons.instance().add());
       this.component = component;
       this.connectionProvider = connectionProvider;
       this.insertListener = insertListener;

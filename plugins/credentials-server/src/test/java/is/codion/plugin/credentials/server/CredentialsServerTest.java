@@ -11,17 +11,19 @@ import org.junit.jupiter.api.Test;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
+import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class CredentialsServerTest {
 
   @Test
   void test() throws AlreadyBoundException, RemoteException, InterruptedException, CredentialsException {
     try {
-      CredentialsProvider provider = CredentialsProvider.credentialsProvider();
+      Optional<CredentialsProvider> optionalProvider = CredentialsProvider.instance();
+      assertTrue(optionalProvider.isPresent());
+      CredentialsProvider provider = optionalProvider.get();
 
       CredentialsService.REGISTRY_PORT.set(12345);
       System.setProperty("java.rmi.server.hostname", CredentialsServer.LOCALHOST);
@@ -32,23 +34,29 @@ public final class CredentialsServerTest {
 
       UUID token = UUID.randomUUID();
       server.addAuthenticationToken(token, scott);
-      User userCredentials = provider.credentials(token);
+      Optional<User> optionalUser = provider.credentials(token);
+      assertTrue(optionalUser.isPresent());
+      User userCredentials = optionalUser.get();
       assertEquals(scott, userCredentials);
-      assertNull(provider.credentials(token));
+      assertFalse(provider.credentials(token).isPresent());
 
       token = UUID.randomUUID();
       server.addAuthenticationToken(token, scott);
-      userCredentials = provider.credentials(provider.getAuthenticationToken(
-              new String[] {"bla", CredentialsProvider.AUTHENTICATION_TOKEN_PREFIX + ":" + token, "bla"}));
+      Optional<UUID> optionalUUID = CredentialsProvider.authenticationToken(
+              new String[]{"bla", CredentialsProvider.AUTHENTICATION_TOKEN_PREFIX + ":" + token, "bla"});
+      assertTrue(optionalUUID.isPresent());
+      optionalUser = provider.credentials(optionalUUID.get());
+      assertTrue(optionalUser.isPresent());
+      userCredentials = optionalUser.get();
       assertEquals(scott, userCredentials);
-      assertNull(provider.credentials(token));
+      assertFalse(provider.credentials(token).isPresent());
 
-      assertNull(provider.credentials(provider.getAuthenticationToken(new String[] {"bla", "bla"})));
+      assertThrows(NullPointerException.class, () -> provider.credentials(null));
 
       server.addAuthenticationToken(token, scott);
       Thread.sleep(1300);
       //token expired and cleaned up
-      assertNull(provider.credentials(token));
+      assertFalse(provider.credentials(token).isPresent());
       server.exit();
       System.clearProperty("java.rmi.server.hostname");
     }

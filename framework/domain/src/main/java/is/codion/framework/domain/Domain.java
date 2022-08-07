@@ -93,7 +93,7 @@ public interface Domain {
   /**
    * @return a list containing all the Domains registered with {@link ServiceLoader}.
    */
-  static List<Domain> getDomains() {
+  static List<Domain> domains() {
     List<Domain> domains = new ArrayList<>();
     ServiceLoader<Domain> loader = ServiceLoader.load(Domain.class);
     for (Domain domain : loader) {
@@ -108,9 +108,9 @@ public interface Domain {
    * @return a {@link Domain} implementation with the given name, if found
    * @see DomainType#name()
    */
-  static Optional<Domain> getInstanceByName(String name) {
+  static Optional<Domain> instanceByName(String name) {
     requireNonNull(name);
-    for (Domain domain : getDomains()) {
+    for (Domain domain : domains()) {
       if (domain.type().name().equals(name)) {
         return Optional.of(domain);
       }
@@ -124,9 +124,9 @@ public interface Domain {
    * @return a {@link Domain} implementation of the given type, if found
    * @see DomainType#name()
    */
-  static Optional<Domain> getInstanceByClassName(String className) {
+  static Optional<Domain> instanceByClassName(String className) {
     requireNonNull(className);
-    for (Domain domain : getDomains()) {
+    for (Domain domain : domains()) {
       if (domain.getClass().getName().equals(className)) {
         return Optional.of(domain);
       }

@@ -30,25 +30,25 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
 
   @Override
   public final String toString() {
-    return getFullReportPath();
+    return fullReportPath();
   }
 
   @Override
   public final boolean equals(Object obj) {
-    return obj instanceof AbstractReport && ((AbstractReport<?, ?, ?>) obj).getFullReportPath().equals(getFullReportPath());
+    return obj instanceof AbstractReport && ((AbstractReport<?, ?, ?>) obj).fullReportPath().equals(fullReportPath());
   }
 
   @Override
   public final int hashCode() {
-    return getFullReportPath().hashCode();
+    return fullReportPath().hashCode();
   }
 
   /**
-   * This default implementation uses {@link Report#getFullReportPath(String)}.
+   * This default implementation uses {@link Report#fullReportPath(String)}.
    * @return a unique path for this report
    */
-  protected String getFullReportPath() {
-    return Report.getFullReportPath(reportPath);
+  protected String fullReportPath() {
+    return Report.fullReportPath(reportPath);
   }
 
   /**
@@ -60,7 +60,7 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
    */
   protected final T loadAndCacheReport() throws ReportException {
     if (CACHE_REPORTS.get()) {
-      return (T) REPORT_CACHE.computeIfAbsent(getFullReportPath(), fullPath -> {
+      return (T) REPORT_CACHE.computeIfAbsent(fullReportPath(), fullPath -> {
         try {
           return loadReport();
         }

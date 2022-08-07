@@ -316,7 +316,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param registryPort the registry port
    */
   private void bindToRegistry(int registryPort) throws RemoteException {
-    getRegistry().rebind(serverInformation().serverName(), this);
+    registry().rebind(serverInformation().serverName(), this);
     String connectInfo = serverInformation().serverName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
@@ -342,7 +342,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
   private static Map<DomainType, Domain> loadDomainModels(Collection<String> domainModelClassNames) throws Throwable {
     Map<DomainType, Domain> domains = new HashMap<>();
-    List<Domain> serviceDomains = Domain.getDomains();
+    List<Domain> serviceDomains = Domain.domains();
     try {
       serviceDomains.forEach(domain -> {
         LOG.info("Server loading and registering domain model '" + domain.type() + "' as a service");
@@ -371,10 +371,10 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     if (!connectionPoolUsers.isEmpty()) {
       ConnectionPoolFactory poolFactory;
       if (Util.nullOrEmpty(connectionPoolFactoryClassName)) {
-        poolFactory = ConnectionPoolFactory.connectionPoolFactory();
+        poolFactory = ConnectionPoolFactory.instance();
       }
       else {
-        poolFactory = ConnectionPoolFactory.connectionPoolFactory(connectionPoolFactoryClassName);
+        poolFactory = ConnectionPoolFactory.instance(connectionPoolFactoryClassName);
       }
       for (User user : connectionPoolUsers) {
         database.initializeConnectionPool(poolFactory, user);

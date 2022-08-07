@@ -378,7 +378,7 @@ public final class ApplicationPanel extends JPanel {
   private static final class IntegerItemFinder implements Finder<Item<Integer>, Integer> {
 
     @Override
-    public Integer getValue(Item<Integer> item) {
+    public Integer value(Item<Integer> item) {
       return item.value();
     }
 

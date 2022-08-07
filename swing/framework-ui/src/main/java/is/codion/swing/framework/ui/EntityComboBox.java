@@ -19,13 +19,13 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -70,7 +70,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
    */
   public Control createForeignKeyFilterControl(ForeignKey foreignKey) {
     return Control.builder(createForeignKeyFilterCommand(requireNonNull(foreignKey)))
-            .smallIcon(frameworkIcons().filter())
+            .smallIcon(FrameworkIcons.instance().filter())
             .build();
   }
 

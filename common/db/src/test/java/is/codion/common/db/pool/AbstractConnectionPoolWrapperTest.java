@@ -21,10 +21,10 @@ public final class AbstractConnectionPoolWrapperTest {
   void test() throws DatabaseException, SQLException, InterruptedException {
     Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", "src/test/sql/create_h2_db.sql");
 
-    assertThrows(IllegalStateException.class, () -> ConnectionPoolFactory.connectionPoolFactory("is.codion.none.existing.Factory"));
+    assertThrows(IllegalStateException.class, () -> ConnectionPoolFactory.instance("is.codion.none.existing.Factory"));
 
-    ConnectionPoolFactory poolFactory = ConnectionPoolFactory.connectionPoolFactory();
-    assertNotNull(ConnectionPoolFactory.connectionPoolFactory("is.codion.plugin.hikari.pool.HikariConnectionPoolFactory"));
+    ConnectionPoolFactory poolFactory = ConnectionPoolFactory.instance();
+    assertNotNull(ConnectionPoolFactory.instance("is.codion.plugin.hikari.pool.HikariConnectionPoolFactory"));
 
     User user = User.parse("scott:tiger");
     long startTime = System.currentTimeMillis();

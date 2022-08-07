@@ -6,13 +6,12 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import javax.swing.JTable;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 final class LookupTablePanel extends EntityTablePanel {
 
@@ -24,7 +23,7 @@ final class LookupTablePanel extends EntityTablePanel {
     setControl(ControlCode.CLEAR, Control.builder(this::clearTableAndConditions)
             .caption("Clear")
             .mnemonic('C')
-            .smallIcon(frameworkIcons().clear())
+            .smallIcon(FrameworkIcons.instance().clear())
             .build());
   }
 
