@@ -99,7 +99,7 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    protected int size() {
+    protected int available() {
       return getPool().getIdleConnections();
     }
 
