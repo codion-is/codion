@@ -31,17 +31,17 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
   private final String delimiter;
   private final boolean fourDigitYear;
-  private final String timeFormat;
+  private final String timePattern;
 
   private DefaultLocaleDateTimePattern(DefaultBuilder builder) {
     this.delimiter = requireNonNull(builder.delimiter, "delimiter");
     this.fourDigitYear = builder.fourDigitYear;
-    this.timeFormat = builder.timeFormat;
+    this.timePattern = builder.timePattern;
   }
 
   @Override
   public String timePattern() {
-    return timeFormat;
+    return timePattern;
   }
 
   @Override
@@ -61,7 +61,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
   @Override
   public String dateTimePattern(Locale locale) {
-    return dateTimePattern(locale, delimiter, fourDigitYear, timeFormat);
+    return dateTimePattern(locale, delimiter, fourDigitYear, timePattern);
   }
 
   @Override
@@ -75,6 +75,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
   private static String dateTimePattern(Locale locale, String delimiter, boolean fourDigitYear,
                                         String timePattern) {
+    requireNonNull(locale);
     String datePattern = DateTimeFormatterBuilder.
             getLocalizedDateTimePattern(FormatStyle.SHORT, null, IsoChronology.INSTANCE, locale).toLowerCase(locale);
     List<String> pattern = new ArrayList<>(Arrays.asList(null, null, null));
@@ -121,7 +122,7 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
     private String delimiter = "";
     private boolean fourDigitYear = true;
-    private String timeFormat;
+    private String timePattern;
 
     @Override
     public Builder delimiter(String delimiter) {
@@ -152,25 +153,25 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
     @Override
     public Builder yearFourDigits() {
-      this.fourDigitYear = true ;
+      this.fourDigitYear = true;
       return this;
     }
 
     @Override
     public Builder hoursMinutes() {
-      this.timeFormat = HOURS_MINUTES;
+      this.timePattern = HOURS_MINUTES;
       return this;
     }
 
     @Override
     public Builder hoursMinutesSeconds() {
-      this.timeFormat = HOURS_MINUTES_SECONDS;
+      this.timePattern = HOURS_MINUTES_SECONDS;
       return this;
     }
 
     @Override
     public Builder hoursMinutesSecondsMilliseconds() {
-      this.timeFormat = HOURS_MINUTES_SECONDS_MILLISECONDS;
+      this.timePattern = HOURS_MINUTES_SECONDS_MILLISECONDS;
       return this;
     }
 
