@@ -48,7 +48,7 @@ public interface Report<T, R, P> {
    * @return the value associated with {@link Report#REPORT_PATH}
    * @throws IllegalStateException in case it is not specified
    */
-  static String getReportPath() {
+  static String reportPath() {
     return REPORT_PATH.getOrThrow();
   }
 
@@ -59,9 +59,9 @@ public interface Report<T, R, P> {
    * @return a full report path
    * @throws IllegalStateException in case {@link Report#REPORT_PATH} is not specified
    */
-  static String getFullReportPath(String reportPath) {
+  static String fullReportPath(String reportPath) {
     final String slash = "/";
-    String reportLocation = getReportPath();
+    String reportLocation = reportPath();
     StringBuilder builder = new StringBuilder(reportLocation);
     if (!reportLocation.endsWith(slash) && !reportPath.startsWith(slash)) {
       builder.append(slash);

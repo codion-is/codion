@@ -8351,3 +8351,4 @@
   Database.instance() now closes connection pools for the existing database when replaced, synchronization added
   CredentialsProvider and CredentialsServer refactored
   Static factory methods using a ServiceLoader lookup renamed instance() or similar
+  common.db, few more get prefixes removed

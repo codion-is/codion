@@ -30,7 +30,7 @@ final class ClassPathJRReport extends AbstractJRReport {
   }
 
   @Override
-  protected String getFullReportPath() {
+  protected String fullReportPath() {
     return resourceClass.getName() + " " + reportPath;
   }
 }

@@ -119,17 +119,17 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
     }
 
     @Override
-    protected int getSize() {
+    protected int size() {
       return getPool().getSize() - getPool().getActive();
     }
 
     @Override
-    protected int getInUse() {
+    protected int inUse() {
       return getPool().getActive();
     }
 
     @Override
-    protected int getWaiting() {
+    protected int waiting() {
       return getPool().getWaitCount();
     }
   }
