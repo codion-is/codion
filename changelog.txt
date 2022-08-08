@@ -8356,3 +8356,4 @@
   FilteredComboBoxModel.Finder.getValue() renamed value()
   AbstractServer.getRegistry() renamed registry()
   EntityEditPanelTestUnit.getEditModel() renamed editModel(), FxEntityListModel.getUserPreferenceKey() renamed userPreferencesKey()
+  EntityComboBoxModel.selectEntityByKey() renamed selectByKey(), EntityPanel, EntityEditPanel, EntityTablePanel, more get prefixes removed

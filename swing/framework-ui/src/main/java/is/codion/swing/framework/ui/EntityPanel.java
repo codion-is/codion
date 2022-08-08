@@ -592,7 +592,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       for (SwingEntityModel linkedModel : new ArrayList<>(entityModel.linkedDetailModels())) {
         entityModel.removeLinkedDetailModel(linkedModel);
       }
-      entityModel.addLinkedDetailModel(getTabbedDetailPanel().model());
+      entityModel.addLinkedDetailModel(selectedDetailPanel().model());
     }
   }
 
@@ -818,7 +818,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     if (state != HIDDEN) {
-      getTabbedDetailPanel().initializePanel();
+      selectedDetailPanel().initializePanel();
     }
 
     if (detailPanelState == WINDOW) {//if we are leaving the WINDOW state, hide all child detail windows
@@ -830,10 +830,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     if (state == HIDDEN) {
-      entityModel.removeLinkedDetailModel(getTabbedDetailPanel().entityModel);
+      entityModel.removeLinkedDetailModel(selectedDetailPanel().entityModel);
     }
     else {
-      entityModel.addLinkedDetailModel(getTabbedDetailPanel().entityModel);
+      entityModel.addLinkedDetailModel(selectedDetailPanel().entityModel);
     }
 
     detailPanelState = state;
@@ -999,7 +999,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * |__________________|_____________|
    * </pre>
    * @see #editControlPanel()
-   * @see #getEditControlTablePanel()
+   * @see #editControlTablePanel()
    */
   protected void initializeUI() {
     if (editPanel != null) {
@@ -1079,7 +1079,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Returns the base panel containing the edit and table panels (north, center).
    * @return the edit and table base panel
    */
-  protected final JPanel getEditControlTablePanel() {
+  protected final JPanel editControlTablePanel() {
     return editControlTablePanel;
   }
 
@@ -1324,7 +1324,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     for (EntityPanel detailPanel : detailEntityPanels) {
       tabbedPane.addTab(detailPanel.caption, detailPanel);
     }
-    tabbedPane.addChangeListener(e -> getTabbedDetailPanel().activatePanel());
+    tabbedPane.addChangeListener(e -> selectedDetailPanel().activatePanel());
     if (showDetailPanelControls) {
       tabbedPane.addMouseListener(new MouseAdapter() {
         @Override
@@ -1444,7 +1444,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private void showDetailWindow() {
     Utilities.getParentWindow(this).ifPresent(parent -> {
       Dimension parentSize = parent.getSize();
-      Dimension size = getDetailWindowSize(parentSize);
+      Dimension size = detailWindowSize(parentSize);
       Point parentLocation = parent.getLocation();
       Point location = new Point(parentLocation.x + (parentSize.width - size.width),
               parentLocation.y + (parentSize.height - size.height) - DETAIL_WINDOW_OFFSET);
@@ -1459,7 +1459,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param parentSize the size of the parent window
    * @return the size to use when showing the detail window
    */
-  private Dimension getDetailWindowSize(Dimension parentSize) {
+  private Dimension detailWindowSize(Dimension parentSize) {
     return new Dimension((int) (parentSize.width / DETAIL_WINDOW_SIZE_RATIO), containsEditPanel() ?
             (int) (parentSize.height / DETAIL_WINDOW_SIZE_RATIO) : parentSize.height - DETAIL_WINDOW_HEIGHT_OFFSET);
   }
@@ -1476,7 +1476,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the detail panel selected in the detail tab pane.
    * @throws IllegalStateException in case no detail panels are defined
    */
-  private EntityPanel getTabbedDetailPanel() {
+  private EntityPanel selectedDetailPanel() {
     if (detailPanelTabbedPane == null) {
       throw new IllegalStateException("No detail panels available");
     }
@@ -1559,9 +1559,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     addComponentListener(new EntityPanelComponentAdapter());
 //    if (containsEditPanel() && editPanel.containsControl(ControlCode.REFRESH)) {
 //      final Control refreshControl = editPanel.getControl(ControlCode.REFRESH);
-//      getTableModel().getTableConditionModel().getConditionChangedObserver().addDataListener(changed -> {
+//      tableModel().tableConditionModel().conditionChangedObserver().addDataListener(changed -> {
 //        refreshControl.setForeground(changed ? Color.RED.darker() : UIManager.getColor("Button.foreground"));
-//        refreshControl.setSmallIcon(changed ? FrameworkIcons.frameworkIcons().refreshRequired() : FrameworkIcons.frameworkIcons().refresh());
+//        refreshControl.setSmallIcon(changed ? FrameworkIcons.instance().refreshRequired() : FrameworkIcons.instance().refresh());
 //      });
 //    }
   }
