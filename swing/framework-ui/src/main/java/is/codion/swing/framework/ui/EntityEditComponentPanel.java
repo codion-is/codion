@@ -231,7 +231,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   public final void requestInitialFocus() {
     if (isVisible()) {
-      requestFocus(getInitialFocusComponent());
+      requestFocus(initialFocusComponent());
     }
   }
 
@@ -805,7 +805,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * @return the component that should get the initial focus when the UI is initialized
    */
-  protected JComponent getInitialFocusComponent() {
+  protected JComponent initialFocusComponent() {
     if (initialFocusComponent != null) {
       return initialFocusComponent;
     }
@@ -820,7 +820,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * @return the component that should get the focus when the UI is initialized after insert
    */
-  protected JComponent getAfterInsertFocusComponent() {
+  protected JComponent afterInsertFocusComponent() {
     if (afterInsertFocusComponent != null) {
       return afterInsertFocusComponent;
     }
@@ -829,11 +829,11 @@ public class EntityEditComponentPanel extends JPanel {
       return getComponentInternal(afterInsertFocusAttribute);
     }
 
-    return getInitialFocusComponent();
+    return initialFocusComponent();
   }
 
   protected final void requestAfterInsertFocus() {
-    requestFocus(getAfterInsertFocusComponent());
+    requestFocus(afterInsertFocusComponent());
   }
 
   private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {

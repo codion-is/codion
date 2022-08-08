@@ -17,7 +17,7 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
   static final Map<String, LookAndFeelProvider> LOOK_AND_FEEL_PROVIDERS = new HashMap<>();
 
   static {
-    LookAndFeelProvider systemProvider = lookAndFeelProvider(Utilities.getSystemLookAndFeelClassName());
+    LookAndFeelProvider systemProvider = lookAndFeelProvider(Utilities.systemLookAndFeelClassName());
     LOOK_AND_FEEL_PROVIDERS.put(systemProvider.name(), systemProvider);
     LookAndFeelProvider crossPlatformProvider = lookAndFeelProvider(UIManager.getCrossPlatformLookAndFeelClassName());
     if (!LOOK_AND_FEEL_PROVIDERS.containsKey(crossPlatformProvider.name())) {

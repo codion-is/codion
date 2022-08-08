@@ -132,7 +132,7 @@ public interface LookAndFeelProvider {
    * @return the look and feel specified by user preference or the default system look and feel
    */
   static String getDefaultLookAndFeelName(String userPreferencePropertyName) {
-    return UserPreferences.getUserPreference(userPreferencePropertyName, Utilities.getSystemLookAndFeelClassName());
+    return UserPreferences.getUserPreference(userPreferencePropertyName, Utilities.systemLookAndFeelClassName());
   }
 
   /**

@@ -280,7 +280,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     for (int i = 0; i < applicationBatchSizeValue.get(); i++) {
       ApplicationRunner runner = new ApplicationRunner();
       applications.push(runner);
-      int initialDelay = getThinkTime();
+      int initialDelay = thinkTime();
       if (loginDelayFactorValue.get() > 0) {
         initialDelay *= loginDelayFactorValue.get();
       }
@@ -378,7 +378,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
    * @see #minimumThinkTimeValue()
    * @see #maximumThinkTimeValue()
    */
-  protected final int getThinkTime() {
+  protected final int thinkTime() {
     int time = minimumThinkTimeValue.get() - maximumThinkTimeValue.get();
     return time > 0 ? RANDOM.nextInt(time) + minimumThinkTimeValue.get() : minimumThinkTimeValue.get();
   }
@@ -426,11 +426,11 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     });
   }
 
-  private static double getSystemCpuLoad() {
+  private static double systemCpuLoad() {
     return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad();
   }
 
-  private static double getProcessCpuLoad() {
+  private static double processCpuLoad() {
     return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
   }
 
@@ -458,7 +458,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
           LOG.debug("LoadTestModel disconnected application: {}", application);
         }
         else {
-          scheduledExecutor.schedule(this, getThinkTime(), TimeUnit.MILLISECONDS);
+          scheduledExecutor.schedule(this, thinkTime(), TimeUnit.MILLISECONDS);
         }
       }
       catch (Exception e) {
@@ -494,26 +494,26 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
     private void updateChartData() {
       long time = System.currentTimeMillis();
-      delayedScenarioRunsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
+      delayedScenarioRunsSeries.add(time, counter.delayedWorkRequestsPerSecond());
       minimumThinkTimeSeries.add(time, minimumThinkTimeValue.get());
       maximumThinkTimeSeries.add(time, maximumThinkTimeValue.get());
       numberOfApplicationsSeries.add(time, applications.size());
       allocatedMemoryCollection.add(time, Memory.allocatedMemory() / THOUSAND);
       usedMemoryCollection.add(time, Memory.usedMemory() / THOUSAND);
       maxMemoryCollection.add(time, Memory.maxMemory() / THOUSAND);
-      systemLoadSeries.add(time, getSystemCpuLoad() * HUNDRED);
-      processLoadSeries.add(time, getProcessCpuLoad() * HUNDRED);
-      scenariosRunSeries.add(time, counter.getWorkRequestsPerSecond());
+      systemLoadSeries.add(time, systemCpuLoad() * HUNDRED);
+      processLoadSeries.add(time, processCpuLoad() * HUNDRED);
+      scenariosRunSeries.add(time, counter.workRequestsPerSecond());
       for (XYSeries series : usageSeries) {
-        series.add(time, counter.getScenarioRate((String) series.getKey()));
+        series.add(time, counter.scenarioRate((String) series.getKey()));
       }
       for (YIntervalSeries series : durationSeries.values()) {
         String scenario = (String) series.getKey();
-        series.add(time, counter.getAverageScenarioDuration(scenario),
-                counter.getMinimumScenarioDuration(scenario), counter.getMaximumScenarioDuration(scenario));
+        series.add(time, counter.averageScenarioDuration(scenario),
+                counter.minimumScenarioDuration(scenario), counter.maximumScenarioDuration(scenario));
       }
       for (XYSeries series : failureSeries) {
-        series.add(time, counter.getScenarioFailureRate((String) series.getKey()));
+        series.add(time, counter.scenarioFailureRate((String) series.getKey()));
       }
     }
   }
@@ -535,15 +535,15 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     private int delayedWorkRequestCounter = 0;
     private long time = System.currentTimeMillis();
 
-    private double getWorkRequestsPerSecond() {
+    private double workRequestsPerSecond() {
       return workRequestsPerSecond;
     }
 
-    private int getDelayedWorkRequestsPerSecond() {
+    private int delayedWorkRequestsPerSecond() {
       return delayedWorkRequestsPerSecond;
     }
 
-    private int getMinimumScenarioDuration(String scenarioName) {
+    private int minimumScenarioDuration(String scenarioName) {
       if (!usageScenarioMinDurations.containsKey(scenarioName)) {
         return 0;
       }
@@ -551,7 +551,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       return usageScenarioMinDurations.get(scenarioName);
     }
 
-    private int getMaximumScenarioDuration(String scenarioName) {
+    private int maximumScenarioDuration(String scenarioName) {
       if (!usageScenarioMaxDurations.containsKey(scenarioName)) {
         return 0;
       }
@@ -559,7 +559,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       return usageScenarioMaxDurations.get(scenarioName);
     }
 
-    private int getAverageScenarioDuration(String scenarioName) {
+    private int averageScenarioDuration(String scenarioName) {
       if (!usageScenarioAvgDurations.containsKey(scenarioName)) {
         return 0;
       }
@@ -567,7 +567,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       return usageScenarioAvgDurations.get(scenarioName);
     }
 
-    private double getScenarioFailureRate(String scenarioName) {
+    private double scenarioFailureRate(String scenarioName) {
       if (!usageScenarioFailures.containsKey(scenarioName)) {
         return 0;
       }
@@ -575,7 +575,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       return usageScenarioFailures.get(scenarioName);
     }
 
-    private int getScenarioRate(String scenarioName) {
+    private int scenarioRate(String scenarioName) {
       if (!usageScenarioRates.containsKey(scenarioName)) {
         return 0;
       }

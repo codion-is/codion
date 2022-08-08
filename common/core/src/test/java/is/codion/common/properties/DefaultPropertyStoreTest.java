@@ -45,7 +45,7 @@ public final class DefaultPropertyStoreTest {
     assertTrue(store.containsProperty("string.property"));
     assertEquals("value", stringValue.get());
     assertEquals("value", System.getProperty(stringValue.propertyName()));
-    assertSame(stringValue, store.getPropertyValue(stringValue.propertyName()).orElse(null));
+    assertSame(stringValue, store.propertyValue(stringValue.propertyName()).orElse(null));
     stringValue.set("another");
     stringValue.set(null);
     assertEquals("value", stringValue.get());
@@ -239,7 +239,7 @@ public final class DefaultPropertyStoreTest {
   }
 
   @Test
-  void getSystemProperties() {
+  void systemProperties() {
     PropertyStore.PropertyFormatter formatter = (property, value) -> {
       if (property.equals("codion.test.user")) {
         return User.parse(value).username();
@@ -247,9 +247,9 @@ public final class DefaultPropertyStoreTest {
 
       return value;
     };
-    String properties = PropertyStore.getSystemProperties();
+    String properties = PropertyStore.systemProperties();
     assertTrue(properties.indexOf("codion.test.user: scott:tiger") >= 0);
-    properties = PropertyStore.getSystemProperties(formatter);
+    properties = PropertyStore.systemProperties(formatter);
     assertTrue(properties.indexOf("codion.test.user: scott") >= 0);
   }
 }

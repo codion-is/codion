@@ -335,15 +335,15 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
 
   private void setDetailPanelState(PanelState state) {
     if (state != PanelState.HIDDEN) {
-      getTabbedDetailPanel().initializePanel();
+      tabbedDetailPanel().initializePanel();
     }
 
     FXEntityModel entityModel = model();
     if (state == PanelState.HIDDEN) {
-      entityModel.removeLinkedDetailModel(getTabbedDetailPanel().model);
+      entityModel.removeLinkedDetailModel(tabbedDetailPanel().model);
     }
     else {
-      entityModel.addLinkedDetailModel(getTabbedDetailPanel().model);
+      entityModel.addLinkedDetailModel(tabbedDetailPanel().model);
     }
     detailPanelState = state;
     if (state.equals(PanelState.EMBEDDED)) {
@@ -351,7 +351,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
     }
   }
 
-  private EntityView getTabbedDetailPanel() {
+  private EntityView tabbedDetailPanel() {
     return (EntityView) detailViewTabPane.getSelectionModel().getSelectedItem().getContent();
   }
 

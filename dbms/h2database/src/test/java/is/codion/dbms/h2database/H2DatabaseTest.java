@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class H2DatabaseTest {
 
   @Test
-  void getDatabaseName() {
+  void name() {
     H2Database database = new H2Database("jdbc:h2:file:C:/data/sample;option=true;option2=false");
     assertEquals("C:/data/sample", database.name());
     database = new H2Database("jdbc:h2:C:/data/sample;option=true;option2=false");
@@ -40,7 +40,7 @@ public class H2DatabaseTest {
   }
 
   @Test
-  void getSequenceSQLNullSequence() {
+  void sequenceSQLNullSequence() {
     assertThrows(NullPointerException.class, () -> new H2Database("url").sequenceQuery(null));
   }
 
@@ -51,13 +51,13 @@ public class H2DatabaseTest {
   }
 
   @Test
-  void getAutoIncrementQuery() {
+  void autoIncrementQuery() {
     H2Database db = new H2Database("url");
     assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
   }
 
   @Test
-  void getSequenceQuery() {
+  void sequenceQuery() {
     H2Database db = new H2Database("url");
     final String idSource = "seq";
     assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.sequenceQuery(idSource));

@@ -49,7 +49,7 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 
   @Override
   public String databaseUrl() {
-    return server.getDatabase().url();
+    return server.database().url();
   }
 
   @Override
@@ -89,39 +89,39 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   @Override
   public void resetConnectionPoolStatistics(String username) {
     LOG.info("resetConnectionPoolStatistics({})", username);
-    server.getDatabase().connectionPool(username).resetStatistics();
+    server.database().connectionPool(username).resetStatistics();
   }
 
   @Override
   public boolean isCollectPoolSnapshotStatistics(String username) {
-    return server.getDatabase().connectionPool(username).isCollectSnapshotStatistics();
+    return server.database().connectionPool(username).isCollectSnapshotStatistics();
   }
 
   @Override
   public void setCollectPoolSnapshotStatistics(String username, boolean snapshotStatistics) {
     LOG.info("setCollectPoolSnapshotStatistics({}, {})", username, snapshotStatistics);
-    server.getDatabase().connectionPool(username).setCollectSnapshotStatistics(snapshotStatistics);
+    server.database().connectionPool(username).setCollectSnapshotStatistics(snapshotStatistics);
   }
 
   @Override
   public boolean isCollectPoolCheckOutTimes(String username) throws RemoteException {
-    return server.getDatabase().connectionPool(username).isCollectCheckOutTimes();
+    return server.database().connectionPool(username).isCollectCheckOutTimes();
   }
 
   @Override
   public void setCollectPoolCheckOutTimes(String username, boolean collectCheckOutTimes) throws RemoteException {
     LOG.info("setCollectPoolCheckOutTimes({}, {})", username, collectCheckOutTimes);
-    server.getDatabase().connectionPool(username).setCollectCheckOutTimes(collectCheckOutTimes);
+    server.database().connectionPool(username).setCollectCheckOutTimes(collectCheckOutTimes);
   }
 
   @Override
   public int requestsPerSecond() {
-    return AbstractRemoteEntityConnection.getRequestsPerSecond();
+    return AbstractRemoteEntityConnection.requestsPerSecond();
   }
 
   @Override
   public ConnectionPoolStatistics connectionPoolStatistics(String username, long since) {
-    return server.getDatabase().connectionPool(username).statistics(since);
+    return server.database().connectionPool(username).statistics(since);
   }
 
   @Override
@@ -131,67 +131,67 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 
   @Override
   public Collection<String> connectionPoolUsernames() {
-    return server.getDatabase().connectionPoolUsernames();
+    return server.database().connectionPoolUsernames();
   }
 
   @Override
   public int getConnectionPoolCleanupInterval(String username) {
-    return server.getDatabase().connectionPool(username).getCleanupInterval();
+    return server.database().connectionPool(username).getCleanupInterval();
   }
 
   @Override
   public void setConnectionPoolCleanupInterval(String username, int poolCleanupInterval) {
     LOG.info("setConnectionPoolCleanupInterval({}, {})", username, poolCleanupInterval);
-    server.getDatabase().connectionPool(username).setCleanupInterval(poolCleanupInterval);
+    server.database().connectionPool(username).setCleanupInterval(poolCleanupInterval);
   }
 
   @Override
   public int getMaximumConnectionPoolSize(String username) {
-    return server.getDatabase().connectionPool(username).getMaximumPoolSize();
+    return server.database().connectionPool(username).getMaximumPoolSize();
   }
 
   @Override
   public void setMaximumConnectionPoolSize(String username, int value) {
     LOG.info("setMaximumConnectionPoolSize({}, {})", username, value);
-    server.getDatabase().connectionPool(username).setMaximumPoolSize(value);
+    server.database().connectionPool(username).setMaximumPoolSize(value);
   }
 
   @Override
   public int getMinimumConnectionPoolSize(String username) {
-    return server.getDatabase().connectionPool(username).getMinimumPoolSize();
+    return server.database().connectionPool(username).getMinimumPoolSize();
   }
 
   @Override
   public void setMinimumConnectionPoolSize(String username, int value) {
     LOG.info("setMinimumConnectionPoolSize({}, {})", username, value);
-    server.getDatabase().connectionPool(username).setMinimumPoolSize(value);
+    server.database().connectionPool(username).setMinimumPoolSize(value);
   }
 
   @Override
   public int getPooledConnectionIdleTimeout(String username) {
-    return server.getDatabase().connectionPool(username).getIdleConnectionTimeout();
+    return server.database().connectionPool(username).getIdleConnectionTimeout();
   }
 
   @Override
   public void setPooledConnectionIdleTimeout(String username, int pooledConnectionIdleTimeout) {
     LOG.info("setPooledConnectionIdleTimeout({}, {})", username, pooledConnectionIdleTimeout);
-    server.getDatabase().connectionPool(username).setIdleConnectionTimeout(pooledConnectionIdleTimeout);
+    server.database().connectionPool(username).setIdleConnectionTimeout(pooledConnectionIdleTimeout);
   }
 
   @Override
   public int getMaximumPoolCheckOutTime(String username) {
-    return server.getDatabase().connectionPool(username).getMaximumCheckOutTime();
+    return server.database().connectionPool(username).getMaximumCheckOutTime();
   }
 
   @Override
   public void setMaximumPoolCheckOutTime(String username, int value) {
     LOG.info("setMaximumPoolCheckOutTime({}, {})", username, value);
-    server.getDatabase().connectionPool(username).setMaximumCheckOutTime(value);
+    server.database().connectionPool(username).setMaximumCheckOutTime(value);
   }
 
   @Override
   public ClientLog clientLog(UUID clientId) {
-    return server.getClientLog(clientId);
+    return server.clientLog(clientId);
   }
 
   @Override
@@ -218,7 +218,7 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 
   @Override
   public Map<String, String> entityDefinitions() {
-    Map<EntityType, String> entityDefinitions = server.getEntityDefinitions();
+    Map<EntityType, String> entityDefinitions = server.entityDefinitions();
     Map<String, String> definitions = new HashMap<>();
     entityDefinitions.forEach((key, value) -> definitions.put(key.domainName() + ":" + key.name(), value));
 

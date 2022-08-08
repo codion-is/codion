@@ -269,7 +269,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
     if (column != null) {
       hiddenColumns.remove(columnIdentifier);
       tableColumnModel.addColumn(column.column);
-      tableColumnModel.moveColumn(getColumnCount() - 1, column.getIndexWhenShown());
+      tableColumnModel.moveColumn(getColumnCount() - 1, column.indexWhenShown());
       columnShownEvent.onEvent(columnIdentifier);
 
       return true;
@@ -305,10 +305,10 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 
     private HiddenColumn(TableColumn column) {
       this.column = column;
-      this.columnsToTheRight = getColumnsToTheRightOf(column);
+      this.columnsToTheRight = columnsToTheRightOf(column);
     }
 
-    private Set<TableColumn> getColumnsToTheRightOf(TableColumn column) {
+    private Set<TableColumn> columnsToTheRightOf(TableColumn column) {
       Set<TableColumn> set = new HashSet<>();
       for (int i = tableColumnModel.getColumnIndex(column.getIdentifier()) + 1; i < tableColumnModel.getColumnCount(); i++) {
         set.add(tableColumnModel.getColumn(i));
@@ -317,7 +317,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
       return set;
     }
 
-    private int getIndexWhenShown() {
+    private int indexWhenShown() {
       for (int i = 0; i < tableColumnModel.getColumnCount(); i++) {
         if (columnsToTheRight.contains(tableColumnModel.getColumn(i))) {
           return i;

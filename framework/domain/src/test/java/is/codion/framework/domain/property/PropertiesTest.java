@@ -121,7 +121,7 @@ public final class PropertiesTest {
   }
 
   @Test
-  void getMaximumFractionDigitsNotNumerical() {
+  void maximumFractionDigitsNotNumerical() {
     assertEquals(-1, columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).build().maximumFractionDigits());
   }
 

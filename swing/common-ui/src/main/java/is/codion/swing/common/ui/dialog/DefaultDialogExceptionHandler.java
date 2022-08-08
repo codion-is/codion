@@ -44,7 +44,7 @@ final class DefaultDialogExceptionHandler {
     }
     new DefaultExceptionDialogBuilder()
             .owner(dialogParent)
-            .title(getMessageTitle(rootCause))
+            .title(messageTitle(rootCause))
             .message(message)
             .show(rootCause);
   }
@@ -72,7 +72,7 @@ final class DefaultDialogExceptionHandler {
     return exception;
   }
 
-  private static String getMessageTitle(Throwable e) {
+  private static String messageTitle(Throwable e) {
     if (e instanceof FileNotFoundException) {
       return MESSAGES.getString("file_not_found");
     }

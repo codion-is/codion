@@ -100,7 +100,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  void getForeignKeySearchModel() {
+  void foreignKeySearchModel() {
     assertFalse(employeeEditModel.containsSearchModel(TestDomain.EMP_DEPARTMENT_FK));
     EntitySearchModel model = employeeEditModel.foreignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK);
     assertTrue(employeeEditModel.containsSearchModel(TestDomain.EMP_DEPARTMENT_FK));
@@ -134,7 +134,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  void getEntityCopy() throws DatabaseException {
+  void entityCopy() throws DatabaseException {
     Entity employee = employeeEditModel.connectionProvider().connection().selectSingle(
             TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
@@ -154,7 +154,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  void getDefaultForeignKeyValue() throws DatabaseException {
+  void defaultForeignKeyValue() throws DatabaseException {
     Entity employee = employeeEditModel.connectionProvider().connection().selectSingle(
             TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);

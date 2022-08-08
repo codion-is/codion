@@ -339,7 +339,7 @@ public final class SwingEntityComboBoxModelTest {
   }
 
   @Test
-  void getEntity() {
+  void entity() {
     comboBoxModel.refresh();
     Key allenPK = ENTITIES.primaryKey(TestDomain.T_EMP, 1);
     assertNotNull(comboBoxModel.entity(allenPK));

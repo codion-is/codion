@@ -12,7 +12,7 @@ public class Db2DatabaseTest {
   private static final String URL = "jdbc:db2://server:6789/database";
 
   @Test
-  void getName() {
+  void name() {
     Db2Database database = new Db2Database(URL);
     assertEquals("database", database.name());
     database = new Db2Database( URL + ";options");
@@ -20,18 +20,18 @@ public class Db2DatabaseTest {
   }
 
   @Test
-  void getAutoIncrementQuery() {
+  void autoIncrementQuery() {
     Db2Database database = new Db2Database("test");
     assertEquals("select previous value for seq", database.autoIncrementQuery("seq"));
   }
 
   @Test
-  void getSequenceSQLNullSequence() {
+  void sequenceSQLNullSequence() {
     assertThrows(NullPointerException.class, () -> new Db2Database(URL).sequenceQuery(null));
   }
 
   @Test
-  void getAutoIncrementQueryNullIdSource() {
+  void autoIncrementQueryNullIdSource() {
     assertThrows(NullPointerException.class, () -> new Db2Database(URL).autoIncrementQuery(null));
   }
 

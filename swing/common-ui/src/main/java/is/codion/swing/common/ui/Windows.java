@@ -35,7 +35,7 @@ public final class Windows {
    * @param ratio a ratio, 0.0 - 1.0
    * @return a Dimension which is the size of the available screen times ratio
    */
-  public static Dimension getScreenSizeRatio(double ratio) {
+  public static Dimension screenSizeRatio(double ratio) {
     Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
 
     return new Dimension((int) (screen.getWidth() * ratio), (int) (screen.getHeight() * ratio));
@@ -75,7 +75,7 @@ public final class Windows {
    */
   public static void resizeWindow(Window window, double screenSizeRatio,
                                   Dimension minimumSize) {
-    Dimension ratioSize = getScreenSizeRatio(screenSizeRatio);
+    Dimension ratioSize = screenSizeRatio(screenSizeRatio);
     if (minimumSize != null) {
       ratioSize.setSize(Math.max(minimumSize.width, ratioSize.width), Math.max(minimumSize.height, ratioSize.height));
     }

@@ -81,21 +81,21 @@ public final class TextTest {
   }
 
   @Test
-  void getDelimitedString() {
+  void delimitedString() {
     String result = "test\ttest2" + Separators.LINE_SEPARATOR + "data1\tdata2" + Separators.LINE_SEPARATOR + "data3\tdata4";
     assertEquals(result, Text.delimitedString(asList("test", "test2"),
             asList(asList("data1", "data2"), asList("data3", "data4")), "\t"));
   }
 
   @Test
-  void getTextFileContentsResource() throws IOException {
+  void textFileContentsResource() throws IOException {
     String contents = "here is" + Separators.LINE_SEPARATOR + "some text";
     assertEquals(contents, Text.textFileContents(TextTest.class, "TextTest.txt"));
     assertThrows(FileNotFoundException.class, () -> Text.textFileContents(TextTest.class, "None.txt"));
   }
 
   @Test
-  void getTextFileContents() throws IOException {
+  void textFileContents() throws IOException {
     String contents = "here is" + Separators.LINE_SEPARATOR + "some text";
     assertEquals(contents, Text.textFileContents("src/test/resources/is/codion/common/TextTest.txt", Charset.defaultCharset()));
   }

@@ -121,7 +121,7 @@ final class DefaultHttpServerConfiguration implements HttpServerConfiguration {
           return;
         }
         File file = File.createTempFile("serverKeyStore", "tmp");
-        Files.write(file.toPath(), getBytes(inputStream));
+        Files.write(file.toPath(), readBytes(inputStream));
         file.deleteOnExit();
 
         HTTP_SERVER_KEYSTORE_PATH.set(file.getPath());
@@ -133,7 +133,7 @@ final class DefaultHttpServerConfiguration implements HttpServerConfiguration {
       }
     }
 
-    private static byte[] getBytes(InputStream stream) throws IOException {
+    private static byte[] readBytes(InputStream stream) throws IOException {
       ByteArrayOutputStream os = new ByteArrayOutputStream();
       byte[] buffer = new byte[8192];
       int line;

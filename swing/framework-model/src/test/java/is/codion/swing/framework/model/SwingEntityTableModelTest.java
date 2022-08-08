@@ -34,7 +34,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityTableModel createTestTableModel() {
-    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DETAIL, getConnectionProvider()) {
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DETAIL, connectionProvider()) {
       @Override
       protected Collection<Entity> refreshItems() {
         return testEntities;
@@ -46,7 +46,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityTableModel createMasterTableModel() {
-    return new SwingEntityTableModel(TestDomain.T_MASTER, getConnectionProvider());
+    return new SwingEntityTableModel(TestDomain.T_MASTER, connectionProvider());
   }
 
   @Override
@@ -69,24 +69,24 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityEditModel createDepartmentEditModel() {
-    return new SwingEntityEditModel(TestDomain.T_MASTER, getConnectionProvider());
+    return new SwingEntityEditModel(TestDomain.T_MASTER, connectionProvider());
   }
 
   @Override
   protected SwingEntityEditModel createDetailEditModel() {
-    return new SwingEntityEditModel(TestDomain.T_DETAIL, getConnectionProvider());
+    return new SwingEntityEditModel(TestDomain.T_DETAIL, connectionProvider());
   }
 
   @Test
   void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
     SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
     assertEquals(0, employeeTableModel.getRowCount());
-    Entity accounting = getConnectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
+    Entity accounting = connectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
     employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, singletonList(accounting));
     assertEquals(7, employeeTableModel.getRowCount());
     employeeTableModel.clear();
     employeeTableModel.setRefreshOnForeignKeyConditionValuesSet(false);
-    Entity sales = getConnectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_ID, 30);
+    Entity sales = connectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_ID, 30);
     employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, Collections.singleton(sales));
     assertEquals(0, employeeTableModel.getRowCount());
     employeeTableModel.refresh();
@@ -95,10 +95,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void nonMatchingConditionModelEntityType() {
-    EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
-            new DefaultFilterModelFactory(), new DefaultConditionModelFactory(getConnectionProvider()));
+    EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, connectionProvider(),
+            new DefaultFilterModelFactory(), new DefaultConditionModelFactory(connectionProvider()));
     assertThrows(IllegalArgumentException.class, () ->
-            new SwingEntityTableModel(new SwingEntityEditModel(TestDomain.T_EMP, getConnectionProvider()), conditionModel));
+            new SwingEntityTableModel(new SwingEntityEditModel(TestDomain.T_EMP, connectionProvider()), conditionModel));
   }
 
   @Test
@@ -200,10 +200,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.sortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
     assertEquals(SortOrder.ASCENDING, tableModel.sortModel().sortingState(TestDomain.EMP_NAME).sortOrder());
 
-    Key pk1 = getConnectionProvider().entities().primaryKey(TestDomain.T_EMP, 10);//ADAMS
+    Key pk1 = connectionProvider().entities().primaryKey(TestDomain.T_EMP, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
 
-    Key pk2 = getConnectionProvider().entities().primaryKey(TestDomain.T_EMP, -66);
+    Key pk2 = connectionProvider().entities().primaryKey(TestDomain.T_EMP, -66);
     assertEquals(-1, tableModel.indexOf(pk2));
   }
 

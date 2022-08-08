@@ -12,7 +12,7 @@ public class HSQLDatabaseTest {
   private static final String URL = "jdbc:hsqldb:hsql//host:1234/sid";
 
   @Test
-  void getDatabaseName() {
+  void name() {
     HSQLDatabase database = new HSQLDatabase("jdbc:hsqldb:file:C:/data/sample;option=true;option2=false");
     assertEquals("C:/data/sample", database.name());
     database = new HSQLDatabase("jdbc:hsqldb:mem:sampleDb;option=true;option2=false");
@@ -24,7 +24,7 @@ public class HSQLDatabaseTest {
   }
 
   @Test
-  void getSequenceSQLNullSequence() {
+  void sequenceSQLNullSequence() {
     assertThrows(NullPointerException.class, () -> new HSQLDatabase(URL).sequenceQuery(null));
   }
 
@@ -35,13 +35,13 @@ public class HSQLDatabaseTest {
   }
 
   @Test
-  void getAutoIncrementQuery() {
+  void autoIncrementQuery() {
     HSQLDatabase db = new HSQLDatabase(URL);
     assertEquals(HSQLDatabase.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
   }
 
   @Test
-  void getSequenceQuery() {
+  void sequenceQuery() {
     HSQLDatabase db = new HSQLDatabase(URL);
     final String idSource = "seq";
     assertEquals(HSQLDatabase.SEQUENCE_VALUE_QUERY + idSource, db.sequenceQuery(idSource));

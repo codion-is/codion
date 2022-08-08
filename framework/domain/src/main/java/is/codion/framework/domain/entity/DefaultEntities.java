@@ -49,12 +49,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   @Override
   public final EntityDefinition definition(EntityType entityType) {
-    return getDefinitionInternal(requireNonNull(entityType, "entityType").name());
+    return definitionInternal(requireNonNull(entityType, "entityType").name());
   }
 
   @Override
   public final EntityDefinition definition(String entityTypeName) {
-    return getDefinitionInternal(requireNonNull(entityTypeName, "entityTypeName"));
+    return definitionInternal(requireNonNull(entityTypeName, "entityTypeName"));
   }
 
   @Override
@@ -100,7 +100,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
    * @return the Entities instance registered for the given domainType
    * @throws IllegalArgumentException in case the domain has not been registered
    */
-  static Entities getEntities(String domainName) {
+  static Entities entities(String domainName) {
     Entities entities = REGISTERED_ENTITIES.get(DomainType.getDomainType(domainName));
     if (entities == null) {
       throw new IllegalArgumentException("Entities for domain '" + domainName + "' have not been registered");
@@ -123,7 +123,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
     populateForeignDefinitions();
   }
 
-  private EntityDefinition getDefinitionInternal(String entityTypeName) {
+  private EntityDefinition definitionInternal(String entityTypeName) {
     EntityDefinition definition = entityDefinitions.get(entityTypeName);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityTypeName);

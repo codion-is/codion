@@ -102,16 +102,16 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
   }
 
   private void incrementWeight(RandomItem<?> exclude) {
-    lastAffected = getNextItem(exclude, false);
+    lastAffected = nextItem(exclude, false);
     lastAffected.incrementWeight();
   }
 
   private void decrementWeight(RandomItem<?> exclude) {
-    lastAffected = getNextItem(exclude, true);
+    lastAffected = nextItem(exclude, true);
     lastAffected.decrementWeight();
   }
 
-  private RandomItem<T> getNextItem(RandomItem<?> exclude, boolean nonEmpty) {
+  private RandomItem<T> nextItem(RandomItem<?> exclude, boolean nonEmpty) {
     int index = items().indexOf(lastAffected);
     RandomItem<T> item = null;
     while (item == null || item.equals(exclude) || (nonEmpty ? item.weight() == 0 : item.weight() == weightBounds)) {

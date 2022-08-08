@@ -161,7 +161,7 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public <T> Optional<PropertyValue<T>> getPropertyValue(String propertyName) {
+  public <T> Optional<PropertyValue<T>> propertyValue(String propertyName) {
     return Optional.ofNullable((PropertyValue<T>) propertyValues.get(requireNonNull(propertyName)));
   }
 

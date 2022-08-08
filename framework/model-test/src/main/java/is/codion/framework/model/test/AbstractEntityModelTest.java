@@ -270,7 +270,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     assertFalse(model.tableModel().containsItem(dept));
   }
 
-  protected final EntityConnectionProvider getConnectionProvider() {
+  protected final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
   }
 

@@ -104,7 +104,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 
   @Override
   public final ConnectionPoolStatistics statistics(long since) {
-    return counter.getStatistics(since);
+    return counter.collectStatistics(since);
   }
 
   /**

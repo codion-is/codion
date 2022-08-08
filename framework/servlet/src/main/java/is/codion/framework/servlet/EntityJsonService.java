@@ -108,7 +108,7 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.entities());
+      EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
 
       return Response.ok(entityObjectMapper.writeValueAsString(connection.isTransactionOpen())).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
@@ -206,7 +206,7 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.entities());
+      EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
 
       return Response.ok(entityObjectMapper.writeValueAsString(connection.isQueryCacheEnabled())).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
@@ -295,7 +295,7 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.entities());
+      EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
       List<Entity> entities = entityObjectMapper.deserializeEntities(request.getInputStream());
 
       Map<String, Collection<Entity>> dependencies = new HashMap<>();
@@ -320,7 +320,7 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      ConditionObjectMapper conditionObjectMapper = getConditionObjectMapper(connection.entities());
+      ConditionObjectMapper conditionObjectMapper = conditionObjectMapper(connection.entities());
 
       return Response.ok(conditionObjectMapper.entityObjectMapper().writeValueAsString(connection.rowCount(conditionObjectMapper
               .readValue(request.getInputStream(), Condition.class)))).type(MediaType.APPLICATION_JSON_TYPE).build();
@@ -343,7 +343,7 @@ public final class EntityJsonService extends AbstractEntityService {
       RemoteEntityConnection connection = authenticate(request, headers);
 
       Entities entities = connection.entities();
-      ConditionObjectMapper mapper = getConditionObjectMapper(entities);
+      ConditionObjectMapper mapper = conditionObjectMapper(entities);
       JsonNode jsonNode = mapper.readTree(request.getInputStream());
       EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
       Attribute<?> attribute = entities.definition(entityType).attribute(jsonNode.get("attribute").textValue());
@@ -373,7 +373,7 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.entities());
+      EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
       List<Key> keysFromJson = entityObjectMapper.deserializeKeys(request.getInputStream());
       List<Entity> entities = connection.select(keysFromJson);
 
@@ -396,7 +396,7 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      ConditionObjectMapper mapper = getConditionObjectMapper(connection.entities());
+      ConditionObjectMapper mapper = conditionObjectMapper(connection.entities());
       SelectCondition selectConditionJson = mapper
               .readValue(request.getInputStream(), SelectCondition.class);
 
@@ -420,7 +420,7 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      EntityObjectMapper mapper = getEntityObjectMapper(connection.entities());
+      EntityObjectMapper mapper = entityObjectMapper(connection.entities());
       List<Entity> entities = mapper.deserializeEntities(request.getInputStream());
 
       return Response.ok(mapper.writeValueAsString(connection.insert(entities))).type(MediaType.APPLICATION_JSON_TYPE).build();
@@ -442,7 +442,7 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      EntityObjectMapper mapper = getEntityObjectMapper(connection.entities());
+      EntityObjectMapper mapper = entityObjectMapper(connection.entities());
       List<Entity> entities = mapper.deserializeEntities(request.getInputStream());
 
       return Response.ok(mapper.writeValueAsString(connection.update(entities))).type(MediaType.APPLICATION_JSON_TYPE).build();
@@ -464,7 +464,7 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      ConditionObjectMapper mapper = getConditionObjectMapper(connection.entities());
+      ConditionObjectMapper mapper = conditionObjectMapper(connection.entities());
       UpdateCondition updateCondition = mapper.readValue(request.getInputStream(), UpdateCondition.class);
 
       return Response.ok(mapper.entityObjectMapper().writeValueAsString(connection.update(updateCondition)))
@@ -487,7 +487,7 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      ConditionObjectMapper mapper = getConditionObjectMapper(connection.entities());
+      ConditionObjectMapper mapper = conditionObjectMapper(connection.entities());
       Condition deleteCondition = mapper.readValue(request.getInputStream(), Condition.class);
 
       return Response.ok(mapper.entityObjectMapper().writeValueAsString(connection.delete(deleteCondition)))
@@ -510,7 +510,7 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
-      EntityObjectMapper mapper = getEntityObjectMapper(connection.entities());
+      EntityObjectMapper mapper = entityObjectMapper(connection.entities());
       List<Key> deleteKeys = mapper.deserializeKeys(request.getInputStream());
       connection.delete(deleteKeys);
 
@@ -565,14 +565,14 @@ public final class EntityJsonService extends AbstractEntityService {
     }
   }
 
-  private EntityObjectMapper getEntityObjectMapper(Entities entities) {
+  private EntityObjectMapper entityObjectMapper(Entities entities) {
     return entityObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
             EntityObjectMapperFactory.instance(domainType).createEntityObjectMapper(entities));
   }
 
-  private ConditionObjectMapper getConditionObjectMapper(Entities entities) {
+  private ConditionObjectMapper conditionObjectMapper(Entities entities) {
     return conditionObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
-            new ConditionObjectMapper(getEntityObjectMapper(entities)));
+            new ConditionObjectMapper(entityObjectMapper(entities)));
   }
 
   private static <T> T deserialize(HttpServletRequest request) throws IOException, ClassNotFoundException {

@@ -415,7 +415,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       connection.beginTransaction();
       try {
         Key playlistKey = insertPlaylistTracks(connection, parameters.playlistName(),
-                getRandomTrackIds((LocalEntityConnection) connection, parameters.noOfTracks()));
+                randomTrackIds((LocalEntityConnection) connection, parameters.noOfTracks()));
 
         connection.commitTransaction();
 
@@ -455,8 +455,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
               .build();
     }
 
-    private static List<Long> getRandomTrackIds(LocalEntityConnection connection,
-                                                int noOfTracks) throws DatabaseException {
+    private static List<Long> randomTrackIds(LocalEntityConnection connection,
+                                             int noOfTracks) throws DatabaseException {
       try (Statement statement = connection.databaseConnection().getConnection().createStatement();
            ResultSet resultSet = statement.executeQuery(TRACK_ID_QUERY + " " + noOfTracks)) {
         return TRACK_ID_PACKER.pack(resultSet);

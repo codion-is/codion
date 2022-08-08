@@ -44,7 +44,7 @@ final class SteppedComboBoxUI extends MetalComboBoxUI {
     @Override
     public void setVisible(boolean visible) {
       if (visible) {
-        Dimension popupSize = getPopupSize(comboBox);
+        Dimension popupSize = popupSize(comboBox);
         popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
         Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height, popupSize.width, popupSize.height);
         scroller.setMaximumSize(popupBounds.getSize());
@@ -65,7 +65,7 @@ final class SteppedComboBoxUI extends MetalComboBoxUI {
       super.setVisible(visible);
     }
 
-    private Dimension getPopupSize(JComboBox<?> comboBox) {
+    private Dimension popupSize(JComboBox<?> comboBox) {
       Dimension displaySize = comboBoxUI.getDisplaySize();
       Dimension size = comboBox.getSize();
 

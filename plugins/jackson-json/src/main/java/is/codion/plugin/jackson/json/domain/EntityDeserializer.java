@@ -40,25 +40,25 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     JsonNode entityNode = parser.getCodec().readTree(parser);
     EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entities::definition);
 
-    return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
+    return definition.entity(valueMap(entityNode, definition), originalValueMap(entityNode, definition));
   }
 
-  private Map<Attribute<?>, Object> getValueMap(JsonNode node, EntityDefinition definition)
+  private Map<Attribute<?>, Object> valueMap(JsonNode node, EntityDefinition definition)
           throws JsonProcessingException {
-    return getPropertyValueMap(definition, node.get("values"));
+    return propertyValueMap(definition, node.get("values"));
   }
 
-  private Map<Attribute<?>, Object> getOriginalValueMap(JsonNode node, EntityDefinition definition)
+  private Map<Attribute<?>, Object> originalValueMap(JsonNode node, EntityDefinition definition)
           throws JsonProcessingException {
     JsonNode originalValues = node.get("originalValues");
     if (originalValues != null) {
-      return getPropertyValueMap(definition, originalValues);
+      return propertyValueMap(definition, originalValues);
     }
 
     return null;
   }
 
-  private Map<Attribute<?>, Object> getPropertyValueMap(EntityDefinition definition, JsonNode values) throws JsonProcessingException {
+  private Map<Attribute<?>, Object> propertyValueMap(EntityDefinition definition, JsonNode values) throws JsonProcessingException {
     Map<Attribute<?>, Object> valueMap = new HashMap<>();
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {

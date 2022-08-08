@@ -1601,7 +1601,7 @@ public class EntityTablePanel extends JPanel {
     KeyEvents.builder(KeyEvent.VK_G)
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .action(control(() -> {
-              Point location = getPopupLocation(table);
+              Point location = popupLocation(table);
               popupMenu.show(table, location.x, location.y);
             }))
             .enable(table);
@@ -1638,7 +1638,7 @@ public class EntityTablePanel extends JPanel {
   private void showEntityMenu() {
     Entity selected = tableModel.selectionModel().getSelectedItem();
     if (selected != null) {
-      Point location = getPopupLocation(table);
+      Point location = popupLocation(table);
       new EntityPopupMenu(selected.copy(), tableModel.connectionProvider().connection()).show(table, location.x, location.y);
     }
   }
@@ -1783,7 +1783,7 @@ public class EntityTablePanel extends JPanel {
     return panel;
   }
 
-  private static Point getPopupLocation(JTable table) {
+  private static Point popupLocation(JTable table) {
     Rectangle visibleRect = table.getVisibleRect();
     int x = visibleRect.x + visibleRect.width / 2;
     int y = table.getSelectionModel().isSelectionEmpty() ?

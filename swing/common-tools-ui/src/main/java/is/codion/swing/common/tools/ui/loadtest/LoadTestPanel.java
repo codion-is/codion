@@ -114,7 +114,7 @@ public final class LoadTestPanel<T> extends JPanel {
               frame.setTitle(frame.getTitle() + " - Closing...");
               loadTestModel.shutdown();
             })
-            .size(Windows.getScreenSizeRatio(DEFAULT_SCREEN_SIZE_RATIO))
+            .size(Windows.screenSizeRatio(DEFAULT_SCREEN_SIZE_RATIO))
             .centerFrame(true)
             .show();
   }
@@ -381,11 +381,11 @@ public final class LoadTestPanel<T> extends JPanel {
       this.scenario = scenario;
     }
 
-    JTextArea getExceptionsTextArea() {
+    JTextArea exceptionsTextArea() {
       return exceptionsTextArea;
     }
 
-    UsageScenario<?> getScenario() {
+    UsageScenario<?> scenario() {
       return scenario;
     }
   }
@@ -398,8 +398,8 @@ public final class LoadTestPanel<T> extends JPanel {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      getScenario().clearExceptions();
-      getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
+      scenario().clearExceptions();
+      exceptionsTextArea().replaceRange("", 0, exceptionsTextArea().getDocument().getLength());
     }
   }
 
@@ -411,12 +411,12 @@ public final class LoadTestPanel<T> extends JPanel {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
-      List<Exception> exceptions = getScenario().exceptions();
+      exceptionsTextArea().replaceRange("", 0, exceptionsTextArea().getDocument().getLength());
+      List<Exception> exceptions = scenario().exceptions();
       for (Exception exception : exceptions) {
-        getExceptionsTextArea().append(exception.getMessage());
-        getExceptionsTextArea().append(Separators.LINE_SEPARATOR);
-        getExceptionsTextArea().append(Separators.LINE_SEPARATOR);
+        exceptionsTextArea().append(exception.getMessage());
+        exceptionsTextArea().append(Separators.LINE_SEPARATOR);
+        exceptionsTextArea().append(Separators.LINE_SEPARATOR);
       }
     }
   }

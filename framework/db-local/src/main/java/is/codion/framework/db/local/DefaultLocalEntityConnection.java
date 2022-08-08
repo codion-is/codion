@@ -239,7 +239,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           KeyGenerator keyGenerator = entityDefinition.keyGenerator();
           keyGenerator.beforeInsert(entity, primaryKeyProperties, connection);
 
-          populatePropertiesAndValues(entity, getInsertableProperties(entityDefinition, keyGenerator.isInserted()),
+          populatePropertiesAndValues(entity, insertableProperties(entityDefinition, keyGenerator.isInserted()),
                   statementProperties, statementValues, columnProperty -> entity.contains(columnProperty.attribute()));
           if (statementProperties.isEmpty()) {
             throw new SQLException("Unable to insert entity " + entity.entityType() + ", no properties to insert");
@@ -297,7 +297,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         List<Entity> updatedEntities = new ArrayList<>(entities.size());
         for (Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
           EntityDefinition entityDefinition = domainEntities.definition(entityTypeEntities.getKey());
-          List<ColumnProperty<?>> updatableProperties = getUpdatableProperties(entityDefinition);
+          List<ColumnProperty<?>> updatableProperties = updatableProperties(entityDefinition);
 
           List<Entity> entitiesToUpdate = entityTypeEntities.getValue();
           for (Entity entity : entitiesToUpdate) {
@@ -647,7 +647,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
-    Collection<ForeignKeyProperty> foreignKeyReferences = getForeignKeyReferences(entities.iterator().next().entityType());
+    Collection<ForeignKeyProperty> foreignKeyReferences = foreignKeyReferences(entities.iterator().next().entityType());
     for (ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.softReference()) {
         List<Entity> dependencies = select(where(foreignKeyReference.attribute()).equalTo(entities));
@@ -899,7 +899,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     for (Map.Entry<EntityType, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
       Collection<Key> originalKeys = Entity.getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
       SelectCondition selectForUpdateCondition = condition(originalKeys).selectBuilder()
-              .selectAttributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()))
+              .selectAttributes(primaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()))
               .forUpdate()
               .build();
       List<Entity> currentEntities = doSelect(selectForUpdateCondition);
@@ -923,7 +923,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private List<Entity> doSelect(SelectCondition condition) throws SQLException {
-    List<Entity> result = getCachedResult(condition);
+    List<Entity> result = cachedResult(condition);
     if (result != null) {
       LOG.debug("Returning cached result: " + condition.entityType());
       return result;
@@ -958,7 +958,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void setForeignKeys(List<Entity> entities, SelectCondition condition,
                               int currentForeignKeyFetchDepth) throws SQLException {
     List<ForeignKeyProperty> foreignKeyProperties =
-            getForeignKeyPropertiesToSet(entities.get(0).entityType(), condition.selectAttributes());
+            foreignKeyPropertiesToSet(entities.get(0).entityType(), condition.selectAttributes());
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
       ForeignKey foreignKey = foreignKeyProperty.attribute();
@@ -978,7 +978,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             SelectCondition referencedEntitiesCondition = condition(referencedKeys)
                     .selectBuilder()
                     .fetchDepth(conditionFetchDepthLimit)
-                    .selectAttributes(getAttributesToSelect(foreignKeyProperty, referencedKeys.get(0).attributes()))
+                    .selectAttributes(attributesToSelect(foreignKeyProperty, referencedKeys.get(0).attributes()))
                     .build();
             List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
@@ -986,7 +986,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             for (int j = 0; j < entities.size(); j++) {
               Entity entity = entities.get(j);
               Key referencedKey = entity.referencedKey(foreignKey);
-              entity.put(foreignKey, getReferencedEntity(referencedKey, referencedEntitiesMappedByKey));
+              entity.put(foreignKey, referencedEntity(referencedKey, referencedEntitiesMappedByKey));
             }
           }
         }
@@ -997,8 +997,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private List<ForeignKeyProperty> getForeignKeyPropertiesToSet(EntityType entityType,
-                                                                Collection<Attribute<?>> conditionSelectAttributes) {
+  private List<ForeignKeyProperty> foreignKeyPropertiesToSet(EntityType entityType,
+                                                             Collection<Attribute<?>> conditionSelectAttributes) {
     if (conditionSelectAttributes.isEmpty()) {
       return domainEntities.definition(entityType).foreignKeyProperties();
     }
@@ -1028,7 +1028,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       resultSet = executeStatement(statement, selectQuery, selectCondition, entityDefinition);
 
       return new EntityResultIterator(statement, resultSet,
-              new EntityResultPacker(entityDefinition, selectQueryBuilder.getSelectedProperties()));
+              new EntityResultPacker(entityDefinition, selectQueryBuilder.selectedProperties()));
     }
     catch (SQLException e) {
       closeSilently(resultSet);
@@ -1116,7 +1116,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param entityType the entityType
    * @return all foreign keys in the domain referencing entities of type {@code entityType}
    */
-  private Collection<ForeignKeyProperty> getForeignKeyReferences(EntityType entityType) {
+  private Collection<ForeignKeyProperty> foreignKeyReferences(EntityType entityType) {
     return foreignKeyReferenceCache.computeIfAbsent(entityType, this::initializeForeignKeyReferences);
   }
 
@@ -1147,18 +1147,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private List<ColumnProperty<?>> getInsertableProperties(EntityDefinition entityDefinition,
-                                                          boolean includePrimaryKeyProperties) {
+  private List<ColumnProperty<?>> insertableProperties(EntityDefinition entityDefinition,
+                                                       boolean includePrimaryKeyProperties) {
     return insertablePropertiesCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
             entityDefinition.writableColumnProperties(includePrimaryKeyProperties, true));
   }
 
-  private List<ColumnProperty<?>> getUpdatableProperties(EntityDefinition entityDefinition) {
+  private List<ColumnProperty<?>> updatableProperties(EntityDefinition entityDefinition) {
     return updatablePropertiesCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
             entityDefinition.writableColumnProperties(true, false));
   }
 
-  private Attribute<?>[] getPrimaryKeyAndWritableColumnAttributes(EntityType entityType) {
+  private Attribute<?>[] primaryKeyAndWritableColumnAttributes(EntityType entityType) {
     return primaryKeyAndWritableColumnPropertiesCache.computeIfAbsent(entityType, e -> {
       EntityDefinition entityDefinition = domainEntities.definition(entityType);
       List<ColumnProperty<?>> writableAndPrimaryKeyProperties =
@@ -1271,7 +1271,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private List<Entity> getCachedResult(SelectCondition condition) {
+  private List<Entity> cachedResult(SelectCondition condition) {
     if (queryCacheEnabled && !condition.forUpdate()) {
       return queryCache.get(condition);
     }
@@ -1288,7 +1288,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return result;
   }
 
-  private static Entity getReferencedEntity(Key referencedKey, Map<Key, Entity> entitiesMappedByKey) {
+  private static Entity referencedEntity(Key referencedKey, Map<Key, Entity> entitiesMappedByKey) {
     if (referencedKey == null) {
       return null;
     }
@@ -1373,8 +1373,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return true;
   }
 
-  private static Collection<Attribute<?>> getAttributesToSelect(ForeignKeyProperty foreignKeyProperty,
-                                                                List<Attribute<?>> referencedAttributes) {
+  private static Collection<Attribute<?>> attributesToSelect(ForeignKeyProperty foreignKeyProperty,
+                                                             List<Attribute<?>> referencedAttributes) {
     if (foreignKeyProperty.selectAttributes().isEmpty()) {
       return emptyList();
     }

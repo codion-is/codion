@@ -82,7 +82,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final StateObserver getEnabledObserver() {
+  public final StateObserver enabledObserver() {
     return enabledObserver;
   }
 

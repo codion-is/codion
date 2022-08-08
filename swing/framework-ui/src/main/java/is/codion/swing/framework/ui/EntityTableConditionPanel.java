@@ -88,7 +88,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    */
   @Override
   public void selectConditionPanel() {
-    List<Property<?>> conditionProperties = getConditionPanelProperties();
+    List<Property<?>> conditionProperties = conditionPanelProperties();
     if (!conditionProperties.isEmpty()) {
       if (conditionProperties.size() == 1) {
         conditionPanel(conditionProperties.get(0).attribute()).requestInputFocus();
@@ -153,7 +153,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     conditionPanel.columnComponents().forEach((column, panel) -> panel.setAdvanced(advanced));
   }
 
-  private List<Property<?>> getConditionPanelProperties() {
+  private List<Property<?>> conditionPanelProperties() {
     return conditionPanel.columnComponents().values().stream()
             .filter(panel -> columnModel.isColumnVisible(panel.model().columnIdentifier()))
             .map(panel -> tableConditionModel().entityDefinition().property(panel.model().columnIdentifier()))

@@ -70,7 +70,7 @@ public final class EntityServerMonitorPanel extends JPanel {
    */
   public EntityServerMonitorPanel() throws RemoteException {
     this(new EntityServerMonitor(Clients.SERVER_HOST_NAME.get(),
-            ServerConfiguration.REGISTRY_PORT.get(), getAdminUser()));
+            ServerConfiguration.REGISTRY_PORT.get(), adminUser()));
     Thread.setDefaultUncaughtExceptionHandler((t, e) ->
             Dialogs.showExceptionDialog(e, Utilities.getParentWindow(EntityServerMonitorPanel.this).orElse(null)));
   }
@@ -121,7 +121,7 @@ public final class EntityServerMonitorPanel extends JPanel {
             .menuBar(initializeMainMenuControls().createMenuBar())
             .title("Codion Server Monitor")
             .defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
-            .size(Windows.getScreenSizeRatio(SCREEN_SIZE_RATIO))
+            .size(Windows.screenSizeRatio(SCREEN_SIZE_RATIO))
             .centerFrame(true)
             .show();
   }
@@ -134,7 +134,7 @@ public final class EntityServerMonitorPanel extends JPanel {
               .title("Set JDK home")
               .selectDirectory()
               .getAbsolutePath();
-      UserPreferences.putUserPreference(JDK_PREFERENCE_KEY, jdkDir);
+      UserPreferences.setUserPreference(JDK_PREFERENCE_KEY, jdkDir);
     }
     catch (CancelException ignored) {/*ignored*/}
   }
@@ -250,7 +250,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     return southPanel;
   }
 
-  private static User getAdminUser() {
+  private static User adminUser() {
     return User.parse(ServerConfiguration.SERVER_ADMIN_USER.getOrThrow());
   }
 

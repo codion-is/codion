@@ -78,7 +78,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
   @Override
   public Color backgroundColor(JTable table, int row, boolean selected) {
     if (selected) {
-      return settings.getSelectionBackgroundColor(row);
+      return settings.selectionBackgroundColor(row);
     }
 
     return settings.backgroundColor(tableModel, property.attribute(), row, displayConditionState);
@@ -155,7 +155,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     @Override
     public Color backgroundColor(JTable table, int row, boolean selected) {
       if (selected) {
-        return settings.getSelectionBackgroundColor(row);
+        return settings.selectionBackgroundColor(row);
       }
 
       return settings.backgroundColor(tableModel, property.attribute(), row, displayConditionState);
@@ -218,7 +218,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
       boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
       Color cellColor = tableModel.backgroundColor(row, attribute);
       if (showCondition) {
-        return getConditionEnabledColor(row, conditionEnabled && filterEnabled, cellColor);
+        return conditionEnabledColor(row, conditionEnabled && filterEnabled, cellColor);
       }
       else if (cellColor != null) {
         return cellColor;
@@ -233,11 +233,11 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
       return cellColor == null ? foregroundColor : cellColor;
     }
 
-    private Color getSelectionBackgroundColor(int row) {
+    private Color selectionBackgroundColor(int row) {
       return isEven(row) ? selectionBackground : alternateSelectionBackground;
     }
 
-    private Color getConditionEnabledColor(int row, boolean conditionAndFilterEnabled, Color cellColor) {
+    private Color conditionEnabledColor(int row, boolean conditionAndFilterEnabled, Color cellColor) {
       if (cellColor != null) {
         return darker(cellColor, DARKENING_FACTOR);
       }
@@ -273,7 +273,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
       this.tableModel = requireNonNull(tableModel);
       this.property = requireNonNull(property);
       this.tableModel.entityDefinition().property(property.attribute());
-      this.horizontalAlignment = getDefaultHorizontalAlignment(property);
+      this.horizontalAlignment = defaultHorizontalAlignment(property);
     }
 
     @Override
@@ -321,7 +321,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
       return new DefaultEntityTableCellRenderer<>(this);
     }
 
-    private static int getDefaultHorizontalAlignment(Property<?> property) {
+    private static int defaultHorizontalAlignment(Property<?> property) {
       if (property.attribute().isBoolean() && !(property instanceof ItemProperty)) {
         return EntityTableCellRenderer.BOOLEAN_HORIZONTAL_ALIGNMENT.get();
       }

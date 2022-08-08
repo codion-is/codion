@@ -111,7 +111,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
     @Override
     public JComponent createEqualField() {
-      return Sizes.setPreferredHeight(createForeignKeyField(), TextComponents.getPreferredTextFieldHeight());
+      return Sizes.setPreferredHeight(createForeignKeyField(), TextComponents.preferredTextFieldHeight());
     }
 
     @Override

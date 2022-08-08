@@ -268,13 +268,13 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     DefaultColumnPropertyBuilder(Attribute<T> attribute, String caption) {
       super(attribute, caption);
       this.primaryKeyIndex = -1;
-      this.columnType = getSqlType(attribute.valueClass());
+      this.columnType = sqlType(attribute.valueClass());
       this.columnHasDefaultValue = false;
       this.insertable = true;
       this.updatable = true;
       this.searchProperty = false;
       this.columnName = attribute.name();
-      this.valueFetcher = (ValueFetcher<Object>) getValueFetcher(this.columnType, attribute.valueClass());
+      this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, attribute.valueClass());
       this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
       this.groupingColumn = false;
       this.aggregateColumn = false;
@@ -288,16 +288,16 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
 
     @Override
     public final <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter) {
-      this.columnType = getSqlType(columnClass);
+      this.columnType = sqlType(columnClass);
       this.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      this.valueFetcher = (ValueFetcher<Object>) getValueFetcher(this.columnType, attribute.valueClass());
+      this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, attribute.valueClass());
       return (B) this;
     }
 
     @Override
     public final <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter,
                                    ValueFetcher<C> valueFetcher) {
-      this.columnType = getSqlType(columnClass);
+      this.columnType = sqlType(columnClass);
       this.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
       this.valueFetcher = (ValueFetcher<Object>) requireNonNull(valueFetcher, "valueFetcher");
       return (B) this;
@@ -385,11 +385,11 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
      * @param clazz the class
      * @return the corresponding sql type
      */
-    private static int getSqlType(Class<?> clazz) {
+    private static int sqlType(Class<?> clazz) {
       return TYPE_MAP.getOrDefault(requireNonNull(clazz, "clazz"), Types.OTHER);
     }
 
-    private static <T> ValueFetcher<T> getValueFetcher(int columnType, Class<T> valueClass) {
+    private static <T> ValueFetcher<T> valueFetcher(int columnType, Class<T> valueClass) {
       if (columnType == Types.OTHER) {
         return (ValueFetcher<T>) new ObjectFetcher(valueClass);
       }

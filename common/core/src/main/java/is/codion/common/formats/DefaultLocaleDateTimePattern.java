@@ -92,30 +92,30 @@ final class DefaultLocaleDateTimePattern implements LocaleDateTimePattern, Seria
 
   private static int indexOf(String pattern, Element element) {
     return Stream.of(pattern.indexOf('y'), pattern.indexOf('m'), pattern.indexOf('d'))
-            .sorted().collect(Collectors.toList()).indexOf(pattern.indexOf(element.getChar()));
+            .sorted().collect(Collectors.toList()).indexOf(pattern.indexOf(element.character()));
   }
 
   private enum Element {
     YEAR {
       @Override
-      char getChar() {
+      char character() {
         return 'y';
       }
     },
     MONTH {
       @Override
-      char getChar() {
+      char character() {
         return 'm';
       }
     },
     DAY {
       @Override
-      char getChar() {
+      char character() {
         return 'd';
       }
     };
 
-    abstract char getChar();
+    abstract char character();
   }
 
   static final class DefaultBuilder implements Builder {

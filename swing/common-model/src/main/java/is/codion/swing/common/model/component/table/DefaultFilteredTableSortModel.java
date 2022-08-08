@@ -33,7 +33,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 
   @Override
   public void sort(List<R> items) {
-    requireNonNull(items, "items").sort(new RowComparator(getSortingStatesOrderedByPriority()));
+    requireNonNull(items, "items").sort(new RowComparator(sortingStatesOrderedByPriority()));
   }
 
   @Override
@@ -62,7 +62,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   @Override
   public LinkedHashMap<C, SortOrder> columnSortOrder() {
     LinkedHashMap<C, SortOrder> columnSortOrder = new LinkedHashMap<>();
-    getSortingStatesOrderedByPriority().forEach(entry ->
+    sortingStatesOrderedByPriority().forEach(entry ->
             columnSortOrder.put(entry.getKey(), entry.getValue().sortOrder()));
 
     return columnSortOrder;
@@ -71,7 +71,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   @Override
   public void clear() {
     if (!sortingStates.isEmpty()) {
-      C firstSortColumn = getSortingStatesOrderedByPriority().get(0).getKey();
+      C firstSortColumn = sortingStatesOrderedByPriority().get(0).getKey();
       sortingStates.clear();
       sortingChangedEvent.onEvent(firstSortColumn);
     }
@@ -94,7 +94,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     else {
       SortingState state = sortingState(columnIdentifier);
       if (state.equals(EMPTY_SORTING_STATE)) {
-        sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, getNextSortPriority()));
+        sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, nextSortPriority()));
       }
       else {
         sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, state.priority()));
@@ -103,13 +103,13 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     sortingChangedEvent.onEvent(columnIdentifier);
   }
 
-  private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
+  private List<Map.Entry<C, SortingState>> sortingStatesOrderedByPriority() {
     return sortingStates.entrySet().stream()
             .sorted(sortingStatesComparator)
             .collect(toList());
   }
 
-  private int getNextSortPriority() {
+  private int nextSortPriority() {
     int maxPriority = -1;
     for (SortingState state : sortingStates.values()) {
       maxPriority = Math.max(state.priority(), maxPriority);

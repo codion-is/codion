@@ -37,7 +37,7 @@ public class EntityApplicationPanelTest {
   }
 
   @Test
-  void getDependencyTreeModel() {
+  void createDependencyTreeModel() {
     TreeModel model = EntityApplicationPanel.createDependencyTreeModel(CONNECTION_PROVIDER.entities());
     DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
     Enumeration<?> tree = root.preorderEnumeration();

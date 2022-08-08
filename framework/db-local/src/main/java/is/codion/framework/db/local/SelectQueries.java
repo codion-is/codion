@@ -74,7 +74,7 @@ final class SelectQueries {
       this.definition = definition;
     }
 
-    List<ColumnProperty<?>> getSelectedProperties() {
+    List<ColumnProperty<?>> selectedProperties() {
       return selectedProperties;
     }
 
@@ -83,7 +83,7 @@ final class SelectQueries {
       if (!columnsClauseFromSelectQuery) {
         setColumns(condition);
       }
-      //default from clause is handled by getFrom()
+      //default from clause is handled by from()
       where(condition);
       if (groupBy == null) {
         groupBy(definition.groupByClause());
@@ -105,11 +105,11 @@ final class SelectQueries {
       if (selectQuery != null) {
         if (selectQuery.columns() != null) {
           columns(selectQuery.columns());
-          selectedProperties = getSelectableProperties();
+          selectedProperties = selectableProperties();
           columnsClauseFromSelectQuery = true;
         }
         else {
-          columns(getAllColumnsClause());
+          columns(allColumnsClause());
         }
         from(selectQuery.from());
         where(selectQuery.where());
@@ -183,7 +183,7 @@ final class SelectQueries {
     String build() {
       StringBuilder builder = new StringBuilder()
               .append(SELECT).append(columns).append(NEWLINE)
-              .append(FROM).append(getFrom());
+              .append(FROM).append(from());
       if (!where.isEmpty()) {
         builder.append(NEWLINE).append(WHERE).append(where.get(0));
         if (where.size() > 1) {
@@ -218,20 +218,20 @@ final class SelectQueries {
     private void setColumns(SelectCondition condition) {
       Collection<Attribute<?>> selectAttributes = condition.selectAttributes();
       if (selectAttributes.isEmpty()) {
-        this.selectedProperties = getSelectableProperties();
-        columns(getAllColumnsClause());
+        this.selectedProperties = selectableProperties();
+        columns(allColumnsClause());
       }
       else {
-        this.selectedProperties = getPropertiesToSelect(selectAttributes);
-        columns(getColumnsClause(selectedProperties));
+        this.selectedProperties = propertiesToSelect(selectAttributes);
+        columns(columnsClause(selectedProperties));
       }
     }
 
-    private String getFrom() {
+    private String from() {
       return from == null ? forUpdate ? definition.tableName() : definition.selectTableName() : from;
     }
 
-    private List<ColumnProperty<?>> getPropertiesToSelect(Collection<Attribute<?>> selectAttributes) {
+    private List<ColumnProperty<?>> propertiesToSelect(Collection<Attribute<?>> selectAttributes) {
       Set<ColumnProperty<?>> propertiesToSelect = new HashSet<>(definition.primaryKeyProperties());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
@@ -246,7 +246,7 @@ final class SelectQueries {
       return new ArrayList<>(propertiesToSelect);
     }
 
-    private List<ColumnProperty<?>> getSelectableProperties() {
+    private List<ColumnProperty<?>> selectableProperties() {
       return selectablePropertiesCache.computeIfAbsent(definition.entityType(), entityType ->
               definition.columnProperties().stream()
                       .filter(property -> !definition.lazyLoadedBlobProperties().contains(property))
@@ -254,11 +254,11 @@ final class SelectQueries {
                       .collect(toList()));
     }
 
-    private String getAllColumnsClause() {
-      return allColumnsClauseCache.computeIfAbsent(definition.entityType(), type -> getColumnsClause(getSelectableProperties()));
+    private String allColumnsClause() {
+      return allColumnsClauseCache.computeIfAbsent(definition.entityType(), type -> columnsClause(selectableProperties()));
     }
 
-    private String getColumnsClause(List<ColumnProperty<?>> columnProperties) {
+    private String columnsClause(List<ColumnProperty<?>> columnProperties) {
       StringBuilder stringBuilder = new StringBuilder();
       for (int i = 0; i < columnProperties.size(); i++) {
         ColumnProperty<?> property = columnProperties.get(i);
@@ -287,15 +287,15 @@ final class SelectQueries {
         throw new IllegalArgumentException("An order by clause must contain at least a single attribute");
       }
       if (orderByAttributes.size() == 1) {
-        return getColumnOrderByClause(definition, orderByAttributes.get(0));
+        return columnOrderByClause(definition, orderByAttributes.get(0));
       }
 
       return orderByAttributes.stream()
-              .map(orderByAttribute -> getColumnOrderByClause(definition, orderByAttribute))
+              .map(orderByAttribute -> columnOrderByClause(definition, orderByAttribute))
               .collect(joining(", "));
     }
 
-    private String getColumnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByAttribute orderByAttribute) {
+    private String columnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByAttribute orderByAttribute) {
       return entityDefinition.columnProperty(orderByAttribute.attribute()).columnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
     }
   }

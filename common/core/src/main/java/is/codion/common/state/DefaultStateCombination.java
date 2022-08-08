@@ -157,10 +157,10 @@ final class DefaultStateCombination implements State.Combination {
 
     @Override
     public void onEvent(Boolean newValue) {
-      observer.notifyObservers(get(), getPreviousState(state, !newValue));
+      observer.notifyObservers(get(), previousState(state, !newValue));
     }
 
-    private boolean getPreviousState(StateObserver excludeState, boolean previousValue) {
+    private boolean previousState(StateObserver excludeState, boolean previousValue) {
       synchronized (observer) {
         return get(conjunction, excludeState, previousValue);
       }

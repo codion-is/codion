@@ -92,7 +92,7 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
 
     String valuePlaceholder = attribute().isString() && !caseSensitive ? "upper(?)" : "?";
     if (values.size() > 1) {
-      return getInList(identifier, valuePlaceholder, values.size(), notEqual);
+      return createInList(identifier, valuePlaceholder, values.size(), notEqual);
     }
     if (attribute().isString() && containsWildcards((String) values.get(0))) {
       return identifier + (notEqual ? " not like " : " like ") + valuePlaceholder;
@@ -101,7 +101,7 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
     return identifier + (notEqual ? " <> " : " = ") + valuePlaceholder;
   }
 
-  private static String getInList(String columnIdentifier, String valuePlaceholder, int valueCount, boolean negated) {
+  private static String createInList(String columnIdentifier, String valuePlaceholder, int valueCount, boolean negated) {
     boolean exceedsLimit = valueCount > IN_CLAUSE_LIMIT;
     StringBuilder stringBuilder = new StringBuilder(exceedsLimit ? "(" : "").append(columnIdentifier).append(negated ? NOT_IN_PREFIX : IN_PREFIX);
     int cnt = 1;

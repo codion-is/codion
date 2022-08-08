@@ -29,7 +29,7 @@ public abstract class FileTransferHandler extends TransferHandler {
 
   @Override
   public boolean importData(TransferSupport transferSupport) {
-    List<File> files = getTransferFiles(transferSupport);
+    List<File> files = transferFiles(transferSupport);
     if (files.isEmpty()) {
       return false;
     }
@@ -64,7 +64,7 @@ public abstract class FileTransferHandler extends TransferHandler {
   public static boolean isFileDataFlavor(TransferSupport transferSupport) {
     requireNonNull(transferSupport, "transferSupport");
     try {
-      DataFlavor nixFileDataFlavor = getNixFileDataFlavor();
+      DataFlavor nixFileDataFlavor = nixFileDataFlavor();
 
       return stream(transferSupport.getDataFlavors())
               .anyMatch(flavor -> flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor));
@@ -80,7 +80,7 @@ public abstract class FileTransferHandler extends TransferHandler {
    * @return the files described by the given transfer support object
    * @throws RuntimeException in case of an exception
    */
-  public static List<File> getTransferFiles(TransferSupport transferSupport) {
+  public static List<File> transferFiles(TransferSupport transferSupport) {
     requireNonNull(transferSupport, "transferSupport");
     try {
       for (DataFlavor flavor : transferSupport.getDataFlavors()) {
@@ -92,7 +92,7 @@ public abstract class FileTransferHandler extends TransferHandler {
       }
       //the code below is for handling unix/linux
       List<File> files = new ArrayList<>();
-      DataFlavor nixFileDataFlavor = getNixFileDataFlavor();
+      DataFlavor nixFileDataFlavor = nixFileDataFlavor();
       String data = (String) transferSupport.getTransferable().getTransferData(nixFileDataFlavor);
       for (StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens(); ) {
         String token = st.nextToken().trim();
@@ -118,7 +118,7 @@ public abstract class FileTransferHandler extends TransferHandler {
    */
   protected abstract boolean importFiles(Component component, List<File> files);
 
-  private static DataFlavor getNixFileDataFlavor() throws ClassNotFoundException {
+  private static DataFlavor nixFileDataFlavor() throws ClassNotFoundException {
     return new DataFlavor("text/uri-list;class=java.lang.String");
   }
 }

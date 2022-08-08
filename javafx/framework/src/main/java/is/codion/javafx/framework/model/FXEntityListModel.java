@@ -397,7 +397,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final void savePreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       try {
-        UserPreferences.putUserPreference(userPreferencesKey(), createPreferences().toString());
+        UserPreferences.setUserPreference(userPreferencesKey(), createPreferences().toString());
       }
       catch (Exception e) {
         LOG.error("Error while saving preferences", e);
@@ -438,7 +438,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
-   * using the order by clause returned by {@link #getOrderBy()}
+   * using the order by clause returned by {@link #orderBy()}
    * @return entities selected from the database according the query condition.
    * @see #queryConditionRequiredState()
    * @see EntityTableConditionModel#condition()
@@ -452,9 +452,9 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     try {
       return connectionProvider().connection().select(tableConditionModel.condition()
               .selectBuilder()
-              .selectAttributes(getSelectAttributes())
+              .selectAttributes(selectAttributes())
               .limit(limit)
-              .orderBy(getOrderBy())
+              .orderBy(orderBy())
               .build());
     }
     catch (DatabaseException e) {
@@ -468,9 +468,9 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @return the order by clause
    * @see EntityDefinition#orderBy()
    */
-  protected OrderBy getOrderBy() {
+  protected OrderBy orderBy() {
     if (orderQueryBySortOrder && columnSortOrder != null && !columnSortOrder.isEmpty()) {
-      OrderBy orderBy = getOrderByFromSortModel();
+      OrderBy orderBy = orderByFromSortModel();
       if (!orderBy.orderByAttributes().isEmpty()) {
         return orderBy;
       }
@@ -485,7 +485,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @return the attributes to select when querying data, an empty list if all should be selected.
    * @see #isQueryHiddenColumns()
    */
-  protected Collection<Attribute<?>> getSelectAttributes() {
+  protected Collection<Attribute<?>> selectAttributes() {
     if (queryHiddenColumns || initialColumns.size() == columns.size()) {
       return emptyList();
     }
@@ -569,7 +569,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     selectionModel().setSelectedIndexes(selected);
   }
 
-  private OrderBy getOrderByFromSortModel() {
+  private OrderBy orderByFromSortModel() {
     OrderBy.Builder builder = OrderBy.builder();
     columnSortOrder.stream()
             .map(EntityTableColumn.class::cast)

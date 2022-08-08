@@ -151,7 +151,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
 
   @Override
   public final T getEqualValue() {
-    return getBoundValue(equalValues.get().isEmpty() ? null : equalValues.get().iterator().next());
+    return boundValue(equalValues.get().isEmpty() ? null : equalValues.get().iterator().next());
   }
 
   @Override
@@ -162,7 +162,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   @Override
   public final Collection<T> getEqualValues() {
     return equalValues.get().stream()
-            .map(this::getBoundValue)
+            .map(this::boundValue)
             .collect(toList());
   }
 
@@ -173,7 +173,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
 
   @Override
   public final T getUpperBound() {
-    return getBoundValue(upperBoundValue.get());
+    return boundValue(upperBoundValue.get());
   }
 
   @Override
@@ -183,7 +183,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
 
   @Override
   public final T getLowerBound() {
-    return getBoundValue(lowerBoundValue.get());
+    return boundValue(lowerBoundValue.get());
   }
 
   @Override
@@ -199,12 +199,12 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
 
   @Override
   public final void previousOperator() {
-    operatorValue.set(operators.get(getPreviousOperatorIndex()));
+    operatorValue.set(operators.get(previousOperatorIndex()));
   }
 
   @Override
   public final void nextOperator() {
-    operatorValue.set(operators.get(getNextOperatorIndex()));
+    operatorValue.set(operators.get(nextOperatorIndex()));
   }
 
   @Override
@@ -352,7 +352,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     return operatorValue;
   }
 
-  private T getBoundValue(Object bound) {
+  private T boundValue(Object bound) {
     if (columnClass.equals(String.class)) {
       if (bound == null || (bound instanceof String && ((String) bound).isEmpty())) {
         return null;
@@ -385,13 +385,13 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     return value;
   }
 
-  private int getNextOperatorIndex() {
+  private int nextOperatorIndex() {
     int currentIndex = operators.indexOf(operatorValue.get());
 
     return currentIndex == operators.size() - 1 ? 0 : currentIndex + 1;
   }
 
-  private int getPreviousOperatorIndex() {
+  private int previousOperatorIndex() {
     int currentIndex = operators.indexOf(operatorValue.get());
 
     return currentIndex == 0 ? operators.size() - 1 : currentIndex - 1;

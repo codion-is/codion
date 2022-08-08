@@ -32,7 +32,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.framework.domain.property.Properties.*;
-import static is.codion.swing.common.ui.Windows.getScreenSizeRatio;
+import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Collections.singletonList;
 
@@ -168,7 +168,7 @@ public final class ClientTutorial {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     SwingUtilities.invokeLater(() -> new ApplicationPanel().starter()
-            .frameSize(getScreenSizeRatio(0.5))
+            .frameSize(screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }

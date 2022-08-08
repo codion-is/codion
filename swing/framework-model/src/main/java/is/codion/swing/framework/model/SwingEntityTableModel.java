@@ -483,7 +483,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   public final void savePreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       try {
-        UserPreferences.putUserPreference(userPreferencesKey(), createPreferences().toString());
+        UserPreferences.setUserPreference(userPreferencesKey(), createPreferences().toString());
       }
       catch (Exception e) {
         LOG.error("Error while saving preferences", e);
@@ -614,7 +614,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    */
   protected OrderBy orderBy() {
     if (orderQueryBySortOrder && sortModel().isSortingEnabled()) {
-      OrderBy orderBy = getOrderByFromSortModel();
+      OrderBy orderBy = orderByFromSortModel();
       if (!orderBy.orderByAttributes().isEmpty()) {
         return orderBy;
       }
@@ -672,7 +672,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     editModel.addRefreshingObserver(refreshingObserver());
     selectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(this::onTableModelEvent);
-    EventListener statusListener = () -> statusMessageValue.set(getStatusMessage());
+    EventListener statusListener = () -> statusMessageValue.set(statusMessage());
     selectionModel().addSelectionChangedListener(statusListener);
     addFilterListener(statusListener);
     addTableDataChangedListener(statusListener);
@@ -758,7 +758,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     }
   }
 
-  private OrderBy getOrderByFromSortModel() {
+  private OrderBy orderByFromSortModel() {
     OrderBy.Builder builder = OrderBy.builder();
     sortModel().columnSortOrder().entrySet().stream()
             .filter(entry -> isColumnProperty(entry.getKey()))
@@ -839,7 +839,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     }
   }
 
-  private String getStatusMessage() {
+  private String statusMessage() {
     int filteredItemCount = filteredItemCount();
 
     return STATUS_MESSAGE_NUMBER_FORMAT.format(getRowCount()) + " (" +

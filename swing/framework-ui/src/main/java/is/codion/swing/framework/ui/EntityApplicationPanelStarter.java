@@ -19,7 +19,7 @@ final class EntityApplicationPanelStarter implements EntityApplicationPanel.Star
   private boolean maximizeFrame = false;
   private boolean displayFrame = true;
   private boolean displayProgressDialog = true;
-  private Dimension frameSize = Windows.getScreenSizeRatio(0.5);
+  private Dimension frameSize = Windows.screenSizeRatio(0.5);
   private boolean loginRequired = EntityApplicationModel.AUTHENTICATION_REQUIRED.get();
   private User defaultLoginUser;
   private User silentLoginUser;

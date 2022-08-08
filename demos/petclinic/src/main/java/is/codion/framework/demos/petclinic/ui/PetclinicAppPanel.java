@@ -91,7 +91,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.PetClinic");
     SwingUtilities.invokeLater(() -> new PetclinicAppPanel().starter()
-            .frameSize(Windows.getScreenSizeRatio(0.6))
+            .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }

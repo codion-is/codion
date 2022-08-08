@@ -100,8 +100,8 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
       buttonModel = new JToggleButton.ToggleButtonModel();
     }
     new BooleanButtonModelValue(buttonModel).link(value);
-    buttonModel.setEnabled(getEnabledObserver().get());
-    getEnabledObserver().addDataListener(buttonModel::setEnabled);
+    buttonModel.setEnabled(enabledObserver().get());
+    enabledObserver().addDataListener(buttonModel::setEnabled);
     addPropertyChangeListener(changeEvent -> {
       if (Action.MNEMONIC_KEY.equals(changeEvent.getPropertyName())) {
         buttonModel.setMnemonic((Integer) changeEvent.getNewValue());

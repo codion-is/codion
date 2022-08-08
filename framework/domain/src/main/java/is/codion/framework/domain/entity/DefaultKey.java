@@ -303,7 +303,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    Entities entities = DefaultEntities.getEntities((String) stream.readObject());
+    Entities entities = DefaultEntities.entities((String) stream.readObject());
     definition = entities.definition((String) stream.readObject());
     if (definition.serializationVersion() != stream.readInt()) {
       throw new IllegalArgumentException("Entity type '" + definition.entityType() + "' can not be deserialized due to version difference");

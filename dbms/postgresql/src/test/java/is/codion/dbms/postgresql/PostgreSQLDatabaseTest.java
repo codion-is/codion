@@ -12,7 +12,7 @@ public class PostgreSQLDatabaseTest {
   private static final String URL = "jdbc:postgresql://host:1234/sid";
 
   @Test
-  void getName() {
+  void name() {
     PostgreSQLDatabase database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid");
     assertEquals("sid", database.name());
     database = new PostgreSQLDatabase("jdbc:postgresql://host.db:1234/sid;options");
@@ -24,7 +24,7 @@ public class PostgreSQLDatabaseTest {
   }
 
   @Test
-  void getSequenceQueryNullSequence() {
+  void sequenceQueryNullSequence() {
     assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase(URL).sequenceQuery(null));
   }
 
@@ -35,19 +35,19 @@ public class PostgreSQLDatabaseTest {
   }
 
   @Test
-  void getAutoIncrementQuery() {
+  void autoIncrementQuery() {
     PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals("select currval('seq')", db.autoIncrementQuery("seq"));
   }
 
   @Test
-  void getSequenceQuery() {
+  void sequenceQuery() {
     PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals("select nextval('seq')", db.sequenceQuery("seq"));
   }
 
   @Test
-  void getCheckConnectionQuery() {
+  void checkConnectionQuery() {
     PostgreSQLDatabase db = new PostgreSQLDatabase(URL);
     assertEquals(PostgreSQLDatabase.CHECK_QUERY, db.checkConnectionQuery());
   }

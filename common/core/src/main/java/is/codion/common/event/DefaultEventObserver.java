@@ -20,41 +20,41 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   @Override
   public void addDataListener(EventDataListener<T> listener) {
     synchronized (lock) {
-      getDataListeners().add(requireNonNull(listener, "listener"));
+      dataListeners().add(requireNonNull(listener, "listener"));
     }
   }
 
   @Override
   public void removeDataListener(EventDataListener<T> listener) {
     synchronized (lock) {
-      getDataListeners().remove(listener);
+      dataListeners().remove(listener);
     }
   }
 
   @Override
   public void addListener(EventListener listener) {
     synchronized (lock) {
-      getListeners().add(requireNonNull(listener, "listener"));
+      listeners().add(requireNonNull(listener, "listener"));
     }
   }
 
   @Override
   public void removeListener(EventListener listener) {
     synchronized (lock) {
-      getListeners().remove(listener);
+      listeners().remove(listener);
     }
   }
 
   void notifyListeners(T data) {
-    for (EventListener listener : getEventListeners()) {
+    for (EventListener listener : eventListeners()) {
       listener.onEvent();
     }
-    for (EventDataListener<T> dataListener : getEventDataListeners()) {
+    for (EventDataListener<T> dataListener : eventDataListeners()) {
       dataListener.onEvent(data);
     }
   }
 
-  private List<EventListener> getEventListeners() {
+  private List<EventListener> eventListeners() {
     synchronized (lock) {
       if (listeners != null && !listeners.isEmpty()) {
         return new ArrayList<>(listeners);
@@ -64,7 +64,7 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
     return emptyList();
   }
 
-  private List<EventDataListener<T>> getEventDataListeners() {
+  private List<EventDataListener<T>> eventDataListeners() {
     synchronized (lock) {
       if (dataListeners != null && !dataListeners.isEmpty()) {
         return new ArrayList<>(dataListeners);
@@ -74,7 +74,7 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
     return emptyList();
   }
 
-  private Set<EventListener> getListeners() {
+  private Set<EventListener> listeners() {
     if (listeners == null) {
       listeners = new LinkedHashSet<>(1);
     }
@@ -82,7 +82,7 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
     return listeners;
   }
 
-  private Set<EventDataListener<T>> getDataListeners() {
+  private Set<EventDataListener<T>> dataListeners() {
     if (dataListeners == null) {
       dataListeners = new LinkedHashSet<>(1);
     }

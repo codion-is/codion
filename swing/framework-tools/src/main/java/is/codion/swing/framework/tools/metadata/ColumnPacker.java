@@ -31,7 +31,7 @@ final class ColumnPacker implements ResultPacker<Column> {
     if (resultSet.wasNull()) {
       decimalDigits = -1;
     }
-    Class<?> columnClass = getColumnClass(dataType, decimalDigits);
+    Class<?> columnClass = columnClass(dataType, decimalDigits);
     if (columnClass != null) {
       String columnName = resultSet.getString("COLUMN_NAME");
       try {
@@ -41,7 +41,7 @@ final class ColumnPacker implements ResultPacker<Column> {
                 resultSet.getInt("NULLABLE"),
                 resultSet.getString("COLUMN_DEF"),
                 resultSet.getString("REMARKS"),
-                getPrimaryKeyColumnIndex(columnName),
+                primaryKeyColumnIndex(columnName),
                 isForeignKeyColumn(columnName));
       }
       catch (SQLException e) {
@@ -53,7 +53,7 @@ final class ColumnPacker implements ResultPacker<Column> {
     return null;
   }
 
-  private int getPrimaryKeyColumnIndex(String columnName) {
+  private int primaryKeyColumnIndex(String columnName) {
     return primaryKeyColumns.stream()
             .filter(primaryKeyColumn -> columnName.equals(primaryKeyColumn.columnName()))
             .findFirst()
@@ -66,7 +66,7 @@ final class ColumnPacker implements ResultPacker<Column> {
             .anyMatch(foreignKeyColumn -> foreignKeyColumn.fkColumnName().equals(columnName));
   }
 
-  private static Class<?> getColumnClass(int sqlType, int decimalDigits) {
+  private static Class<?> columnClass(int sqlType, int decimalDigits) {
     switch (sqlType) {
       case Types.BIGINT:
         return Long.class;

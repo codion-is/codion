@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class CredentialsProviderTest {
 
   @Test
-  void getAuthenticationToken() {
+  void authenticationToken() {
     UUID uuid = UUID.randomUUID();
 
     assertFalse(CredentialsProvider.authenticationToken(null).isPresent());

@@ -284,14 +284,14 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private EntityPanel createPanel(SwingEntityModel entityModel) {
     try {
       EntityPanel entityPanel;
-      if (getPanelClass().equals(EntityPanel.class)) {
+      if (panelClass().equals(EntityPanel.class)) {
         EntityTablePanel tablePanel = entityModel.containsTableModel() ? createTablePanel(entityModel.tableModel()) : null;
-        EntityEditPanel editPanel = getEditPanelClass() == null ? null : createEditPanel(entityModel.editModel());
-        entityPanel = getPanelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
+        EntityEditPanel editPanel = editPanelClass() == null ? null : createEditPanel(entityModel.editModel());
+        entityPanel = panelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
                 .newInstance(entityModel, editPanel, tablePanel);
       }
       else {
-        entityPanel = findModelConstructor(getPanelClass()).newInstance(entityModel);
+        entityPanel = findModelConstructor(panelClass()).newInstance(entityModel);
       }
       entityPanel.setCaption(caption == null ? entityModel.connectionProvider()
               .entities().definition(entityModel.entityType()).caption() : caption);
@@ -335,7 +335,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       if (!tableModel.entityType().equals(entityType)) {
         throw new IllegalArgumentException("Entity type mismatch, tableModel: " + tableModel.entityType() + ", required: " + entityType);
       }
-      EntityTablePanel tablePanel = findTableModelConstructor(getTablePanelClass()).newInstance(tableModel);
+      EntityTablePanel tablePanel = findTableModelConstructor(tablePanelClass()).newInstance(tableModel);
       onBuildTablePanel.accept(tablePanel);
 
       return tablePanel;
@@ -348,15 +348,15 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
   }
 
-  private Class<? extends EntityPanel> getPanelClass() {
+  private Class<? extends EntityPanel> panelClass() {
     return panelClass == null ? EntityPanel.class : panelClass;
   }
 
-  private Class<? extends EntityEditPanel> getEditPanelClass() {
+  private Class<? extends EntityEditPanel> editPanelClass() {
     return editPanelClass;
   }
 
-  private Class<? extends EntityTablePanel> getTablePanelClass() {
+  private Class<? extends EntityTablePanel> tablePanelClass() {
     return tablePanelClass == null ? EntityTablePanel.class : tablePanelClass;
   }
 

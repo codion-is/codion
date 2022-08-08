@@ -70,7 +70,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     EntityTablePanel.CONDITION_PANEL_VISIBLE.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser");
     SwingUtilities.invokeLater(() -> new SchemaBrowserAppPanel().starter()
-            .frameSize(Windows.getScreenSizeRatio(0.5))
+            .frameSize(Windows.screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }

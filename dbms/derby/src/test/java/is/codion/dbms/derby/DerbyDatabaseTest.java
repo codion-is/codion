@@ -12,7 +12,7 @@ public class DerbyDatabaseTest {
   private static final String URL = "jdbc:derby://host:1234/sid";
 
   @Test
-  void getName() {
+  void name() {
     DerbyDatabase database = new DerbyDatabase("jdbc:derby:C:/data/sample;option=true;option2=false");
     assertEquals("C:/data/sample", database.name());
     database = new DerbyDatabase("jdbc:derby://sample.db:1234;option=true;option2=false");
@@ -24,7 +24,7 @@ public class DerbyDatabaseTest {
   }
 
   @Test
-  void getSequenceQuery() {
+  void sequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new DerbyDatabase(URL).sequenceQuery("seq"));
   }
 
@@ -41,7 +41,7 @@ public class DerbyDatabaseTest {
   }
 
   @Test
-  void getAutoIncrementQuery() {
+  void autoIncrementQuery() {
     DerbyDatabase db = new DerbyDatabase(URL);
     final String idSource = "id_source";
     assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.autoIncrementQuery(idSource));

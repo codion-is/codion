@@ -47,7 +47,7 @@ final class DefaultLookAndFeelDialogBuilder implements LookAndFeelSelectionDialo
     return Control.builder(() -> selectLookAndFeel()
                     .ifPresent(provider -> {
                       if (userPreferencePropertyName != null) {
-                        UserPreferences.putUserPreference(userPreferencePropertyName, provider.name());
+                        UserPreferences.setUserPreference(userPreferencePropertyName, provider.name());
                       }
                     }))
             .caption(caption)

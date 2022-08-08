@@ -32,7 +32,7 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
     }
     int wheelRotation = event.getWheelRotation();
     if (wheelRotation != 0) {
-      comboBoxModel.setSelectedItem(getItemToSelect(wheelRotation > 0));
+      comboBoxModel.setSelectedItem(itemToSelect(wheelRotation > 0));
     }
   }
 
@@ -56,22 +56,22 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
     return new ComboBoxMouseWheelListener(comboBoxModel, true);
   }
 
-  private Object getItemToSelect(boolean next) {
+  private Object itemToSelect(boolean next) {
     Object currentSelection = comboBoxModel.getSelectedItem();
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       if (Objects.equals(currentSelection, comboBoxModel.getElementAt(i))) {
-        return comboBoxModel.getElementAt(next ? getNextIndex(i) : getPreviousIndex(i));
+        return comboBoxModel.getElementAt(next ? nextIndex(i) : previousIndex(i));
       }
     }
 
-    return comboBoxModel.getElementAt(next ? getNextIndex(0) : getPreviousIndex(0));
+    return comboBoxModel.getElementAt(next ? nextIndex(0) : previousIndex(0));
   }
 
-  private int getNextIndex(int currentIndex) {
+  private int nextIndex(int currentIndex) {
     return currentIndex == comboBoxModel.getSize() - 1 ? (wrapAround ? 0 : currentIndex) : currentIndex + 1;
   }
 
-  private int getPreviousIndex(int currentIndex) {
+  private int previousIndex(int currentIndex) {
     return currentIndex == 0 ? (wrapAround ? comboBoxModel.getSize() - 1 : currentIndex) : currentIndex - 1;
   }
 }

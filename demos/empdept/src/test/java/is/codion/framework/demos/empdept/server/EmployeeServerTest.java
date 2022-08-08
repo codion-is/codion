@@ -47,7 +47,7 @@ public final class EmployeeServerTest {
 
     EmployeeServer employeeServer = new EmployeeServer(configuration);
 
-    Server<EmployeeService, ?> remoteServer = Server.Locator.locator().getServer("localhost",
+    Server<EmployeeService, ?> remoteServer = Server.Locator.locator().findServer("localhost",
             "Employee Server", REGISTRY_PORT, SERVER_PORT);
 
     UUID clientId = UUID.randomUUID();

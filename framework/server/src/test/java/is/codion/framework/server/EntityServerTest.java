@@ -94,22 +94,22 @@ public class EntityServerTest {
   }
 
   @Test
-  void getServerAdminEmptyPassword() throws Exception {
+  void serverAdminEmptyPassword() throws Exception {
     assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test", "".toCharArray())));
   }
 
   @Test
-  void getServerAdminNullPassword() throws Exception {
+  void serverAdminNullPassword() throws Exception {
     assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test")));
   }
 
   @Test
-  void getServerAdminWrongPassword() throws Exception {
+  void serverAdminWrongPassword() throws Exception {
     assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test", "test".toCharArray())));
   }
 
   @Test
-  void getServerAdminWrongUsername() throws Exception {
+  void serverAdminWrongUsername() throws Exception {
     assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test", "test".toCharArray())));
   }
 
@@ -290,7 +290,7 @@ public class EntityServerTest {
   }
 
   @Test
-  void getClientLogNotConnected() throws RemoteException {
+  void clientLogNotConnected() throws RemoteException {
     assertThrows(IllegalArgumentException.class, () -> admin.clientLog(UUID.randomUUID()));
   }
 

@@ -83,15 +83,15 @@ final class LoginPanel extends JPanel {
     initializeUI(southComponent);
   }
 
-  User getUser() {
+  User user() {
     return userValue.get();
   }
 
-  Control getOkControl() {
+  Control okControl() {
     return okControl;
   }
 
-  Control getCancelControl() {
+  Control cancelControl() {
     return cancelControl;
   }
 

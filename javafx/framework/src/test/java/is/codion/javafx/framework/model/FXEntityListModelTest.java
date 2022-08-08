@@ -30,7 +30,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createTestTableModel() {
-    FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_DETAIL, getConnectionProvider()) {
+    FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_DETAIL, connectionProvider()) {
       @Override
       protected List<Entity> performQuery() {
         return testEntities;
@@ -44,7 +44,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createMasterTableModel() {
-    return new FXEntityListModel(TestDomain.T_MASTER, getConnectionProvider());
+    return new FXEntityListModel(TestDomain.T_MASTER, connectionProvider());
   }
 
   @Override
@@ -71,18 +71,18 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityEditModel createDepartmentEditModel() {
-    return new FXEntityEditModel(TestDomain.T_MASTER, getConnectionProvider());
+    return new FXEntityEditModel(TestDomain.T_MASTER, connectionProvider());
   }
 
   @Override
   protected FXEntityEditModel createDetailEditModel() {
-    return new FXEntityEditModel(TestDomain.T_DETAIL, getConnectionProvider());
+    return new FXEntityEditModel(TestDomain.T_DETAIL, connectionProvider());
   }
 
   @Test
   void orderQueryBySortOrder() {
     FXEntityListModel tableModel = createEmployeeTableModel();
-    OrderBy orderBy = tableModel.getOrderBy();
+    OrderBy orderBy = tableModel.orderBy();
     //default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
@@ -95,7 +95,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     EntityTableColumn<?> column = tableModel.tableColumn(TestDomain.EMP_NAME);
     column.setSortType(TableColumn.SortType.ASCENDING);
     sortOrder.add((TableColumn<Entity, ?>) column);
-    orderBy = tableModel.getOrderBy();
+    orderBy = tableModel.orderBy();
     //still default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
@@ -104,7 +104,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
 
     tableModel.setOrderQueryBySortOrder(true);
-    orderBy = tableModel.getOrderBy();
+    orderBy = tableModel.orderBy();
     assertEquals(1, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
     assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(0).attribute());
@@ -117,7 +117,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     column.setSortType(TableColumn.SortType.ASCENDING);
     sortOrder.add(column);
 
-    orderBy = tableModel.getOrderBy();
+    orderBy = tableModel.orderBy();
     assertEquals(2, orderBy.orderByAttributes().size());
     assertFalse(orderBy.orderByAttributes().get(0).isAscending());
     assertEquals(TestDomain.EMP_HIREDATE, orderBy.orderByAttributes().get(0).attribute());
@@ -125,7 +125,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
 
     sortOrder.clear();
-    orderBy = tableModel.getOrderBy();
+    orderBy = tableModel.orderBy();
     //back to default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());

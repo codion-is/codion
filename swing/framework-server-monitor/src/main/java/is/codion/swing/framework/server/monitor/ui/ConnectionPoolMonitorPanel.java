@@ -102,9 +102,9 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     initializeCharts(model);
     setLayout(Layouts.borderLayout());
 
-    add(getConfigurationPanel(), BorderLayout.NORTH);
-    add(getChartPanel(), BorderLayout.CENTER);
-    add(getSouthPanel(), BorderLayout.SOUTH);
+    add(configurationPanel(), BorderLayout.NORTH);
+    add(chartPanel(), BorderLayout.CENTER);
+    add(southPanel(), BorderLayout.SOUTH);
   }
 
   private void initializeCharts(ConnectionPoolMonitor model) {
@@ -141,7 +141,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     model.statisticsObserver().addListener(this::updateView);
   }
 
-  private JPanel getConfigurationPanel() {
+  private JPanel configurationPanel() {
     JPanel configBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
     configBase.setBorder(BorderFactory.createTitledBorder("Configuration"));
     configBase.add(createWestCenterPanel(new JLabel("Mininum size"), Components.integerSpinner(model.minimumPoolSizeValue())
@@ -174,7 +174,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     return configPanel;
   }
 
-  private JPanel getChartPanel() {
+  private JPanel chartPanel() {
     JPanel chartBase = new JPanel(new GridLayout(2, 2));
     chartBase.add(requestsPerSecondChartPanel);
     chartBase.add(inPoolChartPanel);
@@ -185,7 +185,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     return chartBase;
   }
 
-  private JPanel getSouthPanel() {
+  private JPanel southPanel() {
     JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 4));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     chartConfig.add(new JLabel("Update interval (s)"));
@@ -197,28 +197,28 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
     chartConfig.add(Components.checkBox(model.collectSnapshotStatisticsState())
             .caption("Snapshot")
-            .maximumSize(TextComponents.getPreferredTextFieldSize())
+            .maximumSize(TextComponents.preferredTextFieldSize())
             .build());
 
     chartConfig.add(Components.checkBox(model.collectCheckOutTimesState())
             .caption("Check out times")
-            .maximumSize(TextComponents.getPreferredTextFieldSize())
+            .maximumSize(TextComponents.preferredTextFieldSize())
             .build());
 
     chartConfig.add(Components.button(control(model::clearInPoolStatistics))
             .caption("Clear")
-            .maximumSize(TextComponents.getPreferredTextFieldSize())
+            .maximumSize(TextComponents.preferredTextFieldSize())
             .build());
 
     JPanel southPanel = new JPanel(Layouts.borderLayout());
     southPanel.add(chartConfig, BorderLayout.WEST);
 
-    southPanel.add(getStatisticsPanel(), BorderLayout.CENTER);
+    southPanel.add(statisticsPanel(), BorderLayout.CENTER);
 
     return southPanel;
   }
 
-  private JPanel getStatisticsPanel() {
+  private JPanel statisticsPanel() {
     JPanel statisticsBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
     poolSizeField.setEditable(false);
     poolSizeField.setHorizontalAlignment(CENTER);

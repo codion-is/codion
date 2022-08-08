@@ -229,13 +229,13 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final <T> Collection<T> values(C columnIdentifier) {
-    return (Collection<T>) getColumnValues(IntStream.range(0, visibleItemCount()).boxed(),
+    return (Collection<T>) columnValues(IntStream.range(0, visibleItemCount()).boxed(),
             columnModel.tableColumn(columnIdentifier).getModelIndex());
   }
 
   @Override
   public final <T> Collection<T> selectedValues(C columnIdentifier) {
-    return (Collection<T>) getColumnValues(selectionModel().getSelectedIndexes().stream(),
+    return (Collection<T>) columnValues(selectionModel().getSelectedIndexes().stream(),
             columnModel.tableColumn(columnIdentifier).getModelIndex());
   }
 
@@ -553,7 +553,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     });
   }
 
-  private List<Object> getColumnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
+  private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
     return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
   }
 

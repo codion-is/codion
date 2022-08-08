@@ -12,7 +12,7 @@ public class OracleDatabaseTest {
   public static final String URL = "jdbc:oracle:thin:@host:1234:sid";
 
   @Test
-  void getName() {
+  void name() {
     OracleDatabase database = new OracleDatabase("jdbc:oracle:thin:@host.com:1234:sid");
     assertEquals("sid", database.name());
     database = new OracleDatabase("jdbc:oracle:thin:@host.com:1234:sid;option=true;option2=false");
@@ -24,7 +24,7 @@ public class OracleDatabaseTest {
   }
 
   @Test
-  void getSequenceSQLNullSequence() {
+  void sequenceSQLNullSequence() {
     assertThrows(NullPointerException.class, () -> new OracleDatabase(URL).sequenceQuery(null));
   }
 
@@ -35,25 +35,25 @@ public class OracleDatabaseTest {
   }
 
   @Test
-  void getAutoIncrementQuery() {
+  void autoIncrementQuery() {
     OracleDatabase db = new OracleDatabase(URL);
     assertEquals("select seq.currval from dual", db.autoIncrementQuery("seq"));
   }
 
   @Test
-  void getSequenceQuery() {
+  void sequenceQuery() {
     OracleDatabase db = new OracleDatabase(URL);
     assertEquals("select seq.nextval from dual", db.sequenceQuery("seq"));
   }
 
   @Test
-  void getURL() {
+  void url() {
     OracleDatabase db = new OracleDatabase(URL);
     assertEquals("jdbc:oracle:thin:@host:1234:sid", db.url());
   }
 
   @Test
-  void getCheckConnectionQuery() {
+  void checkConnectionQuery() {
     OracleDatabase db = new OracleDatabase(URL);
     assertEquals(OracleDatabase.CHECK_QUERY, db.checkConnectionQuery());
   }

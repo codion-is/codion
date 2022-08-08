@@ -82,7 +82,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void getSelectedEntitiesIterator() {
+  public void selectedEntitiesIterator() {
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
@@ -166,7 +166,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void getEntityByKey() {
+  public void entityByKey() {
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
@@ -245,7 +245,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void getEntitiesByKey() {
+  public void entitiesByKey() {
     testModel.refresh();
     Entities entities = testModel.entities();
     Entity tmpEnt = entities.builder(TestDomain.T_DETAIL)
@@ -292,7 +292,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void getTableDataAsDelimitedString() {
+  public void tableDataAsDelimitedString() {
     TableModel deptModel = createDepartmentTableModel();
     deptModel.setVisibleColumns(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION);
     deptModel.refresh();
@@ -311,7 +311,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     empModel.setVisibleColumns(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT_FK, TestDomain.EMP_HIREDATE);
   }
 
-  protected final EntityConnectionProvider getConnectionProvider() {
+  protected final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
   }
 

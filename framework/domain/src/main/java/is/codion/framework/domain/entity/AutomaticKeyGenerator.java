@@ -33,7 +33,7 @@ final class AutomaticKeyGenerator extends AbstractQueriedKeyGenerator {
   }
 
   @Override
-  protected String getQuery(Database database) {
+  protected String query(Database database) {
     return database.autoIncrementQuery(valueSource);
   }
 }

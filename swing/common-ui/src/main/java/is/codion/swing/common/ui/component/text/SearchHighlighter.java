@@ -151,7 +151,7 @@ public final class SearchHighlighter {
   /**
    * @return the index of the selected search position within the document, null if none is selected.
    */
-  Integer getSelectedHighlightPosition() {
+  Integer selectedHighlightPosition() {
     return selectedSearchTextPosition.get();
   }
 

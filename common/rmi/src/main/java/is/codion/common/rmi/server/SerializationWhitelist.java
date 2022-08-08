@@ -128,7 +128,7 @@ public final class SerializationWhitelist {
     private final List<String> allowedWildcardClassnames = new ArrayList<>();
 
     SerializationFilter(String whitelistFile) {
-      this(getWhitelistItems(whitelistFile));
+      this(readWhitelistItems(whitelistFile));
     }
 
     SerializationFilter(Collection<String> whitelistItems) {
@@ -181,16 +181,16 @@ public final class SerializationWhitelist {
       return false;
     }
 
-    private static Collection<String> getWhitelistItems(String whitelistFile) {
+    private static Collection<String> readWhitelistItems(String whitelistFile) {
       if (requireNonNull(whitelistFile).startsWith(CLASSPATH_PREFIX)) {
-        return getClasspathWhitelistItems(whitelistFile);
+        return readClasspathWhitelistItems(whitelistFile);
       }
 
-      return getFileWhitelistItems(whitelistFile);
+      return readFileWhitelistItems(whitelistFile);
     }
 
-    private static Collection<String> getClasspathWhitelistItems(String whitelistFile) {
-      String path = getClasspathFilepath(whitelistFile);
+    private static Collection<String> readClasspathWhitelistItems(String whitelistFile) {
+      String path = classpathFilepath(whitelistFile);
       try (InputStream whitelistFileStream = SerializationWhitelist.class.getClassLoader().getResourceAsStream(path)) {
         if (whitelistFileStream == null) {
           throw new RuntimeException("Whitelist file not found on classpath: " + path);
@@ -204,7 +204,7 @@ public final class SerializationWhitelist {
       }
     }
 
-    private static Collection<String> getFileWhitelistItems(String whitelistFile) {
+    private static Collection<String> readFileWhitelistItems(String whitelistFile) {
       try (Stream<String> stream = Files.lines(Paths.get(whitelistFile))) {
         return stream.collect(toSet());
       }
@@ -214,7 +214,7 @@ public final class SerializationWhitelist {
       }
     }
 
-    private static String getClasspathFilepath(String whitelistFile) {
+    private static String classpathFilepath(String whitelistFile) {
       String path = whitelistFile.substring(CLASSPATH_PREFIX.length());
       if (path.startsWith("/")) {
         path = path.substring(1);

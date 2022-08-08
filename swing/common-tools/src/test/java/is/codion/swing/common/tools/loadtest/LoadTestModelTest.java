@@ -79,7 +79,7 @@ public class LoadTestModelTest {
   }
 
   @Test
-  void getUnknownUsageScenario() {
+  void unknownUsageScenario() {
     TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
     assertThrows(IllegalArgumentException.class, () -> model.usageScenario("bla"));
   }

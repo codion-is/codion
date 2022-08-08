@@ -60,7 +60,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
   @Override
   public final String systemProperties() {
-    return PropertyStore.getSystemProperties(propertyFormatter);
+    return PropertyStore.systemProperties(propertyFormatter);
   }
 
   @Override

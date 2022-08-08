@@ -18,7 +18,7 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static is.codion.swing.common.ui.component.text.TextComponents.getPreferredTextFieldHeight;
+import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
 public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B>
@@ -41,7 +41,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
     super(linkedValue);
     this.comboBoxModel = requireNonNull(comboBoxModel);
-    preferredHeight(getPreferredTextFieldHeight());
+    preferredHeight(preferredTextFieldHeight());
   }
 
   @Override
