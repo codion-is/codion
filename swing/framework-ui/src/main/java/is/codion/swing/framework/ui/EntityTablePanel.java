@@ -1207,7 +1207,7 @@ public class EntityTablePanel extends JPanel {
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
-    String[] messages = getConfirmDeleteMessages();
+    String[] messages = confirmDeleteMessages();
     int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;
@@ -1216,7 +1216,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @return Strings to display in the confirm delete dialog, index 0 = message, index 1 = title
    */
-  protected String[] getConfirmDeleteMessages() {
+  protected String[] confirmDeleteMessages() {
     return new String[] {FrameworkMessages.confirmDeleteSelected(), FrameworkMessages.delete()};
   }
 

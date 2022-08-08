@@ -515,7 +515,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
-    String[] messages = getConfirmationMessages(ConfirmType.DELETE);
+    String[] messages = confirmationMessages(ConfirmType.DELETE);
     return confirm(messages[0], messages[1]);
   }
 
@@ -524,7 +524,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return true if the update action should be performed
    */
   protected boolean confirmUpdate() {
-    String[] messages = getConfirmationMessages(ConfirmType.UPDATE);
+    String[] messages = confirmationMessages(ConfirmType.UPDATE);
     return confirm(messages[0], messages[1]);
   }
 
@@ -547,7 +547,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * as the message displayed in the dialog and the element at index 1 is used as the dialog title,
    * i.e. ["Are you sure you want to delete the selected records?", "About to delete selected records"]
    */
-  protected String[] getConfirmationMessages(ConfirmType type) {
+  protected String[] confirmationMessages(ConfirmType type) {
     switch (type) {
       case DELETE:
         return new String[] {FrameworkMessages.confirmDelete(), FrameworkMessages.delete()};
@@ -622,7 +622,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Initializes the controls available to this EntityEditPanel by mapping them to their respective
    * control codes ({@link ControlCode#INSERT}, {@link ControlCode#UPDATE} etc.)
-   * via the {@code setControl(String, Control) method, these can then be retrieved via the {@link #getControl(ControlCode)} method.
+   * via the {@link #setControl(ControlCode, Control)}) method, these can then be retrieved via the {@link #getControl(ControlCode)} method.
    * @see is.codion.swing.common.ui.control.Control
    * @see #setControl(ControlCode, is.codion.swing.common.ui.control.Control)
    * @see #getControl(ControlCode)

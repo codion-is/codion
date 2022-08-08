@@ -100,12 +100,12 @@ public final class SwingEntityComboBoxModelTest {
     SwingEntityComboBoxModel deptBox = empBox.createForeignKeyFilterComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     assertEquals(1, empBox.getSize());
     Key accountingKey = connectionProvider.entities().primaryKey(TestDomain.T_DEPARTMENT, 10);
-    deptBox.selectEntityByKey(accountingKey);
+    deptBox.selectByKey(accountingKey);
     assertEquals(8, empBox.getSize());
     deptBox.setSelectedItem(null);
     assertEquals(1, empBox.getSize());
     Key salesKey = connectionProvider.entities().primaryKey(TestDomain.T_DEPARTMENT, 30);
-    deptBox.selectEntityByKey(salesKey);
+    deptBox.selectByKey(salesKey);
     assertEquals(5, empBox.getSize());
     empBox.setSelectedItem(empBox.visibleItems().get(1));
     empBox.setSelectedItem(null);
@@ -121,12 +121,12 @@ public final class SwingEntityComboBoxModelTest {
     SwingEntityComboBoxModel deptBox = empBox.createForeignKeyConditionComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     assertEquals(1, empBox.getSize());
     Key accountingKey = connectionProvider.entities().primaryKey(TestDomain.T_DEPARTMENT, 10);
-    deptBox.selectEntityByKey(accountingKey);
+    deptBox.selectByKey(accountingKey);
     assertEquals(8, empBox.getSize());
     deptBox.setSelectedItem(null);
     assertEquals(1, empBox.getSize());
     Key salesKey = connectionProvider.entities().primaryKey(TestDomain.T_DEPARTMENT, 30);
-    deptBox.selectEntityByKey(salesKey);
+    deptBox.selectByKey(salesKey);
     assertEquals(5, empBox.getSize());
     empBox.setSelectedItem(empBox.visibleItems().get(1));
     empBox.setSelectedItem(null);
@@ -190,21 +190,21 @@ public final class SwingEntityComboBoxModelTest {
   void setSelectedEntityByKey() throws DatabaseException {
     comboBoxModel.refresh();
     Entity clark = comboBoxModel.connectionProvider().connection().selectSingle(TestDomain.EMP_NAME, "CLARK");
-    comboBoxModel.selectEntityByKey(clark.primaryKey());
+    comboBoxModel.selectByKey(clark.primaryKey());
     assertEquals(clark, comboBoxModel.selectedValue());
     comboBoxModel.setSelectedItem(null);
     assertNull(comboBoxModel.selectedValue());
     comboBoxModel.setIncludeCondition(entity -> false);
-    comboBoxModel.selectEntityByKey(clark.primaryKey());
+    comboBoxModel.selectByKey(clark.primaryKey());
     assertEquals(clark, comboBoxModel.selectedValue());
     Key nobodyPK = ENTITIES.primaryKey(TestDomain.T_EMP, -1);
-    comboBoxModel.selectEntityByKey(nobodyPK);
+    comboBoxModel.selectByKey(nobodyPK);
     assertEquals(clark, comboBoxModel.selectedValue());
   }
 
   @Test
   void setSelectedEntityByPrimaryKeyNullValue() {
-    assertThrows(NullPointerException.class, () -> comboBoxModel.selectEntityByKey(null));
+    assertThrows(NullPointerException.class, () -> comboBoxModel.selectByKey(null));
   }
 
   @Test
@@ -214,7 +214,7 @@ public final class SwingEntityComboBoxModelTest {
     Value<Integer> empIdValue = comboBoxModel.createSelectorValue(TestDomain.EMP_ID);
     assertNull(empIdValue.get());
     Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(TestDomain.T_EMP, 5);
-    comboBoxModel.selectEntityByKey(jonesKey);
+    comboBoxModel.selectByKey(jonesKey);
     assertEquals(5, empIdValue.get());
     comboBoxModel.setSelectedItem(null);
     assertNull(empIdValue.get());

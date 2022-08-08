@@ -118,7 +118,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * in the model this method returns silently without changing the selection
    * @param primaryKey the primary key of the entity to select
    */
-  void selectEntityByKey(Key primaryKey);
+  void selectByKey(Key primaryKey);
 
   /**
    * Forces a refresh of this model, disregarding the staticData directive

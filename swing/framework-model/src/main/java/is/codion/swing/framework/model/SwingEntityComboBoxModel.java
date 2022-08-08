@@ -161,7 +161,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final void selectEntityByKey(Key primaryKey) {
+  public final void selectByKey(Key primaryKey) {
     requireNonNull(primaryKey);
     int indexOfKey = getIndexOfKey(primaryKey);
     if (indexOfKey >= 0) {
@@ -358,7 +358,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
     addSelectionListener(selected -> {
       if (selected != null) {
-        foreignKeyModel.selectEntityByKey(selected.referencedKey(foreignKey));
+        foreignKeyModel.selectByKey(selected.referencedKey(foreignKey));
       }
     });
     addRefreshListener(foreignKeyModel::forceRefresh);
