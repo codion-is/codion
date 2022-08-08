@@ -41,13 +41,13 @@ public class EntityEditPanelTestUnit {
    * @throws Exception in case of an exception
    */
   protected EntityEditPanel createEditPanel() throws Exception {
-    return editPanelClass.getConstructor(SwingEntityEditModel.class).newInstance(getEditModel());
+    return editPanelClass.getConstructor(SwingEntityEditModel.class).newInstance(editModel());
   }
 
   /**
    * @return the edit model
    */
-  protected SwingEntityEditModel getEditModel() {
+  protected SwingEntityEditModel editModel() {
     return editModel;
   }
 }

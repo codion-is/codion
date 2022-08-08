@@ -8393,3 +8393,4 @@
   AbstractConnectionPoolWrapper.size() renamed available()
   FilteredComboBoxModel.Finder.getValue() renamed value()
   AbstractServer.getRegistry() renamed registry()
+  EntityEditPanelTestUnit.getEditModel() renamed editModel(), FxEntityListModel.getUserPreferenceKey() renamed userPreferencesKey()
