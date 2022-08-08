@@ -75,7 +75,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @return the user this connection is using
    */
   public final User user() {
-    return connectionHandler.getRemoteClient().user();
+    return connectionHandler.remoteClient().user();
   }
 
   /**
@@ -109,15 +109,15 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   /**
    * @return the remote client using this remote connection
    */
-  final RemoteClient getRemoteClient() {
-    return connectionHandler.getRemoteClient();
+  final RemoteClient remoteClient() {
+    return connectionHandler.remoteClient();
   }
 
   /**
    * @return a ClientLog instance containing information about this connection's recent activity
    */
-  final ClientLog getClientLog() {
-    return connectionHandler.getClientLog();
+  final ClientLog clientLog() {
+    return connectionHandler.clientLog();
   }
 
   /**
@@ -125,15 +125,15 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @return true if this connection has been inactive for {@code timeout} milliseconds or longer
    */
   final boolean hasBeenInactive(int timeout) {
-    return System.currentTimeMillis() - connectionHandler.getLastAccessTime() > timeout;
+    return System.currentTimeMillis() - connectionHandler.lastAccessTime() > timeout;
   }
 
   final void setLoggingEnabled(boolean status) {
-    connectionHandler.getMethodLogger().setEnabled(status);
+    connectionHandler.methodLogger().setEnabled(status);
   }
 
   final boolean isLoggingEnabled() {
-    return connectionHandler.getMethodLogger().isEnabled();
+    return connectionHandler.methodLogger().isEnabled();
   }
 
   /**
@@ -147,7 +147,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     disconnectedEvent.addDataListener(listener);
   }
 
-  static int getRequestsPerSecond() {
-    return LocalConnectionHandler.REQUEST_COUNTER.getRequestsPerSecond();
+  static int requestsPerSecond() {
+    return LocalConnectionHandler.REQUEST_COUNTER.requestsPerSecond();
   }
 }

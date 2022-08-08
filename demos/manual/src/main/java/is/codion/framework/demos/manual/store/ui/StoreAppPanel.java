@@ -79,7 +79,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.manual.store.domain.Store");
     Report.REPORT_PATH.set("http://test.io");
     SwingUtilities.invokeLater(() -> new StoreAppPanel().starter()
-            .frameSize(Windows.getScreenSizeRatio(0.6))
+            .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }

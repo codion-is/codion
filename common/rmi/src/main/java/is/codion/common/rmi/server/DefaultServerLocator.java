@@ -38,12 +38,12 @@ final class DefaultServerLocator implements Server.Locator {
   }
 
   @Override
-  public <T extends Remote, A extends ServerAdmin> Server<T, A> getServer(String serverHostName,
-                                                                          String serverNamePrefix,
-                                                                          int registryPort,
-                                                                          int requestedServerPort)
+  public <T extends Remote, A extends ServerAdmin> Server<T, A> findServer(String serverHostName,
+                                                                           String serverNamePrefix,
+                                                                           int registryPort,
+                                                                           int requestedServerPort)
           throws RemoteException, NotBoundException {
-    List<Server<T, A>> servers = getServers(serverHostName, registryPort, serverNamePrefix, requestedServerPort);
+    List<Server<T, A>> servers = findServers(serverHostName, registryPort, serverNamePrefix, requestedServerPort);
     if (!servers.isEmpty()) {
       return servers.get(0);
     }
@@ -53,24 +53,24 @@ final class DefaultServerLocator implements Server.Locator {
     }
   }
 
-  private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> getServers(String hostNames,
-                                                                                         int registryPort,
-                                                                                         String serverNamePrefix,
-                                                                                         int requestedServerPort)
+  private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> findServers(String hostNames,
+                                                                                          int registryPort,
+                                                                                          String serverNamePrefix,
+                                                                                          int requestedServerPort)
           throws RemoteException {
     List<Server<T, A>> servers = new ArrayList<>();
     for (String serverHostName : hostNames.split(",")) {
-      servers.addAll(getServersOnHost(serverHostName, registryPort, serverNamePrefix, requestedServerPort));
+      servers.addAll(findServersOnHost(serverHostName, registryPort, serverNamePrefix, requestedServerPort));
     }
     servers.sort(new ServerComparator<>());
 
     return servers;
   }
 
-  private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> getServersOnHost(String serverHostName,
-                                                                                               int registryPort,
-                                                                                               String serverNamePrefix,
-                                                                                               int requestedServerPort)
+  private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> findServersOnHost(String serverHostName,
+                                                                                                int registryPort,
+                                                                                                String serverNamePrefix,
+                                                                                                int requestedServerPort)
           throws RemoteException {
     LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", requested server port: {}, registry port {}",
             serverHostName, serverNamePrefix, requestedServerPort, registryPort);

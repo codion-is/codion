@@ -124,27 +124,27 @@ public final class EntityEditEvents {
     private final Map<EntityType, Listeners<List<Entity>>> deleteListeners = new ConcurrentHashMap<>();
 
     private void addInsertListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
-      getInsertListeners(entityType).addDataListener(listener);
+      insertListeners(entityType).addDataListener(listener);
     }
 
     private void removeInsertListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
-      getInsertListeners(entityType).removeDataListener(listener);
+      insertListeners(entityType).removeDataListener(listener);
     }
 
     private void addUpdateListener(EntityType entityType, EventDataListener<Map<Key, Entity>> listener) {
-      getUpdateListeners(entityType).addDataListener(listener);
+      updateListeners(entityType).addDataListener(listener);
     }
 
     private void removeUpdateListener(EntityType entityType, EventDataListener<Map<Key, Entity>> listener) {
-      getUpdateListeners(entityType).removeDataListener(listener);
+      updateListeners(entityType).removeDataListener(listener);
     }
 
     private void addDeleteListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
-      getDeleteListeners(entityType).addDataListener(listener);
+      deleteListeners(entityType).addDataListener(listener);
     }
 
     private void removeDeleteListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
-      getDeleteListeners(entityType).removeDataListener(listener);
+      deleteListeners(entityType).removeDataListener(listener);
     }
 
     private void notifyInserted(List<Entity> inserted) {
@@ -184,15 +184,15 @@ public final class EntityEditEvents {
       }
     }
 
-    private Listeners<List<Entity>> getInsertListeners(EntityType entityType) {
+    private Listeners<List<Entity>> insertListeners(EntityType entityType) {
       return insertListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
     }
 
-    private Listeners<Map<Key, Entity>> getUpdateListeners(EntityType entityType) {
+    private Listeners<Map<Key, Entity>> updateListeners(EntityType entityType) {
       return updateListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
     }
 
-    private Listeners<List<Entity>> getDeleteListeners(EntityType entityType) {
+    private Listeners<List<Entity>> deleteListeners(EntityType entityType) {
       return deleteListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
     }
 

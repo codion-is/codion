@@ -70,7 +70,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
   @Override
   public final T randomItem() {
-    int totalWeights = getTotalWeights();
+    int totalWeights = totalWeights();
     if (totalWeights == 0) {
       throw new IllegalStateException("Can not choose a random item unless total weights exceed 0");
     }
@@ -89,7 +89,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
   @Override
   public final double weightRatio(T item) {
-    int totalWeights = getTotalWeights();
+    int totalWeights = totalWeights();
     if (totalWeights == 0) {
       return 0;
     }
@@ -118,7 +118,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     throw new IllegalArgumentException("Item not found: " + item + ": " + item.getClass());
   }
 
-  private int getTotalWeights() {
+  private int totalWeights() {
     return items.stream()
             .mapToInt(RandomItem::weight)
             .sum();

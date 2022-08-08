@@ -39,7 +39,7 @@ final class DisposeDialogOnEscapeAction extends AbstractAction {
 
       return;
     }
-    List<JPopupMenu> popupMenus = getComponentsOfType(dialog.getContentPane(), JPopupMenu.class);
+    List<JPopupMenu> popupMenus = componentsOfType(dialog.getContentPane(), JPopupMenu.class);
     if (popupMenus.isEmpty()) {
       DisposeDialogAction.closeIfConfirmed(dialog, confirmCloseListener);
     }
@@ -48,14 +48,14 @@ final class DisposeDialogOnEscapeAction extends AbstractAction {
     }
   }
 
-  static <T extends Component> List<T> getComponentsOfType(Container container, Class<T> clazz) {
+  static <T extends Component> List<T> componentsOfType(Container container, Class<T> clazz) {
     List<T> components = new ArrayList<>();
     for (Component component : container.getComponents()) {
       if (clazz.isAssignableFrom(component.getClass())) {
         components.add((T) component);
       }
       if (component instanceof Container) {
-        components.addAll(getComponentsOfType((Container) component, clazz));
+        components.addAll(componentsOfType((Container) component, clazz));
       }
     }
 

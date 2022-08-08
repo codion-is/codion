@@ -16,7 +16,7 @@ final class QueryKeyGenerator extends AbstractQueriedKeyGenerator {
   }
 
   @Override
-  protected String getQuery(Database database) {
+  protected String query(Database database) {
     return query;
   }
 }

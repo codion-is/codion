@@ -400,15 +400,15 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (onBuild != null) {
       onBuild.accept(component);
     }
-    validators.forEach(validator -> getComponentValue(component).addValidator(validator));
+    validators.forEach(validator -> componentValue(component).addValidator(validator));
     if (initialValue != null) {
       setInitialValue(component, initialValue);
     }
     if (linkedValue != null) {
-      getComponentValue(component).link(linkedValue);
+      componentValue(component).link(linkedValue);
     }
     if (linkedValueObserver != null) {
-      getComponentValue(component).link(linkedValueObserver);
+      componentValue(component).link(linkedValueObserver);
     }
     keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
     focusListeners.forEach(focusListener -> component.addFocusListener(focusListener));
@@ -471,7 +471,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     TransferFocusOnEnter.enable(component);
   }
 
-  private ComponentValue<T, C> getComponentValue(C component) {
+  private ComponentValue<T, C> componentValue(C component) {
     if (componentValue == null) {
       componentValue = createComponentValue(component);
     }

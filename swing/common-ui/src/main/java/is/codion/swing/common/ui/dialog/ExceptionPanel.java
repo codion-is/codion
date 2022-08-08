@@ -228,7 +228,7 @@ final class ExceptionPanel extends JPanel {
     if (DISPLAY_SYSTEM_PROPERTIES.get()) {
       detailsArea.append("\n");
       detailsArea.append("--------------------------------------------Properties--------------------------------------------\n\n");
-      detailsArea.append(PropertyStore.getSystemProperties());
+      detailsArea.append(PropertyStore.systemProperties());
     }
 
     detailsArea.setCaretPosition(0);

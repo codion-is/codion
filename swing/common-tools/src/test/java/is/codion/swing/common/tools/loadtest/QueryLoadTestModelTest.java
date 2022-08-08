@@ -23,7 +23,7 @@ public final class QueryLoadTestModelTest {
   private static final QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
           new QueryLoadTestModel.QueryScenario(UNIT_TEST_USER, "selectEmployees", "select * from scott.emp where ename not like ?") {
             @Override
-            protected List<Object> getParameters() {
+            protected List<Object> parameters() {
               return singletonList("ADAMS");
             }
           };

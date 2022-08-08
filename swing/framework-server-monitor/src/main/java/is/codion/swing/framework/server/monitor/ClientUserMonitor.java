@@ -112,11 +112,11 @@ public final class ClientUserMonitor {
    */
   public void refresh() throws RemoteException {
     clientTypeListModel.clear();
-    for (String clientType : getSortedClientTypes()) {
+    for (String clientType : sortedClientTypes()) {
       clientTypeListModel.addElement(new ClientMonitor(server, clientType, null));
     }
     userListModel.clear();
-    for (User user : getSortedUsers()) {
+    for (User user : sortedUsers()) {
       userListModel.addElement(new ClientMonitor(server, null, user));
     }
   }
@@ -177,14 +177,14 @@ public final class ClientUserMonitor {
     return updateIntervalValue;
   }
 
-  private List<String> getSortedClientTypes() throws RemoteException {
+  private List<String> sortedClientTypes() throws RemoteException {
     List<String> users = new ArrayList<>(server.clientTypes());
     Collections.sort(users);
 
     return users;
   }
 
-  private List<User> getSortedUsers() throws RemoteException {
+  private List<User> sortedUsers() throws RemoteException {
     List<User> users = new ArrayList<>(server.users());
     users.sort(USER_COMPARATOR);
 

@@ -12,7 +12,7 @@ public class MySQLDatabaseTest {
   private static final String URL = "jdbc:mysql://host:1234/sid";
 
   @Test
-  void getName() {
+  void name() {
     MySQLDatabase database = new MySQLDatabase("jdbc:mysql://host.com:1234/dbname");
     assertEquals("dbname", database.name());
     database = new MySQLDatabase("jdbc:mysql://host.com:1234/dbname;option=true;option2=false");
@@ -20,7 +20,7 @@ public class MySQLDatabaseTest {
   }
 
   @Test
-  void getSequenceQuery() {
+  void sequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new MySQLDatabase(URL).sequenceQuery("seq"));
   }
 
@@ -31,7 +31,7 @@ public class MySQLDatabaseTest {
   }
 
   @Test
-  void getAutoIncrementQuery() {
+  void autoIncrementQuery() {
     MySQLDatabase db = new MySQLDatabase(URL);
     assertEquals(MySQLDatabase.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
   }

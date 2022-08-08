@@ -102,7 +102,7 @@ public final class PropertyConditionView<T> extends BorderPane {
 
   private ComboBox<Item<Operator>> createOperatorComboBox() {
     ComboBox<Item<Operator>> comboBox = new ComboBox<>(
-            FXCollections.observableArrayList(getOperators(model.columnIdentifier())));
+            FXCollections.observableArrayList(operators(model.columnIdentifier())));
     comboBox.getSelectionModel().select(item(model.getOperator()));
     comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> model.setOperator(newValue.value()));
     comboBox.maxWidthProperty().set(Double.MAX_VALUE);
@@ -236,7 +236,7 @@ public final class PropertyConditionView<T> extends BorderPane {
     return gridPane;
   }
 
-  private static Collection<Item<Operator>> getOperators(Attribute<?> attribute) {
+  private static Collection<Item<Operator>> operators(Attribute<?> attribute) {
     Collection<Item<Operator>> types = new ArrayList<>();
     if (attribute instanceof ForeignKey) {
       types.add(item(Operator.EQUAL, Operator.EQUAL.caption()));

@@ -54,14 +54,14 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
             .resizable(false)
             .titleProvider(titleProvider)
             .icon(icon)
-            .okAction(loginPanel.getOkControl())
-            .cancelAction(loginPanel.getCancelControl())
+            .okAction(loginPanel.okControl())
+            .cancelAction(loginPanel.cancelControl())
             .show();
     if (dummyFrame != null) {
       dummyFrame.dispose();
     }
 
-    User user = loginPanel.getUser();
+    User user = loginPanel.user();
     if (user == null) {
       throw new CancelException();
     }

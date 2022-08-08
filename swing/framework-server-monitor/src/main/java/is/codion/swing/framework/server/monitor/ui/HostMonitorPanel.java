@@ -36,13 +36,13 @@ public final class HostMonitorPanel extends JPanel {
 
   private void initializeUI() throws RemoteException {
     setLayout(Layouts.borderLayout());
-    add(getControls().createHorizontalToolBar(), BorderLayout.NORTH);
+    add(controls().createHorizontalToolBar(), BorderLayout.NORTH);
     serverPane = new JTabbedPane();
     add(serverPane, BorderLayout.CENTER);
     initializeServerTabs();
   }
 
-  private Controls getControls() {
+  private Controls controls() {
     return Controls.builder()
             .control(Control.builder(model::refresh)
                     .caption("Refresh"))

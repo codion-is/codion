@@ -144,12 +144,12 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
      * these must of course match the parameter slots in the underlying query.
      * @return a list of parameters for the next query run
      */
-    protected List<Object> getParameters() {
+    protected List<Object> parameters() {
       return emptyList();
     }
 
     private void setStatementParameters(PreparedStatement statement) throws SQLException {
-      List<Object> parameters = getParameters();
+      List<Object> parameters = parameters();
       if (!Util.nullOrEmpty(parameters)) {
         int index = 1;
         for (Object parameter : parameters) {

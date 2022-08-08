@@ -115,13 +115,13 @@ public class DomainTest {
   }
 
   @Test
-  void getPropertyWrongEntityType() {
+  void propertyWrongEntityType() {
     EntityDefinition definition = entities.definition(Detail.TYPE);
     assertThrows(IllegalArgumentException.class, () -> definition.property(Master.CODE));
   }
 
   @Test
-  void getWritableColumnProperties() {
+  void writableColumnProperties() {
     EntityDefinition deptDef = entities.definition(Department.TYPE);
     List<ColumnProperty<?>> writable = deptDef
             .writableColumnProperties(true, true);
@@ -180,7 +180,7 @@ public class DomainTest {
   }
 
   @Test
-  void getUpdatableProperties() {
+  void updatableProperties() {
     EntityDefinition definition = entities.definition(Detail.TYPE);
     List<Property<?>> properties = definition.updatableProperties();
     assertEquals(11, properties.size());
@@ -190,7 +190,7 @@ public class DomainTest {
   }
 
   @Test
-  void getSelectedProperties() {
+  void selectedProperties() {
     List<Attribute<?>> attributes = new ArrayList<>();
     attributes.add(Department.NO);
     attributes.add(Department.NAME);
@@ -319,7 +319,7 @@ public class DomainTest {
   }
 
   @Test
-  void getProperties() {
+  void properties() {
     EntityDefinition definition = entities.definition(Department.TYPE);
     Property<Integer> id = definition.property(Department.NO);
     Property<String> location = definition.property(Department.LOCATION);
@@ -345,13 +345,13 @@ public class DomainTest {
   }
 
   @Test
-  void getPropertyInvalid() {
+  void propertyInvalid() {
     assertThrows(IllegalArgumentException.class, () -> entities.definition(Master.TYPE)
             .property(Master.TYPE.attribute("unknown property", Integer.class)));
   }
 
   @Test
-  void getForeignKeys() {
+  void foreignKeys() {
     EntityDefinition definition = entities.definition(Detail.TYPE);
     List<ForeignKey> foreignKeys = definition.foreignKeys(Employee.TYPE);
     assertEquals(0, foreignKeys.size());
@@ -361,12 +361,12 @@ public class DomainTest {
   }
 
   @Test
-  void getForeignKeyProperty() {
+  void foreignKeyProperty() {
     assertNotNull(entities.definition(Detail.TYPE).foreignKeyProperty(Detail.MASTER_FK));
   }
 
   @Test
-  void getForeignKeyPropertyInvalid() {
+  void foreignKeyPropertyInvalid() {
     ForeignKey foreignKey = Detail.TYPE.foreignKey("bla bla", Detail.MASTER_ID, Master.ID);
     assertThrows(IllegalArgumentException.class, () -> entities.definition(Detail.TYPE).foreignKeyProperty(foreignKey));
   }
@@ -379,7 +379,7 @@ public class DomainTest {
   }
 
   @Test
-  void getDerivedAttributes() {
+  void derivedAttributes() {
     EntityDefinition definition = entities.definition(Detail.TYPE);
     Collection<Attribute<?>> derivedAttributes = definition.derivedAttributes(Detail.BOOLEAN);
     assertTrue(derivedAttributes.isEmpty());
@@ -395,7 +395,7 @@ public class DomainTest {
   }
 
   @Test
-  void getDenormalizedProperties() {
+  void denormalizedProperties() {
     List<DenormalizedProperty<?>> denormalized =
             entities.definition(Detail.TYPE).denormalizedProperties(Detail.MASTER_FK);
     assertFalse(denormalized.isEmpty());
@@ -408,7 +408,7 @@ public class DomainTest {
   }
 
   @Test
-  void getStringFactory() {
+  void stringFactory() {
     assertNotNull(entities.definition(Department.TYPE).stringFactory());
   }
 
@@ -487,7 +487,7 @@ public class DomainTest {
   }
 
   @Test
-  void getSearchAttributes() {
+  void searchAttributes() {
     EntityDefinition definition = entities.definition(Employee.TYPE);
     Collection<Attribute<String>> searchAttributes = definition.searchAttributes();
     assertTrue(searchAttributes.contains(Employee.JOB));
@@ -564,13 +564,13 @@ public class DomainTest {
   }
 
   @Test
-  void getFunctionNonExisting() {
+  void functionNonExisting() {
     FunctionType<?, ?, ?> functionType = FunctionType.functionType("nonexisting");
     assertThrows(IllegalArgumentException.class, () -> domain.function(functionType));
   }
 
   @Test
-  void getProcedureNonExisting() {
+  void frocedureNonExisting() {
     ProcedureType<?, ?> procedureType = ProcedureType.procedureType("nonexisting");
     assertThrows(IllegalArgumentException.class, () -> domain.procedure(procedureType));
   }

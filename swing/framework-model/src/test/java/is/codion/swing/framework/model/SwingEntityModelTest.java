@@ -25,7 +25,7 @@ public final class SwingEntityModelTest
 
   @Override
   protected SwingEntityModel createDepartmentModel() {
-    SwingEntityModel departmentModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
+    SwingEntityModel departmentModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, connectionProvider());
     SwingEntityModel employeeModel = new SwingEntityModel(TestDomain.T_EMP, departmentModel.connectionProvider());
     employeeModel.editModel().refreshComboBoxModels();
     departmentModel.addDetailModel(employeeModel);
@@ -38,27 +38,27 @@ public final class SwingEntityModelTest
 
   @Override
   protected SwingEntityModel createDepartmentModelWithoutDetailModel() {
-    return new SwingEntityModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
+    return new SwingEntityModel(TestDomain.T_DEPARTMENT, connectionProvider());
   }
 
   @Override
   protected SwingEntityModel createEmployeeModel() {
-    return new SwingEntityModel(TestDomain.T_EMP, getConnectionProvider());
+    return new SwingEntityModel(TestDomain.T_EMP, connectionProvider());
   }
 
   @Override
   protected SwingEntityEditModel createDepartmentEditModel() {
-    return new SwingEntityEditModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
+    return new SwingEntityEditModel(TestDomain.T_DEPARTMENT, connectionProvider());
   }
 
   @Override
   protected SwingEntityTableModel createEmployeeTableModel() {
-    return new SwingEntityTableModel(TestDomain.T_EMP, getConnectionProvider());
+    return new SwingEntityTableModel(TestDomain.T_EMP, connectionProvider());
   }
 
   @Override
   protected SwingEntityTableModel createDepartmentTableModel() {
-    return new SwingEntityTableModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
+    return new SwingEntityTableModel(TestDomain.T_DEPARTMENT, connectionProvider());
   }
 
   @Test
@@ -91,7 +91,7 @@ public final class SwingEntityModelTest
     SwingEntityEditModel employeeEditModel = employeeModel.editModel();
     EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.foreignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     departmentsComboBoxModel.refresh();
-    Key primaryKey = getConnectionProvider().entities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations, no employees
+    Key primaryKey = connectionProvider().entities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations, no employees
     departmentModel.tableModel().selectByKey(Collections.singletonList(primaryKey));
     Entity operations = departmentModel.tableModel().selectionModel().getSelectedItem();
     EntityConnection connection = departmentModel.connectionProvider().connection();
@@ -153,13 +153,13 @@ public final class SwingEntityModelTest
 
   @Test
   void constructor() {
-    SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
-    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
+    SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DEPARTMENT, connectionProvider());
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, connectionProvider());
 
     new SwingEntityModel(editModel);
     new SwingEntityModel(tableModel);
 
-    tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, getConnectionProvider());
+    tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, connectionProvider());
     assertNotEquals(editModel, new SwingEntityModel(tableModel).editModel());
 
     tableModel = new SwingEntityTableModel(editModel);
@@ -168,7 +168,7 @@ public final class SwingEntityModelTest
 
   @Test
   void constructorNullEntityType() {
-    assertThrows(NullPointerException.class, () -> new SwingEntityModel(null, getConnectionProvider()));
+    assertThrows(NullPointerException.class, () -> new SwingEntityModel(null, connectionProvider()));
   }
 
   @Test

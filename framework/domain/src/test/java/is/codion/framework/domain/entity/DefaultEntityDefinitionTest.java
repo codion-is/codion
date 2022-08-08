@@ -285,7 +285,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  void getColor() {
+  void color() {
     final String colorBlue = "blue";
     final String colorYellow = "blue";
     EntityType entityType = DOMAIN_TYPE.entityType("getColor");

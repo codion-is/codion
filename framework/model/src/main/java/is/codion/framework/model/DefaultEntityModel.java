@@ -371,7 +371,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @see #initialize(EntityType, List)
    */
   protected final void initializeDetailModels() {
-    List<Entity> activeEntities = getActiveEntities();
+    List<Entity> activeEntities = activeEntities();
     for (M detailModel : linkedDetailModels) {
       initializeDetailModel(activeEntities, detailModel);
     }
@@ -424,7 +424,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     editModel.removeForeignKeyValues(deletedEntities);
   }
 
-  private List<Entity> getActiveEntities() {
+  private List<Entity> activeEntities() {
     if (tableModel != null && tableModel.selectionModel().isSelectionNotEmpty()) {
       return tableModel.selectionModel().getSelectedItems();
     }

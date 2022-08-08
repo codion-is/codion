@@ -249,7 +249,7 @@ public interface Chinook {
     ForeignKey TRACK_FK = TYPE.foreignKey("track_fk", TRACK_ID, Track.ID);
   }
 
-  static Integer getMinutes(Integer milliseconds) {
+  static Integer minutes(Integer milliseconds) {
     if (milliseconds == null) {
       return null;
     }
@@ -257,7 +257,7 @@ public interface Chinook {
     return milliseconds / 1000 / 60;
   }
 
-  static Integer getSeconds(Integer milliseconds) {
+  static Integer seconds(Integer milliseconds) {
     if (milliseconds == null) {
       return null;
     }
@@ -265,7 +265,7 @@ public interface Chinook {
     return milliseconds / 1000 % 60;
   }
 
-  static Integer getMilliseconds(Integer minutes, Integer seconds) {
+  static Integer milliseconds(Integer minutes, Integer seconds) {
     int milliseconds = minutes == null ? 0 : minutes * 60 * 1000;
     milliseconds += seconds == null ? 0 : seconds * 1000;
 
@@ -301,8 +301,8 @@ public interface Chinook {
         return "";
       }
 
-      return getMinutes(milliseconds) + " min " +
-              getSeconds(milliseconds) + " sec";
+      return minutes(milliseconds) + " min " +
+              seconds(milliseconds) + " sec";
     }
   }
 

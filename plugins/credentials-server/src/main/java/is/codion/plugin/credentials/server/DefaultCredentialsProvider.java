@@ -34,7 +34,7 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
   public Optional<User> credentials(UUID authenticationToken) throws CredentialsException {
     requireNonNull(authenticationToken);
     LOG.debug("DefaultCredentialsProvider.credentials(" + authenticationToken + ")");
-    Remote credentialsService = getCredentialsService(getRegistry(CredentialsService.REGISTRY_PORT.getOrThrow()));
+    Remote credentialsService = credentialsService(registry(CredentialsService.REGISTRY_PORT.getOrThrow()));
     try {
       return Optional.ofNullable(((CredentialsService) credentialsService)
               .user(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX)));
@@ -44,7 +44,7 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
     }
   }
 
-  private static Remote getCredentialsService(Registry registry) throws ProviderNotFoundException, ProviderNotReachableException {
+  private static Remote credentialsService(Registry registry) throws ProviderNotFoundException, ProviderNotReachableException {
     Remote credentialsService;
     try {
       credentialsService = registry.lookup(CredentialsService.class.getSimpleName());
@@ -60,7 +60,7 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
     }
   }
 
-  private static Registry getRegistry(int registryPort) throws ProviderNotFoundException {
+  private static Registry registry(int registryPort) throws ProviderNotFoundException {
     try {
       return LocateRegistry.getRegistry(registryPort);
     }

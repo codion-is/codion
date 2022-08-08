@@ -209,16 +209,16 @@ final class SelectColumnsPanel<C> extends JPanel {
               .filter(Component::isFocusOwner)
               .findAny()
               .ifPresent(checkBox -> checkBoxes.get(next ?
-                              getNextIndex(checkBoxes.indexOf(checkBox)) :
-                              getPreviousIndex(checkBoxes.indexOf(checkBox)))
+                              nextIndex(checkBoxes.indexOf(checkBox)) :
+                              previousIndex(checkBoxes.indexOf(checkBox)))
                       .requestFocusInWindow());
     }
 
-    private int getNextIndex(int currentIndex) {
+    private int nextIndex(int currentIndex) {
       return currentIndex == checkBoxes.size() - 1 ? 0 : currentIndex + 1;
     }
 
-    private int getPreviousIndex(int currentIndex) {
+    private int previousIndex(int currentIndex) {
       return currentIndex == 0 ? checkBoxes.size() - 1 : currentIndex - 1;
     }
   }

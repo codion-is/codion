@@ -68,7 +68,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
    */
   public LookAndFeelSelectionPanel(boolean changeDuringSelection) {
     this.comboBoxModel = ItemComboBoxModel.createModel(initializeAvailableLookAndFeels());
-    getCurrentLookAndFeel().ifPresent(comboBoxModel::setSelectedItem);
+    currentLookAndFeel().ifPresent(comboBoxModel::setSelectedItem);
     this.originalLookAndFeel = comboBoxModel.selectedValue().value();
     if (changeDuringSelection) {
       comboBoxModel.addSelectionListener(lookAndFeelProvider ->
@@ -115,7 +115,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     }
   }
 
-  private Optional<Item<LookAndFeelProvider>> getCurrentLookAndFeel() {
+  private Optional<Item<LookAndFeelProvider>> currentLookAndFeel() {
     String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
 
     return comboBoxModel.items().stream()
@@ -147,7 +147,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
       textLabel.setOpaque(true);
       colorLabel.setOpaque(true);
       textLabel.setText(lookAndFeel.className());
-      UIDefaults defaults = getDefaults(lookAndFeel.className());
+      UIDefaults defaults = defaults(lookAndFeel.className());
       if (defaults == nullDefaults) {
         textLabel.setBackground(selected ? Color.LIGHT_GRAY : Color.WHITE);
         textLabel.setForeground(Color.BLACK);
@@ -163,7 +163,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
       }
     }
 
-    private UIDefaults getDefaults(String className) {
+    private UIDefaults defaults(String className) {
       return lookAndFeelDefaults.computeIfAbsent(className, this::initializeLookAndFeelDefaults);
     }
 

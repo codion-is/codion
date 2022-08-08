@@ -78,7 +78,7 @@ public final class HostMonitor {
   public void refresh() throws RemoteException {
     removeUnreachableServers();
     try {
-      for (ServerInformation serverInformation : getEntityServers(hostName, registryPort)) {
+      for (ServerInformation serverInformation : findEntityServers(hostName, registryPort)) {
         if (!containsServerMonitor(serverInformation.serverId())) {
           ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInformation, registryPort, adminUser, updateRate);
           serverMonitor.addServerShutDownListener(() -> removeServer(serverMonitor));
@@ -136,13 +136,13 @@ public final class HostMonitor {
     }
   }
 
-  private static List<ServerInformation> getEntityServers(String serverHostName, int registryPort) {
+  private static List<ServerInformation> findEntityServers(String serverHostName, int registryPort) {
     List<ServerInformation> servers = new ArrayList<>();
     try {
       LOG.debug("HostMonitor locating registry on host: {}, port: {}: ", serverHostName, registryPort);
       Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
       LOG.debug("HostMonitor located registry: {} on port: {}", registry, registryPort);
-      Collection<String> boundNames = getEntityServers(registry);
+      Collection<String> boundNames = findEntityServers(registry);
       if (boundNames.isEmpty()) {
         LOG.debug("HostMonitor found no server bound to registry: {} on port: {}", registry, registryPort);
       }
@@ -159,7 +159,7 @@ public final class HostMonitor {
     return servers;
   }
 
-  private static Collection<String> getEntityServers(Registry registry) throws RemoteException {
+  private static Collection<String> findEntityServers(Registry registry) throws RemoteException {
     String[] boundNames = registry.list();
     String serverNamePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
 

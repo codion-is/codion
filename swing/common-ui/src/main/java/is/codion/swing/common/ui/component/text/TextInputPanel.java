@@ -215,7 +215,7 @@ public final class TextInputPanel extends JPanel {
     AbstractAction buttonAction = new AbstractAction("...") {
       @Override
       public void actionPerformed(ActionEvent e) {
-        getInputFromUser();
+        inputFromUser();
       }
     };
     KeyEvents.builder(KeyEvent.VK_INSERT)
@@ -230,7 +230,7 @@ public final class TextInputPanel extends JPanel {
     return actionButton;
   }
 
-  private void getInputFromUser() {
+  private void inputFromUser() {
     JTextArea textArea = TextAreaBuilder.builder()
             .document(new SizedDocument(maximumLength))
             .initialValue(textField.getText())

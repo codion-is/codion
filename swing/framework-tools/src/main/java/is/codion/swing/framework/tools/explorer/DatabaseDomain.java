@@ -45,7 +45,7 @@ final class DatabaseDomain extends DefaultDomain {
               .map(ForeignKeyConstraint::referencedTable)
               .filter(referencedTable -> !referencedTable.equals(table))
               .forEach(this::defineEntity);
-      define(getPropertyBuilders(table, entityType, new ArrayList<>(table.foreignKeys())));
+      define(propertyBuilders(table, entityType, new ArrayList<>(table.foreignKeys())));
     }
   }
 
@@ -55,11 +55,11 @@ final class DatabaseDomain extends DefaultDomain {
     }
   }
 
-  private List<Property.Builder<?, ?>> getPropertyBuilders(Table table, EntityType entityType,
-                                                           List<ForeignKeyConstraint> foreignKeyConstraints) {
+  private List<Property.Builder<?, ?>> propertyBuilders(Table table, EntityType entityType,
+                                                        List<ForeignKeyConstraint> foreignKeyConstraints) {
     List<Property.Builder<?, ?>> builders = new ArrayList<>();
     table.columns().forEach(column -> {
-      builders.add(getColumnPropertyBuilder(column, entityType));
+      builders.add(columnPropertyBuilder(column, entityType));
       if (column.isForeignKeyColumn()) {
         foreignKeyConstraints.stream()
                 //if this is the last column in the foreign key
@@ -68,7 +68,7 @@ final class DatabaseDomain extends DefaultDomain {
                 .ifPresent(foreignKeyConstraint -> {
                   //we add the foreign key property just below it
                   foreignKeyConstraints.remove(foreignKeyConstraint);
-                  builders.add(getForeignKeyPropertyBuilder(foreignKeyConstraint, entityType));
+                  builders.add(foreignKeyPropertyBuilder(foreignKeyConstraint, entityType));
                 });
       }
     });
@@ -76,20 +76,20 @@ final class DatabaseDomain extends DefaultDomain {
     return builders;
   }
 
-  private Property.Builder<?, ?> getForeignKeyPropertyBuilder(ForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
+  private Property.Builder<?, ?> foreignKeyPropertyBuilder(ForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
     Table referencedTable = foreignKeyConstraint.referencedTable();
     EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
     ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
             foreignKeyConstraint.references().entrySet().stream()
-                    .map(entry -> reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
+                    .map(entry -> reference(attribute(entityType, entry.getKey()), attribute(referencedEntityType, entry.getValue())))
                     .collect(toList()));
 
-    return foreignKeyProperty(foreignKey, getCaption(referencedTable.tableName()));
+    return foreignKeyProperty(foreignKey, caption(referencedTable.tableName()));
   }
 
-  private static ColumnProperty.Builder<?, ?> getColumnPropertyBuilder(Column column, EntityType entityType) {
-    String caption = getCaption(column.columnName());
-    Attribute<?> attribute = getAttribute(entityType, column);
+  private static ColumnProperty.Builder<?, ?> columnPropertyBuilder(Column column, EntityType entityType) {
+    String caption = caption(column.columnName());
+    Attribute<?> attribute = attribute(entityType, column);
     ColumnProperty.Builder<?, ?> builder;
     if (attribute.isByteArray()) {
       builder = blobProperty((Attribute<byte[]>) attribute, caption);
@@ -119,11 +119,11 @@ final class DatabaseDomain extends DefaultDomain {
     return builder;
   }
 
-  private static <T> Attribute<T> getAttribute(EntityType entityType, Column column) {
+  private static <T> Attribute<T> attribute(EntityType entityType, Column column) {
     return (Attribute<T>) entityType.attribute(column.columnName(), column.columnClass());
   }
 
-  private static String getCaption(String name) {
+  private static String caption(String name) {
     String caption = name.toLowerCase().replace("_", " ");
 
     return caption.substring(0, 1).toUpperCase() + caption.substring(1);

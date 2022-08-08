@@ -106,7 +106,7 @@ public class AbstractServerTest {
     TestLoginProxy.CLOSE_COUNTER.set(0);
 
     String clientTypeId = "clientTypeId";
-    ServerConfiguration configuration = getConfiguration();
+    ServerConfiguration configuration = configuration();
     TestServer server = new TestServer(configuration);
     ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientTypeId(clientTypeId).build();
     ServerTest connection = server.connect(connectionRequest);
@@ -237,13 +237,13 @@ public class AbstractServerTest {
     RemoteClient remoteClient() throws RemoteException;
   }
 
-  private static ServerConfiguration getConfiguration() {
+  private static ServerConfiguration configuration() {
     return ServerConfiguration.builder(PORT).serverName("remoteServerTestServer").build();
   }
 
   private static final class TestServer extends AbstractServer<ServerTest, ServerAdmin> {
 
-    private static final ServerConfiguration CONFIGURATION = getConfiguration();
+    private static final ServerConfiguration CONFIGURATION = configuration();
 
     private TestServer() throws RemoteException {
       this(CONFIGURATION);

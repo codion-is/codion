@@ -91,12 +91,12 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
       LOG.debug("Initializing connection for {}", user());
       return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
               new Class[] {EntityConnection.class}, new RemoteEntityConnectionHandler(
-                      getServer().connect(ConnectionRequest.builder()
+                      server().connect(ConnectionRequest.builder()
                               .user(user())
                               .clientId(clientId())
                               .clientTypeId(clientTypeId())
                               .clientVersion(clientVersion())
-                              .parameter(REMOTE_CLIENT_DOMAIN_TYPE, getDomainTypeName(domainClassName()))
+                              .parameter(REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName(domainClassName()))
                               .build())));
     }
     catch (Exception e) {
@@ -119,7 +119,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @throws java.rmi.NotBoundException if no server is reachable or if the servers found are not using the specified port
    * @throws java.rmi.RemoteException in case of remote exceptions
    */
-  private Server<RemoteEntityConnection, ServerAdmin> getServer() throws RemoteException, NotBoundException {
+  private Server<RemoteEntityConnection, ServerAdmin> server() throws RemoteException, NotBoundException {
     boolean unreachable = false;
     try {
       if (this.server != null) {
@@ -140,7 +140,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    this.server = Server.Locator.locator().getServer(serverHostName, ServerConfiguration.SERVER_NAME_PREFIX.get(), registryPort, serverPort);
+    this.server = Server.Locator.locator().findServer(serverHostName, ServerConfiguration.SERVER_NAME_PREFIX.get(), registryPort, serverPort);
     this.serverInformation = this.server.serverInformation();
   }
 
@@ -160,7 +160,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
         return isConnected();
       }
 
-      Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::getRemoteMethod);
+      Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::remoteMethod);
       try {
         return remoteMethod.invoke(remoteConnection, args);
       }
@@ -183,7 +183,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
       }
     }
 
-    private static Method getRemoteMethod(Method method) {
+    private static Method remoteMethod(Method method) {
       try {
         return RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
       }

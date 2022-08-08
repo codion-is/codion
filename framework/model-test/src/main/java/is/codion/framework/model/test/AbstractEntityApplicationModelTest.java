@@ -66,13 +66,13 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
   }
 
   @Test
-  public void getEntityModelByEntityTypeNotFound() {
+  public void entityModelByEntityTypeNotFound() {
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     assertThrows(IllegalArgumentException.class, () -> model.entityModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test
-  public void getEntityModelByEntityType() {
+  public void entityModelByEntityType() {
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     Model departmentModel = createDepartmentModel();
     model.addEntityModel(departmentModel);
@@ -80,7 +80,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
   }
 
   @Test
-  public void getEntityModelByClass() {
+  public void entityModelByClass() {
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     Model departmentModel = createDepartmentModel();
     assertThrows(IllegalArgumentException.class, () -> model.entityModel((Class<? extends Model>) departmentModel.getClass()));
@@ -137,7 +137,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     assertFalse(model.containsUnsavedData());
   }
 
-  protected final EntityConnectionProvider getConnectionProvider() {
+  protected final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
   }
 

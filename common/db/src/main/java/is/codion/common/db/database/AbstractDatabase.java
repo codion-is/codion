@@ -105,7 +105,7 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public final Statistics statistics() {
-    return queryCounter.getStatisticsAndResetCounter();
+    return queryCounter.collectStatisticsAndResetCounter();
   }
 
   @Override
@@ -344,7 +344,7 @@ public abstract class AbstractDatabase implements Database {
       }
     }
 
-    private Database.Statistics getStatisticsAndResetCounter() {
+    private Database.Statistics collectStatisticsAndResetCounter() {
       long current = System.currentTimeMillis();
       double seconds = (current - queriesPerSecondTime.get()) / THOUSAND;
       int queriesPerSecond = 0;

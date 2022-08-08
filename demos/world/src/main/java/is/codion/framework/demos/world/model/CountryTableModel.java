@@ -37,10 +37,10 @@ public final class CountryTableModel extends SwingEntityTableModel {
     CountryReportDataSource dataSource = new CountryReportDataSource(selectionModel().getSelectedItems(),
             connectionProvider().connection(), progressReporter);
 
-    return fillReport(classPathReport(CountryTableModel.class, COUNTRY_REPORT), dataSource, getReportParameters());
+    return fillReport(classPathReport(CountryTableModel.class, COUNTRY_REPORT), dataSource, reportParameters());
   }
 
-  private static Map<String, Object> getReportParameters() throws ReportException {
+  private static Map<String, Object> reportParameters() throws ReportException {
     return new HashMap<>(singletonMap(CITY_SUBREPORT_PARAMETER,
             classPathReport(CityTableModel.class, CITY_REPORT).loadReport()));
   }

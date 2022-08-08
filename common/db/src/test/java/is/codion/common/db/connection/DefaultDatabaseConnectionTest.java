@@ -83,12 +83,12 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  void getDatabase() {
+  void database() {
     assertEquals(DATABASE, dbConnection.database());
   }
 
   @Test
-  void getUser() {
+  void user() {
     assertEquals(dbConnection.user(), UNIT_TEST_USER);
   }
 

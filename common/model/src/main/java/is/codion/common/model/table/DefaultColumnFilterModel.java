@@ -45,7 +45,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
    */
   public DefaultColumnFilterModel(C columnIdentifier, Class<T> columnClass, char wildcard,
                                   Format format, String dateTimePattern) {
-    super(columnIdentifier, columnClass, getOperators(columnClass), wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
+    super(columnIdentifier, columnClass, operators(columnClass), wildcard, format, dateTimePattern, AUTOMATIC_WILDCARD.get());
   }
 
   @Override
@@ -272,7 +272,7 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
     return lowerCompareResult <= 0 || upperCompareResult >= 0;
   }
 
-  private static List<Operator> getOperators(Class<?> columnClass) {
+  private static List<Operator> operators(Class<?> columnClass) {
     if (columnClass.equals(Boolean.class)) {
       return Collections.singletonList(Operator.EQUAL);
     }

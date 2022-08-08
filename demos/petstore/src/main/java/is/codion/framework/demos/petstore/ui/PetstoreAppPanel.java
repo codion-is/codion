@@ -94,7 +94,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petstore.domain.Petstore");
     SwingUtilities.invokeLater(() -> new PetstoreAppPanel().starter()
-            .frameSize(Windows.getScreenSizeRatio(0.8))
+            .frameSize(Windows.screenSizeRatio(0.8))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }

@@ -64,22 +64,22 @@ final class DefaultStateObserver implements StateObserver {
 
   @Override
   public void addListener(EventListener listener) {
-    getEventObserver().addListener(listener);
+    eventObserver().addListener(listener);
   }
 
   @Override
   public void removeListener(EventListener listener) {
-    getEventObserver().removeListener(listener);
+    eventObserver().removeListener(listener);
   }
 
   @Override
   public void addDataListener(EventDataListener<Boolean> listener) {
-    getEventObserver().addDataListener(listener);
+    eventObserver().addDataListener(listener);
   }
 
   @Override
   public void removeDataListener(EventDataListener<Boolean> listener) {
-    getEventObserver().removeDataListener(listener);
+    eventObserver().removeDataListener(listener);
   }
 
   void notifyObservers(boolean newValue, boolean previousValue) {
@@ -95,7 +95,7 @@ final class DefaultStateObserver implements StateObserver {
     }
   }
 
-  private EventObserver<Boolean> getEventObserver() {
+  private EventObserver<Boolean> eventObserver() {
     synchronized (lock) {
       if (stateChangedEvent == null) {
         stateChangedEvent = Event.event();

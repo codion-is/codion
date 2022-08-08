@@ -326,7 +326,7 @@ public final class Utilities {
    * tabbed panes look bad
    * @return the default look and feel for the platform we're running on
    */
-  public static String getSystemLookAndFeelClassName() {
+  public static String systemLookAndFeelClassName() {
     String systemLookAndFeel = UIManager.getSystemLookAndFeelClassName();
     if (systemLookAndFeel.endsWith("GTKLookAndFeel")) {
       systemLookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel";
@@ -337,12 +337,12 @@ public final class Utilities {
 
   /**
    * @return true if the system or cross-platform look and feel is enabled
-   * @see #getSystemLookAndFeelClassName()
+   * @see #systemLookAndFeelClassName()
    */
   public static boolean isSystemOrCrossPlatformLookAndFeelEnabled() {
     String lookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
 
-    return lookAndFeelClassName.equals(getSystemLookAndFeelClassName()) ||
+    return lookAndFeelClassName.equals(systemLookAndFeelClassName()) ||
             lookAndFeelClassName.equals(UIManager.getCrossPlatformLookAndFeelClassName());
   }
 

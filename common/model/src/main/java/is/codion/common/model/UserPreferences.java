@@ -25,15 +25,15 @@ public final class UserPreferences {
    * @return the user preference associated with the given key
    */
   public static String getUserPreference(String key, String defaultValue) {
-    return getPreferences().get(requireNonNull(key, KEY), defaultValue);
+    return userPreferences().get(requireNonNull(key, KEY), defaultValue);
   }
 
   /**
    * @param key the key to use to identify the preference
    * @param value the preference value to associate with the given key
    */
-  public static void putUserPreference(String key, String value) {
-    getPreferences().put(requireNonNull(key, KEY), value);
+  public static void setUserPreference(String key, String value) {
+    userPreferences().put(requireNonNull(key, KEY), value);
   }
 
   /**
@@ -41,7 +41,7 @@ public final class UserPreferences {
    * @param key the key to use to identify the preference to remove
    */
   public static void removeUserPreference(String key) {
-    getPreferences().remove(requireNonNull(key, KEY));
+    userPreferences().remove(requireNonNull(key, KEY));
   }
 
   /**
@@ -49,10 +49,10 @@ public final class UserPreferences {
    * @throws BackingStoreException in case of a backing store failure
    */
   public static void flushUserPreferences() throws BackingStoreException {
-    getPreferences().flush();
+    userPreferences().flush();
   }
 
-  private static synchronized Preferences getPreferences() {
+  private static synchronized Preferences userPreferences() {
     if (preferences == null) {
       preferences = Preferences.userRoot();
     }

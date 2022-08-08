@@ -44,7 +44,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
       return null;
     }
 
-    return new DefaultColumnConditionModel<>(attribute, attribute.valueClass(), getOperators(attribute),
+    return new DefaultColumnConditionModel<>(attribute, attribute.valueClass(), operators(attribute),
             Text.WILDCARD_CHARACTER.get(), property.format(), property.dateTimePattern());
   }
 
@@ -63,7 +63,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
     return connectionProvider.entities().definition(entityType);
   }
 
-  private static List<Operator> getOperators(Attribute<?> attribute) {
+  private static List<Operator> operators(Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
       return Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL);
     }

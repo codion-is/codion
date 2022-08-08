@@ -402,7 +402,7 @@ public final class NumberField<T extends Number> extends JTextField {
     }
 
     private NumberFormat initializeFormat() {
-      NumberFormat format = (NumberFormat) getFormat();
+      NumberFormat format = (NumberFormat) format();
       if (format != null) {
         NumberFormat cloned = (NumberFormat) format.clone();
         cloned.setGroupingUsed(format.isGroupingUsed());

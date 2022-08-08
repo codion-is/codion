@@ -73,7 +73,7 @@ public abstract class DefaultDomain implements Domain {
 
   @Override
   public final <T, R, P> Report<T, R, P> report(ReportType<T, R, P> reportType) {
-    Report<T, R, P> report = reports.getReport(reportType);
+    Report<T, R, P> report = reports.report(reportType);
     if (report == null) {
       throw new IllegalArgumentException("Undefined report: " + reportType);
     }
@@ -83,12 +83,12 @@ public abstract class DefaultDomain implements Domain {
 
   @Override
   public final <C, T> DatabaseProcedure<C, T> procedure(ProcedureType<C, T> procedureType) {
-    return procedures.getProcedure(procedureType);
+    return procedures.procedure(procedureType);
   }
 
   @Override
   public final <C, T, R> DatabaseFunction<C, T, R> function(FunctionType<C, T, R> functionType) {
-    return functions.getFunction(functionType);
+    return functions.function(functionType);
   }
 
   /**
@@ -260,7 +260,7 @@ public abstract class DefaultDomain implements Domain {
       procedures.put(procedureType, procedure);
     }
 
-    private <C, T> DatabaseProcedure<C, T> getProcedure(ProcedureType<C, T> procedureType) {
+    private <C, T> DatabaseProcedure<C, T> procedure(ProcedureType<C, T> procedureType) {
       requireNonNull(procedureType, "procedureType");
       DatabaseProcedure<C, T> operation = (DatabaseProcedure<C, T>) procedures.get(procedureType);
       if (operation == null) {
@@ -284,7 +284,7 @@ public abstract class DefaultDomain implements Domain {
       functions.put(functionType, function);
     }
 
-    private <C, T, R> DatabaseFunction<C, T, R> getFunction(FunctionType<C, T, R> functionType) {
+    private <C, T, R> DatabaseFunction<C, T, R> function(FunctionType<C, T, R> functionType) {
       requireNonNull(functionType, "functionType");
       DatabaseFunction<C, T, R> operation = (DatabaseFunction<C, T, R>) functions.get(functionType);
       if (operation == null) {
@@ -316,7 +316,7 @@ public abstract class DefaultDomain implements Domain {
       }
     }
 
-    private <T, R, P> Report<T, R, P> getReport(ReportType<T, R, P> reportType) {
+    private <T, R, P> Report<T, R, P> report(ReportType<T, R, P> reportType) {
       return (Report<T, R, P>) reports.get(requireNonNull(reportType, REPORT));
     }
   }

@@ -828,7 +828,7 @@ public final class DefaultFilteredTableModelTest {
   }
 
   @Test
-  void getValues() {
+  void values() {
     tableModel.refresh();
     tableModel.selectionModel().setSelectedIndexes(asList(0, 2));
     Collection<String> values = tableModel.selectedValues(0);

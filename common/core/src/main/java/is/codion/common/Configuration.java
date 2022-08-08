@@ -244,7 +244,7 @@ public final class Configuration {
   }
 
   static PropertyStore loadFromClasspath(String filePath, boolean configurationRequired) {
-    String filepath = getClasspathFilepath(filePath);
+    String filepath = classpathFilepath(filePath);
     try (InputStream configurationFileStream = Configuration.class.getClassLoader().getResourceAsStream(filepath)) {
       if (configurationFileStream == null) {
         if (configurationRequired) {
@@ -279,7 +279,7 @@ public final class Configuration {
     }
   }
 
-  private static String getClasspathFilepath(String filePath) {
+  private static String classpathFilepath(String filePath) {
     String path = filePath.substring(CLASSPATH_PREFIX.length());
     if (path.startsWith("/")) {
       path = path.substring(1);

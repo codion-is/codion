@@ -92,7 +92,7 @@ public final class KeyEvents {
      * Returns a KeyStroke based on this builder
      * @return a KeyStroke
      */
-    KeyStroke getKeyStroke();
+    KeyStroke keyStroke();
 
     /**
      * Builds the key event and enables it on the given component
@@ -154,7 +154,7 @@ public final class KeyEvents {
     }
 
     @Override
-    public KeyStroke getKeyStroke() {
+    public KeyStroke keyStroke() {
       return KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyReleased);
     }
 
@@ -168,7 +168,7 @@ public final class KeyEvents {
       if (actionName == null) {
         actionName = createDefaultActionName(component);
       }
-      KeyStroke keyStroke = getKeyStroke();
+      KeyStroke keyStroke = keyStroke();
       enable(component, action, condition, keyStroke, actionName);
       if (component instanceof JComboBox<?>) {
         JComponent editorComponent = (JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent();
@@ -188,7 +188,7 @@ public final class KeyEvents {
       if (actionName == null) {
         actionName = createDefaultActionName(component);
       }
-      KeyStroke keyStroke = getKeyStroke();
+      KeyStroke keyStroke = keyStroke();
       disable(component, condition, keyStroke, actionName);
       if (component instanceof JComboBox<?>) {
         JComponent editorComponent = (JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent();

@@ -86,7 +86,7 @@ public class DefaultEntityTest {
             .with(Master.CODE, 10)
             .build();
     final String originalStringValue = "string value";
-    Entity entity = getDetailEntity(10, 34, 23.4, originalStringValue, LocalDate.now(),
+    Entity entity = detailEntity(10, 34, 23.4, originalStringValue, LocalDate.now(),
             LocalDateTime.now(), true, referencedEntityValue);
     entity.put(Detail.STRING, "a new String value");
     List<Object> fromFile = Serializer.deserialize(Serializer.serialize(singletonList(entity)));
@@ -124,7 +124,7 @@ public class DefaultEntityTest {
             .build();
 
     Entity test = ENTITIES.entity(Detail.TYPE);
-    Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+    Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     test.setAs(testEntity);
     assertEquals(test, testEntity, "Entities should be equal after .setAs()");
@@ -180,7 +180,7 @@ public class DefaultEntityTest {
   }
 
   @Test
-  void getDerivedOriginal() {
+  void derivedOriginal() {
     Entity entity = ENTITIES.builder(Detail.TYPE)
             .with(Detail.INT, 1)
             .build();
@@ -238,7 +238,7 @@ public class DefaultEntityTest {
   }
 
   @Test
-  void getReferencedKeyCache() {
+  void referencedKeyCache() {
     Entity compositeDetail = ENTITIES.builder(TestDomain.T_COMPOSITE_DETAIL)
             .with(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1)
             .with(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 2)
@@ -330,7 +330,7 @@ public class DefaultEntityTest {
     assertFalse(referencedEntityValue.isModified());
 
 
-    Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+    Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
 
     //assert values
@@ -404,8 +404,8 @@ public class DefaultEntityTest {
   }
 
   @Test
-  void getReferencedKeyIncorrectFk() {
-    Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+  void referencedKeyIncorrectFk() {
+    Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertThrows(IllegalArgumentException.class, () ->
             testEntity.referencedKey(Employee.DEPARTMENT_FK));
@@ -413,7 +413,7 @@ public class DefaultEntityTest {
 
   @Test
   void isNull() {
-    Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+    Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertTrue(testEntity.isNull(Detail.MASTER_ID));
     assertTrue(testEntity.isNull(Detail.MASTER_FK));
@@ -442,7 +442,7 @@ public class DefaultEntityTest {
   @Test
   void removeAll() {
     Entity referencedEntityValue = ENTITIES.entity(Master.TYPE);
-    Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+    Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     testEntity.put(Detail.STRING, "TestString");
     assertTrue(testEntity.isModified());
@@ -454,7 +454,7 @@ public class DefaultEntityTest {
     assertFalse(testEntity.contains(Detail.BOOLEAN));
     assertFalse(testEntity.isModified());
 
-    testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+    testEntity = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
 
     testEntity.clearPrimaryKey();
@@ -466,14 +466,14 @@ public class DefaultEntityTest {
 
   @Test
   void putDenormalizedViewValue() {
-    Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+    Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertThrows(IllegalArgumentException.class, () -> testEntity.put(Detail.MASTER_NAME, "hello"));
   }
 
   @Test
   void putDenormalizedValue() {
-    Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+    Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertThrows(IllegalArgumentException.class, () -> testEntity.put(Detail.MASTER_CODE, 2));
   }
@@ -505,9 +505,9 @@ public class DefaultEntityTest {
 
   @Test
   void columnValuesEqual() {
-    Entity testEntityOne = getDetailEntity(detailId, detailInt, detailDouble,
+    Entity testEntityOne = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
-    Entity testEntityTwo = getDetailEntity(detailId, detailInt, detailDouble,
+    Entity testEntityTwo = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
 
     assertTrue(testEntityOne.columnValuesEqual(testEntityTwo));
@@ -538,7 +538,7 @@ public class DefaultEntityTest {
   }
 
   @Test
-  void getDoubleValue() {
+  void doubleValue() {
     Entity employee = ENTITIES.builder(Employee.TYPE)
             .with(Employee.ID, -10)
             .build();
@@ -551,7 +551,7 @@ public class DefaultEntityTest {
   }
 
   @Test
-  void getForeignKeyValue() {
+  void foreignKeyValue() {
     Entity department = ENTITIES.builder(Department.TYPE)
             .with(Department.NO, -10)
             .build();
@@ -569,7 +569,7 @@ public class DefaultEntityTest {
   }
 
   @Test
-  void getDerivedValue() {
+  void derivedValue() {
     Entity department = ENTITIES.builder(Department.TYPE)
             .with(Department.NAME, "dname")
             .build();
@@ -812,9 +812,9 @@ public class DefaultEntityTest {
     assertNotNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
   }
 
-  private static Entity getDetailEntity(long id, Integer intValue, Double doubleValue,
-                                        String stringValue, LocalDate dateValue, LocalDateTime timestampValue,
-                                        Boolean booleanValue, Entity entityValue) {
+  private static Entity detailEntity(long id, Integer intValue, Double doubleValue,
+                                     String stringValue, LocalDate dateValue, LocalDateTime timestampValue,
+                                     Boolean booleanValue, Entity entityValue) {
     return ENTITIES.builder(Detail.TYPE)
             .with(Detail.ID, id)
             .with(Detail.INT, intValue)

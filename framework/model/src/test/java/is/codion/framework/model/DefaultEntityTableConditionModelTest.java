@@ -67,22 +67,22 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  void getPropertyFilterModel() {
+  void filterModel() {
     assertNotNull(conditionModel.filterModel(TestDomain.EMP_COMMISSION));
   }
 
   @Test
-  void getPropertyConditionModel() {
+  void conditionModel() {
     assertNotNull(conditionModel.conditionModel(TestDomain.EMP_COMMISSION));
   }
 
   @Test
-  void getPropertyConditionModelNonExisting() {
+  void conditionModelNonExisting() {
     assertThrows(IllegalArgumentException.class, () -> conditionModel.conditionModel(TestDomain.DEPARTMENT_ID));
   }
 
   @Test
-  void getPropertyFilterModelNonExisting() {
+  void filterModelNonExisting() {
     assertThrows(IllegalArgumentException.class, () -> conditionModel.filterModel(TestDomain.EMP_DEPARTMENT_FK));
     assertThrows(IllegalArgumentException.class, () -> conditionModel.filterModel(TestDomain.EMP_DEPARTMENT_FK));
   }
@@ -135,7 +135,7 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  void getCondition() throws DatabaseException {
+  void condition() throws DatabaseException {
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));

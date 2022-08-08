@@ -259,7 +259,7 @@ final class DefaultMethodLogger implements MethodLogger {
      */
     private void setException(Throwable exception) {
       if (exception != null) {
-        this.stackTrace = getStackTrace(exception);
+        this.stackTrace = stackTrace(exception);
       }
     }
 
@@ -283,7 +283,7 @@ final class DefaultMethodLogger implements MethodLogger {
       }
     }
 
-    private static String getStackTrace(Throwable exception) {
+    private static String stackTrace(Throwable exception) {
       StringWriter sw = new StringWriter();
       exception.printStackTrace(new PrintWriter(sw));
 

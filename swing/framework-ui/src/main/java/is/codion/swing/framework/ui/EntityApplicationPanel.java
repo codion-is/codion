@@ -381,7 +381,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .onOk(() -> {
               Integer selectedFontSizeMultiplier = comboBoxModel.getSelectedItem().value();
               if (!selectedFontSizeMultiplier.equals(fontSizeMultiplier)) {
-                UserPreferences.putUserPreference(applicationFontSizeProperty, selectedFontSizeMultiplier.toString());
+                UserPreferences.setUserPreference(applicationFontSizeProperty, selectedFontSizeMultiplier.toString());
                 JOptionPane.showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
               }
             })
@@ -479,7 +479,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final void displayKeyboardShortcuts() {
     KeyboardShortcutsPanel shortcutsPanel = new KeyboardShortcutsPanel();
-    shortcutsPanel.setPreferredSize(new Dimension(shortcutsPanel.getPreferredSize().width, Windows.getScreenSizeRatio(0.5).height));
+    shortcutsPanel.setPreferredSize(new Dimension(shortcutsPanel.getPreferredSize().width, Windows.screenSizeRatio(0.5).height));
     Dialogs.componentDialog(shortcutsPanel)
             .owner(this)
             .title(resourceBundle.getString(KEYBOARD_SHORTCUTS))
@@ -882,7 +882,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     requireNonNull(panelBuilder, "panelBuilder");
     WaitCursor.show(this);
     try {
-      EntityPanel entityPanel = getEntityPanel(panelBuilder);
+      EntityPanel entityPanel = entityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
         Utilities.getParentWindow(entityPanel).ifPresent(Window::toFront);
       }
@@ -920,7 +920,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     requireNonNull(panelBuilder, "panelBuilder");
     WaitCursor.show(this);
     try {
-      EntityPanel entityPanel = getEntityPanel(panelBuilder);
+      EntityPanel entityPanel = entityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
         Utilities.getParentWindow(entityPanel).ifPresent(Window::toFront);
       }
@@ -990,10 +990,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * @return the default look and feel to use for the system we're running on.
-   * @see Utilities#getSystemLookAndFeelClassName()
+   * @see Utilities#systemLookAndFeelClassName()
    */
   protected String defaultLookAndFeelName() {
-    return Utilities.getSystemLookAndFeelClassName();
+    return Utilities.systemLookAndFeelClassName();
   }
 
   /**
@@ -1055,7 +1055,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (builder.length() > 0) {
       builder.append(" - ");
     }
-    builder.append(getUserInfo(model().connectionProvider()));
+    builder.append(userInfo(model().connectionProvider()));
 
     return builder.toString();
   }
@@ -1160,7 +1160,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param username the username
    */
   protected void saveDefaultUsername(String username) {
-    UserPreferences.putUserPreference(applicationDefaultUsernameProperty, username);
+    UserPreferences.setUserPreference(applicationDefaultUsernameProperty, username);
   }
 
   /**
@@ -1319,7 +1319,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     bindEvents();
   }
 
-  private EntityPanel getEntityPanel(EntityPanel.Builder panelBuilder) {
+  private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {
     if (PERSIST_ENTITY_PANELS.get() && persistentEntityPanels.containsKey(panelBuilder)) {
       return persistentEntityPanels.get(panelBuilder);
     }
@@ -1444,13 +1444,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
-  private static String getUserInfo(EntityConnectionProvider connectionProvider) {
+  private static String userInfo(EntityConnectionProvider connectionProvider) {
     String description = connectionProvider.description();
 
-    return getUsername(connectionProvider.user().username().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
+    return removePrefix(connectionProvider.user().username().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
   }
 
-  private static String getUsername(String username) {
+  private static String removePrefix(String username) {
     String usernamePrefix = EntityApplicationModel.USERNAME_PREFIX.get();
     if (!nullOrEmpty(usernamePrefix) && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
       return username.substring(usernamePrefix.length());

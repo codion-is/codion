@@ -163,12 +163,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   @Override
   public final void selectByKey(Key primaryKey) {
     requireNonNull(primaryKey);
-    int indexOfKey = getIndexOfKey(primaryKey);
+    int indexOfKey = indexOfKey(primaryKey);
     if (indexOfKey >= 0) {
       setSelectedItem(getElementAt(indexOfKey));
     }
     else {
-      int filteredIndexOfKey = getFilteredIndexOfKey(primaryKey);
+      int filteredIndexOfKey = indexOfFilteredKey(primaryKey);
       if (filteredIndexOfKey >= 0) {
         setSelectedItem(filteredItems().get(filteredIndexOfKey));
       }
@@ -258,7 +258,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
 
     if (item instanceof Entity) {
-      int indexOfKey = getIndexOfKey(((Entity) item).primaryKey());
+      int indexOfKey = indexOfKey(((Entity) item).primaryKey());
       if (indexOfKey >= 0) {
         return getElementAt(indexOfKey);
       }
@@ -303,7 +303,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
   }
 
-  private int getIndexOfKey(Key primaryKey) {
+  private int indexOfKey(Key primaryKey) {
     int size = getSize();
     int startIndex = isIncludeNull() ? 1 : 0;
     for (int index = startIndex; index < size; index++) {
@@ -315,7 +315,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     return -1;
   }
 
-  private int getFilteredIndexOfKey(Key primaryKey) {
+  private int indexOfFilteredKey(Key primaryKey) {
     List<Entity> filteredItems = filteredItems();
     for (int index = 0; index < filteredItems.size(); index++) {
       Entity item = filteredItems.get(index);

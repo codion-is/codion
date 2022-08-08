@@ -373,7 +373,7 @@ final class DefaultEntity implements Entity, Serializable {
   @Override
   public Key referencedKey(ForeignKey foreignKey) {
     definition.foreignKeyProperty(foreignKey);
-    Key cachedReferencedKey = getCachedReferencedKey(foreignKey);
+    Key cachedReferencedKey = cachedReferencedKey(foreignKey);
     if (cachedReferencedKey != null) {
       return cachedReferencedKey;
     }
@@ -428,7 +428,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   private <T> T get(Property<T> property) {
     if (property instanceof DerivedProperty) {
-      return getDerivedValue((DerivedProperty<T>) property, false);
+      return derivedValue((DerivedProperty<T>) property, false);
     }
 
     return (T) values.get(property.attribute());
@@ -436,7 +436,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   private <T> T getOriginal(Property<T> property) {
     if (property instanceof DerivedProperty) {
-      return getDerivedValue((DerivedProperty<T>) property, true);
+      return derivedValue((DerivedProperty<T>) property, true);
     }
     if (isModified(property.attribute())) {
       return (T) originalValues.get(property.attribute());
@@ -643,7 +643,7 @@ final class DefaultEntity implements Entity, Serializable {
     return referencedPrimaryKey;
   }
 
-  private Key getCachedReferencedKey(ForeignKey foreignKey) {
+  private Key cachedReferencedKey(ForeignKey foreignKey) {
     if (referencedKeyCache == null) {
       return null;
     }
@@ -685,11 +685,11 @@ final class DefaultEntity implements Entity, Serializable {
     return new DefaultKey(definition, attribute, originalValues ? getOriginal(attribute) : values.get(attribute), true);
   }
 
-  private <T> T getDerivedValue(DerivedProperty<T> derivedProperty, boolean originalValue) {
-    return derivedProperty.valueProvider().get(getSourceValues(derivedProperty, originalValue));
+  private <T> T derivedValue(DerivedProperty<T> derivedProperty, boolean originalValue) {
+    return derivedProperty.valueProvider().get(sourceValues(derivedProperty, originalValue));
   }
 
-  private DerivedProperty.SourceValues getSourceValues(DerivedProperty<?> derivedProperty, boolean originalValues) {
+  private DerivedProperty.SourceValues sourceValues(DerivedProperty<?> derivedProperty, boolean originalValues) {
     List<Attribute<?>> sourceAttributes = derivedProperty.sourceAttributes();
     if (sourceAttributes.size() == 1) {
       Attribute<?> sourceAttribute = sourceAttributes.get(0);
@@ -793,7 +793,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    Entities entities = DefaultEntities.getEntities((String) stream.readObject());
+    Entities entities = DefaultEntities.entities((String) stream.readObject());
     definition = entities.definition((String) stream.readObject());
     if (definition.serializationVersion() != stream.readInt()) {
       throw new IllegalArgumentException("Entity type '" + definition.entityType() + "' can not be deserialized due to version difference");

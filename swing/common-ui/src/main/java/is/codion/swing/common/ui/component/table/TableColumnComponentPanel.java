@@ -91,7 +91,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
     basePanel.removeAll();
     Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
-      basePanel.add(getColumnComponent(columnEnumeration.nextElement()));
+      basePanel.add(columnComponent(columnEnumeration.nextElement()));
     }
     basePanel.add(scrollBarFiller);
     syncPanelWidths();
@@ -101,7 +101,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   private void bindColumnAndComponentSizes() {
     columnModel.addColumnModelListener(new SyncColumnModelListener());
     for (TableColumn column : columns) {
-      JComponent component = getColumnComponent(column);
+      JComponent component = columnComponent(column);
       component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));
       column.addPropertyChangeListener(new SyncListener(component, column));
     }
@@ -109,11 +109,11 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
 
   private void syncPanelWidths() {
     for (TableColumn column : columns) {
-      syncPanelWidth(getColumnComponent(column), column);
+      syncPanelWidth(columnComponent(column), column);
     }
   }
 
-  private JComponent getColumnComponent(TableColumn column) {
+  private JComponent columnComponent(TableColumn column) {
     return columnComponents.getOrDefault(column, (T) nullComponents.computeIfAbsent(column, c -> new JPanel()));
   }
 

@@ -242,7 +242,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   @Override
   public final String dateTimePattern() {
     if (dateTimePattern == null) {
-      dateTimePattern = localeDateTimePattern == null ? getDefaultDateTimePattern() : localeDateTimePattern.dateTimePattern();
+      dateTimePattern = localeDateTimePattern == null ? defaultDateTimePattern() : localeDateTimePattern.dateTimePattern();
     }
 
     return dateTimePattern;
@@ -341,7 +341,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     return value.toString();
   }
 
-  private String getDefaultDateTimePattern() {
+  private String defaultDateTimePattern() {
     if (attribute.isLocalDate()) {
       return DATE_FORMAT.get();
     }
@@ -645,7 +645,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
 
     private static Format initializeDefaultFormat(Attribute<?> attribute) {
       if (attribute.isNumerical()) {
-        NumberFormat numberFormat = getDefaultNumberFormat(attribute);
+        NumberFormat numberFormat = defaultNumberFormat(attribute);
         if (attribute.isBigDecimal()) {
           ((DecimalFormat) numberFormat).setParseBigDecimal(true);
         }
@@ -659,7 +659,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       return null;
     }
 
-    private static NumberFormat getDefaultNumberFormat(Attribute<?> attribute) {
+    private static NumberFormat defaultNumberFormat(Attribute<?> attribute) {
       boolean grouping = NUMBER_FORMAT_GROUPING.get();
       if (attribute.isInteger() || attribute.isLong()) {
         return setSeparators(grouping ? NumberFormat.getIntegerInstance() : Formats.nonGroupingIntegerFormat());

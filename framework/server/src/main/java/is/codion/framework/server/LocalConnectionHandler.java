@@ -37,9 +37,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static is.codion.common.logging.MethodLogger.methodLogger;
-import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
-
 final class LocalConnectionHandler implements InvocationHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(LocalConnectionHandler.class);
@@ -120,16 +117,16 @@ final class LocalConnectionHandler implements InvocationHandler {
     this.remoteClient = remoteClient;
     this.connectionPool = database.connectionPool(remoteClient.databaseUser().username());
     this.database = database;
-    this.methodLogger = methodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(), new EntityArgumentToString());
+    this.methodLogger = MethodLogger.methodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(), new EntityArgumentToString());
     this.logIdentifier = remoteClient.user().username().toLowerCase() + "@" + remoteClient.clientTypeId();
     this.userDescription = "Remote user: " + remoteClient.user().username() + ", database user: " + remoteClient.databaseUser().username();
     try {
       if (connectionPool == null) {
-        localEntityConnection = localEntityConnection(database, domain, remoteClient.databaseUser());
+        localEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, remoteClient.databaseUser());
         localEntityConnection.setMethodLogger(methodLogger);
       }
       else {
-        poolEntityConnection = localEntityConnection(database, domain, connectionPool.connection(remoteClient.databaseUser()));
+        poolEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, connectionPool.connection(remoteClient.databaseUser()));
         rollbackSilently(poolEntityConnection.databaseConnection());
         returnConnectionToPool();
       }
@@ -153,7 +150,7 @@ final class LocalConnectionHandler implements InvocationHandler {
         methodLogger.logAccess(methodName, args);
       }
 
-      return method.invoke(getConnection(), args);
+      return method.invoke(connection(), args);
     }
     catch (InvocationTargetException e) {
       throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
@@ -192,7 +189,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     cleanupLocalConnections();
   }
 
-  ClientLog getClientLog() {
+  ClientLog clientLog() {
     synchronized (methodLogger) {
       return ClientLog.clientLog(remoteClient.clientId(),
               Instant.ofEpochMilli(creationDate).atZone(ZoneId.systemDefault()).toLocalDateTime(),
@@ -200,15 +197,15 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
   }
 
-  RemoteClient getRemoteClient() {
+  RemoteClient remoteClient() {
     return remoteClient;
   }
 
-  long getLastAccessTime() {
+  long lastAccessTime() {
     return lastAccessTime;
   }
 
-  MethodLogger getMethodLogger() {
+  MethodLogger methodLogger() {
     return methodLogger;
   }
 
@@ -220,17 +217,17 @@ final class LocalConnectionHandler implements InvocationHandler {
     return closed;
   }
 
-  private EntityConnection getConnection() throws DatabaseException {
+  private EntityConnection connection() throws DatabaseException {
     DatabaseException exception = null;
     try {
       if (methodLogger.isEnabled()) {
         methodLogger.logAccess(GET_CONNECTION, userDescription);
       }
       if (connectionPool != null) {
-        return getPooledEntityConnection();
+        return pooledEntityConnection();
       }
 
-      return getLocalEntityConnection();
+      return localEntityConnection();
     }
     catch (DatabaseException ex) {
       exception = ex;
@@ -243,7 +240,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
   }
 
-  private EntityConnection getPooledEntityConnection() throws DatabaseException {
+  private EntityConnection pooledEntityConnection() throws DatabaseException {
     if (poolEntityConnection.isTransactionOpen()) {
       return poolEntityConnection;
     }
@@ -253,10 +250,10 @@ final class LocalConnectionHandler implements InvocationHandler {
     return poolEntityConnection;
   }
 
-  private EntityConnection getLocalEntityConnection() throws DatabaseException {
+  private EntityConnection localEntityConnection() throws DatabaseException {
     if (!localEntityConnection.isConnected()) {
       localEntityConnection.close();//just in case
-      localEntityConnection = localEntityConnection(database, domain, remoteClient.databaseUser());
+      localEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, remoteClient.databaseUser());
       localEntityConnection.setMethodLogger(methodLogger);
     }
 
@@ -340,7 +337,7 @@ final class LocalConnectionHandler implements InvocationHandler {
               DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS);
     }
 
-    int getRequestsPerSecond() {
+    int requestsPerSecond() {
       return requestsPerSecond.get();
     }
 

@@ -95,10 +95,10 @@ public final class EntityTestUtil {
   public static <T> T createRandomValue(Property<T> property, Map<ForeignKey, Entity> referenceEntities) {
     requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
-      return (T) getReferenceEntity(((ForeignKeyProperty) property).attribute(), referenceEntities);
+      return (T) referenceEntity(((ForeignKeyProperty) property).attribute(), referenceEntities);
     }
     if (property instanceof ItemProperty) {
-      return getRandomItem((ItemProperty<T>) property);
+      return randomItem((ItemProperty<T>) property);
     }
     Attribute<?> attribute = property.attribute();
     if (attribute.isBoolean()) {
@@ -120,22 +120,22 @@ public final class EntityTestUtil {
       return (T) LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
     if (attribute.isDouble()) {
-      return (T) Double.valueOf(getRandomDouble(property));
+      return (T) Double.valueOf(randomDouble(property));
     }
     if (attribute.isBigDecimal()) {
-      return (T) BigDecimal.valueOf(getRandomDouble(property));
+      return (T) BigDecimal.valueOf(randomDouble(property));
     }
     if (attribute.isInteger()) {
-      return (T) Integer.valueOf(getRandomInteger(property));
+      return (T) Integer.valueOf(randomInteger(property));
     }
     if (attribute.isLong()) {
-      return (T) Long.valueOf(getRandomInteger(property));
+      return (T) Long.valueOf(randomInteger(property));
     }
     if (attribute.isString()) {
-      return (T) getRandomString(property);
+      return (T) randomString(property);
     }
     if (attribute.isByteArray()) {
-      return (T) getRandomBlob(property);
+      return (T) randomBlob(property);
     }
 
     return null;
@@ -158,46 +158,46 @@ public final class EntityTestUtil {
     }
   }
 
-  private static String getRandomString(Property<?> property) {
+  private static String randomString(Property<?> property) {
     int length = property.maximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.maximumLength();
 
     return Text.randomString(length, length);
   }
 
-  private static byte[] getRandomBlob(Property<?> property) {
+  private static byte[] randomBlob(Property<?> property) {
     if ((property instanceof BlobProperty) && ((BlobProperty) property).isEagerlyLoaded()) {
-      return getRandomBlob(1024);
+      return randomBlob(1024);
     }
 
     return null;
   }
 
-  private static byte[] getRandomBlob(int numberOfBytes) {
+  private static byte[] randomBlob(int numberOfBytes) {
     byte[] bytes = new byte[numberOfBytes];
     RANDOM.nextBytes(bytes);
 
     return bytes;
   }
 
-  private static Object getReferenceEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> referenceEntities) {
+  private static Entity referenceEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> referenceEntities) {
     return referenceEntities == null ? null : referenceEntities.get(foreignKey);
   }
 
-  private static <T> T getRandomItem(ItemProperty<T> property) {
+  private static <T> T randomItem(ItemProperty<T> property) {
     List<Item<T>> items = property.items();
     Item<T> item = items.get(RANDOM.nextInt(items.size()));
 
     return item.value();
   }
 
-  private static int getRandomInteger(Property<?> property) {
+  private static int randomInteger(Property<?> property) {
     int min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : property.minimumValue().intValue();
     int max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.maximumValue().intValue();
 
     return RANDOM.nextInt((max - min) + 1) + min;
   }
 
-  private static double getRandomDouble(Property<?> property) {
+  private static double randomDouble(Property<?> property) {
     double min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : property.minimumValue().doubleValue();
     double max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.maximumValue().doubleValue();
 

@@ -478,7 +478,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
                     .action(selectPreviousResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
                     .action(requestTableFocus))
-            .popupMenuControls(getSearchFieldPopupMenuControls())
+            .popupMenuControls(searchFieldPopupMenuControls())
             .hintText(hintText)
             .onTextChanged(searchText -> {
               if (!searchText.isEmpty() && !Objects.equals(searchText, hintText)) {
@@ -489,7 +489,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   private void selectSearchResult(boolean addToSelection, boolean next) {
-    getSearchResult(addToSelection, next).ifPresent(rowColumn -> {
+    searchResult(addToSelection, next).ifPresent(rowColumn -> {
       if (!addToSelection) {
         setColumnSelectionInterval(rowColumn.column(), rowColumn.column());
       }
@@ -497,7 +497,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     });
   }
 
-  private Optional<RowColumn> getSearchResult(boolean addToSelection, boolean next) {
+  private Optional<RowColumn> searchResult(boolean addToSelection, boolean next) {
     FilteredTableSearchModel searchModel = tableModel.searchModel();
     if (next) {
       return addToSelection ? searchModel.selectNextResult() : searchModel.nextResult();
@@ -506,7 +506,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     return addToSelection ? searchModel.selectPreviousResult() : searchModel.previousResult();
   }
 
-  private Controls getSearchFieldPopupMenuControls() {
+  private Controls searchFieldPopupMenuControls() {
     return Controls.builder()
             .control(ToggleControl.builder(tableModel.searchModel().caseSensitiveSearchState())
                     .caption(MESSAGES.getString("case_sensitive_search")))
@@ -677,13 +677,13 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
         ColumnFilterModel<R, C, ?> filterModel = tableModel.columnFilterModels().get(tableColumn.getIdentifier());
         label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
-        label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
+        label.setIcon(headerRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
       }
 
       return component;
     }
 
-    private Icon getHeaderRendererIcon(C columnIdentifier, int iconSizePixels) {
+    private Icon headerRendererIcon(C columnIdentifier, int iconSizePixels) {
       SortOrder sortOrder = tableModel.sortModel().sortingState(columnIdentifier).sortOrder();
       if (sortOrder == SortOrder.UNSORTED) {
         return null;
@@ -772,7 +772,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
         C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
         if (isSortingEnabled(columnIdentifier)) {
           FilteredTableSortModel<R, C> sortModel = getModel().sortModel();
-          SortOrder newSortOrder = getNewSortOrder(sortModel.sortingState(columnIdentifier).sortOrder(), e.isShiftDown());
+          SortOrder newSortOrder = newSortOrder(sortModel.sortingState(columnIdentifier).sortOrder(), e.isShiftDown());
           if (e.isControlDown()) {
             sortModel.addSortOrder(columnIdentifier, newSortOrder);
           }
@@ -783,7 +783,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
       }
     }
 
-    private SortOrder getNewSortOrder(SortOrder currentSortOrder, boolean isShiftDown) {
+    private SortOrder newSortOrder(SortOrder currentSortOrder, boolean isShiftDown) {
       switch (currentSortOrder) {
         case UNSORTED:
           return isShiftDown ? SortOrder.DESCENDING : SortOrder.ASCENDING;

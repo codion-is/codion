@@ -137,7 +137,7 @@ final class H2Database extends AbstractDatabase {
     INITIALIZED_DATABASES.add(url().toLowerCase());
   }
 
-  private String getDatabasePath() {
+  private String databasePath() {
     return removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX_FILE, JDBC_URL_PREFIX);
   }
 
@@ -146,7 +146,7 @@ final class H2Database extends AbstractDatabase {
   }
 
   private boolean databaseFileExists() {
-    return Files.exists(Paths.get(getDatabasePath() + FILE_SUFFIX_PAGESTORE)) ||
-            Files.exists(Paths.get(getDatabasePath() + FILE_SUFFIX_MVSTORE));
+    return Files.exists(Paths.get(databasePath() + FILE_SUFFIX_PAGESTORE)) ||
+            Files.exists(Paths.get(databasePath() + FILE_SUFFIX_MVSTORE));
   }
 }

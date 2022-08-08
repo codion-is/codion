@@ -176,7 +176,7 @@ public final class Completion {
       }
 
       if (match) {
-        offs = getMaximumMatchingOffset(getText(0, getLength()), item);
+        offs = maximumMatchingOffset(getText(0, getLength()), item);
       }
       else {
         offs += str.length();
@@ -186,7 +186,7 @@ public final class Completion {
     }
 
     // calculates how many characters are predetermined by the given pattern.
-    private int getMaximumMatchingOffset(String pattern, Object selectedItem) {
+    private int maximumMatchingOffset(String pattern, Object selectedItem) {
       String selectedAsString = selectedItem.toString();
       int match = selectedAsString.length();
       // look for items that match the given pattern

@@ -12,7 +12,7 @@ public final class SwingEntityApplicationModelTest
 
   @Override
   protected SwingEntityModel createDepartmentModel() {
-    return new DeptModel(getConnectionProvider());
+    return new DeptModel(connectionProvider());
   }
 
   private static class DeptModel extends SwingEntityModel {

@@ -168,7 +168,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     setReadOnly(entityDefinition().isReadOnly());
     initializePersistentValues();
     bindEventsInternal();
-    doSetEntity(getDefaultEntity(Property::defaultValue));
+    doSetEntity(defaultEntity(Property::defaultValue));
   }
 
   @Override
@@ -380,7 +380,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final <T> void put(Attribute<T> attribute, T value) {
     requireNonNull(attribute, "attribute");
-    Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
+    Map<Attribute<?>, Object> dependingValues = dependentValues(attribute);
     T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
       notifyValueEdit(attribute, value, dependingValues);
@@ -392,7 +392,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     requireNonNull(attribute, PROPERTY);
     T value = null;
     if (entity.contains(attribute)) {
-      Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
+      Map<Attribute<?>, Object> dependingValues = dependentValues(attribute);
       value = entity.remove(attribute);
       notifyValueEdit(attribute, null, dependingValues);
     }
@@ -688,7 +688,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void addEditListener(Attribute<T> attribute, EventDataListener<T> listener) {
-    getEditEvent(attribute).addDataListener(listener);
+    editEvent(attribute).addDataListener(listener);
   }
 
   @Override
@@ -700,7 +700,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void addValueListener(Attribute<T> attribute, EventDataListener<T> listener) {
-    getValueEvent(attribute).addDataListener(listener);
+    valueEvent(attribute).addDataListener(listener);
   }
 
   @Override
@@ -980,7 +980,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private void doSetEntity(Entity entity) {
-    Map<Attribute<?>, Object> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity(this::getDefaultValue) : entity);
+    Map<Attribute<?>, Object> affectedAttributes = this.entity.setAs(entity == null ? defaultEntity(this::defaultValue) : entity);
     for (Map.Entry<Attribute<?>, Object> entry : affectedAttributes.entrySet()) {
       Attribute<Object> objectAttribute = (Attribute<Object>) entry.getKey();
       onValueChange(objectAttribute, this.entity.get(objectAttribute));
@@ -993,15 +993,15 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private boolean valueModified(Attribute<?> attribute) {
-    return !Objects.equals(get(attribute), getDefaultValue(attribute));
+    return !Objects.equals(get(attribute), defaultValue(attribute));
   }
 
-  private <T> Event<T> getEditEvent(Attribute<T> attribute) {
+  private <T> Event<T> editEvent(Attribute<T> attribute) {
     entityDefinition().property(attribute);
     return (Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
-  private <T> Event<T> getValueEvent(Attribute<T> attribute) {
+  private <T> Event<T> valueEvent(Attribute<T> attribute) {
     entityDefinition().property(attribute);
     return (Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event());
   }
@@ -1022,7 +1022,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @see ColumnProperty.Builder#columnHasDefaultValue()
    * @see ColumnProperty.Builder#defaultValue(Object)
    */
-  private Entity getDefaultEntity(ValueSupplier valueSupplier) {
+  private Entity defaultEntity(ValueSupplier valueSupplier) {
     EntityDefinition definition = entityDefinition();
     Entity newEntity = definition.entity();
     for (@SuppressWarnings("rawtypes") ColumnProperty property : definition.columnProperties()) {
@@ -1044,11 +1044,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return newEntity;
   }
 
-  private <T> T getDefaultValue(Attribute<T> attribute) {
-    return getDefaultValue(entityDefinition().property(attribute));
+  private <T> T defaultValue(Attribute<T> attribute) {
+    return defaultValue(entityDefinition().property(attribute));
   }
 
-  private <T> T getDefaultValue(Property<T> property) {
+  private <T> T defaultValue(Property<T> property) {
     if (isPersistValue(property.attribute())) {
       if (property instanceof ForeignKeyProperty) {
         return (T) entity.referencedEntity((ForeignKey) property.attribute());
@@ -1066,7 +1066,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     afterUpdateEvent.addListener(entitiesEditedEvent);
   }
 
-  private Map<Attribute<?>, Object> getDependentValues(Attribute<?> attribute) {
+  private Map<Attribute<?>, Object> dependentValues(Attribute<?> attribute) {
     Map<Attribute<?>, Object> dependentValues = new HashMap<>();
     EntityDefinition entityDefinition = entityDefinition();
     entityDefinition.derivedAttributes(attribute).forEach(derivedAttribute ->
@@ -1083,7 +1083,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependentValues) {
     onValueChange(attribute, value);
-    getEditEvent(attribute).onEvent(value);
+    editEvent(attribute).onEvent(value);
     dependentValues.forEach((dependentAttribute, previousValue) -> {
       Object currentValue = get(dependentAttribute);
       if (!Objects.equals(previousValue, currentValue)) {

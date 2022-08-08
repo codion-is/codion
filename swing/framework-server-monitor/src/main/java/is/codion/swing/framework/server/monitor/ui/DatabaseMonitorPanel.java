@@ -49,11 +49,11 @@ public final class DatabaseMonitorPanel extends JPanel {
     setLayout(new BorderLayout());
     JTabbedPane tabPane = new JTabbedPane();
     tabPane.addTab("Connection Pools", new PoolMonitorPanel(model.connectionPoolMonitor()));
-    tabPane.addTab("Performance", getChartPanel());
+    tabPane.addTab("Performance", chartPanel());
     add(tabPane, BorderLayout.CENTER);
   }
 
-  private JPanel getChartPanel() {
+  private JPanel chartPanel() {
     JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 3));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     chartConfig.add(new JLabel("Update interval (s)"));

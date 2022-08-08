@@ -214,12 +214,12 @@ public interface PropertyStore {
   <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue);
 
   /**
-   * Returns the Value associated with the given property, an empty Optional if none has been created.
+   * Returns the Value associated with the given property, an empty Optional if no such Value has been created.
    * @param propertyName the property name
    * @param <T> the value type
-   * @return the configuration value or an empty Optional if none exists
+   * @return the configuration value for the given name or an empty Optional if none exists
    */
-  <T> Optional<PropertyValue<T>> getPropertyValue(String propertyName);
+  <T> Optional<PropertyValue<T>> propertyValue(String propertyName);
 
   /**
    * Sets the value of the given property
@@ -312,8 +312,8 @@ public interface PropertyStore {
   /**
    * @return a String containing all system properties, one per line
    */
-  static String getSystemProperties() {
-    return getSystemProperties((property, value) -> value);
+  static String systemProperties() {
+    return systemProperties((property, value) -> value);
   }
 
   /**
@@ -321,7 +321,7 @@ public interface PropertyStore {
    * @param propertyFormatter for specific property formatting or exclusions
    * @return a String containing all system properties, one per line
    */
-  static String getSystemProperties(PropertyFormatter propertyFormatter) {
+  static String systemProperties(PropertyFormatter propertyFormatter) {
     requireNonNull(propertyFormatter);
     Properties properties = System.getProperties();
 

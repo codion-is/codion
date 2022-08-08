@@ -94,7 +94,7 @@ final class EntityPopupMenu extends JPopupMenu {
         if (entity.isForeignKeyNull(foreignKey)) {
           JMenuItem menuItem = new JMenuItem(captionBuilder.append(createValueString(entity, property)).toString());
           setInvalidModified(menuItem, isValid(validator, entity, foreignKey), entity.isModified(foreignKey));
-          menuItem.setToolTipText(getForeignKeyAttributeNames(foreignKey));
+          menuItem.setToolTipText(foreignKeyAttributeNames(foreignKey));
           rootMenu.add(menuItem);
         }
         else {
@@ -102,7 +102,7 @@ final class EntityPopupMenu extends JPopupMenu {
           entity.put(foreignKey, referencedEntity);
           JMenu foreignKeyMenu = new JMenu(captionBuilder.append(createValueString(entity, property)).toString());
           setInvalidModified(foreignKeyMenu, isValid(validator, entity, foreignKey), entity.isModified(foreignKey));
-          foreignKeyMenu.setToolTipText(getForeignKeyAttributeNames(foreignKey));
+          foreignKeyMenu.setToolTipText(foreignKeyAttributeNames(foreignKey));
           populateEntityMenu(foreignKeyMenu, referencedEntity, connection, visitedEntities);
           rootMenu.add(foreignKeyMenu);
         }
@@ -110,7 +110,7 @@ final class EntityPopupMenu extends JPopupMenu {
     }
   }
 
-  private static String getForeignKeyAttributeNames(ForeignKey foreignKey) {
+  private static String foreignKeyAttributeNames(ForeignKey foreignKey) {
     return foreignKey.references().stream()
             .map(reference -> reference.attribute().toString())
             .collect(joining(", "));

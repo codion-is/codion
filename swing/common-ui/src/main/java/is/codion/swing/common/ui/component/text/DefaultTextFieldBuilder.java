@@ -156,7 +156,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     }
   }
 
-  protected final Format getFormat() {
+  protected final Format format() {
     return format;
   }
 

@@ -37,7 +37,7 @@ public class SwingEntityEditModelTest {
   }
 
   @Test
-  void getComboBoxModel() {
+  void comboBoxModel() {
     FilteredComboBoxModel<String> model = employeeEditModel.comboBoxModel(TestDomain.EMP_JOB);
     model.setIncludeNull(true);
     model.setNullItem("null");
@@ -53,7 +53,7 @@ public class SwingEntityEditModelTest {
   }
 
   @Test
-  void getForeignKeyComboBoxModel() {
+  void foreignKeyComboBoxModel() {
     assertFalse(employeeEditModel.containsComboBoxModel(TestDomain.EMP_DEPARTMENT_FK));
     EntityComboBoxModel model = employeeEditModel.foreignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(model);

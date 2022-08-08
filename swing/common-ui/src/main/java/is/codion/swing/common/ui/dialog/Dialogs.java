@@ -215,7 +215,7 @@ public final class Dialogs {
         try {
           File file = fileSelectionDialog()
                   .owner(filenameField)
-                  .startDirectory(getParentPath(filenameField.getText()))
+                  .startDirectory(parentPath(filenameField.getText()))
                   .selectFile();
           filenameField.setText(file.getAbsolutePath());
         }
@@ -224,7 +224,7 @@ public final class Dialogs {
     };
   }
 
-  private static String getParentPath(String text) {
+  private static String parentPath(String text) {
     if (nullOrEmpty(text)) {
       return null;
     }

@@ -61,7 +61,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   DefaultDatabaseConnection(Database database, Connection connection) throws DatabaseException {
     this.database = requireNonNull(database, "database");
     this.connection = disableAutoCommit(connection);
-    this.user = getUser(connection);
+    this.user = user(connection);
   }
 
   @Override
@@ -317,7 +317,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws DatabaseException in case of an exception while retrieving the username from the connection meta-data
    * @see java.sql.DatabaseMetaData#getUserName()
    */
-  private static User getUser(Connection connection) throws DatabaseException {
+  private static User user(Connection connection) throws DatabaseException {
     try {
       return META_DATA_USER_CACHE.computeIfAbsent(connection.getMetaData().getUserName(), User::user);
     }

@@ -51,7 +51,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
   }
 
   protected final NumberFormat getFormat() {
-    return ((NumberParser<T>) getDocumentFilter().getParser()).getFormat();
+    return ((NumberParser<T>) getDocumentFilter().parser()).getFormat();
   }
 
   protected final void setNumber(T number) {
@@ -60,7 +60,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
   protected final T getNumber() {
     try {
-      return getDocumentFilter().getParser().parse(getText(0, getLength())).value();
+      return getDocumentFilter().parser().parse(getText(0, getLength())).value();
     }
     catch (BadLocationException e) {
       throw new RuntimeException(e);
@@ -137,7 +137,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
           int decimalSeparatorIndex = string.indexOf(decimalSeparator);
           if (decimalSeparatorIndex >= 0 && string.substring(decimalSeparatorIndex).endsWith("0")) {
             formattedNumber += (formattedNumber.contains(decimalSeparator) ? "" : decimalSeparator) +
-                    getTrailingDecimalZeros(string, decimalSeparatorIndex);
+                    trailingDecimalZeros(string, decimalSeparatorIndex);
           }
         }
 
@@ -227,7 +227,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
       return count(newNumber, symbols.getGroupingSeparator()) - count(currentNumber, symbols.getGroupingSeparator());
     }
 
-    private static String getTrailingDecimalZeros(String string, int decimalSeparatorIndex) {
+    private static String trailingDecimalZeros(String string, int decimalSeparatorIndex) {
       StringBuilder builder = new StringBuilder();
       int index = string.length() - 1;
       char c = string.charAt(index);
@@ -324,7 +324,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
       }
     }
 
-    Parser<T> getParser() {
+    Parser<T> parser() {
       return parser;
     }
 

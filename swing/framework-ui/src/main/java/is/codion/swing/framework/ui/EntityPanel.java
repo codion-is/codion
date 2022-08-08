@@ -355,7 +355,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * @return the control panel layout constraints (BorderLayout constraints)
    */
-  public final String getControlPanelConstraints() {
+  public final String controlPanelConstraints() {
     return controlPanelConstraints;
   }
 

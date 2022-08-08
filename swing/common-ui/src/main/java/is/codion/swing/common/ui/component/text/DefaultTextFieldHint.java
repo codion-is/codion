@@ -82,11 +82,11 @@ final class DefaultTextFieldHint implements TextFieldHint {
     Color foreground = UIManager.getColor("TextField.foreground");
     Color background = UIManager.getColor("TextField.background");
     foregroundColor = foreground;
-    hintForegroundColor = getHintForegroundColor(background, foreground);
+    hintForegroundColor = hintForegroundColor(background, foreground);
     updateColor();
   }
 
-  private static Color getHintForegroundColor(Color background, Color foreground) {
+  private static Color hintForegroundColor(Color background, Color foreground) {
     //simplistic averaging of background and foreground
     int r = (int) sqrt((pow(background.getRed(), 2) + pow(foreground.getRed(), 2)) / 2);
     int g = (int) sqrt((pow(background.getGreen(), 2) + pow(foreground.getGreen(), 2)) / 2);

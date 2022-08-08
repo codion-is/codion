@@ -27,7 +27,7 @@ public class TemporalInputPanelTest {
   }
 
   @Test
-  void setDate() {
+  void setTemporal() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class, "dd.MM.yyyy").build();
     TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
@@ -38,7 +38,7 @@ public class TemporalInputPanelTest {
   }
 
   @Test
-  void getDate() {
+  void getTemporal() {
     TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class, "dd.MM.yyyy").build();
     TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
     assertFalse(panel.getOptional().isPresent());

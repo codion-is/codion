@@ -141,13 +141,13 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
         LOG.debug("{} modelBuilder initializing entity model", this);
         model = modelFactory.create(connectionProvider);
       }
-      else if (getModelClass().equals(SwingEntityModel.class)) {
+      else if (modelClass().equals(SwingEntityModel.class)) {
         LOG.debug("{} initializing a default entity model", this);
         model = buildDefaultModel(connectionProvider);
       }
       else {
-        LOG.debug("{} initializing a custom entity model: {}", this, getModelClass());
-        model = getModelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
+        LOG.debug("{} initializing a custom entity model: {}", this, modelClass());
+        model = modelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       for (SwingEntityModel.Builder detailProvider : detailModelBuilders) {
         model.addDetailModel(detailProvider.buildModel(connectionProvider));
@@ -173,13 +173,13 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
         LOG.debug("{} editModelBuilder initializing edit model", this);
         editModel = editModelFactory.create(connectionProvider);
       }
-      else if (getEditModelClass().equals(SwingEntityEditModel.class)) {
+      else if (editModelClass().equals(SwingEntityEditModel.class)) {
         LOG.debug("{} initializing a default edit model", this);
         editModel = new SwingEntityEditModel(entityType, connectionProvider);
       }
       else {
-        LOG.debug("{} initializing a custom edit model: {}", this, getEditModelClass());
-        editModel = getEditModelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
+        LOG.debug("{} initializing a custom edit model: {}", this, editModelClass());
+        editModel = editModelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       onBuildEditModel.accept(editModel);
 
@@ -202,13 +202,13 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
         LOG.debug("{} tableModelBuilder initializing table model", this);
         tableModel = tableModelFactory.create(connectionProvider);
       }
-      else if (getTableModelClass().equals(SwingEntityTableModel.class)) {
+      else if (tableModelClass().equals(SwingEntityTableModel.class)) {
         LOG.debug("{} initializing a default table model", this);
         tableModel = new SwingEntityTableModel(buildEditModel(connectionProvider));
       }
       else {
-        LOG.debug("{} initializing a custom table model: {}", this, getTableModelClass());
-        tableModel = getTableModelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
+        LOG.debug("{} initializing a custom table model: {}", this, tableModelClass());
+        tableModel = tableModelClass().getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       onBuildTableModel.accept(tableModel);
 
@@ -245,15 +245,15 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
     return new SwingEntityModel(buildTableModel(connectionProvider));
   }
 
-  private Class<? extends SwingEntityModel> getModelClass() {
+  private Class<? extends SwingEntityModel> modelClass() {
     return modelClass == null ? SwingEntityModel.class : modelClass;
   }
 
-  private Class<? extends SwingEntityEditModel> getEditModelClass() {
+  private Class<? extends SwingEntityEditModel> editModelClass() {
     return editModelClass ==  null ? SwingEntityEditModel.class : editModelClass;
   }
 
-  private Class<? extends SwingEntityTableModel> getTableModelClass() {
+  private Class<? extends SwingEntityTableModel> tableModelClass() {
     return tableModelClass == null ? SwingEntityTableModel.class : tableModelClass;
   }
 

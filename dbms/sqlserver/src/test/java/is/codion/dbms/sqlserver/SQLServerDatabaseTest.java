@@ -12,7 +12,7 @@ public class SQLServerDatabaseTest {
   private static final String URL = "jdbc:sqlserver://host:1234;databaseName=sid";
 
   @Test
-  void getName() {
+  void name() {
     SQLServerDatabase database = new SQLServerDatabase("jdbc:sqlserver://host.db\\instance:1234");
     assertEquals("instance", database.name());
     database = new SQLServerDatabase("jdbc:sqlserver://host.db\\instance:1234;options");
@@ -20,7 +20,7 @@ public class SQLServerDatabaseTest {
   }
 
   @Test
-  void getSequenceQuery() {
+  void sequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new SQLServerDatabase(URL).sequenceQuery("seq"));
   }
 
@@ -31,7 +31,7 @@ public class SQLServerDatabaseTest {
   }
 
   @Test
-  void getAutoIncrementQuery() {
+  void autoIncrementQuery() {
     SQLServerDatabase db = new SQLServerDatabase(URL);
     assertEquals(SQLServerDatabase.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
   }

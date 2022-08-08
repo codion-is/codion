@@ -46,7 +46,7 @@ public class DefaultFilteredTableColumnModelTest {
   }
 
   @Test
-  void getTableColumnNotFound() {
+  void tableColumnNotFound() {
     FilteredTableColumnModel<Integer> testModel = createTestModel();
     assertThrows(IllegalArgumentException.class, () -> testModel.tableColumn(42));
   }
