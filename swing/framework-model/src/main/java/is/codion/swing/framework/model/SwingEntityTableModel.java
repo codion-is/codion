@@ -644,7 +644,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * The default implementation is:
    * <pre>
    * {@code
-   * return getClass().getSimpleName() + "-" + getEntityType();
+   * return getClass().getSimpleName() + "-" + entityType();
    * }
    * </pre>
    * Override in case this key is not unique.

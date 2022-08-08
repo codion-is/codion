@@ -397,7 +397,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final void savePreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       try {
-        UserPreferences.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
+        UserPreferences.putUserPreference(userPreferencesKey(), createPreferences().toString());
       }
       catch (Exception e) {
         LOG.error("Error while saving preferences", e);
@@ -500,13 +500,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * The default implementation is:
    * <pre>
    * {@code
-   * return getClass().getSimpleName() + "-" + getEntityType();
+   * return getClass().getSimpleName() + "-" + entityType();
    * }
    * </pre>
    * Override in case this key is not unique.
    * @return the key used to identify user preferences for this table model
    */
-  protected String getUserPreferencesKey() {
+  protected String userPreferencesKey() {
     return getClass().getSimpleName() + "-" + entityType();
   }
 
@@ -594,7 +594,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private void applyPreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
-      String preferencesString = UserPreferences.getUserPreference(getUserPreferencesKey(), "");
+      String preferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
       try {
         if (preferencesString.length() > 0) {
           JSONObject preferences = new JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS);

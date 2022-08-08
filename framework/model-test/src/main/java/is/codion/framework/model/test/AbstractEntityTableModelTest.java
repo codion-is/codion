@@ -195,7 +195,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void getEntityType() {
+  public void entityType() {
     assertEquals(TestDomain.T_DETAIL, testModel.entityType());
   }
 
