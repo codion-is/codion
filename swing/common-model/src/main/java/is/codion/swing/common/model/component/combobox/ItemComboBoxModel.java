@@ -29,7 +29,7 @@ public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<
   }
 
   private ItemComboBoxModel(Comparator<Item<T>> sortComparator, Collection<Item<T>> items) {
-    super(sortComparator);
+    setSortComparator(sortComparator);
     setContents(items);
     if (containsItem(Item.item(null))) {
       setSelectedItem(null);

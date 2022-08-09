@@ -76,13 +76,12 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     }
 
     setLayout(Layouts.borderLayout());
-    add(Components.comboBox(comboBoxModel)
+    add(Components.itemComboBox(comboBoxModel)
             .completionMode(Completion.Mode.NONE)
             .mouseWheelScrolling(true)
             .renderer(new LookAndFeelRenderer())
             .editor(new LookAndFeelEditor())
             .border(createLineBorder(UIManager.getColor("TextField.foreground")))
-            .editable(true)
             .build(), BorderLayout.NORTH);
     setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, 0, PADDING));
   }

@@ -65,19 +65,10 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   /**
    * Instantiates a new SwingFilteredComboBoxModel.
    * The model contents are sorted automatically with a default collation based comparator.
+   * To prevent sorting call {@link #setSortComparator(Comparator)} with a null argument before adding items.
    */
   public SwingFilteredComboBoxModel() {
     this.sortComparator = new SortComparator<>();
-  }
-
-  /**
-   * Instantiates a new SwingFilteredComboBoxModel with the given nullValueString.
-   * @param sortComparator the Comparator used to sort the contents of this combo box model, if null then
-   * the contents are not sorted
-   * @see #isNullSelected()
-   */
-  public SwingFilteredComboBoxModel(Comparator<T> sortComparator) {
-    this.sortComparator = sortComparator;
   }
 
   @Override

@@ -8360,3 +8360,8 @@
   Bunch of get prefixes removed
   Entity.isForeignKeyNull() renamed isReferenceNull(), no longer public, isNull() should suffice
   SwingEntityComboBoxModel.linkForeignKeyComboBoxModel(), no longer calls selectByKey() with a null key
+  SwingFilteredComboBoxModel, constructor overloaded with sortComparator removed
+  SelectedValue no longer throws exception in case of a ItemComboBoxModel
+  SelectedValue now uses FilteredComboBoxModel.addSelectionListener() to notify value changes when possible, since JComboBox does not emit ItemEvent when null is selected/deselected, which prevented a selection event when the selected item was filtered away
+  ItemComboBoxBuilder.editor() added
+  ComboBoxBuilder.renderer(DefaultListCellRenderer) removed

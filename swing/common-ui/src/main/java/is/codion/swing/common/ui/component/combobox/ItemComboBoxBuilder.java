@@ -8,6 +8,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 
+import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
 import java.util.Comparator;
@@ -77,6 +78,12 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
    * @return this builder instance
    */
   ItemComboBoxBuilder<T> renderer(ListCellRenderer<Item<T>> renderer);
+
+  /**
+   * @param editor the editor for the combo box
+   * @return this builder instance
+   */
+  ItemComboBoxBuilder<T> editor(ComboBoxEditor editor);
 
   /**
    * @param comboBoxModel the combo box model
