@@ -120,8 +120,7 @@ task runClientLocal(type: ModularJavaExec) {
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'       : 'src/main/sql/create_schema.sql',
-            'logback.configurationFile'   : 'src/main/config/logback.xml'
+            'codion.db.initScripts'       : 'src/main/sql/create_schema.sql'
     ]
 }
 

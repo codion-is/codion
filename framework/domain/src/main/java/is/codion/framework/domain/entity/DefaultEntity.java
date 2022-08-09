@@ -400,24 +400,6 @@ final class DefaultEntity implements Entity, Serializable {
     return unmodifiableSet(originalValues.entrySet());
   }
 
-  @Override
-  public boolean isForeignKeyNull(ForeignKey foreignKey) {
-    List<ForeignKey.Reference<?>> references = foreignKey.references();
-    if (references.size() == 1) {
-      return isNull(references.get(0).attribute());
-    }
-    EntityDefinition referencedDefinition = definition.referencedEntityDefinition(foreignKey);
-    for (int i = 0; i < references.size(); i++) {
-      ForeignKey.Reference<?> reference = references.get(i);
-      ColumnProperty<?> referencedProperty = referencedDefinition.columnProperty(reference.referencedAttribute());
-      if (!referencedProperty.nullable() && isNull(reference.attribute())) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   private void clear() {
     values.clear();
     originalValues = null;
@@ -480,10 +462,27 @@ final class DefaultEntity implements Entity, Serializable {
    */
   private <T> boolean isNull(Property<T> property) {
     if (property instanceof ForeignKeyProperty) {
-      return isForeignKeyNull(((ForeignKeyProperty) property).attribute());
+      return isReferenceNull(((ForeignKeyProperty) property).attribute());
     }
 
     return get(property) == null;
+  }
+
+  private boolean isReferenceNull(ForeignKey foreignKey) {
+    List<ForeignKey.Reference<?>> references = foreignKey.references();
+    if (references.size() == 1) {
+      return isNull(references.get(0).attribute());
+    }
+    EntityDefinition referencedDefinition = definition.referencedEntityDefinition(foreignKey);
+    for (int i = 0; i < references.size(); i++) {
+      ForeignKey.Reference<?> reference = references.get(i);
+      ColumnProperty<?> referencedProperty = referencedDefinition.columnProperty(reference.referencedAttribute());
+      if (!referencedProperty.nullable() && isNull(reference.attribute())) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private <T> T validateAndPrepareForPut(Property<T> property, T value) {

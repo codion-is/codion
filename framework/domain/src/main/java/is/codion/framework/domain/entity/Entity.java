@@ -167,14 +167,6 @@ public interface Entity extends Comparable<Entity> {
   Key referencedKey(ForeignKey foreignKey);
 
   /**
-   * Returns true if the value of the given foreign key is null, in case of composite
-   * foreign keys a single null value of a non-null attribute is enough.
-   * @param foreignKey the foreign key
-   * @return true if the foreign key value is null
-   */
-  boolean isForeignKeyNull(ForeignKey foreignKey);
-
-  /**
    * Returns true if the value associated with the given attribute has been modified since first set,
    * note that this does not apply to attributes based on derived values.
    * @param attribute the attribute
