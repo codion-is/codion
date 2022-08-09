@@ -119,8 +119,7 @@ task runClientLocal(type: ModularJavaExec) {
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'       : 'src/main/sql/create_schema.sql',
-            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+            'codion.db.initScripts'       : 'src/main/sql/create_schema.sql'
     ]
 }
 
@@ -133,8 +132,7 @@ task runClientRMI(type: ModularJavaExec) {
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
             'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'codion.client.trustStorePassword': 'crappypass',
-            'logback.configurationFile'       : 'src/main/config/logback.xml'
+            'codion.client.trustStorePassword': 'crappypass'
     ]
 }
 
@@ -146,8 +144,7 @@ task runClientHttp(type: ModularJavaExec) {
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : "${serverHostName}",
-            'logback.configurationFile'   : 'src/main/config/logback.xml'
+            'codion.client.http.hostname' : "${serverHostName}"
     ]
 }
 
@@ -160,8 +157,7 @@ task runLoadTestRMI(type: ModularJavaExec) {
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
             'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'codion.client.trustStorePassword': 'crappypass',
-            'logback.configurationFile'       : 'src/main/config/logback.xml'
+            'codion.client.trustStorePassword': 'crappypass'
     ]
 }
 
@@ -173,8 +169,7 @@ task runLoadTestHttp(type: ModularJavaExec) {
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : "${serverHostName}",
-            'logback.configurationFile'   : 'src/main/config/logback.xml'
+            'codion.client.http.hostname' : "${serverHostName}"
     ]
 }
 
@@ -185,8 +180,7 @@ task clientLocalScript(type: ModularCreateStartScripts) {
             '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook',
             '-Dcodion.client.connectionType=local',
             '-Dcodion.db.url=jdbc:h2:mem:h2db',
-            '-Dcodion.db.initScripts=../config/create_schema.sql',
-            '-Dlogback.configurationFile=../config/logback.xml'
+            '-Dcodion.db.initScripts=../config/create_schema.sql'
     ]
 }
 
@@ -198,8 +192,7 @@ task clientRMIScript(type: ModularCreateStartScripts) {
             '-Dcodion.client.connectionType=remote',
             '-Dcodion.server.hostname=localhost',
             '-Dcodion.client.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass',
-            '-Dlogback.configurationFile=../config/logback.xml'
+            '-Dcodion.client.trustStorePassword=crappypass'
     ]
 }
 
@@ -210,8 +203,7 @@ task clientHttpScript(type: ModularCreateStartScripts) {
             '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook',
             '-Dcodion.client.connectionType=http',
             '-Dcodion.client.http.secure=false',
-            '-Dcodion.client.http.hostname=localhost',
-            '-Dlogback.configurationFile=../config/logback.xml'
+            '-Dcodion.client.http.hostname=localhost'
     ]
 }
 
@@ -223,8 +215,7 @@ task loadTestRMIScript(type: ModularCreateStartScripts) {
             '-Dcodion.client.connectionType=remote',
             '-Dcodion.server.hostname=localhost',
             '-Dcodion.client.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass',
-            '-Dlogback.configurationFile=../config/logback.xml'
+            '-Dcodion.client.trustStorePassword=crappypass'
     ]
 }
 
@@ -235,14 +226,12 @@ task loadTestHttpScript(type: ModularCreateStartScripts) {
             '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook',
             '-Dcodion.client.connectionType=http',
             '-Dcodion.client.http.secure=false',
-            '-Dcodion.client.http.hostname=localhost',
-            '-Dlogback.configurationFile=../config/logback.xml'
+            '-Dcodion.client.http.hostname=localhost'
     ]
 }
 
 applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
-    from(files('src/main/config/logback.xml'))
     from(files('../../framework/server/src/main/config/truststore.jks'))
 }
 
