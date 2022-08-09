@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.model.combobox.FilteredComboBoxModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 
 import javax.swing.ComboBoxModel;
@@ -16,10 +15,13 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
 
   SelectedValue(C comboBox) {
     super(comboBox);
-    if (comboBox.getModel() instanceof ItemComboBoxModel) {
-      throw new IllegalArgumentException("comboBox() does not support ItemComboBoxModel, use itemComboBox()");
+    if (comboBox.getModel() instanceof FilteredComboBoxModel) {
+      //ItemListener does not get notified when null values are selected/deselected
+      ((FilteredComboBoxModel<T>) comboBox.getModel()).addSelectionListener(selected -> notifyValueChange());
     }
-    comboBox.addItemListener(new NotifyOnItemSelectedListener());
+    else {
+      comboBox.addItemListener(new NotifyOnItemSelectedListener());
+    }
   }
 
   @Override

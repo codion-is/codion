@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.ComponentValue;
 
+import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   private int maximumRowCount = -1;
   private int popupWidth = 0;
   private ListCellRenderer<Item<T>> renderer;
+  private ComboBoxEditor editor;
 
   DefaultItemComboBoxBuilder(List<Item<T>> items, Value<T> linkedValue) {
     super(linkedValue);
@@ -117,6 +119,12 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   }
 
   @Override
+  public ItemComboBoxBuilder<T> editor(ComboBoxEditor editor) {
+    this.editor = requireNonNull(editor);
+    return this;
+  }
+
+  @Override
   protected JComboBox<Item<T>> createComponent() {
     ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
     JComboBox<Item<T>> comboBox = new FocusableComboBox<>(itemComboBoxModel);
@@ -135,6 +143,9 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
     }
     if (renderer != null) {
       comboBox.setRenderer(renderer);
+    }
+    if (editor != null) {
+      comboBox.setEditor(editor);
     }
     comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());
 

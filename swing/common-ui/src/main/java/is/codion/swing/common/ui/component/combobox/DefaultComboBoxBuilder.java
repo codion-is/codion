@@ -11,7 +11,6 @@ import is.codion.swing.common.ui.component.ComponentValue;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
 import java.awt.event.ItemListener;
@@ -30,7 +29,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 
   private boolean editable = false;
   private Completion.Mode completionMode = Completion.COMBO_BOX_COMPLETION_MODE.get();
-  private ListCellRenderer<?> renderer;
+  private ListCellRenderer<T> renderer;
   private ComboBoxEditor editor;
   private boolean mouseWheelScrolling = true;
   private boolean mouseWheelScrollingWithWrapAround = false;
@@ -53,12 +52,6 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   @Override
   public final B completionMode(Completion.Mode completionMode) {
     this.completionMode = requireNonNull(completionMode);
-    return (B) this;
-  }
-
-  @Override
-  public final B renderer(DefaultListCellRenderer renderer) {
-    this.renderer = requireNonNull(renderer);
     return (B) this;
   }
 
@@ -120,7 +113,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   protected final C createComponent() {
     C comboBox = createComboBox();
     if (renderer != null) {
-      comboBox.setRenderer((ListCellRenderer<T>) renderer);
+      comboBox.setRenderer(renderer);
     }
     if (editor != null) {
       comboBox.setEditor(editor);
