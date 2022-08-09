@@ -48,8 +48,7 @@ startScripts {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=local',
             '-Dcodion.db.url=jdbc:h2:mem:h2db',
-            '-Dcodion.db.initScripts=../config/create_schema.sql',
-            '-Dlogback.configurationFile=../config/logback.xml'
+            '-Dcodion.db.initScripts=../config/create_schema.sql'
     ]
 }
 
@@ -61,8 +60,7 @@ task clientRMIScript(type: CreateStartScripts) {
             '-Dcodion.client.connectionType=remote',
             "-Dcodion.server.hostname=${serverHostName}",
             '-Djavax.net.ssl.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass',
-            '-Dlogback.configurationFile=../config/logback.xml'
+            '-Dcodion.client.trustStorePassword=crappypass'
     ]
 }
 
@@ -73,8 +71,7 @@ task clientHttpScript(type: CreateStartScripts) {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=http',
             '-Dcodion.client.http.secure=false',
-            "-Dcodion.client.http.hostname=${serverHostName}",
-            '-Dlogback.configurationFile=../config/logback.xml'
+            "-Dcodion.client.http.hostname=${serverHostName}"
     ]
 }
 
@@ -87,8 +84,7 @@ task loadTestRMIScript(type: CreateStartScripts) {
             '-Dcodion.client.connectionType=remote',
             "-Dcodion.server.hostname=${serverHostName}",
             '-Dcodion.client.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass',
-            '-Dlogback.configurationFile=../config/logback.xml'
+            '-Dcodion.client.trustStorePassword=crappypass'
     ]
 }
 
@@ -100,14 +96,12 @@ task loadTestHttpScript(type: CreateStartScripts) {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=http',
             '-Dcodion.client.http.secure=false',
-            "-Dcodion.client.http.hostname=${serverHostName}",
-            '-Dlogback.configurationFile=../config/logback.xml'
+            "-Dcodion.client.http.hostname=${serverHostName}"
     ]
 }
 
 applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
-    from(files('src/main/config/logback.xml'))
     from(files('../../framework/server/src/main/config/truststore.jks'))
 }
 
@@ -130,7 +124,6 @@ task runClientLocal(type: JavaExec) {
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
             'codion.db.initScripts'       : 'src/main/sql/create_schema.sql',
-            'logback.configurationFile'   : 'src/main/config/logback.xml',
             'sun.awt.disablegrab'         : 'true'
     ]
 }
@@ -143,7 +136,6 @@ task runClientRMI(type: JavaExec) {
             'codion.server.hostname'          : "${serverHostName}",
             'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
             'codion.client.trustStorePassword': 'crappypass',
-            'logback.configurationFile'       : 'src/main/config/logback.xml',
             'sun.awt.disablegrab'             : 'true'
     ]
 }
@@ -155,7 +147,6 @@ task runClientHttp(type: JavaExec) {
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
             'codion.client.http.hostname' : "${serverHostName}",
-            'logback.configurationFile'   : 'src/main/config/logback.xml',
             'sun.awt.disablegrab'         : 'true'
     ]
 }
@@ -167,8 +158,7 @@ task runLoadTestRMI(type: JavaExec) {
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
             'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'codion.client.trustStorePassword': 'crappypass',
-            'logback.configurationFile'       : 'src/main/config/logback.xml'
+            'codion.client.trustStorePassword': 'crappypass'
     ]
 }
 
@@ -178,7 +168,6 @@ task runLoadTestHttp(type: JavaExec) {
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : "${serverHostName}",
-            'logback.configurationFile'   : 'src/main/config/logback.xml'
+            'codion.client.http.hostname' : "${serverHostName}"
     ]
 }
