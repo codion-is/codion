@@ -8358,3 +8358,5 @@
   EntityEditPanelTestUnit.getEditModel() renamed editModel(), FxEntityListModel.getUserPreferenceKey() renamed userPreferencesKey()
   EntityComboBoxModel.selectEntityByKey() renamed selectByKey(), EntityPanel, EntityEditPanel, EntityTablePanel, more get prefixes removed
   Bunch of get prefixes removed
+  Entity.isForeignKeyNull() renamed isReferenceNull(), no longer public, isNull() should suffice
+  SwingEntityComboBoxModel.linkForeignKeyComboBoxModel(), no longer calls selectByKey() with a null key

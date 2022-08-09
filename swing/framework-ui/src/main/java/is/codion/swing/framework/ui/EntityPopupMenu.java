@@ -91,7 +91,7 @@ final class EntityPopupMenu extends JPopupMenu {
       for (ForeignKeyProperty property : fkProperties) {
         ForeignKey foreignKey = property.attribute();
         StringBuilder captionBuilder = new StringBuilder("[FK] ").append(property.caption()).append(": ");
-        if (entity.isForeignKeyNull(foreignKey)) {
+        if (entity.isNull(foreignKey)) {
           JMenuItem menuItem = new JMenuItem(captionBuilder.append(createValueString(entity, property)).toString());
           setInvalidModified(menuItem, isValid(validator, entity, foreignKey), entity.isModified(foreignKey));
           menuItem.setToolTipText(foreignKeyAttributeNames(foreignKey));

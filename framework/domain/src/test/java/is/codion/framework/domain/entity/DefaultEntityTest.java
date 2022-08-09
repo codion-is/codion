@@ -417,7 +417,6 @@ public class DefaultEntityTest {
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertTrue(testEntity.isNull(Detail.MASTER_ID));
     assertTrue(testEntity.isNull(Detail.MASTER_FK));
-    assertTrue(testEntity.isForeignKeyNull(Detail.MASTER_FK));
     testEntity.put(Detail.MASTER_ID, 10L);
 
     assertFalse(testEntity.isLoaded(Detail.MASTER_FK));
@@ -429,14 +428,14 @@ public class DefaultEntityTest {
 
     Entity composite = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, null);
-    assertTrue(composite.isForeignKeyNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
+    assertTrue(composite.isNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1);
-    assertTrue(composite.isForeignKeyNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
+    assertTrue(composite.isNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, null);
-    assertTrue(composite.isForeignKeyNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
+    assertTrue(composite.isNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 1);
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 2);
-    assertFalse(composite.isForeignKeyNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
+    assertFalse(composite.isNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
   }
 
   @Test
@@ -558,12 +557,12 @@ public class DefaultEntityTest {
     Entity employee = ENTITIES.builder(Employee.TYPE)
             .with(Employee.ID, -10)
             .build();
-    assertTrue(employee.isForeignKeyNull(Employee.DEPARTMENT_FK));
+    assertTrue(employee.isNull(Employee.DEPARTMENT_FK));
     assertNull(employee.get(Employee.DEPARTMENT_FK));
     assertNull(employee.get(Employee.DEPARTMENT_NO));
 
     employee.put(Employee.DEPARTMENT_FK, department);
-    assertFalse(employee.isForeignKeyNull(Employee.DEPARTMENT_FK));
+    assertFalse(employee.isNull(Employee.DEPARTMENT_FK));
     assertNotNull(employee.get(Employee.DEPARTMENT_FK));
     assertNotNull(employee.get(Employee.DEPARTMENT_NO));
   }
