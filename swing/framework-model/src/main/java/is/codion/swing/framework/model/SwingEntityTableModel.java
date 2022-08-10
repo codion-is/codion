@@ -780,7 +780,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   private JSONObject createPreferences() throws Exception {
     JSONObject preferencesRoot = new JSONObject();
-    preferencesRoot.put(PREFERENCES_COLUMNS, createColumnPreferences());
+    preferencesRoot.put(ColumnPreferences.PREFERENCES_COLUMNS, createColumnPreferences());
 
     return preferencesRoot;
   }
@@ -790,9 +790,9 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     for (TableColumn column : columnModel().columns()) {
       Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
       boolean visible = columnModel().isColumnVisible(attribute);
-      ColumnPreferences columnPreferences = new ColumnPreferences(attribute,
+      ColumnPreferences columnPreferences = EntityTableModel.columnPreferences(attribute,
               visible ? columnModel().getColumnIndex(attribute) : -1, column.getWidth());
-      columnPreferencesRoot.put(attribute.name(), columnPreferences.toJSONObject());
+      columnPreferencesRoot.put(attribute.name(), toJSONObject(columnPreferences));
     }
 
     return columnPreferencesRoot;
@@ -802,8 +802,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       String preferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
       try {
-        if (preferencesString.length() > 0) {
-          applyColumnPreferences(new JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS));
+        if (!preferencesString.isEmpty()) {
+          applyColumnPreferences(preferencesString);
         }
       }
       catch (Exception e) {
@@ -812,14 +812,17 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     }
   }
 
-  private void applyColumnPreferences(JSONObject preferences) {
-    Map<Attribute<?>, ColumnPreferences> columnPreferencesMap = createColumnPreferenceMap(list(columnModel().getColumns()), preferences);
+  private void applyColumnPreferences(String preferencesString) {
+    JSONObject preferences = new JSONObject(preferencesString).getJSONObject(ColumnPreferences.PREFERENCES_COLUMNS);
+    Map<Attribute<?>, ColumnPreferences> preferenceMap = createColumnPreferenceMap(list(columnModel().getColumns()), preferences);
     for (TableColumn column : list(columnModel().getColumns())) {
       Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
-      ColumnPreferences columnPreferences = columnPreferencesMap.get(attribute);
-      column.setPreferredWidth(columnPreferences.width());
+      ColumnPreferences columnPreferences = preferenceMap.get(attribute);
+      if (columnPreferences != null) {
+        column.setPreferredWidth(columnPreferences.width());
+      }
     }
-    setVisibleColumns(columnPreferencesMap.values().stream()
+    setVisibleColumns(preferenceMap.values().stream()
             .filter(ColumnPreferences::visible)
             .sorted(Comparator.comparingInt(ColumnPreferences::index))
             .map(ColumnPreferences::attribute)
@@ -846,12 +849,26 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   private static Optional<ColumnPreferences> columnPreferences(TableColumn tableColumn, JSONObject preferences) {
     Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
     try {
-      return Optional.of(new ColumnPreferences(attribute, preferences.getJSONObject(attribute.name())));
+      return Optional.of(fromJSONObject(attribute, preferences.getJSONObject(attribute.name())));
     }
     catch (Exception e) {
-      LOG.info("Property preferences not found: " + attribute, e);
+      LOG.info("Attribute preferences not found: " + attribute, e);
       return Optional.empty();
     }
+  }
+
+  private static JSONObject toJSONObject(ColumnPreferences columnPreferences) {
+    JSONObject columnObject = new JSONObject();
+    columnObject.put(ColumnPreferences.PREFERENCES_COLUMN_WIDTH, columnPreferences.width());
+    columnObject.put(ColumnPreferences.PREFERENCES_COLUMN_INDEX, columnPreferences.index());
+
+    return columnObject;
+  }
+
+  private static ColumnPreferences fromJSONObject(Attribute<?> attribute, JSONObject jsonObject) {
+    return EntityTableModel.columnPreferences(attribute,
+              jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_INDEX),
+              jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_WIDTH));
   }
 
   private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {
@@ -884,47 +901,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     @Override
     public String getString(Entity entity, Attribute<?> attribute) {
       return entity.toString(attribute);
-    }
-  }
-
-  private static final class ColumnPreferences {
-
-    private final Attribute<?> attribute;
-    private final int index;
-    private final int width;
-
-    private ColumnPreferences(Attribute<?> attribute, JSONObject jsonObject) {
-      this(attribute, jsonObject.getInt(PREFERENCES_COLUMN_INDEX), jsonObject.getInt(PREFERENCES_COLUMN_WIDTH));
-    }
-
-    private ColumnPreferences(Attribute<?> attribute, int index, int width) {
-      this.attribute = attribute;
-      this.index = index;
-      this.width = width;
-    }
-
-    private Attribute<?> attribute() {
-      return attribute;
-    }
-
-    private int index() {
-      return index;
-    }
-
-    private boolean visible() {
-      return index != -1;
-    }
-
-    private int width() {
-      return width;
-    }
-
-    private JSONObject toJSONObject() {
-      JSONObject columnObject = new JSONObject();
-      columnObject.put(PREFERENCES_COLUMN_WIDTH, width);
-      columnObject.put(PREFERENCES_COLUMN_INDEX, index);
-
-      return columnObject;
     }
   }
 }

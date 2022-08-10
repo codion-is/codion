@@ -47,10 +47,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    */
   PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue("codion.client.orderQueryBySortOrder", false);
 
-  String PREFERENCES_COLUMNS = "columns";
-  String PREFERENCES_COLUMN_WIDTH = "width";
-  String PREFERENCES_COLUMN_INDEX = "index";
-
   /**
    * Defines the actions a table model can perform when entities are inserted via the associated edit model
    */
@@ -396,4 +392,56 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @see #setForeignKeyConditionValues(ForeignKey, Collection)
    */
   boolean isRefreshOnForeignKeyConditionValuesSet();
+
+  /**
+   * Creates a new {@link ColumnPreferences} instance.
+   * @param attribute the attribute
+   * @param index the column index, -1 if not visible
+   * @param width the column width
+   * @return a new {@link ColumnPreferences} instance.
+   */
+  static ColumnPreferences columnPreferences(Attribute<?> attribute, int index, int width) {
+    return new DefaultColumnPreferences(attribute, index, width);
+  }
+
+  /**
+   * Represents preferences for an Attribute based table column.
+   */
+  interface ColumnPreferences {
+
+    /**
+     * The name of the root element identifying column preferences
+     */
+    String PREFERENCES_COLUMNS = "columns";
+
+    /**
+     * The key for the 'width' property
+     */
+    String PREFERENCES_COLUMN_WIDTH = "width";
+
+    /**
+     * The key for the 'index' property
+     */
+    String PREFERENCES_COLUMN_INDEX = "index";
+
+    /**
+     * @return the column attribute
+     */
+    Attribute<?> attribute();
+
+    /**
+     * @return the column index, -1 if not visible
+     */
+    int index();
+
+    /**
+     * @return true if this column is visible, false if hidden
+     */
+    boolean visible();
+
+    /**
+     * @return the column width in pixels
+     */
+    int width();
+  }
 }
