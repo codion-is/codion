@@ -56,17 +56,17 @@ public final class DefaultFilteredTableModelTest {
       super(createColumns(),
               new ColumnValueProvider<List<String>, Integer>() {
                 @Override
-                public Object getValue(List<String> row, Integer columnIdentifier) {
+                public Object value(List<String> row, Integer columnIdentifier) {
                   return row.get(columnIdentifier);
                 }
 
                 @Override
-                public Class<?> getColumnClass(Integer columnIdentifier) {
+                public Class<?> columnClass(Integer columnIdentifier) {
                   return String.class;
                 }
 
                 @Override
-                public Comparator<?> getComparator(Integer columnIdentifier) {
+                public Comparator<?> comparator(Integer columnIdentifier) {
                   if (customComparator != null) {
                     return customComparator;
                   }
@@ -147,12 +147,12 @@ public final class DefaultFilteredTableModelTest {
     assertThrows(IllegalArgumentException.class, () -> new DefaultFilteredTableModel<String, Integer>(
             emptyList(), new ColumnValueProvider<String, Integer>() {
       @Override
-      public Object getValue(String row, Integer columnIdentifier) {
+      public Object value(String row, Integer columnIdentifier) {
         return null;
       }
 
       @Override
-      public Class<?> getColumnClass(Integer columnIdentifier) {
+      public Class<?> columnClass(Integer columnIdentifier) {
         return null;
       }
     }));
@@ -330,7 +330,7 @@ public final class DefaultFilteredTableModelTest {
             asList(columnId, columnValue),
             new ColumnValueProvider<Row, Integer>() {
               @Override
-              public Object getValue(Row row, Integer columnIdentifier) {
+              public Object value(Row row, Integer columnIdentifier) {
                 if (columnIdentifier == 0) {
                   return row.id;
                 }
@@ -339,7 +339,7 @@ public final class DefaultFilteredTableModelTest {
               }
 
               @Override
-              public Class<?> getColumnClass(Integer columnIdentifier) {
+              public Class<?> columnClass(Integer columnIdentifier) {
                 if (columnIdentifier == 0) {
                   return Integer.class;
                 }

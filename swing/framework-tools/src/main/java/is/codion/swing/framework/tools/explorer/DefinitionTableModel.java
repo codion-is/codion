@@ -60,7 +60,7 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
   private static final class DefinitionColumnValueProvider implements ColumnValueProvider<DefinitionRow, Integer> {
 
     @Override
-    public Class<?> getColumnClass(Integer columnIdentifier) {
+    public Class<?> columnClass(Integer columnIdentifier) {
       switch (columnIdentifier) {
         case DefinitionTableModel.DOMAIN:
         case DefinitionTableModel.ENTITY:
@@ -71,7 +71,7 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
     }
 
     @Override
-    public Object getValue(DefinitionRow row, Integer columnIdentifier) {
+    public Object value(DefinitionRow row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case DefinitionTableModel.DOMAIN:
           return row.domain.type().name();

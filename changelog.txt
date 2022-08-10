@@ -8368,3 +8368,4 @@
   EntityEditModel.add/removeEntitySetListener() renamed add/removeEntityListener()
   SwingEntityTableModel, column preference handling refactored
   EntityTableModel.ColumnPreferences added, column preference handling refactored some more
+  FilteredTableModel.ColumnValueProvider, removed get prefix

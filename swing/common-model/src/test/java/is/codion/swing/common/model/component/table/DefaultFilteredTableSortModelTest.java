@@ -27,7 +27,7 @@ public class DefaultFilteredTableSortModelTest {
     thirdColumn.setIdentifier(2);
     DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<>(new ColumnValueProvider<Row, Integer>() {
       @Override
-      public Object getValue(Row row, Integer columnIdentifier) {
+      public Object value(Row row, Integer columnIdentifier) {
         switch (columnIdentifier) {
           case 0:
             return row.firstValue;
@@ -41,7 +41,7 @@ public class DefaultFilteredTableSortModelTest {
       }
 
       @Override
-      public Class<?> getColumnClass(Integer columnIdentifier) {
+      public Class<?> columnClass(Integer columnIdentifier) {
         return String.class;
       }
     });
@@ -101,12 +101,12 @@ public class DefaultFilteredTableSortModelTest {
     DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<>(
             new ColumnValueProvider<ArrayList, Integer>() {
               @Override
-              public Object getValue(ArrayList row, Integer columnIdentifier) {
+              public Object value(ArrayList row, Integer columnIdentifier) {
                 return row.toString();
               }
 
               @Override
-              public Class<?> getColumnClass(Integer columnIdentifier) {
+              public Class<?> columnClass(Integer columnIdentifier) {
                 return ArrayList.class;
               }
             });

@@ -28,12 +28,12 @@ public class DefaultFilteredTableSelectionModelTest {
     FilteredTableModel<String, Integer> tableModel = new DefaultFilteredTableModel<String, Integer>(
             singletonList(column), new ColumnValueProvider<String, Integer>() {
       @Override
-      public Object getValue(String row, Integer columnIdentifier) {
+      public Object value(String row, Integer columnIdentifier) {
         return row;
       }
 
       @Override
-      public Class<?> getColumnClass(Integer columnIdentifier) {
+      public Class<?> columnClass(Integer columnIdentifier) {
         return String.class;
       }
     }) {

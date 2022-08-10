@@ -361,7 +361,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final Class<?> getColumnClass(C columnIdentifier) {
-    return columnValueProvider.getColumnClass(columnIdentifier);
+    return columnValueProvider.columnClass(columnIdentifier);
   }
 
   @Override
@@ -371,12 +371,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final Object getValueAt(int rowIndex, int columnIndex) {
-    return columnValueProvider.getValue(itemAt(rowIndex), columnModel().columnIdentifier(columnIndex));
+    return columnValueProvider.value(itemAt(rowIndex), columnModel().columnIdentifier(columnIndex));
   }
 
   @Override
   public final String getStringAt(int rowIndex, C columnIdentifier) {
-    return columnValueProvider.getString(itemAt(rowIndex), columnIdentifier);
+    return columnValueProvider.string(itemAt(rowIndex), columnIdentifier);
   }
 
   @Override

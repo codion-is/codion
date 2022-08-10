@@ -48,7 +48,7 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
   private static final class SchemaColumnValueProvider implements ColumnValueProvider<Schema, Integer> {
 
     @Override
-    public Class<?> getColumnClass(Integer columnIdentifier) {
+    public Class<?> columnClass(Integer columnIdentifier) {
       switch (columnIdentifier) {
         case SchemaTableModel.SCHEMA:
           return String.class;
@@ -60,7 +60,7 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
     }
 
     @Override
-    public Object getValue(Schema row, Integer columnIdentifier) {
+    public Object value(Schema row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case SchemaTableModel.SCHEMA:
           return row.name();

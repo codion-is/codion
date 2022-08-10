@@ -880,12 +880,12 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     }
 
     @Override
-    public Class<?> getColumnClass(Attribute<?> attribute) {
+    public Class<?> columnClass(Attribute<?> attribute) {
       return attribute.valueClass();
     }
 
     @Override
-    public Comparator<?> getComparator(Attribute<?> attribute) {
+    public Comparator<?> comparator(Attribute<?> attribute) {
       if (attribute instanceof ForeignKey) {
         return entities.definition(((ForeignKey) attribute).referencedType()).comparator();
       }
@@ -894,12 +894,12 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     }
 
     @Override
-    public Object getValue(Entity entity, Attribute<?> attribute) {
+    public Object value(Entity entity, Attribute<?> attribute) {
       return entity.get(attribute);
     }
 
     @Override
-    public String getString(Entity entity, Attribute<?> attribute) {
+    public String string(Entity entity, Attribute<?> attribute) {
       return entity.toString(attribute);
     }
   }

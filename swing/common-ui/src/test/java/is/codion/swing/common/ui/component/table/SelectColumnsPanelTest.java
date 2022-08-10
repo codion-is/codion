@@ -23,12 +23,12 @@ public final class SelectColumnsPanelTest {
     DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(singletonList(column),
             new ColumnValueProvider<Object, Integer>() {
               @Override
-              public Object getValue(Object row, Integer columnIdentifier) {
+              public Object value(Object row, Integer columnIdentifier) {
                 return null;
               }
 
               @Override
-              public Class<?> getColumnClass(Integer columnIdentifier) {
+              public Class<?> columnClass(Integer columnIdentifier) {
                 return null;
               }
             });

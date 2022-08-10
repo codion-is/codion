@@ -87,12 +87,12 @@ public class FilteredTableTest {
                                            List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
       super(columns, new ColumnValueProvider<List<String>, Integer>() {
         @Override
-        public Object getValue(List<String> row, Integer columnIdentifier) {
+        public Object value(List<String> row, Integer columnIdentifier) {
           return row.get(columnIdentifier);
         }
 
         @Override
-        public Class<?> getColumnClass(Integer columnIdentifier) {
+        public Class<?> columnClass(Integer columnIdentifier) {
           return String.class;
         }
       }, columnFilterModels);
