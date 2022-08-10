@@ -446,7 +446,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       tableModel().addSelectionChangedListener(initializer);
     }
     else {
-      editModel.addEntitySetListener(entity -> initializeDetailModels());
+      editModel.addEntityListener(entity -> initializeDetailModels());
     }
   }
 

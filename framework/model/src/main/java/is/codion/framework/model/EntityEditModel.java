@@ -636,16 +636,17 @@ public interface EntityEditModel {
   void removeValueListener(EventDataListener<Attribute<?>> listener);
 
   /**
-   * @param listener a listener notified each time the entity is set
+   * Notified each time the entity is set via {@link #setEntity(Entity)}.
+   * @param listener a listener notified each time the entity is set, possibly to null
    * @see #setEntity(Entity)
    */
-  void addEntitySetListener(EventDataListener<Entity> listener);
+  void addEntityListener(EventDataListener<Entity> listener);
 
   /**
    * Removes the given listener.
    * @param listener the listener to remove
    */
-  void removeEntitySetListener(EventDataListener<Entity> listener);
+  void removeEntityListener(EventDataListener<Entity> listener);
 
   /**
    * @param listener a listener to be notified before an insert is performed
