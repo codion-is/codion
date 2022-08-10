@@ -5,6 +5,7 @@ package is.codion.swing.framework.model;
 
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.DefaultForeignKeyConditionModel;
+import is.codion.framework.model.ForeignKeyConditionModel;
 
 import java.util.Objects;
 
@@ -34,6 +35,9 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
     entityComboBoxModel.refresh();
   }
 
+  /**
+   * @return the {@link SwingEntityComboBoxModel} used by this {@link ForeignKeyConditionModel}
+   */
   public SwingEntityComboBoxModel entityComboBoxModel() {
     return entityComboBoxModel;
   }

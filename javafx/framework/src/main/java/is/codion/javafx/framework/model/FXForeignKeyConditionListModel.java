@@ -33,7 +33,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
   }
 
   /**
-   * @return the {@link ObservableEntityList} this model is based on
+   * @return the {@link ObservableEntityList} this model is based on, null if none is available
    */
   public ObservableEntityList listModel() {
     return listModel;
