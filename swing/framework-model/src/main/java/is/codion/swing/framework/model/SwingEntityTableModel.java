@@ -668,7 +668,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
     editModel.addRefreshListener(this::refresh);
-    editModel.addEntitySetListener(this::onEntitySet);
+    editModel.addEntityListener(this::onEntitySet);
     editModel.addRefreshingObserver(refreshingObserver());
     selectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(this::onTableModelEvent);

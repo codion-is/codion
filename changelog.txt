@@ -8403,3 +8403,4 @@
   SelectedValue now uses FilteredComboBoxModel.addSelectionListener() to notify value changes when possible, since JComboBox does not emit ItemEvent when null is selected/deselected, which prevented a selection event when the selected item was filtered away
   ItemComboBoxBuilder.editor() added
   ComboBoxBuilder.renderer(DefaultListCellRenderer) removed
+  EntityEditModel.add/removeEntitySetListener() renamed add/removeEntityListener()

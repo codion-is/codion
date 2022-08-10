@@ -63,7 +63,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Event<List<Entity>> afterDeleteEvent = Event.event();
   private final Event<?> entitiesEditedEvent = Event.event();
   private final Event<State> confirmSetEntityEvent = Event.event();
-  private final Event<Entity> entitySetEvent = Event.event();
+  private final Event<Entity> entityEvent = Event.event();
   private final Event<Attribute<?>> valueChangeEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
 
@@ -714,13 +714,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void removeEntitySetListener(EventDataListener<Entity> listener) {
-    entitySetEvent.removeDataListener(listener);
+  public final void removeEntityListener(EventDataListener<Entity> listener) {
+    entityEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addEntitySetListener(EventDataListener<Entity> listener) {
-    entitySetEvent.addDataListener(listener);
+  public final void addEntityListener(EventDataListener<Entity> listener) {
+    entityEvent.addDataListener(listener);
   }
 
   @Override
@@ -989,7 +989,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       updateEntityStates();
     }
 
-    entitySetEvent.onEvent(entity);
+    entityEvent.onEvent(entity);
   }
 
   private boolean valueModified(Attribute<?> attribute) {
