@@ -615,7 +615,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
         try {
           JSONObject columnPreferences = preferences.getJSONObject(property.name());
           column.setPrefWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
-          if (!columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
+          int index = columnPreferences.getInt(PREFERENCES_COLUMN_INDEX);
+          if (index == -1) {
             columns.remove(column);
           }
         }
@@ -640,7 +641,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       JSONObject columnObject = new JSONObject();
       boolean visible = columns.contains(column);
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
-      columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
       columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? columns.indexOf(column) : -1);
       columnPreferencesRoot.put(property.name(), columnObject);
     }

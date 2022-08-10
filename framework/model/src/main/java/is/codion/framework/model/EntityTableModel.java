@@ -49,7 +49,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   String PREFERENCES_COLUMNS = "columns";
   String PREFERENCES_COLUMN_WIDTH = "width";
-  String PREFERENCES_COLUMN_VISIBLE = "visible";
   String PREFERENCES_COLUMN_INDEX = "index";
 
   /**
