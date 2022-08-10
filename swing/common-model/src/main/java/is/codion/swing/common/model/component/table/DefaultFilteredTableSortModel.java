@@ -139,8 +139,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     }
 
     private int compareRows(R rowOne, R rowTwo, C columnIdentifier, SortOrder sortOrder) {
-      Object valueOne = columnValueProvider.getValue(rowOne, columnIdentifier);
-      Object valueTwo = columnValueProvider.getValue(rowTwo, columnIdentifier);
+      Object valueOne = columnValueProvider.value(rowOne, columnIdentifier);
+      Object valueTwo = columnValueProvider.value(rowTwo, columnIdentifier);
       int comparison;
       // Define null less than everything, except null.
       if (valueOne == null && valueTwo == null) {
@@ -154,7 +154,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
       }
       else {
         comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(columnIdentifier,
-                k -> columnValueProvider.getComparator(columnIdentifier))).compare(valueOne, valueTwo);
+                k -> columnValueProvider.comparator(columnIdentifier))).compare(valueOne, valueTwo);
       }
       if (comparison != 0) {
         return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;

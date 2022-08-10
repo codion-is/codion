@@ -13,7 +13,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 public interface ForeignKeyConditionModel extends ColumnConditionModel<ForeignKey, Entity> {
 
   /**
-   * @return the {@link EntitySearchModel} used by this ForeignKeyConditionModel, if any
+   * @return the {@link EntitySearchModel} used by this {@link ForeignKeyConditionModel}, null if none is available
    */
   EntitySearchModel entitySearchModel();
 

@@ -292,7 +292,7 @@ public final class ClientUserMonitor {
   private static final class UserHistoryColumnValueProvider implements ColumnValueProvider<UserInfo, Integer> {
 
     @Override
-    public Class<?> getColumnClass(Integer columnIdentifier) {
+    public Class<?> columnClass(Integer columnIdentifier) {
       switch (columnIdentifier) {
         case USERNAME_COLUMN: return String.class;
         case CLIENT_TYPE_COLUMN: return String.class;
@@ -306,7 +306,7 @@ public final class ClientUserMonitor {
     }
 
     @Override
-    public Object getValue(UserInfo row, Integer columnIdentifier) {
+    public Object value(UserInfo row, Integer columnIdentifier) {
       switch (columnIdentifier) {
         case USERNAME_COLUMN: return row.user().username();
         case CLIENT_TYPE_COLUMN: return row.clientTypeId();

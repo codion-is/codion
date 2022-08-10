@@ -34,12 +34,12 @@ public class TableColumnComponentPanelTest {
     DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(asList(column0, column1, column2),
             new ColumnValueProvider<Object, Integer>() {
               @Override
-              public Object getValue(Object row, Integer columnIdentifier) {
+              public Object value(Object row, Integer columnIdentifier) {
                 return null;
               }
 
               @Override
-              public Class<?> getColumnClass(Integer columnIdentifier) {
+              public Class<?> columnClass(Integer columnIdentifier) {
                 return null;
               }
             });
@@ -54,12 +54,12 @@ public class TableColumnComponentPanelTest {
     DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(asList(column0, column1, column2),
             new ColumnValueProvider<Object, Integer>() {
               @Override
-              public Object getValue(Object row, Integer columnIdentifier) {
+              public Object value(Object row, Integer columnIdentifier) {
                 return null;
               }
 
               @Override
-              public Class<?> getColumnClass(Integer columnIdentifier) {
+              public Class<?> columnClass(Integer columnIdentifier) {
                 return null;
               }
             });
@@ -83,12 +83,12 @@ public class TableColumnComponentPanelTest {
     DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(asList(column0, column1, column2),
             new ColumnValueProvider<Object, Integer>() {
               @Override
-              public Object getValue(Object row, Integer columnIdentifier) {
+              public Object value(Object row, Integer columnIdentifier) {
                 return null;
               }
 
               @Override
-              public Class<?> getColumnClass(Integer columnIdentifier) {
+              public Class<?> columnClass(Integer columnIdentifier) {
                 return null;
               }
             });

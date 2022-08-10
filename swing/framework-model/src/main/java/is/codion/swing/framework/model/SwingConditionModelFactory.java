@@ -12,8 +12,7 @@ import is.codion.framework.model.ConditionModelFactory;
 import is.codion.framework.model.DefaultConditionModelFactory;
 
 /**
- * A Swing {@link ConditionModelFactory} implementation
- * using ComboBoxModel for foreign key properties with small datasets
+ * A Swing {@link ConditionModelFactory} implementation using {@link SwingEntityComboBoxModel} for foreign keys based on small datasets
  */
 public class SwingConditionModelFactory extends DefaultConditionModelFactory {
 

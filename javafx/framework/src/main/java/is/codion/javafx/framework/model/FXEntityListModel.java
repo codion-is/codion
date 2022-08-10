@@ -48,6 +48,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * A JavaFX implementation of {@link EntityTableModel}.
@@ -596,10 +597,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       String preferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
       try {
-        if (preferencesString.length() > 0) {
-          JSONObject preferences = new JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS);
-          applyColumnPreferences(preferences);
-          columns.sort(new ColumnOrder(preferences));
+        if (!preferencesString.isEmpty()) {
+          applyColumnPreferences(preferencesString);
         }
       }
       catch (Exception e) {
@@ -608,27 +607,27 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  private void applyColumnPreferences(JSONObject preferences) {
+  private void applyColumnPreferences(String preferencesString) {
+    JSONObject preferences = new JSONObject(preferencesString).getJSONObject(ColumnPreferences.PREFERENCES_COLUMNS);
+    Map<Attribute<?>, ColumnPreferences> preferenceMap = createColumnPreferenceMap(initialColumns, preferences);
     for (AttributeTableColumn<?> column : initialColumns) {
-      Attribute<?> property = column.attribute();
+      Attribute<?> attribute = column.attribute();
       if (columns.contains(column)) {
-        try {
-          JSONObject columnPreferences = preferences.getJSONObject(property.name());
-          column.setPrefWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
-          if (!columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
+        ColumnPreferences columnPreferences = preferenceMap.get(attribute);
+        if (columnPreferences != null) {
+          column.setPrefWidth(columnPreferences.width());
+          if (!columnPreferences.visible()) {
             columns.remove(column);
           }
         }
-        catch (Exception e) {
-          LOG.info("Property preferences not found: " + property, e);
-        }
       }
+      columns.sort(new ColumnOrder(preferenceMap));
     }
   }
 
   private JSONObject createPreferences() throws Exception {
     JSONObject preferencesRoot = new JSONObject();
-    preferencesRoot.put(PREFERENCES_COLUMNS, createColumnPreferences());
+    preferencesRoot.put(ColumnPreferences.PREFERENCES_COLUMNS, createColumnPreferences());
 
     return preferencesRoot;
   }
@@ -636,13 +635,10 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private JSONObject createColumnPreferences() throws Exception {
     JSONObject columnPreferencesRoot = new JSONObject();
     for (AttributeTableColumn<?> column : initialColumns) {
-      Attribute<?> property = column.attribute();
-      JSONObject columnObject = new JSONObject();
-      boolean visible = columns.contains(column);
-      columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
-      columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
-      columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? columns.indexOf(column) : -1);
-      columnPreferencesRoot.put(property.name(), columnObject);
+      Attribute<?> attribute = column.attribute();
+      ColumnPreferences columnPreferences = EntityTableModel.columnPreferences(attribute,
+              columns.indexOf(column), (int) column.getWidth());
+      columnPreferencesRoot.put(attribute.name(), toJSONObject(columnPreferences));
     }
 
     return columnPreferencesRoot;
@@ -660,6 +656,38 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
         selectionModel().clearSelection();
       }
     });
+  }
+
+  private static Map<Attribute<?>, ColumnPreferences> createColumnPreferenceMap(List<AttributeTableColumn<?>> initialColumns, JSONObject preferences) {
+    return initialColumns.stream()
+            .map(tableColumn -> columnPreferences(tableColumn, preferences))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(toMap(ColumnPreferences::attribute, columnPreferences -> columnPreferences));
+  }
+
+  private static Optional<ColumnPreferences> columnPreferences(AttributeTableColumn<?> tableColumn, JSONObject preferences) {
+    try {
+      return Optional.of(fromJSONObject(tableColumn.attribute, preferences.getJSONObject(tableColumn.attribute.name())));
+    }
+    catch (Exception e) {
+      LOG.info("Attribute preferences not found: " + tableColumn.attribute, e);
+      return Optional.empty();
+    }
+  }
+
+  private static JSONObject toJSONObject(ColumnPreferences columnPreferences) {
+    JSONObject columnObject = new JSONObject();
+    columnObject.put(ColumnPreferences.PREFERENCES_COLUMN_WIDTH, columnPreferences.width());
+    columnObject.put(ColumnPreferences.PREFERENCES_COLUMN_INDEX, columnPreferences.index());
+
+    return columnObject;
+  }
+
+  private static ColumnPreferences fromJSONObject(Attribute<?> attribute, JSONObject jsonObject) {
+    return EntityTableModel.columnPreferences(attribute,
+              jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_INDEX),
+              jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_WIDTH));
   }
 
   /**
@@ -690,33 +718,18 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private static final class ColumnOrder implements Comparator<TableColumn<Entity, ?>> {
 
-    private final JSONObject preferences;
+    private final Map<Attribute<?>, ColumnPreferences> preferences;
 
-    private ColumnOrder(JSONObject preferences) {
+    private ColumnOrder(Map<Attribute<?>, ColumnPreferences> preferences) {
       this.preferences = preferences;
     }
 
     @Override
     public int compare(TableColumn<Entity, ?> col1, TableColumn<Entity, ?> col2) {
-      try {
-        JSONObject columnOnePreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col1).attribute().name());
-        JSONObject columnTwoPreferences = preferences.getJSONObject(((AttributeTableColumn<?>) col2).attribute().name());
-        Integer firstIndex = columnOnePreferences.getInt(PREFERENCES_COLUMN_INDEX);
-        if (firstIndex == null) {
-          firstIndex = 0;
-        }
-        Integer secondIndex = columnTwoPreferences.getInt(PREFERENCES_COLUMN_INDEX);
-        if (secondIndex == null) {
-          secondIndex = 0;
-        }
+      ColumnPreferences columnOnePreferences = preferences.get(((AttributeTableColumn<?>) col1).attribute());
+      ColumnPreferences columnTwoPreferences = preferences.get(((AttributeTableColumn<?>) col2).attribute());
 
-        return firstIndex.compareTo(secondIndex);
-      }
-      catch (Exception e) {
-        LOG.info("Property preferences not found", e);
-      }
-
-      return 0;
+      return Integer.compare(columnOnePreferences.index(), columnTwoPreferences.index());
     }
   }
 }

@@ -240,7 +240,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
      * @param columnIdentifier the column identifier
      * @return the Class representing the given column
      */
-    Class<?> getColumnClass(C columnIdentifier);
+    Class<?> columnClass(C columnIdentifier);
 
     /**
      * Returns the comparator to use when sorting by the give column,
@@ -248,8 +248,8 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
      * @param columnIdentifier the column identifier
      * @return the comparator to use when sorting by the given column
      */
-    default Comparator<?> getComparator(C columnIdentifier) {
-      if (Comparable.class.isAssignableFrom(getColumnClass(columnIdentifier))) {
+    default Comparator<?> comparator(C columnIdentifier) {
+      if (Comparable.class.isAssignableFrom(columnClass(columnIdentifier))) {
         return COMPARABLE_COMPARATOR;
       }
 
@@ -262,7 +262,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
      * @param columnIdentifier the column identifier
      * @return a value for the given row and column
      */
-    Object getValue(R row, C columnIdentifier);
+    Object value(R row, C columnIdentifier);
 
     /**
      * Returns a String representation of the value for the given row and columnIdentifier
@@ -270,8 +270,8 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
      * @param columnIdentifier the column identifier
      * @return a String representation of the value for the given row and column
      */
-    default String getString(R row, C columnIdentifier) {
-      Object columnValue = getValue(row, columnIdentifier);
+    default String string(R row, C columnIdentifier) {
+      Object columnValue = value(row, columnIdentifier);
 
       return columnValue == null ? "" : columnValue.toString();
     }

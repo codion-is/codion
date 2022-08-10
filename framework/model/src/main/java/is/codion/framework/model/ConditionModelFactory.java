@@ -7,12 +7,12 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
 
 /**
- * Specifies an object responsible for creating condition models
+ * Responsible for creating {@link ColumnConditionModel}.
  */
 public interface ConditionModelFactory {
 
   /**
-   * Initializes a {@link ColumnConditionModel} for the given attribute
+   * Creates a {@link ColumnConditionModel} for the given attribute
    * @param <T> the column value type
    * @param <A> the Attribute type
    * @param attribute the Attribute for which to create a {@link ColumnConditionModel}
