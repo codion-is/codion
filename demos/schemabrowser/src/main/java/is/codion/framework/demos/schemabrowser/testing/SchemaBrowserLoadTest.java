@@ -45,7 +45,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
   }
 
   @Override
-  protected SchemaBrowserAppPanel.SchemaBrowserApplicationModel initializeApplication() throws CancelException {
+  protected SchemaBrowserAppPanel.SchemaBrowserApplicationModel createApplication() throws CancelException {
     SchemaBrowserAppPanel.SchemaBrowserApplicationModel applicationModel =
             new SchemaBrowserAppPanel.SchemaBrowserApplicationModel(
                     EntityConnectionProvider.builder()

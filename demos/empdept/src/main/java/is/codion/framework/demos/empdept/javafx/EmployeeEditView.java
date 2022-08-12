@@ -30,13 +30,13 @@ public final class EmployeeEditView extends EntityEditView {
 
     GridPane gridPane = new GridPane();
 
-    gridPane.add(createPropertyPanel(Employee.ID), 0, 0);
-    gridPane.add(createPropertyPanel(Employee.NAME), 0, 1);
-    gridPane.add(createPropertyPanel(Employee.JOB), 0, 2);
-    gridPane.add(createPropertyPanel(Employee.SALARY), 0, 3);
-    gridPane.add(createPropertyPanel(Employee.DEPARTMENT_FK), 0, 4);
-    gridPane.add(createPropertyPanel(Employee.HIREDATE), 0, 5);
-    gridPane.add(createPropertyPanel(Employee.MGR_FK), 0, 6);
+    gridPane.add(createInputPanel(Employee.ID), 0, 0);
+    gridPane.add(createInputPanel(Employee.NAME), 0, 1);
+    gridPane.add(createInputPanel(Employee.JOB), 0, 2);
+    gridPane.add(createInputPanel(Employee.SALARY), 0, 3);
+    gridPane.add(createInputPanel(Employee.DEPARTMENT_FK), 0, 4);
+    gridPane.add(createInputPanel(Employee.HIREDATE), 0, 5);
+    gridPane.add(createInputPanel(Employee.MGR_FK), 0, 6);
 
     return gridPane;
   }

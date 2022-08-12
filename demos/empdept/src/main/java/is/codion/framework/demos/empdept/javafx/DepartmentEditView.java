@@ -26,9 +26,9 @@ public final class DepartmentEditView extends EntityEditView {
 
     GridPane gridPane = new GridPane();
 
-    gridPane.add(createPropertyPanel(Department.ID), 0, 0);
-    gridPane.add(createPropertyPanel(Department.NAME), 0, 1);
-    gridPane.add(createPropertyPanel(Department.LOCATION), 0, 2);
+    gridPane.add(createInputPanel(Department.ID), 0, 0);
+    gridPane.add(createInputPanel(Department.NAME), 0, 1);
+    gridPane.add(createInputPanel(Department.LOCATION), 0, 2);
 
     return gridPane;
   }

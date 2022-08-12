@@ -65,8 +65,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
                                           ConditionModelFactory conditionModelFactory) {
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
-    initializeConditionModels(entityType, requireNonNull(conditionModelFactory, "conditionModelFactory"));
-    initializeFilterModels(entityType, filterModelFactory);
+    createConditionModels(entityType, requireNonNull(conditionModelFactory, "conditionModelFactory"));
+    createFilterModels(entityType, filterModelFactory);
     rememberCondition();
     bindEvents();
   }
@@ -274,7 +274,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
             });
   }
 
-  private void initializeFilterModels(EntityType entityType, FilterModelFactory filterModelProvider) {
+  private void createFilterModels(EntityType entityType, FilterModelFactory filterModelProvider) {
     if (filterModelProvider != null) {
       for (Property<?> property : connectionProvider.entities().definition(entityType).properties()) {
         if (!property.isHidden()) {
@@ -287,7 +287,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private void initializeConditionModels(EntityType entityType, ConditionModelFactory conditionModelFactory) {
+  private void createConditionModels(EntityType entityType, ConditionModelFactory conditionModelFactory) {
     EntityDefinition definition = connectionProvider.entities().definition(entityType);
     for (ColumnProperty<?> columnProperty : definition.columnProperties()) {
       ColumnConditionModel<? extends Attribute<?>, ?> conditionModel = conditionModelFactory.createConditionModel(columnProperty.attribute());

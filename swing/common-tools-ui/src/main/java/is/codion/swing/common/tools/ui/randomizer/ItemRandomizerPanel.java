@@ -85,7 +85,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     addSelectedItemListener(selectedItems -> {
       configPanel.removeAll();
       for (ItemRandomizer.RandomItem<T> item : selectedItems) {
-        configPanel.add(initializeWeightPanel(item));
+        configPanel.add(createWeightPanel(item));
       }
       revalidate();
     });
@@ -99,7 +99,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @param item the item for which to create a configuration panel
    * @return a control panel for the item weight
    */
-  private JPanel initializeWeightPanel(ItemRandomizer.RandomItem<T> item) {
+  private JPanel createWeightPanel(ItemRandomizer.RandomItem<T> item) {
     JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(new JLabel(item.item().toString()), BorderLayout.NORTH);
     panel.add(Components.checkBox(new EnabledModelValue(item.item()))

@@ -263,7 +263,7 @@ public abstract class EntityEditView extends BorderPane {
     return new Label(editModel().entityDefinition().property(attribute).caption());
   }
 
-  protected final BorderPane createPropertyPanel(Attribute<?> attribute) {
+  protected final BorderPane createInputPanel(Attribute<?> attribute) {
     BorderPane pane = new BorderPane();
     pane.setTop(createLabel(attribute));
     Control control = controls.get(attribute);

@@ -110,15 +110,15 @@ public final class ServerMonitorPanel extends JPanel {
   private void initializeUI() throws RemoteException {
     JPanel serverPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     serverPanel.add(new JLabel("Connections", SwingConstants.RIGHT));
-    serverPanel.add(initializeConnectionCountField());
+    serverPanel.add(createConnectionCountField());
     serverPanel.add(new JLabel("limit", SwingConstants.RIGHT));
     serverPanel.add(Components.integerSpinner(model.connectionLimitValue())
             .columns(SPINNER_COLUMNS)
             .build());
     serverPanel.add(new JLabel("Mem. usage", SwingConstants.RIGHT));
-    serverPanel.add(initializeMemoryField());
+    serverPanel.add(createMemoryField());
     serverPanel.add(new JLabel("Logging", SwingConstants.RIGHT));
-    serverPanel.add(initializeLogLevelField());
+    serverPanel.add(createLogLevelField());
 
     JPanel northPanel = new JPanel(Layouts.borderLayout());
     northPanel.add(serverPanel, BorderLayout.CENTER);
@@ -132,15 +132,15 @@ public final class ServerMonitorPanel extends JPanel {
     setLayout(new BorderLayout());
     add(northPanel, BorderLayout.NORTH);
     JTabbedPane pane = new JTabbedPane();
-    pane.addTab("Performance", initializePerformancePanel());
+    pane.addTab("Performance", createPerformancePanel());
     pane.addTab("Database", new DatabaseMonitorPanel(model.databaseMonitor()));
     pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.clientMonitor()));
-    pane.addTab("Environment", initializeEnvironmentPanel());
+    pane.addTab("Environment", createEnvironmentPanel());
 
     add(pane, BorderLayout.CENTER);
   }
 
-  private JPanel initializePerformancePanel() {
+  private JPanel createPerformancePanel() {
     JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
 
@@ -195,15 +195,15 @@ public final class ServerMonitorPanel extends JPanel {
     return panel;
   }
 
-  private JTabbedPane initializeEnvironmentPanel() throws RemoteException {
+  private JTabbedPane createEnvironmentPanel() throws RemoteException {
     JTabbedPane panel = new JTabbedPane();
-    panel.addTab("System", initializeEnvironmentInfoPanel());
-    panel.addTab("Domain", initializeDomainModelPanel());
+    panel.addTab("System", createEnvironmentInfoPanel());
+    panel.addTab("Domain", createDomainModelPanel());
 
     return panel;
   }
 
-  private JPanel initializeDomainModelPanel() {
+  private JPanel createDomainModelPanel() {
     JPanel panel = new JPanel(Layouts.borderLayout());
     JTable table = new JTable(model.domainTableModel());
     table.setRowSorter(new TableRowSorter<>(model.domainTableModel()));
@@ -219,7 +219,7 @@ public final class ServerMonitorPanel extends JPanel {
     return panel;
   }
 
-  private JScrollPane initializeEnvironmentInfoPanel() throws RemoteException {
+  private JScrollPane createEnvironmentInfoPanel() throws RemoteException {
     return Components.textArea()
             .autoscrolls(false)
             .editable(false)
@@ -230,7 +230,7 @@ public final class ServerMonitorPanel extends JPanel {
             .build();
   }
 
-  private JTextField initializeConnectionCountField() {
+  private JTextField createConnectionCountField() {
     return Components.integerField()
             .columns(4)
             .editable(false)
@@ -239,7 +239,7 @@ public final class ServerMonitorPanel extends JPanel {
             .build();
   }
 
-  private JTextField initializeMemoryField() {
+  private JTextField createMemoryField() {
     return Components.textField()
             .columns(8)
             .editable(false)
@@ -248,7 +248,7 @@ public final class ServerMonitorPanel extends JPanel {
             .build();
   }
 
-  private JComboBox<Object> initializeLogLevelField() {
+  private JComboBox<Object> createLogLevelField() {
     DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.logLevels().toArray());
 
     return Components.comboBox(comboModel, model.logLevelValue())

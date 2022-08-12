@@ -63,13 +63,13 @@ final class CoverArtPanel extends JPanel {
     super(borderLayout());
     this.imageBytesValue = imageBytesValue;
     this.imagePanel = createImagePanel();
-    this.basePanel = initializePanel();
+    this.basePanel = createPanel();
     add(basePanel, BorderLayout.CENTER);
     setBorder(BorderFactory.createTitledBorder(BUNDLE.getString(COVER)));
     bindEvents();
   }
 
-  private JPanel initializePanel() {
+  private JPanel createPanel() {
     return Components.panel(borderLayout())
             .border(BorderFactory.createEmptyBorder(5, 5, 5, 5))
             .preferredSize(EMBEDDED_SIZE)

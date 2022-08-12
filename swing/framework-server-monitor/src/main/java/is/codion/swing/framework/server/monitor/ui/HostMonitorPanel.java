@@ -39,7 +39,7 @@ public final class HostMonitorPanel extends JPanel {
     add(controls().createHorizontalToolBar(), BorderLayout.NORTH);
     serverPane = new JTabbedPane();
     add(serverPane, BorderLayout.CENTER);
-    initializeServerTabs();
+    addServerTabs();
   }
 
   private Controls controls() {
@@ -68,7 +68,7 @@ public final class HostMonitorPanel extends JPanel {
     });
   }
 
-  private void initializeServerTabs() throws RemoteException {
+  private void addServerTabs() throws RemoteException {
     for (ServerMonitor serverMonitor : model.serverMonitors()) {
       addServerTab(serverMonitor);
     }

@@ -52,7 +52,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
     addInputPanel(Employee.NAME);
     addInputPanel(Employee.JOB);
-    addInputPanel(Employee.DEPARTMENT_FK, initializeDepartmentPanel());
+    addInputPanel(Employee.DEPARTMENT_FK, createDepartmentPanel());
 
     addInputPanel(Employee.MGR_FK);
     addInputPanel(Employee.SALARY);
@@ -63,7 +63,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     add(new JLabel());
   }
 
-  private JPanel initializeDepartmentPanel() {
+  private JPanel createDepartmentPanel() {
     EntityComboBox departmentBox = createForeignKeyComboBox(Employee.DEPARTMENT_FK).build();
     NumberField<Integer> departmentIdField = departmentBox.integerSelectorField(Department.ID)
             .transferFocusOnEnter(true)

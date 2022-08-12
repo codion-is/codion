@@ -112,7 +112,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     this.equalField = boundFieldFactory.createEqualField();
     this.upperBoundField = boundFieldFactory.createUpperBoundField().orElse(null);
     this.lowerBoundField = boundFieldFactory.createLowerBoundField().orElse(null);
-    this.operatorCombo = initializeOperatorComboBox(conditionModel.operators());
+    this.operatorCombo = createOperatorComboBox(conditionModel.operators());
     this.toggleEnabledButton = radioButton(conditionModel.enabledState())
             .horizontalAlignment(CENTER)
             .build();
@@ -429,7 +429,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
   }
 
-  private JComboBox<Operator> initializeOperatorComboBox(List<Operator> operators) {
+  private JComboBox<Operator> createOperatorComboBox(List<Operator> operators) {
     SwingFilteredComboBoxModel<Operator> operatorComboBoxModel = new SwingFilteredComboBoxModel<>();
     operatorComboBoxModel.setContents(operators);
     operatorComboBoxModel.setSelectedItem(operators.get(0));

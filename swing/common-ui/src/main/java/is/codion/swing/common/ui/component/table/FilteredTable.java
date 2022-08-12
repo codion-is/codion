@@ -181,7 +181,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     super(requireNonNull(tableModel, "tableModel"), tableModel.columnModel(), tableModel.selectionModel());
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
-    this.searchField = initializeSearchField();
+    this.searchField = createSearchField();
     initializeTableHeader();
     bindEvents();
   }
@@ -449,7 +449,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * Creates a JTextField for searching through this table.
    * @return a search field
    */
-  private JTextField initializeSearchField() {
+  private JTextField createSearchField() {
     Control nextResult = control(() -> selectSearchResult(false, true));
     Control selectNextResult = control(() -> selectSearchResult(true, true));
     Control previousResult = control(() -> selectSearchResult(false, false));
@@ -608,7 +608,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   private void bindEvents() {
-    addMouseListener(initializeTableMouseListener());
+    addMouseListener(createTableMouseListener());
     tableModel.selectionModel().addSelectedIndexesListener(selectedRowIndexes -> {
       if (scrollToSelectedItem && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
         scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
@@ -634,13 +634,13 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   /**
-   * Initialize the MouseListener for the table component handling double click.
+   * Creates the MouseListener for the table component handling double click.
    * Double-clicking invokes the action returned by {@link #getDoubleClickAction()}
    * with this table as the ActionEvent source
    * @return the MouseListener for the table
    * @see #getDoubleClickAction()
    */
-  private MouseListener initializeTableMouseListener() {
+  private MouseListener createTableMouseListener() {
     return new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {

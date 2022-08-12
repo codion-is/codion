@@ -19,7 +19,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   }
 
   @Override
-  protected EmpDeptFXModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {
+  protected EmpDeptFXModel createApplicationModel(EntityConnectionProvider connectionProvider) {
     return new EmpDeptFXModel(connectionProvider);
   }
 
@@ -29,7 +29,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   }
 
   @Override
-  protected void initializeEntityViews() {
+  protected void createEntityViews() {
     FXEntityModel departmentModel = model().entityModel(Department.TYPE);
     EntityView departmentView = new EntityView(departmentModel,
             new DepartmentEditView(departmentModel.editModel()),

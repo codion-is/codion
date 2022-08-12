@@ -166,7 +166,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     this.validator = validator;
     this.modifiedSupplier = entity::isModified;
     setReadOnly(entityDefinition().isReadOnly());
-    initializePersistentValues();
+    configurePersistentValues();
     bindEventsInternal();
     doSetEntity(defaultEntity(Property::defaultValue));
   }
@@ -1006,7 +1006,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return (Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
-  private void initializePersistentValues() {
+  private void configurePersistentValues() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
       entityDefinition().foreignKeys().forEach(foreignKey -> setPersistValue(foreignKey, true));
     }

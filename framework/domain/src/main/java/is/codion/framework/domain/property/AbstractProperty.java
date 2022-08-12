@@ -428,8 +428,8 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     AbstractPropertyBuilder(Attribute<T> attribute, String caption) {
       this.attribute = requireNonNull(attribute);
       this.caption = caption;
-      format = initializeDefaultFormat(attribute);
-      comparator = initializeDefaultComparator(attribute);
+      format = defaultFormat(attribute);
+      comparator = defaultComparator(attribute);
       beanProperty = Text.underscoreToCamelCase(attribute.name());
       captionResourceKey = attribute.name();
       hidden = caption == null && resourceNotFound(attribute.entityType().resourceBundleName(), captionResourceKey);
@@ -643,7 +643,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       }
     }
 
-    private static Format initializeDefaultFormat(Attribute<?> attribute) {
+    private static Format defaultFormat(Attribute<?> attribute) {
       if (attribute.isNumerical()) {
         NumberFormat numberFormat = defaultNumberFormat(attribute);
         if (attribute.isBigDecimal()) {
@@ -683,7 +683,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       return numberFormat;
     }
 
-    private static <T> Comparator<T> initializeDefaultComparator(Attribute<T> attribute) {
+    private static <T> Comparator<T> defaultComparator(Attribute<T> attribute) {
       if (attribute.isString() && USE_LEXICAL_STRING_COMPARATOR.get()) {
         return (Comparator<T>) LEXICAL_COMPARATOR;
       }

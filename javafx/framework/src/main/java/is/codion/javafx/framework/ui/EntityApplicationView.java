@@ -128,11 +128,11 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
       User user = loginUser();
       EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, applicationIdentifier());
       connectionProvider.connection();//throws exception if the server is not reachable or credentials are incorrect
-      this.model = initializeApplicationModel(connectionProvider);
+      this.model = createApplicationModel(connectionProvider);
       stage.setTitle(applicationTitle);
       stage.getIcons().add(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName)));
-      initializeEntityViews();
-      Scene applicationScene = initializeApplicationScene(stage);
+      createEntityViews();
+      Scene applicationScene = createApplicationScene(stage);
       stage.setOnCloseRequest(event -> savePreferences());
       stage.setScene(applicationScene);
 
@@ -225,14 +225,14 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
   /**
    * Initialized all entity views and adds them via {@link #addEntityView(EntityView)}
    */
-  protected abstract void initializeEntityViews();
+  protected abstract void createEntityViews();
 
   /**
    * Creates the application scene from the available {@link EntityView}s.
    * @param primaryStage the primary stage
    * @return the application scene
    */
-  protected Scene initializeApplicationScene(Stage primaryStage) {
+  protected Scene createApplicationScene(Stage primaryStage) {
     if (entityViews.isEmpty()) {
       throw new IllegalStateException("No entity views have been added");
     }
@@ -250,7 +250,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    * @param connectionProvider the connection provider
    * @return the application model
    */
-  protected abstract M initializeApplicationModel(EntityConnectionProvider connectionProvider);
+  protected abstract M createApplicationModel(EntityConnectionProvider connectionProvider);
 
   private static void onException(Exception e) {
     if (e instanceof CancelException) {

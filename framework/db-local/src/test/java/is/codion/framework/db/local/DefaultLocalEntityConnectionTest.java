@@ -65,7 +65,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @BeforeEach
   void setup() throws ClassNotFoundException, DatabaseException {
-    connection = initializeConnection();
+    connection = createConnection();
   }
 
   @AfterEach
@@ -638,8 +638,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectForUpdateModified() throws Exception {
-    LocalEntityConnection connection = initializeConnection();
-    LocalEntityConnection connection2 = initializeConnection();
+    LocalEntityConnection connection = createConnection();
+    LocalEntityConnection connection2 = createConnection();
     String originalLocation;
     try {
       SelectCondition condition = where(Department.DNAME).equalTo("SALES").selectBuilder().forUpdate().build();
@@ -675,8 +675,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void optimisticLockingDeleted() throws Exception {
-    LocalEntityConnection connection = initializeConnection();
-    EntityConnection connection2 = initializeConnection();
+    LocalEntityConnection connection = createConnection();
+    EntityConnection connection2 = createConnection();
     connection.setOptimisticLockingEnabled(true);
     Entity allen;
     try {
@@ -711,8 +711,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void optimisticLockingModified() throws Exception {
-    LocalEntityConnection baseConnection = initializeConnection();
-    LocalEntityConnection optimisticConnection = initializeConnection(true);
+    LocalEntityConnection baseConnection = createConnection();
+    LocalEntityConnection optimisticConnection = createConnection(true);
     optimisticConnection.setOptimisticLockingEnabled(true);
     assertTrue(optimisticConnection.isOptimisticLockingEnabled());
     String oldLocation = null;
@@ -747,8 +747,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void optimisticLockingBlob() throws Exception {
-    LocalEntityConnection baseConnection = initializeConnection();
-    LocalEntityConnection optimisticConnection = initializeConnection();
+    LocalEntityConnection baseConnection = createConnection();
+    LocalEntityConnection optimisticConnection = createConnection();
     optimisticConnection.setOptimisticLockingEnabled(true);
     Entity updatedEmployee = null;
     try {
@@ -780,7 +780,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void dualIterator() throws Exception {
-    try (LocalEntityConnection connection = initializeConnection()) {
+    try (LocalEntityConnection connection = createConnection()) {
       ResultIterator<Entity> deptIterator =
               connection.iterator(condition(Department.TYPE));
       while (deptIterator.hasNext()) {
@@ -1038,11 +1038,11 @@ public class DefaultLocalEntityConnectionTest {
     assertNotSame(result, result2);
   }
 
-  private static LocalEntityConnection initializeConnection() throws DatabaseException {
-    return initializeConnection(false);
+  private static LocalEntityConnection createConnection() throws DatabaseException {
+    return createConnection(false);
   }
 
-  private static LocalEntityConnection initializeConnection(boolean setLockTimeout) throws DatabaseException {
+  private static LocalEntityConnection createConnection(boolean setLockTimeout) throws DatabaseException {
     Database database = Database.instance();
     if (setLockTimeout) {
       database.setConnectionProvider(new ConnectionProvider() {

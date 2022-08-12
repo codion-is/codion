@@ -1026,11 +1026,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (containsEditPanel()) {
       updateEditPanelState();
     }
-    initializeKeyboardActions();
+    setupKeyboardActions();
     if (useKeyboardNavigation) {
-      initializeNavigation();
+      setupNavigation();
     }
-    initializeResizing();
+    setupResizing();
   }
 
   /**
@@ -1096,14 +1096,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Initializes the keyboard navigation actions.
+   * Sets up the keyboard navigation actions.
    * CTRL-T transfers focus to the table in case one is available,
    * CTR-E transfers focus to the edit panel in case one is available,
    * CTR-S opens a select search condition panel dialog, in case one is available,
    * CTR-I opens a select input field dialog and
    * CTR-F selects the table search field
    */
-  protected final void initializeKeyboardActions() {
+  protected final void setupKeyboardActions() {
     if (containsTablePanel()) {
       Control selectTablePanelControl = tablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS);
       Control selectSearchFieldControl = tablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_SEARCH_FIELD_FOCUS);
@@ -1166,7 +1166,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  protected final void initializeResizing() {
+  protected final void setupResizing() {
     ResizeVerticallyAction resizeUpAction = new ResizeVerticallyAction(this, UP);
     ResizeVerticallyAction resizeDownAction = new ResizeVerticallyAction(this, DOWN);
     ResizeHorizontallyAction resizeRightAction = new ResizeHorizontallyAction(this, RIGHT);
@@ -1218,7 +1218,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  protected final void initializeNavigation() {
+  protected final void setupNavigation() {
     KeyEvents.builder(VK_UP)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

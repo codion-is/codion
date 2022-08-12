@@ -36,7 +36,7 @@ public final class ProgressDialog extends JDialog {
       setIconImage(builder.icon.getImage());
     }
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    progressBar = initializeProgressBar(builder.indeterminate, builder.stringPainted, builder.progressBarSize);
+    progressBar = createProgressBar(builder.indeterminate, builder.stringPainted, builder.progressBarSize);
     initializeUI(builder.northPanel, builder.westPanel, builder.controls);
     setLocationRelativeTo(dialogOwner);
   }
@@ -80,8 +80,8 @@ public final class ProgressDialog extends JDialog {
     pack();
   }
 
-  private static JProgressBar initializeProgressBar(boolean indeterminate, boolean stringPainted,
-                                                    Dimension size) {
+  private static JProgressBar createProgressBar(boolean indeterminate, boolean stringPainted,
+                                                Dimension size) {
     JProgressBar progressBar = new JProgressBar();
     progressBar.setStringPainted(stringPainted);
     if (size != null) {

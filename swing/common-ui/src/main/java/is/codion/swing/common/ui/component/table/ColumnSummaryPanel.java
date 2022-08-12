@@ -29,10 +29,10 @@ public final class ColumnSummaryPanel extends JPanel {
    */
   public ColumnSummaryPanel(ColumnSummaryModel model) {
     setLayout(new BorderLayout());
-    add(initializeSummaryField(requireNonNull(model, "model")), BorderLayout.CENTER);
+    add(createSummaryField(requireNonNull(model, "model")), BorderLayout.CENTER);
   }
 
-  private static JTextField initializeSummaryField(ColumnSummaryModel model) {
+  private static JTextField createSummaryField(ColumnSummaryModel model) {
     JPopupMenu menu = createPopupMenu(model);
     return Components.textField()
             .linkedValueObserver(model.summaryTextObserver())

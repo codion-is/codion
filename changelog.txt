@@ -8377,3 +8377,4 @@
   Windows.FrameBuilder.location() added, relativeTo() renamed locationRelativeTo()
   Windows.resizeWindow(), added maximumSize parameter, Windows.screenSizeRatio() now throws exception in case ratio is invalid
   ComboBoxBuilder.moveCaretOnSelection() renamed moveCaretToFrontOnSelection()
+  Global method renaming, initialize prefix replaced with create where applicable

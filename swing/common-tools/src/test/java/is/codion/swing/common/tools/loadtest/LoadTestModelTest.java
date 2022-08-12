@@ -149,7 +149,7 @@ public class LoadTestModelTest {
     }
 
     @Override
-    protected Object initializeApplication() throws CancelException {
+    protected Object createApplication() throws CancelException {
       return new Object();
     }
 

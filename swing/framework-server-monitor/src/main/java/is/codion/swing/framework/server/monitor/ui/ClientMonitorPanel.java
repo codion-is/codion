@@ -52,7 +52,7 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    clientList.setComponentPopupMenu(initializePopupMenu());
+    clientList.setComponentPopupMenu(createPopupMenu());
 
     JPanel clientInstanceBase = new JPanel(Layouts.borderLayout());
     JScrollPane clientInstanceScroller = new JScrollPane(clientList);
@@ -88,7 +88,7 @@ public final class ClientMonitorPanel extends JPanel {
     add(splitPane, BorderLayout.CENTER);
   }
 
-  private JPopupMenu initializePopupMenu() {
+  private JPopupMenu createPopupMenu() {
     return Controls.builder()
             .control(Control.builder(this::disconnect)
                     .caption("Disconnect"))

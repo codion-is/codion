@@ -44,7 +44,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
   }
 
   @Override
-  protected ChinookApplicationModel initializeApplication() throws CancelException {
+  protected ChinookApplicationModel createApplication() throws CancelException {
     ChinookApplicationModel applicationModel = new ChinookApplicationModel(EntityConnectionProvider.builder()
             .domainClassName("is.codion.framework.demos.chinook.domain.impl.ChinookImpl")
             .clientTypeId(ChinookAppPanel.class.getName())

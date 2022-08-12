@@ -109,7 +109,7 @@ final class DefaultEntity implements Entity, Serializable {
   @Override
   public Key primaryKey() {
     if (primaryKey == null) {
-      primaryKey = initializePrimaryKey(false);
+      primaryKey = createPrimaryKey(false);
     }
 
     return primaryKey;
@@ -117,7 +117,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public Key originalPrimaryKey() {
-    return initializePrimaryKey(true);
+    return createPrimaryKey(true);
   }
 
   @Override
@@ -378,7 +378,7 @@ final class DefaultEntity implements Entity, Serializable {
       return cachedReferencedKey;
     }
 
-    return initializeAndCacheReferencedKey(foreignKey);
+    return createAndCacheReferencedKey(foreignKey);
   }
 
   @Override
@@ -588,19 +588,19 @@ final class DefaultEntity implements Entity, Serializable {
    * @param foreignKey the foreign key
    * @return the referenced primary key or null if a valid key can not be created (null values for non-nullable properties)
    */
-  private Key initializeAndCacheReferencedKey(ForeignKey foreignKey) {
+  private Key createAndCacheReferencedKey(ForeignKey foreignKey) {
     EntityDefinition referencedEntityDefinition = definition.referencedEntityDefinition(foreignKey);
     List<ForeignKey.Reference<?>> references = foreignKey.references();
     if (references.size() > 1) {
-      return initializeAndCacheCompositeReferenceKey(foreignKey, references, referencedEntityDefinition);
+      return createAndCacheCompositeReferenceKey(foreignKey, references, referencedEntityDefinition);
     }
 
-    return initializeAndCacheSingleReferenceKey(foreignKey, references.get(0), referencedEntityDefinition);
+    return createAndCacheSingleReferenceKey(foreignKey, references.get(0), referencedEntityDefinition);
   }
 
-  private Key initializeAndCacheCompositeReferenceKey(ForeignKey foreignKey,
-                                                      List<ForeignKey.Reference<?>> references,
-                                                      EntityDefinition referencedEntityDefinition) {
+  private Key createAndCacheCompositeReferenceKey(ForeignKey foreignKey,
+                                                  List<ForeignKey.Reference<?>> references,
+                                                  EntityDefinition referencedEntityDefinition) {
     Map<Attribute<?>, Object> keyValues = new HashMap<>(references.size());
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
@@ -618,9 +618,9 @@ final class DefaultEntity implements Entity, Serializable {
     return cacheReferencedKey(foreignKey, new DefaultKey(referencedEntityDefinition, keyValues, isPrimaryKey));
   }
 
-  private Key initializeAndCacheSingleReferenceKey(ForeignKey foreignKey,
-                                                   ForeignKey.Reference<?> reference,
-                                                   EntityDefinition referencedEntityDefinition) {
+  private Key createAndCacheSingleReferenceKey(ForeignKey foreignKey,
+                                               ForeignKey.Reference<?> reference,
+                                               EntityDefinition referencedEntityDefinition) {
     Object value = values.get(reference.attribute());
     if (value == null) {
       return null;
@@ -660,11 +660,11 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   /**
-   * Initializes a Key for this Entity instance
+   * Creates a Key for this Entity instance
    * @param originalValues if true then the original values of the properties involved are used
    * @return a Key based on the values in this Entity instance
    */
-  private Key initializePrimaryKey(boolean originalValues) {
+  private Key createPrimaryKey(boolean originalValues) {
     if (!definition.hasPrimaryKey()) {
       return new DefaultKey(definition, emptyList(), true);
     }

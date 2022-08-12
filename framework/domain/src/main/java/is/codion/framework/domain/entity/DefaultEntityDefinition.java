@@ -216,7 +216,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     this.conditionProviders = builder.conditionProviders == null ? null : new HashMap<>(builder.conditionProviders);
     this.entityProperties = builder.properties;
     this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
-    this.groupByClause = initializeGroupByClause();
+    this.groupByClause = createGroupByClause();
     resolveEntityClassMethods();
   }
 
@@ -652,10 +652,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   /**
-   * @return a list of grouping columns separated with a comma, to serve as a group by clause,
-   * null if no grouping properties are defined
+   * @return a group by clause based on grouping column properties, null if no grouping properties are defined
    */
-  private String initializeGroupByClause() {
+  private String createGroupByClause() {
     List<String> groupingColumnNames = entityProperties.columnProperties.stream()
             .filter(ColumnProperty::isGroupingColumn)
             .map(ColumnProperty::columnExpression)
@@ -810,25 +809,25 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
         throw new IllegalArgumentException("One of more properties must be specified for an entity");
       }
       this.entityType = propertyBuilders.get(0).attribute().entityType();
-      this.propertyMap = initializePropertyMap(propertyBuilders);
-      this.attributeMap = initializeAttributeMap(propertyMap);
+      this.propertyMap = propertyMap(propertyBuilders);
+      this.attributeMap = attributeMap(propertyMap);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
       this.columnProperties = unmodifiableList(columnProperties());
-      this.lazyLoadedBlobProperties = initializeLazyLoadedByteArrayProperties();
+      this.lazyLoadedBlobProperties = lazyLoadedByteArrayProperties();
       this.primaryKeyProperties = unmodifiableList(primaryKeyProperties());
       this.primaryKeyAttribues = unmodifiableList(primaryKeyAttributes());
-      this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
+      this.primaryKeyPropertyMap = primaryKeyPropertyMap();
       this.foreignKeyProperties = unmodifiableList(foreignKeyProperties());
-      this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap();
-      this.columnPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties();
-      this.derivedAttributes = initializeDerivedAttributes();
+      this.foreignKeyPropertyMap = foreignKeyPropertyMap();
+      this.columnPropertyForeignKeyProperties = columnPropertyForeignKeyProperties();
+      this.derivedAttributes = derivedAttributes();
       this.transientProperties = unmodifiableList(transientProperties());
       this.denormalizedProperties = unmodifiableMap(denormalizedProperties());
       this.defaultSelectAttributes = unmodifiableList(defaultSelectAttributes());
       this.serializationVersion = createSerializationVersion();
     }
 
-    private Map<Attribute<?>, Property<?>> initializePropertyMap(List<Property.Builder<?, ?>> builders) {
+    private Map<Attribute<?>, Property<?>> propertyMap(List<Property.Builder<?, ?>> builders) {
       Map<Attribute<?>, Property<?>> map = new HashMap<>(builders.size());
       for (Property.Builder<?, ?> builder : builders) {
         if (!(builder instanceof ForeignKeyProperty.Builder)) {
@@ -837,7 +836,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       }
       validatePrimaryKeyProperties(map, entityType);
 
-      initializeForeignKeyColumnProperties(builders.stream()
+      configureForeignKeyColumnProperties(builders.stream()
               .filter(ForeignKeyProperty.Builder.class::isInstance)
               .map(ForeignKeyProperty.Builder.class::cast)
               .collect(toList()), map);
@@ -855,7 +854,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return unmodifiableMap(ordereredMap);
     }
 
-    private Map<Attribute<?>, List<ForeignKeyProperty>> initializeColumnPropertyForeignKeyProperties() {
+    private Map<Attribute<?>, List<ForeignKeyProperty>> columnPropertyForeignKeyProperties() {
       Map<Attribute<?>, List<ForeignKeyProperty>> foreignKeyMap = new HashMap<>();
       foreignKeyProperties.forEach(foreignKeyProperty ->
               foreignKeyProperty.references().forEach(reference ->
@@ -865,8 +864,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return foreignKeyMap;
     }
 
-    private void initializeForeignKeyColumnProperties(List<ForeignKeyProperty.Builder> foreignKeyBuilders,
-                                                      Map<Attribute<?>, Property<?>> propertyMap) {
+    private void configureForeignKeyColumnProperties(List<ForeignKeyProperty.Builder> foreignKeyBuilders,
+                                                     Map<Attribute<?>, Property<?>> propertyMap) {
       Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties = foreignKeyBuilders.stream()
               .map(ForeignKeyProperty.Builder::attribute)
               .map(ForeignKey.class::cast)
@@ -877,7 +876,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       foreignKeyBuilders.forEach(foreignKeyBuilder -> setForeignKeyNullable(foreignKeyBuilder, foreignKeyColumnProperties));
     }
 
-    private Map<Attribute<?>, ColumnProperty<?>> initializePrimaryKeyPropertyMap() {
+    private Map<Attribute<?>, ColumnProperty<?>> primaryKeyPropertyMap() {
       return unmodifiableMap(primaryKeyProperties.stream()
               .collect(toMap(Property::attribute, property -> property)));
     }
@@ -903,7 +902,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .collect(toList());
     }
 
-    private List<ColumnProperty<?>> initializeLazyLoadedByteArrayProperties() {
+    private List<ColumnProperty<?>> lazyLoadedByteArrayProperties() {
       return columnProperties.stream()
               .filter(property -> property.attribute().isByteArray())
               .filter(property -> !(property instanceof BlobProperty) || !((BlobProperty) property).isEagerlyLoaded())
@@ -935,7 +934,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return selectableAttributes;
     }
 
-    private Map<Attribute<?>, Set<Attribute<?>>> initializeDerivedAttributes() {
+    private Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes() {
       Map<Attribute<?>, Set<Attribute<?>>> derivedPropertyMap = new HashMap<>();
       properties.stream()
               .filter(DerivedProperty.class::isInstance)
@@ -974,7 +973,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .hashCode();
     }
 
-    private static Map<String, Attribute<?>> initializeAttributeMap(Map<Attribute<?>, Property<?>> properties) {
+    private static Map<String, Attribute<?>> attributeMap(Map<Attribute<?>, Property<?>> properties) {
       Map<String, Attribute<?>> map = new HashMap<>();
       properties.values().forEach(property -> map.put(property.attribute().name(), property.attribute()));
 
@@ -1029,7 +1028,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       }
     }
 
-    private Map<ForeignKey, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
+    private Map<ForeignKey, ForeignKeyProperty> foreignKeyPropertyMap() {
       Map<ForeignKey, ForeignKeyProperty> foreignKeyMap = new LinkedHashMap<>(foreignKeyProperties.size());
       foreignKeyProperties.forEach(foreignKeyProperty ->
               foreignKeyMap.put(foreignKeyProperty.attribute(), foreignKeyProperty));

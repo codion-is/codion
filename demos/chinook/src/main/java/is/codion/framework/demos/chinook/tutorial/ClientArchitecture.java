@@ -30,19 +30,19 @@ public final class ClientArchitecture {
    * @param connectionProvider the connection provider
    */
   static SwingEntityModel artistModel(EntityConnectionProvider connectionProvider) {
-    // initialize a default edit model
+    // create a default edit model
     SwingEntityEditModel artistEditModel =
             new SwingEntityEditModel(Artist.TYPE, connectionProvider);
 
-    // initialize a default table model, using the edit model
+    // create a default table model, wrapping the edit model
     SwingEntityTableModel artistTableModel =
             new SwingEntityTableModel(artistEditModel);
 
-    // initialize a default model using the table model
+    // create a default model wrapping the table model
     SwingEntityModel artistModel =
             new SwingEntityModel(artistTableModel);
 
-    // Note that this does the same as the above, that is, initializes
+    // Note that this does the same as the above, that is, creates
     // a SwingEntityModel with a default edit and table model
     SwingEntityModel albumModel =
             new SwingEntityModel(Album.TYPE, connectionProvider);
@@ -59,7 +59,7 @@ public final class ClientArchitecture {
    * @param connectionProvider the connection provider
    */
   static EntityPanel artistPanel(EntityConnectionProvider connectionProvider) {
-    // initialize the EntityModel to base the panel on (calling the above method)
+    // create the EntityModel to base the panel on (calling the above method)
     SwingEntityModel artistModel = artistModel(connectionProvider);
 
     // the edit model

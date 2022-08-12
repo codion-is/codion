@@ -81,10 +81,10 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       this.database = requireNonNull(configuration.database(), "database");
       this.clientLoggingEnabled = configuration.isClientLoggingEnabled();
       this.domainModels = loadDomainModels(configuration.domainModelClassNames());
-      setAdmin(initializeServerAdmin(configuration));
+      setAdmin(createServerAdmin(configuration));
       setIdleConnectionTimeout(configuration.idleConnectionTimeout());
       setClientTypeIdleConnectionTimeouts(configuration.clientTypeIdleConnectionTimeouts());
-      initializeConnectionPools(configuration.database(), configuration.connectionPoolProvider(), configuration.connectionPoolUsers());
+      createConnectionPools(configuration.database(), configuration.connectionPoolProvider(), configuration.connectionPoolUsers());
       setConnectionLimit(configuration.connectionLimit());
       bindToRegistry(configuration.registryPort());
     }
@@ -302,7 +302,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @return a admin instance
    * @throws RemoteException in case of an exception
    */
-  private EntityServerAdmin initializeServerAdmin(EntityServerConfiguration configuration) throws RemoteException {
+  private EntityServerAdmin createServerAdmin(EntityServerConfiguration configuration) throws RemoteException {
     if (configuration.serverAdminPort() != 0) {
       return new DefaultEntityServerAdmin(this, configuration);
     }
@@ -366,8 +366,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
   }
 
-  private static void initializeConnectionPools(Database database, String connectionPoolFactoryClassName,
-                                                Collection<User> connectionPoolUsers) throws DatabaseException {
+  private static void createConnectionPools(Database database, String connectionPoolFactoryClassName,
+                                            Collection<User> connectionPoolUsers) throws DatabaseException {
     if (!connectionPoolUsers.isEmpty()) {
       ConnectionPoolFactory poolFactory;
       if (Util.nullOrEmpty(connectionPoolFactoryClassName)) {
@@ -377,7 +377,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
         poolFactory = ConnectionPoolFactory.instance(connectionPoolFactoryClassName);
       }
       for (User user : connectionPoolUsers) {
-        database.initializeConnectionPool(poolFactory, user);
+        database.createConnectionPool(poolFactory, user);
       }
     }
   }

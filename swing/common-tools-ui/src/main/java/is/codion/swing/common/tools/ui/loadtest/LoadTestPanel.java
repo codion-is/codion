@@ -88,7 +88,7 @@ public final class LoadTestPanel<T> extends JPanel {
   public LoadTestPanel(LoadTest<T> loadTestModel) {
     requireNonNull(loadTestModel, "loadTestModel");
     this.loadTestModel = loadTestModel;
-    this.scenarioPanel = initializeScenarioPanel();
+    this.scenarioPanel = createScenarioPanel();
     initializeUI();
   }
 
@@ -106,7 +106,7 @@ public final class LoadTestPanel<T> extends JPanel {
   public JFrame showFrame() {
     return Windows.frame(this)
             .icon(Logos.logoTransparent())
-            .menuBar(initializeMainMenuControls().createMenuBar())
+            .menuBar(createMainMenuControls().createMenuBar())
             .title("Codion - " + loadTestModel.title())
             .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
             .onClosing(windowEvent -> {
@@ -119,7 +119,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .show();
   }
 
-  private Controls initializeMainMenuControls() {
+  private Controls createMainMenuControls() {
     return Controls.builder()
             .control(Controls.builder()
                     .caption("View")
@@ -135,25 +135,25 @@ public final class LoadTestPanel<T> extends JPanel {
     setLayout(Layouts.borderLayout());
     add(Components.panel(new BorderLayout())
             .add(Components.panel(Layouts.flexibleGridLayout(5, 1))
-                    .add(initializeApplicationPanel())
-                    .add(initializeActivityPanel())
+                    .add(createApplicationPanel())
+                    .add(createActivityPanel())
                     .add(scenarioPanel)
-                    .add(initializeUserPanel())
-                    .add(initializeChartControlPanel())
+                    .add(createUserPanel())
+                    .add(createChartControlPanel())
                     .build(), BorderLayout.NORTH)
             .build(), BorderLayout.WEST);
-    add(initializeChartPanel(), BorderLayout.CENTER);
-    add(initializeSouthPanel(), BorderLayout.SOUTH);
+    add(createChartPanel(), BorderLayout.CENTER);
+    add(createSouthPanel(), BorderLayout.SOUTH);
   }
 
-  private static JPanel initializeSouthPanel() {
+  private static JPanel createSouthPanel() {
     return Components.panel(Layouts.flowLayout(FlowLayout.TRAILING))
             .add(new JLabel("Memory usage:"))
             .add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS))
             .build();
   }
 
-  private ItemRandomizerPanel<UsageScenario<T>> initializeScenarioPanel() {
+  private ItemRandomizerPanel<UsageScenario<T>> createScenarioPanel() {
     ItemRandomizerPanel<UsageScenario<T>> panel = new ItemRandomizerPanel<>(loadTestModel.scenarioChooser());
     panel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
     panel.addSelectedItemListener(this::onScenarioSelectionChanged);
@@ -161,7 +161,7 @@ public final class LoadTestPanel<T> extends JPanel {
     return panel;
   }
 
-  private JPanel initializeUserPanel() {
+  private JPanel createUserPanel() {
     User user = loadTestModel.getUser();
     JTextField usernameField = Components.textField()
             .initialValue(user.username())
@@ -184,11 +184,11 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
   }
 
-  private JPanel initializeApplicationPanel() {
+  private JPanel createApplicationPanel() {
     return Components.panel(Layouts.borderLayout())
             .border(BorderFactory.createTitledBorder("Applications"))
             .add(Components.panel(Layouts.borderLayout())
-                    .add(initializeApplicationCountButtonPanel(), BorderLayout.WEST)
+                    .add(createApplicationCountButtonPanel(), BorderLayout.WEST)
                     .add(Components.integerField()
                             .editable(false)
                             .horizontalAlignment(SwingConstants.CENTER)
@@ -203,14 +203,14 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
   }
 
-  private JPanel initializeApplicationCountButtonPanel() {
+  private JPanel createApplicationCountButtonPanel() {
     return Components.panel(new GridLayout(1, 2, 0, 0))
-            .add(initializeAddRemoveApplicationButton(false))
-            .add(initializeAddRemoveApplicationButton(true))
+            .add(createAddRemoveApplicationButton(false))
+            .add(createAddRemoveApplicationButton(true))
             .build();
   }
 
-  private JButton initializeAddRemoveApplicationButton(boolean add) {
+  private JButton createAddRemoveApplicationButton(boolean add) {
     return Components.button(Control.builder(add ? loadTestModel::addApplicationBatch : loadTestModel::removeApplicationBatch)
                     .caption(add ? "+" : "-")
                     .description(add ? "Add application batch" : "Remove application batch")
@@ -220,7 +220,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
   }
 
-  private JPanel initializeChartControlPanel() {
+  private JPanel createChartControlPanel() {
     return Components.panel(Layouts.flexibleGridLayout(1, 2))
             .border(BorderFactory.createTitledBorder("Charts"))
             .add(Components.checkBox(loadTestModel.collectChartDataState())
@@ -232,7 +232,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
   }
 
-  private JPanel initializeChartPanel() {
+  private JPanel createChartPanel() {
     JFreeChart thinkTimeChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.thinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
     setColors(thinkTimeChart);
@@ -299,7 +299,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
   }
 
-  private JPanel initializeActivityPanel() {
+  private JPanel createActivityPanel() {
     return Components.panel(Layouts.flexibleGridLayout(4, 2))
             .add(new JLabel("Max. think time", SwingConstants.CENTER))
             .add(Components.integerSpinner(loadTestModel.maximumThinkTimeValue())

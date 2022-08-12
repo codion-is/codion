@@ -118,7 +118,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public void showFrame() {
     monitorFrame = Windows.frame(this)
             .icon(Logos.logoRed())
-            .menuBar(initializeMainMenuControls().createMenuBar())
+            .menuBar(createMainMenuControls().createMenuBar())
             .title("Codion Server Monitor")
             .defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
             .size(Windows.screenSizeRatio(SCREEN_SIZE_RATIO))
@@ -146,69 +146,69 @@ public final class EntityServerMonitorPanel extends JPanel {
       hostPane.addTab(hostMonitor.hostName() + ":" + hostMonitor.registryPort(), new HostMonitorPanel(hostMonitor));
     }
     add(hostPane, BorderLayout.CENTER);
-    add(initializeSouthPanel(), BorderLayout.SOUTH);
+    add(createSouthPanel(), BorderLayout.SOUTH);
   }
 
-  private Controls initializeMainMenuControls() {
+  private Controls createMainMenuControls() {
     return Controls.builder()
             .control(Controls.builder()
                     .caption("File")
                     .mnemonic('F')
-                    .control(initializeExitControl()))
+                    .control(createExitControl()))
             .control(Controls.builder()
                     .caption("View")
                     .mnemonic('V')
-                    .control(initializeRefreshControl())
-                    .control(initializeUpateIntervalControl())
+                    .control(createRefreshControl())
+                    .control(createUpateIntervalControl())
                     .separator()
                     .control(Dialogs.lookAndFeelSelectionDialog()
                             .dialogOwner(this)
                             .userPreferencePropertyName(EntityServerMonitorPanel.class.getName())
                             .createControl())
-                    .control(initializeAlwaysOnTopControl()))
+                    .control(createAlwaysOnTopControl()))
             .control(Controls.builder()
                     .caption("Tools")
                     .mnemonic('T')
-                    .control(initializeSetJDKDirControl())
-                    .control(initializeJConsoleControl()))
+                    .control(createSetJDKDirControl())
+                    .control(createJConsoleControl()))
             .build();
   }
 
-  private Control initializeRefreshControl() {
+  private Control createRefreshControl() {
     return Control.builder(model::refresh)
             .caption("Refresh")
             .mnemonic('R')
             .build();
   }
 
-  private Control initializeAlwaysOnTopControl() {
+  private Control createAlwaysOnTopControl() {
     return ToggleControl.builder(alwaysOnTopState)
             .caption("Always on Top")
             .mnemonic('A')
             .build();
   }
 
-  private Control initializeUpateIntervalControl() {
+  private Control createUpateIntervalControl() {
     return Control.builder(this::setUpdateInterval)
             .caption("Chart update interval...")
             .build();
   }
 
-  private Control initializeSetJDKDirControl() {
+  private Control createSetJDKDirControl() {
     return Control.builder(this::setJDKDir)
             .caption("Set JDK home...")
             .mnemonic('S')
             .build();
   }
 
-  private Control initializeJConsoleControl() {
+  private Control createJConsoleControl() {
     return Control.builder(this::runJConsole)
             .caption("Run JConsole")
             .mnemonic('J')
             .build();
   }
 
-  private Control initializeExitControl() {
+  private Control createExitControl() {
     return Control.builder(() -> System.exit(0))
             .caption("Exit")
             .mnemonic('X')
@@ -241,7 +241,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     });
   }
 
-  private static JPanel initializeSouthPanel() {
+  private static JPanel createSouthPanel() {
     JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
     southPanel.setBorder(BorderFactory.createEtchedBorder());
     southPanel.add(new JLabel("Memory usage:"));

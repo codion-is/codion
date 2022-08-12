@@ -35,7 +35,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppPanel.E
   }
 
   @Override
-  protected EmpDeptAppPanel.EmpDeptApplicationModel initializeApplication() throws CancelException {
+  protected EmpDeptAppPanel.EmpDeptApplicationModel createApplication() throws CancelException {
     EmpDeptAppPanel.EmpDeptApplicationModel applicationModel =
             new EmpDeptAppPanel.EmpDeptApplicationModel(EntityConnectionProvider.builder()
                     .domainClassName(EmpDept.class.getName())
