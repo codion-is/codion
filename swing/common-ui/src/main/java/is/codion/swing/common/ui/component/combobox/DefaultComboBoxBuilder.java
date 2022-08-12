@@ -34,7 +34,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   private boolean mouseWheelScrolling = true;
   private boolean mouseWheelScrollingWithWrapAround = false;
   private int maximumRowCount = -1;
-  private boolean moveCaretOnSelection = true;
+  private boolean moveCaretToFrontOnSelection = true;
   private int popupWidth = 0;
 
   protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
@@ -92,8 +92,8 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   }
 
   @Override
-  public final B moveCaretOnSelection(boolean moveCaretOnSelection) {
-    this.moveCaretOnSelection = moveCaretOnSelection;
+  public final B moveCaretToFrontOnSelection(boolean moveCaretToFrontOnSelection) {
+    this.moveCaretToFrontOnSelection = moveCaretToFrontOnSelection;
     return (B) this;
   }
 
@@ -134,7 +134,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
       comboBox.setMaximumRowCount(maximumRowCount);
     }
     itemListeners.forEach(comboBox::addItemListener);
-    if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretOnSelection) {
+    if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
       ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
     }
     if (Utilities.isSystemOrCrossPlatformLookAndFeelEnabled()) {

@@ -72,13 +72,14 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
    * showing the start of the selected item.
    * Note that this only works for {@link is.codion.common.model.combobox.FilteredComboBoxModel}.
    * This is enabled by default.
-   * @param moveCaretOnSelection if true the caret is moved to the front of the editor component on selection,
+   * @param moveCaretToFrontOnSelection if true the caret is moved to the front of the editor component on selection,
    * displaying the start of the selected item, instead of the end
    * @return this builder instance
    */
-  B moveCaretOnSelection(boolean moveCaretOnSelection);
+  B moveCaretToFrontOnSelection(boolean moveCaretToFrontOnSelection);
 
   /**
+   * Only used for the system and cross-platform Look&Feels.
    * @param popupWidth a fixed popup width
    * @return this builder instance
    */
