@@ -250,7 +250,7 @@ final class SelectQueries {
       return selectablePropertiesCache.computeIfAbsent(definition.entityType(), entityType ->
               definition.columnProperties().stream()
                       .filter(property -> !definition.lazyLoadedBlobProperties().contains(property))
-                      .filter(ColumnProperty::selectable)
+                      .filter(ColumnProperty::isSelectable)
                       .collect(toList()));
     }
 

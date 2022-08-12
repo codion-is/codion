@@ -185,7 +185,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final boolean hidden() {
+  public final boolean isHidden() {
     return hidden;
   }
 
@@ -200,7 +200,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final boolean nullable() {
+  public final boolean isNullable() {
     return nullable;
   }
 

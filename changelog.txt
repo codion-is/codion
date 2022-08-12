@@ -8369,3 +8369,4 @@
   SwingEntityTableModel, column preference handling refactored
   EntityTableModel.ColumnPreferences added, column preference handling refactored some more
   FilteredTableModel.ColumnValueProvider, removed get prefix
+  ValueObserver, Property and more, is prefix added to boolean accessors where applicable, for consistency

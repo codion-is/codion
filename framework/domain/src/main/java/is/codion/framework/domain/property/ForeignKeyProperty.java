@@ -35,14 +35,14 @@ public interface ForeignKeyProperty extends Property<Entity> {
    * @return true if this foreign key is not based on a physical (table) foreign key
    * and should not prevent deletion
    */
-  boolean softReference();
+  boolean isSoftReference();
 
   /**
    * Returns true if the given foreign key reference attribute as read-only, as in, not updated when the foreign key value is set.
    * @param referenceAttribute the reference attribute
    * @return true if the given foreign key reference attribute as read-only
    */
-  boolean readOnly(Attribute<?> referenceAttribute);
+  boolean isReadOnly(Attribute<?> referenceAttribute);
 
   /**
    * @return the {@link ForeignKey.Reference}s that comprise this foreign key

@@ -369,7 +369,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         EntityDefinition entityDefinition = domainEntities.definition(condition.entityType());
         for (Map.Entry<Attribute<?>, Object> propertyValue : condition.attributeValues().entrySet()) {
           ColumnProperty<Object> columnProperty = entityDefinition.columnProperty((Attribute<Object>) propertyValue.getKey());
-          if (!columnProperty.updatable()) {
+          if (!columnProperty.isUpdatable()) {
             throw new IllegalArgumentException("Property is not updatable: " + columnProperty.attribute());
           }
           statementProperties.add(columnProperty);
@@ -649,7 +649,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
     Collection<ForeignKeyProperty> foreignKeyReferences = foreignKeyReferences(entities.iterator().next().entityType());
     for (ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
-      if (!foreignKeyReference.softReference()) {
+      if (!foreignKeyReference.isSoftReference()) {
         List<Entity> dependencies = select(where(foreignKeyReference.attribute()).equalTo(entities));
         if (!dependencies.isEmpty()) {
           dependencyMap.put(foreignKeyReference.entityType(), dependencies);

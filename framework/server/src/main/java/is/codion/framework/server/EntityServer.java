@@ -79,7 +79,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     this.configuration = configuration;
     try {
       this.database = requireNonNull(configuration.database(), "database");
-      this.clientLoggingEnabled = configuration.clientLoggingEnabled();
+      this.clientLoggingEnabled = configuration.isClientLoggingEnabled();
       this.domainModels = loadDomainModels(configuration.domainModelClassNames());
       setAdmin(initializeServerAdmin(configuration));
       setIdleConnectionTimeout(configuration.idleConnectionTimeout());

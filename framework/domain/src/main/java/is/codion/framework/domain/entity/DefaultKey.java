@@ -257,7 +257,7 @@ class DefaultKey implements Key, Serializable {
     for (int i = 0; i < attributes.size(); i++) {
       ColumnProperty<?> property = definition.columnProperty(attributes.get(i));
       Object value = values.get(property.attribute());
-      if (!property.nullable() && value == null) {
+      if (!property.isNullable() && value == null) {
         return null;
       }
       if (value != null) {

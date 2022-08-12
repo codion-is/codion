@@ -115,7 +115,7 @@ final class DefaultState implements State {
   }
 
   @Override
-  public boolean nullable() {
+  public boolean isNullable() {
     return false;
   }
 

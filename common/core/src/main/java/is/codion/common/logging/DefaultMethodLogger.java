@@ -166,7 +166,7 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     @Override
-    public boolean complete() {
+    public boolean isComplete() {
       return exitTime != 0;
     }
 
@@ -217,7 +217,7 @@ final class DefaultMethodLogger implements MethodLogger {
           stringBuilder.append(" : ").append(accessMessage);
         }
       }
-      if (complete()) {
+      if (isComplete()) {
         LocalDateTime exitDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(exitTime), TimeZone.getDefault().toZoneId());
         stringBuilder.append(NEWLINE).append(indentString).append(TIMESTAMP_FORMATTER.format(exitDateTime)).append(" > ")
                 .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(duration()))).append(" μs")

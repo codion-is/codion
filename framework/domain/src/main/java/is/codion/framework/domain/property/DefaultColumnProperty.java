@@ -91,22 +91,22 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   }
 
   @Override
-  public final boolean insertable() {
+  public final boolean isInsertable() {
     return insertable;
   }
 
   @Override
-  public final boolean updatable() {
+  public final boolean isUpdatable() {
     return updatable;
   }
 
   @Override
-  public final boolean readOnly() {
+  public final boolean isReadOnly() {
     return !insertable && !updatable;
   }
 
   @Override
-  public boolean denormalized() {
+  public boolean isDenormalized() {
     return false;
   }
 
@@ -116,27 +116,27 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   }
 
   @Override
-  public final boolean groupingColumn() {
+  public final boolean isGroupingColumn() {
     return groupingColumn;
   }
 
   @Override
-  public final boolean aggregateColumn() {
+  public final boolean isAggregateColumn() {
     return aggregateColumn;
   }
 
   @Override
-  public final boolean selectable() {
+  public final boolean isSelectable() {
     return selectable;
   }
 
   @Override
-  public final boolean primaryKeyColumn() {
+  public final boolean isPrimaryKeyColumn() {
     return primaryKeyIndex >= 0;
   }
 
   @Override
-  public final boolean searchProperty() {
+  public final boolean isSearchProperty() {
     return searchProperty;
   }
 

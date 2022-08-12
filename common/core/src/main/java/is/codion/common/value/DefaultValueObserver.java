@@ -22,8 +22,8 @@ final class DefaultValueObserver<T> implements ValueObserver<T> {
   }
 
   @Override
-  public boolean nullable() {
-    return value.nullable();
+  public boolean isNullable() {
+    return value.isNullable();
   }
 
   @Override

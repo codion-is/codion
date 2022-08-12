@@ -239,7 +239,7 @@ public class EntityTestUnit {
     Entity updated = connection.update(testEntity);
     assertEquals(testEntity.primaryKey(), updated.primaryKey());
     for (ColumnProperty<?> property : testEntity.entityDefinition().columnProperties()) {
-      if (property.updatable()) {
+      if (property.isUpdatable()) {
         Object beforeUpdate = testEntity.get(property.attribute());
         Object afterUpdate = updated.get(property.attribute());
         String message = "Values of property " + property + " should be equal after update ["

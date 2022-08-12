@@ -1237,7 +1237,7 @@ public class EntityTablePanel extends JPanel {
    * @return a TableCellEditor for the given property
    */
   protected <T> TableCellEditor createTableCellEditor(Property<T> property) {
-    if (property instanceof ColumnProperty && !((ColumnProperty<T>) property).updatable()) {
+    if (property instanceof ColumnProperty && !((ColumnProperty<T>) property).isUpdatable()) {
       return null;
     }
     //TODO handle Enter key correctly for foreign key input fields

@@ -16,7 +16,7 @@ final class DefaultCheckBoxBuilder extends DefaultToggleButtonBuilder<JCheckBox,
   DefaultCheckBoxBuilder(Value<Boolean> value) {
     super(value);
     if (value != null) {
-      nullable = value.nullable();
+      nullable = value.isNullable();
     }
     horizontalAlignment(SwingConstants.LEADING);
   }

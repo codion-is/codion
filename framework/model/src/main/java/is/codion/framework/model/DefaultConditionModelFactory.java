@@ -40,7 +40,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
     }
 
     ColumnProperty<T> property = definition(attribute.entityType()).columnProperty(attribute);
-    if (property.aggregateColumn()) {
+    if (property.isAggregateColumn()) {
       return null;
     }
 

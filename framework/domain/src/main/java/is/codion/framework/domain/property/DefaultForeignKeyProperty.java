@@ -53,12 +53,12 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
   }
 
   @Override
-  public boolean softReference() {
+  public boolean isSoftReference() {
     return softReference;
   }
 
   @Override
-  public boolean readOnly(Attribute<?> referenceAttribute) {
+  public boolean isReadOnly(Attribute<?> referenceAttribute) {
     return readOnlyAttributes.contains(referenceAttribute);
   }
 

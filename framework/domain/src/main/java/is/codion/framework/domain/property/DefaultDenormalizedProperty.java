@@ -35,7 +35,7 @@ final class DefaultDenormalizedProperty<T> extends DefaultColumnProperty<T> impl
   }
 
   @Override
-  public boolean denormalized() {
+  public boolean isDenormalized() {
     return true;
   }
 
