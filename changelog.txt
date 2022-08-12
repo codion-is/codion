@@ -8375,3 +8375,4 @@
   DialogBuilder.location() added
   ColumnConditionPanel, dialog functionality moved to FilteredTable
   Windows.FrameBuilder.location() added, relativeTo() renamed locationRelativeTo()
+  Windows.resizeWindow(), added maximumSize parameter, Windows.screenSizeRatio() now throws exception in case ratio is invalid

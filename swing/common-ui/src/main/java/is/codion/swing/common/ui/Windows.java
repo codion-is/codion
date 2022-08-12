@@ -36,8 +36,12 @@ public final class Windows {
   /**
    * @param ratio a ratio, 0.0 - 1.0
    * @return a Dimension which is the size of the available screen times ratio
+   * @throws IllegalArgumentException in case ratio is not between 0 and 1
    */
   public static Dimension screenSizeRatio(double ratio) {
+    if (ratio < 0 || ratio > 1.0) {
+      throw new IllegalArgumentException("Ratio must be between 0 and 1");
+    }
     Dimension screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getSize();
 
     return new Dimension((int) (screen.getWidth() * ratio), (int) (screen.getHeight() * ratio));
@@ -63,23 +67,28 @@ public final class Windows {
    * Resizes the given window so that it is {@code screenSizeRatio} percent of the current screen size
    * @param window the window to resize
    * @param screenSizeRatio the screen size ratio
+   * @throws IllegalArgumentException in case ratio is not between 0 and 1
    */
   public static void resizeWindow(Window window, double screenSizeRatio) {
-    resizeWindow(window, screenSizeRatio, null);
+    resizeWindow(window, screenSizeRatio, null, null);
   }
 
   /**
    * Resizes the given window so that it is {@code screenSizeRatio} percent of the current screen size,
-   * within the given minimum size
+   * within the given minimum and maximum sizes
    * @param window the window to resize
    * @param screenSizeRatio the screen size ratio
-   * @param minimumSize a minimum size
+   * @param minimumSize the minimum size, may be null
+   * @param maximumSize the maximum size, may be null
+   * @throws IllegalArgumentException in case ratio is not between 0 and 1
    */
-  public static void resizeWindow(Window window, double screenSizeRatio,
-                                  Dimension minimumSize) {
+  public static void resizeWindow(Window window, double screenSizeRatio, Dimension minimumSize, Dimension maximumSize) {
     Dimension ratioSize = screenSizeRatio(screenSizeRatio);
     if (minimumSize != null) {
       ratioSize.setSize(Math.max(minimumSize.width, ratioSize.width), Math.max(minimumSize.height, ratioSize.height));
+    }
+    if (maximumSize != null) {
+      ratioSize.setSize(Math.min(maximumSize.width, ratioSize.width), Math.min(maximumSize.height, ratioSize.height));
     }
 
     window.setSize(ratioSize);
