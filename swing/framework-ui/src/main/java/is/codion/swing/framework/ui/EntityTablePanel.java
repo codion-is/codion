@@ -130,7 +130,6 @@ public class EntityTablePanel extends JPanel {
   private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanel.class);
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
-  private static final FrameworkIcons FRAMEWORK_ICONS = FrameworkIcons.instance();
 
   /**
    * Specifies whether columns can be rearranged in tables<br>
