@@ -11,9 +11,11 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -121,10 +123,17 @@ public final class Windows {
     FrameBuilder resizable(boolean resizable);
 
     /**
-     * @param relativeTo the component to which the location should be relative
+     * Overrides {@link #locationRelativeTo(Component)} and {@link #centerFrame(boolean)}.
+     * @param location the frame location
      * @return this builder instance
      */
-    FrameBuilder relativeTo(JComponent relativeTo);
+    FrameBuilder location(Point location);
+
+    /**
+     * @param locationRelativeTo the component to which the location should be relative
+     * @return this builder instance
+     */
+    FrameBuilder locationRelativeTo(Component locationRelativeTo);
 
     /**
      * @param onOpened called when the frame has been opened
@@ -165,7 +174,7 @@ public final class Windows {
     FrameBuilder extendedState(int extendedState);
 
     /**
-     * This is overridden by setting the {@link #relativeTo(JComponent)} component.
+     * This is overridden by {@link #location(Point)} or by setting the {@link #locationRelativeTo(JComponent)} component.
      * @param centerFrame true if the frame should be centered in on the screen
      * @return this builder instance
      */
@@ -201,7 +210,8 @@ public final class Windows {
     private Consumer<WindowEvent> onOpened;
     private Dimension size;
     private boolean resizable = true;
-    private JComponent relativeTo;
+    private Point location;
+    private Component locationRelativeTo;
     private int defaultCloseOperation = WindowConstants.HIDE_ON_CLOSE;
     private JMenuBar menuBar;
     private int extendedState = Frame.NORMAL;
@@ -236,8 +246,14 @@ public final class Windows {
     }
 
     @Override
-    public FrameBuilder relativeTo(JComponent relativeTo) {
-      this.relativeTo = relativeTo;
+    public FrameBuilder location(Point location) {
+      this.location = location;
+      return this;
+    }
+
+    @Override
+    public FrameBuilder locationRelativeTo(Component locationRelativeTo) {
+      this.locationRelativeTo = locationRelativeTo;
       return this;
     }
 
@@ -312,8 +328,11 @@ public final class Windows {
         frame.setJMenuBar(menuBar);
       }
       frame.setResizable(resizable);
-      if (relativeTo != null) {
-        frame.setLocationRelativeTo(relativeTo);
+      if (location != null) {
+        frame.setLocation(location);
+      }
+      else if (locationRelativeTo != null) {
+        frame.setLocationRelativeTo(locationRelativeTo);
       }
       else if (centerFrame) {
         frame.setLocationRelativeTo(null);

@@ -8374,3 +8374,4 @@
   ColumnConditionPanel, AbstractEntityTableConditionPanel, setAdvanced() renamed setAdvancedView()
   DialogBuilder.location() added
   ColumnConditionPanel, dialog functionality moved to FilteredTable
+  Windows.FrameBuilder.location() added, relativeTo() renamed locationRelativeTo()
