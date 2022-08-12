@@ -500,9 +500,9 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private void validateForeignKeyValue(ForeignKeyProperty property, Entity foreignKeyValue) {
-    EntityType referencedEntityType = property.referencedEntityType();
-    if (!Objects.equals(referencedEntityType, foreignKeyValue.entityType())) {
-      throw new IllegalArgumentException("Entity of type " + referencedEntityType +
+    EntityType referencedType = property.referencedType();
+    if (!Objects.equals(referencedType, foreignKeyValue.entityType())) {
+      throw new IllegalArgumentException("Entity of type " + referencedType +
               " expected for property " + property + ", got: " + foreignKeyValue.entityType());
     }
     property.references().forEach(reference -> throwIfModifiesReadOnlyReference(property, foreignKeyValue, reference));

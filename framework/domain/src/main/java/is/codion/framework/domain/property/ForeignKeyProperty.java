@@ -24,7 +24,7 @@ public interface ForeignKeyProperty extends Property<Entity> {
   /**
    * @return the type of the entity referenced by this foreign key
    */
-  EntityType referencedEntityType();
+  EntityType referencedType();
 
   /**
    * @return the default query fetch depth for this foreign key

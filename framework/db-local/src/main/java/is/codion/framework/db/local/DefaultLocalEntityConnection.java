@@ -1123,7 +1123,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private List<ForeignKeyProperty> initializeForeignKeyReferences(EntityType entityType) {
     return domainEntities.definitions().stream()
             .flatMap(entityDefinition -> entityDefinition.foreignKeyProperties().stream())
-            .filter(foreignKeyProperty -> foreignKeyProperty.referencedEntityType().equals(entityType))
+            .filter(foreignKeyProperty -> foreignKeyProperty.referencedType().equals(entityType))
             .collect(toList());
   }
 

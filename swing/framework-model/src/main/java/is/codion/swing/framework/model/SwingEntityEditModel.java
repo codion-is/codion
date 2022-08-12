@@ -186,7 +186,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition().foreignKeyProperty(foreignKey);
-    SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.referencedEntityType(), connectionProvider());
+    SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.referencedType(), connectionProvider());
     model.setSelectAttributes(foreignKeyProperty.selectAttributes());
     if (isNullable(foreignKey)) {
       model.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());

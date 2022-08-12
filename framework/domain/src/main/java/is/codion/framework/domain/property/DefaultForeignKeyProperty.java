@@ -43,7 +43,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
   }
 
   @Override
-  public EntityType referencedEntityType() {
+  public EntityType referencedType() {
     return referencedEntityType;
   }
 

@@ -606,12 +606,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
     ForeignKeyProperty property = entityDefinition().foreignKeyProperty(foreignKey);
     Collection<Attribute<String>> searchAttributes = entities()
-            .definition(property.referencedEntityType()).searchAttributes();
+            .definition(property.referencedType()).searchAttributes();
     if (searchAttributes.isEmpty()) {
-      throw new IllegalStateException("No search attributes defined for entity: " + property.referencedEntityType());
+      throw new IllegalStateException("No search attributes defined for entity: " + property.referencedType());
     }
 
-    EntitySearchModel searchModel = new DefaultEntitySearchModel(property.referencedEntityType(), connectionProvider, searchAttributes);
+    EntitySearchModel searchModel = new DefaultEntitySearchModel(property.referencedType(), connectionProvider, searchAttributes);
     searchModel.multipleSelectionEnabledState().set(false);
 
     return searchModel;
