@@ -174,7 +174,7 @@ public final class Windows {
     FrameBuilder extendedState(int extendedState);
 
     /**
-     * This is overridden by {@link #location(Point)} or by setting the {@link #locationRelativeTo(JComponent)} component.
+     * This is overridden by {@link #location(Point)} or by setting the {@link #locationRelativeTo(Component)} component.
      * @param centerFrame true if the frame should be centered in on the screen
      * @return this builder instance
      */
