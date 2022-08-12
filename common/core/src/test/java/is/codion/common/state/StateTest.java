@@ -78,7 +78,7 @@ public class StateTest {
     assertFalse(state.get(), "State should be inactive when initialized");
     assertFalse(state.isNull());
     assertTrue(state.isNotNull());
-    assertFalse(state.nullable());
+    assertFalse(state.isNullable());
     assertFalse(state.equalTo(true));
     assertTrue(state.toOptional().isPresent());
     state.onEvent(true);//calls set()
@@ -201,7 +201,7 @@ public class StateTest {
 
     assertFalse(orState.isNull());
     assertTrue(orState.isNotNull());
-    assertFalse(orState.nullable());
+    assertFalse(orState.isNullable());
   }
 
   @Test

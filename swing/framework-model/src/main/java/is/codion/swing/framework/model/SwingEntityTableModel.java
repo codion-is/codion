@@ -301,7 +301,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
     Property<?> property = entityDefinition().property(attribute);
 
-    return property instanceof ColumnProperty && ((ColumnProperty<?>) property).updatable();
+    return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
   }
 
   /**
@@ -823,7 +823,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       }
     }
     setVisibleColumns(preferenceMap.values().stream()
-            .filter(ColumnPreferences::visible)
+            .filter(ColumnPreferences::isVisible)
             .sorted(Comparator.comparingInt(ColumnPreferences::index))
             .map(ColumnPreferences::attribute)
             .toArray(Attribute[]::new));

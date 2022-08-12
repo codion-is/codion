@@ -154,7 +154,7 @@ public class EntityComponents {
 
     return Components.checkBox()
             .toolTipText(property.description())
-            .nullable(property.nullable())
+            .nullable(property.isNullable())
             .caption(property.caption())
             .includeCaption(false);
   }
@@ -258,7 +258,7 @@ public class EntityComponents {
 
     return Components.itemComboBox(((ItemProperty<T>) property).items())
             .toolTipText(property.description())
-            .nullable(property.nullable());
+            .nullable(property.isNullable());
   }
 
   /**

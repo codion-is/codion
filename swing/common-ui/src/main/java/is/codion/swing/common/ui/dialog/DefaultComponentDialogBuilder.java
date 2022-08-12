@@ -19,6 +19,7 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -119,7 +120,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   @Override
   public JDialog build() {
-    JDialog dialog = createDialog(owner, titleProvider, icon, component, size, locationRelativeTo, modal, resizable, onShown);
+    JDialog dialog = createDialog(owner, titleProvider, icon, component, size, locationRelativeTo, location, modal, resizable, onShown);
     if (enterAction != null) {
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -147,7 +148,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   static JDialog createDialog(Window owner, ValueObserver<String> titleProvider, ImageIcon icon,
                               JComponent component, Dimension size, Component locationRelativeTo,
-                              boolean modal, boolean resizable, Consumer<JDialog> onShown) {
+                              Point location, boolean modal, boolean resizable, Consumer<JDialog> onShown) {
     JDialog dialog = new JDialog(owner);
     if (titleProvider != null) {
       dialog.setTitle(titleProvider.get());
@@ -164,7 +165,10 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     else {
       dialog.pack();
     }
-    if (locationRelativeTo != null) {
+    if (location != null) {
+      dialog.setLocation(location);
+    }
+    else if (locationRelativeTo != null) {
       dialog.setLocationRelativeTo(locationRelativeTo);
     }
     else {

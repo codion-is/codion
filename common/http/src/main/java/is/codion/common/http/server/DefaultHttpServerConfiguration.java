@@ -40,7 +40,7 @@ final class DefaultHttpServerConfiguration implements HttpServerConfiguration {
   }
 
   @Override
-  public boolean secure() {
+  public boolean isSecure() {
     return secure;
   }
 

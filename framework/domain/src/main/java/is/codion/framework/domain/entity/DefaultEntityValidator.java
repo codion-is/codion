@@ -52,7 +52,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   @Override
   public <T> boolean isNullable(Entity entity, Attribute<T> attribute) {
-    return requireNonNull(entity).entityDefinition().property(attribute).nullable();
+    return requireNonNull(entity).entityDefinition().property(attribute).isNullable();
   }
 
   @Override
@@ -142,11 +142,11 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   private static boolean isNonGeneratedPrimaryKeyProperty(EntityDefinition definition, Property<?> property) {
     return (property instanceof ColumnProperty
-            && ((ColumnProperty<?>) property).primaryKeyColumn()) && !definition.isKeyGenerated();
+            && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) && !definition.isKeyGenerated();
   }
 
   private static boolean isNonKeyColumnPropertyWithoutDefaultValue(Property<?> property) {
-    return property instanceof ColumnProperty && !((ColumnProperty<?>) property).primaryKeyColumn()
+    return property instanceof ColumnProperty && !((ColumnProperty<?>) property).isPrimaryKeyColumn()
             && !((ColumnProperty<?>) property).columnHasDefaultValue();
   }
 
@@ -154,7 +154,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     if (property instanceof DerivedProperty) {
       return false;
     }
-    if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).readOnly()) {
+    if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isReadOnly()) {
       return false;
     }
 

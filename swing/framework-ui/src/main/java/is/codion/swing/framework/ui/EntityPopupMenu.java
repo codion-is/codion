@@ -121,7 +121,7 @@ final class EntityPopupMenu extends JPopupMenu {
     EntityDefinition definition = entity.entityDefinition();
     EntityValidator validator = definition.validator();
     for (Property<?> property : properties) {
-      boolean isPrimaryKeyProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).primaryKeyColumn();
+      boolean isPrimaryKeyProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyColumn();
       if (!isPrimaryKeyProperty && !(property instanceof ForeignKeyProperty)) {
         JMenuItem menuItem = new JMenuItem(new StringBuilder(property.toString())
                 .append(" [").append(property.attribute().valueClass().getSimpleName())

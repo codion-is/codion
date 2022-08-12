@@ -103,9 +103,9 @@ final class DomainToString {
   private static String columnProperty(String interfaceName, ColumnProperty<?> property,
                                        boolean isForeignKey, boolean compositePrimaryKey) {
     StringBuilder builder = new StringBuilder(propertyType(property.attribute(),
-            property.primaryKeyColumn() && !compositePrimaryKey))
+            property.isPrimaryKeyColumn() && !compositePrimaryKey))
             .append(interfaceName).append(".").append(property.columnName().toUpperCase());
-    if (!isForeignKey && !property.primaryKeyColumn()) {
+    if (!isForeignKey && !property.isPrimaryKeyColumn()) {
       builder.append(", ").append("\"").append(property.caption()).append("\")");
     }
     else {
@@ -114,14 +114,14 @@ final class DomainToString {
     if (property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
       builder.append(LINE_SEPARATOR).append("                .eagerlyLoaded()");
     }
-    if (property.primaryKeyColumn() && compositePrimaryKey) {
+    if (property.isPrimaryKeyColumn() && compositePrimaryKey) {
       builder.append(LINE_SEPARATOR).append("                .primaryKeyIndex(")
               .append(property.primaryKeyIndex()).append(")");
     }
     if (property.columnHasDefaultValue()) {
       builder.append(LINE_SEPARATOR).append("                .columnHasDefaultValue(true)");
     }
-    if (!property.nullable() && !property.primaryKeyColumn()) {
+    if (!property.isNullable() && !property.isPrimaryKeyColumn()) {
       builder.append(LINE_SEPARATOR).append("                .nullable(false)");
     }
     if (String.class.equals(property.attribute().valueClass())) {

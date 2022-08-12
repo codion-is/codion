@@ -49,7 +49,7 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
   public HttpServer(HttpServerConfiguration configuration) {
     super(requireNonNull(configuration, "configuration").serverPort());
     this.port = configuration.serverPort();
-    if (configuration.secure()) {
+    if (configuration.isSecure()) {
       setupSecureConnector(configuration);
     }
     LOG.info(getClass().getSimpleName() + " created on port: " + port);

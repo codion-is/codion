@@ -353,7 +353,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public Collection<Attribute<String>> searchAttributes() {
     return entityProperties.columnProperties.stream()
-            .filter(ColumnProperty::searchProperty)
+            .filter(ColumnProperty::isSearchProperty)
             .map(property -> ((ColumnProperty<String>) property).attribute())
             .collect(toList());
   }
@@ -426,7 +426,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public List<Property<?>> updatableProperties() {
     List<ColumnProperty<?>> writableColumnProperties = writableColumnProperties(!isKeyGenerated(), false);
-    writableColumnProperties.removeIf(property -> isForeignKeyAttribute(property.attribute()) || property.denormalized());
+    writableColumnProperties.removeIf(property -> isForeignKeyAttribute(property.attribute()) || property.isDenormalized());
     List<Property<?>> updatable = new ArrayList<>(writableColumnProperties);
     for (ForeignKeyProperty foreignKeyProperty : entityProperties.foreignKeyProperties) {
       if (isUpdatable(foreignKeyProperty.attribute())) {
@@ -441,7 +441,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   public boolean isUpdatable(ForeignKey foreignKey) {
     return foreignKey.references().stream()
             .map(reference -> columnProperty(reference.attribute()))
-            .allMatch(ColumnProperty::updatable);
+            .allMatch(ColumnProperty::isUpdatable);
   }
 
   @Override
@@ -512,7 +512,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public List<Property<?>> visibleProperties() {
     return entityProperties.properties.stream()
-            .filter(property -> !property.hidden())
+            .filter(property -> !property.isHidden())
             .collect(toList());
   }
 
@@ -639,8 +639,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     if (foreignEntityDefinitions.containsKey(foreignKey)) {
       throw new IllegalStateException("Foreign definition has already been set for " + foreignKey);
     }
-    if (!foreignKeyProperty.referencedEntityType().equals(definition.entityType())) {
-      throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.referencedEntityType() +
+    if (!foreignKeyProperty.referencedType().equals(definition.entityType())) {
+      throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.referencedType() +
               " expected for " + foreignKey);
     }
     foreignEntityDefinitions.put(foreignKey, definition);
@@ -657,7 +657,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    */
   private String initializeGroupByClause() {
     List<String> groupingColumnNames = entityProperties.columnProperties.stream()
-            .filter(ColumnProperty::groupingColumn)
+            .filter(ColumnProperty::isGroupingColumn)
             .map(ColumnProperty::columnExpression)
             .collect(toList());
     if (groupingColumnNames.isEmpty()) {
@@ -778,8 +778,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   private static boolean isWritable(ColumnProperty<?> property, boolean includePrimaryKeyProperties,
                                     boolean includeNonUpdatable) {
-    return property.insertable() && (includeNonUpdatable || property.updatable())
-            && (includePrimaryKeyProperties || !property.primaryKeyColumn());
+    return property.isInsertable() && (includeNonUpdatable || property.isUpdatable())
+            && (includePrimaryKeyProperties || !property.isPrimaryKeyColumn());
   }
 
   private static final class EntityProperties implements Serializable {
@@ -925,7 +925,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private List<Attribute<?>> defaultSelectAttributes() {
       List<Attribute<?>> selectableAttributes = columnProperties.stream()
-              .filter(ColumnProperty::selectable)
+              .filter(ColumnProperty::isSelectable)
               .filter(property -> !lazyLoadedBlobProperties.contains(property))
               .map(Property::attribute)
               .collect(toList());
@@ -955,7 +955,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return properties.stream()
               .filter(ColumnProperty.class::isInstance)
               .map(property -> (ColumnProperty<?>) property)
-              .filter(ColumnProperty::primaryKeyColumn)
+              .filter(ColumnProperty::isPrimaryKeyColumn)
               .sorted(comparingInt(ColumnProperty::primaryKeyIndex))
               .collect(toList());
     }
@@ -990,7 +990,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private static void validatePrimaryKeyProperties(Map<Attribute<?>, Property<?>> properties, EntityType entityType) {
       Set<Integer> usedPrimaryKeyIndexes = new LinkedHashSet<>();
       for (Property<?> property : properties.values()) {
-        if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).primaryKeyColumn()) {
+        if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) {
           Integer index = ((ColumnProperty<?>) property).primaryKeyIndex();
           if (usedPrimaryKeyIndexes.contains(index)) {
             throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
@@ -1059,7 +1059,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       //make foreign key properties nullable if and only if any of their constituent column properties are nullable
       foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.attribute())
               .stream()
-              .anyMatch(Property::nullable));
+              .anyMatch(Property::isNullable));
     }
   }
 

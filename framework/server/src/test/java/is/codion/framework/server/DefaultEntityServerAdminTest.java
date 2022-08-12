@@ -87,7 +87,7 @@ public final class DefaultEntityServerAdminTest {
       try {
         admin.threadStatistics();
       }
-      catch (NullPointerException e) {/*Github Actions on Windows build keeps failing here, let's see what happens now*/}
+      catch (NullPointerException e) {/*Intermittent failure when run in Github actions*/}
       admin.gcEvents(0);
       admin.serverInformation();
       admin.systemProperties();

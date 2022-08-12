@@ -277,7 +277,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private void initializeFilterModels(EntityType entityType, FilterModelFactory filterModelProvider) {
     if (filterModelProvider != null) {
       for (Property<?> property : connectionProvider.entities().definition(entityType).properties()) {
-        if (!property.hidden()) {
+        if (!property.isHidden()) {
           ColumnFilterModel<Entity, Attribute<?>, ?> filterModel = filterModelProvider.createFilterModel(property);
           if (filterModel != null) {
             filterModels.put(filterModel.columnIdentifier(), filterModel);

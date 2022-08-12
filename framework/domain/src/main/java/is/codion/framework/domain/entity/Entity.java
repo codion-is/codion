@@ -372,7 +372,7 @@ public interface Entity extends Comparable<Entity> {
     return comparison.entrySet().stream()
             .map(entry -> definition.property(entry.getKey()))
             .filter(property -> {
-              boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).updatable();
+              boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
               boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
 
               return updatableColumnProperty && !lazilyLoadedBlobProperty && isValueMissingOrModified(entity, comparison, property.attribute());

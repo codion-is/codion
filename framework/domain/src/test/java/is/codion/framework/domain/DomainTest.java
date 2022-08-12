@@ -101,17 +101,17 @@ public class DomainTest {
     assertEquals(definition.property(Detail.MASTER_CODE).caption(), Detail.MASTER_CODE.name());
 
     //assert hidden status
-    assertTrue(definition.property(Detail.ID).hidden());
-    assertFalse(definition.property(Detail.SHORT).hidden());
-    assertFalse(definition.property(Detail.INT).hidden());
-    assertFalse(definition.property(Detail.DOUBLE).hidden());
-    assertFalse(definition.property(Detail.STRING).hidden());
-    assertFalse(definition.property(Detail.DATE).hidden());
-    assertFalse(definition.property(Detail.TIMESTAMP).hidden());
-    assertFalse(definition.property(Detail.BOOLEAN).hidden());
-    assertFalse(definition.property(Detail.MASTER_FK).hidden());
-    assertFalse(definition.property(Detail.MASTER_NAME).hidden());
-    assertFalse(definition.property(Detail.MASTER_CODE).hidden());
+    assertTrue(definition.property(Detail.ID).isHidden());
+    assertFalse(definition.property(Detail.SHORT).isHidden());
+    assertFalse(definition.property(Detail.INT).isHidden());
+    assertFalse(definition.property(Detail.DOUBLE).isHidden());
+    assertFalse(definition.property(Detail.STRING).isHidden());
+    assertFalse(definition.property(Detail.DATE).isHidden());
+    assertFalse(definition.property(Detail.TIMESTAMP).isHidden());
+    assertFalse(definition.property(Detail.BOOLEAN).isHidden());
+    assertFalse(definition.property(Detail.MASTER_FK).isHidden());
+    assertFalse(definition.property(Detail.MASTER_NAME).isHidden());
+    assertFalse(definition.property(Detail.MASTER_CODE).isHidden());
   }
 
   @Test

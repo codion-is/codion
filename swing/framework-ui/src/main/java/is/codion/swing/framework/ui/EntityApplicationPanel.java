@@ -1553,8 +1553,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (EntityDefinition definition : entities.definitions()) {
         for (ForeignKeyProperty fkProperty : definition.foreignKeyProperties()) {
-          if (fkProperty.referencedEntityType().equals(entityType()) && !fkProperty.softReference()
-                  && !foreignKeyCycle(fkProperty.referencedEntityType())) {
+          if (fkProperty.referencedType().equals(entityType()) && !fkProperty.isSoftReference()
+                  && !foreignKeyCycle(fkProperty.referencedType())) {
             childrenList.add(new EntityDependencyTreeNode(definition.entityType(), entities));
           }
         }

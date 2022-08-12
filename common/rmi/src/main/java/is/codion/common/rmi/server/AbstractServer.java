@@ -414,7 +414,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   private static void configureSerializationWhitelist(ServerConfiguration configuration) {
-    if (configuration.serializationFilterDryRun()) {
+    if (configuration.isSerializationFilterDryRun()) {
       SerializationWhitelist.configureDryRun(configuration.serializationFilterWhitelist());
     }
     else {

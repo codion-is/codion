@@ -23,7 +23,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
 
   private final EntityTableConditionModel tableConditionModel;
   private final Collection<TableColumn> tableColumns;
-  private final State advancedState = State.state();
+  private final State advancedViewState = State.state();
 
   /**
    * Instantiates a new AbstractEntityTableConditionPanel.
@@ -55,7 +55,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
    * @return the state controlling the advanced state of this condition panel
    */
   public final State advancedState() {
-    return advancedState;
+    return advancedViewState;
   }
 
   /**
@@ -81,15 +81,15 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
   /**
    * @param listener a listener notified each time the advanced search state changes
    */
-  public final void addAdvancedListener(EventDataListener<Boolean> listener) {
-    advancedState.addDataListener(listener);
+  public final void addAdvancedViewListener(EventDataListener<Boolean> listener) {
+    advancedViewState.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeAdvancedListener(EventDataListener<Boolean> listener) {
-    advancedState.removeDataListener(listener);
+  public final void removeAdvancedViewListener(EventDataListener<Boolean> listener) {
+    advancedViewState.removeDataListener(listener);
   }
 
   /**
@@ -99,16 +99,16 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
   public void addFocusGainedListener(EventDataListener<Attribute<?>> listener) {}
 
   /**
-   * Sets the advanced search state, if supported
+   * Sets the advanced search view state, if supported
    * @param advanced true
    * @throws UnsupportedOperationException by default
    * @see #hasAdvancedView()
    */
-  protected void setAdvanced(boolean advanced) {
+  protected void setAdvancedView(boolean advanced) {
     throw new UnsupportedOperationException();
   }
 
   private void bindEvents() {
-    advancedState.addDataListener(this::setAdvanced);
+    advancedViewState.addDataListener(this::setAdvancedView);
   }
 }

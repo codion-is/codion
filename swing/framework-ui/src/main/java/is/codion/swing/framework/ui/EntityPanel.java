@@ -867,9 +867,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Hides or shows the active filter panels for this panel and all its child panels
+   * Hides or shows the active filter panel dialogs for this panel and all its child panels
    * (detail panels and their detail panels etc.)
-   * @param visible true if the active panels should be shown, false if they should be hidden
+   * @param visible true if the active filter panel dialogs should be shown, false if they should be hidden
    */
   public final void setFilterPanelsVisible(boolean visible) {
     if (!panelInitialized) {

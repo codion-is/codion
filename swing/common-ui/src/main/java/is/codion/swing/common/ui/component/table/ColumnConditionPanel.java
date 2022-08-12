@@ -19,7 +19,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -28,10 +27,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Point;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.math.BigDecimal;
@@ -87,9 +84,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final JPanel rangePanel = new JPanel(new GridLayout(1, 2));
 
   private final Event<C> focusGainedEvent = Event.event();
-  private final State advancedConditionState = State.state();
-
-  private JDialog dialog;
+  private final State advancedViewState = State.state();
 
   /**
    * Instantiates a new ColumnConditionPanel, with a default bound field factory.
@@ -121,7 +116,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     this.toggleEnabledButton = radioButton(conditionModel.enabledState())
             .horizontalAlignment(CENTER)
             .build();
-    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? toggleButton(advancedConditionState)
+    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? toggleButton(advancedViewState)
             .caption("...")
             .build() : null;
     conditionModel.setLocked(modelLocked);
@@ -141,67 +136,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    */
   public ColumnConditionModel<C, T> model() {
     return this.conditionModel;
-  }
-
-  /**
-   * @return true if the dialog is enabled
-   */
-  public boolean isDialogEnabled() {
-    return dialog != null;
-  }
-
-  /**
-   * @return true if the dialog is being shown
-   */
-  public boolean isDialogVisible() {
-    return dialog != null && dialog.isVisible();
-  }
-
-  /**
-   * Displays this condition panel in a dialog
-   * @param dialogParent the dialog parent
-   * @param title the dialog title
-   */
-  public void enableDialog(Container dialogParent, String title) {
-    if (!isDialogEnabled()) {
-      initializeConditionDialog(dialogParent, title);
-    }
-  }
-
-  /**
-   * Displays this panel in a dialog
-   * @param position the location, used if specified
-   */
-  public void showDialog(Point position) {
-    if (!isDialogEnabled()) {
-      throw new IllegalStateException("Dialog has not been enabled for this condition panel");
-    }
-    if (!isDialogVisible()) {
-      if (position != null) {
-        Point adjustedPosition = position;
-        adjustedPosition.y = adjustedPosition.y - dialog.getHeight();
-        dialog.setLocation(adjustedPosition);
-      }
-      dialog.setVisible(true);
-      requestInputFocus();
-    }
-  }
-
-  /**
-   * Hides the dialog showing this panel if visible
-   */
-  public void hideDialog() {
-    if (isDialogVisible()) {
-      dialog.setVisible(false);
-      dialog.dispose();
-    }
-  }
-
-  /**
-   * @return the dialog used to show this filter panel
-   */
-  public JDialog dialog() {
-    return dialog;
   }
 
   /**
@@ -231,17 +165,17 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   /**
-   * @param advanced true if advanced condition should be enabled
+   * @param advanced true if advanced view should be enabled
    */
-  public void setAdvanced(boolean advanced) {
-    advancedConditionState.set(advanced);
+  public void setAdvancedView(boolean advanced) {
+    advancedViewState.set(advanced);
   }
 
   /**
-   * @return true if the advanced condition is enabled
+   * @return true if the advanced view is enabled
    */
-  public boolean isAdvanced() {
-    return advancedConditionState.get();
+  public boolean isAdvancedView() {
+    return advancedViewState.get();
   }
 
   /**
@@ -275,15 +209,15 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @param listener a listener notified each time the advanced condition state changes
    */
-  public void addAdvancedListener(EventDataListener<Boolean> listener) {
-    advancedConditionState.addDataListener(listener);
+  public void addAdvancedViewListener(EventDataListener<Boolean> listener) {
+    advancedViewState.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeAdvancedListener(EventDataListener<Boolean> listener) {
-    advancedConditionState.removeDataListener(listener);
+  public void removeAdvancedViewListener(EventDataListener<Boolean> listener) {
+    advancedViewState.removeDataListener(listener);
   }
 
   /**
@@ -404,7 +338,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    advancedConditionState.addDataListener(this::onAdvancedChange);
+    advancedViewState.addDataListener(this::onAdvancedViewChange);
     conditionModel.operatorValue().addDataListener(this::onOperatorChanged);
     FocusAdapter focusGainedListener = new FocusAdapter() {
       @Override
@@ -457,16 +391,16 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     repaint();
   }
 
-  private void onAdvancedChange(boolean advanced) {
-    if (advanced) {
-      setAdvanced();
+  private void onAdvancedViewChange(boolean advancedView) {
+    if (advancedView) {
+      setAdvancedView();
     }
     else {
-      setSimple();
+      setSimpleView();
     }
   }
 
-  private void setSimple() {
+  private void setSimpleView() {
     remove(controlPanel);
     setupButtonPanel();
     inputPanel.add(buttonPanel, BorderLayout.EAST);
@@ -475,7 +409,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     revalidate();
   }
 
-  private void setAdvanced() {
+  private void setAdvancedView() {
     setupButtonPanel();
     controlPanel.add(buttonPanel, BorderLayout.EAST);
     add(controlPanel, BorderLayout.NORTH);
@@ -516,27 +450,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     setLayout(new BorderLayout());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
     onOperatorChanged(conditionModel.getOperator());
-    onAdvancedChange(advancedConditionState.get());
+    onAdvancedViewChange(advancedViewState.get());
     addStringConfigurationPopupMenu();
-  }
-
-  private void initializeConditionDialog(Container parent, String title) {
-    if (dialog != null) {
-      return;
-    }
-
-    JDialog dialogParent = Utilities.getParentDialog(parent).orElse(null);
-    if (dialogParent != null) {
-      dialog = new JDialog(dialogParent, title, false);
-    }
-    else {
-      dialog = new JDialog(Utilities.getParentFrame(parent).orElse(null), title, false);
-    }
-
-    dialog.getContentPane().add(this);
-    dialog.pack();
-
-    addAdvancedListener(advanced -> dialog.pack());
   }
 
   private void singleValuePanel(JComponent boundField) {

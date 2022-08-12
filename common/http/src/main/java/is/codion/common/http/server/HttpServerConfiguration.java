@@ -83,7 +83,7 @@ public interface HttpServerConfiguration {
   /**
    * @return true if https is used
    */
-  boolean secure();
+  boolean isSecure();
 
   /**
    * @return the document root

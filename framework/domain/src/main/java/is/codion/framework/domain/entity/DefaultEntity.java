@@ -439,7 +439,7 @@ final class DefaultEntity implements Entity, Serializable {
       updateOriginalValue(attribute, newValue, previousValue);
     }
     if (property instanceof ColumnProperty) {
-      if (((ColumnProperty<?>) property).primaryKeyColumn()) {
+      if (((ColumnProperty<?>) property).isPrimaryKeyColumn()) {
         primaryKey = null;
       }
       if (definition.isForeignKeyAttribute(attribute)) {
@@ -477,7 +477,7 @@ final class DefaultEntity implements Entity, Serializable {
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
       ColumnProperty<?> referencedProperty = referencedDefinition.columnProperty(reference.referencedAttribute());
-      if (!referencedProperty.nullable() && isNull(reference.attribute())) {
+      if (!referencedProperty.isNullable() && isNull(reference.attribute())) {
         return true;
       }
     }
@@ -500,9 +500,9 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private void validateForeignKeyValue(ForeignKeyProperty property, Entity foreignKeyValue) {
-    EntityType referencedEntityType = property.referencedEntityType();
-    if (!Objects.equals(referencedEntityType, foreignKeyValue.entityType())) {
-      throw new IllegalArgumentException("Entity of type " + referencedEntityType +
+    EntityType referencedType = property.referencedType();
+    if (!Objects.equals(referencedType, foreignKeyValue.entityType())) {
+      throw new IllegalArgumentException("Entity of type " + referencedType +
               " expected for property " + property + ", got: " + foreignKeyValue.entityType());
     }
     property.references().forEach(reference -> throwIfModifiesReadOnlyReference(property, foreignKeyValue, reference));
@@ -510,7 +510,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   private void throwIfModifiesReadOnlyReference(ForeignKeyProperty property, Entity foreignKeyValue,
                                                 ForeignKey.Reference<?> reference) {
-    boolean readOnlyReference = property.readOnly(reference.attribute());
+    boolean readOnlyReference = property.isReadOnly(reference.attribute());
     if (readOnlyReference) {
       boolean containsValue = contains(reference.attribute());
       if (containsValue) {
@@ -559,7 +559,7 @@ final class DefaultEntity implements Entity, Serializable {
     List<ForeignKey.Reference<?>> references = foreignKeyProperty.references();
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
-      if (!foreignKeyProperty.readOnly(reference.attribute())) {
+      if (!foreignKeyProperty.isReadOnly(reference.attribute())) {
         Property<Object> columnProperty = definition.columnProperty((Attribute<Object>) reference.attribute());
         put(columnProperty, referencedEntity == null ? null : referencedEntity.get(reference.referencedAttribute()));
       }
@@ -606,7 +606,7 @@ final class DefaultEntity implements Entity, Serializable {
       ForeignKey.Reference<?> reference = references.get(i);
       ColumnProperty<?> referencedProperty = referencedEntityDefinition.columnProperty(reference.referencedAttribute());
       Object value = values.get(reference.attribute());
-      if (value == null && !referencedProperty.nullable()) {
+      if (value == null && !referencedProperty.isNullable()) {
         return null;
       }
       keyValues.put(reference.referencedAttribute(), value);
@@ -713,7 +713,7 @@ final class DefaultEntity implements Entity, Serializable {
         Property<?> property = definition.property(attribute);
         if (property instanceof ColumnProperty) {
           ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
-          if (columnProperty.insertable() && columnProperty.updatable()) {
+          if (columnProperty.isInsertable() && columnProperty.isUpdatable()) {
             return true;
           }
         }

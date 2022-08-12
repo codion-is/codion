@@ -50,45 +50,45 @@ public interface ColumnProperty<T> extends Property<T> {
   /**
    * @return true if this property is part of a primary key
    */
-  boolean primaryKeyColumn();
+  boolean isPrimaryKeyColumn();
 
   /**
    * @return true if this column is a group by column
    */
-  boolean groupingColumn();
+  boolean isGroupingColumn();
 
   /**
    * @return true if this is an aggregate column
    */
-  boolean aggregateColumn();
+  boolean isAggregateColumn();
 
   /**
    * @return true if this property should be included in select queries
    */
-  boolean selectable();
+  boolean isSelectable();
 
   /**
    * Specifies whether this property is insertable
    * @return true if this property is insertable
    */
-  boolean insertable();
+  boolean isInsertable();
 
   /**
    * Indicates whether this column is updatable
    * @return true if this column is updatable
    */
-  boolean updatable();
+  boolean isUpdatable();
 
   /**
    * @return true if this property is neither insertable nor updatable.
    */
-  boolean readOnly();
+  boolean isReadOnly();
 
   /**
    * @return true if this column is a denormalized column, one which should receives a value
    * from a column in a table referenced via a foreign key
    */
-  boolean denormalized();
+  boolean isDenormalized();
 
   /**
    * @return true if the underlying column has a default value
@@ -98,7 +98,7 @@ public interface ColumnProperty<T> extends Property<T> {
   /**
    * @return true if this property should be included when searching by string
    */
-  boolean searchProperty();
+  boolean isSearchProperty();
 
   /**
    * Fetches a value for this property from a ResultSet

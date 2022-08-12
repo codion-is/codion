@@ -437,7 +437,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
     /**
      * @return true if this column is visible, false if hidden
      */
-    boolean visible();
+    boolean isVisible();
 
     /**
      * @return the column width in pixels

@@ -616,7 +616,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
         ColumnPreferences columnPreferences = preferenceMap.get(attribute);
         if (columnPreferences != null) {
           column.setPrefWidth(columnPreferences.width());
-          if (!columnPreferences.visible()) {
+          if (!columnPreferences.isVisible()) {
             columns.remove(column);
           }
         }

@@ -30,7 +30,7 @@ final class DefaultColumnPreferences implements EntityTableModel.ColumnPreferenc
   }
 
   @Override
-  public boolean visible() {
+  public boolean isVisible() {
     return index != -1;
   }
 

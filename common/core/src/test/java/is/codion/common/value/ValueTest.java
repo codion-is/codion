@@ -89,11 +89,11 @@ public class ValueTest {
   void value() {
     AtomicInteger eventCounter = new AtomicInteger();
     Value<Integer> intValue = Value.value(42, -1);
-    assertFalse(intValue.nullable());
+    assertFalse(intValue.isNullable());
     assertTrue(intValue.toOptional().isPresent());
     assertTrue(intValue.equalTo(42));
     ValueObserver<Integer> valueObserver = intValue.observer();
-    assertFalse(valueObserver.nullable());
+    assertFalse(valueObserver.isNullable());
     assertTrue(valueObserver.toOptional().isPresent());
     assertTrue(valueObserver.equalTo(42));
     EventListener eventListener = eventCounter::incrementAndGet;
@@ -127,7 +127,7 @@ public class ValueTest {
     assertEquals(-1, valueObserver.get());
 
     Value<String> stringValue = Value.value(null, "null");
-    assertFalse(stringValue.nullable());
+    assertFalse(stringValue.isNullable());
     assertEquals("null", stringValue.get());
     stringValue.set("test");
     assertEquals("test", stringValue.get());
@@ -191,7 +191,7 @@ public class ValueTest {
     AtomicInteger modelValueEventCounter = new AtomicInteger();
     Value<Integer> modelValue = Value.propertyValue(this, "intValue", int.class, integerValueChange.observer());
     Value<Integer> uiValue = Value.value();
-    assertFalse(modelValue.nullable());
+    assertFalse(modelValue.isNullable());
     uiValue.link(modelValue.observer());
     modelValue.addListener(modelValueEventCounter::incrementAndGet);
     AtomicInteger uiValueEventCounter = new AtomicInteger();
@@ -253,7 +253,7 @@ public class ValueTest {
     assertTrue(valueSet.isEmpty());
     assertFalse(valueSet.isNotEmpty());
 
-    assertFalse(valueSet.nullable());
+    assertFalse(valueSet.isNullable());
     assertTrue(valueSet.toOptional().isPresent());
 
     assertTrue(valueSet.add(1));

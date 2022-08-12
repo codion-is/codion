@@ -87,8 +87,7 @@ public interface FilteredModel<T> {
   boolean isFiltered(T item);
 
   /**
-   * Refreshes the data in this model.
-   * Note that this method only throws exceptions when run synchronously, as in, off the EDT.
+   * Refreshes the data in this model. Note that this method only throws exceptions when run synchronously off the EDT.
    * Use {@link #addRefreshFailedListener(EventDataListener)} to listen for exceptions that happen during asynchronous refresh.
    * @see #refreshingObserver()
    * @see #addRefreshListener(EventListener)

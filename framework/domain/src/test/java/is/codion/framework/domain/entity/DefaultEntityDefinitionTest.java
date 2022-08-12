@@ -221,8 +221,8 @@ public class DefaultEntityDefinitionTest {
   @Test
   void testForeignKeyNullability() {
     Domain domain = new TestDomain();
-    assertFalse(domain.entities().definition(TestDomain.T_COMPOSITE_DETAIL).foreignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK).nullable());
-    assertTrue(domain.entities().definition(Detail.TYPE).foreignKeyProperty(Detail.MASTER_FK).nullable());
+    assertFalse(domain.entities().definition(TestDomain.T_COMPOSITE_DETAIL).foreignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK).isNullable());
+    assertTrue(domain.entities().definition(Detail.TYPE).foreignKeyProperty(Detail.MASTER_FK).isNullable());
   }
 
   @Test

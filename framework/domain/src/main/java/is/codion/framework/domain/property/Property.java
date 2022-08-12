@@ -170,7 +170,7 @@ public interface Property<T> {
   /**
    * @return true if this property should be hidden in table views
    */
-  boolean hidden();
+  boolean isHidden();
 
   /**
    * @return the maximum allowed value for this property, null if none is defined,
@@ -206,7 +206,7 @@ public interface Property<T> {
   /**
    * @return true if null is a valid value for this property
    */
-  boolean nullable();
+  boolean isNullable();
 
   /**
    * @return the maximum length of this property value, -1 is returned if the maximum length is undefined,

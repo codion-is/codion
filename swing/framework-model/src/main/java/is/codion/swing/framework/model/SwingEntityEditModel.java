@@ -180,13 +180,13 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param foreignKey the foreign key for which to create a {@link SwingEntityComboBoxModel}
    * @return a {@link SwingEntityComboBoxModel} for the given foreign key
    * @see FilteredComboBoxModel#COMBO_BOX_NULL_CAPTION
-   * @see Property#nullable()
+   * @see Property#isNullable()
    * @see is.codion.framework.model.EntityComboBoxModel#setSelectAttributes(Collection)
    * @see ForeignKeyProperty#selectAttributes()
    */
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition().foreignKeyProperty(foreignKey);
-    SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.referencedEntityType(), connectionProvider());
+    SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.referencedType(), connectionProvider());
     model.setSelectAttributes(foreignKeyProperty.selectAttributes());
     if (isNullable(foreignKey)) {
       model.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
