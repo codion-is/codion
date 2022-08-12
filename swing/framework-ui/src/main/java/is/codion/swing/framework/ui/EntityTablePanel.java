@@ -1546,7 +1546,7 @@ public class EntityTablePanel extends JPanel {
         addRefreshOnEnterControl((EntityTableConditionPanel) conditionPanel, refreshControl);
       }
       if (conditionPanel.hasAdvancedView()) {
-        conditionPanel.addAdvancedListener(advanced -> {
+        conditionPanel.addAdvancedViewListener(advanced -> {
           if (isConditionPanelVisible()) {
             revalidate();
           }

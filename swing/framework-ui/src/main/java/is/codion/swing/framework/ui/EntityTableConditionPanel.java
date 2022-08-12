@@ -149,8 +149,8 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   }
 
   @Override
-  protected void setAdvanced(boolean advanced) {
-    conditionPanel.columnComponents().forEach((column, panel) -> panel.setAdvanced(advanced));
+  protected void setAdvancedView(boolean advanced) {
+    conditionPanel.columnComponents().forEach((column, panel) -> panel.setAdvancedView(advanced));
   }
 
   private List<Property<?>> conditionPanelProperties() {
