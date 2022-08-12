@@ -888,7 +888,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
       else {
         Windows.frame(entityPanel)
-                .relativeTo(this)
+                .locationRelativeTo(this)
                 .title(panelBuilder.getCaption() == null ? applicationModel.entities().definition(panelBuilder.entityType()).caption() : panelBuilder.getCaption())
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {

@@ -1487,7 +1487,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private Window createEditWindow() {
     if (USE_FRAME_PANEL_DISPLAY.get()) {
       return Windows.frame(editControlPanel)
-              .relativeTo(this)
+              .locationRelativeTo(this)
               .title(caption)
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
               .onClosed(windowEvent -> setEditPanelState(HIDDEN))
