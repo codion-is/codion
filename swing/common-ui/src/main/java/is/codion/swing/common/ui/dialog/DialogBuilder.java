@@ -7,6 +7,7 @@ import is.codion.common.value.ValueObserver;
 
 import javax.swing.ImageIcon;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.Window;
 
 /**
@@ -34,6 +35,13 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
    * @return this builder instance
    */
   B locationRelativeTo(Component component);
+
+  /**
+   * Overrides {@link #locationRelativeTo(Component)}.
+   * @param location the location of the dialog
+   * @return this builder instance
+   */
+  B location(Point location);
 
   /**
    * @param title the dialog title

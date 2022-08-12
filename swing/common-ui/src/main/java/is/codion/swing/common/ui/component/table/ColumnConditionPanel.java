@@ -19,7 +19,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -28,10 +27,8 @@ import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Point;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.math.BigDecimal;
@@ -89,8 +86,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final Event<C> focusGainedEvent = Event.event();
   private final State advancedViewState = State.state();
 
-  private JDialog dialog;
-
   /**
    * Instantiates a new ColumnConditionPanel, with a default bound field factory.
    * @param conditionModel the condition model to base this panel on
@@ -141,67 +136,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    */
   public ColumnConditionModel<C, T> model() {
     return this.conditionModel;
-  }
-
-  /**
-   * @return true if the dialog is enabled
-   */
-  public boolean isDialogEnabled() {
-    return dialog != null;
-  }
-
-  /**
-   * @return true if the dialog is being shown
-   */
-  public boolean isDialogVisible() {
-    return dialog != null && dialog.isVisible();
-  }
-
-  /**
-   * Displays this condition panel in a dialog
-   * @param dialogParent the dialog parent
-   * @param title the dialog title
-   */
-  public void enableDialog(Container dialogParent, String title) {
-    if (!isDialogEnabled()) {
-      initializeConditionDialog(dialogParent, title);
-    }
-  }
-
-  /**
-   * Displays this panel in a dialog
-   * @param position the location, used if specified
-   */
-  public void showDialog(Point position) {
-    if (!isDialogEnabled()) {
-      throw new IllegalStateException("Dialog has not been enabled for this condition panel");
-    }
-    if (!isDialogVisible()) {
-      if (position != null) {
-        Point adjustedPosition = position;
-        adjustedPosition.y = adjustedPosition.y - dialog.getHeight();
-        dialog.setLocation(adjustedPosition);
-      }
-      dialog.setVisible(true);
-      requestInputFocus();
-    }
-  }
-
-  /**
-   * Hides the dialog showing this panel if visible
-   */
-  public void hideDialog() {
-    if (isDialogVisible()) {
-      dialog.setVisible(false);
-      dialog.dispose();
-    }
-  }
-
-  /**
-   * @return the dialog used to show this filter panel
-   */
-  public JDialog dialog() {
-    return dialog;
   }
 
   /**
@@ -518,25 +452,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     onOperatorChanged(conditionModel.getOperator());
     onAdvancedViewChange(advancedViewState.get());
     addStringConfigurationPopupMenu();
-  }
-
-  private void initializeConditionDialog(Container parent, String title) {
-    if (dialog != null) {
-      return;
-    }
-
-    JDialog dialogParent = Utilities.getParentDialog(parent).orElse(null);
-    if (dialogParent != null) {
-      dialog = new JDialog(dialogParent, title, false);
-    }
-    else {
-      dialog = new JDialog(Utilities.getParentFrame(parent).orElse(null), title, false);
-    }
-
-    dialog.getContentPane().add(this);
-    dialog.pack();
-
-    addAdvancedViewListener(advanced -> dialog.pack());
   }
 
   private void singleValuePanel(JComponent boundField) {

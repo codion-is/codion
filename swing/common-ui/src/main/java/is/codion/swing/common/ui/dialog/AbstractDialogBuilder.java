@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.ImageIcon;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.Window;
 
 /**
@@ -19,6 +20,7 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 
   protected Window owner;
   protected Component locationRelativeTo;
+  protected Point location;
   protected ValueObserver<String> titleProvider;
   protected ImageIcon icon;
 
@@ -43,6 +45,12 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
   @Override
   public final B locationRelativeTo(Component locationRelativeTo) {
     this.locationRelativeTo = locationRelativeTo;
+    return (B) this;
+  }
+
+  @Override
+  public final B location(Point location) {
+    this.location = location;
     return (B) this;
   }
 

@@ -25,6 +25,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -38,7 +39,6 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -123,6 +123,11 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * The column filter panels
    */
   private final Map<TableColumn, ColumnConditionPanel<C, ?>> columnFilterPanels = new HashMap<>();
+
+  /**
+   * Active filter panel dialogs
+   */
+  private final Map<ColumnConditionPanel<C, ?>, JDialog> columnFilterPanelDialogs = new HashMap<>();
 
   /**
    * The text field used for entering the search condition
@@ -306,17 +311,11 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   /**
-   * Hides or shows the active filter panels for this table panel
-   * @param filterPanelsVisible true if the active filter panels should be shown, false if they should be hidden
+   * Hides or shows the active filter panel dialogs for this table panel
+   * @param filterPanelsVisible true if the active filter panel dialogs should be shown, false if they should be hidden
    */
   public void setFilterPanelsVisible(boolean filterPanelsVisible) {
-    columnFilterPanels.forEach((column, conditionPanel) -> {
-      if (filterPanelsVisible) {
-        conditionPanel.showDialog(null);
-      }
-      else {
-        conditionPanel.hideDialog();
-      }});
+    columnFilterPanelDialogs.values().forEach(dialog -> dialog.setVisible(filterPanelsVisible));
   }
 
   /**
@@ -554,21 +553,6 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     viewport.scrollRectToVisible(cellRectangle);
   }
 
-  private static void toggleFilterPanel(ColumnConditionPanel<?, ?> columnFilterPanel, Container parent,
-                                        String title, Point position) {
-    if (columnFilterPanel != null) {
-      if (!columnFilterPanel.isDialogEnabled()) {
-        columnFilterPanel.enableDialog(parent, title);
-      }
-      if (columnFilterPanel.isDialogVisible()) {
-        columnFilterPanel.hideDialog();
-      }
-      else {
-        columnFilterPanel.showDialog(position);
-      }
-    }
-  }
-
   private ToggleControl createToggleColumnControl(TableColumn column) {
     C identifier = (C) column.getIdentifier();
     State visibleState = State.state(tableModel.columnModel().isColumnVisible(identifier));
@@ -577,6 +561,39 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     return ToggleControl.builder(visibleState)
             .caption(column.getHeaderValue().toString())
             .build();
+  }
+
+  private void toggleFilterPanel(ColumnConditionPanel<C, ?> columnFilterPanel, String title, Point location) {
+    if (columnFilterPanel != null) {
+      JDialog dialog = columnFilterPanelDialog(columnFilterPanel, title);
+      if (dialog.isShowing()) {
+        columnFilterPanelDialogs.remove(columnFilterPanel).dispose();
+      }
+      else {
+        showDialog(columnFilterPanel, title, location);
+      }
+    }
+  }
+
+  private void showDialog(ColumnConditionPanel<C, ?> columnFilterPanel, String title, Point location) {
+    JDialog dialog = columnFilterPanelDialog(columnFilterPanel, title);
+    Point adjustedLocation = location;
+    //set the location above the column header
+    adjustedLocation.y = adjustedLocation.y - dialog.getHeight() - getTableHeader().getHeight();
+    dialog.setLocation(adjustedLocation);
+    dialog.setVisible(true);
+    columnFilterPanel.addAdvancedViewListener(advanced -> dialog.pack());
+    columnFilterPanel.requestInputFocus();
+  }
+
+  private JDialog columnFilterPanelDialog(ColumnConditionPanel<C, ?> columnFilterPanel, String title) {
+    return columnFilterPanelDialogs.computeIfAbsent(columnFilterPanel, k -> Dialogs.componentDialog(k)
+            .owner(this)
+            .title(title)
+            .modal(false)
+            .disposeOnEscape(false)
+            .onClosed(event -> columnFilterPanelDialogs.remove(columnFilterPanel).dispose())
+            .build());
   }
 
   private void initializeTableHeader() {
@@ -810,7 +827,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
       TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
       toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
                       (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column)),
-              FilteredTable.this, column.getHeaderValue().toString(), event.getLocationOnScreen());
+              column.getHeaderValue().toString(), event.getLocationOnScreen());
     }
   }
 

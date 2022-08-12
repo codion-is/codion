@@ -8372,3 +8372,5 @@
   ValueObserver, Property and more, is prefix added to boolean accessors where applicable, for consistency
   ForeignKeyProperty.referencedEntityType() renamed referencedType()
   ColumnConditionPanel, AbstractEntityTableConditionPanel, setAdvanced() renamed setAdvancedView()
+  DialogBuilder.location() added
+  ColumnConditionPanel, dialog functionality moved to FilteredTable

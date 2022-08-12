@@ -28,7 +28,6 @@ public class ColumnConditionPanelTest {
     assertNotNull(panel.equalField());
     assertNotNull(panel.upperBoundField());
     assertNotNull(panel.lowerBoundField());
-    assertFalse(panel.isDialogVisible());
     assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String>(null, null));
   }
 
