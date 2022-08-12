@@ -105,8 +105,7 @@ public class StoreDemo {
 
     Dialogs.componentDialog(customerPanel)
             .title("Customers")
+            .onClosed(e -> connectionProvider.close())
             .show();
-
-    connectionProvider.close();
   }
 }
