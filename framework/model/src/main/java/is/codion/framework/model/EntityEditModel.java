@@ -532,27 +532,34 @@ public interface EntityEditModel {
   boolean isValid();
 
   /**
-   * @return a StateObserver indicating the valid status of the underlying Entity.
+   * @return a {@link StateObserver} indicating the valid status of the underlying Entity.
    * @see #validator()
    * @see #isValid()
    */
   StateObserver validObserver();
 
   /**
-   * Returns a StateObserver responsible for indicating when and if any values in the underlying Entity have been modified.
-   * @return a StateObserver indicating the modified state of this edit model
+   * Returns a {@link StateObserver} responsible for indicating when and if any values in the underlying Entity have been modified.
+   * @return a {@link StateObserver} indicating the modified state of this edit model
    * @see #isModified()
    */
   StateObserver modifiedObserver();
 
   /**
-   * @return an observer indicating whether the active entity is new
+   * Returns a {@link StateObserver} instance indicating whether the value of the given attribute has been modified.
+   * @return a {@link StateObserver} indicating the modified state of the value of the given attribute
+   * @see #isModified()
+   */
+  StateObserver modifiedObserver(Attribute<?> attribute);
+
+  /**
+   * @return a {@link StateObserver} indicating whether the active entity is new
    * @see #isEntityNew()
    */
   StateObserver entityNewObserver();
 
   /**
-   * @return the state used to determine if deleting should be enabled
+   * @return the {@link StateObserver} used to determine if deleting should be enabled
    * @see #isDeleteEnabled()
    * @see #setDeleteEnabled(boolean)
    */

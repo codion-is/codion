@@ -626,6 +626,21 @@ public final class DefaultEntityEditModelTest {
     assertEquals(dept, employeeEditModel.get(TestDomain.EMP_DEPARTMENT_FK));
   }
 
+  @Test
+  void modifiedObserver() throws DatabaseException {
+    Entity martin = employeeEditModel.connectionProvider().connection().selectSingle(TestDomain.EMP_NAME, "MARTIN");
+    employeeEditModel.setEntity(martin);
+    State modifiedState = State.state();
+    StateObserver nameModifiedObserver = employeeEditModel.modifiedObserver(TestDomain.EMP_NAME);
+    nameModifiedObserver.addDataListener(modifiedState::set);
+    employeeEditModel.put(TestDomain.EMP_NAME, "JOHN");
+    assertTrue(nameModifiedObserver.get());
+    assertTrue(modifiedState.get());
+    employeeEditModel.put(TestDomain.EMP_NAME, "MARTIN");
+    assertFalse(nameModifiedObserver.get());
+    assertFalse(modifiedState.get());
+  }
+
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
     public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
