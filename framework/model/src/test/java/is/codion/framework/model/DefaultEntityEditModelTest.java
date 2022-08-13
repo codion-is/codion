@@ -628,6 +628,9 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   void modifiedAndNullObserver() throws DatabaseException {
+    employeeEditModel.put(TestDomain.EMP_NAME, "NAME");
+    //only modified when the entity is not new
+    assertFalse(employeeEditModel.modifiedObserver(TestDomain.EMP_NAME).get());
     Entity martin = employeeEditModel.connectionProvider().connection().selectSingle(TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(martin);
     State modifiedState = State.state();

@@ -8383,3 +8383,4 @@
   EntityEditModel.modifiedObserver(Attribute) added
   EntityEditModel.nullObserver(Attribute) added
   DefaultEntityEditModel.onValueChange() now updates null and modified states before firing change events
+  DefaultEntityEditModel.modifiedObserver(Attribute) bug fixed, now values are only modified if the entity is not new

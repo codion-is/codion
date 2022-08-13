@@ -349,7 +349,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final StateObserver modifiedObserver(Attribute<?> attribute) {
     requireNonNull(attribute);
     return attributeModifiedStateMap.computeIfAbsent(attribute, k ->
-            State.state(entity.isModified(attribute))).observer();
+            State.state(!entity.isNew() && entity.isModified(attribute))).observer();
   }
 
   @Override
@@ -1116,7 +1116,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
     State modifiedState = attributeModifiedStateMap.get(attribute);
     if (modifiedState != null) {
-      modifiedState.set(entity.isModified(attribute));
+      modifiedState.set(!entity.isNew() && entity.isModified(attribute));
     }
     Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
     if (changeEvent != null) {
