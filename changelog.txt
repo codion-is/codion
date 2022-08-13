@@ -8381,3 +8381,4 @@
   EntityEditComponentPanel.getComponent(Attribute) now throws exception if none is found
   EntityEditView.getInputControl() renamed getInputComponent()
   EntityEditModel.modifiedObserver(Attribute) added
+  EntityEditModel.nullObserver(Attribute) added

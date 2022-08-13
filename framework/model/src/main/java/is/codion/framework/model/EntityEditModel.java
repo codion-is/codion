@@ -553,6 +553,13 @@ public interface EntityEditModel {
   StateObserver modifiedObserver(Attribute<?> attribute);
 
   /**
+   * Returns a {@link StateObserver} indicating whether the value of the given attribute is null.
+   * @return a {@link StateObserver} indicating whether the value of the given attribute is null
+   * @see #isNull(Attribute)
+   */
+  StateObserver nullObserver(Attribute<?> attribute);
+
+  /**
    * @return a {@link StateObserver} indicating whether the active entity is new
    * @see #isEntityNew()
    */

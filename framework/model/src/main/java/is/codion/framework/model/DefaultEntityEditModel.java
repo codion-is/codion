@@ -77,6 +77,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final StateObserver readOnlyObserver = State.and(insertEnabledState.reversedObserver(),
           updateEnabledState.reversedObserver(), deleteEnabledState.reversedObserver());
   private final Map<Attribute<?>, State> attributeModifiedStateMap = new HashMap<>();
+  private final Map<Attribute<?>, State> attributeNullStateMap = new HashMap<>();
 
   /**
    * The Entity being edited by this model
@@ -349,6 +350,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     requireNonNull(attribute);
     return attributeModifiedStateMap.computeIfAbsent(attribute, k ->
             State.state(entity.isModified(attribute))).observer();
+  }
+
+  @Override
+  public final StateObserver nullObserver(Attribute<?> attribute) {
+    requireNonNull(attribute);
+    return attributeNullStateMap.computeIfAbsent(attribute, k ->
+            State.state(entity.isNull(attribute))).observer();
   }
 
   @Override
@@ -1109,6 +1117,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     State modifiedState = attributeModifiedStateMap.get(attribute);
     if (modifiedState != null) {
       modifiedState.set(entity.isModified(attribute));
+    }
+    State nullState = attributeNullStateMap.get(attribute);
+    if (nullState != null) {
+      nullState.set(entity.isNull(attribute));
     }
     valueChangeEvent.onEvent(attribute);
   }
