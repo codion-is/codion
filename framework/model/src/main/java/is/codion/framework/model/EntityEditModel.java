@@ -547,6 +547,7 @@ public interface EntityEditModel {
 
   /**
    * Returns a {@link StateObserver} instance indicating whether the value of the given attribute has been modified.
+   * @param attribute the attribute
    * @return a {@link StateObserver} indicating the modified state of the value of the given attribute
    * @see #isModified()
    */
@@ -554,6 +555,7 @@ public interface EntityEditModel {
 
   /**
    * Returns a {@link StateObserver} indicating whether the value of the given attribute is null.
+   * @param attribute the attribute
    * @return a {@link StateObserver} indicating whether the value of the given attribute is null
    * @see #isNull(Attribute)
    */

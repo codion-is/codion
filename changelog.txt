@@ -8384,3 +8384,6 @@
   EntityEditModel.nullObserver(Attribute) added
   DefaultEntityEditModel.onValueChange() now updates null and modified states before firing change events
   DefaultEntityEditModel.modifiedObserver(Attribute) bug fixed, now values are only modified if the entity is not new
+  EntityEditComponentPanel, modified value indicator implemented
+  EntityEditPanel.addPanelInitializedListener() added
+  EntityEditComponentPanel.selectInputComponent() now final, as setComponent() is no longer restricted to attributes from the underlying entity, overriding no longer required for adding misc. components to the component selection
