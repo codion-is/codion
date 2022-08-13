@@ -1110,17 +1110,17 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private <T> void onValueChange(Attribute<T> attribute, T value) {
     updateEntityStates();
-    Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
-    if (changeEvent != null) {
-      changeEvent.onEvent(value);
+    State nullState = attributeNullStateMap.get(attribute);
+    if (nullState != null) {
+      nullState.set(entity.isNull(attribute));
     }
     State modifiedState = attributeModifiedStateMap.get(attribute);
     if (modifiedState != null) {
       modifiedState.set(entity.isModified(attribute));
     }
-    State nullState = attributeNullStateMap.get(attribute);
-    if (nullState != null) {
-      nullState.set(entity.isNull(attribute));
+    Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
+    if (changeEvent != null) {
+      changeEvent.onEvent(value);
     }
     valueChangeEvent.onEvent(attribute);
   }

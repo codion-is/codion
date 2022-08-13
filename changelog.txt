@@ -8382,3 +8382,4 @@
   EntityEditView.getInputControl() renamed getInputComponent()
   EntityEditModel.modifiedObserver(Attribute) added
   EntityEditModel.nullObserver(Attribute) added
+  DefaultEntityEditModel.onValueChange() now updates null and modified states before firing change events
