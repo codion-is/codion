@@ -51,6 +51,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -499,7 +500,10 @@ public class EntityEditComponentPanel extends JPanel {
     requireNonNull(labelComponent, "labelComponent");
     requireNonNull(inputComponent, "inputComponent");
     if (labelComponent instanceof JLabel) {
-      setLabelForComponent((JLabel) labelComponent, inputComponent);
+      // we need to be a bit clever here, since this inputComponent could be a panel, containing the actual
+      // input component, f.ex. when a combobox is added to a panel with a new instance button
+      findComponent(inputComponent).ifPresent(component ->
+              setLabelForComponent((JLabel) labelComponent, component));
     }
     JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(inputComponent, BorderLayout.CENTER);
@@ -908,6 +912,12 @@ public class EntityEditComponentPanel extends JPanel {
     return components.get(attribute);
   }
 
+  private Optional<JComponent> findComponent(JComponent component) {
+    return components.values().stream()
+            .filter(comp -> sameOrParentOf(component, comp))
+            .findAny();
+  }
+
   /**
    * Returns true if this component can be selected, that is,
    * if it is non-null, displayable, visible, focusable and enabled.
@@ -935,6 +945,16 @@ public class EntityEditComponentPanel extends JPanel {
         comboBoxModel.refresh();
       }
     }
+  }
+
+  private static boolean sameOrParentOf(JComponent parent, JComponent component) {
+    if (parent == component) {
+      return true;
+    }
+
+    return Arrays.stream(parent.getComponents()).anyMatch(childComponent ->
+            childComponent instanceof JComponent &&
+                    sameOrParentOf((JComponent) childComponent, component));
   }
 
   private final class OnComponentBuilt<C extends JComponent> implements Consumer<C> {
