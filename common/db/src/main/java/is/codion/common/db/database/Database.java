@@ -220,12 +220,12 @@ public interface Database extends ConnectionFactory {
   Statistics statistics();
 
   /**
-   * Initializes a connection pool for the given user in this database.
+   * Creates a connection pool for the given user in this database.
    * @param connectionPoolFactory the ConnectionPoolFactory implementation to use
-   * @param poolUser the user to initialize connection pool for
+   * @param poolUser the user for which to create a connection pool
    * @throws DatabaseException in case of a database exception
    */
-  void initializeConnectionPool(ConnectionPoolFactory connectionPoolFactory, User poolUser) throws DatabaseException;
+  void createConnectionPool(ConnectionPoolFactory connectionPoolFactory, User poolUser) throws DatabaseException;
 
   /**
    * @param username the username

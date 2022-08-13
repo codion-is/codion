@@ -76,6 +76,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final State deleteEnabledState = State.state(true);
   private final StateObserver readOnlyObserver = State.and(insertEnabledState.reversedObserver(),
           updateEnabledState.reversedObserver(), deleteEnabledState.reversedObserver());
+  private final Map<Attribute<?>, State> attributeModifiedStateMap = new HashMap<>();
+  private final Map<Attribute<?>, State> attributeNullStateMap = new HashMap<>();
 
   /**
    * The Entity being edited by this model
@@ -166,7 +168,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     this.validator = validator;
     this.modifiedSupplier = entity::isModified;
     setReadOnly(entityDefinition().isReadOnly());
-    initializePersistentValues();
+    configurePersistentValues();
     bindEventsInternal();
     doSetEntity(defaultEntity(Property::defaultValue));
   }
@@ -341,6 +343,20 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final boolean isModified() {
     return modifiedSupplier.get();
+  }
+
+  @Override
+  public final StateObserver modifiedObserver(Attribute<?> attribute) {
+    requireNonNull(attribute);
+    return attributeModifiedStateMap.computeIfAbsent(attribute, k ->
+            State.state(!entity.isNew() && entity.isModified(attribute))).observer();
+  }
+
+  @Override
+  public final StateObserver nullObserver(Attribute<?> attribute) {
+    requireNonNull(attribute);
+    return attributeNullStateMap.computeIfAbsent(attribute, k ->
+            State.state(entity.isNull(attribute))).observer();
   }
 
   @Override
@@ -1006,7 +1022,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return (Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
-  private void initializePersistentValues() {
+  private void configurePersistentValues() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
       entityDefinition().foreignKeys().forEach(foreignKey -> setPersistValue(foreignKey, true));
     }
@@ -1094,6 +1110,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private <T> void onValueChange(Attribute<T> attribute, T value) {
     updateEntityStates();
+    State nullState = attributeNullStateMap.get(attribute);
+    if (nullState != null) {
+      nullState.set(entity.isNull(attribute));
+    }
+    State modifiedState = attributeModifiedStateMap.get(attribute);
+    if (modifiedState != null) {
+      modifiedState.set(!entity.isNew() && entity.isModified(attribute));
+    }
     Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
     if (changeEvent != null) {
       changeEvent.onEvent(value);

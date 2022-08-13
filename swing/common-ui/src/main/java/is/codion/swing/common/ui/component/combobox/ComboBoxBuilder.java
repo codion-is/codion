@@ -79,7 +79,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
   B moveCaretToFrontOnSelection(boolean moveCaretToFrontOnSelection);
 
   /**
-   * Only used for the system and cross-platform Look&Feels.
+   * Only used for the system and cross-platform Look and Feels.
    * @param popupWidth a fixed popup width
    * @return this builder instance
    */

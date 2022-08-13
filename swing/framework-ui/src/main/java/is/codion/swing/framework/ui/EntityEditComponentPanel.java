@@ -3,7 +3,10 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.Configuration;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
+import is.codion.common.properties.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -39,6 +42,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.math.BigDecimal;
@@ -65,6 +69,23 @@ import static java.util.Objects.requireNonNull;
  * A base class for entity edit panels, providing components for editing entities.
  */
 public class EntityEditComponentPanel extends JPanel {
+
+  /**
+   * Specifies whether this edit component panel should add a modified indicator to component labels<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> USE_MODIFIED_INDICATOR =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditComponentPanel.useModifiedIndicator", true);
+
+  /**
+   * The String to use to indicate a modified value<br>
+   * Value type: String<br>
+   * Default value: "*"<br>
+   * @see #USE_MODIFIED_INDICATOR
+   */
+  public static final PropertyValue<String> MODIFIED_INDICATOR_STRING =
+          Configuration.stringValue("is.codion.swing.framework.ui.EntityEditComponentPanel.modifiedIndicatorString", "*");
 
   /**
    * The edit model these edit components are associated with
@@ -122,6 +143,11 @@ public class EntityEditComponentPanel extends JPanel {
   private int defaultTextFieldColumns = TextFieldBuilder.DEFAULT_TEXT_FIELD_COLUMNS.get();
 
   /**
+   * Specifies whether to use a modified indicator on component labels
+   */
+  private boolean useModifiedIndicator = USE_MODIFIED_INDICATOR.get();
+
+  /**
    * Instantiates a new EntityEditComponentPanel
    * @param editModel the edit model
    */
@@ -164,8 +190,8 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * @param component the component
    * @param <T> the attribute type
-   * @return the attribute the given component is associated with, null if the component has not been
-   * associated with an attribute
+   * @return the attribute the given component is associated with
+   * @throws IllegalArgumentException in case no attribute is associated with the given component
    */
   public final <T> Attribute<T> getAttribute(JComponent component) {
     requireNonNull(component);
@@ -173,7 +199,7 @@ public class EntityEditComponentPanel extends JPanel {
             .filter(entry -> entry.getValue() == component)
             .findFirst()
             .map(Map.Entry::getKey)
-            .orElse(null);
+            .orElseThrow(() -> new IllegalArgumentException("No attribute associated with this component"));
   }
 
   /**
@@ -253,7 +279,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @see #excludeComponentFromSelection(Attribute)
    * @see #requestComponentFocus(Attribute)
    */
-  public void selectInputComponent() {
+  public final void selectInputComponent() {
     Entities entities = editModel().entities();
     List<Property<?>> properties = selectComponentAttributes().stream()
             .map(attribute -> entities.definition(attribute.entityType()).property(attribute))
@@ -310,6 +336,19 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
+   * If set to true then component labels will indicate that the value is modified.
+   * This applies to all components create via this edit component panel as well as
+   * all components set via {@link #setComponent(Attribute, JComponent)}.
+   * Note that this has no effect on components that have already been created.
+   * @param useModifiedIndicator the new value
+   * @see #USE_MODIFIED_INDICATOR
+   * @see JLabel#setLabelFor(Component)
+   */
+  protected final void setUseModifiedIndicator(boolean useModifiedIndicator) {
+    this.useModifiedIndicator = useModifiedIndicator;
+  }
+
+  /**
    * If set to true then components created subsequently will transfer focus on enter, otherwise not.
    * Note that this has no effect on components that have already been created.
    * @param transferFocusOnEnter the new value
@@ -337,6 +376,9 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final void setComponent(Attribute<?> attribute, JComponent component) {
     components.put(requireNonNull(attribute), requireNonNull(component));
+    if (useModifiedIndicator && attribute.entityType().equals(editModel.entityType())) {
+      editModel.modifiedObserver(attribute).addDataListener(new ModifiedIndicator(component));
+    }
   }
 
   /**
@@ -906,7 +948,31 @@ public class EntityEditComponentPanel extends JPanel {
     @Override
     public void accept(C component) {
       componentBuilders.remove(attribute);
-      components.put(attribute, component);
+      setComponent(attribute, component);
+    }
+  }
+
+  private static final class ModifiedIndicator implements EventDataListener<Boolean> {
+
+    private static final String LABELED_BY_PROPERTY = "labeledBy";
+
+    private final JComponent component;
+
+    private String labelText;
+
+    private ModifiedIndicator(JComponent component) {
+      this.component = component;
+    }
+
+    @Override
+    public void onEvent(Boolean modified) {
+      JLabel label = (JLabel) component.getClientProperty(LABELED_BY_PROPERTY);
+      if (label != null) {
+        if (labelText == null) {
+          labelText = label.getText();
+        }
+        SwingUtilities.invokeLater(() -> label.setText(modified ?  labelText + MODIFIED_INDICATOR_STRING.get() : labelText));
+      }
     }
   }
 }

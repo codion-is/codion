@@ -626,6 +626,36 @@ public final class DefaultEntityEditModelTest {
     assertEquals(dept, employeeEditModel.get(TestDomain.EMP_DEPARTMENT_FK));
   }
 
+  @Test
+  void modifiedAndNullObserver() throws DatabaseException {
+    employeeEditModel.put(TestDomain.EMP_NAME, "NAME");
+    //only modified when the entity is not new
+    assertFalse(employeeEditModel.modifiedObserver(TestDomain.EMP_NAME).get());
+    Entity martin = employeeEditModel.connectionProvider().connection().selectSingle(TestDomain.EMP_NAME, "MARTIN");
+    employeeEditModel.setEntity(martin);
+    State modifiedState = State.state();
+    State nullState = State.state();
+    StateObserver nameModifiedObserver = employeeEditModel.modifiedObserver(TestDomain.EMP_NAME);
+    nameModifiedObserver.addDataListener(modifiedState::set);
+    StateObserver nameNullObserver = employeeEditModel.nullObserver(TestDomain.EMP_NAME);
+    nameNullObserver.addDataListener(nullState::set);
+
+    employeeEditModel.put(TestDomain.EMP_NAME, "JOHN");
+    assertTrue(nameModifiedObserver.get());
+    assertTrue(modifiedState.get());
+    employeeEditModel.put(TestDomain.EMP_NAME, null);
+    assertTrue(nameModifiedObserver.get());
+    assertTrue(modifiedState.get());
+    assertTrue(nameNullObserver.get());
+    assertTrue(nullState.get());
+    assertTrue(nullState.get());
+    employeeEditModel.put(TestDomain.EMP_NAME, "MARTIN");
+    assertFalse(nameModifiedObserver.get());
+    assertFalse(modifiedState.get());
+    assertFalse(nameNullObserver.get());
+    assertFalse(nullState.get());
+  }
+
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
     public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {

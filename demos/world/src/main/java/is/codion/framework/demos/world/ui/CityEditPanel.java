@@ -41,7 +41,7 @@ public final class CityEditPanel extends EntityEditPanel {
 
   CityEditPanel(SwingEntityEditModel editModel, CityTableModel tableModel) {
     super(editModel);
-    this.mapKit = tableModel == null ? null : initializeMapKit(tableModel);
+    this.mapKit = tableModel == null ? null : createMapKit(tableModel);
   }
 
   @Override
@@ -71,7 +71,7 @@ public final class CityEditPanel extends EntityEditPanel {
     add(centerPanel, BorderLayout.CENTER);
   }
 
-  private static JXMapKit initializeMapKit(CityTableModel tableModel) {
+  private static JXMapKit createMapKit(CityTableModel tableModel) {
     JXMapKit mapKit = new JXMapKit();
     mapKit.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
     mapKit.setMiniMapVisible(false);

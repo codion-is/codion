@@ -22,7 +22,7 @@ public final class ArtistEditVew extends EntityEditView {
     createTextField(Artist.NAME);
 
     BorderPane pane = new BorderPane();
-    pane.setCenter(createPropertyPanel(Artist.NAME));
+    pane.setCenter(createInputPanel(Artist.NAME));
 
     return pane;
   }

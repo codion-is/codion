@@ -68,6 +68,7 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
   ItemComboBoxBuilder<T> maximumRowCount(int maximumRowCount);
 
   /**
+   * Only used for the system and cross-platform Look and Feels.
    * @param popupWidth a fixed popup width
    * @return this builder instance
    */

@@ -130,7 +130,6 @@ public class EntityTablePanel extends JPanel {
   private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanel.class);
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
-  private static final FrameworkIcons FRAMEWORK_ICONS = FrameworkIcons.instance();
 
   /**
    * Specifies whether columns can be rearranged in tables<br>
@@ -1007,7 +1006,7 @@ public class EntityTablePanel extends JPanel {
         setConditionPanelVisibleInternal(conditionPanelVisibleState.get());
         setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
         bindEvents();
-        initializeKeyboardActions();
+        setupKeyboardActions();
       }
       finally {
         panelInitialized = true;
@@ -1044,12 +1043,12 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Initializes the default keyboard actions.
+   * Sets up the default keyboard actions.
    * CTRL-T transfers focus to the table in case one is available,
    * CTR-S opens a select search condition panel dialog, in case one is available,
    * CTR-F selects the table search field
    */
-  protected void initializeKeyboardActions() {
+  protected void setupKeyboardActions() {
     KeyEvents.builder(KeyEvent.VK_T)
             .modifiers(CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

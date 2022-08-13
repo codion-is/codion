@@ -53,7 +53,7 @@ public final class EntityEditViewTest {
       createDatePicker(TestDomain.EMP_HIREDATE);
       createForeignKeyComboBox(TestDomain.EMP_MGR_FK);
 
-      createPropertyPanel(TestDomain.EMP_ID);
+      createInputPanel(TestDomain.EMP_ID);
 
       return new GridPane();
     }

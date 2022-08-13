@@ -13,12 +13,12 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
 
   public ChinookApplicationModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
-    addEntityModel(initializeArtistModel(connectionProvider));
-    addEntityModel(initializePlaylistModel(connectionProvider));
-    addEntityModel(initializeCustomerModel(connectionProvider));
+    addEntityModel(createArtistModel(connectionProvider));
+    addEntityModel(createPlaylistModel(connectionProvider));
+    addEntityModel(createCustomerModel(connectionProvider));
   }
 
-  private static SwingEntityModel initializeArtistModel(EntityConnectionProvider connectionProvider) {
+  private static SwingEntityModel createArtistModel(EntityConnectionProvider connectionProvider) {
     SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
     SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
     SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
@@ -32,7 +32,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
     return artistModel;
   }
 
-  private static SwingEntityModel initializePlaylistModel(EntityConnectionProvider connectionProvider) {
+  private static SwingEntityModel createPlaylistModel(EntityConnectionProvider connectionProvider) {
     SwingEntityModel playlistModel = new SwingEntityModel(new PlaylistTableModel(connectionProvider));
     SwingEntityModel playlistTrackModel = new SwingEntityModel(PlaylistTrack.TYPE, connectionProvider);
     playlistTrackModel.editModel().initializeComboBoxModels(PlaylistTrack.PLAYLIST_FK);
@@ -44,7 +44,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
     return playlistModel;
   }
 
-  private static SwingEntityModel initializeCustomerModel(EntityConnectionProvider connectionProvider) {
+  private static SwingEntityModel createCustomerModel(EntityConnectionProvider connectionProvider) {
     SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
     customerModel.editModel().initializeComboBoxModels(Customer.SUPPORTREP_FK);
     SwingEntityModel invoiceModel = new InvoiceModel(connectionProvider);

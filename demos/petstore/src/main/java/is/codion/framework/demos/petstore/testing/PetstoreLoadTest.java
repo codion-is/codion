@@ -37,7 +37,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
   }
 
   @Override
-  protected PetstoreAppModel initializeApplication() throws CancelException {
+  protected PetstoreAppModel createApplication() throws CancelException {
     PetstoreAppModel applicationModel = new PetstoreAppModel(
             EntityConnectionProvider.builder()
                     .domainClassName(Petstore.class.getName())

@@ -92,7 +92,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     JPanel actionBase = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     actionBase.add(new JLabel("Reaper interval (s)", SwingConstants.RIGHT));
-    actionBase.add(initializeMaintenanceIntervalComponent());
+    actionBase.add(createMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Idle connection timeout (s)"));
     actionBase.add(Components.integerSpinner(new SpinnerNumberModel(), model.idleConnectionTimeoutValue())
@@ -150,7 +150,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     return connectionHistoryPanel;
   }
 
-  private JComponent initializeMaintenanceIntervalComponent() throws RemoteException {
+  private JComponent createMaintenanceIntervalComponent() throws RemoteException {
     JComboBox<Integer> maintenanceBox = new JComboBox<>(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 120, 180, 340, 6000, 10000});
     maintenanceBox.setSelectedItem(model.getMaintenanceInterval());
     maintenanceBox.addItemListener(e -> {

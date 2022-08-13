@@ -58,7 +58,7 @@ final class ContinentPanel extends EntityPanel {
     add(centerPanel, BorderLayout.CENTER);
     add(southChartPanel, BorderLayout.SOUTH);
 
-    initializeKeyboardActions();
-    initializeNavigation();
+    setupKeyboardActions();
+    setupNavigation();
   }
 }

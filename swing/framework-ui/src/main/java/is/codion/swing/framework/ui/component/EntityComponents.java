@@ -97,7 +97,7 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a default input component for the given attribute.
+   * Returns a {@link ComponentBuilder} instance for a default input component for the given attribute.
    * @param attribute the attribute for which to create the input component
    * @param <T> the attribute type
    * @param <C> the component type

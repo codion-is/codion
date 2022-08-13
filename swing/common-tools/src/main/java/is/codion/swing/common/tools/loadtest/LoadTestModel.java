@@ -135,7 +135,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     this.minimumThinkTimeValue.addValidator(new MinimumThinkTimeValidator());
     this.maximumThinkTimeValue.addValidator(new MaximumThinkTimeValidator());
     usageScenarios.forEach(scenario -> this.usageScenarios.put(scenario.name(), scenario));
-    this.scenarioChooser = initializeScenarioChooser();
+    this.scenarioChooser = createScenarioChooser();
     initializeChartModels();
     this.chartUpdateScheduler = TaskScheduler.builder(new ChartUpdateTask())
             .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS)
@@ -366,7 +366,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
    * @return an initialized application.
    * @throws is.codion.common.model.CancelException in case the initialization was cancelled
    */
-  protected abstract T initializeApplication();
+  protected abstract T createApplication();
 
   /**
    * @param application the application to disconnect
@@ -383,7 +383,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     return time > 0 ? RANDOM.nextInt(time) + minimumThinkTimeValue.get() : minimumThinkTimeValue.get();
   }
 
-  private ItemRandomizer<UsageScenario<T>> initializeScenarioChooser() {
+  private ItemRandomizer<UsageScenario<T>> createScenarioChooser() {
     ItemRandomizer<UsageScenario<T>> model = new ItemRandomizerModel<>();
     for (UsageScenario<T> scenario : usageScenarios.values()) {
       model.addItem(scenario, scenario.defaultWeight());
@@ -447,7 +447,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     public void run() {
       try {
         if (application == null) {
-          application = initializeApplication();
+          application = createApplication();
           LOG.debug("LoadTestModel initialized application: {}", application);
         }
         if (!stopped && !pausedState.get()) {

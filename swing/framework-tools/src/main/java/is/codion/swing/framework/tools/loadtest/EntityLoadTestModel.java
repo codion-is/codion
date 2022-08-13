@@ -151,5 +151,5 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
   }
 
   @Override
-  protected abstract M initializeApplication();
+  protected abstract M createApplication();
 }
