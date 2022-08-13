@@ -114,7 +114,7 @@ public abstract class EntityEditView extends BorderPane {
   /**
    * Displays a dialog for choosing an input component to receive focus
    */
-  public void selectInputControl() {
+  public final void selectInputComponent() {
     List<Property<?>> properties = Properties.sort(editModel()
             .entityDefinition().properties(controls.keySet()));
     properties.removeIf(property -> {
@@ -425,7 +425,7 @@ public abstract class EntityEditView extends BorderPane {
       }
     }
     else if (event.isControlDown() && event.getCode().equals(KeyCode.I)) {
-      selectInputControl();
+      selectInputComponent();
       event.consume();
     }
   }

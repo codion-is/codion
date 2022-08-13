@@ -8378,3 +8378,5 @@
   Windows.resizeWindow(), added maximumSize parameter, Windows.screenSizeRatio() now throws exception in case ratio is invalid
   ComboBoxBuilder.moveCaretOnSelection() renamed moveCaretToFrontOnSelection()
   Global method renaming, initialize prefix replaced with create where applicable
+  EntityEditComponentPanel.getComponent(Attribute) now throws exception if none is found
+  EntityEditView.getInputControl() renamed getInputComponent()
