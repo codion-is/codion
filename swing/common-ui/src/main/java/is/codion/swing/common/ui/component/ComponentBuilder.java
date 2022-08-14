@@ -282,7 +282,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B onSetVisible(Consumer<C> onSetVisible);
 
   /**
-   * Creates a bi-directional link to the given value. Overrides any initial value set.
+   * Creates a bidirectional link to the given value. Overrides any initial value set.
    * @param linkedValue a value to link to the component value
    * @return this builder instance
    */
@@ -310,7 +310,8 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   ScrollPaneBuilder scrollPane();
 
   /**
-   * @param onBuild called when the component has been built, before any values are linked, not called on subsequent calls
+   * @param onBuild called when the component has been built, before any values are linked, not called on subsequent
+   * calls until {@link #clear()} has been called.
    * @return this builder instance
    */
   B onBuild(Consumer<C> onBuild);

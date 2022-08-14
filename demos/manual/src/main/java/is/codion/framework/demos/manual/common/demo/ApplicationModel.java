@@ -5,11 +5,11 @@ import is.codion.common.value.ValueObserver;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static is.codion.common.value.Value.value;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
+import static java.util.Arrays.asList;
 
 /*
 // tag::demoModelImport[]
@@ -39,28 +39,28 @@ public final class ApplicationModel {
   private final Value<String> stringListValue = value();
   private final Value<String> messageValue = value();
 
-  private final Collection<Value<?>> values = new ArrayList<>();
+  private final Collection<Value<?>> values = asList(
+          shortStringValue,
+          longStringValue,
+          textValue,
+          localDateValue,
+          localDateTimeValue,
+          formattedStringValue,
+          integerValue,
+          doubleValue,
+          booleanValue,
+          booleanSelectionValue,
+          integerItemValue,
+          stringSelectionValue,
+          integerSlideValue,
+          integerSpinValue,
+          integerSelectionValue,
+          itemSpinValue,
+          stringListValue
+  );
 
   public ApplicationModel() {
     setDefaultUncaughtExceptionHandler(this::exceptionHandler);
-    values.add(shortStringValue);
-    values.add(longStringValue);
-    values.add(textValue);
-    values.add(localDateValue);
-    values.add(localDateTimeValue);
-    values.add(formattedStringValue);
-    values.add(integerValue);
-    values.add(doubleValue);
-    values.add(booleanValue);
-    values.add(booleanSelectionValue);
-    values.add(integerItemValue);
-    values.add(stringSelectionValue);
-    values.add(integerSlideValue);
-    values.add(integerSpinValue);
-    values.add(integerSelectionValue);
-    values.add(itemSpinValue);
-    values.add(stringListValue);
-
     values.forEach(value -> value.addDataListener(this::setMessage));
   }
 

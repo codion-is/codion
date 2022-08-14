@@ -426,9 +426,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (componentValue != null) {
       return componentValue;
     }
-    build();//initializes the component value if required
+    build();//creates the component value if value-linking is required
     if (componentValue == null) {
-      //try to intialize the component value if build() did not
+      //create the component value if build() did not
       componentValue = createComponentValue(component);
     }
 
