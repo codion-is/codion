@@ -83,11 +83,13 @@ public final class ApplicationPanel extends JPanel {
             .build(inputPanel::add);
     textField(model.shortStringValue())
             .columns(20)
-            .upperCase(true)
+            .lowerCase(true)
             .maximumLength(20)
             .selectAllOnFocusGained(true)
             .transferFocusOnEnter(true)
             .validator(new PGValidator())
+            .selectionProvider(Dialogs.selectionProvider(() ->
+                    Arrays.asList("a", "few", "short", "strings", "to", "choose", "from")))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 

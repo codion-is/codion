@@ -500,10 +500,13 @@ public class EntityEditComponentPanel extends JPanel {
     requireNonNull(labelComponent, "labelComponent");
     requireNonNull(inputComponent, "inputComponent");
     if (labelComponent instanceof JLabel) {
-      // we need to be a bit clever here, since this inputComponent could be a panel, containing the actual
-      // input component, f.ex. when a combobox is added to a panel with a new instance button
-      findComponent(inputComponent).ifPresent(component ->
-              setLabelForComponent((JLabel) labelComponent, component));
+      // we need to be a bit clever here, since the input component argument isn't necessarily the actual input
+      // component, f.ex. this could be a text area wrapped in a scroll pane or a combobox on a panel with
+      // a new instance button, we assume that this input component at least contains the actual component
+      components.values().stream()
+              .filter(comp -> sameOrParentOf(inputComponent, comp))
+              .findAny()
+              .ifPresent(component -> setLabelForComponent((JLabel) labelComponent, component));
     }
     JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(inputComponent, BorderLayout.CENTER);
@@ -910,12 +913,6 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     return components.get(attribute);
-  }
-
-  private Optional<JComponent> findComponent(JComponent component) {
-    return components.values().stream()
-            .filter(comp -> sameOrParentOf(component, comp))
-            .findAny();
   }
 
   /**
