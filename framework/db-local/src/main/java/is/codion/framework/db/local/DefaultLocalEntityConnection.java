@@ -953,7 +953,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param currentForeignKeyFetchDepth the current foreign key fetch depth
    * @throws SQLException in case of a database exception
    * @see #setLimitFetchDepth(boolean)
-   * @see SelectCondition#fetchDepth(int)
+   * @see SelectCondition.Builder#fetchDepth(int)
    */
   private void setForeignKeys(List<Entity> entities, SelectCondition condition,
                               int currentForeignKeyFetchDepth) throws SQLException {

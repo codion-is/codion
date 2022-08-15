@@ -218,6 +218,7 @@ public class NavigableImagePanel extends JPanel {
    * <p>Creates a new navigable image panel with the specified image
    * and the mouse scroll wheel as the zooming device.</p>
    * @param image the default image
+   * @throws IllegalArgumentException in case the image height and/or width is zero
    */
   public NavigableImagePanel(BufferedImage image) {
     setImage(image);
@@ -324,19 +325,16 @@ public class NavigableImagePanel extends JPanel {
    * Called from paintComponent() when a new image is set.
    */
   private void initializeParams() {
-    initializeScale();
+    double xScale = (double) getWidth() / image.getWidth();
+    double yScale = (double) getHeight() / image.getHeight();
+    initialScale = Math.min(xScale, yScale);
+    scale = initialScale;
+
     //An image is initially centered
     centerImage();
     if (navigationImageEnabled) {
       createNavigationImage();
     }
-  }
-
-  private void initializeScale() {
-    double xScale = (double) getWidth() / image.getWidth();
-    double yScale = (double) getHeight() / image.getHeight();
-    initialScale = Math.min(xScale, yScale);
-    scale = initialScale;
   }
 
   /**
@@ -400,13 +398,17 @@ public class NavigableImagePanel extends JPanel {
   /**
    * <p>Sets an image for display in the panel.</p>
    * @param image an image to be set in the panel
+   * @throws IllegalArgumentException in case the image height and/or width is zero
    */
   public final void setImage(BufferedImage image) {
+    if (image != null && (image.getHeight() == 0 || image.getWidth() == 0)) {
+      throw new IllegalArgumentException("Only images of non-zero size can be viewed");
+    }
     BufferedImage oldImage = this.image;
     this.image = image;
-    if (image != null) {
-      initializeScale();
-    }
+    //Reset scale so that initializeParameters() is called in paintComponent()
+    //for the new image.
+    scale = 0.0;
     firePropertyChange(IMAGE_CHANGED_PROPERTY, oldImage, image);
     repaint();
   }
