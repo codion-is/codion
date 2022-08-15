@@ -563,18 +563,6 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
             .build();
   }
 
-  private void toggleFilterPanel(ColumnConditionPanel<C, ?> columnFilterPanel, String title, Point location) {
-    if (columnFilterPanel != null) {
-      JDialog dialog = columnFilterPanelDialog(columnFilterPanel, title);
-      if (dialog.isShowing()) {
-        columnFilterPanelDialogs.remove(columnFilterPanel).dispose();
-      }
-      else {
-        showDialog(columnFilterPanel, title, location);
-      }
-    }
-  }
-
   private void showDialog(ColumnConditionPanel<C, ?> columnFilterPanel, String title, Point location) {
     JDialog dialog = columnFilterPanelDialog(columnFilterPanel, title);
     Point adjustedLocation = location;
@@ -828,6 +816,18 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
       toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
                       (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column)),
               column.getHeaderValue().toString(), event.getLocationOnScreen());
+    }
+
+    private void toggleFilterPanel(ColumnConditionPanel<C, ?> columnFilterPanel, String title, Point location) {
+      if (columnFilterPanel != null) {
+        JDialog dialog = columnFilterPanelDialog(columnFilterPanel, title);
+        if (dialog.isShowing()) {
+          columnFilterPanelDialogs.remove(columnFilterPanel).dispose();
+        }
+        else {
+          showDialog(columnFilterPanel, title, location);
+        }
+      }
     }
   }
 
