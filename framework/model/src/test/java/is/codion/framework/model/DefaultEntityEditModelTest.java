@@ -649,11 +649,29 @@ public final class DefaultEntityEditModelTest {
     assertTrue(nameNullObserver.get());
     assertTrue(nullState.get());
     assertTrue(nullState.get());
-    employeeEditModel.put(TestDomain.EMP_NAME, "MARTIN");
+    employeeEditModel.setEntity(martin);
     assertFalse(nameModifiedObserver.get());
     assertFalse(modifiedState.get());
     assertFalse(nameNullObserver.get());
     assertFalse(nullState.get());
+  }
+
+  @Test
+  void modifiedUpdate() throws DatabaseException, ValidationException {
+    EntityConnection connection = employeeEditModel.connectionProvider().connection();
+    StateObserver nameModifiedObserver = employeeEditModel.modifiedObserver(TestDomain.EMP_NAME);
+    Entity martin = connection.selectSingle(TestDomain.EMP_NAME, "MARTIN");
+    employeeEditModel.setEntity(martin);
+    employeeEditModel.put(TestDomain.EMP_NAME, "MARTINEZ");
+    assertTrue(nameModifiedObserver.get());
+    connection.beginTransaction();
+    try {
+      employeeEditModel.update();
+      assertFalse(nameModifiedObserver.get());
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
   }
 
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
