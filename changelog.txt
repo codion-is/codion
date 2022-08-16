@@ -8428,3 +8428,4 @@
   EntityEditComponentPanel, modified indicator bug fixed, did not work when the actual input component was a child of a panel, which was then used when creating the input panel
   EntityPopupMenu bug fixed, entity involved in cyclical relationship now only included once
   NavigableImagePanel, recent changes concerning 0 size image handling reverted, problematic, now setImage() throws IllegalArgumentException in case the image width and/or height is 0
+  DefaultEntityEditModel bug fixed, did not update modified attribute states after update, since no value change events are triggered when setting the same entity after update

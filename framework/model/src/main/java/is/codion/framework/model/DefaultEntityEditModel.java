@@ -1004,6 +1004,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     if (affectedAttributes.isEmpty()) {//no value changes to trigger state updates
       updateEntityStates();
     }
+    updateModifiedAttributeStates();
 
     entityEvent.onEvent(entity);
   }
@@ -1116,13 +1117,21 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
     State modifiedState = attributeModifiedStateMap.get(attribute);
     if (modifiedState != null) {
-      modifiedState.set(!entity.isNew() && entity.isModified(attribute));
+      updateModifiedAttributeState(attribute, modifiedState);
     }
     Event<T> changeEvent = (Event<T>) valueChangeEvents.get(attribute);
     if (changeEvent != null) {
       changeEvent.onEvent(value);
     }
     valueChangeEvent.onEvent(attribute);
+  }
+
+  private void updateModifiedAttributeStates() {
+    attributeModifiedStateMap.forEach(this::updateModifiedAttributeState);
+  }
+
+  private void updateModifiedAttributeState(Attribute<?> attribute, State modifiedState) {
+    modifiedState.set(!entity.isNew() && entity.isModified(attribute));
   }
 
   private void updateEntityStates() {
