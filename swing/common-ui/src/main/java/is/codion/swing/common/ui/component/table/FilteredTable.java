@@ -373,8 +373,8 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     int selectedRow = getSelectedRow();
     int selectedColumn = getSelectedColumn();
     if (selectedRow >= 0 && selectedColumn >= 0) {
-      Object value = getValueAt(selectedRow, selectedColumn);
-      Utilities.setClipboard(value == null ? "" : value.toString());
+      TableColumn column = getModel().columnModel().getColumn(selectedColumn);
+      Utilities.setClipboard(getModel().getStringAt(selectedRow, (C) column.getIdentifier()));
     }
   }
 
