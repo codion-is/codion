@@ -180,12 +180,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final EntityDefinition entityDefinition() {
-    return entity.entityDefinition();
+    return entity.definition();
   }
 
   @Override
   public final String toString() {
-    return getClass().toString() + ", " + entity.entityType();
+    return getClass().toString() + ", " + entity.type();
   }
 
   @Override
@@ -306,7 +306,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final EntityType entityType() {
-    return entity.entityType();
+    return entity.type();
   }
 
   @Override
@@ -460,11 +460,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public void validate(Entity entity) throws ValidationException {
-    if (entity.entityType().equals(entityType())) {
+    if (entity.type().equals(entityType())) {
       validator.validate(entity);
     }
     else {
-      entity.entityDefinition().validator().validate(entity);
+      entity.definition().validator().validate(entity);
     }
   }
 

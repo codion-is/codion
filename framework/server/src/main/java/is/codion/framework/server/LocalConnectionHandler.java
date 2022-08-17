@@ -402,8 +402,8 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
 
     private static String entityToString(Entity entity) {
-      StringBuilder builder = new StringBuilder(entity.entityType().name()).append(" {");
-      List<ColumnProperty<?>> columnProperties = entity.entityDefinition().columnProperties();
+      StringBuilder builder = new StringBuilder(entity.type().name()).append(" {");
+      List<ColumnProperty<?>> columnProperties = entity.definition().columnProperties();
       for (int i = 0; i < columnProperties.size(); i++) {
         ColumnProperty<?> property = columnProperties.get(i);
         boolean modified = entity.isModified(property.attribute());
@@ -422,7 +422,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
 
     private static String entityKeyToString(Key key) {
-      return key.entityType() + " {" + key + "}";
+      return key.type() + " {" + key + "}";
     }
   }
 }

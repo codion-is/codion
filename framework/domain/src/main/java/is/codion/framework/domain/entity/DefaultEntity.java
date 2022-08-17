@@ -97,12 +97,12 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public EntityType entityType() {
-    return definition.entityType();
+  public EntityType type() {
+    return definition.type();
   }
 
   @Override
-  public EntityDefinition entityDefinition() {
+  public EntityDefinition definition() {
     return definition;
   }
 
@@ -254,8 +254,8 @@ final class DefaultEntity implements Entity, Serializable {
     if (entity == this) {
       return emptyMap();
     }
-    if (entity != null && !definition.entityType().equals(entity.entityType())) {
-      throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.entityType());
+    if (entity != null && !definition.type().equals(entity.type())) {
+      throw new IllegalArgumentException("Entity of type: " + definition.type() + " expected, got: " + entity.type());
     }
     Map<Property<?>, Object> previousValues = new HashMap<>();
     definition.properties().forEach(property -> previousValues.put(property, get(property)));
@@ -310,8 +310,8 @@ final class DefaultEntity implements Entity, Serializable {
       // no wrapping required
       return (T) this;
     }
-    if (!entityType().entityClass().equals(entityClass)) {
-      throw new IllegalArgumentException("entityClass " + entityType().entityClass() + " expected, got: " + entityClass);
+    if (!type().entityClass().equals(entityClass)) {
+      throw new IllegalArgumentException("entityClass " + type().entityClass() + " expected, got: " + entityClass);
     }
 
     return (T) Proxy.newProxyInstance(getClass().getClassLoader(),
@@ -320,9 +320,9 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public boolean columnValuesEqual(Entity entity) {
-    if (!definition.entityType().equals(requireNonNull(entity, "entity").entityType())) {
-      throw new IllegalArgumentException("Entity of type " + definition.entityType() +
-              " expected, got: " + entity.entityType());
+    if (!definition.type().equals(requireNonNull(entity, "entity").type())) {
+      throw new IllegalArgumentException("Entity of type " + definition.type() +
+              " expected, got: " + entity.type());
     }
 
     return definition.columnProperties().stream()
@@ -501,9 +501,9 @@ final class DefaultEntity implements Entity, Serializable {
 
   private void validateForeignKeyValue(ForeignKeyProperty property, Entity foreignKeyValue) {
     EntityType referencedType = property.referencedType();
-    if (!Objects.equals(referencedType, foreignKeyValue.entityType())) {
+    if (!Objects.equals(referencedType, foreignKeyValue.type())) {
       throw new IllegalArgumentException("Entity of type " + referencedType +
-              " expected for property " + property + ", got: " + foreignKeyValue.entityType());
+              " expected for property " + property + ", got: " + foreignKeyValue.type());
     }
     property.references().forEach(reference -> throwIfModifiesReadOnlyReference(property, foreignKeyValue, reference));
   }
@@ -766,7 +766,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.domainName());
-    stream.writeObject(definition.entityType().name());
+    stream.writeObject(definition.type().name());
     stream.writeInt(definition.serializationVersion());
     boolean isModified = isModified(true);
     stream.writeBoolean(isModified);
@@ -795,7 +795,7 @@ final class DefaultEntity implements Entity, Serializable {
     Entities entities = DefaultEntities.entities((String) stream.readObject());
     definition = entities.definition((String) stream.readObject());
     if (definition.serializationVersion() != stream.readInt()) {
-      throw new IllegalArgumentException("Entity type '" + definition.entityType() + "' can not be deserialized due to version difference");
+      throw new IllegalArgumentException("Entity type '" + definition.type() + "' can not be deserialized due to version difference");
     }
     boolean isModified = stream.readBoolean();
     values = new HashMap<>();
@@ -904,7 +904,7 @@ final class DefaultEntity implements Entity, Serializable {
       if (value instanceof Entity) {
         Entity entityValue = (Entity) value;
 
-        value = entityValue.castTo(entityValue.entityType().entityClass());
+        value = entityValue.castTo(entityValue.type().entityClass());
       }
       if (getterReturnType.equals(Optional.class)) {
         return Optional.ofNullable(value);

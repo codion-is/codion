@@ -325,8 +325,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private void validateType(Entity entity) {
-    if (!entity.entityType().equals(entityType)) {
-      throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.entityType());
+    if (!entity.type().equals(entityType)) {
+      throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.type());
     }
   }
 

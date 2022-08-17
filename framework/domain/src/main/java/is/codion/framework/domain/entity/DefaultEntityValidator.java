@@ -52,13 +52,13 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   @Override
   public <T> boolean isNullable(Entity entity, Attribute<T> attribute) {
-    return requireNonNull(entity).entityDefinition().property(attribute).isNullable();
+    return requireNonNull(entity).definition().property(attribute).isNullable();
   }
 
   @Override
   public void validate(Entity entity) throws ValidationException {
     requireNonNull(entity, ENTITY_PARAM);
-    List<Attribute<?>> attributes = entity.entityDefinition().properties().stream()
+    List<Attribute<?>> attributes = entity.definition().properties().stream()
             .filter(DefaultEntityValidator::validationRequired)
             .map(Property::attribute)
             .collect(Collectors.toList());
@@ -71,7 +71,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
-    if (!entity.entityDefinition().isForeignKeyAttribute(attribute)) {
+    if (!entity.definition().isForeignKeyAttribute(attribute)) {
       performNullValidation(entity, attribute);
     }
     if (attribute.isNumerical()) {
@@ -85,12 +85,12 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   private <T> void performNullValidation(Entity entity, Attribute<T> attribute) throws NullValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
-    Property<T> property = entity.entityDefinition().property(attribute);
+    Property<T> property = entity.definition().property(attribute);
     if (!isNullable(entity, attribute) && entity.isNull(attribute)) {
       if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
         boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
-        boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(entity.entityDefinition(), property);
+        boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(entity.definition(), property);
         if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
           throw new NullValidationException(property.attribute(),
                   MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.caption()));
@@ -110,7 +110,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       return;
     }
 
-    Property<T> property = entity.entityDefinition().property(attribute);
+    Property<T> property = entity.definition().property(attribute);
     Number value = entity.get(property.attribute());
     Number minimumValue = property.minimumValue();
     if (minimumValue != null && value.doubleValue() < minimumValue.doubleValue()) {
@@ -131,7 +131,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       return;
     }
 
-    Property<?> property = entity.entityDefinition().property(attribute);
+    Property<?> property = entity.definition().property(attribute);
     int maximumLength = property.maximumLength();
     String value = entity.get(attribute);
     if (maximumLength != -1 && value.length() > maximumLength) {
