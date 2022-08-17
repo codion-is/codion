@@ -8,6 +8,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.SwingEntityTreeModel;
+import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +24,6 @@ public class EntityTreeTest {
 
   @Test
   void test() {
-    new EntityTree(new SwingEntityTreeModel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER), TestDomain.EMP_MGR_FK));
+    new EntityTree(new SwingEntityTreeModel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER), Employee.MGR_FK));
   }
 }

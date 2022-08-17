@@ -8,7 +8,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.test.AbstractEntityModelTest;
-import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Employee;
 
 import java.util.List;
 
@@ -17,8 +18,8 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 
   @Override
   protected TestEntityModel createDepartmentModel() {
-    TestEntityModel deptModel = new TestEntityModel(new TestEntityEditModel(TestDomain.T_DEPARTMENT, connectionProvider()));
-    TestEntityModel empModel = new TestEntityModel(new TestEntityEditModel(TestDomain.T_EMP, connectionProvider()));
+    TestEntityModel deptModel = new TestEntityModel(new TestEntityEditModel(Department.TYPE, connectionProvider()));
+    TestEntityModel empModel = new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connectionProvider()));
     deptModel.addDetailModel(empModel);
     deptModel.addLinkedDetailModel(empModel);
 
@@ -27,17 +28,17 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 
   @Override
   protected TestEntityModel createDepartmentModelWithoutDetailModel() {
-    return new TestEntityModel(new TestEntityEditModel(TestDomain.T_DEPARTMENT, connectionProvider()));
+    return new TestEntityModel(new TestEntityEditModel(Department.TYPE, connectionProvider()));
   }
 
   @Override
   protected TestEntityModel createEmployeeModel() {
-    return new TestEntityModel(new TestEntityEditModel(TestDomain.T_EMP, connectionProvider()));
+    return new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connectionProvider()));
   }
 
   @Override
   protected TestEntityEditModel createDepartmentEditModel() {
-    return new TestEntityEditModel(TestDomain.T_DEPARTMENT, connectionProvider());
+    return new TestEntityEditModel(Department.TYPE, connectionProvider());
   }
 
   @Override

@@ -10,6 +10,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,7 @@ public final class EntityEditPanelTest {
 
   @Test
   void test() throws DatabaseException {
-    SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
     TestEditPanel editPanel = new TestEditPanel(editModel);
     assertEquals(7, editPanel.componentAttributes().size());
     editPanel.createHorizontalControlPanel();
@@ -43,7 +44,7 @@ public final class EntityEditPanelTest {
     editPanel.setActive(true);
     assertTrue(editPanel.isActive());
 
-    Entity martin = editModel.connectionProvider().connection().selectSingle(TestDomain.EMP_NAME, "MARTIN");
+    Entity martin = editModel.connectionProvider().connection().selectSingle(Employee.NAME, "MARTIN");
     editModel.setEntity(martin);
     assertFalse(editModel.isEntityNew());
     editPanel.clearAndRequestFocus();
@@ -66,30 +67,30 @@ public final class EntityEditPanelTest {
 
     public TestEditPanel(SwingEntityEditModel editModel) {
       super(editModel);
-      createTextField(TestDomain.EMP_NAME);
-      createItemComboBox(TestDomain.EMP_JOB);
-      createForeignKeyComboBox(TestDomain.EMP_MGR_FK);
-      createForeignKeyComboBox(TestDomain.EMP_DEPARTMENT_FK);
-      createTextField(TestDomain.EMP_SALARY);
-      createTextField(TestDomain.EMP_COMMISSION);
-      createTemporalInputPanel(TestDomain.EMP_HIREDATE);
+      createTextField(Employee.NAME);
+      createItemComboBox(Employee.JOB);
+      createForeignKeyComboBox(Employee.MGR_FK);
+      createForeignKeyComboBox(Employee.DEPARTMENT_FK);
+      createTextField(Employee.SALARY);
+      createTextField(Employee.COMMISSION);
+      createTemporalInputPanel(Employee.HIREDATE);
     }
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(TestDomain.EMP_NAME);
+      setInitialFocusAttribute(Employee.NAME);
 
       setLayout(Layouts.flexibleGridLayout(3, 3));
 
-      addInputPanel(TestDomain.EMP_NAME);
-      addInputPanel(TestDomain.EMP_JOB);
-      addInputPanel(TestDomain.EMP_DEPARTMENT_FK);
+      addInputPanel(Employee.NAME);
+      addInputPanel(Employee.JOB);
+      addInputPanel(Employee.DEPARTMENT_FK);
 
-      addInputPanel(TestDomain.EMP_MGR_FK);
-      addInputPanel(TestDomain.EMP_SALARY);
-      addInputPanel(TestDomain.EMP_COMMISSION);
+      addInputPanel(Employee.MGR_FK);
+      addInputPanel(Employee.SALARY);
+      addInputPanel(Employee.COMMISSION);
 
-      addInputPanel(TestDomain.EMP_HIREDATE);
+      addInputPanel(Employee.HIREDATE);
     }
   }
 }

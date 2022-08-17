@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.TestDomain.Detail;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,16 +25,16 @@ public final class DefaultEntityComponentFactoryTest {
           .user(UNIT_TEST_USER)
           .build();
 
-  private final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
+  private final SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
 
   @Test
   void test() {
     EntityComponentFactory<Entity, ForeignKey, EntitySearchField> foreignKeyComponentFactory = new DefaultEntityComponentFactory<>();
-    foreignKeyComponentFactory.createComponentValue(TestDomain.DETAIL_MASTER_FK, editModel, null);
-    foreignKeyComponentFactory.createComponentValue(TestDomain.DETAIL_DETAIL_FK, editModel, null);
+    foreignKeyComponentFactory.createComponentValue(Detail.MASTER_FK, editModel, null);
+    foreignKeyComponentFactory.createComponentValue(Detail.DETAIL_FK, editModel, null);
 
     EntityComponentFactory<Integer, Attribute<Integer>, NumberField<Integer>> integerComponentFactory = new DefaultEntityComponentFactory<>();
-    integerComponentFactory.createComponentValue(TestDomain.DETAIL_INT, editModel, null);
-    integerComponentFactory.createComponentValue(TestDomain.DETAIL_INT_DERIVED, editModel, null);
+    integerComponentFactory.createComponentValue(Detail.INT, editModel, null);
+    integerComponentFactory.createComponentValue(Detail.INT_DERIVED, editModel, null);
   }
 }

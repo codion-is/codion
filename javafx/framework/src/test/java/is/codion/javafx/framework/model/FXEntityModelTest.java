@@ -4,7 +4,8 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.framework.model.test.AbstractEntityModelTest;
-import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Employee;
 import is.codion.javafx.framework.ui.EntityTableView;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -19,16 +20,16 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
 
   @Override
   protected FXEntityModel createDepartmentModel() {
-    FXEntityModel entityModel = new FXEntityModel(TestDomain.T_DEPARTMENT, connectionProvider());
+    FXEntityModel entityModel = new FXEntityModel(Department.TYPE, connectionProvider());
     new EntityTableView(entityModel.tableModel());
-    FXEntityModel employeeModel = new FXEntityModel(new FXEntityEditModel(TestDomain.T_EMP, connectionProvider()));
+    FXEntityModel employeeModel = new FXEntityModel(new FXEntityEditModel(Employee.TYPE, connectionProvider()));
     employeeModel.editModel().refreshDataModels();
     FXEntityListModel employeeListModel = employeeModel.tableModel();
     new EntityTableView(employeeListModel);
     FXEntityEditModel employeeEditModel = employeeModel.editModel();
-    new EntityTableView(employeeEditModel.foreignKeyListModel(TestDomain.EMP_DEPARTMENT_FK));
+    new EntityTableView(employeeEditModel.foreignKeyListModel(Employee.DEPARTMENT_FK));
     entityModel.addDetailModel(employeeModel);
-    entityModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);
+    entityModel.setDetailModelForeignKey(employeeModel, Employee.DEPARTMENT_FK);
     entityModel.addLinkedDetailModel(employeeModel);
     employeeModel.tableModel().queryConditionRequiredState().set(false);
 
@@ -37,7 +38,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
 
   @Override
   protected FXEntityModel createDepartmentModelWithoutDetailModel() {
-    FXEntityModel model = new FXEntityModel(TestDomain.T_DEPARTMENT, connectionProvider());
+    FXEntityModel model = new FXEntityModel(Department.TYPE, connectionProvider());
     new EntityTableView(model.tableModel());
 
     return model;
@@ -45,12 +46,12 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
 
   @Override
   protected FXEntityEditModel createDepartmentEditModel() {
-    return new FXEntityEditModel(TestDomain.T_DEPARTMENT, connectionProvider());
+    return new FXEntityEditModel(Department.TYPE, connectionProvider());
   }
 
   @Override
   protected FXEntityListModel createEmployeeTableModel() {
-    FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, connectionProvider());
+    FXEntityListModel listModel = new FXEntityListModel(Employee.TYPE, connectionProvider());
     new EntityTableView(listModel);
 
     return listModel;
@@ -58,7 +59,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
 
   @Override
   protected FXEntityListModel createDepartmentTableModel() {
-    FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_DEPARTMENT, connectionProvider());
+    FXEntityListModel listModel = new FXEntityListModel(Department.TYPE, connectionProvider());
     new EntityTableView(listModel);
 
     return listModel;
@@ -66,7 +67,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
 
   @Override
   protected FXEntityModel createEmployeeModel() {
-    FXEntityModel model = new FXEntityModel(TestDomain.T_EMP, connectionProvider());
+    FXEntityModel model = new FXEntityModel(Employee.TYPE, connectionProvider());
     new EntityTableView(model.tableModel());
 
     return model;

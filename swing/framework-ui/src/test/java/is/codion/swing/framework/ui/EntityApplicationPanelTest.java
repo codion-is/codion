@@ -9,6 +9,9 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.TestDomain.Detail;
+import is.codion.swing.framework.ui.TestDomain.Employee;
+import is.codion.swing.framework.ui.TestDomain.Master;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -44,9 +47,9 @@ public class EntityApplicationPanelTest {
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
     assertNull(node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_MASTER, node.getUserObject());
+    assertEquals(Master.TYPE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_DETAIL, node.getUserObject());
+    assertEquals(Detail.TYPE, node.getUserObject());
   }
 
   @Test
@@ -57,17 +60,17 @@ public class EntityApplicationPanelTest {
     EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>("Test") {
       @Override
       protected List<EntityPanel> createEntityPanels(SwingEntityApplicationModel applicationModel) {
-        return singletonList(new EntityPanel(applicationModel.entityModel(TestDomain.T_EMP)));
+        return singletonList(new EntityPanel(applicationModel.entityModel(Employee.TYPE)));
       }
       @Override
       protected SwingEntityApplicationModel createApplicationModel(EntityConnectionProvider connectionProvider) {
         SwingEntityApplicationModel model = new SwingEntityApplicationModel(connectionProvider);
-        model.addEntityModel(new SwingEntityModel(TestDomain.T_EMP, connectionProvider));
+        model.addEntityModel(new SwingEntityModel(Employee.TYPE, connectionProvider));
 
         return model;
       }
     };
-    panel.addApplicationStartedListener(frame -> assertNotNull(panel.entityPanel(TestDomain.T_EMP)));
+    panel.addApplicationStartedListener(frame -> assertNotNull(panel.entityPanel(Employee.TYPE)));
     panel.startApplication(null, UNIT_TEST_USER, false, null, false, false, true, false);
   }
 }

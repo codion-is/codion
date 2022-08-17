@@ -9,6 +9,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -32,15 +34,15 @@ public class DefaultForeignKeyConditionModelTest {
 
   @Test
   void searchEntitiesSearchModel() throws DatabaseException {
-    EntitySearchModel searchModel = new DefaultEntitySearchModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
-            singletonList(TestDomain.DEPARTMENT_NAME));
-    ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(TestDomain.EMP_DEPARTMENT_FK, searchModel);
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    EntitySearchModel searchModel = new DefaultEntitySearchModel(Department.TYPE, CONNECTION_PROVIDER,
+            singletonList(Department.NAME));
+    ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(Employee.DEPARTMENT_FK, searchModel);
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
     searchModel.setSelectedEntity(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
-    Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "ACCOUNTING");
     List<Entity> salesAccounting = asList(sales, accounting);
     searchModel.setSelectedEntities(salesAccounting);
     assertTrue(conditionModel.getEqualValues().contains(sales));

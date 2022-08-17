@@ -12,6 +12,8 @@ import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.rmi.TestDomain.Department;
+import is.codion.framework.db.rmi.TestDomain.Employee;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
@@ -58,9 +60,9 @@ public class RemoteEntityConnectionProviderTest {
             .build();
 
     EntityConnection connection = provider.connection();
-    connection.select(condition(TestDomain.T_DEPARTMENT));
+    connection.select(condition(Department.TYPE));
 
-    assertThrows(DatabaseException.class, () -> connection.delete(where(TestDomain.EMP_NAME).equalTo("JONES")));
+    assertThrows(DatabaseException.class, () -> connection.delete(where(Employee.NAME).equalTo("JONES")));
 
     admin.shutdown();
 

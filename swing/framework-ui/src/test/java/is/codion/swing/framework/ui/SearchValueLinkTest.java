@@ -11,6 +11,8 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.TestDomain.Department;
+import is.codion.swing.framework.ui.TestDomain.Employee;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
 import org.junit.jupiter.api.Test;
@@ -27,23 +29,23 @@ public class SearchValueLinkTest {
           .user(UNIT_TEST_USER)
           .build();
 
-  private final EntityEditModel model = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+  private final EntityEditModel model = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
   private final EntityComponents inputComponents = new EntityComponents(model.entityDefinition());
 
   @Test
   void test() throws Exception {
     ComponentValue<Entity, EntitySearchField> componentValue =
-            inputComponents.foreignKeySearchField(TestDomain.EMP_DEPARTMENT_FK,
-            model.foreignKeySearchModel(TestDomain.EMP_DEPARTMENT_FK)).buildComponentValue();
-    componentValue.link(model.value(TestDomain.EMP_DEPARTMENT_FK));
+            inputComponents.foreignKeySearchField(Employee.DEPARTMENT_FK,
+            model.foreignKeySearchModel(Employee.DEPARTMENT_FK)).buildComponentValue();
+    componentValue.link(model.value(Employee.DEPARTMENT_FK));
     EntitySearchModel searchModel = componentValue.component().model();
     assertEquals(0, searchModel.getSelectedEntities().size());
-    Entity department = model.connectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    model.put(TestDomain.EMP_DEPARTMENT_FK, department);
+    Entity department = model.connectionProvider().connection().selectSingle(Department.NAME, "SALES");
+    model.put(Employee.DEPARTMENT_FK, department);
     assertEquals(searchModel.getSelectedEntities().size(), 1);
     assertEquals(searchModel.getSelectedEntities().iterator().next(), department);
-    department = model.connectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+    department = model.connectionProvider().connection().selectSingle(Department.NAME, "OPERATIONS");
     searchModel.setSelectedEntity(department);
-    assertEquals(model.get(TestDomain.EMP_DEPARTMENT_FK), department);
+    assertEquals(model.get(Employee.DEPARTMENT_FK), department);
   }
 }

@@ -7,6 +7,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.javafx.framework.model.FXEntityEditModel;
+import is.codion.javafx.framework.ui.TestDomain.Employee;
 
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
@@ -31,7 +32,7 @@ public final class EntityEditViewTest {
 
   @Test
   void constructor() {
-    FXEntityEditModel editModel = new FXEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    FXEntityEditModel editModel = new FXEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
     EntityEditView editView = new EmpEditView(editModel).initializePanel();
     editView.createButtonPanel();
   }
@@ -44,16 +45,16 @@ public final class EntityEditViewTest {
 
     @Override
     protected Node initializeEditPanel() {
-      setInitialFocusAttribute(TestDomain.EMP_ID);
+      setInitialFocusAttribute(Employee.ID);
 
-      createTextField(TestDomain.EMP_ID);
-      createTextField(TestDomain.EMP_NAME);
-      createTextField(TestDomain.EMP_SALARY);
-      createForeignKeySearchField(TestDomain.EMP_DEPARTMENT_FK);
-      createDatePicker(TestDomain.EMP_HIREDATE);
-      createForeignKeyComboBox(TestDomain.EMP_MGR_FK);
+      createTextField(Employee.ID);
+      createTextField(Employee.NAME);
+      createTextField(Employee.SALARY);
+      createForeignKeySearchField(Employee.DEPARTMENT_FK);
+      createDatePicker(Employee.HIREDATE);
+      createForeignKeyComboBox(Employee.MGR_FK);
 
-      createInputPanel(TestDomain.EMP_ID);
+      createInputPanel(Employee.ID);
 
       return new GridPane();
     }

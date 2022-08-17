@@ -5,7 +5,8 @@ package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.test.AbstractEntityApplicationModelTest;
-import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Employee;
 
 public final class SwingEntityApplicationModelTest
         extends AbstractEntityApplicationModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
@@ -17,8 +18,8 @@ public final class SwingEntityApplicationModelTest
 
   private static class DeptModel extends SwingEntityModel {
     private DeptModel(EntityConnectionProvider connectionProvider) {
-      super(TestDomain.T_DEPARTMENT, connectionProvider);
-      addDetailModel(new SwingEntityModel(TestDomain.T_EMP, connectionProvider));
+      super(Department.TYPE, connectionProvider);
+      addDetailModel(new SwingEntityModel(Employee.TYPE, connectionProvider));
     }
   }
 }

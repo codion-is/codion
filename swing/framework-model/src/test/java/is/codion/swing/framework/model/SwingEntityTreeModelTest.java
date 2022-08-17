@@ -7,6 +7,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -26,17 +27,17 @@ public final class SwingEntityTreeModelTest {
             .user(UNIT_TEST_USER)
             .build();
 
-    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, connectionProvider);
-    SwingEntityTreeModel treeModel = new SwingEntityTreeModel(tableModel, TestDomain.EMP_MGR_FK);
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, connectionProvider);
+    SwingEntityTreeModel treeModel = new SwingEntityTreeModel(tableModel, Employee.MGR_FK);
 
     tableModel.refresh();
 
     SwingEntityTreeModel.EntityTreeNode root = (SwingEntityTreeModel.EntityTreeNode) treeModel.getRoot().children().nextElement();
-    assertEquals("KING", root.entity().get(TestDomain.EMP_NAME));
+    assertEquals("KING", root.entity().get(Employee.NAME));
 
-    tableModel.selectByKey(Collections.singletonList(connectionProvider.entities().primaryKey(TestDomain.T_EMP, 3)));//Jones
+    tableModel.selectByKey(Collections.singletonList(connectionProvider.entities().primaryKey(Employee.TYPE, 3)));//Jones
 
     SwingEntityTreeModel.EntityTreeNode node = (SwingEntityTreeModel.EntityTreeNode) treeModel.treeSelectionModel().getSelectionPath().getLastPathComponent();
-    assertEquals("JONES", node.entity().get(TestDomain.EMP_NAME));
+    assertEquals("JONES", node.entity().get(Employee.NAME));
   }
 }

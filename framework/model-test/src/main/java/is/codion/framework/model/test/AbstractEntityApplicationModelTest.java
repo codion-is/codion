@@ -13,6 +13,8 @@ import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableModel;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -46,16 +48,16 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     Model deptModel = createDepartmentModel();
     model.addEntityModel(deptModel);
-    assertNotNull(model.entityModel(TestDomain.T_DEPARTMENT));
+    assertNotNull(model.entityModel(Department.TYPE));
     assertEquals(1, model.entityModels().size());
     model.clear();
     assertEquals(UNIT_TEST_USER, model.user());
 
-    assertThrows(IllegalArgumentException.class, () -> model.entityModel(TestDomain.T_EMP));
+    assertThrows(IllegalArgumentException.class, () -> model.entityModel(Employee.TYPE));
     if (!deptModel.containsTableModel()) {
       return;
     }
-    deptModel.detailModel(TestDomain.T_EMP).tableModel().queryConditionRequiredState().set(false);
+    deptModel.detailModel(Employee.TYPE).tableModel().queryConditionRequiredState().set(false);
     model.refresh();
     assertTrue(deptModel.tableModel().getRowCount() > 0);
   }
@@ -68,7 +70,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
   @Test
   public void entityModelByEntityTypeNotFound() {
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-    assertThrows(IllegalArgumentException.class, () -> model.entityModel(TestDomain.T_DEPARTMENT));
+    assertThrows(IllegalArgumentException.class, () -> model.entityModel(Department.TYPE));
   }
 
   @Test
@@ -76,7 +78,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     Model departmentModel = createDepartmentModel();
     model.addEntityModel(departmentModel);
-    assertEquals(departmentModel, model.entityModel(TestDomain.T_DEPARTMENT));
+    assertEquals(departmentModel, model.entityModel(Department.TYPE));
   }
 
   @Test
@@ -94,12 +96,12 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     Model departmentModel = createDepartmentModel();
     model.addEntityModel(departmentModel);
 
-    assertTrue(model.containsEntityModel(TestDomain.T_DEPARTMENT));
+    assertTrue(model.containsEntityModel(Department.TYPE));
     assertTrue(model.containsEntityModel((Class<? extends Model>) departmentModel.getClass()));
     assertTrue(model.containsEntityModel(departmentModel));
 
-    assertFalse(model.containsEntityModel(TestDomain.T_EMP));
-    assertFalse(model.containsEntityModel(departmentModel.detailModel(TestDomain.T_EMP)));
+    assertFalse(model.containsEntityModel(Employee.TYPE));
+    assertFalse(model.containsEntityModel(departmentModel.detailModel(Employee.TYPE)));
   }
 
   @Test
@@ -109,7 +111,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
       return;
     }
 
-    Model empModel = deptModel.detailModel(TestDomain.T_EMP);
+    Model empModel = deptModel.detailModel(Employee.TYPE);
     deptModel.addLinkedDetailModel(empModel);
 
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
@@ -122,18 +124,18 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     deptModel.tableModel().selectionModel().setSelectedIndex(0);
     empModel.tableModel().selectionModel().setSelectedIndex(0);
 
-    String name = empModel.editModel().get(TestDomain.EMP_NAME);
-    empModel.editModel().put(TestDomain.EMP_NAME, "Darri");
+    String name = empModel.editModel().get(Employee.NAME);
+    empModel.editModel().put(Employee.NAME, "Darri");
     assertTrue(model.containsUnsavedData());
 
-    empModel.editModel().put(TestDomain.EMP_NAME, name);
+    empModel.editModel().put(Employee.NAME, name);
     assertFalse(model.containsUnsavedData());
 
-    name = deptModel.editModel().get(TestDomain.DEPARTMENT_NAME);
-    deptModel.editModel().put(TestDomain.DEPARTMENT_NAME, "Darri");
+    name = deptModel.editModel().get(Department.NAME);
+    deptModel.editModel().put(Department.NAME, "Darri");
     assertTrue(model.containsUnsavedData());
 
-    deptModel.editModel().put(TestDomain.DEPARTMENT_NAME, name);
+    deptModel.editModel().put(Department.NAME, name);
     assertFalse(model.containsUnsavedData());
   }
 
@@ -143,7 +145,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   /**
    * @return a EntityModel based on the department entity
-   * @see TestDomain#T_DEPARTMENT
+   * @see Department#TYPE
    */
   protected abstract Model createDepartmentModel();
 }

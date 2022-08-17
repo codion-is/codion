@@ -12,6 +12,8 @@ import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,21 +31,21 @@ public class SwingForeignKeyConditionModelTest {
             .user(UNIT_TEST_USER)
             .build();
 
-  private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_EMP,
+  private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(Employee.TYPE,
           CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new SwingConditionModelFactory(CONNECTION_PROVIDER));
 
   @Test
   void refresh() {
     conditionModel.refresh();
-    assertTrue(((SwingForeignKeyConditionModel) conditionModel.conditionModel(TestDomain.EMP_DEPARTMENT_FK))
+    assertTrue(((SwingForeignKeyConditionModel) conditionModel.conditionModel(Employee.DEPARTMENT_FK))
             .entityComboBoxModel().getSize() > 1);
   }
 
   @Test
   void searchEntitiesComboBoxModel() throws DatabaseException {
-    SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
-    SwingForeignKeyConditionModel conditionModel = new SwingForeignKeyConditionModel(TestDomain.EMP_DEPARTMENT_FK, comboBoxModel);
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
+    SwingForeignKeyConditionModel conditionModel = new SwingForeignKeyConditionModel(Employee.DEPARTMENT_FK, comboBoxModel);
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
     comboBoxModel.setSelectedItem(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());

@@ -15,7 +15,10 @@ import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
-import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Detail;
+import is.codion.framework.model.test.TestDomain.Employee;
+import is.codion.framework.model.test.TestDomain.Master;
 
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +37,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityTableModel createTestTableModel() {
-    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DETAIL, connectionProvider()) {
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, connectionProvider()) {
       @Override
       protected Collection<Entity> refreshItems() {
         return testEntities;
@@ -46,7 +49,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityTableModel createMasterTableModel() {
-    return new SwingEntityTableModel(TestDomain.T_MASTER, connectionProvider());
+    return new SwingEntityTableModel(Master.TYPE, connectionProvider());
   }
 
   @Override
@@ -56,38 +59,38 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityTableModel createDepartmentTableModel() {
-    SwingEntityTableModel deptModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, testModel.connectionProvider());
-    deptModel.sortModel().setSortOrder(TestDomain.DEPARTMENT_NAME, SortOrder.ASCENDING);
+    SwingEntityTableModel deptModel = new SwingEntityTableModel(Department.TYPE, testModel.connectionProvider());
+    deptModel.sortModel().setSortOrder(Department.NAME, SortOrder.ASCENDING);
 
     return deptModel;
   }
 
   @Override
   protected SwingEntityTableModel createEmployeeTableModel() {
-    return new SwingEntityTableModel(TestDomain.T_EMP, testModel.connectionProvider());
+    return new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
   }
 
   @Override
   protected SwingEntityEditModel createDepartmentEditModel() {
-    return new SwingEntityEditModel(TestDomain.T_MASTER, connectionProvider());
+    return new SwingEntityEditModel(Master.TYPE, connectionProvider());
   }
 
   @Override
   protected SwingEntityEditModel createDetailEditModel() {
-    return new SwingEntityEditModel(TestDomain.T_DETAIL, connectionProvider());
+    return new SwingEntityEditModel(Detail.TYPE, connectionProvider());
   }
 
   @Test
   void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
     SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
     assertEquals(0, employeeTableModel.getRowCount());
-    Entity accounting = connectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
-    employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, singletonList(accounting));
+    Entity accounting = connectionProvider().connection().selectSingle(Department.ID, 10);
+    employeeTableModel.setForeignKeyConditionValues(Employee.DEPARTMENT_FK, singletonList(accounting));
     assertEquals(7, employeeTableModel.getRowCount());
     employeeTableModel.clear();
     employeeTableModel.setRefreshOnForeignKeyConditionValuesSet(false);
-    Entity sales = connectionProvider().connection().selectSingle(TestDomain.DEPARTMENT_ID, 30);
-    employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, Collections.singleton(sales));
+    Entity sales = connectionProvider().connection().selectSingle(Department.ID, 30);
+    employeeTableModel.setForeignKeyConditionValues(Employee.DEPARTMENT_FK, Collections.singleton(sales));
     assertEquals(0, employeeTableModel.getRowCount());
     employeeTableModel.refresh();
     assertEquals(4, employeeTableModel.getRowCount());
@@ -95,22 +98,22 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void nonMatchingConditionModelEntityType() {
-    EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, connectionProvider(),
+    EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(Department.TYPE, connectionProvider(),
             new DefaultFilterModelFactory(), new DefaultConditionModelFactory(connectionProvider()));
     assertThrows(IllegalArgumentException.class, () ->
-            new SwingEntityTableModel(new SwingEntityEditModel(TestDomain.T_EMP, connectionProvider()), conditionModel));
+            new SwingEntityTableModel(new SwingEntityEditModel(Employee.TYPE, connectionProvider()), conditionModel));
   }
 
   @Test
   void nullConditionModel() {
-    assertThrows(NullPointerException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, null));
+    assertThrows(NullPointerException.class, () -> new SwingEntityTableModel(Employee.TYPE, null));
   }
 
   @Test
   void testFiltering() {
     testModel.refresh();
     ColumnConditionModel<Attribute<String>, String> filterModel =
-            testModel.tableConditionModel().filterModel(TestDomain.DETAIL_STRING);
+            testModel.tableConditionModel().filterModel(Detail.STRING);
     filterModel.setEqualValue("a");
     testModel.filterContents();
     assertEquals(4, testModel.filteredItems().size());
@@ -118,16 +121,16 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void getColumnIndex() {
-    assertEquals(0, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_INT));
-    assertEquals(1, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_DOUBLE));
-    assertEquals(2, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_STRING));
-    assertEquals(3, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_DATE));
-    assertEquals(4, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_TIMESTAMP));
-    assertEquals(5, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_BOOLEAN));
-    assertEquals(6, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_BOOLEAN_NULLABLE));
-    assertEquals(7, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_MASTER_FK));
-    assertEquals(8, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_MASTER_NAME));
-    assertEquals(9, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_MASTER_CODE));
+    assertEquals(0, testModel.columnModel().getColumnIndex(Detail.INT));
+    assertEquals(1, testModel.columnModel().getColumnIndex(Detail.DOUBLE));
+    assertEquals(2, testModel.columnModel().getColumnIndex(Detail.STRING));
+    assertEquals(3, testModel.columnModel().getColumnIndex(Detail.DATE));
+    assertEquals(4, testModel.columnModel().getColumnIndex(Detail.TIMESTAMP));
+    assertEquals(5, testModel.columnModel().getColumnIndex(Detail.BOOLEAN));
+    assertEquals(6, testModel.columnModel().getColumnIndex(Detail.BOOLEAN_NULLABLE));
+    assertEquals(7, testModel.columnModel().getColumnIndex(Detail.MASTER_FK));
+    assertEquals(8, testModel.columnModel().getColumnIndex(Detail.MASTER_NAME));
+    assertEquals(9, testModel.columnModel().getColumnIndex(Detail.MASTER_CODE));
   }
 
   @Test
@@ -149,7 +152,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void isEditable() {
     testModel.setEditable(true);
     assertTrue(testModel.isCellEditable(0, 0));
-    assertFalse(testModel.isCellEditable(0, testModel.columnModel().getColumnIndex(TestDomain.DETAIL_INT_DERIVED)));
+    assertFalse(testModel.isCellEditable(0, testModel.columnModel().getColumnIndex(Detail.INT_DERIVED)));
     testModel.setEditable(false);
   }
 
@@ -161,14 +164,14 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.setEditable(true);
     tableModel.setValueAt("newname", 0, 1);
     Entity entity = tableModel.itemAt(0);
-    assertEquals("newname", entity.get(TestDomain.EMP_NAME));
+    assertEquals("newname", entity.get(Employee.NAME));
     assertThrows(RuntimeException.class, () -> tableModel.setValueAt("newname", 0, 0));
   }
 
   @Test
   void columnModel() {
-    TableColumn column = testModel.columnModel().tableColumn(TestDomain.DETAIL_STRING);
-    assertEquals(TestDomain.DETAIL_STRING, column.getIdentifier());
+    TableColumn column = testModel.columnModel().tableColumn(Detail.STRING);
+    assertEquals(Detail.STRING, column.getIdentifier());
   }
 
   @Test
@@ -187,23 +190,23 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void backgroundColor() {
     SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
     ColumnConditionModel<Attribute<String>, String> nameConditionModel =
-            employeeTableModel.tableConditionModel().conditionModel(TestDomain.EMP_NAME);
+            employeeTableModel.tableConditionModel().conditionModel(Employee.NAME);
     nameConditionModel.setEqualValue("BLAKE");
     employeeTableModel.refresh();
-    assertEquals(Color.GREEN, employeeTableModel.backgroundColor(0, TestDomain.EMP_JOB));
+    assertEquals(Color.GREEN, employeeTableModel.backgroundColor(0, Employee.JOB));
   }
 
   @Test
   void indexOf() {
-    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.connectionProvider());
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
     tableModel.refresh();
-    tableModel.sortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
-    assertEquals(SortOrder.ASCENDING, tableModel.sortModel().sortingState(TestDomain.EMP_NAME).sortOrder());
+    tableModel.sortModel().setSortOrder(Employee.NAME, SortOrder.ASCENDING);
+    assertEquals(SortOrder.ASCENDING, tableModel.sortModel().sortingState(Employee.NAME).sortOrder());
 
-    Key pk1 = connectionProvider().entities().primaryKey(TestDomain.T_EMP, 10);//ADAMS
+    Key pk1 = connectionProvider().entities().primaryKey(Employee.TYPE, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
 
-    Key pk2 = connectionProvider().entities().primaryKey(TestDomain.T_EMP, -66);
+    Key pk2 = connectionProvider().entities().primaryKey(Employee.TYPE, -66);
     assertEquals(-1, tableModel.indexOf(pk2));
   }
 
@@ -212,9 +215,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     testModel.clearPreferences();
 
     SwingEntityTableModel tableModel = createTestTableModel();
-    assertTrue(tableModel.columnModel().isColumnVisible(TestDomain.DETAIL_STRING));
+    assertTrue(tableModel.columnModel().isColumnVisible(Detail.STRING));
 
-    tableModel.columnModel().setColumnVisible(TestDomain.DETAIL_STRING, false);
+    tableModel.columnModel().setColumnVisible(Detail.STRING, false);
     tableModel.columnModel().moveColumn(1, 0);//double to 0, int to 1
     TableColumn column = tableModel.columnModel().getColumn(3);
     column.setWidth(150);//timestamp
@@ -224,9 +227,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.savePreferences();
 
     SwingEntityTableModel model = createTestTableModel();
-    assertFalse(model.columnModel().isColumnVisible(TestDomain.DETAIL_STRING));
-    assertEquals(0, model.columnModel().getColumnIndex(TestDomain.DETAIL_DOUBLE));
-    assertEquals(1, model.columnModel().getColumnIndex(TestDomain.DETAIL_INT));
+    assertFalse(model.columnModel().isColumnVisible(Detail.STRING));
+    assertEquals(0, model.columnModel().getColumnIndex(Detail.DOUBLE));
+    assertEquals(1, model.columnModel().getColumnIndex(Detail.INT));
     column = model.columnModel().getColumn(3);
     assertEquals(150, column.getPreferredWidth());
     column = model.columnModel().getColumn(5);
@@ -243,42 +246,42 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     //default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
+    assertEquals(Employee.DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
+    assertEquals(Employee.NAME, orderBy.orderByAttributes().get(1).attribute());
 
-    tableModel.sortModel().setSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
+    tableModel.sortModel().setSortOrder(Employee.NAME, SortOrder.ASCENDING);
     orderBy = tableModel.orderBy();
     //still default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
+    assertEquals(Employee.DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
+    assertEquals(Employee.NAME, orderBy.orderByAttributes().get(1).attribute());
 
     tableModel.setOrderQueryBySortOrder(true);
     orderBy = tableModel.orderBy();
     assertEquals(1, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(0).attribute());
+    assertEquals(Employee.NAME, orderBy.orderByAttributes().get(0).attribute());
 
-    tableModel.sortModel().setSortOrder(TestDomain.EMP_HIREDATE, SortOrder.DESCENDING);
-    tableModel.sortModel().addSortOrder(TestDomain.EMP_NAME, SortOrder.ASCENDING);
+    tableModel.sortModel().setSortOrder(Employee.HIREDATE, SortOrder.DESCENDING);
+    tableModel.sortModel().addSortOrder(Employee.NAME, SortOrder.ASCENDING);
 
     orderBy = tableModel.orderBy();
     assertEquals(2, orderBy.orderByAttributes().size());
     assertFalse(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_HIREDATE, orderBy.orderByAttributes().get(0).attribute());
+    assertEquals(Employee.HIREDATE, orderBy.orderByAttributes().get(0).attribute());
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
+    assertEquals(Employee.NAME, orderBy.orderByAttributes().get(1).attribute());
 
     tableModel.sortModel().clear();
     orderBy = tableModel.orderBy();
     //back to default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
     assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(TestDomain.EMP_DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
+    assertEquals(Employee.DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(TestDomain.EMP_NAME, orderBy.orderByAttributes().get(1).attribute());
+    assertEquals(Employee.NAME, orderBy.orderByAttributes().get(1).attribute());
   }
 }

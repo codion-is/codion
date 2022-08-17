@@ -5,6 +5,10 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.db.TestDomain;
+import is.codion.framework.db.TestDomain.Department;
+import is.codion.framework.db.TestDomain.Detail;
+import is.codion.framework.db.TestDomain.Employee;
+import is.codion.framework.db.TestDomain.Master;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -34,13 +38,13 @@ public final class ConditionsTest {
 
   @Test
   void selectCondition() {
-    SelectCondition condition = where(TestDomain.DEPARTMENT_LOCATION).equalTo("New York")
+    SelectCondition condition = where(Department.LOCATION).equalTo("New York")
             .selectBuilder()
-            .orderBy(OrderBy.ascending(TestDomain.DEPARTMENT_NAME))
+            .orderBy(OrderBy.ascending(Department.NAME))
             .build();
     assertEquals(-1, condition.limit());
 
-    condition = Conditions.condition(TestDomain.T_DEPARTMENT).selectBuilder()
+    condition = Conditions.condition(Department.TYPE).selectBuilder()
             .limit(10)
             .build();
     assertEquals(10, condition.limit());
@@ -48,9 +52,9 @@ public final class ConditionsTest {
 
   @Test
   void customConditionTest() {
-    SelectCondition condition = Conditions.customCondition(TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID)
+    SelectCondition condition = Conditions.customCondition(Department.NAME_NOT_NULL_CONDITION_ID)
             .selectBuilder()
-            .orderBy(OrderBy.ascending(TestDomain.DEPARTMENT_NAME))
+            .orderBy(OrderBy.ascending(Department.NAME))
             .build();
     assertTrue(condition.values().isEmpty());
     assertTrue(condition.attributes().isEmpty());
@@ -58,42 +62,42 @@ public final class ConditionsTest {
 
   @Test
   void updateConditionDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).updateBuilder()
-            .set(TestDomain.EMP_COMMISSION, 123d)
-            .set(TestDomain.EMP_COMMISSION, 123d));
+    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(Employee.TYPE).updateBuilder()
+            .set(Employee.COMMISSION, 123d)
+            .set(Employee.COMMISSION, 123d));
   }
 
   @Test
   void combinationEmpty() {
     Condition.Combination combination = Conditions.combination(Conjunction.AND);
-    assertEquals("", combination.toString(ENTITIES.definition(TestDomain.T_EMP)));
+    assertEquals("", combination.toString(ENTITIES.definition(Employee.TYPE)));
 
-    combination = combination.and(Conditions.condition(TestDomain.T_EMP),
-            where(TestDomain.EMP_ID).equalTo(1));
-    assertEquals("(empno = ?)", combination.toString(ENTITIES.definition(TestDomain.T_EMP)));
+    combination = combination.and(Conditions.condition(Employee.TYPE),
+            where(Employee.ID).equalTo(1));
+    assertEquals("(empno = ?)", combination.toString(ENTITIES.definition(Employee.TYPE)));
   }
 
   @Test
   void foreignKeyCondition() {
-    Entity master = ENTITIES.builder(TestDomain.T_MASTER)
-            .with(TestDomain.MASTER_ID_1, 1)
-            .with(TestDomain.MASTER_ID_2, 2)
-            .with(TestDomain.MASTER_CODE, 3)
+    Entity master = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID_1, 1)
+            .with(Master.ID_2, 2)
+            .with(Master.CODE, 3)
             .build();
-    Condition condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(master);
-    assertEquals("(master_id = ? and master_id_2 = ?)", condition.toString(ENTITIES.definition(TestDomain.T_DETAIL)));
-    Condition condition2 = where(TestDomain.DETAIL_MASTER_VIA_CODE_FK).equalTo(master);
-    assertEquals("master_code = ?", condition2.toString(ENTITIES.definition(TestDomain.T_DETAIL)));
+    Condition condition = where(Detail.MASTER_FK).equalTo(master);
+    assertEquals("(master_id = ? and master_id_2 = ?)", condition.toString(ENTITIES.definition(Detail.TYPE)));
+    Condition condition2 = where(Detail.MASTER_VIA_CODE_FK).equalTo(master);
+    assertEquals("master_code = ?", condition2.toString(ENTITIES.definition(Detail.TYPE)));
   }
 
   @Test
   void combination() {
-    Condition.Combination combination1 = where(TestDomain.DETAIL_STRING).equalTo("value")
-            .and(where(TestDomain.DETAIL_INT).equalTo(666));
-    EntityDefinition detailDefinition = ENTITIES.definition(TestDomain.T_DETAIL);
+    Condition.Combination combination1 = where(Detail.STRING).equalTo("value")
+            .and(where(Detail.INT).equalTo(666));
+    EntityDefinition detailDefinition = ENTITIES.definition(Detail.TYPE);
     assertEquals("(string = ? and int = ?)", combination1.toString(detailDefinition));
-    Condition.Combination combination2 = where(TestDomain.DETAIL_DOUBLE).equalTo(666.666)
-            .and(where(TestDomain.DETAIL_STRING).equalToIgnoreCase("valu%e2"));
+    Condition.Combination combination2 = where(Detail.DOUBLE).equalTo(666.666)
+            .and(where(Detail.STRING).equalToIgnoreCase("valu%e2"));
     Condition.Combination combination3 = combination1.or(combination2);
     assertEquals("((string = ? and int = ?) or (double = ? and upper(string) like upper(?)))",
             combination3.toString(detailDefinition));
@@ -101,89 +105,89 @@ public final class ConditionsTest {
 
   @Test
   void attributeConditionTest() {
-    Condition critOne = where(TestDomain.DEPARTMENT_LOCATION).equalTo("New York");
-    assertEquals("loc = ?", critOne.toString(ENTITIES.definition(TestDomain.T_DEPARTMENT)));
+    Condition critOne = where(Department.LOCATION).equalTo("New York");
+    assertEquals("loc = ?", critOne.toString(ENTITIES.definition(Department.TYPE)));
     assertNotNull(critOne);
   }
 
   @Test
   void foreignKeyConditionNull() {
-    EntityDefinition definition = ENTITIES.definition(TestDomain.T_EMP);
-    Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).isNull();
+    EntityDefinition definition = ENTITIES.definition(Employee.TYPE);
+    Condition condition = where(Employee.DEPARTMENT_FK).isNull();
     assertEquals("deptno is null", condition.toString(definition));
 
-    condition = where(TestDomain.EMP_DEPARTMENT_FK).isNotNull();
+    condition = where(Employee.DEPARTMENT_FK).isNotNull();
     assertEquals("deptno is not null", condition.toString(definition));
   }
 
   @Test
   void foreignKeyConditionEntity() {
-    Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, 10)
+    Entity department = ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, 10)
             .build();
-    EntityDefinition empDefinition = ENTITIES.definition(TestDomain.T_EMP);
-    Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo(department);
+    EntityDefinition empDefinition = ENTITIES.definition(Employee.TYPE);
+    Condition condition = where(Employee.DEPARTMENT_FK).equalTo(department);
     assertEquals("deptno = ?", condition.toString(empDefinition));
 
-    Entity department2 = ENTITIES.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, 11)
+    Entity department2 = ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, 11)
             .build();
-    condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo(asList(department, department2));
+    condition = where(Employee.DEPARTMENT_FK).equalTo(asList(department, department2));
     assertEquals("deptno in (?, ?)", condition.toString(empDefinition));
 
-    condition = where(TestDomain.EMP_DEPARTMENT_FK).notEqualTo(asList(department, department2));
+    condition = where(Employee.DEPARTMENT_FK).notEqualTo(asList(department, department2));
     assertEquals("deptno not in (?, ?)", condition.toString(empDefinition));
   }
 
   @Test
   void foreignKeyConditionEntityKey() {
-    Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, 10)
+    Entity department = ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, 10)
             .build();
-    EntityDefinition empDefinition = ENTITIES.definition(TestDomain.T_EMP);
-    Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo(department);
+    EntityDefinition empDefinition = ENTITIES.definition(Employee.TYPE);
+    Condition condition = where(Employee.DEPARTMENT_FK).equalTo(department);
     assertEquals("deptno = ?", condition.toString(empDefinition));
   }
 
   @Test
   void compositeForeignKey() {
-    Entity master1 = ENTITIES.builder(TestDomain.T_MASTER)
-            .with(TestDomain.MASTER_ID_1, 1)
-            .with(TestDomain.MASTER_ID_2, 2)
+    Entity master1 = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID_1, 1)
+            .with(Master.ID_2, 2)
             .build();
 
-    Entity master2 = ENTITIES.builder(TestDomain.T_MASTER)
-            .with(TestDomain.MASTER_ID_1, 3)
-            .with(TestDomain.MASTER_ID_2, 4)
+    Entity master2 = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID_1, 3)
+            .with(Master.ID_2, 4)
             .build();
 
-    EntityDefinition detailDefinition = ENTITIES.definition(TestDomain.T_DETAIL);
-    Condition condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(master1);
+    EntityDefinition detailDefinition = ENTITIES.definition(Detail.TYPE);
+    Condition condition = where(Detail.MASTER_FK).equalTo(master1);
     assertEquals("(master_id = ? and master_id_2 = ?)", condition.toString(detailDefinition));
 
-    condition = where(TestDomain.DETAIL_MASTER_FK).notEqualTo(master1);
+    condition = where(Detail.MASTER_FK).notEqualTo(master1);
     assertEquals("(master_id <> ? and master_id_2 <> ?)", condition.toString(detailDefinition));
 
-    condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(asList(master1, master2));
+    condition = where(Detail.MASTER_FK).equalTo(asList(master1, master2));
     assertEquals("((master_id = ? and master_id_2 = ?) or (master_id = ? and master_id_2 = ?))", condition.toString(detailDefinition));
 
-    condition = where(TestDomain.DETAIL_MASTER_FK).notEqualTo(asList(master1, master2));
+    condition = where(Detail.MASTER_FK).notEqualTo(asList(master1, master2));
     assertEquals("((master_id <> ? and master_id_2 <> ?) or (master_id <> ? and master_id_2 <> ?))", condition.toString(detailDefinition));
   }
 
   @Test
   void selectConditionCompositeKey() {
-    Entity master1 = ENTITIES.builder(TestDomain.T_MASTER)
-            .with(TestDomain.MASTER_ID_1, 1)
-            .with(TestDomain.MASTER_ID_2, 2)
+    Entity master1 = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID_1, 1)
+            .with(Master.ID_2, 2)
             .build();
 
-    Entity master2 = ENTITIES.builder(TestDomain.T_MASTER)
-            .with(TestDomain.MASTER_ID_1, 3)
-            .with(TestDomain.MASTER_ID_2, 4)
+    Entity master2 = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID_1, 3)
+            .with(Master.ID_2, 4)
             .build();
 
-    EntityDefinition masterDefinition = ENTITIES.definition(TestDomain.T_MASTER);
+    EntityDefinition masterDefinition = ENTITIES.definition(Master.TYPE);
     Condition condition = Conditions.condition(master1.primaryKey());
     assertEquals("(id = ? and id2 = ?)", condition.toString(masterDefinition));
 
@@ -194,64 +198,64 @@ public final class ConditionsTest {
   @Test
   void keyNullCondition() {
     assertThrows(NullPointerException.class, () ->
-            where(TestDomain.EMP_DEPARTMENT_FK).equalTo((Entity[]) null));
+            where(Employee.DEPARTMENT_FK).equalTo((Entity[]) null));
     assertThrows(NullPointerException.class, () ->
-            where(TestDomain.EMP_DEPARTMENT_FK).equalTo((Collection<Entity>) null));
+            where(Employee.DEPARTMENT_FK).equalTo((Collection<Entity>) null));
     assertThrows(NullPointerException.class, () ->
-            where(TestDomain.EMP_DEPARTMENT_FK).notEqualTo((Entity[]) null));
+            where(Employee.DEPARTMENT_FK).notEqualTo((Entity[]) null));
     assertThrows(NullPointerException.class, () ->
-            where(TestDomain.EMP_DEPARTMENT_FK).notEqualTo((Collection<Entity>) null));
+            where(Employee.DEPARTMENT_FK).notEqualTo((Collection<Entity>) null));
 
-    EntityDefinition empDefinition = ENTITIES.definition(TestDomain.T_EMP);
-    Condition condition = where(TestDomain.EMP_DEPARTMENT_FK).isNull();
+    EntityDefinition empDefinition = ENTITIES.definition(Employee.TYPE);
+    Condition condition = where(Employee.DEPARTMENT_FK).isNull();
     assertEquals("deptno is null", condition.toString(empDefinition));
 
-    condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo((Entity) null);
+    condition = where(Employee.DEPARTMENT_FK).equalTo((Entity) null);
     assertEquals("deptno is null", condition.toString(empDefinition));
 
-    condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo(emptyList());
+    condition = where(Employee.DEPARTMENT_FK).equalTo(emptyList());
     assertEquals("deptno is null", condition.toString(empDefinition));
 
-    condition = where(TestDomain.EMP_DEPARTMENT_FK).isNull();
+    condition = where(Employee.DEPARTMENT_FK).isNull();
     assertEquals("deptno is null", condition.toString(empDefinition));
 
-    condition = where(TestDomain.EMP_DEPARTMENT_FK).isNotNull();
+    condition = where(Employee.DEPARTMENT_FK).isNotNull();
     assertEquals("deptno is not null", condition.toString(empDefinition));
 
-    condition = where(TestDomain.EMP_DEPARTMENT_FK).notEqualTo((Entity) null);
+    condition = where(Employee.DEPARTMENT_FK).notEqualTo((Entity) null);
     assertEquals("deptno is not null", condition.toString(empDefinition));
 
-    condition = where(TestDomain.EMP_DEPARTMENT_FK).notEqualTo(emptyList());
+    condition = where(Employee.DEPARTMENT_FK).notEqualTo(emptyList());
     assertEquals("deptno is not null", condition.toString(empDefinition));
 
-    Entity master1 = ENTITIES.builder(TestDomain.T_MASTER)
-            .with(TestDomain.MASTER_ID_1, null)
-            .with(TestDomain.MASTER_ID_2, null)
+    Entity master1 = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID_1, null)
+            .with(Master.ID_2, null)
             .build();
 
-    EntityDefinition detailDefinition = ENTITIES.definition(TestDomain.T_DETAIL);
-    condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(master1);
+    EntityDefinition detailDefinition = ENTITIES.definition(Detail.TYPE);
+    condition = where(Detail.MASTER_FK).equalTo(master1);
     assertEquals("(master_id is null and master_id_2 is null)", condition.toString(detailDefinition));
 
-    master1.put(TestDomain.MASTER_ID_2, 1);
-    condition = where(TestDomain.DETAIL_MASTER_FK).equalTo(master1);
+    master1.put(Master.ID_2, 1);
+    condition = where(Detail.MASTER_FK).equalTo(master1);
     assertEquals("(master_id is null and master_id_2 = ?)", condition.toString(detailDefinition));
 
-    Entity dept = ENTITIES.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, 42)
+    Entity dept = ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, 42)
             .build();
 
-    condition = where(TestDomain.EMP_DEPARTMENT_FK).equalTo(dept);
+    condition = where(Employee.DEPARTMENT_FK).equalTo(dept);
     assertEquals("deptno = ?", condition.toString(empDefinition));
   }
 
   @Test
   void conditionTest() {
-    Entity entity = ENTITIES.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, 10)
+    Entity entity = ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, 10)
             .build();
 
-    EntityDefinition deptDefinition = ENTITIES.definition(TestDomain.T_DEPARTMENT);
+    EntityDefinition deptDefinition = ENTITIES.definition(Department.TYPE);
 
     Condition condition = Conditions.condition(entity.primaryKey());
     assertDepartmentKeyCondition(condition, deptDefinition);
@@ -259,17 +263,17 @@ public final class ConditionsTest {
     condition = Conditions.condition(entity.primaryKey());
     assertDepartmentKeyCondition(condition, deptDefinition);
 
-    condition = where(TestDomain.DEPARTMENT_NAME).notEqualTo("DEPT");
+    condition = where(Department.NAME).notEqualTo("DEPT");
     assertDepartmentCondition(condition, deptDefinition);
   }
 
   @Test
   void selectConditionTest() {
-    Entity entity = ENTITIES.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, 10)
+    Entity entity = ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, 10)
             .build();
 
-    EntityDefinition deptDefinition = ENTITIES.definition(TestDomain.T_DEPARTMENT);
+    EntityDefinition deptDefinition = ENTITIES.definition(Department.TYPE);
 
     Condition condition = Conditions.condition(entity.primaryKey());
     assertDepartmentKeyCondition(condition, deptDefinition);
@@ -277,281 +281,281 @@ public final class ConditionsTest {
     condition = Conditions.condition(singletonList(entity.primaryKey()));
     assertDepartmentKeyCondition(condition, deptDefinition);
 
-    condition = where(TestDomain.DEPARTMENT_NAME).notEqualTo("DEPT");
+    condition = where(Department.NAME).notEqualTo("DEPT");
     assertDepartmentCondition(condition, deptDefinition);
   }
 
   @Test
   void selectAllCondition() {
-    Condition selectCondition = Conditions.condition(TestDomain.T_DEPARTMENT);
+    Condition selectCondition = Conditions.condition(Department.TYPE);
     assertTrue(selectCondition.values().isEmpty());
     assertTrue(selectCondition.attributes().isEmpty());
 
-    Condition condition = Conditions.condition(TestDomain.T_DEPARTMENT);
+    Condition condition = Conditions.condition(Department.TYPE);
     assertTrue(condition.values().isEmpty());
     assertTrue(condition.attributes().isEmpty());
   }
 
   @Test
   void attributeConditionWithNonColumnProperty() {
-    EntityDefinition definition = ENTITIES.definition(TestDomain.T_EMP);
+    EntityDefinition definition = ENTITIES.definition(Employee.TYPE);
     assertThrows(IllegalArgumentException.class, () ->
-            where(TestDomain.EMP_DEPARTMENT_LOCATION).isNull().toString(definition));
+            where(Employee.DEPARTMENT_LOCATION).isNull().toString(definition));
   }
 
   @Test
   void conditionNullOrEmptyValues() {
-    assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).equalTo((String[]) null));
-    assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).equalTo((Collection<String>) null));
+    assertThrows(NullPointerException.class, () -> where(Department.NAME).equalTo((String[]) null));
+    assertThrows(NullPointerException.class, () -> where(Department.NAME).equalTo((Collection<String>) null));
 
-    assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).notEqualTo((String[]) null));
-    assertThrows(NullPointerException.class, () -> where(TestDomain.DEPARTMENT_NAME).notEqualTo((Collection<String>) null));
+    assertThrows(NullPointerException.class, () -> where(Department.NAME).notEqualTo((String[]) null));
+    assertThrows(NullPointerException.class, () -> where(Department.NAME).notEqualTo((Collection<String>) null));
   }
 
   @Test
   void whereClause() throws Exception {
-    EntityDefinition departmentDefinition = ENTITIES.definition(TestDomain.T_DEPARTMENT);
-    ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.property(TestDomain.DEPARTMENT_NAME);
-    Condition condition = where(TestDomain.DEPARTMENT_NAME).equalTo("upper%");
+    EntityDefinition departmentDefinition = ENTITIES.definition(Department.TYPE);
+    ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.property(Department.NAME);
+    Condition condition = where(Department.NAME).equalTo("upper%");
     assertEquals(property.columnExpression() + " like ?", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).equalTo("upper");
+    condition = where(Department.NAME).equalTo("upper");
     assertEquals(property.columnExpression() + " = ?", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).isNull();
+    condition = where(Department.NAME).isNull();
     assertEquals(property.columnExpression() + " is null", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).equalTo((String) null);
+    condition = where(Department.NAME).equalTo((String) null);
     assertEquals(property.columnExpression() + " is null", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).equalTo(emptyList());
+    condition = where(Department.NAME).equalTo(emptyList());
     assertEquals(property.columnExpression() + " is null", condition.toString(departmentDefinition));
 
-    condition = where(TestDomain.DEPARTMENT_NAME).notEqualTo("upper%");
+    condition = where(Department.NAME).notEqualTo("upper%");
     assertEquals(property.columnExpression() + " not like ?", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).notEqualTo("upper");
+    condition = where(Department.NAME).notEqualTo("upper");
     assertEquals(property.columnExpression() + " <> ?", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).isNotNull();
+    condition = where(Department.NAME).isNotNull();
     assertEquals(property.columnExpression() + " is not null", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).notEqualTo((String) null);
+    condition = where(Department.NAME).notEqualTo((String) null);
     assertEquals(property.columnExpression() + " is not null", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).notEqualTo(emptyList());
+    condition = where(Department.NAME).notEqualTo(emptyList());
     assertEquals(property.columnExpression() + " is not null", condition.toString(departmentDefinition));
 
-    condition = where(TestDomain.DEPARTMENT_NAME).greaterThan("upper");
+    condition = where(Department.NAME).greaterThan("upper");
     assertEquals(property.columnExpression() + " > ?", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).greaterThanOrEqualTo("upper");
+    condition = where(Department.NAME).greaterThanOrEqualTo("upper");
     assertEquals(property.columnExpression() + " >= ?", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).lessThan("upper");
+    condition = where(Department.NAME).lessThan("upper");
     assertEquals(property.columnExpression() + " < ?", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).lessThanOrEqualTo("upper");
+    condition = where(Department.NAME).lessThanOrEqualTo("upper");
     assertEquals(property.columnExpression() + " <= ?", condition.toString(departmentDefinition));
 
-    condition = where(TestDomain.DEPARTMENT_NAME).betweenExclusive("upper", "lower");
+    condition = where(Department.NAME).betweenExclusive("upper", "lower");
     assertEquals("(" + property.columnExpression() + " > ? and " + property.columnExpression() + " < ?)", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).between("upper", "lower");
+    condition = where(Department.NAME).between("upper", "lower");
     assertEquals("(" + property.columnExpression() + " >= ? and " + property.columnExpression() + " <= ?)", condition.toString(departmentDefinition));
 
-    condition = where(TestDomain.DEPARTMENT_NAME).notBetweenExclusive("upper", "lower");
+    condition = where(Department.NAME).notBetweenExclusive("upper", "lower");
     assertEquals("(" + property.columnExpression() + " < ? or " + property.columnExpression() + " > ?)", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).notBetween("upper", "lower");
+    condition = where(Department.NAME).notBetween("upper", "lower");
     assertEquals("(" + property.columnExpression() + " <= ? or " + property.columnExpression() + " >= ?)", condition.toString(departmentDefinition));
 
-    condition = where(TestDomain.DEPARTMENT_NAME).equalTo("%upper%");
+    condition = where(Department.NAME).equalTo("%upper%");
     assertEquals(property.columnExpression() + " like ?", condition.toString(departmentDefinition));
-    condition = where(TestDomain.DEPARTMENT_NAME).notEqualTo("%upper%");
+    condition = where(Department.NAME).notEqualTo("%upper%");
     assertEquals(property.columnExpression() + " not like ?", condition.toString(departmentDefinition));
   }
 
   @Test
   void equals() {
-    Condition condition1 = Conditions.condition(TestDomain.T_DEPARTMENT);
-    Condition condition2 = Conditions.condition(TestDomain.T_DEPARTMENT);
+    Condition condition1 = Conditions.condition(Department.TYPE);
+    Condition condition2 = Conditions.condition(Department.TYPE);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.condition(TestDomain.T_EMP);
+    condition2 = Conditions.condition(Employee.TYPE);
     assertNotEquals(condition1, condition2);
 
-    Key key1 = ENTITIES.primaryKey(TestDomain.T_EMP, 1);
-    Key key2 = ENTITIES.primaryKey(TestDomain.T_EMP, 2);
+    Key key1 = ENTITIES.primaryKey(Employee.TYPE, 1);
+    Key key2 = ENTITIES.primaryKey(Employee.TYPE, 2);
     condition1 = Conditions.condition(key1);
     condition2 = Conditions.condition(key1);
     assertEquals(condition1, condition2);
     condition2 = Conditions.condition(key2);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_DEPARTMENT_FK).isNull();
-    condition2 = Conditions.where(TestDomain.EMP_DEPARTMENT_FK).isNull();
+    condition1 = Conditions.where(Employee.DEPARTMENT_FK).isNull();
+    condition2 = Conditions.where(Employee.DEPARTMENT_FK).isNull();
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_DEPARTMENT_FK).isNotNull();
+    condition2 = Conditions.where(Employee.DEPARTMENT_FK).isNotNull();
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).equalTo(0);
-    condition2 = Conditions.where(TestDomain.EMP_ID).equalTo(0);
+    condition1 = Conditions.where(Employee.ID).equalTo(0);
+    condition2 = Conditions.where(Employee.ID).equalTo(0);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).equalTo(1);
+    condition2 = Conditions.where(Employee.ID).equalTo(1);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke");
-    condition2 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke");
+    condition1 = Conditions.where(Employee.NAME).equalTo("Luke");
+    condition2 = Conditions.where(Employee.NAME).equalTo("Luke");
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_NAME).equalToIgnoreCase("Luke");
+    condition2 = Conditions.where(Employee.NAME).equalToIgnoreCase("Luke");
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).notEqualTo(0);
-    condition2 = Conditions.where(TestDomain.EMP_ID).notEqualTo(0);
+    condition1 = Conditions.where(Employee.ID).notEqualTo(0);
+    condition2 = Conditions.where(Employee.ID).notEqualTo(0);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).equalTo(0);
+    condition2 = Conditions.where(Employee.ID).equalTo(0);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).notEqualTo(0);
-    condition2 = Conditions.where(TestDomain.EMP_ID).notEqualTo(0);
+    condition1 = Conditions.where(Employee.ID).notEqualTo(0);
+    condition2 = Conditions.where(Employee.ID).notEqualTo(0);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).notEqualTo(1);
+    condition2 = Conditions.where(Employee.ID).notEqualTo(1);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).lessThan(0);
-    condition2 = Conditions.where(TestDomain.EMP_ID).lessThan(0);
+    condition1 = Conditions.where(Employee.ID).lessThan(0);
+    condition2 = Conditions.where(Employee.ID).lessThan(0);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).lessThan(1);
+    condition2 = Conditions.where(Employee.ID).lessThan(1);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).lessThanOrEqualTo(0);
-    condition2 = Conditions.where(TestDomain.EMP_ID).lessThanOrEqualTo(0);
+    condition1 = Conditions.where(Employee.ID).lessThanOrEqualTo(0);
+    condition2 = Conditions.where(Employee.ID).lessThanOrEqualTo(0);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).lessThanOrEqualTo(1);
+    condition2 = Conditions.where(Employee.ID).lessThanOrEqualTo(1);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).greaterThan(0);
-    condition2 = Conditions.where(TestDomain.EMP_ID).greaterThan(0);
+    condition1 = Conditions.where(Employee.ID).greaterThan(0);
+    condition2 = Conditions.where(Employee.ID).greaterThan(0);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).greaterThan(1);
+    condition2 = Conditions.where(Employee.ID).greaterThan(1);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).greaterThanOrEqualTo(0);
-    condition2 = Conditions.where(TestDomain.EMP_ID).greaterThanOrEqualTo(0);
+    condition1 = Conditions.where(Employee.ID).greaterThanOrEqualTo(0);
+    condition2 = Conditions.where(Employee.ID).greaterThanOrEqualTo(0);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).greaterThanOrEqualTo(1);
+    condition2 = Conditions.where(Employee.ID).greaterThanOrEqualTo(1);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).between(0, 1);
-    condition2 = Conditions.where(TestDomain.EMP_ID).between(0, 1);
+    condition1 = Conditions.where(Employee.ID).between(0, 1);
+    condition2 = Conditions.where(Employee.ID).between(0, 1);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).between(1, 0);
+    condition2 = Conditions.where(Employee.ID).between(1, 0);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).betweenExclusive(0, 1);
-    condition2 = Conditions.where(TestDomain.EMP_ID).betweenExclusive(0, 1);
+    condition1 = Conditions.where(Employee.ID).betweenExclusive(0, 1);
+    condition2 = Conditions.where(Employee.ID).betweenExclusive(0, 1);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).betweenExclusive(1, 0);
+    condition2 = Conditions.where(Employee.ID).betweenExclusive(1, 0);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).notBetween(0, 1);
-    condition2 = Conditions.where(TestDomain.EMP_ID).notBetween(0, 1);
+    condition1 = Conditions.where(Employee.ID).notBetween(0, 1);
+    condition2 = Conditions.where(Employee.ID).notBetween(0, 1);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).notBetween(1, 0);
+    condition2 = Conditions.where(Employee.ID).notBetween(1, 0);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).notBetweenExclusive(0, 1);
-    condition2 = Conditions.where(TestDomain.EMP_ID).notBetweenExclusive(0, 1);
+    condition1 = Conditions.where(Employee.ID).notBetweenExclusive(0, 1);
+    condition2 = Conditions.where(Employee.ID).notBetweenExclusive(0, 1);
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).notBetweenExclusive(1, 0);
+    condition2 = Conditions.where(Employee.ID).notBetweenExclusive(1, 0);
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID,
-            Collections.singletonList(TestDomain.DEPARTMENT_NAME), Collections.singletonList("Test"));
-    condition2 = Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID,
-            Collections.singletonList(TestDomain.DEPARTMENT_NAME), Collections.singletonList("Test"));
+    condition1 = Conditions.customCondition(Department.CONDITION_ID,
+            Collections.singletonList(Department.NAME), Collections.singletonList("Test"));
+    condition2 = Conditions.customCondition(Department.CONDITION_ID,
+            Collections.singletonList(Department.NAME), Collections.singletonList("Test"));
     assertEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).equalTo(0)
-            .or(Conditions.where(TestDomain.EMP_ID).equalTo(1));
-    condition2 = Conditions.where(TestDomain.EMP_ID).equalTo(0)
-            .or(Conditions.where(TestDomain.EMP_ID).equalTo(1));
+    condition1 = Conditions.where(Employee.ID).equalTo(0)
+            .or(Conditions.where(Employee.ID).equalTo(1));
+    condition2 = Conditions.where(Employee.ID).equalTo(0)
+            .or(Conditions.where(Employee.ID).equalTo(1));
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).equalTo(1)
-            .or(Conditions.where(TestDomain.EMP_ID).equalTo(0));
+    condition2 = Conditions.where(Employee.ID).equalTo(1)
+            .or(Conditions.where(Employee.ID).equalTo(0));
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_ID).equalTo(0)
-            .or(Conditions.where(TestDomain.EMP_NAME).equalTo("Luke"));
-    condition2 = Conditions.where(TestDomain.EMP_ID).equalTo(0)
-            .or(Conditions.where(TestDomain.EMP_NAME).equalTo("Luke"));
+    condition1 = Conditions.where(Employee.ID).equalTo(0)
+            .or(Conditions.where(Employee.NAME).equalTo("Luke"));
+    condition2 = Conditions.where(Employee.ID).equalTo(0)
+            .or(Conditions.where(Employee.NAME).equalTo("Luke"));
     assertEquals(condition1, condition2);
-    condition2 = Conditions.where(TestDomain.EMP_ID).equalTo(0)
-            .or(Conditions.where(TestDomain.EMP_NAME).equalTo("Lukas"));
+    condition2 = Conditions.where(Employee.ID).equalTo(0)
+            .or(Conditions.where(Employee.NAME).equalTo("Lukas"));
     assertNotEquals(condition1, condition2);
 
-    condition1 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke", "John");
-    condition2 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke", "John");
+    condition1 = Conditions.where(Employee.NAME).equalTo("Luke", "John");
+    condition2 = Conditions.where(Employee.NAME).equalTo("Luke", "John");
     assertEquals(condition1.selectBuilder().build(), condition2.selectBuilder().build());
     assertEquals(condition1.selectBuilder()
-                    .orderBy(OrderBy.ascending(TestDomain.EMP_NAME))
+                    .orderBy(OrderBy.ascending(Employee.NAME))
                     .build(),
             condition2.selectBuilder()
-                    .orderBy(OrderBy.ascending(TestDomain.EMP_NAME))
+                    .orderBy(OrderBy.ascending(Employee.NAME))
                     .build());
     assertNotEquals(condition1.selectBuilder()
-                    .orderBy(OrderBy.ascending(TestDomain.EMP_NAME))
+                    .orderBy(OrderBy.ascending(Employee.NAME))
                     .build(),
             condition2.selectBuilder()
                     .build());
 
     assertEquals(condition1.selectBuilder()
-                    .selectAttributes(TestDomain.EMP_NAME)
+                    .selectAttributes(Employee.NAME)
                     .build(),
             condition2.selectBuilder()
-                    .selectAttributes(TestDomain.EMP_NAME)
+                    .selectAttributes(Employee.NAME)
                     .build());
 
     assertEquals(condition1.selectBuilder()
-                    .selectAttributes(TestDomain.EMP_NAME)
+                    .selectAttributes(Employee.NAME)
                     .offset(10)
                     .build(),
             condition2.selectBuilder()
-                    .selectAttributes(TestDomain.EMP_NAME)
-                    .offset(10)
-                    .build());
-
-    assertNotEquals(condition1.selectBuilder()
-                    .selectAttributes(TestDomain.EMP_NAME)
-                    .build(),
-            condition2.selectBuilder()
-                    .selectAttributes(TestDomain.EMP_NAME)
+                    .selectAttributes(Employee.NAME)
                     .offset(10)
                     .build());
 
     assertNotEquals(condition1.selectBuilder()
-                    .selectAttributes(TestDomain.EMP_NAME)
+                    .selectAttributes(Employee.NAME)
                     .build(),
             condition2.selectBuilder()
-                    .selectAttributes(TestDomain.EMP_ID)
+                    .selectAttributes(Employee.NAME)
+                    .offset(10)
                     .build());
 
-    condition1 = Conditions.where(TestDomain.EMP_NAME).equalTo("Luke");
+    assertNotEquals(condition1.selectBuilder()
+                    .selectAttributes(Employee.NAME)
+                    .build(),
+            condition2.selectBuilder()
+                    .selectAttributes(Employee.ID)
+                    .build());
+
+    condition1 = Conditions.where(Employee.NAME).equalTo("Luke");
     condition2 = condition1;
     assertEquals(condition1, condition2);
 
-    condition2 = Conditions.where(TestDomain.EMP_NAME).greaterThanOrEqualTo("Luke");
+    condition2 = Conditions.where(Employee.NAME).greaterThanOrEqualTo("Luke");
     assertNotEquals(condition1, condition2);
     assertNotEquals(condition2, condition1);
 
-    condition1 = Conditions.where(TestDomain.EMP_NAME).lessThanOrEqualTo("Luke");
+    condition1 = Conditions.where(Employee.NAME).lessThanOrEqualTo("Luke");
     condition2 = condition1;
     assertEquals(condition1, condition2);
 
-    condition2 = Conditions.where(TestDomain.EMP_NAME).greaterThanOrEqualTo("Luke");
+    condition2 = Conditions.where(Employee.NAME).greaterThanOrEqualTo("Luke");
     assertNotEquals(condition1, condition2);
     assertNotEquals(condition2, condition1);
 
-    condition1 = Conditions.where(TestDomain.EMP_NAME).betweenExclusive("John", "Luke");
+    condition1 = Conditions.where(Employee.NAME).betweenExclusive("John", "Luke");
     condition2 = condition1;
     assertEquals(condition1, condition2);
 
-    condition2 = Conditions.where(TestDomain.EMP_NAME).greaterThanOrEqualTo("Luke");
+    condition2 = Conditions.where(Employee.NAME).greaterThanOrEqualTo("Luke");
     assertNotEquals(condition1, condition2);
     assertNotEquals(condition2, condition1);
 
-    condition1 = Conditions.where(TestDomain.EMP_NAME).notBetweenExclusive("John", "Luke");
+    condition1 = Conditions.where(Employee.NAME).notBetweenExclusive("John", "Luke");
     condition2 = condition1;
     assertEquals(condition1, condition2);
 
-    condition2 = Conditions.where(TestDomain.EMP_NAME).lessThanOrEqualTo("Luke");
+    condition2 = Conditions.where(Employee.NAME).lessThanOrEqualTo("Luke");
     assertNotEquals(condition1, condition2);
     assertNotEquals(condition2, condition1);
   }
@@ -561,7 +565,7 @@ public final class ConditionsTest {
     assertEquals(1, condition.values().size());
     assertEquals(1, condition.attributes().size());
     assertEquals(10, condition.values().get(0));
-    assertEquals(TestDomain.DEPARTMENT_ID, condition.attributes().get(0));
+    assertEquals(Department.ID, condition.attributes().get(0));
   }
 
   private static void assertDepartmentCondition(Condition condition, EntityDefinition departmentDefinition) {
@@ -569,6 +573,6 @@ public final class ConditionsTest {
     assertEquals(1, condition.values().size());
     assertEquals(1, condition.attributes().size());
     assertEquals("DEPT", condition.values().get(0));
-    assertEquals(TestDomain.DEPARTMENT_NAME, condition.attributes().get(0));
+    assertEquals(Department.NAME, condition.attributes().get(0));
   }
 }

@@ -12,6 +12,8 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,23 +51,23 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void constructorNullConnectionProvider() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, null, new ArrayList<>()));
+    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(Employee.TYPE, null, new ArrayList<>()));
   }
 
   @Test
   void constructorNullSearchProperties() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER, null));
+    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(Employee.TYPE, CONNECTION_PROVIDER, null));
   }
 
   @Test
   void searchWithNoSearchProperties() {
-    assertThrows(IllegalStateException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER, emptyList()).performQuery());
+    assertThrows(IllegalStateException.class, () -> new DefaultEntitySearchModel(Employee.TYPE, CONNECTION_PROVIDER, emptyList()).performQuery());
   }
 
   @Test
   void constructorIncorrectEntitySearchProperty() {
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            singletonList(TestDomain.DEPARTMENT_NAME)));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel(Employee.TYPE, CONNECTION_PROVIDER,
+            singletonList(Department.NAME)));
   }
 
   @Test
@@ -79,23 +81,23 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void wrongEntityType() {
-    assertThrows(IllegalArgumentException.class, () -> searchModel.setSelectedEntity(ENTITIES.entity(TestDomain.T_DEPARTMENT)));
+    assertThrows(IllegalArgumentException.class, () -> searchModel.setSelectedEntity(ENTITIES.entity(Department.TYPE)));
   }
 
   @Test
   void setMultipleSelectionNotEnabled() {
     searchModel.multipleSelectionEnabledState().set(false);
-    List<Entity> entities = asList(ENTITIES.entity(TestDomain.T_EMP), ENTITIES.entity(TestDomain.T_EMP));
+    List<Entity> entities = asList(ENTITIES.entity(Employee.TYPE), ENTITIES.entity(Employee.TYPE));
     assertThrows(IllegalArgumentException.class, () -> searchModel.setSelectedEntities(entities));
   }
 
   @Test
   void setToStringProvider() {
-    Property<?> job = ENTITIES.definition(TestDomain.T_EMP).property(TestDomain.EMP_JOB);
+    Property<?> job = ENTITIES.definition(Employee.TYPE).property(Employee.JOB);
     searchModel.setToStringProvider(entity -> entity.toString(job.attribute()));
-    Entity employee = ENTITIES.builder(TestDomain.T_EMP)
-            .with(TestDomain.EMP_NAME, "Darri")
-            .with(TestDomain.EMP_JOB, "CLERK")
+    Entity employee = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.NAME, "Darri")
+            .with(Employee.JOB, "CLERK")
             .build();
     searchModel.setSelectedEntities(singletonList(employee));
     assertEquals(searchModel.getSearchString(), "CLERK");
@@ -134,8 +136,8 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_NAME).wildcardPrefixState().set(false);
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_JOB).wildcardPrefixState().set(false);
+    searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPrefixState().set(false);
+    searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPrefixState().set(false);
     searchModel.setSearchString("jo,cl");
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
@@ -144,16 +146,16 @@ public final class DefaultEntitySearchModelTest {
     assertFalse(contains(result, "Andrew"));
 
     searchModel.setSearchString("Joh");
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_NAME).caseSensitiveState().set(true);
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_JOB).caseSensitiveState().set(true);
+    searchModel.attributeSearchSettings().get(Employee.NAME).caseSensitiveState().set(true);
+    searchModel.attributeSearchSettings().get(Employee.JOB).caseSensitiveState().set(true);
     result = searchModel.performQuery();
     assertEquals(1, result.size());
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_NAME).wildcardPrefixState().set(false);
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_JOB).wildcardPrefixState().set(false);
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_NAME).caseSensitiveState().set(false);
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_JOB).caseSensitiveState().set(false);
+    searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPrefixState().set(false);
+    searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPrefixState().set(false);
+    searchModel.attributeSearchSettings().get(Employee.NAME).caseSensitiveState().set(false);
+    searchModel.attributeSearchSettings().get(Employee.JOB).caseSensitiveState().set(false);
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertTrue(contains(result, "johnson"));
@@ -176,22 +178,22 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(searchModel.searchStringRepresentsSelected());
 
     searchModel.setSearchString("and; rew");
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_NAME).wildcardPrefixState().set(true);
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_JOB).wildcardPrefixState().set(true);
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_NAME).wildcardPostfixState().set(false);
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_JOB).wildcardPostfixState().set(false);
+    searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPrefixState().set(true);
+    searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPrefixState().set(true);
+    searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPostfixState().set(false);
+    searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPostfixState().set(false);
     result = searchModel.performQuery();
     assertEquals(1, result.size());
     assertFalse(contains(result, "Andy"));
     assertTrue(contains(result, "Andrew"));
 
     searchModel.setSearchString("Joh");
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_NAME).caseSensitiveState().set(true);
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_JOB).caseSensitiveState().set(true);
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_NAME).wildcardPostfixState().set(true);
-    searchModel.attributeSearchSettings().get(TestDomain.EMP_JOB).wildcardPostfixState().set(true);
+    searchModel.attributeSearchSettings().get(Employee.NAME).caseSensitiveState().set(true);
+    searchModel.attributeSearchSettings().get(Employee.JOB).caseSensitiveState().set(true);
+    searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPostfixState().set(true);
+    searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPostfixState().set(true);
     searchModel.setAdditionalConditionSupplier(() ->
-            Conditions.where(TestDomain.EMP_JOB).notEqualTo("MANAGER"));
+            Conditions.where(Employee.JOB).notEqualTo("MANAGER"));
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
@@ -205,7 +207,7 @@ public final class DefaultEntitySearchModelTest {
     List<Entity> result = searchModel.performQuery();
     assertEquals(1, result.size());
     searchModel.setSelectedEntities(result);
-    searchModel.setAdditionalConditionSupplier(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_1_TYPE));
+    searchModel.setAdditionalConditionSupplier(() -> Conditions.customCondition(Employee.CONDITION_1_TYPE));
     assertEquals(1, searchModel.getSelectedEntities().size());
     result = searchModel.performQuery();
     assertTrue(result.isEmpty());
@@ -213,8 +215,8 @@ public final class DefaultEntitySearchModelTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    searchAttributes = asList(TestDomain.EMP_NAME, TestDomain.EMP_JOB);
-    searchModel = new DefaultEntitySearchModel(TestDomain.T_EMP, CONNECTION_PROVIDER, searchAttributes);
+    searchAttributes = asList(Employee.NAME, Employee.JOB);
+    searchModel = new DefaultEntitySearchModel(Employee.TYPE, CONNECTION_PROVIDER, searchAttributes);
 
     CONNECTION_PROVIDER.connection().beginTransaction();
     setupData();
@@ -227,7 +229,7 @@ public final class DefaultEntitySearchModelTest {
 
   private static boolean contains(List<Entity> result, String employeeName) {
     for (Entity entity : result) {
-      if (entity.get(TestDomain.EMP_NAME).equals(employeeName)) {
+      if (entity.get(Employee.NAME).equals(employeeName)) {
         return true;
       }
     }
@@ -236,46 +238,46 @@ public final class DefaultEntitySearchModelTest {
   }
 
   private static void setupData() throws Exception {
-    Entity dept = ENTITIES.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, 88)
-            .with(TestDomain.DEPARTMENT_LOCATION, "TestLoc")
-            .with(TestDomain.DEPARTMENT_NAME, "TestDept")
+    Entity dept = ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, 88)
+            .with(Department.LOCATION, "TestLoc")
+            .with(Department.NAME, "TestDept")
             .build();
 
-    Entity emp = ENTITIES.builder(TestDomain.T_EMP)
-            .with(TestDomain.EMP_DEPARTMENT_FK, dept)
-            .with(TestDomain.EMP_COMMISSION, 1000d)
-            .with(TestDomain.EMP_HIREDATE, LocalDate.now())
-            .with(TestDomain.EMP_JOB, "CLERK")
-            .with(TestDomain.EMP_NAME, "John")
-            .with(TestDomain.EMP_SALARY, 1000d)
+    Entity emp = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.DEPARTMENT_FK, dept)
+            .with(Employee.COMMISSION, 1000d)
+            .with(Employee.HIREDATE, LocalDate.now())
+            .with(Employee.JOB, "CLERK")
+            .with(Employee.NAME, "John")
+            .with(Employee.SALARY, 1000d)
             .build();
 
-    Entity emp2 = ENTITIES.builder(TestDomain.T_EMP)
-            .with(TestDomain.EMP_DEPARTMENT_FK, dept)
-            .with(TestDomain.EMP_COMMISSION, 1000d)
-            .with(TestDomain.EMP_HIREDATE, LocalDate.now())
-            .with(TestDomain.EMP_JOB, "MANAGER")
-            .with(TestDomain.EMP_NAME, "johnson")
-            .with(TestDomain.EMP_SALARY, 1000d)
+    Entity emp2 = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.DEPARTMENT_FK, dept)
+            .with(Employee.COMMISSION, 1000d)
+            .with(Employee.HIREDATE, LocalDate.now())
+            .with(Employee.JOB, "MANAGER")
+            .with(Employee.NAME, "johnson")
+            .with(Employee.SALARY, 1000d)
             .build();
 
-    Entity emp3 = ENTITIES.builder(TestDomain.T_EMP)
-            .with(TestDomain.EMP_DEPARTMENT_FK, dept)
-            .with(TestDomain.EMP_COMMISSION, 1000d)
-            .with(TestDomain.EMP_HIREDATE, LocalDate.now())
-            .with(TestDomain.EMP_JOB, "CLERK")
-            .with(TestDomain.EMP_NAME, "Andy")
-            .with(TestDomain.EMP_SALARY, 1000d)
+    Entity emp3 = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.DEPARTMENT_FK, dept)
+            .with(Employee.COMMISSION, 1000d)
+            .with(Employee.HIREDATE, LocalDate.now())
+            .with(Employee.JOB, "CLERK")
+            .with(Employee.NAME, "Andy")
+            .with(Employee.SALARY, 1000d)
             .build();
 
-    Entity emp4 = ENTITIES.builder(TestDomain.T_EMP)
-            .with(TestDomain.EMP_DEPARTMENT_FK, dept)
-            .with(TestDomain.EMP_COMMISSION, 1000d)
-            .with(TestDomain.EMP_HIREDATE, LocalDate.now())
-            .with(TestDomain.EMP_JOB, "MANAGER")
-            .with(TestDomain.EMP_NAME, "Andrew")
-            .with(TestDomain.EMP_SALARY, 1000d)
+    Entity emp4 = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.DEPARTMENT_FK, dept)
+            .with(Employee.COMMISSION, 1000d)
+            .with(Employee.HIREDATE, LocalDate.now())
+            .with(Employee.JOB, "MANAGER")
+            .with(Employee.NAME, "Andrew")
+            .with(Employee.SALARY, 1000d)
             .build();
 
     CONNECTION_PROVIDER.connection().insert(asList(dept, emp, emp2, emp3, emp4));

@@ -6,6 +6,7 @@ package is.codion.plugin.jasperreports.model;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.plugin.jasperreports.model.TestDomain.Department;
 
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
@@ -23,18 +24,18 @@ public class JasperReportsDataSourceTest {
 
   @Test
   void iterator() throws Exception {
-    Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, 10)
-            .with(TestDomain.DEPARTMENT_NAME, "name")
-            .with(TestDomain.DEPARTMENT_LOCATION, "none")
+    Entity department = ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, 10)
+            .with(Department.NAME, "name")
+            .with(Department.LOCATION, "none")
             .build();
-    EntityDefinition definition = ENTITIES.definition(TestDomain.T_DEPARTMENT);
+    EntityDefinition definition = ENTITIES.definition(Department.TYPE);
     List<Entity> entities = singletonList(department);
     JasperReportsDataSource<Entity> source =
             new JasperReportsDataSource<>(entities.iterator(), (entity, field) ->
                     entity.get(definition.attribute(field.getName())));
     while (source.next()) {
-      JRField field = new TestField(TestDomain.DEPARTMENT_NAME.name());
+      JRField field = new TestField(Department.NAME.name());
       source.getFieldValue(field);
     }
   }

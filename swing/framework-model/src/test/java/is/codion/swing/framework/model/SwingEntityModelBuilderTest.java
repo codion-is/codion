@@ -8,6 +8,8 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,45 +27,45 @@ public final class SwingEntityModelBuilderTest {
 
   @Test
   void setModelClass() {
-    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
             .editModelClass(DepartmentEditModel.class).modelClass(SwingEntityModel.class));
-    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
             .tableModelClass(DepartmentTableModel.class).modelClass(SwingEntityModel.class));
 
-    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
             .modelClass(SwingEntityModel.class).editModelClass(DepartmentEditModel.class));
-    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
             .tableModelClass(DepartmentTableModel.class).editModelClass(DepartmentEditModel.class));
-    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
             .editModelClass(DepartmentEditModel.class).tableModelClass(DepartmentTableModel.class));
-    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
+    assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(Department.TYPE)
             .modelClass(SwingEntityModel.class).tableModelClass(DepartmentTableModel.class));
   }
 
   @Test
   void testDetailModelBuilder() {
-    SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+    SwingEntityModel.Builder departmentModelBuilder = SwingEntityModel.builder(Department.TYPE)
             .tableModelClass(DepartmentTableModel.class);
-    SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(TestDomain.T_EMP);
+    SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(Employee.TYPE);
 
     departmentModelBuilder.detailModelBuilder(employeeModelBuilder);
 
     SwingEntityModel departmentModel = departmentModelBuilder.buildModel(CONNECTION_PROVIDER);
     assertTrue(departmentModel.editModel() instanceof DepartmentEditModel);
     assertTrue(departmentModel.tableModel() instanceof DepartmentTableModel);
-    assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
+    assertTrue(departmentModel.containsDetailModel(Employee.TYPE));
   }
 
   @Test
   void factories() {
-    SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+    SwingEntityModel.Builder builder = SwingEntityModel.builder(Department.TYPE)
             .editModelFactory(DepartmentEditModel::new)
             .tableModelFactory(DepartmentTableModel::new);
     SwingEntityModel model = builder.buildModel(CONNECTION_PROVIDER);
     assertTrue(model.editModel() instanceof DepartmentEditModel);
     assertTrue(model.tableModel() instanceof DepartmentTableModel);
 
-    builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+    builder = SwingEntityModel.builder(Department.TYPE)
             .modelFactory(DepartmentModel::new);
 
     model = builder.buildModel(CONNECTION_PROVIDER);
@@ -74,13 +76,13 @@ public final class SwingEntityModelBuilderTest {
 
   @Test
   void modelClasses() {
-    SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+    SwingEntityModel.Builder builder = SwingEntityModel.builder(Department.TYPE)
             .tableModelClass(DepartmentTableModel.class);
     SwingEntityModel model = builder.buildModel(CONNECTION_PROVIDER);
     assertTrue(model.editModel() instanceof DepartmentEditModel);
     assertTrue(model.tableModel() instanceof DepartmentTableModel);
 
-    builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+    builder = SwingEntityModel.builder(Department.TYPE)
             .modelClass(DepartmentModel.class);
 
     model = builder.buildModel(CONNECTION_PROVIDER);
@@ -95,7 +97,7 @@ public final class SwingEntityModelBuilderTest {
     State editModelBuilt = State.state();
     State tableModelBuilt = State.state();
 
-    SwingEntityModel.Builder builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+    SwingEntityModel.Builder builder = SwingEntityModel.builder(Department.TYPE)
             .tableModelClass(DepartmentTableModel.class)
             .onBuildModel(swingEntityModel -> modelBuilt.set(true))
             .onBuildEditModel(swingEntityEditModel -> editModelBuilt.set(true))
@@ -110,7 +112,7 @@ public final class SwingEntityModelBuilderTest {
     modelBuilt.set(false);
     tableModelBuilt.set(false);
 
-    builder = SwingEntityModel.builder(TestDomain.T_DEPARTMENT)
+    builder = SwingEntityModel.builder(Department.TYPE)
             .editModelClass(DepartmentEditModel.class)
             .onBuildModel(swingEntityModel -> modelBuilt.set(true))
             .onBuildEditModel(swingEntityEditModel -> editModelBuilt.set(true))
@@ -133,7 +135,7 @@ public final class SwingEntityModelBuilderTest {
   static final class DepartmentEditModel extends SwingEntityEditModel {
 
     public DepartmentEditModel(EntityConnectionProvider connectionProvider) {
-      super(TestDomain.T_DEPARTMENT, connectionProvider);
+      super(Department.TYPE, connectionProvider);
     }
   }
 

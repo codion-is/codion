@@ -29,64 +29,74 @@ public final class TestDomain extends DefaultDomain {
     employee();
   }
 
-  public static final EntityType T_DEPARTMENT = DOMAIN.entityType("scott.dept");
-  public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
+  public interface Department {
+    EntityType TYPE = DOMAIN.entityType("scott.dept");
+
+    Attribute<String> LOCATION = TYPE.stringAttribute("loc");
+    Attribute<String> NAME = TYPE.stringAttribute("dname");
+    Attribute<Integer> ID = TYPE.integerAttribute("deptno");
+  }
 
   void department() {
     add(definition(
-            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.name())
+            primaryKeyProperty(Department.ID, Department.ID.name())
                     .updatable(true).nullable(false),
-            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.name())
-                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
-            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.name())
-                    .preferredColumnWidth(150).maximumLength(13))
+            columnProperty(Department.NAME, Department.NAME.name())
+                    .searchProperty(true)
+                    .preferredColumnWidth(120)
+                    .maximumLength(14)
+                    .nullable(false),
+            columnProperty(Department.LOCATION, Department.LOCATION.name())
+                    .preferredColumnWidth(150)
+                    .maximumLength(13))
             .smallDataset(true)
-            .stringFactory(DEPARTMENT_NAME)
+            .stringFactory(Department.NAME)
             .caption("Department"));
   }
 
+  public interface Employee {
+    EntityType TYPE = DOMAIN.entityType("scott.emp");
 
-  public static final EntityType T_EMP = DOMAIN.entityType("scott.emp");
-  public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
-  public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
-  public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
-  public static final Attribute<Integer> EMP_MGR = T_EMP.integerAttribute("mgr");
-  public static final Attribute<LocalDate> EMP_HIREDATE = T_EMP.localDateAttribute("hiredate");
-  public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
-  public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
-  public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
-  public static final ForeignKey EMP_DEPARTMENT_FK = T_EMP.foreignKey("dept_fk", EMP_DEPARTMENT, DEPARTMENT_ID);
-  public static final ForeignKey EMP_MGR_FK = T_EMP.foreignKey("mgr_fk", EMP_MGR, EMP_ID);
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
+    Attribute<Integer> ID = TYPE.integerAttribute("empno");
+    Attribute<String> NAME = TYPE.stringAttribute("ename");
+    Attribute<String> JOB = TYPE.stringAttribute("job");
+    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
+    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
+    Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
+    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
+    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
+    Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 
-  public static final JRReport EMPLOYEE_FILE_REPORT =
-          fileReport("/empdept_employees.jasper");
-  public static final JRReport EMPLOYEE_CLASSPATH_REPORT =
-          classPathReport(TestDomain.class, "/empdept_employees.jasper");
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
+    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
+
+    JRReport FILE_REPORT =
+            fileReport("/empdept_employees.jasper");
+    JRReport CLASS_PATH_REPORT =
+            classPathReport(TestDomain.class, "/empdept_employees.jasper");
+  }
 
   void employee() {
     add(definition(
-            primaryKeyProperty(EMP_ID, EMP_ID.name()),
-            columnProperty(EMP_NAME, EMP_NAME.name())
+            primaryKeyProperty(Employee.ID, Employee.ID.name()),
+            columnProperty(Employee.NAME, Employee.NAME.name())
                     .searchProperty(true).maximumLength(10).nullable(false),
-            columnProperty(EMP_DEPARTMENT)
+            columnProperty(Employee.DEPARTMENT)
                     .nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.name()),
-            itemProperty(EMP_JOB, EMP_JOB.name(),
+            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.name()),
+            itemProperty(Employee.JOB, Employee.JOB.name(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
-            columnProperty(EMP_SALARY, EMP_SALARY.name())
+            columnProperty(Employee.SALARY, Employee.SALARY.name())
                     .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
-            columnProperty(EMP_COMMISSION, EMP_COMMISSION.name())
+            columnProperty(Employee.COMMISSION, Employee.COMMISSION.name())
                     .valueRange(100, 2000).maximumFractionDigits(2),
-            columnProperty(EMP_MGR),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.name()),
-            columnProperty(EMP_HIREDATE, EMP_HIREDATE.name())
+            columnProperty(Employee.MGR),
+            foreignKeyProperty(Employee.MGR_FK, Employee.MGR_FK.name()),
+            columnProperty(Employee.HIREDATE, Employee.HIREDATE.name())
                     .nullable(false),
-            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.name(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION).preferredColumnWidth(100))
-            .stringFactory(EMP_NAME)
+            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION).preferredColumnWidth(100))
+            .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .caption("Employee"));
   }

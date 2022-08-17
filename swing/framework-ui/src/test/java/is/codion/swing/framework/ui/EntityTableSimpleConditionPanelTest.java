@@ -7,6 +7,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +25,7 @@ public class EntityTableSimpleConditionPanelTest {
 
   @Test
   void test() {
-    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
     EntityTableSimpleConditionPanel panel = new EntityTableSimpleConditionPanel(tableModel.tableConditionModel(),
             tableModel.columnModel(), tableModel::refresh);
     panel.setSearchText("BLAKE");
