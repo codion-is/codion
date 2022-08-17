@@ -14,7 +14,7 @@ public interface Key {
   /**
    * @return the entity type
    */
-  EntityType entityType();
+  EntityType type();
 
   /**
    * @return the entity definition

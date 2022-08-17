@@ -149,9 +149,9 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
                            Function<Entity, String> stringFunction, ForeignKey parentForeignKey,
                            Comparator<EntityTreeNode> nodeComparator) {
       super(nodeEntity);
-      if (nodeEntity != null && !nodeEntity.entityType().equals(tableModel.entityType())) {
+      if (nodeEntity != null && !nodeEntity.type().equals(tableModel.entityType())) {
         throw new IllegalArgumentException("Entity of type " +
-                tableModel.entityType() + " expected, got: " + nodeEntity.entityType());
+                tableModel.entityType() + " expected, got: " + nodeEntity.type());
       }
       this.tableModel = tableModel;
       this.nodeEntity = nodeEntity;

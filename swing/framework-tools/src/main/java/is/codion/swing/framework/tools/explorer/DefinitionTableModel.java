@@ -76,7 +76,7 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
         case DefinitionTableModel.DOMAIN:
           return row.domain.type().name();
         case DefinitionTableModel.ENTITY:
-          return row.definition.entityType().name();
+          return row.definition.type().name();
         default:
           throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
       }

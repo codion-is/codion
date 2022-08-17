@@ -89,11 +89,11 @@ public class StoreTest extends EntityTestUnit {
 
   @Override
   protected void modifyEntity(Entity testEntity, Map<ForeignKey, Entity> foreignKeyEntities) {
-    if (testEntity.entityType().equals(Address.TYPE)) {
+    if (testEntity.type().equals(Address.TYPE)) {
       testEntity.put(Address.STREET, "New Street");
       testEntity.put(Address.CITY, "New City");
     }
-    else if (testEntity.entityType().equals(Customer.TYPE)) {
+    else if (testEntity.type().equals(Customer.TYPE)) {
       //It is sufficient to change the value of a single property, but the more, the merrier
       testEntity.put(Customer.FIRST_NAME, "Jesse");
       testEntity.put(Customer.LAST_NAME, "James");

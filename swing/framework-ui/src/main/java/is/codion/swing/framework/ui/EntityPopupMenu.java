@@ -61,10 +61,10 @@ final class EntityPopupMenu extends JPopupMenu {
    * @param visitedKeys used to prevent cyclical dependencies wreaking havoc
    */
   private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection, Set<Key> visitedKeys) {
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.entityDefinition().primaryKeyProperties()));
-    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entity.entityDefinition()
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.definition().primaryKeyProperties()));
+    populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entity.definition()
             .foreignKeyProperties()), visitedKeys);
-    populateValueMenu(rootMenu, entity, new ArrayList<>(entity.entityDefinition().properties()));
+    populateValueMenu(rootMenu, entity, new ArrayList<>(entity.definition().properties()));
   }
 
   private static void populatePrimaryKeyMenu(JComponent rootMenu, Entity entity, List<ColumnProperty<?>> primaryKeyProperties) {
@@ -86,7 +86,7 @@ final class EntityPopupMenu extends JPopupMenu {
     if (!visitedKeys.contains(entity.primaryKey())) {
       visitedKeys.add(entity.primaryKey());
       Text.collate(fkProperties);
-      EntityDefinition definition = entity.entityDefinition();
+      EntityDefinition definition = entity.definition();
       EntityValidator validator = definition.validator();
       for (ForeignKeyProperty property : fkProperties) {
         ForeignKey foreignKey = property.attribute();
@@ -119,7 +119,7 @@ final class EntityPopupMenu extends JPopupMenu {
 
   private static void populateValueMenu(JComponent rootMenu, Entity entity, List<Property<?>> properties) {
     Text.collate(properties);
-    EntityDefinition definition = entity.entityDefinition();
+    EntityDefinition definition = entity.definition();
     EntityValidator validator = definition.validator();
     for (Property<?> property : properties) {
       boolean isPrimaryKeyProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyColumn();

@@ -99,8 +99,8 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public EntityType entityType() {
-    return definition.entityType();
+  public EntityType type() {
+    return definition.type();
   }
 
   @Override
@@ -140,7 +140,7 @@ class DefaultKey implements Key, Serializable {
   @Override
   public <T> T get(Attribute<T> attribute) {
     if (!values.containsKey(attribute)) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of key: " + definition.entityType());
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of key: " + definition.type());
     }
 
     return (T) values.get(definition.columnProperty(attribute).attribute());
@@ -291,7 +291,7 @@ class DefaultKey implements Key, Serializable {
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.domainName());
-    stream.writeObject(definition.entityType().name());
+    stream.writeObject(definition.type().name());
     stream.writeInt(definition.serializationVersion());
     stream.writeBoolean(primaryKey);
     stream.writeInt(attributes.size());
@@ -306,7 +306,7 @@ class DefaultKey implements Key, Serializable {
     Entities entities = DefaultEntities.entities((String) stream.readObject());
     definition = entities.definition((String) stream.readObject());
     if (definition.serializationVersion() != stream.readInt()) {
-      throw new IllegalArgumentException("Entity type '" + definition.entityType() + "' can not be deserialized due to version difference");
+      throw new IllegalArgumentException("Entity type '" + definition.type() + "' can not be deserialized due to version difference");
     }
     primaryKey = stream.readBoolean();
     int attributeCount = stream.readInt();

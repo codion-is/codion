@@ -921,7 +921,7 @@ public class EntityTablePanel extends JPanel {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    SwingEntityEditModel editModel = new SwingEntityEditModel(entities.iterator().next().entityType(), connectionProvider);
+    SwingEntityEditModel editModel = new SwingEntityEditModel(entities.iterator().next().type(), connectionProvider);
     editModel.setReadOnly(true);
     SwingEntityTableModel tableModel = new SwingEntityTableModel(editModel) {
       @Override
@@ -947,7 +947,7 @@ public class EntityTablePanel extends JPanel {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    EntityType entityType = entities.iterator().next().entityType();
+    EntityType entityType = entities.iterator().next().type();
     SwingEntityTableModel tableModel = new SwingEntityTableModel(entityType, connectionProvider) {
       @Override
       protected Collection<Entity> refreshItems() {

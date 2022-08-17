@@ -680,7 +680,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     selectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
       List<Entity> entitiesToAdd = insertedEntities.stream()
-              .filter(entity -> entity.entityType().equals(entityType()))
+              .filter(entity -> entity.type().equals(entityType()))
               .collect(toList());
       switch (insertAction) {
         case ADD_TOP:

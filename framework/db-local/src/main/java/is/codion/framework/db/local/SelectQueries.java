@@ -247,7 +247,7 @@ final class SelectQueries {
     }
 
     private List<ColumnProperty<?>> selectableProperties() {
-      return selectablePropertiesCache.computeIfAbsent(definition.entityType(), entityType ->
+      return selectablePropertiesCache.computeIfAbsent(definition.type(), entityType ->
               definition.columnProperties().stream()
                       .filter(property -> !definition.lazyLoadedBlobProperties().contains(property))
                       .filter(ColumnProperty::isSelectable)
@@ -255,7 +255,7 @@ final class SelectQueries {
     }
 
     private String allColumnsClause() {
-      return allColumnsClauseCache.computeIfAbsent(definition.entityType(), type -> columnsClause(selectableProperties()));
+      return allColumnsClauseCache.computeIfAbsent(definition.type(), type -> columnsClause(selectableProperties()));
     }
 
     private String columnsClause(List<ColumnProperty<?>> columnProperties) {

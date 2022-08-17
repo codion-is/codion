@@ -39,7 +39,7 @@ public interface EntityDefinition {
   /**
    * @return the entity type
    */
-  EntityType entityType();
+  EntityType type();
 
   /**
    * @return the name of the underlying table, with schema prefix if applicable

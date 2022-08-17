@@ -114,12 +114,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   protected final void add(EntityDefinition definition) {
-    if (entityDefinitions.containsKey(definition.entityType().name())) {
+    if (entityDefinitions.containsKey(definition.type().name())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
-              definition.entityType() + ", for table: " + definition.tableName());
+              definition.type() + ", for table: " + definition.tableName());
     }
     validateForeignKeyProperties(definition);
-    entityDefinitions.put(definition.entityType().name(), (DefaultEntityDefinition) definition);
+    entityDefinitions.put(definition.type().name(), (DefaultEntityDefinition) definition);
     populateForeignDefinitions();
   }
 
@@ -133,7 +133,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   private void validateForeignKeyProperties(EntityDefinition definition) {
-    EntityType entityType = definition.entityType();
+    EntityType entityType = definition.type();
     for (ForeignKey foreignKey : definition.foreignKeys()) {
       EntityType referencedType = foreignKey.referencedType();
       EntityDefinition referencedEntity = referencedType.equals(entityType) ?

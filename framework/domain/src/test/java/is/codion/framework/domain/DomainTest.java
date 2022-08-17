@@ -311,7 +311,7 @@ public class DomainTest {
     Key key = entities.primaryKey(Master.TYPE, 10L);
 
     Entity master = Entity.entity(key);
-    assertEquals(Master.TYPE, master.entityType());
+    assertEquals(Master.TYPE, master.type());
     assertTrue(master.contains(Master.ID));
     assertEquals(10L, master.get(Master.ID));
 
