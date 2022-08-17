@@ -43,7 +43,7 @@ import static java.util.stream.Collectors.joining;
 public interface PropertyStore {
 
   /**
-   * Instantiates a value for the given boolean property
+   * Creates a value for the given boolean property
    * @param propertyName the property name
    * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
@@ -51,7 +51,7 @@ public interface PropertyStore {
   PropertyValue<Boolean> booleanValue(String propertyName);
 
   /**
-   * Instantiates a value for the given boolean property
+   * Creates a value for the given boolean property
    * @param propertyName the property name
    * @param defaultValue the default value
    * @return a new {@link PropertyValue} instance
@@ -60,7 +60,7 @@ public interface PropertyStore {
   PropertyValue<Boolean> booleanValue(String propertyName, boolean defaultValue);
 
   /**
-   * Instantiates a value for the given double property
+   * Creates a value for the given double property
    * @param propertyName the property name
    * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
@@ -68,7 +68,7 @@ public interface PropertyStore {
   PropertyValue<Double> doubleValue(String propertyName);
 
   /**
-   * Instantiates a value for the given double property
+   * Creates a value for the given double property
    * @param propertyName the property name
    * @param defaultValue the default value
    * @return a new {@link PropertyValue} instance
@@ -77,7 +77,7 @@ public interface PropertyStore {
   PropertyValue<Double> doubleValue(String propertyName, double defaultValue);
 
   /**
-   * Instantiates a value for the given integer property
+   * Creates a value for the given integer property
    * @param propertyName the property name
    * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
@@ -85,7 +85,7 @@ public interface PropertyStore {
   PropertyValue<Integer> integerValue(String propertyName);
 
   /**
-   * Instantiates a value for the given integer property
+   * Creates a value for the given integer property
    * @param propertyName the property name
    * @param defaultValue the default value
    * @return a new {@link PropertyValue} instance
@@ -94,7 +94,7 @@ public interface PropertyStore {
   PropertyValue<Integer> integerValue(String propertyName, int defaultValue);
 
   /**
-   * Instantiates a value for the given long property
+   * Creates a value for the given long property
    * @param propertyName the property name
    * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
@@ -102,7 +102,7 @@ public interface PropertyStore {
   PropertyValue<Long> longValue(String propertyName);
 
   /**
-   * Instantiates a value for the given long property
+   * Creates a value for the given long property
    * @param propertyName the property name
    * @param defaultValue the default value
    * @return a new {@link PropertyValue} instance
@@ -111,7 +111,7 @@ public interface PropertyStore {
   PropertyValue<Long> longValue(String propertyName, long defaultValue);
 
   /**
-   * Instantiates a value for the given long property
+   * Creates a value for the given long property
    * @param propertyName the property name
    * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
@@ -119,7 +119,7 @@ public interface PropertyStore {
   PropertyValue<Character> characterValue(String propertyName);
 
   /**
-   * Instantiates a value for the given long property
+   * Creates a value for the given long property
    * @param propertyName the property name
    * @param defaultValue the default value
    * @return a new {@link PropertyValue} instance
@@ -128,7 +128,7 @@ public interface PropertyStore {
   PropertyValue<Character> characterValue(String propertyName, char defaultValue);
 
   /**
-   * Instantiates a value for the given string property
+   * Creates a value for the given string property
    * @param propertyName the property name
    * @return a new {@link PropertyValue} instance
    * @throws NullPointerException if {@code propertyName} is null
@@ -136,7 +136,7 @@ public interface PropertyStore {
   PropertyValue<String> stringValue(String propertyName);
 
   /**
-   * Instantiates a value for the given string property
+   * Creates a value for the given string property
    * @param propertyName the property name
    * @param defaultValue the default value
    * @return a new {@link PropertyValue} instance
@@ -145,7 +145,7 @@ public interface PropertyStore {
   PropertyValue<String> stringValue(String propertyName, String defaultValue);
 
   /**
-   * Instantiates a value for the given enum property
+   * Creates a value for the given enum property
    * @param <T> the enum type
    * @param propertyName the property name
    * @param enumClass the enum class
@@ -155,7 +155,7 @@ public interface PropertyStore {
   <T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass);
 
   /**
-   * Instantiates a value for the given enum property
+   * Creates a value for the given enum property
    * @param <T> the enum type
    * @param propertyName the property name
    * @param enumClass the enum class
@@ -166,7 +166,7 @@ public interface PropertyStore {
   <T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass, T defaultValue);
 
   /**
-   * Instantiates a value for the given list property.
+   * Creates a value for the given list property.
    * Note that a list property automatically gets an {@link Collections#emptyList()} as its default value.
    * @param <T> the value type
    * @param propertyName the property name
@@ -178,7 +178,7 @@ public interface PropertyStore {
   <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder);
 
   /**
-   * Instantiates a value for the given list property.
+   * Creates a value for the given list property.
    * Note that a list property automatically gets an {@link Collections#emptyList()} as its default value.
    * @param <T> the value type
    * @param propertyName the property name
@@ -191,7 +191,7 @@ public interface PropertyStore {
   <T> PropertyValue<List<T>> listValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, List<T> defaultValue);
 
   /**
-   * Instantiates a value representing the given property name.
+   * Creates a value representing the given property name.
    * @param <T> the value type
    * @param propertyName the configuration property name identifying this value
    * @param decoder a decoder for decoding the value from a string
@@ -202,7 +202,7 @@ public interface PropertyStore {
   <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder);
 
   /**
-   * Instantiates a value representing the given property name.
+   * Creates a value representing the given property name.
    * @param <T> the value type
    * @param propertyName the configuration property name identifying this value
    * @param decoder a decoder for decoding the value from a string
@@ -272,7 +272,7 @@ public interface PropertyStore {
   void writeToFile(File propertiesFile) throws IOException;
 
   /**
-   * Instantiates a new empy PropertyStore.
+   * Creates a new empy PropertyStore.
    * @return a new empty PropertyStore instance
    */
   static PropertyStore propertyStore() {
@@ -280,7 +280,7 @@ public interface PropertyStore {
   }
 
   /**
-   * Instantiates a new PropertyStore initialized with the properties found in the given file.
+   * Creates a new PropertyStore initialized with the properties found in the given file.
    * @param inputStream the input stream to read from
    * @return a new PropertyStore
    * @throws IOException in case the given input stream could not be read
@@ -290,7 +290,7 @@ public interface PropertyStore {
   }
 
   /**
-   * Instantiates a new PropertyStore initialized with the properties found in the given file.
+   * Creates a new PropertyStore initialized with the properties found in the given file.
    * @param propertiesFile the file to read from initially
    * @return a new PropertyStore
    * @throws IOException in case the given properties file exists but reading it failed
@@ -301,7 +301,7 @@ public interface PropertyStore {
   }
 
   /**
-   * Instantiates a new PropertyStore initialized with the given properties.
+   * Creates a new PropertyStore initialized with the given properties.
    * @param properties the initial properties
    * @return a new PropertyStore
    */

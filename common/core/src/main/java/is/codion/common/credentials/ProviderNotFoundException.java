@@ -9,7 +9,7 @@ package is.codion.common.credentials;
 public final class ProviderNotFoundException extends CredentialsException {
 
   /**
-   * Instantiates a new ProviderNotFoundException
+   * Creates a new ProviderNotFoundException
    * @param message the exception message
    * @param cause the root cause
    */

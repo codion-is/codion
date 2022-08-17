@@ -9,7 +9,7 @@ package is.codion.common.credentials;
 public final class ProviderNotReachableException extends CredentialsException {
 
   /**
-   * Instantiates a new ProviderNotReachableException
+   * Creates a new ProviderNotReachableException
    * @param message the exception message
    * @param cause the root cause
    */

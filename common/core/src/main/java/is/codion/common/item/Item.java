@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 /**
  * A class encapsulating a constant value and a caption representing the value.
- * Comparing Items is based on their caption.
+ * Comparing {@link Item}s is based on their caption.
  * Factory class for {@link Item} instances.
  * @param <T> the type of the value
  * @see Item#item(Object)
@@ -27,10 +27,10 @@ public interface Item<T> extends Comparable<Item<T>>, Serializable {
   T value();
 
   /**
-   * Returns an Item, with the caption as item.toString() or an empty string in case of a null value
+   * Returns an {@link Item}, with the caption as item.toString() or an empty string in case of a null value
    * @param value the value, may be null
    * @param <T> the value type
-   * @return an Item based on the given value
+   * @return an {@link Item} based on the given value
    */
   static <T> Item<T> item(T value) {
     if (value == null) {
@@ -41,11 +41,11 @@ public interface Item<T> extends Comparable<Item<T>>, Serializable {
   }
 
   /**
-   * Instantiates a new Item.
+   * Creates a new {@link Item}.
    * @param value the value, may be null
    * @param caption the caption
    * @param <T> the value type
-   * @return an Item based on the given value and caption
+   * @return an {@link Item} based on the given value and caption
    * @throws NullPointerException if caption is null
    */
   static <T> Item<T> item(T value, String caption) {
@@ -53,7 +53,7 @@ public interface Item<T> extends Comparable<Item<T>>, Serializable {
   }
 
   /**
-   * Instantiates a new Item, which gets its caption from a resource bundle.
+   * Creates a new {@link Item}, which gets its caption from a resource bundle.
    * Note that the caption is cached, so that changing the {@link java.util.Locale} after the
    * first time {@link Item#caption} is called will not change the caption.
    * @param value the value, may be null

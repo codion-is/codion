@@ -11,7 +11,7 @@ import is.codion.common.value.ValueObserver;
 public interface StateObserver extends ValueObserver<Boolean> {
 
   /**
-   * @return A StateObserver instance that is always the reverse of this StateObserver
+   * @return A {@link StateObserver} instance that is always the reverse of this {@link StateObserver} instance
    */
   StateObserver reversedObserver();
 }

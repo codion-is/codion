@@ -10,7 +10,7 @@ package is.codion.common.event;
 public interface EventObserver<T> {
 
   /**
-   * Adds {@code listener} to this EventObserver, adding the same listener
+   * Adds {@code listener} to this {@link EventObserver}, adding the same listener
    * a second time has no effect.
    * @param listener the listener to add
    * @throws NullPointerException in case listener is null
@@ -18,13 +18,13 @@ public interface EventObserver<T> {
   void addListener(EventListener listener);
 
   /**
-   * Removes {@code listener} from this EventObserver
+   * Removes {@code listener} from this {@link EventObserver}
    * @param listener the listener to remove
    */
   void removeListener(EventListener listener);
 
   /**
-   * Adds {@code listener} to this EventObserver, adding the same listener
+   * Adds {@code listener} to this {@link EventObserver}, adding the same listener
    * a second time has no effect.
    * @param listener the listener to add
    * @throws NullPointerException in case listener is null
@@ -32,7 +32,7 @@ public interface EventObserver<T> {
   void addDataListener(EventDataListener<T> listener);
 
   /**
-   * Removes {@code listener} from this EventObserver
+   * Removes {@code listener} from this {@link EventObserver}
    * @param listener the listener to remove
    */
   void removeDataListener(EventDataListener<T> listener);

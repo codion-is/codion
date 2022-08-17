@@ -52,19 +52,19 @@ public interface ValueSet<T> extends Value<Set<T>> {
   Value<T> value();
 
   /**
-   * Instantiates a new empty ValueSet
+   * Creates a new empty {@link ValueSet}
    * @param <T> the value type
-   * @return a ValueSet
+   * @return a new {@link ValueSet}
    */
   static <T> ValueSet<T> valueSet() {
     return valueSet(Collections.emptySet());
   }
 
   /**
-   * Instantiates a new ValueSet
+   * Creates a new {@link ValueSet}
    * @param initialValues the initial values, may not be null
    * @param <T> the value type
-   * @return a ValueSet
+   * @return a new {@link ValueSet}
    */
   static <T> ValueSet<T> valueSet(Set<T> initialValues) {
     return new DefaultValueSet<>(initialValues);

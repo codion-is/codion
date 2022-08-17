@@ -33,7 +33,7 @@ public interface User {
   void clearPassword();
 
   /**
-   * Instantiates a new User with an empty password.
+   * Creates a new User with an empty password.
    * @param username the username
    * @return a new User
    */
@@ -42,7 +42,7 @@ public interface User {
   }
 
   /**
-   * Instantiates a new User.
+   * Creates a new User.
    * @param username the username
    * @param password the password
    * @return a new User

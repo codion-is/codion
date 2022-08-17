@@ -33,7 +33,7 @@ final class ValueLink<T> {
   private boolean isUpdatingOriginal = false;
 
   /**
-   * Instantiates a new ValueLink
+   * Creates a new ValueLink
    * @param linkedValue the value to link to the original value
    * @param originalValue the original value
    */
