@@ -21,6 +21,8 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
+import is.codion.framework.servlet.TestDomain.Department;
+import is.codion.framework.servlet.TestDomain.Employee;
 import is.codion.plugin.jackson.json.db.ConditionObjectMapper;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
@@ -169,7 +171,7 @@ public class EntityServletServerTest {
     //count
     uriBuilder.setPath("count");
     HttpPost httpPost = new HttpPost(uriBuilder.build());
-    AttributeCondition<Integer> condition = where(TestDomain.DEPARTMENT_ID).equalTo(10);
+    AttributeCondition<Integer> condition = where(Department.ID).equalTo(10);
     String conditionJson = conditionObjectMapper.writeValueAsString(condition);
 
     httpPost.setEntity(new StringEntity(conditionJson));
@@ -181,9 +183,9 @@ public class EntityServletServerTest {
 
     //select by key
     List<Key> keys = new ArrayList<>();
-    Key key = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 10);
+    Key key = ENTITIES.primaryKey(Department.TYPE, 10);
     keys.add(key);
-    key = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 20);
+    key = ENTITIES.primaryKey(Department.TYPE, 20);
     keys.add(key);
 
     uriBuilder.setPath("selectByKey");
@@ -209,15 +211,15 @@ public class EntityServletServerTest {
 
     //insert
     List<Entity> entities = new ArrayList<>();
-    entities.add(ENTITIES.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, -10)
-            .with(TestDomain.DEPARTMENT_NAME, "A name")
-            .with(TestDomain.DEPARTMENT_LOCATION, "loc")
+    entities.add(ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, -10)
+            .with(Department.NAME, "A name")
+            .with(Department.LOCATION, "loc")
             .build());
-    entities.add(ENTITIES.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, -20)
-            .with(TestDomain.DEPARTMENT_NAME, "Another name")
-            .with(TestDomain.DEPARTMENT_LOCATION, "locat")
+    entities.add(ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, -20)
+            .with(Department.NAME, "Another name")
+            .with(Department.LOCATION, "locat")
             .build());
 
     uriBuilder.setPath("insert");
@@ -233,8 +235,8 @@ public class EntityServletServerTest {
     response.close();
 
     //update entities
-    entities.get(0).put(TestDomain.DEPARTMENT_NAME, "newname");
-    entities.get(1).put(TestDomain.DEPARTMENT_LOCATION, "newloc");
+    entities.get(0).put(Department.NAME, "newname");
+    entities.get(1).put(Department.LOCATION, "newloc");
 
     uriBuilder.setPath("update");
     httpPost = new HttpPost(uriBuilder.build());
@@ -247,15 +249,15 @@ public class EntityServletServerTest {
     assertEquals(2, updated.size());
     assertTrue(updated.containsAll(entities));
 
-    assertEquals("newname", updated.stream().filter(entity -> entity.get(TestDomain.DEPARTMENT_ID).equals(-10))
-            .findFirst().orElse(null).get(TestDomain.DEPARTMENT_NAME));
-    assertEquals("newloc", updated.stream().filter(entity -> entity.get(TestDomain.DEPARTMENT_ID).equals(-20))
-            .findFirst().orElse(null).get(TestDomain.DEPARTMENT_LOCATION));
+    assertEquals("newname", updated.stream().filter(entity -> entity.get(Department.ID).equals(-10))
+            .findFirst().orElse(null).get(Department.NAME));
+    assertEquals("newloc", updated.stream().filter(entity -> entity.get(Department.ID).equals(-20))
+            .findFirst().orElse(null).get(Department.LOCATION));
     response.close();
 
     //update condition
-    UpdateCondition updateCondition = where(TestDomain.DEPARTMENT_ID)
-            .between(-20, -10).updateBuilder().set(TestDomain.DEPARTMENT_LOCATION, "aloc").build();
+    UpdateCondition updateCondition = where(Department.ID)
+            .between(-20, -10).updateBuilder().set(Department.LOCATION, "aloc").build();
     uriBuilder.setPath("updateByCondition");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new StringEntity(conditionObjectMapper.writeValueAsString(updateCondition)));
@@ -268,7 +270,7 @@ public class EntityServletServerTest {
     response.close();
 
     //delete condition
-    Condition deleteCondition = where(TestDomain.DEPARTMENT_ID).equalTo(-10);
+    Condition deleteCondition = where(Department.ID).equalTo(-10);
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new StringEntity(conditionObjectMapper.writeValueAsString(deleteCondition)));
@@ -290,10 +292,10 @@ public class EntityServletServerTest {
     response.close();
 
     //select values
-    condition = where(TestDomain.DEPARTMENT_ID).equalTo(10);
+    condition = where(Department.ID).equalTo(10);
     ObjectNode node = entityObjectMapper.createObjectNode();
-    node.set("attribute", conditionObjectMapper.valueToTree(TestDomain.DEPARTMENT_ID.name()));
-    node.set("entityType", conditionObjectMapper.valueToTree(TestDomain.DEPARTMENT_ID.entityType().name()));
+    node.set("attribute", conditionObjectMapper.valueToTree(Department.ID.name()));
+    node.set("entityType", conditionObjectMapper.valueToTree(Department.ID.entityType().name()));
     node.set("condition", conditionObjectMapper.valueToTree(condition));
 
     uriBuilder.setPath("values");
@@ -306,8 +308,8 @@ public class EntityServletServerTest {
     response.close();
 
     //dependencies
-    Key key1 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 10);
-    Key key2 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 20);
+    Key key1 = ENTITIES.primaryKey(Department.TYPE, 10);
+    Key key2 = ENTITIES.primaryKey(Department.TYPE, 20);
 
     List<Entity> entitiesDep = Arrays.asList(Entity.entity(key1), Entity.entity(key2));
 
@@ -320,7 +322,7 @@ public class EntityServletServerTest {
     Map<String, Collection<Entity>> dependencies = entityObjectMapper.readValue(response.getEntity().getContent(),
             new TypeReference<Map<String, Collection<Entity>>>() {});
     assertEquals(1, dependencies.size());
-    assertEquals(12, dependencies.get(TestDomain.T_EMP.name()).size());
+    assertEquals(12, dependencies.get(Employee.TYPE.name()).size());
     response.close();
 
     //transactions
@@ -457,7 +459,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     HttpPost httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(TestDomain.T_DEPARTMENT))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(Department.TYPE))));
     context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -465,11 +467,11 @@ public class EntityServletServerTest {
     assertEquals(4, queryEntities.size());
     response.close();
 
-    Entity department = ENTITIES.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, null)
-            .with(TestDomain.DEPARTMENT_ID, -42)
-            .with(TestDomain.DEPARTMENT_NAME, "Test")
-            .with(TestDomain.DEPARTMENT_LOCATION, "Location")
+    Entity department = ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, null)
+            .with(Department.ID, -42)
+            .with(Department.NAME, "Test")
+            .with(Department.LOCATION, "Location")
             .build();
 
     //insert
@@ -507,8 +509,8 @@ public class EntityServletServerTest {
 
     //update
     department.saveAll();
-    department.put(TestDomain.DEPARTMENT_LOCATION, "New location");
-    department.put(TestDomain.DEPARTMENT_NAME, "New name");
+    department.put(Department.LOCATION, "New location");
+    department.put(Department.NAME, "New name");
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("update");
     httpPost = new HttpPost(uriBuilder.build());
@@ -524,7 +526,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(where(TestDomain.DEPARTMENT_NAME).equalTo("New name"))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(where(Department.NAME).equalTo("New name"))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
@@ -546,7 +548,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(where(TestDomain.DEPARTMENT_ID).equalTo(-42))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(where(Department.ID).equalTo(-42))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();

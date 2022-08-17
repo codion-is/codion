@@ -19,8 +19,8 @@ import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An abstract Value implementation handling everything except the value itself.<br><br>
- * The constructor parameter {@code notifyOnSet} specifies whether this Value instance should automatically call
+ * An abstract {@link Value} implementation handling everything except the value itself.<br><br>
+ * The constructor parameter {@code notifyOnSet} specifies whether this {@link Value} instance should automatically call
  * {@link #notifyValueChange()} when the value is changed via {@link AbstractValue#set(Object)}.
  * Some implementations may want to do this manually.
  * @param <T> the value type
@@ -41,7 +41,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   /**
-   * Instantiates an {@link AbstractValue} instance, which does not notify on set.
+   * Creates an {@link AbstractValue} instance, which does not notify on set.
    * @param nullValue the value to use instead of null
    */
   protected AbstractValue(T nullValue) {
@@ -49,7 +49,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   /**
-   * Instantiates an {@link AbstractValue} instance.
+   * Creates an {@link AbstractValue} instance.
    * @param nullValue the value to use instead of null
    * @param notifyOnSet specifies whether to automatically call {@link #notifyValueChange()} when the value is changed via {@link #set(Object)}
    */
@@ -173,7 +173,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   /**
-   * Fires the change event for this value, using the current value, indicating that
+   * Triggers the change event for this value, using the current value, indicating that
    * the underlying value has changed or at least that it may have changed
    */
   protected final void notifyValueChange() {

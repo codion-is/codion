@@ -21,8 +21,8 @@ final class SQLServerDatabase extends AbstractDatabase {
 
   private static final String JDBC_URL_PREFIX = "jdbc:sqlserver://";
 
-  SQLServerDatabase(String jdbcUrl) {
-    super(jdbcUrl);
+  SQLServerDatabase(String url) {
+    super(url);
   }
 
   @Override

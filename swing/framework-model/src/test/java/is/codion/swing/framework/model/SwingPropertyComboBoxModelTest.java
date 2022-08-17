@@ -8,6 +8,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
 
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ public final class SwingPropertyComboBoxModelTest {
   private final Event<?> refreshEvent = Event.event();
 
   public SwingPropertyComboBoxModelTest() {
-    comboBoxModel = new SwingPropertyComboBoxModel<>(CONNECTION_PROVIDER, TestDomain.DEPARTMENT_NAME);
+    comboBoxModel = new SwingPropertyComboBoxModel<>(CONNECTION_PROVIDER, Department.NAME);
     refreshEvent.addListener(comboBoxModel::refresh);
   }
 

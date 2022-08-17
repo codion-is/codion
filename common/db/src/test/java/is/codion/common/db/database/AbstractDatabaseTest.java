@@ -49,7 +49,7 @@ public final class AbstractDatabaseTest {
     Connection connection = database.createConnection(sa);
     database.setConnectionProvider(new ConnectionProvider() {
       @Override
-      public Connection connection(User user, String jdbcUrl) throws SQLException {
+      public Connection connection(User user, String url) throws SQLException {
         return connection;
       }
     });

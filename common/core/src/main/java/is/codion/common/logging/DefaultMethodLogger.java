@@ -128,7 +128,7 @@ final class DefaultMethodLogger implements MethodLogger {
     private String stackTrace;
 
     /**
-     * Instantiates a new Entry, using the current time
+     * Creates a new Entry, using the current time
      * @param method the method being logged
      * @param accessMessage the message associated with accessing the method
      */
@@ -137,7 +137,7 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     /**
-     * Instantiates a new Entry
+     * Creates a new Entry
      * @param method the method being logged
      * @param accessMessage the message associated with accessing the method
      * @param accessTime the time to associate with accessing the method

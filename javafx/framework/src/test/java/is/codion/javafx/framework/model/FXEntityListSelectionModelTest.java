@@ -8,6 +8,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Employee;
 import is.codion.javafx.framework.ui.EntityTableView;
 
 import javafx.scene.control.MultipleSelectionModel;
@@ -35,7 +36,7 @@ public final class FXEntityListSelectionModelTest {
 
   @Test
   void selectionMode() {
-    FXEntityListModel list = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    FXEntityListModel list = new FXEntityListModel(Employee.TYPE, CONNECTION_PROVIDER);
     new EntityTableView(list);
     FXEntityListSelectionModel selectionModel = list.selectionModel();
     MultipleSelectionModel<Entity> multipleSelectionModel = (MultipleSelectionModel<Entity>) selectionModel.selectionModel();

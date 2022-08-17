@@ -14,8 +14,8 @@ import java.sql.Connection;
 public interface ConnectionFactory {
 
   /**
-   * Returns the database url for this connection factory.
-   * @return the database url for this connection factory.
+   * Returns the jdbc database url for this connection factory.
+   * @return the jdbc database url for this connection factory.
    */
   String url();
 

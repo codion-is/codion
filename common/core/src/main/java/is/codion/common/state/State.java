@@ -28,8 +28,8 @@ import java.util.function.Supplier;
 public interface State extends StateObserver, Value<Boolean> {
 
   /**
-   * Returns a StateObserver notified each time the state changes
-   * @return a StateObserver notified each time the state changes
+   * Returns a {@link StateObserver} notified each time the state changes
+   * @return a {@link StateObserver} notified each time the state changes
    */
   StateObserver observer();
 
@@ -59,43 +59,43 @@ public interface State extends StateObserver, Value<Boolean> {
   }
 
   /**
-   * A State.Group deactivates all other states when a state in the group is activated.
-   * State.Group works with WeakReference so adding states does not prevent
+   * A {@link State.Group} deactivates all other states when a state in the group is activated.
+   * {@link State.Group} works with WeakReference so adding states does not prevent
    * them from being garbage collected.
    */
   interface Group {
 
     /**
-     * Adds a state to this state group via a WeakReference,
+     * Adds a state to this {@link State.Group} via a WeakReference,
      * so it does not prevent it from being garbage collected.
      * Adding an active state deactivates all other states in the group.
-     * @param state the State to add
+     * @param state the {@link State} instance to add
      */
     void addState(State state);
   }
 
   /**
-   * Instantiates a new 'false' State object.
-   * @return a new State
+   * Creates a new 'false' {@link State} instance.
+   * @return a new {@link State} instance
    */
   static State state() {
     return state(false);
   }
 
   /**
-   * Instantiates a new State object.
+   * Creates a new {@link State} instance.
    * @param value the initial state value
-   * @return a new State
+   * @return a new {@link State} instance
    */
   static State state(boolean value) {
     return new DefaultState(value);
   }
 
   /**
-   * Instantiates a new State based on the given getter and setter.
+   * Creates a new {@link State} instance based on the given getter and setter.
    * @param getter the getter
    * @param setter the setter
-   * @return a new State
+   * @return a new {@link State} instance
    * @throws NullPointerException in case either getter or setter is null
    */
   static State state(Supplier<Boolean> getter, Consumer<Boolean> setter) {
@@ -103,66 +103,66 @@ public interface State extends StateObserver, Value<Boolean> {
   }
 
   /**
-   * Instantiates a new {@link State.Combination} instance.
+   * Creates a new {@link State.Combination} instance.
    * @param conjunction the conjunction to use
    * @param stateObservers the state observers to base this state combination on
-   * @return a new State.Combination
+   * @return a new {@link State.Combination} instance
    */
   static Combination combination(Conjunction conjunction, StateObserver... stateObservers) {
     return new DefaultStateCombination(conjunction, stateObservers);
   }
 
   /**
-   * Instantiates a new {@link State.Combination} instance.
+   * Creates a new {@link State.Combination} instance.
    * @param conjunction the conjunction to use
    * @param stateObservers the state observers to base this state combination on
-   * @return a new State.Combination
+   * @return a new {@link State.Combination} instance
    */
   static Combination combination(Conjunction conjunction, Collection<? extends StateObserver> stateObservers) {
     return new DefaultStateCombination(conjunction, stateObservers);
   }
 
   /**
-   * Instantiates a new {@link State.Combination} instance using {@link Conjunction#AND}.
+   * Creates a new {@link State.Combination} instance using {@link Conjunction#AND}.
    * @param stateObservers the state observers to base this state combination on
-   * @return a new State.Combination
+   * @return a new {@link State.Combination} instance
    */
   static Combination and(StateObserver... stateObservers) {
     return new DefaultStateCombination(Conjunction.AND, stateObservers);
   }
 
   /**
-   * Instantiates a new {@link State.Combination} instance using {@link Conjunction#AND}.
+   * Creates a new {@link State.Combination} instance using {@link Conjunction#AND}.
    * @param stateObservers the state observers to base this state combination on
-   * @return a new State.Combination
+   * @return a new {@link State.Combination} instance
    */
   static Combination and(Collection<? extends StateObserver> stateObservers) {
     return new DefaultStateCombination(Conjunction.AND, stateObservers);
   }
 
   /**
-   * Instantiates a new {@link State.Combination} instance using {@link Conjunction#OR}.
+   * Creates a new {@link State.Combination} instance using {@link Conjunction#OR}.
    * @param stateObservers the state observers to base this state combination on
-   * @return a new State.Combination
+   * @return a new {@link State.Combination} instance
    */
   static Combination or(StateObserver... stateObservers) {
     return new DefaultStateCombination(Conjunction.OR, stateObservers);
   }
 
   /**
-   * Instantiates a new {@link State.Combination} instance using {@link Conjunction#OR}.
+   * Creates a new {@link State.Combination} instance using {@link Conjunction#OR}.
    * @param stateObservers the state observers to base this state combination on
-   * @return a new State.Combination
+   * @return a new {@link State.Combination} instance
    */
   static Combination or(Collection<? extends StateObserver> stateObservers) {
     return new DefaultStateCombination(Conjunction.OR, stateObservers);
   }
 
   /**
-   * Instantiates a new State.Group object, which guarantees that only a single
+   * Creates a new {@link State.Group} instance, which guarantees that only a single
    * state within the group is active at a time
    * @param states the states to add to the group initially, not required
-   * @return a new State.Group
+   * @return a new {@link State.Group} instance
    * @see Group
    */
   static Group group(State... states) {

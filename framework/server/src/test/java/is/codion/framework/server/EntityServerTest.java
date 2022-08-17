@@ -25,6 +25,7 @@ import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.server.TestDomain.Employee;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -67,7 +68,7 @@ public class EntityServerTest {
 
   @Test
   void customCondition() throws Exception {
-    //Fix side-effect from remoteEntityConnectionProvider() test,
+    //Fix side effect from remoteEntityConnectionProvider() test,
     //which registers the entities received from the server
     //thus overwriting the entities containing the custom conditions
     new TestDomain();
@@ -77,8 +78,8 @@ public class EntityServerTest {
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
-    Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_TYPE,
-            singletonList(TestDomain.EMP_MGR), singletonList(4));
+    Condition condition = Conditions.customCondition(Employee.MGR_CONDITION_TYPE,
+            singletonList(Employee.MGR), singletonList(4));
 
     connection.select(condition);
 
@@ -168,9 +169,9 @@ public class EntityServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    SelectCondition selectCondition = Conditions.condition(TestDomain.T_EMP)
+    SelectCondition selectCondition = Conditions.condition(Employee.TYPE)
             .selectBuilder()
-            .orderBy(OrderBy.ascending(TestDomain.EMP_NAME))
+            .orderBy(OrderBy.ascending(Employee.NAME))
             .build();
     remoteConnectionTwo.select(selectCondition);
 

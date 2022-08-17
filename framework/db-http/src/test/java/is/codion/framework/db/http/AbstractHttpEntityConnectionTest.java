@@ -14,6 +14,8 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.http.TestDomain.Department;
+import is.codion.framework.db.http.TestDomain.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
@@ -85,10 +87,10 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void insert() throws IOException, DatabaseException {
-    Entity entity = connection.entities().builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, 33)
-            .with(TestDomain.DEPARTMENT_NAME, "name")
-            .with(TestDomain.DEPARTMENT_LOCATION, "loc")
+    Entity entity = connection.entities().builder(Department.TYPE)
+            .with(Department.ID, 33)
+            .with(Department.NAME, "name")
+            .with(Department.LOCATION, "loc")
             .build();
     Key key = connection.insert(entity);
     assertEquals(Integer.valueOf(33), key.get());
@@ -97,15 +99,15 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void selectByKey() throws IOException, DatabaseException {
-    Key key = connection.entities().primaryKey(TestDomain.T_DEPARTMENT, 10);
+    Key key = connection.entities().primaryKey(Department.TYPE, 10);
     List<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
   @Test
   void selectByKeyDifferentEntityTypes() throws IOException, DatabaseException {
-    Key deptKey = connection.entities().primaryKey(TestDomain.T_DEPARTMENT, 10);
-    Key empKey = connection.entities().primaryKey(TestDomain.T_EMP, 8);
+    Key deptKey = connection.entities().primaryKey(Department.TYPE, 10);
+    Key empKey = connection.entities().primaryKey(Employee.TYPE, 8);
 
     List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -113,30 +115,30 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void selectByValue() throws IOException, DatabaseException {
-    List<Entity> department = connection.select(TestDomain.DEPARTMENT_NAME, "SALES");
+    List<Entity> department = connection.select(Department.NAME, "SALES");
     assertEquals(1, department.size());
   }
 
   @Test
   void update() throws IOException, DatabaseException {
-    Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
-    department.put(TestDomain.DEPARTMENT_NAME, "TEstING");
+    Entity department = connection.selectSingle(Department.NAME, "ACCOUNTING");
+    department.put(Department.NAME, "TEstING");
     connection.update(department);
-    department = connection.selectSingle(TestDomain.DEPARTMENT_ID, department.get(TestDomain.DEPARTMENT_ID));
-    assertEquals("TEstING", department.get(TestDomain.DEPARTMENT_NAME));
-    department.put(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    department = connection.selectSingle(Department.ID, department.get(Department.ID));
+    assertEquals("TEstING", department.get(Department.NAME));
+    department.put(Department.NAME, "ACCOUNTING");
     connection.update(department);
   }
 
   @Test
   void updateByCondition() throws DatabaseException {
-    Condition selectCondition = where(TestDomain.EMP_COMMISSION).isNull();
+    Condition selectCondition = where(Employee.COMMISSION).isNull();
 
     List<Entity> entities = connection.select(selectCondition);
 
-    UpdateCondition updateCondition = where(TestDomain.EMP_COMMISSION).isNull().updateBuilder()
-            .set(TestDomain.EMP_COMMISSION, 500d)
-            .set(TestDomain.EMP_SALARY, 4200d)
+    UpdateCondition updateCondition = where(Employee.COMMISSION).isNull().updateBuilder()
+            .set(Employee.COMMISSION, 500d)
+            .set(Employee.SALARY, 4200d)
             .build();
     connection.beginTransaction();
     try {
@@ -144,8 +146,8 @@ abstract class AbstractHttpEntityConnectionTest {
       assertEquals(0, connection.rowCount(selectCondition));
       List<Entity> afterUpdate = connection.select(Entity.getPrimaryKeys(entities));
       for (Entity entity : afterUpdate) {
-        assertEquals(500d, entity.get(TestDomain.EMP_COMMISSION));
-        assertEquals(4200d, entity.get(TestDomain.EMP_SALARY));
+        assertEquals(500d, entity.get(Employee.COMMISSION));
+        assertEquals(4200d, entity.get(Employee.SALARY));
       }
     }
     finally {
@@ -155,7 +157,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void deleteByKey() throws IOException, DatabaseException {
-    Entity employee = connection.selectSingle(TestDomain.EMP_NAME, "ADAMS");
+    Entity employee = connection.selectSingle(Employee.NAME, "ADAMS");
     connection.beginTransaction();
     try {
       connection.delete(employee.primaryKey());
@@ -169,8 +171,8 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void deleteByKeyDifferentEntityTypes() throws IOException, DatabaseException {
-    Key deptKey = connection.entities().primaryKey(TestDomain.T_DEPARTMENT, 40);
-    Key empKey = connection.entities().primaryKey(TestDomain.T_EMP, 1);
+    Key deptKey = connection.entities().primaryKey(Department.TYPE, 40);
+    Key empKey = connection.entities().primaryKey(Employee.TYPE, 1);
     connection.beginTransaction();
     try {
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());
@@ -185,21 +187,21 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void selectDependencies() throws IOException, DatabaseException {
-    Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity department = connection.selectSingle(Department.NAME, "SALES");
     Map<EntityType, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
     assertNotNull(dependentEntities);
-    assertTrue(dependentEntities.containsKey(TestDomain.T_EMP));
-    assertFalse(dependentEntities.get(TestDomain.T_EMP).isEmpty());
+    assertTrue(dependentEntities.containsKey(Employee.TYPE));
+    assertFalse(dependentEntities.get(Employee.TYPE).isEmpty());
   }
 
   @Test
   void rowCount() throws IOException, DatabaseException {
-    assertEquals(4, connection.rowCount(condition(TestDomain.T_DEPARTMENT)));
+    assertEquals(4, connection.rowCount(condition(Department.TYPE)));
   }
 
   @Test
   void selectValues() throws IOException, DatabaseException {
-    List<String> values = connection.select(TestDomain.DEPARTMENT_NAME);
+    List<String> values = connection.select(Department.NAME);
     assertEquals(4, values.size());
   }
 
@@ -221,9 +223,9 @@ abstract class AbstractHttpEntityConnectionTest {
     byte[] bytes = new byte[1024];
     new Random().nextBytes(bytes);
 
-    Entity scott = connection.selectSingle(TestDomain.EMP_ID, 7);
-    connection.writeBlob(scott.primaryKey(), TestDomain.EMP_DATA, bytes);
-    assertArrayEquals(bytes, connection.readBlob(scott.primaryKey(), TestDomain.EMP_DATA));
+    Entity scott = connection.selectSingle(Employee.ID, 7);
+    connection.writeBlob(scott.primaryKey(), Employee.DATA, bytes);
+    assertArrayEquals(bytes, connection.readBlob(scott.primaryKey(), Employee.DATA));
   }
 
   @Test
@@ -234,15 +236,15 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
-    Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity department = connection.selectSingle(Department.NAME, "SALES");
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Conditions.condition(department.primaryKey())));
   }
 
   @Test
   void foreignKeyValues() throws DatabaseException {
-    Entity employee = connection.selectSingle(TestDomain.EMP_ID, 5);
-    assertNotNull(employee.get(TestDomain.EMP_DEPARTMENT_FK));
-    assertNotNull(employee.get(TestDomain.EMP_MGR_FK));
+    Entity employee = connection.selectSingle(Employee.ID, 5);
+    assertNotNull(employee.get(Employee.DEPARTMENT_FK));
+    assertNotNull(employee.get(Employee.MGR_FK));
   }
 
   @Test

@@ -17,7 +17,7 @@ abstract class AbstractItem<T> implements Item<T> {
   private transient Comparator<String> collator;
 
   /**
-   * Instantiates a new Item.
+   * Creates a new Item.
    * @param value the value, may be null
    */
   AbstractItem(T value) {

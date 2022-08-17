@@ -8,6 +8,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.javafx.framework.model.FXEntityListModel;
 import is.codion.javafx.framework.model.FXEntityModel;
+import is.codion.javafx.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ public final class EntityViewTest {
 
   @Test
   void constructor() {
-    FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    FXEntityListModel listModel = new FXEntityListModel(Employee.TYPE, CONNECTION_PROVIDER);
     FXEntityModel model = new FXEntityModel(listModel);
 
     new EntityView(model, new EntityEditViewTest.EmpEditView(listModel.editModel()), new EntityTableView(listModel)).initializePanel();

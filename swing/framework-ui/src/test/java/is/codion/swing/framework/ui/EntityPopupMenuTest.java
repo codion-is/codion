@@ -8,6 +8,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,9 +23,9 @@ public final class EntityPopupMenuTest {
           .domainClassName(TestDomain.class.getName())
           .user(UNIT_TEST_USER)
           .build()) {
-      Entity blake = connectionProvider.connection().selectSingle(TestDomain.EMP_NAME, "BLAKE");
-      blake.put(TestDomain.EMP_NAME, "a really long name aaaaaaaaaaaaaaaaaaaaaaaaaa");
-      blake.put(TestDomain.EMP_SALARY, 100d);
+      Entity blake = connectionProvider.connection().selectSingle(Employee.NAME, "BLAKE");
+      blake.put(Employee.NAME, "a really long name aaaaaaaaaaaaaaaaaaaaaaaaaa");
+      blake.put(Employee.SALARY, 100d);
 
       new EntityPopupMenu(blake, connectionProvider.connection());
     }

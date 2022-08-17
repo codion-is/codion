@@ -24,8 +24,8 @@ final class DerbyDatabase extends AbstractDatabase {
 
   static final String AUTO_INCREMENT_QUERY = "select IDENTITY_VAL_LOCAL() from ";
 
-  DerbyDatabase(String jdbcUrl) {
-    super(jdbcUrl);
+  DerbyDatabase(String url) {
+    super(url);
   }
 
   @Override

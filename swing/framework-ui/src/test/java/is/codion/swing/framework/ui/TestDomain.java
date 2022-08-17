@@ -37,116 +37,134 @@ public final class TestDomain extends DefaultDomain {
     employee();
   }
 
-  public static final EntityType T_MASTER = DOMAIN.entityType("domain.master_entity");
-  public static final Attribute<Long> MASTER_ID = T_MASTER.longAttribute("id");
-  public static final Attribute<String> MASTER_NAME = T_MASTER.stringAttribute("name");
-  public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
+  public interface Master {
+    EntityType TYPE = DOMAIN.entityType("domain.master_entity");
+
+    Attribute<Long> ID = TYPE.longAttribute("id");
+    Attribute<String> NAME = TYPE.stringAttribute("name");
+    Attribute<Integer> CODE = TYPE.integerAttribute("code");
+  }
 
   void master() {
     add(definition(
-            primaryKeyProperty(MASTER_ID),
-            columnProperty(MASTER_NAME)
+            primaryKeyProperty(Master.ID),
+            columnProperty(Master.NAME)
                     .searchProperty(true),
-            columnProperty(MASTER_CODE))
-            .comparator(Comparator.comparing(o -> o.get(MASTER_CODE)))
-            .stringFactory(MASTER_NAME));
+            columnProperty(Master.CODE))
+            .comparator(Comparator.comparing(o -> o.get(Master.CODE)))
+            .stringFactory(Master.NAME));
   }
 
-  public static final EntityType T_DETAIL = DOMAIN.entityType("domain.detail_entity");
-  public static final Attribute<Long> DETAIL_ID = T_DETAIL.longAttribute("id");
-  public static final Attribute<Integer> DETAIL_INT = T_DETAIL.integerAttribute("int");
-  public static final Attribute<Double> DETAIL_DOUBLE = T_DETAIL.doubleAttribute("double");
-  public static final Attribute<BigDecimal> DETAIL_BIG_DECIMAL = T_DETAIL.bigDecimalAttribute("big_decimal");
-  public static final Attribute<String> DETAIL_STRING = T_DETAIL.stringAttribute("string");
-  public static final Attribute<LocalTime> DETAIL_TIME = T_DETAIL.localTimeAttribute("time");
-  public static final Attribute<LocalDate> DETAIL_DATE = T_DETAIL.localDateAttribute("date");
-  public static final Attribute<LocalDateTime> DETAIL_TIMESTAMP = T_DETAIL.localDateTimeAttribute("timestamp");
-  public static final Attribute<OffsetDateTime> DETAIL_OFFSET = T_DETAIL.offsetDateTimeAttribute("offset");
-  public static final Attribute<Boolean> DETAIL_BOOLEAN = T_DETAIL.booleanAttribute("boolean");
-  public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = T_DETAIL.booleanAttribute("boolean_nullable");
-  public static final Attribute<Long> DETAIL_MASTER_ID = T_DETAIL.longAttribute("master_id");
-  public static final ForeignKey DETAIL_MASTER_FK = T_DETAIL.foreignKey("master_fk", DETAIL_MASTER_ID, MASTER_ID);
-  public static final Attribute<Long> DETAIL_DETAIL_ID = T_DETAIL.longAttribute("detail_id");
-  public static final ForeignKey DETAIL_DETAIL_FK = T_DETAIL.foreignKey("detail_fk", DETAIL_DETAIL_ID, DETAIL_ID);
-  public static final Attribute<String> DETAIL_MASTER_NAME = T_DETAIL.stringAttribute("master_name");
-  public static final Attribute<Integer> DETAIL_MASTER_CODE = T_DETAIL.integerAttribute("master_code");
-  public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = T_DETAIL.integerAttribute("int_value_list");
-  public static final Attribute<Integer> DETAIL_INT_DERIVED = T_DETAIL.integerAttribute("int_derived");
+  public interface Detail {
+    EntityType TYPE = DOMAIN.entityType("domain.detail_entity");
 
-  public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
+    Attribute<Long> ID = TYPE.longAttribute("id");
+    Attribute<Integer> INT = TYPE.integerAttribute("int");
+    Attribute<Double> DOUBLE = TYPE.doubleAttribute("double");
+    Attribute<BigDecimal> BIG_DECIMAL = TYPE.bigDecimalAttribute("big_decimal");
+    Attribute<String> STRING = TYPE.stringAttribute("string");
+    Attribute<LocalTime> TIME = TYPE.localTimeAttribute("time");
+    Attribute<LocalDate> DATE = TYPE.localDateAttribute("date");
+    Attribute<LocalDateTime> TIMESTAMP = TYPE.localDateTimeAttribute("timestamp");
+    Attribute<OffsetDateTime> OFFSET = TYPE.offsetDateTimeAttribute("offset");
+    Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
+    Attribute<Boolean> BOOLEAN_NULLABLE = TYPE.booleanAttribute("boolean_nullable");
+    Attribute<Long> MASTER_ID = TYPE.longAttribute("master_id");
+    ForeignKey MASTER_FK = TYPE.foreignKey("master_fk", MASTER_ID, Master.ID);
+    Attribute<Long> DETAIL_ID = TYPE.longAttribute("detail_id");
+    ForeignKey DETAIL_FK = TYPE.foreignKey("detail_fk", DETAIL_ID, ID);
+    Attribute<String> MASTER_NAME = TYPE.stringAttribute("master_name");
+    Attribute<Integer> MASTER_CODE = TYPE.integerAttribute("master_code");
+    Attribute<Integer> INT_VALUE_LIST = TYPE.integerAttribute("int_value_list");
+    Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
+  }
+
+  private static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
   private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
           item(2, "2"), item(3, "3"));
 
   void detail() {
     add(definition(
-            primaryKeyProperty(DETAIL_ID),
-            columnProperty(DETAIL_INT, DETAIL_INT.name()),
-            columnProperty(DETAIL_DOUBLE, DETAIL_DOUBLE.name()),
-            columnProperty(DETAIL_BIG_DECIMAL, DETAIL_BIG_DECIMAL.name()),
-            columnProperty(DETAIL_STRING, "Detail string"),
-            columnProperty(DETAIL_DATE, DETAIL_DATE.name()),
-            columnProperty(DETAIL_TIME, DETAIL_TIME.name()),
-            columnProperty(DETAIL_TIMESTAMP, DETAIL_TIMESTAMP.name()),
-            columnProperty(DETAIL_OFFSET, DETAIL_OFFSET.name()),
-            columnProperty(DETAIL_BOOLEAN, DETAIL_BOOLEAN.name())
+            primaryKeyProperty(Detail.ID),
+            columnProperty(Detail.INT, Detail.INT.name()),
+            columnProperty(Detail.DOUBLE, Detail.DOUBLE.name()),
+            columnProperty(Detail.BIG_DECIMAL, Detail.BIG_DECIMAL.name()),
+            columnProperty(Detail.STRING, "Detail string"),
+            columnProperty(Detail.DATE, Detail.DATE.name()),
+            columnProperty(Detail.TIME, Detail.TIME.name()),
+            columnProperty(Detail.TIMESTAMP, Detail.TIMESTAMP.name()),
+            columnProperty(Detail.OFFSET, Detail.OFFSET.name()),
+            columnProperty(Detail.BOOLEAN, Detail.BOOLEAN.name())
                     .nullable(false)
                     .defaultValue(true)
                     .description("A boolean property"),
-            columnProperty(DETAIL_BOOLEAN_NULLABLE, DETAIL_BOOLEAN_NULLABLE.name())
+            columnProperty(Detail.BOOLEAN_NULLABLE, Detail.BOOLEAN_NULLABLE.name())
                     .defaultValue(true),
-            columnProperty(DETAIL_MASTER_ID),
-            foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.name()),
-            columnProperty(DETAIL_DETAIL_ID),
-            foreignKeyProperty(DETAIL_DETAIL_FK, DETAIL_DETAIL_FK.name()),
-            denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_NAME.name(), DETAIL_MASTER_FK, MASTER_NAME),
-            denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.name(), DETAIL_MASTER_FK, MASTER_CODE),
-            itemProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.name(), ITEMS),
-            derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.name(), linkedValues -> {
-              Integer intValue = linkedValues.get(DETAIL_INT);
+            columnProperty(Detail.MASTER_ID),
+            foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.name()),
+            columnProperty(Detail.DETAIL_ID),
+            foreignKeyProperty(Detail.DETAIL_FK, Detail.DETAIL_FK.name()),
+            denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.name(), Detail.MASTER_FK, Master.NAME),
+            denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.name(), Detail.MASTER_FK, Master.CODE),
+            itemProperty(Detail.INT_VALUE_LIST, Detail.INT_VALUE_LIST.name(), ITEMS),
+            derivedProperty(Detail.INT_DERIVED, Detail.INT_DERIVED.name(), linkedValues -> {
+              Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
                 return null;
               }
 
               return intValue * 10;
-            }, DETAIL_INT))
+            }, Detail.INT))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
-            .orderBy(ascending(DETAIL_STRING))
+            .orderBy(ascending(Detail.STRING))
             .smallDataset(true)
-            .stringFactory(DETAIL_STRING));
+            .stringFactory(Detail.STRING));
   }
 
-  public static final EntityType T_DEPARTMENT = DOMAIN.entityType("scott.dept");
-  public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
+  public interface Department {
+    EntityType TYPE = DOMAIN.entityType("scott.dept");
+
+    Attribute<Integer> ID = TYPE.integerAttribute("deptno");
+    Attribute<String> NAME = TYPE.stringAttribute("dname");
+    Attribute<String> LOCATION = TYPE.stringAttribute("loc");
+  }
 
   void department() {
     add(definition(
-            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.name())
-                    .updatable(true).nullable(false),
-            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.name())
-                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
-            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.name())
-                    .preferredColumnWidth(150).maximumLength(13))
+            primaryKeyProperty(Department.ID, Department.ID.name())
+                    .updatable(true)
+                    .nullable(false),
+            columnProperty(Department.NAME, Department.NAME.name())
+                    .searchProperty(true)
+                    .preferredColumnWidth(120)
+                    .maximumLength(14)
+                    .nullable(false),
+            columnProperty(Department.LOCATION, Department.LOCATION.name())
+                    .preferredColumnWidth(150)
+                    .maximumLength(13))
             .smallDataset(true)
-            .orderBy(ascending(DEPARTMENT_NAME))
-            .stringFactory(DEPARTMENT_NAME)
+            .orderBy(ascending(Department.NAME))
+            .stringFactory(Department.NAME)
             .caption("Department"));
   }
 
-  public static final EntityType T_EMP = DOMAIN.entityType("scott.emp");
-  public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
-  public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
-  public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
-  public static final Attribute<Integer> EMP_MGR = T_EMP.integerAttribute("mgr");
-  public static final Attribute<LocalDate> EMP_HIREDATE = T_EMP.localDateAttribute("hiredate");
-  public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
-  public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
-  public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
-  public static final ForeignKey EMP_DEPARTMENT_FK = T_EMP.foreignKey("dept_fk", EMP_DEPARTMENT, DEPARTMENT_ID);
-  public static final ForeignKey EMP_MGR_FK = T_EMP.foreignKey("mgr_fk", EMP_MGR, EMP_ID);
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
+  public interface Employee {
+    EntityType TYPE = DOMAIN.entityType("scott.emp");
+
+    Attribute<Integer> ID = TYPE.integerAttribute("empno");
+    Attribute<String> NAME = TYPE.stringAttribute("ename");
+    Attribute<String> JOB = TYPE.stringAttribute("job");
+    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
+    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
+    Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
+    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
+    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
+    Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
+
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
+    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
+  }
 
   /**
    * Otherwise we'd depend on java.awt.Color
@@ -155,31 +173,36 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(definition(
-            primaryKeyProperty(EMP_ID, EMP_ID.name()),
-            columnProperty(EMP_NAME, EMP_NAME.name())
-                    .searchProperty(true).maximumLength(10).nullable(false),
-            columnProperty(EMP_DEPARTMENT)
+            primaryKeyProperty(Employee.ID, Employee.ID.name()),
+            columnProperty(Employee.NAME, Employee.NAME.name())
+                    .searchProperty(true)
+                    .maximumLength(10)
                     .nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.name()),
-            itemProperty(EMP_JOB, EMP_JOB.name(),
+            columnProperty(Employee.DEPARTMENT)
+                    .nullable(false),
+            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.name()),
+            itemProperty(Employee.JOB, Employee.JOB.name(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
-            columnProperty(EMP_SALARY, EMP_SALARY.name())
-                    .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
-            columnProperty(EMP_COMMISSION, EMP_COMMISSION.name())
-                    .valueRange(100, 2000).maximumFractionDigits(2),
-            columnProperty(EMP_MGR),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.name()),
-            columnProperty(EMP_HIREDATE, EMP_HIREDATE.name())
+            columnProperty(Employee.SALARY, Employee.SALARY.name())
+                    .nullable(false)
+                    .valueRange(1000, 10000)
+                    .maximumFractionDigits(2),
+            columnProperty(Employee.COMMISSION, Employee.COMMISSION.name())
+                    .valueRange(100, 2000)
+                    .maximumFractionDigits(2),
+            columnProperty(Employee.MGR),
+            foreignKeyProperty(Employee.MGR_FK, Employee.MGR_FK.name()),
+            columnProperty(Employee.HIREDATE, Employee.HIREDATE.name())
                     .nullable(false),
-            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.name(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION)
+            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION)
                     .preferredColumnWidth(100))
-            .stringFactory(EMP_NAME)
+            .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
-            .orderBy(ascending(EMP_DEPARTMENT, EMP_NAME))
+            .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .caption("Employee")
             .backgroundColorProvider((entity, attribute) -> {
-              if (attribute.equals(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
+              if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {
                 return CYAN;
               }
 

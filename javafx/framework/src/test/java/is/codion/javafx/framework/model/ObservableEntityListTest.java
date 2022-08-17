@@ -11,6 +11,7 @@ import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
 
 import javafx.scene.control.ListView;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,10 +41,10 @@ public final class ObservableEntityListTest {
 
   @Test
   void selectCondition() {
-    ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    ObservableEntityList list = new ObservableEntityList(Department.TYPE, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
-    list.setSelectCondition(Conditions.where(TestDomain.DEPARTMENT_NAME).notEqualTo("SALES", "OPERATIONS"));
+    list.setSelectCondition(Conditions.where(Department.NAME).notEqualTo("SALES", "OPERATIONS"));
     list.refresh();
     assertEquals(2, list.size());
   }
@@ -51,14 +52,14 @@ public final class ObservableEntityListTest {
   @Test
   void includeCondition() throws DatabaseException {
     AtomicInteger counter = new AtomicInteger();
-    ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    ObservableEntityList list = new ObservableEntityList(Department.TYPE, CONNECTION_PROVIDER);
     EventListener listener = counter::incrementAndGet;
     list.addFilterListener(listener);
     list.refresh();
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    Entity operations = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
+    Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "OPERATIONS");
 
-    list.setIncludeCondition(item -> Objects.equals(item.get(TestDomain.DEPARTMENT_NAME), "SALES"));
+    list.setIncludeCondition(item -> Objects.equals(item.get(Department.NAME), "SALES"));
     assertEquals(1, counter.get());
     assertNotNull(list.getIncludeCondition());
     assertEquals(3, list.filteredItemCount());
@@ -82,7 +83,7 @@ public final class ObservableEntityListTest {
 
   @Test
   void selection() throws DatabaseException {
-    ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    ObservableEntityList list = new ObservableEntityList(Department.TYPE, CONNECTION_PROVIDER);
     ListView<Entity> listView = new ListView<>(list);
     list.setSelectionModel(listView.getSelectionModel());
     try {
@@ -91,8 +92,8 @@ public final class ObservableEntityListTest {
     }
     catch (IllegalStateException ignored) {}
     list.refresh();
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    Entity operations = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
+    Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "OPERATIONS");
 
     list.selectionModel().setSelectedItem(sales);
     assertFalse(list.selectionEmptyObserver().get());

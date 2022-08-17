@@ -16,6 +16,9 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityTableModel;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Detail;
+import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -59,7 +62,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
-    List<Key> keys = tableModel.entities().primaryKeys(TestDomain.T_EMP, 1, 2);
+    List<Key> keys = tableModel.entities().primaryKeys(Employee.TYPE, 1, 2);
     Key pk1 = keys.get(0);
     Key pk2 = keys.get(1);
 
@@ -100,10 +103,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
     Entities entities = deptModel.entities();
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_BOTTOM);
-    Entity dept = entities.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, -10)
-            .with(TestDomain.DEPARTMENT_LOCATION, "Nowhere1")
-            .with(TestDomain.DEPARTMENT_NAME, "HELLO")
+    Entity dept = entities.builder(Department.TYPE)
+            .with(Department.ID, -10)
+            .with(Department.LOCATION, "Nowhere1")
+            .with(Department.NAME, "HELLO")
             .build();
     int count = deptModel.getRowCount();
     deptModel.editModel().insert(singletonList(dept));
@@ -111,20 +114,20 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(dept, deptModel.items().get(deptModel.getRowCount() - 1));
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_TOP_SORTED);
-    Entity dept2 = entities.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, -20)
-            .with(TestDomain.DEPARTMENT_LOCATION, "Nowhere2")
-            .with(TestDomain.DEPARTMENT_NAME, "NONAME")
+    Entity dept2 = entities.builder(Department.TYPE)
+            .with(Department.ID, -20)
+            .with(Department.LOCATION, "Nowhere2")
+            .with(Department.NAME, "NONAME")
             .build();
     deptModel.editModel().insert(singletonList(dept2));
     assertEquals(count + 2, deptModel.getRowCount());
     assertEquals(dept2, deptModel.items().get(2));
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.DO_NOTHING);
-    Entity dept3 = entities.builder(TestDomain.T_DEPARTMENT)
-            .with(TestDomain.DEPARTMENT_ID, -30)
-            .with(TestDomain.DEPARTMENT_LOCATION, "Nowhere3")
-            .with(TestDomain.DEPARTMENT_NAME, "NONAME2")
+    Entity dept3 = entities.builder(Department.TYPE)
+            .with(Department.ID, -30)
+            .with(Department.LOCATION, "Nowhere3")
+            .with(Department.NAME, "NONAME2")
             .build();
     deptModel.editModel().insert(singletonList(dept3));
     assertEquals(count + 2, deptModel.getRowCount());
@@ -141,8 +144,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
 
     Entities entities = tableModel.entities();
-    Key pk1 = entities.primaryKey(TestDomain.T_EMP, 1);
-    Key pk2 = entities.primaryKey(TestDomain.T_EMP, 2);
+    Key pk1 = entities.primaryKey(Employee.TYPE, 1);
+    Key pk2 = entities.primaryKey(Employee.TYPE, 2);
     tableModel.connectionProvider().connection().beginTransaction();
     try {
       tableModel.selectByKey(singletonList(pk1));
@@ -171,10 +174,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
 
     Entities entities = tableModel.entities();
-    Key pk1 = entities.primaryKey(TestDomain.T_EMP, 1);
+    Key pk1 = entities.primaryKey(Employee.TYPE, 1);
     assertNotNull(tableModel.entityByKey(pk1));
 
-    Key pk2 = entities.primaryKey(TestDomain.T_EMP, -66);
+    Key pk2 = entities.primaryKey(Employee.TYPE, -66);
     assertNull(tableModel.entityByKey(pk2));
   }
 
@@ -196,7 +199,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void entityType() {
-    assertEquals(TestDomain.T_DETAIL, testModel.entityType());
+    assertEquals(Detail.TYPE, testModel.entityType());
   }
 
   @Test
@@ -215,7 +218,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     testModel.refresh();
     testModel.selectionModel().setSelectedIndexes(singletonList(0));
     Entity entity = testModel.selectionModel().getSelectedItem();
-    entity.put(TestDomain.DETAIL_STRING, "hello");
+    entity.put(Detail.STRING, "hello");
     assertThrows(IllegalStateException.class, () -> testModel.update(singletonList(entity)));
   }
 
@@ -226,7 +229,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     testModel.refresh();
     testModel.selectionModel().setSelectedIndexes(asList(0, 1));
     List<Entity> entities = testModel.selectionModel().getSelectedItems();
-    Entity.put(TestDomain.DETAIL_STRING, "hello", entities);
+    Entity.put(Detail.STRING, "hello", entities);
     assertThrows(IllegalStateException.class, () -> testModel.update(entities));
   }
 
@@ -248,18 +251,18 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   public void entitiesByKey() {
     testModel.refresh();
     Entities entities = testModel.entities();
-    Entity tmpEnt = entities.builder(TestDomain.T_DETAIL)
-            .with(TestDomain.DETAIL_ID, 3L)
+    Entity tmpEnt = entities.builder(Detail.TYPE)
+            .with(Detail.ID, 3L)
             .build();
-    assertEquals("c", testModel.entityByKey(tmpEnt.primaryKey()).get(TestDomain.DETAIL_STRING));
+    assertEquals("c", testModel.entityByKey(tmpEnt.primaryKey()).get(Detail.STRING));
     List<Key> keys = new ArrayList<>();
     keys.add(tmpEnt.primaryKey());
-    tmpEnt = entities.builder(TestDomain.T_DETAIL)
-            .with(TestDomain.DETAIL_ID, 2L)
+    tmpEnt = entities.builder(Detail.TYPE)
+            .with(Detail.ID, 2L)
             .build();
     keys.add(tmpEnt.primaryKey());
-    tmpEnt = entities.builder(TestDomain.T_DETAIL)
-            .with(TestDomain.DETAIL_ID, 1L)
+    tmpEnt = entities.builder(Detail.TYPE)
+            .with(Detail.ID, 1L)
             .build();
     keys.add(tmpEnt.primaryKey());
 
@@ -274,7 +277,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
     assertEquals(6, tableModel.getRowCount());
     ColumnConditionModel<?, Double> commissionConditionModel =
-            tableModel.tableConditionModel().conditionModel(TestDomain.EMP_COMMISSION);
+            tableModel.tableConditionModel().conditionModel(Employee.COMMISSION);
     commissionConditionModel.setOperator(Operator.EQUAL);
     commissionConditionModel.setEnabled(true);
     tableModel.refresh();
@@ -294,7 +297,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void tableDataAsDelimitedString() {
     TableModel deptModel = createDepartmentTableModel();
-    deptModel.setVisibleColumns(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION);
+    deptModel.setVisibleColumns(Department.ID, Department.NAME, Department.LOCATION);
     deptModel.refresh();
     String newline = Separators.LINE_SEPARATOR;
     String expected = "deptno\tdname\tloc" + newline +
@@ -308,7 +311,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void setColumns() {
     TableModel empModel = createEmployeeTableModel();
-    empModel.setVisibleColumns(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT_FK, TestDomain.EMP_HIREDATE);
+    empModel.setVisibleColumns(Employee.COMMISSION, Employee.DEPARTMENT_FK, Employee.HIREDATE);
   }
 
   protected final EntityConnectionProvider connectionProvider() {
@@ -317,13 +320,13 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   /**
    * @return a EntityTableModel using {@link #testEntities} with an edit model
-   * @see TestDomain#T_DETAIL
+   * @see Detail#TYPE
    */
   protected abstract TableModel createTestTableModel();
 
   /**
    * @return a EntityTableModel based on the master entity
-   * @see TestDomain#T_MASTER
+   * @see TestDomain.Master#TYPE
    */
   protected abstract TableModel createMasterTableModel();
 
@@ -341,10 +344,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     List<Entity> testEntities = new ArrayList<>(5);
     String[] stringValues = new String[] {"a", "b", "c", "d", "e"};
     for (int i = 0; i < 5; i++) {
-      testEntities.add(entities.builder(TestDomain.T_DETAIL)
-              .with(TestDomain.DETAIL_ID, (long) i + 1)
-              .with(TestDomain.DETAIL_INT, i + 1)
-              .with(TestDomain.DETAIL_STRING, stringValues[i])
+      testEntities.add(entities.builder(Detail.TYPE)
+              .with(Detail.ID, (long) i + 1)
+              .with(Detail.INT, i + 1)
+              .with(Detail.STRING, stringValues[i])
               .build());
     }
 

@@ -21,7 +21,7 @@ public final class PostgreSQLDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public Database createDatabase(String jdbcUrl) {
-    return new PostgreSQLDatabase(jdbcUrl, Database.SELECT_FOR_UPDATE_NOWAIT.get());
+  public Database createDatabase(String url) {
+    return new PostgreSQLDatabase(url, Database.SELECT_FOR_UPDATE_NOWAIT.get());
   }
 }

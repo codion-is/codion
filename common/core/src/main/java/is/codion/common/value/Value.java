@@ -27,8 +27,8 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
   void set(T value);
 
   /**
-   * Returns a ValueObserver notified each time this value changes.
-   * @return a ValueObserver for this value
+   * Returns a {@link ValueObserver} notified each time this value changes.
+   * @return a {@link ValueObserver} for this value
    */
   ValueObserver<T> observer();
 
@@ -87,7 +87,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
   Collection<Validator<T>> validators();
 
   /**
-   * A Validator for {@link Value}s.
+   * A {@link Validator} for {@link Value}s.
    * @param <T> the value type
    */
   interface Validator<T> {
@@ -101,8 +101,8 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
   }
 
   /**
-   * Instantiates a new Value instance wrapping a null initial value
-   * @param <T> type to wrap
+   * Creates a new {@link Value} instance, wrapping a null initial value
+   * @param <T> the value type
    * @return a Value for the given type
    */
   static <T> Value<T> value() {
@@ -110,21 +110,21 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
   }
 
   /**
-   * Instantiates a new Value
+   * Creates a new {@link Value} instance
    * @param initialValue the initial value
-   * @param <T> type to wrap
-   * @return a Value for the given type with the given initial value
+   * @param <T> the value type
+   * @return a {@link Value} with given initial value
    */
   static <T> Value<T> value(T initialValue) {
     return new DefaultValue<>(initialValue, null);
   }
 
   /**
-   * Instantiates a new Value
+   * Creates a new {@link Value} instance
    * @param initialValue the initial value
    * @param nullValue the actual value to use when the value is set to null
-   * @param <T> type to wrap
-   * @return a Value for the given type with the given initial value
+   * @param <T> the value type
+   * @return a {@link Value} with given initial value
    * @throws NullPointerException in case {@code nullValue} is null
    */
   static <T> Value<T> value(T initialValue, T nullValue) {
@@ -132,12 +132,12 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
   }
 
   /**
-   * Creates a {@link Value} based on the given getter and setter.
+   * Creates a new {@link Value} instance based on the given getter and setter.
    * The setter may throw an unchecked exception in case of an invalid value.
    * @param <T> the value type
    * @param getter the getter
    * @param setter the setter
-   * @return a Value based on the given setter and getter
+   * @return a new {@link Value} instance based on the given setter and getter
    * @throws NullPointerException in case either getter or setter is null
    */
   static <T> Value<T> value(Supplier<T> getter, Consumer<T> setter) {
@@ -151,7 +151,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * @param getter the getter
    * @param setter the setter
    * @param nullValue the value to use instead of null
-   * @return a Value based on the given setter and getter
+   * @return a new {@link Value} instance based on the given setter and getter
    * @throws NullPointerException in case either getter or setter is null
    */
   static <T> Value<T> value(Supplier<T> getter, Consumer<T> setter, T nullValue) {
@@ -159,13 +159,13 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
   }
 
   /**
-   * Instantiates a new PropertyValue based on a class property
+   * Creates a new {@link Value} based on a class property
    * @param owner the property owner
    * @param propertyName the name of the property
    * @param valueClass the value class
    * @param valueChangeObserver an observer notified each time the value changes
-   * @param <T> type to wrap
-   * @return a Value for the given property
+   * @param <T> the value type
+   * @return a {@link Value} for the given property
    */
   static <T> Value<T> propertyValue(Object owner, String propertyName, Class<T> valueClass,
                                     EventObserver<T> valueChangeObserver) {

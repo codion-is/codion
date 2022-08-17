@@ -12,6 +12,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,29 +35,29 @@ public class SwingEntityEditModelTest {
 
   @BeforeEach
   void setUp() {
-    employeeEditModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+    employeeEditModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
   }
 
   @Test
   void comboBoxModel() {
-    FilteredComboBoxModel<String> model = employeeEditModel.comboBoxModel(TestDomain.EMP_JOB);
+    FilteredComboBoxModel<String> model = employeeEditModel.comboBoxModel(Employee.JOB);
     model.setIncludeNull(true);
     model.setNullItem("null");
     assertNotNull(model);
-    assertTrue(employeeEditModel.containsComboBoxModel(TestDomain.EMP_JOB));
-    assertEquals(model, employeeEditModel.comboBoxModel(TestDomain.EMP_JOB));
+    assertTrue(employeeEditModel.containsComboBoxModel(Employee.JOB));
+    assertEquals(model, employeeEditModel.comboBoxModel(Employee.JOB));
     employeeEditModel.refreshComboBoxModels();
     employeeEditModel.clearComboBoxModels();
-    assertTrue(employeeEditModel.comboBoxModel(TestDomain.EMP_JOB).isCleared());
+    assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).isCleared());
     employeeEditModel.refreshComboBoxModels();
     employeeEditModel.clear();
-    assertTrue(employeeEditModel.comboBoxModel(TestDomain.EMP_JOB).isCleared());
+    assertTrue(employeeEditModel.comboBoxModel(Employee.JOB).isCleared());
   }
 
   @Test
   void foreignKeyComboBoxModel() {
-    assertFalse(employeeEditModel.containsComboBoxModel(TestDomain.EMP_DEPARTMENT_FK));
-    EntityComboBoxModel model = employeeEditModel.foreignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
+    assertFalse(employeeEditModel.containsComboBoxModel(Employee.DEPARTMENT_FK));
+    EntityComboBoxModel model = employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.items().isEmpty());
@@ -69,38 +71,38 @@ public class SwingEntityEditModelTest {
 
   @Test
   void createForeignKeyComboBoxModel() {
-    EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
+    EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(Employee.DEPARTMENT_FK);
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.items().isEmpty());
-    ForeignKeyProperty deptProperty = employeeEditModel.entities().definition(TestDomain.T_EMP).foreignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
+    ForeignKeyProperty deptProperty = employeeEditModel.entities().definition(Employee.TYPE).foreignKeyProperty(Employee.DEPARTMENT_FK);
     assertEquals(deptProperty.referencedType(), model.entityType());
     model.refresh();
     for (Entity department : model.items()) {
-      assertTrue(department.contains(TestDomain.DEPARTMENT_ID));
-      assertTrue(department.contains(TestDomain.DEPARTMENT_NAME));
-      assertFalse(department.contains(TestDomain.DEPARTMENT_LOCATION));
+      assertTrue(department.contains(Department.ID));
+      assertTrue(department.contains(Department.NAME));
+      assertFalse(department.contains(Department.LOCATION));
     }
   }
 
   @Test
   void replaceForeignKeyValues() throws DatabaseException {
     Entity blake = employeeEditModel.connectionProvider().connection()
-            .selectSingle(TestDomain.EMP_NAME, "BLAKE");
-    employeeEditModel.foreignKeyComboBoxModel(TestDomain.EMP_MGR_FK);
+            .selectSingle(Employee.NAME, "BLAKE");
+    employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);
     employeeEditModel.refreshComboBoxModels();
-    assertNotSame(employeeEditModel.foreignKeyComboBoxModel(TestDomain.EMP_MGR_FK)
+    assertNotSame(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK)
             .entity(blake.primaryKey()).orElse(null), blake);
     employeeEditModel.replaceForeignKeyValues(singletonList(blake));
-    assertSame(employeeEditModel.foreignKeyComboBoxModel(TestDomain.EMP_MGR_FK)
+    assertSame(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK)
             .entity(blake.primaryKey()).orElse(null), blake);
   }
 
   @Test
   void initializeComboBoxModels() {
-    employeeEditModel.initializeComboBoxModels(TestDomain.EMP_DEPARTMENT_FK, TestDomain.EMP_MGR_FK, TestDomain.EMP_JOB);
-    assertFalse(employeeEditModel.comboBoxModel(TestDomain.EMP_JOB).isCleared());
-    assertFalse(employeeEditModel.foreignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).isCleared());
-    assertFalse(employeeEditModel.foreignKeyComboBoxModel(TestDomain.EMP_MGR_FK).isCleared());
+    employeeEditModel.initializeComboBoxModels(Employee.DEPARTMENT_FK, Employee.MGR_FK, Employee.JOB);
+    assertFalse(employeeEditModel.comboBoxModel(Employee.JOB).isCleared());
+    assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).isCleared());
+    assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK).isCleared());
   }
 }

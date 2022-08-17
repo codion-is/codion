@@ -31,7 +31,7 @@ final class DefaultVersion implements Version, Serializable {
   private final String metadata;
 
   /**
-   * Instantiates a new version [major].[minor].[patch]-[metadata]
+   * Creates a new version [major].[minor].[patch]-[metadata]
    * @param major the major version
    * @param minor the minor version
    * @param patch the patch version

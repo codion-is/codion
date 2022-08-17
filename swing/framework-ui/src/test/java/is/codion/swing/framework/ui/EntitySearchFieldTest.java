@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.DefaultEntitySearchModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.framework.ui.TestDomain.Department;
 
 import org.junit.jupiter.api.Test;
 
@@ -33,13 +34,13 @@ public class EntitySearchFieldTest {
 
   @Test
   void componentValue() throws Exception {
-    EntitySearchModel model = new DefaultEntitySearchModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    EntitySearchModel model = new DefaultEntitySearchModel(Department.TYPE, CONNECTION_PROVIDER);
     ComponentValue<Entity, EntitySearchField> value = EntitySearchField.builder(model)
             .buildComponentValue();
 
     assertNull(value.get());
 
-    Entity dept = CONNECTION_PROVIDER.connection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    Entity dept = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
 
     model.setSelectedEntity(dept);
     assertEquals(dept, value.get());

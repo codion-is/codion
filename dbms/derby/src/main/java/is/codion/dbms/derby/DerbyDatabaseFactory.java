@@ -21,7 +21,7 @@ public final class DerbyDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public Database createDatabase(String jdbcUrl) {
-    return new DerbyDatabase(jdbcUrl);
+  public Database createDatabase(String url) {
+    return new DerbyDatabase(url);
   }
 }

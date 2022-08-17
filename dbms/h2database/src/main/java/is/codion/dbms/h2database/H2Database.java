@@ -49,19 +49,19 @@ final class H2Database extends AbstractDatabase {
 
   private final boolean nowait;
 
-  H2Database(String jdbcUrl) {
-    this(jdbcUrl, emptyList());
+  H2Database(String url) {
+    this(url, emptyList());
   }
 
-  H2Database(String jdbcUrl, List<String> scriptPaths) {
-    this(jdbcUrl, scriptPaths, true);
+  H2Database(String url, List<String> scriptPaths) {
+    this(url, scriptPaths, true);
   }
 
-  H2Database(String jdbcUrl, List<String> scriptPaths, boolean nowait) {
-    super(jdbcUrl);
+  H2Database(String url, List<String> scriptPaths, boolean nowait) {
+    super(url);
     this.nowait = nowait;
     synchronized (INITIALIZED_DATABASES) {
-      if (!nullOrEmpty(scriptPaths) && !INITIALIZED_DATABASES.contains(jdbcUrl.toLowerCase())) {
+      if (!nullOrEmpty(scriptPaths) && !INITIALIZED_DATABASES.contains(url.toLowerCase())) {
         initializeEmbeddedDatabase(scriptPaths);
       }
     }

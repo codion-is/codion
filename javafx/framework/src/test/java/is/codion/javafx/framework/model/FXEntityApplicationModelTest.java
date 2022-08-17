@@ -5,7 +5,8 @@ package is.codion.javafx.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.test.AbstractEntityApplicationModelTest;
-import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Employee;
 import is.codion.javafx.framework.ui.EntityTableView;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -22,15 +23,15 @@ public final class FXEntityApplicationModelTest extends AbstractEntityApplicatio
   protected FXEntityModel createDepartmentModel() {
     FXEntityModel model = new DeptModel(connectionProvider());
     new EntityTableView(model.tableModel());
-    new EntityTableView(model.detailModel(TestDomain.T_EMP).tableModel());
+    new EntityTableView(model.detailModel(Employee.TYPE).tableModel());
 
     return model;
   }
 
   private static class DeptModel extends FXEntityModel {
     private DeptModel(EntityConnectionProvider connectionProvider) {
-      super(TestDomain.T_DEPARTMENT, connectionProvider);
-      addDetailModel(new FXEntityModel(TestDomain.T_EMP, connectionProvider));
+      super(Department.TYPE, connectionProvider);
+      addDetailModel(new FXEntityModel(Employee.TYPE, connectionProvider));
     }
   }
 }

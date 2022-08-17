@@ -29,7 +29,7 @@ public interface Version extends Comparable<Version> {
   String metadata();
 
   /**
-   * Instantiates a new version [major].0.0
+   * Creates a new version [major].0.0
    * @param major the major version
    * @return a Version
    */
@@ -38,7 +38,7 @@ public interface Version extends Comparable<Version> {
   }
 
   /**
-   * Instantiates a new version [major].[minor].0
+   * Creates a new version [major].[minor].0
    * @param major the major version
    * @param minor the minor version
    * @return a Version
@@ -48,7 +48,7 @@ public interface Version extends Comparable<Version> {
   }
 
   /**
-   * Instantiates a new version [major].[minor].[patch]
+   * Creates a new version [major].[minor].[patch]
    * @param major the major version
    * @param minor the minor version
    * @param patch the patch version
@@ -59,7 +59,7 @@ public interface Version extends Comparable<Version> {
   }
 
   /**
-   * Instantiates a new version [major].[minor].[patch]-[metadata]
+   * Creates a new version [major].[minor].[patch]-[metadata]
    * @param major the major version
    * @param minor the minor version
    * @param patch the patch version

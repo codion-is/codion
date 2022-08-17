@@ -64,7 +64,7 @@ public interface MethodLogger {
   List<Entry> entries();
 
   /**
-   * Instantiates a new MethodLogger, disabled by default.
+   * Creates a new MethodLogger, disabled by default.
    * @param maxSize the maximum log size
    * @return a new MethodLogger instance
    */
@@ -73,7 +73,7 @@ public interface MethodLogger {
   }
 
   /**
-   * Instantiates a new MethodLogger, disabled by default.
+   * Creates a new MethodLogger, disabled by default.
    * @param maxSize the maximum log size
    * @param argumentStringProvider responsible for providing String representations of method arguments
    * @return a new MethodLogger instance

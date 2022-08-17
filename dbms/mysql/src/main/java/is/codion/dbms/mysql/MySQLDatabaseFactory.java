@@ -21,7 +21,7 @@ public final class MySQLDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public Database createDatabase(String jdbcUrl) {
-    return new MySQLDatabase(jdbcUrl);
+  public Database createDatabase(String url) {
+    return new MySQLDatabase(url);
   }
 }

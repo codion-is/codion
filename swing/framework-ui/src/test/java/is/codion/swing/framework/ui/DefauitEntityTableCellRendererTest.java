@@ -8,6 +8,9 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.TestDomain.Department;
+import is.codion.swing.framework.ui.TestDomain.Detail;
+import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
@@ -27,10 +30,10 @@ public class DefauitEntityTableCellRendererTest {
 
   @Test
   void test() {
-    EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
+    EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
     tablePanel.tableModel().refresh();
     EntityTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.tableModel(),
-            DOMAIN.entities().definition(TestDomain.T_EMP).property(TestDomain.EMP_NAME))
+            DOMAIN.entities().definition(Employee.TYPE).property(Employee.NAME))
             .build();
     renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 0);
@@ -47,9 +50,9 @@ public class DefauitEntityTableCellRendererTest {
 
   @Test
   void entityMismatch() {
-    EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
+    EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
     tablePanel.tableModel().refresh();
     assertThrows(IllegalArgumentException.class, () -> EntityTableCellRenderer.builder(tablePanel.tableModel(),
-            DOMAIN.entities().definition(TestDomain.T_DETAIL).property(TestDomain.DEPARTMENT_NAME)));
+            DOMAIN.entities().definition(Detail.TYPE).property(Department.NAME)));
   }
 }

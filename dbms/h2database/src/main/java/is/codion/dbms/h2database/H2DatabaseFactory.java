@@ -31,13 +31,13 @@ public final class H2DatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public Database createDatabase(String jdbcUrl) {
-    return new H2Database(jdbcUrl, Text.parseCommaSeparatedValues(Database.DATABASE_INIT_SCRIPTS.get()),
+  public Database createDatabase(String url) {
+    return new H2Database(url, Text.parseCommaSeparatedValues(Database.DATABASE_INIT_SCRIPTS.get()),
             Database.SELECT_FOR_UPDATE_NOWAIT.get());
   }
 
-  public static Database createDatabase(String jdbcUrl, String initScript) {
-    return new H2Database(jdbcUrl, initScript == null ? emptyList() : singletonList(initScript),
+  public static Database createDatabase(String url, String initScript) {
+    return new H2Database(url, initScript == null ? emptyList() : singletonList(initScript),
             Database.SELECT_FOR_UPDATE_NOWAIT.get());
   }
 

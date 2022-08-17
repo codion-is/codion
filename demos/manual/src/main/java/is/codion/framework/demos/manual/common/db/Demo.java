@@ -32,21 +32,21 @@ public final class Demo {
 
   private void databaseFromUrl() throws SQLException {
     // tag::url[]
-    String jdbcUrl = "jdbc:h2:mem:h2db";
+    String url = "jdbc:h2:mem:h2db";
 
-    DatabaseFactory databaseFactory = DatabaseFactory.instance(jdbcUrl);
+    DatabaseFactory databaseFactory = DatabaseFactory.instance(url);
 
-    Database database = databaseFactory.createDatabase(jdbcUrl);
+    Database database = databaseFactory.createDatabase(url);
     // end::url[]
   }
 
   private void databaseFactory() {
     // tag::factory[]
-    String jdbcUrl = "jdbc:h2:mem:h2db";
+    String url = "jdbc:h2:mem:h2db";
 
     H2DatabaseFactory databaseFactory = new H2DatabaseFactory();
 
-    Database database = databaseFactory.createDatabase(jdbcUrl);
+    Database database = databaseFactory.createDatabase(url);
     // end::factory[]
   }
 
