@@ -373,8 +373,8 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     int selectedRow = getSelectedRow();
     int selectedColumn = getSelectedColumn();
     if (selectedRow >= 0 && selectedColumn >= 0) {
-      Object value = getValueAt(selectedRow, selectedColumn);
-      Utilities.setClipboard(value == null ? "" : value.toString());
+      TableColumn column = getModel().columnModel().getColumn(selectedColumn);
+      Utilities.setClipboard(getModel().getStringAt(selectedRow, (C) column.getIdentifier()));
     }
   }
 
@@ -563,33 +563,12 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
             .build();
   }
 
-  private void showDialog(ColumnConditionPanel<C, ?> columnFilterPanel, String title, Point location) {
-    JDialog dialog = columnFilterPanelDialog(columnFilterPanel, title);
-    Point adjustedLocation = location;
-    //set the location above the column header
-    adjustedLocation.y = adjustedLocation.y - dialog.getHeight() - getTableHeader().getHeight();
-    dialog.setLocation(adjustedLocation);
-    dialog.setVisible(true);
-    columnFilterPanel.addAdvancedViewListener(advanced -> dialog.pack());
-    columnFilterPanel.requestInputFocus();
-  }
-
-  private JDialog columnFilterPanelDialog(ColumnConditionPanel<C, ?> columnFilterPanel, String title) {
-    return columnFilterPanelDialogs.computeIfAbsent(columnFilterPanel, k -> Dialogs.componentDialog(k)
-            .owner(this)
-            .title(title)
-            .modal(false)
-            .disposeOnEscape(false)
-            .onClosed(event -> columnFilterPanelDialogs.remove(columnFilterPanel).dispose())
-            .build());
-  }
-
   private void initializeTableHeader() {
-    getTableHeader().addMouseListener(new MouseColumnFilterPanelHandler());
+    getTableHeader().addMouseListener(new ColumnFilterPanelMouseHandler());
     tableModel.addSortListener(getTableHeader()::repaint);
     getTableHeader().setReorderingAllowed(true);
     getTableHeader().setAutoscrolls(true);
-    getTableHeader().addMouseMotionListener(new MouseColumnDragHandler());
+    getTableHeader().addMouseMotionListener(new ColumnDragMouseHandler());
     getTableHeader().addMouseListener(new MouseSortHandler());
     tableModel.columnModel().columns().forEach(tableColumn ->
             tableColumn.setHeaderRenderer(new SortableHeaderRenderer(tableColumn.getHeaderRenderer())));
@@ -802,36 +781,56 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     }
   }
 
-  private final class MouseColumnFilterPanelHandler extends MouseAdapter {
+  private final class ColumnFilterPanelMouseHandler extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
       if (e.isAltDown() && e.isControlDown()) {
-        toggleColumnFilterPanel(e);
+        toggleFilterPanel(e);
       }
     }
 
-    private void toggleColumnFilterPanel(MouseEvent event) {
+    private void toggleFilterPanel(MouseEvent event) {
       FilteredTableColumnModel<C> columnModel = getModel().columnModel();
       TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
-      toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, c ->
-                      (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(column)),
+      toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, k ->
+                      (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(k)),
               column.getHeaderValue().toString(), event.getLocationOnScreen());
     }
 
-    private void toggleFilterPanel(ColumnConditionPanel<C, ?> columnFilterPanel, String title, Point location) {
-      if (columnFilterPanel != null) {
-        JDialog dialog = columnFilterPanelDialog(columnFilterPanel, title);
+    private void toggleFilterPanel(ColumnConditionPanel<C, ?> filterPanel, String title, Point location) {
+      if (filterPanel != null) {
+        JDialog dialog = filterPanelDialog(filterPanel, title);
         if (dialog.isShowing()) {
-          columnFilterPanelDialogs.remove(columnFilterPanel).dispose();
+          columnFilterPanelDialogs.remove(filterPanel).dispose();
         }
         else {
-          showDialog(columnFilterPanel, title, location);
+          showDialog(filterPanel, title, location);
         }
       }
     }
+
+    private void showDialog(ColumnConditionPanel<C, ?> filterPanel, String title, Point location) {
+      JDialog dialog = filterPanelDialog(filterPanel, title);
+      //adjust the location to above the column header
+      location.y = location.y - dialog.getHeight() - getTableHeader().getHeight();
+      dialog.setLocation(location);
+      dialog.setVisible(true);
+      filterPanel.addAdvancedViewListener(advanced -> dialog.pack());
+      filterPanel.requestInputFocus();
+    }
+
+    private JDialog filterPanelDialog(ColumnConditionPanel<C, ?> filterPanel, String title) {
+      return columnFilterPanelDialogs.computeIfAbsent(filterPanel, k -> Dialogs.componentDialog(k)
+              .owner(FilteredTable.this)
+              .title(title)
+              .modal(false)
+              .disposeOnEscape(false)
+              .onClosed(event -> columnFilterPanelDialogs.remove(filterPanel).dispose())
+              .build());
+    }
   }
 
-  private final class MouseColumnDragHandler extends MouseMotionAdapter {
+  private final class ColumnDragMouseHandler extends MouseMotionAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
       scrollRectToVisible(new Rectangle(e.getX(), getVisibleRect().y, 1, 1));
