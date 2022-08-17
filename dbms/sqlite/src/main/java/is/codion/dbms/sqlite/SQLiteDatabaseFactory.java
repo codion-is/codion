@@ -21,7 +21,7 @@ public final class SQLiteDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public Database createDatabase(String jdbcUrl) {
-    return new SQLiteDatabase(jdbcUrl);
+  public Database createDatabase(String url) {
+    return new SQLiteDatabase(url);
   }
 }

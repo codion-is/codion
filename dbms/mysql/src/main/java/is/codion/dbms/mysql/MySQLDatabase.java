@@ -20,8 +20,8 @@ final class MySQLDatabase extends AbstractDatabase {
 
   static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
 
-  MySQLDatabase(String jdbcUrl) {
-    super(jdbcUrl);
+  MySQLDatabase(String url) {
+    super(url);
   }
 
   @Override

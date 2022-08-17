@@ -21,7 +21,7 @@ public final class Db2DatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public Database createDatabase(String jdbcUrl) {
-    return new Db2Database(jdbcUrl);
+  public Database createDatabase(String url) {
+    return new Db2Database(url);
   }
 }

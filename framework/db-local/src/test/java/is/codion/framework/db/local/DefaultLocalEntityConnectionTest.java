@@ -1047,8 +1047,8 @@ public class DefaultLocalEntityConnectionTest {
     if (setLockTimeout) {
       database.setConnectionProvider(new ConnectionProvider() {
         @Override
-        public Connection connection(User user, String jdbcUrl) throws SQLException {
-          Connection connection = ConnectionProvider.super.connection(user, jdbcUrl);
+        public Connection connection(User user, String url) throws SQLException {
+          Connection connection = ConnectionProvider.super.connection(user, url);
           try (Statement statement = connection.createStatement()) {
             statement.execute("SET LOCK_TIMEOUT 10");
           }

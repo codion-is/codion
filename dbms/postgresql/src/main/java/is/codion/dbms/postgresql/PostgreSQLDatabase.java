@@ -26,12 +26,12 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   private final boolean nowait;
 
-  PostgreSQLDatabase(String jdbcUrl) {
-    this(jdbcUrl, false);
+  PostgreSQLDatabase(String url) {
+    this(url, false);
   }
 
-  PostgreSQLDatabase(String jdbcUrl, boolean nowait) {
-    super(jdbcUrl);
+  PostgreSQLDatabase(String url, boolean nowait) {
+    super(url);
     this.nowait = nowait;
   }
 

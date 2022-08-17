@@ -22,12 +22,12 @@ final class HSQLDatabase extends AbstractDatabase {
 
   private final boolean nowait;
 
-  HSQLDatabase(String jdbcUrl) {
-    this(jdbcUrl, true);
+  HSQLDatabase(String url) {
+    this(url, true);
   }
 
-  HSQLDatabase(String jdbcUrl, boolean nowait) {
-    super(jdbcUrl);
+  HSQLDatabase(String url, boolean nowait) {
+    super(url);
     this.nowait = nowait;
   }
 

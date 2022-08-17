@@ -58,12 +58,12 @@ final class OracleDatabase extends AbstractDatabase {
 
   private final boolean nowait;
 
-  OracleDatabase(String jdbcUrl) {
-    this(jdbcUrl, true);
+  OracleDatabase(String url) {
+    this(url, true);
   }
 
-  OracleDatabase(String jdbcUrl, boolean nowait) {
-    super(jdbcUrl);
+  OracleDatabase(String url, boolean nowait) {
+    super(url);
     this.nowait = nowait;
   }
 

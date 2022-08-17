@@ -21,7 +21,7 @@ public final class HSQLDatabaseFactory implements DatabaseFactory {
   }
 
   @Override
-  public Database createDatabase(String jdbcUrl) {
-    return new HSQLDatabase(jdbcUrl, Database.SELECT_FOR_UPDATE_NOWAIT.get());
+  public Database createDatabase(String url) {
+    return new HSQLDatabase(url, Database.SELECT_FOR_UPDATE_NOWAIT.get());
   }
 }

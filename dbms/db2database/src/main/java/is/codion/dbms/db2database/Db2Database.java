@@ -24,8 +24,8 @@ final class Db2Database extends AbstractDatabase {
 
   private static final String JDBC_URL_PREFIX = "jdbc:db2:";
 
-  Db2Database(String jdbcUrl) {
-    super(jdbcUrl);
+  Db2Database(String url) {
+    super(url);
   }
 
   @Override

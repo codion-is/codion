@@ -45,28 +45,28 @@ public abstract class AbstractDatabase implements Database {
   private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.get();
   private final QueryCounter queryCounter = new QueryCounter();
   private final boolean queryCounterEnabled = QUERY_COUNTER_ENABLED.get();
-  private final String jdbcUrl;
+  private final String url;
 
   private ConnectionProvider connectionProvider = new ConnectionProvider() {};
 
   /**
    * Instantiates a new AbstractDatabase.
-   * @param jdbcUrl the jdbc url
+   * @param url the jdbc url
    */
-  public AbstractDatabase(String jdbcUrl) {
-    this.jdbcUrl = requireNonNull(jdbcUrl, "jdbcUrl");
+  public AbstractDatabase(String url) {
+    this.url = requireNonNull(url, "url");
   }
 
   @Override
   public final String url() {
-    return jdbcUrl;
+    return url;
   }
 
   @Override
   public final Connection createConnection(User user) throws DatabaseException {
     DriverManager.setLoginTimeout(loginTimeout());
     try {
-      Connection connection = connectionProvider.connection(user, jdbcUrl);
+      Connection connection = connectionProvider.connection(user, url);
       if (Database.TRANSACTION_ISOLATION.isNotNull()) {
         connection.setTransactionIsolation(Database.TRANSACTION_ISOLATION.get());
       }

@@ -25,9 +25,9 @@ public interface DatabaseFactory {
 
   /**
    * @return a new {@link Database} implementation based on the given jdbc url.
-   * @param jdbcUrl the jdbc url
+   * @param url the jdbc url
    */
-  Database createDatabase(String jdbcUrl);
+  Database createDatabase(String url);
 
   /**
    * @return a {@link DatabaseFactory} implementation for {@link Database#DATABASE_URL}
@@ -41,14 +41,14 @@ public interface DatabaseFactory {
   }
 
   /**
-   * @param jdbcUrl the jdbc url
+   * @param url the jdbc url
    * @return a {@link DatabaseFactory} implementation for the given jdbc url
    * @throws IllegalArgumentException in case no such implementation is found
    * @throws SQLException in case loading of database driver failed
    * @throws IllegalArgumentException in case no implementation exists for the given jdbc url
    */
-  static DatabaseFactory instance(String jdbcUrl) throws SQLException {
-    String driver = driverClassName(jdbcUrl);
+  static DatabaseFactory instance(String url) throws SQLException {
+    String driver = driverClassName(url);
     ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
     for (DatabaseFactory factory : loader) {
       if (factory.isDriverCompatible(driver)) {
@@ -60,11 +60,11 @@ public interface DatabaseFactory {
   }
 
   /**
-   * @param jdbcUrl the jdbc url
+   * @param url the jdbc url
    * @return the database driver class name according to jdbc url
    * @throws SQLException in case loading of database driver failed
    */
-  static String driverClassName(String jdbcUrl) throws SQLException {
-    return DriverManager.getDriver(requireNonNull(jdbcUrl, "jdbcUrl")).getClass().getName();
+  static String driverClassName(String url) throws SQLException {
+    return DriverManager.getDriver(requireNonNull(url, "url")).getClass().getName();
   }
 }

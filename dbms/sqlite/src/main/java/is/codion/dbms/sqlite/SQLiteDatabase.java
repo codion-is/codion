@@ -17,8 +17,8 @@ final class SQLiteDatabase extends AbstractDatabase {
 
   private static final String JDBC_URL_PREFIX = "jdbc:sqlite:";
 
-  SQLiteDatabase(String jdbcUrl) {
-    super(jdbcUrl);
+  SQLiteDatabase(String url) {
+    super(url);
   }
 
   @Override
