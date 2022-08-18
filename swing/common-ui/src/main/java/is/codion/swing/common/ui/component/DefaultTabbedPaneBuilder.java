@@ -63,6 +63,9 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
       if (tabBuilder.mnemonic != 0) {
         tabbedPane.setMnemonicAt(tabIndex, tabBuilder.mnemonic);
       }
+      if (tabBuilder.tabComponent != null) {
+        tabbedPane.setTabComponentAt(tabIndex, tabBuilder.tabComponent);
+      }
     });
     changeListeners.forEach(tabbedPane::addChangeListener);
 
@@ -86,6 +89,7 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
     private int mnemonic;
     private String toolTipText;
     private Icon icon;
+    private JComponent tabComponent;
 
     private DefaultTabBuilder(DefaultTabbedPaneBuilder tabbedPaneBuilder, String title, JComponent component) {
       this.tabbedPaneBuilder = tabbedPaneBuilder;
@@ -108,6 +112,12 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
     @Override
     public TabBuilder icon(Icon icon) {
       this.icon = icon;
+      return this;
+    }
+
+    @Override
+    public TabBuilder tabComponent(JComponent tabComponent) {
+      this.tabComponent = tabComponent;
       return this;
     }
 

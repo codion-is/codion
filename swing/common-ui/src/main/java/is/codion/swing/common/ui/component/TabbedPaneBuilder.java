@@ -7,6 +7,7 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeListener;
+import java.awt.Component;
 
 /**
  * A builder for a JTabbedPane.
@@ -98,6 +99,13 @@ public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, T
      * @return this builder instance
      */
     TabBuilder icon(Icon icon);
+
+    /**
+     * @param tabComponent the tab component
+     * @return this builder instance
+     * @see JTabbedPane#setTabComponentAt(int, Component)
+     */
+    TabBuilder tabComponent(JComponent tabComponent);
 
     /**
      * Adds this tab and returns the {@link TabbedPaneBuilder}
