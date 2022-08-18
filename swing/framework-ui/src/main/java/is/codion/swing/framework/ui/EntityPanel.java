@@ -197,6 +197,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private String caption;
 
   /**
+   * The description to display for this entity panel
+   */
+  private String description;
+
+  /**
    * The horizontal split pane, which is used in case this entity panel has detail panels.
    * It splits the lower section of this EntityPanel into the EntityTablePanel
    * on the left, and the detail panels on the right.
@@ -318,6 +323,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     setFocusCycleRoot(true);
     this.entityModel = entityModel;
     this.caption = entityModel.editModel().entityDefinition().caption();
+    this.description = entityModel.editModel().entityDefinition().description();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
   }
@@ -553,6 +559,21 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   public final String getCaption() {
     return caption;
+  }
+
+  /**
+   * Sets the description text to use in f.ex. tool tips for tabbed panes
+   * @param description the description
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  /**
+   * @return the description
+   */
+  public String getDescription() {
+    return description;
   }
 
   @Override
@@ -1322,7 +1343,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.setFocusable(false);
     for (EntityPanel detailPanel : detailEntityPanels) {
-      tabbedPane.addTab(detailPanel.caption, detailPanel);
+      tabbedPane.addTab(detailPanel.caption, null, detailPanel, detailPanel.description);
     }
     tabbedPane.addChangeListener(e -> selectedDetailPanel().activatePanel());
     if (showDetailPanelControls) {

@@ -77,6 +77,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             // tag::foreground[]
             .foregroundColorProvider(new CityColorProvider())
             // end::foreground[]
+            .description("Cities of the World")
             .caption("City"));
   }
   // end::defineCity[]
@@ -156,6 +157,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .maximumLength(2))
             .orderBy(ascending(Country.NAME))
             .stringFactory(Country.NAME)
+            .description("Countries of the World")
             .caption("Country"));
   }
 
@@ -188,6 +190,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .ascending(CountryLanguage.LANGUAGE)
                     .descending(CountryLanguage.PERCENTAGE)
                     .build())
+            .description("Languages")
             .caption("Language"));
   }
 
@@ -227,6 +230,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .descending(Lookup.CITY_POPULATION)
                     .build())
             .readOnly(true)
+            .description("Lookup country or city")
             .caption("Lookup"));
   }
 
@@ -261,6 +265,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .numberFormatGrouping(true))
             .tableName("world.country")
             .readOnly(true)
+            .description("Continents of the World")
             .caption("Continent"));
   }
 

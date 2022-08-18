@@ -97,6 +97,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private transient String resourceCaption;
 
   /**
+   * The entity description, if any
+   */
+  private final String description;
+
+  /**
    * Holds the order by clause
    */
   private final OrderBy orderBy;
@@ -199,6 +204,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     this.entityType = builder.properties.entityType;
     this.caption = builder.caption;
     this.captionResourceKey = builder.captionResourceKey;
+    this.description = builder.description;
     this.orderBy = builder.orderBy;
     this.readOnly = builder.readOnly;
     this.smallDataset = builder.smallDataset;
@@ -283,6 +289,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     return caption == null ? entityType.name() : caption;
+  }
+
+  @Override
+  public String description() {
+    return description;
   }
 
   @Override
@@ -1070,6 +1081,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private Map<ConditionType, ConditionProvider> conditionProviders;
     private String caption;
     private String captionResourceKey;
+    private String description;
     private boolean smallDataset;
     private boolean staticData;
     private boolean readOnly;
@@ -1125,6 +1137,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
         throw new IllegalStateException("Caption has already been set for entity: " + properties.entityType);
       }
       this.captionResourceKey = requireNonNull(captionResourceKey, "captionResourceKey");
+      return this;
+    }
+
+    @Override
+    public Builder description(String description) {
+      this.description = description;
       return this;
     }
 

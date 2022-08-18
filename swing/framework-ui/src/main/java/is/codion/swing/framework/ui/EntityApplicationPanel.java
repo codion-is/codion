@@ -1274,7 +1274,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     tabbedPane.setFocusable(false);
     tabbedPane.addChangeListener(e -> ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel());
     for (EntityPanel entityPanel : entityPanels) {
-      tabbedPane.addTab(entityPanel.getCaption(), entityPanel);
+      tabbedPane.addTab(entityPanel.getCaption(), null, entityPanel, entityPanel.getDescription());
       if (entityPanel.editPanel() != null) {
         entityPanel.editPanel().addActiveListener(panelActivated -> {
           if (panelActivated) {

@@ -70,6 +70,11 @@ public interface EntityDefinition {
   String caption();
 
   /**
+   * @return the entity description
+   */
+  String description();
+
+  /**
    * @return true if the underlying table is small enough for displaying the contents in a combo box
    */
   boolean isSmallDataset();
@@ -474,6 +479,13 @@ public interface EntityDefinition {
      * @see EntityType#resourceBundleName()
      */
     Builder captionResourceKey(String captionResourceKey);
+
+    /**
+     * Specifies a description for this entity.
+     * @param description the description
+     * @return this {@link Builder} instance
+     */
+    Builder description(String description);
 
     /**
      * Specifies whether this entity should be regarded as being based on a small dataset,
