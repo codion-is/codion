@@ -32,10 +32,10 @@ abstract class ChartTablePanel extends EntityTablePanel {
             .add(southPanel, BorderLayout.SOUTH)
             .build();
     JTabbedPane tabbedPane = Components.tabbedPane()
-            .tab("Table", tableViewPanel)
+            .tabBuilder("Table", tableViewPanel)
             .mnemonic(KeyEvent.VK_1)
             .add()
-            .tab("Chart", chartPanel)
+            .tabBuilder("Chart", chartPanel)
             .mnemonic(KeyEvent.VK_2)
             .add()
             .build();
