@@ -279,12 +279,12 @@ public final class LoadTestPanel<T> extends JPanel {
 
     return Components.panel(new BorderLayout(0, 0))
             .add(Components.tabbedPane()
-                    .addTab("Overview", Components.splitPane()
+                    .tab("Overview", Components.splitPane()
                             .orientation(JSplitPane.VERTICAL_SPLIT)
                             .oneTouchExpandable(true)
                             .leftComponent(Components.tabbedPane()
-                                    .addTab("Scenarios run", usageScenarioChartPanel)
-                                    .addTab("Failed runs", failureChartPanel)
+                                    .tab("Scenarios run", usageScenarioChartPanel)
+                                    .tab("Failed runs", failureChartPanel)
                                     .build())
                             .rightComponent(Components.panel(new GridLayout(1, 4, 0, 0))
                                     .add(memoryUsageChartPanel)
@@ -294,7 +294,7 @@ public final class LoadTestPanel<T> extends JPanel {
                                     .build())
                             .resizeWeight(RESIZE_WEIGHT)
                             .build())
-                    .addTab("Scenarios", scenarioBase)
+                    .tab("Scenarios", scenarioBase)
                     .build())
             .build();
   }
