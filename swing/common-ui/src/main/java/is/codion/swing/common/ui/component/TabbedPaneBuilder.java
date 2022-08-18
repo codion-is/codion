@@ -55,12 +55,13 @@ public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, T
   TabbedPaneBuilder changeListener(ChangeListener changeListener);
 
   /**
-   * Adds a tab to this tabbed pane builder
+   * Adds a tab to this tabbed pane builder.
+   * For further tab configuration use {@link #tabBuilder(JComponent)}.
    * @param title the tab title
    * @param component the component to display in the tab
    * @return this builder instance
    */
-  TabbedPaneBuilder addTab(String title, JComponent component);
+  TabbedPaneBuilder tab(String title, JComponent component);
 
   /**
    * Returns a new {@link TabBuilder} for adding a tab
