@@ -284,7 +284,9 @@ public final class LoadTestPanel<T> extends JPanel {
                             .oneTouchExpandable(true)
                             .leftComponent(Components.tabbedPane()
                                     .tab("Scenarios run", usageScenarioChartPanel)
+                                    .add()
                                     .tab("Failed runs", failureChartPanel)
+                                    .add()
                                     .build())
                             .rightComponent(Components.panel(new GridLayout(1, 4, 0, 0))
                                     .add(memoryUsageChartPanel)
@@ -294,7 +296,9 @@ public final class LoadTestPanel<T> extends JPanel {
                                     .build())
                             .resizeWeight(RESIZE_WEIGHT)
                             .build())
+                    .add()
                     .tab("Scenarios", scenarioBase)
+                    .add()
                     .build())
             .build();
   }

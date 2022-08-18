@@ -8397,3 +8397,4 @@
   EntityDefinition.description() added
   EntityPanel.description added, initialized with the above
   EntityApplicationPanel, EntityPanel, now use the entity description as the tab tool tip text
+  TabbedPaneBuilder redesigned, TabBuilder added
