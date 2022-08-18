@@ -8395,3 +8395,5 @@
   FilteredTable.copySelectedCell() bug fixed, now uses FilteredTableModel.getStringAt() instead of JTable.getValueAt().toString()
   Entity.entityDefinition() renamed definition(), Entity, Key, EntityDefinition.entityType() renamed type()
   EntityDefinition.description() added
+  EntityPanel.description added, initialized with the above
+  EntityApplicationPanel, EntityPanel, now use the entity description as the tab tool tip text
