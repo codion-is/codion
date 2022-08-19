@@ -8407,3 +8407,4 @@
   Utilities.EnableComponentListener no longer uses SwingUtilities.invokeLater() when running on the EDT
   CalendarPanel no longer uses SwingUtilities.invokeLater() when running on the EDT
   NumberField.Builder.nullable() added, some related refactoring
+  NumberField, NumberDocument, Components, EntityComponents, added short support

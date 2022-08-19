@@ -474,6 +474,13 @@ public final class Components {
   /**
    * @return a builder for a component
    */
+  public static NumberField.Builder<Short> shortField() {
+    return NumberField.builder(Short.class);
+  }
+
+  /**
+   * @return a builder for a component
+   */
   public static NumberField.Builder<Integer> integerField() {
     return NumberField.builder(Integer.class);
   }

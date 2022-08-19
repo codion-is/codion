@@ -90,6 +90,7 @@ public class EntityComponents {
             attribute.isString() ||
             attribute.isCharacter() ||
             attribute.isBoolean() ||
+            attribute.isShort() ||
             attribute.isInteger() ||
             attribute.isLong() ||
             attribute.isDouble() ||
@@ -127,6 +128,9 @@ public class EntityComponents {
     }
     if (attribute.isBoolean()) {
       return (ComponentBuilder<T, C, B>) checkBox((Attribute<Boolean>) attribute);
+    }
+    if (attribute.isShort()) {
+      return (ComponentBuilder<T, C, B>) shortField((Attribute<Short>) attribute);
     }
     if (attribute.isInteger()) {
       return (ComponentBuilder<T, C, B>) integerField((Attribute<Integer>) attribute);
@@ -466,6 +470,21 @@ public class EntityComponents {
     Property<T> property = entityDefinition.property(attribute);
 
     return Components.temporalField(property.attribute().valueClass(), dateTimePattern)
+            .toolTipText(property.description());
+  }
+
+  /**
+   * Creates {@link NumberField} builder based on the given attribute.
+   * @param attribute the attribute
+   * @return a {@link NumberField} builder
+   */
+  public final NumberField.Builder<Short> shortField(Attribute<Short> attribute) {
+    Property<Short> property = entityDefinition.property(attribute);
+
+    return Components.shortField()
+            .format(property.format())
+            .minimumValue(property.minimumValue())
+            .maximumValue(property.maximumValue())
             .toolTipText(property.description());
   }
 

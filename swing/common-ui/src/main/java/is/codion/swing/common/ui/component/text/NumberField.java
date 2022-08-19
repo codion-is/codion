@@ -196,6 +196,9 @@ public final class NumberField<T extends Number> extends JTextField {
 
   private static <T extends Number> Builder<T> createBuilder(Class<T> valueClass, Value<T> linkedValue) {
     requireNonNull(valueClass);
+    if (valueClass.equals(Short.class)) {
+      return (Builder<T>) new DefaultShortFieldBuilder((Value<Short>) linkedValue);
+    }
     if (valueClass.equals(Integer.class)) {
       return (Builder<T>) new DefaultIntegerFieldBuilder((Value<Integer>) linkedValue);
     }
@@ -486,6 +489,28 @@ public final class NumberField<T extends Number> extends JTextField {
     }
   }
 
+  private static final class DefaultShortFieldBuilder extends AbstractNumberFieldBuilder<Short> {
+
+    private DefaultShortFieldBuilder(Value<Short> linkedValue) {
+      super(Short.class, linkedValue);
+    }
+
+    @Override
+    protected NumberField<Short> createNumberField(NumberFormat format) {
+      return new NumberField<>(new NumberDocument<>(format, Short.class));
+    }
+
+    @Override
+    protected ComponentValue<Short, NumberField<Short>> createComponentValue(NumberField<Short> component) {
+      return new ShortFieldValue(component, nullable, updateOn);
+    }
+
+    @Override
+    protected NumberFormat createFormat() {
+      return Formats.nonGroupingIntegerFormat();
+    }
+  }
+
   private static final class DefaultIntegerFieldBuilder extends AbstractNumberFieldBuilder<Integer> {
 
     private DefaultIntegerFieldBuilder(Value<Integer> linkedValue) {
@@ -527,6 +552,28 @@ public final class NumberField<T extends Number> extends JTextField {
     @Override
     protected NumberFormat createFormat() {
       return Formats.nonGroupingIntegerFormat();
+    }
+  }
+
+  private static final class ShortFieldValue extends AbstractTextComponentValue<Short, NumberField<Short>> {
+
+    private ShortFieldValue(NumberField<Short> shortField, boolean nullable, UpdateOn updateOn) {
+      super(shortField, nullable ? null : (short) 0, updateOn);
+    }
+
+    @Override
+    protected Short getComponentValue() {
+      Number number = component().getNumber();
+      if (number == null) {
+        return isNullable() ? null : (short) 0;
+      }
+
+      return number.shortValue();
+    }
+
+    @Override
+    protected void setComponentValue(Short value) {
+      component().setNumber(value);
     }
   }
 

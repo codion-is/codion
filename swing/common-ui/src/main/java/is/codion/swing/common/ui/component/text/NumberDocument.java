@@ -173,6 +173,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
     }
 
     private T toType(T number) {
+      if (clazz.equals(Short.class)) {
+        return toShort(number);
+      }
       if (clazz.equals(Integer.class)) {
         return toInteger(number);
       }
@@ -187,6 +190,14 @@ class NumberDocument<T extends Number> extends PlainDocument {
       }
 
       throw new IllegalArgumentException("Unsupported type class: " + clazz);
+    }
+
+    private T toShort(T number) {
+      if (number instanceof Short) {
+        return number;
+      }
+
+      return (T) Short.valueOf(number.shortValue());
     }
 
     private T toInteger(T number) {
