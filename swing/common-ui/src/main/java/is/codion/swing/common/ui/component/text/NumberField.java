@@ -219,6 +219,14 @@ public final class NumberField<T extends Number> extends JTextField {
   public interface Builder<T extends Number> extends TextFieldBuilder<T, NumberField<T>, Builder<T>> {
 
     /**
+     * Specifies whether the {@link ComponentValue} created by this builder is nullable, default true.
+     * Note that setting this to false does not prevent the field from containing no value.
+     * @param nullable if false then the {@link ComponentValue} returns 0 when the field contains no value
+     * @return this builder instance
+     */
+    Builder<T> nullable(boolean nullable);
+
+    /**
      * @param minimumValue the minimum value
      * @param maximumValue the maximum value
      * @return this builder instance
@@ -312,6 +320,8 @@ public final class NumberField<T extends Number> extends JTextField {
   private abstract static class AbstractNumberFieldBuilder<T extends Number>
           extends DefaultTextFieldBuilder<T, NumberField<T>, Builder<T>> implements Builder<T> {
 
+    protected boolean nullable = true;
+
     private Number maximumValue;
     private Number minimumValue;
     private char groupingSeparator = 0;
@@ -321,6 +331,12 @@ public final class NumberField<T extends Number> extends JTextField {
 
     protected AbstractNumberFieldBuilder(Class<T> type, Value<T> linkedValue) {
       super(type, linkedValue);
+    }
+
+    @Override
+    public Builder<T> nullable(boolean nullable) {
+      this.nullable = nullable;
+      return this;
     }
 
     @Override
@@ -433,7 +449,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected ComponentValue<BigDecimal, NumberField<BigDecimal>> createComponentValue(NumberField<BigDecimal> component) {
-      return new BigDecimalFieldValue(component, true, updateOn);
+      return new BigDecimalFieldValue(component, nullable, updateOn);
     }
 
     @Override
@@ -458,7 +474,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected ComponentValue<Double, NumberField<Double>> createComponentValue(NumberField<Double> component) {
-      return new DoubleFieldValue(component, true, updateOn);
+      return new DoubleFieldValue(component, nullable, updateOn);
     }
 
     @Override
@@ -483,7 +499,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected ComponentValue<Integer, NumberField<Integer>> createComponentValue(NumberField<Integer> component) {
-      return new IntegerFieldValue(component, true, updateOn);
+      return new IntegerFieldValue(component, nullable, updateOn);
     }
 
     @Override
@@ -505,7 +521,7 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected ComponentValue<Long, NumberField<Long>> createComponentValue(NumberField<Long> component) {
-      return new LongFieldValue(component, true, updateOn);
+      return new LongFieldValue(component, nullable, updateOn);
     }
 
     @Override
@@ -518,9 +534,6 @@ public final class NumberField<T extends Number> extends JTextField {
 
     private DoubleFieldValue(NumberField<Double> doubleField, boolean nullable, UpdateOn updateOn) {
       super(doubleField, nullable ? null : 0d, updateOn);
-      if (!isNullable() && doubleField.getNumber() == null) {
-        doubleField.setNumber(0d);
-      }
     }
 
     @Override
@@ -543,9 +556,6 @@ public final class NumberField<T extends Number> extends JTextField {
 
     private IntegerFieldValue(NumberField<Integer> integerField, boolean nullable, UpdateOn updateOn) {
       super(integerField, nullable ? null : 0, updateOn);
-      if (!isNullable() && integerField.getNumber() == null) {
-        integerField.setNumber(0);
-      }
     }
 
     @Override
@@ -568,9 +578,6 @@ public final class NumberField<T extends Number> extends JTextField {
 
     private LongFieldValue(NumberField<Long> longField, boolean nullable, UpdateOn updateOn) {
       super(longField, nullable ? null : 0L, updateOn);
-      if (!isNullable() && longField.getNumber() == null) {
-        longField.setNumber(0L);
-      }
     }
 
     @Override
@@ -597,7 +604,12 @@ public final class NumberField<T extends Number> extends JTextField {
 
     @Override
     protected BigDecimal getComponentValue() {
-      return component().getNumber();
+      BigDecimal number = component().getNumber();
+      if (number == null) {
+        return isNullable() ? null : BigDecimal.ZERO;
+      }
+
+      return number;
     }
 
     @Override
