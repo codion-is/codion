@@ -8404,3 +8404,5 @@
   EntityEditComponentPanel now keeps track of the last focused input component, to keep the focus on the previously focused input component after update
   EntityEditComponentPanel.requestAfterInsertFocus() and requestAfterUpdateFocus() renamed requestFocusAfterInsert() and requestFocusAfterUpdate() respectively
   EntityEditComponentPanel.ModifiedIndicator no longer uses SwingUtilities.invokeLater() when running on the EDT
+  Utilities.EnableComponentListener no longer uses SwingUtilities.invokeLater() when running on the EDT
+  CalendarPanel no longer uses SwingUtilities.invokeLater() when running on the EDT
