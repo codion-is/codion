@@ -181,6 +181,7 @@ public final class ApplicationPanel extends JPanel {
     label("Double")
             .build(inputPanel::add);
     doubleField(model.doubleValue())
+            .nullable(false)
             .valueRange(0, 1_000_000)
             .groupingUsed(true)
             .maximumFractionDigits(2)

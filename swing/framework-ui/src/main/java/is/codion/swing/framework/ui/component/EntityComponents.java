@@ -90,6 +90,7 @@ public class EntityComponents {
             attribute.isString() ||
             attribute.isCharacter() ||
             attribute.isBoolean() ||
+            attribute.isShort() ||
             attribute.isInteger() ||
             attribute.isLong() ||
             attribute.isDouble() ||
@@ -128,6 +129,9 @@ public class EntityComponents {
     if (attribute.isBoolean()) {
       return (ComponentBuilder<T, C, B>) checkBox((Attribute<Boolean>) attribute);
     }
+    if (attribute.isShort()) {
+      return (ComponentBuilder<T, C, B>) shortField((Attribute<Short>) attribute);
+    }
     if (attribute.isInteger()) {
       return (ComponentBuilder<T, C, B>) integerField((Attribute<Integer>) attribute);
     }
@@ -147,7 +151,7 @@ public class EntityComponents {
   /**
    * Creates a CheckBox builder based on the given attribute.
    * @param attribute the attribute
-   * @return a CheckBox builder
+   * @return a JCheckBox builder
    */
   public final CheckBoxBuilder checkBox(Attribute<Boolean> attribute) {
     Property<Boolean> property = entityDefinition.property(attribute);
@@ -163,7 +167,7 @@ public class EntityComponents {
    * Creates a ToggleButton builder based on the given attribute.
    * @param attribute the attribute
    * @param <B> the builder type
-   * @return a ToggleButton builder
+   * @return a JToggleButton builder
    */
   public final <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(Attribute<Boolean> attribute) {
     Property<Boolean> property = entityDefinition.property(attribute);
@@ -177,7 +181,7 @@ public class EntityComponents {
   /**
    * Creates a boolean ComboBox builder based on the given attribute.
    * @param attribute the attribute
-   * @return a boolean ComboBox builder
+   * @return a boolean JComboBox builder
    */
   public final ItemComboBoxBuilder<Boolean> booleanComboBox(Attribute<Boolean> attribute) {
     Property<Boolean> property = entityDefinition.property(attribute);
@@ -191,7 +195,7 @@ public class EntityComponents {
    * @param foreignKey the foreign key
    * @param comboBoxModel the combo box model
    * @param <B> the builder type
-   * @return a foreign key ComboBox builder
+   * @return a foreign key JComboBox builder
    */
   public final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> foreignKeyComboBox(ForeignKey foreignKey,
                                                                                                                                     SwingEntityComboBoxModel comboBoxModel) {
@@ -205,7 +209,7 @@ public class EntityComponents {
    * Creates a foreign key search field builder based on the given foreign key.
    * @param foreignKey the foreign key
    * @param searchModel the search model
-   * @return a foreign key search field builder
+   * @return a foreign key {@link EntitySearchField} builder
    */
   public final EntitySearchField.Builder foreignKeySearchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.foreignKeyProperty(foreignKey);
@@ -218,7 +222,7 @@ public class EntityComponents {
    * Creates foreign key text field builder for the given foreign key, read-only and non-focusable.
    * @param foreignKey the foreign key
    * @param <B> the builder type
-   * @return a foreign key text field builder
+   * @return a foreign key JTextField builder
    */
   public final <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> foreignKeyTextField(ForeignKey foreignKey) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.foreignKeyProperty(foreignKey);
@@ -233,7 +237,7 @@ public class EntityComponents {
   /**
    * Creates a foreign key label builder based on the given foreign key.
    * @param foreignKey the foreign key
-   * @return a foreign key label builder
+   * @return a foreign key JLabel builder
    */
   public final LabelBuilder<Entity> foreignKeyLabel(ForeignKey foreignKey) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.foreignKeyProperty(foreignKey);
@@ -243,11 +247,11 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a ComboBox builder based on the given attribute.
+   * Creates a JComboBox builder based on the given attribute.
    * Note that the attribute must be associated with a {@link ItemProperty}.
    * @param attribute the attribute
    * @param <T> the attribute type
-   * @return an item ComboBox builder
+   * @return an {@link is.codion.common.item.Item} based JComboBox builder
    * @throws IllegalArgumentException in case the given attribute is not associated with a {@link ItemProperty}
    */
   public final <T> ItemComboBoxBuilder<T> itemComboBox(Attribute<T> attribute) {
@@ -262,13 +266,13 @@ public class EntityComponents {
   }
 
   /**
-   * Creates a ComboBox builder based on the given attribute.
+   * Creates a JComboBox builder based on the given attribute.
    * @param attribute the attribute
    * @param comboBoxModel the combo box model
    * @param <T> the attribute type
    * @param <C> the component type
    * @param <B> the builder type
-   * @return a ComboBox builder
+   * @return a JComboBox builder
    */
   public final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(Attribute<T> attribute,
                                                                                                                  ComboBoxModel<T> comboBoxModel) {
@@ -317,7 +321,7 @@ public class EntityComponents {
   /**
    * Creates a TextArea builder based on the given attribute.
    * @param attribute the attribute
-   * @return a TextArea builder
+   * @return a JTextArea builder
    */
   public final TextAreaBuilder textArea(Attribute<String> attribute) {
     Property<String> property = entityDefinition.property(attribute);
@@ -336,7 +340,7 @@ public class EntityComponents {
    * @param <T> the attribute type
    * @param <C> the text field type
    * @param <B> the builder type
-   * @return a text field builder
+   * @return a JTextField builder
    */
   public final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
     Property<T> property = entityDefinition.property(attribute);
@@ -474,6 +478,21 @@ public class EntityComponents {
    * @param attribute the attribute
    * @return a {@link NumberField} builder
    */
+  public final NumberField.Builder<Short> shortField(Attribute<Short> attribute) {
+    Property<Short> property = entityDefinition.property(attribute);
+
+    return Components.shortField()
+            .format(property.format())
+            .minimumValue(property.minimumValue())
+            .maximumValue(property.maximumValue())
+            .toolTipText(property.description());
+  }
+
+  /**
+   * Creates {@link NumberField} builder based on the given attribute.
+   * @param attribute the attribute
+   * @return a {@link NumberField} builder
+   */
   public final NumberField.Builder<Integer> integerField(Attribute<Integer> attribute) {
     Property<Integer> property = entityDefinition.property(attribute);
 
@@ -534,7 +553,7 @@ public class EntityComponents {
   /**
    * Creates masked text field builder based on the given attribute.
    * @param attribute the attribute
-   * @return a masked text field builder
+   * @return a JFormattedTextField builder
    */
   public final MaskedTextFieldBuilder maskedTextField(Attribute<String> attribute) {
     Property<String> property = entityDefinition.property(attribute);

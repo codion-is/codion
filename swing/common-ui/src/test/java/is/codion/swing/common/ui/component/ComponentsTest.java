@@ -116,6 +116,21 @@ public final class ComponentsTest {
   }
 
   @Test
+  void shortField() {
+    Value<Short> value = Value.value((short) 42);
+    ComponentValue<Short, NumberField<Short>> componentValue = Components.shortField()
+            .valueRange(0, 100)
+            .font(Font.getFont("arial"))
+            .minimumHeight(10)
+            .minimumWidth(10)
+            .foreground(Color.WHITE)
+            .background(Color.BLACK)
+            .linkedValue(value)
+            .buildComponentValue();
+    assertEquals(componentValue.component().getText(), "42");
+  }
+
+  @Test
   void integerField() {
     Value<Integer> value = Value.value(42);
     ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField()
