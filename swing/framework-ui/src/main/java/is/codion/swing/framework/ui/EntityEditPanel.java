@@ -537,8 +537,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
-    String[] messages = confirmationMessages(ConfirmType.DELETE);
-    return confirm(messages[0], messages[1]);
+    return confirm(confirmationMessage(ConfirmType.DELETE));
   }
 
   /**
@@ -546,37 +545,33 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return true if the update action should be performed
    */
   protected boolean confirmUpdate() {
-    String[] messages = confirmationMessages(ConfirmType.UPDATE);
-    return confirm(messages[0], messages[1]);
+    return confirm(confirmationMessage(ConfirmType.UPDATE));
   }
 
   /**
-   * Presents an OK/Cancel confirm dialog with the given message and title,
-   * returns true if OK was selected.
-   * @param message the message
-   * @param title the dialog title
+   * Presents an OK/Cancel confirm dialog with the message and title from the given {@link ConfirmationMessage} instance.
+   * Returns true if OK was selected.
+   * @param message the confirmation message to present to the user
    * @return true if OK was selected
    */
-  protected boolean confirm(String message, String title) {
-    int res = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION);
-
-    return res == JOptionPane.OK_OPTION;
+  protected boolean confirm(ConfirmationMessage message) {
+    requireNonNull(message);
+    return JOptionPane.showConfirmDialog(this, message.message(), message.title(),
+            JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
   }
 
   /**
    * @param type the confirmation message type
-   * @return a string array containing two elements, the element at index 0 is used
-   * as the message displayed in the dialog and the element at index 1 is used as the dialog title,
-   * i.e. ["Are you sure you want to delete the selected records?", "About to delete selected records"]
+   * @return a {@link ConfirmationMessage} instance
    */
-  protected String[] confirmationMessages(ConfirmType type) {
+  protected ConfirmationMessage confirmationMessage(ConfirmType type) {
     switch (type) {
       case DELETE:
-        return new String[] {FrameworkMessages.confirmDelete(), FrameworkMessages.delete()};
+        return ConfirmationMessage.confirmationMessage(FrameworkMessages.confirmDelete(), FrameworkMessages.delete());
       case INSERT:
-        return new String[] {FrameworkMessages.confirmInsert(), FrameworkMessages.add()};
+        return ConfirmationMessage.confirmationMessage(FrameworkMessages.confirmInsert(), FrameworkMessages.add());
       case UPDATE:
-        return new String[] {FrameworkMessages.confirmUpdate(), FrameworkMessages.update()};
+        return ConfirmationMessage.confirmationMessage(FrameworkMessages.confirmUpdate(), FrameworkMessages.update());
       default:
         throw new IllegalArgumentException("Unknown confirmation type constant: " + type);
     }
@@ -774,5 +769,52 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private void showEntityMenu() {
     new EntityPopupMenu(editModel().entityCopy(), editModel().connectionProvider().connection()).show(this, 0, 0);
+  }
+
+  /**
+   * Specifies the message and title for a user confirmation.
+   */
+  protected interface ConfirmationMessage {
+
+    /**
+     * @return the message to present
+     */
+    String message();
+
+    /**
+     * @return the title
+     */
+    String title();
+
+    /**
+     * Creates a new {@link ConfirmationMessage} instance
+     * @param message the message
+     * @param title the title
+     * @return a new {@link ConfirmationMessage} instance
+     */
+    static ConfirmationMessage confirmationMessage(String message, String title) {
+      return new DefaultConfirmationMessage(message, title);
+    }
+  }
+
+  private static final class DefaultConfirmationMessage implements ConfirmationMessage {
+
+    private final String message;
+    private final String title;
+
+    private DefaultConfirmationMessage(String message, String title) {
+      this.message = requireNonNull(message);
+      this.title = requireNonNull(title);
+    }
+
+    @Override
+    public String message() {
+      return message;
+    }
+
+    @Override
+    public String title() {
+      return title;
+    }
   }
 }
