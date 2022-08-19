@@ -8401,3 +8401,4 @@
   TabbedPaneBuilder redesigned a bit more, now easier to add simple tabs with only title and component
   TabbedPaneBuilder.TabBuilder.tabComponent() added
   TabbedPaneBuilder.addTab() renamed tab()
+  EntityEditComponentPanel now keeps track of the last focused input component, to keep the focus on the previously focused input component after update

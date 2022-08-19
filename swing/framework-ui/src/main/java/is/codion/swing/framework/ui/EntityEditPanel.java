@@ -498,7 +498,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       WaitCursor.show(this);
       try {
         editModel().update();
-        requestInitialFocus();
+        requestAfterUpdateFocus();
 
         return true;
       }
