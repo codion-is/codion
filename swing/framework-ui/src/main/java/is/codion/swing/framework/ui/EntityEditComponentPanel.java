@@ -1018,8 +1018,17 @@ public class EntityEditComponentPanel extends JPanel {
         if (labelText == null) {
           labelText = label.getText();
         }
-        SwingUtilities.invokeLater(() -> label.setText(modified ?  labelText + MODIFIED_INDICATOR_STRING.get() : labelText));
+        if (SwingUtilities.isEventDispatchThread()) {
+          setModifiedIndicator(label, modified);
+        }
+        else {
+          SwingUtilities.invokeLater(() -> setModifiedIndicator(label, modified));
+        }
       }
+    }
+
+    private void setModifiedIndicator(JLabel label, boolean modified) {
+      label.setText(modified ? labelText + MODIFIED_INDICATOR_STRING.get() : labelText);
     }
   }
 }
