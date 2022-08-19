@@ -356,7 +356,12 @@ public final class Utilities {
 
     @Override
     public void onEvent(Boolean enabled) {
-      SwingUtilities.invokeLater(() -> component.setEnabled(enabled));
+      if (SwingUtilities.isEventDispatchThread()) {
+        component.setEnabled(enabled);
+      }
+      else {
+        SwingUtilities.invokeLater(() -> component.setEnabled(enabled));
+      }
     }
   }
 }

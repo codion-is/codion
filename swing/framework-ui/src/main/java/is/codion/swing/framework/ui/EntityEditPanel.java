@@ -414,7 +414,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
           editModel().setDefaultValues();
         }
         if (requestFocusAfterInsert) {
-          requestAfterInsertFocus();
+          requestFocusAfterInsert();
         }
 
         return true;
@@ -498,7 +498,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       WaitCursor.show(this);
       try {
         editModel().update();
-        requestInitialFocus();
+        requestFocusAfterUpdate();
 
         return true;
       }

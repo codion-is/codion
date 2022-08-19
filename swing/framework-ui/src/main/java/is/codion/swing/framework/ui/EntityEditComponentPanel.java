@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.properties.PropertyValue;
+import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -45,6 +46,9 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.KeyboardFocusManager;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -114,12 +118,17 @@ public class EntityEditComponentPanel extends JPanel {
   private final Set<Attribute<?>> excludeFromSelection = new HashSet<>();
 
   /**
-   * The component that should receive focus when the UI is initialized
+   * Holds the last focused input component
+   */
+  private final Value<JComponent> focusedComponent = Value.value();
+
+  /**
+   * The component that should receive focus when the UI is initialized/cleared
    */
   private JComponent initialFocusComponent;
 
   /**
-   * The attribute for which component should receive the focus when the UI is initialized
+   * The attribute for which component should receive the focus when the UI is initialized/cleared
    */
   private Attribute<?> initialFocusAttribute;
 
@@ -155,6 +164,7 @@ public class EntityEditComponentPanel extends JPanel {
   protected EntityEditComponentPanel(SwingEntityEditModel editModel) {
     this.editModel = requireNonNull(editModel, "editModel");
     this.entityComponents = new EntityComponents(editModel.entityDefinition());
+    addFocusedComponentListener();
   }
 
   /**
@@ -867,7 +877,7 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * @return the component that should get the focus when the UI is initialized after insert
+   * @return the component that should receive the focus when the UI is initialized after insert
    */
   protected JComponent afterInsertFocusComponent() {
     if (afterInsertFocusComponent != null) {
@@ -881,8 +891,12 @@ public class EntityEditComponentPanel extends JPanel {
     return initialFocusComponent();
   }
 
-  protected final void requestAfterInsertFocus() {
+  protected final void requestFocusAfterInsert() {
     requestFocus(afterInsertFocusComponent());
+  }
+
+  protected final void requestFocusAfterUpdate() {
+    requestFocus(focusedComponent.get() == null ? initialFocusComponent() : focusedComponent.get());
   }
 
   private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
@@ -913,6 +927,11 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     return components.get(attribute);
+  }
+
+  private void addFocusedComponentListener() {
+    KeyboardFocusManager.getCurrentKeyboardFocusManager()
+            .addPropertyChangeListener("focusOwner", new FocusedComponentListener());
   }
 
   /**
@@ -969,6 +988,17 @@ public class EntityEditComponentPanel extends JPanel {
     }
   }
 
+  private final class FocusedComponentListener implements PropertyChangeListener {
+
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+      JComponent component = (JComponent) event.getNewValue();
+      if (component != null && components.containsValue(component)) {
+        focusedComponent.set(component);
+      }
+    }
+  }
+
   private static final class ModifiedIndicator implements EventDataListener<Boolean> {
 
     private static final String LABELED_BY_PROPERTY = "labeledBy";
@@ -988,8 +1018,17 @@ public class EntityEditComponentPanel extends JPanel {
         if (labelText == null) {
           labelText = label.getText();
         }
-        SwingUtilities.invokeLater(() -> label.setText(modified ?  labelText + MODIFIED_INDICATOR_STRING.get() : labelText));
+        if (SwingUtilities.isEventDispatchThread()) {
+          setModifiedIndicator(label, modified);
+        }
+        else {
+          SwingUtilities.invokeLater(() -> setModifiedIndicator(label, modified));
+        }
       }
+    }
+
+    private void setModifiedIndicator(JLabel label, boolean modified) {
+      label.setText(modified ? labelText + MODIFIED_INDICATOR_STRING.get() : labelText);
     }
   }
 }

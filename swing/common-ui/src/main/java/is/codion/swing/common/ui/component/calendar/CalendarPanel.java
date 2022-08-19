@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component.calendar;
 
 import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -441,7 +442,12 @@ public final class CalendarPanel extends JPanel {
     localDateValue.set(localDateTime.toLocalDate());
     localDateTimeValue.set(localDateTime);
     todaySelectedState.set(isTodaySelected());
-    SwingUtilities.invokeLater(this::updateFormattedDate);
+    if (SwingUtilities.isEventDispatchThread()) {
+      updateFormattedDate();
+    }
+    else {
+      SwingUtilities.invokeLater(this::updateFormattedDate);
+    }
   }
 
   private boolean isTodaySelected() {
@@ -529,8 +535,9 @@ public final class CalendarPanel extends JPanel {
     dayValue.addListener(this::updateDateTime);
     hourValue.addListener(this::updateDateTime);
     minuteValue.addListener(this::updateDateTime);
-    yearValue.addListener(() -> SwingUtilities.invokeLater(this::layoutDayPanel));
-    monthValue.addListener(() -> SwingUtilities.invokeLater(this::layoutDayPanel));
+    EventListener layoutDayPanelListener = new LayoutDayPanelListener();
+    yearValue.addListener(layoutDayPanelListener);
+    monthValue.addListener(layoutDayPanelListener);
   }
 
   private JSpinner createYearSpinner() {
@@ -615,5 +622,18 @@ public final class CalendarPanel extends JPanel {
     return Arrays.stream(Month.values())
             .map(month -> Item.item(month, month.getDisplayName(TextStyle.FULL, Locale.getDefault())))
             .collect(Collectors.toList());
+  }
+
+  private final class LayoutDayPanelListener implements EventListener {
+
+    @Override
+    public void onEvent() {
+      if (SwingUtilities.isEventDispatchThread()) {
+        layoutDayPanel();
+      }
+      else {
+        SwingUtilities.invokeLater(CalendarPanel.this::layoutDayPanel);
+      }
+    }
   }
 }

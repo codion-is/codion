@@ -13,8 +13,8 @@ import java.awt.Component;
  * A builder for a JTabbedPane.
  * <pre>
  * Components.tabbedPane()
- *         .addTab("First Tab", new JLabel("First"))
- *         .addTab("Second Tab", new JLabel("Second"))
+ *         .tab("First Tab", new JLabel("First"))
+ *         .tab("Second Tab", new JLabel("Second"))
  *         .build();
  *
  * Components.tabbedPane()
