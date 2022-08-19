@@ -877,7 +877,7 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * @return the component that should get the focus when the UI is initialized after insert
+   * @return the component that should receive the focus when the UI is initialized after insert
    */
   protected JComponent afterInsertFocusComponent() {
     if (afterInsertFocusComponent != null) {
@@ -891,11 +891,11 @@ public class EntityEditComponentPanel extends JPanel {
     return initialFocusComponent();
   }
 
-  protected final void requestAfterInsertFocus() {
+  protected final void requestFocusAfterInsert() {
     requestFocus(afterInsertFocusComponent());
   }
 
-  protected final void requestAfterUpdateFocus() {
+  protected final void requestFocusAfterUpdate() {
     requestFocus(focusedComponent.get() == null ? initialFocusComponent() : focusedComponent.get());
   }
 
