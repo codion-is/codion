@@ -18,6 +18,7 @@ import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
+import is.codion.swing.common.ui.component.text.FileInputPanel;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.PasswordFieldBuilder;
@@ -52,7 +53,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A factory for {@link ComponentBuilder}.
+ * A factory for {@link ComponentBuilder} instances.
  */
 public final class Components {
 
@@ -60,7 +61,7 @@ public final class Components {
 
   /**
    * @param <B> the builder type
-   * @return a builder for a JButton
+   * @return a JButton builder
    */
   public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button() {
     return ButtonBuilder.builder();
@@ -69,14 +70,14 @@ public final class Components {
   /**
    * @param <B> the builder type
    * @param action the button action
-   * @return a builder for a JButton
+   * @return a JButton builder
    */
   public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button(Action action) {
     return ButtonBuilder.builder(action);
   }
 
   /**
-   * @return a builder for a component
+   * @return a JCheckBox builder
    */
   public static CheckBoxBuilder checkBox() {
     return CheckBoxBuilder.builder();
@@ -84,14 +85,14 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the check-box
-   * @return a builder for a component
+   * @return a JCheckBox builder
    */
   public static CheckBoxBuilder checkBox(Value<Boolean> linkedValue) {
     return CheckBoxBuilder.builder(linkedValue);
   }
 
   /**
-   * @return a builder for a component
+   * @return a JRadioButton builder
    */
   public static RadioButtonBuilder radioButton() {
     return RadioButtonBuilder.builder();
@@ -99,7 +100,7 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the radion button
-   * @return a builder for a component
+   * @return a JRadioButton builder
    */
   public static RadioButtonBuilder radioButton(Value<Boolean> linkedValue) {
     return RadioButtonBuilder.builder(linkedValue);
@@ -107,7 +108,7 @@ public final class Components {
 
   /**
    * @param <B> the builder type
-   * @return a builder for a component
+   * @return a JToggleButton builder
    */
   public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton() {
     return ToggleButtonBuilder.builder();
@@ -116,14 +117,14 @@ public final class Components {
   /**
    * @param linkedValue the value to link to the button
    * @param <B> the builder type
-   * @return a builder for a component
+   * @return a JToggleButton builder
    */
   public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(Value<Boolean> linkedValue) {
     return ToggleButtonBuilder.builder(linkedValue);
   }
 
   /**
-   * @return a builder for a component
+   * @return a boolean based JComboBox builder
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox() {
     return ItemComboBoxBuilder.builder(ItemComboBoxModel.createBooleanModel());
@@ -131,7 +132,7 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a boolean based JComboBox builder
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox(Value<Boolean> linkedValue) {
     return ItemComboBoxBuilder.builder(ItemComboBoxModel.createBooleanModel(), requireNonNull(linkedValue));
@@ -139,7 +140,7 @@ public final class Components {
 
   /**
    * @param comboBoxModel the combo box model
-   * @return a builder for a component
+   * @return a boolean based JComboBox builder
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox(ItemComboBoxModel<Boolean> comboBoxModel) {
     return ItemComboBoxBuilder.builder(comboBoxModel);
@@ -148,7 +149,7 @@ public final class Components {
   /**
    * @param comboBoxModel the combo box model
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a boolean based JComboBox builder
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox(ItemComboBoxModel<Boolean> comboBoxModel,
                                                              Value<Boolean> linkedValue) {
@@ -158,7 +159,7 @@ public final class Components {
   /**
    * @param comboBoxModel the combo box model
    * @param <T> the value type
-   * @return a builder for a component
+   * @return a {@link Item} based JComboBox builder
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(ItemComboBoxModel<T> comboBoxModel) {
     return ItemComboBoxBuilder.builder(comboBoxModel);
@@ -168,7 +169,7 @@ public final class Components {
    * @param comboBoxModel the combo box model
    * @param linkedValue the value to link to the component
    * @param <T> the value type
-   * @return a builder for a component
+   * @return a {@link Item} based JComboBox builder
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(ItemComboBoxModel<T> comboBoxModel,
                                                         Value<T> linkedValue) {
@@ -178,7 +179,7 @@ public final class Components {
   /**
    * @param values the values
    * @param <T> the value type
-   * @return a builder for a component
+   * @return a {@link Item} based JComboBox builder
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(List<Item<T>> values) {
     return ItemComboBoxBuilder.builder(values);
@@ -188,7 +189,7 @@ public final class Components {
    * @param values the values
    * @param linkedValue the value to link to the component
    * @param <T> the value type
-   * @return a builder for a component
+   * @return a {@link Item} based JComboBox builder
    */
   public static <T> ItemComboBoxBuilder<T> itemComboBox(List<Item<T>> values, Value<T> linkedValue) {
     return ItemComboBoxBuilder.builder(values, linkedValue);
@@ -199,7 +200,7 @@ public final class Components {
    * @param <C> the component type
    * @param <B> the builder type
    * @param comboBoxModel the combo box model
-   * @return a builder for a component
+   * @return a JComboBox builder
    */
   public static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel) {
     return ComboBoxBuilder.builder(comboBoxModel);
@@ -211,7 +212,7 @@ public final class Components {
    * @param <T> the value type
    * @param <C> the component type
    * @param <B> the builder type
-   * @return a builder for a component
+   * @return a JComboBox builder
    */
   public static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel,
                                                                                                                   Value<T> linkedValue) {
@@ -222,7 +223,7 @@ public final class Components {
    * @param <T> the value type
    * @param valueClass the value class
    * @param dateTimePattern the date time pattern
-   * @return a builder for a component
+   * @return a {@link TemporalInputPanel} builder
    */
   public static <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Class<T> valueClass,
                                                                                       String dateTimePattern) {
@@ -234,7 +235,7 @@ public final class Components {
    * @param valueClass the value class
    * @param dateTimePattern the date time pattern
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a {@link TemporalInputPanel} builder
    */
   public static <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Class<T> valueClass,
                                                                                       String dateTimePattern,
@@ -244,7 +245,7 @@ public final class Components {
 
   /**
    * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
+   * @return a {@link LocalTime} based {@link TemporalInputPanel} builder
    */
   public static TemporalInputPanel.Builder<LocalTime> localTimeInputPanel(String dateTimePattern) {
     return temporalInputPanel(LocalTime.class, dateTimePattern);
@@ -253,7 +254,7 @@ public final class Components {
   /**
    * @param dateTimePattern the date time pattern
    * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
+   * @return a {@link LocalTime} based {@link TemporalInputPanel} builder
    */
   public static TemporalInputPanel.Builder<LocalTime> localTimeInputPanel(String dateTimePattern,
                                                                           Value<LocalTime> linkedValue) {
@@ -262,7 +263,7 @@ public final class Components {
 
   /**
    * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
+   * @return a {@link LocalDate} based {@link TemporalInputPanel} builder
    */
   public static TemporalInputPanel.Builder<LocalDate> localDateInputPanel(String dateTimePattern) {
     return temporalInputPanel(LocalDate.class, dateTimePattern);
@@ -271,7 +272,7 @@ public final class Components {
   /**
    * @param dateTimePattern the date time pattern
    * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
+   * @return a {@link LocalDate} based {@link TemporalInputPanel} builder
    */
   public static TemporalInputPanel.Builder<LocalDate> localDateInputPanel(String dateTimePattern,
                                                                           Value<LocalDate> linkedValue) {
@@ -280,7 +281,7 @@ public final class Components {
 
   /**
    * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
+   * @return a {@link LocalDateTime} based {@link TemporalInputPanel} builder
    */
   public static TemporalInputPanel.Builder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern) {
     return temporalInputPanel(LocalDateTime.class, dateTimePattern);
@@ -289,7 +290,7 @@ public final class Components {
   /**
    * @param dateTimePattern the date time pattern
    * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
+   * @return a {@link LocalDateTime} based {@link TemporalInputPanel} builder
    */
   public static TemporalInputPanel.Builder<LocalDateTime> localDateTimeInputPanel(String dateTimePattern,
                                                                                   Value<LocalDateTime> linkedValue) {
@@ -297,7 +298,7 @@ public final class Components {
   }
 
   /**
-   * @return a builder for a component
+   * @return a {@link TextInputPanel} builder
    */
   public static TextInputPanel.Builder textInputPanel() {
     return TextInputPanel.builder();
@@ -305,14 +306,14 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a {@link TextInputPanel} builder
    */
   public static TextInputPanel.Builder textInputPanel(Value<String> linkedValue) {
     return TextInputPanel.builder(linkedValue);
   }
 
   /**
-   * @return a builder for a component
+   * @return a JTextArea builder
    */
   public static TextAreaBuilder textArea() {
     return TextAreaBuilder.builder();
@@ -320,7 +321,7 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a JTextArea builder
    */
   public static TextAreaBuilder textArea(Value<String> linkedValue) {
     return TextAreaBuilder.builder(linkedValue);
@@ -328,7 +329,7 @@ public final class Components {
 
   /**
    * @param <B> the builder type
-   * @return a builder for a component
+   * @return a JTextField builder
    */
   public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField() {
     return TextFieldBuilder.builder(String.class);
@@ -337,7 +338,7 @@ public final class Components {
   /**
    * @param linkedValue the value to link to the component
    * @param <B> the builder type
-   * @return a builder for a component
+   * @return a JTextField builder
    */
   public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> textField(Value<String> linkedValue) {
     return TextFieldBuilder.builder(String.class, linkedValue);
@@ -348,7 +349,7 @@ public final class Components {
    * @param <C> the text field type
    * @param <B> the builder type
    * @param valueClass the value class
-   * @return a builder for a component
+   * @return a JTextField builder
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass) {
     if (Number.class.isAssignableFrom(valueClass)) {
@@ -364,7 +365,7 @@ public final class Components {
    * @param <B> the builder type
    * @param valueClass the value class
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a JTextField builder
    */
   public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass,
                                                                                                                    Value<T> linkedValue) {
@@ -377,7 +378,7 @@ public final class Components {
 
   /**
    * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
+   * @return a {@link LocalTime} based {@link TemporalField} builder
    */
   public static TemporalField.Builder<LocalTime> localTimeField(String dateTimePattern) {
     return TemporalField.builder(LocalTime.class, dateTimePattern);
@@ -386,7 +387,7 @@ public final class Components {
   /**
    * @param dateTimePattern the date time pattern
    * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
+   * @return a {@link LocalTime} based {@link TemporalField} builder
    */
   public static TemporalField.Builder<LocalTime> localTimeField(String dateTimePattern,
                                                                 Value<LocalTime> linkedValue) {
@@ -395,7 +396,7 @@ public final class Components {
 
   /**
    * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
+   * @return a {@link LocalDate} based {@link TemporalField} builder
    */
   public static TemporalField.Builder<LocalDate> localDateField(String dateTimePattern) {
     return TemporalField.builder(LocalDate.class, dateTimePattern);
@@ -404,7 +405,7 @@ public final class Components {
   /**
    * @param dateTimePattern the date time pattern
    * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
+   * @return a {@link LocalDate} based {@link TemporalField} builder
    */
   public static TemporalField.Builder<LocalDate> localDateField(String dateTimePattern,
                                                                 Value<LocalDate> linkedValue) {
@@ -413,7 +414,7 @@ public final class Components {
 
   /**
    * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
+   * @return a {@link LocalDateTime} based {@link TemporalField} builder
    */
   public static TemporalField.Builder<LocalDateTime> localDateTimeField(String dateTimePattern) {
     return TemporalField.builder(LocalDateTime.class, dateTimePattern);
@@ -422,7 +423,7 @@ public final class Components {
   /**
    * @param dateTimePattern the date time pattern
    * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
+   * @return a {@link LocalDateTime} based {@link TemporalField} builder
    */
   public static TemporalField.Builder<LocalDateTime> localDateTimeField(String dateTimePattern,
                                                                         Value<LocalDateTime> linkedValue) {
@@ -431,7 +432,7 @@ public final class Components {
 
   /**
    * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
+   * @return a {@link OffsetDateTime} based {@link TemporalField} builder
    */
   public static TemporalField.Builder<OffsetDateTime> offsetDateTimeField(String dateTimePattern) {
     return TemporalField.builder(OffsetDateTime.class, dateTimePattern);
@@ -440,7 +441,7 @@ public final class Components {
   /**
    * @param dateTimePattern the date time pattern
    * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
+   * @return a {@link OffsetDateTime} based {@link TemporalField} builder
    */
   public static TemporalField.Builder<OffsetDateTime> offsetDateTimeField(String dateTimePattern,
                                                                           Value<OffsetDateTime> linkedValue) {
@@ -451,7 +452,7 @@ public final class Components {
    * @param <T> the temporal type
    * @param temporalClass the temporal class
    * @param dateTimePattern the date time pattern
-   * @return a builder for a temporal component
+   * @return a {@link TemporalField} builder
    */
   public static <T extends Temporal> TemporalField.Builder<T> temporalField(Class<T> temporalClass,
                                                                             String dateTimePattern) {
@@ -463,7 +464,7 @@ public final class Components {
    * @param temporalClass the temporal class
    * @param dateTimePattern the date time pattern
    * @param linkedValue the value to link to the component
-   * @return a builder for a temporal component
+   * @return a {@link TemporalField} builder
    */
   public static <T extends Temporal> TemporalField.Builder<T> temporalField(Class<T> temporalClass,
                                                                             String dateTimePattern,
@@ -472,14 +473,14 @@ public final class Components {
   }
 
   /**
-   * @return a builder for a component
+   * @return a Short based {@link NumberField} builder
    */
   public static NumberField.Builder<Short> shortField() {
     return NumberField.builder(Short.class);
   }
 
   /**
-   * @return a builder for a component
+   * @return a Integer based {@link NumberField} builder
    */
   public static NumberField.Builder<Integer> integerField() {
     return NumberField.builder(Integer.class);
@@ -487,14 +488,14 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a Integer based {@link NumberField} builder
    */
   public static NumberField.Builder<Integer> integerField(Value<Integer> linkedValue) {
     return NumberField.builder(Integer.class, linkedValue);
   }
 
   /**
-   * @return a builder for a component
+   * @return a Long based {@link NumberField} builder
    */
   public static NumberField.Builder<Long> longField() {
     return NumberField.builder(Long.class);
@@ -502,14 +503,14 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a Long based {@link NumberField} builder
    */
   public static NumberField.Builder<Long> longField(Value<Long> linkedValue) {
     return NumberField.builder(Long.class, linkedValue);
   }
 
   /**
-   * @return a builder for a component
+   * @return a Double based {@link NumberField} builder
    */
   public static NumberField.Builder<Double> doubleField() {
     return NumberField.builder(Double.class);
@@ -517,14 +518,14 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a Double based {@link NumberField} builder
    */
   public static NumberField.Builder<Double> doubleField(Value<Double> linkedValue) {
     return NumberField.builder(Double.class, linkedValue);
   }
 
   /**
-   * @return a builder for a component
+   * @return a BigDecimal based {@link NumberField} builder
    */
   public static NumberField.Builder<BigDecimal> bigDecimalField() {
     return NumberField.builder(BigDecimal.class);
@@ -532,14 +533,14 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a BigDecimal based {@link NumberField} builder
    */
   public static NumberField.Builder<BigDecimal> bigDecimalField(Value<BigDecimal> linkedValue) {
     return NumberField.builder(BigDecimal.class, linkedValue);
   }
 
   /**
-   * @return a builder for a component
+   * @return a JFormattedTextField builder
    */
   public static MaskedTextFieldBuilder maskedTextField() {
     return MaskedTextFieldBuilder.builder();
@@ -547,14 +548,14 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a JFormattedTextField builder
    */
   public static MaskedTextFieldBuilder maskedTextField(Value<String> linkedValue) {
     return MaskedTextFieldBuilder.builder(linkedValue);
   }
 
   /**
-   * @return a new JPasswordField
+   * @return a JPasswordField builder
    */
   public static PasswordFieldBuilder passwordField() {
     return PasswordFieldBuilder.builder();
@@ -562,14 +563,14 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a new JPasswordField
+   * @return a JPasswordField builder
    */
   public static PasswordFieldBuilder passwordField(Value<String> linkedValue) {
     return PasswordFieldBuilder.builder(linkedValue);
   }
 
   /**
-   * @return a builder for a Double based JSpinner
+   * @return a Double based JSpinner builder
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner() {
     return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Double.class);
@@ -577,7 +578,7 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a builder for a Double based JSpinner
+   * @return a Double based JSpinner builder
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner(Value<Double> linkedValue) {
     return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Double.class, linkedValue);
@@ -585,7 +586,7 @@ public final class Components {
 
   /**
    * @param spinnerNumberModel the spinner model
-   * @return a builder for a Double based JSpinner
+   * @return a Double based JSpinner builder
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner(SpinnerNumberModel spinnerNumberModel) {
     return NumberSpinnerBuilder.builder(spinnerNumberModel, Double.class);
@@ -594,7 +595,7 @@ public final class Components {
   /**
    * @param spinnerNumberModel the spinner model
    * @param linkedValue the value to link to the component
-   * @return a builder for a Double based JSpinner
+   * @return a Double based JSpinner builder
    */
   public static NumberSpinnerBuilder<Double> doubleSpinner(SpinnerNumberModel spinnerNumberModel,
                                                            Value<Double> linkedValue) {
@@ -602,7 +603,7 @@ public final class Components {
   }
 
   /**
-   * @return a builder for a Integer based JSpinner
+   * @return a Integer based JSpinner builder
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner() {
     return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Integer.class);
@@ -610,7 +611,7 @@ public final class Components {
 
   /**
    * @param linkedValue the value to link to the component
-   * @return a builder for a Integer based JSpinner
+   * @return a Integer based JSpinner builder
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner(Value<Integer> linkedValue) {
     return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Integer.class, linkedValue);
@@ -618,7 +619,7 @@ public final class Components {
 
   /**
    * @param spinnerNumberModel the spinner model
-   * @return a builder for a Integer based JSpinner
+   * @return a Integer based JSpinner builder
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner(SpinnerNumberModel spinnerNumberModel) {
     return NumberSpinnerBuilder.builder(spinnerNumberModel, Integer.class);
@@ -627,7 +628,7 @@ public final class Components {
   /**
    * @param spinnerNumberModel the spinner model
    * @param linkedValue the value to link to the component
-   * @return a builder for a Integer based JSpinner
+   * @return a Integer based JSpinner builder
    */
   public static NumberSpinnerBuilder<Integer> integerSpinner(SpinnerNumberModel spinnerNumberModel,
                                                              Value<Integer> linkedValue) {
@@ -637,7 +638,7 @@ public final class Components {
   /**
    * @param <T> the value type
    * @param spinnerModel the spinner model
-   * @return a builder for a JSpinner
+   * @return a JSpinner builder
    */
   public static <T> ListSpinnerBuilder<T> listSpinner(SpinnerListModel spinnerModel) {
     return ListSpinnerBuilder.builder(spinnerModel);
@@ -647,7 +648,7 @@ public final class Components {
    * @param <T> the value type
    * @param spinnerModel the spinner model
    * @param linkedValue the value to link to the component
-   * @return a builder for a JSpinner
+   * @return a JSpinner builder
    */
   public static <T> ListSpinnerBuilder<T> listSpinner(SpinnerListModel spinnerModel, Value<T> linkedValue) {
     return ListSpinnerBuilder.builder(spinnerModel, linkedValue);
@@ -656,7 +657,7 @@ public final class Components {
   /**
    * @param <T> the value type
    * @param spinnerModel the spinner model
-   * @return a builder for a JSpinner
+   * @return a JSpinner builder
    */
   public static <T> ItemSpinnerBuilder<T> itemSpinner(SpinnerListModel spinnerModel) {
     return ItemSpinnerBuilder.builder(spinnerModel);
@@ -666,7 +667,7 @@ public final class Components {
    * @param <T> the value type
    * @param spinnerModel the spinner model
    * @param linkedValue the value to link to the component
-   * @return a builder for a JSpinner
+   * @return a JSpinner builder
    */
   public static <T> ItemSpinnerBuilder<T> itemSpinner(SpinnerListModel spinnerModel, Value<T> linkedValue) {
     return ItemSpinnerBuilder.builder(spinnerModel, linkedValue);
@@ -674,7 +675,7 @@ public final class Components {
 
   /**
    * @param boundedRangeModel the slider model
-   * @return a builder for a component
+   * @return a JSlider builder
    */
   public static SliderBuilder slider(BoundedRangeModel boundedRangeModel) {
     return SliderBuilder.builder(boundedRangeModel);
@@ -683,7 +684,7 @@ public final class Components {
   /**
    * @param boundedRangeModel the slider model
    * @param linkedValue the value to link to the component
-   * @return a builder for a component
+   * @return a JSlider builder
    */
   public static SliderBuilder slider(BoundedRangeModel boundedRangeModel, Value<Integer> linkedValue) {
     return SliderBuilder.builder(boundedRangeModel, linkedValue);
@@ -693,7 +694,7 @@ public final class Components {
    * A single selection JList builder.
    * @param <T> the value type
    * @param listModel the list model
-   * @return a builder for a JList
+   * @return a JList builder
    */
   public static <T> ListBuilder<T> list(ListModel<T> listModel) {
     return new DefaultListBuilder<>(listModel, null);
@@ -704,7 +705,7 @@ public final class Components {
    * @param <T> the value type
    * @param listModel the list model
    * @param linkedValue the value to link to the component
-   * @return a builder for a JList
+   * @return a JList builder
    */
   public static <T> ListBuilder<T> list(ListModel<T> listModel, Value<T> linkedValue) {
     return new DefaultListBuilder<>(listModel, requireNonNull(linkedValue));
@@ -712,7 +713,7 @@ public final class Components {
 
   /**
    * @param <T> the type to display in the label (using value.toString() or "" for null).
-   * @return a label builder
+   * @return a JLabel builder
    */
   public static <T> LabelBuilder<T> label() {
     return new DefaultLabelBuilder<>((String) null);
@@ -721,7 +722,7 @@ public final class Components {
   /**
    * @param <T> the type to display in the label (using value.toString() or "" for null).
    * @param linkedValueObserver the value observer to link to the label text
-   * @return a label builder
+   * @return a JLabel builder
    */
   public static <T> LabelBuilder<T> label(ValueObserver<T> linkedValueObserver) {
     return new DefaultLabelBuilder<>(linkedValueObserver);
@@ -730,7 +731,7 @@ public final class Components {
   /**
    * @param <T> the type to display in the label (using value.toString() or "" for null).
    * @param icon the label icon
-   * @return a label builder
+   * @return a JLabel builder
    */
   public static <T> LabelBuilder<T> label(Icon icon) {
     return new DefaultLabelBuilder<>(icon);
@@ -738,14 +739,14 @@ public final class Components {
 
   /**
    * @param text the label text
-   * @return a label builder
+   * @return a JLabel builder
    */
   public static LabelBuilder<String> label(String text) {
     return new DefaultLabelBuilder<>(text);
   }
 
   /**
-   * @return a panel builder
+   * @return a JPanel builder
    */
   public static PanelBuilder panel() {
     return PanelBuilder.builder();
@@ -753,7 +754,7 @@ public final class Components {
 
   /**
    * @param layout the panel layout manager
-   * @return a panel builder
+   * @return a JPanel builder
    */
   public static PanelBuilder panel(LayoutManager layout) {
     return PanelBuilder.builder(layout);
@@ -761,21 +762,21 @@ public final class Components {
 
   /**
    * @param panel the panel to configure
-   * @return a panel builder
+   * @return a JPanel builder
    */
   public static PanelBuilder panel(JPanel panel) {
     return PanelBuilder.builder(panel);
   }
 
   /**
-   * @return a tabbed pane builder
+   * @return a JTabbedPane builder
    */
   public static TabbedPaneBuilder tabbedPane() {
     return new DefaultTabbedPaneBuilder();
   }
 
   /**
-   * @return a split pane builder
+   * @return a JSplitPane builder
    */
   public static SplitPaneBuilder splitPane() {
     return new DefaultSplitPaneBuilder();
@@ -783,7 +784,7 @@ public final class Components {
 
   /**
    * @param view the view component
-   * @return a scroll pane builder
+   * @return a JScrollPane builder
    */
   public static ScrollPaneBuilder scrollPane(JComponent view) {
     return new DefaultScrollPaneBuilder(view);
@@ -791,14 +792,14 @@ public final class Components {
 
   /**
    * @param boundedRangeModel the model
-   * @return a progress bar builder
+   * @return a JProgressBar builder
    */
   public static ProgressBarBuilder progressBar(BoundedRangeModel boundedRangeModel) {
     return new DefaultProgressBarBuilder(boundedRangeModel);
   }
 
   /**
-   * @return a FileInputPanel builder
+   * @return a {@link FileInputPanel} builder
    */
   public static FileInputPanelBuilder fileInputPanel() {
     return fileInputPanel(textField()
@@ -809,7 +810,7 @@ public final class Components {
 
   /**
    * @param filePathField the file path field
-   * @return a FileInputPanel builder
+   * @return a {@link FileInputPanel} builder
    */
   public static FileInputPanelBuilder fileInputPanel(JTextField filePathField) {
     return new DefaultFileInputPanelBuilder(filePathField);
