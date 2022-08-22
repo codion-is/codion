@@ -992,9 +992,9 @@ public class EntityEditComponentPanel extends JPanel {
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
-      JComponent component = (JComponent) event.getNewValue();
-      if (component != null && components.containsValue(component)) {
-        focusedComponent.set(component);
+      Component component = (Component) event.getNewValue();
+      if (component instanceof JComponent && components.containsValue(component)) {
+        focusedComponent.set((JComponent) component);
       }
     }
   }

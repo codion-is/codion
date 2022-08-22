@@ -8409,3 +8409,4 @@
   NumberField.Builder.nullable() added, some related refactoring
   NumberField, NumberDocument, Components, EntityComponents, added short support
   EntityEditPanel.ConfirmationMessage added, returned by confirmationMessage(), related refactoring
+  EntityEditComponentPanel.FocusedComponentListener bug fixed, can't cast focus owner to JComponent
