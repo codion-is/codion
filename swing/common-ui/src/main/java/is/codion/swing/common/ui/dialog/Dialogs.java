@@ -141,12 +141,12 @@ public final class Dialogs {
   }
 
   /**
-   * Displays the component from the given component value in a dialog and returns the value if the user presses OK.
+   * Displays the component from the given component value in a dialog and returns the value if the user accepts the input.
    * @param <T> the value type
    * @param <C> the component type
    * @param componentValue the component value
    * @param dialogOwner the dialog owner
-   * @return the value from the component value if the user presses OK
+   * @return the value from the component value if the user accepts the input
    * @throws is.codion.common.model.CancelException if the user cancels
    */
   public static <T, C extends JComponent> T showInputDialog(ComponentValue<T, C> componentValue, JComponent dialogOwner) {
@@ -154,16 +154,17 @@ public final class Dialogs {
   }
 
   /**
-   * Displays the component from the given component value in a dialog and returns the value if the user presses OK.
+   * Displays the component from the given component value in a dialog and returns the value if the user accepts the input.
    * @param <T> the value type
    * @param <C> the component type
    * @param componentValue the component value
    * @param dialogOwner the dialog owner
    * @param title the dialog title
-   * @return the value from the component value if the user presses OK
+   * @return the value from the component value if the user accepts the input
    * @throws is.codion.common.model.CancelException if the user cancels
    */
   public static <T, C extends JComponent> T showInputDialog(ComponentValue<T, C> componentValue, JComponent dialogOwner, String title) {
+    requireNonNull(componentValue);
     State okPressed = State.state();
     JPanel basePanel = new JPanel(Layouts.borderLayout());
     basePanel.add(componentValue.component(), BorderLayout.CENTER);
