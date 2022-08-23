@@ -1828,6 +1828,7 @@ public class EntityTablePanel extends JPanel {
       if (attribute.isString()) {
         return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
                 .textInputPanel((Attribute<String>) attribute)
+                .initialValue((String) initialValue)
                 .buildComponentValue();
       }
 
