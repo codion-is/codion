@@ -74,6 +74,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private volatile ProgressWorker<Collection<R>, ?> refreshWorker;
   private Predicate<R> includeCondition;
   private boolean mergeOnRefresh = false;
+  private boolean asyncRefresh = true;
 
   /**
    * Instantiates a new table model.
@@ -165,7 +166,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    */
   @Override
   public final void refresh() {
-    if (SwingUtilities.isEventDispatchThread()) {
+    if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
       refreshAsync();
     }
     else {
@@ -247,6 +248,16 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   @Override
   public final void setMergeOnRefresh(boolean mergeOnRefresh) {
     this.mergeOnRefresh = mergeOnRefresh;
+  }
+
+  @Override
+  public final boolean isAsyncRefresh() {
+    return asyncRefresh;
+  }
+
+  @Override
+  public final void setAsyncRefresh(boolean asyncRefresh) {
+    this.asyncRefresh = asyncRefresh;
   }
 
   @Override
