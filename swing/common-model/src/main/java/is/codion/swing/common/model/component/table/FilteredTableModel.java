@@ -179,6 +179,20 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   void setMergeOnRefresh(boolean mergeOnRefresh);
 
   /**
+   * @return true if asynchronous refreshing is enabled, true by default
+   */
+  boolean isAsyncRefresh();
+
+  /**
+   * Sometimes we'd like to be able to refresh one or more table models and perform some action on
+   * the refreshed data, after the refresh has finished, such as selecting a particular entity or such.
+   * This is quite difficult to achieve with asynchronous refresh enabled, so here's a way to temporarily
+   * disable asynchronous refresh, for a more consistent/predictable behaviour.
+   * @param asyncRefresh true if asynchronous refreshing should be enabled, true by default
+   */
+  void setAsyncRefresh(boolean asyncRefresh);
+
+  /**
    * Sorts the visible contents according to the {@link FilteredTableSortModel}, keeping the selected items.
    * Calling this method with the sort model disabled has no effect.
    * @see #sortModel()
@@ -204,12 +218,14 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
   /**
    * Refreshes the items in this table model, respecting the selection, filtering as well as sorting states.
-   * If run on the Event Dispatch Thread the refresh happens asynchronously.
+   * If run on the Event Dispatch Thread the refresh happens asynchronously, unless async refresh has been disabled
+   * via {@link #setAsyncRefresh(boolean)}.
    * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
    * before it is repopulated, during which the selection is cleared as well. Using merge on insert
    * ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
-   * @throws RuntimeException in case of an exception when running refresh synchronously, as in, not on the Event Dispatch Thread
+   * @throws RuntimeException in case of an exception when refresh is run synchronously
    * @see #addRefreshFailedListener(EventDataListener)
+   * @see #setAsyncRefresh(boolean)
    */
   void refresh();
 

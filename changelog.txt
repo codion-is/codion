@@ -8448,3 +8448,4 @@
   NumberField, NumberDocument, Components, EntityComponents, added short support
   EntityEditPanel.ConfirmationMessage added, returned by confirmationMessage(), related refactoring
   EntityEditComponentPanel.FocusedComponentListener bug fixed, can't cast focus owner to JComponent
+  FilteredTableModel.is/SetAsyncRefresh() added, in order to be able to temporarily disable async refresh
