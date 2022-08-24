@@ -42,7 +42,7 @@ import static java.util.stream.Collectors.toList;
  * A TableModel implementation that supports filtering, searching and sorting.
  * <pre>
  * DefaultFilteredTableModel tableModel = ...;
- * JTable table = new JTable(tableModel, tableModel.getColumnModel(), tableModel.getSelectionModel());
+ * JTable table = new JTable(tableModel, tableModel.columnModel(), tableModel.selectionModel());
  * </pre><br>
  * User: Björn Darri<br>
  * Date: 18.4.2010<br>

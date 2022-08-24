@@ -350,6 +350,12 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setVisibleColumns(Attribute<?>... attributes);
 
   /**
+   * Arranges the column model so that only the given columns are visible and in the given order
+   * @param attributes the column attributes
+   */
+  void setVisibleColumns(List<Attribute<?>> attributes);
+
+  /**
    * @param delimiter the delimiter
    * @return the table data as a tab delimited string, with column names as a header
    */

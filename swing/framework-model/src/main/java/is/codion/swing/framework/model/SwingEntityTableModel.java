@@ -478,6 +478,11 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
+  public final void setVisibleColumns(List<Attribute<?>> attributes) {
+    columnModel().setVisibleColumns(attributes);
+  }
+
+  @Override
   public final void savePreferences() {
     if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       try {
@@ -815,18 +820,24 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   private void applyColumnPreferences(String preferencesString) {
     JSONObject preferences = new JSONObject(preferencesString).getJSONObject(ColumnPreferences.PREFERENCES_COLUMNS);
     Map<Attribute<?>, ColumnPreferences> preferenceMap = createColumnPreferenceMap(list(columnModel().getColumns()), preferences);
+    List<Attribute<?>> columnAttributesWithoutPreferences = new ArrayList<>();
     for (TableColumn column : list(columnModel().getColumns())) {
       Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
       ColumnPreferences columnPreferences = preferenceMap.get(attribute);
-      if (columnPreferences != null) {
+      if (columnPreferences == null) {
+        columnAttributesWithoutPreferences.add(attribute);
+      }
+      else {
         column.setPreferredWidth(columnPreferences.width());
       }
     }
-    setVisibleColumns(preferenceMap.values().stream()
+    List<Attribute<?>> columnAttributes = preferenceMap.values().stream()
             .filter(ColumnPreferences::isVisible)
             .sorted(Comparator.comparingInt(ColumnPreferences::index))
             .map(ColumnPreferences::attribute)
-            .toArray(Attribute[]::new));
+            .collect(toList());
+    columnAttributes.addAll(0, columnAttributesWithoutPreferences);
+    setVisibleColumns(columnAttributes);
   }
 
   private String statusMessage() {
@@ -867,8 +878,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   private static ColumnPreferences fromJSONObject(Attribute<?> attribute, JSONObject jsonObject) {
     return EntityTableModel.columnPreferences(attribute,
-              jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_INDEX),
-              jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_WIDTH));
+            jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_INDEX),
+            jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_WIDTH));
   }
 
   private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {
