@@ -408,15 +408,20 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final void setVisibleColumns(Attribute<?>... attributes) {
-    List<Attribute<?>> attributeList = asList(attributes);
+    setVisibleColumns(asList(attributes));
+  }
+
+  @Override
+  public final void setVisibleColumns(List<Attribute<?>> attributes) {
+    requireNonNull(attributes);
     new ArrayList<>(columns).forEach(column -> {
-      if (!attributeList.contains(((AttributeTableColumn<?>) column).attribute())) {
+      if (!attributes.contains(((AttributeTableColumn<?>) column).attribute())) {
         columns.remove(column);
       }
     });
     columns.sort((col1, col2) -> {
-      Integer first = attributeList.indexOf(((AttributeTableColumn<?>) col1).attribute());
-      Integer second = attributeList.indexOf(((AttributeTableColumn<?>) col2).attribute());
+      Integer first = attributes.indexOf(((AttributeTableColumn<?>) col1).attribute());
+      Integer second = attributes.indexOf(((AttributeTableColumn<?>) col2).attribute());
 
       return first.compareTo(second);
     });
@@ -686,8 +691,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private static ColumnPreferences fromJSONObject(Attribute<?> attribute, JSONObject jsonObject) {
     return EntityTableModel.columnPreferences(attribute,
-              jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_INDEX),
-              jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_WIDTH));
+            jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_INDEX),
+            jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_WIDTH));
   }
 
   /**

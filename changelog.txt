@@ -8412,3 +8412,5 @@
   EntityEditComponentPanel.FocusedComponentListener bug fixed, can't cast focus owner to JComponent
   FilteredTableModel.is/SetAsyncRefresh() added, in order to be able to temporarily disable async refresh
   EntityTablePanel.UpdateSelectedComponentFactory bug fixed, did not set the initial value for String based input
+  SwingEntityTableModel.applyPreferences() bug fixed, no longer hides new columns
+  EntityTableModel.setVisibleColumns() overloaded with List parameter
