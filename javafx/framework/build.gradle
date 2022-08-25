@@ -34,7 +34,7 @@ ext {
 }
 
 javafx {
-    version = '12'
+    version = '18'
     modules = ['javafx.base', 'javafx.graphics', 'javafx.controls', 'javafx.swing']
 }
 
