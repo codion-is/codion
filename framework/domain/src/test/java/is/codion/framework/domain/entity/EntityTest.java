@@ -402,11 +402,11 @@ public final class EntityTest {
 
     Map<Attribute<?>, Object> values = new HashMap<>();
     values.put(Detail.STRING, "b");
-    assertEquals(1, Entity.getByValue(entities, values).size());
+    assertEquals(1, Entity.getByValue(values, entities).size());
     values.put(Detail.STRING, "zz");
-    assertEquals(2, Entity.getByValue(entities, values).size());
+    assertEquals(2, Entity.getByValue(values, entities).size());
     values.put(Detail.ID, 3L);
-    assertEquals(1, Entity.getByValue(entities, values).size());
+    assertEquals(1, Entity.getByValue(values, entities).size());
   }
 
   @Test

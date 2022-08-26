@@ -8415,3 +8415,4 @@
   SwingEntityTableModel.applyPreferences() bug fixed, no longer hides new columns
   EntityTableModel.setVisibleColumns() overloaded with List parameter
   DatabaseConnection.SQL_STATE_NO_DATA added, DatabaseConnection.queryInteger() and queryLong() now throw SQLException with no data state if the result set contains not data
+  Entity.getByValue(), entities parameter moved, for consistency

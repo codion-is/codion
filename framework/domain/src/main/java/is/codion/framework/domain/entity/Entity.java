@@ -617,11 +617,11 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Finds entities according to attribute values
-   * @param entities the entities to search
    * @param values the attribute values to use as condition mapped to their respective attributes
+   * @param entities the entities to search
    * @return the entities having the exact same attribute values as in the given value map
    */
-  static Collection<Entity> getByValue(Collection<Entity> entities, Map<Attribute<?>, Object> values) {
+  static Collection<Entity> getByValue(Map<Attribute<?>, Object> values, Collection<Entity> entities) {
     requireNonNull(values);
     return requireNonNull(entities).stream()
             .filter(entity -> values.entrySet().stream()
