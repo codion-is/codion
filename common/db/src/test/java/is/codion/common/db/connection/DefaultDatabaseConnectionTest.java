@@ -71,6 +71,13 @@ public class DefaultDatabaseConnectionTest {
     try (DatabaseConnection connection = new DefaultDatabaseConnection(Database.instance(), UNIT_TEST_USER)) {
       int qInt = connection.selectInteger("select empno from scott.emp where ename = 'ADAMS'");
       assertEquals(10, qInt);
+      try {
+        connection.selectInteger("select empno from scott.emp where ename = 'NOONE'");
+        fail();
+      }
+      catch (SQLException e) {
+        assertEquals(DatabaseConnection.SQL_STATE_NO_DATA, e.getSQLState());
+      }
     }
   }
 
@@ -79,6 +86,13 @@ public class DefaultDatabaseConnectionTest {
     try (DatabaseConnection connection = new DefaultDatabaseConnection(Database.instance(), UNIT_TEST_USER)) {
       long qLong = connection.selectLong("select empno from scott.emp where ename = 'ADAMS'");
       assertEquals(10L, qLong);
+      try {
+        connection.selectLong("select empno from scott.emp where ename = 'NOONE'");
+        fail();
+      }
+      catch (SQLException e) {
+        assertEquals(DatabaseConnection.SQL_STATE_NO_DATA, e.getSQLState());
+      }
     }
   }
 

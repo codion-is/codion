@@ -126,7 +126,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       return integers.get(0);
     }
 
-    throw new SQLException("No records returned when querying for an integer", sql);
+    throw new SQLException("No records returned when querying for an integer", SQL_STATE_NO_DATA);
   }
 
   @Override
@@ -136,12 +136,12 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       return longs.get(0);
     }
 
-    throw new SQLException("No records returned when querying for a long", sql);
+    throw new SQLException("No records returned when querying for a long", SQL_STATE_NO_DATA);
   }
 
   @Override
   public void beginTransaction() {
-    checkIfClosed();
+    verifyOpenConnection();
     if (transactionOpen) {
       throw new IllegalStateException("Transaction already open");
     }
@@ -153,7 +153,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public void rollbackTransaction() {
-    checkIfClosed();
+    verifyOpenConnection();
     SQLException exception = null;
     try {
       if (!transactionOpen) {
@@ -174,7 +174,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public void commitTransaction() {
-    checkIfClosed();
+    verifyOpenConnection();
     SQLException exception = null;
     try {
       if (!transactionOpen) {
@@ -200,7 +200,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public void commit() throws SQLException {
-    checkIfClosed();
+    verifyOpenConnection();
     if (transactionOpen) {
       throw new IllegalStateException("Can not perform a commit during an open transaction, use 'commitTransaction()'");
     }
@@ -222,7 +222,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public void rollback() throws SQLException {
-    checkIfClosed();
+    verifyOpenConnection();
     if (transactionOpen) {
       throw new IllegalStateException("Can not perform a rollback during an open transaction, use 'rollbackTransaction()'");
     }
@@ -242,7 +242,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   private <T> List<T> select(String sql, ResultPacker<T> resultPacker, int fetchLimit) throws SQLException {
-    checkIfClosed();
+    verifyOpenConnection();
     database.countQuery(requireNonNull(sql, "sql"));
     Statement statement = null;
     SQLException exception = null;
@@ -285,7 +285,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     return null;
   }
 
-  private void checkIfClosed() {
+  private void verifyOpenConnection() {
     if (connection == null) {
       throw new IllegalStateException("Connection is closed");
     }
