@@ -815,4 +815,11 @@ public final class Components {
   public static FileInputPanelBuilder fileInputPanel(JTextField filePathField) {
     return new DefaultFileInputPanelBuilder(filePathField);
   }
+
+  /**
+   * @return a {@link javax.swing.JToolBar} builder
+   */
+  public static ToolBarBuilder toolBar() {
+    return new DefaultToolBarBuilder();
+  }
 }

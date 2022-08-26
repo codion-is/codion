@@ -8417,3 +8417,4 @@
   DatabaseConnection.SQL_STATE_NO_DATA added, DatabaseConnection.queryInteger() and queryLong() now throw SQLException with no data state if the result set contains not data
   Entity.getByValue(), entities parameter moved, for consistency
   EntityPanel.FocusActivationListener bug fixed, now starts by searching for a EntityPanel parent, only searching for a EntityEditPanel parent if no EntityPanel parent was found, InvoiceEditPanel in Chinook demo got activated when InvoiceLineTablePanel gained focus, instead of the InvoiceLineEditPanel
+  ToolBarBuilder added along with Components.toolBar()

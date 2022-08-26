@@ -19,6 +19,7 @@ import is.codion.swing.common.ui.icon.Logos;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.AbstractAction;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -41,6 +42,7 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -665,5 +667,20 @@ public final class ComponentsTest {
   void addConstraintsComponent() {
     assertThrows(IllegalArgumentException.class, () -> Components.panel()
             .add(new JLabel(), new JLabel()));
+  }
+
+  @Test
+  void toolBar() {
+    Components.toolBar()
+            .borderPainted(true)
+            .floatable(true)
+            .rollover(true)
+            .orientation(SwingConstants.HORIZONTAL)
+            .action(new AbstractAction() {
+              @Override
+              public void actionPerformed(ActionEvent e) {}
+            })
+            .separator()
+            .build();
   }
 }
