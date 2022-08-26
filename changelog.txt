@@ -8452,3 +8452,7 @@
   EntityTablePanel.UpdateSelectedComponentFactory bug fixed, did not set the initial value for String based input
   SwingEntityTableModel.applyPreferences() bug fixed, no longer hides new columns
   EntityTableModel.setVisibleColumns() overloaded with List parameter
+  DatabaseConnection.SQL_STATE_NO_DATA added, DatabaseConnection.queryInteger() and queryLong() now throw SQLException with no data state if the result set contains not data
+  Entity.getByValue(), entities parameter moved, for consistency
+  EntityPanel.FocusActivationListener bug fixed, now starts by searching for a EntityPanel parent, only searching for a EntityEditPanel parent if no EntityPanel parent was found, InvoiceEditPanel in Chinook demo got activated when InvoiceLineTablePanel gained focus, instead of the InvoiceLineEditPanel
+  ToolBarBuilder added along with Components.toolBar()

@@ -24,7 +24,7 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
                 connection.selectLong(query(connection.database())));
         break;
       default:
-        throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes", null, null);
+        throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes");
     }
   }
 

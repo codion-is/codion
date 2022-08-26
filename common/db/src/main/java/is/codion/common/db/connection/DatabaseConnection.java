@@ -12,10 +12,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Manages a {@link Connection}, providing basic transaction control.
+ * Manages a {@link Connection} instance, providing basic transaction control.
  * A factory class for DatabaseConnection instances.
  */
 public interface DatabaseConnection extends AutoCloseable {
+
+  /**
+   * SQLException state indicating that a query did not return a result
+   */
+  String SQL_STATE_NO_DATA = "02000";
 
   /**
    * @return true if the connection has been established and is valid
@@ -32,23 +37,25 @@ public interface DatabaseConnection extends AutoCloseable {
   /**
    * Sets the internal connection to use, note that no validation or transaction checking is performed
    * on the connection and auto-commit is assumed to be disabled. The connection is simply used 'as is'.
+   * Note that setting the connection to null causes all methods requiring it to throw a {@link IllegalStateException}
+   * until a non-null connection is set.
    * @param connection the JDBC connection
    */
   void setConnection(Connection connection);
 
   /**
    * Selects a single integer value using the given query.
-   * @param sql the query must select at least a single number column, any other subsequent columns are disregarded
-   * @return the first record in the result as an integer
-   * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
+   * @param sql the query must select at least a single number column, any other subsequent columns are ignored
+   * @return the first column from the first record in the result as an integer
+   * @throws SQLException if anything goes wrong during the execution, or no results from query with {@link SQLException#getSQLState()} as {@link #SQL_STATE_NO_DATA}
    */
   int selectInteger(String sql) throws SQLException;
 
   /**
    * Selects a single long value using the given query.
-   * @param sql the query must select at least a single number column, any other subsequent columns are disregarded
-   * @return the first record in the result as a long
-   * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
+   * @param sql the query must select at least a single number column, any other subsequent columns are ignored
+   * @return the first column from the first record in the result as a long
+   * @throws SQLException if anything goes wrong during the execution, or no results from query with {@link SQLException#getSQLState()} as {@link #SQL_STATE_NO_DATA}
    */
   long selectLong(String sql) throws SQLException;
 

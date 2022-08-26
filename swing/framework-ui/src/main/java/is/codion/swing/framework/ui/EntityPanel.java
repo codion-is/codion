@@ -1671,14 +1671,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private static class FocusActivationListener implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
-      EntityEditPanel editPanelParent = Utilities.getParentOfType(EntityEditPanel.class, (Component) changeEvent.getNewValue()).orElse(null);
-      if (editPanelParent != null) {
-        editPanelParent.setActive(true);
+      Component focusedComponent = (Component) changeEvent.getNewValue();
+      EntityPanel entityPanelParent = Utilities.getParentOfType(EntityPanel.class, focusedComponent).orElse(null);
+      if (entityPanelParent != null) {
+        if (entityPanelParent.editPanel() != null) {
+          entityPanelParent.editPanel().setActive(true);
+        }
       }
       else {
-        Utilities.getParentOfType(EntityPanel.class, (Component) changeEvent.getNewValue()).ifPresent(parent -> {
-          if (parent.editPanel() != null) {
-            parent.editPanel().setActive(true);
+        Utilities.getParentOfType(EntityEditPanel.class, focusedComponent).ifPresent(editPanelParent -> {
+          if (editPanelParent != null) {
+            editPanelParent.setActive(true);
           }
         });
       }

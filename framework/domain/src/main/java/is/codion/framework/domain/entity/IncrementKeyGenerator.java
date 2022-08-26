@@ -17,8 +17,9 @@ final class IncrementKeyGenerator extends AbstractQueriedKeyGenerator {
   private final String query;
 
   IncrementKeyGenerator(String tableName, String columnName) {
-    this.query = "select max(" + requireNonNull(columnName, "columnName") + ") + 1 from " + requireNonNull(tableName,
-            "tableName");
+    requireNonNull(tableName, "tableName");
+    requireNonNull(columnName, "columnName");
+    this.query = "select max(" + columnName + ") + 1 from " + tableName;
   }
 
   @Override

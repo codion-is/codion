@@ -941,8 +941,11 @@ public class EntityEditComponentPanel extends JPanel {
    * @return true if this component can be selected
    */
   private static boolean isComponentSelectable(JComponent component) {
-    return component != null && component.isDisplayable() &&
-            component.isVisible() && component.isFocusable() && component.isEnabled();
+    return component != null &&
+            component.isDisplayable() &&
+            component.isVisible() &&
+            component.isFocusable() &&
+            component.isEnabled();
   }
 
   private static JLabel setLabelForComponent(JLabel label, JComponent component) {
