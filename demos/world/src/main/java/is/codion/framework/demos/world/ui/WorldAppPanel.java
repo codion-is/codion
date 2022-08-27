@@ -72,7 +72,8 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
-    ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
+    ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
+            .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
     SwingUtilities.invokeLater(() -> new WorldAppPanel().starter()
             .frameSize(new Dimension(1280, 720))

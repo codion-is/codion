@@ -13,18 +13,18 @@ public enum ReferentialIntegrityErrorHandling {
   /**
    * Display the error.
    */
-  ERROR,
+  DISPLAY_ERROR,
   /**
    * Display the dependencies causing the error.
    */
-  DEPENDENCIES;
+  DISPLAY_DEPENDENCIES;
 
   /**
    * Specifies whether to display the error message or the dependent entities in case of a referential integrity error on delete<br>
    * Value type: {@link ReferentialIntegrityErrorHandling}<br>
-   * Default value: {@link ReferentialIntegrityErrorHandling#ERROR}
+   * Default value: {@link ReferentialIntegrityErrorHandling#DISPLAY_ERROR}
    */
   public static final PropertyValue<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING =
           Configuration.enumValue("is.codion.swing.framework.ui.referentialIntegrityErrorHandling",
-                          ReferentialIntegrityErrorHandling.class, ReferentialIntegrityErrorHandling.ERROR);
+                          ReferentialIntegrityErrorHandling.class, ReferentialIntegrityErrorHandling.DISPLAY_ERROR);
 }

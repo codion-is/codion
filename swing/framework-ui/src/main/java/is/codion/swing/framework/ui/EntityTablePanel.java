@@ -832,7 +832,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Handles the given exception. If the referential error handling is {@link ReferentialIntegrityErrorHandling#DEPENDENCIES},
+   * Handles the given exception. If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
    * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
    * @param entities the entities causing the exception
@@ -841,7 +841,7 @@ public class EntityTablePanel extends JPanel {
   public void onReferentialIntegrityException(ReferentialIntegrityException exception, List<Entity> entities) {
     WaitCursor.show(this);
     try {
-      if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
+      if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
         Map<EntityType, Collection<Entity>> dependencies =
                 tableModel.connectionProvider().connection().selectDependencies(entities);
         showDependenciesDialog(dependencies, tableModel.connectionProvider(), this,

@@ -270,7 +270,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Handles the given exception. If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DEPENDENCIES},
+   * Handles the given exception. If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
    * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
    * @param entity the entity causing the exception
@@ -279,7 +279,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public void onReferentialIntegrityException(ReferentialIntegrityException exception, Entity entity) {
     requireNonNull(exception);
     requireNonNull(entity);
-    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
+    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
       EntityTablePanel.showDependenciesDialog(singletonList(entity), editModel().connectionProvider(),
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }
