@@ -8420,3 +8420,4 @@
   ToolBarBuilder added along with Components.toolBar()
   ReferentialIntegrityErrorHandling.ERROR AND DEPENDENCIES renamed DISPLAY_ERROR and DISPLAY_DEPENDENCIES respectively
   OrderBy.NullOrder added along with the required builder methods
+  DefaultLocalEntityConnection.selectDependencies(), now sets fetch depth to 1, in order to select all foreign key values

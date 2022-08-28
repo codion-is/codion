@@ -538,7 +538,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public List<Entity> select(Condition condition) throws DatabaseException {
-    SelectCondition selectCondition = requireNonNull(condition, CONDITION_PARAM_NAME).selectBuilder().build();
+    requireNonNull(condition, CONDITION_PARAM_NAME);
+    SelectCondition selectCondition = condition instanceof SelectCondition ?
+            (SelectCondition) condition : condition.selectBuilder().build();
     synchronized (connection) {
       try {
         List<Entity> result = doSelect(selectCondition);
@@ -650,7 +652,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Collection<ForeignKeyProperty> foreignKeyReferences = foreignKeyReferences(entities.iterator().next().type());
     for (ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
-        List<Entity> dependencies = select(where(foreignKeyReference.attribute()).equalTo(entities));
+        List<Entity> dependencies = select(where(foreignKeyReference.attribute()).equalTo(entities)
+                .selectBuilder()
+                .fetchDepth(1)
+                .build());
         if (!dependencies.isEmpty()) {
           dependencyMap.put(foreignKeyReference.entityType(), dependencies);
         }
@@ -1015,7 +1020,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private ResultIterator<Entity> entityIterator(Condition condition) throws SQLException {
-    SelectCondition selectCondition = requireNonNull(condition, CONDITION_PARAM_NAME).selectBuilder().build();
+    requireNonNull(condition, CONDITION_PARAM_NAME);
+    SelectCondition selectCondition = condition instanceof SelectCondition ?
+            (SelectCondition) condition : condition.selectBuilder().build();
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectQuery = null;
