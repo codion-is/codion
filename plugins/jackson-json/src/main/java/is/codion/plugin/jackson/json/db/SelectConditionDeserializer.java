@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.OrderBy.NullOrder;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -94,12 +95,34 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     OrderBy.Builder builder = OrderBy.builder();
     for (JsonNode node : jsonNode) {
       String[] split = node.asText().split(":");
-      String attributeName = split[0];
-      if ("asc".equals(split[1])) {
-        builder.ascending(definition.attribute(attributeName));
+      Attribute<Object> attribute = definition.attribute(split[0]);
+      String order = split[1];
+      NullOrder nullOrder = NullOrder.valueOf(split[2]);
+      if ("asc".equals(order)) {
+        switch (nullOrder) {
+          case NULLS_FIRST:
+            builder.ascendingNullsFirst(attribute);
+            break;
+          case NULLS_LAST:
+            builder.ascendingNullsLast(attribute);
+            break;
+          default:
+            builder.ascending(attribute);
+            break;
+        }
       }
       else {
-        builder.descending(definition.attribute(attributeName));
+        switch (nullOrder) {
+          case NULLS_FIRST:
+            builder.descendingNullsFirst(attribute);
+            break;
+          case NULLS_LAST:
+            builder.descendingNullsLast(attribute);
+            break;
+          default:
+            builder.descending(attribute);
+            break;
+        }
       }
     }
 

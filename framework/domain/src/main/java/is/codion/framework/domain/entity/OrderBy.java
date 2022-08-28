@@ -32,6 +32,32 @@ public interface OrderBy {
      * @return true if the order is ascending, false for descending
      */
     boolean isAscending();
+
+    /**
+     * @return the {@link NullOrder} when ordering by this attribute
+     */
+    NullOrder nullOrder();
+  }
+
+  /**
+   * Specifies how to handle null values during order by.
+   */
+  enum NullOrder {
+
+    /**
+     * Nulls first.
+     */
+    NULLS_FIRST,
+
+    /**
+     * Nulls last.
+     */
+    NULLS_LAST,
+
+    /**
+     * Database default, as in, no null ordering directive.
+     */
+    DEFAULT
   }
 
   /**
@@ -48,12 +74,44 @@ public interface OrderBy {
     Builder ascending(Attribute<?>... attributes);
 
     /**
+     * Adds an 'ascending' order by for the given attributes with nulls appearing first
+     * @param attributes the attributes
+     * @return this builder instance
+     * @throws IllegalArgumentException in case {@code attributes} is empty
+     */
+    Builder ascendingNullsFirst(Attribute<?>... attributes);
+
+    /**
+     * Adds an 'ascending' order by for the given attributes with nulls appearing last
+     * @param attributes the attributes
+     * @return this builder instance
+     * @throws IllegalArgumentException in case {@code attributes} is empty
+     */
+    Builder ascendingNullsLast(Attribute<?>... attributes);
+
+    /**
      * Adds a 'descending' order by for the given attributes
      * @param attributes the attributes
      * @return this builder instance
      * @throws IllegalArgumentException in case {@code attributes} is empty
      */
     Builder descending(Attribute<?>... attributes);
+
+    /**
+     * Adds a 'descending' order by for the given attributes with nulls appearing first
+     * @param attributes the attributes
+     * @return this builder instance
+     * @throws IllegalArgumentException in case {@code attributes} is empty
+     */
+    Builder descendingNullsFirst(Attribute<?>... attributes);
+
+    /**
+     * Adds a 'descending' order by for the given attributes with nulls appearing last
+     * @param attributes the attributes
+     * @return this builder instance
+     * @throws IllegalArgumentException in case {@code attributes} is empty
+     */
+    Builder descendingNullsLast(Attribute<?>... attributes);
 
     /**
      * @return a new {@link OrderBy} instance based on this builder

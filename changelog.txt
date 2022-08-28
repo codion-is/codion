@@ -8419,3 +8419,4 @@
   EntityPanel.FocusActivationListener bug fixed, now starts by searching for a EntityPanel parent, only searching for a EntityEditPanel parent if no EntityPanel parent was found, InvoiceEditPanel in Chinook demo got activated when InvoiceLineTablePanel gained focus, instead of the InvoiceLineEditPanel
   ToolBarBuilder added along with Components.toolBar()
   ReferentialIntegrityErrorHandling.ERROR AND DEPENDENCIES renamed DISPLAY_ERROR and DISPLAY_DEPENDENCIES respectively
+  OrderBy.NullOrder added along with the required builder methods

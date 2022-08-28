@@ -1038,6 +1038,41 @@ public class DefaultLocalEntityConnectionTest {
     assertNotSame(result, result2);
   }
 
+  @Test
+  void orderByNullOrder() throws DatabaseException {
+    List<Entity> result = connection.select(condition(Employee.TYPE)
+            .selectBuilder()
+            .orderBy(OrderBy.builder()
+                    .ascendingNullsFirst(Employee.MGR)
+                    .build())
+            .build());
+    assertEquals(result.get(0).get(Employee.NAME), "KING");
+
+    result = connection.select(condition(Employee.TYPE)
+            .selectBuilder()
+            .orderBy(OrderBy.builder()
+                    .ascendingNullsLast(Employee.MGR)
+                    .build())
+            .build());
+    assertEquals(result.get(result.size() - 1).get(Employee.NAME), "KING");
+
+    result = connection.select(condition(Employee.TYPE)
+            .selectBuilder()
+            .orderBy(OrderBy.builder()
+                    .descendingNullsFirst(Employee.MGR)
+                    .build())
+            .build());
+    assertEquals(result.get(0).get(Employee.NAME), "KING");
+
+    result = connection.select(condition(Employee.TYPE)
+            .selectBuilder()
+            .orderBy(OrderBy.builder()
+                    .descendingNullsLast(Employee.MGR)
+                    .build())
+            .build());
+    assertEquals(result.get(result.size() - 1).get(Employee.NAME), "KING");
+  }
+
   private static LocalEntityConnection createConnection() throws DatabaseException {
     return createConnection(false);
   }
