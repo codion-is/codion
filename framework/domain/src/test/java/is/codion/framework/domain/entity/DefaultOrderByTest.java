@@ -47,5 +47,39 @@ public final class DefaultOrderByTest {
                     .ascending(Department.LOCATION)
                     .descending(Department.NAME)
                     .build());
+
+    assertEquals(OrderBy.builder()
+                    .ascending(Department.LOCATION)
+                    .descendingNullsFirst(Department.NAME)
+                    .build(),
+            OrderBy.builder()
+                    .ascending(Department.LOCATION)
+                    .descendingNullsFirst(Department.NAME)
+                    .build());
+    assertEquals(OrderBy.builder()
+                    .ascendingNullsLast(Department.LOCATION)
+                    .descending(Department.NAME)
+                    .build(),
+            OrderBy.builder()
+                    .ascendingNullsLast(Department.LOCATION)
+                    .descending(Department.NAME)
+                    .build());
+
+    assertNotEquals(OrderBy.builder()
+                    .ascending(Department.LOCATION)
+                    .descendingNullsLast(Department.NAME)
+                    .build(),
+            OrderBy.builder()
+                    .ascending(Department.LOCATION)
+                    .descending(Department.NAME)
+                    .build());
+    assertNotEquals(OrderBy.builder()
+                    .ascending(Department.LOCATION)
+                    .descending(Department.NAME)
+                    .build(),
+            OrderBy.builder()
+                    .ascendingNullsFirst(Department.LOCATION)
+                    .descending(Department.NAME)
+                    .build());
   }
 }

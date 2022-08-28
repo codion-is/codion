@@ -52,6 +52,8 @@ final class SelectQueries {
     private static final String HAVING = "having ";
     private static final String ORDER_BY = "order by ";
     private static final String NEWLINE = "\n";
+    private static final String NULL_FIRST = " nulls first";
+    private static final String NULL_LAST = " nulls last";
 
     private final EntityDefinition definition;
 
@@ -296,7 +298,17 @@ final class SelectQueries {
     }
 
     private String columnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByAttribute orderByAttribute) {
-      return entityDefinition.columnProperty(orderByAttribute.attribute()).columnExpression() + (orderByAttribute.isAscending() ? "" : " desc");
+      return entityDefinition.columnProperty(orderByAttribute.attribute()).columnExpression() +
+              (orderByAttribute.isAscending() ? "" : " desc") +
+              nullOrderString(orderByAttribute.nullOrder());
+    }
+
+    private String nullOrderString(OrderBy.NullOrder nullOrder) {
+      switch (nullOrder) {
+        case NULLS_FIRST: return NULL_FIRST;
+        case NULLS_LAST: return NULL_LAST;
+        default: return "";
+      }
     }
   }
 }
