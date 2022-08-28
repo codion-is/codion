@@ -18,7 +18,9 @@ import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
@@ -88,6 +90,9 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   }
 
   private void resetPanel() {
+    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+    Utilities.getParentOfType(TableColumnComponentPanel.class, focusOwner)
+            .ifPresent(parent -> basePanel.requestFocusInWindow());
     basePanel.removeAll();
     Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
@@ -96,6 +101,9 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
     basePanel.add(scrollBarFiller);
     syncPanelWidths();
     repaint();
+    if (focusOwner != null) {
+      focusOwner.requestFocusInWindow();
+    }
   }
 
   private void bindColumnAndComponentSizes() {
@@ -153,7 +161,9 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
 
     @Override
     public void columnMoved(TableColumnModelEvent e) {
-      resetPanel();
+      if (e.getFromIndex() != e.getToIndex()) {
+        resetPanel();
+      }
     }
 
     @Override
