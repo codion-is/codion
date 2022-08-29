@@ -170,7 +170,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
       Dialogs.okCancelDialog(createForeignKeyFilterComboBox(foreignKey).build())
               .owner(this)
               .title(MESSAGES.getString("filter_by"))
-              .onOk(() -> getModel().setForeignKeyFilterEntities(foreignKey, current))
+              .onCancel(() -> getModel().setForeignKeyFilterEntities(foreignKey, current))
               .show();
     };
   }
