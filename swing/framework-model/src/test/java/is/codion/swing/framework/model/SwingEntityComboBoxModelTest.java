@@ -138,7 +138,7 @@ public final class SwingEntityComboBoxModelTest {
   void setForeignKeyFilterEntities() throws Exception {
     comboBoxModel.refresh();
     Entity blake = comboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME, "BLAKE");
-    comboBoxModel.setForeignKeyFilterEntities(Employee.MGR_FK, singletonList(blake));
+    comboBoxModel.setForeignKeyFilterKeys(Employee.MGR_FK, singletonList(blake.primaryKey()));
     assertEquals(5, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       Entity item = comboBoxModel.getElementAt(i);
@@ -146,7 +146,7 @@ public final class SwingEntityComboBoxModelTest {
     }
 
     Entity sales = comboBoxModel.connectionProvider().connection().selectSingle(Department.NAME, "SALES");
-    comboBoxModel.setForeignKeyFilterEntities(Employee.DEPARTMENT_FK, singletonList(sales));
+    comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, singletonList(sales.primaryKey()));
     assertEquals(2, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       Entity item = comboBoxModel.getElementAt(i);
@@ -173,7 +173,7 @@ public final class SwingEntityComboBoxModelTest {
 
     //non strict filtering
     comboBoxModel.setStrictForeignKeyFiltering(false);
-    comboBoxModel.setForeignKeyFilterEntities(Employee.DEPARTMENT_FK, null);
+    comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, null);
     assertEquals(6, comboBoxModel.getSize());
     boolean kingFound = false;
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
@@ -278,7 +278,7 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals(0, comboBoxModel.getSize());
 
     comboBoxModel.setSelectConditionSupplier(() -> Conditions.customCondition(Employee.CONDITION_3_TYPE));
-    comboBoxModel.setForeignKeyFilterEntities(Employee.DEPARTMENT_FK, null);
+    comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();
     assertEquals(1, comboBoxModel.getSize());
