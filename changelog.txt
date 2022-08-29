@@ -8461,3 +8461,5 @@
   DefaultLocalEntityConnection.selectDependencies(), now sets fetch depth to 1, in order to select all foreign key values
   TableColumnComponentPanel.SyncColumnModelListener.columnMoved() no longer resets the panel if no move was performed
   TableColumnComponentPanel.resetPanel() bug fixed, now preserves the focus owner
+  EntityComboBox.createForeignKeyFilterCommand() bug fixed, now sets the originally selected value on cancel
+  SwingEntityComboBoxModel.get/setForeignKeyFilterEntities() renamed get/setForeignKeyFilterKeys(), now Key based, combo box items no longer have to have a loaded foreign key reference for filtering to work

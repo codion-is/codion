@@ -51,8 +51,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private final Collection<Attribute<?>> selectAttributes = new ArrayList<>(0);
   private final Entities entities;
   private final OrderBy orderBy;
-  /** A map of entities used to filter the contents of this model by foreign key value. */
-  private final Map<ForeignKey, Set<Entity>> foreignKeyFilterEntities = new HashMap<>();
+  /** A map of keys used to filter the contents of this model by foreign key value. */
+  private final Map<ForeignKey, Set<Key>> foreignKeyFilterKeys = new HashMap<>();
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
@@ -191,22 +191,22 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final void setForeignKeyFilterEntities(ForeignKey foreignKey, Collection<Entity> entities) {
+  public final void setForeignKeyFilterKeys(ForeignKey foreignKey, Collection<Key> keys) {
     requireNonNull(foreignKey);
-    if (Util.nullOrEmpty(entities)) {
-      foreignKeyFilterEntities.remove(foreignKey);
+    if (Util.nullOrEmpty(keys)) {
+      foreignKeyFilterKeys.remove(foreignKey);
     }
     else {
-      foreignKeyFilterEntities.put(foreignKey, new HashSet<>(entities));
+      foreignKeyFilterKeys.put(foreignKey, new HashSet<>(keys));
     }
     setIncludeCondition(foreignKeyIncludeCondition);
   }
 
   @Override
-  public final Collection<Entity> getForeignKeyFilterEntities(ForeignKey foreignKey) {
+  public final Collection<Key> getForeignKeyFilterKeys(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
-    if (foreignKeyFilterEntities.containsKey(foreignKey)) {
-      return unmodifiableCollection(new ArrayList<>(foreignKeyFilterEntities.get(foreignKey)));
+    if (foreignKeyFilterKeys.containsKey(foreignKey)) {
+      return unmodifiableCollection(new ArrayList<>(foreignKeyFilterKeys.get(foreignKey)));
     }
 
     return emptyList();
@@ -345,10 +345,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
       throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.entityType()
               + ", should be: " + foreignKeyProperty.referencedType());
     }
-    //if foreign key filter entities have been set previously, initialize with one of those
-    Collection<Entity> filterEntities = getForeignKeyFilterEntities(foreignKey);
-    if (!Util.nullOrEmpty(filterEntities)) {
-      foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
+    //if foreign key filter keys have been set previously, initialize with one of those
+    Collection<Key> filterKeys = getForeignKeyFilterKeys(foreignKey);
+    if (!Util.nullOrEmpty(filterKeys)) {
+      foreignKeyModel.selectByKey(filterKeys.iterator().next());
     }
     if (filter) {
       linkFilter(foreignKey, foreignKeyModel);
@@ -374,7 +374,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
         setIncludeCondition(filterAllCondition);
       }
       else {
-        setForeignKeyFilterEntities(foreignKey, selected == null ? emptyList() : singletonList(selected));
+        setForeignKeyFilterKeys(foreignKey, selected == null ? emptyList() : singletonList(selected.primaryKey()));
       }
     });
   }
@@ -429,12 +429,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
     @Override
     public boolean test(Entity item) {
-      for (Map.Entry<ForeignKey, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
-        Entity foreignKeyValue = item.referencedEntity(entry.getKey());
-        if (foreignKeyValue == null) {
+      for (Map.Entry<ForeignKey, Set<Key>> entry : foreignKeyFilterKeys.entrySet()) {
+        Key referencedKey = item.referencedKey(entry.getKey());
+        if (referencedKey == null) {
           return !strictForeignKeyFiltering;
         }
-        if (!entry.getValue().contains(foreignKeyValue)) {
+        if (!entry.getValue().contains(referencedKey)) {
           return false;
         }
       }

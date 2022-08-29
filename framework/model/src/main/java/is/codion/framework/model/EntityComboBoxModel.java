@@ -47,23 +47,22 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    *   model.setIncludeCondition(item -&gt; fkCondition.test(item) &amp;&amp; ...);
    * </pre>
    * @return the {@link Predicate} based on the foreign key filter entities
-   * @see #setForeignKeyFilterEntities(ForeignKey, Collection)
+   * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
    */
   Predicate<Entity> foreignKeyIncludeCondition();
 
   /**
    * @param foreignKey the foreign key
-   * @return the entities currently used to filter the contents of this model by foreign key, an empty collection for none
+   * @return the keys currently used to filter the contents of this model by foreign key, an empty collection for none
    */
-  Collection<Entity> getForeignKeyFilterEntities(ForeignKey foreignKey);
+  Collection<Key> getForeignKeyFilterKeys(ForeignKey foreignKey);
 
   /**
-   * Filters this combo box model so that only entities referencing the given foreign key entities
-   * via the given foreign key property are shown.
+   * Filters this combo box model so that only items referencing the given keys via the given foreign key are shown.
    * @param foreignKey the foreign key
-   * @param entities the entities, null or empty for none
+   * @param keys the keys, null or empty for none
    */
-  void setForeignKeyFilterEntities(ForeignKey foreignKey, Collection<Entity> entities);
+  void setForeignKeyFilterKeys(ForeignKey foreignKey, Collection<Key> keys);
 
   /**
    * Specifies whether foreign key filtering should be strict or not.
@@ -71,7 +70,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * entities with null values for the given foreign key are filtered.
    * Non-strict simply means that entities with null references are not filtered.
    * @param strictForeignKeyFiltering the value
-   * @see #setForeignKeyFilterEntities(ForeignKey, Collection)
+   * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
    */
   void setStrictForeignKeyFiltering(boolean strictForeignKeyFiltering);
 
