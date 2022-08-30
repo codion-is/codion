@@ -8425,3 +8425,4 @@
   TableColumnComponentPanel.resetPanel() bug fixed, now preserves the focus owner
   EntityComboBox.createForeignKeyFilterCommand() bug fixed, now sets the originally selected value on cancel
   SwingEntityComboBoxModel.get/setForeignKeyFilterEntities() renamed get/setForeignKeyFilterKeys(), now Key based, combo box items no longer have to have a loaded foreign key reference for filtering to work
+  DefaultEntityTableConditionModel.condition() bug fixed, no longer assumes additionalConditionSupplier always returns a condition, may return null

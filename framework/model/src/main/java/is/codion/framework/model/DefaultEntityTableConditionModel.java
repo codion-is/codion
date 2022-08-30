@@ -200,7 +200,10 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       }
     }
     if (additionalConditionSupplier != null) {
-      conditions.add(additionalConditionSupplier.get());
+      Condition additionalCondition = additionalConditionSupplier.get();
+      if (additionalCondition != null) {
+        conditions.add(additionalCondition);
+      }
     }
 
     return conditions.isEmpty() ? Conditions.condition(entityType) : Conditions.combination(conjunction, conditions);
@@ -212,8 +215,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public void setAdditionalConditionSupplier(Supplier<Condition> conditionSupplier) {
-    this.additionalConditionSupplier = conditionSupplier;
+  public void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier) {
+    this.additionalConditionSupplier = additionalConditionSupplier;
   }
 
   @Override
