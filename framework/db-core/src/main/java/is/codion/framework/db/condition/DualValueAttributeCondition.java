@@ -62,11 +62,11 @@ final class DualValueAttributeCondition<T> extends AbstractAttributeCondition<T>
       case BETWEEN:
         return "(" + columnExpression + " >= ? and " + columnExpression + " <= ?)";
       case NOT_BETWEEN:
-        return "(" + columnExpression + " <= ? or " + columnExpression + " >= ?)";
+        return "(" + columnExpression + " < ? or " + columnExpression + " > ?)";
       case BETWEEN_EXCLUSIVE:
         return "(" + columnExpression + " > ? and " + columnExpression + " < ?)";
       case NOT_BETWEEN_EXCLUSIVE:
-        return "(" + columnExpression + " < ? or " + columnExpression + " > ?)";
+        return "(" + columnExpression + " <= ? or " + columnExpression + " >= ?)";
       default:
         throw new IllegalStateException("Unsupported dual value operator: " + operator());
     }
