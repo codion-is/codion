@@ -18,7 +18,8 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
 
   private Icon icon;
   private int horizontalAlignment = LABEL_TEXT_ALIGNMENT.get();
-  private int displayedMnemonic = 0;
+  private Integer displayedMnemonic;
+  private Character displayedMnemonicChar;
   private int iconTextGap = -1;
   private JComponent component;
 
@@ -26,17 +27,14 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
     this.text = null;
     icon(requireNonNull(icon));
     horizontalAlignment(SwingConstants.CENTER);
-    focusable(false);
   }
 
   DefaultLabelBuilder(String text) {
     this.text = text;
-    focusable(false);
   }
 
   DefaultLabelBuilder(ValueObserver<T> linkedValueObserver) {
     this.text = null;
-    focusable(false);
     linkedValueObserver(requireNonNull(linkedValueObserver));
   }
 
@@ -49,6 +47,12 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
   @Override
   public LabelBuilder<T> displayedMnemonic(int displayedMnemonic) {
     this.displayedMnemonic = displayedMnemonic;
+    return this;
+  }
+
+  @Override
+  public LabelBuilder<T> displayedMnemonic(char displayedMnemonic) {
+    this.displayedMnemonicChar = displayedMnemonic;
     return this;
   }
 
@@ -73,8 +77,11 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
   @Override
   protected JLabel createComponent() {
     JLabel label = new JLabel(text, icon, horizontalAlignment);
-    if (displayedMnemonic != 0) {
+    if (displayedMnemonic != null) {
       label.setDisplayedMnemonic(displayedMnemonic);
+    }
+    if (displayedMnemonicChar != null) {
+      label.setDisplayedMnemonic(displayedMnemonicChar);
     }
     if (component != null) {
       label.setLabelFor(component);

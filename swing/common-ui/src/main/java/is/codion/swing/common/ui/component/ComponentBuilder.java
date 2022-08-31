@@ -14,10 +14,12 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.TransferHandler;
 import javax.swing.border.Border;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -47,6 +49,13 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    */
   PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER =
           Configuration.booleanValue("is.codion.swing.common.ui.component.ComponentBuilder.transferFocusOnEnter", false);
+
+  /**
+   * @param label the label for the component
+   * @return this builder instance
+   * @see JLabel#setLabelFor(Component)
+   */
+  B label(JLabel label);
 
   /**
    * @param focusable false if the component should not be focusable

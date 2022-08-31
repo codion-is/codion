@@ -65,10 +65,11 @@ public interface EntityTableConditionModel {
   Supplier<Condition> getAdditionalConditionSupplier();
 
   /**
-   * Sets the additional condition supplier, one not based on any individual property condition
-   * @param conditionSupplier the condition supplier
+   * Sets the additional condition supplier, one not based on any individual property condition.
+   * This condition supplier may return null in case of no condition.
+   * @param additionalConditionSupplier the condition supplier
    */
-  void setAdditionalConditionSupplier(Supplier<Condition> conditionSupplier);
+  void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier);
 
   /**
    * @return true if any of the underlying condition models are enabled

@@ -353,9 +353,9 @@ public final class ConditionsTest {
     assertEquals("(" + property.columnExpression() + " >= ? and " + property.columnExpression() + " <= ?)", condition.toString(departmentDefinition));
 
     condition = where(Department.NAME).notBetweenExclusive("upper", "lower");
-    assertEquals("(" + property.columnExpression() + " < ? or " + property.columnExpression() + " > ?)", condition.toString(departmentDefinition));
-    condition = where(Department.NAME).notBetween("upper", "lower");
     assertEquals("(" + property.columnExpression() + " <= ? or " + property.columnExpression() + " >= ?)", condition.toString(departmentDefinition));
+    condition = where(Department.NAME).notBetween("upper", "lower");
+    assertEquals("(" + property.columnExpression() + " < ? or " + property.columnExpression() + " > ?)", condition.toString(departmentDefinition));
 
     condition = where(Department.NAME).equalTo("%upper%");
     assertEquals(property.columnExpression() + " like ?", condition.toString(departmentDefinition));

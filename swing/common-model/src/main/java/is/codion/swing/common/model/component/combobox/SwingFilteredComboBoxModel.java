@@ -347,8 +347,8 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
-  public final <V> Value<V> createSelectorValue(Finder<T, V> finder) {
-    return new SelectorValue<>(finder);
+  public final <V> Value<V> createSelectorValue(ItemFinder<T, V> itemFinder) {
+    return new SelectorValue<>(itemFinder);
   }
 
   @Override
@@ -510,10 +510,10 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   private final class SelectorValue<V> extends AbstractValue<V> {
 
-    private final Finder<T, V> finder;
+    private final ItemFinder<T, V> itemFinder;
 
-    private SelectorValue(Finder<T, V> finder) {
-      this.finder = requireNonNull(finder);
+    private SelectorValue(ItemFinder<T, V> itemFinder) {
+      this.itemFinder = requireNonNull(itemFinder);
       addSelectionListener(selected -> notifyValueChange());
     }
 
@@ -523,12 +523,12 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
         return null;
       }
 
-      return finder.value(selectedValue());
+      return itemFinder.value(selectedValue());
     }
 
     @Override
     protected void setValue(V value) {
-      setSelectedItem(value == null ? null : finder.findItem(visibleItems(), value));
+      setSelectedItem(value == null ? null : itemFinder.findItem(visibleItems(), value));
     }
   }
 }

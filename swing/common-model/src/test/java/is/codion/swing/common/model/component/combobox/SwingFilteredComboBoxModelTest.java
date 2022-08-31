@@ -5,7 +5,7 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.combobox.FilteredComboBoxModel.Finder;
+import is.codion.common.model.combobox.FilteredComboBoxModel.ItemFinder;
 import is.codion.common.value.Value;
 
 import org.junit.jupiter.api.AfterEach;
@@ -257,7 +257,7 @@ public class SwingFilteredComboBoxModelTest {
 
   @Test
   void selectorValue() {
-    Value<Character> selectorValue = testModel.createSelectorValue(new Finder<String, Character>() {
+    Value<Character> selectorValue = testModel.createSelectorValue(new ItemFinder<String, Character>() {
       @Override
       public Character value(String item) {
         return item.charAt(0);

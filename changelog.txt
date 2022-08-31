@@ -8463,3 +8463,11 @@
   TableColumnComponentPanel.resetPanel() bug fixed, now preserves the focus owner
   EntityComboBox.createForeignKeyFilterCommand() bug fixed, now sets the originally selected value on cancel
   SwingEntityComboBoxModel.get/setForeignKeyFilterEntities() renamed get/setForeignKeyFilterKeys(), now Key based, combo box items no longer have to have a loaded foreign key reference for filtering to work
+  DefaultEntityTableConditionModel.condition() bug fixed, no longer assumes additionalConditionSupplier always returns a condition, may return null
+  DualValueAttributeCondition bug fixed, not between and not between exclusive operators were incorrect, now results in the opposite result from between and between exclusive
+  DualValueAttributeCondition, SingleValueAttributeCondition now accept null bound values, constructor parameter validation improved
+  DefaultLabelBuilder bug fixed, no longer sets focusable(false), as that prevents mnemonics set via setDisplayedMnemonic() from working
+  TextComponentBuilder.focusAccelerator() added
+  ComponentBuilder.label() added
+  LabelBuilder.displayedMnemonic(char) added
+  FilteredComboBoxModel.Finder renamed ItemFinder

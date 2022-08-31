@@ -443,7 +443,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
   }
 
-  private static final class EntityFinder<T> implements Finder<Entity, T> {
+  private static final class EntityFinder<T> implements ItemFinder<Entity, T> {
 
     private final Attribute<T> attribute;
 

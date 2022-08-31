@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.util.Collections.singletonList;
-import static java.util.Objects.requireNonNull;
 
 final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<T> {
 
@@ -20,7 +19,8 @@ final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<
 
   SingleValueAttributeCondition(Attribute<T> attribute, T value, Operator operator) {
     super(attribute, operator);
-    this.value = requireNonNull(value, "A bound value is required");
+    validateOperator(operator);
+    this.value = value;
   }
 
   @Override
@@ -66,6 +66,18 @@ final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<
         return columnExpression + " >= ?";
       default:
         throw new IllegalStateException("Unsupported single value operator: " + operator());
+    }
+  }
+
+  private static void validateOperator(Operator operator) {
+    switch (operator) {
+      case LESS_THAN:
+      case LESS_THAN_OR_EQUAL:
+      case GREATER_THAN:
+      case GREATER_THAN_OR_EQUAL:
+        break;
+      default:
+        throw new IllegalStateException("Unsupported single value operator: " + operator);
     }
   }
 }

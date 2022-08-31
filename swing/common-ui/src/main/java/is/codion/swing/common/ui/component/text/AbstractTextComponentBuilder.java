@@ -33,6 +33,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   private boolean moveCaretToStartOnFocusGained;
   private Consumer<String> onTextChanged;
   private boolean dragEnabled = false;
+  private Character focusAcceleratorKey;
 
   protected AbstractTextComponentBuilder(Value<T> linkedValue) {
     super(linkedValue);
@@ -123,10 +124,19 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
+  public final B focusAccelerator(char focusAcceleratorKey) {
+    this.focusAcceleratorKey = focusAcceleratorKey;
+    return (B) this;
+  }
+
+  @Override
   protected final C createComponent() {
     C textComponent = createTextComponent();
     textComponent.setEditable(editable);
     textComponent.setDragEnabled(dragEnabled);
+    if (focusAcceleratorKey != null) {
+      textComponent.setFocusAccelerator(focusAcceleratorKey);
+    }
     if (margin != null) {
       textComponent.setMargin(margin);
     }

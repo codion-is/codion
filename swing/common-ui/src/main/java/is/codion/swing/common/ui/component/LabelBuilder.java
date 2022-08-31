@@ -32,10 +32,19 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
   LabelBuilder<T> horizontalAlignment(int horizontalAlignment);
 
   /**
-   * @param displayedMnemonic the label mnemonic
+   * @param displayedMnemonic the label mnemonic key code
    * @return this builder instance
+   * @see JLabel#setDisplayedMnemonic(int)
    */
   LabelBuilder<T> displayedMnemonic(int displayedMnemonic);
+
+  /**
+   * Overrides {@link #displayedMnemonic(int)}.
+   * @param displayedMnemonic the label mnemonic character
+   * @return this builder instance
+   * @see JLabel#setDisplayedMnemonic(char)
+   */
+  LabelBuilder<T> displayedMnemonic(char displayedMnemonic);
 
   /**
    * @param component the component to associate with this label

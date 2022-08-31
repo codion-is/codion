@@ -18,8 +18,8 @@ public enum Operator {
   GREATER_THAN_OR_EQUAL("\u2265"),
   BETWEEN_EXCLUSIVE("<\u2219<"),
   BETWEEN("\u2264\u2219\u2264"),
-  NOT_BETWEEN_EXCLUSIVE(">\u2219>"),
-  NOT_BETWEEN("\u2265\u2219\u2265");
+  NOT_BETWEEN_EXCLUSIVE("\u2265\u2219\u2265"),
+  NOT_BETWEEN(">\u2219>");
 
   private final ResourceBundle messages = ResourceBundle.getBundle(Operator.class.getName());
 
