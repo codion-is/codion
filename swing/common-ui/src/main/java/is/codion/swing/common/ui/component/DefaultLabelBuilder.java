@@ -26,17 +26,14 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
     this.text = null;
     icon(requireNonNull(icon));
     horizontalAlignment(SwingConstants.CENTER);
-    focusable(false);
   }
 
   DefaultLabelBuilder(String text) {
     this.text = text;
-    focusable(false);
   }
 
   DefaultLabelBuilder(ValueObserver<T> linkedValueObserver) {
     this.text = null;
-    focusable(false);
     linkedValueObserver(requireNonNull(linkedValueObserver));
   }
 
