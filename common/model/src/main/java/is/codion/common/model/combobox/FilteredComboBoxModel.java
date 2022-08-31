@@ -166,11 +166,11 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
   Object getSelectedItem();
 
   /**
-   * @param finder responsible for finding the item to select
+   * @param itemFinder responsible for finding the item to select
    * @return a value linked to the selected item via the given finder instance
    * @param <V> the value type
    */
-  <V> Value<V> createSelectorValue(Finder<T, V> finder);
+  <V> Value<V> createSelectorValue(ItemFinder<T, V> itemFinder);
 
   /**
    * Refreshes the items in this combo box model.
@@ -190,7 +190,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T> {
    * @param <T> the combo box model item type
    * @param <V> the type of the value to search by
    */
-  interface Finder<T, V> {
+  interface ItemFinder<T, V> {
 
     /**
      * Returns the value from the given item to use when searching
