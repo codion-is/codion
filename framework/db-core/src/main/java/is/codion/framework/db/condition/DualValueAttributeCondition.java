@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.util.Arrays.asList;
-import static java.util.Objects.requireNonNull;
 
 final class DualValueAttributeCondition<T> extends AbstractAttributeCondition<T> {
 
@@ -21,8 +20,9 @@ final class DualValueAttributeCondition<T> extends AbstractAttributeCondition<T>
 
   DualValueAttributeCondition(Attribute<T> attribute, T lowerBound, T upperBound, Operator operator) {
     super(attribute, operator);
-    this.lowerBound = requireNonNull(lowerBound, "A lower bound is required");
-    this.upperBound = requireNonNull(upperBound, "An upper bound is required");
+    validateOperator(operator);
+    this.lowerBound = lowerBound;
+    this.upperBound = upperBound;
   }
 
   @Override
@@ -69,6 +69,18 @@ final class DualValueAttributeCondition<T> extends AbstractAttributeCondition<T>
         return "(" + columnExpression + " <= ? or " + columnExpression + " >= ?)";
       default:
         throw new IllegalStateException("Unsupported dual value operator: " + operator());
+    }
+  }
+
+  private static void validateOperator(Operator operator) {
+    switch (operator) {
+      case BETWEEN:
+      case NOT_BETWEEN:
+      case BETWEEN_EXCLUSIVE:
+      case NOT_BETWEEN_EXCLUSIVE:
+        break;
+      default:
+        throw new IllegalStateException("Unsupported dual value operator: " + operator);
     }
   }
 }

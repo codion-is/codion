@@ -11,14 +11,22 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class MultiValueAttributeConditionTest {
 
   private final TestDomain domain = new TestDomain();
+
+  @Test
+  void test() {
+    assertThrows(IllegalStateException.class, () -> new MultiValueAttributeCondition<>(Employee.ID, Collections.emptyList(), Operator.BETWEEN));
+    assertThrows(NullPointerException.class, () -> new MultiValueAttributeCondition<>(Employee.ID, Collections.singletonList(null), Operator.EQUAL));
+  }
 
   @Test
   void inClauseParenthesis() {

@@ -34,14 +34,15 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
   MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator,
                                boolean caseSensitive) {
     super(attribute, operator);
+    validateOperator(operator);
+    for (Object value : requireNonNull(values)) {
+      requireNonNull(value, "Equal condition values may not be null");
+    }
     if (!caseSensitive && !attribute.isString()) {
       throw new IllegalStateException("Case sensitivity only applies to String based attributes: " + attribute);
     }
     this.caseSensitive = caseSensitive;
     this.values = unmodifiableList(new ArrayList<>(values));
-    for (int i = 0; i < this.values.size(); i++) {
-      requireNonNull(this.values.get(i), "Equal condition values may not be null");
-    }
   }
 
   @Override
@@ -122,5 +123,15 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
 
   private static boolean containsWildcards(String value) {
     return value.contains("%") || value.contains("_");
+  }
+
+  private static void validateOperator(Operator operator) {
+    switch (operator) {
+      case EQUAL:
+      case NOT_EQUAL:
+        break;
+      default:
+        throw new IllegalStateException("Unsupported multi value operator: " + operator);
+    }
   }
 }
