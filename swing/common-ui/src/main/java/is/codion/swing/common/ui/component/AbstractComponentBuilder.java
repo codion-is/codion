@@ -13,6 +13,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.TransferHandler;
 import javax.swing.border.Border;
@@ -54,6 +55,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private C component;
   private ComponentValue<T, C> componentValue;
 
+  private JLabel label;
   private boolean focusable = true;
   private int preferredHeight;
   private int preferredWidth;
@@ -95,6 +97,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   protected AbstractComponentBuilder(Value<T> linkedValue) {
     this.linkedValue = linkedValue;
     this.linkedValueLocked = linkedValue != null;
+  }
+
+  @Override
+  public final B label(JLabel label) {
+    this.label = label;
+    return (B) this;
   }
 
   @Override
@@ -409,6 +417,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     }
     if (linkedValueObserver != null) {
       componentValue(component).link(linkedValueObserver);
+    }
+    if (label != null) {
+      label.setLabelFor(component);
     }
     keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
     focusListeners.forEach(focusListener -> component.addFocusListener(focusListener));

@@ -91,4 +91,11 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
    * @see JTextComponent#setDragEnabled(boolean)
    */
   B dragEnabled(boolean dragEnabled);
+
+  /**
+   * @param focusAcceleratorKey the focus accelerator key
+   * @return this builder instance
+   * @see JTextComponent#setFocusAccelerator(char)
+   */
+  B focusAccelerator(char focusAcceleratorKey);
 }

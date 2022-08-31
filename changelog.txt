@@ -8429,3 +8429,6 @@
   DualValueAttributeCondition bug fixed, not between and not between exclusive operators were incorrect, now results in the opposite result from between and between exclusive
   DualValueAttributeCondition, SingleValueAttributeCondition now accept null bound values, constructor parameter validation improved
   DefaultLabelBuilder bug fixed, no longer sets focusable(false), as that prevents mnemonics set via setDisplayedMnemonic() from working
+  TextComponentBuilder.focusAccelerator() added
+  ComponentBuilder.label() added
+  LabelBuilder.displayedMnemonic(char) added

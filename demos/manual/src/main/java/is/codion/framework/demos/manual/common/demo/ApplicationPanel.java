@@ -65,7 +65,7 @@ public final class ApplicationPanel extends JPanel {
 
     checkBox(inputEnabledState)
             .caption("Enabled")
-            .mnemonic('E')
+            .mnemonic('N')
             .transferFocusOnEnter(true)
             .build(checkBox -> settingsPanel.add(checkBox, BorderLayout.WEST));
 
@@ -73,14 +73,12 @@ public final class ApplicationPanel extends JPanel {
             .enabledState(inputEnabledState)
             .build())
             .caption("Clear")
-            .mnemonic('C')
+            .mnemonic('L')
             .transferFocusOnEnter(true)
             .build(button -> settingsPanel.add(button, BorderLayout.EAST));
 
     JPanel inputPanel = new JPanel(Layouts.flexibleGridLayout(0, 2));
 
-    label("Short String")
-            .build(inputPanel::add);
     textField(model.shortStringValue())
             .columns(20)
             .lowerCase(true)
@@ -90,22 +88,24 @@ public final class ApplicationPanel extends JPanel {
             .validator(new PGValidator())
             .selectionProvider(Dialogs.selectionProvider(() ->
                     Arrays.asList("a", "few", "short", "strings", "to", "choose", "from")))
+            .label(label("Short String (1)")
+                    .displayedMnemonic('1')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Long String")
-            .build(inputPanel::add);
     textInputPanel(model.longStringValue())
             .columns(20)
             .maximumLength(400)
             .buttonFocusable(true)
             .selectAllOnFocusGained(true)
             .transferFocusOnEnter(true)
+            .label(label("Long String (2)")
+                    .displayedMnemonic('2')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Text")
-            .build(inputPanel::add);
     textArea(model.textValue())
             .rowsColumns(4, 20)
             .lineWrap(true)
@@ -117,12 +117,13 @@ public final class ApplicationPanel extends JPanel {
                     .modifiers(KeyEvent.CTRL_DOWN_MASK)
                     .action(Control.actionControl(actionEvent ->
                             ((JTextArea) actionEvent.getSource()).append("SPACE"))))
+            .label(label("Text (3)")
+                    .displayedMnemonic('3')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .scrollPane()
             .build(inputPanel::add);
 
-    label("Formatted String")
-            .build(inputPanel::add);
     maskedTextField(model.formattedStringValue())
             .mask("(##) ##-##")
             .placeholderCharacter('_')
@@ -133,31 +134,34 @@ public final class ApplicationPanel extends JPanel {
             .commitsOnValidEdit(true)
             .focusLostBehaviour(JFormattedTextField.COMMIT)
             .transferFocusOnEnter(true)
+            .label(label("Formatted String (4)")
+                    .displayedMnemonic('4')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("String Selection")
-            .build(inputPanel::add);
     comboBox(createStringComboBoxModel(), model.stringSelectionValue())
             .editable(true)
             .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
+            .label(label("String Selection (5)")
+                    .displayedMnemonic('5')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Date")
-            .build(inputPanel::add);
     localDateField(LocaleDateTimePattern.builder()
             .delimiterDash()
             .yearFourDigits()
             .build()
             .dateTimePattern(), model.localDateValue())
             .transferFocusOnEnter(true)
+            .label(label("Date (6)")
+                    .displayedMnemonic('6')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Date Time")
-            .build(inputPanel::add);
     localDateTimeInputPanel(LocaleDateTimePattern.builder()
             .delimiterDot()
             .yearTwoDigits()
@@ -165,21 +169,23 @@ public final class ApplicationPanel extends JPanel {
             .build()
             .dateTimePattern(), model.localDateTimeValue())
             .transferFocusOnEnter(true)
+            .label(label("Date Time (7)")
+                    .displayedMnemonic('7')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Integer")
-            .build(inputPanel::add);
     integerField(model.integerValue())
             .valueRange(0, 10_000)
             .groupingUsed(true)
             .groupingSeparator('.')
             .transferFocusOnEnter(true)
+            .label(label("Integer (8)")
+                    .displayedMnemonic('8')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Double")
-            .build(inputPanel::add);
     doubleField(model.doubleValue())
             .nullable(false)
             .valueRange(0, 1_000_000)
@@ -188,11 +194,12 @@ public final class ApplicationPanel extends JPanel {
             .decimalSeparator(',')
             .groupingSeparator('.')
             .transferFocusOnEnter(true)
+            .label(label("Double (9)")
+                    .displayedMnemonic('9')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Integer Item")
-            .build(inputPanel::add);
     ItemComboBoxModel<Integer> integerItemComboBoxModel = createIntegerItemComboBoxModel();
     Value<Integer> integerItemSelectorValue = integerItemComboBoxModel.createSelectorValue(new IntegerItemFinder());
     NumberField<Integer> integerItemSelectorField = integerField(integerItemSelectorValue)
@@ -200,6 +207,9 @@ public final class ApplicationPanel extends JPanel {
             .horizontalAlignment(SwingConstants.CENTER)
             .selectAllOnFocusGained(true)
             .transferFocusOnEnter(true)
+            .label(label("Integer Item (A)")
+                    .displayedMnemonic('A')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build();
     JComboBox<Item<Integer>> integerItemComboBox = itemComboBox(integerItemComboBoxModel, model.integerItemValue())
@@ -214,8 +224,6 @@ public final class ApplicationPanel extends JPanel {
             .add(integerItemComboBox, BorderLayout.CENTER)
             .build(inputPanel::add);
 
-    label("Integer Slide")
-            .build(inputPanel::add);
     slider(createSliderModel(), model.integerSlideValue())
             .paintTicks(true)
             .paintTrack(true)
@@ -223,60 +231,69 @@ public final class ApplicationPanel extends JPanel {
             .majorTickSpacing(20)
             .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
+            .label(label("Integer Slide (B)")
+                    .displayedMnemonic('B')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Integer Spin")
-            .build(inputPanel::add);
     integerSpinner(createSpinnerModel(), model.integerSpinValue())
             .columns(4)
             .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
+            .label(label("Integer Spin (C)")
+                    .displayedMnemonic('C')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Integer Selection")
-            .build(inputPanel::add);
     comboBox(createIntegerComboBoxModel(), model.integerSelectionValue())
             .editable(true)
             .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
+            .label(label("Integer Selection (D)")
+                    .displayedMnemonic('D')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Item Spin")
-            .build(inputPanel::add);
     itemSpinner(createItemSpinnerModel(), model.itemSpinnerValue())
             .columns(20)
             .horizontalAlignment(SwingConstants.CENTER)
             .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
+            .label(label("Item Spin (E)")
+                    .displayedMnemonic('E')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Boolean")
-            .build(inputPanel::add);
     checkBox(model.booleanValue())
             .horizontalAlignment(SwingConstants.CENTER)
             .transferFocusOnEnter(true)
+            .label(label("Boolean (F)")
+                    .displayedMnemonic('F')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    label("Boolean Selection")
-            .build(inputPanel::add);
     booleanComboBox(model.booleanSelectionValue())
             .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
+            .label(label("Boolean Selection (G)")
+                    .displayedMnemonic('G')
+                    .build(inputPanel::add))
             .build(inputPanel::add);
 
-    label("Text List Selection")
-            .build(inputPanel::add);
     Components.list(createStringListModel(), model.stringListValue())
             .visibleRowCount(4)
             .selectionMode(ListSelectionModel.SINGLE_SELECTION)
             .layoutOrientation(JList.HORIZONTAL_WRAP)
             .transferFocusOnEnter(true)
+            .label(label("Text List Selection (H)")
+                    .displayedMnemonic('H')
+                    .build(inputPanel::add))
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
@@ -292,7 +309,7 @@ public final class ApplicationPanel extends JPanel {
             .linkedValueObserver(model.messageObserver())
             .build(component -> add(component, BorderLayout.SOUTH));
 
-    Sizes.setPreferredWidth(this, 380);
+    Sizes.setPreferredWidth(this, 400);
   }
 
   private static class PGValidator implements Value.Validator<String> {
