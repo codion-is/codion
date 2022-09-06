@@ -5,10 +5,9 @@ package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
-import is.codion.common.event.EventListener;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
@@ -81,23 +80,6 @@ public interface EntityTableConditionModel {
    * @return true if the {@link ColumnConditionModel} associated with the given attribute is enabled
    */
   boolean isConditionEnabled(Attribute<?> attribute);
-
-  /**
-   * Remembers the current condition model state, any subsequent changes to condition
-   * parameters or operators are notified via the conditionChanged observer.
-   * A data model using this condition model should call this method each time the
-   * model is refreshed according to the condition provided by this condition model.
-   * @see #hasConditionChanged()
-   * @see #conditionChangedObserver
-   */
-  void rememberCondition();
-
-  /**
-   * @return true if the condition model state (or configuration) has changed
-   * since the last time the condition model state was remembered
-   * @see #rememberCondition()
-   */
-  boolean hasConditionChanged();
 
   /**
    * @return the conjunction to be used when multiple column condition are active,
@@ -180,18 +162,12 @@ public interface EntityTableConditionModel {
   Value<String> simpleConditionStringValue();
 
   /**
-   * @return a StateObserver indicating if the search condition has changed since it was last remembered
-   * @see #rememberCondition()
-   */
-  StateObserver conditionChangedObserver();
-
-  /**
    * @param listener a listener notified each time the search condition changes
    */
-  void addConditionChangedListener(EventListener listener);
+  void addConditionChangedListener(EventDataListener<Condition> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionChangedListener(EventListener listener);
+  void removeConditionChangedListener(EventDataListener<Condition> listener);
 }

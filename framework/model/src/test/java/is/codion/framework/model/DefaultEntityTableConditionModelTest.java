@@ -7,7 +7,6 @@ import is.codion.common.Conjunction;
 import is.codion.common.Operator;
 import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -21,8 +20,6 @@ import is.codion.framework.model.test.TestDomain.Detail;
 import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -147,39 +144,6 @@ public class DefaultEntityTableConditionModelTest {
     nameConditionModel.setEqualValue("SCOTT");
     conditionModel.setAdditionalConditionSupplier(() -> Conditions.customCondition(Employee.CONDITION_2_TYPE));
     assertNotNull(conditionModel.getAdditionalConditionSupplier());
-  }
-
-  @Test
-  void conditionChangedListener() {
-    AtomicInteger counter = new AtomicInteger();
-    EventListener conditionChangedListener = counter::incrementAndGet;
-    conditionModel.addConditionChangedListener(conditionChangedListener);
-    ColumnConditionModel<? extends Attribute<Double>, Double> commissionModel =
-            conditionModel.conditionModel(Employee.COMMISSION);
-    commissionModel.setEnabled(true);
-    assertEquals(1, counter.get());
-    commissionModel.setEnabled(false);
-    assertEquals(2, counter.get());
-    commissionModel.setOperator(Operator.GREATER_THAN_OR_EQUAL);
-    commissionModel.setLowerBound(1200d);
-    //automatically set enabled when upper bound is set
-    assertEquals(3, counter.get());
-    this.conditionModel.removeConditionChangedListener(conditionChangedListener);
-  }
-
-  @Test
-  void testSearchState() {
-    assertFalse(conditionModel.hasConditionChanged());
-    ColumnConditionModel<? extends Attribute<String>, String> jobModel =
-            conditionModel.conditionModel(Employee.JOB);
-    jobModel.setEqualValue("job");
-    assertTrue(conditionModel.hasConditionChanged());
-    jobModel.setEnabled(false);
-    assertFalse(conditionModel.hasConditionChanged());
-    jobModel.setEnabled(true);
-    assertTrue(conditionModel.hasConditionChanged());
-    this.conditionModel.rememberCondition();
-    assertFalse(conditionModel.hasConditionChanged());
   }
 
   @Test

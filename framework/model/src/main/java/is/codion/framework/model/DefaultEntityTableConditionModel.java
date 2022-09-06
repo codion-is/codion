@@ -6,12 +6,11 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
 import is.codion.common.Util;
-import is.codion.common.event.EventListener;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.model.table.ColumnFilterModel;
-import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.AttributeCondition;
@@ -32,7 +31,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 import static java.util.Collections.unmodifiableMap;
@@ -43,15 +41,14 @@ import static java.util.Objects.requireNonNull;
  */
 public final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
 
-  private final State conditionChangedState = State.state();
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
   private final Map<Attribute<?>, ColumnFilterModel<Entity, Attribute<?>, ?>> filterModels = new LinkedHashMap<>();
   private final Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> conditionModels = new HashMap<>();
   private final Value<String> simpleConditionStringValue = Value.value();
+  private final Event<Condition> conditionChangedEvent = Event.event();
   private Supplier<Condition> additionalConditionSupplier;
   private Conjunction conjunction = Conjunction.AND;
-  private Condition rememberedCondition = null;
 
   /**
    * Instantiates a new DefaultEntityTableConditionModel
@@ -67,7 +64,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     createConditionModels(entityType, requireNonNull(conditionModelFactory, "conditionModelFactory"));
     createFilterModels(entityType, filterModelFactory);
-    rememberCondition();
     bindEvents();
   }
 
@@ -79,17 +75,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   @Override
   public EntityDefinition entityDefinition() {
     return connectionProvider.entities().definition(entityType);
-  }
-
-  @Override
-  public void rememberCondition() {
-    rememberedCondition = condition();
-    conditionChangedState.set(false);
-  }
-
-  @Override
-  public boolean hasConditionChanged() {
-    return conditionChangedState.get();
   }
 
   @Override
@@ -235,24 +220,18 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public StateObserver conditionChangedObserver() {
-    return conditionChangedState.observer();
+  public void addConditionChangedListener(EventDataListener<Condition> listener) {
+    conditionChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void addConditionChangedListener(EventListener listener) {
-    conditionChangedState.addListener(listener);
-  }
-
-  @Override
-  public void removeConditionChangedListener(EventListener listener) {
-    conditionChangedState.removeListener(listener);
+  public void removeConditionChangedListener(EventDataListener<Condition> listener) {
+    conditionChangedEvent.removeDataListener(listener);
   }
 
   private void bindEvents() {
     for (ColumnConditionModel<?, ?> conditionModel : conditionModels.values()) {
-      conditionModel.addConditionChangedListener(() ->
-              conditionChangedState.set(!Objects.equals(rememberedCondition, condition())));
+      conditionModel.addConditionChangedListener(() -> conditionChangedEvent.onEvent(condition()));
     }
     simpleConditionStringValue.addDataListener(conditionString -> {
       clearConditions();
