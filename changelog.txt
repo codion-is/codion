@@ -8433,3 +8433,4 @@
   ComponentBuilder.label() added
   LabelBuilder.displayedMnemonic(char) added
   FilteredComboBoxModel.Finder renamed ItemFinder
+  EntityTableConditionModel.rememberCondition() functionality moved to EntityTableModel

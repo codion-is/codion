@@ -7,7 +7,9 @@ import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -60,11 +62,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private final EntityTableConditionModel tableConditionModel;
   private final State queryConditionRequiredState = State.state();
   private final FXEntityEditModel editModel;
+  private final State conditionChangedState = State.state();
 
   private ObservableList<? extends TableColumn<Entity, ?>> columns;
   private ObservableList<TableColumn<Entity, ?>> columnSortOrder;
   private List<AttributeTableColumn<?>> initialColumns;
 
+  private Condition refreshCondition;
   private InsertAction insertAction = InsertAction.ADD_TOP;
   private boolean batchUpdateEnabled = true;
   private boolean removeEntitiesOnDelete = true;
@@ -96,6 +100,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
     this.editModel = editModel;
     this.tableConditionModel = tableConditionModel;
+    this.refreshCondition = tableConditionModel.condition();
     bindEvents();
   }
 
@@ -442,6 +447,11 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
             String.valueOf(delimiter));
   }
 
+  @Override
+  public final StateObserver conditionChangedObserver() {
+    return conditionChangedState.observer();
+  }
+
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #orderBy()}
@@ -650,7 +660,9 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private void bindEvents() {
-    addRefreshListener(tableConditionModel::rememberCondition);
+    addRefreshListener(this::rememberCondition);
+    tableConditionModel.addConditionChangedListener(condition ->
+            conditionChangedState.set(!Objects.equals(refreshCondition, condition)));
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
@@ -661,6 +673,11 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
         selectionModel().clearSelection();
       }
     });
+  }
+
+  private void rememberCondition() {
+    refreshCondition = tableConditionModel.condition();
+    conditionChangedState.set(false);
   }
 
   private static Map<Attribute<?>, ColumnPreferences> createColumnPreferenceMap(List<AttributeTableColumn<?>> initialColumns, JSONObject preferences) {

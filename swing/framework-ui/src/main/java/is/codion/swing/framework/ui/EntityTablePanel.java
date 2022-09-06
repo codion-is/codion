@@ -1437,7 +1437,7 @@ public class EntityTablePanel extends JPanel {
    */
   private JToolBar createRefreshToolBar() {
     Control refreshControl = Control.builder(tableModel::refresh)
-            .enabledState(tableModel.tableConditionModel().conditionChangedObserver())
+            .enabledState(tableModel.conditionChangedObserver())
             .smallIcon(FrameworkIcons.instance().refreshRequired())
             .build();
 
@@ -1534,7 +1534,7 @@ public class EntityTablePanel extends JPanel {
     tableModel.editModel().addEntitiesEditedListener(table::repaint);
     if (conditionPanel != null) {
       Control refreshControl = Control.builder(tableModel::refresh)
-              .enabledState(tableModel.tableConditionModel().conditionChangedObserver())
+              .enabledState(tableModel.conditionChangedObserver())
               .build();
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

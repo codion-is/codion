@@ -10,6 +10,7 @@ import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
@@ -381,6 +382,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return the {@link SelectionModel}
    */
   SelectionModel<Entity> selectionModel();
+
+  /**
+   * @return a StateObserver indicating if the search condition has changed since last refresh
+   */
+  StateObserver conditionChangedObserver();
 
   /**
    * @param listener notified when the selection changes in the underlying selection model

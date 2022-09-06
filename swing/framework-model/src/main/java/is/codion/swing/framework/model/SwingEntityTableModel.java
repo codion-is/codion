@@ -10,9 +10,11 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -48,6 +50,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,6 +78,9 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   /** Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)} */
   private final ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
   private final Value<String> statusMessageValue = Value.value("", "");
+  private final State conditionChangedState = State.state();
+  /** the condition active during the last refresh */
+  private Condition refreshCondition;
   /** the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched */
   private int limit = -1;
   /** Specifies whether the values of hidden columns are included in the underlying query */
@@ -139,6 +145,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
               + ", tableModel: " + editModel.entityType());
     }
     this.tableConditionModel = tableConditionModel;
+    this.refreshCondition = tableConditionModel.condition();
     this.editModel = editModel;
     bindEventsInternal();
     applyPreferences();
@@ -511,6 +518,11 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
+  public final StateObserver conditionChangedObserver() {
+    return conditionChangedState.observer();
+  }
+
+  @Override
   public final void addSelectionChangedListener(EventListener listener) {
     selectionModel().addSelectionChangedListener(listener);
   }
@@ -666,7 +678,9 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   private void bindEventsInternal() {
     columnModel().addColumnHiddenListener(this::onColumnHidden);
-    addRefreshListener(tableConditionModel::rememberCondition);
+    addRefreshListener(this::rememberCondition);
+    tableConditionModel.addConditionChangedListener(condition ->
+            conditionChangedState.set(!Objects.equals(refreshCondition, condition)));
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
@@ -679,6 +693,11 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     selectionModel().addSelectionChangedListener(statusListener);
     addFilterListener(statusListener);
     addTableDataChangedListener(statusListener);
+  }
+
+  private void rememberCondition() {
+    refreshCondition = tableConditionModel.condition();
+    conditionChangedState.set(false);
   }
 
   private void onInsert(List<Entity> insertedEntities) {

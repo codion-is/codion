@@ -6,10 +6,12 @@ package is.codion.framework.model.test;
 import is.codion.common.Operator;
 import is.codion.common.Separators;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -312,6 +315,41 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   public void setColumns() {
     TableModel empModel = createEmployeeTableModel();
     empModel.setVisibleColumns(Employee.COMMISSION, Employee.DEPARTMENT_FK, Employee.HIREDATE);
+  }
+
+  @Test
+  public void conditionChangedListener() {
+    TableModel empModel = createEmployeeTableModel();
+    AtomicInteger counter = new AtomicInteger();
+    EventListener conditionChangedListener = counter::incrementAndGet;
+    empModel.conditionChangedObserver().addListener(conditionChangedListener);
+    ColumnConditionModel<? extends Attribute<Double>, Double> commissionModel =
+            empModel.tableConditionModel().conditionModel(Employee.COMMISSION);
+    commissionModel.setEnabled(true);
+    assertEquals(1, counter.get());
+    commissionModel.setEnabled(false);
+    assertEquals(2, counter.get());
+    commissionModel.setOperator(Operator.GREATER_THAN_OR_EQUAL);
+    commissionModel.setLowerBound(1200d);
+    //automatically set enabled when upper bound is set
+    assertEquals(3, counter.get());
+    empModel.conditionChangedObserver().removeListener(conditionChangedListener);
+  }
+
+  @Test
+  public void testSearchState() {
+    TableModel empModel = createEmployeeTableModel();
+    assertFalse(empModel.conditionChangedObserver().get());
+    ColumnConditionModel<? extends Attribute<String>, String> jobModel =
+            empModel.tableConditionModel().conditionModel(Employee.JOB);
+    jobModel.setEqualValue("job");
+    assertTrue(empModel.conditionChangedObserver().get());
+    jobModel.setEnabled(false);
+    assertFalse(empModel.conditionChangedObserver().get());
+    jobModel.setEnabled(true);
+    assertTrue(empModel.conditionChangedObserver().get());
+    empModel.refresh();
+    assertFalse(empModel.conditionChangedObserver().get());
   }
 
   protected final EntityConnectionProvider connectionProvider() {
