@@ -86,7 +86,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   /** Specifies whether the values of hidden columns are included in the underlying query */
   private boolean queryHiddenColumns = EntityTableModel.QUERY_HIDDEN_COLUMNS.get();
   /** If true then items deleted via the edit model are removed from this table model */
-  private boolean removeEntitiesOnDelete = true;
+  private boolean removeDeletedEntities = true;
   /** The action to perform when entities are inserted via the edit model */
   private InsertAction insertAction = InsertAction.ADD_TOP;
   /** Specifies whether multiple entities can be updated at a time */
@@ -212,13 +212,13 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public final boolean isRemoveEntitiesOnDelete() {
-    return removeEntitiesOnDelete;
+  public final boolean isRemoveDeletedEntities() {
+    return removeDeletedEntities;
   }
 
   @Override
-  public final void setRemoveEntitiesOnDelete(boolean removeEntitiesOnDelete) {
-    this.removeEntitiesOnDelete = removeEntitiesOnDelete;
+  public final void setRemoveDeletedEntities(boolean removeDeletedEntities) {
+    this.removeDeletedEntities = removeDeletedEntities;
   }
 
   @Override
@@ -725,7 +725,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   private void onDelete(List<Entity> deletedEntities) {
-    if (removeEntitiesOnDelete) {
+    if (removeDeletedEntities) {
       removeItems(deletedEntities);
     }
   }
