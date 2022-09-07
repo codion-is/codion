@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.chinook.model;
 
+import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -10,6 +11,8 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookApplicationModel extends SwingEntityApplicationModel {
+
+  public static final Version VERSION = Version.parsePropertiesFile(ChinookApplicationModel.class, "/version.properties");
 
   public ChinookApplicationModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);

@@ -8435,3 +8435,4 @@
   FilteredComboBoxModel.Finder renamed ItemFinder
   EntityTableConditionModel.rememberCondition() functionality moved to EntityTableModel
   EntityTableModel.setRemoveEntitiesOnDelete() renamed setRemoveDeletedEntities()
+  Version.parsePropertiesFile() added

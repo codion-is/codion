@@ -116,7 +116,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
 
   @Override
   protected Version clientVersion() {
-    return Version.version(0, 1, 0);
+    return ChinookApplicationModel.VERSION;
   }
 
   @Override
