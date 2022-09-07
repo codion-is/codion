@@ -142,7 +142,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void removeOnDelete() throws DatabaseException {
+  public void removeDeletedEntities() throws DatabaseException {
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
@@ -154,15 +154,15 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
       tableModel.selectByKey(singletonList(pk1));
       tableModel.selectionModel().setSelectedIndex(0);
       Entity selected = tableModel.selectionModel().getSelectedItem();
-      tableModel.setRemoveEntitiesOnDelete(true);
-      assertTrue(tableModel.isRemoveEntitiesOnDelete());
+      tableModel.setRemoveDeletedEntities(true);
+      assertTrue(tableModel.isRemoveDeletedEntities());
       tableModel.deleteSelected();
       assertFalse(tableModel.containsItem(selected));
 
       tableModel.selectByKey(singletonList(pk2));
       selected = tableModel.selectionModel().getSelectedItem();
-      tableModel.setRemoveEntitiesOnDelete(false);
-      assertFalse(tableModel.isRemoveEntitiesOnDelete());
+      tableModel.setRemoveDeletedEntities(false);
+      assertFalse(tableModel.isRemoveDeletedEntities());
       tableModel.deleteSelected();
       assertTrue(tableModel.containsItem(selected));
     }

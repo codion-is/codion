@@ -71,7 +71,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private Condition refreshCondition;
   private InsertAction insertAction = InsertAction.ADD_TOP;
   private boolean batchUpdateEnabled = true;
-  private boolean removeEntitiesOnDelete = true;
+  private boolean removeDeletedEntities = true;
   private boolean refreshOnForeignKeyConditionValuesSet = true;
   private boolean editable = false;
   private int limit = -1;
@@ -343,13 +343,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final boolean isRemoveEntitiesOnDelete() {
-    return removeEntitiesOnDelete;
+  public final boolean isRemoveDeletedEntities() {
+    return removeDeletedEntities;
   }
 
   @Override
-  public final void setRemoveEntitiesOnDelete(boolean removeEntitiesOnDelete) {
-    this.removeEntitiesOnDelete = removeEntitiesOnDelete;
+  public final void setRemoveDeletedEntities(boolean removeDeletedEntities) {
+    this.removeDeletedEntities = removeDeletedEntities;
   }
 
   @Override
@@ -561,7 +561,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private void onDelete(List<Entity> deletedEntities) {
-    if (removeEntitiesOnDelete) {
+    if (removeDeletedEntities) {
       removeAll(deletedEntities);
     }
   }

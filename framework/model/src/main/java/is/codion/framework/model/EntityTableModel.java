@@ -290,13 +290,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return true if entities that are deleted via the associated edit model
    * should be automatically removed from this table model
    */
-  boolean isRemoveEntitiesOnDelete();
+  boolean isRemoveDeletedEntities();
 
   /**
-   * @param removeEntitiesOnDelete true if entities that are deleted via the associated edit model
+   * @param removeDeletedEntities true if entities that are deleted via the associated edit model
    * should be automatically removed from this table model
    */
-  void setRemoveEntitiesOnDelete(boolean removeEntitiesOnDelete);
+  void setRemoveDeletedEntities(boolean removeDeletedEntities);
 
   /**
    * @return the action performed when entities are inserted via the associated edit model
