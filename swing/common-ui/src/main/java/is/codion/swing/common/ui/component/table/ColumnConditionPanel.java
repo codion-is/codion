@@ -29,6 +29,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.math.BigDecimal;
@@ -401,21 +402,29 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void setSimpleView() {
+    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
     remove(controlPanel);
     setupButtonPanel();
     inputPanel.add(buttonPanel, BorderLayout.EAST);
     add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, inputPanel.getPreferredSize().height));
     revalidate();
+    if (focusOwner != null) {
+      focusOwner.requestFocusInWindow();
+    }
   }
 
   private void setAdvancedView() {
+    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
     setupButtonPanel();
     controlPanel.add(buttonPanel, BorderLayout.EAST);
     add(controlPanel, BorderLayout.NORTH);
     add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, controlPanel.getPreferredSize().height + inputPanel.getPreferredSize().height));
     revalidate();
+    if (focusOwner != null) {
+      focusOwner.requestFocusInWindow();
+    }
   }
 
   private void setupButtonPanel() {
