@@ -8436,3 +8436,4 @@
   EntityTableConditionModel.rememberCondition() functionality moved to EntityTableModel
   EntityTableModel.setRemoveEntitiesOnDelete() renamed setRemoveDeletedEntities()
   Version.parsePropertiesFile() added
+  ColumnConditionPanel bug fixed, now preserves the focus owner when switching to advanced view
