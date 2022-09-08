@@ -3,27 +3,14 @@
  */
 package is.codion.common.version;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.Properties;
 
 final class DefaultVersion implements Version, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  static final Version VERSION;
-
-  static {
-    try {
-      Properties properties = new Properties();
-      properties.load(DefaultVersion.class.getResourceAsStream("version.properties"));
-      VERSION = Version.parse(properties.getProperty("version"));
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
+  static final Version VERSION = Version.parsePropertiesFile(DefaultVersion.class, "version.properties");
 
   private final int major;
   private final int minor;
