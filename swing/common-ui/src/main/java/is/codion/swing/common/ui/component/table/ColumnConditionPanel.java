@@ -29,7 +29,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.KeyboardFocusManager;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.math.BigDecimal;
@@ -43,6 +42,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.component.Components.*;
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
 
@@ -402,27 +402,35 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void setSimpleView() {
-    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+    Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
+    boolean isParentOfFocusOwner = Utilities.getParentOfType(ColumnConditionPanel.class, focusOwner).orElse(null) == this;
+    if (isParentOfFocusOwner) {
+      requestFocusInWindow(true);
+    }
     remove(controlPanel);
     setupButtonPanel();
     inputPanel.add(buttonPanel, BorderLayout.EAST);
     add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, inputPanel.getPreferredSize().height));
     revalidate();
-    if (focusOwner != null) {
+    if (isParentOfFocusOwner) {
       focusOwner.requestFocusInWindow();
     }
   }
 
   private void setAdvancedView() {
-    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+    Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
+    boolean isParentOfFocusOwner = Utilities.getParentOfType(ColumnConditionPanel.class, focusOwner).orElse(null) == this;
+    if (isParentOfFocusOwner) {
+      requestFocusInWindow(true);
+    }
     setupButtonPanel();
     controlPanel.add(buttonPanel, BorderLayout.EAST);
     add(controlPanel, BorderLayout.NORTH);
     add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, controlPanel.getPreferredSize().height + inputPanel.getPreferredSize().height));
     revalidate();
-    if (focusOwner != null) {
+    if (isParentOfFocusOwner) {
       focusOwner.requestFocusInWindow();
     }
   }
