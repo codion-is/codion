@@ -4,6 +4,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
+import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
@@ -56,6 +57,11 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   @Override
   protected WorldAppModel createApplicationModel(EntityConnectionProvider connectionProvider) {
     return new WorldAppModel(connectionProvider);
+  }
+
+  @Override
+  protected Version clientVersion() {
+    return WorldAppModel.VERSION;
   }
 
   @Override
