@@ -73,7 +73,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     Locale.setDefault(new Locale("en", "EN"));
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
-    LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION.set(true);
+    LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.set(true);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityPanel.TOOLBAR_BUTTONS.set(true);

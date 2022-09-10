@@ -40,12 +40,12 @@ import static javax.swing.BorderFactory.createLineBorder;
 public final class LookAndFeelSelectionPanel extends JPanel {
 
   /**
-   * Specifies whether to change the Look and Feel dynamically when choosing<br>
+   * Specifies whether to change the Look and Feel dynamically when selecting<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> CHANGE_DURING_SELECTION =
-          Configuration.booleanValue("is.codion.swing.common.ui.dialog.LookAndFeelSelectionPanel.changeDuringSelection", false);
+  public static final PropertyValue<Boolean> CHANGE_ON_SELECTION =
+          Configuration.booleanValue("is.codion.swing.common.ui.dialog.LookAndFeelSelectionPanel.changeOnSelection", false);
 
   private static final int PADDING = 10;
   private static final int BORDER_THICKNESS = 5;
@@ -60,18 +60,18 @@ public final class LookAndFeelSelectionPanel extends JPanel {
    * Instantiates a new LookAndFeelSelectionPanel
    */
   public LookAndFeelSelectionPanel() {
-    this(CHANGE_DURING_SELECTION.get());
+    this(CHANGE_ON_SELECTION.get());
   }
 
   /**
    * Instantiates a new LookAndFeelSelectionPanel
-   * @param changeDuringSelection if true the look and feel is changed when selected
+   * @param changeOnSelection if true the look and feel is changed when selected
    */
-  public LookAndFeelSelectionPanel(boolean changeDuringSelection) {
+  public LookAndFeelSelectionPanel(boolean changeOnSelection) {
     this.comboBoxModel = ItemComboBoxModel.createModel(initializeAvailableLookAndFeels());
     currentLookAndFeel().ifPresent(comboBoxModel::setSelectedItem);
     this.originalLookAndFeel = comboBoxModel.selectedValue().value();
-    if (changeDuringSelection) {
+    if (changeOnSelection) {
       comboBoxModel.addSelectionListener(lookAndFeelProvider ->
                       SwingUtilities.invokeLater(() -> LookAndFeelProvider.enableLookAndFeel(lookAndFeelProvider.value())));
     }
