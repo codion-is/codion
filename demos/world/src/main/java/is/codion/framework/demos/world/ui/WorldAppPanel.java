@@ -4,6 +4,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
+import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
@@ -59,6 +60,11 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   }
 
   @Override
+  protected Version clientVersion() {
+    return WorldAppModel.VERSION;
+  }
+
+  @Override
   protected String defaultLookAndFeelName() {
     return FlatDarkLaf.class.getName();
   }
@@ -67,7 +73,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     Locale.setDefault(new Locale("en", "EN"));
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
-    LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION.set(true);
+    LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.set(true);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityPanel.TOOLBAR_BUTTONS.set(true);

@@ -61,5 +61,21 @@ test {
     systemProperty "codion.test.user", "scott:tiger"
 }
 
+task writeVersion {
+    group 'build'
+    def versionFile = file(sourceSets.main.output.resourcesDir.getAbsolutePath() + "/version.properties")
+    inputs.property("version", project.version)
+    outputs.file(versionFile)
+    outputs.upToDateWhen { false }
+
+    doLast {
+        def versionProperties = new Properties()
+        versionProperties.put('version', project.version)
+        versionProperties.store(versionFile.newWriter(), null)
+    }
+}
+
+classes.dependsOn writeVersion
+
 //https://github.com/java9-modularity/gradle-modules-plugin/issues/165
 modularity.disableEffectiveArgumentsAdjustment()

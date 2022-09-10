@@ -74,7 +74,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private final ItemRandomizerPanel<UsageScenario<T>> scenarioPanel;
 
   static {
-    LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION.set(true);
+    LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName(LoadTestPanel.class.getName()))

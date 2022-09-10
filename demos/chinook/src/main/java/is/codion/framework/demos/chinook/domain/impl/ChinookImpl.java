@@ -293,7 +293,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Invoice.TOTAL)
                     .maximumFractionDigits(2),
             subqueryProperty(Invoice.TOTAL_SUBQUERY,
-                    "select sum(unitprice * quantity) from chinook.invoiceline " +
+                    "select sum(unitprice * quantity) " +
+                            "from chinook.invoiceline " +
                             "where invoiceid = invoice.invoiceid")
                     .maximumFractionDigits(2)
                     .hidden(true))

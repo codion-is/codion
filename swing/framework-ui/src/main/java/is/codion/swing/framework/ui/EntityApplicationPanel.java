@@ -720,7 +720,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)
    * @see LookAndFeelProvider#getLookAndFeelProvider(String)
    * @see Dialogs#lookAndFeelSelectionDialog()
-   * @see LookAndFeelSelectionPanel#CHANGE_DURING_SELECTION
+   * @see LookAndFeelSelectionPanel#CHANGE_ON_SELECTION
    * @return a Control for selecting the application look and feel
    */
   protected final Control createSelectLookAndFeelControl() {

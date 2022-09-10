@@ -257,7 +257,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public static void main(String[] arguments) {
     UiManagerDefaults.initialize();
     Clients.resolveTrustStore();
-    LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION.set(true);
+    LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     SwingUtilities.invokeLater(() -> {
