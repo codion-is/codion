@@ -17,6 +17,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
@@ -72,7 +73,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     this.originalLookAndFeel = comboBoxModel.selectedValue().value();
     if (changeDuringSelection) {
       comboBoxModel.addSelectionListener(lookAndFeelProvider ->
-              LookAndFeelProvider.enableLookAndFeel(lookAndFeelProvider.value()));
+                      SwingUtilities.invokeLater(() -> LookAndFeelProvider.enableLookAndFeel(lookAndFeelProvider.value())));
     }
 
     setLayout(Layouts.borderLayout());
