@@ -7,7 +7,6 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.DefaultEntitySearchModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.framework.ui.TestDomain.Department;
@@ -34,7 +33,7 @@ public class EntitySearchFieldTest {
 
   @Test
   void componentValue() throws Exception {
-    EntitySearchModel model = new DefaultEntitySearchModel(Department.TYPE, CONNECTION_PROVIDER);
+    EntitySearchModel model = EntitySearchModel.entitySearchModel(Department.TYPE, CONNECTION_PROVIDER);
     ComponentValue<Entity, EntitySearchField> value = EntitySearchField.builder(model)
             .buildComponentValue();
 

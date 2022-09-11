@@ -36,7 +36,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
       return (ColumnConditionModel<A, T>) new DefaultForeignKeyConditionModel(foreignKey,
-              new DefaultEntitySearchModel(foreignKey.referencedType(), connectionProvider));
+              EntitySearchModel.entitySearchModel(foreignKey.referencedType(), connectionProvider));
     }
 
     ColumnProperty<T> property = definition(attribute.entityType()).columnProperty(attribute);

@@ -11,6 +11,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
@@ -20,8 +21,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Responsible for performing entity searches based on a search text and set of condition attributes.
+ * Factory for {@link EntitySearchModel} instances via {@link EntitySearchModel#entitySearchModel(EntityType, EntityConnectionProvider)}.
  */
 public interface EntitySearchModel {
 
@@ -175,5 +179,29 @@ public interface EntitySearchModel {
      * @return a State representing whether the search is case-sensitive
      */
     State caseSensitiveState();
+  }
+
+  /**
+   * Instantiates a new {@link EntitySearchModel}, using the search properties for the given entity type
+   * @param entityType the type of the entity to search
+   * @param connectionProvider the EntityConnectionProvider to use when performing the search
+   * @see EntityDefinition#searchAttributes()
+   * @return a new {@link EntitySearchModel} instance
+   */
+  static EntitySearchModel entitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+    return entitySearchModel(requireNonNull(entityType), requireNonNull(connectionProvider),
+            connectionProvider.entities().definition(entityType).searchAttributes());
+  }
+
+  /**
+   * Instantiates a new {@link EntitySearchModel}
+   * @param entityType the type of the entity to search
+   * @param connectionProvider the EntityConnectionProvider to use when performing the search
+   * @param searchAttributes the attributes to search by
+   * @return a new {@link EntitySearchModel} instance
+   */
+  static EntitySearchModel entitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                             Collection<Attribute<String>> searchAttributes) {
+    return new DefaultEntitySearchModel(requireNonNull(entityType), requireNonNull(connectionProvider), requireNonNull(searchAttributes));
   }
 }

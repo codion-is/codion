@@ -37,10 +37,7 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-/**
- * A default EntitySearchModel implementation
- */
-public final class DefaultEntitySearchModel implements EntitySearchModel {
+final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
   private static final String DEFAULT_SEPARATOR = ",";
@@ -83,27 +80,8 @@ public final class DefaultEntitySearchModel implements EntitySearchModel {
   private Comparator<Entity> resultSorter = new EntityComparator();
   private String description;
 
-  /**
-   * Instantiates a new DefaultEntitySearchModel, using the search properties for the given entity type
-   * @param entityType the type of the entity to search
-   * @param connectionProvider the EntityConnectionProvider to use when performing the search
-   * @see EntityDefinition#searchAttributes()
-   */
-  public DefaultEntitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, connectionProvider.entities().definition(entityType).searchAttributes());
-  }
-
-  /**
-   * Instantiates a new EntitySearchModel
-   * @param entityType the type of the entity to search
-   * @param connectionProvider the EntityConnectionProvider to use when performing the search
-   * @param searchAttributes the attributes to search by
-   */
-  public DefaultEntitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                  Collection<Attribute<String>> searchAttributes) {
-    requireNonNull(entityType, "entityType");
-    requireNonNull(connectionProvider, "connectionProvider");
-    requireNonNull(searchAttributes, "searchAttributes");
+  DefaultEntitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                           Collection<Attribute<String>> searchAttributes) {
     validateSearchAttributes(entityType, searchAttributes);
     this.connectionProvider = connectionProvider;
     this.entityType = entityType;
