@@ -106,6 +106,11 @@ public interface ColumnConditionModel<C, T> {
   Value<AutomaticWildcard> automaticWildcardValue();
 
   /**
+   * @return the {@link State} controlling whether this model is enabled automatically when a condition value is specified
+   */
+  State autoEnableState();
+
+  /**
    * @param locked true to lock this model, false to unlock
    */
   void setLocked(boolean locked);
@@ -173,16 +178,6 @@ public interface ColumnConditionModel<C, T> {
   void setOperator(Operator operator);
 
   /**
-   * Select the previous operator, with wrap-around
-   */
-  void previousOperator();
-
-  /**
-   * Select the next operator, with wrap-around
-   */
-  void nextOperator();
-
-  /**
    * @return the operators available in this condition model
    */
   List<Operator> operators();
@@ -191,17 +186,6 @@ public interface ColumnConditionModel<C, T> {
    * @return the Value controlling the character used as a wildcard when working with strings
    */
   Value<Character> wildcardValue();
-
-  /**
-   * @return true if auto enable is enabled
-   */
-  boolean isAutoEnable();
-
-  /**
-   * If set, this model automatically enables itself when a condition is specified
-   * @param autoEnable true to enable, false to disable
-   */
-  void setAutoEnable(boolean autoEnable);
 
   /**
    * @return true if this condition model is enabled

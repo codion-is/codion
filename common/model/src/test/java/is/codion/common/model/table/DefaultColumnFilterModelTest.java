@@ -15,7 +15,7 @@ public class DefaultColumnFilterModelTest {
   @Test
   void includeInteger() {
     DefaultColumnFilterModel<String, String, Integer> conditionModel = new DefaultColumnFilterModel<>("test", Integer.class, '%');
-    conditionModel.setAutoEnable(false);
+    conditionModel.autoEnableState().set(false);
     conditionModel.setOperator(Operator.EQUAL);
 
     conditionModel.setEqualValue(null);
@@ -129,7 +129,7 @@ public class DefaultColumnFilterModelTest {
   @Test
   void includeString() {
     DefaultColumnFilterModel<String, String, String> conditionModel = new DefaultColumnFilterModel<>("test", String.class, '%');
-    conditionModel.setAutoEnable(false);
+    conditionModel.autoEnableState().set(false);
     conditionModel.setEnabled(true);
 
     conditionModel.setOperator(Operator.EQUAL);

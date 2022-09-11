@@ -507,21 +507,22 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void addStringConfigurationPopupMenu() {
+    Controls.Builder builder = Controls.builder()
+            .control(ToggleControl.builder(conditionModel.autoEnableState())
+                    .caption(MESSAGES.getString("auto_enable")));
     if (conditionModel.columnClass().equals(String.class)) {
-      JPopupMenu popupMenu = Controls.builder()
-              .control(ToggleControl.builder(conditionModel.caseSensitiveState())
+      builder.control(ToggleControl.builder(conditionModel.caseSensitiveState())
                       .caption(MESSAGES.getString("case_sensitive"))
                       .build())
-              .controls(createAutomaticWildcardControls())
-              .build()
-              .createPopupMenu();
-      equalField.setComponentPopupMenu(popupMenu);
-      if (lowerBoundField != null) {
-        lowerBoundField.setComponentPopupMenu(popupMenu);
-      }
-      if (upperBoundField != null) {
-        upperBoundField.setComponentPopupMenu(popupMenu);
-      }
+              .controls(createAutomaticWildcardControls());
+    }
+    JPopupMenu popupMenu = builder.build().createPopupMenu();
+    equalField.setComponentPopupMenu(popupMenu);
+    if (lowerBoundField != null) {
+      lowerBoundField.setComponentPopupMenu(popupMenu);
+    }
+    if (upperBoundField != null) {
+      upperBoundField.setComponentPopupMenu(popupMenu);
     }
   }
 
