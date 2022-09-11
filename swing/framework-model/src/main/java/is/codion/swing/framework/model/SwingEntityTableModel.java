@@ -26,7 +26,6 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
@@ -55,6 +54,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -127,7 +127,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @param editModel the edit model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel) {
-    this(editModel, new DefaultEntityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
+    this(editModel, entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
             new DefaultFilterModelFactory(), new SwingConditionModelFactory(editModel.connectionProvider())));
   }
 

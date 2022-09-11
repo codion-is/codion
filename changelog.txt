@@ -8446,3 +8446,4 @@
   ColumnConditionModel.set/isAutoEnable() replaced with autoEnableState()
   ColumnConditionPanel, configuration popup menu now added to all value fields, now contains a control for auto enable
   ColumnConditionModel.nextOperator() and previousOperator() removed
+  DefaultEntityTableConditionModel no longer public, factory method added to EntityTableConditionModel

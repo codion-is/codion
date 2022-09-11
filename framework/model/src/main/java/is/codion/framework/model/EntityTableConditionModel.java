@@ -9,6 +9,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.value.Value;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -23,6 +24,8 @@ import java.util.function.Supplier;
  * This interface defines filtering functionality, which refers to showing/hiding entities already available
  * in a table model and searching functionality, which refers to configuring the underlying query,
  * which then needs to be re-run.<br>
+ * Factory for {@link EntityTableConditionModel} instances via
+ * {@link EntityTableConditionModel#entityTableConditionModel(EntityType, EntityConnectionProvider, FilterModelFactory, ConditionModelFactory)}
  */
 public interface EntityTableConditionModel {
 
@@ -170,4 +173,17 @@ public interface EntityTableConditionModel {
    * @param listener the listener to remove
    */
   void removeConditionChangedListener(EventDataListener<Condition> listener);
+
+  /**
+   * Creates a new {@link EntityTableConditionModel}
+   * @param entityType the underlying entity type
+   * @param connectionProvider a EntityConnectionProvider instance
+   * @param filterModelFactory provides the column filter models for this table condition model, null if not required
+   * @param conditionModelFactory provides the column condition models for this table condition model
+   * @return a new {@link EntityTableConditionModel} instance
+   */
+  static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                                             FilterModelFactory filterModelFactory, ConditionModelFactory conditionModelFactory) {
+    return new DefaultEntityTableConditionModel(entityType, connectionProvider, filterModelFactory, conditionModelFactory);
+  }
 }

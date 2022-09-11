@@ -11,7 +11,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.model.DefaultConditionModelFactory;
-import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
@@ -30,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
+import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,7 +98,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void nonMatchingConditionModelEntityType() {
-    EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(Department.TYPE, connectionProvider(),
+    EntityTableConditionModel conditionModel = entityTableConditionModel(Department.TYPE, connectionProvider(),
             new DefaultFilterModelFactory(), new DefaultConditionModelFactory(connectionProvider()));
     assertThrows(IllegalArgumentException.class, () ->
             new SwingEntityTableModel(new SwingEntityEditModel(Employee.TYPE, connectionProvider()), conditionModel));
