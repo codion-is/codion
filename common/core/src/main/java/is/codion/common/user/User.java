@@ -18,12 +18,12 @@ public interface User {
   String username();
 
   /**
-   * @param password the password
+   * @param password the password, null in case of an empty password
    */
   void setPassword(char[] password);
 
   /**
-   * @return the password
+   * @return the password, an empty array in case of an empty password
    */
   char[] getPassword();
 

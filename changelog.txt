@@ -8442,3 +8442,4 @@
   LookAndFeelSelectionPanel bug fixed, now uses SwingUtilities.invokeLater() when changing the look and feel on combo box selection change, prevents NullPointerException in BasicComboBoxUI.selectNextPossibleValue(), after the comboBox field had been set to null during a call to uninstallUI()
   LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION renamed CHANGE_ON_SELECTION
   User.parse() refactoring
+  DefaultUser.setPassword() and getPassword() now copy the char array

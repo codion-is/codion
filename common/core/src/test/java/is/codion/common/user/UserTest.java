@@ -34,6 +34,9 @@ public class UserTest {
     assertEquals(user, User.parse("scott:blabla"));
     assertEquals(User.user("scott"), User.user("ScoTT"));
     assertEquals(Serializer.deserialize(Serializer.serialize(User.user("scott", "test".toCharArray()))), User.user("Scott"));
+    char[] password = new char[] {'0', '1'};
+    user.setPassword(password);
+    assertNotSame(password, user.getPassword());
   }
 
   @Test

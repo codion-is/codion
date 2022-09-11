@@ -33,12 +33,12 @@ final class DefaultUser implements User, Serializable {
 
   @Override
   public void setPassword(char[] password) {
-    this.password = password == null ? new char[0] : password;
+    this.password = password == null ? new char[0] : Arrays.copyOf(password, password.length);
   }
 
   @Override
   public char[] getPassword() {
-    return password;
+    return Arrays.copyOf(password, password.length);
   }
 
   @Override
