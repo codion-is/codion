@@ -40,6 +40,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   private final Value<AutomaticWildcard> automaticWildcardValue = Value.value(AUTOMATIC_WILDCARD.get(), AutomaticWildcard.NONE);
   private final Value<Character> wildcardValue = Value.value('%', '%');
 
+  private final State autoEnableState = State.state(true);
   private final State enabledState = State.state();
   private final State lockedState = State.state();
 
@@ -48,8 +49,6 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   private final Format format;
   private final String dateTimePattern;
   private final List<Operator> operators;
-
-  private boolean autoEnable = true;
 
   /**
    * Instantiates a DefaultColumnConditionModel.
@@ -198,16 +197,6 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
-  public final void previousOperator() {
-    operatorValue.set(operators.get(previousOperatorIndex()));
-  }
-
-  @Override
-  public final void nextOperator() {
-    operatorValue.set(operators.get(nextOperatorIndex()));
-  }
-
-  @Override
   public final List<Operator> operators() {
     return operators;
   }
@@ -215,16 +204,6 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   @Override
   public final Value<Character> wildcardValue() {
     return wildcardValue;
-  }
-
-  @Override
-  public final boolean isAutoEnable() {
-    return autoEnable;
-  }
-
-  @Override
-  public final void setAutoEnable(boolean autoEnable) {
-    this.autoEnable = autoEnable;
   }
 
   @Override
@@ -240,6 +219,11 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   @Override
   public final Value<AutomaticWildcard> automaticWildcardValue() {
     return automaticWildcardValue;
+  }
+
+  @Override
+  public final State autoEnableState() {
+    return autoEnableState;
   }
 
   @Override
@@ -385,24 +369,13 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
     return value;
   }
 
-  private int nextOperatorIndex() {
-    int currentIndex = operators.indexOf(operatorValue.get());
-
-    return currentIndex == operators.size() - 1 ? 0 : currentIndex + 1;
-  }
-
-  private int previousOperatorIndex() {
-    int currentIndex = operators.indexOf(operatorValue.get());
-
-    return currentIndex == 0 ? operators.size() - 1 : currentIndex - 1;
-  }
-
   private void bindEvents() {
     EventListener autoEnableListener = new AutoEnableListener();
     equalValues.addListener(autoEnableListener);
     upperBoundValue.addListener(autoEnableListener);
     lowerBoundValue.addListener(autoEnableListener);
     operatorValue.addListener(autoEnableListener);
+    autoEnableState.addListener(autoEnableListener);
     equalValues.addListener(conditionChangedEvent);
     upperBoundValue.addListener(conditionChangedEvent);
     lowerBoundValue.addListener(conditionChangedEvent);
@@ -428,7 +401,7 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
 
     @Override
     public void onEvent() {
-      if (autoEnable) {
+      if (autoEnableState.get()) {
         switch (operatorValue.get()) {
           case EQUAL:
           case NOT_EQUAL:

@@ -43,8 +43,7 @@ public class DefaultColumnConditionModelTest {
   void testSetBounds() {
     DefaultColumnConditionModel<String, String> model =
             new DefaultColumnConditionModel<>("test", String.class, Arrays.asList(Operator.values()), '%');
-    model.setAutoEnable(false);
-    assertFalse(model.isAutoEnable());
+    model.autoEnableState().set(false);
     model.addEqualsValueListener(equalToListener);
     model.addUpperBoundListener(upperBoundListener);
     model.addLowerBoundListener(lowerBoundListener);
@@ -120,7 +119,7 @@ public class DefaultColumnConditionModelTest {
   @Test
   void test() throws Exception {
     DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, ALL_OPERATORS, '%');
-    assertTrue(model.isAutoEnable());
+    assertTrue(model.autoEnableState().get());
     model.setEqualValue("test");
     assertTrue(model.isEnabled());
     model.caseSensitiveState().set(false);

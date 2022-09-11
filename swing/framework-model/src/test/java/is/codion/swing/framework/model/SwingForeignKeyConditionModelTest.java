@@ -8,7 +8,6 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.TestDomain;
@@ -19,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
+import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingForeignKeyConditionModelTest {
@@ -31,7 +31,7 @@ public class SwingForeignKeyConditionModelTest {
             .user(UNIT_TEST_USER)
             .build();
 
-  private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(Employee.TYPE,
+  private final EntityTableConditionModel conditionModel = entityTableConditionModel(Employee.TYPE,
           CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new SwingConditionModelFactory(CONNECTION_PROVIDER));
 
   @Test

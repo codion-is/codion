@@ -21,7 +21,6 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
@@ -46,6 +45,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -84,7 +84,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
 
   public FXEntityListModel(FXEntityEditModel editModel) {
-    this(editModel, new DefaultEntityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
+    this(editModel, entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
             null, new FXConditionModelFactory(editModel.connectionProvider())));
   }
 

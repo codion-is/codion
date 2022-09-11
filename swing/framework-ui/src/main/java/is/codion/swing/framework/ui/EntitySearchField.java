@@ -13,7 +13,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.framework.model.DefaultEntitySearchModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
@@ -357,7 +356,7 @@ public final class EntitySearchField extends JTextField {
 
   private static List<Entity> lookupEntities(EntityType entityType, EntityConnectionProvider connectionProvider,
                                              boolean singleSelection, JComponent dialogParent, String dialogTitle) {
-    EntitySearchModel searchModel = new DefaultEntitySearchModel(entityType, connectionProvider);
+    EntitySearchModel searchModel = EntitySearchModel.entitySearchModel(entityType, connectionProvider);
     searchModel.multipleSelectionEnabledState().set(!singleSelection);
 
     return Dialogs.showInputDialog(EntitySearchField.builder(searchModel)

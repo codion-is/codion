@@ -8479,3 +8479,10 @@
   ColumnConditionPanel bug fixed, now prevents focus from jumping around when switching to advanced view
   LookAndFeelSelectionPanel bug fixed, now uses SwingUtilities.invokeLater() when changing the look and feel on combo box selection change, prevents NullPointerException in BasicComboBoxUI.selectNextPossibleValue(), after the comboBox field had been set to null during a call to uninstallUI()
   LookAndFeelSelectionPanel.CHANGE_DURING_SELECTION renamed CHANGE_ON_SELECTION
+  User.parse() refactoring
+  DefaultUser.setPassword() and getPassword() now copy the char array
+  ColumnConditionModel.set/isAutoEnable() replaced with autoEnableState()
+  ColumnConditionPanel, configuration popup menu now added to all value fields, now contains a control for auto enable
+  ColumnConditionModel.nextOperator() and previousOperator() removed
+  DefaultEntityTableConditionModel no longer public, factory method added to EntityTableConditionModel
+  DefaultEntitySearchModel no longer public, factory methods added to EntitySearchModel

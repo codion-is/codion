@@ -18,12 +18,12 @@ public interface User {
   String username();
 
   /**
-   * @param password the password
+   * @param password the password, null in case of an empty password
    */
   void setPassword(char[] password);
 
   /**
-   * @return the password
+   * @return the password, an empty array in case of an empty password
    */
   char[] getPassword();
 
@@ -54,7 +54,7 @@ public interface User {
   /**
    * Parses a User from a string, containing a username and password with a single ':' as delimiter, i.e. "user:pass"
    * or "user:" for en empty password. If no delimiter is found the whole string is assumed to be the username
-   * and the password empty. The username portion is trimmed. Any delimeter beyond the initial one are assumed
+   * and the password empty. The username portion is trimmed. Any delimeters beyond the initial one are assumed
    * to be part of the password.
    * @param userPassword the username and password string
    * @return a User with the given username and password
@@ -64,13 +64,13 @@ public interface User {
     if (split.length == 1) {
       return new DefaultUser(split[0].trim(), null);
     }
-    if (split.length != 2) {
-      throw new IllegalArgumentException("Expecting a username and password with a single ':' as delimiter, multiple delimiters found");
-    }
-    if (split[0].isEmpty() || split[1].isEmpty()) {
+    //here split is of length 2, as per split limit
+    String username = split[0];
+    String password = split[1];
+    if (username.isEmpty() || password.isEmpty()) {
       throw new IllegalArgumentException("Both username and password are required");
     }
 
-    return new DefaultUser(split[0].trim(), split[1].toCharArray());
+    return new DefaultUser(username.trim(), password.toCharArray());
   }
 }

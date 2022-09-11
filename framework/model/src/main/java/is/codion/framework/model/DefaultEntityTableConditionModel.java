@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default EntityTableConditionModel implementation
  */
-public final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
+final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
 
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
@@ -50,16 +50,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private Supplier<Condition> additionalConditionSupplier;
   private Conjunction conjunction = Conjunction.AND;
 
-  /**
-   * Instantiates a new DefaultEntityTableConditionModel
-   * @param entityType the underlying entity type
-   * @param connectionProvider a EntityConnectionProvider instance
-   * @param filterModelFactory provides the column filter models for this table condition model, null if not required
-   * @param conditionModelFactory provides the column condition models for this table condition model
-   */
-  public DefaultEntityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                          FilterModelFactory filterModelFactory,
-                                          ConditionModelFactory conditionModelFactory) {
+  DefaultEntityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                   FilterModelFactory filterModelFactory,
+                                   ConditionModelFactory conditionModelFactory) {
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     createConditionModels(entityType, requireNonNull(conditionModelFactory, "conditionModelFactory"));
