@@ -8448,3 +8448,4 @@
   ColumnConditionModel.nextOperator() and previousOperator() removed
   DefaultEntityTableConditionModel no longer public, factory method added to EntityTableConditionModel
   DefaultEntitySearchModel no longer public, factory methods added to EntitySearchModel
+  LookAndFeelSelectionPanel constructor no longer public, factory methods added
