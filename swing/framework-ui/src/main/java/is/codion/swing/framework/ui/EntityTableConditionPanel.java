@@ -30,36 +30,22 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A UI component based on the EntityTableConditionModel
+ * A UI component based on the EntityTableConditionModel.
+ * For instances use the {@link #entityTableConditionPanel(EntityTableConditionModel, FilteredTableColumnModel)} or
+ * {@link #entityTableConditionPanel(EntityTableConditionModel, FilteredTableColumnModel, ConditionPanelFactory)} factory methods.
  * @see EntityTableConditionModel
  * @see ColumnConditionPanel
+ * @see #entityTableConditionPanel(EntityTableConditionModel, FilteredTableColumnModel)
+ * @see #entityTableConditionPanel(EntityTableConditionModel, FilteredTableColumnModel, ConditionPanelFactory)
  */
 public final class EntityTableConditionPanel extends AbstractEntityTableConditionPanel {
 
   private final TableColumnComponentPanel<ColumnConditionPanel<Attribute<?>, ?>> conditionPanel;
   private final FilteredTableColumnModel<Attribute<?>> columnModel;
 
-  /**
-   * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on
-   * an {@link TableColumnComponentPanel} containing {@link ColumnConditionPanel}s
-   * @param tableConditionModel the table condition model
-   * @param columnModel the column model
-   */
-  public EntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
-                                   FilteredTableColumnModel<Attribute<?>> columnModel) {
-    this(tableConditionModel, columnModel, new EntityConditionPanelFactory(tableConditionModel));
-  }
-
-  /**
-   * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on
-   * an {@link TableColumnComponentPanel} containing {@link ColumnConditionPanel}s
-   * @param tableConditionModel the table condition model
-   * @param columnModel the column model
-   * @param conditionPanelFactory the condition panel factory
-   */
-  public EntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
-                                   FilteredTableColumnModel<Attribute<?>> columnModel,
-                                   ConditionPanelFactory conditionPanelFactory) {
+  private EntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
+                                    FilteredTableColumnModel<Attribute<?>> columnModel,
+                                    ConditionPanelFactory conditionPanelFactory) {
     super(tableConditionModel, requireNonNull(columnModel).columns());
     requireNonNull(conditionPanelFactory);
     this.conditionPanel = new TableColumnComponentPanel<>(columnModel, createConditionPanels(columnModel, conditionPanelFactory));
@@ -146,6 +132,32 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     }
 
     throw new IllegalArgumentException("No condition panel available for attribute: " + attribute);
+  }
+
+  /**
+   * Instantiates a new {@link EntityTableConditionPanel} with a default condition panel setup, based on
+   * an {@link TableColumnComponentPanel} containing {@link ColumnConditionPanel}s
+   * @param tableConditionModel the table condition model
+   * @param columnModel the column model
+   * @return a new {@link EntityTableConditionPanel}
+   */
+  public static EntityTableConditionPanel entityTableConditionPanel(EntityTableConditionModel tableConditionModel,
+                                                                    FilteredTableColumnModel<Attribute<?>> columnModel) {
+    return entityTableConditionPanel(tableConditionModel, columnModel, new EntityConditionPanelFactory(tableConditionModel));
+  }
+
+  /**
+   * Instantiates a new {@link EntityTableConditionPanel} with a default condition panel setup, based on
+   * an {@link TableColumnComponentPanel} containing {@link ColumnConditionPanel}s
+   * @param tableConditionModel the table condition model
+   * @param columnModel the column model
+   * @param conditionPanelFactory the condition panel factory
+   * @return a new {@link EntityTableConditionPanel}
+   */
+  public static EntityTableConditionPanel entityTableConditionPanel(EntityTableConditionModel tableConditionModel,
+                                                                    FilteredTableColumnModel<Attribute<?>> columnModel,
+                                                                    ConditionPanelFactory conditionPanelFactory) {
+    return new EntityTableConditionPanel(tableConditionModel, columnModel, conditionPanelFactory);
   }
 
   @Override

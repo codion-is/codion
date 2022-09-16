@@ -95,6 +95,7 @@ import java.util.Set;
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.framework.ui.EntityTableConditionPanel.entityTableConditionPanel;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.util.Objects.requireNonNull;
 
@@ -335,7 +336,7 @@ public class EntityTablePanel extends JPanel {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(SwingEntityTableModel tableModel) {
-    this(tableModel, new EntityTableConditionPanel(tableModel.tableConditionModel(), tableModel.columnModel()));
+    this(tableModel, entityTableConditionPanel(tableModel.tableConditionModel(), tableModel.columnModel()));
   }
 
   /**

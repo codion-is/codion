@@ -8453,3 +8453,4 @@
   ConditionObjectMapper constructor now private, factory method added
   SwingEntityTreeModel bug fixed, bindEvents() was not called in overloaded constructor
   EntityTree and SwingEntityTreeModel, public constructors replaced with factory methods
+  EntityTableConditionPanel, EntityTableSimpleConditionPanel, public constructors replaced with factory methods
