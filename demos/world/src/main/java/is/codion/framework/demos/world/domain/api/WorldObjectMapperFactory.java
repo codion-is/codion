@@ -24,7 +24,7 @@ public final class WorldObjectMapperFactory extends DefaultEntityObjectMapperFac
   }
 
   @Override
-  public EntityObjectMapper createEntityObjectMapper(Entities entities) {
+  public EntityObjectMapper entityObjectMapper(Entities entities) {
     StdSerializer<Location> locationSerializer = new StdSerializer<Location>(Location.class) {
       @Override
       public void serialize(Location value, JsonGenerator generator,
@@ -46,7 +46,7 @@ public final class WorldObjectMapperFactory extends DefaultEntityObjectMapperFac
       }
     };
 
-    EntityObjectMapper objectMapper = EntityObjectMapper.createEntityObjectMapper(entities);
+    EntityObjectMapper objectMapper = EntityObjectMapper.entityObjectMapper(entities);
     objectMapper.addSerializer(Location.class, locationSerializer);
     objectMapper.addDeserializer(Location.class, locationDeserializer);
 

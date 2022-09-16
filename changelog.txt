@@ -8449,3 +8449,5 @@
   DefaultEntityTableConditionModel no longer public, factory method added to EntityTableConditionModel
   DefaultEntitySearchModel no longer public, factory methods added to EntitySearchModel
   LookAndFeelSelectionPanel constructor no longer public, factory methods added
+  EntityObjectMapper.createEntityObjectMapper() and EntityObjectMapperFactory.createEntityObjectMapper() renamed entityObjectMapper(), for consistency
+  ConditionObjectMapper constructor now private, factory method added

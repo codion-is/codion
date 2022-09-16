@@ -21,7 +21,7 @@ public interface EntityObjectMapperFactory {
    * @param entities the domain entities
    * @return a new {@link EntityObjectMapper} instance.
    */
-  EntityObjectMapper createEntityObjectMapper(Entities entities);
+  EntityObjectMapper entityObjectMapper(Entities entities);
 
   /**
    * Returns true if this mapper factory is compatible with the given domain type.
@@ -47,8 +47,8 @@ public interface EntityObjectMapperFactory {
 
     return new EntityObjectMapperFactory() {
       @Override
-      public EntityObjectMapper createEntityObjectMapper(Entities entities) {
-        return EntityObjectMapper.createEntityObjectMapper(entities);
+      public EntityObjectMapper entityObjectMapper(Entities entities) {
+        return EntityObjectMapper.entityObjectMapper(entities);
       }
 
       @Override
