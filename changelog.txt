@@ -8456,3 +8456,4 @@
   EntityTableConditionPanel, EntityTableSimpleConditionPanel, public constructors replaced with factory methods
   SizedDocument, public constructor replaced with factory methods
   TemporalInputPanel, constructor now package private, builder available
+  SwingForeignKeyConditionModel, public constructor replaced with factory method

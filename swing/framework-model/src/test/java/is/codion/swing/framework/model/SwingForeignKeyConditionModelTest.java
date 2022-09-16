@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
+import static is.codion.swing.framework.model.SwingForeignKeyConditionModel.swingForeignKeyConditionModel;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingForeignKeyConditionModelTest {
@@ -44,7 +45,7 @@ public class SwingForeignKeyConditionModelTest {
   @Test
   void searchEntitiesComboBoxModel() throws DatabaseException {
     SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
-    SwingForeignKeyConditionModel conditionModel = new SwingForeignKeyConditionModel(Employee.DEPARTMENT_FK, comboBoxModel);
+    SwingForeignKeyConditionModel conditionModel = swingForeignKeyConditionModel(Employee.DEPARTMENT_FK, comboBoxModel);
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
     comboBoxModel.setSelectedItem(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
