@@ -69,9 +69,13 @@ import static java.util.Objects.requireNonNull;
 /**
  * A JTable implementation for {@link FilteredTableModel}.
  * Note that for the table header to display you must add this table to a JScrollPane.
+ * For instances use the {@link #filteredTable(FilteredTableModel)} or
+ * {@link #filteredTable(FilteredTableModel, ConditionPanelFactory)} factory methods.
  * @param <R> the type representing rows
  * @param <C> the type used to identify columns
  * @param <T> the table model type
+ * @see #filteredTable(FilteredTableModel)
+ * @see #filteredTable(FilteredTableModel, ConditionPanelFactory)
  */
 public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> extends JTable {
 
@@ -164,20 +168,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    */
   private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 
-  /**
-   * Instantiates a new FilteredTable using the given model
-   * @param tableModel the table model
-   */
-  public FilteredTable(T tableModel) {
-    this(tableModel, new DefaultConditionPanelFactory<>(tableModel));
-  }
-
-  /**
-   * Instantiates a new FilteredTable using the given model
-   * @param tableModel the table model
-   * @param conditionPanelFactory the column condition panel factory
-   */
-  public FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory) {
+  private FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.columnModel(), tableModel.selectionModel());
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
@@ -443,6 +434,31 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    */
   public void removeDoubleClickListener(EventDataListener<MouseEvent> listener) {
     doubleClickedEvent.removeDataListener(listener);
+  }
+
+  /**
+   * Instantiates a new {@link FilteredTable} using the given model
+   * @param tableModel the table model
+   * @param <R> the type representing rows
+   * @param <C> the type used to identify columns
+   * @param <T> the table model type
+   * @return a new {@link FilteredTable}
+   */
+  public static <R, C, T extends FilteredTableModel<R, C>> FilteredTable<R, C, T> filteredTable(T tableModel) {
+    return filteredTable(tableModel, new DefaultConditionPanelFactory<>(tableModel));
+  }
+
+  /**
+   * Instantiates a new {@link FilteredTable} using the given model
+   * @param tableModel the table model
+   * @param conditionPanelFactory the column condition panel factory
+   * @param <R> the type representing rows
+   * @param <C> the type used to identify columns
+   * @param <T> the table model type
+   * @return a new {@link FilteredTable}
+   */
+  public static <R, C, T extends FilteredTableModel<R, C>> FilteredTable<R, C, T> filteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory) {
+    return new FilteredTable<R, C, T>(tableModel, conditionPanelFactory);
   }
 
   /**

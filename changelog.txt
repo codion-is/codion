@@ -8459,3 +8459,4 @@
   SwingForeignKeyConditionModel, public constructor replaced with factory method
   SwingPropertyComboBoxModel, public constructor replaced with factory methods
   TableColumnComponentPanel, public constructor replaced with factory method
+  FilteredTable, public constructors replaced with factory methods

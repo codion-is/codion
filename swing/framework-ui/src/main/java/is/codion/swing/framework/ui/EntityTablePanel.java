@@ -1415,7 +1415,7 @@ public class EntityTablePanel extends JPanel {
 
   private FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> createTable() {
     FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> filteredTable =
-            new FilteredTable<>(tableModel, new DefaultFilterPanelFactory(tableModel));
+            FilteredTable.filteredTable(tableModel, new DefaultFilterPanelFactory(tableModel));
     filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);

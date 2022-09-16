@@ -558,7 +558,7 @@ public final class EntitySearchField extends JTextField {
           return emptyList();
         }
       };
-      table = new FilteredTable<>(tableModel);
+      table = FilteredTable.filteredTable(tableModel);
       selectControl = Control.builder(createSelectCommand(searchModel, tableModel))
               .caption(Messages.ok())
               .build();
