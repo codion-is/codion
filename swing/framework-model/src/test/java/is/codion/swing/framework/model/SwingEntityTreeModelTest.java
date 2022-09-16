@@ -28,7 +28,7 @@ public final class SwingEntityTreeModelTest {
             .build();
 
     SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, connectionProvider);
-    SwingEntityTreeModel treeModel = new SwingEntityTreeModel(tableModel, Employee.MGR_FK);
+    SwingEntityTreeModel treeModel = SwingEntityTreeModel.swingEntityTreeModel(tableModel, Employee.MGR_FK);
 
     tableModel.refresh();
 

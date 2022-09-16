@@ -11,19 +11,26 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link JTree} extension based on {@link SwingEntityTreeModel}.
+ * For instances use the {@link #entityTree(SwingEntityTreeModel)} factory method.
+ * @see #entityTree(SwingEntityTreeModel)
  */
 public final class EntityTree extends JTree {
 
-  /**
-   * Instantiates a new {@link EntityTree};
-   * @param treeModel the tree model
-   */
-  public EntityTree(SwingEntityTreeModel treeModel) {
+  private EntityTree(SwingEntityTreeModel treeModel) {
     super(requireNonNull(treeModel, "treeModel"));
     setSelectionModel(treeModel.treeSelectionModel());
     setRootVisible(false);
     setShowsRootHandles(true);
     bindEvents();
+  }
+
+  /**
+   * Instantiates a new {@link EntityTree}
+   * @param treeModel the tree model
+   * @return a new {@link EntityTree} instance
+   */
+  public static EntityTree entityTree(SwingEntityTreeModel treeModel) {
+    return new EntityTree(treeModel);
   }
 
   private void bindEvents() {

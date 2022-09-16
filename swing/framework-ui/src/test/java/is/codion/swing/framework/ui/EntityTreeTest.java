@@ -24,6 +24,6 @@ public class EntityTreeTest {
 
   @Test
   void test() {
-    new EntityTree(new SwingEntityTreeModel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER), Employee.MGR_FK));
+    EntityTree.entityTree(SwingEntityTreeModel.swingEntityTreeModel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER), Employee.MGR_FK));
   }
 }

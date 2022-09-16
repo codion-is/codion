@@ -8451,3 +8451,5 @@
   LookAndFeelSelectionPanel constructor no longer public, factory methods added
   EntityObjectMapper.createEntityObjectMapper() and EntityObjectMapperFactory.createEntityObjectMapper() renamed entityObjectMapper(), for consistency
   ConditionObjectMapper constructor now private, factory method added
+  SwingEntityTreeModel bug fixed, bindEvents() was not called in overloaded constructor
+  EntityTree and SwingEntityTreeModel, public constructors replaced with factory methods
