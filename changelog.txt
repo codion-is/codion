@@ -8463,3 +8463,4 @@
   ColumnConditionPanel, public constructors replaced with factory methods
   ColumnSummaryPanel, public constructor replaced with factory method
   CredentialsServer, public constructor replaced with factory method
+  FileInputPanel, public constructor replaced with factory method

@@ -17,11 +17,15 @@ import java.io.File;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * For instances use the {@link #fileInputPanel(JTextField)} factory method.
+ * @see #fileInputPanel(JTextField)
+ */
 public final class FileInputPanel extends JPanel {
 
   private final JTextField filePathField;
 
-  public FileInputPanel(JTextField filePathField) {
+  private FileInputPanel(JTextField filePathField) {
     this.filePathField = requireNonNull(filePathField);
     setLayout(Layouts.borderLayout());
     add(filePathField, BorderLayout.CENTER);
@@ -37,6 +41,14 @@ public final class FileInputPanel extends JPanel {
 
   public JTextField filePathField() {
     return filePathField;
+  }
+
+  /**
+   * @param filePathField the file path input field
+   * @return a new {@link FileInputPanel} instance.
+   */
+  public static FileInputPanel fileInputPanel(JTextField filePathField) {
+    return new FileInputPanel(filePathField);
   }
 
   private void browseFile() {

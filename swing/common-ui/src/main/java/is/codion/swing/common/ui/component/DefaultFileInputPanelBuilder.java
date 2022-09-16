@@ -7,6 +7,7 @@ import is.codion.swing.common.ui.component.text.FileInputPanel;
 
 import javax.swing.JTextField;
 
+import static is.codion.swing.common.ui.component.text.FileInputPanel.fileInputPanel;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFileInputPanelBuilder extends AbstractComponentBuilder<byte[], FileInputPanel, FileInputPanelBuilder>
@@ -20,7 +21,7 @@ final class DefaultFileInputPanelBuilder extends AbstractComponentBuilder<byte[]
 
   @Override
   protected FileInputPanel createComponent() {
-    return new FileInputPanel(filePathField);
+    return fileInputPanel(filePathField);
   }
 
   @Override
