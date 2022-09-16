@@ -40,11 +40,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   private final TemporalField<T> inputField;
   private final JButton calendarButton;
 
-  /**
-   * Instantiates a new TemporalInputPanel.
-   * @param temporalField the temporal input field
-   */
-  public TemporalInputPanel(TemporalField<T> temporalField) {
+  TemporalInputPanel(TemporalField<T> temporalField) {
     super(new BorderLayout());
     this.inputField = requireNonNull(temporalField, "temporalField");
     add(temporalField, BorderLayout.CENTER);
