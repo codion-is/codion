@@ -8461,3 +8461,4 @@
   TableColumnComponentPanel, public constructor replaced with factory method
   FilteredTable, public constructors replaced with factory methods
   ColumnConditionPanel, public constructors replaced with factory methods
+  ColumnSummaryPanel, public constructor replaced with factory method

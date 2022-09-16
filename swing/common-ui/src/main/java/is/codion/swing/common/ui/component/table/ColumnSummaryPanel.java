@@ -20,19 +20,23 @@ import java.awt.event.MouseEvent;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A panel that shows a summary value for a numerical column property in a EntityTableModel.
+ * A panel that shows a summary value for a numerical column property.
+ * For instances use the {@link #columnSummaryPanel(ColumnSummaryModel)} factory method.
  */
 public final class ColumnSummaryPanel extends JPanel {
 
-  /**
-   * @param model the PropertySummaryModel instance
-   */
-  public ColumnSummaryPanel(ColumnSummaryModel model) {
+  private ColumnSummaryPanel(ColumnSummaryModel model) {
     setLayout(new BorderLayout());
     add(createSummaryField(requireNonNull(model, "model")), BorderLayout.CENTER);
   }
 
-
+  /**
+   * @param columnSummaryModel the {@link ColumnSummaryModel} instance
+   * @return a new {@link ColumnSummaryPanel} instance.
+   */
+  public static ColumnSummaryPanel columnSummaryPanel(ColumnSummaryModel columnSummaryModel) {
+    return new ColumnSummaryPanel(columnSummaryModel);
+  }
 
   private static JTextField createSummaryField(ColumnSummaryModel model) {
     JPopupMenu menu = createPopupMenu(model);

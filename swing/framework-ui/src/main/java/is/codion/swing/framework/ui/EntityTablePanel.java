@@ -31,7 +31,6 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ToggleAdvancedButton;
-import is.codion.swing.common.ui.component.table.ColumnSummaryPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.TableColumnComponentPanel;
@@ -95,6 +94,7 @@ import java.util.Set;
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
+import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.TableColumnComponentPanel.tableColumnComponentPanel;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.framework.ui.EntityTableConditionPanel.entityTableConditionPanel;
@@ -1756,7 +1756,7 @@ public class EntityTablePanel extends JPanel {
     tableModel.columnModel().columns().forEach(column ->
             tableModel.columnSummaryModel((Attribute<?>) column.getIdentifier())
                     .ifPresent(columnSummaryModel ->
-                            components.put(column, new ColumnSummaryPanel(columnSummaryModel))));
+                            components.put(column, columnSummaryPanel(columnSummaryModel))));
 
     return components;
   }
