@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.Optional;
 import java.util.UUID;
 
+import static is.codion.plugin.credentials.server.CredentialsServer.credentialsServer;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class CredentialsServerTest {
@@ -30,7 +31,7 @@ public final class CredentialsServerTest {
       User scott = User.parse("scott:tiger");
       int serverPort = 1100;
 
-      CredentialsServer server = new CredentialsServer(serverPort, 900, 50);
+      CredentialsServer server = credentialsServer(serverPort, 900, 50);
 
       UUID token = UUID.randomUUID();
       server.addAuthenticationToken(token, scott);
