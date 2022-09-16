@@ -13,6 +13,7 @@ import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxMode
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.swing.framework.model.SwingPropertyComboBoxModel.swingPropertyComboBoxModel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,7 +31,7 @@ public final class SwingPropertyComboBoxModelTest {
   private final Event<?> refreshEvent = Event.event();
 
   public SwingPropertyComboBoxModelTest() {
-    comboBoxModel = new SwingPropertyComboBoxModel<>(CONNECTION_PROVIDER, Department.NAME);
+    comboBoxModel = swingPropertyComboBoxModel(CONNECTION_PROVIDER, Department.NAME);
     refreshEvent.addListener(comboBoxModel::refresh);
   }
 

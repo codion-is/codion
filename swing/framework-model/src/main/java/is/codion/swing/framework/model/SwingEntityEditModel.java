@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static is.codion.swing.framework.model.SwingPropertyComboBoxModel.swingPropertyComboBoxModel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -205,7 +206,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public <T> SwingPropertyComboBoxModel<T> createComboBoxModel(Attribute<T> attribute) {
     requireNonNull(attribute, "attribute");
-    SwingPropertyComboBoxModel<T> model = new SwingPropertyComboBoxModel<>(connectionProvider(), attribute);
+    SwingPropertyComboBoxModel<T> model = swingPropertyComboBoxModel(connectionProvider(), attribute);
     if (isNullable(attribute)) {
       model.setIncludeNull(true);
       if (attribute.valueClass().isInterface()) {
