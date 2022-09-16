@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,18 +24,18 @@ public class ColumnConditionPanelTest {
   void test() {
     final String key = "key";
     ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>(key, String.class, ALL_OPERATORS, '%');
-    ColumnConditionPanel<String, String> panel = new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);
+    ColumnConditionPanel<String, String> panel = columnConditionPanel(model, ToggleAdvancedButton.YES);
     assertEquals(model, panel.model());
     assertNotNull(panel.equalField());
     assertNotNull(panel.upperBoundField());
     assertNotNull(panel.lowerBoundField());
-    assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String, String>(null, null));
+    assertThrows(NullPointerException.class, () -> ColumnConditionPanel.<String, String>columnConditionPanel(null, null));
   }
 
   @Test
   void lockedModel() {
     ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("key", String.class, ALL_OPERATORS, '%');
     model.setLocked(true);
-    new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);
+    columnConditionPanel(model, ToggleAdvancedButton.YES);
   }
 }

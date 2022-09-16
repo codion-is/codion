@@ -62,6 +62,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -652,7 +653,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
         return null;
       }
 
-      return new ColumnConditionPanel<>((ColumnConditionModel<C, T>) filterModel, ColumnConditionPanel.ToggleAdvancedButton.YES);
+      return columnConditionPanel((ColumnConditionModel<C, T>) filterModel, ColumnConditionPanel.ToggleAdvancedButton.YES);
     }
   }
 

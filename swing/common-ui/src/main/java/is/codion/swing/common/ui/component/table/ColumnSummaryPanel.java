@@ -32,6 +32,8 @@ public final class ColumnSummaryPanel extends JPanel {
     add(createSummaryField(requireNonNull(model, "model")), BorderLayout.CENTER);
   }
 
+
+
   private static JTextField createSummaryField(ColumnSummaryModel model) {
     JPopupMenu menu = createPopupMenu(model);
     return Components.textField()

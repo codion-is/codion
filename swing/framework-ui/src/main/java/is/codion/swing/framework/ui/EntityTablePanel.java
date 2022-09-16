@@ -94,6 +94,7 @@ import java.util.Set;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.common.ui.component.table.TableColumnComponentPanel.tableColumnComponentPanel;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.framework.ui.EntityTableConditionPanel.entityTableConditionPanel;
@@ -1854,7 +1855,7 @@ public class EntityTablePanel extends JPanel {
         return null;
       }
 
-      return new ColumnConditionPanel<>(filterModel, ToggleAdvancedButton.YES);
+      return columnConditionPanel(filterModel, ToggleAdvancedButton.YES);
     }
   }
 
