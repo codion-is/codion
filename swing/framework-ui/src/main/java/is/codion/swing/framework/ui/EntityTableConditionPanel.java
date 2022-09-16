@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static is.codion.swing.common.ui.component.table.TableColumnComponentPanel.tableColumnComponentPanel;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -48,7 +49,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
                                     ConditionPanelFactory conditionPanelFactory) {
     super(tableConditionModel, requireNonNull(columnModel).columns());
     requireNonNull(conditionPanelFactory);
-    this.conditionPanel = new TableColumnComponentPanel<>(columnModel, createConditionPanels(columnModel, conditionPanelFactory));
+    this.conditionPanel = tableColumnComponentPanel(columnModel, createConditionPanels(columnModel, conditionPanelFactory));
     this.columnModel = columnModel;
     setLayout(new BorderLayout());
     add(conditionPanel, BorderLayout.CENTER);

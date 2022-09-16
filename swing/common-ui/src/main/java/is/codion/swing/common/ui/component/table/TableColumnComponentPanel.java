@@ -33,7 +33,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A panel that synchronizes child component sizes and positions to table columns.
+ * For instances use the {@link #tableColumnComponentPanel(FilteredTableColumnModel, Map)} factory method.
  * @param <T> the component type
+ * @see #tableColumnComponentPanel(FilteredTableColumnModel, Map)
  */
 public final class TableColumnComponentPanel<T extends JComponent> extends JPanel {
 
@@ -44,13 +46,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   private final Map<TableColumn, T> columnComponents;
   private final Map<TableColumn, JPanel> nullComponents = new HashMap<>(0);
 
-  /**
-   * Instantiates a new AbstractTableColumnSyncPanel.
-   * @param columnModel the column model
-   * @param columnComponents the column components mapped to their respective column
-   */
-  public TableColumnComponentPanel(FilteredTableColumnModel<?> columnModel,
-                                   Map<TableColumn, T> columnComponents) {
+  private TableColumnComponentPanel(FilteredTableColumnModel<?> columnModel, Map<TableColumn, T> columnComponents) {
     this.columnModel = requireNonNull(columnModel);
     this.columns = columnModel.columns();
     requireNonNull(columnComponents).forEach((column, component) -> {
@@ -87,6 +83,18 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
    */
   public Map<TableColumn, T> columnComponents() {
     return columnComponents;
+  }
+
+  /**
+   * Instantiates a new {@link TableColumnComponentPanel}.
+   * @param columnModel the column model
+   * @param columnComponents the column components mapped to their respective column
+   * @param <T> the component type
+   * @return a new {@link TableColumnComponentPanel}
+   */
+  public static <T extends JComponent> TableColumnComponentPanel<T> tableColumnComponentPanel(FilteredTableColumnModel<?> columnModel,
+                                                                                              Map<TableColumn, T> columnComponents) {
+    return new TableColumnComponentPanel<T>(columnModel, columnComponents);
   }
 
   private void resetPanel() {

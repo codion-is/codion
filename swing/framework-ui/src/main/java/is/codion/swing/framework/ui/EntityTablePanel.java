@@ -94,6 +94,7 @@ import java.util.Set;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
+import static is.codion.swing.common.ui.component.table.TableColumnComponentPanel.tableColumnComponentPanel;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.framework.ui.EntityTableConditionPanel.entityTableConditionPanel;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -1486,7 +1487,7 @@ public class EntityTablePanel extends JPanel {
       return null;
     }
 
-    return new TableColumnComponentPanel<>(tableModel.columnModel(), columnSummaryPanels);
+    return tableColumnComponentPanel(tableModel.columnModel(), columnSummaryPanels);
   }
 
   private JScrollPane createSummaryScrollPane(JScrollPane tableScrollPane) {
