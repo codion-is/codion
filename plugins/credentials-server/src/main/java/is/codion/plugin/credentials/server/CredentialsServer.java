@@ -28,14 +28,17 @@ import java.util.concurrent.TimeUnit;
  * {@code System.setProperty("java.rmi.server.hostname", CredentialServer.LOCALHOST);}
  * <pre>
  * {@code
- * CredentialsServer credentialsServer = new CredentialsServer(12345, 30000, 60000);
+ * CredentialsServer credentialsServer = CredentialsServer.credentialsServer(12345, 30000, 60000);
  * String jnlpUrl = getApplicationJNLPUrl();
  * UUID token = UUID.randomUUID();
  * credentialServer.addAuthenticationToken(token, user);
  * new ProcessBuilder().command("javaws", "-open", token.toString(), jnlpUrl).start();
  * }
  * </pre>
+ * For instances use the {@link #credentialsServer(int, int, int)} or {@link #credentialsServer(int, int, int, int)} factory methods.
  * @see CredentialsProvider#credentials(UUID)
+ * @see #credentialsServer(int, int, int)
+ * @see #credentialsServer(int, int, int, int)
  */
 public final class CredentialsServer extends UnicastRemoteObject implements CredentialsService {
 
@@ -50,30 +53,8 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
   private final TaskScheduler expiredCleaner;
   private final int tokenValidity;
 
-  /**
-   * Starts a server on the given port using the default registry port (1099).
-   * @param port the port
-   * @param tokenValidity the number of milliseconds a token is valid
-   * @param cleanupInterval the expired token cleanup interval in milliseconds
-   * @throws RemoteException in case of a communication error
-   * @throws AlreadyBoundException if a credential server is already running
-   */
-  public CredentialsServer(int port, int tokenValidity,
-                           int cleanupInterval) throws AlreadyBoundException, RemoteException {
-    this(port, CredentialsService.REGISTRY_PORT.getOrThrow(), tokenValidity, cleanupInterval);
-  }
-
-  /**
-   * Starts a server on the given port
-   * @param port the port
-   * @param registryPort the registry port
-   * @param tokenValidity the number of milliseconds a token is valid
-   * @param cleanupInterval the expired token cleanup interval in milliseconds
-   * @throws RemoteException in case of a communication error
-   * @throws AlreadyBoundException if a credential server is already running
-   */
-  public CredentialsServer(int port, int registryPort, int tokenValidity,
-                           int cleanupInterval) throws AlreadyBoundException, RemoteException {
+  private CredentialsServer(int port, int registryPort, int tokenValidity,
+                            int cleanupInterval) throws AlreadyBoundException, RemoteException {
     super(port);
     this.tokenValidity = tokenValidity;
     this.expiredCleaner = TaskScheduler.builder(this::removeExpired)
@@ -130,6 +111,35 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
     catch (Exception e) {
       LOG.error("Error on exit", e);
     }
+  }
+
+  /**
+   * Creates and starts a server on the given port
+   * @param port the port
+   * @param tokenValidity the number of milliseconds a token is valid
+   * @param cleanupInterval the expired token cleanup interval in milliseconds
+   * @return a new {@link CredentialsServer} instance
+   * @throws RemoteException in case of a communication error
+   * @throws AlreadyBoundException if a credential server is already running
+   */
+  public static CredentialsServer credentialsServer(int port, int tokenValidity,
+                                                    int cleanupInterval) throws AlreadyBoundException, RemoteException {
+    return credentialsServer(port, CredentialsService.REGISTRY_PORT.getOrThrow(), tokenValidity, cleanupInterval);
+  }
+
+  /**
+   * Creates and starts a server on the given port
+   * @param port the port
+   * @param registryPort the registry port
+   * @param tokenValidity the number of milliseconds a token is valid
+   * @param cleanupInterval the expired token cleanup interval in milliseconds
+   * @return a new {@link CredentialsServer} instance
+   * @throws RemoteException in case of a communication error
+   * @throws AlreadyBoundException if a credential server is already running
+   */
+  public static CredentialsServer credentialsServer(int port, int registryPort, int tokenValidity,
+                                                    int cleanupInterval) throws AlreadyBoundException, RemoteException {
+    return new CredentialsServer(port, registryPort, tokenValidity, cleanupInterval);
   }
 
   private void removeExpired() {

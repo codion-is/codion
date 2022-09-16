@@ -34,7 +34,10 @@ import java.util.stream.Collectors;
 import static javax.swing.BorderFactory.createLineBorder;
 
 /**
- * Provides a combo box for selecting a LookAndFeel.
+ * Provides a panel with a combo box for selecting a LookAndFeel.
+ * Instantiate via factory methods {@link #lookAndFeelSelectionPanel()} or {@link #lookAndFeelSelectionPanel(boolean)}.
+ * @see #lookAndFeelSelectionPanel()
+ * @see #lookAndFeelSelectionPanel(boolean)
  * @see LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)
  */
 public final class LookAndFeelSelectionPanel extends JPanel {
@@ -56,18 +59,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
   private final Map<String, UIDefaults> lookAndFeelDefaults = new HashMap<>();
   private final UIDefaults nullDefaults = new UIDefaults(0, 0.1f);
 
-  /**
-   * Instantiates a new LookAndFeelSelectionPanel
-   */
-  public LookAndFeelSelectionPanel() {
-    this(CHANGE_ON_SELECTION.get());
-  }
-
-  /**
-   * Instantiates a new LookAndFeelSelectionPanel
-   * @param changeOnSelection if true the look and feel is changed when selected
-   */
-  public LookAndFeelSelectionPanel(boolean changeOnSelection) {
+  private LookAndFeelSelectionPanel(boolean changeOnSelection) {
     this.comboBoxModel = ItemComboBoxModel.createModel(initializeAvailableLookAndFeels());
     currentLookAndFeel().ifPresent(comboBoxModel::setSelectedItem);
     this.originalLookAndFeel = comboBoxModel.selectedValue().value();
@@ -113,6 +105,23 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     if (!currentLookAndFeelClassName.equals(originalLookAndFeel.className())) {
       LookAndFeelProvider.enableLookAndFeel(originalLookAndFeel);
     }
+  }
+
+  /**
+   * Instantiates a new {@link LookAndFeelSelectionPanel}
+   * @return a new {@link LookAndFeelSelectionPanel} instance
+   */
+  public static LookAndFeelSelectionPanel lookAndFeelSelectionPanel() {
+    return lookAndFeelSelectionPanel(CHANGE_ON_SELECTION.get());
+  }
+
+  /**
+   * Instantiates a new {@link LookAndFeelSelectionPanel}
+   * @param changeOnSelection if true the look and feel is changed dynamically when selected
+   * @return a new {@link LookAndFeelSelectionPanel} instance
+   */
+  public static LookAndFeelSelectionPanel lookAndFeelSelectionPanel(boolean changeOnSelection) {
+    return new LookAndFeelSelectionPanel(changeOnSelection);
   }
 
   private Optional<Item<LookAndFeelProvider>> currentLookAndFeel() {

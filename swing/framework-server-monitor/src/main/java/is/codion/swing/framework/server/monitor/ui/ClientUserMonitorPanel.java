@@ -141,7 +141,7 @@ public final class ClientUserMonitorPanel extends JPanel {
             .caption("Reset")
             .build(), BorderLayout.EAST);
 
-    FilteredTable<?, ?, ?> userHistoryTable = new FilteredTable<>(model.userHistoryTableModel());
+    FilteredTable<?, ?, ?> userHistoryTable = FilteredTable.filteredTable(model.userHistoryTableModel());
 
     JPanel connectionHistoryPanel = new JPanel(Layouts.borderLayout());
     connectionHistoryPanel.add(new JScrollPane(userHistoryTable), BorderLayout.CENTER);

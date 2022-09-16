@@ -164,8 +164,8 @@ public class EntityServletServerTest {
             })
             .build();
 
-    EntityObjectMapper entityObjectMapper = EntityObjectMapper.createEntityObjectMapper(ENTITIES);
-    ConditionObjectMapper conditionObjectMapper = new ConditionObjectMapper(entityObjectMapper);
+    EntityObjectMapper entityObjectMapper = EntityObjectMapper.entityObjectMapper(ENTITIES);
+    ConditionObjectMapper conditionObjectMapper = ConditionObjectMapper.conditionObjectMapper(entityObjectMapper);
     URIBuilder uriBuilder = createJsonURIBuilder();
 
     //count

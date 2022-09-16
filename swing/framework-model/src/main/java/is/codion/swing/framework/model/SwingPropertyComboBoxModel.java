@@ -15,25 +15,37 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A combo box model based on all the values of a single attribute.
+ * For instances use the {@link #swingPropertyComboBoxModel(EntityConnectionProvider, Attribute)} or
+ * {@link #swingPropertyComboBoxModel(Supplier)} factory methods.
  * @param <T> the type of values in this combo box model
+ * @see #swingPropertyComboBoxModel(EntityConnectionProvider, Attribute)
+ * @see #swingPropertyComboBoxModel(Supplier)
  */
 public final class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T> {
 
   private final Supplier<Collection<T>> valueSupplier;
 
+  private SwingPropertyComboBoxModel(Supplier<Collection<T>> valueSupplier) {
+    this.valueSupplier = requireNonNull(valueSupplier, "valueSupplier");
+  }
+
   /**
    * @param connectionProvider a EntityConnectionProvider instance
    * @param attribute the underlying attribute
+   * @param <T> the type of values in this combo box model
+   * @return a new {@link SwingPropertyComboBoxModel} instance
    */
-  public SwingPropertyComboBoxModel(EntityConnectionProvider connectionProvider, Attribute<T> attribute) {
-    this(new DefaultValueSupplier<>(requireNonNull(connectionProvider, "connectionProvider"), attribute));
+  public static <T> SwingPropertyComboBoxModel<T> swingPropertyComboBoxModel(EntityConnectionProvider connectionProvider, Attribute<T> attribute) {
+    return new SwingPropertyComboBoxModel<>(new DefaultValueSupplier<>(requireNonNull(connectionProvider, "connectionProvider"), attribute));
   }
 
   /**
    * @param valueSupplier provides the values to show in this combo box model
+   * @param <T> the type of values in this combo box model
+   * @return a new {@link SwingPropertyComboBoxModel} instance
    */
-  public SwingPropertyComboBoxModel(Supplier<Collection<T>> valueSupplier) {
-    this.valueSupplier = requireNonNull(valueSupplier, "valueSupplier");
+  public static <T> SwingPropertyComboBoxModel<T> swingPropertyComboBoxModel(Supplier<Collection<T>> valueSupplier) {
+    return new SwingPropertyComboBoxModel<>(valueSupplier);
   }
 
   @Override

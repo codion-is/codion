@@ -79,8 +79,8 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
                            HttpClientConnectionManager connectionManager) {
     super(domainTypeName, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
             "application/json", "/entities/json", connectionManager);
-    this.entityObjectMapper = EntityObjectMapperFactory.instance(entities().domainType()).createEntityObjectMapper(entities());
-    this.conditionObjectMapper = new ConditionObjectMapper(entityObjectMapper);
+    this.entityObjectMapper = EntityObjectMapperFactory.instance(entities().domainType()).entityObjectMapper(entities());
+    this.conditionObjectMapper = ConditionObjectMapper.conditionObjectMapper(entityObjectMapper);
   }
 
   @Override

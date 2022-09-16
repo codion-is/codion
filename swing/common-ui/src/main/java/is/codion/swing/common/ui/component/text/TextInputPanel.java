@@ -27,6 +27,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 
+import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -232,7 +233,7 @@ public final class TextInputPanel extends JPanel {
 
   private void inputFromUser() {
     JTextArea textArea = TextAreaBuilder.builder()
-            .document(new SizedDocument(maximumLength))
+            .document(sizedDocument(maximumLength))
             .initialValue(textField.getText())
             .preferredSize(textAreaSize)
             .lineWrap(true)

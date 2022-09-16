@@ -11,13 +11,14 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityConditionPanelFactory;
 import is.codion.swing.framework.ui.EntitySearchField;
-import is.codion.swing.framework.ui.EntityTableConditionPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+
+import static is.codion.swing.framework.ui.EntityTableConditionPanel.entityTableConditionPanel;
 
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
   public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel, new EntityTableConditionPanel(tableModel.tableConditionModel(), tableModel.columnModel(),
+    super(tableModel, entityTableConditionPanel(tableModel.tableConditionModel(), tableModel.columnModel(),
             new PlaylistTrackConditionPanelFactory(tableModel.tableConditionModel())));
     setUpdateSelectedComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory());
   }

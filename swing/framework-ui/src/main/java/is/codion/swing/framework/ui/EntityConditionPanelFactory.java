@@ -30,6 +30,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 import java.util.Optional;
 
+import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -91,7 +92,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
       return null;
     }
     try {
-      return new ColumnConditionPanel<>(conditionModel, ToggleAdvancedButton.NO, boundFieldFactory);
+      return columnConditionPanel(conditionModel, ToggleAdvancedButton.NO, boundFieldFactory);
     }
     catch (Exception e) {
       LOG.error("Unable to create AttributeConditionPanel for attribute: " + conditionModel.columnIdentifier(), e);

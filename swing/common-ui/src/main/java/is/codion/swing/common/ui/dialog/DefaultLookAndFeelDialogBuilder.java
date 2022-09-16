@@ -13,6 +13,7 @@ import javax.swing.JComponent;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel.lookAndFeelSelectionPanel;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultLookAndFeelDialogBuilder implements LookAndFeelSelectionDialogBuilder {
@@ -56,7 +57,7 @@ final class DefaultLookAndFeelDialogBuilder implements LookAndFeelSelectionDialo
 
   @Override
   public Optional<LookAndFeelProvider> selectLookAndFeel() {
-    LookAndFeelSelectionPanel lookAndFeelSelectionPanel = new LookAndFeelSelectionPanel(changeOnSelection);
+    LookAndFeelSelectionPanel lookAndFeelSelectionPanel = lookAndFeelSelectionPanel(changeOnSelection);
     State okPressed = State.state();
     new DefaultOkCancelDialogBuilder(lookAndFeelSelectionPanel)
             .owner(dialogOwner)

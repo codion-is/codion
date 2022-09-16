@@ -311,7 +311,7 @@ public final class EntityObjectMapperTest {
 
   @Test
   void customSerializer() throws JsonProcessingException {
-    EntityObjectMapper mapper = new CustomEntityObjectMapperFactory().createEntityObjectMapper(entities);
+    EntityObjectMapper mapper = new CustomEntityObjectMapperFactory().entityObjectMapper(entities);
 
     Custom custom = new Custom("a value");
     assertEquals(custom.value, mapper.readValue(mapper.writeValueAsString(custom), Custom.class).value);

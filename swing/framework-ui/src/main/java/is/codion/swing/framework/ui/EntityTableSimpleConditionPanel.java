@@ -22,6 +22,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A simple table condition panel, presenting a single text field for condition input.
+ * For instances use the {@link #entityTableSimpleConditionPanel(EntityTableConditionModel, FilteredTableColumnModel, EventListener)} factory method.
+ * @see #entityTableSimpleConditionPanel(EntityTableConditionModel, FilteredTableColumnModel, EventListener)
  */
 public final class EntityTableSimpleConditionPanel extends AbstractEntityTableConditionPanel {
 
@@ -31,15 +33,9 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   private final EventListener onSearchListener;
   private final Control searchControl;
 
-  /**
-   * Instantiates a new EntityTableSimpleConditionPanel
-   * @param tableConditionModel the table condition model
-   * @param columnModel the column model
-   * @param onSearchListener notified when this condition panel triggers a search
-   */
-  public EntityTableSimpleConditionPanel(EntityTableConditionModel tableConditionModel,
-                                         FilteredTableColumnModel<?> columnModel,
-                                         EventListener onSearchListener) {
+  private EntityTableSimpleConditionPanel(EntityTableConditionModel tableConditionModel,
+                                          FilteredTableColumnModel<?> columnModel,
+                                          EventListener onSearchListener) {
     super(tableConditionModel, columnModel.columns());
     this.searchControl = Control.builder(this::performSimpleSearch)
             .caption(FrameworkMessages.search())
@@ -78,6 +74,19 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
    */
   public void performSearch() {
     performSimpleSearch();
+  }
+
+  /**
+   * Instantiates a new {@link EntityTableSimpleConditionPanel}
+   * @param tableConditionModel the table condition model
+   * @param columnModel the column model
+   * @param onSearchListener notified when this condition panel triggers a search
+   * @return a new {@link EntityTableSimpleConditionPanel}
+   */
+  public static EntityTableSimpleConditionPanel entityTableSimpleConditionPanel(EntityTableConditionModel tableConditionModel,
+                                                                                FilteredTableColumnModel<?> columnModel,
+                                                                                EventListener onSearchListener) {
+    return new EntityTableSimpleConditionPanel(tableConditionModel, columnModel, onSearchListener);
   }
 
   private JPanel createSimpleConditionPanel() {

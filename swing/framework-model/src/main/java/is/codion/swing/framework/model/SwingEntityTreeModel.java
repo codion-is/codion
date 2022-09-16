@@ -28,21 +28,19 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A basic tree model for viewing self-referential entities,
- * using a {@link SwingEntityTableModel} as a data source.
+ * A basic tree model for viewing self-referential entities, using a {@link SwingEntityTableModel} as a data source.
+ * For instances use the {@link #swingEntityTreeModel(SwingEntityTableModel, ForeignKey)} or
+ * {@link #swingEntityTreeModel(SwingEntityTableModel, ForeignKey, Function)} factory methods.
+ * @see #swingEntityTreeModel(SwingEntityTableModel, ForeignKey)
+ * @see #swingEntityTreeModel(SwingEntityTableModel, ForeignKey, Function)
  */
 public final class SwingEntityTreeModel extends DefaultTreeModel {
 
   private final TreeSelectionModel treeSelectionModel;
   private final ForeignKey parentForeignKey;
 
-  public SwingEntityTreeModel(SwingEntityTableModel tableModel, ForeignKey parentForeignKey) {
-    this(tableModel, parentForeignKey, Entity::toString);
-    bindEvents(tableModel);
-  }
-
-  public SwingEntityTreeModel(SwingEntityTableModel tableModel, ForeignKey parentForeignKey,
-                              Function<Entity, String> stringFunction) {
+  private SwingEntityTreeModel(SwingEntityTableModel tableModel, ForeignKey parentForeignKey,
+                               Function<Entity, String> stringFunction) {
     super(new EntityTreeNode(requireNonNull(tableModel, "tableModel"), null,
             requireNonNull(stringFunction, "stringFunction"), requireNonNull(parentForeignKey, "parentForeignKey"),
             new EntityTreeNodeComparator(tableModel.entityDefinition().comparator())));
@@ -50,6 +48,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
     this.treeSelectionModel = new DefaultTreeSelectionModel();
     this.treeSelectionModel.addTreeSelectionListener(new EntityTreeSelectionListener(treeSelectionModel,
             tableModel.selectionModel(), getRoot()));
+    bindEvents(tableModel);
   }
 
   /**
@@ -108,6 +107,30 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
         removeNodeFromParent((EntityTreeNode) treePath.getLastPathComponent());
       }
     }
+  }
+
+  /**
+   * Instantiates a new {@link SwingEntityTreeModel} instance.
+   * @param tableModel the table model data source
+   * @param parentForeignKey the foreign key referencing parent nodes
+   * @return a new {@link SwingEntityTreeModel} instance.
+   */
+  public static SwingEntityTreeModel swingEntityTreeModel(SwingEntityTableModel tableModel,
+                                                          ForeignKey parentForeignKey) {
+    return swingEntityTreeModel(tableModel, parentForeignKey, Entity::toString);
+  }
+
+  /**
+   * Instantiates a new {@link SwingEntityTreeModel} instance.
+   * @param tableModel the table model data source
+   * @param parentForeignKey the foreign key referencing parent nodes
+   * @param stringFunction the function for creating String representations of the entities
+   * @return a new {@link SwingEntityTreeModel} instance.
+   */
+  public static SwingEntityTreeModel swingEntityTreeModel(SwingEntityTableModel tableModel,
+                                                          ForeignKey parentForeignKey,
+                                                          Function<Entity, String> stringFunction) {
+    return new SwingEntityTreeModel(tableModel, parentForeignKey, stringFunction);
   }
 
   private void refreshNode(EntityTreeNode treeNode) {

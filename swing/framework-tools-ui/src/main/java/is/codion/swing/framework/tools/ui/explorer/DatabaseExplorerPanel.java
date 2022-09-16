@@ -43,12 +43,12 @@ public final class DatabaseExplorerPanel extends JPanel {
   DatabaseExplorerPanel(DatabaseExplorerModel model) {
     this.model = requireNonNull(model);
     FilteredTable<Schema, Integer, FilteredTableModel<Schema, Integer>> schemaTable =
-            new FilteredTable<>(model.schemaModel());
+            FilteredTable.filteredTable(model.schemaModel());
     JScrollPane schemaScroller = new JScrollPane(schemaTable);
 
     FilteredTable<DefinitionRow, Integer,
             FilteredTableModel<DefinitionRow, Integer>> domainTable =
-            new FilteredTable<>(model.definitionModel());
+            FilteredTable.filteredTable(model.definitionModel());
     JScrollPane tableScroller = new JScrollPane(domainTable);
 
     JSplitPane schemaTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);

@@ -27,7 +27,7 @@ public class FilteredTableTest {
 
   @Test
   void constructorNullTableModel() {
-    assertThrows(Exception.class, () -> new FilteredTable<>(null));
+    assertThrows(Exception.class, () -> FilteredTable.filteredTable(null));
   }
 
   @Test
@@ -47,8 +47,7 @@ public class FilteredTableTest {
                 singletonList("dlabo"));
       }
     };
-    FilteredTable<List<String>, Integer, TestAbstractFilteredTableModel> filteredTable =
-            new FilteredTable<>(tableModel);
+    FilteredTable<List<String>, Integer, TestAbstractFilteredTableModel> filteredTable = FilteredTable.filteredTable(tableModel);
     tableModel.refresh();
 
     new JScrollPane(filteredTable);

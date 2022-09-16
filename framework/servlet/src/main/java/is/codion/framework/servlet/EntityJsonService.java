@@ -567,12 +567,12 @@ public final class EntityJsonService extends AbstractEntityService {
 
   private EntityObjectMapper entityObjectMapper(Entities entities) {
     return entityObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
-            EntityObjectMapperFactory.instance(domainType).createEntityObjectMapper(entities));
+            EntityObjectMapperFactory.instance(domainType).entityObjectMapper(entities));
   }
 
   private ConditionObjectMapper conditionObjectMapper(Entities entities) {
     return conditionObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
-            new ConditionObjectMapper(entityObjectMapper(entities)));
+            ConditionObjectMapper.conditionObjectMapper(entityObjectMapper(entities)));
   }
 
   private static <T> T deserialize(HttpServletRequest request) throws IOException, ClassNotFoundException {

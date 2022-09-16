@@ -19,6 +19,7 @@ import java.awt.event.KeyEvent;
 import java.text.Format;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static java.util.Objects.requireNonNull;
 
 class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends AbstractTextComponentBuilder<T, C, B>
@@ -130,7 +131,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
    * @return the {@link javax.swing.text.JTextField} built by this builder.
    */
   protected C createTextField() {
-    return (C) new JTextField(new SizedDocument(), "", 1);
+    return (C) new JTextField(sizedDocument(), "", 1);
   }
 
   @Override

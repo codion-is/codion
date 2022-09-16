@@ -25,7 +25,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Entity object mapper for mapping {@link Entity} and {@link Key} to and from JSON.<br><br>
- * For instances use the {@link #createEntityObjectMapper(Entities)} factory method.
+ * For instances use the {@link #entityObjectMapper(Entities)} factory method.
  */
 public final class EntityObjectMapper extends ObjectMapper {
 
@@ -163,7 +163,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @param entities the domain entities
    * @return a new {@link EntityObjectMapper} instance based on the given entities
    */
-  public static EntityObjectMapper createEntityObjectMapper(Entities entities) {
+  public static EntityObjectMapper entityObjectMapper(Entities entities) {
     return new EntityObjectMapper(entities);
   }
 }
