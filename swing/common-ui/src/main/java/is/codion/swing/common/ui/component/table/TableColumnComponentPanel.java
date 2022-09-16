@@ -94,7 +94,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
    */
   public static <T extends JComponent> TableColumnComponentPanel<T> tableColumnComponentPanel(FilteredTableColumnModel<?> columnModel,
                                                                                               Map<TableColumn, T> columnComponents) {
-    return new TableColumnComponentPanel<T>(columnModel, columnComponents);
+    return new TableColumnComponentPanel<>(columnModel, columnComponents);
   }
 
   private void resetPanel() {
