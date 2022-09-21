@@ -83,6 +83,7 @@ public final class TestDomain extends DefaultDomain {
     Attribute<Long> ID = TYPE.longAttribute("id");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<Integer> CODE = TYPE.integerAttribute("code");
+    Attribute<Integer> READ_ONLY = TYPE.integerAttribute("read_only");
 
     Long getId();
     String getName();
@@ -94,7 +95,9 @@ public final class TestDomain extends DefaultDomain {
                     .beanProperty("id"),
             columnProperty(Master.NAME)
                     .beanProperty("name"),
-            columnProperty(Master.CODE))
+            columnProperty(Master.CODE),
+            columnProperty(Master.READ_ONLY)
+                    .readOnly(true))
             .comparator(new MasterComparator())
             .stringFactory(Master.NAME));
   }

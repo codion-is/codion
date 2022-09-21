@@ -8502,3 +8502,4 @@
   ColumnSummaryPanel, public constructor replaced with factory method
   CredentialsServer, public constructor replaced with factory method
   FileInputPanel, public constructor replaced with factory method
+  DefaultEntity bug fixed, setAs() did not set the original values when isModified() returned false, which it does when only non-writable properties have been modified

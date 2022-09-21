@@ -459,7 +459,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * @return a new {@link FilteredTable}
    */
   public static <R, C, T extends FilteredTableModel<R, C>> FilteredTable<R, C, T> filteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory) {
-    return new FilteredTable<R, C, T>(tableModel, conditionPanelFactory);
+    return new FilteredTable<>(tableModel, conditionPanelFactory);
   }
 
   /**

@@ -200,7 +200,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   @Override
   public EntityPanel buildPanel() {
     if (model == null) {
-      throw new IllegalStateException("A SwingEntityModel is not avilable in this panel builder: " + entityType);
+      throw new IllegalStateException("A SwingEntityModel is not available in this panel builder: " + entityType);
     }
 
     return buildPanel(model);
@@ -208,11 +208,12 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   @Override
   public EntityPanel buildPanel(EntityConnectionProvider connectionProvider) {
+    requireNonNull(connectionProvider, "connectionProvider");
     if (modelBuilder == null) {
-      throw new IllegalStateException("A SwingEntityModel.Builder is not avilable in this panel builder: " + entityType);
+      throw new IllegalStateException("A SwingEntityModel.Builder is not available in this panel builder: " + entityType);
     }
 
-    return buildPanel(modelBuilder.buildModel(requireNonNull(connectionProvider, "connectionProvider")));
+    return buildPanel(modelBuilder.buildModel(connectionProvider));
   }
 
   @Override
