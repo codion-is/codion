@@ -137,6 +137,20 @@ public class DefaultEntityTest {
     assertNull(testEntity.get(Detail.MASTER_FK));
 
     assertThrows(IllegalArgumentException.class, () -> testEntity.setAs(referencedEntityValue));
+
+    Entity entity = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID, 2L)
+            .with(Master.NAME, masterName)
+            .with(Master.CODE, 7)
+            .with(Master.READ_ONLY, 42)
+            .build();
+
+    entity.put(Master.READ_ONLY, 1);
+
+    Entity setAsEntity = ENTITIES.entity(Master.TYPE);
+    setAsEntity.setAs(entity);
+
+    assertTrue(setAsEntity.isModified(Master.READ_ONLY));
   }
 
   @Test

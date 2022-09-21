@@ -262,9 +262,10 @@ final class DefaultEntity implements Entity, Serializable {
     clear();
     if (entity != null) {
       entity.entrySet().forEach(attributeValue -> values.put(attributeValue.getKey(), attributeValue.getValue()));
-      if (entity.isModified()) {
+      Set<Map.Entry<Attribute<?>, Object>> originalEntrySet = entity.originalEntrySet();
+      if (!originalEntrySet.isEmpty()) {
         originalValues = new HashMap<>();
-        entity.originalEntrySet().forEach(entry -> originalValues.put(entry.getKey(), entry.getValue()));
+        originalEntrySet.forEach(entry -> originalValues.put(entry.getKey(), entry.getValue()));
       }
     }
     Map<Attribute<?>, Object> affectedAttributes = new HashMap<>();
