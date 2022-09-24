@@ -152,12 +152,11 @@ public interface Version extends Comparable<Version> {
    * @throws IllegalArgumentException in case the properties resource is not found or if no 'version' property key is found
    */
   static Version parsePropertiesFile(Class<?> resourceOwner, String resourcePath) {
-    InputStream resourceStream = requireNonNull(resourceOwner).getResourceAsStream(requireNonNull(resourcePath));
-    if (resourceStream == null) {
-      throw new IllegalArgumentException("Version resource not found: " + resourceOwner + ", " + resourcePath);
-    }
-    Properties properties = new Properties();
-    try {
+    try (InputStream resourceStream = requireNonNull(resourceOwner).getResourceAsStream(requireNonNull(resourcePath))) {
+      if (resourceStream == null) {
+        throw new IllegalArgumentException("Version resource not found: " + resourceOwner + ", " + resourcePath);
+      }
+      Properties properties = new Properties();
       properties.load(resourceStream);
       String version = properties.getProperty(VERSION_PROPERTY_KEY);
       if (version == null) {
@@ -167,7 +166,7 @@ public interface Version extends Comparable<Version> {
       return Version.parse(version);
     }
     catch (IOException e) {
-      throw new RuntimeException("Version information not found", e);
+      throw new RuntimeException("Unable to parse version information", e);
     }
   }
 }
