@@ -223,7 +223,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public boolean isPersistValue(Attribute<?> attribute) {
+  public final boolean isPersistValue(Attribute<?> attribute) {
     entityDefinition().property(attribute);
 
     return Boolean.TRUE.equals(persistentValues.get(attribute));
