@@ -988,7 +988,6 @@ public class EntityTablePanel extends JPanel {
     popupControls.add(tablePanel.createViewDependenciesControl());
     tablePanel.addPopupControls(popupControls);
     tablePanel.setIncludeConditionPanel(false);
-    tablePanel.setIncludeSouthPanel(false);
     tablePanel.initializePanel();
 
     return tablePanel;

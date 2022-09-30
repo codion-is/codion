@@ -8505,3 +8505,4 @@
   DefaultEntity bug fixed, setAs() did not set the original values when isModified() returned false, which it does when only non-writable properties have been modified
   Version.parsePropertiesFile() now uses try with resources
   DefaultEntityEditModel.isPersistValue() now final
+  EntityTablePanel.createEntityTablePanel(), resulting table panel now includes a south panel
