@@ -8468,3 +8468,4 @@
   Version.parsePropertiesFile() now uses try with resources
   DefaultEntityEditModel.isPersistValue() now final
   EntityTablePanel.createEntityTablePanel(), resulting table panel now includes a south panel
+  Old configuration value codion.server.pooling.startupPoolUsers replaced with codion.server.connectionPoolUsers
