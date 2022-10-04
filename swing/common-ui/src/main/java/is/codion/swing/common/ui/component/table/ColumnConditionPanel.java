@@ -419,7 +419,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private void setSimpleView() {
     Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
-    boolean isParentOfFocusOwner = Utilities.getParentOfType(ColumnConditionPanel.class, focusOwner).orElse(null) == this;
+    boolean isParentOfFocusOwner = Utilities.getParentOfType(ColumnConditionPanel.class, focusOwner) == this;
     if (isParentOfFocusOwner) {
       requestFocusInWindow(true);
     }
@@ -436,7 +436,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private void setAdvancedView() {
     Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
-    boolean isParentOfFocusOwner = Utilities.getParentOfType(ColumnConditionPanel.class, focusOwner).orElse(null) == this;
+    boolean isParentOfFocusOwner = Utilities.getParentOfType(ColumnConditionPanel.class, focusOwner) == this;
     if (isParentOfFocusOwner) {
       requestFocusInWindow(true);
     }

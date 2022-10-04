@@ -8507,3 +8507,5 @@
   DefaultEntityEditModel.isPersistValue() now final
   EntityTablePanel.createEntityTablePanel(), resulting table panel now includes a south panel
   Old configuration value codion.server.pooling.startupPoolUsers replaced with codion.server.connectionPoolUsers
+  Utilities.getParentOfType(), getParentWindow(), getParentFrame() and getParentDialog() no longer return Optional, now back to being consistent with SwingUtilities.getAncestorOfClass()
+  Utilities.disposeParentWindow() added

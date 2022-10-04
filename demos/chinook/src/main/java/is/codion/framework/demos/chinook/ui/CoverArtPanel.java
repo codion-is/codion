@@ -15,7 +15,6 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.BorderLayout;
@@ -114,8 +113,7 @@ final class CoverArtPanel extends JPanel {
   }
 
   private void embed() {
-    Utilities.getParentDialog(basePanel)
-            .ifPresent(JDialog::dispose);
+    Utilities.disposeParentWindow(basePanel);
     basePanel.setSize(EMBEDDED_SIZE);
     imagePanel.resetView();
     add(basePanel, BorderLayout.CENTER);

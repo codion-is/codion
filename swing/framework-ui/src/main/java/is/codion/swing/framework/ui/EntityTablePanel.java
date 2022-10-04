@@ -877,7 +877,7 @@ public class EntityTablePanel extends JPanel {
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
-    Dialogs.showExceptionDialog(exception, getParentWindow(this).orElse(null));
+    Dialogs.showExceptionDialog(exception, getParentWindow(this));
   }
 
   /**
@@ -908,7 +908,7 @@ public class EntityTablePanel extends JPanel {
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
     }
     catch (DatabaseException e) {
-      Dialogs.showExceptionDialog(e, getParentWindow(dialogParent).orElse(null));
+      Dialogs.showExceptionDialog(e, getParentWindow(dialogParent));
     }
   }
 

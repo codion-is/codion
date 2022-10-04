@@ -243,7 +243,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final void displayException(Throwable exception) {
     LOG.error(exception.getMessage(), exception);
-    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this).orElse(null));
+    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this));
   }
 
   /**
@@ -275,7 +275,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the parent window of this panel, if one exists, an empty Optional otherwise
    */
   public final Optional<Window> parentWindow() {
-    return Utilities.getParentWindow(this);
+    return Optional.ofNullable(Utilities.getParentWindow(this));
   }
 
   /**
@@ -884,7 +884,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       EntityPanel entityPanel = entityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
-        Utilities.getParentWindow(entityPanel).ifPresent(Window::toFront);
+        Window parentWindow = Utilities.getParentWindow(entityPanel);
+        if (parentWindow != null) {
+          parentWindow.toFront();
+        }
       }
       else {
         Windows.frame(entityPanel)
@@ -922,7 +925,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       EntityPanel entityPanel = entityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
-        Utilities.getParentWindow(entityPanel).ifPresent(Window::toFront);
+        Window parentWindow = Utilities.getParentWindow(entityPanel);
+        if (parentWindow != null) {
+          parentWindow.toFront();
+        }
       }
       else {
         String dialogTitle = panelBuilder.getCaption() == null ?
@@ -1342,7 +1348,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void setParentWindowTitle(String title) {
-    Window parentWindow = Utilities.getParentWindow(this).orElse(null);
+    Window parentWindow = Utilities.getParentWindow(this);
     if (parentWindow instanceof JFrame) {
       ((JFrame) parentWindow).setTitle(title);
     }

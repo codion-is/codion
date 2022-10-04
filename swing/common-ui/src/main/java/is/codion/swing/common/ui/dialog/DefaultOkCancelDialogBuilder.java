@@ -174,7 +174,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     @Override
     public void perform() throws Exception {
       command.run();
-      Utilities.getParentDialog(component).ifPresent(JDialog::dispose);
+      Utilities.disposeParentWindow(component);
     }
   }
 
@@ -188,7 +188,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
     @Override
     public void perform() throws Exception {
-      Utilities.getParentDialog(component).ifPresent(JDialog::dispose);
+      Utilities.disposeParentWindow(component);
     }
   }
 
@@ -202,7 +202,7 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
     @Override
     public void perform() throws Exception {
-      Utilities.getParentDialog(component).ifPresent(JDialog::dispose);
+      Utilities.disposeParentWindow(component);
     }
   }
 }
