@@ -40,7 +40,6 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -302,7 +301,7 @@ public final class EntitySearchField extends JTextField {
             selectAll();
           }
           catch (Exception e) {
-            Dialogs.showExceptionDialog(e, Utilities.getParentWindow(this).orElse(null));
+            Dialogs.showExceptionDialog(e, Utilities.getParentWindow(this));
           }
         }
       }
@@ -530,7 +529,7 @@ public final class EntitySearchField extends JTextField {
     private Control.Command createSelectCommand(EntitySearchModel searchModel) {
       return () -> {
         searchModel.setSelectedEntities(list.getSelectedValuesList());
-        Utilities.getParentDialog(list).ifPresent(JDialog::dispose);
+        Utilities.disposeParentWindow(list);
       };
     }
   }
@@ -623,7 +622,7 @@ public final class EntitySearchField extends JTextField {
     private Control.Command createSelectCommand(EntitySearchModel searchModel, SwingEntityTableModel tableModel) {
       return () -> {
         searchModel.setSelectedEntities(tableModel.selectionModel().getSelectedItems());
-        Utilities.getParentDialog(table).ifPresent(JDialog::dispose);
+        Utilities.disposeParentWindow(table);
       };
     }
   }

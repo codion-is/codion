@@ -18,7 +18,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -163,10 +162,10 @@ final class LoginPanel extends JPanel {
   private void onValidationFailure(Throwable exception) {
     userValue.set(null);
     validatingState.set(false);
-    DefaultDialogExceptionHandler.displayException(exception, Utilities.getParentWindow(this).orElse(null));
+    DefaultDialogExceptionHandler.displayException(exception, Utilities.getParentWindow(this));
   }
 
   private void closeDialog() {
-    Utilities.getParentDialog(this).ifPresent(JDialog::dispose);
+    Utilities.disposeParentWindow(this);
   }
 }

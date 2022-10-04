@@ -343,7 +343,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
-    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this).orElse(null));
+    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this));
   }
 
   /**

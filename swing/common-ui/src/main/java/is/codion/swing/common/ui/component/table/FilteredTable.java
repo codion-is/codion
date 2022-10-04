@@ -330,9 +330,9 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
    */
   public boolean isCellVisible(int row, int column) {
-    return Utilities.getParentOfType(JViewport.class, this)
-            .map(viewport -> isCellVisible(viewport, row, column))
-            .orElse(false);
+    JViewport viewport = Utilities.getParentOfType(JViewport.class, this);
+
+    return viewport != null && isCellVisible(viewport, row, column);
   }
 
   /**
@@ -341,9 +341,11 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * @param columnIdentifier the column identifier
    */
   public void scrollToColumn(C columnIdentifier) {
-    Utilities.getParentOfType(JViewport.class, this).ifPresent(viewport ->
-            scrollToRowColumn(viewport, rowAtPoint(viewport.getViewPosition()),
-                    getModel().columnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER));
+    JViewport viewport = Utilities.getParentOfType(JViewport.class, this);
+    if (viewport != null) {
+      scrollToRowColumn(viewport, rowAtPoint(viewport.getViewPosition()),
+              getModel().columnModel().getColumnIndex(columnIdentifier), CenterOnScroll.NEITHER);
+    }
   }
 
   /**
@@ -354,8 +356,10 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    */
   public void scrollToCoordinate(int row, int column, CenterOnScroll centerOnScroll) {
     requireNonNull(centerOnScroll);
-    Utilities.getParentOfType(JViewport.class, this).ifPresent(viewport ->
-            scrollToRowColumn(viewport, row, column, centerOnScroll));
+    JViewport viewport = Utilities.getParentOfType(JViewport.class, this);
+    if (viewport != null) {
+      scrollToRowColumn(viewport, row, column, centerOnScroll);
+    }
   }
 
   /**
@@ -604,10 +608,13 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   private boolean noRowVisible(List<Integer> rows) {
-    return Utilities.getParentOfType(JViewport.class, this)
-            .filter(viewport -> rows.stream()
-                    .noneMatch(row -> isRowVisible(viewport, row)))
-            .isPresent();
+    JViewport viewport = Utilities.getParentOfType(JViewport.class, this);
+    if (viewport != null) {
+      return rows.stream()
+              .noneMatch(row -> isRowVisible(viewport, row));
+    }
+
+    return false;
   }
 
   private void bindFilterIndicatorEvents(TableColumn column) {

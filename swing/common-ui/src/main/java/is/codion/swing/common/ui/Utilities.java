@@ -35,7 +35,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -272,21 +271,21 @@ public final class Utilities {
    * @param <T> the type of parent to find
    * @param clazz the class of the parent to find
    * @param component the component
-   * @return the parent of the given component of the given type, an empty Optional if none is found
+   * @return the parent of the given component of the given type, null if none is found
    */
-  public static <T> Optional<T> getParentOfType(Class<T> clazz, Component component) {
-    return Optional.ofNullable((T) SwingUtilities.getAncestorOfClass(clazz, component));
+  public static <T> T getParentOfType(Class<T> clazz, Component component) {
+    return (T) SwingUtilities.getAncestorOfClass(clazz, component);
   }
 
   /**
    * Finds the first component of type {@link Window} in the parent hierarchy of {@code component}.
    * Note that if {@code component} is of type {@link Window}, it is returned.
    * @param component the component
-   * @return the parent Window of the given component, an empty Optional if none exists
+   * @return the parent Window of the given component, null if none is found
    */
-  public static Optional<Window> getParentWindow(Component component) {
+  public static Window getParentWindow(Component component) {
     if (component instanceof Window) {
-      return Optional.of((Window) component);
+      return (Window) component;
     }
 
     return getParentOfType(Window.class, component);
@@ -296,11 +295,11 @@ public final class Utilities {
    * Finds the first component of type {@link JFrame} in the parent hierarchy of {@code component}.
    * Note that if {@code component} is of type {@link JFrame}, it is returned.
    * @param component the component
-   * @return the parent JFrame of the given component, an empty Optional if none exists
+   * @return the parent JFrame of the given component, null if none is found
    */
-  public static Optional<JFrame> getParentFrame(Component component) {
+  public static JFrame getParentFrame(Component component) {
     if (component instanceof JFrame) {
-      return Optional.of((JFrame) component);
+      return (JFrame) component;
     }
 
     return getParentOfType(JFrame.class, component);
@@ -310,14 +309,30 @@ public final class Utilities {
    * Finds the first component of type {@link JDialog} in the parent hierarchy of {@code component}.
    * Note that if {@code component} is of type {@link JDialog}, it is returned.
    * @param component the component
-   * @return the parent JDialog of the given component, an empty Optional if none exists
+   * @return the parent JDialog of the given component, null if none is found
    */
-  public static Optional<JDialog> getParentDialog(Component component) {
+  public static JDialog getParentDialog(Component component) {
     if (component instanceof JDialog) {
-      return Optional.of((JDialog) component);
+      return (JDialog) component;
     }
 
     return getParentOfType(JDialog.class, component);
+  }
+
+  /**
+   * Finds the parent Window and disposes it if found. If no parent Window is found this method has no effect
+   * @param component the component which parent Window should be disposed
+   * @return true if a parent Window was found and disposed
+   */
+  public static boolean disposeParentWindow(Component component) {
+    Window parentWindow = getParentWindow(component);
+    if (parentWindow != null) {
+      parentWindow.dispose();
+
+      return true;
+    }
+
+    return false;
   }
 
   /**

@@ -159,8 +159,7 @@ public final class EntitySelectionDialog extends JDialog {
       entityTablePanel.table().requestFocusInWindow();
     }
     else {
-      JOptionPane.showMessageDialog(getParentWindow(entityTablePanel).orElse(null),
-              FrameworkMessages.noResultsFromCondition());
+      JOptionPane.showMessageDialog(getParentWindow(entityTablePanel), FrameworkMessages.noResultsFromCondition());
     }
   }
 

@@ -99,8 +99,9 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
 
   private void resetPanel() {
     Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-    Utilities.getParentOfType(TableColumnComponentPanel.class, focusOwner)
-            .ifPresent(parent -> basePanel.requestFocusInWindow());
+    if (Utilities.getParentOfType(TableColumnComponentPanel.class, focusOwner) != null) {
+      basePanel.requestFocusInWindow();
+    }
     basePanel.removeAll();
     Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {

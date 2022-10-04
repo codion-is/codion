@@ -590,7 +590,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   @Override
   public final Optional<HierarchyPanel> parentPanel() {
     if (masterPanel == null) {
-      return Utilities.getParentOfType(HierarchyPanel.class, this);
+      return Optional.ofNullable(Utilities.getParentOfType(HierarchyPanel.class, this));
     }
 
     return Optional.of(masterPanel);
@@ -667,7 +667,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
-    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this).orElse(null));
+    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this));
   }
 
   /**
@@ -1463,7 +1463,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Shows the detail panels in a window
    */
   private void showDetailWindow() {
-    Utilities.getParentWindow(this).ifPresent(parent -> {
+    Window parent = Utilities.getParentWindow(this);
+    if (parent != null) {
       Dimension parentSize = parent.getSize();
       Dimension size = detailWindowSize(parentSize);
       Point parentLocation = parent.getLocation();
@@ -1473,7 +1474,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       detailPanelWindow.setSize(size);
       detailPanelWindow.setLocation(location);
       detailPanelWindow.setVisible(true);
-    });
+    }
   }
 
   /**
@@ -1672,18 +1673,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
       Component focusedComponent = (Component) changeEvent.getNewValue();
-      EntityPanel entityPanelParent = Utilities.getParentOfType(EntityPanel.class, focusedComponent).orElse(null);
+      EntityPanel entityPanelParent = Utilities.getParentOfType(EntityPanel.class, focusedComponent);
       if (entityPanelParent != null) {
         if (entityPanelParent.editPanel() != null) {
           entityPanelParent.editPanel().setActive(true);
         }
       }
       else {
-        Utilities.getParentOfType(EntityEditPanel.class, focusedComponent).ifPresent(editPanelParent -> {
-          if (editPanelParent != null) {
-            editPanelParent.setActive(true);
-          }
-        });
+        EntityEditPanel editPanelParent = Utilities.getParentOfType(EntityEditPanel.class, focusedComponent);
+        if (editPanelParent != null) {
+          editPanelParent.setActive(true);
+        }
       }
     }
   }

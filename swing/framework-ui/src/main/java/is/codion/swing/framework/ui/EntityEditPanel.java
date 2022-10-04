@@ -751,7 +751,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .enable(this);
     editModel().refreshingObserver().addDataListener(this::onRefreshingChanged);
     editModel().addConfirmSetEntityObserver(confirmationState -> {
-      int result = JOptionPane.showConfirmDialog(Utilities.getParentWindow(EntityEditPanel.this).orElse(null),
+      int result = JOptionPane.showConfirmDialog(Utilities.getParentWindow(EntityEditPanel.this),
               FrameworkMessages.unsavedDataWarning(), FrameworkMessages.unsavedDataWarningTitle(),
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
       confirmationState.set(result == JOptionPane.YES_OPTION);
