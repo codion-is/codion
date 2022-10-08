@@ -702,7 +702,7 @@ public class EntityTablePanel extends JPanel {
     if (!includeDeleteSelectedControl()) {
       throw new IllegalStateException("Table model is read only or does not allow delete");
     }
-    return Control.builder(this::delete)
+    return Control.builder(this::deleteWithConfirmation)
             .caption(FrameworkMessages.delete())
             .enabledState(State.and(
                     tableModel.editModel().deleteEnabledObserver(),
@@ -803,7 +803,7 @@ public class EntityTablePanel extends JPanel {
    * Deletes the entities selected in the underlying table model
    * @see #confirmDelete()
    */
-  public final void delete() {
+  public final void deleteWithConfirmation() {
     try {
       if (confirmDelete()) {
         WaitCursor.show(this);

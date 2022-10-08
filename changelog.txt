@@ -8471,3 +8471,5 @@
   Old configuration value codion.server.pooling.startupPoolUsers replaced with codion.server.connectionPoolUsers
   Utilities.getParentOfType(), getParentWindow(), getParentFrame() and getParentDialog() no longer return Optional, now back to being consistent with SwingUtilities.getAncestorOfClass()
   Utilities.disposeParentWindow() added
+  EntityEditPanel.insertWithoutConfirmation() renamed insert(), insert() renamed insertWithConfirmation(), same for update() and delete()
+  EntityTablePanel.delete() renamed deleteWithConfirmation(), for consistency
