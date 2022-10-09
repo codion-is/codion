@@ -18,7 +18,7 @@ import is.codion.framework.domain.entity.StringFactory;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Property.*;
 
 public final class PetClinic extends DefaultDomain {
 

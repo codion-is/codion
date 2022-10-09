@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Property.*;
 
 public final class SchemaBrowser extends DefaultDomain {
 

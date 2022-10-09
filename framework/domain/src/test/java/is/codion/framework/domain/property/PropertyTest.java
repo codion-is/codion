@@ -21,13 +21,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Property.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class PropertiesTest {
+public final class PropertyTest {
 
   private static final DomainType DOMAIN_TYPE = DomainType.domainType("domainType");
-  private static final EntityType ENTITY_TYPE = DOMAIN_TYPE.entityType("entityType", PropertiesTest.class.getName());
+  private static final EntityType ENTITY_TYPE = DOMAIN_TYPE.entityType("entityType", PropertyTest.class.getName());
   private static final EntityType ENTITY_TYPE2 = DOMAIN_TYPE.entityType("entityType2");
 
   @Test
@@ -213,10 +213,10 @@ public final class PropertiesTest {
   @Test
   void itemProperty() {
     List<Item<Integer>> itemsDuplicate = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(1));
-    assertThrows(IllegalArgumentException.class, () -> Properties.itemProperty(ENTITY_TYPE.integerAttribute("item"), itemsDuplicate));
+    assertThrows(IllegalArgumentException.class, () -> Property.itemProperty(ENTITY_TYPE.integerAttribute("item"), itemsDuplicate));
 
     List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(3));
-    ItemProperty<Integer> property = (ItemProperty<Integer>) Properties.itemProperty(ENTITY_TYPE.integerAttribute("item"), items).build();
+    ItemProperty<Integer> property = (ItemProperty<Integer>) Property.itemProperty(ENTITY_TYPE.integerAttribute("item"), items).build();
     assertFalse(property.isValid(4));
     assertThrows(IllegalArgumentException.class, () -> property.item(4));
     assertTrue(property.isValid(null));

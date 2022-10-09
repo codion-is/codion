@@ -12,7 +12,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ItemProperty;
-import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.javafx.framework.model.FXEntityEditModel;
@@ -115,7 +114,7 @@ public abstract class EntityEditView extends BorderPane {
    * Displays a dialog for choosing an input component to receive focus
    */
   public final void selectInputComponent() {
-    List<Property<?>> properties = Properties.sort(editModel()
+    List<Property<?>> properties = Property.sort(editModel()
             .entityDefinition().properties(controls.keySet()));
     properties.removeIf(property -> {
       Control control = controls.get(property.attribute());

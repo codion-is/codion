@@ -120,7 +120,7 @@ include::{dir-source}/is/codion/framework/demos/manual/world/domain/World.java[t
 
 == Properties
 
-Each column is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses. The {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is based on an Attribute or ForeignKey.
+Each column is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses. This class also provides factory methods for constructing Property instances and is usually statically imported, as will be assumed in the following examples. Each Property is based on an Attribute or ForeignKey.
 
 === Property
 
@@ -185,14 +185,14 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 === Boolean Properties
 
-For databases supporting *Types.BOOLEAN* you simply use *Properties.columnProperty*.
+For databases supporting *Types.BOOLEAN* you simply use *Property.columnProperty*.
 
 [source,java,indent=0]
 ----
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=booleanProperty]
 ----
 
-For databases lacking native boolean support we use the *Properties.booleanProperty* method, specifying the underlying type and the true/false values.
+For databases lacking native boolean support we use the *Property.booleanProperty* method, specifying the underlying type and the true/false values.
 
 [source,java]
 ----

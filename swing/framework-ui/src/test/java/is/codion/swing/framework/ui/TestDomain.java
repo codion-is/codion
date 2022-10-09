@@ -22,7 +22,7 @@ import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Property.*;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DefaultDomain {

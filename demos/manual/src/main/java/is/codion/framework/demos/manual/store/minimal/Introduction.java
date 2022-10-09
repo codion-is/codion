@@ -16,7 +16,7 @@ import is.codion.framework.domain.entity.Key;
 import java.util.List;
 
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Property.*;
 
 class Introduction {
 

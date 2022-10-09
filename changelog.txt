@@ -8475,3 +8475,4 @@
   EntityTablePanel.delete() renamed deleteWithConfirmation(), for consistency
   Properties.derivedProperty(), linkedAttributes parameter renamed sourceAttributes
   Conditions removed, factory methods moved to Condition
+  Properties removed (almost), factory methods moved to Property

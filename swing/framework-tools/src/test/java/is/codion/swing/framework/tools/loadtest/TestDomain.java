@@ -9,8 +9,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Properties.columnProperty;
-import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
+import static is.codion.framework.domain.property.Property.columnProperty;
+import static is.codion.framework.domain.property.Property.primaryKeyProperty;
 
 public final class TestDomain extends DefaultDomain {
 

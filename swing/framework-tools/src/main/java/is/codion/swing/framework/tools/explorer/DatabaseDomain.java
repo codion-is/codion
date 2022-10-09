@@ -24,7 +24,7 @@ import java.util.Map;
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.ForeignKey.reference;
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Property.*;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 

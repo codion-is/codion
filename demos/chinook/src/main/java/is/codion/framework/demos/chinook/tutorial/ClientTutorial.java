@@ -31,7 +31,7 @@ import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Property.*;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Collections.singletonList;

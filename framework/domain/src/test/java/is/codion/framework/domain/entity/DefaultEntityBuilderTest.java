@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Property.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityBuilderTest {

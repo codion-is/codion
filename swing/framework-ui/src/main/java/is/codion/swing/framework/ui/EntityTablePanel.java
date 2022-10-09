@@ -18,7 +18,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -668,7 +667,7 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.updateSelectedTip())
             .build();
-    Properties.sort(tableModel.entityDefinition().updatableProperties()).forEach(property -> {
+    Property.sort(tableModel.entityDefinition().updatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.attribute())) {
         String caption = property.caption() == null ? property.attribute().name() : property.caption();
         updateControls.add(Control.builder(() -> updateSelectedEntities(property))

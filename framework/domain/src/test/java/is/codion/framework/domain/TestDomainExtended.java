@@ -15,8 +15,8 @@ import is.codion.framework.domain.entity.ForeignKey;
 import java.sql.Connection;
 
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Properties.columnProperty;
-import static is.codion.framework.domain.property.Properties.foreignKeyProperty;
+import static is.codion.framework.domain.property.Property.columnProperty;
+import static is.codion.framework.domain.property.Property.foreignKeyProperty;
 
 public final class TestDomainExtended extends DefaultDomain {
 

@@ -7,7 +7,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.javafx.framework.model.FXEntityListModel;
@@ -227,7 +226,7 @@ public class EntityTableView extends TableView<Entity> {
   private Menu createUpdateSelectedItem() {
     Menu updateSelected = new Menu(FrameworkMessages.update());
     FXUiUtil.link(updateSelected.disableProperty(), listModel.selectionEmptyObserver());
-    Properties.sort(listModel().entityDefinition().updatableProperties()).stream()
+    Property.sort(listModel().entityDefinition().updatableProperties()).stream()
             .filter(this::includeUpdateSelectedProperty)
             .forEach(property -> addUpdateSelectedMenuItem(updateSelected, property));
 
