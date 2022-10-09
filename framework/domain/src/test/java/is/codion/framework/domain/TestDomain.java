@@ -10,7 +10,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.DerivedProperty;
-import is.codion.framework.domain.property.Properties;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -24,7 +23,7 @@ import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.KeyGenerator.queried;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Property.*;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DefaultDomain {
@@ -357,8 +356,8 @@ public final class TestDomain extends DefaultDomain {
 
   void transientModifies() {
     add(definition(
-            Properties.primaryKeyProperty(TransModifies.ID),
-            Properties.transientProperty(TransModifies.TRANS)));
+            primaryKeyProperty(TransModifies.ID),
+            transientProperty(TransModifies.TRANS)));
   }
 
   public interface TransModifiesNot {
@@ -370,8 +369,8 @@ public final class TestDomain extends DefaultDomain {
 
   void transientModifiesNot() {
     add(definition(
-            Properties.primaryKeyProperty(TransModifiesNot.ID),
-            Properties.transientProperty(TransModifiesNot.TRANS)
+            primaryKeyProperty(TransModifiesNot.ID),
+            transientProperty(TransModifiesNot.TRANS)
                     .modifiesEntity(false)));
   }
 }

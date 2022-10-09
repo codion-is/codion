@@ -17,7 +17,6 @@ import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Entities;
@@ -45,8 +44,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
 
-import static is.codion.framework.db.condition.Conditions.condition;
-import static is.codion.framework.db.condition.Conditions.where;
+import static is.codion.framework.db.condition.Condition.condition;
+import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.local.TestDomain.*;
 import static is.codion.framework.domain.entity.Entity.getPrimaryKeys;
 import static java.util.Arrays.asList;
@@ -92,7 +91,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.beginTransaction();
     try {
       Key key = ENTITIES.primaryKey(Department.TYPE, 40);
-      assertEquals(1, connection.delete(Conditions.condition(key)));
+      assertEquals(1, connection.delete(Condition.condition(key)));
       try {
         connection.select(key);
         fail();
@@ -242,13 +241,13 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(2, result.size());
     result = connection.select(getPrimaryKeys(result));
     assertEquals(2, result.size());
-    result = connection.select(Conditions.customCondition(Department.DEPARTMENT_CONDITION_TYPE,
+    result = connection.select(Condition.customCondition(Department.DEPARTMENT_CONDITION_TYPE,
             asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)));
     assertEquals(2, result.size());
-    result = connection.select(Conditions.customCondition(EmpnoDeptno.CONDITION));
+    result = connection.select(Condition.customCondition(EmpnoDeptno.CONDITION));
     assertEquals(7, result.size());
 
-    SelectCondition condition = Conditions.customCondition(Employee.NAME_IS_BLAKE_CONDITION_ID).selectBuilder().build();
+    SelectCondition condition = Condition.customCondition(Employee.NAME_IS_BLAKE_CONDITION_ID).selectBuilder().build();
     result = connection.select(condition);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(Employee.DEPARTMENT_FK));
@@ -374,7 +373,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectInvalidColumn() throws Exception {
-    assertThrows(DatabaseException.class, () -> connection.select(Conditions.customCondition(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE)));
+    assertThrows(DatabaseException.class, () -> connection.select(Condition.customCondition(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE)));
   }
 
   @Test
@@ -401,7 +400,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(sales.get(Department.DNAME), "SALES");
     sales = connection.select(sales.primaryKey());
     assertEquals(sales.get(Department.DNAME), "SALES");
-    sales = connection.selectSingle(Conditions.customCondition(Department.DEPARTMENT_CONDITION_SALES_TYPE));
+    sales = connection.selectSingle(Condition.customCondition(Department.DEPARTMENT_CONDITION_SALES_TYPE));
     assertEquals(sales.get(Department.DNAME), "SALES");
 
     Entity king = connection.selectSingle(Employee.NAME, "KING");
@@ -414,7 +413,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void customCondition() throws DatabaseException {
-    Condition condition = Conditions.customCondition(Employee.MGR_GREATER_THAN_CONDITION_ID,
+    Condition condition = Condition.customCondition(Employee.MGR_GREATER_THAN_CONDITION_ID,
             singletonList(Employee.MGR), singletonList(5));
 
     assertEquals(4, connection.select(condition).size());
@@ -569,7 +568,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateWithConditionNoProperties() throws DatabaseException {
-    UpdateCondition condition = Conditions.condition(Employee.TYPE).updateBuilder().build();
+    UpdateCondition condition = Condition.condition(Employee.TYPE).updateBuilder().build();
     assertThrows(IllegalArgumentException.class, () -> connection.update(condition));
   }
 

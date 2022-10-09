@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Condition.condition;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;

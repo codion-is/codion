@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.jackson.json.db;
 
-import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.CustomCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -45,6 +45,6 @@ final class CustomConditionDeserializer implements Serializable {
       values.add(entityObjectMapper.readValue(valueNode.toString(), property.attribute().valueClass()));
     }
 
-    return Conditions.customCondition(definition.type().conditionType(conditionTypeName), attributes, values);
+    return Condition.customCondition(definition.type().conditionType(conditionTypeName), attributes, values);
   }
 }

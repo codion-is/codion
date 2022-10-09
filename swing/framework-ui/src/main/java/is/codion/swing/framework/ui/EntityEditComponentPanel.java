@@ -12,7 +12,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.Utilities;
@@ -295,7 +294,7 @@ public class EntityEditComponentPanel extends JPanel {
     List<Property<?>> properties = selectComponentAttributes().stream()
             .map(attribute -> entities.definition(attribute.entityType()).property(attribute))
             .collect(Collectors.toList());
-    Properties.sort(properties);
+    Property.sort(properties);
     Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
             Dialogs.selectionDialog(properties)
                     .owner(this)

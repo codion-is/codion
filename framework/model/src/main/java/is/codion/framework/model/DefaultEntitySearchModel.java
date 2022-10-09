@@ -31,8 +31,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.framework.db.condition.Conditions.combination;
-import static is.codion.framework.db.condition.Conditions.where;
+import static is.codion.framework.db.condition.Condition.combination;
+import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;

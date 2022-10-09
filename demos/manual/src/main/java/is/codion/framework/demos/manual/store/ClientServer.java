@@ -21,7 +21,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import static is.codion.common.user.User.parse;
-import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Condition.condition;
 import static java.util.Collections.singletonList;
 
 public final class ClientServer {

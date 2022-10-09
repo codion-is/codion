@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import static is.codion.framework.db.condition.Conditions.where;
+import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.domain.entity.OrderBy.descending;
 
 public final class CountryReportDataSource extends JasperReportsDataSource<Entity> {

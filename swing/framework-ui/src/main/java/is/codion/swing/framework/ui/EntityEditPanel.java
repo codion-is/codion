@@ -392,9 +392,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @return true in case of successful insert, false otherwise
    * @see #confirmInsert()
    */
-  public final boolean insert() {
+  public final boolean insertWithConfirmation() {
     if (confirmInsert()) {
-      return insertWithoutConfirmation();
+      return insert();
     }
 
     return false;
@@ -404,7 +404,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Performs insert on the active entity without asking for confirmation
    * @return true in case of successful insert, false otherwise
    */
-  public final boolean insertWithoutConfirmation() {
+  public final boolean insert() {
     try {
       validateData();
       WaitCursor.show(this);
@@ -438,10 +438,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs delete on the active entity after asking for confirmation via {@link #confirmDelete()}.
    * @return true if the delete operation was successful
+   * @see #confirmDelete()
    */
-  public final boolean delete() {
+  public final boolean deleteWithConfirmation() {
     if (confirmDelete()) {
-      return deleteWithoutConfirmation();
+      return delete();
     }
 
     return false;
@@ -451,7 +452,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Performs delete on the active entity without asking for confirmation
    * @return true if the delete operation was successful
    */
-  public final boolean deleteWithoutConfirmation() {
+  public final boolean delete() {
     try {
       WaitCursor.show(this);
       try {
@@ -479,10 +480,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs update on the active entity after asking for confirmation via {@link #confirmUpdate()}.
    * @return true if the update operation was successful
+   * @see #confirmUpdate()
    */
-  public final boolean update() {
+  public final boolean updateWithConfirmation() {
     if (confirmUpdate()) {
-      return updateWithoutConfirmation();
+      return update();
     }
 
     return false;
@@ -492,7 +494,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Performs update on the active entity without asking for confirmation.
    * @return true if the update operation was successful or if no update was required
    */
-  public final boolean updateWithoutConfirmation() {
+  public final boolean update() {
     try {
       validateData();
       WaitCursor.show(this);
@@ -679,7 +681,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private Control createDeleteControl() {
-    return Control.builder(this::delete)
+    return Control.builder(this::deleteWithConfirmation)
             .caption(FrameworkMessages.delete())
             .enabledState(State.and(activeState,
                     editModel().deleteEnabledObserver(),
@@ -701,7 +703,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private Control createUpdateControl() {
-    return Control.builder(this::update)
+    return Control.builder(this::updateWithConfirmation)
             .caption(FrameworkMessages.update())
             .enabledState(State.and(activeState,
                     editModel().updateEnabledObserver(),
@@ -717,7 +719,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     boolean useSaveCaption = USE_SAVE_CAPTION.get();
     char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.addMnemonic();
     String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
-    return Control.builder(this::insert)
+    return Control.builder(this::insertWithConfirmation)
             .caption(caption)
             .enabledState(State.and(activeState, editModel().insertEnabledObserver()))
             .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")

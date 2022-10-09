@@ -29,7 +29,6 @@ import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
-import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 
 import org.junit.jupiter.api.Test;
@@ -44,8 +43,8 @@ import java.util.List;
 
 import static is.codion.framework.domain.TestDomain.DOMAIN;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Properties.columnProperty;
-import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
+import static is.codion.framework.domain.property.Property.columnProperty;
+import static is.codion.framework.domain.property.Property.primaryKeyProperty;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -170,7 +169,7 @@ public class DomainTest {
 
   @Test
   void sortProperties() {
-    List<Property<?>> properties = Properties.sort(entities.definition(Employee.TYPE).properties(
+    List<Property<?>> properties = Property.sort(entities.definition(Employee.TYPE).properties(
             asList(Employee.HIREDATE, Employee.COMMISSION,
                     Employee.SALARY, Employee.JOB)));
     assertEquals(Employee.COMMISSION, properties.get(0).attribute());
@@ -509,7 +508,7 @@ public class DomainTest {
       domain.add(definition(
               primaryKeyProperty(entityType.attribute("id", Integer.class)),
               columnProperty(fkId),
-              Properties.foreignKeyProperty(foreignKey, "caption")));
+              Property.foreignKeyProperty(foreignKey, "caption")));
     });
   }
 
@@ -524,7 +523,7 @@ public class DomainTest {
     domain.add(definition(
             primaryKeyProperty(entityType.attribute("id", Integer.class)),
             columnProperty(fkId),
-            Properties.foreignKeyProperty(foreignKey, "caption")));
+            Property.foreignKeyProperty(foreignKey, "caption")));
     domain.setStrictForeignKeys(true);
   }
 
@@ -824,6 +823,6 @@ public class DomainTest {
     EntityType entityType = DOMAIN.entityType("fkComp");
     Attribute<Integer> ref_id = entityType.integerAttribute("ref_id");
     ForeignKey foreignKey = entityType.foreignKey("fk", ref_id, id);
-    assertThrows(UnsupportedOperationException.class, () -> Properties.foreignKeyProperty(foreignKey).comparator((o1, o2) -> 0));
+    assertThrows(UnsupportedOperationException.class, () -> Property.foreignKeyProperty(foreignKey).comparator((o1, o2) -> 0));
   }
 }

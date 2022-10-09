@@ -58,8 +58,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import static is.codion.common.db.database.Database.closeSilently;
-import static is.codion.framework.db.condition.Conditions.condition;
-import static is.codion.framework.db.condition.Conditions.where;
+import static is.codion.framework.db.condition.Condition.condition;
+import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.local.Queries.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;

@@ -23,7 +23,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import java.util.Iterator;
 import java.util.UUID;
 
-import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Condition.condition;
 import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
 
 public final class Misc {
@@ -75,7 +75,7 @@ public final class Misc {
     //inserts and returns the inserted entity
     Entity customer = editModel.insert();
 
-    //modify some property values
+    //modify some values
     editModel.put(Customer.FIRST_NAME, "John");
     editModel.put(Customer.LAST_NAME, "Doe");
 

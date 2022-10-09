@@ -19,7 +19,7 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.List;
 
-import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Condition.condition;
 
 public final class EmployeeServer extends EntityServer {
 

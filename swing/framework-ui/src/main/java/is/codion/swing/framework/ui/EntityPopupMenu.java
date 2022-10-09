@@ -6,7 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -179,7 +179,7 @@ final class EntityPopupMenu extends JPopupMenu {
 
   private static Entity selectEntity(Key primaryKey, EntityConnection connection) {
     try {
-      return connection.selectSingle(Conditions.condition(primaryKey)
+      return connection.selectSingle(Condition.condition(primaryKey)
               .selectBuilder()
               .fetchDepth(0)
               .build());

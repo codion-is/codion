@@ -4,7 +4,7 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.TestDomain.Query;
 import is.codion.framework.db.local.TestDomain.QueryColumnsWhereClause;
@@ -50,7 +50,7 @@ public final class SelectQueriesTest {
             .entitySelectQuery();
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
 
-    SelectCondition condition = Conditions.where(QueryColumnsWhereClause.ENAME)
+    SelectCondition condition = Condition.where(QueryColumnsWhereClause.ENAME)
             .equalTo("SCOTT")
             .selectBuilder()
             .selectAttributes(QueryColumnsWhereClause.ENAME)

@@ -15,7 +15,6 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.ForeignKeyConditionBuilder;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -184,7 +183,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
       }
     }
 
-    return conditions.isEmpty() ? Conditions.condition(entityType) : Conditions.combination(conjunction, conditions);
+    return conditions.isEmpty() ? Condition.condition(entityType) : Condition.combination(conjunction, conditions);
   }
 
   @Override
@@ -282,7 +281,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   private static Condition foreignKeyCondition(ForeignKeyConditionModel conditionModel) {
     ForeignKey foreignKey = conditionModel.columnIdentifier();
     Collection<Entity> values = conditionModel.equalValueSet().get();
-    ForeignKeyConditionBuilder builder = Conditions.where(foreignKey);
+    ForeignKeyConditionBuilder builder = Condition.where(foreignKey);
     switch (conditionModel.getOperator()) {
       case EQUAL:
         return builder.equalTo(values);
@@ -297,7 +296,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
     Attribute<T> attribute = (Attribute<T>) conditionModel.columnIdentifier();
     Collection<T> equalToValues = conditionModel.getEqualValues();
     boolean ignoreCase = !conditionModel.caseSensitiveState().get();
-    AttributeCondition.Builder<T> builder = Conditions.where(attribute);
+    AttributeCondition.Builder<T> builder = Condition.where(attribute);
     switch (conditionModel.getOperator()) {
       case EQUAL:
         if (attribute.isString() && ignoreCase) {

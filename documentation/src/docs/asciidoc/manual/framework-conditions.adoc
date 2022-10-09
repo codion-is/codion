@@ -3,17 +3,15 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
-The {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Conditions.html[Conditions] class is a factory for conditions, used when querying entities.
-
 The <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>> is used in the examples below.
 
 == Condition
 
-{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Condition.html[Condition] represents a where clause for an entity type.
+{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Condition.html[Condition] represents a where clause for an entity type and contains factory methods for creating Condition instances.
 
 == Condition.Combination
 
-{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Condition.Combination.html[Condition.Combination] represents a combination of Conditions, which are either AND'ed or OR'ed together. These can be nested and combined with other condition combinations.
+{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Condition.Combination.html[Condition.Combination] represents a combination of Condition instances, which are either AND'ed or OR'ed together. These can be nested and combined with other condition combinations.
 
 == SelectCondition
 

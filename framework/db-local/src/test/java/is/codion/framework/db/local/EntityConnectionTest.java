@@ -10,7 +10,7 @@ import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.TestDomain.Department;
 import is.codion.framework.db.local.TestDomain.Employee;
 import is.codion.framework.domain.Domain;
@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Condition.condition;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -76,12 +76,12 @@ public class EntityConnectionTest {
             .batchSize(-10));
 
     assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Employee.TYPE)
-            .condition(Department.TYPE, Conditions.condition(Department.TYPE)));
+            .condition(Department.TYPE, Condition.condition(Department.TYPE)));
 
     EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Employee.TYPE)
             .batchSize(2)
             .includePrimaryKeys(false)
-            .condition(Employee.TYPE, Conditions.where(Employee.SALARY).greaterThan(1000d))
+            .condition(Employee.TYPE, Condition.where(Employee.SALARY).greaterThan(1000d))
             .execute();
     assertEquals(13, DESTINATION_CONNECTION.rowCount(condition(Employee.TYPE)));
 

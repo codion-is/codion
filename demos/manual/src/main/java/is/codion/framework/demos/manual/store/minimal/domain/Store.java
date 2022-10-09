@@ -13,12 +13,12 @@ import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Properties;
+import is.codion.framework.domain.property.Property;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Property.*;
 
 public class Store extends DefaultDomain {
 
@@ -91,22 +91,22 @@ public class Store extends DefaultDomain {
 
   void addressExpanded() {
     ColumnProperty.Builder<Long, ?> id =
-            Properties.primaryKeyProperty(Address.ID);
+            Property.primaryKeyProperty(Address.ID);
 
     ColumnProperty.Builder<Long, ?> customerId =
-            Properties.columnProperty(Address.CUSTOMER_ID)
+            Property.columnProperty(Address.CUSTOMER_ID)
                     .nullable(false);
 
     ForeignKeyProperty.Builder customerFk =
-            Properties.foreignKeyProperty(Address.CUSTOMER_FK, "Customer");
+            Property.foreignKeyProperty(Address.CUSTOMER_FK, "Customer");
 
     ColumnProperty.Builder<String, ?> street =
-            Properties.columnProperty(Address.STREET, "Street")
+            Property.columnProperty(Address.STREET, "Street")
                     .nullable(false)
                     .maximumLength(100);
 
     ColumnProperty.Builder<String, ?> city =
-            Properties.columnProperty(Address.CITY, "City")
+            Property.columnProperty(Address.CITY, "City")
                     .nullable(false)
                     .maximumLength(50);
 

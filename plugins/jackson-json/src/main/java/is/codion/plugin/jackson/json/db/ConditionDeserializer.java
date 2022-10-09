@@ -4,7 +4,6 @@
 package is.codion.plugin.jackson.json.db;
 
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -57,7 +56,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
       return customConditionDeserializer.deserialize(definition, conditionNode);
     }
     else if ("empty".equals(typeString)) {
-      return Conditions.condition(definition.type());
+      return Condition.condition(definition.type());
     }
 
     throw new IllegalArgumentException("Unknown condition type: " + type);
