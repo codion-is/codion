@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import static is.codion.framework.db.condition.Conditions.where;
+import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;

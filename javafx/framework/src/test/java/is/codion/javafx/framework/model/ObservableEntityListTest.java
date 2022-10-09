@@ -7,7 +7,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventListener;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.test.TestDomain;
@@ -44,7 +44,7 @@ public final class ObservableEntityListTest {
     ObservableEntityList list = new ObservableEntityList(Department.TYPE, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
-    list.setSelectCondition(Conditions.where(Department.NAME).notEqualTo("SALES", "OPERATIONS"));
+    list.setSelectCondition(Condition.where(Department.NAME).notEqualTo("SALES", "OPERATIONS"));
     list.refresh();
     assertEquals(2, list.size());
   }

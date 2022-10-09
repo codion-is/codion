@@ -15,6 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static is.codion.common.Conjunction.AND;
+import static is.codion.common.Conjunction.OR;
 import static is.codion.common.Operator.EQUAL;
 import static is.codion.common.Operator.NOT_EQUAL;
 import static java.util.Collections.emptyList;
@@ -100,10 +102,28 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
     return foreignKeyCondition(foreignKey, NOT_EQUAL, emptyList());
   }
 
+  static Condition compositeKeyCondition(Map<Attribute<?>, Attribute<?>> attributes, Operator operator,
+                                         List<Map<Attribute<?>, Object>> valueMaps) {
+    if (valueMaps.size() == 1) {
+      return compositeCondition(attributes, operator, valueMaps.get(0));
+    }
+
+    return Condition.combination(OR, valueMaps.stream()
+            .map(valueMap -> compositeCondition(attributes, operator, valueMap))
+            .collect(toList()));
+  }
+
+  static Condition compositeCondition(Map<Attribute<?>, Attribute<?>> attributes,
+                                      Operator operator, Map<Attribute<?>, Object> valueMap) {
+    return Condition.combination(AND, attributes.entrySet().stream()
+            .map(entry -> condition(entry.getKey(), operator, valueMap.get(entry.getValue())))
+            .collect(toList()));
+  }
+
   private static Condition foreignKeyCondition(ForeignKey foreignKey, Operator operator,
                                                List<Map<Attribute<?>, Object>> valueMaps) {
     if (foreignKey.references().size() > 1) {
-      return Conditions.compositeKeyCondition(attributeMap(foreignKey), operator, valueMaps);
+      return compositeKeyCondition(attributeMap(foreignKey), operator, valueMaps);
     }
 
     ForeignKey.Reference<?> reference = foreignKey.references().get(0);
@@ -111,10 +131,10 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
             .map(map -> map.get(reference.referencedAttribute()))
             .collect(toList());
     if (operator == EQUAL) {
-      return Conditions.where((Attribute<Object>) reference.attribute()).equalTo(values);
+      return Condition.where((Attribute<Object>) reference.attribute()).equalTo(values);
     }
     if (operator == NOT_EQUAL) {
-      return Conditions.where((Attribute<Object>) reference.attribute()).notEqualTo(values);
+      return Condition.where((Attribute<Object>) reference.attribute()).notEqualTo(values);
     }
 
     throw new IllegalArgumentException("Unsupported operator: " + operator);
@@ -132,5 +152,18 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
     attributes.forEach(attribute -> values.put(attribute, entity.get(attribute)));
 
     return values;
+  }
+
+  private static Condition condition(Attribute<?> conditionAttribute, Operator operator, Object value) {
+    AttributeCondition.Builder<Object> condition = Condition.where((Attribute<Object>) conditionAttribute);
+    if (operator == EQUAL) {
+      return condition.equalTo(value);
+    }
+    else if (operator == NOT_EQUAL) {
+      return condition.notEqualTo(value);
+    }
+    else {
+      throw new IllegalArgumentException("Unsupported operator: " + operator);
+    }
   }
 }

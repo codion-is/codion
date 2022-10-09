@@ -7,7 +7,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
@@ -150,7 +150,7 @@ public final class EmpDeptMinimalApp {
       SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
       if (foreignKey.equals(Employee.MGR_FK)) {
         comboBoxModel.setSelectConditionSupplier(() ->
-                Conditions.where(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));
+                Condition.where(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));
       }
 
       return comboBoxModel;

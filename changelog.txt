@@ -8474,3 +8474,4 @@
   EntityEditPanel.insertWithoutConfirmation() renamed insert(), insert() renamed insertWithConfirmation(), same for update() and delete()
   EntityTablePanel.delete() renamed deleteWithConfirmation(), for consistency
   Properties.derivedProperty(), linkedAttributes parameter renamed sourceAttributes
+  Conditions removed, factory methods moved to Condition

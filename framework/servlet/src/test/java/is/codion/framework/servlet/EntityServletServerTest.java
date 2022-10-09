@@ -13,7 +13,6 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -69,8 +68,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static is.codion.framework.db.condition.Conditions.condition;
-import static is.codion.framework.db.condition.Conditions.where;
+import static is.codion.framework.db.condition.Condition.condition;
+import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -198,7 +197,7 @@ public class EntityServletServerTest {
     response.close();
 
     //select by condition
-    Condition selectCondition = Conditions.condition(keys);
+    Condition selectCondition = Condition.condition(keys);
 
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());

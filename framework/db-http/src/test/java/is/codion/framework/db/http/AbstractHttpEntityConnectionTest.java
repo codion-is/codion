@@ -12,7 +12,6 @@ import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.db.http.TestDomain.Employee;
@@ -40,8 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static is.codion.framework.db.condition.Conditions.condition;
-import static is.codion.framework.db.condition.Conditions.where;
+import static is.codion.framework.db.condition.Condition.condition;
+import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -237,7 +236,7 @@ abstract class AbstractHttpEntityConnectionTest {
   @Test
   void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
     Entity department = connection.selectSingle(Department.NAME, "SALES");
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Conditions.condition(department.primaryKey())));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Condition.condition(department.primaryKey())));
   }
 
   @Test

@@ -5,7 +5,7 @@ package is.codion.plugin.jackson.json.db;
 
 import is.codion.common.Operator;
 import is.codion.framework.db.condition.AttributeCondition;
-import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Property;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
@@ -35,7 +35,7 @@ final class AttributeConditionDeserializer implements Serializable {
     for (JsonNode valueNode : valuesNode) {
       values.add(entityObjectMapper.readValue(valueNode.toString(), property.attribute().valueClass()));
     }
-    AttributeCondition.Builder<T> builder = Conditions.where(property.attribute());
+    AttributeCondition.Builder<T> builder = Condition.where(property.attribute());
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
       case EQUAL:
         return builder.equalTo(values);

@@ -5,7 +5,7 @@ package is.codion.framework.model;
 
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -193,7 +193,7 @@ public final class DefaultEntitySearchModelTest {
     searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPostfixState().set(true);
     searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPostfixState().set(true);
     searchModel.setAdditionalConditionSupplier(() ->
-            Conditions.where(Employee.JOB).notEqualTo("MANAGER"));
+            Condition.where(Employee.JOB).notEqualTo("MANAGER"));
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
@@ -207,7 +207,8 @@ public final class DefaultEntitySearchModelTest {
     List<Entity> result = searchModel.performQuery();
     assertEquals(1, result.size());
     searchModel.setSelectedEntities(result);
-    searchModel.setAdditionalConditionSupplier(() -> Conditions.customCondition(Employee.CONDITION_1_TYPE));
+    searchModel.setAdditionalConditionSupplier(() ->
+            Condition.customCondition(Employee.CONDITION_1_TYPE));
     assertEquals(1, searchModel.getSelectedEntities().size());
     result = searchModel.performQuery();
     assertTrue(result.isEmpty());

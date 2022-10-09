@@ -18,7 +18,6 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
@@ -78,7 +77,7 @@ public class EntityServerTest {
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
-    Condition condition = Conditions.customCondition(Employee.MGR_CONDITION_TYPE,
+    Condition condition = Condition.customCondition(Employee.MGR_CONDITION_TYPE,
             singletonList(Employee.MGR), singletonList(4));
 
     connection.select(condition);
@@ -169,7 +168,7 @@ public class EntityServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    SelectCondition selectCondition = Conditions.condition(Employee.TYPE)
+    SelectCondition selectCondition = Condition.condition(Employee.TYPE)
             .selectBuilder()
             .orderBy(OrderBy.ascending(Employee.NAME))
             .build();

@@ -5,7 +5,6 @@ import is.codion.common.db.report.ReportException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.model.ForeignKeyConditionModel;
@@ -57,7 +56,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
     public Condition get() {
       EntityConnection connection = connectionProvider().connection();
       try {
-        return Conditions.where(City.ID).equalTo(connection.select(Country.CAPITAL));
+        return Condition.where(City.ID).equalTo(connection.select(Country.CAPITAL));
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);

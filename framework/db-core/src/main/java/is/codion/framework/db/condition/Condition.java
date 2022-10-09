@@ -5,15 +5,28 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.ConditionProvider;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.Key;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static is.codion.common.Operator.EQUAL;
+import static is.codion.framework.db.condition.DefaultForeignKeyConditionBuilder.compositeCondition;
+import static is.codion.framework.db.condition.DefaultForeignKeyConditionBuilder.compositeKeyCondition;
+import static is.codion.framework.domain.entity.Entity.getValues;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
- * Specifies a query condition.
- * @see Conditions for factory and builder methods
+ * Specifies a query condition. A factory class for {@link Condition} and it's descendants.
  */
 public interface Condition {
 
@@ -81,5 +94,121 @@ public interface Condition {
      * @return the conjunction
      */
     Conjunction conjunction();
+  }
+
+  /**
+   * Creates a {@link Condition} instance specifying all entities of the type identified by {@code entityType}
+   * @param entityType the entityType
+   * @return a condition specifying all entities of the given type
+   */
+  static Condition condition(EntityType entityType) {
+    return new DefaultCondition(entityType);
+  }
+
+  /**
+   * Creates a {@link Condition} based on the given key
+   * @param key the key
+   * @return a condition based on the given key
+   */
+  static Condition condition(Key key) {
+    if (requireNonNull(key).attributes().size() > 1) {
+      return compositeCondition(key.attributes().stream()
+              .collect(Collectors.toMap(attribute -> attribute, attribute -> attribute)), EQUAL, key.attributes().stream()
+              .collect(Collectors.toMap(attribute -> attribute, key::get)));
+    }
+
+    return new MultiValueAttributeCondition<>(key.attribute(), singletonList(key.get()), EQUAL);
+  }
+
+  /**
+   * Creates a {@link Condition} based on the given keys, assuming they are all based on the same attributes.
+   * @param keys the keys
+   * @return a condition based on the given keys
+   * @throws IllegalArgumentException in case {@code keys} is empty
+   */
+  static Condition condition(Collection<Key> keys) {
+    if (requireNonNull(keys).isEmpty()) {
+      throw new IllegalArgumentException("No keys specified for key condition");
+    }
+    Key firstKey = (keys instanceof List) ? ((List<Key>) keys).get(0) : keys.iterator().next();
+    if (firstKey.attributes().size() > 1) {
+      return compositeKeyCondition(firstKey.attributes().stream()
+              .collect(Collectors.toMap(attribute -> attribute, attribute -> attribute)), EQUAL, keys.stream()
+              .map(key -> key.attributes().stream()
+                      .collect(Collectors.<Attribute<?>, Attribute<?>, Object>toMap(attribute -> attribute, key::get)))
+              .collect(toList()));
+    }
+
+    return new MultiValueAttributeCondition<>((Attribute<?>) firstKey.attribute(), getValues(keys), EQUAL);
+  }
+
+  /**
+   * Creates a {@link ForeignKeyConditionBuilder} instance based on the given foreign key attribute.
+   * @param foreignKey the foreign key to base the condition on
+   * @return a {@link ForeignKeyConditionBuilder} instance
+   */
+  static ForeignKeyConditionBuilder where(ForeignKey foreignKey) {
+    return new DefaultForeignKeyConditionBuilder(foreignKey);
+  }
+
+  /**
+   * Creates a {@link AttributeCondition.Builder} instance based on the given attribute.
+   * @param attribute the attribute to base the condition on
+   * @param <T> the attribute type
+   * @return a {@link AttributeCondition.Builder} instance
+   * @throws IllegalArgumentException in case {@code attribute} is a {@link ForeignKey}.
+   * @see #where(ForeignKey)
+   */
+  static <T> AttributeCondition.Builder<T> where(Attribute<T> attribute) {
+    if (attribute instanceof ForeignKey) {
+      throw new IllegalArgumentException("Use Conditions.where(ForeignKey foreignKey) to create a foreign key based where condition");
+    }
+
+    return new DefaultAttributeConditionBuilder<>(attribute);
+  }
+
+  /**
+   * Initializes a new {@link Combination} instance
+   * @param conjunction the Conjunction to use
+   * @param conditions the conditions to combine
+   * @return a new {@link Combination} instance
+   */
+  static Combination combination(Conjunction conjunction, Condition... conditions) {
+    return new DefaultConditionCombination(conjunction, conditions);
+  }
+
+  /**
+   * Initializes a new {@link Combination} instance
+   * @param conjunction the Conjunction to use
+   * @param conditions the conditions to combine
+   * @return a new {@link Combination} instance
+   */
+  static Combination combination(Conjunction conjunction, Collection<Condition> conditions) {
+    return new DefaultConditionCombination(conjunction, conditions);
+  }
+
+  /**
+   * Creates a new {@link CustomCondition} based on the condition of the given type
+   * @param conditionType the condition type
+   * @return a new Condition instance
+   * @throws NullPointerException in case the condition type is null
+   * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
+   */
+  static CustomCondition customCondition(ConditionType conditionType) {
+    return customCondition(conditionType, emptyList(), emptyList());
+  }
+
+  /**
+   * Creates a new {@link CustomCondition} based on the condition of the given type
+   * @param conditionType the condition type
+   * @param attributes the attributes representing the values used by this condition, in the same order as their respective values
+   * @param values the values used by this condition string
+   * @return a new Condition instance
+   * @throws NullPointerException in case any of the parameters are null
+   * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
+   */
+  static CustomCondition customCondition(ConditionType conditionType, List<Attribute<?>> attributes,
+                                         List<Object> values) {
+    return new DefaultCustomCondition(conditionType, attributes, values);
   }
 }

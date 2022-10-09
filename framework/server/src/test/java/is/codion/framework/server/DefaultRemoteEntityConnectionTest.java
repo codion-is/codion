@@ -11,7 +11,6 @@ import is.codion.common.rmi.server.Server;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.server.TestDomain.Employee;
@@ -60,7 +59,7 @@ public class DefaultRemoteEntityConnectionTest {
             .clientTypeId("DefaultRemoteEntityConnectionTestClient")
             .build());
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
-    Condition condition = Conditions.condition(Employee.TYPE);
+    Condition condition = Condition.condition(Employee.TYPE);
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.select(condition).isEmpty());
@@ -98,7 +97,7 @@ public class DefaultRemoteEntityConnectionTest {
                 }
               });
 
-      Condition condition = Conditions.condition(Employee.TYPE);
+      Condition condition = Condition.condition(Employee.TYPE);
       proxy.beginTransaction();
       proxy.select(condition);
       proxy.delete(condition);

@@ -4,7 +4,7 @@
 package is.codion.framework.demos.empdept.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -36,7 +36,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       comboBoxModel.setFilterSelectedItem(false);
       //Only select the president and managers from the database
       comboBoxModel.setSelectConditionSupplier(() ->
-              Conditions.where(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));
+              Condition.where(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));
     }
 
     return comboBoxModel;

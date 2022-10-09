@@ -10,7 +10,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -142,7 +142,7 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
     ColumnConditionModel<?, String> nameConditionModel = conditionModel.conditionModel(Employee.NAME);
     nameConditionModel.setEqualValue("SCOTT");
-    conditionModel.setAdditionalConditionSupplier(() -> Conditions.customCondition(Employee.CONDITION_2_TYPE));
+    conditionModel.setAdditionalConditionSupplier(() -> Condition.customCondition(Employee.CONDITION_2_TYPE));
     assertNotNull(conditionModel.getAdditionalConditionSupplier());
   }
 
