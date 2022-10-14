@@ -71,7 +71,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final FilteredTableSearchModel searchModel;
   private final Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels = new HashMap<>();
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
-  private volatile ProgressWorker<Collection<R>, ?> refreshWorker;
+  private ProgressWorker<Collection<R>, ?> refreshWorker;
   private Predicate<R> includeCondition;
   private boolean mergeOnRefresh = false;
   private boolean asyncRefresh = true;
@@ -651,8 +651,9 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private void cancelCurrentRefresh() {
-    if (refreshWorker != null) {
-      refreshWorker.cancel(true);
+    ProgressWorker<?, ?> worker = refreshWorker;
+    if (worker != null) {
+      worker.cancel(true);
     }
   }
 

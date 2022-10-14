@@ -8476,3 +8476,4 @@
   Properties.derivedProperty(), linkedAttributes parameter renamed sourceAttributes
   Conditions removed, factory methods moved to Condition
   Properties removed (almost), factory methods moved to Property
+  DefaultFilteredTableModel.cancelCurrentRefresh(), now defends against a NullPointerException
