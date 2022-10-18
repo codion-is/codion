@@ -8477,3 +8477,4 @@
   Conditions removed, factory methods moved to Condition
   Properties removed (almost), factory methods moved to Property
   DefaultFilteredTableModel.cancelCurrentRefresh(), now defends against a NullPointerException
+  DefaultEntityModel.addDetailModel() now throws exception in case the model is the same as the master model
