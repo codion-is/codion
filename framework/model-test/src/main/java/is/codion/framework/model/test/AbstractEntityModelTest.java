@@ -212,6 +212,12 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   }
 
   @Test
+  public void addModelAsItsOwnDetailModel() {
+    Model model = createDepartmentModelWithoutDetailModel();
+    assertThrows(IllegalArgumentException.class, () -> model.addDetailModel(model));
+  }
+
+  @Test
   public void setMasterModel() {
     Model model = createDepartmentModelWithoutDetailModel();
     Model employeeModel = createEmployeeModel();

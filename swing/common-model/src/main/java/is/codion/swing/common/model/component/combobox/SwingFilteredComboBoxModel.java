@@ -56,6 +56,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   private T nullItem;
   private Predicate<T> includeCondition;
   private boolean filterSelectedItem = true;
+  private boolean asyncRefresh = true;
 
   /**
    * Due to a java.util.ConcurrentModificationException in OSX
@@ -72,8 +73,18 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   @Override
+  public final boolean isAsyncRefresh() {
+    return asyncRefresh;
+  }
+
+  @Override
+  public final void setAsyncRefresh(boolean asyncRefresh) {
+    this.asyncRefresh = asyncRefresh;
+  }
+
+  @Override
   public final void refresh() {
-    if (SwingUtilities.isEventDispatchThread()) {
+    if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
       refreshAsync();
     }
     else {
