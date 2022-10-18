@@ -178,7 +178,7 @@ dependencyResolutionManagement {
             version('jersey', '3.0.4')
             version('junit', '5.9.1')
             version('sslcontext.kickstart', '7.4.7')
-            version('flatlaf', '2.5')
+            version('flatlaf', '2.6')
             version('ikonli.swing', '12.3.1')
             //plugins
             version('hikari', '5.0.1')
