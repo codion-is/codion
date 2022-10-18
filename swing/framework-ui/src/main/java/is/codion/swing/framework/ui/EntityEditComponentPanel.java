@@ -119,7 +119,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Holds the last focused input component
    */
-  private final Value<JComponent> focusedComponent = Value.value();
+  private final Value<JComponent> focusedInputComponent = Value.value();
 
   /**
    * The component that should receive focus when the UI is initialized/cleared
@@ -895,7 +895,7 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   protected final void requestFocusAfterUpdate() {
-    requestFocus(focusedComponent.get() == null ? initialFocusComponent() : focusedComponent.get());
+    requestFocus(focusedInputComponent.get() == null ? initialFocusComponent() : focusedInputComponent.get());
   }
 
   private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
@@ -930,7 +930,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   private void addFocusedComponentListener() {
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
-            .addPropertyChangeListener("focusOwner", new FocusedComponentListener());
+            .addPropertyChangeListener("focusOwner", new FocusedInputComponentListener());
   }
 
   /**
@@ -990,14 +990,24 @@ public class EntityEditComponentPanel extends JPanel {
     }
   }
 
-  private final class FocusedComponentListener implements PropertyChangeListener {
+  private final class FocusedInputComponentListener implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
       Component component = (Component) event.getNewValue();
-      if (component instanceof JComponent && components.containsValue(component)) {
-        focusedComponent.set((JComponent) component);
+      if (component instanceof JComponent && isInputComponent((JComponent) component)) {
+        focusedInputComponent.set((JComponent) component);
       }
+    }
+
+    private boolean isInputComponent(JComponent component) {
+      for (JComponent inputComponent : components.values()) {
+        if (sameOrParentOf(inputComponent, component)) {
+          return true;
+        }
+      }
+
+      return false;
     }
   }
 
