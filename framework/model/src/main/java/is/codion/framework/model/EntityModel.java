@@ -92,15 +92,6 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   void removeLinkedDetailModel(M detailModel);
 
   /**
-   * Initializes this {@link EntityModel} according to the given foreign key entities.
-   * It sets the value for the first available foreign key property representing the given entityType
-   * in the {@link EntityEditModel} and sets the search values in the {@link EntityTableModel}.
-   * @param foreignKeyEntityType the id of the master entity
-   * @param foreignKeyValues the master entities, empty list for none
-   */
-  void initialize(EntityType foreignKeyEntityType, List<Entity> foreignKeyValues);
-
-  /**
    * Initializes this {@link EntityModel} according to the given foreign key entities,
    * sets the appropriate attribute value in the {@link EntityEditModel} and filters the {@link EntityTableModel}
    * @param foreignKey the foreign key
@@ -124,7 +115,8 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Adds the given detail model to this model, sets this model as the master model of the
    * given detail models via {@link #setMasterModel(EntityModel)}, a side effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
-   * any data, via {@link EntityTableModel#queryConditionRequiredState()}
+   * any data, via {@link EntityTableModel#queryConditionRequiredState()}.
+   * Note that the detail model is associated with the first foreign key found referencing this models entity.
    * @param detailModels the detail models to add
    */
   void addDetailModels(M... detailModels);
@@ -133,11 +125,25 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Adds the given detail model to this model, sets this model as the master model of the
    * given detail model via {@link #setMasterModel(EntityModel)}, a side effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
-   * any data, via {@link EntityTableModel#queryConditionRequiredState()}
+   * any data, via {@link EntityTableModel#queryConditionRequiredState()}.
+   * Note that the detail model is associated with the first foreign key found referencing this models entity.
    * @param detailModel the detail model
    * @return the detail model just added
    */
   M addDetailModel(M detailModel);
+
+  /**
+   * Adds the given detail model to this model, sets this model as the master model of the
+   * given detail model via {@link #setMasterModel(EntityModel)}, a side effect if the detail model contains
+   * a table model is that it is configured so that a query condition is required for it to show
+   * any data, via {@link EntityTableModel#queryConditionRequiredState()}
+   * Specify the foreign key in case the detail model is based on an entity which contains multiple foreign keys to the
+   * same master entity. When initializing this detail model only the value for that foreign key is set.
+   * @param detailModel the detail model
+   * @param foreignKey the foreign key to base the detail model on
+   * @return the detail model just added
+   */
+  M addDetailModel(M detailModel, ForeignKey foreignKey);
 
   /**
    * @param modelClass the detail model class
@@ -180,20 +186,8 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   Collection<M> detailModels();
 
   /**
-   * Indicates that the given detail model is based on the foreign key attribute, this becomes
-   * practical when a detail model is based on an entity which contains multiple foreign keys to the
-   * same master entity. When initializing this detail model only the value for that foreignKey is set.
-   * If {@code foreignKey} is null the association is removed.
    * @param detailModel the detail model
-   * @param foreignKey the foreign key
-   * @see #initialize(ForeignKey, List)
-   * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
-   */
-  void setDetailModelForeignKey(M detailModel, ForeignKey foreignKey);
-
-  /**
-   * @param detailModel the detail model
-   * @return the foreign key the given detail model is based on, null if none has been defined
+   * @return the foreign key the given detail model is based on
    */
   ForeignKey detailModelForeignKey(M detailModel);
 

@@ -16,7 +16,6 @@ import is.codion.framework.domain.entity.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,17 +60,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * Holds the detail EntityModels used by this EntityModel
    */
-  private final Collection<M> detailModels = new ArrayList<>();
+  private final Map<M, ForeignKey> detailModels = new HashMap<>();
 
   /**
    * Holds linked detail models that should be updated and filtered according to the selected entity/entities
    */
   private final Set<M> linkedDetailModels = new HashSet<>();
-
-  /**
-   * Maps detail models to the foreign key attribute they are based on
-   */
-  private final Map<M, ForeignKey> detailModelForeignKeys = new HashMap<>();
 
   /**
    * The master model, if any, so that detail models can refer to their masters
@@ -173,16 +167,29 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final M addDetailModel(M detailModel) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
+    List<ForeignKey> foreignKeys = detailModel.editModel().entityDefinition().foreignKeys(editModel.entityType());
+    if (foreignKeys.isEmpty()) {
+      throw new IllegalArgumentException("Entity " + detailModel.editModel().entityType() +
+              " does not reference " + editModel.entityType() + " via a foreign key");
+    }
+
+    return addDetailModel(detailModel, foreignKeys.get(0));
+  }
+
+  @Override
+  public final M addDetailModel(M detailModel, ForeignKey foreignKey) {
+    requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
+    requireNonNull(foreignKey, "foreignKey");
     if (this == detailModel) {
       throw new IllegalArgumentException("A model can not be its own detail model");
     }
-    if (this.detailModels.contains(detailModel)) {
+    if (detailModels.containsKey(detailModel)) {
       throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
     }
     if (detailModel.getMasterModel() != null) {
       throw new IllegalArgumentException("Detail model " + detailModel + " has already had a master model defined");
     }
-    this.detailModels.add(detailModel);
+    detailModels.put(detailModel, foreignKey);
     detailModel.setMasterModel((M) this);
     if (detailModel.containsTableModel()) {
       detailModel.tableModel().queryConditionRequiredState().set(true);
@@ -194,30 +201,30 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final boolean containsDetailModel(Class<? extends M> modelClass) {
     requireNonNull(modelClass, "modelClass");
-    return detailModels.stream()
+    return detailModels.keySet().stream()
             .anyMatch(detailModel -> detailModel.getClass().equals(modelClass));
   }
 
   @Override
   public final boolean containsDetailModel(EntityType entityType) {
     requireNonNull(entityType, "entityType");
-    return detailModels.stream()
+    return detailModels.keySet().stream()
             .anyMatch(detailModel -> detailModel.entityType().equals(entityType));
   }
 
   @Override
   public final boolean containsDetailModel(M detailModel) {
-    return detailModels.contains(requireNonNull(detailModel, DETAIL_MODEL_PARAMETER));
+    return detailModels.containsKey(requireNonNull(detailModel, DETAIL_MODEL_PARAMETER));
   }
 
   @Override
   public final Collection<M> detailModels() {
-    return unmodifiableCollection(detailModels);
+    return unmodifiableCollection(detailModels.keySet());
   }
 
   @Override
   public final void addLinkedDetailModel(M detailModel) {
-    if (!detailModels.contains(requireNonNull(detailModel))) {
+    if (!detailModels.containsKey(requireNonNull(detailModel))) {
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
     if (linkedDetailModels.add(detailModel)) {
@@ -227,7 +234,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final void removeLinkedDetailModel(M detailModel) {
-    if (!detailModels.contains(requireNonNull(detailModel))) {
+    if (!detailModels.containsKey(requireNonNull(detailModel))) {
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
     if (linkedDetailModels.remove(detailModel)) {
@@ -243,7 +250,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final <T extends M> T detailModel(Class<? extends M> modelClass) {
     requireNonNull(modelClass, "modelClass");
-    for (M detailModel : detailModels) {
+    for (M detailModel : detailModels.keySet()) {
       if (detailModel.getClass().equals(modelClass)) {
         return (T) detailModel;
       }
@@ -255,7 +262,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final M detailModel(EntityType entityType) {
     requireNonNull(entityType, "entityType");
-    for (M detailModel : detailModels) {
+    for (M detailModel : detailModels.keySet()) {
       if (detailModel.entityType().equals(entityType)) {
         return detailModel;
       }
@@ -265,23 +272,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void setDetailModelForeignKey(M detailModel, ForeignKey foreignKey) {
-    requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
-    if (!containsDetailModel(detailModel)) {
-      throw new IllegalArgumentException(this + " does not contain detail model: " + detailModel);
-    }
-
-    if (foreignKey == null) {
-      detailModelForeignKeys.remove(detailModel);
-    }
-    else {
-      detailModelForeignKeys.put(detailModel, foreignKey);
-    }
-  }
-
-  @Override
   public final ForeignKey detailModelForeignKey(M detailModel) {
-    return detailModelForeignKeys.get(requireNonNull(detailModel, DETAIL_MODEL_PARAMETER));
+    return detailModels.get(requireNonNull(detailModel, DETAIL_MODEL_PARAMETER));
   }
 
   @Override
@@ -295,18 +287,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final void clearDetailModels() {
-    for (M detailModel : detailModels) {
+    for (M detailModel : detailModels.keySet()) {
       detailModel.clear();
-    }
-  }
-
-  @Override
-  public final void initialize(EntityType foreignKeyEntityType, List<Entity> foreignKeyValues) {
-    requireNonNull(foreignKeyEntityType);
-    requireNonNull(foreignKeyValues);
-    List<ForeignKey> foreignKeys = editModel.entityDefinition().foreignKeys(foreignKeyEntityType);
-    if (!foreignKeys.isEmpty()) {
-      initialize(foreignKeys.get(0), foreignKeyValues);
     }
   }
 
@@ -371,7 +353,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * Initializes all linked detail models according to the active entities in this master model
    * @see #addLinkedDetailModel(DefaultEntityModel)
-   * @see #initialize(EntityType, List)
+   * @see #initialize(ForeignKey, List)
    */
   protected final void initializeDetailModels() {
     List<Entity> activeEntities = activeEntities();
@@ -386,12 +368,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param detailModel the detail model
    */
   protected void initializeDetailModel(List<Entity> activeEntities, M detailModel) {
-    if (detailModelForeignKeys.containsKey(detailModel)) {
-      detailModel.initialize(detailModelForeignKeys.get(detailModel), activeEntities);
-    }
-    else {
-      detailModel.initialize(entityType(), activeEntities);
-    }
+    detailModel.initialize(detailModels.get(detailModel), activeEntities);
   }
 
   /**
@@ -404,11 +381,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     editModel.addForeignKeyValues(insertedEntities);
     editModel.setForeignKeyValues(insertedEntities);
     if (containsTableModel() && searchOnMasterInsert) {
-      ForeignKey foreignKey = masterModel.detailModelForeignKey((M) this);
-      if (foreignKey == null) {
-        foreignKey = editModel.entityDefinition().foreignKeys(masterModel.entityType()).get(0);
-      }
-      tableModel.setForeignKeyConditionValues(foreignKey, insertedEntities);
+      tableModel.setForeignKeyConditionValues(masterModel.detailModelForeignKey((M) this), insertedEntities);
     }
   }
 
@@ -454,14 +427,14 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void onInsert(List<Entity> insertedEntities) {
-    detailModels.forEach(detailModel -> detailModel.onMasterInsert(insertedEntities));
+    detailModels.keySet().forEach(detailModel -> detailModel.onMasterInsert(insertedEntities));
   }
 
   private void onUpdate(Map<Key, Entity> updatedEntities) {
-    detailModels.forEach(detailModel -> detailModel.onMasterUpdate(updatedEntities));
+    detailModels.keySet().forEach(detailModel -> detailModel.onMasterUpdate(updatedEntities));
   }
 
   private void onDelete(List<Entity> deletedEntities) {
-    detailModels.forEach(detailModel -> detailModel.onMasterDelete(deletedEntities));
+    detailModels.keySet().forEach(detailModel -> detailModel.onMasterDelete(deletedEntities));
   }
 }

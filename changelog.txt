@@ -8518,3 +8518,5 @@
   DefaultEntityModel.addDetailModel() now throws exception in case the model is the same as the master model
   FilteredComboBoxModel.setAsyncRefresh() added
   EntityEditComponentPanel bug fixed, FocusedComponentListener (renamed FocusedInputComponentListener) did not handle the case where the input component was the parent of the actual focused component, such as the text field on a temporal input panel
+  EntityModel.setDetailModelForeignKey() removed, addDetailModel() overloaded with a foreignKey parameter
+  SwingEntityTreeModel, entityType validation added to constructor

@@ -29,8 +29,7 @@ public final class SwingEntityModelTest
     SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider());
     SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, departmentModel.connectionProvider());
     employeeModel.editModel().refreshComboBoxModels();
-    departmentModel.addDetailModel(employeeModel);
-    departmentModel.setDetailModelForeignKey(employeeModel, Employee.DEPARTMENT_FK);
+    departmentModel.addDetailModel(employeeModel, Employee.DEPARTMENT_FK);
     departmentModel.addLinkedDetailModel(employeeModel);
     employeeModel.tableModel().queryConditionRequiredState().set(false);
 

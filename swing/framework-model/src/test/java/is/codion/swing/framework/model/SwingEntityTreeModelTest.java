@@ -7,6 +7,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.model.test.TestDomain;
+import is.codion.framework.model.test.TestDomain.Detail;
 import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class SwingEntityTreeModelTest {
 
@@ -28,6 +30,9 @@ public final class SwingEntityTreeModelTest {
             .build();
 
     SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, connectionProvider);
+
+    assertThrows(IllegalArgumentException.class, () -> SwingEntityTreeModel.swingEntityTreeModel(tableModel, Detail.MASTER_FK));
+
     SwingEntityTreeModel treeModel = SwingEntityTreeModel.swingEntityTreeModel(tableModel, Employee.MGR_FK);
 
     tableModel.refresh();

@@ -44,6 +44,10 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
     super(new EntityTreeNode(requireNonNull(tableModel, "tableModel"), null,
             requireNonNull(stringFunction, "stringFunction"), requireNonNull(parentForeignKey, "parentForeignKey"),
             new EntityTreeNodeComparator(tableModel.entityDefinition().comparator())));
+    if (!tableModel.entityType().equals(parentForeignKey.entityType())) {
+      throw new IllegalArgumentException("parentForeignKey entity type (" + parentForeignKey.entityType() +
+              ") must be the same as the table model entity type (" + tableModel.entityType() + ")");
+    }
     this.parentForeignKey = parentForeignKey;
     this.treeSelectionModel = new DefaultTreeSelectionModel();
     this.treeSelectionModel.addTreeSelectionListener(new EntityTreeSelectionListener(treeSelectionModel,
