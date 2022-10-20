@@ -400,6 +400,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   @Override
   public void setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKey, "foreignKey");
+    requireNonNull(foreignKeyValues, "foreignKeyValues");
     entityDefinition().foreignKeyProperty(foreignKey);
     if (tableConditionModel.setEqualConditionValues(foreignKey, foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
@@ -407,18 +408,16 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public final void replaceForeignKeyValues(EntityType foreignKeyEntityType, Collection<Entity> foreignKeyValues) {
+  public final void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
+    requireNonNull(foreignKey, "foreignKey");
     requireNonNull(foreignKeyValues, "foreignKeyValues");
-    List<ForeignKey> foreignKeys = entityDefinition().foreignKeys(requireNonNull(foreignKeyEntityType, "foreignKeyEntityType"));
     boolean changed = false;
     for (Entity entity : items()) {
-      for (ForeignKey foreignKey : foreignKeys) {
-        for (Entity foreignKeyValue : foreignKeyValues) {
-          Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
-          if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
-            currentForeignKeyValue.setAs(foreignKeyValue);
-            changed = true;
-          }
+      for (Entity foreignKeyValue : foreignKeyValues) {
+        Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
+        if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
+          currentForeignKeyValue.setAs(foreignKeyValue);
+          changed = true;
         }
       }
     }

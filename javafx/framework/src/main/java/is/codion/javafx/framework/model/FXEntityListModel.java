@@ -205,37 +205,34 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void replaceForeignKeyValues(EntityType foreignKeyEntityType, Collection<Entity> foreignKeyValues) {
-    List<ForeignKey> foreignKeys = entityDefinition().foreignKeys(foreignKeyEntityType);
+  public final void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
     for (Entity entity : items()) {
-      for (ForeignKey foreignKey : foreignKeys) {
-        for (Entity foreignKeyValue : foreignKeyValues) {
-          Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
-          if (Objects.equals(currentForeignKeyValue, foreignKeyValue)) {
-            currentForeignKeyValue.setAs(foreignKeyValue);
-          }
+      for (Entity foreignKeyValue : foreignKeyValues) {
+        Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
+        if (Objects.equals(currentForeignKeyValue, foreignKeyValue)) {
+          currentForeignKeyValue.setAs(foreignKeyValue);
         }
       }
     }
   }
 
   @Override
-  public void addEntities(Collection<Entity> entities) {
+  public final void addEntities(Collection<Entity> entities) {
     addEntitiesAt(getSize(), entities);
   }
 
   @Override
-  public void addEntitiesSorted(Collection<Entity> entities) {
+  public final void addEntitiesSorted(Collection<Entity> entities) {
     addEntitiesAtSorted(getSize(), entities);
   }
 
   @Override
-  public void addEntitiesAt(int index, Collection<Entity> entities) {
+  public final void addEntitiesAt(int index, Collection<Entity> entities) {
     addAll(index, entities);
   }
 
   @Override
-  public void addEntitiesAtSorted(int index, Collection<Entity> entities) {
+  public final void addEntitiesAtSorted(int index, Collection<Entity> entities) {
     addAll(index, entities);
     sort(sortedList().getComparator());
   }

@@ -109,10 +109,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * For every entity in this table model, replaces the foreign key instance bearing the primary
    * key with the corresponding entity from {@code foreignKeyValues}, useful when property
    * values have been changed in the referenced entity that must be reflected in the table model.
-   * @param foreignKeyEntityType the entityType of the foreign key values
+   * @param foreignKey the foreign key
    * @param foreignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(EntityType foreignKeyEntityType, Collection<Entity> foreignKeyValues);
+  void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues);
 
   /**
    * Adds the given entities to the bottom of this table model.
