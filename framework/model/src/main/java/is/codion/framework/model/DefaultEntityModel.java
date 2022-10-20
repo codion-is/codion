@@ -68,11 +68,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   private final Set<M> linkedDetailModels = new HashSet<>();
 
   /**
-   * The master model, if any, so that detail models can refer to their masters
-   */
-  private M masterModel;
-
-  /**
    * If true then this models table model will automatically search by the inserted entity
    * when an insert is performed in a master model
    */
@@ -127,20 +122,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M getMasterModel() {
-    return masterModel;
-  }
-
-  @Override
-  public final void setMasterModel(M entityModel) {
-    requireNonNull(entityModel, "entityModel");
-    if (this.masterModel != null) {
-      throw new IllegalStateException("Master model has already been set for " + this);
-    }
-    this.masterModel = entityModel;
-  }
-
-  @Override
   public final E editModel() {
     return editModel;
   }
@@ -186,11 +167,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (detailModels.containsKey(detailModel)) {
       throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
     }
-    if (detailModel.getMasterModel() != null) {
-      throw new IllegalArgumentException("Detail model " + detailModel + " has already had a master model defined");
-    }
     detailModels.put(detailModel, foreignKey);
-    detailModel.setMasterModel((M) this);
     if (detailModel.containsTableModel()) {
       detailModel.tableModel().queryConditionRequiredState().set(true);
     }
@@ -374,10 +351,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * Adds the inserted entities to the EntityComboBoxModels based on the inserted entity type,
    * sets the value of the master foreign key attribute and filters the table model if applicable
+   * @param masterModel the master model doing the insert
    * @param insertedEntities the inserted entities
    * @see EntityModel#SEARCH_ON_MASTER_INSERT
    */
-  protected final void onMasterInsert(List<Entity> insertedEntities) {
+  protected final void onMasterInsert(M masterModel, List<Entity> insertedEntities) {
     editModel.addForeignKeyValues(insertedEntities);
     editModel.setForeignKeyValues(insertedEntities);
     if (containsTableModel() && searchOnMasterInsert) {
@@ -387,12 +365,13 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /**
    * Replaces the updated master entities wherever they are referenced
+   * @param masterModel the master model doing the update
    * @param updatedEntities the updated entities
    */
-  protected final void onMasterUpdate(Map<Key, Entity> updatedEntities) {
+  protected final void onMasterUpdate(M masterModel, Map<Key, Entity> updatedEntities) {
     editModel.replaceForeignKeyValues(updatedEntities.values());
     if (containsTableModel()) {
-      tableModel.replaceForeignKeyValues(masterModel.entityType(), updatedEntities.values());
+      tableModel.replaceForeignKeyValues(masterModel.detailModelForeignKey((M) this), updatedEntities.values());
     }
   }
 
@@ -427,11 +406,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void onInsert(List<Entity> insertedEntities) {
-    detailModels.keySet().forEach(detailModel -> detailModel.onMasterInsert(insertedEntities));
+    detailModels.keySet().forEach(detailModel -> detailModel.onMasterInsert((M) this, insertedEntities));
   }
 
   private void onUpdate(Map<Key, Entity> updatedEntities) {
-    detailModels.keySet().forEach(detailModel -> detailModel.onMasterUpdate(updatedEntities));
+    detailModels.keySet().forEach(detailModel -> detailModel.onMasterUpdate((M) this, updatedEntities));
   }
 
   private void onDelete(List<Entity> deletedEntities) {

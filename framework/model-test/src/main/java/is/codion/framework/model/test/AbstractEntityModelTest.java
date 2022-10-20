@@ -138,7 +138,6 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void test() throws Exception {
-    assertNull(departmentModel.getMasterModel());
     assertNotNull(departmentModel.editModel());
 
     EventDataListener<Model> linkedListener = model -> {};
@@ -204,25 +203,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   }
 
   @Test
-  public void addDetailModelDetailModelAlreadyHasMasterModel() {
-    Model model = createDepartmentModelWithoutDetailModel();
-    Model employeeModel = createEmployeeModel();
-    employeeModel.setMasterModel(model);
-    assertThrows(IllegalArgumentException.class, () -> model.addDetailModel(employeeModel));
-  }
-
-  @Test
   public void addModelAsItsOwnDetailModel() {
     Model model = createDepartmentModelWithoutDetailModel();
     assertThrows(IllegalArgumentException.class, () -> model.addDetailModel(model));
-  }
-
-  @Test
-  public void setMasterModel() {
-    Model model = createDepartmentModelWithoutDetailModel();
-    Model employeeModel = createEmployeeModel();
-    employeeModel.setMasterModel(model);
-    assertThrows(IllegalStateException.class, () -> employeeModel.setMasterModel(departmentModel));
   }
 
   @Test
