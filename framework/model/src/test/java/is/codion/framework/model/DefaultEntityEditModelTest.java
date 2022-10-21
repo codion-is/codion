@@ -18,6 +18,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.Property;
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -512,7 +514,7 @@ public final class DefaultEntityEditModelTest {
     Entity blake = employeeEditModel.connectionProvider().connection()
             .selectSingle(Employee.NAME, "BLAKE");
     assertNotSame(employeeEditModel.referencedEntity(Employee.MGR_FK), blake);
-    employeeEditModel.replaceForeignKeyValues(singletonList(blake));
+    employeeEditModel.replaceForeignKeyValues(Employee.MGR_FK, singletonList(blake));
     assertSame(employeeEditModel.referencedEntity(Employee.MGR_FK), blake);
   }
 
@@ -535,9 +537,9 @@ public final class DefaultEntityEditModelTest {
   void derivedProperties() {
     EntityEditModel editModel = new DefaultEntityEditModel(Detail.TYPE, employeeEditModel.connectionProvider()) {
       @Override
-      public void addForeignKeyValues(List<Entity> entities) {}
+      public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
       @Override
-      public void removeForeignKeyValues(List<Entity> entities) {}
+      public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
       @Override
       public void clear() {}
       @Override
@@ -685,10 +687,10 @@ public final class DefaultEntityEditModelTest {
     }
 
     @Override
-    public void addForeignKeyValues(List<Entity> entities) {}
+    public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
 
     @Override
-    public void removeForeignKeyValues(List<Entity> entities) {}
+    public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
 
     @Override
     public void clear() {}

@@ -93,7 +93,7 @@ public class SwingEntityEditModelTest {
     employeeEditModel.refreshComboBoxModels();
     assertNotSame(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK)
             .entity(blake.primaryKey()).orElse(null), blake);
-    employeeEditModel.replaceForeignKeyValues(singletonList(blake));
+    employeeEditModel.replaceForeignKeyValues(Employee.MGR_FK, singletonList(blake));
     assertSame(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK)
             .entity(blake.primaryKey()).orElse(null), blake);
   }

@@ -22,7 +22,6 @@ import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxMode
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -221,43 +220,37 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  public final void addForeignKeyValues(List<Entity> entities) {
-    Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
-    for (Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
-      for (ForeignKey foreignKey : entityDefinition().foreignKeys(entry.getKey())) {
-        if (containsComboBoxModel(foreignKey)) {
-          SwingEntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
-          for (Entity inserted : entry.getValue()) {
-            comboBoxModel.addItem(inserted);
-          }
-        }
+  public final void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
+    requireNonNull(foreignKey);
+    requireNonNull(entities);
+    if (containsComboBoxModel(foreignKey)) {
+      SwingEntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
+      for (Entity inserted : entities) {
+        comboBoxModel.addItem(inserted);
       }
     }
   }
 
   @Override
-  public final void removeForeignKeyValues(List<Entity> entities) {
-    Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
-    for (Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
-      for (ForeignKey foreignKey : entityDefinition().foreignKeys(entry.getKey())) {
-        if (containsComboBoxModel(foreignKey)) {
-          SwingEntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
-          Entity selectedEntity = comboBoxModel.selectedValue();
-          for (Entity deletedEntity : entry.getValue()) {
-            comboBoxModel.removeItem(deletedEntity);
-          }
-          if (comboBoxModel.isVisible(selectedEntity)) {
-            comboBoxModel.setSelectedItem(selectedEntity);
-          }//if the null value is selected we're fine, otherwise select topmost item
-          else if (!comboBoxModel.isNullSelected() && comboBoxModel.getSize() > 0) {
-            comboBoxModel.setSelectedItem(comboBoxModel.getElementAt(0));
-          }
-          else {
-            comboBoxModel.setSelectedItem(null);
-          }
-        }
-        clearForeignKeyReferences(foreignKey, entry.getValue());
+  public final void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
+    requireNonNull(foreignKey);
+    requireNonNull(entities);
+    if (containsComboBoxModel(foreignKey)) {
+      SwingEntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
+      Entity selectedEntity = comboBoxModel.selectedValue();
+      for (Entity deletedEntity : entities) {
+        comboBoxModel.removeItem(deletedEntity);
       }
+      if (comboBoxModel.isVisible(selectedEntity)) {
+        comboBoxModel.setSelectedItem(selectedEntity);
+      }//if the null value is selected we're fine, otherwise select topmost item
+      else if (!comboBoxModel.isNullSelected() && comboBoxModel.getSize() > 0) {
+        comboBoxModel.setSelectedItem(comboBoxModel.getElementAt(0));
+      }
+      else {
+        comboBoxModel.setSelectedItem(null);
+      }
+      clearForeignKeyReferences(foreignKey, entities);
     }
   }
 
@@ -277,7 +270,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  protected void replaceForeignKey(ForeignKey foreignKey, List<Entity> entities) {
+  protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> entities) {
     super.replaceForeignKey(foreignKey, entities);
     if (containsComboBoxModel(foreignKey)) {
       SwingEntityComboBoxModel comboBoxModel = foreignKeyComboBoxModel(foreignKey);
@@ -285,7 +278,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     }
   }
 
-  private void clearForeignKeyReferences(ForeignKey foreignKey, List<Entity> entities) {
+  private void clearForeignKeyReferences(ForeignKey foreignKey, Collection<Entity> entities) {
     entities.forEach(entity -> {
       if (Objects.equals(entity, get(foreignKey))) {
         put(foreignKey, null);
