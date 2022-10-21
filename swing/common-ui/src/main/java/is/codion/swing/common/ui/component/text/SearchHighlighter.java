@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +35,8 @@ import static java.util.Objects.requireNonNull;
  * Instantiate via the {@link SearchHighlighter#searchHighlighter(JTextComponent)} factory method.
  */
 public final class SearchHighlighter {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SearchHighlighter.class.getName());
 
   private final Document document;
   private final Value<String> searchStringValue = Value.value();
@@ -88,11 +91,9 @@ public final class SearchHighlighter {
   public JTextField createSearchField() {
     JTextField searchField = new JTextField(12);
     new SearchFieldValue(searchField).link(searchStringValue);
-    //todo make this work somehow
-    //TextFieldHint.create(searchField, "Search");
     searchField.setComponentPopupMenu(Controls.builder()
             .control(ToggleControl.builder(caseSensitiveState)
-                    .caption("Case-sensitive"))
+                    .caption(MESSAGES.getString("case_sensitive")))
             .build().createPopupMenu());
     KeyEvents.builder(KeyEvent.VK_DOWN)
             .action(control(this::nextSearchPosition))

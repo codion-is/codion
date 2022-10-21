@@ -25,6 +25,7 @@ import java.util.Set;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A default EntityModel implementation.
@@ -356,10 +357,16 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @see EntityModel#SEARCH_ON_MASTER_INSERT
    */
   protected final void onMasterInsert(M masterModel, List<Entity> insertedEntities) {
-    editModel.addForeignKeyValues(insertedEntities);
-    editModel.setForeignKeyValues(insertedEntities);
+    ForeignKey foreignKey = masterModel.detailModelForeignKey((M) this);
+    List<Entity> entities = insertedEntities.stream()
+            .filter(entity -> entity.type().equals(foreignKey.referencedType()))
+            .collect(toList());
+    editModel.addForeignKeyValues(foreignKey, entities);
+    if (!entities.isEmpty()) {
+      editModel.put(foreignKey, entities.get(0));
+    }
     if (containsTableModel() && searchOnMasterInsert) {
-      tableModel.setForeignKeyConditionValues(masterModel.detailModelForeignKey((M) this), insertedEntities);
+      tableModel.setForeignKeyConditionValues(foreignKey, entities);
     }
   }
 
@@ -369,14 +376,22 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param updatedEntities the updated entities
    */
   protected final void onMasterUpdate(M masterModel, Map<Key, Entity> updatedEntities) {
-    editModel.replaceForeignKeyValues(updatedEntities.values());
+    ForeignKey foreignKey = masterModel.detailModelForeignKey((M) this);
+    List<Entity> entities = updatedEntities.values().stream()
+            .filter(entity -> entity.type().equals(foreignKey.referencedType()))
+            .collect(toList());
+    editModel.replaceForeignKeyValues(foreignKey, entities);
     if (containsTableModel()) {
-      tableModel.replaceForeignKeyValues(masterModel.detailModelForeignKey((M) this), updatedEntities.values());
+      tableModel.replaceForeignKeyValues(foreignKey, entities);
     }
   }
 
-  protected final void onMasterDelete(List<Entity> deletedEntities) {
-    editModel.removeForeignKeyValues(deletedEntities);
+  protected final void onMasterDelete(M masterModel, List<Entity> deletedEntities) {
+    ForeignKey foreignKey = masterModel.detailModelForeignKey((M) this);
+    List<Entity> entities = deletedEntities.stream()
+            .filter(entity -> entity.type().equals(foreignKey.referencedType()))
+            .collect(toList());
+    editModel.removeForeignKeyValues(foreignKey, entities);
   }
 
   private List<Entity> activeEntities() {
@@ -414,6 +429,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void onDelete(List<Entity> deletedEntities) {
-    detailModels.keySet().forEach(detailModel -> detailModel.onMasterDelete(deletedEntities));
+    detailModels.keySet().forEach(detailModel -> detailModel.onMasterDelete((M) this, deletedEntities));
   }
 }

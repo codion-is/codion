@@ -439,31 +439,27 @@ public interface EntityEditModel {
 
   /**
    * Adds the inserted entities to all foreign key models based on that entity type
+   * @param foreignKey the foreign key
    * @param entities the values
    */
-  void addForeignKeyValues(List<Entity> entities);
+  void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities);
 
   /**
    * Removes the given entities from all foreign key models based on that entity type and clears any foreign
    * key values referencing them.
+   * @param foreignKey the foreign key
    * @param entities the values
    */
-  void removeForeignKeyValues(List<Entity> entities);
+  void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities);
 
   /**
    * For every field referencing the given foreign key values, replaces that foreign key instance with
-   * the corresponding entity from {@code values}, useful when property
+   * the corresponding entity from {@code entities}, useful when property
    * values have been changed in the referenced entity that must be reflected in the edit model.
+   * @param foreignKey the foreign key
    * @param entities the foreign key entities
    */
-  void replaceForeignKeyValues(Collection<Entity> entities);
-
-  /**
-   * Sets the values in the given list as the values for the respective foreign keys, uses the first
-   * value found for each entity type in case of multiple entities of that type
-   * @param entities the entities
-   */
-  void setForeignKeyValues(Collection<Entity> entities);
+  void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities);
 
   /**
    * Initializes this {@link EntityEditModel} according to the given foreign key value

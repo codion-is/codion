@@ -315,14 +315,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void replaceForeignKeyValues(Collection<Entity> entities) {
-    Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
-    for (Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
-      List<ForeignKey> foreignKeys = entityDefinition().foreignKeys(entityTypeEntities.getKey());
-      for (ForeignKey foreignKey : foreignKeys) {
-        replaceForeignKey(foreignKey, entityTypeEntities.getValue());
-      }
-    }
+  public final void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
+    replaceForeignKey(requireNonNull(foreignKey), requireNonNull(entities));
   }
 
   @Override
@@ -362,17 +356,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public boolean isEntityNew() {
     return entity().isNew();
-  }
-
-  @Override
-  public final void setForeignKeyValues(Collection<Entity> entities) {
-    Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
-    for (Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
-      for (ForeignKey foreignKey : entityDefinition().foreignKeys(entityTypeEntities.getKey())) {
-        //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
-        put(foreignKey, entityTypeEntities.getValue().iterator().next());
-      }
-    }
   }
 
   @Override
@@ -894,7 +877,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param foreignKey the foreign key attribute
    * @param values the foreign key entities
    */
-  protected void replaceForeignKey(ForeignKey foreignKey, List<Entity> values) {
+  protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> values) {
     Entity currentForeignKeyValue = referencedEntity(foreignKey);
     if (currentForeignKeyValue != null) {
       for (Entity replacementValue : values) {

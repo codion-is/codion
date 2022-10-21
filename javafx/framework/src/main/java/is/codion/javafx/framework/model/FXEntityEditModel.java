@@ -13,8 +13,8 @@ import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.DefaultEntityEditModel;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -77,50 +77,32 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     foreignKeyListModels.values().forEach(FXEntityListModel::clear);
   }
 
-  /**
-   * Adds the given foreign key values to respective {@link FXEntityListModel}s.
-   * @param entities the values
-   */
   @Override
-  public void addForeignKeyValues(List<Entity> entities) {
-    Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
-    for (Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
-      for (ForeignKey foreignKey : entityDefinition().foreignKeys(entry.getKey())) {
-        FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
-        if (listModel != null) {
-          listModel.addAll(entry.getValue());
-        }
-      }
+  public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
+    FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
+    if (listModel != null) {
+      listModel.addAll(entities);
     }
   }
 
-  /**
-   * Removes the given foreign key values from respective {@link FXEntityListModel}s.
-   * @param entities the values
-   */
   @Override
-  public void removeForeignKeyValues(List<Entity> entities) {
-    Map<EntityType, List<Entity>> mapped = Entity.mapToType(entities);
-    for (Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
-      for (ForeignKey foreignKey : entityDefinition().foreignKeys(entry.getKey())) {
-        FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
-        if (listModel != null) {
-          listModel.removeAll(entry.getValue());
-          //todo
-//          final Entity selectedEntity = listModel.getSelectionModel().getSelectedItem();
-//          if (listModel.isVisible(selectedEntity)) {
-//            listModel.setSelectedItem(selectedEntity);
-//          }//if the null value is selected we're fine, otherwise select topmost item
-//          else if (!listModel.isNullValueSelected() && listModel.getSize() > 0) {
-//            listModel.setSelectedItem(listModel.getElementAt(0));
-//          }
-//          else {
-//            listModel.setSelectedItem(null);
-//          }
-        }
-        clearForeignKeyReferences(foreignKey, entry.getValue());
-      }
+  public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
+    FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
+    if (listModel != null) {
+      listModel.removeAll(entities);
+      //todo
+//      final Entity selectedEntity = listModel.getSelectionModel().getSelectedItem();
+//      if (listModel.isVisible(selectedEntity)) {
+//        listModel.setSelectedItem(selectedEntity);
+//      }//if the null value is selected we're fine, otherwise select topmost item
+//      else if (!listModel.isNullValueSelected() && listModel.getSize() > 0) {
+//        listModel.setSelectedItem(listModel.getElementAt(0));
+//      }
+//      else {
+//        listModel.setSelectedItem(null);
+//      }
     }
+    clearForeignKeyReferences(foreignKey, entities);
   }
 
   @Override
@@ -138,7 +120,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     foreignKeyListModels.values().forEach(FXEntityListModel::refresh);
   }
 
-  private void clearForeignKeyReferences(ForeignKey foreignKey, List<Entity> entities) {
+  private void clearForeignKeyReferences(ForeignKey foreignKey, Collection<Entity> entities) {
     entities.forEach(entity -> {
       if (Objects.equals(entity, get(foreignKey))) {
         put(foreignKey, null);

@@ -7,11 +7,12 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
-import java.util.List;
+import java.util.Collection;
 
 public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntityModelTest.TestEntityModel,
         DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel> {
@@ -57,9 +58,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
       super(entityType, connectionProvider);
     }
     @Override
-    public void addForeignKeyValues(List<Entity> entities) {}
+    public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
     @Override
-    public void removeForeignKeyValues(List<Entity> entities) {}
+    public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
     @Override
     public void clear() {}
     @Override

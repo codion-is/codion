@@ -8521,3 +8521,6 @@
   EntityModel.setDetailModelForeignKey() removed, addDetailModel() overloaded with a foreignKey parameter
   SwingEntityTreeModel, entityType validation added to constructor
   EntityModel.setMasterModel() removed, onMasterInsert/Update() added masterModel parameter, EntityTableModel.replaceForeignKeyValues() EntityType parameter replaced with ForeignKey
+  ColumnConditionPanel bug fixed, auto-enable popup menu replaced existing popup menus, now added to toggleEnabledButton only
+  SearchHighlighter, hardcoded string replaced with i18n
+  EntityEditModel.setForeignKeyValues() removed, replaceForeignKeyValues() foreignKey parameter added, related refactoring
