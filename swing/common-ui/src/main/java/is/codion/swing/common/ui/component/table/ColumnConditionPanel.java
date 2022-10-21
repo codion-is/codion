@@ -104,6 +104,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     this.operatorCombo = createOperatorComboBox(conditionModel.operators());
     this.toggleEnabledButton = radioButton(conditionModel.enabledState())
             .horizontalAlignment(CENTER)
+            .popupMenu(Controls.builder()
+                    .control(ToggleControl.builder(conditionModel.autoEnableState())
+                            .caption(MESSAGES.getString("auto_enable"))).build()
+                    .createPopupMenu())
             .build();
     this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? toggleButton(advancedViewState)
             .caption("...")
@@ -523,22 +527,20 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void addStringConfigurationPopupMenu() {
-    Controls.Builder builder = Controls.builder()
-            .control(ToggleControl.builder(conditionModel.autoEnableState())
-                    .caption(MESSAGES.getString("auto_enable")));
     if (conditionModel.columnClass().equals(String.class)) {
-      builder.control(ToggleControl.builder(conditionModel.caseSensitiveState())
+      JPopupMenu popupMenu = Controls.builder()
+              .control(ToggleControl.builder(conditionModel.caseSensitiveState())
                       .caption(MESSAGES.getString("case_sensitive"))
                       .build())
-              .controls(createAutomaticWildcardControls());
-    }
-    JPopupMenu popupMenu = builder.build().createPopupMenu();
-    equalField.setComponentPopupMenu(popupMenu);
-    if (lowerBoundField != null) {
-      lowerBoundField.setComponentPopupMenu(popupMenu);
-    }
-    if (upperBoundField != null) {
-      upperBoundField.setComponentPopupMenu(popupMenu);
+              .controls(createAutomaticWildcardControls())
+              .build().createPopupMenu();
+      equalField.setComponentPopupMenu(popupMenu);
+      if (lowerBoundField != null) {
+        lowerBoundField.setComponentPopupMenu(popupMenu);
+      }
+      if (upperBoundField != null) {
+        upperBoundField.setComponentPopupMenu(popupMenu);
+      }
     }
   }
 
