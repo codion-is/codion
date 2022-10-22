@@ -6,7 +6,6 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
@@ -553,9 +552,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   private void bindEventsInternal() {
     addTableModelListener(e -> tableDataChangedEvent.onEvent());
-    for (ColumnConditionModel<C, ?> conditionModel : columnFilterModels.values()) {
-      conditionModel.addConditionChangedListener(this::filterContents);
-    }
+    columnFilterModels.values().forEach(conditionModel ->
+            conditionModel.addConditionChangedListener(this::filterContents));
     sortModel.addSortingChangedListener(columnIdentifier -> sort());
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {

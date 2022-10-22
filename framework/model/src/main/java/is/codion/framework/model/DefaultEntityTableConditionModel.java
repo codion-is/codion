@@ -215,9 +215,8 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   }
 
   private void bindEvents() {
-    for (ColumnConditionModel<?, ?> conditionModel : conditionModels.values()) {
-      conditionModel.addConditionChangedListener(() -> conditionChangedEvent.onEvent(condition()));
-    }
+    conditionModels.values().forEach(conditionModel ->
+            conditionModel.addConditionChangedListener(() -> conditionChangedEvent.onEvent(condition())));
     simpleConditionStringValue.addDataListener(conditionString -> {
       clearConditions();
       if (!Util.nullOrEmpty(conditionString)) {
