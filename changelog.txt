@@ -8486,3 +8486,4 @@
   ColumnConditionPanel bug fixed, auto-enable popup menu replaced existing popup menus, now added to toggleEnabledButton only
   SearchHighlighter, hardcoded string replaced with i18n
   EntityEditModel.setForeignKeyValues() removed, replaceForeignKeyValues() foreignKey parameter added, related refactoring
+  DefaultEntityTableConditionModel, some refactoring

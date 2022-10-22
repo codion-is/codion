@@ -1528,8 +1528,7 @@ public class EntityTablePanel extends JPanel {
     }
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisibleInternal);
     summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisibleInternal);
-    tableModel.tableConditionModel().conditionModels().values().forEach(conditionModel ->
-            conditionModel.addConditionChangedListener(this::onConditionChanged));
+    tableModel.tableConditionModel().addConditionChangedListener(condition -> onConditionChanged());
     tableModel.refreshingObserver().addDataListener(this::onRefreshingChanged);
     tableModel.addRefreshFailedListener(this::onException);
     tableModel.editModel().addEntitiesEditedListener(table::repaint);
