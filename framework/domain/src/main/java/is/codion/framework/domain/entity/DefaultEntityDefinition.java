@@ -880,7 +880,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties = foreignKeyBuilders.stream()
               .map(ForeignKeyProperty.Builder::attribute)
               .map(ForeignKey.class::cast)
-              .collect(toMap(foreignKey -> foreignKey, foreignKey -> foreignKeyColumnProperties(foreignKey, propertyMap)));
+              .collect(toMap(Function.identity(), foreignKey -> foreignKeyColumnProperties(foreignKey, propertyMap)));
       foreignKeyColumnAttributes.addAll(foreignKeyColumnProperties.values().stream()
               .flatMap(properties -> properties.stream().map(Property::attribute))
               .collect(toSet()));
@@ -889,7 +889,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private Map<Attribute<?>, ColumnProperty<?>> primaryKeyPropertyMap() {
       return unmodifiableMap(primaryKeyProperties.stream()
-              .collect(toMap(Property::attribute, property -> property)));
+              .collect(toMap(Property::attribute, Function.identity())));
     }
 
     private List<ForeignKeyProperty> foreignKeyProperties() {

@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
@@ -45,14 +46,14 @@ public final class MetaDataModel {
   }
 
   private static Map<String, Schema> discoverSchemas(DatabaseMetaData metaData) throws SQLException {
-    Map<String, Schema> schemas = new HashMap<>();
+    Map<String, Schema> schemas;
     try (ResultSet resultSet = metaData.getCatalogs()) {
-      schemas.putAll(new SchemaPacker("TABLE_CAT").pack(resultSet).stream()
-              .collect(toMap(Schema::name, schema -> schema)));
+      schemas = new HashMap<>(new SchemaPacker("TABLE_CAT").pack(resultSet).stream()
+              .collect(toMap(Schema::name, Function.identity())));
     }
     try (ResultSet resultSet = metaData.getSchemas()) {
       schemas.putAll(new SchemaPacker("TABLE_SCHEM").pack(resultSet).stream()
-              .collect(toMap(Schema::name, schema -> schema)));
+              .collect(toMap(Schema::name, Function.identity())));
     }
 
     return schemas;

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -40,7 +41,7 @@ public final class Schema {
       schemaNotifier.onEvent(name);
       try (ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
         tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
-                .collect(toMap(Table::tableName, table -> table)));
+                .collect(toMap(Table::tableName, Function.identity())));
         tables.values().stream()
                 .flatMap(table -> table.referencedSchemaNames().stream())
                 .map(schemas::get)

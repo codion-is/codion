@@ -53,6 +53,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Collections.*;
@@ -872,7 +873,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
             .map(tableColumn -> columnPreferences(tableColumn, preferences))
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .collect(toMap(ColumnPreferences::attribute, columnPreferences -> columnPreferences));
+            .collect(toMap(ColumnPreferences::attribute, Function.identity()));
   }
 
   private static Optional<ColumnPreferences> columnPreferences(TableColumn tableColumn, JSONObject preferences) {

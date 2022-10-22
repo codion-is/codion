@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
@@ -682,7 +683,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
             .map(tableColumn -> columnPreferences(tableColumn, preferences))
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .collect(toMap(ColumnPreferences::attribute, columnPreferences -> columnPreferences));
+            .collect(toMap(ColumnPreferences::attribute, Function.identity()));
   }
 
   private static Optional<ColumnPreferences> columnPreferences(AttributeTableColumn<?> tableColumn, JSONObject preferences) {

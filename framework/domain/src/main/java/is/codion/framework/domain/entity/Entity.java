@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
@@ -562,7 +563,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static Map<Key, Entity> mapToPrimaryKey(Collection<Entity> entities) {
     return requireNonNull(entities).stream()
-            .collect(toMap(Entity::primaryKey, entity -> entity));
+            .collect(toMap(Entity::primaryKey, Function.identity()));
   }
 
   /**

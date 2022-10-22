@@ -14,6 +14,7 @@ import is.codion.framework.domain.entity.Key;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static is.codion.common.Operator.EQUAL;
@@ -113,8 +114,8 @@ public interface Condition {
   static Condition condition(Key key) {
     if (requireNonNull(key).attributes().size() > 1) {
       return compositeCondition(key.attributes().stream()
-              .collect(Collectors.toMap(attribute -> attribute, attribute -> attribute)), EQUAL, key.attributes().stream()
-              .collect(Collectors.toMap(attribute -> attribute, key::get)));
+              .collect(Collectors.toMap(Function.identity(), Function.identity())), EQUAL, key.attributes().stream()
+              .collect(Collectors.toMap(Function.identity(), key::get)));
     }
 
     return new MultiValueAttributeCondition<>(key.attribute(), singletonList(key.get()), EQUAL);
@@ -133,7 +134,7 @@ public interface Condition {
     Key firstKey = (keys instanceof List) ? ((List<Key>) keys).get(0) : keys.iterator().next();
     if (firstKey.attributes().size() > 1) {
       return compositeKeyCondition(firstKey.attributes().stream()
-              .collect(Collectors.toMap(attribute -> attribute, attribute -> attribute)), EQUAL, keys.stream()
+              .collect(Collectors.toMap(Function.identity(), Function.identity())), EQUAL, keys.stream()
               .map(key -> key.attributes().stream()
                       .collect(Collectors.<Attribute<?>, Attribute<?>, Object>toMap(attribute -> attribute, key::get)))
               .collect(toList()));
