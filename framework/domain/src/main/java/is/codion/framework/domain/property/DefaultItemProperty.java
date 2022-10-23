@@ -24,7 +24,7 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
     super(builder);
     this.items = builder.items;
     this.itemMap = items.stream()
-            .collect(Collectors.toMap(Item::value, item -> item));
+            .collect(Collectors.toMap(Item::value, Function.identity()));
   }
 
   @Override

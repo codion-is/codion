@@ -13,9 +13,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,8 +32,6 @@ import static java.util.stream.Collectors.toList;
  */
 public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends DefaultEntityEditModel,
         T extends EntityTableModel<E>> implements EntityModel<M, E, T> {
-
-  protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityModel.class);
 
   private static final String DETAIL_MODEL_PARAMETER = "detailModel";
 

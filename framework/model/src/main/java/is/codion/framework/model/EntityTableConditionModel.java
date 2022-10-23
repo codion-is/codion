@@ -98,7 +98,7 @@ public interface EntityTableConditionModel {
   void setConjunction(Conjunction conjunction);
 
   /**
-   * @return a Map containing the {@link ColumnConditionModel}s available in this table condition model, mapped to their respective attributes
+   * @return an unmodifiable map containing the {@link ColumnConditionModel}s available in this table condition model, mapped to their respective attributes
    */
   Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> conditionModels();
 
@@ -119,7 +119,7 @@ public interface EntityTableConditionModel {
   void clearConditions();
 
   /**
-   * @return a Map containing the filter models available in this table condition model, mapped to their respective attributes
+   * @return an unmodifiable map containing the filter models available in this table condition model, mapped to their respective attributes
    */
   Map<Attribute<?>, ColumnFilterModel<Entity, Attribute<?>, ?>> filterModels();
 

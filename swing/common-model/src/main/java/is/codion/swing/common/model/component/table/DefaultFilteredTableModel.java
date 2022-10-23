@@ -6,7 +6,6 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
@@ -33,8 +32,7 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -69,7 +67,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final FilteredTableColumnModel<C> columnModel;
   private final FilteredTableSortModel<R, C> sortModel;
   private final FilteredTableSearchModel searchModel;
-  private final Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels = new HashMap<>();
+  private final Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels;
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
   private ProgressWorker<Collection<R>, ?> refreshWorker;
   private Predicate<R> includeCondition;
@@ -98,11 +96,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     this.columnValueProvider = requireNonNull(columnValueProvider);
     this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
-    if (columnFilterModels != null) {
-      for (ColumnFilterModel<R, C, ?> columnFilterModel : columnFilterModels) {
-        this.columnFilterModels.put(columnFilterModel.columnIdentifier(), columnFilterModel);
-      }
-    }
+    this.columnFilterModels = initializeColumnFilterModels(columnFilterModels);
     this.includeCondition = new DefaultIncludeCondition<>(columnFilterModels);
     bindEventsInternal();
   }
@@ -215,7 +209,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels() {
-    return unmodifiableMap(columnFilterModels);
+    return columnFilterModels;
   }
 
   @Override
@@ -553,9 +547,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   private void bindEventsInternal() {
     addTableModelListener(e -> tableDataChangedEvent.onEvent());
-    for (ColumnConditionModel<C, ?> conditionModel : columnFilterModels.values()) {
-      conditionModel.addConditionChangedListener(this::filterContents);
-    }
+    columnFilterModels.values().forEach(conditionModel ->
+            conditionModel.addConditionChangedListener(this::filterContents));
     sortModel.addSortingChangedListener(columnIdentifier -> sort());
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
@@ -686,6 +679,19 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     clear();
     addItemsSorted(items);
     selectionModel.setSelectedItems(selectedItems);
+  }
+
+  private Map<C, ColumnFilterModel<R, C, ?>> initializeColumnFilterModels(Collection<? extends ColumnFilterModel<R, C, ?>> filterModels) {
+    if (filterModels == null) {
+      return emptyMap();
+    }
+
+    Map<C, ColumnFilterModel<R, C, ?>> filterMap = new HashMap<>();
+    for (ColumnFilterModel<R, C, ?> columnFilterModel : filterModels) {
+      filterMap.put(columnFilterModel.columnIdentifier(), columnFilterModel);
+    }
+
+    return unmodifiableMap(filterMap);
   }
 
   private static final class DefaultIncludeCondition<R, C> implements Predicate<R> {

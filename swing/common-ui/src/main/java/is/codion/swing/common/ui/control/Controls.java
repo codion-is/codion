@@ -23,7 +23,7 @@ public interface Controls extends Control {
   /**
    * @return an unmodifiable view of the actions in this set
    */
-  List<Action> getActions();
+  List<Action> actions();
 
   /**
    * Adds the given action to this Controls instance,

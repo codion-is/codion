@@ -31,7 +31,7 @@ final class ToolBarControlHandler extends ControlHandler {
 
   @Override
   public void onControls(Controls controls) {
-    controls.getActions().forEach(new ToolBarControlHandler(toolbar));
+    controls.actions().forEach(new ToolBarControlHandler(toolbar));
   }
 
   @Override
