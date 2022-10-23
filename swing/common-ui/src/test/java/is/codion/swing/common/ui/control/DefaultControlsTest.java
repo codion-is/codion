@@ -59,17 +59,17 @@ public class DefaultControlsTest {
     assertNull(list2.get(1));
     assertEquals(two, list2.get(2));
 
-    assertTrue(list2.getActions().contains(one));
-    assertTrue(list2.getActions().contains(two));
+    assertTrue(list2.actions().contains(one));
+    assertTrue(list2.actions().contains(two));
     assertEquals(3, list2.size());
     list2.addSeparator();
     assertEquals(4, list2.size());
 
     list2.remove(two);
-    assertFalse(list2.getActions().contains(two));
+    assertFalse(list2.actions().contains(two));
 
     list2.removeAll();
-    assertFalse(list2.getActions().contains(one));
+    assertFalse(list2.actions().contains(one));
     assertTrue(list2.isEmpty());
   }
 

@@ -1108,7 +1108,7 @@ public class EntityTablePanel extends JPanel {
     toolbarControls.add(controls.get(ControlCode.MOVE_SELECTION_DOWN));
     additionalToolBarControls.forEach(additionalControls -> {
       toolbarControls.addSeparator();
-      additionalControls.getActions().forEach(toolbarControls::add);
+      additionalControls.actions().forEach(toolbarControls::add);
     });
 
     return toolbarControls;

@@ -8488,3 +8488,4 @@
   EntityEditModel.setForeignKeyValues() removed, replaceForeignKeyValues() foreignKey parameter added, related refactoring
   DefaultEntityTableConditionModel, some refactoring
   Collectors.toMap(), Function.identity() used where applicable
+  Controls.getActions() renamed actions()

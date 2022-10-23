@@ -16,7 +16,7 @@ final class ButtonControlHandler extends ControlHandler {
   ButtonControlHandler(JPanel panel, Controls controls, boolean vertical) {
     this.panel = panel;
     this.vertical = vertical;
-    controls.getActions().forEach(this);
+    controls.actions().forEach(this);
   }
 
   @Override

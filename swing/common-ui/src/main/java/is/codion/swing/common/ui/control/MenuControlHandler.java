@@ -12,7 +12,7 @@ final class MenuControlHandler extends ControlHandler {
 
   MenuControlHandler(JMenu menu, Controls controls) {
     this.menu = menu;
-    controls.getActions().forEach(this);
+    controls.actions().forEach(this);
   }
 
   @Override

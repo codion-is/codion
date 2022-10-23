@@ -43,7 +43,7 @@ final class DefaultControls extends AbstractControl implements Controls {
   }
 
   @Override
-  public List<Action> getActions() {
+  public List<Action> actions() {
     return unmodifiableList(actions);
   }
 
@@ -114,7 +114,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   @Override
   public Controls addAll(Controls controls) {
-    actions.addAll(requireNonNull(controls, CONTROLS_PARAMETER).getActions());
+    actions.addAll(requireNonNull(controls, CONTROLS_PARAMETER).actions());
     return this;
   }
 
