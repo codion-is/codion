@@ -1207,17 +1207,17 @@ public class EntityTablePanel extends JPanel {
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
-    String[] messages = confirmDeleteMessages();
-    int res = JOptionPane.showConfirmDialog(this, messages[0], messages[1], JOptionPane.OK_CANCEL_OPTION);
+    ConfirmationMessage messages = confirmDeleteMessages();
+    int res = JOptionPane.showConfirmDialog(this, messages.message(), messages.title(), JOptionPane.OK_CANCEL_OPTION);
 
     return res == JOptionPane.OK_OPTION;
   }
 
   /**
-   * @return Strings to display in the confirm delete dialog, index 0 = message, index 1 = title
+   * @return Message and title to display in the confirm delete dialog
    */
-  protected String[] confirmDeleteMessages() {
-    return new String[] {FrameworkMessages.confirmDeleteSelected(), FrameworkMessages.delete()};
+  protected ConfirmationMessage confirmDeleteMessages() {
+    return ConfirmationMessage.confirmationMessage(FrameworkMessages.confirmDeleteSelected(), FrameworkMessages.delete());
   }
 
   /**

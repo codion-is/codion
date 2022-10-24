@@ -6,6 +6,7 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
@@ -72,7 +73,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private ProgressWorker<Collection<R>, ?> refreshWorker;
   private Predicate<R> includeCondition;
   private boolean mergeOnRefresh = false;
-  private boolean asyncRefresh = true;
+  private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
   /**
    * Instantiates a new table model.
@@ -758,7 +759,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     @Override
     public void addValuesChangedListener(EventListener listener) {
       tableModel.addTableDataChangedListener(listener);
-      tableModel.selectionModel().addSelectionChangedListener(listener);
+      tableModel.selectionModel().addSelectionListener(listener);
     }
 
     @Override

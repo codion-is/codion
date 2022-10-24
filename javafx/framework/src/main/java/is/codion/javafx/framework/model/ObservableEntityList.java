@@ -61,6 +61,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
   private Condition selectCondition;
   private Predicate<Entity> includeCondition;
+  private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
   /**
    * Instantiates a new {@link ObservableEntityList}
@@ -99,7 +100,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
   @Override
   public final void refresh() {
-    if (Platform.isFxApplicationThread()) {
+    if (asyncRefresh && Platform.isFxApplicationThread()) {
       refreshAsync();
     }
     else {
@@ -110,6 +111,16 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   @Override
   public final StateObserver refreshingObserver() {
     return refreshingState.observer();
+  }
+
+  @Override
+  public final boolean isAsyncRefresh() {
+    return asyncRefresh;
+  }
+
+  @Override
+  public final void setAsyncRefresh(boolean asyncRefresh) {
+    this.asyncRefresh = asyncRefresh;
   }
 
   /**
@@ -203,7 +214,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   /**
    * @param listener notified each time the selection changes.
    */
-  public final void addSelectionChangedListener(EventListener listener) {
+  public final void addSelectionListener(EventListener listener) {
     selectionChangedEvent.addListener(listener);
   }
 
@@ -337,7 +348,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * Binds model events to the selection model
    */
   protected void bindSelectionModelEvents() {
-    selectionModel.addSelectionChangedListener(selectionChangedEvent);
+    selectionModel.addSelectionListener(selectionChangedEvent);
   }
 
   private void refreshAsync() {

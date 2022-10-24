@@ -62,8 +62,8 @@ public final class DatabaseExplorerModel {
   }
 
   private void bindEvents() {
-    schemaTableModel.selectionModel().addSelectionChangedListener(definitionTableModel::refresh);
-    definitionTableModel.selectionModel().addSelectionChangedListener(this::updateCodeValue);
+    schemaTableModel.selectionModel().addSelectionListener(definitionTableModel::refresh);
+    definitionTableModel.selectionModel().addSelectionListener(this::updateCodeValue);
   }
 
   public void populateSelected(EventDataListener<String> schemaNotifier) {

@@ -8527,3 +8527,10 @@
   DefaultEntityTableConditionModel, some refactoring
   Collectors.toMap(), Function.identity() used where applicable
   Controls.getActions() renamed actions()
+  EntityEditPanel.ConfirmationMessage and DefaultConfirmationMessage moved up to package level
+  EntityTablePanel.confirmDeleteMessages() now returns ConfirmationMessage
+  SelectionModel.addSelectionChangedListener() and EntityTableModel.addSelectionChangedListener() renamed addSelectionListener()
+  EntityEditPanel bug fixed, now only sets the default values in the edit model if the entity is new
+  FilteredTableModel.setAsyncRefresh() moved to FilteredModel
+  FilteredModel.ASYNC_REFRESH configuration parameter reintroduced, quite convenient to be able to disable this globally
+  EntityPanel, added a bit of flexibility concerning detail panels, now a detail panel can be based on a model which is not a detail model in the underlying model
