@@ -8492,3 +8492,4 @@
   EntityEditPanel.ConfirmationMessage and DefaultConfirmationMessage moved up to package level
   EntityTablePanel.confirmDeleteMessages() now returns ConfirmationMessage
   SelectionModel.addSelectionChangedListener() and EntityTableModel.addSelectionChangedListener() renamed addSelectionListener()
+  EntityEditPanel bug fixed, now only sets the default values in the edit model if the entity is new
