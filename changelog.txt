@@ -8489,3 +8489,5 @@
   DefaultEntityTableConditionModel, some refactoring
   Collectors.toMap(), Function.identity() used where applicable
   Controls.getActions() renamed actions()
+  EntityEditPanel.ConfirmationMessage and DefaultConfirmationMessage moved up to package level
+  EntityTablePanel.confirmDeleteMessages() now returns ConfirmationMessage
