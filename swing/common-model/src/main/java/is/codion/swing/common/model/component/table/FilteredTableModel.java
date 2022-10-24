@@ -179,20 +179,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   void setMergeOnRefresh(boolean mergeOnRefresh);
 
   /**
-   * @return true if asynchronous refreshing is enabled, true by default
-   */
-  boolean isAsyncRefresh();
-
-  /**
-   * Sometimes we'd like to be able to refresh one or more table models and perform some action on
-   * the refreshed data, after the refresh has finished, such as selecting a particular entity or such.
-   * This is quite difficult to achieve with asynchronous refresh enabled, so here's a way to temporarily
-   * disable asynchronous refresh, for a more predictable behaviour.
-   * @param asyncRefresh true if asynchronous refreshing should be enabled, true by default
-   */
-  void setAsyncRefresh(boolean asyncRefresh);
-
-  /**
    * Sorts the visible contents according to the {@link FilteredTableSortModel}, keeping the selected items.
    * Calling this method with the sort model disabled has no effect.
    * @see #sortModel()

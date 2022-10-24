@@ -3,8 +3,10 @@
  */
 package is.codion.common.model;
 
+import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.StateObserver;
 
 import java.util.List;
@@ -15,6 +17,14 @@ import java.util.function.Predicate;
  * @param <T> the type of data in the model.
  */
 public interface FilteredModel<T> {
+
+  /**
+   * Specifies whether data models should refresh data asynchronously or on the EDT.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   * @see FilteredModel#setAsyncRefresh(boolean)
+   */
+  PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh", true);
 
   /**
    * Filters this model according to the condition returned by {@link #getIncludeCondition()}.
@@ -85,6 +95,22 @@ public interface FilteredModel<T> {
    * @return true if the given item is filtered
    */
   boolean isFiltered(T item);
+
+  /**
+   * @return true if asynchronous refreshing is enabled, true by default
+   * @see #ASYNC_REFRESH
+   */
+  boolean isAsyncRefresh();
+
+  /**
+   * Sometimes we'd like to be able to refresh one or more models and perform some action on
+   * the refreshed data, after the refresh has finished, such as selecting a particular entity or such.
+   * This is quite difficult to achieve with asynchronous refresh enabled, so here's a way to temporarily
+   * disable asynchronous refresh, for a more predictable behaviour.
+   * @param asyncRefresh true if asynchronous refreshing should be enabled, true by default
+   * @see #ASYNC_REFRESH
+   */
+  void setAsyncRefresh(boolean asyncRefresh);
 
   /**
    * Refreshes the data in this model. Note that this method only throws exceptions when run synchronously off the EDT.
