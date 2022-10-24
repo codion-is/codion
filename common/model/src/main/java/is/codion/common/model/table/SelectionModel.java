@@ -45,12 +45,12 @@ public interface SelectionModel<R> {
   /**
    * @param listener a listener to be notified each time the selection changes
    */
-  void addSelectionChangedListener(EventListener listener);
+  void addSelectionListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectionChangedListener(EventListener listener);
+  void removeSelectionListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the selected index changes
@@ -95,14 +95,14 @@ public interface SelectionModel<R> {
   /**
    * Moves all selected indexes down one index, wraps around.
    * If the selection is empty the first item in this model is selected.
-   * @see #addSelectionChangedListener(EventListener)
+   * @see #addSelectionListener(EventListener)
    */
   void moveSelectionDown();
 
   /**
    * Moves all selected indexes up one index, wraps around.
    * If the selection is empty the last item in this model is selected.
-   * @see #addSelectionChangedListener(EventListener)
+   * @see #addSelectionListener(EventListener)
    */
   void moveSelectionUp();
 
@@ -149,7 +149,7 @@ public interface SelectionModel<R> {
 
   /**
    * Selects all visible entities
-   * @see #addSelectionChangedListener(EventListener)
+   * @see #addSelectionListener(EventListener)
    */
   void selectAll();
 

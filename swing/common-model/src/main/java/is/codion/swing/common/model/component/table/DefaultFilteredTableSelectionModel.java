@@ -22,11 +22,11 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionModel implements FilteredTableSelectionModel<R> {
 
-  private final Event<?> selectionChangedEvent = Event.event();
-  private final Event<Integer> selectedIndexChangedEvent = Event.event();
-  private final Event<List<Integer>> selectedIndexesChangedEvent = Event.event();
-  private final Event<R> selectedItemChangedEvent = Event.event();
-  private final Event<List<R>> selectedItemsChangedEvent = Event.event();
+  private final Event<?> selectionEvent = Event.event();
+  private final Event<Integer> selectedIndexEvent = Event.event();
+  private final Event<List<Integer>> selectedIndexesEvent = Event.event();
+  private final Event<R> selectedItemEvent = Event.event();
+  private final Event<List<R>> selectedItemsEvent = Event.event();
   private final State singleSelectionModeState = State.state(false);
   private final State selectionEmptyState = State.state(true);
   private final State singleSelectionState = State.state(false);
@@ -279,14 +279,14 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
       int minSelIndex = getMinSelectionIndex();
       if (selectedIndex != minSelIndex) {
         selectedIndex = minSelIndex;
-        selectedIndexChangedEvent.onEvent(selectedIndex);
-        selectedItemChangedEvent.onEvent(getSelectedItem());
+        selectedIndexEvent.onEvent(selectedIndex);
+        selectedItemEvent.onEvent(getSelectedItem());
       }
       List<Integer> selectedIndexes = getSelectedIndexes();
-      selectionChangedEvent.onEvent();
-      selectedIndexesChangedEvent.onEvent(selectedIndexes);
+      selectionEvent.onEvent();
+      selectedIndexesEvent.onEvent(selectedIndexes);
       //we don't call getSelectedItems() since that would cause another call to getSelectedIndexes()
-      selectedItemsChangedEvent.onEvent(selectedIndexes.stream()
+      selectedItemsEvent.onEvent(selectedIndexes.stream()
               .mapToInt(modelIndex -> modelIndex)
               .mapToObj(tableModel::itemAt)
               .collect(toList()));
@@ -295,52 +295,52 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 
   @Override
   public void addSelectedIndexListener(EventDataListener<Integer> listener) {
-    selectedIndexChangedEvent.addDataListener(listener);
+    selectedIndexEvent.addDataListener(listener);
   }
 
   @Override
   public void removeSelectedIndexListener(EventDataListener<Integer> listener) {
-    selectedIndexChangedEvent.removeDataListener(listener);
+    selectedIndexEvent.removeDataListener(listener);
   }
 
   @Override
   public void addSelectedIndexesListener(EventDataListener<List<Integer>> listener) {
-    selectedIndexesChangedEvent.addDataListener(listener);
+    selectedIndexesEvent.addDataListener(listener);
   }
 
   @Override
   public void removeSelectedIndexesListener(EventDataListener<List<Integer>> listener) {
-    selectedIndexesChangedEvent.removeDataListener(listener);
+    selectedIndexesEvent.removeDataListener(listener);
   }
 
   @Override
-  public void addSelectionChangedListener(EventListener listener) {
-    selectionChangedEvent.addListener(listener);
+  public void addSelectionListener(EventListener listener) {
+    selectionEvent.addListener(listener);
   }
 
   @Override
-  public void removeSelectionChangedListener(EventListener listener) {
-    selectionChangedEvent.removeListener(listener);
+  public void removeSelectionListener(EventListener listener) {
+    selectionEvent.removeListener(listener);
   }
 
   @Override
   public void addSelectedItemListener(EventDataListener<R> listener) {
-    selectedItemChangedEvent.addDataListener(listener);
+    selectedItemEvent.addDataListener(listener);
   }
 
   @Override
   public void removeSelectedItemListener(EventDataListener<R> listener) {
-    selectedItemChangedEvent.removeDataListener(listener);
+    selectedItemEvent.removeDataListener(listener);
   }
 
   @Override
   public void addSelectedItemsListener(EventDataListener<List<R>> listener) {
-    selectedItemsChangedEvent.addDataListener(listener);
+    selectedItemsEvent.addDataListener(listener);
   }
 
   @Override
   public void removeSelectedItemsListener(EventDataListener<List<R>> listener) {
-    selectedItemsChangedEvent.removeDataListener(listener);
+    selectedItemsEvent.removeDataListener(listener);
   }
 
   @Override

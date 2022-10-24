@@ -203,7 +203,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   /**
    * @param listener notified each time the selection changes.
    */
-  public final void addSelectionChangedListener(EventListener listener) {
+  public final void addSelectionListener(EventListener listener) {
     selectionChangedEvent.addListener(listener);
   }
 
@@ -337,7 +337,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
    * Binds model events to the selection model
    */
   protected void bindSelectionModelEvents() {
-    selectionModel.addSelectionChangedListener(selectionChangedEvent);
+    selectionModel.addSelectionListener(selectionChangedEvent);
   }
 
   private void refreshAsync() {

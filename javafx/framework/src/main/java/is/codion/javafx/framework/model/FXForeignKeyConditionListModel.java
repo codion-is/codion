@@ -45,7 +45,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
   }
 
   private void bindListModelEvents() {
-    listModel.addSelectionChangedListener(() -> {
+    listModel.addSelectionListener(() -> {
       if (!isUpdatingModel()) {
         setEqualValue(listModel.selectionModel().getSelectedItem());
       }

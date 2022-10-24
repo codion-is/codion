@@ -195,7 +195,7 @@ public final class DefaultFilteredTableModelTest {
         return items;
       }
     };
-    testModel.selectionModel().addSelectionChangedListener(selectionEvents::incrementAndGet);
+    testModel.selectionModel().addSelectionListener(selectionEvents::incrementAndGet);
     testModel.setMergeOnRefresh(true);
     testModel.refresh();
     testModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
@@ -572,7 +572,7 @@ public final class DefaultFilteredTableModelTest {
     EventDataListener dataListener = Event.dataListener(listener);
     FilteredTableSelectionModel<List<String>> selectionModel = tableModel.selectionModel();
     selectionModel.addSelectedIndexListener(dataListener);
-    selectionModel.addSelectionChangedListener(listener);
+    selectionModel.addSelectionListener(listener);
     selectionModel.addSelectedItemListener(dataListener);
     selectionModel.addSelectedItemsListener(dataListener);
 
@@ -702,7 +702,7 @@ public final class DefaultFilteredTableModelTest {
 
     selectionModel.clearSelection();
     selectionModel.removeSelectedIndexListener(dataListener);
-    selectionModel.removeSelectionChangedListener(listener);
+    selectionModel.removeSelectionListener(listener);
     selectionModel.removeSelectedItemListener(dataListener);
     selectionModel.removeSelectedItemsListener(dataListener);
   }

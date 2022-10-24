@@ -29,11 +29,11 @@ import static java.util.Collections.singletonList;
  */
 public final class FXEntityListSelectionModel implements SelectionModel<Entity> {
 
-  private final Event<?> selectionChangedEvent = Event.event();
-  private final Event<Integer> selectedIndexChangedEvent = Event.event();
-  private final Event<List<Integer>> selectedIndexesChangedEvent = Event.event();
-  private final Event<Entity> selectedItemChangedEvent = Event.event();
-  private final Event<List<Entity>> selectedItemsChangedEvent = Event.event();
+  private final Event<?> selectionEvent = Event.event();
+  private final Event<Integer> selectedIndexEvent = Event.event();
+  private final Event<List<Integer>> selectedIndexesEvent = Event.event();
+  private final Event<Entity> selectedItemEvent = Event.event();
+  private final Event<List<Entity>> selectedItemsEvent = Event.event();
   private final State singleSelectionModeState = State.state(false);
   private final State selectionEmptyState = State.state(true);
   private final State multipleSelectionState = State.state(false);
@@ -92,53 +92,53 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
-  public void addSelectionChangedListener(EventListener listener) {
-    selectionChangedEvent.addListener(listener);
+  public void addSelectionListener(EventListener listener) {
+    selectionEvent.addListener(listener);
   }
 
   @Override
-  public void removeSelectionChangedListener(EventListener listener) {
-    selectionChangedEvent.removeListener(listener);
+  public void removeSelectionListener(EventListener listener) {
+    selectionEvent.removeListener(listener);
   }
 
   @Override
   public void addSelectedIndexListener(EventDataListener<Integer> listener) {
-    selectedIndexChangedEvent.addDataListener(listener);
+    selectedIndexEvent.addDataListener(listener);
   }
 
   @Override
   public void removeSelectedIndexListener(EventDataListener<Integer> listener) {
-    selectedIndexChangedEvent.removeDataListener(listener);
+    selectedIndexEvent.removeDataListener(listener);
   }
 
   @Override
   public void addSelectedIndexesListener(EventDataListener<List<Integer>> listener) {
-    selectedIndexesChangedEvent.addDataListener(listener);
+    selectedIndexesEvent.addDataListener(listener);
   }
 
   @Override
   public void removeSelectedIndexesListener(EventDataListener<List<Integer>> listener) {
-    selectedIndexesChangedEvent.removeDataListener(listener);
+    selectedIndexesEvent.removeDataListener(listener);
   }
 
   @Override
   public void addSelectedItemListener(EventDataListener<Entity> listener) {
-    selectedItemChangedEvent.addDataListener(listener);
+    selectedItemEvent.addDataListener(listener);
   }
 
   @Override
   public void removeSelectedItemListener(EventDataListener<Entity> listener) {
-    selectedItemChangedEvent.removeDataListener(listener);
+    selectedItemEvent.removeDataListener(listener);
   }
 
   @Override
   public void addSelectedItemsListener(EventDataListener<List<Entity>> listener) {
-    selectedItemsChangedEvent.addDataListener(listener);
+    selectedItemsEvent.addDataListener(listener);
   }
 
   @Override
   public void removeSelectedItemsListener(EventDataListener<List<Entity>> listener) {
-    selectedItemsChangedEvent.removeDataListener(listener);
+    selectedItemsEvent.removeDataListener(listener);
   }
 
   @Override
@@ -344,16 +344,16 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
         List<Integer> selectedIndexes = getSelectedIndexes();
         singleSelectionState.set(selectedIndexes.size() == 1);
         multipleSelectionState.set(!selectionEmptyState.get() && !singleSelectionState.get());
-        selectionChangedEvent.onEvent();
-        selectedIndexesChangedEvent.onEvent(selectedIndexes);
-        selectedItemChangedEvent.onEvent(getSelectedItem());
-        selectedItemsChangedEvent.onEvent(getSelectedItems());
+        selectionEvent.onEvent();
+        selectedIndexesEvent.onEvent(selectedIndexes);
+        selectedItemEvent.onEvent(getSelectedItem());
+        selectedItemsEvent.onEvent(getSelectedItems());
       });
       this.selectionModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
         int newSelectedIndex = newValue.intValue();
         if (selectedIndex != newSelectedIndex) {
           selectedIndex = newSelectedIndex;
-          selectedIndexChangedEvent.onEvent(selectedIndex);
+          selectedIndexEvent.onEvent(selectedIndex);
         }
       });
       multipleSelectionModel.selectionModeProperty().addListener((observable, oldValue, newValue) ->
@@ -370,11 +370,11 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
         int newSelectedIndex = newValue.intValue();
         if (selectedIndex != newSelectedIndex) {
           selectedIndex = newSelectedIndex;
-          selectionChangedEvent.onEvent();
-          selectedIndexChangedEvent.onEvent(selectedIndex);
-          selectedIndexesChangedEvent.onEvent(singletonList(selectedIndex));
-          selectedItemChangedEvent.onEvent(getSelectedItem());
-          selectedItemsChangedEvent.onEvent(getSelectedItems());
+          selectionEvent.onEvent();
+          selectedIndexEvent.onEvent(selectedIndex);
+          selectedIndexesEvent.onEvent(singletonList(selectedIndex));
+          selectedItemEvent.onEvent(getSelectedItem());
+          selectedItemsEvent.onEvent(getSelectedItems());
         }
       });
     }

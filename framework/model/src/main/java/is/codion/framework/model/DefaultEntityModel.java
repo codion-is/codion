@@ -408,7 +408,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
     if (containsTableModel()) {
-      tableModel().addSelectionChangedListener(initializer);
+      tableModel().addSelectionListener(initializer);
     }
     else {
       editModel.addEntityListener(entity -> initializeDetailModels());

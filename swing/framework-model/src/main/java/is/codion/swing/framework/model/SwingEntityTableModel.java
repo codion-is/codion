@@ -523,8 +523,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public final void addSelectionChangedListener(EventListener listener) {
-    selectionModel().addSelectionChangedListener(listener);
+  public final void addSelectionListener(EventListener listener) {
+    selectionModel().addSelectionListener(listener);
   }
 
   /**
@@ -690,7 +690,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     selectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(this::onTableModelEvent);
     EventListener statusListener = () -> statusMessageValue.set(statusMessage());
-    selectionModel().addSelectionChangedListener(statusListener);
+    selectionModel().addSelectionListener(statusListener);
     addFilterListener(statusListener);
     addTableDataChangedListener(statusListener);
   }

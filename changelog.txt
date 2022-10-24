@@ -8491,3 +8491,4 @@
   Controls.getActions() renamed actions()
   EntityEditPanel.ConfirmationMessage and DefaultConfirmationMessage moved up to package level
   EntityTablePanel.confirmDeleteMessages() now returns ConfirmationMessage
+  SelectionModel.addSelectionChangedListener() and EntityTableModel.addSelectionChangedListener() renamed addSelectionListener()
