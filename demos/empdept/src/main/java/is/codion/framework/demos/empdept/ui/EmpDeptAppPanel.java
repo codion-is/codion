@@ -10,7 +10,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.demos.empdept.model.EmployeeEditModel;
-import is.codion.framework.model.EntityEditModel;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
@@ -91,7 +90,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
   // tag::main[]
   public static void main(String[] args) {
-    EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
     SwingUtilities.invokeLater(() -> new EmpDeptAppPanel().starter()

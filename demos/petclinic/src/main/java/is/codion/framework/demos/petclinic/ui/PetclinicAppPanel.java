@@ -16,7 +16,6 @@ import is.codion.framework.demos.petclinic.domain.api.Vet;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.demos.petclinic.model.PetclinicAppModel;
-import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -85,7 +84,6 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 
   public static void main(String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
-    EntityEditModel.POST_EDIT_EVENTS.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
