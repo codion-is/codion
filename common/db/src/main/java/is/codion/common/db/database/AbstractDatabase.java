@@ -160,6 +160,11 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
+  public int maximumNumberOfParameters() {
+    return Integer.MAX_VALUE;
+  }
+
+  @Override
   public String checkConnectionQuery() {
     throw new IllegalStateException("No check connection query specified");
   }

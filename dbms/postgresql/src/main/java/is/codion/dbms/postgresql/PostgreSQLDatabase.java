@@ -21,6 +21,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   private static final String TIMEOUT_ERROR = "57014";//query_canceled
 
   private static final String JDBC_URL_PREFIX = "jdbc:postgresql://";
+  private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
 
   static final String CHECK_QUERY = "select 1";
 
@@ -103,6 +104,11 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   @Override
   public boolean subqueryRequiresAlias() {
     return true;
+  }
+
+  @Override
+  public int maximumNumberOfParameters() {
+    return MAXIMUM_STATEMENT_PARAMETERS;
   }
 
   @Override
