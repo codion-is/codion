@@ -79,7 +79,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final String CONDITION_PARAM_NAME = "condition";
   private static final String ENTITIES_PARAM_NAME = "entities";
   private static final String EXECUTE_STATEMENT = "executeStatement";
-  private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
 
   private static final ResultPacker<byte[]> BLOB_RESULT_PACKER = resultSet -> resultSet.getBytes(1);
   private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
@@ -1018,8 +1017,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                                     int currentForeignKeyFetchDepth, int conditionFetchDepthLimit) throws SQLException {
     List<Attribute<?>> keyAttributes = referencedKeys.get(0).attributes();
     List<Entity> referencedEntities = new ArrayList<>(referencedKeys.size());
-    for (int i = 0; i < referencedKeys.size(); i += MAXIMUM_STATEMENT_PARAMETERS) {
-      List<Key> keys = referencedKeys.subList(i, Math.min(i + MAXIMUM_STATEMENT_PARAMETERS, referencedKeys.size()));
+    int maximumNumberOfParameters = connection.database().maximumNumberOfParameters();
+    for (int i = 0; i < referencedKeys.size(); i += maximumNumberOfParameters) {
+      List<Key> keys = referencedKeys.subList(i, Math.min(i + maximumNumberOfParameters, referencedKeys.size()));
       SelectCondition referencedEntitiesCondition = condition(keys)
               .selectBuilder()
               .fetchDepth(conditionFetchDepthLimit)

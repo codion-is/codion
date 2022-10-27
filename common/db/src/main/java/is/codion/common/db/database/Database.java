@@ -156,6 +156,13 @@ public interface Database extends ConnectionFactory {
   boolean subqueryRequiresAlias();
 
   /**
+   * Returns the maximum number of prepared statement parameters, supported by this database.
+   * The default implementation simply returns {@link Integer#MAX_VALUE}, as in, no limit.
+   * @return the maximum number of prepared statement parameters, supported by this database.
+   */
+  int maximumNumberOfParameters();
+
+  /**
    * Returns a query to use when checking if the connection is valid,
    * this is used in cases where the dbms does not support the isValid() call.
    * Returning null is safe if isValid() is supported.
