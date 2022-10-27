@@ -79,6 +79,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final String CONDITION_PARAM_NAME = "condition";
   private static final String ENTITIES_PARAM_NAME = "entities";
   private static final String EXECUTE_STATEMENT = "executeStatement";
+  private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
 
   private static final ResultPacker<byte[]> BLOB_RESULT_PACKER = resultSet -> resultSet.getBytes(1);
   private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
@@ -980,14 +981,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             }
           }
           else {
-            SelectCondition referencedEntitiesCondition = condition(referencedKeys)
-                    .selectBuilder()
-                    .fetchDepth(conditionFetchDepthLimit)
-                    .selectAttributes(attributesToSelect(foreignKeyProperty, referencedKeys.get(0).attributes()))
-                    .build();
-            List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
-                    currentForeignKeyFetchDepth + 1);
-            Map<Key, Entity> referencedEntitiesMappedByKey = Entity.mapToPrimaryKey(referencedEntities);
+            Map<Key, Entity> referencedEntitiesMappedByKey = selectReferencedEntities(foreignKeyProperty, referencedKeys,
+                    currentForeignKeyFetchDepth, conditionFetchDepthLimit);
             for (int j = 0; j < entities.size(); j++) {
               Entity entity = entities.get(j);
               Key referencedKey = entity.referencedKey(foreignKey);
@@ -1017,6 +1012,23 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private boolean isWithinFetchDepthLimit(int currentForeignKeyFetchDepth, int conditionFetchDepthLimit) {
     return !limitForeignKeyFetchDepth || conditionFetchDepthLimit == -1 || currentForeignKeyFetchDepth < conditionFetchDepthLimit;
+  }
+
+  private Map<Key, Entity> selectReferencedEntities(ForeignKeyProperty foreignKeyProperty, List<Key> referencedKeys,
+                                                    int currentForeignKeyFetchDepth, int conditionFetchDepthLimit) throws SQLException {
+    List<Attribute<?>> keyAttributes = referencedKeys.get(0).attributes();
+    List<Entity> referencedEntities = new ArrayList<>(referencedKeys.size());
+    for (int i = 0; i < referencedKeys.size(); i += MAXIMUM_STATEMENT_PARAMETERS) {
+      List<Key> keys = referencedKeys.subList(i, Math.min(i + MAXIMUM_STATEMENT_PARAMETERS, referencedKeys.size()));
+      SelectCondition referencedEntitiesCondition = condition(keys)
+              .selectBuilder()
+              .fetchDepth(conditionFetchDepthLimit)
+              .selectAttributes(attributesToSelect(foreignKeyProperty, keyAttributes))
+              .build();
+      referencedEntities.addAll(doSelect(referencedEntitiesCondition, currentForeignKeyFetchDepth + 1));
+    }
+
+    return Entity.mapToPrimaryKey(referencedEntities);
   }
 
   private ResultIterator<Entity> entityIterator(Condition condition) throws SQLException {

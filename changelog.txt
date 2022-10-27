@@ -8496,3 +8496,4 @@
   FilteredTableModel.setAsyncRefresh() moved to FilteredModel
   FilteredModel.ASYNC_REFRESH configuration parameter reintroduced, quite convenient to be able to disable this globally
   EntityPanel, added a bit of flexibility concerning detail panels, now a detail panel can be based on a model which is not a detail model in the underlying model
+  DefaultLocalEntityConnection.setForeignKeys() now handles the case where the number of referenced entities exceeds the maximum number of parameters for a prepared statement (65.535)
