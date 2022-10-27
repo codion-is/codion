@@ -14,7 +14,6 @@ import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
 import is.codion.framework.demos.manual.store.model.CustomerAddressModel;
 import is.codion.framework.demos.manual.store.model.CustomerModel;
 import is.codion.framework.demos.manual.store.model.StoreAppModel;
-import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -71,7 +70,6 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
 
   public static void main(String[] args) {
     Locale.setDefault(new Locale("en", "EN"));
-    EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);

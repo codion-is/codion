@@ -12,7 +12,6 @@ import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
-import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -154,7 +153,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
-    EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityApplicationPanel.DISPLAY_ENTITY_PANELS_IN_FRAME.set(true);
     EntityApplicationPanel.PERSIST_ENTITY_PANELS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
