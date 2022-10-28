@@ -7,9 +7,9 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.model.DefaultForeignKeyConditionModel;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.EntityTableConditionModel;
-import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
@@ -82,8 +82,8 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
    */
   protected final <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createDefaultConditionPanel(ColumnConditionModel<C, T> conditionModel) {
     ColumnConditionPanel.BoundFieldFactory boundFieldFactory;
-    if (conditionModel instanceof ForeignKeyConditionModel) {
-      boundFieldFactory = new ForeignKeyBoundFieldFactory((ForeignKeyConditionModel) conditionModel, entityComponents);
+    if (conditionModel.columnIdentifier() instanceof ForeignKey) {
+      boundFieldFactory = new ForeignKeyBoundFieldFactory((ColumnConditionModel<ForeignKey, Entity>) conditionModel, entityComponents);
     }
     else if (entityComponents.supports(conditionModel.columnIdentifier())) {
       boundFieldFactory = new AttributeBoundFieldFactory<>(conditionModel, entityComponents, conditionModel.columnIdentifier());
@@ -126,6 +126,11 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
     }
 
     private JComponent createForeignKeyField() {
+      if (model instanceof DefaultForeignKeyConditionModel) {
+        EntitySearchModel searchModel = ((DefaultForeignKeyConditionModel) model).entitySearchModel();
+
+        return entityComponents.foreignKeySearchField(model.columnIdentifier(), searchModel).build();
+      }
       if (model instanceof SwingForeignKeyConditionModel) {
         SwingEntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) model).entityComboBoxModel();
 
@@ -135,9 +140,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
                 .build();
       }
 
-      EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).entitySearchModel();
-
-      return entityComponents.foreignKeySearchField(model.columnIdentifier(), searchModel).build();
+      throw new IllegalArgumentException("Uknown foreign key condition model type: " + model);
     }
   }
 

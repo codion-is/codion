@@ -90,15 +90,6 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   }
 
   @Override
-  public void refresh() {
-    for (ColumnConditionModel<?, ?> model : conditionModels.values()) {
-      if (model instanceof ForeignKeyConditionModel) {
-        ((ForeignKeyConditionModel) model).refresh();
-      }
-    }
-  }
-
-  @Override
   public void clearConditions() {
     conditionModels.values().forEach(ColumnConditionModel::clearCondition);
   }
@@ -281,15 +272,15 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   }
 
   private static Condition condition(ColumnConditionModel<?, ?> conditionModel) {
-    if (conditionModel instanceof ForeignKeyConditionModel) {
-      return foreignKeyCondition((ForeignKeyConditionModel) conditionModel);
+    if (conditionModel.columnIdentifier() instanceof ForeignKey) {
+      return foreignKeyCondition((ColumnConditionModel<?, Entity>) conditionModel);
     }
 
     return attributeCondition(conditionModel);
   }
 
-  private static Condition foreignKeyCondition(ForeignKeyConditionModel conditionModel) {
-    ForeignKey foreignKey = conditionModel.columnIdentifier();
+  private static Condition foreignKeyCondition(ColumnConditionModel<?, Entity> conditionModel) {
+    ForeignKey foreignKey = (ForeignKey) conditionModel.columnIdentifier();
     Collection<Entity> values = conditionModel.equalValueSet().get();
     ForeignKeyConditionBuilder builder = Condition.where(foreignKey);
     switch (conditionModel.getOperator()) {

@@ -151,11 +151,6 @@ public interface EntityTableConditionModel {
   boolean isFilterEnabled(Attribute<?> attribute);
 
   /**
-   * Refreshes any data bound models in this table condition model
-   */
-  void refresh();
-
-  /**
    * Note that modifying this value may (and probably will) change the automatic prefix and case sensetivity settings of
    * the underlying {@link ColumnConditionModel}s
    * @see ColumnConditionModel#caseSensitiveState()

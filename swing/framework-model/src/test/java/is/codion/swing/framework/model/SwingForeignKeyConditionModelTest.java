@@ -8,8 +8,6 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.DefaultFilterModelFactory;
-import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -18,7 +16,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
-import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static is.codion.swing.framework.model.SwingForeignKeyConditionModel.swingForeignKeyConditionModel;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,16 +28,6 @@ public class SwingForeignKeyConditionModelTest {
             .domainClassName(TestDomain.class.getName())
             .user(UNIT_TEST_USER)
             .build();
-
-  private final EntityTableConditionModel conditionModel = entityTableConditionModel(Employee.TYPE,
-          CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new SwingConditionModelFactory(CONNECTION_PROVIDER));
-
-  @Test
-  void refresh() {
-    conditionModel.refresh();
-    assertTrue(((SwingForeignKeyConditionModel) conditionModel.conditionModel(Employee.DEPARTMENT_FK))
-            .entityComboBoxModel().getSize() > 1);
-  }
 
   @Test
   void searchEntitiesComboBoxModel() throws DatabaseException {
