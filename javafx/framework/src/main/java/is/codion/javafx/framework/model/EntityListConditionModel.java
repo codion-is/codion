@@ -3,33 +3,33 @@
  */
 package is.codion.javafx.framework.model;
 
+import is.codion.common.Operator;
+import is.codion.common.Text;
+import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.model.DefaultForeignKeyConditionModel;
 
+import java.util.Arrays;
 import java.util.Collection;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A foreign key condition model based on an {@link ObservableEntityList}
+ * For instances use the {@link #entityListConditionModel(ForeignKey, ObservableEntityList)} factory method.
+ * @see #entityListConditionModel(ForeignKey, ObservableEntityList)
  */
-public final class FXForeignKeyConditionListModel extends DefaultForeignKeyConditionModel {
+public final class EntityListConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity> {
 
   private final ObservableEntityList listModel;
 
-  /**
-   * Constructs a FXForeignKeyConditionListModel instance
-   * @param foreignKey the foreign key
-   * @param listModel the list model to use
-   */
-  public FXForeignKeyConditionListModel(ForeignKey foreignKey, ObservableEntityList listModel) {
-    super(foreignKey);
-    this.listModel = listModel;
-    if (listModel != null) {
-      listModel.refresh();
-    }
-    if (listModel != null) {
-      bindListModelEvents();
-    }
+  private boolean updatingModel = false;
+
+  private EntityListConditionModel(ForeignKey foreignKey, ObservableEntityList listModel) {
+    super(foreignKey, Entity.class, Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL), Text.WILDCARD_CHARACTER.get());
+    this.listModel = requireNonNull(listModel, "listModel");
+    listModel.refresh();
+    bindListModelEvents();
   }
 
   /**
@@ -39,20 +39,32 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
     return listModel;
   }
 
-  @Override
+  /**
+   * Refreshes the underlying list model.
+   */
   public void refresh() {
     listModel.refresh();
   }
 
+  /**
+   * Instantiates a new {@link EntityListConditionModel} instance
+   * @param foreignKey the foreign key
+   * @param listModel the list model to use
+   * @return a new {@link EntityListConditionModel} instance
+   */
+  public static EntityListConditionModel entityListConditionModel(ForeignKey foreignKey, ObservableEntityList listModel) {
+    return new EntityListConditionModel(foreignKey, listModel);
+  }
+
   private void bindListModelEvents() {
     listModel.addSelectionListener(() -> {
-      if (!isUpdatingModel()) {
+      if (!updatingModel) {
         setEqualValue(listModel.selectionModel().getSelectedItem());
       }
     });
     addEqualsValueListener(() -> {
       try {
-        setUpdatingModel(true);
+        updatingModel = true;
         Collection<Entity> equalsValues = getEqualValues();
         if (!equalsValues.isEmpty()) {
           listModel.selectionModel().setSelectedItem(equalsValues.iterator().next());
@@ -62,7 +74,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
         }
       }
       finally {
-        setUpdatingModel(false);
+        updatingModel = false;
       }
     });
     listModel.addRefreshListener(() -> listModel.selectionModelOptional().ifPresent(selectionModel -> {

@@ -16,13 +16,16 @@ dependencies {
     runtimeOnly (libs.h2)
 
 //    runtimeOnly project(':codion-dbms-postgresql')
-//    runtimeOnly 'org.postgresql:postgresql:42.3.4'
+//    runtimeOnly 'org.postgresql:postgresql:42.3.7'
 
 //    runtimeOnly project(':codion-dbms-oracle')
-//    runtimeOnly ('com.oracle.database.jdbc:ojdbc8:21.5.0.0') { transitive false }
+//    runtimeOnly ('com.oracle.database.jdbc:ojdbc8:21.7.0.0') { transitive false }
 
 //    runtimeOnly project(':codion-dbms-mariadb')
-//    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
+//    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
+
+//    runtimeOnly project(':codion-dbms-db2database')
+//    runtimeOnly 'com.ibm.db2:jcc:11.5.8.0'
 
     testRuntimeOnly project(':codion-framework-db-local')
     testRuntimeOnly project(':codion-framework-db-rmi')

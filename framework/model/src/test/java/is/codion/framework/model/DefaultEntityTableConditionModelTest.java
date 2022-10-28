@@ -51,8 +51,6 @@ public class DefaultEntityTableConditionModelTest {
     assertFalse(conditionModel.isConditionEnabled());
     conditionModel.conditionModel(Employee.DEPARTMENT_FK).setEnabled(true);
     assertTrue(conditionModel.isConditionEnabled());
-
-    conditionModel.refresh();
   }
 
   @Test
@@ -63,7 +61,7 @@ public class DefaultEntityTableConditionModelTest {
     ColumnConditionModel<? extends Attribute<Entity>, Entity> masterModel =
             model.conditionModel(Detail.MASTER_FK);
     assertThrows(IllegalStateException.class, () ->
-            ((DefaultForeignKeyConditionModel) masterModel).entitySearchModel().performQuery());
+            ((EntitySearchModelConditionModel) masterModel).entitySearchModel().performQuery());
   }
 
   @Test

@@ -17,12 +17,13 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.List;
 
+import static is.codion.framework.model.EntitySearchModelConditionModel.entitySearchModelConditionModel;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DefaultForeignKeyConditionModelTest {
+public class EntitySearchModelConditionModelTest {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -36,7 +37,7 @@ public class DefaultForeignKeyConditionModelTest {
   void searchEntitiesSearchModel() throws DatabaseException {
     EntitySearchModel searchModel = new DefaultEntitySearchModel(Department.TYPE, CONNECTION_PROVIDER,
             singletonList(Department.NAME));
-    ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(Employee.DEPARTMENT_FK, searchModel);
+    EntitySearchModelConditionModel conditionModel = entitySearchModelConditionModel(Employee.DEPARTMENT_FK, searchModel);
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
     searchModel.setSelectedEntity(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
@@ -62,7 +63,5 @@ public class DefaultForeignKeyConditionModelTest {
 
     searchEntities = conditionModel.getEqualValues();
     assertTrue(searchEntities.isEmpty());
-
-    conditionModel.refresh();
   }
 }

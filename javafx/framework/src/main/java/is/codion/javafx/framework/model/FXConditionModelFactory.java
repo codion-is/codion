@@ -24,7 +24,7 @@ public class FXConditionModelFactory extends DefaultConditionModelFactory {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
       if (definition(foreignKey.referencedType()).isSmallDataset()) {
-        return (ColumnConditionModel<A, T>) new FXForeignKeyConditionListModel(foreignKey,
+        return (ColumnConditionModel<A, T>) EntityListConditionModel.entityListConditionModel(foreignKey,
                 new ObservableEntityList(foreignKey.referencedType(), connectionProvider()));
       }
     }
