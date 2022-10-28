@@ -7,8 +7,8 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.model.DefaultForeignKeyConditionModel;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.framework.model.EntitySearchModelConditionModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -17,7 +17,7 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ToggleAdva
 import is.codion.swing.common.ui.component.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
-import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
+import is.codion.swing.framework.model.SwingEntityComboBoxModelConditionModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
 import org.slf4j.Logger;
@@ -126,13 +126,13 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
     }
 
     private JComponent createForeignKeyField() {
-      if (model instanceof DefaultForeignKeyConditionModel) {
-        EntitySearchModel searchModel = ((DefaultForeignKeyConditionModel) model).entitySearchModel();
+      if (model instanceof EntitySearchModelConditionModel) {
+        EntitySearchModel searchModel = ((EntitySearchModelConditionModel) model).entitySearchModel();
 
         return entityComponents.foreignKeySearchField(model.columnIdentifier(), searchModel).build();
       }
-      if (model instanceof SwingForeignKeyConditionModel) {
-        SwingEntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) model).entityComboBoxModel();
+      if (model instanceof SwingEntityComboBoxModelConditionModel) {
+        SwingEntityComboBoxModel comboBoxModel = ((SwingEntityComboBoxModelConditionModel) model).entityComboBoxModel();
 
         return entityComponents.foreignKeyComboBox(model.columnIdentifier(), comboBoxModel)
                 .completionMode(Completion.Mode.MAXIMUM_MATCH)

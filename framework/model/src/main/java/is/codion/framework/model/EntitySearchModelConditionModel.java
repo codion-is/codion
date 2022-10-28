@@ -16,36 +16,37 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link is.codion.common.model.table.ColumnConditionModel} implementation based on a {@link EntitySearchModel}.
- * For instances use the {@link #defaultForeignKeyConditionModel(ForeignKey, EntitySearchModel)} factory method.
- * @see #defaultForeignKeyConditionModel(ForeignKey, EntitySearchModel)
+ * For instances use the {@link #entitySearchModelConditionModel(ForeignKey, EntitySearchModel)} factory method.
+ * @see #entitySearchModelConditionModel(ForeignKey, EntitySearchModel)
  */
-public final class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity> {
+public final class EntitySearchModelConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity> {
 
   private final EntitySearchModel entitySearchModel;
 
   private boolean updatingModel = false;
 
-  private DefaultForeignKeyConditionModel(ForeignKey foreignKey, EntitySearchModel entitySearchModel) {
+  private EntitySearchModelConditionModel(ForeignKey foreignKey, EntitySearchModel entitySearchModel) {
     super(foreignKey, Entity.class, Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL), Text.WILDCARD_CHARACTER.get());
     this.entitySearchModel = requireNonNull(entitySearchModel, "entitySearchModel");
     bindSearchModelEvents();
   }
 
   /**
-   * @return the {@link EntitySearchModel} used by this {@link DefaultForeignKeyConditionModel}
+   * @return the {@link EntitySearchModel} used by this {@link EntitySearchModelConditionModel}
    */
   public EntitySearchModel entitySearchModel() {
     return entitySearchModel;
   }
 
   /**
-   * Instantiates a new {@link DefaultForeignKeyConditionModel} instance.
+   * Instantiates a new {@link EntitySearchModelConditionModel} instance.
    * @param foreignKey the foreign key
    * @param entitySearchModel a EntitySearchModel
-   * @return a new {@link DefaultForeignKeyConditionModel} instance.
+   * @return a new {@link EntitySearchModelConditionModel} instance.
    */
-  public static DefaultForeignKeyConditionModel defaultForeignKeyConditionModel(ForeignKey foreignKey, EntitySearchModel entitySearchModel) {
-    return new DefaultForeignKeyConditionModel(foreignKey, entitySearchModel);
+  public static EntitySearchModelConditionModel entitySearchModelConditionModel(ForeignKey foreignKey,
+                                                                                EntitySearchModel entitySearchModel) {
+    return new EntitySearchModelConditionModel(foreignKey, entitySearchModel);
   }
 
   private void bindSearchModelEvents() {

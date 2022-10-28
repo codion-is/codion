@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static is.codion.framework.model.DefaultForeignKeyConditionModel.defaultForeignKeyConditionModel;
+import static is.codion.framework.model.EntitySearchModelConditionModel.entitySearchModelConditionModel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -36,7 +36,7 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
   public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(A attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
-      return (ColumnConditionModel<A, T>) defaultForeignKeyConditionModel(foreignKey,
+      return (ColumnConditionModel<A, T>) entitySearchModelConditionModel(foreignKey,
               EntitySearchModel.entitySearchModel(foreignKey.referencedType(), connectionProvider));
     }
 

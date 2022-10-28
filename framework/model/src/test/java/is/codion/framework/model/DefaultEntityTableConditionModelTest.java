@@ -61,7 +61,7 @@ public class DefaultEntityTableConditionModelTest {
     ColumnConditionModel<? extends Attribute<Entity>, Entity> masterModel =
             model.conditionModel(Detail.MASTER_FK);
     assertThrows(IllegalStateException.class, () ->
-            ((DefaultForeignKeyConditionModel) masterModel).entitySearchModel().performQuery());
+            ((EntitySearchModelConditionModel) masterModel).entitySearchModel().performQuery());
   }
 
   @Test

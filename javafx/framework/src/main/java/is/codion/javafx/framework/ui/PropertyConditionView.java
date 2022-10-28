@@ -13,8 +13,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.model.DefaultForeignKeyConditionModel;
-import is.codion.javafx.framework.model.FXForeignKeyConditionListModel;
+import is.codion.framework.model.EntitySearchModelConditionModel;
+import is.codion.javafx.framework.model.EntityListConditionModel;
 
 import javafx.collections.FXCollections;
 import javafx.scene.control.CheckBox;
@@ -157,13 +157,13 @@ public final class PropertyConditionView<T> extends BorderPane {
 
   private Control createControl(Property<T> property) {
     Control control;
-    if (model instanceof FXForeignKeyConditionListModel) {
-      FXForeignKeyConditionListModel listModel = (FXForeignKeyConditionListModel) model;
+    if (model instanceof EntityListConditionModel) {
+      EntityListConditionModel listModel = (EntityListConditionModel) model;
       control = new ComboBox<>(listModel.listModel().sortedList());
       listModel.listModel().setSelectionModel(((ComboBox<Entity>) control).getSelectionModel());
     }
-    else if (model instanceof DefaultForeignKeyConditionModel) {
-      control = new EntitySearchField(((DefaultForeignKeyConditionModel) model).entitySearchModel());
+    else if (model instanceof EntitySearchModelConditionModel) {
+      control = new EntitySearchField(((EntitySearchModelConditionModel) model).entitySearchModel());
     }
     else {
       control = FXUiUtil.createControl(property, null);
