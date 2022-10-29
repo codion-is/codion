@@ -10,7 +10,6 @@ import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
-import is.codion.common.model.table.DefaultColumnSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.worker.ProgressWorker;
@@ -204,7 +203,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   public final Optional<ColumnSummaryModel> columnSummaryModel(C columnIdentifier) {
     return Optional.ofNullable(columnSummaryModels.computeIfAbsent(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER), identifier ->
             createColumnValueProvider(columnIdentifier)
-                    .map(DefaultColumnSummaryModel::new)
+                    .map(ColumnSummaryModel::columnSummaryModel)
                     .orElse(null)));
   }
 
@@ -757,19 +756,18 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     }
 
     @Override
-    public void addValuesChangedListener(EventListener listener) {
+    public void addValuesListener(EventListener listener) {
       tableModel.addTableDataChangedListener(listener);
       tableModel.selectionModel().addSelectionListener(listener);
     }
 
     @Override
-    public Collection<T> values() {
-      return isValueSubset() ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier);
-    }
+    public ColumnSummaryModel.SummaryValues<T> values() {
+      FilteredTableSelectionModel<?> tableSelectionModel = tableModel.selectionModel();
+      boolean subset = tableSelectionModel.isSelectionNotEmpty() &&
+              tableSelectionModel.selectionCount() != tableModel.visibleItemCount();
 
-    @Override
-    public boolean isValueSubset() {
-      return tableModel.selectionModel().isSelectionNotEmpty();
+      return ColumnSummaryModel.summaryValues(subset ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier), subset);
     }
   }
 }

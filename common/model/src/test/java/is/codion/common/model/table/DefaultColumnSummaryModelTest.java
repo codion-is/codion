@@ -5,12 +5,12 @@ package is.codion.common.model.table;
 
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 
 import org.junit.jupiter.api.Test;
 
 import java.text.Format;
 import java.text.NumberFormat;
-import java.util.Collection;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,30 +23,22 @@ public class DefaultColumnSummaryModelTest {
     @Override
     public String format(Object value) {return numberFormat.format(value);}
     @Override
-    public Collection<Integer> values() {
-      return asList(1, 2, 3, null, 4, 5);
+    public SummaryValues<Integer> values() {
+      return ColumnSummaryModel.summaryValues(asList(1, 2, 3, null, 4, 5), false);
     }
     @Override
-    public boolean isValueSubset() {
-      return false;
-    }
-    @Override
-    public void addValuesChangedListener(EventListener event) {}
+    public void addValuesListener(EventListener event) {}
   });
 
   final ColumnSummaryModel testDoubleModel = new DefaultColumnSummaryModel<>(new SummaryValueProvider<Double>() {
     @Override
     public String format(Object value) {return numberFormat.format(value);}
     @Override
-    public Collection<Double> values() {
-      return asList(1.1, 2.2, 3.3, null, 4.4, 5.5);
+    public SummaryValues<Double> values() {
+      return ColumnSummaryModel.summaryValues(asList(1.1, 2.2, 3.3, null, 4.4, 5.5), false);
     }
     @Override
-    public boolean isValueSubset() {
-      return false;
-    }
-    @Override
-    public void addValuesChangedListener(EventListener event) {}
+    public void addValuesListener(EventListener event) {}
   });
 
   @Test

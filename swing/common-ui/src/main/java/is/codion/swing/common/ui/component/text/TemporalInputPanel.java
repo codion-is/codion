@@ -284,7 +284,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     }
 
     @Override
-    protected void setTransferFocusOnEnter(TemporalInputPanel<T> component) {
+    protected void enableTransferFocusOnEnter(TemporalInputPanel<T> component) {
       component.setTransferFocusOnEnter(true);
     }
 

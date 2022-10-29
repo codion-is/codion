@@ -399,7 +399,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
       new OnSetVisible<>(component, onSetVisible);
     }
     if (transferFocusOnEnter) {
-      setTransferFocusOnEnter(component);
+      enableTransferFocusOnEnter(component);
     }
     if (transferHandler != null) {
       component.setTransferHandler(transferHandler);
@@ -478,7 +478,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
    * Enables focus transfer on Enter, override for special handling
    * @param component the component
    */
-  protected void setTransferFocusOnEnter(C component) {
+  protected void enableTransferFocusOnEnter(C component) {
     TransferFocusOnEnter.enable(component);
   }
 

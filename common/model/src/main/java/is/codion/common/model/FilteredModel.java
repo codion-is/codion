@@ -104,7 +104,7 @@ public interface FilteredModel<T> {
 
   /**
    * Sometimes we'd like to be able to refresh one or more models and perform some action on
-   * the refreshed data, after the refresh has finished, such as selecting a particular entity or such.
+   * the refreshed data, after the refresh has finished, such as selecting a particular item or such.
    * This is quite difficult to achieve with asynchronous refresh enabled, so here's a way to temporarily
    * disable asynchronous refresh, for a more predictable behaviour.
    * @param asyncRefresh true if asynchronous refreshing should be enabled, true by default
