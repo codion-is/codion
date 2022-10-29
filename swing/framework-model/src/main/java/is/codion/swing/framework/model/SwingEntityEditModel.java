@@ -5,6 +5,7 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.Conjunction;
 import is.codion.common.ProxyBuilder;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -195,15 +196,15 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Creates a combo box model containing the current values of the given attribute.
-   * This default implementation returns a sorted {@link PropertyComboBoxModel} with the default nullValueItem
+   * This default implementation returns a sorted {@link FilteredComboBoxModel} with the default nullValueItem
    * if the underlying attribute is nullable
    * @param attribute the attribute
    * @param <T> the value type
    * @return a combo box model based on the given attribute
    */
-  public <T> PropertyComboBoxModel<T> createComboBoxModel(Attribute<T> attribute) {
+  public <T> FilteredComboBoxModel<T> createComboBoxModel(Attribute<T> attribute) {
     requireNonNull(attribute, "attribute");
-    PropertyComboBoxModel<T> model = PropertyComboBoxModel.propertyComboBoxModel(connectionProvider(), attribute);
+    AttributeComboBoxModel<T> model = new AttributeComboBoxModel<>(connectionProvider(), attribute);
     if (isNullable(attribute)) {
       model.setIncludeNull(true);
       if (attribute.valueClass().isInterface()) {
@@ -296,5 +297,26 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     refreshingObserver.addState(comboBoxModel.refreshingObserver());
 
     return comboBoxModel;
+  }
+
+  private static final class AttributeComboBoxModel<T> extends FilteredComboBoxModel<T> {
+
+    private final EntityConnectionProvider connectionProvider;
+    private final Attribute<T> attribute;
+
+    private AttributeComboBoxModel(EntityConnectionProvider connectionProvider, Attribute<T> attribute) {
+      this.connectionProvider = connectionProvider;
+      this.attribute = attribute;
+    }
+
+    @Override
+    protected Collection<T> refreshItems() {
+      try {
+        return connectionProvider.connection().select(attribute);
+      }
+      catch (DatabaseException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 }
