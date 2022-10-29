@@ -4,8 +4,8 @@
 package is.codion.common.model.table;
 
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValues;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.ResourceBundle;
@@ -32,11 +32,11 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String summary(SummaryValueProvider<T> valueProvider) {
-      Collection<T> values = valueProvider.values();
-      if (!values.isEmpty()) {
-        return addSubsetIndicator(valueProvider.format(values.stream()
+      SummaryValues<T> summaryValues = valueProvider.values();
+      if (!summaryValues.values().isEmpty()) {
+        return addSubsetIndicator(valueProvider.format(summaryValues.values().stream()
                 .filter(Objects::nonNull)
-                .mapToDouble(Number::doubleValue).sum()), valueProvider);
+                .mapToDouble(Number::doubleValue).sum()), summaryValues.isSubset());
       }
 
       return "";
@@ -49,13 +49,13 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String summary(SummaryValueProvider<T> valueProvider) {
-      Collection<T> values = valueProvider.values();
-      if (!values.isEmpty()) {
-        OptionalDouble average = values.stream()
+      SummaryValues<T> summaryValues = valueProvider.values();
+      if (!summaryValues.values().isEmpty()) {
+        OptionalDouble average = summaryValues.values().stream()
                 .mapToDouble(value -> value == null ? 0d : value.doubleValue())
                 .average();
         if (average.isPresent()) {
-          return addSubsetIndicator(valueProvider.format(average.getAsDouble()), valueProvider);
+          return addSubsetIndicator(valueProvider.format(average.getAsDouble()), summaryValues.isSubset());
         }
       }
 
@@ -69,14 +69,14 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String summary(SummaryValueProvider<T> valueProvider) {
-      Collection<T> values = valueProvider.values();
-      if (!values.isEmpty()) {
-        OptionalDouble min = values.stream()
+      SummaryValues<T> summaryValues = valueProvider.values();
+      if (!summaryValues.values().isEmpty()) {
+        OptionalDouble min = summaryValues.values().stream()
                 .filter(Objects::nonNull)
                 .mapToDouble(Number::doubleValue)
                 .min();
         if (min.isPresent()) {
-          return addSubsetIndicator(valueProvider.format(min.getAsDouble()), valueProvider);
+          return addSubsetIndicator(valueProvider.format(min.getAsDouble()), summaryValues.isSubset());
         }
       }
 
@@ -90,14 +90,14 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String summary(SummaryValueProvider<T> valueProvider) {
-      Collection<T> values = valueProvider.values();
-      if (!values.isEmpty()) {
-        OptionalDouble max = values.stream()
+      SummaryValues<T> summaryValues = valueProvider.values();
+      if (!summaryValues.values().isEmpty()) {
+        OptionalDouble max = summaryValues.values().stream()
                 .filter(Objects::nonNull)
                 .mapToDouble(Number::doubleValue)
                 .max();
         if (max.isPresent()) {
-          return addSubsetIndicator(valueProvider.format(max.getAsDouble()), valueProvider);
+          return addSubsetIndicator(valueProvider.format(max.getAsDouble()), summaryValues.isSubset());
         }
       }
 
@@ -111,18 +111,18 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public <T extends Number> String summary(SummaryValueProvider<T> valueProvider) {
-      Collection<T> values = valueProvider.values();
-      if (!values.isEmpty()) {
-        OptionalDouble min = values.stream()
+      SummaryValues<T> summaryValues = valueProvider.values();
+      if (!summaryValues.values().isEmpty()) {
+        OptionalDouble min = summaryValues.values().stream()
                 .filter(Objects::nonNull)
                 .mapToDouble(Number::doubleValue)
                 .min();
-        OptionalDouble max = values.stream()
+        OptionalDouble max = summaryValues.values().stream()
                 .filter(Objects::nonNull)
                 .mapToDouble(Number::doubleValue)
                 .max();
         if (min.isPresent() && max.isPresent()) {
-          return addSubsetIndicator(valueProvider.format(min.getAsDouble()) + "/" + valueProvider.format(max.getAsDouble()), valueProvider);
+          return addSubsetIndicator(valueProvider.format(min.getAsDouble()) + "/" + valueProvider.format(max.getAsDouble()), summaryValues.isSubset());
         }
       }
 
@@ -132,7 +132,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSummary.class.getName());
 
-  protected String addSubsetIndicator(String text, SummaryValueProvider<?> valueProvider) {
-    return text.isEmpty() ? text : text + (valueProvider.isValueSubset() ? "*" : "");
+  protected String addSubsetIndicator(String text, boolean subset) {
+    return text.isEmpty() ? text : text + (subset ? "*" : "");
   }
 }

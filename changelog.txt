@@ -8503,3 +8503,5 @@
   FilteredComboBoxModel and EntityComboBoxModel interfaces removed, SwingFilteredComboBoxModel, SwingPropertyComboBoxModel and SwingEntityComboBoxModel renamed FilteredComboBoxModel, PropertyComboBoxModel and EntityComboBoxModel respectively
   PropertyComboBoxModel removed
   ItemComboBoxModel.createModel() renamed itemComboBoxModel(), createSortedModel() renamed sortedItemComboBoxModel() and createBooleanModel() renamed booleanItemComboBoxModel()
+  ColumnSummaryModel.isValueSubset() removed, ColumnSummaryModel.SummaryValues added
+  DefaultColumnSummaryModel no longer public, ColumnSummaryModel.columnSummaryModel() factory method added
