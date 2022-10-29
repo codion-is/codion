@@ -74,7 +74,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
 
   /**
-   * Instantiates a new SwingFilteredComboBoxModel.
+   * Instantiates a new FilteredComboBoxModel.
    * The model contents are sorted automatically with a default collation based comparator.
    * To prevent sorting call {@link #setSortComparator(Comparator)} with a null argument before adding items.
    */

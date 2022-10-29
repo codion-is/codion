@@ -49,7 +49,7 @@ public final class EntityComboBoxModelConditionModel extends DefaultColumnCondit
   /**
    * Instantiates a {@link EntityComboBoxModelConditionModel} instance
    * @param foreignKey the foreign key
-   * @param comboBoxModel a SwingEntityComboBoxModel
+   * @param comboBoxModel a {@link EntityComboBoxModel}
    * @return a new {@link EntityComboBoxModelConditionModel} instance
    */
   public static EntityComboBoxModelConditionModel entityComboBoxModelConditionModel(ForeignKey foreignKey,

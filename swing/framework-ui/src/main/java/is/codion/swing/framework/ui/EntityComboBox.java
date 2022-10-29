@@ -29,7 +29,7 @@ import java.util.ResourceBundle;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A UI component based on the SwingEntityComboBoxModel.
+ * A UI component based on the {@link EntityComboBoxModel}.
  * @see EntityComboBoxModel
  */
 public final class EntityComboBox extends JComboBox<Entity> {
@@ -38,7 +38,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
   /**
    * Instantiates a new EntityComboBox
-   * @param model the SwingEntityComboBoxModel
+   * @param model the {@link EntityComboBoxModel}
    */
   EntityComboBox(EntityComboBoxModel model) {
     super(model);
