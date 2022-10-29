@@ -6,6 +6,5 @@ module is.codion.common.model {
   requires transitive is.codion.common.core;
 
   exports is.codion.common.model;
-  exports is.codion.common.model.combobox;
   exports is.codion.common.model.table;
 }
