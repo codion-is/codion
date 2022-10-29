@@ -622,9 +622,12 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   /**
-   * The order by clause to use when selecting the data for this model,
-   * by default the order by clause defined for the underlying entity
+   * The order by clause to use when selecting the data for this model.
+   * If ordering by sort order is enabled a {@link OrderBy} clause is constructed
+   * according to the sort order of column based attributes, otherwise the order by
+   * clause defined for the underlying entity is returned.
    * @return the order by clause
+   * @see #setOrderQueryBySortOrder(boolean)
    * @see EntityDefinition#orderBy()
    */
   protected OrderBy orderBy() {

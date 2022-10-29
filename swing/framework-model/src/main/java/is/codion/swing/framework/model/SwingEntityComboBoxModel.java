@@ -290,9 +290,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    * @see #getSelectConditionSupplier()
    */
   protected Collection<Entity> performQuery() {
+    Condition condition = selectConditionSupplier == null ? condition(entityType) : selectConditionSupplier.get();
     try {
-      Condition condition = selectConditionSupplier == null ? condition(entityType) : selectConditionSupplier.get();
-
       return connectionProvider.connection().select(condition.selectBuilder()
               .selectAttributes(selectAttributes)
               .orderBy(orderBy)

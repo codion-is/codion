@@ -159,11 +159,10 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
     if (operator == EQUAL) {
       return condition.equalTo(value);
     }
-    else if (operator == NOT_EQUAL) {
+    if (operator == NOT_EQUAL) {
       return condition.notEqualTo(value);
     }
-    else {
-      throw new IllegalArgumentException("Unsupported operator: " + operator);
-    }
+
+    throw new IllegalArgumentException("Unsupported operator: " + operator);
   }
 }
