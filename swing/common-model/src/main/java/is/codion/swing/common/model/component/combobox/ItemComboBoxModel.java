@@ -18,9 +18,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * A ComboBoxModel implementation based on the {@link Item} class.
  * @param <T> the type of value wrapped by this combo box models items
- * @see #createModel()
- * @see #createSortedModel()
- * @see #createBooleanModel()
+ * @see #itemComboBoxModel()
+ * @see #sortedItemComboBoxModel()
+ * @see #booleanItemComboBoxModel()
  */
 public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
 
@@ -55,7 +55,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @param <T> the Item value type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> createModel() {
+  public static <T> ItemComboBoxModel<T> itemComboBoxModel() {
     return new ItemComboBoxModel<>(null, null);
   }
 
@@ -64,7 +64,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @param <T> the Item value type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> createModel(List<Item<T>> items) {
+  public static <T> ItemComboBoxModel<T> itemComboBoxModel(List<Item<T>> items) {
     return new ItemComboBoxModel<>(null, requireNonNull(items));
   }
 
@@ -72,8 +72,8 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @param <T> the Item value type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> createSortedModel() {
-    return createSortedModel((List<Item<T>>) null);
+  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel() {
+    return sortedItemComboBoxModel((List<Item<T>>) null);
   }
 
   /**
@@ -81,7 +81,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @param <T> the Item value type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> createSortedModel(List<Item<T>> items) {
+  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(List<Item<T>> items) {
     return new ItemComboBoxModel<>(items);
   }
 
@@ -90,7 +90,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @param <T> the Item value type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> createSortedModel(Comparator<Item<T>> sortComparator) {
+  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(Comparator<Item<T>> sortComparator) {
     return new ItemComboBoxModel<>(requireNonNull(sortComparator), null);
   }
 
@@ -100,7 +100,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @param <T> the Item value type
    * @return a new combo box model
    */
-  public static <T> ItemComboBoxModel<T> createSortedModel(List<Item<T>> items, Comparator<Item<T>> sortComparator) {
+  public static <T> ItemComboBoxModel<T> sortedItemComboBoxModel(List<Item<T>> items, Comparator<Item<T>> sortComparator) {
     requireNonNull(items);
     requireNonNull(sortComparator);
 
@@ -111,8 +111,8 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * Constructs a new Boolean based ItemComboBoxModel with null as the initially selected value.
    * @return a Boolean based ItemComboBoxModel
    */
-  public static ItemComboBoxModel<Boolean> createBooleanModel() {
-    return createBooleanModel("-");
+  public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel() {
+    return booleanItemComboBoxModel("-");
   }
 
   /**
@@ -120,8 +120,8 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @param nullCaption the string representing a null value
    * @return a Boolean based ItemComboBoxModel
    */
-  public static ItemComboBoxModel<Boolean> createBooleanModel(String nullCaption) {
-    return createBooleanModel(nullCaption, Messages.yes(), Messages.no());
+  public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel(String nullCaption) {
+    return booleanItemComboBoxModel(nullCaption, Messages.yes(), Messages.no());
   }
 
   /**
@@ -131,7 +131,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    * @param falseCaption the string representing the boolean value 'false'
    * @return a Boolean based ItemComboBoxModel
    */
-  public static ItemComboBoxModel<Boolean> createBooleanModel(String nullCaption, String trueCaption, String falseCaption) {
+  public static ItemComboBoxModel<Boolean> booleanItemComboBoxModel(String nullCaption, String trueCaption, String falseCaption) {
     return new ItemComboBoxModel<>(null, asList(item(null, nullCaption), item(true, trueCaption), item(false, falseCaption)));
   }
 

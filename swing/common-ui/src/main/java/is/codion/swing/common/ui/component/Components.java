@@ -50,6 +50,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.List;
 
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -127,7 +128,7 @@ public final class Components {
    * @return a boolean based JComboBox builder
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox() {
-    return ItemComboBoxBuilder.builder(ItemComboBoxModel.createBooleanModel());
+    return ItemComboBoxBuilder.builder(booleanItemComboBoxModel());
   }
 
   /**
@@ -135,7 +136,7 @@ public final class Components {
    * @return a boolean based JComboBox builder
    */
   public static ItemComboBoxBuilder<Boolean> booleanComboBox(Value<Boolean> linkedValue) {
-    return ItemComboBoxBuilder.builder(ItemComboBoxModel.createBooleanModel(), requireNonNull(linkedValue));
+    return ItemComboBoxBuilder.builder(booleanItemComboBoxModel(), requireNonNull(linkedValue));
   }
 
   /**

@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static javax.swing.BorderFactory.createLineBorder;
 
 /**
@@ -60,7 +61,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
   private final UIDefaults nullDefaults = new UIDefaults(0, 0.1f);
 
   private LookAndFeelSelectionPanel(boolean changeOnSelection) {
-    this.comboBoxModel = ItemComboBoxModel.createModel(initializeAvailableLookAndFeels());
+    this.comboBoxModel = itemComboBoxModel(initializeAvailableLookAndFeels());
     currentLookAndFeel().ifPresent(comboBoxModel::setSelectedItem);
     this.originalLookAndFeel = comboBoxModel.selectedValue().value();
     if (changeOnSelection) {

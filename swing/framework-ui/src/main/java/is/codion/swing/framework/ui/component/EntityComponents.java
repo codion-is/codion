@@ -11,7 +11,6 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.LabelBuilder;
@@ -45,6 +44,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -186,7 +186,7 @@ public class EntityComponents {
   public final ItemComboBoxBuilder<Boolean> booleanComboBox(Attribute<Boolean> attribute) {
     Property<Boolean> property = entityDefinition.property(attribute);
 
-    return Components.booleanComboBox(ItemComboBoxModel.createBooleanModel())
+    return Components.booleanComboBox(booleanItemComboBoxModel())
             .toolTipText(property.description());
   }
 

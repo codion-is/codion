@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -349,7 +350,7 @@ public final class ComponentsTest {
   void booleanComboBox() {
     Value<Boolean> value = Value.value(true);
     ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue =
-            Components.booleanComboBox(ItemComboBoxModel.createBooleanModel())
+            Components.booleanComboBox(booleanItemComboBoxModel())
                     .maximumRowCount(5)
                     .transferFocusOnEnter(true)
                     .linkedValue(value)

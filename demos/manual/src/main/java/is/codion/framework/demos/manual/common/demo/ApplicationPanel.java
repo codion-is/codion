@@ -41,6 +41,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.Predicate;
 
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Arrays.asList;
@@ -388,7 +389,7 @@ public final class ApplicationPanel extends JPanel {
   }
 
   private static ItemComboBoxModel<Integer> createIntegerItemComboBoxModel() {
-    return ItemComboBoxModel.createModel(asList(
+    return itemComboBoxModel(asList(
             Item.item(1, "One"), Item.item(2, "Two"), Item.item(3, "Three"),
             Item.item(4, "Four"), Item.item(5, "Five"), Item.item(6, "Six"),
             Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")

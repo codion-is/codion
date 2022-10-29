@@ -46,7 +46,7 @@ public class BooleanValuesTest {
 
   @Test
   void booleanComboBox() {
-    ItemComboBoxModel<Boolean> model = ItemComboBoxModel.createBooleanModel();
+    ItemComboBoxModel<Boolean> model = ItemComboBoxModel.booleanItemComboBoxModel();
     model.setSelectedItem(false);
     ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = Components.booleanComboBox(model)
             .buildComponentValue();
